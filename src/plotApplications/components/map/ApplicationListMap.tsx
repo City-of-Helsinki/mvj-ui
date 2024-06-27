@@ -6,7 +6,7 @@ import isEmpty from "lodash/isEmpty";
 import AreaNotesEditMap from "/src/areaNote/components/AreaNotesEditMap";
 import TargetListLayer from "plotApplications/components/map/TargetListLayer";
 import { DEFAULT_ZOOM, MAP_COLORS } from "util/constants";
-import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "leases/constants";
+import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "/src/leases/constants";
 import { getApplicationTargetGeoJson } from "plotApplications/helpers";
 import { getApiResponseResults, getUrlParams } from "util/helpers";
 import { getBoundsFromBBox, getBoundsFromFeatures } from "util/map";

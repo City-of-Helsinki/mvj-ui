@@ -8,10 +8,10 @@ import BoxItem from "/src/components/content/BoxItem";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import ExternalLink from "/src/components/links/ExternalLink";
-import { LeaseAreaCustomDetailedPlanFieldPaths, LeaseAreaCustomDetailedPlanFieldTitles, LeaseAreaUsageDistributionFieldTitles, LeaseAreaUsageDistributionFieldPaths, LeaseAreaCustomDetailedPlanInfoLinksFieldPaths, LeaseAreaCustomDetailedPlanInfoLinksFieldTitles } from "leases/enums";
+import { LeaseAreaCustomDetailedPlanFieldPaths, LeaseAreaCustomDetailedPlanFieldTitles, LeaseAreaUsageDistributionFieldTitles, LeaseAreaUsageDistributionFieldPaths, LeaseAreaCustomDetailedPlanInfoLinksFieldPaths, LeaseAreaCustomDetailedPlanInfoLinksFieldTitles } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes } from "leases/selectors";
+import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 import SubTitle from "/src/components/content/SubTitle";
 type OwnProps = {

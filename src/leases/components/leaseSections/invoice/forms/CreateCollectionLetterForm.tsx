@@ -18,14 +18,14 @@ import { FieldTypes, FormNames } from "enums";
 import { CreateCollectionLetterFieldPaths, CreateCollectionLetterFieldTitles } from "/src/createCollectionLetter/enums";
 import { InvoiceType } from "/src/invoices/enums";
 import { PenaltyInterestFieldPaths, PenaltyInterestFieldTitles } from "penaltyInterest/enums";
-import { getInvoiceTenantOptions } from "leases/helpers";
+import { getInvoiceTenantOptions } from "/src/leases/helpers";
 import { getUiDataCreateCollectionLetterKey, getUiDataPenaltyInterestKey } from "uiData/helpers";
 import { convertStrToDecimalNumber, formatDate, formatDateRange, getFieldAttributes, isFieldAllowedToEdit, sortStringByKeyDesc } from "util/helpers";
 import { getAttributes as getCreateCollectionLetterAttributes } from "/src/createCollectionLetter/selectors";
 import { getInvoicesByLease } from "/src/invoices/selectors";
-import { getCurrentLease } from "leases/selectors";
+import { getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 type InvoicesProps = {
   disableDirty?: boolean;
   fields: any;

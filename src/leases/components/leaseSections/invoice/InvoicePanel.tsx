@@ -12,7 +12,7 @@ import { FormNames, Methods } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { isMethodAllowed } from "util/helpers";
 import { getInvoicesByLease, getIsEditClicked, getMethods as getInvoiceMethods } from "/src/invoices/selectors";
-import { getCurrentLease } from "leases/selectors";
+import { getCurrentLease } from "/src/leases/selectors";
 import type { Methods as MethodsType } from "types";
 import type { Invoice, InvoiceList } from "/src/invoices/types";
 type Props = {

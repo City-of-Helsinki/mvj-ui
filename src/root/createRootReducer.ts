@@ -29,7 +29,7 @@ import invoiceSetReducer from "/src/invoiceSets/reducer";
 import landUseInvoiceReducer from "/src/landUseInvoices/reducer";
 import landUseContractReducer from "/src/landUseContract/reducer";
 import landUseAgreementAttachmentReducer from "/src/landUseAgreementAttachment/reducer";
-import leaseReducer from "leases/reducer";
+import leaseReducer from "/src/leases/reducer";
 import plotSearchReducer from "plotSearch/reducer";
 import plotApplicationsReducer from "plotApplications/reducer";
 import applicationReducer from "/src/application/reducer";

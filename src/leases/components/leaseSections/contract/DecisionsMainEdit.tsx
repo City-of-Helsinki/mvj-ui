@@ -6,10 +6,10 @@ import DecisionsEdit from "./DecisionsEdit";
 import Divider from "/src/components/content/Divider";
 import InspectionsEdit from "./InspectionsEdit";
 import Title from "/src/components/content/Title";
-import { LeaseContractsFieldPaths, LeaseContractsFieldTitles, LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "leases/enums";
+import { LeaseContractsFieldPaths, LeaseContractsFieldTitles, LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { isFieldAllowedToRead } from "util/helpers";
-import { getAttributes } from "leases/selectors";
+import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;

@@ -10,7 +10,7 @@ import { RentCalculatorTypes } from "/src/components/enums";
 import { validateRentCalculatorForm } from "/src/components/formValidations";
 import { formatDateRange } from "util/helpers";
 import { getCurrentYear } from "util/date";
-import { getCurrentLease } from "leases/selectors";
+import { getCurrentLease } from "/src/leases/selectors";
 import { getBillingPeriodsByLease } from "/src/billingPeriods/selectors";
 import type { BillingPeriodList } from "/src/billingPeriods/types";
 type Props = {

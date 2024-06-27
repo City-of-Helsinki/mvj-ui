@@ -6,13 +6,13 @@ import FormText from "/src/components/form/FormText";
 import LeaseAreaWithArchiceInfo from "./LeaseAreaWithArchiceInfo";
 import Title from "/src/components/content/Title";
 import WarningContainer from "/src/components/content/WarningContainer";
-import { LeaseAreasFieldPaths } from "leases/enums";
-import { calculateAreasSum, getContentLeaseAreas, getDecisionOptions } from "leases/helpers";
+import { LeaseAreasFieldPaths } from "/src/leases/enums";
+import { calculateAreasSum, getContentLeaseAreas, getDecisionOptions } from "/src/leases/helpers";
 import { formatNumber, isFieldAllowedToRead } from "util/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
-import { getAttributes, getCurrentLease } from "leases/selectors";
+import { getAttributes, getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 type Props = {
   attributes: Attributes;
   currentLease: Lease;

@@ -6,11 +6,11 @@ import { Row, Column } from "react-foundation";
 import Authorization from "/src/components/authorization/Authorization";
 import FormField from "/src/components/form/FormField";
 import { FormNames } from "enums";
-import { LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles } from "leases/enums";
-import { validateSteppedDiscountForm } from "leases/formValidators";
+import { LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles } from "/src/leases/enums";
+import { validateSteppedDiscountForm } from "/src/leases/formValidators";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToEdit } from "util/helpers";
-import { getAttributes as getLeaseAttributes } from "leases/selectors";
+import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   decisionOptions: Array<Record<string, any>>;

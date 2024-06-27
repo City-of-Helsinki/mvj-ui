@@ -6,10 +6,10 @@ import BoxItemContainer from "/src/components/content/BoxItemContainer";
 import FormText from "/src/components/form/FormText";
 import GreenBox from "/src/components/content/GreenBox";
 import InspectionItem from "./InspectionItem";
-import { getContentInspections } from "leases/helpers";
-import { getAttributes as getLeaseAttributes, getCurrentLease } from "leases/selectors";
+import { getContentInspections } from "/src/leases/helpers";
+import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 type Props = {
   currentLease: Lease;
   leaseAttributes: Attributes;

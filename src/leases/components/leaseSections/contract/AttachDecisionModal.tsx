@@ -6,9 +6,9 @@ import DualListBox from "react-dual-listbox";
 import FormText from "/src/components/form/FormText";
 import Modal from "/src/components/modal/Modal";
 import ModalButtonWrapper from "/src/components/modal/ModalButtonWrapper";
-import { fetchLeases } from "leases/requestsAsync";
+import { fetchLeases } from "/src/leases/requestsAsync";
 import { ButtonColors } from "/src/components/enums";
-import { getContentLeaseOption } from "leases/helpers";
+import { getContentLeaseOption } from "/src/leases/helpers";
 import { sortStringByKeyAsc } from "util/helpers";
 type FilterProps = {
   available: string;

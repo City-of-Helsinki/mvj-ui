@@ -10,13 +10,13 @@ import GreenBox from "/src/components/content/GreenBox";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import SubTitle from "/src/components/content/SubTitle";
-import { LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, RentAdjustmentManagementSubventionsFieldPaths, RentAdjustmentManagementSubventionsFieldTitles, RentAdjustmentAmountTypes, RentAdjustmentTypes, SubventionTypes, RentAdjustmentTemporarySubventionsFieldPaths, RentAdjustmentTemporarySubventionsFieldTitles } from "leases/enums";
-import { calculateReLeaseDiscountPercent, getDecisionById, getDecisionOptions } from "leases/helpers";
+import { LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, RentAdjustmentManagementSubventionsFieldPaths, RentAdjustmentManagementSubventionsFieldTitles, RentAdjustmentAmountTypes, RentAdjustmentTypes, SubventionTypes, RentAdjustmentTemporarySubventionsFieldPaths, RentAdjustmentTemporarySubventionsFieldTitles } from "/src/leases/enums";
+import { calculateReLeaseDiscountPercent, getDecisionById, getDecisionOptions } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes as getLeaseAttributes, getCurrentLease } from "leases/selectors";
+import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 type Props = {
   currentLease: Lease;
   leaseAttributes: Attributes;

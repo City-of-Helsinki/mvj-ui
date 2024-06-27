@@ -12,12 +12,12 @@ import FixedInitialYearRents from "./FixedInitialYearRents";
 import IndexAdjustedRents from "./IndexAdjustedRents";
 import PayableRents from "./PayableRents";
 import RentAdjustments from "./RentAdjustments";
-import { receiveCollapseStates } from "leases/actions";
+import { receiveCollapseStates } from "/src/leases/actions";
 import { FormNames, ViewModes } from "enums";
-import { LeaseRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles, LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, LeaseIndexAdjustedRentsFieldPaths, LeaseIndexAdjustedRentsFieldTitles, LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, LeasePayableRentsFieldPaths, LeasePayableRentsFieldTitles, LeaseEqualizedRentsFieldPaths, LeaseEqualizedRentsFieldTitles, RentTypes } from "leases/enums";
+import { LeaseRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles, LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, LeaseIndexAdjustedRentsFieldPaths, LeaseIndexAdjustedRentsFieldTitles, LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, LeasePayableRentsFieldPaths, LeasePayableRentsFieldTitles, LeaseEqualizedRentsFieldPaths, LeaseEqualizedRentsFieldTitles, RentTypes } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDateRange, getFieldOptions, getLabelOfOption, isActive, isArchived, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes as getLeaseAttributes, getCollapseStateByKey } from "leases/selectors";
+import { getAttributes as getLeaseAttributes, getCollapseStateByKey } from "/src/leases/selectors";
 import type { Attributes } from "types";
 const formName = FormNames.LEASE_RENTS;
 type Props = {

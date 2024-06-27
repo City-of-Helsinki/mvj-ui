@@ -10,11 +10,11 @@ import TableWrapper from "/src/components/table/TableWrapper";
 import Title from "/src/components/content/Title";
 import { fetchAuditLogByLease } from "/src/auditLog/actions";
 import { LIST_TABLE_PAGE_SIZE } from "util/constants";
-import { LeaseFieldPaths, LeaseFieldTitles } from "leases/enums";
+import { LeaseFieldPaths, LeaseFieldTitles } from "/src/leases/enums";
 import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults } from "util/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { getAuditLogByLease, getIsFetchingByLease } from "/src/auditLog/selectors";
-import { getIsEditMode } from "leases/selectors";
+import { getIsEditMode } from "/src/leases/selectors";
 import type { AuditLogList } from "/src/auditLog/types";
 type Props = {
   auditLogList: AuditLogList;

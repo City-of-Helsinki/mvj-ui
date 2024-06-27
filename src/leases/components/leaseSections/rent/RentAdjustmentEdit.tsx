@@ -22,15 +22,15 @@ import RentAdjustmentTemporarySubventionEdit from "./RentAdjustmentTemporarySubv
 import SubTitle from "/src/components/content/SubTitle";
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, RentAdjustmentManagementSubventionsFieldPaths, RentAdjustmentManagementSubventionsFieldTitles, RentAdjustmentTemporarySubventionsFieldPaths, RentAdjustmentTemporarySubventionsFieldTitles, RentAdjustmentAmountTypes, RentAdjustmentTypes, SubventionTypes } from "leases/enums";
+import { LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, RentAdjustmentManagementSubventionsFieldPaths, RentAdjustmentManagementSubventionsFieldTitles, RentAdjustmentTemporarySubventionsFieldPaths, RentAdjustmentTemporarySubventionsFieldTitles, RentAdjustmentAmountTypes, RentAdjustmentTypes, SubventionTypes } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { calculateReLeaseDiscountPercent, calculateRentAdjustmentSubventionPercentCumulative, getDecisionById, hasSubventionDataChanged, hasSubventionValues, isSubventionTypeSpecified } from "leases/helpers";
+import { calculateReLeaseDiscountPercent, calculateRentAdjustmentSubventionPercentCumulative, getDecisionById, hasSubventionDataChanged, hasSubventionValues, isSubventionTypeSpecified } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatNumber, getFieldAttributes, getLabelOfOption, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "util/helpers";
-import { getAttributes as getLeaseAttributes, getCurrentLease } from "leases/selectors";
+import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type ManagementSubventionsProps = {
   fields: any;

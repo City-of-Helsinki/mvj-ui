@@ -9,14 +9,14 @@ import AttachDecisionModal from "./AttachDecisionModal";
 import Authorization from "/src/components/authorization/Authorization";
 import DecisionItemEdit from "./DecisionItemEdit";
 import FormText from "/src/components/form/FormText";
-import { copyDecisionToLeases, hideAttachDecisionModal, receiveFormValidFlags, showAttachDecisionModal } from "leases/actions";
+import { copyDecisionToLeases, hideAttachDecisionModal, receiveFormValidFlags, showAttachDecisionModal } from "/src/leases/actions";
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { hasPermissions } from "util/helpers";
-import { getCurrentLease, getIsAttachDecisionModalOpen } from "leases/selectors";
+import { getCurrentLease, getIsAttachDecisionModalOpen } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type DecisionsProps = {
   fields: any;

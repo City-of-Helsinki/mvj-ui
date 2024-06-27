@@ -23,7 +23,7 @@ import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import { InvoiceFieldPaths, InvoiceRowsFieldPaths } from "/src/invoices/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { formatReceivableTypesString } from "/src/invoices/helpers";
-import { getContentLeaseIdentifier } from "leases/helpers";
+import { getContentLeaseIdentifier } from "/src/leases/helpers";
 import { getSapInvoices, mapSapInvoiceSearchFilters } from "sapInvoice/helpers";
 import { formatDate, formatNumber, getApiResponseCount, getApiResponseMaxPage, getFieldOptions, getSearchQuery, getUrlParams, isEmptyValue, isFieldAllowedToRead, isMethodAllowed, setPageTitle } from "util/helpers";
 import { getRouteById, Routes } from "root/routes";

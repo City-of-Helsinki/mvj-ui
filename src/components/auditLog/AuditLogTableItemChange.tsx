@@ -6,7 +6,7 @@ import { getAttributes as getCommentAttributes } from "/src/comments/selectors";
 import { getAttributes as getContactAttributes } from "/src/contacts/selectors";
 import { getAttributes as getInfillDevelopmentCompensationAttributes } from "/src/infillDevelopment/selectors";
 import { getAttributes as getInvoiceAttributes } from "/src/invoices/selectors";
-import { getAttributes as getLeaseAttributes } from "leases/selectors";
+import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   change: {

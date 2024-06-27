@@ -6,10 +6,10 @@ import Authorization from "/src/components/authorization/Authorization";
 import BoxItem from "/src/components/content/BoxItem";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
-import { CollateralTypes, LeaseContractCollateralsFieldPaths, LeaseContractCollateralsFieldTitles } from "leases/enums";
+import { CollateralTypes, LeaseContractCollateralsFieldPaths, LeaseContractCollateralsFieldTitles } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatNumber, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes } from "leases/selectors";
+import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type EmptyProps = {
   attributes: Attributes;

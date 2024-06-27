@@ -3,12 +3,12 @@ import { connect } from "react-redux";
 import ContractFileModal from "./ContractFileModal";
 import ContractItem from "./ContractItem";
 import FormText from "/src/components/form/FormText";
-import { LeaseContractsFieldPaths } from "leases/enums";
-import { getContentContracts } from "leases/helpers";
+import { LeaseContractsFieldPaths } from "/src/leases/enums";
+import { getContentContracts } from "/src/leases/helpers";
 import { getFieldOptions } from "util/helpers";
-import { getAttributes, getCurrentLease } from "leases/selectors";
+import { getAttributes, getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 type Props = {
   attributes: Attributes;
   currentLease: Lease;

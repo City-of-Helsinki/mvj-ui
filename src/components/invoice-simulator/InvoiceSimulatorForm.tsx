@@ -6,7 +6,7 @@ import flowRight from "lodash/flowRight";
 import FormField from "/src/components/form/FormField";
 import { FormNames } from "enums";
 import { getCurrentYear } from "util/date";
-import { getCurrentLease } from "leases/selectors";
+import { getCurrentLease } from "/src/leases/selectors";
 import { getBillingPeriodsByLease } from "/src/billingPeriods/selectors";
 type Props = {
   onSubmit: (...args: Array<any>) => any;

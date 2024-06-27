@@ -10,7 +10,7 @@ import FormTextTitle from "/src/components/form/FormTextTitle";
 import SubTitle from "/src/components/content/SubTitle";
 import { InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "/src/invoices/enums";
 import { getContactFullName } from "/src/contacts/helpers";
-import { getContentTenant } from "leases/helpers";
+import { getContentTenant } from "/src/leases/helpers";
 import { getUiDataInvoiceKey } from "uiData/helpers";
 import { formatDate, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
 import type { Attributes } from "types";

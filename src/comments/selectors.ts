@@ -1,7 +1,7 @@
 import type { Attributes, Methods, Selector } from "types";
 import type { RootState } from "root/types";
 import type { CommentId, CommentList } from "./types";
-import type { LeaseId } from "leases/types";
+import type { LeaseId } from "/src/leases/types";
 export const getEditModeFlags: Selector<Record<string, any>, void> = (state: RootState): Record<string, any> => state.comment.isEditModeById;
 export const getIsEditModeById: Selector<boolean, CommentId> = (state: RootState, commentId: CommentId): boolean => state.comment.isEditModeById[commentId];
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean => state.comment.isFetching;

@@ -5,13 +5,13 @@ import Divider from "/src/components/content/Divider";
 import FormText from "/src/components/form/FormText";
 import SendEmail from "./SendEmail";
 import Title from "/src/components/content/Title";
-import { LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "leases/enums";
-import { getContentConstructabilityAreas } from "leases/helpers";
+import { LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "/src/leases/enums";
+import { getContentConstructabilityAreas } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { getFieldOptions } from "util/helpers";
-import { getAttributes, getCurrentLease } from "leases/selectors";
+import { getAttributes, getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 type Props = {
   attributes: Attributes;
   currentLease: Lease;

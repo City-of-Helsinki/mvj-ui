@@ -9,13 +9,13 @@ import Tenant from "./Tenant";
 import Title from "/src/components/content/Title";
 import WarningContainer from "/src/components/content/WarningContainer";
 import WarningField from "/src/components/form/WarningField";
-import { LeaseTenantsFieldPaths, LeaseTenantsFieldTitles } from "leases/enums";
-import { getContentTenants, getTenantShareWarnings } from "leases/helpers";
+import { LeaseTenantsFieldPaths, LeaseTenantsFieldTitles } from "/src/leases/enums";
+import { getContentTenants, getTenantShareWarnings } from "/src/leases/helpers";
 import { isArchived } from "util/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
-import { getCurrentLease } from "leases/selectors";
+import { getCurrentLease } from "/src/leases/selectors";
 import { withContactAttributes } from "/src/components/attributes/ContactAttributes";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 type Props = {
   currentLease: Lease;
   isFetchingContactAttributes: boolean;

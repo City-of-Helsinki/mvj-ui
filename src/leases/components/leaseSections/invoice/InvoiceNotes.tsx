@@ -15,15 +15,15 @@ import FormTextTitle from "/src/components/form/FormTextTitle";
 import ListItem from "/src/components/content/ListItem";
 import ListItems from "/src/components/content/ListItems";
 import RemoveButton from "/src/components/form/RemoveButton";
-import { patchLeaseInvoiceNotes } from "leases/actions";
+import { patchLeaseInvoiceNotes } from "/src/leases/actions";
 import { ConfirmationModalTexts, FieldTypes, FormNames, Methods } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { InvoiceNoteFieldPaths, InvoiceNoteFieldTitles } from "/src/invoiceNote/enums";
 import { formatDate, getFieldAttributes, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
 import { getAttributes as getInvoiceNoteAttributes, getMethods as getInvoiceNoteMethods } from "/src/invoiceNote/selectors";
-import { getCurrentLease } from "leases/selectors";
+import { getCurrentLease } from "/src/leases/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 type ReadOnlyProps = {
   invoiceNoteAttributes: Attributes;
   invoiceNotes: Array<Record<string, any>>;

@@ -8,10 +8,10 @@ import BoxItem from "/src/components/content/BoxItem";
 import BoxItemContainer from "/src/components/content/BoxItemContainer";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
-import { LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles } from "leases/enums";
+import { LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes as getLeaseAttributes } from "leases/selectors";
+import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
 type Props = {

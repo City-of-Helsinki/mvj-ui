@@ -2,12 +2,12 @@ import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import DecisionItem from "./DecisionItem";
 import FormText from "/src/components/form/FormText";
-import { LeaseDecisionConditionsFieldPaths, LeaseDecisionsFieldPaths } from "leases/enums";
-import { getContentDecisions } from "leases/helpers";
+import { LeaseDecisionConditionsFieldPaths, LeaseDecisionsFieldPaths } from "/src/leases/enums";
+import { getContentDecisions } from "/src/leases/helpers";
 import { getFieldOptions } from "util/helpers";
-import { getAttributes, getCurrentLease } from "leases/selectors";
+import { getAttributes, getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 type Props = {
   attributes: Attributes;
   currentLease: Lease;

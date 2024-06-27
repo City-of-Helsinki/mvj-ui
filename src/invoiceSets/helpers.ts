@@ -1,4 +1,4 @@
-import { CreditInvoiceOptions } from "leases/enums";
+import { CreditInvoiceOptions } from "/src/leases/enums";
 import { convertStrToDecimalNumber } from "util/helpers";
 
 /**

@@ -8,7 +8,7 @@ import { isDirty } from "redux-form";
 import { getSplittedDateRangesWithItems, sortByStartAndEndDateDesc } from "util/date";
 import { FormNames, TableSortOrder } from "enums";
 import { CollateralTypes, ConstructabilityType, DecisionTypeKinds, LeaseState, LeaseTenantRentSharesFieldPaths, LeaseStatus, RecipientOptions, RelationTypes, RentAdjustmentAmountTypes, RentCycles, RentDueDateTypes, RentTypes, SubventionTypes, TenantContactType } from "./enums";
-import { CalculatorTypes } from "leases/enums";
+import { CalculatorTypes } from "/src/leases/enums";
 import { LeaseAreaAttachmentTypes } from "/src/leaseAreaAttachment/enums";
 import { getContactFullName, getContentContact } from "/src/contacts/helpers";
 import { getContentLessor } from "lessor/helpers";
@@ -22,7 +22,7 @@ import type { Lease, IntendedUse } from "./types";
 import type { CommentList } from "/src/comments/types";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
 import type { RootState } from "root/types";
-import type { LeaseList } from "leases/types";
+import type { LeaseList } from "/src/leases/types";
 
 /**
  * Test is lease empty

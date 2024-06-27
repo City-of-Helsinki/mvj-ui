@@ -11,14 +11,14 @@ import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import StatusIndicator from "./StatusIndicator";
 import SubTitle from "/src/components/content/SubTitle";
-import { receiveCollapseStates } from "leases/actions";
+import { receiveCollapseStates } from "/src/leases/actions";
 import { FormNames, ViewModes } from "enums";
-import { LeaseAreaAddressesFieldPaths, LeaseAreaAttachmentsFieldPaths, LeaseAreaAttachmentsFieldTitles, LeaseAreasFieldPaths, LeaseAreasFieldTitles, LeaseConstructabilityDescriptionsFieldPaths } from "leases/enums";
-import { getFullAddress } from "leases/helpers";
+import { LeaseAreaAddressesFieldPaths, LeaseAreaAttachmentsFieldPaths, LeaseAreaAttachmentsFieldTitles, LeaseAreasFieldPaths, LeaseAreasFieldTitles, LeaseConstructabilityDescriptionsFieldPaths } from "/src/leases/enums";
+import { getFullAddress } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatNumber, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getUserFullName } from "users/helpers";
-import { getAttributes, getCollapseStateByKey } from "leases/selectors";
+import { getAttributes, getCollapseStateByKey } from "/src/leases/selectors";
 import type { Attributes } from "types";
 const formName = FormNames.LEASE_CONSTRUCTABILITY;
 type Props = {

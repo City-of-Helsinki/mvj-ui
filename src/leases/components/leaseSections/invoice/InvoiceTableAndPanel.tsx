@@ -19,7 +19,7 @@ import { formatReceivableTypesString, getContentIncoive, getContentInvoices, get
 import { findReactById, formatDate, formatDateRange, formatNumber, getFieldOptions, getLabelOfOption, hasPermissions, isFieldAllowedToRead, sortByOptionsAsc, sortByOptionsDesc, sortNumberByKeyAsc, sortNumberByKeyDesc, sortStringAsc, sortStringDesc } from "util/helpers";
 import { getAttributes as getInvoiceAttributes, getInvoicesByLease, getPatchedInvoice } from "/src/invoices/selectors";
 import { getInvoiceSetsByLease } from "/src/invoiceSets/selectors";
-import { getCurrentLease } from "leases/selectors";
+import { getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Invoice, InvoiceList } from "/src/invoices/types";
 import type { InvoiceSetList } from "/src/invoiceSets/types";

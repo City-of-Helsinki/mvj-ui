@@ -30,22 +30,22 @@ import { CollectionLetterFieldPaths, CollectionLetterFieldTitles } from "/src/co
 import { CollectionNoteFieldPaths, CollectionNoteFieldTitles } from "/src/collectionNote/enums";
 import { ButtonColors } from "/src/components/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles } from "leases/enums";
+import { LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles } from "/src/leases/enums";
 import { getUserFullName } from "users/helpers";
-import { getContentDebtCollectionDecisions, getDecisionOptions } from "leases/helpers";
+import { getContentDebtCollectionDecisions, getDecisionOptions } from "/src/leases/helpers";
 import { getUiDataCollectionCourtDecisionKey, getUiDataCollectionLetterKey, getUiDataCollectionNoteKey, getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, hasPermissions, isFieldAllowedToRead, isFieldRequired, sortStringByKeyAsc } from "util/helpers";
 import { getAttributes as getCollectionCourtDecisionAttributes, getCollectionCourtDecisionsByLease, getIsCollectionCourtDecisionPanelOpen } from "/src/collectionCourtDecision/selectors";
 import { getAttributes as getCollectionLetterAttributes, getCollectionLettersByLease } from "/src/collectionLetter/selectors";
 import { getAttributes as getCollectionNoteAttributes } from "/src/collectionNote/selectors";
 import { getCollectionNotesByLease } from "/src/collectionNote/selectors";
-import { getAttributes as getLeaseAttributes, getCurrentLease } from "leases/selectors";
+import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import { withWindowResize } from "/src/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
 import type { CollectionCourtDecisionId } from "/src/collectionCourtDecision/types";
 import type { CollectionLetterId } from "/src/collectionLetter/types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type NotesProps = {
   fields: any;

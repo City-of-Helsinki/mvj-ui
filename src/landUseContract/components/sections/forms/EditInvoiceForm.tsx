@@ -21,7 +21,7 @@ import { UsersPermissions } from "usersPermissions/enums";
 import { getRecipientOptionsFromLitigants } from "/src/landUseContract/helpers";
 import { exportInvoiceToLaskeAndUpdateList } from "/src/landUseInvoices/actions";
 import { InvoiceCreditInvoicesFieldPaths, InvoiceCreditInvoicesFieldTitles, InvoiceFieldPaths, InvoiceFieldTitles, InvoiceInterestInvoicesFieldPaths, InvoiceInterestInvoicesFieldTitles, InvoicePaymentsFieldPaths, InvoicePaymentsFieldTitles, InvoiceRowsFieldPaths, InvoiceType } from "/src/landUseInvoices/enums";
-import { validateInvoiceForm } from "leases/formValidators";
+import { validateInvoiceForm } from "/src/leases/formValidators";
 import { getContactFullName } from "/src/contacts/helpers";
 import { isInvoiceBillingPeriodRequired } from "/src/landUseInvoices/helpers";
 import { getUiDataInvoiceKey } from "uiData/helpers";

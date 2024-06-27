@@ -9,13 +9,13 @@ import Divider from "/src/components/content/Divider";
 import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import LeaseArea from "./LeaseArea";
-import { receiveCollapseStates } from "leases/actions";
+import { receiveCollapseStates } from "/src/leases/actions";
 import { FormNames, ViewModes } from "enums";
-import { LeaseAreaAddressesFieldPaths, LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "leases/enums";
-import { getFullAddress } from "leases/helpers";
+import { LeaseAreaAddressesFieldPaths, LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "/src/leases/enums";
+import { getFullAddress } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes, getCollapseStateByKey } from "leases/selectors";
+import { getAttributes, getCollapseStateByKey } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   area: Record<string, any>;

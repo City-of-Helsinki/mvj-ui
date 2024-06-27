@@ -8,14 +8,14 @@ import ExternalLink from "/src/components/links/ExternalLink";
 import FormText from "/src/components/form/FormText";
 import RemoveButton from "/src/components/form/RemoveButton";
 import { ConfirmationModalTexts } from "enums";
-import { LeaseHistoryItemTypes } from "leases/enums";
+import { LeaseHistoryItemTypes } from "/src/leases/enums";
 import { ButtonColors } from "/src/components/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getContentLeaseIdentifier, getTitleText } from "leases/helpers";
+import { getContentLeaseIdentifier, getTitleText } from "/src/leases/helpers";
 import { formatDate, getLabelOfOption, hasPermissions } from "util/helpers";
 import { getRouteById, Routes } from "root/routes";
 import { getUsersPermissions } from "usersPermissions/selectors";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {
   active?: boolean;

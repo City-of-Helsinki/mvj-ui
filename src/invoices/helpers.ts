@@ -1,7 +1,7 @@
 import isPast from "date-fns/isPast";
 import forEach from "lodash/forEach";
 import get from "lodash/get";
-import { CreditInvoiceOptions } from "leases/enums";
+import { CreditInvoiceOptions } from "/src/leases/enums";
 import { InvoiceState, InvoiceType, ReceivableTypes } from "./enums";
 import { convertStrToDecimalNumber, getLabelOfOption, sortStringAsc } from "util/helpers";
 

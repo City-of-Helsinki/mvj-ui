@@ -17,12 +17,12 @@ import RemoveButton from "/src/components/form/RemoveButton";
 import { ButtonColors } from "/src/components/enums";
 import { ConfirmationModalTexts } from "enums";
 import { FormNames } from "enums";
-import { LeaseAreaCustomDetailedPlanFieldPaths, LeaseAreaCustomDetailedPlanFieldTitles, LeaseAreaUsageDistributionFieldPaths, LeaseAreaUsageDistributionFieldTitles, LeaseAreaCustomDetailedPlanInfoLinksFieldPaths, LeaseAreaCustomDetailedPlanInfoLinksFieldTitles } from "leases/enums";
+import { LeaseAreaCustomDetailedPlanFieldPaths, LeaseAreaCustomDetailedPlanFieldTitles, LeaseAreaUsageDistributionFieldPaths, LeaseAreaUsageDistributionFieldTitles, LeaseAreaCustomDetailedPlanInfoLinksFieldPaths, LeaseAreaCustomDetailedPlanInfoLinksFieldTitles } from "/src/leases/enums";
 import type { Attributes } from "types";
 import { UsersPermissions } from "usersPermissions/enums";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 import { getUiDataLeaseKey } from "uiData/helpers";
-import { getAttributes } from "leases/selectors";
+import { getAttributes } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";
 type UsageDistributionsProps = {

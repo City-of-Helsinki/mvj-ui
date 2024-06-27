@@ -7,18 +7,18 @@ import AreaNotesLayer from "/src/areaNote/components/AreaNotesLayer";
 import AreaNotesEditMap from "/src/areaNote/components/AreaNotesEditMap";
 import LeaseListLayer from "./LeaseListLayer";
 import { DEFAULT_ZOOM, MAP_COLORS } from "util/constants";
-import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "leases/constants";
-import { LeaseFieldPaths } from "leases/enums";
+import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "/src/leases/constants";
+import { LeaseFieldPaths } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getContentLeasesGeoJson } from "leases/helpers";
+import { getContentLeasesGeoJson } from "/src/leases/helpers";
 import { getApiResponseResults, getFieldOptions, getUrlParams, hasPermissions } from "util/helpers";
 import { getBoundsFromBBox, getBoundsFromFeatures } from "util/map";
 import { getAreaNoteList } from "/src/areaNote/selectors";
-import { getAttributes as getLeaseAttributes, getLeasesByBBox } from "leases/selectors";
+import { getAttributes as getLeaseAttributes, getLeasesByBBox } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Attributes, LeafletGeoJson } from "types";
 import type { AreaNoteList } from "/src/areaNote/types";
-import type { LeaseList } from "leases/types";
+import type { LeaseList } from "/src/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 
 const getMapBounds = () => {

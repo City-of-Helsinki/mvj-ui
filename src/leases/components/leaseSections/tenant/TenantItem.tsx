@@ -11,12 +11,12 @@ import FormWrapper from "/src/components/form/FormWrapper";
 import FormWrapperLeft from "/src/components/form/FormWrapperLeft";
 import FormWrapperRight from "/src/components/form/FormWrapperRight";
 import SubTitle from "/src/components/content/SubTitle";
-import { LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, LeaseTenantRentSharesFieldPaths, LeaseTenantRentSharesFieldTitles } from "leases/enums";
+import { LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, LeaseTenantRentSharesFieldPaths, LeaseTenantRentSharesFieldTitles } from "/src/leases/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
 import { getRouteById, Routes } from "root/routes";
-import { getAttributes } from "leases/selectors";
+import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type RentSharesProps = {
   attributes: Attributes;

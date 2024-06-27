@@ -6,8 +6,8 @@ import { hideEditMode, receiveAttributes, receivePlotSearchList, receiveSinglePl
 import { receiveError } from "/src/api/actions";
 import { getRouteById, Routes } from "root/routes";
 import { fetchAttributes, createPlotSearch, fetchPlotSearches, fetchSinglePlotSearch, editPlotSearch as editPlotSearchRequest, deletePlotSearch, fetchPlanUnitAttributes, fetchPlanUnit, fetchCustomDetailedPlanAttributes, fetchCustomDetailedPlan, fetchPlotSearchSubtypesRequest, fetchFormRequest, fetchTemplateFormsRequest, editFormRequest, fetchStagesRequest, editTargetPlotSearchRelationRequest, fetchAllMunicipalitiesRequest, fetchAllDistrictsRequest, createDirectReservationLinkRequest, fetchPlotSearchApplicationsRequest, createPlotSearchApplicationsOpeningRecords } from "plotSearch/requests";
-import { createLease } from "leases/requests";
-import { RelationTypes } from "leases/enums";
+import { createLease } from "/src/leases/requests";
+import { RelationTypes } from "/src/leases/enums";
 import { fetchLeaseTypes } from "leaseType/requests";
 import { fetchFormAttributes } from "/src/application/actions";
 

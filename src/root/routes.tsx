@@ -15,8 +15,8 @@ import InfillDevelopmentListPage from "/src/infillDevelopment/components/InfillD
 import InvoiceNoteListPage from "/src/invoiceNote/components/InvoiceNoteListPage";
 import LandUseContractListPage from "/src/landUseContract/components/LandUseContractListPage";
 import LandUseContractPage from "/src/landUseContract/components/LandUseContractPage";
-import LeaseListPage from "leases/components/LeaseListPage";
-import LeasePage from "leases/components/LeasePage";
+import LeaseListPage from "/src/leases/components/LeaseListPage";
+import LeasePage from "/src/leases/components/LeasePage";
 import LeaseholdTransferListPage from "/src/leaseholdTransfer/components/LeaseholdTransferListPage";
 import NewContactPage from "/src/contacts/components/NewContactPage";
 import NewInfillDevelopmentPage from "/src/infillDevelopment/components/NewInfillDevelopmentPage";

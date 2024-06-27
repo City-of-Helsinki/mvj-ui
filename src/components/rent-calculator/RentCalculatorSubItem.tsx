@@ -7,7 +7,7 @@ import FormText from "/src/components/form/FormText";
 import { RentSubItemSubjectType } from "/src/components/enums";
 import { formatDateRange, formatNumber } from "util/helpers";
 import { getRentSubItemAmount, getRentSubItemDescription } from "../helpers";
-import { getAttributes } from "leases/selectors";
+import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;

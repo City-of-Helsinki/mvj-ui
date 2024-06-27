@@ -2,8 +2,8 @@ import React from "react";
 import debounce from "lodash/debounce";
 import AsyncSelect from "/src/components/form/AsyncSelect";
 import { addEmptyOption, sortStringByKeyAsc } from "util/helpers";
-import { getContentIntendedUse } from "leases/helpers";
-import { fetchIntendedUses } from "leases/requestsAsync";
+import { getContentIntendedUse } from "/src/leases/helpers";
+import { fetchIntendedUses } from "/src/leases/requestsAsync";
 import type { ServiceUnit } from "serviceUnits/types";
 type Props = {
   disabled?: boolean;

@@ -24,7 +24,7 @@ import { receiveTopNavigationSettings } from "/src/components/topNavigation/acti
 import { LIST_TABLE_PAGE_SIZE } from "util/constants";
 import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import { InvoiceNoteFieldPaths, InvoiceNoteFieldTitles } from "/src/invoiceNote/enums";
-import { getContentLeaseIdentifier } from "leases/helpers";
+import { getContentLeaseIdentifier } from "/src/leases/helpers";
 import { formatDate, getApiResponseCount, getApiResponseResults, getApiResponseMaxPage, getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
 import { getRouteById, Routes } from "root/routes";
 import { getInvoiceNoteList, getIsCreateModalOpen, getIsFetching } from "/src/invoiceNote/selectors";

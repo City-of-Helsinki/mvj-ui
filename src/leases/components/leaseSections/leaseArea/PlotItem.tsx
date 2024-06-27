@@ -11,10 +11,10 @@ import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import KtjLink from "/src/components/ktj/KtjLink";
 import SubTitle from "/src/components/content/SubTitle";
-import { LeasePlotsFieldPaths, LeasePlotsFieldTitles, PlotType } from "leases/enums";
+import { LeasePlotsFieldPaths, LeasePlotsFieldTitles, PlotType } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getSearchQuery, getUrlParams, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes } from "leases/selectors";
+import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   areaArchived: boolean;

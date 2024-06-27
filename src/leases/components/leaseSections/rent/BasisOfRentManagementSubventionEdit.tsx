@@ -7,11 +7,11 @@ import FieldAndRemoveButtonWrapper from "/src/components/form/FieldAndRemoveButt
 import FormField from "/src/components/form/FormField";
 import FormText from "/src/components/form/FormText";
 import RemoveButton from "/src/components/form/RemoveButton";
-import { BasisOfRentManagementSubventionsFieldPaths, BasisOfRentManagementSubventionsFieldTitles } from "leases/enums";
+import { BasisOfRentManagementSubventionsFieldPaths, BasisOfRentManagementSubventionsFieldTitles } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { calculateBasisOfRentSubventionAmount, calculateBasisOfRentSubventionPercentage, calculateSubventionAmountFromPercantage } from "leases/helpers";
+import { calculateBasisOfRentSubventionAmount, calculateBasisOfRentSubventionPercentage, calculateSubventionAmountFromPercantage } from "/src/leases/helpers";
 import { formatNumber, hasPermissions, isFieldAllowedToRead, getFieldAttributes } from "util/helpers";
-import { getAttributes as getLeaseAttributes, getIsSaveClicked } from "leases/selectors";
+import { getAttributes as getLeaseAttributes, getIsSaveClicked } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";

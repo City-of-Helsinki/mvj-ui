@@ -23,7 +23,7 @@ import invoiceNoteSaga from "/src/invoiceNote/saga";
 import invoiceSetSaga from "/src/invoiceSets/saga";
 import landUseContractSaga from "/src/landUseContract/saga";
 import landUseAgreementAttachmentSaga from "/src/landUseAgreementAttachment/saga";
-import leaseSaga from "leases/saga";
+import leaseSaga from "/src/leases/saga";
 import leaseAreaAttachmentSaga from "/src/leaseAreaAttachment/saga";
 import leaseInspectionAttachmentSaga from "/src/leaseInspectionAttachment/saga";
 import leaseCreateChargeSaga from "/src/leaseCreateCharge/saga";

@@ -2,7 +2,7 @@ import callApi from "/src/api/callApi";
 import callUploadRequest from "/src/api/callUploadRequest";
 import createUrl from "/src/api/createUrl";
 import type { CollectionLetterId, UploadCollectionLetterPayload } from "./types";
-import type { LeaseId } from "leases/types";
+import type { LeaseId } from "/src/leases/types";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('collection_letter/'), {
     method: 'OPTIONS'

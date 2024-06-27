@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import isAfter from "date-fns/isAfter";
 import isBefore from "date-fns/isBefore";
 import { formatNumber } from "util/helpers";
-import { getCurrentLease } from "leases/selectors";
+import { getCurrentLease } from "/src/leases/selectors";
 import { getVats } from "vat/selectors";
 import type { VatList } from "vat/types";
 type Props = {

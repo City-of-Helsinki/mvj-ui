@@ -9,11 +9,11 @@ import FormField from "/src/components/form/FormField";
 import FormText from "/src/components/form/FormText";
 import Modal from "/src/components/modal/Modal";
 import { ConfirmationModalTexts, FormNames } from "enums";
-import { LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "leases/enums";
+import { LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "/src/leases/enums";
 import { ButtonColors } from "/src/components/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes } from "leases/selectors";
+import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   archivedNote: string;

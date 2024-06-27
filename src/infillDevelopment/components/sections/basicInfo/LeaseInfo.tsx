@@ -13,14 +13,14 @@ import ListItem from "/src/components/content/ListItem";
 import ListItems from "/src/components/content/ListItems";
 import { getRouteById, Routes } from "root/routes";
 import { InfillDevelopmentCompensationLeasesFieldPaths, InfillDevelopmentCompensationLeasesFieldTitles } from "/src/infillDevelopment/enums";
-import { LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths, LeaseTenantsFieldPaths } from "leases/enums";
+import { LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths, LeaseTenantsFieldPaths } from "/src/leases/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { getUiDataInfillDevelopmentKey } from "uiData/helpers";
 import { getSearchQuery, getUrlParams, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getInfillDevelopmentAttributes } from "/src/infillDevelopment/selectors";
-import { getAttributes as getLeaseAttributes } from "leases/selectors";
+import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
-import type { LeaseId } from "leases/types";
+import type { LeaseId } from "/src/leases/types";
 type Props = {
   identifier: string | null | undefined;
   infillDevelopmentAttributes: Attributes;

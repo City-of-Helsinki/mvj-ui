@@ -16,14 +16,14 @@ import RentAdjustmentEdit from "./RentAdjustmentEdit";
 import SteppedDiscountModal from "./SteppedDiscountModal";
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { ButtonColors } from "/src/components/enums";
-import { LeaseRentAdjustmentsFieldPaths, RentAdjustmentAmountTypes, RentAdjustmentTypes } from "leases/enums";
+import { LeaseRentAdjustmentsFieldPaths, RentAdjustmentAmountTypes, RentAdjustmentTypes } from "/src/leases/enums";
 import { UsersPermissions } from "usersPermissions/enums";
-import { getDecisionById, getDecisionOptions } from "leases/helpers";
+import { getDecisionById, getDecisionOptions } from "/src/leases/helpers";
 import { convertStrToDecimalNumber, formatNumber, getFieldOptions, hasPermissions } from "util/helpers";
-import { getAttributes as getLeaseAttributes, getCurrentLease } from "leases/selectors";
+import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {
   adjustments: Array<Record<string, any>>;

@@ -1,7 +1,7 @@
 import { createAction } from "redux-actions";
 import type { Attributes, Methods } from "types";
 import type { FetchAttributesAction, ReceiveAttributesAction, ReceiveMethodsAction, InvoiceAttributesNotFoundAction, Invoice, InvoiceListMap, FetchInvoicesByLeaseAction, ReceiveInvoicesByLeaseAction, CreateInvoiceAction, CreditInvoiceAction, PatchInvoiceAction, ExportInvoiceToLaskeAndUpdateListAction, ExportInvoiceToLaskeAndUpdateListPayload, ReceivePatchedInvoiceAction, ClearPatchedInvoiceAction, InvoiceNotFoundAction, ReceiveInvoiceToCreditAction, ReceiveIsCreateInvoicePanelOpenAction, ReceiveIsCreditInvoicePanelOpenAction, ReceiveIsCreateClickedAction, ReceiveIsCreditClickedAction, ReceiveIsEditClickedAction, DeleteInvoiceAction } from "./types";
-import type { LeaseId } from "leases/types";
+import type { LeaseId } from "/src/leases/types";
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/invoices/FETCH_ATTRIBUTES')();
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction => createAction('mvj/invoices/RECEIVE_ATTRIBUTES')(attributes);
 export const receiveMethods = (methods: Methods): ReceiveMethodsAction => createAction('mvj/invoices/RECEIVE_METHODS')(methods);

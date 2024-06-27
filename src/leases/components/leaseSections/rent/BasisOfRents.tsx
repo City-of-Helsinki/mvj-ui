@@ -6,12 +6,12 @@ import BoxItemContainer from "/src/components/content/BoxItemContainer";
 import FormText from "/src/components/form/FormText";
 import GrayBox from "/src/components/content/GrayBox";
 import GreenBox from "/src/components/content/GreenBox";
-import { BasisOfRentManagementSubventionsFieldPaths, LeaseBasisOfRentsFieldPaths } from "leases/enums";
-import { calculateBasisOfRentTotalDiscountedInitialYearRent, getContentBasisOfRents } from "leases/helpers";
+import { BasisOfRentManagementSubventionsFieldPaths, LeaseBasisOfRentsFieldPaths } from "/src/leases/enums";
+import { calculateBasisOfRentTotalDiscountedInitialYearRent, getContentBasisOfRents } from "/src/leases/helpers";
 import { getFieldOptions, isEmptyValue } from "util/helpers";
-import { getAttributes as getLeaseAttributes, getCurrentLease } from "leases/selectors";
+import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 type Props = {
   currentLease: Lease;
   leaseAttributes: Attributes;

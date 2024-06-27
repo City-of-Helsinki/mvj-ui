@@ -2,10 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 import AmountWithVat from "/src/components/vat/AmountWithVat";
 import SortableTable from "/src/components/table/SortableTable";
-import { LeaseIndexAdjustedRentsFieldPaths, LeaseIndexAdjustedRentsFieldTitles } from "leases/enums";
+import { LeaseIndexAdjustedRentsFieldPaths, LeaseIndexAdjustedRentsFieldTitles } from "/src/leases/enums";
 import { TableSortOrder } from "enums";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isFieldAllowedToRead, sortByOptionsAsc, sortByOptionsDesc, sortNumberByKeyAsc, sortNumberByKeyDesc } from "util/helpers";
-import { getAttributes } from "leases/selectors";
+import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;

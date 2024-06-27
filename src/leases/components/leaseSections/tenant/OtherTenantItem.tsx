@@ -13,14 +13,14 @@ import FormWrapper from "/src/components/form/FormWrapper";
 import FormWrapperLeft from "/src/components/form/FormWrapperLeft";
 import FormWrapperRight from "/src/components/form/FormWrapperRight";
 import SubTitle from "/src/components/content/SubTitle";
-import { receiveCollapseStates } from "leases/actions";
+import { receiveCollapseStates } from "/src/leases/actions";
 import { FormNames, ViewModes } from "enums";
-import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles } from "leases/enums";
+import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles } from "/src/leases/enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatDateRange, getFieldOptions, getLabelOfOption, isActive, isArchived, isFieldAllowedToRead } from "util/helpers";
 import { getRouteById, Routes } from "root/routes";
-import { getAttributes, getCollapseStateByKey } from "leases/selectors";
+import { getAttributes, getCollapseStateByKey } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;

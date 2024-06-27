@@ -18,11 +18,11 @@ import { UsersPermissions } from "usersPermissions/enums";
 import { getContentPreviewInvoiceBillingPeriods } from "/src/components/helpers";
 import { getFieldOptions, hasPermissions } from "util/helpers";
 import { getAttributes as getInvoiceAttributes } from "/src/invoices/selectors";
-import { getCurrentLease } from "leases/selectors";
+import { getCurrentLease } from "/src/leases/selectors";
 import { getIsFetching, getPreviewInvoices } from "previewInvoices/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "/src/leases/types";
 import type { PreviewInvoices } from "previewInvoices/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {

@@ -6,7 +6,7 @@ import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import ShowMore from "/src/components/showMore/ShowMore";
 import SubTitle from "/src/components/content/SubTitle";
-import { LeaseInspectionAttachmentsFieldPaths, LeaseInspectionAttachmentsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "leases/enums";
+import { LeaseInspectionAttachmentsFieldPaths, LeaseInspectionAttachmentsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "/src/leases/enums";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, isFieldAllowedToRead } from "util/helpers";
 import { getUserFullName } from "users/helpers";

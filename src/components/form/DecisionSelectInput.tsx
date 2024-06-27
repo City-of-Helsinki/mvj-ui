@@ -1,7 +1,7 @@
 import React from "react";
 import debounce from "lodash/debounce";
 import AsyncSelect from "/src/components/form/AsyncSelect";
-import { fetchDecisions } from "leases/requestsAsync";
+import { fetchDecisions } from "/src/leases/requestsAsync";
 import { formatDecisionName } from "plotSearch/helpers";
 type Props = {
   disabled?: boolean;
