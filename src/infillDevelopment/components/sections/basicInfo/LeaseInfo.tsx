@@ -11,7 +11,7 @@ import FormText from "/src/components/form/FormText";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import ListItem from "/src/components/content/ListItem";
 import ListItems from "/src/components/content/ListItems";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { InfillDevelopmentCompensationLeasesFieldPaths, InfillDevelopmentCompensationLeasesFieldTitles } from "/src/infillDevelopment/enums";
 import { LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths, LeaseTenantsFieldPaths } from "/src/leases/enums";
 import { getContactFullName } from "/src/contacts/helpers";

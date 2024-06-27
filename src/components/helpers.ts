@@ -3,7 +3,7 @@ import { RentExplanationSubjectType, RentSubItemSubjectType, RentSubItemType } f
 import { LeaseRentsFieldPaths, LeaseRentAdjustmentsFieldPaths, LeaseRentContractRentsFieldPaths, TenantContactType } from "/src/leases/enums";
 import { formatNumber, getFieldOptions, getLabelOfOption } from "util/helpers";
 import type { Attributes } from "types";
-import type { BillingPeriod, BillingPeriodInvoice, PreviewInvoices } from "previewInvoices/types";
+import type { BillingPeriod, BillingPeriodInvoice, PreviewInvoices } from "/src/previewInvoices/types";
 export const getRentsTotalAmount = (rents: Array<Record<string, any>>) => {
   let amount = 0;
   rents.forEach(rent => {

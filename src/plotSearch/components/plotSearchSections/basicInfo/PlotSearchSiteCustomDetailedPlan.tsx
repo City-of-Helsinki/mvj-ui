@@ -4,7 +4,7 @@ import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import { receiveCollapseStates } from "/src/plotSearch/actions";
 import { FormNames, ViewModes } from "enums";
-import { Routes, getRouteById } from "root/routes";
+import { Routes, getRouteById } from "/src/root/routes";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
 import Collapse from "/src/components/collapse/Collapse";

@@ -11,7 +11,7 @@ import { ConfirmationModalTexts } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { hasAnyPageDirtyForms } from "util/forms";
 import { getSearchQuery, getUrlParams } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 
 import type { UserGroups, UserServiceUnit, UserServiceUnits } from "usersPermissions/types";
 

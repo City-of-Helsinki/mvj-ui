@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { FeatureGroup, GeoJSON, Popup } from "react-leaflet";
 import flowRight from "lodash/flowRight";
 import { Link } from "react-router-dom";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import type { Attributes, LeafletGeoJson } from "types";
 import { withAreaSearchAttributes } from "/src/components/attributes/AreaSearchAttributes";
 import { formatDate, getFieldOptions, getLabelOfOption } from "util/helpers";

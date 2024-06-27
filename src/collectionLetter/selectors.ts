@@ -1,6 +1,6 @@
 import type { Attributes, Methods, Selector } from "types";
 import type { LeaseId } from "/src/leases/types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.collectionLetter.attributes;
 export const getMethods: Selector<Methods, void> = (state: RootState): Methods => state.collectionLetter.methods;
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean => state.collectionLetter.isFetchingAttributes;

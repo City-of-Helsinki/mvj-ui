@@ -25,7 +25,7 @@ import { ButtonColors } from "/src/components/enums";
 import { LeaseholdTransferFieldPaths, LeaseholdTransferFieldTitles } from "/src/leaseholdTransfer/enums";
 import { getContentLeaseholdTransfers, mapLeaseholdTransferSearchFilters } from "/src/leaseholdTransfer/helpers";
 import { formatDate, getApiResponseCount, getApiResponseMaxPage, getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFetching, getLeaseholdTransferList } from "/src/leaseholdTransfer/selectors";
 import { withLeaseholdTransferAttributes } from "/src/components/attributes/LeaseholdTransferAttributes";
 import type { Attributes, Methods as MethodsType } from "types";

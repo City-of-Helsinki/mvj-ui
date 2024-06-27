@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { flowRight } from "lodash/util";
 import { destroy, getFormValues, initialize, isDirty } from "redux-form";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import FullWidthContainer from "/src/components/content/FullWidthContainer";
 import PageNavigationWrapper from "/src/components/content/PageNavigationWrapper";
 import ControlButtonBar from "/src/components/controlButtons/ControlButtonBar";

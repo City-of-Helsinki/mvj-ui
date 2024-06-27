@@ -33,7 +33,7 @@ import { getContactFullName } from "/src/contacts/helpers";
 import { formatDate, formatNumber, getFieldAttributeOptions, getLabelOfOption, isEmptyValue, getReferenceNumberLink } from "util/helpers";
 import { getUserFullName } from "users/helpers";
 import { genericNormalizer } from "/src/components/form/normalizers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { genericValidator } from "/src/components/form/validations";
 import { getHoursAndMinutes } from "util/date";
 import type { UserServiceUnit } from "usersPermissions/types";

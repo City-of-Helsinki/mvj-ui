@@ -8,7 +8,7 @@ import Authorization from "/src/components/authorization/Authorization";
 import FormTextTitle from "/src/components/form/FormTextTitle";
 import FormText from "/src/components/form/FormText";
 import FileDownloadLink from "/src/components/file/FileDownloadLink";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { Attributes } from "types";
 import { getUserFullName } from "users/helpers";
 import PlotApplicationInfoCheckCollapse from "/src/plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";

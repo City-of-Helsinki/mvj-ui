@@ -4,7 +4,7 @@ import { SubmissionError } from "redux-form";
 import { displayUIMessage, getSearchQuery, getUrlParams } from "util/helpers";
 import { hideEditMode, receiveAttributes, receiveLandUseContractList, receiveSingleLandUseContract, notFound, receiveIsSaveClicked, attributesNotFound, receiveMethods, fetchSingleLandUseContractAfterEdit } from "./actions";
 import { receiveError } from "/src/api/actions";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { createLandUseContract, fetchAttributes, fetchLandUseContracts, fetchSingleLandUseContract, editLandUseContract, deleteLandUseContract } from "./requests";
 
 // import attributesMockData from './attributes-mock-data.json';

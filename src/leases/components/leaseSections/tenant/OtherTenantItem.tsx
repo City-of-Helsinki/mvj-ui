@@ -19,7 +19,7 @@ import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles } fro
 import { getContactFullName } from "/src/contacts/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatDateRange, getFieldOptions, getLabelOfOption, isActive, isArchived, isFieldAllowedToRead } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getAttributes, getCollapseStateByKey } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {

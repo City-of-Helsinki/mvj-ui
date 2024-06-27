@@ -31,7 +31,7 @@ import { InfillDevelopmentCompensationFieldPaths, InfillDevelopmentCompensationF
 import { clearUnsavedChanges, getContentInfillDevelopment, getCopyOfInfillDevelopment, getPayloadInfillDevelopment } from "/src/infillDevelopment/helpers";
 import { getUiDataInfillDevelopmentKey } from "uiData/helpers";
 import { getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, scrollToTopPage, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getCurrentInfillDevelopment, getIsEditMode, getIsFetching, getIsFormValidById, getIsSaveClicked, getIsSaving } from "/src/infillDevelopment/selectors";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
 import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";

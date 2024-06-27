@@ -20,7 +20,7 @@ import { receiveTopNavigationSettings } from "/src/components/topNavigation/acti
 import { PermissionMissingTexts } from "enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getSearchQuery, getUrlParams, hasPermissions, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {

@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { CallbackComponent } from "redux-oidc";
 import { getRedirectUrlFromSessionStorage } from "util/storage";
 import userManager from "/src/auth/util/user-manager";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 type Props = {
   history: Record<string, any>;
 };

@@ -23,13 +23,13 @@ import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import { ContactFieldPaths, ContactFieldTitles } from "/src/contacts/enums";
 import { getContactFullName, mapContactSearchFilters } from "/src/contacts/helpers";
 import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults, getFieldOptions, getLabelOfOption, getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getContactList, getIsFetching } from "../selectors";
 import { withContactAttributes } from "/src/components/attributes/ContactAttributes";
 import { getUserActiveServiceUnit } from "usersPermissions/selectors";
 import type { ContactList } from "../types";
 import type { Attributes, Methods as MethodsType } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { UserServiceUnit } from "usersPermissions/types";
 type Props = {
   contactAttributes: Attributes;

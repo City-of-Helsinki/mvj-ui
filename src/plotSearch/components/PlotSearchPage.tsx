@@ -18,7 +18,7 @@ import PageNavigationWrapper from "/src/components/content/PageNavigationWrapper
 import TabContent from "/src/components/tabs/TabContent";
 import TabPane from "/src/components/tabs/TabPane";
 import Tabs from "/src/components/tabs/Tabs";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
 import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";

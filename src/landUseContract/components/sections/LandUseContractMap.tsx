@@ -8,7 +8,7 @@ import { fetchAreaNoteList } from "/src/areaNote/actions";
 import { UsersPermissions } from "usersPermissions/enums";
 import { hasPermissions } from "util/helpers";
 import { getAreaNoteList } from "/src/areaNote/selectors";
-import { getAttributes as getRentBasisAttributes, getRentBasis } from "rentbasis/selectors";
+import { getAttributes as getRentBasisAttributes, getRentBasis } from "/src/rentbasis/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { AreaNoteList } from "/src/areaNote/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";

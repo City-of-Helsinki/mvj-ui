@@ -34,7 +34,7 @@ import { convertStrToDecimalNumber, formatDate, formatNumber, getFieldAttributes
 import { getContactFullName } from "/src/contacts/helpers";
 import { getContentLeaseAreas, getContentLeaseIdentifier, getContentTenants } from "/src/leases/helpers";
 import { getUserFullName } from "users/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getAttributes as getInfillDevelopmentAttributes, getCollapseStateByKey } from "/src/infillDevelopment/selectors";
 import { getAttributes as getInfillDevelopmentAttachmentAttributes, getMethods as getInfillDevelopmentAttachmentMethods } from "/src/infillDevelopmentAttachment/selectors";
 import { getAttributes as getLeaseAttributes, getIsFetchingById, getLeaseById } from "/src/leases/selectors";

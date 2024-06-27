@@ -1,5 +1,5 @@
 import type { Attributes, Methods, Selector } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { CommentId, CommentList } from "./types";
 import type { LeaseId } from "/src/leases/types";
 export const getEditModeFlags: Selector<Record<string, any>, void> = (state: RootState): Record<string, any> => state.comment.isEditModeById;

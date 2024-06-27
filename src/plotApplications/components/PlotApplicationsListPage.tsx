@@ -23,7 +23,7 @@ import TableWrapper from "/src/components/table/TableWrapper";
 import TableIcon from "/src/components/icons/TableIcon";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import PageContainer from "/src/components/content/PageContainer";
 import { withPlotApplicationsAttributes } from "/src/components/attributes/PlotApplicationsAttributes";

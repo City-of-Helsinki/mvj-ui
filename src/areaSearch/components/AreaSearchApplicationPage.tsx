@@ -21,7 +21,7 @@ import PageNavigationWrapper from "/src/components/content/PageNavigationWrapper
 import ControlButtonBar from "/src/components/controlButtons/ControlButtonBar";
 import ControlButtons from "/src/components/controlButtons/ControlButtons";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts } from "enums";
 import { getIsEditMode, getIsSaveClicked, getIsFormValidFlags, getCurrentAreaSearch, getIsFetchingCurrentAreaSearch } from "/src/areaSearch/selectors";
 import { showEditMode, receiveIsSaveClicked, hideEditMode, clearFormValidFlags, receiveFormValidFlags, fetchSingleAreaSearch, batchEditAreaSearchInfoChecks } from "/src/areaSearch/actions";

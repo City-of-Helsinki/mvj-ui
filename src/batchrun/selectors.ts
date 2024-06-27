@@ -1,5 +1,5 @@
 import type { ApiResponse, Attributes, Methods, Selector } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { JobRuns, ScheduledJobs } from "/src/batchrun/types";
 export const getIsFetchingJobRunAttributes: Selector<boolean, void> = (state: RootState): boolean => state.batchrun.isFetchingJobRunAttributes;
 export const getJobRunAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.batchrun.jobRunAttributes;

@@ -15,7 +15,7 @@ import { ButtonColors } from "/src/components/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { hasAnyPageDirtyForms } from "util/forms";
 import { hasPermissions } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { withUsersPermissions } from "/src/components/attributes/UsersPermissions";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type OwnProps = {

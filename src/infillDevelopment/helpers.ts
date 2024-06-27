@@ -8,7 +8,7 @@ import { getIsEditMode } from "/src/infillDevelopment/selectors";
 import { removeSessionStorageItem } from "util/storage";
 import { getContentLeaseAreasFeatures, getContentPlanUnitFeatures, getContentLeasePlotsFeatures } from "/src/leases/helpers";
 import type { LeafletGeoJson } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 
 /**
  * Get infill development compensation list results

@@ -24,7 +24,7 @@ import TableWrapper from "/src/components/table/TableWrapper";
 import IconRadioButtons from "/src/components/button/IconRadioButtons";
 import TableIcon from "/src/components/icons/TableIcon";
 import MapIcon from "/src/components/icons/MapIcon";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { formatDate, getLabelOfOption, setPageTitle, getFieldOptions, getSearchQuery, getApiResponseCount, getApiResponseMaxPage, getUrlParams, isMethodAllowed } from "util/helpers";
 import { withAreaSearchAttributes } from "/src/components/attributes/AreaSearchAttributes";
 import { getAreaSearchList, getAreaSearchListByBBox, getIsEditingAreaSearch, getIsFetchingAreaSearchList, getIsFetchingAreaSearchListByBBox, getLastAreaSearchEditError } from "/src/areaSearch/selectors";

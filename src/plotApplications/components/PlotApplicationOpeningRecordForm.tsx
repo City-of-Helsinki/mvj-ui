@@ -5,7 +5,7 @@ import { get } from "lodash/object";
 import { flowRight } from "lodash/util";
 import { connect } from "react-redux";
 import FormField from "/src/components/form/FormField";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import { getAttributes } from "/src/application/selectors";
 import type { Attributes } from "types";
 import { FieldTypes, FormNames } from "enums";

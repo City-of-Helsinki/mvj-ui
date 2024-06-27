@@ -10,7 +10,7 @@ import { receiveTopNavigationSettings } from "/src/components/topNavigation/acti
 import { PermissionMissingTexts } from "enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { hasPermissions, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
 import { withLeaseAttributes } from "/src/components/attributes/LeaseAttributes";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";

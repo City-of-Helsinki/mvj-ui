@@ -9,7 +9,7 @@ import { Methods } from "enums";
 import { isMethodAllowed } from "util/helpers";
 import { getIsContactFormValid, getIsSaveClicked, getMethods as getContactMethods } from "/src/contacts/selectors";
 import type { Methods as MethodsType } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 type Props = {
   contactMethods: MethodsType;
   isContactFormValid: boolean;

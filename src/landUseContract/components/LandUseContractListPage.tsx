@@ -23,7 +23,7 @@ import { createLandUseContract, fetchLandUseContractList } from "/src/landUseCon
 import { LIST_TABLE_PAGE_SIZE } from "util/constants";
 import { getContentLandUseContractListResults } from "/src/landUseContract/helpers";
 import { getApiResponseCount, getApiResponseMaxPage, getFieldOptions, getLabelOfOption, getSearchQuery, getUrlParams, setPageTitle, isMethodAllowed } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFetching, getLandUseContractList } from "/src/landUseContract/selectors";
 import { withLandUseContractAttributes } from "/src/components/attributes/LandUseContractAttributes";
 import type { Attributes, Methods as MethodType } from "types";

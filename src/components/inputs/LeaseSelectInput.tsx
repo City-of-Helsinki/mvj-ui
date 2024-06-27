@@ -6,7 +6,7 @@ import { fetchLeases } from "/src/leases/requestsAsync";
 import { fetchAreaSearches, fetchTargetStatuses, fetchPlotSearches } from "/src/leases/requestsAsync";
 import { getLabelOfOption, getFieldOptions } from "util/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";
-import { store } from "root/startApp";
+import { store } from "/src/root/startApp";
 import { LeaseFieldPaths, LeaseHistoryItemTypes, LeaseHistoryContentTypes } from "/src/leases/enums";
 import type { UserServiceUnit } from "usersPermissions/types";
 type Props = {

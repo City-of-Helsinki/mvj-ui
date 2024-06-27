@@ -12,7 +12,7 @@ import { PermissionMissingTexts } from "enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getContentYearlyIndexes } from "/src/index/helpers";
 import { hasPermissions, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getIndexList, getIsFetching } from "/src/index/selectors";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
 import type { IndexList } from "/src/index/types";

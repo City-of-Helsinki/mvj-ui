@@ -9,7 +9,7 @@ import { getUsersPermissions } from "usersPermissions/selectors";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getHoursAndMinutes } from "util/date";
 import { formatDate, hasPermissions } from "util/helpers";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {
   isOpen: boolean;

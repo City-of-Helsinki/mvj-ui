@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import type { Selector } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { InfoCheckBatchEditErrorsItem, PlotApplication, PlotApplicationsList } from "/src/plotApplications/types";
 import type { PlotSearch } from "/src/plotSearch/types";
 export const getApplicationsByBBox: Selector<PlotApplicationsList, void> = (state: RootState): PlotApplicationsList => state.plotApplications.listByBBox;

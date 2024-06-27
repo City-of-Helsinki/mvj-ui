@@ -3,7 +3,7 @@ import _ from "lodash";
 import { formValueSelector } from "redux-form";
 import { getApiResponseResults, getFieldAttributes } from "util/helpers";
 import createUrl from "/src/api/createUrl";
-import { store } from "root/startApp";
+import { store } from "/src/root/startApp";
 import { FormNames } from "enums";
 import { getCurrentEditorTargets } from "/src/plotApplications/selectors";
 import { getTargetTitle, getTargetType, prepareApplicationForSubmission } from "/src/application/helpers";

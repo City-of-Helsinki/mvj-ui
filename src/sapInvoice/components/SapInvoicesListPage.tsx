@@ -26,7 +26,7 @@ import { formatReceivableTypesString } from "/src/invoices/helpers";
 import { getContentLeaseIdentifier } from "/src/leases/helpers";
 import { getSapInvoices, mapSapInvoiceSearchFilters } from "sapInvoice/helpers";
 import { formatDate, formatNumber, getApiResponseCount, getApiResponseMaxPage, getFieldOptions, getSearchQuery, getUrlParams, isEmptyValue, isFieldAllowedToRead, isMethodAllowed, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFetching, getSapInvoices as getSapInvoiceList } from "sapInvoice/selectors";
 import { withSapInvoicesAttributes } from "/src/components/attributes/SapInvoicesAttributes";
 import { getUserActiveServiceUnit } from "usersPermissions/selectors";

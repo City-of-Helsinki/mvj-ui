@@ -1,7 +1,7 @@
 import format from "date-fns/format";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
-import { store } from "root/startApp";
+import { store } from "/src/root/startApp";
 import { RentAdjustmentAmountTypes, RentCycles, RentDueDateTypes, RentTypes } from "./enums";
 import { getRentWarnings, getTenantRentShareWarnings, getTenantShareWarnings } from "/src/leases/helpers";
 import { getAttributes as getLeaseAttributes } from "/src/leases/selectors";

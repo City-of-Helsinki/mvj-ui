@@ -3,7 +3,7 @@ import { FieldTypes, FormNames } from "enums";
 import { formValueSelector, reduxForm } from "redux-form";
 import { connect } from "react-redux";
 import { flowRight } from "lodash/util";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import { Column, Row } from "react-foundation";
 import FormField from "/src/components/form/FormField";
 import { PlotApplicationOpeningRecordLabels, PlotApplicationOpeningRecordPaths } from "/src/plotApplications/enums";

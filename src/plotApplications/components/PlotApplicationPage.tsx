@@ -24,7 +24,7 @@ import ControlButtonBar from "/src/components/controlButtons/ControlButtonBar";
 import ControlButtons from "/src/components/controlButtons/ControlButtons";
 import { withPlotApplicationsAttributes } from "/src/components/attributes/PlotApplicationsAttributes";
 import { receiveTopNavigationSettings } from "/src/components/topNavigation/actions";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { ConfirmationModalTexts, Methods, PermissionMissingTexts } from "enums";
 import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
 import { getIsFetching, getCurrentPlotApplication, getIsEditMode, getIsSaveClicked, getIsFormValidFlags, getIsPerformingFileOperation, getIsSaving, getIsSingleAllowed, getApplicationRelatedPlotSearch, getApplicationApplicantInfoCheckData, getApplicationTargetInfoCheckData } from "/src/plotApplications/selectors";

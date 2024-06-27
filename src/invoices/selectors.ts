@@ -1,5 +1,5 @@
 import type { Attributes, Methods, Selector } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { Invoice, InvoiceList } from "./types";
 import type { LeaseId } from "/src/leases/types";
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean => state.invoice.isFetching;

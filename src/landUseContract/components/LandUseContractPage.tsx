@@ -42,7 +42,7 @@ import { clearFormValidFlags, editLandUseContract, fetchSingleLandUseContract, h
 import { ConfirmationModalTexts, FormNames } from "enums";
 import { addLitigantsFormValuesToPayload, clearUnsavedChanges, getContentLandUseContractIdentifier, getContentBasicInformation, getContentCompensations, getContentContracts, getContentDecisions, getContentInvoices, getContentLitigants, getContentConditions, convertCompensationValuesToDecimalNumber } from "/src/landUseContract/helpers";
 import { getSearchQuery, getUrlParams, isArchived, scrollToTopPage, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getCurrentLandUseContract, getIsEditMode, getIsFormValidById, getIsFormValidFlags, getIsSaveClicked, getIsFetching } from "/src/landUseContract/selectors";
 import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "usersPermissions/selectors";
 import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";

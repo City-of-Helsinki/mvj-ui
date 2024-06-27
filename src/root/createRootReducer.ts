@@ -38,9 +38,9 @@ import leaseholdTransferReducer from "/src/leaseholdTransfer/reducer";
 import leaseTypeReducer from "/src/leaseType/reducer";
 import lessorReducer from "/src/lessor/reducer";
 import penaltyInterestReducer from "/src/penaltyInterest/reducer";
-import previewInvoicesReducer from "previewInvoices/reducer";
-import rentBasisReducer from "rentbasis/reducer";
-import rentForPeriodReducer from "rentForPeriod/reducer";
+import previewInvoicesReducer from "/src/previewInvoices/reducer";
+import rentBasisReducer from "/src/rentbasis/reducer";
+import rentForPeriodReducer from "/src/rentForPeriod/reducer";
 import sapInvoiceReducer from "sapInvoice/reducer";
 import serviceUnitsReducer from "serviceUnits/reducer";
 import topNavigationReducer from "/src/components/topNavigation/reducer";
@@ -50,7 +50,7 @@ import usersReducer from "users/reducer";
 import usersPermissionsReducer from "usersPermissions/reducer";
 import vatReducer from "vat/reducer";
 import type { Reducer } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 export default ((history: Record<string, any>): Reducer<RootState> => combineReducers<Record<string, any>, any>({
   api: apiReducer,
   areaNote: areaNoteReducer,

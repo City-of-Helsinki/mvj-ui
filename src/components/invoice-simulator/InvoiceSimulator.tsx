@@ -10,7 +10,7 @@ import InvoiceSimulatorBillingPeriod from "./InvoiceSimulatorBillingPeriods";
 import InvoiceSimulatorForm from "./InvoiceSimulatorForm";
 import Loader from "/src/components/loader/Loader";
 import LoaderWrapper from "/src/components/loader/LoaderWrapper";
-import { fetchPreviewInvoices } from "previewInvoices/actions";
+import { fetchPreviewInvoices } from "/src/previewInvoices/actions";
 import { FormNames, PermissionMissingTexts } from "enums";
 import { ButtonColors } from "/src/components/enums";
 import { InvoiceFieldPaths, InvoiceRowsFieldPaths } from "/src/invoices/enums";
@@ -19,11 +19,11 @@ import { getContentPreviewInvoiceBillingPeriods } from "/src/components/helpers"
 import { getFieldOptions, hasPermissions } from "util/helpers";
 import { getAttributes as getInvoiceAttributes } from "/src/invoices/selectors";
 import { getCurrentLease } from "/src/leases/selectors";
-import { getIsFetching, getPreviewInvoices } from "previewInvoices/selectors";
+import { getIsFetching, getPreviewInvoices } from "/src/previewInvoices/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "/src/leases/types";
-import type { PreviewInvoices } from "previewInvoices/types";
+import type { PreviewInvoices } from "/src/previewInvoices/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {
   currentLease: Lease;

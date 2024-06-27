@@ -24,7 +24,7 @@ import { getContentLeaseSummary } from "/src/leases/helpers";
 import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getReferenceNumberLink, hasPermissions, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
 import { getUserFullName } from "users/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getAttributes, getCollapseStateByKey, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Attributes } from "types";

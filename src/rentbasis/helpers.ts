@@ -3,11 +3,11 @@ import { isDirty } from "redux-form";
 import isEmpty from "lodash/isEmpty";
 import { FormNames, TableSortOrder } from "enums";
 import { convertStrToDecimalNumber } from "util/helpers";
-import { getIsEditMode } from "rentbasis/selectors";
+import { getIsEditMode } from "/src/rentbasis/selectors";
 import { removeSessionStorageItem } from "util/storage";
 import type { LeafletGeoJson } from "types";
 import type { RentBasis } from "./types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 
 /**
  * Get basis of rent rent rates

@@ -28,7 +28,7 @@ import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/
 import VisualisationTypeWrapper from "/src/components/table/VisualisationTypeWrapper";
 import { createPlotSearch, fetchPlotSearchList } from "/src/plotSearch/actions";
 import { getIsFetching, getPlotSearchList } from "/src/plotSearch/selectors";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { formatDate, getLabelOfOption, setPageTitle, getFieldOptions, getSearchQuery, getApiResponseCount, getApiResponseMaxPage, getUrlParams, isMethodAllowed } from "util/helpers";
 import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER, DEFAULT_PLOT_SEARCH_STATES } from "/src/plotSearch/constants";
 import { getContentPlotSearchListResults } from "/src/plotSearch/helpers";

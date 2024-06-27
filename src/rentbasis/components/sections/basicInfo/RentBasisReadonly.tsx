@@ -10,12 +10,12 @@ import GreenBox from "/src/components/content/GreenBox";
 import ListItem from "/src/components/content/ListItem";
 import ListItems from "/src/components/content/ListItems";
 import SubTitle from "/src/components/content/SubTitle";
-import { RentBasisFieldPaths, RentBasisFieldTitles, RentBasisDecisionsFieldPaths, RentBasisDecisionsFieldTitles, RentBasisPropertyIdentifiersFieldPaths, RentBasisPropertyIdentifiersFieldTitles, RentBasisRentRatesFieldPaths, RentBasisRentRatesFieldTitles } from "rentbasis/enums";
+import { RentBasisFieldPaths, RentBasisFieldTitles, RentBasisDecisionsFieldPaths, RentBasisDecisionsFieldTitles, RentBasisPropertyIdentifiersFieldPaths, RentBasisPropertyIdentifiersFieldTitles, RentBasisRentRatesFieldPaths, RentBasisRentRatesFieldTitles } from "/src/rentbasis/enums";
 import { getUiDataRentBasisKey } from "uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isEmptyValue, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes as getRentBasisAttributes } from "rentbasis/selectors";
+import { getAttributes as getRentBasisAttributes } from "/src/rentbasis/selectors";
 import type { Attributes } from "types";
-import type { RentBasis } from "rentbasis/types";
+import type { RentBasis } from "/src/rentbasis/types";
 type Props = {
   rentBasis: RentBasis;
   rentBasisAttributes: Attributes;

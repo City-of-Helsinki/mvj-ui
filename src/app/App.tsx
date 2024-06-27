@@ -15,7 +15,7 @@ import LoginPage from "/src/auth/components/LoginPage";
 import SideMenu from "/src/components/sideMenu/SideMenu";
 import TopNavigation from "/src/components/topNavigation/TopNavigation";
 import userManager from "/src/auth/util/user-manager";
-import { Routes, getRouteById } from "root/routes";
+import { Routes, getRouteById } from "/src/root/routes";
 import { clearError } from "/src/api/actions";
 import { clearApiToken, fetchApiToken } from "/src/auth/actions";
 import { getEpochTime } from "util/helpers";

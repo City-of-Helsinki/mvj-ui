@@ -16,7 +16,7 @@ import { getApplicationRelatedAttachments, getFormAttributes, getIsFetchingAppli
 import { APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER } from "/src/application/constants";
 import Collapse from "/src/components/collapse/Collapse";
 import PlotApplicationOpeningRecordForm from "/src/plotApplications/components/PlotApplicationOpeningRecordForm";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { PlotApplication } from "/src/plotApplications/types";
 import type { SectionExtraComponentProps } from "/src/application/types";
 import type { Attributes } from "types";

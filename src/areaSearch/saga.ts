@@ -6,7 +6,7 @@ import { editApplicantInfoCheckItemRequest } from "/src/plotApplications/request
 import { receiveUpdatedApplicantInfoCheckItem } from "/src/application/actions";
 import { displayUIMessage } from "util/helpers";
 import { push } from "react-router-redux";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { createApplicationRequest } from "/src/application/requests";
 import type { DeleteAreaSearchAttachmentAction, UploadAreaSearchAttachmentAction } from "/src/areaSearch/types";
 

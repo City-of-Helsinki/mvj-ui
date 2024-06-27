@@ -24,7 +24,7 @@ import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import { InfillDevelopmentCompensationFieldPaths, InfillDevelopmentCompensationLeasesFieldPaths } from "/src/infillDevelopment/enums";
 import { getContentInfillDevelopmentListResults, mapInfillDevelopmentSearchFilters } from "/src/infillDevelopment/helpers";
 import { getApiResponseCount, getApiResponseMaxPage, getFieldOptions, getLabelOfOption, getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getInfillDevelopments, getIsFetching } from "/src/infillDevelopment/selectors";
 import { withInfillDevelopmentListPageAttributes } from "/src/components/attributes/InfillDevelopmentListPageAttributes";
 import type { Attributes, Methods as MethodsType } from "types";

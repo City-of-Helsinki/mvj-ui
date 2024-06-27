@@ -26,7 +26,7 @@ import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import { InvoiceNoteFieldPaths, InvoiceNoteFieldTitles } from "/src/invoiceNote/enums";
 import { getContentLeaseIdentifier } from "/src/leases/helpers";
 import { formatDate, getApiResponseCount, getApiResponseResults, getApiResponseMaxPage, getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getInvoiceNoteList, getIsCreateModalOpen, getIsFetching } from "/src/invoiceNote/selectors";
 import { withInvoiceNoteAttributes } from "/src/components/attributes/InvoiceNoteAttributes";
 import { getUserActiveServiceUnit } from "usersPermissions/selectors";

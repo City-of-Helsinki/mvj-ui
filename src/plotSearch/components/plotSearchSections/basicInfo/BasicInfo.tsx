@@ -23,7 +23,7 @@ import { PlotSearchFieldPaths } from "/src/plotSearch/enums";
 import type { Attributes } from "types";
 import type { PlotSearch } from "/src/plotSearch/types";
 import { fetchPlanUnit, fetchPlanUnitAttributes, fetchCustomDetailedPlanAttributes } from "/src/plotSearch/actions";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import PlotSearchTargetListing from "/src/plotSearch/components/plotSearchSections/basicInfo/PlotSearchTargetListing";
 import DocumentsButton from "/src/components/form/DocumentsButton";
 import Button from "/src/components/button/Button";

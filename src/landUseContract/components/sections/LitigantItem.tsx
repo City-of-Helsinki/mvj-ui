@@ -10,7 +10,7 @@ import FormWrapperRight from "/src/components/form/FormWrapperRight";
 import SubTitle from "/src/components/content/SubTitle";
 import { getContactFullName } from "/src/contacts/helpers";
 import { formatDate } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 type Props = {
   contact: Record<string, any> | null | undefined;
   litigant: Record<string, any>;

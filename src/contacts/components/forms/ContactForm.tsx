@@ -22,7 +22,7 @@ import { getFieldAttributes, isEmptyValue, isFieldAllowedToRead } from "util/hel
 import { getAttributes, getInitialContactFormValues, getIsContactFormValid, getIsSaveClicked } from "/src/contacts/selectors";
 import { getUserActiveServiceUnit } from "usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { UserServiceUnit } from "usersPermissions/types";
 type Props = {
   attributes: Attributes;

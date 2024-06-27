@@ -15,7 +15,7 @@ import FormFieldLabel from "/src/components/form/FormFieldLabel";
 import AddFileButton from "/src/components/form/AddFileButton";
 import FormText from "/src/components/form/FormText";
 import FileDownloadLink from "/src/components/file/FileDownloadLink";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { Attributes } from "types";
 import { getUserFullName } from "users/helpers";
 import { ConfirmationModalTexts, FieldTypes } from "enums";

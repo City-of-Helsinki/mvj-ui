@@ -14,7 +14,7 @@ import { receiveCollapseStates } from "/src/landUseContract/actions";
 import { FormNames, ViewModes } from "enums";
 import { getContactFullName } from "/src/contacts/helpers";
 import { formatDate, formatDateRange, isActive, isArchived } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getCollapseStateByKey } from "/src/landUseContract/selectors";
 type Props = {
   billingPerson: Record<string, any>;

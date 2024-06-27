@@ -22,7 +22,7 @@ import { getUiDataLeaseKey, getUiDataRentCalculatorKey } from "uiData/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { Lease } from "/src/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
 type Props = {

@@ -13,7 +13,7 @@ import { getUiDataCommentKey } from "uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToEdit } from "util/helpers";
 import { getAttributes as getCommentAttributes, getIsSaveClicked } from "/src/comments/selectors";
 import type { Attributes } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 type Props = {
   commentAttributes: Attributes;
   isSaveClicked: boolean;

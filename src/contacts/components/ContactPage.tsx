@@ -33,7 +33,7 @@ import { UsersPermissions } from "usersPermissions/enums";
 import { clearUnsavedChanges, getContactFullName } from "/src/contacts/helpers";
 import { getUiDataContactKey } from "uiData/helpers";
 import { hasPermissions, getSearchQuery, getUrlParams, isMethodAllowed, scrollToTopPage, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getCurrentContact, getIsContactFormValid, getIsEditMode, getIsFetching, getIsSaveClicked, getIsSaving } from "/src/contacts/selectors";
 import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "util/storage";
 import { withContactAttributes } from "/src/components/attributes/ContactAttributes";
@@ -41,7 +41,7 @@ import { withUiDataList } from "/src/components/uiData/UiDataListHOC";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import { getUserActiveServiceUnit } from "usersPermissions/selectors";
 import type { Methods as MethodsType } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "usersPermissions/types";
 import type { Contact } from "../types";
 type Props = {

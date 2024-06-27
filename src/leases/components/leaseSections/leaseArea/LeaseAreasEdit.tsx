@@ -22,7 +22,7 @@ import { getUiDataLeaseKey } from "uiData/helpers";
 import { formatNumber, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead } from "util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "/src/leases/selectors";
 import { getUsersPermissions } from "usersPermissions/selectors";
-import { store } from "root/startApp";
+import { store } from "/src/root/startApp";
 import type { Attributes } from "types";
 import type { Lease } from "/src/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";

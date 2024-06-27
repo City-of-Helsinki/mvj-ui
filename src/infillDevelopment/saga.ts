@@ -5,7 +5,7 @@ import { fetchSingleInfillDevelopment as fetchSingleInfillDevelopmentAction, hid
 import { receiveError } from "/src/api/actions";
 import { displayUIMessage } from "util/helpers";
 import { createInfillDevelopment, editInfillDevelopment, fetchAttributes, fetchInfillDevelopments, fetchSingleInfillDevelopment } from "./requests";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {

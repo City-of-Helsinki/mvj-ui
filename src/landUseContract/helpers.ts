@@ -9,7 +9,7 @@ import { getIsEditMode } from "/src/landUseContract/selectors";
 import { removeSessionStorageItem } from "util/storage";
 import { getContactFullName, getContentContact } from "/src/contacts/helpers";
 import type { LandUseContract } from "./types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 
 /** 
  * Get land use contract identifier

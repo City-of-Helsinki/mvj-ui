@@ -13,7 +13,7 @@ import ExternalLink from "/src/components/links/ExternalLink";
 import WarningContainer from "/src/components/content/WarningContainer";
 import WarningField from "/src/components/form/WarningField";
 import { createPTPPlanReportUrl } from "util/helpers";
-import { Routes, getRouteById } from "root/routes";
+import { Routes, getRouteById } from "/src/root/routes";
 import { formatDate, getFieldOptions, getLabelOfOption } from "util/helpers";
 import { getAttributes, getCollapseStateByKey, getIsFetchingPlanUnitAttributes, getRelatedApplications } from "/src/plotSearch/selectors";
 import type { Attributes } from "types";

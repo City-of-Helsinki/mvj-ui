@@ -41,7 +41,7 @@ import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import { LeaseAreasFieldPaths, LeaseAreaAddressesFieldPaths, LeaseFieldPaths, LeaseFieldTitles, LeaseTenantsFieldPaths } from "/src/leases/enums";
 import { getContentLeaseListResults, mapLeaseSearchFilters } from "/src/leases/helpers";
 import { formatDate, getApiResponseCount, getApiResponseMaxPage, getFieldOptions, getLabelOfOption, getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getAreaNoteList, getMethods as getAreaNoteMethods } from "/src/areaNote/selectors";
 import { getIsFetching, getIsFetchingByBBox, getLeasesList } from "/src/leases/selectors";
 import { getLessorList } from "/src/lessor/selectors";

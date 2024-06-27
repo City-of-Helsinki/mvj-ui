@@ -12,7 +12,7 @@ import { receiveTopNavigationSettings } from "/src/components/topNavigation/acti
 import { PermissionMissingTexts } from "enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { hasPermissions, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getReportTypeOptions } from "/src/leaseStatisticReport/helpers";
 import LeaseStatisticReportForm from "./LeaseStatisticReportForm";
 import LeaseInvoicingConfirmationReport from "./LeaseInvoicingConfirmationReport";

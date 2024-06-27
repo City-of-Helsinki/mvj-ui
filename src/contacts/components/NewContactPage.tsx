@@ -21,12 +21,12 @@ import { ButtonColors } from "/src/components/enums";
 import { ContactTypes } from "/src/contacts/enums";
 import { isEmptyValue, isMethodAllowed, setPageTitle } from "util/helpers";
 import { contactExists } from "/src/contacts/requestsAsync";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getIsContactFormValid, getIsSaveClicked } from "/src/contacts/selectors";
 import { withContactAttributes } from "/src/components/attributes/ContactAttributes";
 import { withUiDataList } from "/src/components/uiData/UiDataListHOC";
 import type { Methods as MethodsType } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { Contact } from "../types";
 type Props = {
   contactFormValues: Contact;

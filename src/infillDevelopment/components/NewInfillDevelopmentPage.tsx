@@ -18,12 +18,12 @@ import { receiveTopNavigationSettings } from "/src/components/topNavigation/acti
 import { FormNames, Methods, PermissionMissingTexts } from "enums";
 import { getPayloadInfillDevelopment } from "/src/infillDevelopment/helpers";
 import { isMethodAllowed, setPageTitle } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getIsFormValidById, getIsSaveClicked, getIsSaving } from "/src/infillDevelopment/selectors";
 import { withInfillDevelopmentPageAttributes } from "/src/components/attributes/InfillDevelopmentPageAttributes";
 import { withUiDataList } from "/src/components/uiData/UiDataListHOC";
 import type { Methods as MethodsType } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 type Props = {
   clearFormValidFlags: (...args: Array<any>) => any;
   createInfillDevelopment: (...args: Array<any>) => any;

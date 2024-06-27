@@ -13,7 +13,7 @@ import { ButtonColors } from "/src/components/enums";
 import { UsersPermissions } from "usersPermissions/enums";
 import { getContentLeaseIdentifier, getTitleText } from "/src/leases/helpers";
 import { formatDate, getLabelOfOption, hasPermissions } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { getUsersPermissions } from "usersPermissions/selectors";
 import type { Lease } from "/src/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";

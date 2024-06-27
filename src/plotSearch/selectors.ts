@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import type { Attributes, Methods, Selector } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { CustomDetailedPlan, PlanUnit, PlotSearch, PlotSearchList } from "/src/plotSearch/types";
 import { formValueSelector } from "redux-form";
 import { FormNames } from "enums";

@@ -9,7 +9,7 @@ import { ButtonColors } from "/src/components/enums";
 import FileDownloadButton from "/src/components/file/FileDownloadButton";
 import FormField from "/src/components/form/FormField";
 import { FieldTypes, FormNames } from "enums";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import createUrl from "/src/api/createUrl";
 type OwnProps = {
   isOpen: boolean;

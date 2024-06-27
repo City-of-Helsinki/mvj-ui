@@ -1,7 +1,7 @@
 import { all, call, fork, put, select, takeEvery, takeLatest } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
-import { getRouteById, Routes } from "root/routes";
+import { getRouteById, Routes } from "/src/root/routes";
 import { fetchSingleLeaseAfterEdit, hideAttachDecisionModal, hideCreateModal, hideEditMode, attributesNotFound, notFound, notFoundByBBox, notFoundById, receiveAttributes, receiveMethods, receiveIsSaveClicked, receiveLeases, receiveLeasesByBBox, receiveSingleLease, receiveLeaseById, receiveLeasesForContractNumbers } from "./actions";
 import { receiveError } from "/src/api/actions";
 import { fetchInvoicesByLease, receiveIsCreateInvoicePanelOpen } from "/src/invoices/actions";
