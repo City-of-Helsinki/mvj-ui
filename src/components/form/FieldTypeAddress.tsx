@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import AddressSearchInput from "components/address-search/AddressSearchInput";
+import AddressSearchInput from "/src/components/address-search/AddressSearchInput";
 type Props = {
   autoComplete: string;
   disabled: boolean;

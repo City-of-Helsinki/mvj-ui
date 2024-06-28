@@ -1,7 +1,7 @@
 import { $Shape } from "utility-types";
 import React, { Component } from "react";
 import CreateLeaseForm from "./CreateLeaseForm";
-import Modal from "components/modal/Modal";
+import Modal from "/src/components/modal/Modal";
 type Props = {
   allowToChangeRelateTo?: boolean;
   isOpen: boolean;

@@ -1,5 +1,5 @@
-import createUrl from "api/createUrl";
-import callApiAsync from "api/callApiAsync";
+import createUrl from "/src/api/createUrl";
+import callApiAsync from "/src/api/callApiAsync";
 export const fetchUsers = async (query?: Record<string, any>): Promise<Array<Record<string, any>>> => {
   const {
     response: {

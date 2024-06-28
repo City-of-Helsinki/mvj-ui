@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Attributes, Reducer } from "types";
-import type { ReceiveAttributesAction, ReceiveReceivableTypesAction } from "leaseCreateCharge/types";
+import type { ReceiveAttributesAction, ReceiveReceivableTypesAction } from "/src/leaseCreateCharge/types";
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/leaseCreateCharge/FETCH_ATTRIBUTES': () => true,
   'mvj/leaseCreateCharge/RECEIVE_ATTRIBUTES': () => false,

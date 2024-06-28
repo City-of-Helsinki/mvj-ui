@@ -3,13 +3,13 @@ import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import classNames from "classnames";
 import get from "lodash/get";
-import AmountWithVat from "components/vat/AmountWithVat";
-import FormText from "components/form/FormText";
+import AmountWithVat from "/src/components/vat/AmountWithVat";
+import FormText from "/src/components/form/FormText";
 import RentCalculatorSubItem from "./RentCalculatorSubItem";
 import { RentExplanationSubjectType } from "../enums";
-import { formatDateRange, formatNumber } from "util/helpers";
+import { formatDateRange, formatNumber } from "/src/util/helpers";
 import { getRentExplanationAmount, getRentExplanationDescription } from "../helpers";
-import { getAttributes } from "leases/selectors";
+import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;

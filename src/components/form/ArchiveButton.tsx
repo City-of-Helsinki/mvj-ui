@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import ArchiveIcon from "components/icons/ArchiveIcon";
+import ArchiveIcon from "/src/components/icons/ArchiveIcon";
 type Props = {
   className?: string;
   disabled?: boolean;

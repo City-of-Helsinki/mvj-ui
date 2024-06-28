@@ -1,6 +1,6 @@
 import callApi from "../api/callApi";
 import createUrl from "../api/createUrl";
-import callUploadRequest from "api/callUploadRequest";
+import callUploadRequest from "/src/api/callUploadRequest";
 import type { CreateLandUseAgreementAttachmentPayload } from "./types";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`land_use_agreement_attachment/`), {

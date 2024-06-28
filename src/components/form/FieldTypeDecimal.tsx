@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import classNames from "classnames";
-import { formatNumber } from "util/helpers";
-import { convertStrToDecimalNumber, isDecimalNumberStr } from "util/helpers";
+import { formatNumber } from "/src/util/helpers";
+import { convertStrToDecimalNumber, isDecimalNumberStr } from "/src/util/helpers";
 type Props = {
   autoBlur: boolean;
   autoComplete?: string;

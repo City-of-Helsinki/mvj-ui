@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchScheduledJobAttributes as fetchBatchrunScheduledJobAttributes } from "batchrun/actions";
-import { getScheduledJobAttributes as getBatchrunScheduledJobAttributes, getIsFetchingScheduledJobAttributes as getIsFetchingBatchrunScheduledJobAttributes, getScheduledJobMethods as getBatchrunScheduledJobMethods } from "batchrun/selectors";
+import { fetchScheduledJobAttributes as fetchBatchrunScheduledJobAttributes } from "/src/batchrun/actions";
+import { getScheduledJobAttributes as getBatchrunScheduledJobAttributes, getIsFetchingScheduledJobAttributes as getIsFetchingBatchrunScheduledJobAttributes, getScheduledJobMethods as getBatchrunScheduledJobMethods } from "/src/batchrun/selectors";
 import type { Attributes, Methods } from "types";
 
 function BatchrunScheduledJobTabAttributes(WrappedComponent: any) {

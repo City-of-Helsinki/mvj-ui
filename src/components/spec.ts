@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import ErrorIcon from "components/icons/ErrorIcon";
-import SuccessIcon from "components/icons/SuccessIcon";
-import ToastrIcons from "components/toastr/ToastrIcons";
+import ErrorIcon from "/src/components/icons/ErrorIcon";
+import SuccessIcon from "/src/components/icons/SuccessIcon";
+import ToastrIcons from "/src/components/toastr/ToastrIcons";
 
 describe('components', () => {
   describe('ErrorIcon', () => {

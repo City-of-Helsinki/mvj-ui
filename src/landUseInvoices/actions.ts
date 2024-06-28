@@ -1,7 +1,7 @@
 import { createAction } from "redux-actions";
 import type { Attributes, Methods } from "types";
 import type { CreateChargePayload, FetchAttributesAction, ReceiveAttributesAction, ReceiveMethodsAction, InvoiceAttributesNotFoundAction, Invoice, InvoiceListMap, FetchInvoicesByLandUseContractAction, ReceiveInvoicesByLandUseContractAction, CreateInvoiceAction, CreditInvoiceAction, PatchInvoiceAction, ExportInvoiceToLaskeAndUpdateListAction, ExportInvoiceToLaskeAndUpdateListPayload, ReceivePatchedInvoiceAction, ClearPatchedInvoiceAction, InvoiceNotFoundAction, ReceiveInvoiceToCreditAction, ReceiveIsCreateInvoicePanelOpenAction, ReceiveIsCreditInvoicePanelOpenAction, ReceiveIsCreateClickedAction, ReceiveIsCreditClickedAction, ReceiveIsEditClickedAction, DeleteInvoiceAction, ReceiveCollapseStatesAction, StartInvoicingAction, StopInvoicingAction, CreateChargeAction } from "./types";
-import type { LandUseContractId } from "landUseInvoices/types";
+import type { LandUseContractId } from "/src/landUseInvoices/types";
 export const fetchAttributes = (): FetchAttributesAction => createAction('mvj/landUseInvoices/FETCH_ATTRIBUTES')();
 export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction => createAction('mvj/landUseInvoices/RECEIVE_ATTRIBUTES')(attributes);
 export const receiveMethods = (methods: Methods): ReceiveMethodsAction => createAction('mvj/landUseInvoices/RECEIVE_METHODS')(methods);

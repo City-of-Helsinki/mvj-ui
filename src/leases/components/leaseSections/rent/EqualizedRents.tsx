@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import AmountWithVat from "components/vat/AmountWithVat";
-import SortableTable from "components/table/SortableTable";
-import { LeaseEqualizedRentsFieldPaths, LeaseEqualizedRentsFieldTitles } from "leases/enums";
+import AmountWithVat from "/src/components/vat/AmountWithVat";
+import SortableTable from "/src/components/table/SortableTable";
+import { LeaseEqualizedRentsFieldPaths, LeaseEqualizedRentsFieldTitles } from "/src/leases/enums";
 import { TableSortOrder } from "enums";
-import { formatDate, formatNumber, isFieldAllowedToRead, sortNumberByKeyAsc, sortNumberByKeyDesc } from "util/helpers";
-import { getAttributes } from "leases/selectors";
+import { formatDate, formatNumber, isFieldAllowedToRead, sortNumberByKeyAsc, sortNumberByKeyDesc } from "/src/util/helpers";
+import { getAttributes } from "/src/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   equalizedRents: Array<Record<string, any>>;

@@ -1,6 +1,6 @@
 import { TableSortOrder } from "enums";
-import { PlotSearchStageTypes } from "plotSearch/enums";
-import type { ProtectedFormPathsSections } from "plotSearch/types";
+import { PlotSearchStageTypes } from "/src/plotSearch/enums";
+import type { ProtectedFormPathsSections } from "/src/plotSearch/types";
 
 /**
  * Default plotSearch states value for plotSearch list search

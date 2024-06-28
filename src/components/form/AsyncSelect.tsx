@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Async from "react-select/async";
 import classNames from "classnames";
-import DropdownIndicator from "components/inputs/DropdownIndicator";
-import LoadingIndicator from "components/inputs/SelectLoadingIndicator";
+import DropdownIndicator from "/src/components/inputs/DropdownIndicator";
+import LoadingIndicator from "/src/components/inputs/SelectLoadingIndicator";
 type Props = {
   disabled?: boolean;
   displayError: boolean;

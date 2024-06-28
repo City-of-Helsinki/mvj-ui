@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { notFound, receiveLeaseTypes } from "./actions";
-import { receiveError } from "api/actions";
+import { receiveError } from "/src/api/actions";
 import { fetchLeaseTypes } from "./requests";
 
 function* fetchLeaseTypesSaga(): Generator<any, any, any> {

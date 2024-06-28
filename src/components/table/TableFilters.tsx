@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import CheckboxInput from "components/inputs/CheckboxInput";
+import CheckboxInput from "/src/components/inputs/CheckboxInput";
 type Props = {
   alignFiltersRight?: boolean;
   amountText: React.ReactNode;

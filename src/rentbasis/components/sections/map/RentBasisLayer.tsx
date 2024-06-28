@@ -1,6 +1,6 @@
 import React from "react";
 import { GeoJSON } from "react-leaflet";
-import { formatDate, getLabelOfOption } from "util/helpers";
+import { formatDate, getLabelOfOption } from "/src/util/helpers";
 import type { LeafletGeoJson } from "types";
 type Props = {
   color: string;

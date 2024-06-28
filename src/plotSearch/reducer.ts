@@ -2,8 +2,8 @@ import merge from "lodash/merge";
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import { FormNames } from "enums";
-import { annotatePlanUnitDecision } from "plotSearch/helpers";
-import type { AddPlanUnitDecisionsAction, CustomDetailedPlan, PlanUnit, PlotSearch, PlotSearchList, PlotSearchState, ReceiveAttributesAction, ReceiveCollapseStatesAction, ReceiveFormAction, ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction, ReceiveMethodsAction, ReceivePlotSearchListAction, ReceivePlotSearchStagesAction, ReceivePlotSearchSubtypesAction, ReceiveSingleCustomDetailedPlanAction, ReceiveSinglePlotSearchAction, ReceiveTemplateFormsAction, RemovePlanUnitDecisionsAction } from "plotSearch/types";
+import { annotatePlanUnitDecision } from "/src/plotSearch/helpers";
+import type { AddPlanUnitDecisionsAction, CustomDetailedPlan, PlanUnit, PlotSearch, PlotSearchList, PlotSearchState, ReceiveAttributesAction, ReceiveCollapseStatesAction, ReceiveFormAction, ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction, ReceiveMethodsAction, ReceivePlotSearchListAction, ReceivePlotSearchStagesAction, ReceivePlotSearchSubtypesAction, ReceiveSingleCustomDetailedPlanAction, ReceiveSinglePlotSearchAction, ReceiveTemplateFormsAction, RemovePlanUnitDecisionsAction } from "/src/plotSearch/types";
 import type { Attributes, Methods, Reducer } from "types";
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/plotSearch/RECEIVE_ATTRIBUTES']: (state: Attributes, {

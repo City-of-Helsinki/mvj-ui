@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchContactAttributes } from "contacts/actions";
-import { getAttributes as getContactAttributes, getIsFetchingAttributes as getIsFetchingContactAttributes, getMethods as getContactMethods } from "contacts/selectors";
+import { fetchAttributes as fetchContactAttributes } from "/src/contacts/actions";
+import { getAttributes as getContactAttributes, getIsFetchingAttributes as getIsFetchingContactAttributes, getMethods as getContactMethods } from "/src/contacts/selectors";
 import type { Attributes, Methods } from "types";
 
 function ContactAttributes(WrappedComponent: any) {

@@ -1,4 +1,4 @@
-import { UiDataPrefixes } from "uiData/enums";
+import { UiDataPrefixes } from "/src/uiData/enums";
 import type { UiDataList } from "./types";
 
 /**

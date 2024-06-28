@@ -1,5 +1,5 @@
 import type { Action, Attributes, Methods } from "types";
-import type { LeaseId } from "leases/types";
+import type { LeaseId } from "/src/leases/types";
 export type InvoiceState = {
   attributes: Attributes;
   byLease: InvoiceListMap;

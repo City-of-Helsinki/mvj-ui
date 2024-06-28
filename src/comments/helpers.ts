@@ -1,5 +1,5 @@
 import get from "lodash/get";
-import { getContentUser } from "users/helpers";
+import { getContentUser } from "/src/users/helpers";
 
 /**
  * Get content comments

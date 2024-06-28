@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import MultiSelect from "components/multi-select/MultiSelect";
+import MultiSelect from "/src/components/multi-select/MultiSelect";
 type Props = {
   disabled: boolean;
   displayError: boolean;

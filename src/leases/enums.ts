@@ -1,4 +1,4 @@
-import { getDayMonth } from "util/date";
+import { getDayMonth } from "/src/util/date";
 
 /**
  * Area location enumerable.

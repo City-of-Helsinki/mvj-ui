@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import type { Attributes, Selector, Methods } from "../types";
-import type { RootState } from "root/types";
+import type { RootState } from "/src/root/types";
 import type { LandUseContract, LandUseContractList } from "./types";
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.landUseContract.attributes;
 export const getMethods: Selector<Attributes, void> = (state: RootState): Methods => state.landUseContract.methods;

@@ -1,4 +1,4 @@
-import callApi from "api/callApi";
+import callApi from "/src/api/callApi";
 import createUrl from "../api/createUrl";
 export const fetchHistoryBusinessId = (id: string): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`get_credit_decisions?business_id=${id}`)));

@@ -1,6 +1,6 @@
-import callApi from "api/callApi";
-import createUrl from "api/createUrl";
-import callUploadRequest from "api/callUploadRequest";
+import callApi from "/src/api/callApi";
+import createUrl from "/src/api/createUrl";
+import callUploadRequest from "/src/api/callUploadRequest";
 export const fetchPlotApplications = (params: Record<string, any> | null | undefined): Generator<any, any, any> => {
   return callApi(new Request(createUrl('answer/', params)));
 };
