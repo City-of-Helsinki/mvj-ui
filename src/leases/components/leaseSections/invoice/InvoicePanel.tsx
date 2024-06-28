@@ -15,6 +15,7 @@ import { getInvoicesByLease, getIsEditClicked, getMethods as getInvoiceMethods }
 import { getCurrentLease } from "leases/selectors";
 import type { Methods as MethodsType } from "types";
 import type { Invoice, InvoiceList } from "invoices/types";
+
 type Props = {
   formValues: Record<string, any>;
   invoice: Invoice | null | undefined;
@@ -27,6 +28,7 @@ type Props = {
   receiveIsEditClicked: (...args: Array<any>) => any;
   valid: boolean;
 };
+
 type State = {
   creditedInvoice: Record<string, any> | null | undefined;
   interestInvoiceFor: Record<string, any> | null | undefined;
@@ -85,13 +87,40 @@ class InvoicePanel extends PureComponent<Props, State> {
       creditedInvoice,
       interestInvoiceFor
     } = this.state;
-    return <TablePanelContainer innerRef={this.setComponentRef} footer={invoice && !invoice.sap_id && <Authorization allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}>
-            <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
-            <Button className={ButtonColors.SUCCESS} disabled={isEditClicked || !valid} onClick={this.handleSave} text='Tallenna' />
-          </Authorization>} onClose={onClose} title='Laskun tiedot'>
-        {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sap_id) ? <EditInvoiceForm creditedInvoice={creditedInvoice} interestInvoiceFor={interestInvoiceFor} invoice={invoice} initialValues={{ ...invoice
-      }} onInvoiceLinkClick={onInvoiceLinkClick} relativeTo={this.component} /> : <InvoiceTemplate creditedInvoice={creditedInvoice} interestInvoiceFor={interestInvoiceFor} invoice={invoice} onInvoiceLinkClick={onInvoiceLinkClick} relativeTo={this.component} />}
-      </TablePanelContainer>;
+    const automaticallyGenerated = invoice && invoice.generated;
+    
+    return (
+    <TablePanelContainer 
+      innerRef={this.setComponentRef}
+      footer={invoice && !invoice.sap_id && 
+        <Authorization allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}>
+          <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
+          {automaticallyGenerated 
+            ? <p className="invoice-panel__error-text">Automaattisesti luotuja laskuja ei voi muokata.</p>
+            : <Button className={ButtonColors.SUCCESS} disabled={isEditClicked || !valid} onClick={this.handleSave} text='Tallenna' />
+          }
+        </Authorization>}
+      onClose={onClose} 
+      title='Laskun tiedot'>
+        {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sap_id) 
+          ? <EditInvoiceForm 
+              creditedInvoice={creditedInvoice} 
+              interestInvoiceFor={interestInvoiceFor} 
+              invoice={invoice} 
+              initialValues={{ ...invoice}} 
+              onInvoiceLinkClick={onInvoiceLinkClick} 
+              relativeTo={this.component} 
+            />
+          : <InvoiceTemplate 
+              creditedInvoice={creditedInvoice} 
+              interestInvoiceFor={interestInvoiceFor} 
+              invoice={invoice} 
+              onInvoiceLinkClick={onInvoiceLinkClick} 
+              relativeTo={this.component} 
+            />
+        }
+      </TablePanelContainer>
+    );
   }
 
 }

@@ -45,6 +45,10 @@
     }
   }
 
+  &__error-text {
+    color: $red;
+  }
+
   &__footer {
     position: absolute;
     bottom: 0;
