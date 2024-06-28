@@ -609,8 +609,8 @@ describe('utils', () => {
       expect(formatDateRange(null, null)).to.deep.equal('');
     });
     it('should get reference number link', () => {
-      expect(getReferenceNumberLink('123')).to.deep.equal('https://dev.hel.fi/paatokset/asia/123');
-      expect(getReferenceNumberLink('123 456')).to.deep.equal('https://dev.hel.fi/paatokset/asia/123-456');
+      expect(getReferenceNumberLink('123')).to.deep.equal('https://paatokset.hel.fi/asia/123');
+      expect(getReferenceNumberLink('123 456')).to.deep.equal('https://paatokset.hel.fi/asia/123-456');
       expect(getReferenceNumberLink(null)).to.deep.equal(null);
     });
     it('should find item from collection by id', () => {

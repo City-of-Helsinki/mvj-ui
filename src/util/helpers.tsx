@@ -307,7 +307,7 @@ export const getApiUrlWithOutVersionSuffix = (): string => {
  * @returns {string}
  */
 export const getReferenceNumberLink = (referenceNumber: string | null | undefined): string | null | undefined => {
-  const apiUrl = 'https://dev.hel.fi/paatokset/asia';
+  const apiUrl = 'https://paatokset.hel.fi/asia';
   return referenceNumber ? `${apiUrl}/${referenceNumber.replace(' ', '-').toLowerCase()}` : null;
 };
 
