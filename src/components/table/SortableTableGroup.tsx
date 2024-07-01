@@ -1,5 +1,5 @@
 import { $Shape } from "utility-types";
-import React, { PureComponent } from "react";
+import React, { PureComponent, KeyboardEventHandler } from "react";
 import classNames from "classnames";
 import get from "lodash/get";
 import isArray from "lodash/isArray";
@@ -32,7 +32,7 @@ class SortableTableGroup extends PureComponent<Props, State> {
       collapse: !this.state.collapse
     });
   };
-  handleCollapseArrowIconKeyDown: (arg0: KeyboardEvent) => void = (e: any) => {
+  handleCollapseArrowIconKeyDown: KeyboardEventHandler<HTMLAnchorElement> = (e: any) => {
     if (e.keyCode === 13) {
       e.preventDefault();
       this.handleCollapseArrowIconClick();
@@ -75,7 +75,7 @@ class SortableTableGroup extends PureComponent<Props, State> {
           {showCollapseArrowColumn && <td className={classNames('collapse-arrow-column', {
           'no-icon': !showCollapseArrowIcon
         })}>
-              { // @ts-ignore: Type '(arg0: KeyboardEvent) => void' is not assignable to type 'KeyboardEventHandler<HTMLAnchorElement>'.
+              {
               showCollapseArrowIcon && <a className='sortable-table-row-collapse-link' onClick={this.handleCollapseArrowIconClick} onKeyDown={this.handleCollapseArrowIconKeyDown} tabIndex={0}>
                   <AccordionIcon className='sortable-table-row-collapse-icon' />
                 </a>}
