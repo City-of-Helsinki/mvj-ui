@@ -51,8 +51,7 @@ const FieldTypeBoolean = ({
         label: optionLabel
       } = option;
       return <label key={index} className='option-label'>
-            {/** @ts-ignore: Type 'boolean' is not assignable to type 'string | number | readonly string[]'. */}
-            <input type='radio' checked={optionValue === value} name={name} onChange={handleChange} value={optionValue} />
+            <input type='radio' checked={optionValue === value} name={name} onChange={handleChange} value={Boolean(optionValue).toString()} />
             <span>{optionLabel}</span>
           </label>;
     })}
