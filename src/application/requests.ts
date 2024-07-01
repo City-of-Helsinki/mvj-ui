@@ -26,7 +26,7 @@ export const editApplicationRequest = (id: number, payload: Record<string, any>)
     body: JSON.stringify(payload)
   }));
 };
-// TODO: Why is id not used?
+// TODO: Why is id hardcoded?
 export const fetchFormAttributesRequest = (id?: number): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`form/1/`), {
     method: 'OPTIONS'
