@@ -85,7 +85,6 @@ function* fetchFormAttributesSaga({
         status: statusCode
       },
       bodyAsJson
-    // @ts-ignore: No overload matches this call.
     } = yield call(fetchFormAttributesRequest, id);
 
     switch (statusCode) {

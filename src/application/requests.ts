@@ -26,7 +26,8 @@ export const editApplicationRequest = (id: number, payload: Record<string, any>)
     body: JSON.stringify(payload)
   }));
 };
-export const fetchFormAttributesRequest = (): Generator<any, any, any> => {
+// TODO: Why is id not used?
+export const fetchFormAttributesRequest = (id?: number): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`form/1/`), {
     method: 'OPTIONS'
   }));
