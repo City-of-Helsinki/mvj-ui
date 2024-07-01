@@ -310,8 +310,7 @@ const ApplicationFormSubsectionFields = connect((state, props) => ({
     }
 
     return <Column {...columnWidths} className="ApplicationFormField__container">
-          {/** @ts-ignore: No overload matches this call. */}
-          <FormField name={`${fieldName}.value`} field={field} fieldAttributes={{
+          <FormField name={`${fieldName}.value`} fieldAttributes={{
             read_only: false,
             type: fieldType,
             label: field.label,
