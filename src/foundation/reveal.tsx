@@ -1,4 +1,5 @@
 // @ts-nocheck: missing static type checking
+// TODO: Replace reveal with HDS Dialog: https://hds.hel.fi/components/dialog/code/
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import hoistsStatics from "hoist-non-react-statics";

@@ -64,7 +64,7 @@ function* fetchApplicantInfoCheckAttributesSaga(): Generator<any, any, any> {
 
 function* receiveUpdatedApplicantInfoCheckItemSaga({
   payload,
-  type: any
+  type
 }: ReceiveUpdatedTargetInfoCheckItemAction): Generator<any, any, any> {
   const formName = getApplicantInfoCheckFormName(payload.id);
   const oldValues = yield select(getFormValues(formName));
@@ -77,7 +77,7 @@ function* receiveUpdatedApplicantInfoCheckItemSaga({
 
 function* fetchFormAttributesSaga({
   payload: id,
-  type: any
+  type
 }): Generator<any, any, any> {
   try {
     const {
@@ -85,7 +85,6 @@ function* fetchFormAttributesSaga({
         status: statusCode
       },
       bodyAsJson
-    // @ts-ignore: No overload matches this call.
     } = yield call(fetchFormAttributesRequest, id);
 
     switch (statusCode) {
@@ -135,7 +134,7 @@ export function* fetchAttachmentAttributesSaga(): Generator<any, any, any> {
 
 function* fetchApplicationRelatedAttachmentsSaga({
   payload: id,
-  type: any
+  type
 }): Generator<any, any, any> {
   try {
     const {
@@ -172,7 +171,7 @@ function* fetchApplicationRelatedAttachmentsSaga({
 
 function* deleteUploadSaga({
   payload,
-  type: any
+  type
 }: DeleteUploadAction): Generator<any, any, any> {
   try {
     yield call(deleteUploadRequest, payload.id);
@@ -192,7 +191,7 @@ function* deleteUploadSaga({
 
 function* uploadFileSaga({
   payload,
-  type: any
+  type
 }: UploadFileAction): Generator<any, any, any> {
   try {
     const {
@@ -200,7 +199,6 @@ function* uploadFileSaga({
       callback,
       fileData
     } = payload;
-    //@ts-ignore: No overload matches this call.
     const result = yield call(uploadFileRequest, fileData);
     yield put(receiveFileOperationFinished());
 
@@ -245,7 +243,7 @@ function* fetchPendingUploadsSaga(): Generator<any, any, any> {
 
 function* receiveUpdatedTargetInfoCheckItemSaga({
   payload,
-  type: any
+  type
 }: ReceiveUpdatedTargetInfoCheckItemAction): Generator<any, any, any> {
   yield put(initialize(payload.targetForm, payload.data));
 }

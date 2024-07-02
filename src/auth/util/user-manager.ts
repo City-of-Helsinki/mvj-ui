@@ -1,4 +1,6 @@
 // @ts-ignore: Module '"oidc-client"' has no exported member 'Global'
+// oidc-client has exported Global, but it is not in the types, so we ignore the error.
+// TODO: migrate to oidc-client-ts, because oidc-client is not maintained anymore
 import { Global, Log, UserManager, WebStorageStateStore } from "oidc-client";
 const userManagerConfig = {
   authority: process.env.OPENID_CONNECT_AUTHORITY_URL || 'https://api.hel.fi/sso/openid/',

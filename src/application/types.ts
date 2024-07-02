@@ -79,6 +79,16 @@ export type SectionExtraComponentProps = {
   identifier: string;
   topLevel: boolean;
 };
+export type UploadFileData = {
+  field: number;
+  file: File;
+  answer: number | null | undefined;
+};
+export type UploadAttachmentPayload = {
+  fileData: UploadFileData;
+  callback?: (path: string, fileData: UploadedFileMeta) => void;
+  path: string;
+}
 export type UploadedFileMeta = {
   id: number;
   attachment: string;
@@ -128,11 +138,7 @@ export type FetchApplicationRelatedAttachmentsAction = Action<string, void>;
 export type ReceiveApplicationRelatedAttachmentsAction = Action<string, Record<string, any>>;
 export type ApplicationRelatedAttachmentsNotFoundAction = Action<string, void>;
 export type DeleteUploadAction = Action<string, Record<string, any>>;
-export type UploadFileAction = Action<string, {
-  fileData: Record<string, any>;
-  callback?: (path: string, fileData: UploadedFileMeta) => void;
-  path: string;
-}>;
+export type UploadFileAction = Action<string, UploadAttachmentPayload>;
 export type FetchPendingUploadsAction = Action<string, void>;
 export type ReceivePendingUploadsAction = Action<string, Record<string, any>>;
 export type PendingUploadsNotFoundAction = Action<string, void>;

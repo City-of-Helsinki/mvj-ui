@@ -70,8 +70,7 @@ const Types = {
   [FieldTypeOptions.TEXTAREA]: 'text'
 };
 
-
-const resolveFieldType = (type: string): Record<string, any> => Object.prototype.hasOwnProperty.call(FieldTypes, type) ? FieldTypes[type] : FieldTypeBasic;
+const resolveFieldType = (type: string): React.ComponentType<any>  => Object.prototype.hasOwnProperty.call(FieldTypes, type) ? FieldTypes[type] : FieldTypeBasic;
 const resolveType = (type: string): string | null | undefined => Object.prototype.hasOwnProperty.call(Types, type) ? Types[type] : null;
 
 type InputProps = {
@@ -212,7 +211,7 @@ const FormFieldInput = ({
         <div className={classNames('form-field__component', {
         'has-unit': unit
       })}>
-        { // @ts-ignore: No overload matches this call
+        {
           createElement(fieldComponent, {
           autoBlur,
           autoComplete,
