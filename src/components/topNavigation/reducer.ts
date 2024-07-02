@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Reducer } from "types";
-import type { ReceiveTopNavigationSettingsAction, TopNavigationSettings, TopNavigationState } from "./types";
+import type { ReceiveTopNavigationSettingsAction, TopNavigationState } from "./types";
 
 const setSettingsReducer: Reducer<TopNavigationState> = handleActions({
   ['mvj/topnavigation/RECEIVE']: (state: TopNavigationState, {
