@@ -1,10 +1,9 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Reducer } from "types";
-import type { ReceiveTopNavigationSettingsAction, TopNavigationSettings, TopNavigationState } from "./types";
+import type { ReceiveTopNavigationSettingsAction, TopNavigationState } from "./types";
 
-// @ts-ignore: Type 'ReduxCompatibleReducer<TopNavigationState, TopNavigationSettings>' is not assignable to type 'Reducer<TopNavigationSettings>'.
-const setSettingsReducer: Reducer<TopNavigationSettings> = handleActions({
+const setSettingsReducer: Reducer<TopNavigationState> = handleActions({
   ['mvj/topnavigation/RECEIVE']: (state: TopNavigationState, {
     payload: options
   }: ReceiveTopNavigationSettingsAction) => {
