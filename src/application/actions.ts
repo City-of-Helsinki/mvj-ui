@@ -17,7 +17,7 @@ export const fetchAttachmentAttributes = (): FetchAttachmentAttributesAction => 
 export const receiveAttachmentAttributes = (payload: Record<string, any>): ReceiveAttachmentAttributesAction => createAction('mvj/application/RECEIVE_ATTACHMENT_ATTRIBUTES')(payload);
 export const receiveAttachmentMethods = (payload: Record<string, any>): ReceiveAttachmentMethodsAction => createAction('mvj/application/RECEIVE_ATTACHMENT_METHODS')(payload);
 export const attachmentAttributesNotFound = (): AttachmentAttributesNotFoundAction => createAction('mvj/application/ATTACHMENT_ATTRIBUTES_NOT_FOUND')();
-export const fetchApplicationRelatedAttachments = (payload: Record<string, any>): FetchApplicationRelatedAttachmentsAction => createAction('mvj/application/FETCH_ATTACHMENTS')(payload);
+export const fetchApplicationRelatedAttachments = (payload: number | null | undefined): FetchApplicationRelatedAttachmentsAction => createAction('mvj/application/FETCH_ATTACHMENTS')(payload);
 export const receiveApplicationRelatedAttachments = (payload: Record<string, any>): ReceiveApplicationRelatedAttachmentsAction => createAction('mvj/application/RECEIVE_ATTACHMENTS')(payload);
 export const applicationRelatedAttachmentsNotFound = (payload?: Record<string, any>): ApplicationRelatedAttachmentsNotFoundAction => createAction('mvj/application/ATTACHMENTS_NOT_FOUND')(payload);
 export const deleteUploadedAttachment = (payload: Record<string, any>): DeleteUploadAction => createAction('mvj/application/DELETE_UPLOAD')(payload);
