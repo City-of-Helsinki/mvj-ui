@@ -1,6 +1,7 @@
 import callApi from "api/callApi";
 import createUrl from "api/createUrl";
 import callUploadRequest from "api/callUploadRequest";
+import { UploadFileData } from "./types";
 export const fetchAttributesRequest = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('answer/'), {
     method: 'OPTIONS'
@@ -37,15 +38,12 @@ export const fetchAttachmentAttributesRequest = (): Generator<any, any, any> => 
     method: 'OPTIONS'
   }));
 };
-export const uploadFileRequest = ({
-  field,
-  file,
-  answer
-}: {
-  field: number;
-  file: File;
-  answer: number | null | undefined;
-}): Generator<any, any, any> => {
+export const uploadFileRequest = (fileData: UploadFileData): Generator<any, any, any> => {
+  const {
+    field,
+    file,
+    answer
+  } = fileData;
   const formData = new FormData();
   formData.append('field', field.toString());
   formData.append('name', file.name);
