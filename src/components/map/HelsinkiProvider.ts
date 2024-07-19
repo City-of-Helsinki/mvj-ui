@@ -18,7 +18,15 @@ export default class Provider {
       query,
       protocol
     });
-    const request = await fetch(url);
+    const apiKey = process.env.PAIKKATIETOHAKU_API_KEY
+    const request = await fetch(
+      url, 
+      { 
+        headers: { 
+          Authorization: `Bearer Api-Key ${apiKey}`,
+        }
+      }
+    );
     const json = await request.json();
     return this.parse({
       data: json
@@ -35,7 +43,7 @@ export default class Provider {
       name: query
     });
     const proto = 'https:';
-    return `${proto}//dev.hel.fi/geocoder/v1/address/?${paramString}&municipality=91`;
+    return `${proto}//paikkatietohaku.api.hel.fi/v1/address/?${paramString}&municipality=91`;
   }
 
   parse({
