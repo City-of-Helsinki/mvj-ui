@@ -1,4 +1,5 @@
 import isArray from "lodash/isArray";
+import type { LatLngBounds } from "leaflet";
 
 /**
  * Translate leaflet draw literals in Finnish
@@ -123,7 +124,7 @@ export const getBoundsFromBBox = (bbox: Array<Record<string, any>>): Record<stri
  */
 
 /* istanbul ignore next */
-export const getBoundsFromCoordinates = (coordinates: Array<any>): Record<string, any> => {
+export const getBoundsFromCoordinates = (coordinates: Array<any>): LatLngBounds => {
   const L = require('leaflet');
 
   const lats = [],
