@@ -33,7 +33,7 @@ export default class Provider {
       ...params,
       q: query
     });
-    return `https://api.hel.fi/servicemap/v2/search/?${paramString}&type=address&&municipality=helsinki`;
+    return `https://api.hel.fi/servicemap/v2/search/?${paramString}&type=address&municipality=helsinki`;
   }
 
   parse({
