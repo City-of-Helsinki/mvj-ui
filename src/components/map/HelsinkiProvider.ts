@@ -1,3 +1,4 @@
+import type { AddressResult, ParseArguments, ServiceMapResponse } from "./types"
 export default class Provider {
   options: Record<string, any>;
 
@@ -11,15 +12,12 @@ export default class Provider {
 
   async search({
     query
-  }: Record<string, any>) {
-    // eslint-disable-next-line no-bitwise
-    const protocol = ~location.protocol.indexOf('http') ? location.protocol : 'https:';
+  }: { query: string }) {
     const url = this.endpoint({
-      query,
-      protocol
+      query
     });
     const request = await fetch(url);
-    const json = await request.json();
+    const json = await request.json() as ServiceMapResponse;
     return this.parse({
       data: json
     });
@@ -27,27 +25,26 @@ export default class Provider {
 
   endpoint({
     query
-  }: any = {}) {
+  }: { query: string }) {
     const {
       params
     } = this.options;
-    const paramString = this.getParamString({ ...params,
-      name: query
+    const paramString = this.getParamString({
+      ...params,
+      q: query
     });
-    const proto = 'https:';
-    return `${proto}//dev.hel.fi/geocoder/v1/address/?${paramString}&municipality=91`;
+    return `https://api.hel.fi/servicemap/v2/search/?${paramString}&type=address&&municipality=helsinki`;
   }
 
   parse({
     data
-  }: any) {
-    return data.objects.map(r => {
+  }: ParseArguments): Array<AddressResult> {
+    return data.results?.map(address => {
       return {
-        x: r.location.coordinates[0],
-        y: r.location.coordinates[1],
-        label: r.name
+        x: address.location?.coordinates[0] ?? 0,
+        y: address.location?.coordinates[1] ?? 0,
+        label: address.name?.fi ?? "",
       };
     });
   }
-
 }
