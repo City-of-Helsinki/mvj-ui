@@ -56,3 +56,10 @@ export const DELETE_MODAL_BUTTON_TEXT = 'Poista';
  * @const {number}
  */
 export const LIST_TABLE_PAGE_SIZE = 25;
+
+/**
+ * Base url for Service Map API
+ * @readonly
+ * @const {string}
+ */
+export const SERVICE_MAP_URL = 'https://api.hel.fi/servicemap/v2';

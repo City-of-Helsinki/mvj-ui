@@ -1,4 +1,5 @@
 import { Provider } from 'leaflet-geosearch';
+import { SERVICE_MAP_URL } from 'util/constants';
 import type { AddressResult, ServiceMapResponse, ParseArgument, SearchArgument, SearchResult } from './types';
 export default class HelsinkiProvider extends Provider<ServiceMapResponse, AddressResult> {
   options: Record<string, any>;
@@ -35,7 +36,7 @@ export default class HelsinkiProvider extends Provider<ServiceMapResponse, Addre
       ...params,
       q: query
     });
-    return `https://api.hel.fi/servicemap/v2/search/?${paramString}&type=address&municipality=helsinki`;
+    return `${SERVICE_MAP_URL}/search/?${paramString}&type=address&municipality=helsinki`;
   }
 
   parse({
