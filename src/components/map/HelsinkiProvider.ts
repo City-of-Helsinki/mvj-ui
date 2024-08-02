@@ -1,8 +1,10 @@
-import type { AddressResult, ParseArguments, ServiceMapResponse } from "./types"
-export default class Provider {
+import { Provider } from 'leaflet-geosearch';
+import type { AddressResult, ServiceMapResponse, ParseArgument, SearchArgument, SearchResult } from './types';
+export default class HelsinkiProvider extends Provider<ServiceMapResponse, AddressResult> {
   options: Record<string, any>;
-
-  constructor(options: Record<string, any> = {}) {
+  
+  constructor(options: Record<string, string | number | boolean> = {}) {
+    super(options);
     this.options = options;
   }
 
@@ -12,7 +14,7 @@ export default class Provider {
 
   async search({
     query
-  }: { query: string }) {
+  }: SearchArgument): Promise<Array<AddressResult>> {
     const url = this.endpoint({
       query
     });
@@ -38,12 +40,14 @@ export default class Provider {
 
   parse({
     data
-  }: ParseArguments): Array<AddressResult> {
+  }: ParseArgument<ServiceMapResponse>): Array<SearchResult> {
     return data.results?.map(address => {
       return {
         x: address.location?.coordinates[0] ?? 0,
         y: address.location?.coordinates[1] ?? 0,
-        label: address.name?.fi ?? "",
+        label: address.name?.fi ?? '',
+        bounds: null,
+        raw: address,
       };
     });
   }

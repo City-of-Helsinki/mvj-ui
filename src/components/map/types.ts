@@ -38,12 +38,26 @@ export interface ServiceMapResponse {
     results: Array<ServiceMapAddress>;
   };
 
-export interface ParseArguments {
-  data: ServiceMapResponse;
-};
-
 export interface AddressResult {
   x: number;
   y: number;
   label: string;
 };
+
+export interface ParseArgument<TData> {
+  data: TData;
+};
+
+export interface SearchArgument {
+  query: string;
+};
+
+export declare type PointTuple = [number, number];
+export declare type BoundsTuple = [PointTuple, PointTuple];
+export interface SearchResult<TRawResult = any> {
+  x: number;
+  y: number;
+  label: string;
+  bounds: BoundsTuple | null;
+  raw: TRawResult;
+}
