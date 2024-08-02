@@ -71,11 +71,16 @@ class AreaNotesEditMap extends Component<Props, State> {
 
       if (!isEmpty(geoJSON)) {
         const featuresGeoJSON = new L.GeoJSON(geoJSON);
-        featuresGeoJSON.eachLayer(layer => {
-          layer.options.color = SHAPE_COLOR;
-          layer.options.fillOpacity = SHAPE_FILL_OPACITY;
-          this.featureGroup?.leafletElement.addLayer(layer);
-          layer.showMeasurements();
+        featuresGeoJSON.eachLayer((layer) => {
+          if (layer instanceof L.Polyline || layer instanceof L.Polygon || layer instanceof L.Circle) {
+            layer.setStyle({
+              "color": SHAPE_COLOR,
+              "fillOpacity": SHAPE_FILL_OPACITY}
+            );
+            this.featureGroup?.leafletElement.addLayer(layer);
+            layer.showMeasurements();
+          }
+
         });
         this.setState({
           isValid: true
