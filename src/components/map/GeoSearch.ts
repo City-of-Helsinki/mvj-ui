@@ -1,7 +1,7 @@
 import { MapControl, withLeaflet } from "react-leaflet";
 import { GeoSearchControl } from "leaflet-geosearch";
 import HelsinkiProvider from "./HelsinkiProvider";
-type LeafletElement = GeoSearchControl;
+type LeafletElement = typeof GeoSearchControl;
 
 class GeoSearch extends MapControl<LeafletElement> {
   createLeafletElement() {
