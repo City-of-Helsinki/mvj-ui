@@ -1,18 +1,18 @@
 @import "./styles/fonts";
 @import "./styles/variables";
-@import "~foundation-sites/scss/foundation";
+@import "foundation-sites/scss/foundation";
 @include foundation-everything(true);
 @include foundation-flex-grid;
 
-@import '~react-leaflet-fullscreen/dist/styles.css';
+@import "react-leaflet-fullscreen/dist/styles.css";
 @import "styles/mixins";
 
 // Vendor
-@import "~react-redux-toastr/src/styles/index";
-@import "~react-datepicker/dist/react-datepicker.css";
-@import '../node_modules/leaflet-draw/dist/leaflet.draw.css';
-@import 'node_modules/react-dual-listbox/src/scss/react-dual-listbox.scss';
-@import '~font-awesome/css/font-awesome.css';
+@import "react-redux-toastr/src/styles/index";
+@import "react-datepicker/dist/react-datepicker.css";
+@import "../node_modules/leaflet-draw/dist/leaflet.draw.css";
+@import "node_modules/react-dual-listbox/src/scss/react-dual-listbox.scss";
+@import "font-awesome/css/font-awesome.css";
 
 // Components
 @import "components/authorization/authorization";
