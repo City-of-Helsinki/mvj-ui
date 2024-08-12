@@ -2,10 +2,10 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
 import { hideEditMode, attributesNotFound, notFound, receiveAttributes, receiveMethods, receiveRentBasisList, receiveSingleRentBasis } from "./actions";
-import { receiveError } from "../api/actions";
-import { displayUIMessage } from "util/helpers";
+import { receiveError } from "@/api/actions";
+import { displayUIMessage } from "@/util/helpers";
 import { createRentBasis, editRentBasis, fetchAttributes, fetchRentBasisList, fetchSingleRentBasis } from "./requests";
-import { getRouteById, Routes } from "../root/routes";
+import { getRouteById, Routes } from "@/root/routes";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {

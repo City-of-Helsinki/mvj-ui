@@ -1,15 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Authorization from "components/authorization/Authorization";
-import FormTextTitle from "components/form/FormTextTitle";
-import { LeaseFieldPaths, LeaseFieldTitles } from "leases/enums";
-import { getContentLeaseInfo } from "leases/helpers";
-import { getUiDataLeaseKey } from "uiData/helpers";
-import { formatDate, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes, getCurrentLease } from "leases/selectors";
+import Authorization from "@/components/authorization/Authorization";
+import FormTextTitle from "@/components/form/FormTextTitle";
+import { LeaseFieldPaths, LeaseFieldTitles } from "@/leases/enums";
+import { getContentLeaseInfo } from "@/leases/helpers";
+import { getUiDataLeaseKey } from "@/uiData/helpers";
+import { formatDate, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "@/util/helpers";
+import { getAttributes, getCurrentLease } from "@/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "leases/types";
+import type { Lease } from "@/leases/types";
 type Props = {
   attributes: Attributes;
   currentLease: Lease;

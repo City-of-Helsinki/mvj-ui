@@ -1,5 +1,5 @@
-import type { Action } from "../types";
-import type { LeaseId } from "leases/types";
+import type { Action } from "@/types";
+import type { LeaseId } from "@/leases/types";
 export type InvoiceSetState = {
   byLease: InvoiceSetListMap;
   isFetching: boolean;

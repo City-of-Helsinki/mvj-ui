@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { receiveLessors } from "./actions";
-import { fetchContacts } from "contacts/requests";
+import { fetchContacts } from "@/contacts/requests";
 
 function* fetchLessorsSaga({
   payload: params,

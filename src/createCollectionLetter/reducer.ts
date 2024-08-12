@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Attributes, Reducer } from "../types";
+import type { Attributes, Reducer } from "@/types";
 import type { ReceiveAttributesAction } from "./types";
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/createCollectionLetter/FETCH_ATTRIBUTES': () => true,

@@ -2,8 +2,8 @@
 import flowRight from "lodash/flowRight";
 import React from "react";
 import { Button } from "react-foundation";
-import { reveal } from "../foundation/reveal";
-import { Sizes } from "../foundation/enums";
+import { reveal } from "@/foundation/reveal";
+import { Sizes } from "@/foundation/enums";
 
 const ApiErrorModal = ({
   data,

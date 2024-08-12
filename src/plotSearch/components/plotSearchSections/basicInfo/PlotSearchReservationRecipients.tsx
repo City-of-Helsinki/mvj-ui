@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import { Column, Row } from "react-foundation";
-import FormTextTitle from "components/form/FormTextTitle";
-import FormText from "components/form/FormText";
-import { PlotSearchFieldTitles } from "plotSearch/enums";
+import FormTextTitle from "@/components/form/FormTextTitle";
+import FormText from "@/components/form/FormText";
+import { PlotSearchFieldTitles } from "@/plotSearch/enums";
 type Props = {
   reservationRecipients: Array<Record<string, any>>;
 };

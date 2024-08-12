@@ -1,14 +1,14 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import CompanyExtended from "tradeRegister/components/CompanyExtended";
-import CompanyNotice from "tradeRegister/components/CompanyNotice";
-import CompanyRepresent from "tradeRegister/components/CompanyRepresent";
-import DownloadableFiles from "tradeRegister/components/DownloadableFiles";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
-import { fetchTradeRegisterCompanyExtendedById, fetchTradeRegisterCompanyNoticeById, fetchTradeRegisterCompanyRepresentById } from "tradeRegister/actions";
-import { getCompanyExtendedById, getCompanyNoticeById, getCompanyRepresentById, getIsFetchingCompanyExtendedById, getIsFetchingCompanyNoticeById, getIsFetchingCompanyRepresentById } from "tradeRegister/selectors";
+import CompanyExtended from "@/tradeRegister/components/CompanyExtended";
+import CompanyNotice from "@/tradeRegister/components/CompanyNotice";
+import CompanyRepresent from "@/tradeRegister/components/CompanyRepresent";
+import DownloadableFiles from "@/tradeRegister/components/DownloadableFiles";
+import Loader from "@/components/loader/Loader";
+import LoaderWrapper from "@/components/loader/LoaderWrapper";
+import { fetchTradeRegisterCompanyExtendedById, fetchTradeRegisterCompanyNoticeById, fetchTradeRegisterCompanyRepresentById } from "@/tradeRegister/actions";
+import { getCompanyExtendedById, getCompanyNoticeById, getCompanyRepresentById, getIsFetchingCompanyExtendedById, getIsFetchingCompanyNoticeById, getIsFetchingCompanyRepresentById } from "@/tradeRegister/selectors";
 type Props = {
   businessId: string;
   companyExtended: Record<string, any> | null | undefined;

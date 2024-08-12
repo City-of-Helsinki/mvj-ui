@@ -2,8 +2,8 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveAttributes, attributesNotFound, receiveLeaseInvoicingConfirmationReportAttributes, leaseInvoicingConfirmationReportAttributesNotFound, receiveLeaseInvoicingConfrimationReports, notFoundLeaseInvoicingConfrimationReports, receiveReports, reportsNotFound, receiveReportData, reportDataNotFound, mailSent, noMailSent, receiveOptions, optionsNotFound } from "./actions";
 import { fetchAttributes, fetchLeaseInvoicingConfirmationReportAttributes, fetchLeaseInvoicingConfrimationReports, fetchReports, fetchReportData, sendReportToMail, fetchOptions } from "./requests";
-import { receiveError } from "../api/actions";
-import { displayUIMessage } from "util/helpers";
+import { receiveError } from "@/api/actions";
+import { displayUIMessage } from "@/util/helpers";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {

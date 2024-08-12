@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "../types";
-import type { PreviewInvoices, ReceivePreviewInvoicesAction } from "previewInvoices/types";
+import type { Reducer } from "@/types";
+import type { PreviewInvoices, ReceivePreviewInvoicesAction } from "@/previewInvoices/types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/previewInvoices/FETCH_ALL': () => true,
   'mvj/previewInvoices/NOT_FOUND': () => false,

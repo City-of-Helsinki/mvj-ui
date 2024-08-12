@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import classNames from "classnames";
-import ListItem from "components/content/ListItem";
+import ListItem from "@/components/content/ListItem";
 type Props = {
   items: Array<any>;
   itemRenderer: (...args: Array<any>) => any;

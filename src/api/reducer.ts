@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "../types";
+import type { Reducer } from "@/types";
 import type { ApiError, ReceiveErrorAction } from "./types";
 export const errorReducer: Reducer<ApiError> = handleActions({
   ['mvj/api/RECEIVE_ERROR']: (state, {

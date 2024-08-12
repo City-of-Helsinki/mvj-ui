@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeEvery } from "redux-saga/effects";
 import { receivePenaltyInterestByInvoice, penaltyInterestNotFoundByInvoice } from "./actions";
-import { receiveError } from "api/actions";
+import { receiveError } from "@/api/actions";
 import { fetchPenaltyInterestByInvoice } from "./requests";
 
 function* fetchPenaltyInterestByInvoiceSaga({

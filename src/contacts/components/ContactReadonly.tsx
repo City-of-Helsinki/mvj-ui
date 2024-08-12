@@ -1,7 +1,7 @@
 import React from "react";
-import ContactTemplate from "contacts/components/templates/ContactTemplate";
-import GreenBox from "components/content/GreenBox";
-import type { Contact } from "../types";
+import ContactTemplate from "@/contacts/components/templates/ContactTemplate";
+import GreenBox from "@/components/content/GreenBox";
+import type { Contact } from "@/types";
 type Props = {
   contact: Contact;
 };

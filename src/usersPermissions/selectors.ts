@@ -1,5 +1,5 @@
 import type { Selector } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "@/root/types";
 import type { UserGroups, UsersPermissions, UserServiceUnit, UserServiceUnits } from "./types";
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean => state.usersPermissions.isFetching;
 export const getUserGroups: Selector<UserGroups, void> = (state: RootState): UserGroups => state.usersPermissions.groups;

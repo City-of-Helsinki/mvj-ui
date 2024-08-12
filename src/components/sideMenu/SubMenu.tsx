@@ -2,9 +2,9 @@ import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
-import BackIcon from "components/icons/BackIcon";
-import Authorization from "components/authorization/Authorization";
-import { KeyCodes } from "enums";
+import BackIcon from "@/components/icons/BackIcon";
+import Authorization from "@/components/authorization/Authorization";
+import { KeyCodes } from "@/enums";
 type Props = {
   header: string;
   isOpen: boolean;

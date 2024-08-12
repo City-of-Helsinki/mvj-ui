@@ -1,10 +1,10 @@
 import React from "react";
 import debounce from "lodash/debounce";
-import AsyncSelect from "components/form/AsyncSelect";
-import { getContentLessor } from "lessor/helpers";
-import { addEmptyOption, sortStringByKeyAsc } from "util/helpers";
-import { fetchContacts } from "contacts/requestsAsync";
-import type { UserServiceUnit } from "usersPermissions/types";
+import AsyncSelect from "@/components/form/AsyncSelect";
+import { getContentLessor } from "@/lessor/helpers";
+import { addEmptyOption, sortStringByKeyAsc } from "@/util/helpers";
+import { fetchContacts } from "@/contacts/requestsAsync";
+import type { UserServiceUnit } from "@/usersPermissions/types";
 type Props = {
   disabled?: boolean;
   displayError: boolean;

@@ -1,5 +1,5 @@
-import { CreditInvoiceOptions } from "leases/enums";
-import { convertStrToDecimalNumber } from "util/helpers";
+import { CreditInvoiceOptions } from "@/leases/enums";
+import { convertStrToDecimalNumber } from "@/util/helpers";
 
 /**
  * Get credit invoice set payload for API

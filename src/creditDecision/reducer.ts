@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Reducer } from "types";
-import type { CreditDecisionDataMap, CreditDecisionNotFoundByBusinessIdAction, CreditDecisionNotFoundByContactIdAction, CreditDecisionNotFoundByNinAction, FetchCreditDecisionByBusinessIdAction, FetchCreditDecisionByContactIdAction, FetchCreditDecisionByNinAction, FetchHistoryByBusinessIdAction, FetchHistoryByContactIdAction, HistoryDataMap, HistoryNotFoundByBusinessIdAction, HistoryNotFoundByContactIdAction, IsFetchingCreditDecisionMap, IsFetchingHistoryMap, ReceiveCreditDecisionByBusinessIdAction, ReceiveCreditDecisionByContactIdAction, ReceiveCreditDecisionByNinAction, ReceiveHistoryByBusinessIdAction, ReceiveHistoryByContactIdAction } from "creditDecision/types";
+import type { CreditDecisionDataMap, CreditDecisionNotFoundByBusinessIdAction, CreditDecisionNotFoundByContactIdAction, CreditDecisionNotFoundByNinAction, FetchCreditDecisionByBusinessIdAction, FetchCreditDecisionByContactIdAction, FetchCreditDecisionByNinAction, FetchHistoryByBusinessIdAction, FetchHistoryByContactIdAction, HistoryDataMap, HistoryNotFoundByBusinessIdAction, HistoryNotFoundByContactIdAction, IsFetchingCreditDecisionMap, IsFetchingHistoryMap, ReceiveCreditDecisionByBusinessIdAction, ReceiveCreditDecisionByContactIdAction, ReceiveCreditDecisionByNinAction, ReceiveHistoryByBusinessIdAction, ReceiveHistoryByContactIdAction } from "@/creditDecision/types";
 const isFetchingHistoryByBusinessIdReducer: Reducer<IsFetchingHistoryMap> = handleActions({
   ['mvj/creditDecision/FETCH_HISTORY_BY_BUSINESS_ID']: (state: IsFetchingHistoryMap, {
     payload: id

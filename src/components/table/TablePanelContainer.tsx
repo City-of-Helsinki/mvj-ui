@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import CloseButton from "components/button/CloseButton";
+import CloseButton from "@/components/button/CloseButton";
 type Props = {
   footer?: any;
   children: any;

@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchInvoiceNoteAttributes } from "invoiceNote/actions";
-import { getAttributes as getInvoiceNoteAttributes, getIsFetchingAttributes as getIsFetchingInvoiceNoteAttributes, getMethods as getInvoiceNoteMethods } from "invoiceNote/selectors";
+import { fetchAttributes as fetchInvoiceNoteAttributes } from "@/invoiceNote/actions";
+import { getAttributes as getInvoiceNoteAttributes, getIsFetchingAttributes as getIsFetchingInvoiceNoteAttributes, getMethods as getInvoiceNoteMethods } from "@/invoiceNote/selectors";
 import type { Attributes, Methods } from "types";
 
 function InvoiceNoteAttributes(WrappedComponent: any) {

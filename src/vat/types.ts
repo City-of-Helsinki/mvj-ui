@@ -1,4 +1,4 @@
-import type { Action } from "../types";
+import type { Action } from "@/types";
 export type VatState = {
   isFetching: boolean;
   list: VatList;

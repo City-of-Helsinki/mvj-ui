@@ -1,6 +1,6 @@
-import callApi from "../api/callApi";
-import createUrl from "../api/createUrl";
-import callUploadRequest from "api/callUploadRequest";
+import callApi from "@/api/callApi";
+import createUrl from "@/api/createUrl";
+import callUploadRequest from "@/api/callUploadRequest";
 import type { CreateLeaseAreaAttachmentPayload } from "./types";
 export const createLeaseAreaAttachment = (payload: CreateLeaseAreaAttachmentPayload): Generator<any, any, any> => {
   const formData = new FormData();

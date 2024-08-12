@@ -1,4 +1,4 @@
-import type { Action } from "../types";
+import type { Action } from "@/types";
 export type LeaseTypeList = Array<Record<string, any>>;
 export type LeaseTypeState = {
   isFetching: boolean;

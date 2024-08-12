@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Attributes, Methods, Reducer } from "../types";
+import type { Attributes, Methods, Reducer } from "@/types";
 import type { Contact, ContactList, ContactModalSettings, InitializeContactFormValuesAction, ReceiveAttributesAction, ReceiveMethodsAction, ReceiveContactsAction, ReceiveSingleContactAction, ReceiveContactFormValidAction, ReceiveContactModalSettingsAction, ReceiveIsSaveClickedAction } from "./types";
 const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/contacts/HIDE_EDIT': () => false,

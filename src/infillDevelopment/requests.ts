@@ -1,5 +1,5 @@
-import callApi from "../api/callApi";
-import createUrl from "../api/createUrl";
+import callApi from "@/api/callApi";
+import createUrl from "@/api/createUrl";
 import type { InfillDevelopment, InfillDevelopmentId } from "./types";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`infill_development_compensation/`), {

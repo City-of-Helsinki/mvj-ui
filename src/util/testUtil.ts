@@ -1,8 +1,8 @@
 import { $Shape } from "utility-types";
-import type { RootState } from "../root/types";
+import type { RootState } from "@/root/types";
 import { createStore } from "redux";
 import { createMemoryHistory } from "history";
-import createRootReducer from "../root/createRootReducer";
+import createRootReducer from "@/root/createRootReducer";
 export const getTestRootState = (overrides: $Shape<RootState> = {}): RootState => {
   const history = createMemoryHistory();
   const rootState = createStore(createRootReducer(history));

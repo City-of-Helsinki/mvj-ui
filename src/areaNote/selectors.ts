@@ -1,5 +1,5 @@
 import type { Attributes, Methods, Selector } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "@/root/types";
 import type { AreaNoteList } from "./types";
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean => state.areaNote.isFetching;
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean => state.areaNote.isFetchingAttributes;

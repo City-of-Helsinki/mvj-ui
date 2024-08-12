@@ -1,6 +1,6 @@
-import type { Attributes, Methods, Selector } from "../types";
-import type { LeaseId } from "leases/types";
-import type { RootState } from "root/types";
+import type { Attributes, Methods, Selector } from "@/types";
+import type { LeaseId } from "@/leases/types";
+import type { RootState } from "@/root/types";
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.collectionNote.attributes;
 export const getMethods: Selector<Methods, void> = (state: RootState): Methods => state.collectionNote.methods;
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean => state.collectionNote.isFetchingAttributes;

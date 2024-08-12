@@ -1,5 +1,5 @@
-import callApi from "../api/callApi";
-import createUrl from "../api/createUrl";
+import callApi from "@/api/callApi";
+import createUrl from "@/api/createUrl";
 import type { LandUseContract } from "./types";
 export const createLandUseContract = (landUseContract: LandUseContract): Generator<any, any, any> => {
   const body = JSON.stringify(landUseContract);

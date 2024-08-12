@@ -1,15 +1,15 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Collapse from "components/collapse/Collapse";
-import FormText from "components/form/FormText";
-import FileDownloadLink from "components/file/FileDownloadLink";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
-import { receiveCollapseStates } from "tradeRegister/actions";
-import { CollapseStatePaths } from "tradeRegister/enums";
-import { getCollapseStateByKey, getCompanyExtendedById, getIsFetchingCompanyExtendedById } from "tradeRegister/selectors";
-import createUrlWithoutVersionSuffix from "api/createUrlWithoutVersionSuffix";
+import Collapse from "@/components/collapse/Collapse";
+import FormText from "@/components/form/FormText";
+import FileDownloadLink from "@/components/file/FileDownloadLink";
+import Loader from "@/components/loader/Loader";
+import LoaderWrapper from "@/components/loader/LoaderWrapper";
+import { receiveCollapseStates } from "@/tradeRegister/actions";
+import { CollapseStatePaths } from "@/tradeRegister/enums";
+import { getCollapseStateByKey, getCompanyExtendedById, getIsFetchingCompanyExtendedById } from "@/tradeRegister/selectors";
+import createUrlWithoutVersionSuffix from "@/api/createUrlWithoutVersionSuffix";
 type Props = {
   businessId: string;
   companyExtended: Record<string, any> | null | undefined;

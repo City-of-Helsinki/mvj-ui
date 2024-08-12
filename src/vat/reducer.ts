@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "../types";
+import type { Reducer } from "@/types";
 import type { VatList, ReceiveVatsAction } from "./types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/vat/FETCH_ALL': () => true,

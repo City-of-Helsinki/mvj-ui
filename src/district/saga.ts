@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { notFound, receiveDistrictsByMunicipality } from "./actions";
 import { fetchDistricts } from "./requests";
-import { receiveError } from "../api/actions";
+import { receiveError } from "@/api/actions";
 
 function* fetchDistrictsByMunicipalitySaga({
   payload: municipalityId,

@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Attributes, Reducer, ApiResponse, Reports } from "../types";
+import type { Attributes, Reducer, ApiResponse, Reports } from "@/types";
 import type { ReceiveAttributesAction, ReceiveLeaseInvoicingConfirmationReportAttributesAction, ReceiveLeaseInvoicingConfrimationReportsAction, ReceiveReportsAction, ReceiveReportDataAction, SetOptionsAction, SetPayloadAction, ReceiveOptionsAction } from "./types";
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/leaseStatisticReport/FETCH_ATTRIBUTES': () => true,

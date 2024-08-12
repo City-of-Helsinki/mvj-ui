@@ -1,6 +1,6 @@
 import { handleActions } from "redux-actions";
 import { combineReducers } from "redux";
-import type { Reducer } from "../types";
+import type { Reducer } from "@/types";
 import type { ReceiveApiTokenAction } from "./types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/auth/FETCH_API_TOKEN': () => true,

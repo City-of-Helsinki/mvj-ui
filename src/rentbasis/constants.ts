@@ -1,4 +1,4 @@
-import { TableSortOrder } from "enums";
+import { TableSortOrder } from "@/enums";
 
 /**
  * Default sort key of basis of rent list page

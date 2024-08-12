@@ -1,6 +1,6 @@
 import { parseISO } from "date-fns";
 import { get, set } from "lodash/object";
-import { CONTROL_SHARE_FIELD_IDENTIFIER } from "application/constants";
+import { CONTROL_SHARE_FIELD_IDENTIFIER } from "@/application/constants";
 const PERSONAL_IDENTIFIER_CHECK_CHAR_LIST = '0123456789ABCDEFHJKLMNPRSTUVWXY';
 // from the rightmost digit to the leftmost
 const COMPANY_IDENTIFIER_CHECKSUM_MULTIPLIERS = [2, 4, 8, 5, 10, 9, 7];

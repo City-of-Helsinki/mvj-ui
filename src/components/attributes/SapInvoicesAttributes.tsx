@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchInvoiceAttributes } from "invoices/actions";
-import { getAttributes as getInvoiceAttributes, getIsFetchingAttributes as getIsFetchingInvoiceAttributes, getMethods as getInvoiceMethods } from "invoices/selectors";
+import { fetchAttributes as fetchInvoiceAttributes } from "@/invoices/actions";
+import { getAttributes as getInvoiceAttributes, getIsFetchingAttributes as getIsFetchingInvoiceAttributes, getMethods as getInvoiceMethods } from "@/invoices/selectors";
 import type { Attributes, Methods } from "types";
 
 function SapInvoicesAttributes(WrappedComponent: any) {

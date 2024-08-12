@@ -3,7 +3,7 @@ import React, { PureComponent, KeyboardEventHandler } from "react";
 import classNames from "classnames";
 import get from "lodash/get";
 import isArray from "lodash/isArray";
-import AccordionIcon from "components/icons/AccordionIcon";
+import AccordionIcon from "@/components/icons/AccordionIcon";
 import MultiItemCollapse from "./MultiItemCollapse";
 import SortableTableRow from "./SortableTableRow";
 import type { Column } from "./SortableTable";

@@ -1,14 +1,14 @@
 import React, { Fragment } from "react";
 import { Row, Column } from "react-foundation";
-import AmountWithVat from "components/vat/AmountWithVat";
-import Collapse from "components/collapse/Collapse";
-import CollapseHeaderSubtitle from "components/collapse/CollapseHeaderSubtitle";
-import FormText from "components/form/FormText";
-import FormTitleAndText from "components/form/FormTitleAndText";
+import AmountWithVat from "@/components/vat/AmountWithVat";
+import Collapse from "@/components/collapse/Collapse";
+import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle";
+import FormText from "@/components/form/FormText";
+import FormTitleAndText from "@/components/form/FormTitleAndText";
 import InvoiceSimulatorInvoiceRows from "./InvoiceSimulatorInvoiceRows";
-import SubTitle from "components/content/SubTitle";
-import { getContactFullName } from "contacts/helpers";
-import { formatDate, formatDateRange, getLabelOfOption } from "util/helpers";
+import SubTitle from "@/components/content/SubTitle";
+import { getContactFullName } from "@/contacts/helpers";
+import { formatDate, formatDateRange, getLabelOfOption } from "@/util/helpers";
 type Props = {
   billedAmount: number;
   dueDate: string;

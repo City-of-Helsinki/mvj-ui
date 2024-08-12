@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { Row } from "react-foundation";
 import { connect } from "react-redux";
 import { change } from "redux-form";
-import ApplicantInfoCheckModal from "application/components/infoCheck/ApplicantInfoCheckModal";
-import { ApplicantInfoCheckFieldPaths, ApplicantInfoCheckFieldTitles, ApplicantTypes } from "application/enums";
-import ApplicantInfoCheckEditItem from "application/components/infoCheck/ApplicantInfoCheckEditItem";
-import FormText from "components/form/FormText";
-import { getApplicantInfoCheckFormName } from "application/helpers";
+import ApplicantInfoCheckModal from "@/application/components/infoCheck/ApplicantInfoCheckModal";
+import { ApplicantInfoCheckFieldPaths, ApplicantInfoCheckFieldTitles, ApplicantTypes } from "@/application/enums";
+import ApplicantInfoCheckEditItem from "@/application/components/infoCheck/ApplicantInfoCheckEditItem";
+import FormText from "@/components/form/FormText";
+import { getApplicantInfoCheckFormName } from "@/application/helpers";
 type OwnProps = {
   infoCheckIds: Array<number>;
   answer: Record<string, any>;

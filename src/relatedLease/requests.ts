@@ -1,5 +1,5 @@
-import callApi from "../api/callApi";
-import createUrl from "../api/createUrl";
+import callApi from "@/api/callApi";
+import createUrl from "@/api/createUrl";
 import type { CreateRelatedLeasePayload, CreateRelatedPlotApplicationPayload } from "./types";
 export const createRelatedLease = (payload: CreateRelatedLeasePayload): Generator<any, any, any> => {
   const body = JSON.stringify(payload);

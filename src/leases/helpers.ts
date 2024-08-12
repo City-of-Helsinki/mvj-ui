@@ -5,24 +5,24 @@ import isArray from "lodash/isArray";
 import isEmpty from "lodash/isEmpty";
 import isEqual from "lodash/isEqual";
 import { isDirty } from "redux-form";
-import { getSplittedDateRangesWithItems, sortByStartAndEndDateDesc } from "util/date";
-import { FormNames, TableSortOrder } from "enums";
+import { getSplittedDateRangesWithItems, sortByStartAndEndDateDesc } from "@/util/date";
+import { FormNames, TableSortOrder } from "@/enums";
 import { CollateralTypes, ConstructabilityType, DecisionTypeKinds, LeaseState, LeaseTenantRentSharesFieldPaths, LeaseStatus, RecipientOptions, RelationTypes, RentAdjustmentAmountTypes, RentCycles, RentDueDateTypes, RentTypes, SubventionTypes, TenantContactType } from "./enums";
-import { CalculatorTypes } from "leases/enums";
-import { LeaseAreaAttachmentTypes } from "leaseAreaAttachment/enums";
-import { getContactFullName, getContentContact } from "contacts/helpers";
-import { getContentLessor } from "lessor/helpers";
-import { getContentPropertyIdentifiers } from "rentbasis/helpers";
-import { getContentUser } from "users/helpers";
-import { addEmptyOption, convertStrToDecimalNumber, fixedLengthNumber, formatDate, formatDateRange, getApiResponseResults, getFieldOptions, getLabelOfOption, isDecimalNumberStr, isEmptyValue, isActive, isActiveOrFuture, isArchived, sortStringAsc, sortStringByKeyAsc, sortStringByKeyDesc } from "util/helpers";
-import { getCoordinatesOfGeometry } from "util/map";
+import { CalculatorTypes } from "@/leases/enums";
+import { LeaseAreaAttachmentTypes } from "@/leaseAreaAttachment/enums";
+import { getContactFullName, getContentContact } from "@/contacts/helpers";
+import { getContentLessor } from "@/lessor/helpers";
+import { getContentPropertyIdentifiers } from "@/rentbasis/helpers";
+import { getContentUser } from "@/users/helpers";
+import { addEmptyOption, convertStrToDecimalNumber, fixedLengthNumber, formatDate, formatDateRange, getApiResponseResults, getFieldOptions, getLabelOfOption, isDecimalNumberStr, isEmptyValue, isActive, isActiveOrFuture, isArchived, sortStringAsc, sortStringByKeyAsc, sortStringByKeyDesc } from "@/util/helpers";
+import { getCoordinatesOfGeometry } from "@/util/map";
 import { getIsEditMode } from "./selectors";
-import { removeSessionStorageItem } from "util/storage";
+import { removeSessionStorageItem } from "@/util/storage";
 import type { Lease, IntendedUse } from "./types";
-import type { CommentList } from "comments/types";
+import type { CommentList } from "@/comments/types";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
-import type { RootState } from "root/types";
-import type { LeaseList } from "leases/types";
+import type { RootState } from "@/root/types";
+import type { LeaseList } from "@/leases/types";
 
 /**
  * Test is lease empty

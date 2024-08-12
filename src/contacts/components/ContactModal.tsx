@@ -1,15 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
-import Button from "components/button/Button";
+import Button from "@/components/button/Button";
 import ContactForm from "./forms/ContactForm";
-import GreenBox from "components/content/GreenBox";
-import Modal from "components/modal/Modal";
-import { ButtonColors } from "components/enums";
-import { Methods } from "enums";
-import { isMethodAllowed } from "util/helpers";
-import { getIsContactFormValid, getIsSaveClicked, getMethods as getContactMethods } from "contacts/selectors";
+import GreenBox from "@/components/content/GreenBox";
+import Modal from "@/components/modal/Modal";
+import { ButtonColors } from "@/components/enums";
+import { Methods } from "@/enums";
+import { isMethodAllowed } from "@/util/helpers";
+import { getIsContactFormValid, getIsSaveClicked, getMethods as getContactMethods } from "@/contacts/selectors";
 import type { Methods as MethodsType } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "@/root/types";
 type Props = {
   contactMethods: MethodsType;
   isContactFormValid: boolean;

@@ -1,9 +1,9 @@
 import isPast from "date-fns/isPast";
 import forEach from "lodash/forEach";
 import get from "lodash/get";
-import { CreditInvoiceOptions } from "leases/enums";
+import { CreditInvoiceOptions } from "@/leases/enums";
 import { InvoiceState, InvoiceType, ReceivableTypes } from "./enums";
-import { convertStrToDecimalNumber, getLabelOfOption, sortStringAsc } from "util/helpers";
+import { convertStrToDecimalNumber, getLabelOfOption, sortStringAsc } from "@/util/helpers";
 
 /**
  * Get payments of single invoice to show on UI

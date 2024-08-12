@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import CreateLandUseContractForm from "./CreateLandUseContractForm";
-import Modal from "components/modal/Modal";
+import Modal from "@/components/modal/Modal";
 type Props = {
   isOpen: boolean;
   onClose: (...args: Array<any>) => any;

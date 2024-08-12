@@ -1,6 +1,6 @@
 import get from "lodash/get";
 import type { ApiResponse, Attributes, Methods, Selector } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "@/root/types";
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.areaSearch.attributes;
 export const getMethods: Selector<Methods, void> = (state: RootState): Methods => state.areaSearch.methods;
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean => state.areaSearch.isFetchingAttributes;

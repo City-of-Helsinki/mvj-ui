@@ -1,6 +1,6 @@
-import callApi from "../api/callApi";
-import createUrl from "../api/createUrl";
-import type { LeaseId } from "leases/types";
+import callApi from "@/api/callApi";
+import createUrl from "@/api/createUrl";
+import type { LeaseId } from "@/leases/types";
 export const fetchInvoiceSetsByLease = (leaseId: LeaseId): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`invoice_set/?lease=${leaseId}&limit=10000`)));
 };

@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { notFound, receiveIsSaveClicked, receiveRentForPeriodByLease } from "./actions";
 import { fetchRentForPeriod } from "./requests";
-import { receiveError } from "../api/actions";
+import { receiveError } from "@/api/actions";
 
 function* fetchRentForPeriodSaga({
   payload,

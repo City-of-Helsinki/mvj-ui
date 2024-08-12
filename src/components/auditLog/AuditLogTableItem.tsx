@@ -1,10 +1,10 @@
 import React, { Fragment, PureComponent } from "react";
 import classNames from "classnames";
-import AccordionIcon from "components/icons/AccordionIcon";
+import AccordionIcon from "@/components/icons/AccordionIcon";
 import AuditLogTableItemChange from "./AuditLogTableItemChange";
-import { formatDate } from "util/helpers";
-import { getAuditLogActionTypeInFinnish } from "auditLog/helpers";
-import { getUserFullName } from "users/helpers";
+import { formatDate } from "@/util/helpers";
+import { getAuditLogActionTypeInFinnish } from "@/auditLog/helpers";
+import { getUserFullName } from "@/users/helpers";
 type Props = {
   item: Record<string, any>;
 };

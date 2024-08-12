@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { receiveServiceUnits, notFound } from "./actions";
 import { fetchServiceUnits } from "./requests";
-import { receiveError } from "../api/actions";
+import { receiveError } from "@/api/actions";
 
 function* fetchServiceUnitsSaga(): Generator<any, any, any> {
   try {

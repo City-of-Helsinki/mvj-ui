@@ -2,8 +2,8 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import type { Attributes, Methods } from "types";
-import { fetchAttributes as fetchPlotApplicationsAttributes } from "application/actions";
-import { getAttributes as getPlotApplicationsAttributes, getIsFetchingAttributes as getIsFetchingPlotApplicationsAttributes, getMethods } from "application/selectors";
+import { fetchAttributes as fetchPlotApplicationsAttributes } from "@/application/actions";
+import { getAttributes as getPlotApplicationsAttributes, getIsFetchingAttributes as getIsFetchingPlotApplicationsAttributes, getMethods } from "@/application/selectors";
 
 function PlotApplicationsAttributes(WrappedComponent: any) {
   type Props = {

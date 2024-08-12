@@ -1,17 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import Authorization from "components/authorization/Authorization";
-import FormText from "components/form/FormText";
-import FormTextTitle from "components/form/FormTextTitle";
-import FormWrapper from "components/form/FormWrapper";
-import FormWrapperLeft from "components/form/FormWrapperLeft";
-import FormWrapperRight from "components/form/FormWrapperRight";
-import { ContactFieldPaths, ContactFieldTitles } from "contacts/enums";
-import { getUiDataContactKey } from "uiData/helpers";
-import { getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "util/helpers";
-import { getAttributes } from "contacts/selectors";
-import { ContactTypes } from "contacts/enums";
+import Authorization from "@/components/authorization/Authorization";
+import FormText from "@/components/form/FormText";
+import FormTextTitle from "@/components/form/FormTextTitle";
+import FormWrapper from "@/components/form/FormWrapper";
+import FormWrapperLeft from "@/components/form/FormWrapperLeft";
+import FormWrapperRight from "@/components/form/FormWrapperRight";
+import { ContactFieldPaths, ContactFieldTitles } from "@/contacts/enums";
+import { getUiDataContactKey } from "@/uiData/helpers";
+import { getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "@/util/helpers";
+import { getAttributes } from "@/contacts/selectors";
+import { ContactTypes } from "@/contacts/enums";
 import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;

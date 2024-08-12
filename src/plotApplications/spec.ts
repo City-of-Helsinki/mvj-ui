@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { fetchPlotApplicationsList, receivePlotApplicationsList, fetchSinglePlotApplication, receiveSinglePlotApplication, hideEditMode, showEditMode, receiveIsSaveClicked, receiveCollapseStates, receiveFormValidFlags, clearFormValidFlags, editPlotApplication } from "plotApplications/actions";
-import plotApplicationReducer from "plotApplications/reducer";
-import type { PlotApplicationsState } from "plotApplications/types";
+import { fetchPlotApplicationsList, receivePlotApplicationsList, fetchSinglePlotApplication, receiveSinglePlotApplication, hideEditMode, showEditMode, receiveIsSaveClicked, receiveCollapseStates, receiveFormValidFlags, clearFormValidFlags, editPlotApplication } from "@/plotApplications/actions";
+import plotApplicationReducer from "@/plotApplications/reducer";
+import type { PlotApplicationsState } from "@/plotApplications/types";
 const baseState: PlotApplicationsState = {
   currentEditorTargets: [],
   form: null,

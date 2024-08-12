@@ -1,4 +1,4 @@
-import type { RootState } from "root/types";
+import type { RootState } from "@/root/types";
 import type { Selector } from "types";
 export const getIsFetchingCompanyExtendedById: Selector<boolean, string> = (state: RootState, businessId: string): boolean => state.tradeRegister.isFetchingCompanyExtendedById[businessId];
 export const getCompanyExtendedById: Selector<Record<string, any> | null | undefined, string> = (state: RootState, businessId: string): Record<string, any> | null | undefined => state.tradeRegister.companyExtendedById[businessId];

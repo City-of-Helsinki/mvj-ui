@@ -1,4 +1,4 @@
-import type { Action } from "../types";
+import type { Action } from "@/types";
 export type ApiToken = Record<string, any> | null;
 export type AuthState = Record<string, any> | null;
 export type FetchApiTokenAction = Action<string, string>;

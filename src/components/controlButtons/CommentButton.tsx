@@ -1,5 +1,5 @@
 import React from "react";
-import CommentIcon from "components/icons/CommentIcon";
+import CommentIcon from "@/components/icons/CommentIcon";
 type Props = {
   commentAmount: number;
   onClick: (...args: Array<any>) => any;

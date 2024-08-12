@@ -1,14 +1,14 @@
 import React from "react";
 import debounce from "lodash/debounce";
-import AsyncSelect from "components/form/AsyncSelect";
-import { getContentLeaseIdentifier } from "leases/helpers";
-import { fetchLeases } from "leases/requestsAsync";
-import { fetchAreaSearches, fetchTargetStatuses, fetchPlotSearches } from "leases/requestsAsync";
-import { getLabelOfOption, getFieldOptions } from "util/helpers";
-import { getAttributes as getLeaseAttributes } from "leases/selectors";
-import { store } from "root/startApp";
-import { LeaseFieldPaths, LeaseHistoryItemTypes, LeaseHistoryContentTypes } from "leases/enums";
-import type { UserServiceUnit } from "usersPermissions/types";
+import AsyncSelect from "@/components/form/AsyncSelect";
+import { getContentLeaseIdentifier } from "@/leases/helpers";
+import { fetchLeases } from "@/leases/requestsAsync";
+import { fetchAreaSearches, fetchTargetStatuses, fetchPlotSearches } from "@/leases/requestsAsync";
+import { getLabelOfOption, getFieldOptions } from "@/util/helpers";
+import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
+import { store } from "@/index";
+import { LeaseFieldPaths, LeaseHistoryItemTypes, LeaseHistoryContentTypes } from "@/leases/enums";
+import type { UserServiceUnit } from "@/usersPermissions/types";
 type Props = {
   disabled?: boolean;
   name: string;

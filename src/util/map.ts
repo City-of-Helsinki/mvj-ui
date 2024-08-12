@@ -1,4 +1,5 @@
 import isArray from "lodash/isArray";
+import L from "leaflet";
 import type { LatLngBounds } from "leaflet";
 
 /**
@@ -7,8 +8,6 @@ import type { LatLngBounds } from "leaflet";
 
 /* istanbul ignore next */
 export const localizeMap = () => {
-  const L = require('leaflet');
-
   L.drawLocal.draw.handlers.circle.tooltip.start = 'Klikkaa ja raahaa piirtääksesi ympyrän';
   L.drawLocal.draw.handlers.circle.radius = 'Säde';
   L.drawLocal.draw.handlers.polygon.tooltip.start = 'Aloita alueen piirtäminen klikkaamalla.';
@@ -81,8 +80,6 @@ export const getCoordinatesOfGeometry = (geometry: any): Array<[number, number]>
 
 /* istanbul ignore next */
 export const formatCoordsToLatLng = (geojson: Record<string, any> | null | undefined): (Record<string, any> | null | undefined) | null => {
-  const L = require('leaflet');
-
   let crs;
 
   if (geojson) {
@@ -109,7 +106,6 @@ export const formatCoordsToLatLng = (geojson: Record<string, any> | null | undef
 
 /* istanbul ignore next */
 export const getBoundsFromBBox = (bbox: Array<Record<string, any>>): Record<string, any> => {
-  const L = require('leaflet');
 
   if (!bbox || !isArray(bbox) || bbox.length < 4) return null;
   const maxBoundsSouthWest = new L.LatLng(bbox[3], bbox[2]),
@@ -125,8 +121,6 @@ export const getBoundsFromBBox = (bbox: Array<Record<string, any>>): Record<stri
 
 /* istanbul ignore next */
 export const getBoundsFromCoordinates = (coordinates: Array<any>): LatLngBounds => {
-  const L = require('leaflet');
-
   const lats = [],
         lons = [];
   coordinates.forEach(coordinate => {
@@ -148,8 +142,6 @@ export const getBoundsFromCoordinates = (coordinates: Array<any>): LatLngBounds 
  * @returns Object
  */
 export const getBoundsFromFeatures = (leasesGeoJson: Record<string, any>): Record<string, any> => {
-  const L = require('leaflet');
-
   const lats = [],
         lons = [];
   if (leasesGeoJson && leasesGeoJson.features) leasesGeoJson.features.forEach(feature => {
@@ -189,8 +181,6 @@ export const getCenterFromCoordinates = (coordinates: Array<any>): [number, numb
   return [lng, lat];
 };
 export const getAreaFromGeoJSON = (geometry: Record<string, any>): number => {
-  const L = require('leaflet');
-
   let area = 0;
 
   switch (geometry.type) {

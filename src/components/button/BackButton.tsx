@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import BackIcon from "components/icons/BackIcon";
+import BackIcon from "@/components/icons/BackIcon";
 import IconButton from "./IconButton";
 type Props = {
   className?: string;

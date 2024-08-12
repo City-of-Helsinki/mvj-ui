@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { notFound, receiveSapInvoices } from "./actions";
-import { receiveError } from "api/actions";
-import { fetchInvoices } from "invoices/requests";
+import { receiveError } from "@/api/actions";
+import { fetchInvoices } from "@/invoices/requests";
 
 function* fetchSapInvoicesSaga({
   payload: query,

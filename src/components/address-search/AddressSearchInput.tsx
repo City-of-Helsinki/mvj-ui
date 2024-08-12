@@ -3,13 +3,12 @@ import ReactDOM from "react-dom";
 import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 import debounce from "lodash/debounce";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
-import { stringifyQuery } from "api/createUrl";
-import { KeyCodes } from "enums";
-import { findFromOcdString } from "util/helpers";
+import Loader from "@/components/loader/Loader";
+import LoaderWrapper from "@/components/loader/LoaderWrapper";
+import { stringifyQuery } from "@/api/createUrl";
+import { KeyCodes } from "@/enums";
+import { findFromOcdString } from "@/util/helpers";
 import { SERVICE_MAP_URL } from "util/constants";
-
 type Language = "fi" | "sv";
 const MINIMUM_SEARCH_STRING = 3;
 const DEBOUNCE_TIME_MILLISECONDS = 500;

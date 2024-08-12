@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { notFound, receiveBillingPeriodsByLease } from "./actions";
 import { fetchBillingPeriods } from "./requests";
-import { receiveError } from "../api/actions";
+import { receiveError } from "@/api/actions";
 
 function* fetchBillingPeriodsSaga({
   payload,

@@ -2,10 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 import debounce from "lodash/debounce";
 import { saveAs } from "file-saver";
-import Button from "components/button/Button";
-import { ButtonColors } from "components/enums";
-import { displayUIMessage, getFileNameFromResponse } from "util/helpers";
-import { getApiToken } from "auth/selectors";
+import Button from "@/components/button/Button";
+import { ButtonColors } from "@/components/enums";
+import { displayUIMessage, getFileNameFromResponse } from "@/util/helpers";
+import { getApiToken } from "@/auth/selectors";
 type OwnProps = {
   disabled: boolean;
   label: string;

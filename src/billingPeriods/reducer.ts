@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "../types";
+import type { Reducer } from "@/types";
 import type { ReceiveBillingPeriodsAction } from "./types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/billingperiods/FETCH_ALL': () => true,

@@ -1,5 +1,5 @@
 import type { Action } from "types";
-import type { InvoiceId } from "invoices/types";
+import type { InvoiceId } from "@/invoices/types";
 export type PenaltyInterestState = {
   byInvoice: Record<string, any>;
   isFetchingByInvoice: Record<string, any>;

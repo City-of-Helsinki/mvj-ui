@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { receiveAttributes, attributesNotFound } from "./actions";
 import { fetchAttributes } from "./requests";
-import { receiveError } from "../api/actions";
+import { receiveError } from "@/api/actions";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {

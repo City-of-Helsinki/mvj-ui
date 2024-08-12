@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "../types";
+import type { Reducer } from "@/types";
 import type { DistrictListMap, ReceiveDistrictsByMunicipalityAction } from "./types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/district/FETCH_BY_MUNICIPALITY': () => true,

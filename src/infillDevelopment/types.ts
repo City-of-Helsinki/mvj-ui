@@ -1,4 +1,4 @@
-import type { Action, Attributes, Methods } from "../types";
+import type { Action, Attributes, Methods } from "@/types";
 export type InfillDevelopmentState = {
   attributes: Attributes;
   collapseStates: Record<string, any>;

@@ -5,7 +5,7 @@ import createRootReducer from "./createRootReducer";
 import createSagaMiddleware from "redux-saga";
 import createRootSaga from "./createRootSaga";
 import { loadUser } from "redux-oidc";
-import userManager from "../auth/util/user-manager";
+import userManager from "@/auth/util/user-manager";
 export const history = createBrowserHistory();
 
 // needed so Typescript doesn't complain about the window object not having the __REDUX_DEVTOOLS_EXTENSION__ property
@@ -25,15 +25,15 @@ export default (() => {
   loadUser(store, userManager);
   sagaMiddleware.run(rootSaga);
 
-  // $FlowFixMe
-  if (module.hot) {
-    // $FlowFixMe
-    module.hot.accept('./createRootReducer', () => {
-      const nextRootReducer = require('./createRootReducer').default(history);
+  // // $FlowFixMe
+  // if (module.hot) {
+  //   // $FlowFixMe
+  //   module.hot.accept('./createRootReducer', () => {
+  //     const nextRootReducer = require('./createRootReducer').default(history);
 
-      store.replaceReducer(nextRootReducer);
-    });
-  }
+  //     store.replaceReducer(nextRootReducer);
+  //   });
+  // }
 
   return store;
 });

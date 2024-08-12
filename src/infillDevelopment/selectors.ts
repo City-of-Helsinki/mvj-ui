@@ -1,6 +1,6 @@
 import get from "lodash/get";
 import type { Attributes, Methods, Selector } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "@/root/types";
 import type { InfillDevelopment, InfillDevelopmentList } from "./types";
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.infillDevelopment.attributes;
 export const getMethods: Selector<Methods, void> = (state: RootState): Methods => state.infillDevelopment.methods;

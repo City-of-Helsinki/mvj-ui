@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { tokenNotFound, receiveApiToken } from "./actions";
-import { getEpochTime } from "util/helpers";
-import userManager from "../auth/util/user-manager";
+import { getEpochTime } from "@/util/helpers";
+import userManager from "@/auth/util/user-manager";
 
 function* fetchApiTokenSaga({
   payload: token,

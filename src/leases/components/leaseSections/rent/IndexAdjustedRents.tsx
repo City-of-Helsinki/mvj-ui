@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import AmountWithVat from "components/vat/AmountWithVat";
-import SortableTable from "components/table/SortableTable";
-import { LeaseIndexAdjustedRentsFieldPaths, LeaseIndexAdjustedRentsFieldTitles } from "leases/enums";
-import { TableSortOrder } from "enums";
-import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isFieldAllowedToRead, sortByOptionsAsc, sortByOptionsDesc, sortNumberByKeyAsc, sortNumberByKeyDesc } from "util/helpers";
-import { getAttributes } from "leases/selectors";
+import AmountWithVat from "@/components/vat/AmountWithVat";
+import SortableTable from "@/components/table/SortableTable";
+import { LeaseIndexAdjustedRentsFieldPaths, LeaseIndexAdjustedRentsFieldTitles } from "@/leases/enums";
+import { TableSortOrder } from "@/enums";
+import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isFieldAllowedToRead, sortByOptionsAsc, sortByOptionsDesc, sortNumberByKeyAsc, sortNumberByKeyDesc } from "@/util/helpers";
+import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;

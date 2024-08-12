@@ -1,5 +1,5 @@
-import type { Action, ApiResponse, Attributes, Methods } from "../types";
-import type { ServiceUnit } from "serviceUnits/types";
+import type { Action, ApiResponse, Attributes, Methods } from "@/types";
+import type { ServiceUnit } from "@/serviceUnits/types";
 export type LeaseState = {
   attributes: Attributes;
   byId: Record<string, any>;

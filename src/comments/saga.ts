@@ -1,9 +1,9 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { initialize, SubmissionError } from "redux-form";
 import { attributesNotFound, notFound, fetchCommentsByLease, hideEditModeById, receiveAttributes, receiveMethods, receiveCommentsByLease, receiveIsSaveClicked } from "./actions";
-import { receiveError } from "../api/actions";
-import { FormNames } from "enums";
-import { displayUIMessage } from "util/helpers";
+import { receiveError } from "@/api/actions";
+import { FormNames } from "@/enums";
+import { displayUIMessage } from "@/util/helpers";
 import { createComment, editComment, fetchAttributes, fetchComments } from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {

@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import merge from "lodash/merge";
-import { FormNames } from "enums";
+import { FormNames } from "@/enums";
 import type { Attributes, Reducer, Methods } from "types";
 import type { LandUseContract, LandUseContractList, ReceiveAttributesAction, ReceiveFormValidFlagsAction, ReceiveLandUseContractListAction, ReceiveSingleLandUseContractAction, ReceiveIsSaveClickedAction, ReceiveCollapseStatesAction, ReceiveMethodsAction } from "./types";
 const attributesReducer: Reducer<Attributes> = handleActions({

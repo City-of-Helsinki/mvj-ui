@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { FeatureGroup, GeoJSON } from "react-leaflet";
 import classNames from "classnames";
-import { DEFAULT_CENTER, DEFAULT_ZOOM } from "util/constants";
-import MapContainer from "areaNote/components/MapContainer";
-import { getBoundsFromFeatures, getCenterFromCoordinates, getCoordinatesOfGeometry } from "util/map";
+import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/util/constants";
+import MapContainer from "@/areaNote/components/MapContainer";
+import { getBoundsFromFeatures, getCenterFromCoordinates, getCoordinatesOfGeometry } from "@/util/map";
 import type { LeafletFeatureGeometry } from "types";
-import { getAreaSearchFeatures } from "areaSearch/helpers";
+import { getAreaSearchFeatures } from "@/areaSearch/helpers";
 type Props = {
   geometry: LeafletFeatureGeometry;
   minimap?: boolean;

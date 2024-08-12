@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import classnames from "classnames";
-import CloseButton from "../button/CloseButton";
+import CloseButton from "@/components/button/CloseButton";
 type Props = {
   children?: any;
   className?: string;

@@ -3,17 +3,17 @@ import classNames from "classnames";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import { IconMenuDots } from "hds-react";
-import { ActionTypes, AppConsumer } from "app/AppContext";
-import MainMenuIcon from "../icons/MainMenuIcon";
-import SearchInput from "../inputs/SearchInput";
-import UserServiceUnitSelectInput from "../inputs/UserServiceUnitSelectInput";
-import { ConfirmationModalTexts } from "enums";
-import { ButtonColors } from "components/enums";
-import { hasAnyPageDirtyForms } from "util/forms";
-import { getSearchQuery, getUrlParams } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import MainMenuIcon from "@/components/icons/MainMenuIcon";
+import SearchInput from "@/components/inputs/SearchInput";
+import UserServiceUnitSelectInput from "@/components/inputs/UserServiceUnitSelectInput";
+import { ConfirmationModalTexts } from "@/enums";
+import { ButtonColors } from "@/components/enums";
+import { hasAnyPageDirtyForms } from "@/util/forms";
+import { getSearchQuery, getUrlParams } from "@/util/helpers";
+import { getRouteById, Routes } from "@/root/routes";
 
-import type { UserGroups, UserServiceUnit, UserServiceUnits } from "usersPermissions/types";
+import type { UserGroups, UserServiceUnit, UserServiceUnits } from "@/usersPermissions/types";
 
 type Props = {
   history: Record<string, any>;

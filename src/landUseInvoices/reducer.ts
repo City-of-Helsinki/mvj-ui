@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import merge from "lodash/merge";
-import type { Attributes, Methods, Reducer } from "../types";
+import type { Attributes, Methods, Reducer } from "@/types";
 import type { ReceiveAttributesAction, ReceiveMethodsAction, Invoice, InvoiceListMap, ReceiveInvoicesByLandUseContractAction, ReceiveInvoiceToCreditAction, ReceiveIsCreateInvoicePanelOpenAction, ReceiveIsCreditInvoicePanelOpenAction, ReceiveIsCreateClickedAction, ReceiveIsCreditClickedAction, ReceiveIsEditClickedAction, ReceivePatchedInvoiceAction, ReceiveCollapseStatesAction } from "./types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/landUseInvoices/CREATE': () => true,

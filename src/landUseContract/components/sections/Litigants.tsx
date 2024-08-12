@@ -1,15 +1,15 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import FormText from "components/form/FormText";
+import FormText from "@/components/form/FormText";
 import Litigant from "./Litigant";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
-import { isArchived } from "util/helpers";
-import { getContentLitigants } from "landUseContract/helpers";
-import { getCurrentLandUseContract } from "landUseContract/selectors";
-import { withContactAttributes } from "components/attributes/ContactAttributes";
-import type { LandUseContract } from "landUseContract/types";
+import Loader from "@/components/loader/Loader";
+import LoaderWrapper from "@/components/loader/LoaderWrapper";
+import { isArchived } from "@/util/helpers";
+import { getContentLitigants } from "@/landUseContract/helpers";
+import { getCurrentLandUseContract } from "@/landUseContract/selectors";
+import { withContactAttributes } from "@/components/attributes/ContactAttributes";
+import type { LandUseContract } from "@/landUseContract/types";
 type Props = {
   currentLandUseContract: LandUseContract;
   isFetchingContactAttributes: boolean;

@@ -8,8 +8,8 @@ import isEmpty from "lodash/isEmpty";
 import SortableTableHeader from "./SortableTableHeader";
 import SortableTableGroup from "./SortableTableGroup";
 import SortableTableRow from "./SortableTableRow";
-import { sortStringByKeyAsc, sortStringByKeyDesc } from "util/helpers";
-import { TableSortOrder } from "enums";
+import { sortStringByKeyAsc, sortStringByKeyDesc } from "@/util/helpers";
+import { TableSortOrder } from "@/enums";
 export type Column = {
   arrayRenderer?: (...args: Array<any>) => any;
   dataClassName?: string;

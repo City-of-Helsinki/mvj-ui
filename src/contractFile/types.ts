@@ -1,4 +1,4 @@
-import type { Action } from "../types";
+import type { Action } from "@/types";
 export type ContractId = number;
 export type ReceiveContractFilePayload = {
   contractId: ContractId;

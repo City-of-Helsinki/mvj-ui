@@ -1,4 +1,4 @@
-import type { Action } from "../types";
+import type { Action } from "@/types";
 export type ServiceUnit = { id: number, name: string };
 export type ServiceUnits = Array<Record<string, any>>;
 export type ServiceUnitState = {

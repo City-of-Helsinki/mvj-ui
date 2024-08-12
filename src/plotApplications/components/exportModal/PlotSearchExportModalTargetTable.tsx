@@ -1,9 +1,9 @@
 import React from "react";
 import { groupBy } from "lodash/collection";
-import SortableTable from "components/table/SortableTable";
-import FormField from "components/form/FormField";
-import { FieldTypes } from "enums";
-import type { Column } from "components/table/SortableTable";
+import SortableTable from "@/components/table/SortableTable";
+import FormField from "@/components/form/FormField";
+import { FieldTypes } from "@/enums";
+import type { Column } from "@/components/table/SortableTable";
 type Props = {
   items: Array<Record<string, any>>;
   onItemChange: (arg0: Record<string, any>, arg1: boolean) => void;

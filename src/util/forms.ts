@@ -1,9 +1,9 @@
-import { isContactFormDirty } from "contacts/helpers";
-import { isInfillDevelopmentFormDirty } from "infillDevelopment/helpers";
-import { isAnyLandUseContractFormDirty } from "landUseContract/helpers";
-import { isAnyLeaseFormDirty } from "leases/helpers";
-import { isRentBasisFormDirty } from "rentbasis/helpers";
-import { store } from "root/startApp";
+import { isContactFormDirty } from "@/contacts/helpers";
+import { isInfillDevelopmentFormDirty } from "@/infillDevelopment/helpers";
+import { isAnyLandUseContractFormDirty } from "@/landUseContract/helpers";
+import { isAnyLeaseFormDirty } from "@/leases/helpers";
+import { isRentBasisFormDirty } from "@/rentbasis/helpers";
+import { store } from "@/index";
 
 /**
  * Test has any page dirty forms

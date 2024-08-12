@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "../types";
+import type { Reducer } from "@/types";
 import type { ServiceUnits, ReceiveServiceUnitsAction } from "./types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/serviceUnits/FETCH_ALL': () => true,

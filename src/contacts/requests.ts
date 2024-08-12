@@ -1,5 +1,5 @@
-import callApi from "../api/callApi";
-import createUrl from "../api/createUrl";
+import callApi from "@/api/callApi";
+import createUrl from "@/api/createUrl";
 import type { Contact, ContactId } from "./types";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`contact/`), {

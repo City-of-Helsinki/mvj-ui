@@ -2,10 +2,10 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
-import { fetchAttributes as fetchUiDataAttributes, fetchUiDataList } from "uiData/actions";
-import { getAttributes as getUiDataAttributes, getIsFetching, getIsFetchingAttributes as getIsFetchingUiDataAttributes, getMethods as getUiDataMethods, getUiDataList } from "uiData/selectors";
+import { fetchAttributes as fetchUiDataAttributes, fetchUiDataList } from "@/uiData/actions";
+import { getAttributes as getUiDataAttributes, getIsFetching, getIsFetchingAttributes as getIsFetchingUiDataAttributes, getMethods as getUiDataMethods, getUiDataList } from "@/uiData/selectors";
 import type { Attributes, Methods } from "types";
-import type { UiDataList } from "uiData/types";
+import type { UiDataList } from "@/uiData/types";
 
 function UiDataListHOC(WrappedComponent: any) {
   type Props = {

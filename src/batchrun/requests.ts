@@ -1,5 +1,5 @@
-import callApi from "../api/callApi";
-import createUrl from "../api/createUrl";
+import callApi from "@/api/callApi";
+import createUrl from "@/api/createUrl";
 export const fetchJobRunAttributes = () => {
   return callApi(new Request(createUrl('job_run/'), {
     method: 'OPTIONS'

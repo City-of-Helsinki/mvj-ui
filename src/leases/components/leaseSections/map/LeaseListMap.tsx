@@ -3,23 +3,23 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
-import AreaNotesLayer from "areaNote/components/AreaNotesLayer";
-import AreaNotesEditMap from "areaNote/components/AreaNotesEditMap";
+import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
+import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import LeaseListLayer from "./LeaseListLayer";
-import { DEFAULT_ZOOM, MAP_COLORS } from "util/constants";
-import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "leases/constants";
-import { LeaseFieldPaths } from "leases/enums";
-import { UsersPermissions } from "usersPermissions/enums";
-import { getContentLeasesGeoJson } from "leases/helpers";
-import { getApiResponseResults, getFieldOptions, getUrlParams, hasPermissions } from "util/helpers";
-import { getBoundsFromBBox, getBoundsFromFeatures } from "util/map";
-import { getAreaNoteList } from "areaNote/selectors";
-import { getAttributes as getLeaseAttributes, getLeasesByBBox } from "leases/selectors";
-import { getUsersPermissions } from "usersPermissions/selectors";
+import { DEFAULT_ZOOM, MAP_COLORS } from "@/util/constants";
+import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "@/leases/constants";
+import { LeaseFieldPaths } from "@/leases/enums";
+import { UsersPermissions } from "@/usersPermissions/enums";
+import { getContentLeasesGeoJson } from "@/leases/helpers";
+import { getApiResponseResults, getFieldOptions, getUrlParams, hasPermissions } from "@/util/helpers";
+import { getBoundsFromBBox, getBoundsFromFeatures } from "@/util/map";
+import { getAreaNoteList } from "@/areaNote/selectors";
+import { getAttributes as getLeaseAttributes, getLeasesByBBox } from "@/leases/selectors";
+import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes, LeafletGeoJson } from "types";
-import type { AreaNoteList } from "areaNote/types";
-import type { LeaseList } from "leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "usersPermissions/types";
+import type { AreaNoteList } from "@/areaNote/types";
+import type { LeaseList } from "@/leases/types";
+import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 
 const getMapBounds = () => {
   const {

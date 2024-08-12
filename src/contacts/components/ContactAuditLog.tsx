@@ -1,16 +1,16 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import isEmpty from "lodash/isEmpty";
-import AuditLogTable from "components/auditLog/AuditLogTable";
-import Loader from "components/loader/Loader";
-import LoaderWrapper from "components/loader/LoaderWrapper";
-import Pagination from "components/table/Pagination";
-import TableWrapper from "components/table/TableWrapper";
-import { fetchAuditLogByContact } from "auditLog/actions";
-import { LIST_TABLE_PAGE_SIZE } from "util/constants";
-import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults } from "util/helpers";
-import { getAuditLogByContact, getIsFetchingByContact } from "auditLog/selectors";
-import type { AuditLogList } from "auditLog/types";
+import AuditLogTable from "@/components/auditLog/AuditLogTable";
+import Loader from "@/components/loader/Loader";
+import LoaderWrapper from "@/components/loader/LoaderWrapper";
+import Pagination from "@/components/table/Pagination";
+import TableWrapper from "@/components/table/TableWrapper";
+import { fetchAuditLogByContact } from "@/auditLog/actions";
+import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
+import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults } from "@/util/helpers";
+import { getAuditLogByContact, getIsFetchingByContact } from "@/auditLog/selectors";
+import type { AuditLogList } from "@/auditLog/types";
 type Props = {
   auditLogList: AuditLogList;
   contactId: string;

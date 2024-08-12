@@ -1,9 +1,9 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import merge from "lodash/merge";
-import { FormNames } from "enums";
+import { FormNames } from "@/enums";
 import type { Attributes, Methods, Reducer } from "types";
-import type { Lease, LeaseList, ReceiveAttributesAction, ReceiveMethodsAction, ReceiveLeasesAction, ReceiveLeasesByBBoxAction, ReceiveSingleLeaseAction, FetchLeaseByIdAction, ReceiveLeaseByIdAction, LeaseNotFoundByIdAction, ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction, ReceiveCollapseStatesAction, ReceiveLeasesForContractNumbersAction } from "leases/types";
+import type { Lease, LeaseList, ReceiveAttributesAction, ReceiveMethodsAction, ReceiveLeasesAction, ReceiveLeasesByBBoxAction, ReceiveSingleLeaseAction, FetchLeaseByIdAction, ReceiveLeaseByIdAction, LeaseNotFoundByIdAction, ReceiveFormValidFlagsAction, ReceiveIsSaveClickedAction, ReceiveCollapseStatesAction, ReceiveLeasesForContractNumbersAction } from "@/leases/types";
 const isAttachDecisionModalOpenReducer: Reducer<boolean> = handleActions({
   'mvj/leases/HIDE_ATTACH_DECISION_MODAL': () => false,
   'mvj/leases/SHOW_ATTACH_DECISION_MODAL': () => true

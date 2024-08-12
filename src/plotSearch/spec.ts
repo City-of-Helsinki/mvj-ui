@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { attributesNotFound, fetchAttributes, receiveAttributes, fetchPlotSearchList, receivePlotSearchList, fetchSinglePlotSearch, receiveSinglePlotSearch, editPlotSearch, createPlotSearch, notFound, hideEditMode, showEditMode, receiveCollapseStates, receiveIsSaveClicked, receiveFormValidFlags, clearFormValidFlags, receiveMethods, deletePlotSearch, fetchSinglePlotSearchAfterEdit, planUnitNotFound, fetchPlanUnit, receiveSinglePlanUnit, fetchPlanUnitAttributes, planUnitAttributesNotFound, receivePlanUnitAttributes, fetchPlotSearchSubtypes, plotSearchSubtypesNotFound, receivePlotSearchSubtype, nullPlanUnits, receiveForm, formNotFound, receiveTemplateForms, fetchForm, removePlanUnitDecisions, addPlanUnitDecisions, resetPlanUnitDecisions } from "plotSearch/actions";
-import mockData from "plotSearch/mock-data.json";
-import mockAttributes from "plotSearch/attributes-mock-data.json";
-import plotSearchReducer from "plotSearch/reducer";
-import type { PlotSearchState } from "plotSearch/types";
-import { isLockedForModifications } from "plotSearch/selectors";
-import { getTestRootState } from "util/testUtil";
+import { attributesNotFound, fetchAttributes, receiveAttributes, fetchPlotSearchList, receivePlotSearchList, fetchSinglePlotSearch, receiveSinglePlotSearch, editPlotSearch, createPlotSearch, notFound, hideEditMode, showEditMode, receiveCollapseStates, receiveIsSaveClicked, receiveFormValidFlags, clearFormValidFlags, receiveMethods, deletePlotSearch, fetchSinglePlotSearchAfterEdit, planUnitNotFound, fetchPlanUnit, receiveSinglePlanUnit, fetchPlanUnitAttributes, planUnitAttributesNotFound, receivePlanUnitAttributes, fetchPlotSearchSubtypes, plotSearchSubtypesNotFound, receivePlotSearchSubtype, nullPlanUnits, receiveForm, formNotFound, receiveTemplateForms, fetchForm, removePlanUnitDecisions, addPlanUnitDecisions, resetPlanUnitDecisions } from "@/plotSearch/actions";
+import mockData from "@/plotSearch/mock-data.json";
+import mockAttributes from "@/plotSearch/attributes-mock-data.json";
+import plotSearchReducer from "@/plotSearch/reducer";
+import type { PlotSearchState } from "@/plotSearch/types";
+import { isLockedForModifications } from "@/plotSearch/selectors";
+import { getTestRootState } from "@/util/testUtil";
 const mockForm = mockData[0].form;
 const baseState: PlotSearchState = {
   attributes: null,

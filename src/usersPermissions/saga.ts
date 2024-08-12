@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { receiveUserGroups, receiveUsersPermissions, receiveUserServiceUnits, setUserActiveServiceUnit, notFound } from "./actions";
 import { fetchUsersPermissions } from "./requests";
-import { receiveError } from "../api/actions";
+import { receiveError } from "@/api/actions";
 
 function* fetchUsersPermissionsSaga(): Generator<any, any, any> {
   try {

@@ -1,4 +1,4 @@
-import type { Action, Attributes } from "../types";
+import type { Action, Attributes } from "@/types";
 export type CreateCollectionLetterState = {
   attributes: Attributes;
   isFetchingAttributes: boolean;

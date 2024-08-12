@@ -1,8 +1,8 @@
 import React from "react";
 import classNames from "classnames";
 import kebabCase from "lodash/kebabCase";
-import { SortIconBoth, SortIconDesc, SortIconAsc } from "components/table/Icons";
-import { TableSortOrder } from "enums";
+import { SortIconBoth, SortIconDesc, SortIconAsc } from "@/components/table/Icons";
+import { TableSortOrder } from "@/enums";
 import type { Column } from "./SortableTable";
 type Props = {
   columns: Array<Column>;

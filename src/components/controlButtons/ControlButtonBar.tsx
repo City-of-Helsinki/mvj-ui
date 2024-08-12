@@ -1,9 +1,9 @@
 import React from "react";
-import { ActionTypes, AppConsumer } from "app/AppContext";
-import BackButton from "components/button/BackButton";
-import { ConfirmationModalTexts } from "enums";
-import { ButtonColors } from "components/enums";
-import { hasAnyPageDirtyForms } from "util/forms";
+import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import BackButton from "@/components/button/BackButton";
+import { ConfirmationModalTexts } from "@/enums";
+import { ButtonColors } from "@/components/enums";
+import { hasAnyPageDirtyForms } from "@/util/forms";
 type Props = {
   buttonComponent?: any;
   infoComponent?: any;

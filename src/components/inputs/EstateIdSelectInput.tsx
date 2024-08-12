@@ -1,7 +1,7 @@
 import React from "react";
 import debounce from "lodash/debounce";
-import AsyncSelect from "components/form/AsyncSelect";
-import { fetchEstateIdList } from "landUseContract/requestsAsync";
+import AsyncSelect from "@/components/form/AsyncSelect";
+import { fetchEstateIdList } from "@/landUseContract/requestsAsync";
 type Props = {
   disabled?: boolean;
   name: string;

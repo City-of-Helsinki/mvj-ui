@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import debounce from "lodash/debounce";
-import AsyncSelect from "components/form/AsyncSelect";
-import { getContentUser } from "users/helpers";
-import { addEmptyOption, sortStringByKeyAsc } from "util/helpers";
-import { fetchSingleUser, fetchUsers } from "users/requestsAsync";
-import type { UserServiceUnit } from "usersPermissions/types";
+import AsyncSelect from "@/components/form/AsyncSelect";
+import { getContentUser } from "@/users/helpers";
+import { addEmptyOption, sortStringByKeyAsc } from "@/util/helpers";
+import { fetchSingleUser, fetchUsers } from "@/users/requestsAsync";
+import type { UserServiceUnit } from "@/usersPermissions/types";
 type Props = {
   disabled?: boolean;
   displayError: boolean;

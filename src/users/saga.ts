@@ -2,7 +2,7 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import get from "lodash/get";
 import { receiveUsers, notFound } from "./actions";
 import { fetchUsers } from "./requests";
-import { receiveError } from "../api/actions";
+import { receiveError } from "@/api/actions";
 
 function* fetchUsersSaga({
   payload: search,

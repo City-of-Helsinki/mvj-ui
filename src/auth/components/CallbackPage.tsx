@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import { withRouter } from "react-router";
 import { CallbackComponent, CallbackComponentProps } from "redux-oidc";
-import { getRedirectUrlFromSessionStorage } from "util/storage";
-import userManager from "auth/util/user-manager";
-import { getRouteById, Routes } from "root/routes";
+import { getRedirectUrlFromSessionStorage } from "@/util/storage";
+import userManager from "@/auth/util/user-manager";
+import { getRouteById, Routes } from "@/root/routes";
 type Props = {
   history: Record<string, any>;
 };

@@ -1,5 +1,5 @@
 import type { Attributes, Methods, Selector } from "types";
-import type { RootState } from "root/types";
+import type { RootState } from "@/root/types";
 import type { RentBasis, RentBasisList } from "./types";
 export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolean => state.rentBasis.isEditMode;
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean => state.rentBasis.isFetching;

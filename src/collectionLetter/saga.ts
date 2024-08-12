@@ -1,8 +1,8 @@
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
-import { receiveError } from "api/actions";
+import { receiveError } from "@/api/actions";
 import { attributesNotFound, receiveAttributes, receiveMethods, fetchCollectionLettersByLease as fetchCollectionLettersByLeaseAction, receiveCollectionLettersByLease, notFoundByLease } from "./actions";
-import { displayUIMessage } from "../util/helpers";
+import { displayUIMessage } from "@/util/helpers";
 import { fetchAttributes, fetchCollectionLettersByLease, uploadCollectionLetter, deleteCollectionLetter } from "./requests";
 import { getCollectionLettersByLease } from "./selectors";
 

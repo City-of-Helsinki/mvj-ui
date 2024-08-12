@@ -1,15 +1,15 @@
 import React, { PureComponent } from "react";
 import debounce from "lodash/debounce";
-import Button from "components/button/Button";
+import Button from "@/components/button/Button";
 import DualListBox from "react-dual-listbox";
-import FormText from "components/form/FormText";
-import Modal from "components/modal/Modal";
-import ModalButtonWrapper from "components/modal/ModalButtonWrapper";
-import TextAreaInput from "components/inputs/TextAreaInput";
-import { fetchUsers } from "users/requestsAsync";
-import { ButtonColors } from "components/enums";
-import { getUserOptions } from "users/helpers";
-import { sortStringByKeyAsc } from "util/helpers";
+import FormText from "@/components/form/FormText";
+import Modal from "@/components/modal/Modal";
+import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
+import TextAreaInput from "@/components/inputs/TextAreaInput";
+import { fetchUsers } from "@/users/requestsAsync";
+import { ButtonColors } from "@/components/enums";
+import { getUserOptions } from "@/users/helpers";
+import { sortStringByKeyAsc } from "@/util/helpers";
 type FilterProps = {
   available: string;
   selected: string;

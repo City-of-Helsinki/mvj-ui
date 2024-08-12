@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Attributes, Methods, Reducer } from "../types";
+import type { Attributes, Methods, Reducer } from "@/types";
 import type { ReceiveAttributesAction, ReceiveMethodsAction, RentBasis, RentBasisList, ReceiveRentBasisListAction, ReceiveRentBasisInitialValuesAction, ReceiveSingleRentBasisAction, ReceiveFormValidAction, ReceiveIsSaveClickedAction } from "./types";
 const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/rentbasis/HIDE_EDIT': () => false,

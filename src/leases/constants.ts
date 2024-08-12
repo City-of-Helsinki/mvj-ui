@@ -1,4 +1,4 @@
-import { TableSortOrder } from "enums";
+import { TableSortOrder } from "@/enums";
 import { CreditInvoiceOptions as CreditInvoiceOptionsEnum, RentDueDateTypes, SteppedDiscountAmountTypes } from "./enums";
 
 /**

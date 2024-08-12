@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import Collapse from "components/collapse/Collapse";
+import Collapse from "@/components/collapse/Collapse";
 type Props = {
   children?: React.ReactNode | null | undefined;
   className?: string;

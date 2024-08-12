@@ -3,11 +3,11 @@ import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import classNames from "classnames";
 import get from "lodash/get";
-import FormText from "components/form/FormText";
-import { RentSubItemSubjectType } from "components/enums";
-import { formatDateRange, formatNumber } from "util/helpers";
-import { getRentSubItemAmount, getRentSubItemDescription } from "../helpers";
-import { getAttributes } from "leases/selectors";
+import FormText from "@/components/form/FormText";
+import { RentSubItemSubjectType } from "@/components/enums";
+import { formatDateRange, formatNumber } from "@/util/helpers";
+import { getRentSubItemAmount, getRentSubItemDescription } from "@/components/helpers";
+import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;

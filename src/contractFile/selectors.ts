@@ -1,4 +1,4 @@
-import type { RootState } from "root/types";
+import type { RootState } from "@/root/types";
 import type { Selector } from "types";
 import type { ContractId } from "./types";
 export const getContractFilesById: Selector<Array<Record<string, any>>, ContractId> = (state: RootState, id: ContractId): Array<Record<string, any>> => state.contractFile.byId[id];

@@ -2,7 +2,7 @@ import type { Action } from "redux";
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import type { Attributes, Methods, Reducer } from "types";
-import type { ApplicationState, ReceiveApplicantInfoCheckAttributesAction, ReceiveApplicationRelatedAttachmentsAction, ReceiveAttachmentAttributesAction, ReceiveAttachmentMethodsAction, ReceiveAttributesAction, ReceiveFormAttributesAction, ReceiveMethodsAction } from "application/types";
+import type { ApplicationState, ReceiveApplicantInfoCheckAttributesAction, ReceiveApplicationRelatedAttachmentsAction, ReceiveAttachmentAttributesAction, ReceiveAttachmentMethodsAction, ReceiveAttributesAction, ReceiveFormAttributesAction, ReceiveMethodsAction } from "@/application/types";
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/application/RECEIVE_ATTRIBUTES']: (state: Attributes, {
     payload: attributes

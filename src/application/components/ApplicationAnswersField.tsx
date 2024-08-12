@@ -1,11 +1,11 @@
 import React from "react";
 import { Column, Row } from "react-foundation";
-import FileDownloadLink from "components/file/FileDownloadLink";
-import FormTextTitle from "components/form/FormTextTitle";
-import FormText from "components/form/FormText";
-import ApplicationAnswersSection from "application/components/ApplicationAnswersSection";
-import { getApplicationAttachmentDownloadLink } from "application/helpers";
-import type { FormSection, SavedApplicationFormSection, SectionExtraComponentProps, UploadedFileMeta } from "application/types";
+import FileDownloadLink from "@/components/file/FileDownloadLink";
+import FormTextTitle from "@/components/form/FormTextTitle";
+import FormText from "@/components/form/FormText";
+import ApplicationAnswersSection from "@/application/components/ApplicationAnswersSection";
+import { getApplicationAttachmentDownloadLink } from "@/application/helpers";
+import type { FormSection, SavedApplicationFormSection, SectionExtraComponentProps, UploadedFileMeta } from "@/application/types";
 type Props = {
   section: FormSection;
   answer: SavedApplicationFormSection;

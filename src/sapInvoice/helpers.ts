@@ -1,9 +1,9 @@
 import format from "date-fns/format";
 import subMonths from "date-fns/subMonths";
-import { TableSortOrder } from "enums";
-import { getContentInvoiceReceivableTypes } from "invoices/helpers";
-import { getApiResponseResults } from "util/helpers";
-import type { SapInvoiceList } from "sapInvoice/types";
+import { TableSortOrder } from "@/enums";
+import { getContentInvoiceReceivableTypes } from "@/invoices/helpers";
+import { getApiResponseResults } from "@/util/helpers";
+import type { SapInvoiceList } from "@/sapInvoice/types";
 
 /**
  * Get sap invoices from API response

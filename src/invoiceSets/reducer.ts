@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "../types";
+import type { Reducer } from "@/types";
 import type { InvoiceSetListMap, ReceiveInvoiceSetsByLeaseAction } from "./types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/invoiceSets/FETCH_BY_LEASE']: () => true,

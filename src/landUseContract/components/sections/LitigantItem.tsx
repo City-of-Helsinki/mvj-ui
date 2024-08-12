@@ -1,16 +1,16 @@
 import React, { Fragment } from "react";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
-import ContactTemplate from "contacts/components/templates/ContactTemplate";
-import ExternalLink from "components/links/ExternalLink";
-import FormTitleAndText from "components/form/FormTitleAndText";
-import FormWrapper from "components/form/FormWrapper";
-import FormWrapperLeft from "components/form/FormWrapperLeft";
-import FormWrapperRight from "components/form/FormWrapperRight";
-import SubTitle from "components/content/SubTitle";
-import { getContactFullName } from "contacts/helpers";
-import { formatDate } from "util/helpers";
-import { getRouteById, Routes } from "root/routes";
+import ContactTemplate from "@/contacts/components/templates/ContactTemplate";
+import ExternalLink from "@/components/links/ExternalLink";
+import FormTitleAndText from "@/components/form/FormTitleAndText";
+import FormWrapper from "@/components/form/FormWrapper";
+import FormWrapperLeft from "@/components/form/FormWrapperLeft";
+import FormWrapperRight from "@/components/form/FormWrapperRight";
+import SubTitle from "@/components/content/SubTitle";
+import { getContactFullName } from "@/contacts/helpers";
+import { formatDate } from "@/util/helpers";
+import { getRouteById, Routes } from "@/root/routes";
 type Props = {
   contact: Record<string, any> | null | undefined;
   litigant: Record<string, any>;

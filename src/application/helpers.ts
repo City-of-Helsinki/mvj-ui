@@ -1,15 +1,15 @@
 import { formValueSelector } from "redux-form";
 import _ from "lodash";
-import { FormNames } from "enums";
-import { ApplicantInfoCheckExternalTypes, ApplicantInfoCheckTypes, ApplicantTypes, TargetIdentifierTypes } from "application/enums";
-import { getContentUser } from "users/helpers";
-import createUrl from "api/createUrl";
-import { APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER } from "application/constants";
-import { store } from "root/startApp";
-import { displayUIMessage } from "util/helpers";
-import type { PlotSearch } from "plotSearch/types";
-import type { RootState } from "root/types";
-import type { ApplicationFormSection, Form, FormSection, PlotApplicationFormValue, SavedApplicationFormSection, UploadedFileMeta } from "application/types";
+import { FormNames } from "@/enums";
+import { ApplicantInfoCheckExternalTypes, ApplicantInfoCheckTypes, ApplicantTypes, TargetIdentifierTypes } from "@/application/enums";
+import { getContentUser } from "@/users/helpers";
+import createUrl from "@/api/createUrl";
+import { APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER, TARGET_SECTION_IDENTIFIER } from "@/application/constants";
+import { store } from "@/index";
+import { displayUIMessage } from "@/util/helpers";
+import type { PlotSearch } from "@/plotSearch/types";
+import type { RootState } from "@/root/types";
+import type { ApplicationFormSection, Form, FormSection, PlotApplicationFormValue, SavedApplicationFormSection, UploadedFileMeta } from "@/application/types";
 export const transformTargetSectionTitle = (plotSearch: PlotSearch): (...args: Array<any>) => any => (title: string, section: FormSection, answer: SavedApplicationFormSection): string => {
   if (section.identifier === TARGET_SECTION_IDENTIFIER && answer?.metadata?.identifier) {
     const target = plotSearch?.plot_search_targets.find(target => target.id === answer.metadata?.identifier);

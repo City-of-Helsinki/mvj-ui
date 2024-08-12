@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import isArray from "lodash/isArray";
-import type { Reducer } from "../types";
+import type { Reducer } from "@/types";
 import type { RentForPeriod, ReceiveRentForPeriodByLeaseAction, DeleteRentForPeriodByLeaseAction, ReceiveIsSaveClickedAction } from "./types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/rentforperiod/FETCH_ALL': () => true,

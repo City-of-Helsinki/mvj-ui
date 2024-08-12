@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Reducer } from "../types";
+import type { Reducer } from "@/types";
 import type { SapInvoiceList, ReceiveSapInvoicesAction } from "./types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/sapInvoice/FETCH_ALL': () => true,

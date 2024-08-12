@@ -1,14 +1,14 @@
 import React from "react";
 import { Row } from "react-foundation";
 import { connect } from "react-redux";
-import { getCurrentPlotSearch, getPlanUnitAttributes, getCustomDetailedPlanAttributes } from "plotSearch/selectors";
-import type { PlotSearch } from "plotSearch/types";
-import WhiteBox from "components/content/WhiteBox";
-import SubTitle from "components/content/SubTitle";
-import { PlotSearchTargetType } from "plotSearch/enums";
+import { getCurrentPlotSearch, getPlanUnitAttributes, getCustomDetailedPlanAttributes } from "@/plotSearch/selectors";
+import type { PlotSearch } from "@/plotSearch/types";
+import WhiteBox from "@/components/content/WhiteBox";
+import SubTitle from "@/components/content/SubTitle";
+import { PlotSearchTargetType } from "@/plotSearch/enums";
 import type { Attributes } from "types";
-import PlotSearchSitePlanUnit from "plotSearch/components/plotSearchSections/basicInfo/PlotSearchSitePlanUnit";
-import PlotSearchSiteCustomDetailedPlan from "plotSearch/components/plotSearchSections/basicInfo/PlotSearchSiteCustomDetailedPlan";
+import PlotSearchSitePlanUnit from "@/plotSearch/components/plotSearchSections/basicInfo/PlotSearchSitePlanUnit";
+import PlotSearchSiteCustomDetailedPlan from "@/plotSearch/components/plotSearchSections/basicInfo/PlotSearchSiteCustomDetailedPlan";
 type OwnProps = {};
 type Props = {
   plotSearch: PlotSearch;

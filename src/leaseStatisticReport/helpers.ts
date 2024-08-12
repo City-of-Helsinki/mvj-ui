@@ -1,9 +1,9 @@
 import get from "lodash/get";
 import format from "date-fns/format";
-import { formatDate, formatNumber } from "util/helpers";
-import { LeaseStatisticReportFormatOptions } from "leaseStatisticReport/enums";
-import type { Reports } from "types";
-import { FieldTypes } from "enums";
+import { formatDate, formatNumber } from "@/util/helpers";
+import { LeaseStatisticReportFormatOptions } from "@/leaseStatisticReport/enums";
+import type { Reports } from "@/types";
+import { FieldTypes } from "@/enums";
 import type { ReportOptions, ReportOutputField } from "./types";
 
 /**

@@ -1,5 +1,5 @@
-import type { Attributes, Methods, Selector } from "../types";
-import type { RootState } from "../root/types";
+import type { Attributes, Methods, Selector } from "@/types";
+import type { RootState } from "@/root/types";
 import type { UiDataList } from "./types";
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean => state.uiData.isFetchingAttributes;
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes => state.uiData.attributes;

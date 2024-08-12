@@ -1,5 +1,5 @@
-import callApi from "../api/callApi";
-import createUrl from "../api/createUrl";
+import callApi from "@/api/callApi";
+import createUrl from "@/api/createUrl";
 import type { RentBasis, RentBasisId } from "./types";
 export const fetchAttributes = () => {
   return callApi(new Request(createUrl('basis_of_rent/'), {
