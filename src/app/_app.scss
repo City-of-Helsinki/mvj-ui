@@ -14,6 +14,21 @@
     }
   }
 
+  &__usergroup-list {
+    position: absolute;
+    top: rem-calc(60px);
+    right: 0;
+    z-index: 1060;
+    background-color: white;
+    padding: rem-calc(8px) rem-calc(16px);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.06);
+
+    .usergroup-list-item {
+      line-height: 1;
+      margin: rem-calc(8px) 0;
+    }
+  }
+
   &__content {
     flex: 1;
     display: flex;

@@ -53,7 +53,7 @@ choosePort(HOST, DEFAULT_PORT)
     }
     const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
     const appName = require(paths.appPackageJson).name;
-    const useTypeScript = false;
+    const useTypeScript = true;
     const urls = prepareUrls(protocol, HOST, port);
     const devSocket = {
       warnings: warnings =>

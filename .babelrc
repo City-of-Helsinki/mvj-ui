@@ -1,8 +1,7 @@
 {
   "presets": [
     "@babel/preset-env",
-    "@babel/preset-react",
-    "@babel/preset-flow"
+    "@babel/preset-react"
   ],
   "env": {
     "test": {
@@ -21,10 +20,7 @@
           "./src"
         ],
         "alias": {
-          "$src": "./src",
-          "$assets": "./assets",
-          "$components": "./src/components",
-          "$util": "./src/util"
+          "src": "./src"
         }
       }
     ]
