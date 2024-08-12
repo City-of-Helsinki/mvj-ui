@@ -1,5 +1,5 @@
 import { $Shape } from "utility-types";
-import React, { Component, Fragment } from "react";
+import React, { useState, useEffect, useCallback, Fragment } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import orderBy from "lodash/orderBy";
@@ -19,7 +19,6 @@ import Loader from "components/loader/Loader";
 import FormTextTitle from "components/form/FormTextTitle";
 import FormText from "components/form/FormText";
 import { AreaSearchFieldTitles } from "areaSearch/enums";
-import { getUserFullName } from "users/helpers";
 import SubTitle from "components/content/SubTitle";
 import FileDownloadLink from "components/file/FileDownloadLink";
 import { getAreaFromGeoJSON } from "util/map";
@@ -48,50 +47,37 @@ type Props = {
   uploadAttachment: (...args: Array<any>) => any;
   setAreaSearchAttachments: (...args: Array<any>) => any;
 };
-type State = {
+
+const AreaSearchApplicationEdit = ({
+  areaSearch,
+  isFetchingFormAttributes,
+  isPerformingFileOperation,
+  formAttributes,
+  areaSearchAttributes,
+  initialize,
+  uploadAttachment,
+  setAreaSearchAttachments,
+}: Props) => {
   // The Leaflet element doesn't initialize correctly if it's invisible in a collapsed section element,
   // only rendering some map tiles and calculating the viewport from given bounds incorrectly, until an
   // action that forces it to update its dimensions (like resizing the window) happens. We can
   // circumvent this by forcing it to rerender with a key whenever that section is opened; during
   // the opening transition, the initialization works properly.
-  selectedAreaSectionRefreshKey: number;
-};
+  const [selectedAreaSectionRefreshKey, setSelectedAreaSectionRefreshKey] =
+    useState<number>(0);
 
-class AreaSearchApplicationEdit extends Component<Props, State> {
-  state: any = {
-    selectedAreaSectionRefreshKey: 0
-  };
-
-  componentDidMount() {
-    this.initializeForm();
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    if (this.props.areaSearch && !prevProps.areaSearch) {
-      this.initializeForm();
-    }
-  }
-
-  initializeForm = () => {
-    const {
-      areaSearch,
-      initialize
-    } = this.props;
-
+  const initializeForm = () => {
     if (!areaSearch) {
       return;
     }
 
     initialize(getInitialAreaSearchEditForm(areaSearch));
   };
-  handleFileAdded = (e: Event) => {
-    const {
-      uploadAttachment,
-      areaSearch,
-      setAreaSearchAttachments
-    } = this.props;
-    const currentFiles = areaSearch?.area_search_attachments || [];
-    const file = (e.target as HTMLInputElement).files[0];
+
+  const handleFileAdded = useCallback(
+    (e: Event) => {
+      const currentFiles = areaSearch?.area_search_attachments || [];
+      const file = (e.target as HTMLInputElement).files[0];
     const fileExists = currentFiles.find(currentFile => currentFile.name === file.name);
 
     if (fileExists) {
@@ -110,24 +96,15 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
         }
       });
     }
-  };
+  },
+  [areaSearch, uploadAttachment, setAreaSearchAttachments]
+  );
 
-  render(): React.ReactNode {
-    const {
-      areaSearch,
-      isFetchingFormAttributes,
-      isPerformingFileOperation,
-      formAttributes,
-      areaSearchAttributes
-    } = this.props;
-    const {
-      selectedAreaSectionRefreshKey
-    } = this.state;
-    const fieldTypes = getFieldAttributes(formAttributes, 'sections.child.children.fields.child.children.type.choices');
-    let form: Form | null | undefined;
-    let answer: Record<string, any> | null | undefined;
-    let area: number | null | undefined;
-    let selectedAreaTitle = 'Alue';
+  const fieldTypes = getFieldAttributes(formAttributes, 'sections.child.children.fields.child.children.type.choices');
+  let form: Form | null | undefined;
+  let answer: Record<string, any> | null | undefined;
+  let area: number | null | undefined;
+  let selectedAreaTitle = 'Alue';
 
     if (areaSearch) {
       form = areaSearch.form;
@@ -138,6 +115,11 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
 
     const intendedUseOptions = getFieldOptions(areaSearchAttributes, 'intended_use', false);
     const applicantSection = form?.sections.find(section => section.identifier === APPLICANT_SECTION_IDENTIFIER);
+
+    useEffect(() => {
+      initializeForm();
+    }, []);
+
     return <div className="AreaSearchApplication">
       <Title>
         Hakemus
@@ -178,9 +160,9 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
         </Collapse>
         <Collapse headerTitle={selectedAreaTitle} onToggle={isOpen => {
           if (isOpen) {
-            this.setState(state => ({
-              selectedAreaSectionRefreshKey: state.selectedAreaSectionRefreshKey + 1
-            }));
+            setSelectedAreaSectionRefreshKey(
+              selectedAreaSectionRefreshKey + 1
+            );
           }
         }} defaultOpen>
           <SingleAreaSearchMap geometry={areaSearch.geometry} key={selectedAreaSectionRefreshKey} minimap />
@@ -235,7 +217,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
           {areaSearch.area_search_attachments.length === 0 && <p>
             Hakemuksella ei ole liitteitä.
           </p>}
-          <AddFileButton label='Lisää tiedosto' onChange={this.handleFileAdded} name="AreaSearchApplicationEditAttachment" disabled={isPerformingFileOperation} />
+          <AddFileButton label='Lisää tiedosto' onChange={handleFileAdded} name="AreaSearchApplicationEditAttachment" disabled={isPerformingFileOperation} />
         </Collapse>
 
         <Collapse headerTitle="Hakemuksen käsittely" defaultOpen>
@@ -294,8 +276,6 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
       </>}
     </div>;
   }
-
-}
 
 export default (flowRight(connect(state => ({
   areaSearch: getCurrentAreaSearch(state),

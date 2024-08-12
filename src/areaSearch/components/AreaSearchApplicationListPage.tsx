@@ -1,5 +1,4 @@
-import React, { Fragment, PureComponent } from "react";
-import PropTypes from "prop-types";
+import React, { Fragment, useEffect, useState } from "react";
 import flowRight from "lodash/flowRight";
 import isArray from "lodash/isArray";
 import { connect } from "react-redux";
@@ -100,35 +99,45 @@ type State = {
   userActiveServiceUnit?: any;
 };
 
-class AreaSearchApplicationListPage extends PureComponent<Props, State> {
-  _isMounted: boolean;
-  _hasFetchedAreaSearches: boolean;
-  state: State = {
-    properties: [],
-    sortKey: DEFAULT_SORT_KEY,
-    sortOrder: DEFAULT_SORT_ORDER,
-    activePage: 1,
-    count: 0,
-    isSearchInitialized: false,
-    maxPage: 0,
-    selectedStates: DEFAULT_AREA_SEARCH_STATES,
-    visualizationType: VisualizationTypes.TABLE,
-    isEditModalOpen: false,
-    isExportModalOpen: false,
-    editModalTargetAreaSearch: null,
-    userActiveServiceUnit: undefined
-  };
-  static contextTypes = {
-    router: PropTypes.object
-  };
+const AreaSearchApplicationListPage = ({
+  history,
+  location: {
+    search
+  },
+  usersPermissions,
+  receiveTopNavigationSettings,
+  areaSearchListAttributes,
+  areaSearchListMethods,
+  isFetchingAreaSearchListAttributes,
+  isFetching,
+  initializeForm,
+  isFetchingByBBox,
+  fetchAreaSearchList,
+  fetchAreaSearchListByBBox,
+  areaSearches,
+  areaSearchesByBBox,
+  editAreaSearch,
+  isEditingAreaSearch,
+  lastEditError,
+  change,
+  selectedSearches,
+  userActiveServiceUnit
+}: Props) => {
+  const [properties, setProperties] = useState([])
+  const [sortKey, setSortKey] = useState(DEFAULT_SORT_KEY)
+  const [sortOrder, setSortOrder] = useState(DEFAULT_SORT_ORDER)
+  const [activePage, setActivePage] = useState(1)
+  const [count, setCount] = useState(0)
+  const [isSearchInitialized, setIsSearchInitialized] = useState(false)
+  const [maxPage, setMaxPage] = useState(0)
+  const [selectedStates, setSelectedStates] = useState(DEFAULT_AREA_SEARCH_STATES)
+  const [visualizationType, setVisualizationType] = useState(VisualizationTypes.TABLE)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false)
+  const [editModalTargetAreaSearch, setEditModalTargetAreaSearch] = useState(null)
+  const [hasFetchedAreaSearches, setHasFetchedAreaSearches] = useState(false)
 
-  componentDidMount() {
-    const {
-      receiveTopNavigationSettings,
-      location: {
-        search
-      }
-    } = this.props;
+  useEffect(() => {
     const searchQuery = getUrlParams(search);
     setPageTitle('Aluehaun hakemukset');
     receiveTopNavigationSettings({
@@ -138,64 +147,50 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     });
 
     if (searchQuery.visualization === VisualizationTypes.MAP) {
-      this.setState({
-        visualizationType: VisualizationTypes.MAP
-      });
-      this.searchByBBox();
+      setVisualizationType(VisualizationTypes.MAP);
+      searchByBBox();
     } else {
-      this.search();
+      searchFunc();
     }
 
-    this.setSearchFormValues();
-    window.addEventListener('popstate', this.handlePopState);
-    this._isMounted = true;
-  }
+    setSearchFormValues();
+    window.addEventListener('popstate', handlePopState);
 
-  handleVisualizationTypeChange = (value: string) => {
-    this.setState({
-      visualizationType: value
-    }, () => {
-      const {
-        history,
-        location: {
-          search
-        }
-      } = this.props;
-      const searchQuery = getUrlParams(search);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    }
+  }, [])
 
-      if (value === VisualizationTypes.MAP) {
-        searchQuery.visualization = VisualizationTypes.MAP;
-      } else {
-        delete searchQuery.visualization;
-        delete searchQuery.in_bbox;
-        delete searchQuery.zoom;
-      }
-
-      return history.push({
-        pathname: getRouteById(Routes.AREA_SEARCH),
-        search: getSearchQuery(searchQuery)
-      });
-    });
+  const handleVisualizationTypeChange = (value: string) => {
+    setVisualizationType(value);
   };
-  handleAreaSearchStatesChange = (values: Array<string>) => {
-    const {
-      location: {
-        search
-      }
-    } = this.props;
+  
+  useEffect(() => {
+    const searchQuery = getUrlParams(search);
+
+    if (visualizationType === VisualizationTypes.MAP) {
+      searchQuery.visualization = VisualizationTypes.MAP;
+    } else {
+      delete searchQuery.visualization;
+      delete searchQuery.in_bbox;
+      delete searchQuery.zoom;
+    }
+
+    return history.push({
+      pathname: getRouteById(Routes.AREA_SEARCH),
+      search: getSearchQuery(searchQuery)
+    });
+  }, [visualizationType])
+
+  const handleAreaSearchStatesChange = (values: Array<string>) => {
     const searchQuery = getUrlParams(search);
     delete searchQuery.page;
     searchQuery.state = values;
-    this.setState({
-      selectedStates: values
-    });
-    this.handleSearchChange(searchQuery, true);
+    setSelectedStates(values);
+    handleSearchChange(searchQuery, true);
   };
-  getColumns = () => {
-    const {
-      areaSearchListAttributes,
-      selectedSearches
-    } = this.props;
+
+  const getColumns = () => {
     const columns = [];
     const intendedUseOptions = getFieldOptions(areaSearchListAttributes, 'intended_use');
     const stateOptions = getFieldOptions(areaSearchListAttributes, 'state');
@@ -215,7 +210,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
             value: true,
             label: ''
           }]
-        }} onBlur={(_, value) => this.updateAllSearchesSelected({ ...selectedSearches,
+        }} onBlur={(_, value) => updateAllSearchesSelected({ ...selectedSearches,
           [item.id]: value
         })} />
       </div>
@@ -266,44 +261,38 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       key: 'lessor',
       text: 'Vuokranantaja',
       renderer: (val, row) => <span onMouseUp={e => e.stopPropagation()}>
-        <Button className={ButtonColors.LINK} onClick={() => this.openAreaSearchEditModal(row.id)} text={val || 'Avoin'} />
+        <Button className={ButtonColors.LINK} onClick={() => openAreaSearchEditModal(row.id)} text={val || 'Avoin'} />
       </span>
     });
     columns.push({
       key: 'preparer',
       text: 'Käsittelijä',
       renderer: (val, row) => <span onMouseUp={e => e.stopPropagation()}>
-        <Button className={ButtonColors.LINK} onClick={() => this.openAreaSearchEditModal(row.id)} text={getUserFullName(val) || 'Avoin'} />
+        <Button className={ButtonColors.LINK} onClick={() => openAreaSearchEditModal(row.id)} text={getUserFullName(val) || 'Avoin'} />
       </span>
     });
     return columns;
   };
-  openAreaSearchEditModal = (id: number) => {
-    this.setState(() => ({
-      isEditModalOpen: true,
-      editModalTargetAreaSearch: id
-    }));
+
+  const openAreaSearchEditModal = (id: number) => {
+    setIsEditModalOpen(true),
+    setEditModalTargetAreaSearch(id)
   };
-  closeAreaSearchEditModal = () => {
-    this.setState(() => ({
-      isEditModalOpen: false,
-      editModalTargetAreaSearch: null
-    }));
+
+  const closeAreaSearchEditModal = () => {
+    setIsEditModalOpen(false)
+    setEditModalTargetAreaSearch(null)
   };
-  openExportModal = () => {
-    this.setState(() => ({
-      isExportModalOpen: true
-    }));
+
+  const openExportModal = () => {
+    setIsExportModalOpen(true)
   };
-  closeExportModal = () => {
-    this.setState(() => ({
-      isExportModalOpen: false
-    }));
+
+  const closeExportModal = () => {
+    setIsExportModalOpen(false)
   };
-  submitAreaSearchEditModal = (data: Record<string, any>) => {
-    const {
-      editAreaSearch
-    } = this.props;
+
+  const submitAreaSearchEditModal = (data: Record<string, any>) => {
     editAreaSearch({
       id: data.id,
       preparer: data.preparer?.id || null,
@@ -315,14 +304,8 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       }
     });
   };
-  search = () => {
-    const {
-      fetchAreaSearchList,
-      location: {
-        search
-      },
-      userActiveServiceUnit
-    } = this.props;
+
+  const searchFunc = () => {
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
@@ -337,16 +320,10 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     delete searchQuery.zoom;
     fetchAreaSearchList(areaSearchSearchFilters(searchQuery));
   };
-  searchByBBox = () => {
-    const {
-      fetchAreaSearchListByBBox,
-      location: {
-        search
-      },
-      userActiveServiceUnit
-    } = this.props;
+
+  const searchByBBox = () => {
     const searchQuery = getUrlParams(search);
-    const leaseStates = this.getSearchStates(searchQuery);
+    const leaseStates = getSearchStates(searchQuery);
 
     if (searchQuery && searchQuery.search && searchQuery.search.length > 6) {
       searchQuery.in_bbox = BOUNDING_BOX_FOR_SEARCH_QUERY;
@@ -370,47 +347,30 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     delete searchQuery.sort_order;
     fetchAreaSearchListByBBox(areaSearchSearchFilters(searchQuery));
   };
-  handleRowClick = id => {
-    const {
-      history,
-      location: {
-        search
-      }
-    } = this.props;
+
+  const handleRowClick = id => {
     return history.push({
       pathname: `${getRouteById(Routes.AREA_SEARCH)}/${id}`,
       search: search
     });
   };
-  handleSortingChange = ({
+
+  const handleSortingChange = ({
     sortKey,
     sortOrder
   }) => {
-    const {
-      history,
-      location: {
-        search
-      }
-    } = this.props;
     const searchQuery = getUrlParams(search);
     searchQuery.sort_key = sortKey;
     searchQuery.sort_order = sortOrder;
-    this.setState({
-      sortKey,
-      sortOrder
-    });
+    setSortKey(sortKey)
+    setSortOrder(sortOrder)
     return history.push({
       pathname: getRouteById(Routes.AREA_SEARCH),
       search: getSearchQuery(searchQuery)
     });
   };
-  handlePageClick = (page: number) => {
-    const {
-      history,
-      location: {
-        search
-      }
-    } = this.props;
+
+  const handlePageClick = (page: number) => {
     const query = getUrlParams(search);
 
     if (page > 1) {
@@ -419,39 +379,26 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       delete query.page;
     }
 
-    this.setState({
-      activePage: page
-    });
+    setActivePage(page)
+
     return history.push({
       pathname: getRouteById(Routes.AREA_SEARCH),
       search: getSearchQuery(query)
     });
   };
-  updateTableData = () => {
-    const {
-      areaSearches,
-      change
-    } = this.props;
-    this.setState({
-      count: getApiResponseCount(areaSearches),
-      maxPage: getApiResponseMaxPage(areaSearches, LIST_TABLE_PAGE_SIZE)
-    });
+
+  const updateTableData = () => {
+    setCount(getApiResponseCount(areaSearches))
+    setMaxPage(getApiResponseMaxPage(areaSearches, LIST_TABLE_PAGE_SIZE))
     change('selectedSearches', {});
     change('allSelected', false);
   };
-  handleSearchChange = (query: Record<string, any>, resetActivePage: boolean = true) => {
-    const {
-      history,
-      location: {
-        search
-      }
-    } = this.props;
+
+  const handleSearchChange = (query: Record<string, any>, resetActivePage: boolean = true) => {
     const urlQuery = getUrlParams(search);
 
     if (resetActivePage) {
-      this.setState({
-        activePage: 1
-      });
+      setActivePage(1);
       delete query.page;
     }
 
@@ -473,52 +420,37 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     });
   };
 
-  componentDidUpdate(prevProps) {
-    const {
-      location: {
-        search: currentSearch
-      },
-      isEditingAreaSearch,
-      lastEditError,
-      userActiveServiceUnit
-    } = this.props;
-    const {
-      location: {
-        search: prevSearch
-      },
-      userActiveServiceUnit: prevUserActiveServiceUnit
-    } = prevProps;
-    const {
-      visualizationType
-    } = this.state;
-    const searchQuery = getUrlParams(currentSearch);
-
+  useEffect(() => {
     const handleSearch = () => {
-      this.setSearchFormValues();
-      this.search();
+      setSearchFormValues();
+      searchFunc();
     };
-
+    
     if (userActiveServiceUnit) {
-      if (!this._hasFetchedAreaSearches) {
+      if (!hasFetchedAreaSearches) {
         // No search has been done yet
         handleSearch();
-        this._hasFetchedAreaSearches = true;
-      } else if (userActiveServiceUnit !== prevUserActiveServiceUnit && !currentSearch.includes('service_unit')) {
+        setHasFetchedAreaSearches(true);
+      } else if (!search.includes('service_unit')) {
         // Search again after changing user active service unit only if not explicitly setting the service unit filter
         handleSearch();
       }
     }
+  }, [userActiveServiceUnit])
 
-    if (currentSearch !== prevSearch || !isEditingAreaSearch && !lastEditError && prevProps.isEditingAreaSearch) {
-      this.closeAreaSearchEditModal();
-
+  useEffect(() => {
+    const searchQuery = getUrlParams(search);
+    
+    if (!isEditingAreaSearch && !lastEditError) {
+      closeAreaSearchEditModal();
+      
       switch (visualizationType) {
         case VisualizationTypes.MAP:
-          this.searchByBBox();
+          searchByBBox();
           break;
 
         case VisualizationTypes.TABLE:
-          this.search();
+          searchFunc();
           break;
       }
 
@@ -526,31 +458,20 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       delete searchQuery.sort_order;
 
       if (!Object.keys(searchQuery).length) {
-        this.setSearchFormValues();
+        setSearchFormValues();
       }
     }
+  }, [search])
 
-    if (prevProps.areaSearches !== this.props.areaSearches) {
-      this.updateTableData();
-    }
-  }
+  useEffect(() => {
+    updateTableData()
+  }, [areaSearches])
 
-  componentWillUnmount() {
-    window.removeEventListener('popstate', this.handlePopState);
-    this._isMounted = false;
-    this._hasFetchedAreaSearches = false;
-  }
-
-  handlePopState = () => {
-    this.setSearchFormValues();
+  const handlePopState = () => {
+    setSearchFormValues();
   };
-  handleMapViewportChanged = debounce((mapOptions: Record<string, any>) => {
-    const {
-      history,
-      location: {
-        search
-      }
-    } = this.props;
+
+  const handleMapViewportChanged = debounce((mapOptions: Record<string, any>) => {
     const searchQuery = getUrlParams(search);
     searchQuery.in_bbox = mapOptions.bBox.split(',');
     searchQuery.zoom = mapOptions.zoom;
@@ -559,7 +480,8 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       search: getSearchQuery(searchQuery)
     });
   }, 1000);
-  getSearchStates = (query: Record<string, any>) => {
+
+  const getSearchStates = (query: Record<string, any>) => {
     if (isArray(query.state)) {
       return query.state;
     }
@@ -570,109 +492,56 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
 
     return query.search || query?.state ? [] : DEFAULT_AREA_SEARCH_STATES;
   };
-  setSearchFormValues = () => {
-    const {
-      location: {
-        search
-      },
-      initializeForm,
-      userActiveServiceUnit
-    } = this.props;
+  const setSearchFormValues = () => {
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
-    const states = this.getSearchStates(searchQuery);
+    const states = getSearchStates(searchQuery);
 
     const setSearchFormReady = () => {
-      this.setState({
-        isSearchInitialized: true
-      });
+      setIsSearchInitialized(true)
     };
 
-    const initializeSearchForm = async () => {
-      const initialValues = { ...searchQuery
-      };
-      delete initialValues.page;
-      delete initialValues.state;
-      delete initialValues.sort_key;
-      delete initialValues.sort_order;
-      delete initialValues.in_bbox;
-      delete initialValues.visualization;
-      delete initialValues.zoom;
-
-      if (initialValues.service_unit === undefined && userActiveServiceUnit) {
-        initialValues.service_unit = userActiveServiceUnit.id;
-      }
-
-      await initializeForm(FormNames.AREA_SEARCH_SEARCH, initialValues);
-    };
-
-    this.setState({
-      activePage: page,
-      isSearchInitialized: false,
-      selectedStates: states
-    }, async () => {
-      await initializeSearchForm();
-
-      if (this._isMounted) {
-        setSearchFormReady();
-      }
-    });
+    setActivePage(page)
+    setIsSearchInitialized(false)
+    setSelectedStates(states)
   };
-  openCreateAreaSearch = () => {
-    const {
-      history
-    } = this.props;
+      
+  useEffect(() => {
+    const initialValues = { ...searchQuery };
+    delete initialValues.page;
+    delete initialValues.state;
+    delete initialValues.sort_key;
+    delete initialValues.sort_order;
+    delete initialValues.in_bbox;
+    delete initialValues.visualization;
+    delete initialValues.zoom;
+  
+    if (initialValues.service_unit === undefined && userActiveServiceUnit) {
+      initialValues.service_unit = userActiveServiceUnit.id;
+    }
+  
+    initializeForm(FormNames.AREA_SEARCH_SEARCH, initialValues);
+  }, [setSearchFormValues])
+
+  const openCreateAreaSearch = () => {
     history.push({
       pathname: `${getRouteById(Routes.AREA_SEARCH)}/uusi`
     });
   };
-  selectAllSearches = (event: React.FocusEvent<HTMLInputElement>, value: boolean) => {
-    const {
-      change,
-      areaSearches
-    } = this.props;
+  const selectAllSearches = (event: React.FocusEvent<HTMLInputElement>, value: boolean) => {
     change('selectedSearches', areaSearches?.results.reduce((acc, result) => {
       acc[result.id] = value;
       return acc;
     }, {}));
   };
-  updateAllSearchesSelected = (selectedSearches: Record<string, any>) => {
-    const {
-      change,
-      areaSearches
-    } = this.props;
+
+  const updateAllSearchesSelected = (selectedSearches: Record<string, any>) => {
     const isAllSelected = areaSearches?.results.every(search => selectedSearches[search.id] === true);
     change('allSelected', isAllSelected);
   };
 
-  render() {
-    const {
-      areaSearchListMethods,
-      areaSearches,
-      areaSearchesByBBox,
-      areaSearchListAttributes,
-      isFetching,
-      isFetchingByBBox,
-      isFetchingAreaSearchListAttributes,
-      location: {
-        search
-      },
-      selectedSearches = {}
-    } = this.props;
-    const {
-      sortKey,
-      sortOrder,
-      activePage,
-      isSearchInitialized,
-      maxPage,
-      selectedStates,
-      visualizationType,
-      isEditModalOpen,
-      isExportModalOpen,
-      editModalTargetAreaSearch
-    } = this.state;
     const searchQuery = getUrlParams(search);
-    const columns = this.getColumns();
+    const columns = getColumns();
     const stateOptions = getFieldOptions(areaSearchListAttributes, 'state', false);
 
     if (isFetchingAreaSearchListAttributes || visualizationType === VisualizationTypes.TABLE && !areaSearches) {
@@ -706,25 +575,30 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
         amountText = isFetching || areaSearches?.count === undefined ? 'Ladataan...' : `Löytyi ${areaSearches.count} kpl`;
     }
 
+    if (!selectedSearches) {
+      return <Loader isLoading={true} />;
+    }
+
     return <PageContainer className="AreaSearchApplicationListPage">
         <Row>
           <Column small={12} medium={4} large={4}>
             <Authorization allow={isMethodAllowed(areaSearchListMethods, Methods.POST)}>
-              <AddButtonSecondary className='no-top-margin' label='Luo aluehakemus' onClick={this.openCreateAreaSearch} />
+              <AddButtonSecondary className='no-top-margin' label='Luo aluehakemus' onClick={openCreateAreaSearch} />
             </Authorization>
           </Column>
           <Column small={12} medium={8} large={8}>
-            <Search isSearchInitialized={isSearchInitialized} onSearch={this.handleSearchChange} states={selectedStates} handleSubmit={() => {}} />
+            {/**@ts-ignore */}
+            <Search isSearchInitialized={isSearchInitialized} onSearch={handleSearchChange} states={selectedStates} handleSubmit={() => {}} />
           </Column>
         </Row>
 
-        {<TableFilterWrapper filterComponent={<TableFilters amountText={amountText} filterOptions={stateOptions} filterValue={selectedStates} onFilterChange={this.handleAreaSearchStatesChange} />} visualizationComponent={<VisualisationTypeWrapper>
-              {<IconRadioButtons legend={'Kartta/taulukko'} onChange={this.handleVisualizationTypeChange} options={visualizationTypeOptions} radioName='visualization-type-radio' value={visualizationType} />}
+        {<TableFilterWrapper filterComponent={<TableFilters amountText={amountText} filterOptions={stateOptions} filterValue={selectedStates} onFilterChange={handleAreaSearchStatesChange} />} visualizationComponent={<VisualisationTypeWrapper>
+              {<IconRadioButtons legend={'Kartta/taulukko'} onChange={handleVisualizationTypeChange} options={visualizationTypeOptions} radioName='visualization-type-radio' value={visualizationType} />}
             </VisualisationTypeWrapper>} />}
         <TableWrapper>
           {isFetching && <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>}
           {visualizationType === 'table' && <Fragment>
-              <SortableTable columns={columns} data={areaSearches?.results || []} listTable onRowClick={this.handleRowClick} onSortingChange={this.handleSortingChange} serverSideSorting showCollapseArrowColumn sortable sortKey={sortKey} sortOrder={sortOrder} footer={({
+              <SortableTable columns={columns} data={areaSearches?.results || []} listTable onRowClick={handleRowClick} onSortingChange={handleSortingChange} serverSideSorting showCollapseArrowColumn sortable sortKey={sortKey} sortOrder={sortOrder} footer={({
             columnCount
           }: {
             columnCount: number;
@@ -740,21 +614,20 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
                   value: true,
                   label: 'Valitse kaikki suodatuksen mukaan'
                 }]
-              }} onBlur={this.selectAllSearches} onChange={this.selectAllSearches} />
+              }} onBlur={selectAllSearches} onChange={selectAllSearches} />
                   </td>
                 </tr>} />
 
-              <Pagination activePage={activePage} maxPage={maxPage} onPageClick={page => this.handlePageClick(page)} />
+              <Pagination activePage={activePage} maxPage={maxPage} onPageClick={page => handlePageClick(page)} />
             </Fragment>}
-          {visualizationType === 'map' && <AreaSearchListMap allowToEdit={false} isLoading={isFetchingByBBox} onViewportChanged={this.handleMapViewportChanged} />}
+          {visualizationType === 'map' && <AreaSearchListMap allowToEdit={false} isLoading={isFetchingByBBox} onViewportChanged={handleMapViewportChanged} />}
         </TableWrapper>
-        <Button onClick={this.openExportModal} text="Tulosta" disabled={selectedSearches.length === 0} />
-        <EditAreaSearchPreparerModal isOpen={isEditModalOpen} onClose={this.closeAreaSearchEditModal} onSubmit={this.submitAreaSearchEditModal} areaSearchId={editModalTargetAreaSearch} />
-        <AreaSearchExportModal isOpen={isExportModalOpen} onClose={this.closeExportModal} />
+        <Button onClick={openExportModal} text="Tulosta" disabled={selectedSearches?.length === 0} />
+        <EditAreaSearchPreparerModal isOpen={isEditModalOpen} onClose={closeAreaSearchEditModal} onSubmit={submitAreaSearchEditModal} areaSearchId={editModalTargetAreaSearch} />
+        <AreaSearchExportModal isOpen={isExportModalOpen} onClose={closeExportModal} />
       </PageContainer>;
   }
 
-}
 
 const FORM_NAME = FormNames.AREA_SEARCH_EXPORT;
 const selector = formValueSelector(FORM_NAME);

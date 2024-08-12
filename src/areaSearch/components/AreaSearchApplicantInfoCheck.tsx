@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { getFieldOptions } from "util/helpers";
 import type { Attributes } from "types";
@@ -12,17 +12,13 @@ type Props = OwnProps & {
   infoCheckAttributes: Attributes;
 };
 
-class AreaSearchApplicantInfoCheck extends PureComponent<Props> {
-  render(): React.ReactNode {
-    const {
-      infoCheckAttributes,
-      infoCheckData
-    } = this.props;
-    const infoCheckStateOptions = getFieldOptions(infoCheckAttributes, 'state');
-    const infoChecks = getApplicantInfoCheckItems(infoCheckData);
-    return <ApplicantInfoCheck infoChecks={infoChecks} infoCheckStateOptions={infoCheckStateOptions} />;
-  }
-
+const AreaSearchApplicantInfoCheck = ({
+  infoCheckAttributes,
+  infoCheckData
+}: Props) => {
+  const infoCheckStateOptions = getFieldOptions(infoCheckAttributes, 'state');
+  const infoChecks = getApplicantInfoCheckItems(infoCheckData);
+  return <ApplicantInfoCheck infoChecks={infoChecks} infoCheckStateOptions={infoCheckStateOptions} />;
 }
 
 export default (connect(state => ({

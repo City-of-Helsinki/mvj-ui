@@ -1,6 +1,5 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import isEmpty from "lodash/isEmpty";
 import AuditLogTable from "components/auditLog/AuditLogTable";
 import Divider from "components/content/Divider";
 import Loader from "components/loader/Loader";
@@ -23,94 +22,62 @@ type Props = {
   isFetching: boolean;
   areaSearchId: string;
 };
-type State = {
-  activePage: number;
-  auditLogItems: Array<Record<string, any>>;
-  auditLogList: AuditLogList;
-  count: number;
-  maxPage: number;
-};
 
-class AreaSearchApplicationAuditLog extends PureComponent<Props, State> {
-  state = {
-    activePage: 1,
-    auditLogItems: [],
-    auditLogList: {},
-    count: 0,
-    maxPage: 0
+const AreaSearchApplicationAuditLog = ({
+  isEditMode,
+  isFetching,
+  fetchAuditLogByAreaSearch,
+  areaSearchId,
+  auditLogList
+}: Props) => {
+  const [activePage, setActivePage] = useState(1);
+  const [auditLogItems, setAuditLogItems] = useState([]);
+  const [maxPage, setMaxPage] = useState(0);
+
+  const handlePageClick = (page: number) => {
+    setActivePage(page);
+    
+    const payload: any = {
+      id: areaSearchId,
+      limit: LIST_TABLE_PAGE_SIZE,
+    };
+  
+    if (page > 1) {
+      payload.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
+    }
+  
+    fetchAuditLogByAreaSearch(payload);
   };
 
-  componentDidMount() {
-    const {
-      fetchAuditLogByAreaSearch,
-      areaSearchId
-    } = this.props;
+  useEffect(() => {
+    setAuditLogItems(getApiResponseResults(auditLogList))
+    setMaxPage(getApiResponseMaxPage(auditLogList, LIST_TABLE_PAGE_SIZE))
+
     fetchAuditLogByAreaSearch({
       id: areaSearchId,
-      limit: LIST_TABLE_PAGE_SIZE
+      limit: LIST_TABLE_PAGE_SIZE,
     });
-  }
+  }, []);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  return (
+    <Fragment>
+      <Title
+        enableUiDataEdit={isEditMode}
+        uiDataKey={getUiDataLeaseKey(AreaSearchFieldPaths.AUDIT_LOG)}
+      >
+        {AreaSearchFieldTitles.AUDIT_LOG}
+      </Title>
+      <Divider />
 
-    if (props.auditLogList !== state.auditLogList) {
-      newState.auditLogList = props.auditLogList;
-      newState.auditLogItems = getApiResponseResults(props.auditLogList);
-      newState.count = getApiResponseCount(props.auditLogList);
-      newState.maxPage = getApiResponseMaxPage(props.auditLogList, LIST_TABLE_PAGE_SIZE);
-    }
-
-    return !isEmpty(newState) ? newState : null;
-  }
-
-  handlePageClick = (page: number) => {
-    const {
-      fetchAuditLogByAreaSearch,
-      areaSearchId
-    } = this.props;
-    this.setState({
-      activePage: page
-    }, () => {
-      const payload: any = {
-        id: areaSearchId,
-        limit: LIST_TABLE_PAGE_SIZE
-      };
-
-      if (page > 1) {
-        payload.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
-      }
-
-      fetchAuditLogByAreaSearch(payload);
-    });
-  };
-
-  render() {
-    const {
-      isEditMode,
-      isFetching
-    } = this.props;
-    const {
-      activePage,
-      auditLogItems,
-      maxPage
-    } = this.state;
-    return <Fragment>
-        <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataLeaseKey(AreaSearchFieldPaths.AUDIT_LOG)}>
-          {AreaSearchFieldTitles.AUDIT_LOG}
-        </Title>
-        <Divider />
-
-        <TableWrapper>
+      <TableWrapper>
           {isFetching && <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>}
 
-          <AuditLogTable items={auditLogItems} />
-          <Pagination activePage={activePage} maxPage={maxPage} onPageClick={this.handlePageClick} />
-        </TableWrapper>
-      </Fragment>;
-  }
-
-}
+        <AuditLogTable items={auditLogItems} />
+          <Pagination activePage={activePage} maxPage={maxPage} onPageClick={handlePageClick} />
+      </TableWrapper>
+    </Fragment>
+  );
+};
 
 export default connect((state, props: Props) => {
   return {

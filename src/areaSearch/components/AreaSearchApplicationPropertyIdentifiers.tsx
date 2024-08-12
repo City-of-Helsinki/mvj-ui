@@ -1,25 +1,12 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import Button from "components/button/Button";
 import { ButtonColors } from "components/enums";
 type Props = {
   ids: Array<string> | null | undefined;
 };
-type State = {
-  expanded: boolean;
-};
 
-class AreaSearchApplicationPropertyIdentifiers extends Component<Props, State> {
-  state: State = {
-    expanded: false
-  };
-
-  render(): React.ReactNode {
-    const {
-      ids
-    } = this.props;
-    const {
-      expanded
-    } = this.state;
+const AreaSearchApplicationPropertyIdentifiers = ({ ids }: Props) => {
+  const [expanded, setExpanded] = useState<boolean>(false);
 
     if (!ids) {
       return '-';
@@ -31,15 +18,9 @@ class AreaSearchApplicationPropertyIdentifiers extends Component<Props, State> {
         {item}
         <br />
       </Fragment>)}
-      {expanded && <Button className={ButtonColors.LINK} onClick={() => this.setState(() => ({
-        expanded: false
-      }))} text="Näytä vähemmän" />}
-      {visibleList.length < ids.length && <Button className={ButtonColors.LINK} onClick={() => this.setState(() => ({
-        expanded: true
-      }))} text={`Näytä kaikki (${ids.length})`} />}
+      {expanded && <Button className={ButtonColors.LINK} onClick={() => setExpanded(false)} text="Näytä vähemmän" />}
+      {visibleList.length < ids.length && <Button className={ButtonColors.LINK} onClick={() => setExpanded(true)} text={`Näytä kaikki (${ids.length})`} />}
     </>;
-  }
-
 }
 
 export default AreaSearchApplicationPropertyIdentifiers;

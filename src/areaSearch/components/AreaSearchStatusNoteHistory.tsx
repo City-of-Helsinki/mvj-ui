@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Collapse from "components/collapse/Collapse";
 import { formatDate } from "util/helpers";
 import { getUserFullName } from "users/helpers";
@@ -6,15 +6,10 @@ type Props = {
   statusNotes: Array<Record<string, any>> | null | undefined;
 };
 
-class AreaSearchStatusNoteHistory extends Component<Props> {
-  render(): React.ReactNode {
-    const {
-      statusNotes
-    } = this.props;
-
-    if (!statusNotes || statusNotes.length === 0) {
-      return null;
-    }
+const AreaSearchStatusNoteHistory = ({ statusNotes }: Props) => {
+  if (!statusNotes || statusNotes.length === 0) {
+    return null;
+  }
 
     return <Collapse defaultOpen className="AreaSearchStatusNoteHistory" headerTitle="Historia">
       {statusNotes.map(note => <div className="AreaSearchStatusNoteHistory__item" key={note.time_stamp}>
@@ -27,6 +22,5 @@ class AreaSearchStatusNoteHistory extends Component<Props> {
     </Collapse>;
   }
 
-}
 
 export default AreaSearchStatusNoteHistory;

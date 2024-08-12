@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { flowRight } from "lodash/util";
 import { getFormValues, reduxForm } from "redux-form";
@@ -19,16 +19,15 @@ type Props = OwnProps & {
   valid: boolean;
 };
 
-class AreaSearchApplicationCreateForm extends Component<Props> {
-  componentDidMount() {
-    const {
-      initialize,
-      formData,
-      formValues,
-      fieldTypeMapping,
-      receiveFormValidFlags,
-      valid
-    } = this.props;
+const AreaSearchApplicationCreateForm = ({
+  initialize,
+  formData,
+  formValues,
+  fieldTypeMapping,
+  receiveFormValidFlags,
+  valid,
+}: Props) => {
+  useEffect(() => {
     receiveFormValidFlags({
       [FormNames.AREA_SEARCH_CREATE_FORM]: valid
     });
@@ -38,35 +37,21 @@ class AreaSearchApplicationCreateForm extends Component<Props> {
         form: getInitialApplicationForm(fieldTypeMapping, formData)
       });
     }
+  }, []);
+
+  useEffect(() => {
+    receiveFormValidFlags({
+      [FormNames.AREA_SEARCH_CREATE_FORM]: valid,
+    });
+  }, [valid]);
+
+  if (!formValues?.form) {
+    return null;
   }
-
-  componentDidUpdate(prevProps) {
-    const {
-      receiveFormValidFlags
-    } = this.props;
-
-    if (prevProps.valid !== this.props.valid) {
-      receiveFormValidFlags({
-        [FormNames.AREA_SEARCH_CREATE_FORM]: this.props.valid
-      });
-    }
-  }
-
-  render(): React.ReactNode {
-    const {
-      formData,
-      formValues
-    } = this.props;
-
-    if (!formValues?.form) {
-      return null;
-    }
 
     return <div>
         {formData.sections.map(section => <ApplicationSubsection path={['form.sections']} section={section} headerTag="h2" key={section.id} formName={FormNames.AREA_SEARCH_CREATE_FORM} formPath='form' sectionTitleTransformers={[]} answerId={null} />)}
       </div>;
-  }
-
 }
 
 export default (flowRight(connect(state => ({

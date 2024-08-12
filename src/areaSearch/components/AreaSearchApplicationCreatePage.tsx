@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { flowRight } from "lodash/util";
 import { destroy, getFormValues, initialize, isDirty } from "redux-form";
@@ -52,89 +52,77 @@ type Props = OwnProps & {
   initialize: (...args: Array<any>) => any;
   destroy: (...args: Array<any>) => any;
 };
-type State = {
-  activeTab: number;
-  attachments: Array<UploadedFileMeta>;
-  initialized: boolean;
-};
 
-class AreaSearchApplicationCreatePage extends Component<Props, State> {
-  state: State = {
-    activeTab: 0,
-    attachments: [],
-    initialized: false
-  };
+const AreaSearchApplicationCreatePage = ({
+  fetchAttributes,
+  fetchFormAttributes,
+  receiveSingleAreaSearch,
+  showEditMode,
+  hideEditMode,
+  initialize,
+  destroy,
+  specsFormValues,
+  currentAreaSearch,
+  history,
+  createAreaSearchApplication,
+  receiveIsSaveClicked,
+  createAreaSearchSpecs,
+  isSpecsFormValid,
+  isApplicationFormValid,
+  uploadAttachment,
+  deleteUploadedAttachment,
+  isFetchingAttributes,
+  isFetchingFormAttributes,
+  isSaveClicked,
+  isPerformingFileOperation,
+  isSubmitting,
+  isSpecsFormDirty,
+  isApplicationFormDirty,
+}: Props) => {
+  const [activeTab, setActiveTab] = useState<number>(0);
+  const [attachments, setAttachments] = useState<Array<UploadedFileMeta>>([]);
+  const [initialized, setInitialized] = useState<boolean>(false);
 
-  componentDidMount() {
-    const {
-      fetchAttributes,
-      fetchFormAttributes,
-      receiveSingleAreaSearch,
-      showEditMode
-    } = this.props;
-    setPageTitle('Uusi aluehakemus');
+  useEffect(() => {
+    setPageTitle("Uusi aluehakemus");
     receiveSingleAreaSearch(null);
     showEditMode();
     fetchAttributes();
     fetchFormAttributes();
-    this.initializeForms();
-  }
+    initializeForms();
+    return () => {
+      hideEditMode();
+      destroyAllForms();
+    };
+  }, []);
 
-  componentWillUnmount() {
-    this.props.hideEditMode();
-    this.destroyAllForms();
-  }
-
-  initializeForms: () => void = () => {
-    const {
-      initialize
-    } = this.props;
-    initialize(FormNames.AREA_SEARCH_CREATE_SPECS, getInitialAreaSearchCreateForm());
+  const initializeForms: () => void = () => {
+    initialize(
+      FormNames.AREA_SEARCH_CREATE_SPECS,
+      getInitialAreaSearchCreateForm()
+    );
     initialize(FormNames.AREA_SEARCH_CREATE_FORM, {
       form: null
     });
-    this.setState(() => ({
-      initialized: true
-    }));
+    setInitialized(true);
   };
-  destroyAllForms: () => void = () => {
-    const {
-      destroy
-    } = this.props;
+
+  const destroyAllForms: () => void = () => {
     destroy(FormNames.AREA_SEARCH_CREATE_SPECS);
     destroy(FormNames.AREA_SEARCH_CREATE_FORM);
   };
 
-  componentDidUpdate(prevProps: Props) {
-    const {
-      initialize,
-      specsFormValues
-    } = this.props;
 
-    if (this.props.currentAreaSearch && !prevProps.currentAreaSearch) {
-      initialize(FormNames.AREA_SEARCH_CREATE_SPECS, specsFormValues);
-      this.setState(() => ({
-        activeTab: 1
-      }));
-      receiveIsSaveClicked(false);
-    }
-  }
-
-  handleBack: () => void = () => {
-    const {
-      history
-    } = this.props;
+  const handleBack: () => void = () => {
     history.push(getRouteById(Routes.AREA_SEARCH));
   };
-  saveChanges: () => void = () => {
-    const {
-      createAreaSearchApplication,
-      receiveIsSaveClicked
-    } = this.props;
-    receiveIsSaveClicked(true);
-    const areFormsValid = this.areFormsValid();
 
-    if (areFormsValid) {
+  const saveChanges: () => void = () => {
+    receiveIsSaveClicked(true);
+    const formsValid = areFormsValid();
+
+    if (formsValid) {
+      // is this properly connected to the redux store?
       const data = prepareAreaSearchDataForSubmission();
 
       if (!data) {
@@ -146,19 +134,11 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
       createAreaSearchApplication(data);
     }
   };
-  submitSearchPart = () => {
-    const {
-      specsFormValues,
-      createAreaSearchSpecs,
-      receiveIsSaveClicked
-    } = this.props;
-    const {
-      attachments
-    } = this.state;
+  const submitSearchPart = () => {
     receiveIsSaveClicked(true);
-    const areFormsValid = this.areFormsValid();
+    const formsValid = areFormsValid();
 
-    if (areFormsValid) {
+    if (formsValid) {
       createAreaSearchSpecs({
         area_search_attachments: attachments.map(attachment => attachment.id),
         ...specsFormValues,
@@ -166,78 +146,44 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
       });
     }
   };
-  areFormsValid: () => boolean = () => {
-    const {
-      isSpecsFormValid,
-      isApplicationFormValid,
-      currentAreaSearch
-    } = this.props;
+
+  const areFormsValid: () => boolean = () => {
     return isSpecsFormValid && (!currentAreaSearch || isApplicationFormValid);
   };
-  handleFileAdded = (file: File) => {
-    const {
-      uploadAttachment,
-      currentAreaSearch
-    } = this.props;
+
+  const handleFileAdded = (file: File) => {
     uploadAttachment({
       fileData: file,
       areaSearch: currentAreaSearch?.id,
-      callback: result => this.setState(state => ({
-        attachments: [...state.attachments, result]
-      }))
+      callback: (result) => setAttachments([...attachments, result]),
     });
   };
-  handleFileRemoved = (id: number) => {
-    const {
-      deleteUploadedAttachment,
-      currentAreaSearch
-    } = this.props;
 
+  const handleFileRemoved = (id: number) => {
     if (currentAreaSearch) {
       deleteUploadedAttachment({
         id,
-        callback: () => this.setState(state => ({
-          attachments: [...state.attachments.filter(file => file.id !== id)]
-        }))
+        callback: () =>
+          setAttachments([...attachments.filter((file) => file.id !== id)]),
       });
     } else {
-      this.setState(state => ({
-        attachments: [...state.attachments.filter(file => file.id !== id)]
-      }));
+      setAttachments([...attachments.filter((file) => file.id !== id)]);
     }
   };
 
-  render(): React.ReactNode {
-    const {
-      isFetchingAttributes,
-      currentAreaSearch,
-      isFetchingFormAttributes,
-      isSaveClicked,
-      isPerformingFileOperation,
-      isSubmitting,
-      isSpecsFormValid,
-      isApplicationFormValid,
-      isSpecsFormDirty,
-      isApplicationFormDirty
-    } = this.props;
-    const {
-      activeTab,
-      attachments,
-      initialized
-    } = this.state;
-    const areFormsValid = this.areFormsValid();
+  const formsValid = areFormsValid();
 
-    if (isFetchingAttributes || isFetchingFormAttributes) {
+  if (isFetchingAttributes || isFetchingFormAttributes) {
       return <PageContainer>
         <Loader isLoading={true} />
       </PageContainer>;
-    }
+  }
 
     return <FullWidthContainer>
-        <PageNavigationWrapper>
-          <ControlButtonBar buttonComponent={<ControlButtons allowDelete={false} allowEdit={true} isCopyDisabled={true} isEditDisabled={true} isEditMode={true} isSaveDisabled={isSubmitting || isPerformingFileOperation || isSaveClicked && !areFormsValid} onCancel={this.handleBack} onSave={!currentAreaSearch ? this.submitSearchPart : this.saveChanges} showCommentButton={false} showCopyButton={false} saveButtonText={!currentAreaSearch ? 'Jatka lomakkeen täyttöön' : 'Tallenna'} />} infoComponent={<h1>
+      <PageNavigationWrapper>
+          <ControlButtonBar buttonComponent={<ControlButtons allowDelete={false} allowEdit={true} isCopyDisabled={true} isEditDisabled={true} isEditMode={true} isSaveDisabled={isSubmitting || isPerformingFileOperation || isSaveClicked && !areFormsValid} onCancel={handleBack} onSave={!currentAreaSearch ? submitSearchPart : saveChanges} showCommentButton={false} showCopyButton={false} saveButtonText={!currentAreaSearch ? 'Jatka lomakkeen täyttöön' : 'Tallenna'} />} infoComponent={<h1>
               Uusi aluehakemus
-            </h1>} onBack={this.handleBack} />
+            </h1>} onBack={handleBack} />
           <Tabs active={activeTab} isEditMode={true} tabs={[{
           label: 'Aluehaun määritys',
           allow: true,
@@ -248,15 +194,13 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
           allow: !!currentAreaSearch,
           isDirty: isApplicationFormDirty,
           hasError: !currentAreaSearch || isSaveClicked && !isApplicationFormValid
-        }]} onTabClick={i => this.setState(() => ({
-          activeTab: i
-        }))} />
-        </PageNavigationWrapper>
+        }]} onTabClick={i => setActiveTab(i)} />
+      </PageNavigationWrapper>
         <PageContainer className='with-control-bar-and-tabs' hasTabs>
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
-                {initialized && <AreaSearchApplicationCreateSpecs attachments={attachments} onFileAdded={this.handleFileAdded} onFileRemoved={this.handleFileRemoved} />}
+                  {initialized && <AreaSearchApplicationCreateSpecs attachments={attachments} onFileAdded={handleFileAdded} onFileRemoved={handleFileRemoved} />}
               </ContentContainer>
             </TabPane>
             <TabPane>
@@ -269,7 +213,6 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
       </FullWidthContainer>;
   }
 
-}
 
 export default (flowRight(connect(state => {
   return {

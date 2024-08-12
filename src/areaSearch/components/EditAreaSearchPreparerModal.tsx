@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Modal from "components/modal/Modal";
 import EditAreaSearchPreparerForm from "areaSearch/components/EditAreaSearchPreparerForm";
 import { getAreaSearchList } from "areaSearch/selectors";
@@ -16,35 +16,33 @@ type Props = OwnProps & {
   areaSearchData: Record<string, any> | null | undefined;
 };
 
-class EditAreaSearchPreparerModal extends Component<Props> {
-  form: any;
-
-  componentDidUpdate(prevProps: Props) {
-    if (!prevProps.isOpen && this.props.isOpen) {
-      this.form?.wrappedInstance.setFocus();
-    }
-  }
-
-  setRefForForm: (arg0: any) => void = element => {
-    this.form = element;
-  };
-
-  render(): React.ReactNode {
-    const {
-      isOpen,
-      onClose,
-      onSubmit,
-      areaSearchData
-    } = this.props;
-    return <Modal isOpen={isOpen} onClose={onClose} title={areaSearchData?.identifier || ''} className="EditAreaSearchPreparerModal">
-        {areaSearchData && <FormText>
-          Saapunut {formatDate(areaSearchData.received_date)} - {areaSearchData.applicants.join(', ')}
-        </FormText>}
-        <EditAreaSearchPreparerForm ref={this.setRefForForm} onSubmit={onSubmit} onClose={onClose} areaSearchData={areaSearchData} />
-      </Modal>;
-  }
-
-}
+const EditAreaSearchPreparerModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  areaSearchData,
+}: Props) => {
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={areaSearchData?.identifier || ""}
+      className="EditAreaSearchPreparerModal"
+    >
+      {areaSearchData && (
+        <FormText>
+          Saapunut {formatDate(areaSearchData.received_date)} -{" "}
+          {areaSearchData.applicants.join(", ")}
+        </FormText>
+      )}
+      <EditAreaSearchPreparerForm
+        onSubmit={onSubmit}
+        onClose={onClose}
+        areaSearchData={areaSearchData}
+      />
+    </Modal>
+  );
+};
 
 export default (connect((state, props) => ({
   areaSearchData: getAreaSearchList(state)?.results.find(search => search.id === props.areaSearchId)

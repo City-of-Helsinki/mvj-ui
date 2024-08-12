@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { change, getFormMeta, getFormSyncErrors, getFormValues, reduxForm } from "redux-form";
 import { connect } from "react-redux";
 import { Column, Row } from "react-foundation";
@@ -38,62 +38,49 @@ type Props = OwnProps & {
   geometryError: any;
 };
 
-class AreaSearchApplicationCreateSpecs extends Component<Props> {
-  componentDidMount() {
-    const {
-      receiveFormValidFlags,
-      valid
-    } = this.props;
+const AreaSearchApplicationCreateSpecs = ({
+  onFileAdded,
+  onFileRemoved,
+  attachments,
+  change,
+  touch,
+  attributes,
+  // createAreaSearchSpecs,
+  isPerformingFileOperation,
+  isSaveClicked,
+  isSubmittingAreaSearchSpecs,
+  // formValues,
+  receiveFormValidFlags,
+  valid,
+  formMeta,
+  geometryError,
+}: Props) => {
+  useEffect(() => {
     receiveFormValidFlags({
-      [FormNames.AREA_SEARCH_CREATE_SPECS]: valid
+      [FormNames.AREA_SEARCH_CREATE_SPECS]: valid,
     });
-  }
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    const {
-      receiveFormValidFlags,
-      valid
-    } = this.props;
+  useEffect(() => {
+    receiveFormValidFlags({
+      [FormNames.AREA_SEARCH_CREATE_SPECS]: valid,
+    });
+  }, [valid]);
 
-    if (prevProps.valid !== valid) {
-      receiveFormValidFlags({
-        [FormNames.AREA_SEARCH_CREATE_SPECS]: valid
-      });
-    }
-  }
-
-  handleFileAdded = (e: any) => {
-    const {
-      onFileAdded
-    } = this.props;
+  const handleFileAdded = (e: any) => {
     onFileAdded(e.target.files[0]);
   };
-  handleFileRemoved = (index: number) => {
-    const {
-      onFileRemoved
-    } = this.props;
+
+  const handleFileRemoved = (index: number) => {
     onFileRemoved(index);
   };
 
-  render(): React.ReactNode {
-    const {
-      attributes,
-      change,
-      attachments,
-      isPerformingFileOperation,
-      isSaveClicked,
-      isSubmittingAreaSearchSpecs,
-      formMeta,
-      touch,
-      geometryError
-    } = this.props;
-
-    if (!attributes) {
-      return null;
-    }
+  if (!attributes) {
+    return null;
+  }
 
     const geometryHasError = geometryError && (isSaveClicked || formMeta.geometry?.touched);
-    const today = startOfToday();
+  const today = startOfToday();
     return <div className="AreaSearchApplicationCreate">
         <Title>
           Aluehaku
@@ -157,7 +144,7 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
           <Authorization allow={true}>
             <Column small={12}>
               <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'description_area')} name='description_area' overrideValues={{
-              fieldType: FieldTypes.TEXTAREA,
+                fieldType: FieldTypes.TEXTAREA,
               label: 'Vuokra-alueen kuvaus'
             }} />
             </Column>
@@ -167,23 +154,21 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
           <Authorization allow={true}>
             <Column small={12} medium={4}>
               <FormFieldLabel htmlFor="areaSearchApplicationAttachments">Liitteet</FormFieldLabel>
-              {attachments.length === 0 && <div>Ei lisättyjä liitteitä.</div>}
+            {attachments.length === 0 && <div>Ei lisättyjä liitteitä.</div>}
               {attachments.map(attachment => <Row key={attachment.id}>
                 <Column small={8} medium={10}>
                   {attachment.name}
                 </Column>
                 <Column small={4} medium={2}>
-                  <RemoveButton onClick={() => this.handleFileRemoved(attachment.id)} />
+                  <RemoveButton onClick={() => handleFileRemoved(attachment.id)} />
                 </Column>
               </Row>)}
-              <AddFileButton label='Lisää tiedosto' onChange={this.handleFileAdded} name="AreaSearchApplicationCreateSpecsAttachment" disabled={isPerformingFileOperation || isSubmittingAreaSearchSpecs} />
+              <AddFileButton label='Lisää tiedosto' onChange={handleFileAdded} name="AreaSearchApplicationCreateSpecsAttachment" disabled={isPerformingFileOperation || isSubmittingAreaSearchSpecs} />
             </Column>
           </Authorization>
         </Row>
       </div>;
   }
-
-}
 
 export default (flowRight(connect(state => {
   return {
@@ -194,7 +179,7 @@ export default (flowRight(connect(state => {
     isSubmittingAreaSearchSpecs: getIsSubmittingAreaSearchSpecs(state),
     formMeta: getFormMeta(FormNames.AREA_SEARCH_CREATE_SPECS)(state),
     geometryError: getFormSyncErrors(FormNames.AREA_SEARCH_CREATE_SPECS)(state)?.geometry
-  };
+};
 }, {
   createAreaSearchSpecs,
   receiveFormValidFlags

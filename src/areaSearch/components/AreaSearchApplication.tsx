@@ -1,5 +1,5 @@
 import { $Shape } from "utility-types";
-import React, { Component, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import orderBy from "lodash/orderBy";
@@ -37,30 +37,21 @@ type Props = OwnProps & {
   formAttributes: Attributes;
   areaSearchAttributes: Attributes;
 };
-type State = {
+
+const AreaSearchApplication = ({
+  areaSearch,
+  isFetchingFormAttributes,
+  formAttributes,
+  areaSearchAttributes
+}: Props) => {
   // The Leaflet element doesn't initialize correctly if it's invisible in a collapsed section element,
   // only rendering some map tiles and calculating the viewport from given bounds incorrectly, until an
   // action that forces it to update its dimensions (like resizing the window) happens. We can
   // circumvent this by forcing it to rerender with a key whenever that section is opened; during
   // the opening transition, the initialization works properly.
-  selectedAreaSectionRefreshKey: number;
-};
+  const [selectedAreaSectionRefreshKey, setSelectedAreaSectionRefreshKey] =
+    useState<number>(0);
 
-class AreaSearchApplication extends Component<Props, State> {
-  state: any = {
-    selectedAreaSectionRefreshKey: 0
-  };
-
-  render(): React.ReactNode {
-    const {
-      areaSearch,
-      isFetchingFormAttributes,
-      formAttributes,
-      areaSearchAttributes
-    } = this.props;
-    const {
-      selectedAreaSectionRefreshKey
-    } = this.state;
     const fieldTypes = getFieldAttributes(formAttributes, 'sections.child.children.fields.child.children.type.choices');
     let form: Form | null | undefined;
     let answer: Record<string, any> | null | undefined;
@@ -121,9 +112,7 @@ class AreaSearchApplication extends Component<Props, State> {
         </Collapse>
         <Collapse headerTitle={selectedAreaTitle} onToggle={isOpen => {
           if (isOpen) {
-            this.setState(state => ({
-              selectedAreaSectionRefreshKey: state.selectedAreaSectionRefreshKey + 1
-            }));
+            setSelectedAreaSectionRefreshKey(selectedAreaSectionRefreshKey + 1);
           }
         }} defaultOpen>
           <SingleAreaSearchMap geometry={areaSearch.geometry} key={selectedAreaSectionRefreshKey} minimap />
@@ -234,8 +223,6 @@ class AreaSearchApplication extends Component<Props, State> {
         </Collapse>
       </>}
     </div>;
-  }
-
 }
 
 export default (flowRight(connect(state => ({

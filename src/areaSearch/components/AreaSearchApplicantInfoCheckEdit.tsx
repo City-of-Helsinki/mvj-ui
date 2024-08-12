@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { change } from "redux-form";
 import PlotApplicationInfoCheckCollapse from "plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
@@ -20,17 +20,13 @@ type Props = OwnProps & {
   }>;
 };
 
-class PlotApplicationApplicantInfoCheck extends PureComponent<Props> {
-  render(): React.ReactNode {
-    const {
-      infoCheckIds,
-      answer,
-      submissionErrors
-    } = this.props;
-    return <ApplicantInfoCheckEdit answer={answer} infoCheckIds={infoCheckIds} submissionErrors={submissionErrors} showMarkAll={false} />;
-  }
-
-}
+const PlotApplicationApplicantInfoCheck = ({
+  infoCheckIds,
+  answer,
+  submissionErrors,
+}: Props) => {
+  return <ApplicantInfoCheckEdit answer={answer} infoCheckIds={infoCheckIds} submissionErrors={submissionErrors} showMarkAll={false} />;
+};
 
 export default (connect((state, props) => {
   const formName = getApplicantInfoCheckFormName(props.identifier);

@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
@@ -76,46 +75,60 @@ type Props = ContextRouter & OwnProps & {
   fetchApplicantInfoCheckAttributes: (...args: Array<any>) => any;
   batchEditAreaSearchInfoChecks: (...args: Array<any>) => any;
 };
-type State = {
-  activeTab: number;
-  isRestoreModalOpen: boolean;
-  applicantInfoCheckFormNames: Array<string>;
-};
 
-class AreaSearchApplicationPage extends Component<Props, State> {
-  state = {
-    activeTab: 0,
-    isRestoreModalOpen: false,
-    applicantInfoCheckFormNames: []
-  };
-  static contextTypes = {
-    router: PropTypes.object
-  };
-  timerAutoSave: any;
+const AreaSearchApplicationPage = ({
+  clearFormValidFlags,
+  currentAreaSearch,
+  fetchSingleAreaSearch,
+  basicInformationFormValues,
+  receiveTopNavigationSettings,
+  showEditMode,
+  hideEditMode,
+  areaSearchAttributes,
+  areaSearchMethods,
+  isFetchingAttributes,
+  usersPermissions,
+  isFetchingUsersPermissions,
+  isFetching,
+  isEditMode,
+  isSaveClicked,
+  receiveIsSaveClicked,
+  initialize,
+  change,
+  destroy,
+  isFormValidFlags,
+  receiveFormValidFlags,
+  isPerformingFileOperation,
+  applicantInfoChecks,
+  isFormDirty,
+  isFormValid,
+  getValuesForForm,
+  isFetchingFormAttributes,
+  formAttributes,
+  fetchFormAttributes,
+  isFetchingApplicantInfoCheckAttributes,
+  fetchApplicantInfoCheckAttributes,
+  batchEditAreaSearchInfoChecks,
+  history,
+  match: {
+    params: {
+      areaSearchId
+    }
+  },
+  location: {
+    search
+  }
+}: Props) => {
+  const [activeTab, setActiveTab] = useState<number>(0)
+  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState<boolean>(false)
+  const [applicantInfoCheckFormNames, setApplicantInfoCheckFormNames] = useState<Array<string>>([])
+  const [timerAutoSave, setTimerAutoSave] = useState<number | null>(null)
 
-  componentDidMount() {
-    const {
-      clearFormValidFlags,
-      receiveTopNavigationSettings,
-      fetchSingleAreaSearch,
-      match: {
-        params: {
-          areaSearchId
-        }
-      },
-      location: {
-        search
-      },
-      receiveIsSaveClicked,
-      fetchFormAttributes,
-      fetchApplicantInfoCheckAttributes
-    } = this.props;
+  useEffect(() => {
     const query = getUrlParams(search);
 
     if (query.tab) {
-      this.setState({
-        activeTab: query.tab
-      });
+      setActiveTab(query.tab);
     }
 
     clearFormValidFlags();
@@ -127,93 +140,71 @@ class AreaSearchApplicationPage extends Component<Props, State> {
     });
 
     if (query.tab) {
-      this.setState({
-        activeTab: query.tab
-      });
+      setActiveTab(query.tab);
     }
 
     fetchSingleAreaSearch(areaSearchId);
     fetchFormAttributes();
     fetchApplicantInfoCheckAttributes();
     setPageTitle('Hakemus');
-  }
+    return () => {
+      hideEditMode();
+      clearFormValidFlags();
+    }
+  }, [])
 
-  componentWillUnmount() {
-    this.props.hideEditMode();
-    this.stopAutoSaveTimer();
-  }
-
-  handleShowEditMode = () => {
-    const {
-      showEditMode,
-      receiveIsSaveClicked
-    } = this.props;
+  const handleShowEditMode = () => {
     receiveIsSaveClicked(false);
     clearFormValidFlags();
     showEditMode();
-    this.destroyAllForms();
-    this.initializeInfoCheckForms();
-    this.startAutoSaveTimer();
+    destroyAllForms();
+    initializeInfoCheckForms();
+    startAutoSaveTimer();
   };
-  startAutoSaveTimer = () => {
-    this.timerAutoSave = setInterval(() => this.saveUnsavedChanges(), 5000);
+  const startAutoSaveTimer = () => {
+    const timer = setInterval(() => saveUnsavedChanges(), 5000)
+    // @ts-ignore: Argument of type 'Timeout' is not assignable to parameter of type 'SetStateAction<number>'.ts(2345)
+    setTimerAutoSave(timer);
   };
-  initializeInfoCheckForms = () => {
-    const {
-      initialize,
-      applicantInfoChecks
-    } = this.props;
-    let applicantInfoCheckFormNames = [];
+  const initializeInfoCheckForms = () => {
+    let applicantInfoCheckFormNamesInit = [];
     const applicantInfoChecksByApplicantId = groupBy(applicantInfoChecks, 'entry');
     Object.keys(applicantInfoChecksByApplicantId).forEach(key => {
       const infoChecks = getApplicantInfoCheckItems(applicantInfoChecksByApplicantId[key]);
       infoChecks.forEach(infoCheck => {
         initialize(getApplicantInfoCheckFormName(infoCheck.data.id), infoCheck);
-        applicantInfoCheckFormNames.push(getApplicantInfoCheckFormName(infoCheck.data.id));
+        applicantInfoCheckFormNamesInit.push(getApplicantInfoCheckFormName(infoCheck.data.id));
       });
     });
-    this.setState(() => ({
-      applicantInfoCheckFormNames
-    }));
+    setApplicantInfoCheckFormNames(applicantInfoCheckFormNamesInit)
   };
-  stopAutoSaveTimer = () => {
-    clearInterval(this.timerAutoSave);
+
+  const stopAutoSaveTimer = () => {
+    clearInterval(timerAutoSave);
   };
-  saveUnsavedChanges = () => {};
-  cancelRestoreUnsavedChanges = () => {
+
+  const saveUnsavedChanges = () => {};
+
+  const cancelRestoreUnsavedChanges = () => {
     clearUnsavedChanges();
-    this.setState({
-      isRestoreModalOpen: false
-    });
+    setIsRestoreModalOpen(false)
   };
-  getAreFormsValid = () => {
+
+  const getAreFormsValid = () => {
     return true;
   };
-  cancelChanges = () => {
-    const {
-      hideEditMode,
-      fetchSingleAreaSearch,
-      match: {
-        params: {
-          areaSearchId
-        }
-      }
-    } = this.props;
+
+  const cancelChanges = () => {
     // Reload all data in case we tried and managed to save some but not all info check data.
     // These could be patched to the current plot application directly upon receiving success too,
     // but that's a more complicated operation with minor gains over a refetch.
     fetchSingleAreaSearch(areaSearchId);
     hideEditMode();
-    this.stopAutoSaveTimer();
-    this.destroyAllForms();
+    stopAutoSaveTimer();
+    destroyAllForms();
   };
-  handleBack = () => {
-    const {
-      history,
-      location: {
-        search
-      }
-    } = this.props;
+
+  const handleBack = () => {
     const query = getUrlParams(search);
     // Remove page specific url parameters when moving to application list page
     delete query.tab;
@@ -222,86 +213,37 @@ class AreaSearchApplicationPage extends Component<Props, State> {
       search: getSearchQuery(query)
     });
   };
-  handleTabClick = tabId => {
-    const {
-      history,
-      location,
-      location: {
-        search
-      }
-    } = this.props;
+  
+  const handleTabClick = tabId => {
     const query = getUrlParams(search);
-    this.setState({
-      activeTab: tabId
-    }, () => {
-      query.tab = tabId;
-      return history.push({ ...location,
-        search: getSearchQuery(query)
-      });
-    });
+    setActiveTab(tabId);
   };
+  
+  useEffect(() => {
+    scrollToTopPage();
+  }, [activeTab]);
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    const {
-      location: {
-        search
-      },
-      currentAreaSearch,
-      match: {
-        params: {
-          areaSearchId
-        }
-      },
-      isFetching,
-      isEditMode,
-      fetchSingleAreaSearch
-    } = this.props;
-    const {
-      activeTab
-    } = this.state;
-    const query = getUrlParams(search);
-    const tab = query.tab ? Number(query.tab) : 0;
-
-    if (tab !== activeTab) {
-      this.setState({
-        activeTab: tab
-      });
-    }
-
-    if (prevState.activeTab !== activeTab) {
-      scrollToTopPage();
-    }
-
-    if (!isFetching && prevProps.isFetching) {
+  useEffect(() => {
+    if (!isFetching) {
       setPageTitle(`Hakemus ${currentAreaSearch?.identifier || ''}`);
     }
+  }, [isFetching]);
 
-    if (!isEditMode && prevProps.isEditMode) {
-      this.stopAutoSaveTimer();
+  useEffect(() => {
+    if (!isEditMode) {
+      stopAutoSaveTimer();
     }
+  }, [isEditMode]);
 
-    if (areaSearchId && areaSearchId !== prevProps.match.params?.areaSearchId) {
+  useEffect(() => {
+    if (areaSearchId) {
       fetchSingleAreaSearch(areaSearchId);
     }
-  }
+  }, [areaSearchId]);
 
-  saveChanges = () => {
-    const {
-      receiveIsSaveClicked,
-      batchEditAreaSearchInfoChecks,
-      getValuesForForm,
-      isFormDirty,
-      match: {
-        params: {
-          areaSearchId
-        }
-      }
-    } = this.props;
-    const {
-      applicantInfoCheckFormNames
-    } = this.state;
+  const saveChanges = () => {
     receiveIsSaveClicked(true);
-    const areFormsValid = this.getAreFormsValid();
+    const areFormsValid = getAreFormsValid();
 
     if (areFormsValid) {
       const operations: InfoCheckBatchEditData = {
@@ -325,39 +267,17 @@ class AreaSearchApplicationPage extends Component<Props, State> {
       batchEditAreaSearchInfoChecks(operations);
     }
   };
-  restoreUnsavedChanges = () => {
-    const {
-      showEditMode
-    } = this.props;
+  const restoreUnsavedChanges = () => {
     showEditMode();
     clearFormValidFlags();
-    this.destroyAllForms();
-    this.startAutoSaveTimer();
-    this.setState({
-      isRestoreModalOpen: false
-    });
+    destroyAllForms();
+    startAutoSaveTimer();
+    setIsRestoreModalOpen(false)
   };
-  destroyAllForms = () => {};
 
-  render() {
-    const {
-      activeTab,
-      isRestoreModalOpen
-    } = this.state;
-    const {
-      currentAreaSearch,
-      isFetchingAttributes,
-      areaSearchMethods,
-      areaSearchAttributes,
-      usersPermissions,
-      isFetchingUsersPermissions,
-      isFetching,
-      isEditMode,
-      isSaveClicked,
-      isPerformingFileOperation,
-      isFetchingApplicantInfoCheckAttributes
-    } = this.props;
-    const areFormsValid = this.getAreFormsValid();
+  const destroyAllForms = () => {};
+
+    const areFormsValid = getAreFormsValid();
 
     if (isFetching || isFetchingUsersPermissions || isFetchingAttributes || isFetchingApplicantInfoCheckAttributes) {
       return <PageContainer><Loader isLoading={true} /></PageContainer>;
@@ -379,12 +299,12 @@ class AreaSearchApplicationPage extends Component<Props, State> {
 
     return <FullWidthContainer>
         <PageNavigationWrapper>
-          <ControlButtonBar buttonComponent={<ControlButtons allowDelete={false} allowEdit={isMethodAllowed(areaSearchMethods, Methods.PATCH)} isCopyDisabled={true} isEditDisabled={false} isEditMode={isEditMode} isSaveDisabled={isPerformingFileOperation || isSaveClicked && !areFormsValid} onCancel={this.cancelChanges} onEdit={this.handleShowEditMode} onSave={this.saveChanges} showCommentButton={false} showCopyButton={false} deleteModalTexts={{
+          <ControlButtonBar buttonComponent={<ControlButtons allowDelete={false} allowEdit={isMethodAllowed(areaSearchMethods, Methods.PATCH)} isCopyDisabled={true} isEditDisabled={false} isEditMode={isEditMode} isSaveDisabled={isPerformingFileOperation || isSaveClicked && !areFormsValid} onCancel={cancelChanges} onEdit={handleShowEditMode} onSave={saveChanges} showCommentButton={false} showCopyButton={false} deleteModalTexts={{
           buttonClassName: ButtonColors.ALERT,
           buttonText: ConfirmationModalTexts.DELETE_PLOT_APPLICATION.BUTTON,
           label: ConfirmationModalTexts.DELETE_PLOT_APPLICATION.LABEL,
           title: ConfirmationModalTexts.DELETE_PLOT_APPLICATION.TITLE
-        }} />} infoComponent={<h1>{currentAreaSearch?.identifier}</h1>} onBack={this.handleBack} />
+        }} />} infoComponent={<h1>{currentAreaSearch?.identifier}</h1>} onBack={handleBack} />
           <Tabs active={activeTab} isEditMode={isEditMode} tabs={[{
           label: 'Hakemus',
           allow: true,
@@ -397,10 +317,10 @@ class AreaSearchApplicationPage extends Component<Props, State> {
         }, {
           label: 'Kartta',
           allow: true
-        }]} onTabClick={this.handleTabClick} />
+        }]} onTabClick={handleTabClick} />
         </PageNavigationWrapper>
         <PageContainer className='with-control-bar-and-tabs' hasTabs>
-          <ConfirmationModal confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON} isOpen={isRestoreModalOpen} label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL} onCancel={this.cancelRestoreUnsavedChanges} onClose={this.cancelRestoreUnsavedChanges} onSave={this.restoreUnsavedChanges} title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE} />
+          <ConfirmationModal confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON} isOpen={isRestoreModalOpen} label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL} onCancel={cancelRestoreUnsavedChanges} onClose={cancelRestoreUnsavedChanges} onSave={restoreUnsavedChanges} title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE} />
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
@@ -422,8 +342,6 @@ class AreaSearchApplicationPage extends Component<Props, State> {
           </TabContent>
         </PageContainer>
       </FullWidthContainer>;
-  }
-
 }
 
 export default (flowRight(withRouter, withAreaSearchAttributes, connect(state => {

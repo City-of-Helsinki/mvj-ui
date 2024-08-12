@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { formValueSelector, reduxForm } from "redux-form";
 import { flowRight } from "lodash/util";
 import { connect } from "react-redux";
@@ -27,33 +27,25 @@ export const ExportModes = {
   APPLICATIONS_PDF: 'APPLICATIONS_PDF'
 };
 
-class AreaSearchExportModal extends Component<Props> {
-  componentDidUpdate(prevProps: Props): void {
-    const {
-      isOpen,
-      change
-    } = this.props;
+const AreaSearchExportModal = ({
+  isOpen,
+  onClose,
+  change,
+  selectedMode,
+  selectedSearches,
+  includeInformationChecks,
+  includeAttachments,
+}: Props) => {
+  useEffect(() => {
+    change("mode", null);
+    change("includePreparerInformation", false);
+    change("includeAttachments", false);
+  }, [isOpen]);
 
-    if (isOpen && !prevProps.isOpen) {
-      change('mode', null);
-      change('includePreparerInformation', false);
-      change('includeAttachments', false);
+  const selectedSearchIds = Object.keys(selectedSearches).reduce((acc, key) => {
+    if (selectedSearches[key]) {
+      acc.push(key);
     }
-  }
-
-  render(): React.ReactNode {
-    const {
-      isOpen,
-      onClose,
-      selectedMode,
-      selectedSearches,
-      includeInformationChecks,
-      includeAttachments
-    } = this.props;
-    const selectedSearchIds = Object.keys(selectedSearches).reduce((acc, key) => {
-      if (selectedSearches[key]) {
-        acc.push(key);
-      }
 
       return acc;
     }, []);
@@ -115,9 +107,9 @@ class AreaSearchExportModal extends Component<Props> {
           }]
         }} disableDirty invisibleLabel />
           <FormField name="includeAttachments" fieldAttributes={{
-          type: FieldTypes.CHECKBOX,
-          required: false,
-          read_only: false,
+              type: FieldTypes.CHECKBOX,
+              required: false,
+              read_only: false,
           label: 'Sisällytä tulostukseen liitteet'
         }} overrideValues={{
           options: [{
@@ -133,7 +125,6 @@ class AreaSearchExportModal extends Component<Props> {
       </Modal>;
   }
 
-}
 
 const formName = FormNames.AREA_SEARCH_EXPORT;
 const selector = formValueSelector(formName);
