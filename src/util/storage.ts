@@ -98,7 +98,7 @@ export const removeSessionStorageItem = (key: string, callback: ((...args: Array
  * @returns {string}
  */
 const buildStorageKey = (key: string) => {
-  return [process.env.STORAGE_PREFIX, key].join('.');
+  return [import.meta.env.VITE_STORAGE_PREFIX, key].join('.');
 };
 
 /**

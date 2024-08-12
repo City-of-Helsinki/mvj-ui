@@ -3,14 +3,14 @@
 // TODO: migrate to oidc-client-ts, because oidc-client is not maintained anymore
 import { Global, Log, UserManager, WebStorageStateStore } from "oidc-client";
 const userManagerConfig = {
-  authority: process.env.OPENID_CONNECT_AUTHORITY_URL || 'https://api.hel.fi/sso/openid/',
+  authority: import.meta.env.VITE_OPENID_CONNECT_AUTHORITY_URL || 'https://api.hel.fi/sso/openid/',
   automaticSilentRenew: true,
-  client_id: process.env.OPENID_CONNECT_CLIENT_ID || '',
+  client_id: import.meta.env.VITE_OPENID_CONNECT_CLIENT_ID || '',
   filterProtocolClaims: true,
   loadUserInfo: true,
   redirect_uri: `${location.origin}/callback`,
   response_type: 'id_token token',
-  scope: process.env.OPENID_CONNECT_SCOPE || 'openid profile https://api.hel.fi/auth/mvj',
+  scope: import.meta.env.VITE_OPENID_CONNECT_SCOPE || 'openid profile https://api.hel.fi/auth/mvj',
   silent_redirect_uri: `${location.origin}/silent_renew.html`,
   userStore: new WebStorageStateStore({
     store: Global.localStorage

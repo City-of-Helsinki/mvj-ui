@@ -8,7 +8,7 @@ function* fetchApiTokenSaga({
   type: any
 }): Generator<any, any, any> {
   try {
-    const request = new Request(process.env.OPENID_CONNECT_API_TOKEN_URL || 'https://api.hel.fi/sso/api-tokens/', {
+    const request = new Request(import.meta.env.VITE_OPENID_CONNECT_API_TOKEN_URL || 'https://api.hel.fi/sso/api-tokens/', {
       headers: {
         'Authorization': `Bearer ${token}`
       }

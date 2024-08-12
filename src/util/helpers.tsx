@@ -298,7 +298,7 @@ export const formatDateRange = (startDate: any, endDate: any): string => {
 
 /* istanbul ignore next */
 export const getApiUrlWithOutVersionSuffix = (): string => {
-  return process.env.API_URL ? process.env.API_URL.split('/v1')[0] : '';
+  return import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.split('/v1')[0] : '';
 };
 
 /**
