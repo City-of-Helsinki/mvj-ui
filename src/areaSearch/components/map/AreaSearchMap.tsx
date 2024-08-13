@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
+// This is a hack to get react-leaflet-draw, the issue and solution described at:
+// https://github.com/Leaflet/Leaflet.draw/issues/1026#issuecomment-986702652
+// @ts-ignore
+window.type = true; 
 import throttle from "lodash/throttle";
 import classNames from "classnames";
 import MapContainer from "@/areaNote/components/MapContainer";
