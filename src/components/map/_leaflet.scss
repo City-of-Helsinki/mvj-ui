@@ -284,7 +284,7 @@
   margin-bottom: 0 !important;
 }
 .leaflet-control-layers-toggle {
-  background-image: url(../assets/images/layers-2x.png);
+  background-image: url(/assets/images/layers-2x.png);
   background-size: 70%;
 }
 .leaflet-bar a:hover {
@@ -384,7 +384,7 @@
 
 /* Default icon URLs */
 .leaflet-default-icon-path {
-  //background-image: url(../assets/images/marker-icon.png);
+  background-image: url(/assets/images/marker-icon.png);
 }
 
 

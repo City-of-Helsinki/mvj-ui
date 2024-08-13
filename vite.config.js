@@ -26,14 +26,7 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        postcssUrl({
-          url: (asset) => {
-            if (asset.relativePath && !['src', 'assets'].includes(asset.relativePath.split('/')[0])) {
-              return `/assets/${asset.url}`;
-            }
-            return asset.url;
-          }
-        }),
+        postcssUrl({}),
       ]
     }
   },
