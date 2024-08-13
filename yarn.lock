@@ -1066,7 +1066,7 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
-"@babel/runtime@^7.15.4":
+"@babel/runtime@^7.12.1", "@babel/runtime@^7.15.4":
   version "7.25.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.25.0.tgz#3af9a91c1b739c569d5d80cc917280919c544ecb"
   integrity sha512-7dRy4DwXwtzBrPbZflqxnvfxLF8kdZXPkhymtDeFoFqE6ldzjQFgYTtYIFARcLEYDrqfBfYcZt1WqFxRoyC9Rw==
@@ -4548,10 +4548,10 @@ leaflet-zoombox@^0.5.1:
   resolved "https://registry.yarnpkg.com/leaflet-zoombox/-/leaflet-zoombox-0.5.1.tgz#84a50abf10a354aed5e0661eadbdda8927f1512f"
   integrity sha512-qbLm6vkJzN1thr1cQFf9xsP+M7K5dz0Xa4EAt9kppkGDxV9Xewr1kpg6e8JBFfCGcqJi6pulNhkxLnfooxYZRQ==
 
-leaflet.fullscreen@1.4.5:
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/leaflet.fullscreen/-/leaflet.fullscreen-1.4.5.tgz#3b558dece24d9b51ce762b2e00fe902727f47272"
-  integrity sha512-rQnZswt/bI2HXmYDWjvgu8GIgg5TAyJEVOXJ1SVpo+36G9/YJ4j8gt8bz7VQU5P/gs2tQNCFbuuWtKYpSw8gbA==
+leaflet.fullscreen@1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/leaflet.fullscreen/-/leaflet.fullscreen-1.6.0.tgz#daad9a6e07c8bdbca8e5af7e3d50272d31b0226a"
+  integrity sha512-Mr6STMeyKSfJ1CsKFcPZOm425LOe0c/6EHh0AK93GiTvteTAMFmO/oFDNe+0p1mk4+8yeGLcYgaXTSzPveEGhA==
 
 leaflet@^1.5.1:
   version "1.6.0"
@@ -4602,13 +4602,6 @@ locate-path@^6.0.0:
   integrity sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==
   dependencies:
     p-locate "^5.0.0"
-
-locate-path@^7.1.0:
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-7.2.0.tgz#69cb1779bd90b35ab1e771e1f2f89a202c2a8a8a"
-  integrity sha512-gvVijfZvn7R+2qyPX8mAuKcFGDf6Nc61GdvGafQsHL0sBIxfKzA+usWn4GFC/bk+QdwPUD4kWFJLhElipq+0VA==
-  dependencies:
-    p-locate "^6.0.0"
 
 lodash-es@^4.17.10:
   version "4.17.21"
@@ -5453,12 +5446,12 @@ react-leaflet-draw@^0.19.0:
   dependencies:
     lodash-es "^4.17.10"
 
-react-leaflet-fullscreen@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-leaflet-fullscreen/-/react-leaflet-fullscreen-1.0.1.tgz#59496664cb45ecb431d50506e61e0a14a1fa9f98"
-  integrity sha512-o6zZlytomWQiWyUh6hbdlJVSgbuCHF1M7JUgS8Z6IOBUo3aFPiHKju7Osb9eKu3nTUoN1jWsm5ZNhRteY+NChQ==
+react-leaflet-fullscreen@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-leaflet-fullscreen/-/react-leaflet-fullscreen-1.0.2.tgz#9dba4dc651f613299411b754df78a2b7f77b132a"
+  integrity sha512-SU7Bs5pokR3UEj8K6MEKcHCbCNEKqN39Z3ad78i1nUqLb0MRymf+8Oy69l8AkKnRN4KOcOcatDsAA1L3ifev9Q==
   dependencies:
-    leaflet.fullscreen "1.4.5"
+    leaflet.fullscreen "1.6.0"
     prop-types "^15.6.x"
 
 react-leaflet@^2.8.0:
