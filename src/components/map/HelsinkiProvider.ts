@@ -1,5 +1,5 @@
 import { Provider } from 'leaflet-geosearch';
-import { SERVICE_MAP_URL } from 'util/constants';
+import { SERVICE_MAP_URL } from '@/util/constants';
 import type { AddressResult, ServiceMapResponse, ParseArgument, SearchArgument, SearchResult } from './types';
 export default class HelsinkiProvider extends Provider<ServiceMapResponse, AddressResult> {
   options: Record<string, any>;
