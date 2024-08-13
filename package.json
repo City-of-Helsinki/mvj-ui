@@ -1,7 +1,7 @@
 {
   "name": "mvj-ui",
   "version": "1.0.0",
-  "description": "City of Helsinki ground rent system UI",
+  "description": "City of Helsinki Land lease UI",
   "main": "src/index.tsx",
   "author": "Jori Lindell <jori.lindell@digia.com>",
   "license": "MIT",
