@@ -2,27 +2,5 @@
   "presets": [
     "@babel/preset-env",
     "@babel/preset-react"
-  ],
-  "env": {
-    "test": {
-      "plugins": [
-        "istanbul"
-      ]
-    }
-  },
-  "plugins": [
-    "react-hot-loader/babel",
-    "@babel/plugin-proposal-class-properties",
-    [
-      "module-resolver",
-      {
-        "root": [
-          "./src"
-        ],
-        "alias": {
-          "src": "./src"
-        }
-      }
-    ]
   ]
 }
