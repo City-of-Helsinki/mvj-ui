@@ -11,11 +11,8 @@ const defaultState: UsersPermissionsState = {
 };
 
 describe('Users permissions', () => {
-  // $FlowFixMe
   describe('Reducer', () => {
-    // $FlowFixMe
     describe('usersPermissionsReducer', () => {
-      // $FlowFixMe
       it('should update user groups', () => {
         const dummyUserGroups = ['UserGroup1'];
         const newState = { ...defaultState,

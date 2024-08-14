@@ -4,9 +4,7 @@ import { composePageTitle, getSearchQuery, getUrlParams, fixedLengthNumber, getE
 import { getCoordinatesOfGeometry, getCenterFromCoordinates } from "./map";
 
 describe('utils', () => {
-  // $FlowFixMe
   describe('date.js', () => {
-    // $FlowFixMe
     it('0999-12-31 should be invalid date', () => {
       expect(isValidDate(new Date('0999-12-31'))).to.deep.equal(false);
     });
@@ -510,7 +508,6 @@ describe('utils', () => {
     });
   });
   describe('helpers.js', () => {
-    // $FlowFixMe
     it('Should return correct title', () => {
       expect(composePageTitle('foo')).to.deep.equal('foo | Maanvuokrausjärjestelmä | Helsingin Kaupunki');
       expect(composePageTitle()).to.deep.equal('Maanvuokrausjärjestelmä | Helsingin Kaupunki');
@@ -1225,7 +1222,6 @@ describe('utils', () => {
     });
   });
   describe('map.js', () => {
-    // $FlowFixMe
     it('Should return coordinates of a geometry', () => {
       const coordinates = [[24.945222, 60.176976], [24.945222, 60.179629], [24.957479, 60.179629], [24.957479, 60.176976], [24.945222, 60.176976]];
       const geometry = {

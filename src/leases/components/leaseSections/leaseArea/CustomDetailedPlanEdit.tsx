@@ -408,7 +408,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
 }
 
 const formName = FormNames.LEASE_AREAS;
-export default (flowRight( // $FlowFixMe
+export default (flowRight(
 withRouter, connect(state => {
   return {
     attributes: getAttributes(state),

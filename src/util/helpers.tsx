@@ -42,11 +42,11 @@ export const setPageTitle = (title: string, prepend?: boolean) => {
 
 /* istanbul ignore next */
 export const getDocumentWidth = (): number => {
-  return Math.max( // $FlowFixMe
-  document.documentElement['clientWidth'], // $FlowFixMe
-  document.body['scrollWidth'], // $FlowFixMe
-  document.documentElement['scrollWidth'], // $FlowFixMe
-  document.body['offsetWidth'], // $FlowFixMe
+  return Math.max(
+  document.documentElement['clientWidth'],
+  document.body['scrollWidth'],
+  document.documentElement['scrollWidth'],
+  document.body['offsetWidth'],
   document.documentElement['offsetWidth']);
 };
 
@@ -123,7 +123,6 @@ export const getSearchQuery = (filters: any): string => {
         return;
       }
 
-      // $FlowFixMe
       query.push(`${key}=${isArray(filter) ? filter.join(',') : encodeURIComponent(filter)}`);
     }
   });
@@ -497,7 +496,6 @@ export const copyElementContentsToClipboard = (el: any): boolean => {
   document.body.appendChild(el);
   selectElementContents(el);
   document.execCommand('copy');
-  // $FlowFixMe
   document.body.removeChild(el);
 
   if (selection && selected) {
@@ -683,7 +681,6 @@ export const findReactById = (id: string | null | undefined): Record<string, any
   const dom = document.getElementById(id);
   if (!dom) return null;
   const key = Object.keys(dom).find(key => key.startsWith('__reactInternalInstance$'));
-  // $FlowFixMe
   const internalInstance = dom[key];
   if (internalInstance == null) return null;
 

@@ -912,7 +912,6 @@ export const getTenantRentShareWarnings = (tenants: Array<Record<string, any>>, 
     });
     rentShares.forEach(rentShare => {
       if (rentShare.intended_use != null) {
-        // $FlowFixMe[method-unbinding] This seems to be a bug on flow.. https://github.com/facebook/flow/issues/8689
         if (Object.prototype.hasOwnProperty.call(sharesByIntendedUse, rentShare.intended_use)) {
           sharesByIntendedUse[rentShare.intended_use].push(rentShare);
         } else {

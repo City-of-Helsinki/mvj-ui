@@ -65,11 +65,8 @@ describe('Lease create charge', () => {
       });
     });
   });
-  // $FlowFixMe
   describe('Helpers', () => {
-    // $FlowFixMe
     describe('receivableTypesFromAttributes', () => {
-      // $FlowFixMe
       it('should filter only active receivableTypes as choices', () => {
         const dummyFieldAttributes = {
           type: "field",

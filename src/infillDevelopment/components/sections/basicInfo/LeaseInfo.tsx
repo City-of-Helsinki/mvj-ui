@@ -110,7 +110,7 @@ const LeaseInfo = ({
     </Fragment>;
 };
 
-export default flowRight( // $FlowFixMe
+export default flowRight(
 withRouter, connect(state => {
   return {
     infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),

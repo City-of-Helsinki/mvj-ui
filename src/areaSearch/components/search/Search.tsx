@@ -100,7 +100,6 @@ class Search extends Component<Props, State> {
     delete searchQuery.zoom;
     const keys = Object.keys(searchQuery);
 
-    // $FlowFixMe[method-unbinding] https://github.com/facebook/flow/issues/8689
     if (!keys.length || keys.length === 1 && Object.prototype.hasOwnProperty.call(searchQuery, 'search')) {
       return true;
     }
