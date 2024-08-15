@@ -127,7 +127,12 @@ class SendEmailModal extends PureComponent<Props, State> {
     } = this.state;
     return <Modal className='modal-autoheight' title='Lähetä sähköposti' isOpen={isOpen} onClose={onClose}>
         <FormText>Valitse sähköpostin vastaanottajat</FormText>
-        <DualListBox availableRef={ref => this.dualListBox = ref} canFilter filter={filter} filterPlaceholder='Hae vastaanottajia...' onChange={this.handleUserListChange} onFilterChange={this.handleFilterChange} options={userOptions} selected={selectedUsers} simpleValue={false} />
+        <DualListBox icons={{
+          moveLeft: '<',
+          moveAllLeft: '<<',
+          moveRight: '>',
+          moveAllRight: '>>'
+        }} availableRef={ref => this.dualListBox = ref} canFilter filter={filter} filterPlaceholder='Hae vastaanottajia...' onChange={this.handleUserListChange} onFilterChange={this.handleFilterChange} options={userOptions} selected={selectedUsers} simpleValue={false} />
 
         <FormText><label htmlFor='send-email_text'> Sähköpostiin liittyvä kommentti</label></FormText>
         <TextAreaInput className="no-margin" id='send-email_text' onChange={this.handleTextChange} placeholder='' rows={4} value={text} />
