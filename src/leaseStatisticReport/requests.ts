@@ -23,7 +23,8 @@ export const fetchReportData = (payload: Record<string, any>): Generator<any, an
   return callApi(new Request(`${payload.url}?${parsedQuery}`));
 };
 export const sendReportToMail = (payload: Record<string, any>): Generator<any, any, any> => {
-  return callApi(new Request(`${payload.url}?${payload.query}`));
+  const parsedQuery = parseServiceUnitQuery(payload.query) || '';
+  return callApi(new Request(`${payload.url}?${parsedQuery}`));
 };
 export const fetchOptions = (payload: any): Generator<any, any, any> => {
   return callApi(new Request(payload, {
