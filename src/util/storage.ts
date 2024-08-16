@@ -30,7 +30,8 @@ export const setStorageItem = (key: string, value: any, callback: ((...args: Arr
     if (callback && typeof callback === 'function') {
       callback();
     }
-  } catch (e) {// fall silently
+  } catch (e) {
+    console.error('Failed to set item to local storage', e);
   }
 };
 
@@ -75,7 +76,8 @@ export const setSessionStorageItem = (key: string, value: any, callback: ((...ar
     if (callback && typeof callback === 'function') {
       callback();
     }
-  } catch (e) {// fall silently
+  } catch (e) {
+    console.error('Failed to set item to session storage', e);
   }
 };
 
@@ -110,6 +112,7 @@ const isJson = (value: any) => {
   try {
     JSON.parse(value);
   } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return false;
   }
 
