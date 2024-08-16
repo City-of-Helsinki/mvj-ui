@@ -88,12 +88,14 @@ const TenantItem = ({
           <Row>
             <Column small={12}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+                <>
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.CONTACT)}>
                   {LeaseTenantContactSetFieldTitles.CONTACT}
                 </FormTextTitle>
                 <FormText>
                   {contact ? <ExternalLink className='no-margin' href={`${getRouteById(Routes.CONTACTS)}/${contact.id}`} text={getContactFullName(contact)} /> : '-'}
                 </FormText>
+                </>
               </Authorization>
             </Column>
           </Row>
@@ -101,10 +103,12 @@ const TenantItem = ({
           <Row>
             <Column>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.REFERENCE)}>
+                <>
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.REFERENCE)}>
                   {LeaseTenantsFieldTitles.REFERENCE}
                 </FormTextTitle>
                 <FormText>{tenant.reference || '-'}</FormText>
+                </>
               </Authorization>
             </Column>
           </Row>
@@ -113,26 +117,32 @@ const TenantItem = ({
           <Row>
             <Column small={12} medium={6} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+                <>
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_FRACTION)}>
                   {LeaseTenantsFieldTitles.SHARE_FRACTION}
                 </FormTextTitle>
                 <FormText>{tenant.share_numerator || ''} / {tenant.share_denominator || ''}</FormText>
+                </>
               </Authorization>
             </Column>
             <Column small={6} medium={3} large={2}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+                <>
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.START_DATE)}>
                   {LeaseTenantContactSetFieldTitles.START_DATE}
                 </FormTextTitle>
                 <FormText>{formatDate(get(tenant, 'tenant.start_date'))}</FormText>
+                </>
               </Authorization>
             </Column>
             <Column small={6} medium={3} large={2}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}>
+                <>
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.END_DATE)}>
                   {LeaseTenantContactSetFieldTitles.END_DATE}
                 </FormTextTitle>
                 <FormText>{formatDate(get(tenant, 'tenant.end_date'))}</FormText>
+                </>
               </Authorization>
             </Column>
           </Row>
@@ -148,8 +158,10 @@ const TenantItem = ({
       </FormWrapper>
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+        <>
         <SubTitle>Asiakkaan tiedot</SubTitle>
         <ContactTemplate contact={contact} />
+        </>
       </Authorization>
     </Fragment>;
 };

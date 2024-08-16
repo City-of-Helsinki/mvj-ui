@@ -163,6 +163,7 @@ const SummaryLeaseInfo = ({
       <Tenants largeScreen={largeScreen} tenants={tenants} tenantWarnings={tenantWarnings} />
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.LEASE_AREAS)}>
+        <>
         <SubTitle>Vuokrakohteet</SubTitle>
         {!leaseAreas.length && <FormText>Ei vuokrakohteita</FormText>}
         {!!leaseAreas.length && <Fragment>
@@ -199,9 +200,11 @@ const SummaryLeaseInfo = ({
                 </ListItems>;
         })}
           </Fragment>}
+        </>
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.LEASE_AREAS)}>
+        <>
         <SubTitle>Rakentamiskelpoisuus</SubTitle>
         {!constructabilityAreas.length && <FormText>Ei vuokrakohteita</FormText>}
         {!!constructabilityAreas.length && constructabilityAreas.map((area, index) => {
@@ -283,6 +286,7 @@ const SummaryLeaseInfo = ({
               </Authorization>
             </ListItems>;
       })}
+        </>
       </Authorization>
 
       <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE_LEASE_AREAS) || hasPermissions(usersPermissions, UsersPermissions.CHANGE_LEASE_LEASE_AREAS)}>
@@ -389,32 +393,42 @@ const SummaryLeaseInfo = ({
                       <Row>
                         <Column small={6}>
                           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}>
+                            <>
                             <FormTextTitle>{InvoiceFieldTitles.RECIPIENT}</FormTextTitle>
                             <FormText>{getContactFullName(invoice.recipientFull) || '-'}</FormText>
+                            </>
                           </Authorization>
                         </Column>
                         <Column small={6}>
                           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}>
+                            <>
                             <FormTextTitle>{InvoiceFieldTitles.DUE_DATE}</FormTextTitle>
                             <FormText>{formatDate(invoice.due_date) || '-'}</FormText>
+                            </>
                           </Authorization>
                         </Column>
                         <Column small={6}>
                           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.NUMBER)}>
+                            <>
                             <FormTextTitle>{InvoiceFieldTitles.NUMBER}</FormTextTitle>
                             <FormText>{invoice.number || '-'}</FormText>
+                            </>
                           </Authorization>
                         </Column>
                         <Column small={6}>
                           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE) || isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
+                            <>
                             <FormTextTitle>{InvoiceFieldTitles.BILLING_PERIOD}</FormTextTitle>
                             <FormText>{formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date) || '-'}</FormText>
+                            </>
                           </Authorization>
                         </Column>
                         <Column small={6}>
                           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.OUTSTANDING_AMOUNT)}>
+                            <>
                             <FormTextTitle>{InvoiceFieldTitles.OUTSTANDING_AMOUNT}</FormTextTitle>
                             <FormText><AmountWithVat amount={invoice.outstanding_amount || 0} date={invoice.due_date} /></FormText>
+                            </>
                           </Authorization>
                         </Column>
                       </Row>

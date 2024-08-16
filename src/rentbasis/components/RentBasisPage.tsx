@@ -411,12 +411,14 @@ class RentBasisPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY)} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}>
+                  <>
                   <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.MAP)}>
                     {RentBasisFieldTitles.MAP}
                   </Title>
                   <Divider />
 
                   <SingleRentBasisMap />
+                  </>
                 </Authorization>
               </ContentContainer>
             </TabPane>

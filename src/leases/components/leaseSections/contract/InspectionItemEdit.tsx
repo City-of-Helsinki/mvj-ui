@@ -115,6 +115,7 @@ const InspectionItemEdit = ({
               </Column>
             </Row>
             {inspectionId && <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseInspectionAttachmentsFieldPaths.ATTACHMENTS)}>
+                <>
                 <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseInspectionAttachmentsFieldPaths.ATTACHMENTS)}>
                   {LeaseInspectionAttachmentsFieldTitles.ATTACHMENTS}
                 </SubTitle>
@@ -186,6 +187,7 @@ const InspectionItemEdit = ({
                 <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INSPECTIONATTACHMENT)}>
                   <AddFileButton label='Lisää tiedosto' name={`add_inspection_attachment_button_${inspectionId}`} onChange={handleAddInspectionAttachment} />
                 </Authorization>
+                </>
               </Authorization>}
           </BoxItem>;
     }}

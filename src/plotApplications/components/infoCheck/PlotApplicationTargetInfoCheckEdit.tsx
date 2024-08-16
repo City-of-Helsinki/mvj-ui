@@ -371,6 +371,7 @@ class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
     } = this.props;
     const targetInfoCheck = formValues?.id;
     return <PlotApplicationInfoCheckCollapse className="PlotApplicationTargetInfoCheckEdit" headerTitle="Kohteen käsittelytiedot">
+        <>
         <form>
           <Row>
             <Authorization allow={isFieldAllowedToRead(attributes, PlotApplicationTargetInfoCheckFieldPaths.RESERVED)}>
@@ -457,6 +458,7 @@ class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
           </Row>
         </form>
         {submissionErrors && this.renderErrors()}
+        </>
       </PlotApplicationInfoCheckCollapse>;
   }
 

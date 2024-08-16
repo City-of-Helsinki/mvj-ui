@@ -70,90 +70,110 @@ const InvoiceTemplate = ({
       <Row>
         <Column small={8}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.RECIPIENT)}>
               {InvoiceFieldTitles.RECIPIENT}
             </FormTextTitle>
             <FormText>{invoice ? getContactFullName(invoice.recipientFull) : '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.NUMBER)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.NUMBER)}>
               {InvoiceFieldTitles.NUMBER}
             </FormTextTitle>
             <FormText>{invoice && invoice.number || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.SENT_TO_SAP_AT)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.SENT_TO_SAP_AT)}>
               {InvoiceFieldTitles.SENT_TO_SAP_AT}
             </FormTextTitle>
             <FormText>{invoice && formatDate(invoice.sent_to_sap_at) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.DUE_DATE)}>
               {InvoiceFieldTitles.DUE_DATE}
             </FormTextTitle>
             <FormText>{invoice && formatDate(invoice.due_date) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.ADJUSTED_DUE_DATE)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.ADJUSTED_DUE_DATE)}>
               {InvoiceFieldTitles.ADJUSTED_DUE_DATE}
             </FormTextTitle>
             <FormText>{invoice && formatDate(invoice.adjusted_due_date) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.INVOICING_DATE)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.INVOICING_DATE)}>
               {InvoiceFieldTitles.INVOICING_DATE}
             </FormTextTitle>
             <FormText>{invoice && formatDate(invoice.invoicing_date) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.STATE)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.STATE)}>
               {InvoiceFieldTitles.STATE}
             </FormTextTitle>
             <FormText>{invoice && getLabelOfOption(stateOptions, invoice.state) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE) || isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.BILLING_PERIOD)}>
               {InvoiceFieldTitles.BILLING_PERIOD}
             </FormTextTitle>
             <FormText>{invoice && formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.POSTPONE_DATE)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.POSTPONE_DATE)}>
               {InvoiceFieldTitles.POSTPONE_DATE}
             </FormTextTitle>
             <FormText>{invoice && formatDate(invoice.postpone_date) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.TOTAL_AMOUNT)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.TOTAL_AMOUNT)}>
               {InvoiceFieldTitles.TOTAL_AMOUNT}
             </FormTextTitle>
             <FormText>{invoice && !isEmptyValue(invoice.total_amount) ? <AmountWithVat amount={invoice.total_amount} date={invoice.due_date} /> : '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={4}>
@@ -164,11 +184,13 @@ const InvoiceTemplate = ({
         </Column>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLED_AMOUNT)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.BILLED_AMOUNT)}>
               {InvoiceFieldTitles.BILLED_AMOUNT}
             </FormTextTitle>
             <FormText>{invoice && !isEmptyValue(invoice.billed_amount) ? <AmountWithVat amount={invoice.billed_amount} date={invoice.due_date} /> : '-'}
             </FormText>
+            </>
           </Authorization>
         </Column>
       </Row>
@@ -180,7 +202,7 @@ const InvoiceTemplate = ({
           <Row>
             <Column small={12} medium={8}>
               <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoicePaymentsFieldPaths.PAYMENTS)}>
-
+                <>
                 {!payments.length && <FormText>Ei maksuja</FormText>}
                 {!!payments.length && <ListItems>
                     <Row>
@@ -215,15 +237,18 @@ const InvoiceTemplate = ({
                         </Row>;
               })}
                   </ListItems>}
+                </>
               </Authorization>
             </Column>
             <Column small={6} medium={4}>
               <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.OUTSTANDING_AMOUNT)}>
+                <>
                 <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.OUTSTANDING_AMOUNT)}>
                   {InvoiceFieldTitles.OUTSTANDING_AMOUNT}
                 </FormTextTitle>
                 <FormText>{invoice && !isEmptyValue(invoice.outstanding_amount) ? <AmountWithVat amount={invoice.outstanding_amount} date={invoice.due_date} /> : '-'}
                 </FormText>
+                </>
               </Authorization>
             </Column>
           </Row>
@@ -231,26 +256,32 @@ const InvoiceTemplate = ({
       {showOldInvoiceInfo && <Row>
           <Column small={4}>
             <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_DATE)}>
+              <>
               <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.PAYMENT_NOTIFICATION_DATE)}>
                 {InvoiceFieldTitles.PAYMENT_NOTIFICATION_DATE}
               </FormTextTitle>
               <FormText>{invoice && formatDate(invoice.payment_notification_date) || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={4}>
             <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.COLLECTION_CHARGE)}>
+              <>
               <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.COLLECTION_CHARGE)}>
                 {InvoiceFieldTitles.COLLECTION_CHARGE}
               </FormTextTitle>
               <FormText>{invoice && !isEmptyValue(invoice.collection_charge) ? `${formatNumber(invoice.collection_charge)} €` : '-'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={4}>
             <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.PAYMENT_NOTIFICATION_CATALOG_DATE)}>
+              <>
               <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.PAYMENT_NOTIFICATION_CATALOG_DATE)}>
                 {InvoiceFieldTitles.PAYMENT_NOTIFICATION_CATALOG_DATE}
               </FormTextTitle>
               <FormText>{invoice && formatDate(invoice.payment_notification_catalog_date) || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
         </Row>}
@@ -258,45 +289,55 @@ const InvoiceTemplate = ({
       <Row>
         <Column small={4}>
           {showOldInvoiceInfo && <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DELIVERY_METHOD)}>
+              <>
               <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.DELIVERY_METHOD)}>
                 {InvoiceFieldTitles.DELIVERY_METHOD}
               </FormTextTitle>
               <FormText>{invoice && getLabelOfOption(deliveryMethodOptions, invoice.delivery_method) || '-'}</FormText>
+              </>
             </Authorization>}
         </Column>
         <Column small={4}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.TYPE)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.TYPE)}>
               {InvoiceFieldTitles.TYPE}
             </FormTextTitle>
             <FormText>{invoice && getLabelOfOption(typeOptions, invoice.type) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={4}>
           {creditedInvoice && <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.CREDITED_INVOICE)}>
+              <>
               <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.CREDITED_INVOICE)}>
                 {InvoiceFieldTitles.CREDITED_INVOICE}
               </FormTextTitle>
               <FormText>{<a className='no-margin' onKeyDown={handleCreditedInvoiceKeyDown} onClick={handleCreditedInvoiceClick} tabIndex={0}>{creditedInvoice.number ? creditedInvoice.number : 'Numeroimaton'}</a>}</FormText>
+              </>
             </Authorization>}
         </Column>
         <Column small={4}>
           {interestInvoiceFor && <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.INTEREST_INVOICE_FOR)}>
+              <>
               <FormTextTitle relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.INTEREST_INVOICE_FOR)}>
                 {InvoiceFieldTitles.INTEREST_INVOICE_FOR}
               </FormTextTitle>
               <FormText>{<a className='no-margin' onKeyDown={handleInterestInvoiceForKeyDown} onClick={handleInterestInvoiceForClick} tabIndex={0}>{interestInvoiceFor.number ? interestInvoiceFor.number : 'Numeroimaton'}</a>}
               </FormText>
+              </>
             </Authorization>}
         </Column>
       </Row>
       <Row>
         <Column small={12}>
           <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.NOTES)}>
+            <>
             <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.NOTES)}>
               {InvoiceFieldTitles.NOTES}
             </FormTextTitle>
             <FormText>{invoice && invoice.notes || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>

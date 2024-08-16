@@ -12,10 +12,10 @@ import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults } fro
 import { getAuditLogByContact, getIsFetchingByContact } from "@/auditLog/selectors";
 import type { AuditLogList } from "@/auditLog/types";
 type Props = {
-  auditLogList: AuditLogList;
+  auditLogList?: AuditLogList;
   contactId: string;
-  fetchAuditLogByContact: (...args: Array<any>) => any;
-  isFetching: boolean;
+  fetchAuditLogByContact?: (...args: Array<any>) => any;
+  isFetching?: boolean;
 };
 type State = {
   activePage: number;

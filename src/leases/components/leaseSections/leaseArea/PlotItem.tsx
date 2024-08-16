@@ -47,18 +47,22 @@ const PlotItem = ({
       <Row>
         <Column small={12} medium={6} large={6}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.IDENTIFIER)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.IDENTIFIER)}>
               {LeasePlotsFieldTitles.IDENTIFIER}
             </FormTextTitle>
             <FormText><strong>{plot.identifier || '-'}</strong></FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={3} large={3}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.TYPE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.TYPE)}>
               {LeasePlotsFieldTitles.TYPE}
             </FormTextTitle>
             <FormText>{getLabelOfOption(typeOptions, plot.type) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={3} large={3}>
@@ -71,34 +75,42 @@ const PlotItem = ({
       <Row>
         <Column small={12} medium={6} large={3}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.AREA)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.AREA)}>
               {LeasePlotsFieldTitles.AREA}
             </FormTextTitle>
             <FormText>{!isEmptyValue(plot.area) ? `${formatNumber(plot.area)} m²` : '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={6} large={3}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.SECTION_AREA)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.SECTION_AREA)}>
               {LeasePlotsFieldTitles.SECTION_AREA}
             </FormTextTitle>
             <FormText>{!isEmptyValue(plot.section_area) ? `${formatNumber(plot.section_area)} m²` : '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={6} large={3}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.REGISTRATION_DATE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.REGISTRATION_DATE)}>
               {LeasePlotsFieldTitles.REGISTRATION_DATE}
             </FormTextTitle>
             <FormText>{formatDate(plot.registration_date) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={6} large={3}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.REPEAL_DATE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.REPEAL_DATE)}>
               {LeasePlotsFieldTitles.REPEAL_DATE}
             </FormTextTitle>
             <FormText>{formatDate(plot.repeal_date) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>

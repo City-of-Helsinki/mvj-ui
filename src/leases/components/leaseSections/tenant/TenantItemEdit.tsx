@@ -333,6 +333,7 @@ const TenantItemEdit = ({
             <Row>
               <Column small={12} medium={6} large={4}>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+                  <>
                   <FormTextTitle required={isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR) || isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR)} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_FRACTION)}>
                     {LeaseTenantsFieldTitles.SHARE_FRACTION}
                   </FormTextTitle>
@@ -354,6 +355,7 @@ const TenantItemEdit = ({
                       </Column>
                     </Row>
                   </Authorization>
+                  </>
                 </Authorization>
               </Column>
               <Column small={6} medium={3} large={2}>
@@ -384,6 +386,7 @@ const TenantItemEdit = ({
       </BoxContentWrapper>
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.TENANTCONTACT_SET)}>
+        <>
         {!!contact && <SubTitle>Asiakkaan tiedot
             <Authorization allow={isMethodAllowed(contactMethods, Methods.PATCH)}>
               <EditButton className='inline-button' onClick={handleEditClick} title='Muokkaa asiakasta' />
@@ -394,6 +397,7 @@ const TenantItemEdit = ({
         <FieldArray component={renderOtherTenants} contactType={TenantContactType.BILLING} name={`${field}.billing_persons`} serviceUnit={serviceUnit} showAddButton={!archived} tenant={savedTenant} usersPermissions={usersPermissions} />
 
         <FieldArray component={renderOtherTenants} contactType={TenantContactType.CONTACT} name={`${field}.contact_persons`} serviceUnit={serviceUnit} showAddButton={!archived} tenant={savedTenant} usersPermissions={usersPermissions} />
+        </>
       </Authorization>
     </Collapse>;
 };

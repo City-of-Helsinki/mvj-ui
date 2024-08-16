@@ -204,22 +204,26 @@ const NewInvoiceForm = ({
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={useLeaseCreateChargeEndpoint ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.BILLING_PERIOD_START_DATE) : isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}>
+                <>
                 <FormTextTitle required={billingPeriodRequired} enableUiDataEdit uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.BILLING_PERIOD_START_DATE)}>
                   {InvoiceFieldTitles.BILLING_PERIOD_START_DATE}
                 </FormTextTitle>
                 <FormField disableTouched={isCreateClicked} fieldAttributes={useLeaseCreateChargeEndpoint ? getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.BILLING_PERIOD_START_DATE) : getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)} name='billing_period_start_date' invisibleLabel overrideValues={{
                 label: InvoiceFieldTitles.BILLING_PERIOD_START_DATE
               }} />
+                </>
               </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={useLeaseCreateChargeEndpoint ? isFieldAllowedToEdit(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.BILLING_PERIOD_END_DATE) : isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
+                <>
                 <FormTextTitle required={billingPeriodRequired} enableUiDataEdit uiDataKey={getUiDataCreateChargeKey(LeaseCreateChargeFieldPaths.BILLING_PERIOD_END_DATE)}>
                   {InvoiceFieldTitles.BILLING_PERIOD_END_DATE}
                 </FormTextTitle>
                 <FormField disableTouched={isCreateClicked} fieldAttributes={useLeaseCreateChargeEndpoint ? getFieldAttributes(leaseCreateChargeAttributes, LeaseCreateChargeFieldPaths.BILLING_PERIOD_END_DATE) : getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)} name='billing_period_end_date' invisibleLabel overrideValues={{
                 label: InvoiceFieldTitles.BILLING_PERIOD_END_DATE
               }} />
+                </>
               </Authorization>
             </Column>
           </Row>

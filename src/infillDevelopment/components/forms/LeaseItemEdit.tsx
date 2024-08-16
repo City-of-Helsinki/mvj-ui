@@ -459,6 +459,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)}>
+                <>
                 <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentKey(LeaseTenantsFieldPaths.TENANTS)}>
                   Vuokralainen
                 </FormTextTitle>
@@ -470,10 +471,12 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                         <ExternalLink className='no-margin' href={`${getRouteById(Routes.CONTACTS)}/${get(tenant, 'tenant.contact.id')}`} text={getContactFullName(get(tenant, 'tenant.contact'))} />
                       </ListItem>)}
                   </ListItems>}
+                    </>
               </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeasePlotsFieldPaths.PLOTS)}>
+                <>
                 <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentKey(LeasePlotsFieldPaths.PLOTS)}>
                   Kiinteistö
                 </FormTextTitle>
@@ -483,10 +486,12 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                 {!isFetching && !!plots.length && <ListItems>
                     {plots.map((plot, index) => <ListItem key={index}>{plot.identifier || '-'}</ListItem>)}
                   </ListItems>}
+                </>
               </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
+                <>
                 <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentKey(LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
                   Kaavayksikkö
                 </FormTextTitle>
@@ -496,13 +501,16 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                 {!isFetching && !!planUnits.length && <ListItems>
                     {planUnits.map((planUnit, index) => <ListItem key={index}>{planUnit.identifier || '-'}</ListItem>)}
                   </ListItems>}
+                </>
               </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.LEASE)}>
+                <>
                 {isFetching && <FormText>Ladataan...</FormText>}
                 {!isFetching && !leaseId && <FormText>-</FormText>}
                 {!isFetching && leaseId && <ExternalLink href={`${getRouteById(Routes.LEASES)}/${leaseId}?tab=7`} text='Karttalinkki' />}
+                </>
               </Authorization>
             </Column>
           </Row>
@@ -536,10 +544,12 @@ class LeaseItemEdit extends PureComponent<Props, State> {
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT) || isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT)}>
+                <>
                 <FormTextTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.TOTAL_COMPENSATION)}>
                   {InfillDevelopmentCompensationLeasesFieldTitles.TOTAL_COMPENSATION}
                 </FormTextTitle>
                 <FormText>{`${formatNumber(totalCompensation)} €`}</FormText>
+                </>
               </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
@@ -689,7 +699,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
 }
 
 const selector = formValueSelector(FormNames.INFILL_DEVELOPMENT);
-export default flowRight(connect((state, props) => {
+export default flowRight(connect((state, props: Props) => {
   const {
     field
   } = props;

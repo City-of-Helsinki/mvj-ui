@@ -70,12 +70,14 @@ const OtherTenantItem = ({
           <Row>
             <Column small={12} medium={6} large={8}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+                <>
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.CONTACT)}>
                   {LeaseTenantContactSetFieldTitles.CONTACT}
                 </FormTextTitle>
                 <FormText>
                   {contact ? <ExternalLink className='no-margin' href={`${getRouteById(Routes.CONTACTS)}/${contact.id}`} text={getContactFullName(contact)} /> : '-'}
                 </FormText>
+                </>
               </Authorization>
             </Column>
           </Row>
@@ -84,18 +86,22 @@ const OtherTenantItem = ({
           <Row>
             <Column small={6} medium={3} large={2}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+                <>
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.START_DATE)}>
                   {LeaseTenantContactSetFieldTitles.START_DATE}
                 </FormTextTitle>
                 <FormText>{formatDate(tenant.start_date)}</FormText>
+                </>
               </Authorization>
             </Column>
             <Column small={6} medium={3} large={2}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}>
+                <>
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.END_DATE)}>
                   {LeaseTenantContactSetFieldTitles.END_DATE}
                 </FormTextTitle>
                 <FormText>{formatDate(tenant.end_date)}</FormText>
+                </>
               </Authorization>
             </Column>
           </Row>
@@ -103,13 +109,15 @@ const OtherTenantItem = ({
       </FormWrapper>
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+        <>
         <SubTitle>Asiakkaan tiedot</SubTitle>
         <ContactTemplate contact={contact} />
+        </>
       </Authorization>
     </Collapse>;
 };
 
-export default connect((state, props) => {
+export default connect((state, props: Props) => {
   const id = props.tenant.id;
   return {
     attributes: getAttributes(state),

@@ -119,26 +119,32 @@ const ConstructabilityItem = ({
         <Row>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.PRECONSTRUCTION_STATE)}>
                 {LeaseAreasFieldTitles.PRECONSTRUCTION_STATE}
               </FormTextTitle>
               <FormText>{getLabelOfOption(constructabilityStateOptions, area.preconstruction_state) || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT)}>
                 {LeaseAreasFieldTitles.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT}
               </FormTextTitle>
               <FormText>{area.preconstruction_estimated_construction_readiness_moment || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={6} medium={4} offsetOnLarge={1} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_INSPECTION_MOMENT)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.PRECONSTRUCTION_INSPECTION_MOMENT)}>
                 {LeaseAreasFieldTitles.PRECONSTRUCTION_INSPECTION_MOMENT}
               </FormTextTitle>
               <FormText>{area.preconstruction_inspection_moment || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
         </Row>
@@ -155,10 +161,12 @@ const ConstructabilityItem = ({
         <Row>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.DEMOLITION_STATE)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.DEMOLITION_STATE)}>
                 {LeaseAreasFieldTitles.DEMOLITION_STATE}
               </FormTextTitle>
               <FormText>{getLabelOfOption(constructabilityStateOptions, area.demolition_state) || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
         </Row>
@@ -175,47 +183,58 @@ const ConstructabilityItem = ({
         <Row>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_STATE)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_STATE)}>
                 {LeaseAreasFieldTitles.POLLUTED_LAND_STATE}
               </FormTextTitle>
               <FormText>{getLabelOfOption(constructabilityStateOptions, area.polluted_land_state) || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE)}>
                 {LeaseAreasFieldTitles.POLLUTED_LAND_RENT_CONDITION_STATE}
               </FormTextTitle>
               <FormText>{getLabelOfOption(pollutedLandRentConditionStateOptions, area.polluted_land_rent_condition_state) || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_DATE)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE)}>
                 {LeaseAreasFieldTitles.POLLUTED_LAND_RENT_CONDITION_DATE}
               </FormTextTitle>
               <FormText>{formatDate(area.polluted_land_rent_condition_date) || '–'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_PLANNER)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_PLANNER)}>
                 {LeaseAreasFieldTitles.POLLUTED_LAND_PLANNER}
               </FormTextTitle>
               <FormText>{getUserFullName(area.polluted_land_planner) || '–'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.POLLUTED_LAND_PROJECTWISE_NUMBER)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_PROJECTWISE_NUMBER)}>
                 {LeaseAreasFieldTitles.POLLUTED_LAND_PROJECTWISE_NUMBER}
               </FormTextTitle>
               <FormText>{area.polluted_land_projectwise_number || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
         </Row>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.ATTACHMENTS)}>
+          <>
           <SubTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.POLLUTED_LAND_MATTI_REPORTS)}>
             {LeaseAreasFieldTitles.POLLUTED_LAND_MATTI_REPORTS}
           </SubTitle>
@@ -261,6 +280,7 @@ const ConstructabilityItem = ({
                   </Row>;
           })}
             </Fragment>}
+          </>
         </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
@@ -276,39 +296,48 @@ const ConstructabilityItem = ({
         <Row>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE)}>
                 {LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_STATE}
               </FormTextTitle>
               <FormText>{getLabelOfOption(constructabilityStateOptions, area.constructability_report_state) || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE)}>
                 {LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE}
               </FormTextTitle>
               <FormText>{getLabelOfOption(constructabilityReportInvestigationStateOptions, area.constructability_report_investigation_state) || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNING_DATE)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNING_DATE)}>
                 {LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_SIGNING_DATE}
               </FormTextTitle>
               <FormText>{formatDate(area.constructability_report_signing_date) || '–'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={6} medium={3} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNER)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNER)}>
                 {LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_SIGNER}
               </FormTextTitle>
               <FormText>{area.constructability_report_signer || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
         </Row>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAttachmentsFieldPaths.ATTACHMENTS)}>
+          <>
           <SubTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_ATTACHMENTS)}>
             {LeaseAreasFieldTitles.CONSTRUCTABILITY_REPORT_GEOTECHNICAL_ATTACHMENTS}
           </SubTitle>
@@ -353,6 +382,7 @@ const ConstructabilityItem = ({
                   </Row>;
           })}
             </Fragment>}
+          </>
         </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS)}>
@@ -368,10 +398,12 @@ const ConstructabilityItem = ({
         <Row>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.OTHER_STATE)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.OTHER_STATE)}>
                 {LeaseAreasFieldTitles.OTHER_STATE}
               </FormTextTitle>
               <FormText>{getLabelOfOption(constructabilityStateOptions, area.other_state) || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
         </Row>
@@ -382,7 +414,7 @@ const ConstructabilityItem = ({
     </Collapse>;
 };
 
-export default connect((state, props) => {
+export default connect((state, props: Props) => {
   const id = get(props, 'area.id');
   return {
     areaCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.area`),

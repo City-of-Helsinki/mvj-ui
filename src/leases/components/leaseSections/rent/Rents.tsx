@@ -64,6 +64,7 @@ const Rents = ({
       <Divider />
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS)}>
+        <>
         {!rents || !rents.length && <FormText className='no-margin'>Ei vuokria</FormText>}
         {rents && !!rents.length && rents.map(rent => {
         return <RentItem key={rent.id} rent={rent} rents={rents} />;
@@ -74,9 +75,11 @@ const Rents = ({
         marginBottom: 5
       }}>Arkisto</h3>}
         {!!rentsArchived.length && rentsArchived.map(rent => <RentItem key={rent.id} rent={rent} rents={rents} />)}
+        </>
       </Authorization>
 
       <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}>
+        <>
         <Title uiDataKey={getUiDataRentCalculatorKey(RentCalculatorFieldPaths.RENT_CALCULATOR)}>
           {RentCalculatorFieldTitles.RENT_CALCULATOR}
         </Title>
@@ -84,14 +87,17 @@ const Rents = ({
         <GreenBox>
           <RentCalculator />
         </GreenBox>
+        </>
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
+        <>
         <Title uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
           {LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}
         </Title>
         <Divider />
         <BasisOfRents />
+        </>
       </Authorization>
     </Fragment>;
 };

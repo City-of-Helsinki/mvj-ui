@@ -123,10 +123,12 @@ class InfillDevelopmentForm extends Component<Props> {
           </Row>
 
           <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.INFILL_DEVELOPMENT_COMPENSATION_LEASES)}>
+            <>
             <SubTitle enableUiDataEdit uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.INFILL_DEVELOPMENT_COMPENSATION_LEASES)}>
               {InfillDevelopmentCompensationLeasesFieldTitles.INFILL_DEVELOPMENT_COMPENSATION_LEASES}
             </SubTitle>
             <FieldArray component={LeaseItemsEdit} infillDevelopment={infillDevelopment} isSaveClicked={isSaveClicked} name={`infill_development_compensation_leases`} />
+            </>
           </Authorization>
         </GreenBox>
       </form>;

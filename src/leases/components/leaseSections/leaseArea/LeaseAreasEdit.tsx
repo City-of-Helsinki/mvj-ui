@@ -307,7 +307,9 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
                     <Button className={ButtonColors.NEUTRAL} onClick={handleCopyAreasToContract} text='Kopioi sopimukseen' />
                   </Authorization>}>
                 <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.AREA)}>
+                  <>
                   Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup>
+                  </>
                 </Authorization>
               </WarningContainer>
               <Divider />

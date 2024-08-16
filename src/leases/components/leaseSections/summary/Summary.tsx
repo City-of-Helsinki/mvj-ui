@@ -172,44 +172,54 @@ class Summary extends PureComponent<Props, State> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.STATE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.STATE)}>
                       {LeaseFieldTitles.STATE}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(stateOptions, summary.state) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.START_DATE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.START_DATE)}>
                       {LeaseFieldTitles.START_DATE}
                     </FormTextTitle>
                     <FormText>{formatDate(summary.start_date) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.END_DATE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.END_DATE)}>
                       {LeaseFieldTitles.END_DATE}
                     </FormTextTitle>
                     <FormText>{formatDate(summary.end_date) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.LESSOR)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.LESSOR)}>
                       {LeaseFieldTitles.LESSOR}
                     </FormTextTitle>
                     <FormText>{getContactFullName(summary.lessor) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.PREPARER)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.PREPARER)}>
                       {LeaseFieldTitles.PREPARER}
                     </FormTextTitle>
                     <FormText>{getUserFullName(summary.preparer) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.CLASSIFICATION)}>
@@ -222,74 +232,91 @@ class Summary extends PureComponent<Props, State> {
                 </Authorization>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.SERVICE_UNIT)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SERVICE_UNIT)}>
                       {LeaseFieldTitles.SERVICE_UNIT}
                     </FormTextTitle>
                     <FormText>{summary.service_unit && summary.service_unit.name ? summary.service_unit.name : '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTENDED_USE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTENDED_USE)}>
                       {LeaseFieldTitles.INTENDED_USE}
                     </FormTextTitle>
                     <FormText>{(summary.intended_use && summary.intended_use.name) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTENDED_USE_NOTE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTENDED_USE_NOTE)}>
                       {LeaseFieldTitles.INTENDED_USE_NOTE}
                     </FormTextTitle>
                     <ShowMore text={summary.intended_use_note || '-'} />
+                    </>
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.FINANCING)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.FINANCING)}>
                       {LeaseFieldTitles.FINANCING}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(financingOptions, summary.financing) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.MANAGEMENT)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MANAGEMENT)}>
                       {LeaseFieldTitles.MANAGEMENT}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(managementOptions, summary.management) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.TRANSFERABLE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.TRANSFERABLE)}>
                       {LeaseFieldTitles.TRANSFERABLE}
                     </FormTextTitle>
                     <FormText>{summary.transferable ? 'Kyllä' : 'Ei'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.HITAS)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HITAS)}>
                       {LeaseFieldTitles.HITAS}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(hitasOptions, summary.hitas) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.RESERVATION_PROCEDURE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RESERVATION_PROCEDURE)}>
                       {LeaseFieldTitles.RESERVATION_PROCEDURE}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(reservationProcedureOptions, summary.reservation_procedure) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_BASISOFRENT)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MATCHING_BASIS_OF_RENTS)}>
                       {LeaseFieldTitles.MATCHING_BASIS_OF_RENTS}
                     </FormTextTitle>
@@ -310,10 +337,12 @@ class Summary extends PureComponent<Props, State> {
                               </ListItem>);
                     })}
                         </ListItems>}
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INFILLDEVELOPMENTCOMPENSATION)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INFILL_DEVELOPMENT_COMPENSATIONS)}>
                       {LeaseFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}
                     </FormTextTitle>
@@ -322,78 +351,95 @@ class Summary extends PureComponent<Props, State> {
                             <ExternalLink className='no-margin' href={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${item.id}`} text={item.name || item.id} />
                           </ListItem>)}
                       </ListItems>}
+                    </>
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.NOTICE_PERIOD)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.NOTICE_PERIOD)}>
                       {LeaseFieldTitles.NOTICE_PERIOD}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(noticePeriodOptions, summary.notice_period) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.NOTICE_NOTE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.NOTICE_NOTE)}>
                       {LeaseFieldTitles.NOTICE_NOTE}
                     </FormTextTitle>
                     <ShowMore text={summary.notice_note || '-'} />
+                    </>
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REFERENCE_NUMBER)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.REFERENCE_NUMBER)}>
                       {LeaseFieldTitles.REFERENCE_NUMBER}
                     </FormTextTitle>
                     <FormText>{summary.reference_number ? <ExternalLink className='no-margin' href={getReferenceNumberLink(summary.reference_number)} text={summary.reference_number} /> : '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.NOTE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.NOTE)}>
                       {LeaseFieldTitles.NOTE}
                     </FormTextTitle>
                     <ShowMore text={summary.note || '-'} />
+                    </>
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.CONTRACT_NUMBERS)}>
                       {LeaseFieldTitles.CONTRACT_NUMBERS}
                     </FormTextTitle>
                     <FormText>{summary.contract_numbers || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.IS_SUBJECT_TO_VAT)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.IS_SUBJECT_TO_VAT)}>
                       {LeaseFieldTitles.IS_SUBJECT_TO_VAT}
                     </FormTextTitle>
                     <FormText>{summary.is_subject_to_vat ? 'Kyllä' : 'Ei'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   {summary.arrangement_decision && <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
+                    <>
                       <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.ARRANGEMENT_DECISION)}>
                         {LeaseFieldTitles.ARRANGEMENT_DECISION}
                       </FormTextTitle>
                       <FormText>{summary.arrangement_decision ? 'Kyllä' : 'Ei'}</FormText>
+                    </>
                     </Authorization>}
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={8}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTERNAL_ORDER)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INTERNAL_ORDER)}>
                       {LeaseFieldTitles.INTERNAL_ORDER}
                     </FormTextTitle>
                     <ShowMore text={summary.internal_order || '-'} />
+                    </>
                   </Authorization>
                 </Column>
               </Row>
@@ -405,70 +451,86 @@ class Summary extends PureComponent<Props, State> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.SPECIAL_PROJECT)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SPECIAL_PROJECT)}>
                       {LeaseFieldTitles.SPECIAL_PROJECT}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(specialProjectOptions, summary.special_project) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.SUPPORTIVE_HOUSING)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SUPPORTIVE_HOUSING)}>
                       {LeaseFieldTitles.SUPPORTIVE_HOUSING}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(supportiveHousingOptions, summary.supportive_housing) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.STATISTICAL_USE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.STATISTICAL_USE)}>
                       {LeaseFieldTitles.STATISTICAL_USE}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(statisticalUseOptions, summary.statistical_use) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REAL_ESTATE_DEVELOPER)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.REAL_ESTATE_DEVELOPER)}>
                       {LeaseFieldTitles.REAL_ESTATE_DEVELOPER}
                     </FormTextTitle>
                     <FormText>{summary.real_estate_developer || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.CONVEYANCE_NUMBER)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.CONVEYANCE_NUMBER)}>
                       {LeaseFieldTitles.CONVEYANCE_NUMBER}
                     </FormTextTitle>
                     <FormText>{summary.conveyance_number || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.BUILDING_SELLING_PRICE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.BUILDING_SELLING_PRICE)}>
                       {LeaseFieldTitles.BUILDING_SELLING_PRICE}
                     </FormTextTitle>
                     <FormText>{!isEmptyValue(summary.building_selling_price) ? `${formatNumber(summary.building_selling_price)} €` : '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REGULATED)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.REGULATED)}>
                       {LeaseFieldTitles.REGULATED}
                     </FormTextTitle>
                     <FormText>{summary.regulated ? 'Kyllä' : 'Ei'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REGULATION)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.REGULATION)}>
                       {LeaseFieldTitles.REGULATION}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(regulationOptions, summary.regulation) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
               </Row>

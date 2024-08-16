@@ -43,51 +43,63 @@ const InvoiceRows = ({
                   <Row>
                     <Column small={4}>
                       <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.TENANT)}>
+                        <>
                         <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.TENANT)}>
                           {InvoiceRowsFieldTitles.TENANT}
                         </FormTextTitle>
                         <FormText>{getContactFullName(contact) || '-'}</FormText>
+                        </>
                       </Authorization>
                     </Column>
                     <Column small={4}>
                       <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                        <>
                         <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
                           {InvoiceRowsFieldTitles.RECEIVABLE_TYPE}
                         </FormTextTitle>
                         <FormText>{getLabelOfOption(receivableTypeOptions, row.receivable_type) || '-'}</FormText>
+                        </>
                       </Authorization>
                     </Column>
                     <Column small={4}>
                       <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.AMOUNT)}>
+                        <>
                         <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.AMOUNT)}>
                           {InvoiceRowsFieldTitles.AMOUNT}
                         </FormTextTitle>
                         <FormText>{row.amount ? <AmountWithVat amount={row.amount} date={invoiceDate} /> : '-'}
                         </FormText>
+                        </>
                       </Authorization>
                     </Column>
                     <Column small={4}>
                       <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.BILLING_PERIOD_START_DATE)}>
+                        <>
                         <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.BILLING_PERIOD_START_DATE)}>
                           {InvoiceRowsFieldTitles.BILLING_PERIOD_START_DATE}
                         </FormTextTitle>
                         <FormText>{formatDate(row.billing_period_start_date) || '-'}</FormText>
+                        </>
                       </Authorization>
                     </Column>
                     <Column small={4}>
                       <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.BILLING_PERIOD_END_DATE)}>
+                        <>
                         <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.BILLING_PERIOD_END_DATE)}>
                           {InvoiceRowsFieldTitles.BILLING_PERIOD_END_DATE}
                         </FormTextTitle>
                         <FormText>{formatDate(row.billing_period_end_date) || '-'}</FormText>
+                        </>
                       </Authorization>
                     </Column>
                     <Column small={4}>
                       <Authorization allow={isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.DESCRIPTION)}>
+                        <>
                         <FormTextTitle enableUiDataEdit relativeTo={relativeTo} uiDataKey={getUiDataInvoiceKey(InvoiceRowsFieldPaths.DESCRIPTION)}>
                           {InvoiceRowsFieldTitles.DESCRIPTION}
                         </FormTextTitle>
                         <FormText>{row.description || '-'}</FormText>
+                        </>
                       </Authorization>
                     </Column>
                   </Row>

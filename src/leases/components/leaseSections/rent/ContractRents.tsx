@@ -103,62 +103,76 @@ class ContractRents extends PureComponent<Props, State> {
           const renderFields = () => <>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
+                    <>
                     <FormTextTitle uiDataKey={getAmountUiDataKey()}>
                       {getAmountLabel()}
                     </FormTextTitle>
                     <FormText>{getAmountText()}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.INTENDED_USE)}>
                       {LeaseRentContractRentsFieldTitles.INTENDED_USE}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(intendedUseOptions, contractRent.intended_use)}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 {rentType === RentTypes.INDEX2022 && <Column small={6} medium={4} large={2}>
                     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INDEX)}>
+                      <>
                       <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.INDEX)}>
                         {LeaseRentContractRentsFieldTitles.INDEX}
                       </FormTextTitle>
                       <FormText>{getLabelOfOption(indexOptions, contractRent.index)}</FormText>
+                      </>
                     </Authorization>
                   </Column>}
                 {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) && <>
                     <Column small={6} medium={4} large={3}>
                       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
+                        <>
                         <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
                           {LeaseRentContractRentsFieldTitles.BASE_AMOUNT}
                         </FormTextTitle>
                         <FormText>{getBaseAmount() || '-'}</FormText>
+                        </>
                       </Authorization>
                     </Column>
                     <Column small={6} medium={4} large={2}>
                       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}>
+                        <>
                         <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}>
                           {LeaseRentContractRentsFieldTitles.BASE_YEAR_RENT}
                         </FormTextTitle>
                         <FormText>
                           {!isEmptyValue(contractRent.base_year_rent) ? `${formatNumber(contractRent.base_year_rent)} €` : '-'}
                         </FormText>
+                        </>
                       </Authorization>
                     </Column>
                   </>}
                 <Column small={6} medium={4} large={1}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.START_DATE)}>
                       {LeaseRentContractRentsFieldTitles.START_DATE}
                     </FormTextTitle>
                     <FormText>{contractRent.start_date ? formatDate(contractRent.start_date) : '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4} large={1}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.END_DATE)}>
                       {LeaseRentContractRentsFieldTitles.END_DATE}
                     </FormTextTitle>
                     <FormText>{contractRent.end_date ? formatDate(contractRent.end_date) : '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
               </>;

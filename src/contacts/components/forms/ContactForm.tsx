@@ -274,12 +274,14 @@ class ContactForm extends Component<Props> {
               </Column>
               <Column small={12} medium={6} large={4}>
                 <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.SERVICE_UNIT)}>
+                  <>
                   <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.SERVICE_UNIT)}>
                     {ContactFieldTitles.SERVICE_UNIT}
                   </FormTextTitle>
                   <FormText>
                     {initialValues.service_unit ? initialValues.service_unit.name || '-' : userActiveServiceUnit && userActiveServiceUnit.name || '-'}
                   </FormText>
+                  </>
                 </Authorization>
               </Column>
               {type === ContactTypes.PERSON && <Column small={12} medium={6} large={4}>

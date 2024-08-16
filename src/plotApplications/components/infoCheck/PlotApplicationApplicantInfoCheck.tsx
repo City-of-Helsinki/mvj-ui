@@ -27,8 +27,10 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props> {
     } = this.props;
     const infoCheckStateOptions = getFieldOptions(infoCheckAttributes, 'state');
     return <PlotApplicationInfoCheckCollapse className="PlotApplicationApplicantInfoCheck" headerTitle="Hakijan käsittelytiedot">
+        <>
         <h4>Tarkistettavat dokumentit</h4>
         <ApplicantInfoCheck infoChecks={infoCheckData} infoCheckStateOptions={infoCheckStateOptions} />
+        </>
       </PlotApplicationInfoCheckCollapse>;
   }
 

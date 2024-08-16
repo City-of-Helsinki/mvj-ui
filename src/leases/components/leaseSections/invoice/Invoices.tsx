@@ -267,6 +267,7 @@ class Invoices extends PureComponent<Props, State> {
                 </Collapse>
               </Authorization>
               <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_COLLECTIONCOURTDECISION) || hasPermissions(usersPermissions, UsersPermissions.VIEW_COLLECTIONLETTER) || hasPermissions(usersPermissions, UsersPermissions.VIEW_COLLECTIONNOTE)}>
+                <>
                 <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseInvoicingFieldPaths.DEBT_COLLECTION)}>
                   {LeaseInvoicingFieldTitles.DEBT_COLLECTION}
                 </Title>
@@ -275,6 +276,7 @@ class Invoices extends PureComponent<Props, State> {
                 <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)}>
                   <CreateCollectionLetter />
                 </Authorization>
+                </>
               </Authorization>
             </Fragment>;
       }}

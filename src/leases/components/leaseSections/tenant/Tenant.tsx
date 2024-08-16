@@ -65,11 +65,13 @@ const Tenant = ({
           {getContactFullName(contact)}
         </Authorization>} onToggle={handleCollapseToggle}>
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.TENANTCONTACT_SET)}>
+        <>
         <TenantItem contact={contact} tenant={tenant} />
 
         {!!billingPersons.length && billingPersons.map(person => <OtherTenantItem key={person.id} tenant={person} />)}
 
         {!!contactPersons.length && contactPersons.map(person => <OtherTenantItem key={person.id} tenant={person} />)}
+        </>
       </Authorization>
     </Collapse>;
 };

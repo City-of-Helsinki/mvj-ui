@@ -33,98 +33,120 @@ const CustomDetailedPlan = ({
       <Row>
         <Column small={12} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.IDENTIFIER)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.IDENTIFIER)}>
               {LeaseAreaCustomDetailedPlanFieldTitles.IDENTIFIER}
             </FormTextTitle>
             <FormText>{customDetailedPlan.identifier || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.INTENDED_USE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.INTENDED_USE)}>
               {LeaseAreaCustomDetailedPlanFieldTitles.INTENDED_USE}
             </FormTextTitle>
             <FormText>{getLabelOfOption(intendedUseOptions, customDetailedPlan.intended_use) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.ADDRESS)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.ADDRESS)}>
               {LeaseAreaCustomDetailedPlanFieldTitles.ADDRESS}
             </FormTextTitle>
             <FormText>{customDetailedPlan.address || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={12} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.AREA)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.AREA)}>
               {LeaseAreaCustomDetailedPlanFieldTitles.AREA}
             </FormTextTitle>
             <FormText>{!isEmptyValue(customDetailedPlan.area) ? `${formatNumber(customDetailedPlan.area)} m²` : '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.STATE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.STATE)}>
               {LeaseAreaCustomDetailedPlanFieldTitles.STATE}
             </FormTextTitle>
             <FormText>{getLabelOfOption(stateOptions, customDetailedPlan.state) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.TYPE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.TYPE)}>
               {LeaseAreaCustomDetailedPlanFieldTitles.TYPE}
             </FormTextTitle>
             <FormText>{getLabelOfOption(typeOptions, customDetailedPlan.type) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={12} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN)}>
               {LeaseAreaCustomDetailedPlanFieldTitles.DETAILED_PLAN}
             </FormTextTitle>
             <FormText>{customDetailedPlan.detailed_plan || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE)}>
               {LeaseAreaCustomDetailedPlanFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE}
             </FormTextTitle>
             <FormText>{formatDate(customDetailedPlan.detailed_plan_latest_processing_date) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE)}>
               {LeaseAreaCustomDetailedPlanFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE}
             </FormTextTitle>
             <FormText>{customDetailedPlan.detailed_plan_latest_processing_date_note || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={12} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.RENT_BUILD_PERMISSION)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.RENT_BUILD_PERMISSION)}>
               {LeaseAreaCustomDetailedPlanFieldTitles.RENT_BUILD_PERMISSION}
             </FormTextTitle>
             <FormText>
               {!isEmptyValue(customDetailedPlan.rent_build_permission) ? `${formatNumber(customDetailedPlan.rent_build_permission)} k-m²` : '-'}
             </FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={12} medium={4} large={4}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaCustomDetailedPlanFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreaCustomDetailedPlanFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT)}>
               {LeaseAreaCustomDetailedPlanFieldTitles.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT}
             </FormTextTitle>
             <FormText>{customDetailedPlan.preconstruction_estimated_construction_readiness_moment || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>

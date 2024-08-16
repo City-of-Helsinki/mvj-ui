@@ -123,6 +123,7 @@ class ContractRentEdit extends PureComponent<Props> {
 
         <Row>
           <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT) || isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)} errorComponent={<Column><FormText>{getAmountText()}</FormText></Column>}>
+            <>
             <Column small={6}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
                 <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)} invisibleLabel name={`${field}.amount`} unit='€' overrideValues={{
@@ -139,6 +140,7 @@ class ContractRentEdit extends PureComponent<Props> {
               }} />
               </Authorization>
             </Column>
+            </>
           </Authorization>
         </Row>
       </>;
@@ -156,6 +158,7 @@ class ContractRentEdit extends PureComponent<Props> {
 
         <Row>
           <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT) || isFieldAllowedToEdit(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD)} errorComponent={<Column><FormText>{getBaseAmountText()}</FormText></Column>}>
+            <>
             <Column small={6}>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
                 <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)} invisibleLabel name={`${field}.base_amount`} unit='€' overrideValues={{
@@ -171,6 +174,7 @@ class ContractRentEdit extends PureComponent<Props> {
               }} />
               </Authorization>
             </Column>
+            </>
           </Authorization>
         </Row>
       </>;
@@ -258,7 +262,7 @@ class ContractRentEdit extends PureComponent<Props> {
 
 const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
-export default flowRight(withWindowResize, connect((state, props) => {
+export default flowRight(withWindowResize, connect((state, props: Props) => {
   return {
     contractRent: selector(state, props.field),
     isSaveClicked: getIsSaveClicked(state),

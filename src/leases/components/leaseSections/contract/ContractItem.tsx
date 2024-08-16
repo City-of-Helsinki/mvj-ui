@@ -83,111 +83,139 @@ const ContractItem = ({
             </Authorization>
           </Column>
         </Fragment>} headerTitle={<Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.TYPE)}>
+          <>
           {getLabelOfOption(typeOptions, contract.type)} {get(contract, 'contract_number')}
+          </>
         </Authorization>} onToggle={handleContractCollapseToggle}>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.TYPE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.TYPE)}>
               {LeaseContractsFieldTitles.TYPE}
             </FormTextTitle>
             <FormText>{getLabelOfOption(typeOptions, contract.type) || '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.CONTRACT_NUMBER)}>
               {LeaseContractsFieldTitles.CONTRACT_NUMBER}
             </FormTextTitle>
             <FormText>{contract.contract_number ? <a onClick={handleShowContractFileModal}>{contract.contract_number}</a> : '-'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SIGNING_DATE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.SIGNING_DATE)}>
               {LeaseContractsFieldTitles.SIGNING_DATE}
             </FormTextTitle>
             <FormText>{formatDate(contract.signing_date) || '–'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={12} large={6}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SIGNING_NOTE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.SIGNING_NOTE)}>
               {LeaseContractsFieldTitles.SIGNING_NOTE}
             </FormTextTitle>
             <FormText>{contract.signing_note || '–'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SIGN_BY_DATE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.SIGN_BY_DATE)}>
               {LeaseContractsFieldTitles.SIGN_BY_DATE}
             </FormTextTitle>
             <FormText>{formatDate(contract.sign_by_date) || '–'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.FIRST_CALL_SENT)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.FIRST_CALL_SENT)}>
               {LeaseContractsFieldTitles.FIRST_CALL_SENT}
             </FormTextTitle>
             <FormText>{formatDate(contract.first_call_sent) || '–'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.SECOND_CALL_SENT)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.SECOND_CALL_SENT)}>
               {LeaseContractsFieldTitles.SECOND_CALL_SENT}
             </FormTextTitle>
             <FormText>{formatDate(contract.second_call_sent) || '–'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.THIRD_CALL_SENT)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.THIRD_CALL_SENT)}>
               {LeaseContractsFieldTitles.THIRD_CALL_SENT}
             </FormTextTitle>
             <FormText>{formatDate(contract.third_call_sent) || '–'}</FormText>
+            </>
           </Authorization>
         </Column>
       </Row>
       <Row>
         {contract.is_readjustment_decision && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION)}>
                 {LeaseContractsFieldTitles.IS_READJUSTMENT_DECISION}
               </FormTextTitle>
               <FormText>{'Kyllä'}</FormText>
+              </>
             </Authorization>
           </Column>}
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.INSTITUTION_IDENTIFIER)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.INSTITUTION_IDENTIFIER)}>
               {LeaseContractsFieldTitles.INSTITUTION_IDENTIFIER}
             </FormTextTitle>
             <FormText>{contract.institution_identifier || '–'}</FormText>
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.DECISION)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.DECISION)}>
               {LeaseContractsFieldTitles.DECISION}
             </FormTextTitle>
             <DecisionLink decision={decision} decisionOptions={decisionOptions} />
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.KTJ_LINK)}>
+            <>
             <FormTextTitle>{LeaseContractsFieldTitles.KTJ_LINK}</FormTextTitle>
             {contract.institution_identifier ? <KtjLink fileKey='vuokraoikeustodistus' fileName='vuokraoikeustodistus' identifier={contract.institution_identifier} idKey='kohdetunnus' label='Vuokraoikeustodistus' /> : <FormText>-</FormText>}
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.KTJ_LINK)}>
+            <>
             <FormTextTitle>{LeaseContractsFieldTitles.ENCUMBRANCE}</FormTextTitle>
             {contract.institution_identifier ? <KtjLink fileKey='rasitustodistus' fileName='rasitustodistus' identifier={contract.institution_identifier} idKey='kohdetunnus' label='Rasitustodistus' /> : <FormText>-</FormText>}
+            </>
           </Authorization>
         </Column>
       </Row>
@@ -202,60 +230,74 @@ const ContractItem = ({
                     <Row>
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractChangesFieldPaths.SIGNING_DATE)}>
+                          <>
                           <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractChangesFieldPaths.SIGNING_DATE)}>
                             {LeaseContractChangesFieldTitles.SIGNING_DATE}
                           </FormTextTitle>
                           <FormText>{formatDate(change.signing_date) || '–'}</FormText>
+                          </>
                         </Authorization>
                       </Column>
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractChangesFieldPaths.SIGN_BY_DATE)}>
+                          <>
                           <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractChangesFieldPaths.SIGN_BY_DATE)}>
                             {LeaseContractChangesFieldTitles.SIGN_BY_DATE}
                           </FormTextTitle>
                           <FormText>{formatDate(change.sign_by_date) || '–'}</FormText>
+                          </>
                         </Authorization>
                       </Column>
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractChangesFieldPaths.FIRST_CALL_SENT)}>
+                          <>
                           <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractChangesFieldPaths.FIRST_CALL_SENT)}>
                             {LeaseContractChangesFieldTitles.FIRST_CALL_SENT}
                           </FormTextTitle>
                           <FormText>{formatDate(change.first_call_sent) || '–'}</FormText>
+                          </>
                         </Authorization>
                       </Column>
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractChangesFieldPaths.SECOND_CALL_SENT)}>
+                          <>
                           <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractChangesFieldPaths.SECOND_CALL_SENT)}>
                             {LeaseContractChangesFieldTitles.SECOND_CALL_SENT}
                           </FormTextTitle>
                           <FormText>{formatDate(change.second_call_sent) || '–'}</FormText>
+                          </>
                         </Authorization>
                       </Column>
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractChangesFieldPaths.THIRD_CALL_SENT)}>
+                          <>
                           <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractChangesFieldPaths.THIRD_CALL_SENT)}>
                             {LeaseContractChangesFieldTitles.THIRD_CALL_SENT}
                           </FormTextTitle>
                           <FormText>{formatDate(change.third_call_sent) || '–'}</FormText>
+                          </>
                         </Authorization>
                       </Column>
                     </Row>
                     <Row>
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractChangesFieldPaths.DECISION)}>
+                          <>
                           <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractChangesFieldPaths.DECISION)}>
                             {LeaseContractChangesFieldTitles.DECISION}
                           </FormTextTitle>
                           <DecisionLink decision={decision} decisionOptions={decisionOptions} />
+                          </>
                         </Authorization>
                       </Column>
                       <Column small={6} medium={8} large={10}>
                         <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractChangesFieldPaths.DESCRIPTION)}>
+                          <>
                           <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseContractChangesFieldPaths.DESCRIPTION)}>
                             {LeaseContractChangesFieldTitles.DESCRIPTION}
                           </FormTextTitle>
                           <FormText>{change.description || '–'}</FormText>
+                          </>
                         </Authorization>
                       </Column>
                     </Row>

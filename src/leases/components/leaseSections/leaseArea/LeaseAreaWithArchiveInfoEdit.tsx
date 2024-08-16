@@ -124,10 +124,12 @@ const LeaseAreaWithArchiveInfoEdit = ({
       {!isActive && <Row>
           <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_AT)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.ARCHIVED_AT)}>
                 {LeaseAreasFieldTitles.ARCHIVED_AT}
               </FormTextTitle>
               <FormText>{formatDate(archivedAt) || '-'}</FormText>
+              </>
             </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>

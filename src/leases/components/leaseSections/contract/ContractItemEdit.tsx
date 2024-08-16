@@ -380,6 +380,7 @@ class ContractItemEdit extends Component<Props> {
             </Column>
             <Column small={6} medium={4} large={4}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)}>
+                <>
                 {contractNumber && leasesWithContractNumber && contract && contractNumber !== contract.contract_number && <WarningContainer>
                   <WarningField meta={{
                   warning: 'Sopimusnumero käytössä!'
@@ -393,6 +394,7 @@ class ContractItemEdit extends Component<Props> {
                 <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)} name={`${field}.contract_number`} readOnlyValueRenderer={contractNumberReadOnlyRenderer} overrideValues={{
                 label: LeaseContractsFieldTitles.CONTRACT_NUMBER
               }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.CONTRACT_NUMBER)} />
+                </>
               </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
@@ -458,16 +460,20 @@ class ContractItemEdit extends Component<Props> {
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.INSTITUTION_IDENTIFIER)}>
+                <>
                 <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.KTJ_LINK)}>
                   {LeaseContractsFieldTitles.KTJ_LINK}
                 </FormTextTitle>
                 {savedContract && savedContract.institution_identifier ? <KtjLink fileKey='vuokraoikeustodistus' fileName='vuokraoikeustodistus' identifier={savedContract.institution_identifier} idKey='kohdetunnus' label='Vuokraoikeustodistus' /> : <FormText>-</FormText>}
+                </>
               </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
               <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.KTJ_LINK)}>
+                <>
                 <FormTextTitle>{LeaseContractsFieldTitles.ENCUMBRANCE}</FormTextTitle>
                 {savedContract && savedContract.institution_identifier ? <KtjLink fileKey='rasitustodistus' fileName='rasitustodistus' identifier={savedContract.institution_identifier} idKey='kohdetunnus' label='Rasitustodistus' /> : <FormText>-</FormText>}
+                </>
               </Authorization>
             </Column>
           </Row>
@@ -496,7 +502,7 @@ class ContractItemEdit extends Component<Props> {
 
 const formName = FormNames.LEASE_CONTRACTS;
 const selector = formValueSelector(formName);
-export default connect((state, props) => {
+export default connect((state, props: Props) => {
   const id = selector(state, `${props.field}.id`);
   const newState: any = {
     attributes: getAttributes(state),

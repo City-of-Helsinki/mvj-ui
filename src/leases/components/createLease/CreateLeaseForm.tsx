@@ -130,10 +130,12 @@ class CreateLeaseForm extends Component<Props> {
           </Column>
           <Column small={4}>
             <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.SERVICE_UNIT)}>
+              <>
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SERVICE_UNIT)}>
                 {LeaseFieldTitles.SERVICE_UNIT}
               </FormTextTitle>
               <FormText>{userActiveServiceUnit.name ? userActiveServiceUnit.name : '-'}</FormText>
+              </>
             </Authorization>
           </Column>
         </Row>

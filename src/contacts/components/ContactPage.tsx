@@ -441,7 +441,13 @@ class ContactPage extends Component<Props, State> {
                   {ContactFieldTitles.BASIC_INFO}
                 </Title>
                 <Divider />
-                {isEditMode ? <Authorization allow={isMethodAllowed(contactMethods, Methods.PATCH)} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}> <ContactEdit /></Authorization> : <ContactReadonly contact={contact} />}
+                {isEditMode ? (
+                  <Authorization allow={isMethodAllowed(contactMethods, Methods.PATCH)} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}>
+                    <ContactEdit />
+                  </Authorization>
+                ) : (
+                  <ContactReadonly contact={contact} />
+                )}
               </ContentContainer>
             </TabPane>
 
@@ -462,11 +468,13 @@ class ContactPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_CREDITDECISION)} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}>
+                  <>
                   <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataContactKey(ContactFieldPaths.CREDIT_DECISION)}>
                     {ContactFieldTitles.CREDIT_DECISION}
                   </Title>
                   <Divider />
                   <CreditDecisionTemplate contactType={contact.type} contactId={contactId} />
+                  </>
                 </Authorization>
               </ContentContainer>
             </TabPane>
@@ -474,11 +482,13 @@ class ContactPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_CONTACT)} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}>
+                  <>
                   <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataContactKey(ContactFieldPaths.AUDIT_LOG)}>
                     {ContactFieldTitles.AUDIT_LOG}
                   </Title>
                   <Divider />
                   <ContactAuditLog contactId={contactId} />
+                  </>
                 </Authorization>
               </ContentContainer>
             </TabPane>

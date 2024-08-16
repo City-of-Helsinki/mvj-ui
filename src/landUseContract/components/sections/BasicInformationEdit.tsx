@@ -150,7 +150,8 @@ const renderAreas = ({
 
           return <Row key={index}>
                   <Column>
-                    <FieldAndRemoveButtonWrapper field={<Authorization allow={isFieldAllowedToRead(attributes, 'estate_ids.child.children.estate_id')}>
+                    <FieldAndRemoveButtonWrapper field={<Authorization allow={(isFieldAllowedToRead(attributes, 'estate_ids.child.children.estate_id'))}>
+                      <>
                           <EstateIdSelectInput onChange={estate_id => {
                   if (estate_id && estate_id.value) {
                     change(`${field}.estate_id`, estate_id.value);
@@ -167,6 +168,7 @@ const renderAreas = ({
                 }}>
                             <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'plots.child.children.id')} invisibleLabel name={`${field}.plot`} />
                           </div>
+                      </>
                         </Authorization>} removeButton={<RemoveButton className='third-level' onClick={handleRemove} title='Poista kohde' />} />
                   </Column>
                 </Row>;

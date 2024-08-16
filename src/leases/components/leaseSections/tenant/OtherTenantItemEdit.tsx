@@ -176,12 +176,14 @@ const OtherTenantItemEdit = ({
         </FormWrapper>
 
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+          <>
           {!!contact && <SubTitle>Asiakkaan tiedot
               <Authorization allow={isMethodAllowed(contactMethods, Methods.PATCH)}>
                 <EditButton className='inline-button' onClick={handleEditClick} title='Muokkaa asiakasta' />
               </Authorization>
             </SubTitle>}
           <ContactTemplate contact={contact} />
+          </>
         </Authorization>
       </BoxContentWrapper>
     </Collapse>;

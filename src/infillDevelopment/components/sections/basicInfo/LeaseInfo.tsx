@@ -57,14 +57,17 @@ const LeaseInfo = ({
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.LEASE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationLeasesFieldPaths.LEASE)}>
               {InfillDevelopmentCompensationLeasesFieldTitles.LEASE}
             </FormTextTitle>
             <ExternalLink href={`${getRouteById(Routes.LEASES)}/${leaseId}`} text={identifier || '-'} />
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(LeaseTenantsFieldPaths.TENANTS)}>
               Vuokralainen
             </FormTextTitle>
@@ -75,10 +78,12 @@ const LeaseInfo = ({
                     <ExternalLink className='no-margin' href={`${getRouteById(Routes.CONTACTS)}/${get(tenant, 'tenant.contact.id')}`} text={getContactFullName(get(tenant, 'tenant.contact'))} />
                   </ListItem>)}
               </ListItems>}
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeasePlotsFieldPaths.PLOTS)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(LeasePlotsFieldPaths.PLOTS)}>
               Kiinteistö
             </FormTextTitle>
@@ -87,10 +92,12 @@ const LeaseInfo = ({
             {!!plots.length && <ListItems>
                 {plots.map((plot, index) => <ListItem key={index}>{plot.identifier || '-'}</ListItem>)}
               </ListItems>}
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataInfillDevelopmentKey(LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
               Kaavayksikkö
             </FormTextTitle>
@@ -99,6 +106,7 @@ const LeaseInfo = ({
             {!!planUnits.length && <ListItems>
                 {planUnits.map((planUnit, index) => <ListItem key={index}>{planUnit.identifier || '-'}</ListItem>)}
               </ListItems>}
+            </>
           </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>

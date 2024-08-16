@@ -476,18 +476,22 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                               <Row>
                                 <Column small={6}>
                                   <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.FILE)}>
+                                    <>
                                     <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.FILE)}>
                                       {CollectionCourtDecisionFieldTitles.FILE}
                                     </FormTextTitle>
                                     <FileDownloadLink fileUrl={collectionCourtDecision.file} label={collectionCourtDecision.filename} />
+                                    </>
                                   </Authorization>
                                 </Column>
                                 <Column small={3}>
                                   <Authorization allow={isFieldAllowedToRead(collectionCourtDecisionAttributes, CollectionCourtDecisionFieldPaths.UPLOADED_AT)}>
+                                    <>
                                     <FormTextTitle enableUiDataEdit uiDataKey={getUiDataCollectionCourtDecisionKey(CollectionCourtDecisionFieldPaths.UPLOADED_AT)}>
                                       {CollectionCourtDecisionFieldTitles.UPLOADED_AT}
                                     </FormTextTitle>
                                     <FormText>{formatDate(collectionCourtDecision.uploaded_at) || '-'}</FormText>
+                                    </>
                                   </Authorization>
                                 </Column>
                                 <Column small={3}>

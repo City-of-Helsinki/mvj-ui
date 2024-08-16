@@ -369,6 +369,7 @@ const EditPlotApplicationSectionFormSubsection: React.ComponentType<SubsectionPr
   const fieldIdentifiers = subsection.fields.map(field => field.identifier);
   const Wrapper = level > 1 ? EditPlotApplicationSectionFormSubsectionSecondLevelWrapper : EditPlotApplicationSectionFormSubsectionFirstLevelWrapper;
   return <Wrapper level={level} attributes={attributes} sectionPath={sectionPath} subsection={subsection} stagedSectionValues={stagedSectionValues} peerSectionIdentifiers={peerSectionIdentifiers} change={change} onDelete={onDelete} onMoveUp={onMoveUp} onMoveDown={onMoveDown} isApplicantSecondLevelSubsection={stagedSectionValues.identifier === APPLICANT_SECTION_IDENTIFIER && level === 2} collapseStates={collapseStates} setSectionEditorCollapseState={setSectionEditorCollapseState} sectionRefs={sectionRefs}>
+    <>
     <FieldArray component={EditPlotApplicationSectionFormSectionFields} disabled={false} form={form} name={`${sectionPath}.fields`} fieldIdentifiers={fieldIdentifiers} dispatch={dispatch} collapseStates={collapseStates} setSectionEditorCollapseState={setSectionEditorCollapseState} validate={value => {
       if (value && uniq(value.map(v => v.identifier)).length < value.length) {
         return 'Kahdella kentällä ei saa olla samaa sisäistä tunnusta!';
@@ -379,6 +380,7 @@ const EditPlotApplicationSectionFormSubsection: React.ComponentType<SubsectionPr
         return 'Kahdella osiolla ei saa olla samaa sisäistä tunnusta!';
       }
     }} />
+    </>
   </Wrapper>;
 };
 

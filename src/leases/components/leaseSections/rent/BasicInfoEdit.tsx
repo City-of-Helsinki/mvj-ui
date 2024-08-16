@@ -37,7 +37,7 @@ type SeasonalDatesProps = {
   seasonalStartDay: string | null | undefined;
   seasonalStartMonth: string | null | undefined;
 };
-const SeasonalDates = connect((state, props) => {
+const SeasonalDates = connect((state, props: Props) => {
   return {
     seasonalEndDay: selector(state, `${props.field}.seasonal_end_day`),
     seasonalEndMonth: selector(state, `${props.field}.seasonal_end_month`),
@@ -55,6 +55,7 @@ const SeasonalDates = connect((state, props) => {
   const startText = formatSeasonalDate(seasonalStartDay, seasonalStartMonth);
   const endText = formatSeasonalDate(seasonalEndDay, seasonalEndMonth);
   return <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)}>
+      <>
       <Row>
         <Column small={12}>
           <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.SEASONAL_DATES)}>
@@ -100,6 +101,7 @@ const SeasonalDates = connect((state, props) => {
           <Field name="seasonalDates" component={ErrorField} showError={isSaveClicked} />
         </Column>
       </Row>
+      </>
     </Authorization>;
 });
 type DueDatesProps = {
@@ -122,6 +124,7 @@ const renderDueDates = ({
   };
 
   return <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+      <>
       <Row>
         <Column>
           <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentDueDatesFieldPaths.DUE_DATES)}>
@@ -167,6 +170,7 @@ const renderDueDates = ({
           </Column>
         </Row>
       </Authorization>
+      </>
     </Authorization>;
 };
 
@@ -277,10 +281,12 @@ const BasicInfoIndexOrManual = ({
           </Column>}
         {dueDatesType === RentDueDateTypes.FIXED && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+              <>
               <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
                 {LeaseRentsFieldTitles.YEARLY_DUE_DATES}
               </FormTextTitle>
               <FormText>{yearlyDueDates && !!yearlyDueDates ? formatDueDates(yearlyDueDates) : '-'}</FormText>
+              </>
             </Authorization>
           </Column>}
       </Row>
@@ -442,10 +448,12 @@ const BasicInfoFixed = ({
           </Column>}
         {dueDatesType === RentDueDateTypes.FIXED && <Column small={6} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+              <>
               <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
                 {LeaseRentsFieldTitles.YEARLY_DUE_DATES}
               </FormTextTitle>
               <FormText>{yearlyDueDates && !!yearlyDueDates ? formatDueDates(yearlyDueDates) : '-'}</FormText>
+              </>
             </Authorization>
           </Column>}
       </Row>

@@ -55,28 +55,34 @@ const RentAdjustments = ({
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.TYPE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.TYPE)}>
                       {LeaseRentAdjustmentsFieldTitles.TYPE}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(typeOptions, adjustment.type) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.INTENDED_USE)}>
                       {LeaseRentAdjustmentsFieldTitles.INTENDED_USE}
                     </FormTextTitle>
                     <FormText>{getLabelOfOption(intendedUseOptions, adjustment.intended_use) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Row>
                     <Column small={6}>
                       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.START_DATE)}>
+                        <>
                         <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.START_DATE)}>
                           {LeaseRentAdjustmentsFieldTitles.START_DATE}
                         </FormTextTitle>
                         <FormText>{formatDate(adjustment.start_date) || '-'}</FormText>
+                        </>
                       </Authorization>
                     </Column>
                     <Column small={6}>
@@ -93,10 +99,12 @@ const RentAdjustments = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
                       {LeaseRentAdjustmentsFieldTitles.FULL_AMOUNT}
                     </FormTextTitle>
                     <FormText>{getFullAmountText(adjustment) || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4} large={2}>
@@ -111,10 +119,12 @@ const RentAdjustments = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.DECISION)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.DECISION)}>
                       {LeaseRentAdjustmentsFieldTitles.DECISION}
                     </FormTextTitle>
                     <DecisionLink decision={decision} decisionOptions={decisionOptions} />
+                    </>
                   </Authorization>
                 </Column>
               </Row>
@@ -134,14 +144,17 @@ const RentAdjustments = ({
                   <Row>
                     <Column small={6} medium={4} large={2}>
                       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_TYPE)}>
+                        <>
                         <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.SUBVENTION_TYPE)}>
                           {LeaseRentAdjustmentsFieldTitles.SUBVENTION_TYPE}
                         </FormTextTitle>
                         <FormText>{getLabelOfOption(subventionTypeOptions, adjustment.subvention_type) || '-'}</FormText>
+                        </>
                       </Authorization>
                     </Column>
                   </Row>
                   {adjustment.subvention_type === SubventionTypes.FORM_OF_MANAGEMENT && <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS)}>
+                      <>
                       <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS)}>{RentAdjustmentManagementSubventionsFieldTitles.MANAGEMENT_SUBVENTIONS}</SubTitle>
                       {!managementSubventions || !managementSubventions.length && <FormText>Ei hallintamuotoja</FormText>}
                       {managementSubventions && managementSubventions.length && <Fragment>
@@ -175,36 +188,43 @@ const RentAdjustments = ({
                               </Column>
                             </Row>)}
                         </Fragment>}
-
+                        </>
                     </Authorization>}
                   {adjustment.subvention_type === SubventionTypes.RE_LEASE && <Row>
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
+                          <>
                           <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
                             {LeaseRentAdjustmentsFieldTitles.SUBVENTION_BASE_PERCENT}
                           </FormTextTitle>
                           <FormText>{!isEmptyValue(adjustment.subvention_base_percent) ? `${formatNumber(adjustment.subvention_base_percent)} %` : '-'}</FormText>
+                          </>
                         </Authorization>
                       </Column>
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_GRADUATED_PERCENT)}>
+                          <>
                           <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.SUBVENTION_GRADUATED_PERCENT)}>
                             {LeaseRentAdjustmentsFieldTitles.SUBVENTION_GRADUATED_PERCENT}
                           </FormTextTitle>
                           <FormText>{!isEmptyValue(adjustment.subvention_graduated_percent) ? `${formatNumber(adjustment.subvention_graduated_percent)} %` : '-'}</FormText>
+                          </>
                         </Authorization>
                       </Column>
                       <Column small={6} medium={4} large={2}>
                         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT) || isFieldAllowedToRead(leaseAttributes, LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT)}>
+                          <>
                           <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentAdjustmentsFieldPaths.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT)}>
                             {LeaseRentAdjustmentsFieldTitles.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT}
                           </FormTextTitle>
                           <FormText>{formatNumber(getReLeaseDiscountPercent())} %</FormText>
+                          </>
                         </Authorization>
                       </Column>
                     </Row>}
 
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, RentAdjustmentTemporarySubventionsFieldPaths.TEMPORARY_SUBVENTIONS)}>
+                    <>
                     <SubTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(RentAdjustmentTemporarySubventionsFieldPaths.TEMPORARY_SUBVENTIONS)}>
                       {RentAdjustmentTemporarySubventionsFieldTitles.TEMPORARY_SUBVENTIONS}
                     </SubTitle>
@@ -240,6 +260,7 @@ const RentAdjustments = ({
                             </Column>
                           </Row>)}
                       </Fragment>}
+                    </>
                   </Authorization>
 
                   <Row>

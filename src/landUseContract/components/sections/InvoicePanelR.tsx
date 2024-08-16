@@ -86,8 +86,10 @@ class InvoicePanelR extends PureComponent<Props, State> {
       interestInvoiceFor
     } = this.state;
     return <TablePanelContainer innerRef={this.setComponentRef} footer={invoice && !invoice.sap_id && <Authorization allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}>
+            <>
             <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
             <Button className={ButtonColors.SUCCESS} disabled={isEditClicked || !valid} onClick={this.handleSave} text='Tallenna' />
+            </>
           </Authorization>} onClose={onClose} title='Laskun tiedot'>
         {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sap_id) ? <EditInvoiceForm creditedInvoice={creditedInvoice} interestInvoiceFor={interestInvoiceFor} invoice={invoice} initialValues={{ ...invoice
       }} onInvoiceLinkClick={onInvoiceLinkClick} relativeTo={this.component} /> : <InvoiceTemplateR creditedInvoice={creditedInvoice} interestInvoiceFor={interestInvoiceFor} invoice={invoice} onInvoiceLinkClick={onInvoiceLinkClick} relativeTo={this.component} />}

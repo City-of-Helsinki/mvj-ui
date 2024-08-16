@@ -463,12 +463,14 @@ class InfillDevelopmentPage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.LEASE)} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}>
+                  <>
                   <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.MAP)}>
                     {InfillDevelopmentCompensationFieldTitles.MAP}
                   </Title>
                   <Divider />
 
                   <SingleInfillDevelopmentMap />
+                  </>
                 </Authorization>
               </ContentContainer>
             </TabPane>

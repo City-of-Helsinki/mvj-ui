@@ -20,27 +20,33 @@ const DecisionsMainEdit = ({
 }: Props) => {
   return <Fragment>
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DECISIONS)}>
+        <>
         <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.DECISIONS)}>
           {LeaseDecisionsFieldTitles.DECISIONS}
         </Title>
         <Divider />
         <DecisionsEdit />
+        </>
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
+        <>
         <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.CONTRACTS)}>
           {LeaseContractsFieldTitles.CONTRACTS}
         </Title>
         <Divider />
         <ContractsEdit />
+        </>
       </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.INSPECTIONS)}>
+        <>
         <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.INSPECTIONS)}>
           {LeaseInspectionsFieldTitles.INSPECTIONS}
         </Title>
         <Divider />
         <InspectionsEdit />
+        </>
       </Authorization>
     </Fragment>;
 };

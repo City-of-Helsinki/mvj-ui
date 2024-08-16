@@ -100,6 +100,7 @@ class SendEmail extends PureComponent<Props, State> {
           </Column>
           <Column small={12} medium={8} large={9}>
             <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE_LEASE_AREAS) || hasPermissions(usersPermissions, UsersPermissions.CHANGE_LEASE_LEASE_AREAS)}>
+              <>
               {!emailLogs.length && <FormText>Ei lähetettyjä sähköposteja</FormText>}
               {!!emailLogs.length && <div className='constructability__send-email_sent-emails'>
                   <Row>
@@ -127,6 +128,7 @@ class SendEmail extends PureComponent<Props, State> {
                       </Row>;
               })}
                 </div>}
+              </>
             </Authorization>
           </Column>
         </Row>

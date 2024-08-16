@@ -262,6 +262,7 @@ class RentsEdit extends PureComponent<Props, State> {
 
         return <form>
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS)}>
+                <>
                 <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}>
                   {LeaseRentsFieldTitles.RENTS}
                 </Title>
@@ -287,9 +288,11 @@ class RentsEdit extends PureComponent<Props, State> {
               /* Archived rents */
             }
                 <FieldArray component={renderRents} archived={true} name='rentsArchived' rents={rentsArchived} usersPermissions={usersPermissions} />
+                </>
               </Authorization>
 
               <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}>
+                <>
                 <Title enableUiDataEdit uiDataKey={getUiDataRentCalculatorKey(RentCalculatorFieldPaths.RENT_CALCULATOR)}>
                   {RentCalculatorFieldTitles.RENT_CALCULATOR}
                 </Title>
@@ -297,9 +300,11 @@ class RentsEdit extends PureComponent<Props, State> {
                 <GreenBox>
                   <RentCalculator />
                 </GreenBox>
+                </>
               </Authorization>
 
               <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
+                <>
                 <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
                   {LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}
                 </Title>
@@ -307,6 +312,7 @@ class RentsEdit extends PureComponent<Props, State> {
                 <FieldArray ref={this.setActiveBasisOfRentsRef} archived={false} basisOfRents={editedActiveBasisOfRents} component={BasisOfRentsEdit} formName={formName} isSaveClicked={isSaveClicked} name="basis_of_rents" onArchive={this.handleArchive} forwardRef />
 
                 <FieldArray ref={this.setArchivedBasisOfRentsRef} archived={true} basisOfRents={editedArchivedBasisOfRents} component={BasisOfRentsEdit} formName={formName} isSaveClicked={isSaveClicked} name="basis_of_rents_archived" onUnarchive={this.handleUnarchive} forwardRef />
+                </>
               </Authorization>
             </form>;
       }}

@@ -31,14 +31,16 @@ class PlotApplicationApplicantInfoCheck extends PureComponent<Props> {
       submissionErrors
     } = this.props;
     return <PlotApplicationInfoCheckCollapse className="PlotApplicationApplicantInfoCheckEdit" headerTitle="Hakijan käsittelytiedot">
+        <>
         <h4>Tarkistettavat dokumentit</h4>
         <ApplicantInfoCheckEdit infoCheckIds={infoCheckIds} answer={answer} submissionErrors={submissionErrors} />
+        </>
       </PlotApplicationInfoCheckCollapse>;
   }
 
 }
 
-export default (connect((state, props) => {
+export default (connect((state, props: Props) => {
   const formName = getApplicantInfoCheckFormName(props.identifier);
   const infoCheckIds = getApplicationApplicantInfoCheckData(state).filter(item => item.entry === props.identifier).map(item => item.id);
   return {

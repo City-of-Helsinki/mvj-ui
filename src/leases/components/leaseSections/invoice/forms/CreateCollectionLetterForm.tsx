@@ -180,10 +180,12 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
         <Row>
           <Column small={12}>
             <Authorization allow={isFieldAllowedToEdit(createCollectionLetterAttributes, CreateCollectionLetterFieldPaths.INVOICES)}>
+              <>
               <SubTitle enableUiDataEdit uiDataKey={getUiDataCreateCollectionLetterKey(CreateCollectionLetterFieldPaths.INVOICES)}>
                 {CreateCollectionLetterFieldTitles.INVOICES}
               </SubTitle>
               <FieldArray selectedInvoices={selectedInvoices} disableDirty component={renderInvoices} invoiceOptions={invoiceOptions} name='invoice' />
+              </>
             </Authorization>
           </Column>
           <Column small={12} style={{

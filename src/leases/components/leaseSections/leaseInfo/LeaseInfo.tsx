@@ -26,50 +26,64 @@ const LeaseInfo = ({
       <Row>
         <Column large={2}>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.IDENTIFIER)}>
+            <>
             <FormTextTitle>{LeaseFieldTitles.IDENTIFIER}</FormTextTitle>
             <h1 className='lease-info__identifier'>{leaseInfo.identifier || '-'}</h1>
+            </>
           </Authorization>
         </Column>
         <Column>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.STATE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.STATE)}>
               {LeaseFieldTitles.STATE}
             </FormTextTitle>
             <p className='lease-info__text'>{getLabelOfOption(stateOptions, leaseInfo.state) || '-'}</p>
+            </>
           </Authorization>
         </Column>
         <Column>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.START_DATE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.START_DATE)}>
               {LeaseFieldTitles.START_DATE}
             </FormTextTitle>
             <p className='lease-info__text'>{formatDate(leaseInfo.start_date) || '-'}</p>
+            </>
           </Authorization>
         </Column>
         <Column>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.END_DATE)}>
+            <>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.END_DATE)}>
               {LeaseFieldTitles.END_DATE}
             </FormTextTitle>
             <p className='lease-info__text'>{formatDate(leaseInfo.end_date) || '-'}</p>
+            </>
           </Authorization>
         </Column>
         <Column>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.START_DATE) && isFieldAllowedToRead(attributes, LeaseFieldPaths.END_DATE)}>
+            <>
             <FormTextTitle>{LeaseFieldTitles.STATUS}</FormTextTitle>
             <p className='lease-info__text'>{leaseInfo.status || '-'}</p>
+            </>
           </Authorization>
         </Column>
         <Column large={2} className='hide_narrow'>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.AREA_IDENTIFIER)}>
+            <>
             <FormTextTitle>{LeaseFieldTitles.AREA_IDENTIFIER}</FormTextTitle>
             <p className='lease-info__text'>{leaseInfo.area_identifier || '-'}</p>
+            </>
           </Authorization>
         </Column>
         <Column large={3} className='hide_narrow'>
           <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.ADDRESS)}>
+            <>
             <FormTextTitle>{LeaseFieldTitles.ADDRESS}</FormTextTitle>
             <p className='lease-info__text'>{leaseInfo.address || '-'}</p>
+            </>
           </Authorization>
         </Column>
       </Row>

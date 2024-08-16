@@ -42,6 +42,7 @@ const SteppedDiscountForm = ({
       </Row>
       <Row>
         <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT)}>
+          <>
           <Column small={6} medium={4} large={4}>
             <FormField fieldAttributes={{
             max_digits: 10,
@@ -72,6 +73,7 @@ const SteppedDiscountForm = ({
             label: LeaseRentAdjustmentsFieldTitles.PERCANTAGE_FINAL
           }} />
           </Column>
+          </>
         </Authorization>
       </Row>
       <Row>

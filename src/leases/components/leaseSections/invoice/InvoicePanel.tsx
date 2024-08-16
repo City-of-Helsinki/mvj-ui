@@ -94,11 +94,13 @@ class InvoicePanel extends PureComponent<Props, State> {
       innerRef={this.setComponentRef}
       footer={invoice && !invoice.sap_id && 
         <Authorization allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}>
+          <>
           <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
           {automaticallyGenerated 
             ? <p className="invoice-panel__error-text">Automaattisesti luotuja laskuja ei voi muokata.</p>
             : <Button className={ButtonColors.SUCCESS} disabled={isEditClicked || !valid} onClick={this.handleSave} text='Tallenna' />
           }
+          </>
         </Authorization>}
       onClose={onClose} 
       title='Laskun tiedot'>

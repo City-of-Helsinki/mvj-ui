@@ -197,10 +197,12 @@ class SummaryEdit extends PureComponent<Props, State> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.SERVICE_UNIT)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SERVICE_UNIT)}>
                       {LeaseFieldTitles.SERVICE_UNIT}
                     </FormTextTitle>
                     <FormText>{summary.service_unit ? summary.service_unit.name || summary.service_unit.id : '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
               </Row>
@@ -259,6 +261,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_BASISOFRENT)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MATCHING_BASIS_OF_RENTS)}>
                       {LeaseFieldTitles.MATCHING_BASIS_OF_RENTS}
                     </FormTextTitle>
@@ -269,10 +272,12 @@ class SummaryEdit extends PureComponent<Props, State> {
                             </ListItem>);
                     })}
                       </ListItems>}
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INFILLDEVELOPMENTCOMPENSATION)}>
+                    <>
                     <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.INFILL_DEVELOPMENT_COMPENSATIONS)}>
                       {LeaseFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}
                     </FormTextTitle>
@@ -281,6 +286,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                             <ExternalLink className='no-margin' href={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${item.id}`} text={item.name || item.id} />
                           </ListItem>)}
                       </ListItems>}
+                          </>
                   </Authorization>
                 </Column>
               </Row>
@@ -321,10 +327,12 @@ class SummaryEdit extends PureComponent<Props, State> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACT_NUMBER)}>
+                    <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.CONTRACT_NUMBERS)}>
                       {LeaseFieldTitles.CONTRACT_NUMBERS}
                     </FormTextTitle>
                     <FormText>{summary.contract_numbers || '-'}</FormText>
+                    </>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
@@ -336,10 +344,12 @@ class SummaryEdit extends PureComponent<Props, State> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   {summary.arrangement_decision && <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
+                      <>
                       <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.ARRANGEMENT_DECISION)}>
                         {LeaseFieldTitles.ARRANGEMENT_DECISION}
                       </FormTextTitle>
                       <FormText>{summary.arrangement_decision ? 'Kyllä' : 'Ei'}</FormText>
+                      </>
                     </Authorization>}
                 </Column>
               </Row>
