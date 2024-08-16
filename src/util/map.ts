@@ -1,13 +1,12 @@
 import isArray from "lodash/isArray";
-import L from "leaflet";
+import * as L from "leaflet";
+import "leaflet-draw";
 import type { LatLngBounds } from "leaflet";
 
 /**
  * Translate leaflet draw literals in Finnish
  */
-
-/* istanbul ignore next */
-export const localizeMap = () => {
+export const localizeMap = (): void => {
   L.drawLocal.draw.handlers.circle.tooltip.start = 'Klikkaa ja raahaa piirtääksesi ympyrän';
   L.drawLocal.draw.handlers.circle.radius = 'Säde';
   L.drawLocal.draw.handlers.polygon.tooltip.start = 'Aloita alueen piirtäminen klikkaamalla.';
@@ -77,8 +76,6 @@ export const getCoordinatesOfGeometry = (geometry: any): Array<[number, number]>
  * @param  {Object} geojson
  * @returns {Object}
  */
-
-/* istanbul ignore next */
 export const formatCoordsToLatLng = (geojson: Record<string, any> | null | undefined): (Record<string, any> | null | undefined) | null => {
   let crs;
 
@@ -86,11 +83,11 @@ export const formatCoordsToLatLng = (geojson: Record<string, any> | null | undef
     if (geojson.crs && geojson.crs.type === 'name') {
       crs = new L.Proj.CRS(geojson.crs.properties.name);
     } else if (geojson.crs && geojson.crs.type) {
-      crs = new L.Proj.CRS(geojson.crs.type + ':' + geojson.crs.properties.code);
+      crs = new L.Proj.CRS(geojson.crs.type, geojson.crs.properties.code);
     }
 
     if (crs !== undefined) {
-      return (coords: Array<Record<string, any>>) => {
+      return (coords: Array<number>) => {
         var point = L.point(coords[0], coords[1]);
         return crs ? crs.projection.unproject(point) : null;
       };
@@ -103,9 +100,7 @@ export const formatCoordsToLatLng = (geojson: Record<string, any> | null | undef
  * @param {Object[]} bbox
  * @returns {Object}
  */
-
-/* istanbul ignore next */
-export const getBoundsFromBBox = (bbox: Array<Record<string, any>>): Record<string, any> => {
+export const getBoundsFromBBox = (bbox: Array<number>): LatLngBounds => {
 
   if (!bbox || !isArray(bbox) || bbox.length < 4) return null;
   const maxBoundsSouthWest = new L.LatLng(bbox[3], bbox[2]),
@@ -118,8 +113,6 @@ export const getBoundsFromBBox = (bbox: Array<Record<string, any>>): Record<stri
  * @param {Object[]} coordinates
  * @returns Object
  */
-
-/* istanbul ignore next */
 export const getBoundsFromCoordinates = (coordinates: Array<any>): LatLngBounds => {
   const lats = [],
         lons = [];
