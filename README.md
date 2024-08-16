@@ -4,24 +4,19 @@
 
 
 # MVJ UI
-City of Helsinki ground rental system UI
+City of Helsinki Land lease UI
 
-Based on [React Boilerplate](https://github.com/nordsoftware/react-boilerplate).
 
 ## What's in the box?
 
-- [Flowtype](https://flowtype.org/) Type checker
+- [Typescript](https://www.typescriptlang.org/) Type checker
 - [Yarn](https://yarnpkg.com/) Dependency manager
+- [Vite](https://vitejs.dev/) Front-end tooling
+- [Vitest](https://vitest.dev/) Testing framework
 - [React](https://facebook.github.io/react/) User interface components
 - [Redux](http://redux.js.org/) Predictable state container
 - [Lodash](https://lodash.com/) Utility library
-- [Babel](https://babeljs.io/) ES.Next transpiler
 - [Eslint](http://eslint.org/) Linting utility
-- [Webpack](https://webpack.github.io/) Module bundler
-- [Mocha](https://mochajs.org/) Testing framework
-- [Chai](http://chaijs.com/) Assertion library
-- [Enzyme](https://github.com/airbnb/enzyme) React testing utilities
-- And more...
 
 ## Usage with Docker
 
@@ -54,32 +49,23 @@ Make sure you have [Yarn](https://yarnpkg.com/en/docs/install) installed globall
 ```bash
 yarn
 ```
-#### 3. Setup Flow typing definitions for dependencies
 
-```bash
-flow-typed install
-```
-If the tool cannot be found as is, you can invoke it from
-the node binary folder manually (i.e.
-`./node_modules/.bin/flow-typed`) instead of just
-`flow-typed`).
-
-#### 4. Add .env file
+#### 3. Add .env file
 
 ```bash
 cp .env.example .env
 ```
 
-#### 5. Start the development server
+#### 4. Start the development server
 
 ```bash
 yarn start
 ```
 
-#### 6. Compile the distribution build
+#### 5. Compile the distribution build
 
 ```bash
-yarn run compile
+yarn run build
 ```
 ## Test
 
@@ -91,12 +77,12 @@ yarn test
 
 #### Run the test suit in watch mode
 
-```
+```bash
 yarn run test:watch
 ```
 
 #### Generate the test coverage report
 
-```
+```bash
 yarn run test:coverage
 ```
