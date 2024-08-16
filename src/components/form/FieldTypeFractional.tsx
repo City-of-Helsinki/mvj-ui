@@ -24,7 +24,7 @@ const FieldTypeFractional = ({
   isDirty = false,
   setRefForField,
   input
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const firstFieldRef = useRef<null | HTMLInputElement>(null);
   const secondFieldRef = useRef<null | HTMLInputElement>(null);
 

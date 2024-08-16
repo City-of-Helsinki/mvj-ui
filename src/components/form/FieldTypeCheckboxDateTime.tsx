@@ -28,7 +28,7 @@ class FieldTypeCheckboxDateTime extends PureComponent<Props, State> {
     onBlur(value ? null : defaultValue ? defaultValue : new Date().toISOString());
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       disabled = false,
       displayError = false,

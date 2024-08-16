@@ -57,7 +57,7 @@ export class AppProvider extends React.Component<Props, AppContextState> {
     }
   };
 
-  render(): React.ReactNode {
+  render() {
     const {
       state,
       props: {

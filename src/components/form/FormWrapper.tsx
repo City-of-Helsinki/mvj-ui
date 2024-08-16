@@ -5,6 +5,6 @@ type Props = {
 
 const FormWrapper = ({
   children
-}: Props): React.ReactNode => <div className='form-wrapper'>{children}</div>;
+}: Props): JSX.Element => <div className='form-wrapper'>{children}</div>;
 
 export default FormWrapper;

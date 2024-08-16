@@ -23,7 +23,7 @@ const FieldTypeAddress = ({
   },
   isDirty,
   valueSelectedCallback
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   return <div className={classNames('form-field__address', {
     'has-error': displayError
   }, {

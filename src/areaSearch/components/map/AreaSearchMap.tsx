@@ -68,7 +68,7 @@ class AreaSearchMap extends Component<Props, State> {
     change(convertFeatureCollectionToFeature(features).geometry);
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       hasError
     } = this.props;

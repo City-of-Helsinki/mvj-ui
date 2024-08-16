@@ -11,6 +11,6 @@ const ErrorField = ({
   },
   showError = false,
   style
-}: Props): React.ReactNode => showError && error ? <span className="form-field__error-field" role="alert" style={style}>{error}</span> : null;
+}: Props): JSX.Element => showError && error ? <span className="form-field__error-field" role="alert" style={style}>{error}</span> : null;
 
 export default ErrorField;

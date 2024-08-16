@@ -71,7 +71,7 @@ class ApplicantInfoCheckEdit extends Component<Props, State> {
     }
   };
 
-  renderErrors(): React.ReactNode {
+  renderErrors(): JSX.Element {
     const {
       submissionErrors
     } = this.props;
@@ -113,7 +113,7 @@ class ApplicantInfoCheckEdit extends Component<Props, State> {
     </FormText>;
   }
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       isModalOpen,
       modalCheckItem,

@@ -55,7 +55,7 @@ const ControlButtons = ({
   showCommentButton = true,
   showCopyButton = false,
   saveButtonText = 'Tallenna'
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const handleComment = () => {
     onComment?.();
   };

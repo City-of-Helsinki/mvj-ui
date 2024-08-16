@@ -11,7 +11,7 @@ const WarningField = ({
   },
   showWarning = true,
   style
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   return showWarning && warning ? <span className="form-field__warning-field" role="alert" style={style}>{warning}</span> : null;
 };
 

@@ -46,7 +46,7 @@ const renderUsageDistributions = ({
   isSaveClicked,
   noDataText,
   usersPermissions
-}: UsageDistributionsProps): React.ReactNode => {
+}: UsageDistributionsProps): JSX.Element => {
   const handleAdd = () => {
     fields.push({
       usage_distributions: [{}]
@@ -151,7 +151,7 @@ const renderInfoLinks = ({
   isSaveClicked,
   noDataText,
   usersPermissions
-}: InfoLinksProps): React.ReactNode => {
+}: InfoLinksProps): JSX.Element => {
   const handleAdd = () => {
     fields.push({
       info_links: [{}]

@@ -32,7 +32,7 @@ class PlotApplicationsListOpeningModal extends Component<InnerProps> {
     createPlotApplicationOpeningRecord(data?.id, currentUser);
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       isOpen,
       onClose,

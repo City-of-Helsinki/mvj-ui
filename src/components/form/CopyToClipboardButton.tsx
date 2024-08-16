@@ -10,7 +10,7 @@ type Props = {
   style?: any;
 };
 
-const CopyToClipboardButton = (props: Props): React.ReactNode => {
+const CopyToClipboardButton = (props: Props): JSX.Element => {
   const {
     className,
     disabled,

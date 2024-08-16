@@ -2,11 +2,11 @@ import React, { Component } from "react";
 type Props = {
   style?: Record<string, any>;
   innerRef?: any;
-  children: React.ReactNode;
+  children: JSX.Element;
 };
 
 class TooltipWrapper extends Component<Props> {
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       style,
       innerRef,

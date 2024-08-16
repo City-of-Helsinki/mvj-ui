@@ -27,7 +27,7 @@ const ApplicationAnswersField = ({
   identifier,
   sectionExtraComponent: SectionExtraComponent,
   sectionTitleTransformers
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   return <>
     <Row>
       {section.fields.filter(field => field.enabled).map(field => {

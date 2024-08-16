@@ -5,6 +5,6 @@ type Props = {
 
 const CollapseHeaderSubtitle = ({
   children
-}: Props): React.ReactNode => <span className='collapse__header_subtitle'>{children}</span>;
+}: Props): JSX.Element => <span className='collapse__header_subtitle'>{children}</span>;
 
 export default CollapseHeaderSubtitle;

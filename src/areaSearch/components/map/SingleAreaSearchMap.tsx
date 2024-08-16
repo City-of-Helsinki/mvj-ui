@@ -55,7 +55,7 @@ class SingleAreaSearchMap extends Component<Props> {
     this.initialize();
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       geometry,
       minimap = false

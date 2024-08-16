@@ -7,6 +7,6 @@ type Props = {
 const SearchSubtitleLabel = ({
   children,
   style
-}: Props): React.ReactNode => <div className='search__subtitle-label-column' style={style}>{children}</div>;
+}: Props): JSX.Element => <div className='search__subtitle-label-column' style={style}>{children}</div>;
 
 export default SearchSubtitleLabel;

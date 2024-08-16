@@ -48,7 +48,7 @@ class PlotApplicationOpeningRecordForm extends Component<InnerProps> {
     }
   }
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       attributes,
       isSaveClicked

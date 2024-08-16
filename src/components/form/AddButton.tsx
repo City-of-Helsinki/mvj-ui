@@ -17,7 +17,7 @@ const AddButton = ({
   onClick,
   style,
   title
-}: Props): React.ReactNode => <button className={classNames('form__add-button', className)} disabled={disabled} onClick={onClick} style={style} title={title} type='button'>
+}: Props): JSX.Element => <button className={classNames('form__add-button', className)} disabled={disabled} onClick={onClick} style={style} title={title} type='button'>
     <AddIcon />
     <span>{label}</span>
   </button>;

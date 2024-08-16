@@ -7,7 +7,7 @@ type Props = {
 };
 
 class AreaSearchStatusNoteHistory extends Component<Props> {
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       statusNotes
     } = this.props;

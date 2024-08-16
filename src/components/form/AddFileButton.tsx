@@ -11,7 +11,7 @@ const AddFileButton = ({
   label,
   name,
   onChange
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   let input: any;
 
   const handleKeyDown = (e: any) => {

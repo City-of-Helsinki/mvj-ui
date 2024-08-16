@@ -68,7 +68,7 @@ class FormTextTitle extends PureComponent<Props, State> {
     });
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       children,
       enableUiDataEdit,

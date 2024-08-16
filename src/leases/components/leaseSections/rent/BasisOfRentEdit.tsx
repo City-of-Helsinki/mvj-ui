@@ -1381,7 +1381,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
 
 }
 
-export default connect((state, props) => {
+export default connect((state, props: Props) => {
   const formName = props.formName;
   const selector = formValueSelector(formName);
   return {

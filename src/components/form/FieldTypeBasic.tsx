@@ -27,7 +27,7 @@ const FieldTypeBasic = ({
   placeholder,
   setRefForField,
   type = 'text'
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const handleChange = (e: any) => {
     if (autoBlur) {
       onBlur(e.target.value);

@@ -29,7 +29,7 @@ class EditAreaSearchPreparerModal extends Component<Props> {
     this.form = element;
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       isOpen,
       onClose,

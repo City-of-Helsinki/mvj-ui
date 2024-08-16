@@ -15,7 +15,7 @@ const ArchiveButton = ({
   onClick,
   title,
   type = 'button'
-}: Props): React.ReactNode => <button className={classNames('form__archive-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
+}: Props): JSX.Element => <button className={classNames('form__archive-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
     <ArchiveIcon className='icon-medium' />
   </button>;
 

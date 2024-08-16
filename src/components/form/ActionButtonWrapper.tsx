@@ -5,6 +5,6 @@ type Props = {
 
 const ActionButtonWrapper = ({
   children
-}: Props): React.ReactNode => <div className='form__action-button-wrapper'>{children}</div>;
+}: Props): JSX.Element => <div className='form__action-button-wrapper'>{children}</div>;
 
 export default ActionButtonWrapper;

@@ -15,7 +15,7 @@ const FieldTypeHidden = ({
   input,
   isDirty,
   setRefForField
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const handleSetRefForField = (element: any) => {
     if (setRefForField) {
       setRefForField(element);

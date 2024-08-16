@@ -19,7 +19,7 @@ const PlanUnitSelectInput = ({
   onBlur,
   placeholder,
   value
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const getPlanUnitOptions = (planUnitList: Array<Record<string, any>>, customDetailedPlanList: Array<Record<string, any>>): Array<Record<string, any>> => {
     return [...planUnitList, ...customDetailedPlanList].map(planUnit => {
       return {

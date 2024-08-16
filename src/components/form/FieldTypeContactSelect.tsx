@@ -23,7 +23,7 @@ const FieldTypeContactSelect = ({
   onChange,
   placeholder,
   serviceUnit
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const getContacts = debounce(async (inputValue: string, callback: (...args: Array<any>) => any) => {
     const contacts = await fetchContacts({
       search: inputValue,

@@ -9,7 +9,7 @@ type Props = {
 
 const PlotSearchReservationRecipients = ({
   reservationRecipients
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   return <Row>
       <Column small={9} medium={9} large={8}>
         <FormTextTitle>

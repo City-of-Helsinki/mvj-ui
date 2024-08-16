@@ -176,7 +176,7 @@ type Props = OwnProps & {
 };
 
 class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       attributes,
       values

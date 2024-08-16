@@ -8,7 +8,7 @@ type Props = {
   history: Record<string, any>;
 };
 
-const CallbackComponentWithChildren = ({ children, ...rest }: CallbackComponentProps & { children: React.ReactNode }): React.ReactNode => {
+const CallbackComponentWithChildren = ({ children, ...rest }: CallbackComponentProps & { children: JSX.Element }): JSX.Element => {
   return <CallbackComponent {...rest}>
         {children}
       </CallbackComponent>;

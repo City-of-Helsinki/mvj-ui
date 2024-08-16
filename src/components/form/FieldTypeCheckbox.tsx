@@ -20,7 +20,7 @@ const FieldTypeCheckbox = ({
   isDirty = false,
   label,
   options
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const hasMultipleValues = options && options.length > 1;
 
   const handleChange = (event: any, optionValue) => {

@@ -6,7 +6,7 @@ type Props = {
   style?: Record<string, any>;
 };
 
-const FormHintText = (props: Props): React.ReactNode => {
+const FormHintText = (props: Props): JSX.Element => {
   const {
     children,
     className,

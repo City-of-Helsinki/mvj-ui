@@ -62,7 +62,7 @@ class ApplicantInfoCheckForm extends Component<Props> {
     onSubmit(formValues);
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       attributes,
       valid,

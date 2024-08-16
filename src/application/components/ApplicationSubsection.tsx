@@ -344,13 +344,13 @@ const ApplicationFormSubsectionFieldArray = ({
   fields: any;
   section: any;
   headerTag: string | React.ComponentType<{
-    children?: React.ReactNode;
+    children?: JSX.Element;
   }>;
   formName: string;
   formPath: string;
   sectionTitleTransformers: Array<(arg0: string, arg1: FormSection, arg2: string) => string>;
   answerId: number | null;
-}): React.ReactNode => {
+}): JSX.Element => {
   return <div className="ApplicationFormSubsectionFieldArray">
       {fields.map((identifier, i) => {
       const subtitle: string = (sectionTitleTransformers || []).reduce((title, transformer) => transformer(title, section, identifier), `${section.title} (${i + 1})`);
@@ -383,14 +383,14 @@ const ApplicationSubsection = ({
   path: Array<string>;
   section: any;
   headerTag?: string | React.ComponentType<{
-    children?: React.ReactNode;
+    children?: JSX.Element;
   }>;
   parentApplicantType?: string | null;
   formName: string;
   formPath: string | null | undefined;
   sectionTitleTransformers: Array<(arg0: string, arg1: FormSection, arg2: string) => string>;
   answerId: number | null;
-}): React.ReactNode => {
+}): JSX.Element => {
   if (!section.visible) {
     return null;
   }

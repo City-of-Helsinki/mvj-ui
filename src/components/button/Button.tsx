@@ -20,7 +20,7 @@ const Button = ({
   text,
   title,
   type = 'button'
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   return <button ref={innerRef} className={classNames('mvj-button', className)} onClick={onClick} disabled={disabled} style={style} title={title} type={type}>
       {text}
     </button>;

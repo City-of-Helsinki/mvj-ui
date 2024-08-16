@@ -10,7 +10,7 @@ type Props = {
   type?: "button" | "submit" | "reset";
 };
 
-const RemoveButton = (props: Props): React.ReactNode => {
+const RemoveButton = (props: Props): JSX.Element => {
   const {
     className,
     disabled,

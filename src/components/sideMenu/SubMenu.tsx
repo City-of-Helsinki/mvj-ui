@@ -61,7 +61,7 @@ class SubMenu extends PureComponent<Props> {
     }
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       header,
       isOpen,

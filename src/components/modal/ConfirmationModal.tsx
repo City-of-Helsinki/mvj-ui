@@ -27,7 +27,7 @@ class ConfirmationModal extends Component<Props> {
     }
   }
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       confirmButtonClassName,
       confirmButtonLabel = 'Tallenna',

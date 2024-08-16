@@ -29,7 +29,7 @@ const FieldTypeTextArea = ({
   rows = 3,
   setRefForField,
   type = 'text'
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const handleChange = (e: any) => {
     if (autoBlur) {
       onBlur(e.target.value);

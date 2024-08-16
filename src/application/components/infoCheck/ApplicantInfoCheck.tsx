@@ -8,7 +8,7 @@ type Props = {
 };
 
 class ApplicantInfoCheck extends Component<Props> {
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       infoChecks,
       infoCheckStateOptions

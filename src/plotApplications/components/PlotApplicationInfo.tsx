@@ -6,7 +6,7 @@ type Props = {
 
 const PlotApplicationInfo = ({
   title
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   return <div className='lease-info'>
       <Row>
         <Column>

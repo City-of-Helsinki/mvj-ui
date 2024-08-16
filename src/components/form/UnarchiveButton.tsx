@@ -15,7 +15,7 @@ const UnarchiveButton = ({
   onClick,
   title,
   type = 'button'
-}: Props): React.ReactNode => <button className={classNames('form__unarchive-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
+}: Props): JSX.Element => <button className={classNames('form__unarchive-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
     <UnarchiveIcon className='icon-medium' />
   </button>;
 

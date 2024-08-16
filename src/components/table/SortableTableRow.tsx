@@ -103,7 +103,7 @@ class SortableTableRow extends PureComponent<Props, State> {
     this.forceUpdate();
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       className,
       columns,

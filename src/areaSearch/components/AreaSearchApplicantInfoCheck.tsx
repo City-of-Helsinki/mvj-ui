@@ -13,7 +13,7 @@ type Props = OwnProps & {
 };
 
 class AreaSearchApplicantInfoCheck extends PureComponent<Props> {
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       infoCheckAttributes,
       infoCheckData

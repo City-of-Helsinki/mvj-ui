@@ -5,6 +5,6 @@ type Props = {
 
 const FormWrapperRight = ({
   children
-}: Props): React.ReactNode => <div className='form-wrapper__right'>{children}</div>;
+}: Props): JSX.Element => <div className='form-wrapper__right'>{children}</div>;
 
 export default FormWrapperRight;

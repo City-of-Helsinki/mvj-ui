@@ -15,7 +15,7 @@ const AttachButton = ({
   onClick,
   title,
   type = 'button'
-}: Props): React.ReactNode => <button className={classNames('form__attach-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
+}: Props): JSX.Element => <button className={classNames('form__attach-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
     <AttachIcon className='icon-medium' />
   </button>;
 

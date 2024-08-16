@@ -7,7 +7,7 @@ type Props = {
   filterOptions: Array<Record<string, any>>;
   filterValue: Array<string>;
   onFilterChange?: (...args: Array<any>) => any;
-  componentToRenderUnderTitle?: React.ReactNode;
+  componentToRenderUnderTitle?: JSX.Element;
 };
 
 const TableFilters = ({
@@ -17,7 +17,7 @@ const TableFilters = ({
   filterValue,
   onFilterChange,
   componentToRenderUnderTitle = null
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const handleFilterChange = (values: Array<Record<string, any>>) => {
     if (onFilterChange) {
       onFilterChange(values);

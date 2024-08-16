@@ -127,7 +127,7 @@ class AsyncSelect extends Component<Props, State> {
     }
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       disabled,
       displayError,

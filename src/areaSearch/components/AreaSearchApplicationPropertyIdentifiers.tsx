@@ -13,7 +13,7 @@ class AreaSearchApplicationPropertyIdentifiers extends Component<Props, State> {
     expanded: false
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       ids
     } = this.props;

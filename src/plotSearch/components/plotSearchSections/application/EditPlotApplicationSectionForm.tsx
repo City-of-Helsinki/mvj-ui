@@ -51,7 +51,7 @@ const EditPlotApplicationSectionFormSectionFields = ({
   setSectionEditorCollapseState,
   meta // usersPermissions,
 
-}: SectionFieldProps): React.ReactNode => {
+}: SectionFieldProps): JSX.Element => {
   const fieldRefs = useRef({});
 
   const handleRemove = (index: number) => {
@@ -131,7 +131,7 @@ const EditPlotApplicationSectionFormSectionSubsections = ({
   collapseStates,
   setSectionEditorCollapseState,
   meta
-}: SectionSubsectionProps): React.ReactNode => {
+}: SectionSubsectionProps): JSX.Element => {
   const handleRemove = (index: number) => {
     dispatch({
       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
@@ -206,7 +206,7 @@ type SubsectionWrapperProps = {
   attributes: Attributes;
   sectionPath: string;
   subsection: FormSection;
-  children: React.ReactNode;
+  children: JSX.Element;
   stagedSectionValues: Record<string, any>;
   peerSectionIdentifiers: Array<string>;
   change: (...args: Array<any>) => any;

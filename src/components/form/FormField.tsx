@@ -381,7 +381,7 @@ class FormField extends PureComponent<Props, State> {
     return validate(value);
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       autoBlur,
       autoComplete,

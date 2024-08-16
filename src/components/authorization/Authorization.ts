@@ -1,13 +1,13 @@
 type Props = {
   allow: boolean;
-  children?: React.ReactNode;
-  errorComponent?: React.ReactNode;
+  children?: JSX.Element;
+  errorComponent?: JSX.Element;
 };
 
 const Authorization = ({
   allow,
   children,
   errorComponent
-}: Props): React.ReactNode => allow ? children || null : errorComponent ? errorComponent : null;
+}: Props): JSX.Element => allow ? children || null : errorComponent ? errorComponent : null;
 
 export default Authorization;

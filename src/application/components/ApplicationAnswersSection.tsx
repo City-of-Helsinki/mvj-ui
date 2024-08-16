@@ -21,7 +21,7 @@ const ApplicationAnswersSection = ({
   fieldTypes,
   sectionExtraComponent,
   sectionTitleTransformers
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   if (!answer) {
     return null;
   }

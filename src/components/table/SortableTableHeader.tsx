@@ -26,7 +26,7 @@ const SortableTableHeader = ({
   sortable,
   sortKey,
   sortOrder
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const setTheadRef = (el: any) => {
     if (getRef) {
       getRef(el);

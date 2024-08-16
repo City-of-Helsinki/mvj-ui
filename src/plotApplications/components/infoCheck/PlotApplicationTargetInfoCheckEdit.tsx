@@ -318,7 +318,7 @@ type Props = OwnProps & {
 };
 
 class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
-  renderErrors(): React.ReactNode {
+  renderErrors(): JSX.Element {
     const {
       submissionErrors
     } = this.props;
@@ -360,7 +360,7 @@ class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
     </FormText>;
   }
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       attributes,
       formValues,

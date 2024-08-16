@@ -18,7 +18,7 @@ type CheckboxProps = {
 const PlotSearchExportModalTargetTableCheckbox = ({
   item,
   onItemChange
-}: CheckboxProps): React.ReactNode => {
+}: CheckboxProps): JSX.Element => {
   return <FormField name={`items.${item.application_identifier}`} fieldAttributes={{
     type: FieldTypes.CHECKBOX,
     label: 'Valitse hakemus ' + item.application_identifier,
@@ -36,7 +36,7 @@ const PlotSearchExportModalTargetTable = ({
   onItemChange,
   columns,
   firstCheckboxOnly
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const groupedItems = groupBy(items, 'answer_id');
   return <SortableTable listTable className="PlotSearchExportModalTargetTable" data={Object.keys(groupedItems).map(name => {
     const group = groupedItems[name];

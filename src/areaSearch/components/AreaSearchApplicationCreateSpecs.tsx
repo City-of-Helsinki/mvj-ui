@@ -75,7 +75,7 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
     onFileRemoved(index);
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       attributes,
       change,

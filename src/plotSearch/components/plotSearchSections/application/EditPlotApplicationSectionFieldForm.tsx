@@ -40,7 +40,7 @@ const EditPlotApplicationSectionFieldChoice = ({
   onChoiceValuesChanged,
   autoFillValues,
   protectedValues
-}: ChoiceProps): React.ReactNode => {
+}: ChoiceProps): JSX.Element => {
   const choiceRefs = useRef({});
 
   const getDataMapBase = (): Record<string, any> => fields.getAll().reduce((acc, item) => ({ ...acc,

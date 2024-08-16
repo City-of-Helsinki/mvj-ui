@@ -26,7 +26,7 @@ const FieldTypeUserSelect = ({
   placeholder,
   multiSelect,
   serviceUnit
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   // If a plain ID value has already been set when the component mounts,
   // retrieve the corresponding single user object and set the state up accordingly
   // so that we can show the user's name in the closed dropdown properly.

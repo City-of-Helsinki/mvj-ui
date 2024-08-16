@@ -25,7 +25,7 @@ class CreateLease extends Component<Props> {
     this.form = element;
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       allowToChangeRelateTo,
       isOpen,

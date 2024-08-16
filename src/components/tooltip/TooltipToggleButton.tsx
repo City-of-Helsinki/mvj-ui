@@ -3,7 +3,7 @@ type Props = {
   className?: string;
   onClick: (arg0: React.MouseEvent<HTMLButtonElement>) => void;
   style?: Record<string, any>;
-  children: React.ReactNode;
+  children: JSX.Element;
 };
 
 class TooltipToggleButton extends Component<Props> {
@@ -19,7 +19,7 @@ class TooltipToggleButton extends Component<Props> {
     }
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       className,
       style,

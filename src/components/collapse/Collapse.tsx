@@ -143,7 +143,7 @@ class Collapse extends PureComponent<Props, State> {
     }
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       contentHeight,
       isOpen,

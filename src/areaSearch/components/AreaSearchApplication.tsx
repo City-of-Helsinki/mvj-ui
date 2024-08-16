@@ -51,7 +51,7 @@ class AreaSearchApplication extends Component<Props, State> {
     selectedAreaSectionRefreshKey: 0
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       areaSearch,
       isFetchingFormAttributes,

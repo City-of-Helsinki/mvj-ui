@@ -52,7 +52,7 @@ type Props = {
   className?: string;
   footer?: (arg0: {
     columnCount: number;
-  }) => React.ReactNode;
+  }) => JSX.Element;
   invoiceToCredit?: any;
   onSelectRow?: any;
 };
@@ -408,7 +408,7 @@ class SortableTable extends Component<Props, State> {
     return colSpan;
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       columns,
       fixedHeader,

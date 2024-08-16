@@ -68,7 +68,7 @@ class MapContainer extends Component<Props> {
     };
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       bounds,
       center,

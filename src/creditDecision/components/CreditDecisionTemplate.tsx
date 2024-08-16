@@ -14,7 +14,7 @@ const CreditDecisionTemplate = ({
   contactId,
   contactType,
   nin
-}: Props): React.ReactNode => <Fragment>
+}: Props) => <Fragment>
     <CreditDecisionRequest contactType={contactType} contactId={contactId} businessId={businessId} nin={nin} />
 
     {contactType !== ContactTypes.PERSON && <CreditDecisionHistory contactId={contactId} businessId={businessId} />}

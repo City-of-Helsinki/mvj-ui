@@ -32,7 +32,7 @@ import "@/main.scss";
 const url = window.location.toString();
 const IS_DEVELOPMENT_URL = url.includes('ninja') || url.includes('localhost');
 type OwnProps = {
-  children: React.ReactNode;
+  children: JSX.Element;
 };
 type Props = OwnProps & {
   apiError: ApiError;

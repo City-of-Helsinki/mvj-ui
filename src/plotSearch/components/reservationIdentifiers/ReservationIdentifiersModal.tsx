@@ -189,7 +189,7 @@ class ReservationIdentifiersModal extends Component<Props, State> {
     return `${type?.identifier || '??'}${municipality?.identifier || '?'}${padStart(district?.identifier || '??', 2, '0')}`;
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       isOpen,
       onClose,

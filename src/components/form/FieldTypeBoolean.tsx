@@ -22,7 +22,7 @@ const FieldTypeBoolean = ({
   },
   isDirty = false,
   label
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const options = [{
     value: false,
     label: 'Ei'

@@ -22,7 +22,7 @@ const FieldTypeIntendedUseSelect = ({
   onChange,
   placeholder,
   serviceUnit
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const getIntendedUses = debounce(async (inputValue: string, callback: (...args: Array<any>) => any) => {
     const intendedUses = await fetchIntendedUses({
       search: inputValue,

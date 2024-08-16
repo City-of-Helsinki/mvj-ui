@@ -39,7 +39,7 @@ const renderTargets = ({
   targets,
   change,
   formValues
-}: RenderTargetProps): React.ReactNode => <Fragment>
+}: RenderTargetProps): JSX.Element => <Fragment>
   {!!targets && targets.map(target => {
     const targetIdentifier = target.plan_unit && target.plan_unit.identifier || target.custom_detailed_plan && target.custom_detailed_plan.identifier;
     let isChecked = false;
@@ -111,7 +111,7 @@ class DirectReservationLinkModal extends Component<Props> {
     });
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       isOpen,
       onClose,

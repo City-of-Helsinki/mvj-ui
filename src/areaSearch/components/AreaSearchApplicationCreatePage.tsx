@@ -207,7 +207,7 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
     }
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       isFetchingAttributes,
       currentAreaSearch,

@@ -77,7 +77,7 @@ class FieldTypeDecimal extends PureComponent<Props, State> {
     }
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       autoComplete,
       disabled,

@@ -29,7 +29,7 @@ const FieldTypeDatePicker = ({
   maxDate,
   placeholder,
   setRefForField
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const handleSetReference = (element: any) => {
     if (setRefForField) {
       setRefForField(element);

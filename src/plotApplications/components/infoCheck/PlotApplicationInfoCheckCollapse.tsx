@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import Collapse from "@/components/collapse/Collapse";
 type Props = {
-  children?: React.ReactNode | null | undefined;
+  children?: JSX.Element | null | undefined;
   className?: string;
   headerTitle: string;
 };

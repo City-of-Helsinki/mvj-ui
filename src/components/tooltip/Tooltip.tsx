@@ -7,7 +7,7 @@ type Props = {
   isOpen: boolean;
   className?: string | Record<string, any>;
   onClose: (arg0: Event) => void;
-  children: React.ReactNode;
+  children: JSX.Element;
   relativeTo?: Element;
 };
 type State = {
@@ -112,7 +112,7 @@ class Tooltip extends Component<Props, State> {
     return 'bottom-right';
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       isOpen,
       className,

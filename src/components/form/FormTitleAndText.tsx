@@ -11,7 +11,7 @@ const FormTitleAndText = ({
   text,
   textClassName,
   title
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   return <div>
       <FormTextTitle title={title} />
       <FormText className={textClassName}>{text}</FormText>

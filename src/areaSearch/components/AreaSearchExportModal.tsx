@@ -41,7 +41,7 @@ class AreaSearchExportModal extends Component<Props> {
     }
   }
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       isOpen,
       onClose,

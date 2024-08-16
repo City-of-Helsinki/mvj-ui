@@ -23,7 +23,7 @@ const FieldTypeMultiSelect = ({
   isDirty,
   isLoading = false,
   options
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const handleBlur = (selected: Array<string>) => onBlur(selected);
 
   return <div className={classNames('form-field__multiselect', {

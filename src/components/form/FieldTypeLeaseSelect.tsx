@@ -23,7 +23,7 @@ const FieldTypeLeaseSelect = ({
   onChange,
   placeholder,
   serviceUnit
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const getLeases = debounce(async (inputValue: string, callback: (...args: Array<any>) => any) => {
     const leases = await fetchLeases({
       succinct: true,

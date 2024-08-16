@@ -51,7 +51,7 @@ class EditAreaSearchPreparerForm extends Component<Props> {
     }
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       areaSearchAttributes,
       areaSearchData,

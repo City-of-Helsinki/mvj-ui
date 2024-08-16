@@ -5,6 +5,6 @@ type Props = {
 
 const ModalButtonWrapper = ({
   children
-}: Props): React.ReactNode => <div className='modal__button-wrapper'>{children}</div>;
+}: Props): JSX.Element => <div className='modal__button-wrapper'>{children}</div>;
 
 export default ModalButtonWrapper;

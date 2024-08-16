@@ -15,7 +15,7 @@ const EditButton = ({
   onClick,
   title,
   type = 'button'
-}: Props): React.ReactNode => <button className={classNames('form__edit-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
+}: Props): JSX.Element => <button className={classNames('form__edit-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
     <EditIcon className='icon-medium' />
   </button>;
 

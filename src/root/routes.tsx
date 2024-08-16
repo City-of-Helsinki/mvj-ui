@@ -135,4 +135,4 @@ export default (<App>
     <Route exact path={getRouteById(Routes.CREDIT_DECISION)} component={CreditDecisionSearchPage} />
     <Route component={ErrorPage} />
   </Switch>
-</App> as React.ReactNode);
+</App> as JSX.Element);

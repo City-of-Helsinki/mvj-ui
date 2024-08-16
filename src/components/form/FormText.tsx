@@ -6,7 +6,7 @@ type Props = {
   style?: Record<string, any>;
 };
 
-const FormText = (props: Props): React.ReactNode => {
+const FormText = (props: Props): JSX.Element => {
   const {
     children,
     className,

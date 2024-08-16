@@ -25,7 +25,7 @@ const DecisionSelectInput = ({
   getOptions,
   cacheOptions,
   hasError
-}: Props): React.ReactNode => {
+}: Props): JSX.Element => {
   const getDecisionOptions = (decisionList: Array<Record<string, any>>): Array<Record<string, any>> => decisionList.map(decision => {
     return {
       value: decision.id,

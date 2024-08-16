@@ -109,7 +109,7 @@ class PlotSearchExportModal extends Component<Props> {
     change('selectedItemIds', Array.from(newSelectedIds));
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       isOpen,
       onClose,
@@ -120,7 +120,7 @@ class PlotSearchExportModal extends Component<Props> {
       items,
       isFetching
     } = this.props;
-    let guideText: React.ReactNode = <p>Voit tulostaa hakemuksien tietoja tiedostoon. Aloita valitsemalla tulostusalue.</p>;
+    let guideText: JSX.Element = <p>Voit tulostaa hakemuksien tietoja tiedostoon. Aloita valitsemalla tulostusalue.</p>;
     let columns: Array<Column> = [];
     let downloadUrl = '';
 

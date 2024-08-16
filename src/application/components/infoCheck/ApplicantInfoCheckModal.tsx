@@ -39,7 +39,7 @@ class ApplicantInfoCheckModal extends Component<Props, State> {
     this.form = element;
   };
 
-  render(): React.ReactNode {
+  render(): JSX.Element {
     const {
       isOpen,
       onClose,
