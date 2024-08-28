@@ -171,6 +171,7 @@ const FormFieldInput = ({
       case FieldTypeOptions.STRING:
       case FieldTypeOptions.HIDDEN:
       case FieldTypeOptions.FRACTIONAL:
+      case FieldTypeOptions.TEXTAREA:
         return value
 
       case FieldTypeOptions.INTENDED_USE:
