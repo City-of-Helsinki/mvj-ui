@@ -171,8 +171,10 @@ const FormFieldInput = ({
       case FieldTypeOptions.STRING:
       case FieldTypeOptions.HIDDEN:
       case FieldTypeOptions.FRACTIONAL:
+        return value
+
       case FieldTypeOptions.INTENDED_USE:
-        return value;
+        return value?.name ?? '-';
 
       case FieldTypeOptions.REFERENCE_NUMBER:
         return value ? <ExternalLink href={getReferenceNumberLink(value)} text={value} /> : null;
