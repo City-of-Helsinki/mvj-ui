@@ -87,7 +87,6 @@ class InvoicePanel extends PureComponent<Props, State> {
       creditedInvoice,
       interestInvoiceFor
     } = this.state;
-    const automaticallyGenerated = invoice && invoice.generated;
     
     return (
     <TablePanelContainer 
@@ -95,11 +94,8 @@ class InvoicePanel extends PureComponent<Props, State> {
       footer={invoice && !invoice.sap_id && 
         <Authorization allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}>
           <>
-          <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
-          {automaticallyGenerated 
-            ? <p className="invoice-panel__error-text">Automaattisesti luotuja laskuja ei voi muokata.</p>
-            : <Button className={ButtonColors.SUCCESS} disabled={isEditClicked || !valid} onClick={this.handleSave} text='Tallenna' />
-          }
+            <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
+            <Button className={ButtonColors.SUCCESS} disabled={isEditClicked || !valid} onClick={this.handleSave} text='Tallenna' />
           </>
         </Authorization>}
       onClose={onClose} 
