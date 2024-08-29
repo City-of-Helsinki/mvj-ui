@@ -172,7 +172,7 @@ const FormFieldInput = ({
       case FieldTypeOptions.HIDDEN:
       case FieldTypeOptions.FRACTIONAL:
       case FieldTypeOptions.TEXTAREA:
-        return value
+        return value;
 
       case FieldTypeOptions.INTENDED_USE:
         return value?.name ?? '-';
