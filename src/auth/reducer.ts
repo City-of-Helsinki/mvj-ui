@@ -1,7 +1,7 @@
 import { handleActions } from "redux-actions";
 import { combineReducers } from "redux";
 import type { Reducer } from "@/types";
-import type { ReceiveApiTokenAction } from "./types";
+import type { ReceiveApiTokenAction, ReceiveUserAction } from "./types";
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/auth/FETCH_API_TOKEN': () => true,
   'mvj/auth/TOKEN_NOT_FOUND': () => false,
@@ -16,4 +16,18 @@ const apiTokenReducer: Reducer<any> = handleActions({
 export default combineReducers<Record<string, any>, any>({
   apiToken: apiTokenReducer,
   isFetching: isFetchingReducer
+});
+
+const userReducer: Reducer<any> = handleActions(
+  {
+    'mvj/auth/USER_FOUND': (state: any, {
+      payload 
+    }: ReceiveUserAction) => payload,
+    'mvj/auth/CLEAR_USER': () => null,
+  },
+  null
+);
+
+export const oidcReducer = combineReducers({
+  user: userReducer,
 });

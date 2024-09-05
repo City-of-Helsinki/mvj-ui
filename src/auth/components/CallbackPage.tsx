@@ -1,33 +1,30 @@
-import React, { PureComponent } from "react";
+import React from "react";
 import { withRouter } from "react-router";
 import { CallbackComponent, CallbackComponentProps } from "redux-oidc";
+import { LoginProvider, LoginCallbackHandler, isHandlingLoginCallbackError } from "hds-react";
+import type { OidcClientError, User } from "hds-react";
 import { getRedirectUrlFromSessionStorage } from "@/util/storage";
 import userManager from "@/auth/util/user-manager";
 import { getRouteById, Routes } from "@/root/routes";
+
 type Props = {
   history: Record<string, any>;
 };
 
-const CallbackComponentWithChildren = ({ children, ...rest }: CallbackComponentProps & { children: JSX.Element }): JSX.Element => {
-  return <CallbackComponent {...rest}>
-        {children}
-      </CallbackComponent>;
-}
-
-class CallbackPage extends PureComponent<Props> {
-  successCallback = () => {
-    const {
-      history
-    } = this.props;
+const CallbackPage = (props: Props) => {
+  const onSuccess = (user: User) => {
+    const { history } = props;
     history.push(getRedirectUrlFromSessionStorage() || getRouteById(Routes.LEASES));
   };
+  const onError = (error: OidcClientError) => {
+    console.error("Login Callback Error:", error);
+  };
 
-  render() {
-    return <CallbackComponentWithChildren errorCallback={this.successCallback} successCallback={this.successCallback} userManager={userManager}>
+  return (
+      <LoginCallbackHandler onError={onError} onSuccess={onSuccess}>
         <div></div>
-      </CallbackComponentWithChildren>;
-  }
-
+      </LoginCallbackHandler>
+  )
 }
 
 export default withRouter(CallbackPage);
