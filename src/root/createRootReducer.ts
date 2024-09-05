@@ -1,13 +1,12 @@
 import { combineReducers } from "redux";
 import { reducer as formReducer } from "redux-form";
-import { reducer as oidc } from "redux-oidc";
 import { reducer as toastrReducer } from "react-redux-toastr";
 import { connectRouter } from "connected-react-router";
 import apiReducer from "@/api/reducer";
 import areaNoteReducer from "@/areaNote/reducer";
 import areaSearchReducer from "@/areaSearch/reducer";
 import auditLogReducer from "@/auditLog/reducer";
-import authReducer from "@/auth/reducer";
+import authReducer, { oidcReducer } from "@/auth/reducer";
 import batchrunReducer from "@/batchrun/reducer";
 import billingPeriodReducer from "@/billingPeriods/reducer";
 import collectionCourtDecisionReducer from "@/collectionCourtDecision/reducer";
@@ -87,7 +86,7 @@ export default ((history: Record<string, any>): Reducer<RootState> => combineRed
   leaseStatisticReport: leaseStatisticReportReducer,
   leaseType: leaseTypeReducer,
   lessor: lessorReducer,
-  oidc,
+  oidc: oidcReducer,
   penaltyInterest: penaltyInterestReducer,
   previewInvoices: previewInvoicesReducer,
   rentBasis: rentBasisReducer,
