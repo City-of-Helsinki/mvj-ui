@@ -4,8 +4,6 @@ import { routerMiddleware as createRouterMiddleware } from "connected-react-rout
 import createRootReducer from "./createRootReducer";
 import createSagaMiddleware from "redux-saga";
 import createRootSaga from "./createRootSaga";
-import { loadUser } from "redux-oidc";
-import userManager from "@/auth/util/user-manager";
 export const history = createBrowserHistory();
 
 // needed so Typescript doesn't complain about the window object not having the __REDUX_DEVTOOLS_EXTENSION__ property
