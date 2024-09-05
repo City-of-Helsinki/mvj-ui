@@ -6,7 +6,7 @@ import apiReducer from "@/api/reducer";
 import areaNoteReducer from "@/areaNote/reducer";
 import areaSearchReducer from "@/areaSearch/reducer";
 import auditLogReducer from "@/auditLog/reducer";
-import authReducer, { oidcReducer } from "@/auth/reducer";
+import { authReducer, oidcReducer } from "@/auth/reducer";
 import batchrunReducer from "@/batchrun/reducer";
 import billingPeriodReducer from "@/billingPeriods/reducer";
 import collectionCourtDecisionReducer from "@/collectionCourtDecision/reducer";

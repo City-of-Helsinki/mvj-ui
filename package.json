@@ -36,7 +36,6 @@
     "leaflet-zoombox": "^0.5.1",
     "lodash": "^4.17.21",
     "normalize.css": "^8.0.1",
-    "oidc-client": "^1.8.2",
     "proj4": "^2.5.0",
     "proj4leaflet": "^1.0.2",
     "prop-types": "^15.7.2",
@@ -59,7 +58,6 @@
     "redux": "^4.0.4",
     "redux-actions": "^2.6.5",
     "redux-form": "^8.2.5",
-    "redux-oidc": "^3.1.4",
     "redux-saga": "^1.0.5",
     "utility-types": "^3.11.0",
     "whatwg-fetch": "^3.0.0"

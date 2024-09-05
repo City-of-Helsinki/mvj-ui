@@ -1,7 +1,6 @@
 import { all, fork } from "redux-saga/effects";
 import areaNoteSaga from "@/areaNote/saga";
 import auditLogSaga from "@/auditLog/saga";
-import authSaga from "@/auth/saga";
 import areaSearchSaga from "@/areaSearch/saga";
 import batchrunSaga from "@/batchrun/saga";
 import billingPeriodsSaga from "@/billingPeriods/saga";
