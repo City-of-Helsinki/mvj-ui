@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { isValidDate, getDayMonth, getCurrentYear, sortByStartAndEndDateAsc, sortByStartAndEndDateDesc, isDateRangesCollapsing, splitDateRanges, getSplittedDateRanges, getSplittedDateRangesWithItems } from "./date";
-import { composePageTitle, getSearchQuery, getUrlParams, fixedLengthNumber, getEpochTime, isEmptyValue, formatNumberWithThousandSeparator, formatDecimalNumber, formatNumber, isDecimalNumberStr, convertStrToDecimalNumber, formatDate, formatDateRange, getReferenceNumberLink, findItemById, getLabelOfOption, sortNumberByKeyAsc, sortNumberByKeyDesc, sortStringAsc, sortStringDesc, sortStringByKeyAsc, sortStringByKeyDesc, sortByOptionsAsc, sortByOptionsDesc, addEmptyOption, isFieldRequired, isFieldAllowedToEdit, isFieldAllowedToRead, isMethodAllowed, hasPermissions, getFieldAttributeOptions, getFieldOptions, humanReadableByteCount, hasNumber, findFromOcdString, createPTPPlanReportUrl, createPTPPlotDivisionUrl, getApiResponseCount, getApiResponseMaxPage, getApiResponseResults, isActive, isActiveOrFuture, isArchived } from "./helpers";
+import { composePageTitle, getSearchQuery, getUrlParams, fixedLengthNumber, isEmptyValue, formatNumberWithThousandSeparator, formatDecimalNumber, formatNumber, isDecimalNumberStr, convertStrToDecimalNumber, formatDate, formatDateRange, getReferenceNumberLink, findItemById, getLabelOfOption, sortNumberByKeyAsc, sortNumberByKeyDesc, sortStringAsc, sortStringDesc, sortStringByKeyAsc, sortStringByKeyDesc, sortByOptionsAsc, sortByOptionsDesc, addEmptyOption, isFieldRequired, isFieldAllowedToEdit, isFieldAllowedToRead, isMethodAllowed, hasPermissions, getFieldAttributeOptions, getFieldOptions, humanReadableByteCount, hasNumber, findFromOcdString, createPTPPlanReportUrl, createPTPPlotDivisionUrl, getApiResponseCount, getApiResponseMaxPage, getApiResponseResults, isActive, isActiveOrFuture, isArchived } from "./helpers";
 import { getCoordinatesOfGeometry, getCenterFromCoordinates } from "./map";
 
 describe('utils', () => {
@@ -541,9 +541,6 @@ describe('utils', () => {
       expect(fixedLengthNumber(123)).to.deep.equal('123');
       expect(fixedLengthNumber(null)).to.deep.equal('');
       expect(fixedLengthNumber(1, 4)).to.deep.equal('0001');
-    });
-    it('epoch time should be a number', () => {
-      expect(getEpochTime()).to.be.a('number');
     });
     it('should be empty value', () => {
       expect(isEmptyValue(undefined)).to.deep.equal(true);

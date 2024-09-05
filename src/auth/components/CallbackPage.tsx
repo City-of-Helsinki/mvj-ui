@@ -1,10 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { CallbackComponent, CallbackComponentProps } from "redux-oidc";
-import { LoginProvider, LoginCallbackHandler, isHandlingLoginCallbackError } from "hds-react";
+import { LoginCallbackHandler } from "hds-react";
 import type { OidcClientError, User } from "hds-react";
 import { getRedirectUrlFromSessionStorage } from "@/util/storage";
-import userManager from "@/auth/util/user-manager";
 import { getRouteById, Routes } from "@/root/routes";
 
 type Props = {

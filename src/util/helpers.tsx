@@ -203,12 +203,6 @@ export const fixedLengthNumber = (value: number | null | undefined, length: numb
 };
 
 /**
- * Get current epoch time
- * @returns {number}
- */
-export const getEpochTime = (): number => Math.round(new Date().getTime() / 1000.0);
-
-/**
  * Test is value empty or null/undefined
  * @param {*} value
  * @returns {number}
