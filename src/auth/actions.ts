@@ -7,4 +7,4 @@ export const receiveApiToken = (token: Record<string, any>): ReceiveApiTokenActi
 export const userFound = (user: User): Action<string> =>
     createAction('mvj/auth/USER_FOUND')(user);
 export const clearUser = (): Action<string> =>
-    createAction('mvj/auth/CLEAR_USER')(null);
+    createAction('mvj/auth/CLEAR_USER')();
