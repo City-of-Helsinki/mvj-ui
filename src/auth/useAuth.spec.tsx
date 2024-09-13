@@ -99,10 +99,10 @@ describe('useAuth', () => {
     sessionPollerSettings: { pollIntervalInMs: 300000 } // 300000ms = 5min
   };
   
-  beforeEach(() => {
-    mockStore = configureStore();//store;
+  beforeEach(async () => {
+    mockStore = configureStore();
     vi.clearAllMocks();
-    cleanup();
+    await cleanup();
   });
 
   it('should initialize with loggedIn as false', () => {
@@ -171,10 +171,7 @@ describe('useAuth', () => {
         </Provider>)
     });
 
-    act(() => {
-      result.current.logout();
-    });
-
+    result.current.logout();
     expect(clearApiToken).toHaveBeenCalled();
     expect(clearUser).toHaveBeenCalled();
     expect(result.current.loggedIn).toBe(false);

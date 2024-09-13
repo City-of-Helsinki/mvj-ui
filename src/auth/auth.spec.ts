@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { User } from "oidc-client-ts";
 import { clearApiToken, receiveApiToken, userFound, clearUser } from "./actions";
-import { authReducer, oidcReducer } from "./reducer";
+import { authReducer } from "./reducer";
 
 const getMockUser = (): User => new User({
   id_token: "id123",
@@ -25,12 +25,25 @@ const getMockUser = (): User => new User({
 describe('Auth', () => {
   describe('Reducer', () => {
     describe('authReducer', () => {
+      it('should set user', () => {
+        const mockUser = getMockUser();
+        const mockState = Object.assign({}, {user: mockUser, apiToken: null});
+        const state = authReducer({user: null}, userFound(mockUser));
+        expect(state).to.deep.equal(mockState);
+      });
+      it('should clear user', () => {
+        const mockUser = getMockUser();
+        const state = authReducer({user: mockUser, apiToken: null}, clearUser());
+        const nullUserState = {user: null, apiToken: null};
+        expect(state).to.deep.equal(nullUserState);
+      });
       it('should update apiToken', () => {
         const dummyApiToken = {
           'foo': 'Lorem ipsum'
         };
         const newState = {
           apiToken: dummyApiToken,
+          user: null,
         };
         const state = authReducer({}, receiveApiToken(dummyApiToken));
         expect(state).to.deep.equal(newState);
@@ -40,26 +53,13 @@ describe('Auth', () => {
           'foo': 'Lorem ipsum'
         };
         const newState = {
-          apiToken: {},
+          apiToken: null,
+          user: null,
         };
         let state = authReducer({}, receiveApiToken(dummyApiToken));
         state = authReducer(state, clearApiToken());
         expect(state).to.deep.equal(newState);
       });
-    });
-    describe('oidcReducer', () => {
-      it('should set user', () => {
-        const mockUser = getMockUser();
-        const mockState = Object.assign({}, {user: mockUser,});
-        const state = oidcReducer({user: null}, userFound(mockUser));
-        expect(state).to.deep.equal(mockState);
-      });
-    });
-    it('should clear user', () => {
-      const mockUser = getMockUser();
-      const state = oidcReducer({user: mockUser}, clearUser());
-      const nullUserState = {user: null};
-      expect(state).to.deep.equal(nullUserState);
     });
   });
 });
