@@ -19,7 +19,7 @@ const useAuth = () => {
   const { login: oidcLogin, logout: oidcLogout, isRenewing: oidcIsRenewing } = useOidcClient();
   const authenticatedUser = useAuthenticatedUser();
   const dispatch = useDispatch();
-  const [apiTokensClientSignal, apiTokensClientSignalReset] = useApiTokensClientTracking();
+  const [apiTokensClientSignal, apiTokensClientSignalReset, apiTokensClient] = useApiTokensClientTracking();
   const { getStoredApiTokens } = useApiTokens();
 
   const setLoggedInIfApiTokenExists = useCallback(() => {
@@ -67,9 +67,10 @@ const useAuth = () => {
     oidcLogout();
   }, [oidcLogout, dispatch]);
 
-  const isRenewing = useCallback(() => {
-    oidcIsRenewing
-  }, [oidcIsRenewing]);
+  const isRenewing = () => {
+    return oidcIsRenewing() || apiTokensClient.isRenewing();
+  };
+
   return { loggedIn, authenticatedUser, login, logout, isRenewing, setLoggedInIfApiTokenExists };
 };
 
