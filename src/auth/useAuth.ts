@@ -47,7 +47,6 @@ const useAuth = () => {
     }
     if (isApiTokensRemovedSignal(apiTokensClientSignal)) {
       dispatch(clearApiToken());
-      setLoggedIn(false);
     }
     if (isApiTokensRenewalStartedSignal(apiTokensClientSignal)) {
       // Placeholder for future use
