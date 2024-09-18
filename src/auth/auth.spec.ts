@@ -27,14 +27,14 @@ describe('Auth', () => {
     describe('authReducer', () => {
       it('should set user', () => {
         const mockUser = getMockUser();
-        const mockState = Object.assign({}, {user: mockUser, apiToken: null});
-        const state = authReducer({user: null}, userFound(mockUser));
+        const mockState = Object.assign({}, {user: mockUser, apiToken: ''});
+        const state = authReducer({user: ''}, userFound(mockUser));
         expect(state).to.deep.equal(mockState);
       });
       it('should clear user', () => {
         const mockUser = getMockUser();
-        const state = authReducer({user: mockUser, apiToken: null}, clearUser());
-        const nullUserState = {user: null, apiToken: null};
+        const state = authReducer({user: mockUser, apiToken: ''}, clearUser());
+        const nullUserState = {user: '', apiToken: ''};
         expect(state).to.deep.equal(nullUserState);
       });
       it('should update apiToken', () => {
@@ -43,7 +43,7 @@ describe('Auth', () => {
         };
         const newState = {
           apiToken: dummyApiToken,
-          user: null,
+          user: '',
         };
         const state = authReducer({}, receiveApiToken(dummyApiToken));
         expect(state).to.deep.equal(newState);
@@ -53,8 +53,8 @@ describe('Auth', () => {
           'foo': 'Lorem ipsum'
         };
         const newState = {
-          apiToken: null,
-          user: null,
+          apiToken: '',
+          user: '',
         };
         let state = authReducer({}, receiveApiToken(dummyApiToken));
         state = authReducer(state, clearApiToken());
