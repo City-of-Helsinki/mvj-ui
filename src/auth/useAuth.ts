@@ -55,8 +55,18 @@ const useAuth = () => {
     return apiTokensClientSignalReset;
   }, [apiTokensClientSignal, dispatch]);
 
+  const determineRedirectPath = (redirectPath: string): string => {
+    if (!redirectPath || redirectPath.startsWith('/callback')) {
+      return getRouteById(Routes.LEASES);
+    }
+    return redirectPath;
+  }
+
   const login = useCallback((redirectPath: string) => {
-    setRedirectUrlToSessionStorage(redirectPath || getRouteById(Routes.LEASES));
+    // avoid setting redirectPath to `/callback`, which could happen if there was an error during login
+    // and user returns to the callback url with error, and then tries to log in again
+    const finalRedirectPath = determineRedirectPath(redirectPath);
+    setRedirectUrlToSessionStorage(finalRedirectPath);
     oidcLogin();
   }, [oidcLogin]);
 
