@@ -132,8 +132,5 @@ export const getRedirectUrlFromSessionStorage = (): any => {
  * @param {string} url
  */
 export const setRedirectUrlToSessionStorage = (url: string) => {
-  // avoid setting redirectUrl to callback url, which could happen if there was an error during login
-  // and user returns to the callback url with error, and then tries to log in again
-  const redirectUrl = url?.startsWith('/callback') ? '/' : url;
-  setSessionStorageItem('redirectURL', redirectUrl);
+  setSessionStorageItem('redirectURL', url);
 };
