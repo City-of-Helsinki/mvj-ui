@@ -1,5 +1,7 @@
 import type { LoginProviderProps } from 'hds-react';
 
+type OidcProviderName = 'tunnistamo' | 'tunnistus';
+
 // Tunnistamo SSO (legacy)
 const loginProviderTunnistamoProperties: LoginProviderProps = {
   userManagerSettings: {
@@ -31,6 +33,9 @@ const loginProviderTunnistusProperties: LoginProviderProps = {
   sessionPollerSettings: { pollIntervalInMs: 300000 } // 300000ms = 5min
 };
 
-export const useTunnistamoOpenIdConnect = import.meta.env.VITE_USE_TUNNISTAMO_OPENID_CONNECT === 'true' || import.meta.env.VITE_USE_TUNNISTAMO_OPENID_CONNECT === true;
+export const oidcProviderName: OidcProviderName = import.meta.env.VITE_OIDC_PROVIDER || 'tunnistus';
 // By default use Tunnistus SSO
-export const loginProviderProperties = useTunnistamoOpenIdConnect ? loginProviderTunnistamoProperties : loginProviderTunnistusProperties;
+export const loginProviderProperties = oidcProviderName === 'tunnistamo' ? loginProviderTunnistamoProperties : loginProviderTunnistusProperties;
+const tunnistamoApiTokenKeyName: string = import.meta.env.VITE_OPENID_CONNECT_API_TOKEN_KEY || 'https://api.hel.fi/auth/mvj';
+const tunnistusApiTokenKeyName: string = import.meta.env.VITE_TUNNISTUS_OIDC_API_AUDIENCE || 'mvj-api';
+export const apiTokenKeyName = oidcProviderName === 'tunnistamo' ? tunnistamoApiTokenKeyName : tunnistusApiTokenKeyName;
