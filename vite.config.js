@@ -56,5 +56,8 @@ export default defineConfig({
     coverage: {
       provider: 'istanbul'
     },
+  },
+  build: {
+    minify: false,
   }
 })
