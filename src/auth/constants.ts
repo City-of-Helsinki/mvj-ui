@@ -31,6 +31,8 @@ const loginProviderTunnistusProperties: LoginProviderProps = {
   sessionPollerSettings: { pollIntervalInMs: 300000 } // 300000ms = 5min
 };
 
-export const useTunnistamoOpenIdConnect = import.meta.env.VITE_USE_TUNNISTAMO_OPENID_CONNECT === 'true' || import.meta.env.VITE_USE_TUNNISTAMO_OPENID_CONNECT === true;
+export const useTunnistamoOpenIdConnect = (): boolean => {
+  return import.meta.env.VITE_USE_TUNNISTAMO_OPENID_CONNECT === 'true' || import.meta.env.VITE_USE_TUNNISTAMO_OPENID_CONNECT === true;
+}
 // By default use Tunnistus SSO
-export const loginProviderProperties = useTunnistamoOpenIdConnect ? loginProviderTunnistamoProperties : loginProviderTunnistusProperties;
+export const loginProviderProperties: LoginProviderProps = useTunnistamoOpenIdConnect() ? loginProviderTunnistamoProperties : loginProviderTunnistusProperties;
