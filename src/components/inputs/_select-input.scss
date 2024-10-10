@@ -83,13 +83,13 @@
 
     &__dropdown-indicator {
       display: block;
-      background-image: url(../assets/icons/icon_arrow_down.svg);
+      background-image: url(/assets/icons/icon_arrow_down.svg);
       height: rem-calc(14px);
       width: rem-calc(14px);
       margin: rem-calc(0 2px);
 
       &.menu-is-open {
-        background-image: url(../assets/icons/icon_arrow_up.svg);
+        background-image: url(/assets/icons/icon_arrow_up.svg);
       }
     }
 
