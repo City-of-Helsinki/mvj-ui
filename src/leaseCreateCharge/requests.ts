@@ -12,7 +12,8 @@ export const fetchReceivableTypes = (): Generator<any, any, any> => {
   const lease = getCurrentLease(state);
   const serviceUnit = lease.service_unit;
   return callApi(new Request(createUrl(`receivable_type/`, {
-    service_unit: serviceUnit.id
+    service_unit: serviceUnit.id,
+    limit: 50
   }), {
     method: 'GET'
   }));
