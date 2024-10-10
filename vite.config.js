@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import commonjs from 'vite-plugin-commonjs';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'path';
 import postcssUrl from 'postcss-url';
 import babel from '@rollup/plugin-babel';
@@ -8,6 +9,14 @@ import babel from '@rollup/plugin-babel';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    viteStaticCopy({
+      targets: [
+        { // copy leaflet-draw images to dist
+          src: 'node_modules/leaflet-draw/dist/images/*',
+          dest: 'images'
+        },
+      ]
+    }),
     react({
       jsxRuntime: 'classic',
     }),
