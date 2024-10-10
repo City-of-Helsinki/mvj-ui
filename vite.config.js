@@ -13,7 +13,7 @@ export default defineConfig({
       targets: [
         { // copy leaflet-draw images to dist
           src: 'node_modules/leaflet-draw/dist/images/*',
-          dest: 'images'
+          dest: 'assets/images'
         },
       ]
     }),
@@ -35,7 +35,16 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        postcssUrl({}),
+        postcssUrl({
+          url: (asset) => {
+            // transform urls from `node_modules/leaflet-draw/dist/leaflet.draw.css`
+            // change those urls to point from `/images` to `/assets/images`
+            if (asset.relativePath && asset.relativePath.startsWith('images/')) {
+              return `/assets/${asset.url}`;
+            }
+            return asset.url;
+          }
+        }),
       ]
     }
   },
