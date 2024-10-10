@@ -4,15 +4,15 @@
 @include foundation-everything(true);
 @include foundation-flex-grid;
 
-@import "../node_modules/react-leaflet-fullscreen/dist/styles.css";
+@import "node_modules/react-leaflet-fullscreen/dist/styles";
 @import "styles/mixins";
 
 // Vendor
-@import "../node_modules/react-redux-toastr/src/styles/index";
-@import "../node_modules/react-datepicker/dist/react-datepicker.css";
-@import "../node_modules/leaflet-draw/dist/leaflet.draw.css";
-@import "../node_modules/react-dual-listbox/src/scss/react-dual-listbox.scss";
-@import "../node_modules/font-awesome/css/font-awesome.css";
+@import "node_modules/react-redux-toastr/src/styles/index";
+@import "node_modules/react-datepicker/dist/react-datepicker";
+@import "node_modules/leaflet-draw/dist/leaflet.draw";
+@import "node_modules/react-dual-listbox/src/scss/react-dual-listbox.scss";
+@import "node_modules/font-awesome/css/font-awesome";
 
 // Components
 @import "components/authorization/authorization";
