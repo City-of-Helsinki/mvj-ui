@@ -66,7 +66,7 @@
   }
 
   &__error-badge {
-    background-image: url(../assets/icons/icon_error.svg);
+    background-image: url(/assets/icons/icon_error.svg);
     height: 14px;
     width: 14px;
     background-size: contain;
@@ -79,7 +79,7 @@
   }
 
   &__dirty-badge {
-    background-image: url(../assets/icons/icon_unsaved.svg);
+    background-image: url(/assets/icons/icon_unsaved.svg);
     height: 14px;
     width: 14px;
     background-size: contain;

@@ -65,7 +65,7 @@
     }
 
     .collapse__header_error-badge {
-      background-image: url(../assets/icons/icon_error.svg);
+      background-image: url(/assets/icons/icon_error.svg);
       height: 14px;
       width: 14px;
       display: inline-block;
@@ -132,7 +132,7 @@
         height: rem-calc(20px);
         width: rem-calc(20px);
         vertical-align: text-bottom;
-        background-image: url(../assets/icons/icon_minus.svg);
+        background-image: url(/assets/icons/icon_minus.svg);
         display: inline-block;
         margin-right: 0.4rem;
         background-position: center;
@@ -144,7 +144,7 @@
         color: $dark-gray;
 
         i {
-          background-image: url(../assets/icons/icon_minus.svg);
+          background-image: url(/assets/icons/icon_minus.svg);
         }
       }
 
@@ -152,7 +152,7 @@
         color: $red;
 
         i {
-          background-image: url(../assets/icons/icon-alert.svg);
+          background-image: url(/assets/icons/icon-alert.svg);
         }
       }
 
@@ -160,7 +160,7 @@
         color: $blue;
 
         i {
-          background-image: url(../assets/icons/icon_checked.svg);
+          background-image: url(/assets/icons/icon_checked.svg);
         }
       }
 
@@ -168,7 +168,7 @@
         color: $yellow-enquiry-sent;
 
         i {
-          background-image: url(../assets/icons/icon_question.svg);
+          background-image: url(/assets/icons/icon_question.svg);
         }
       }
     }
@@ -323,7 +323,7 @@
     height: rem-calc(20px);
     width: rem-calc(20px);
     vertical-align: text-bottom;
-    background-image: url(../assets/icons/icon-alert.svg);
+    background-image: url(/assets/icons/icon-alert.svg);
     display: inline-block;
     margin-right: 0.4rem;
   }
