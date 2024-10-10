@@ -45,7 +45,7 @@
     "react-dual-listbox": "^2.0.0",
     "react-foundation": "^0.9.7",
     "react-leaflet": "^2.8.0",
-    "react-leaflet-draw": "^0.19.0",
+    "react-leaflet-draw": "0.19.0",
     "react-leaflet-fullscreen": "^1.0.2",
     "react-redux": "^7.1.0",
     "react-redux-toastr": "^7.6.12",
