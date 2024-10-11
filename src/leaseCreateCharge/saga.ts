@@ -30,29 +30,61 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchReceivableTypesSaga(): Generator<any, any, any> {
+  let nextUrl = ''
+  const allReceivableTypes = []
   try {
-    const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
-    } = yield call(fetchReceivableTypes);
+    while (typeof nextUrl === 'string') {
+      const {
+        response: {
+          status: statusCode
+        },
+        bodyAsJson
+      } = yield call(fetchReceivableTypes, nextUrl);
 
-    switch (statusCode) {
-      case 200:
-        const receivableTypes = bodyAsJson.results;
-        yield put(receiveReceivableTypes(receivableTypes));
-        break;
+      switch (statusCode) {
+        case 200:
+          allReceivableTypes.push(...bodyAsJson.results);
+          nextUrl = bodyAsJson.next;
+          break;
 
-      default:
-        yield put(receivableTypesNotFound());
-        break;
+        default:
+          yield put(receivableTypesNotFound());
+          nextUrl = null;
+          break;
+      }
     }
-  } catch (error) {
-    console.error('Failed to fetch receivable types with error "%s"', error);
-    yield put(receivableTypesNotFound());
-    yield put(receiveError(error));
-  }
+    yield put(receiveReceivableTypes(allReceivableTypes));
+    } catch (error) {
+      console.error('Failed to fetch receivable types with error "%s"', error);
+      yield put(receivableTypesNotFound());
+      yield put(receiveError(error));
+      nextUrl = null;
+    }
+
+
+  // try {
+  //   const {
+  //     response: {
+  //       status: statusCode
+  //     },
+  //     bodyAsJson
+  //   } = yield call(fetchReceivableTypes);
+
+  //   switch (statusCode) {
+  //     case 200:
+  //       const receivableTypes = bodyAsJson.results;
+  //       yield put(receiveReceivableTypes(receivableTypes));
+  //       break;
+
+  //     default:
+  //       yield put(receivableTypesNotFound());
+  //       break;
+  //   }
+  // } catch (error) {
+  //   console.error('Failed to fetch receivable types with error "%s"', error);
+  //   yield put(receivableTypesNotFound());
+  //   yield put(receiveError(error));
+  // }
 }
 
 export default function* (): Generator<any, any, any> {
