@@ -54,37 +54,12 @@ function* fetchReceivableTypesSaga(): Generator<any, any, any> {
       }
     }
     yield put(receiveReceivableTypes(allReceivableTypes));
-    } catch (error) {
-      console.error('Failed to fetch receivable types with error "%s"', error);
-      yield put(receivableTypesNotFound());
-      yield put(receiveError(error));
-      nextUrl = null;
-    }
-
-
-  // try {
-  //   const {
-  //     response: {
-  //       status: statusCode
-  //     },
-  //     bodyAsJson
-  //   } = yield call(fetchReceivableTypes);
-
-  //   switch (statusCode) {
-  //     case 200:
-  //       const receivableTypes = bodyAsJson.results;
-  //       yield put(receiveReceivableTypes(receivableTypes));
-  //       break;
-
-  //     default:
-  //       yield put(receivableTypesNotFound());
-  //       break;
-  //   }
-  // } catch (error) {
-  //   console.error('Failed to fetch receivable types with error "%s"', error);
-  //   yield put(receivableTypesNotFound());
-  //   yield put(receiveError(error));
-  // }
+  } catch (error) {
+    console.error('Failed to fetch receivable types with error "%s"', error);
+    yield put(receivableTypesNotFound());
+    yield put(receiveError(error));
+    nextUrl = null;
+  }
 }
 
 export default function* (): Generator<any, any, any> {
