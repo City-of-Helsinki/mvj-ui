@@ -37,7 +37,9 @@ export const getPayloadLeaseCreateCharge = (invoice: Record<string, any>): Recor
  * @returns {Object}
  */
 export const receivableTypesFromAttributes = (fieldAttributes: Record<string, any>, receivableTypes: Record<string, any>): Record<string, any> => {
-  const newChoices = fieldAttributes.choices.filter(choice => receivableTypes.find(type => type.is_active && type.id === choice.value));
+  const newChoices = fieldAttributes.choices
+    .filter(choice => receivableTypes.find(type => type.is_active && type.id === choice.value))
+    .sort((a, b) => a.display_name.localeCompare(b.display_name));
   const newFieldAttributes = { ...fieldAttributes,
     choices: newChoices
   };
