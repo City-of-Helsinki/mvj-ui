@@ -44,7 +44,7 @@ function* fetchReceivableTypesSaga(): Generator<any, any, any> {
       switch (statusCode) {
         case 200:
           allReceivableTypes.push(...bodyAsJson.results);
-          nextUrl = bodyAsJson.next;
+          nextUrl = bodyAsJson.next || null;
           break;
 
         default:
