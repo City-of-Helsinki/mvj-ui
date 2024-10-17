@@ -7,10 +7,15 @@ export const fetchAttributes = (): Generator<any, any, any> => {
     method: 'OPTIONS'
   }));
 };
-export const fetchReceivableTypes = (): Generator<any, any, any> => {
+export const fetchReceivableTypes = (nextUrl: string): Generator<any, any, any> => {
   const state = store.getState();
   const lease = getCurrentLease(state);
   const serviceUnit = lease.service_unit;
+  if (nextUrl) {
+    return callApi(new Request(nextUrl, {
+      method: 'GET'
+    }));
+  }
   return callApi(new Request(createUrl(`receivable_type/`, {
     service_unit: serviceUnit.id
   }), {

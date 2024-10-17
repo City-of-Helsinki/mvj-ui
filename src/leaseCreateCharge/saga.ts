@@ -3,6 +3,8 @@ import { receiveAttributes, attributesNotFound, receiveReceivableTypes, receivab
 import { receiveError } from "@/api/actions";
 import { fetchAttributes, fetchReceivableTypes } from "./requests";
 
+const SAFETY_CAP_FOR_WHILE_LOOP_ITERATIONS = 20;
+
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
@@ -30,28 +32,37 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchReceivableTypesSaga(): Generator<any, any, any> {
+  let nextUrl = ''
+  let iterationCounter = 0;
+  const allReceivableTypes = []
   try {
-    const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
-    } = yield call(fetchReceivableTypes);
+    while (nextUrl !== null && iterationCounter < SAFETY_CAP_FOR_WHILE_LOOP_ITERATIONS) {
+      const {
+        response: {
+          status: statusCode
+        },
+        bodyAsJson
+      } = yield call(fetchReceivableTypes, nextUrl);
 
-    switch (statusCode) {
-      case 200:
-        const receivableTypes = bodyAsJson.results;
-        yield put(receiveReceivableTypes(receivableTypes));
-        break;
+      switch (statusCode) {
+        case 200:
+          allReceivableTypes.push(...bodyAsJson.results);
+          nextUrl = bodyAsJson.next || null;
+          break;
 
-      default:
-        yield put(receivableTypesNotFound());
-        break;
+        default:
+          yield put(receivableTypesNotFound());
+          nextUrl = null;
+          break;
+      }
+      iterationCounter++;
     }
+    yield put(receiveReceivableTypes(allReceivableTypes));
   } catch (error) {
     console.error('Failed to fetch receivable types with error "%s"', error);
     yield put(receivableTypesNotFound());
     yield put(receiveError(error));
+    nextUrl = null;
   }
 }
 
