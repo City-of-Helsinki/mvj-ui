@@ -3,6 +3,8 @@ import { receiveAttributes, attributesNotFound, receiveReceivableTypes, receivab
 import { receiveError } from "@/api/actions";
 import { fetchAttributes, fetchReceivableTypes } from "./requests";
 
+const SAFETY_CAP_FOR_WHILE_LOOP_ITERATIONS = 20;
+
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
@@ -31,9 +33,10 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchReceivableTypesSaga(): Generator<any, any, any> {
   let nextUrl = ''
+  let iterationCounter = 0;
   const allReceivableTypes = []
   try {
-    while (typeof nextUrl === 'string') {
+    while (typeof nextUrl === 'string' && iterationCounter < SAFETY_CAP_FOR_WHILE_LOOP_ITERATIONS) {
       const {
         response: {
           status: statusCode
@@ -52,6 +55,7 @@ function* fetchReceivableTypesSaga(): Generator<any, any, any> {
           nextUrl = null;
           break;
       }
+      iterationCounter++;
     }
     yield put(receiveReceivableTypes(allReceivableTypes));
   } catch (error) {
