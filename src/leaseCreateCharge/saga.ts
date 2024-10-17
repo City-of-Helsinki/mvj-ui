@@ -36,7 +36,7 @@ function* fetchReceivableTypesSaga(): Generator<any, any, any> {
   let iterationCounter = 0;
   const allReceivableTypes = []
   try {
-    while (typeof nextUrl === 'string' && iterationCounter < SAFETY_CAP_FOR_WHILE_LOOP_ITERATIONS) {
+    while (nextUrl !== null && iterationCounter < SAFETY_CAP_FOR_WHILE_LOOP_ITERATIONS) {
       const {
         response: {
           status: statusCode
