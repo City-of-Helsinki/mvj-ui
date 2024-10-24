@@ -84,3 +84,8 @@ export type ClearFormValidFlagsAction = Action<string, void>;
 export type ReceiveCollapseStatesAction = Action<string, Record<string, any>>;
 export type FetchLeasesForContractNumberAction = Action<string, Record<string, any>>;
 export type ReceiveLeasesForContractNumbersAction = Action<string, LeaseList>;
+export type DueDate = {
+  id: number;
+  day: number;
+  month: number;
+}
