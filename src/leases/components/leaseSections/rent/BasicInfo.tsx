@@ -5,7 +5,7 @@ import Authorization from "@/components/authorization/Authorization";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import { LeaseRentDueDatesFieldPaths, LeaseRentDueDatesFieldTitles, LeaseRentsFieldPaths, LeaseRentsFieldTitles, RentCycles, RentTypes, RentDueDateTypes } from "@/leases/enums";
-import { formatDueDates, formatSeasonalDate } from "@/leases/helpers";
+import { formatDueDates, formatSeasonalDate, sortDueDates } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
@@ -120,7 +120,7 @@ const BasicInfoIndexOrManual = ({
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentDueDatesFieldPaths.DUE_DATES)}>
                 {LeaseRentDueDatesFieldTitles.DUE_DATES}
               </FormTextTitle>
-              <FormText>{rent.due_dates && !!rent.due_dates.length ? formatDueDates(rent.due_dates) : 'Ei eräpäiviä'}</FormText>
+              <FormText>{rent.due_dates && !!rent.due_dates.length ? formatDueDates(sortDueDates(rent.due_dates)) : 'Ei eräpäiviä'}</FormText>
               </>
             </Authorization>
           </Column>}
@@ -371,7 +371,7 @@ const BasicInfoFixed = ({
               <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentDueDatesFieldPaths.DUE_DATES)}>
                 {LeaseRentDueDatesFieldTitles.DUE_DATES}
               </FormTextTitle>
-              <FormText>{rent.due_dates && !!rent.due_dates.length ? formatDueDates(rent.due_dates) : 'Ei eräpäiviä'}</FormText>
+              <FormText>{rent.due_dates && !!rent.due_dates.length ? formatDueDates(sortDueDates(rent.due_dates)) : 'Ei eräpäiviä'}</FormText>
               </>
             </Authorization>
           </Column>}

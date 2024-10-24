@@ -22,7 +22,7 @@ import type { Lease, IntendedUse } from "./types";
 import type { CommentList } from "@/comments/types";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
 import type { RootState } from "@/root/types";
-import type { LeaseList } from "@/leases/types";
+import type { LeaseList, DueDate } from "@/leases/types";
 
 /**
  * Test is lease empty
@@ -2853,21 +2853,34 @@ export const formatSeasonalDate = (day: string | null | undefined, month: string
 
 /**
  * Format single due date as string
- * @param {Object} date
+ * @param {DueDate} date
  * @returns {string}
  */
-const formatDueDate = (date: Record<string, any>): string => {
+const formatDueDate = (date: DueDate): string => {
   return `${date.day}.${date.month}.`;
 };
 
 /**
  * Format due dates as string
- * @param {Object[]} dates
+ * @param {Array<DueDate>} dates
  * @returns {string}
  */
-export const formatDueDates = (dates: Array<Record<string, any>>): string => {
+export const formatDueDates = (dates: Array<DueDate>): string => {
   return dates.map(date => formatDueDate(date)).join(', ');
 };
+
+/**
+ * Sort due dates by month and day
+ * @param {Array<DueDate>} dueDates 
+ * @returns {Array<DueDate>} Sorted array of due date objects with day and month properties.
+ */
+export const sortDueDates = (dueDates: Array<DueDate>): Array<DueDate> => {
+  return dueDates.sort((a, b) => {
+    if (a.month !== b.month) {
+      return a.month - b.month;
+    }
+    return a.day - b.day;
+})};
 
 /**
  * Test is any lease page form dirty
