@@ -15,7 +15,7 @@ import { rentCustomDateOptions } from "@/leases/constants";
 import { FieldTypes, FormNames } from "@/enums";
 import { DueDatesPositions, FixedDueDates, LeaseRentDueDatesFieldPaths, LeaseRentDueDatesFieldTitles, LeaseRentsFieldPaths, LeaseRentsFieldTitles, RentCycles, RentTypes, RentDueDateTypes } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
-import { formatDueDates, formatSeasonalDate } from "@/leases/helpers";
+import { formatDueDates, formatSeasonalDate, sortDueDates } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "@/leases/selectors";
@@ -23,7 +23,7 @@ import { getLeaseTypeList } from "@/leaseType/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { PlotSearchFieldPaths } from "@/plotSearch/enums";
 import type { Attributes } from "types";
-import type { Lease } from "@/leases/types";
+import type { DueDate, Lease } from "@/leases/types";
 import type { LeaseTypeList } from "@/leaseType/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 const formName = FormNames.LEASE_RENTS;
@@ -37,6 +37,7 @@ type SeasonalDatesProps = {
   seasonalStartDay: string | null | undefined;
   seasonalStartMonth: string | null | undefined;
 };
+
 const SeasonalDates = connect((state, props: Props) => {
   return {
     seasonalEndDay: selector(state, `${props.field}.seasonal_end_day`),
@@ -105,7 +106,7 @@ const SeasonalDates = connect((state, props: Props) => {
     </Authorization>;
 });
 type DueDatesProps = {
-  dueDates: Array<Record<string, any>>;
+  dueDates: Array<DueDate>;
   fields: any;
   isSaveClicked: boolean;
   leaseAttributes: Attributes;
@@ -132,7 +133,7 @@ const renderDueDates = ({
           </FormTextTitle>
         </Column>
       </Row>
-      <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY) || isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)} errorComponent={<FormText>{formatDueDates(dueDates) || '-'}</FormText>}>
+      <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.DAY) || isFieldAllowedToEdit(leaseAttributes, LeaseRentDueDatesFieldPaths.MONTH)} errorComponent={<FormText>{formatDueDates(sortDueDates(dueDates)) || '-'}</FormText>}>
         {fields && !!fields.length && fields.map((due_date, index) => {
         const handleRemove = () => {
           fields.remove(index);
@@ -196,7 +197,7 @@ const BasicInfoEmpty = ({
 
 type BasicInfoIndexOrManualProps = {
   cycle: string | null | undefined;
-  dueDates: Array<Record<string, any>>;
+  dueDates: Array<DueDate>;
   dueDatesType: string | null | undefined;
   field: string;
   rentType: string;
@@ -268,7 +269,7 @@ const BasicInfoIndexOrManual = ({
             {
           /* Authorization is done on renderDueDates component */
         }
-            <FieldArray component={renderDueDates} dueDates={dueDates} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} name="due_dates" usersPermissions={usersPermissions} />
+            <FieldArray component={renderDueDates} dueDates={sortDueDates(dueDates)} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} name="due_dates" usersPermissions={usersPermissions} />
           </Column>}
         {dueDatesType === RentDueDateTypes.FIXED && <Column small={6} medium={4} large={1}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}>
@@ -327,7 +328,7 @@ const BasicInfoIndexOrManual = ({
 };
 
 type BasicInfoOneTimeProps = {
-  dueDates: Array<Record<string, any>>;
+  dueDates: Array<DueDate>;
   dueDatesType: string | null | undefined;
   isSaveClicked: boolean;
   leaseAttributes: Attributes;
@@ -383,7 +384,7 @@ const BasicInfoOneTime = ({
 };
 
 type BasicInfoFixedProps = {
-  dueDates: Array<Record<string, any>>;
+  dueDates: Array<DueDate>;
   dueDatesType: string | null | undefined;
   field: string;
   isSaveClicked: boolean;
@@ -435,7 +436,7 @@ const BasicInfoFixed = ({
             {
           /* Authorization is done on renderDueDates component */
         }
-            <FieldArray component={renderDueDates} dueDates={dueDates} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} name="due_dates" usersPermissions={usersPermissions} />
+            <FieldArray component={renderDueDates} dueDates={sortDueDates(dueDates)} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} name="due_dates" usersPermissions={usersPermissions} />
           </Column>}
         {dueDatesType === RentDueDateTypes.FIXED && <Column small={6} medium={4} large={1}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}>
@@ -526,7 +527,7 @@ type Props = {
   change: (...args: Array<any>) => any;
   currentLease: Lease;
   cycle: string;
-  dueDates: Array<Record<string, any>>;
+  dueDates: Array<DueDate>;
   dueDatesPerYear: number | null | undefined;
   dueDatesType: string | null | undefined;
   field: string;
