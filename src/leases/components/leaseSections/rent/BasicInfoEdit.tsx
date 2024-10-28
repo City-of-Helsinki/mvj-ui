@@ -38,7 +38,7 @@ type SeasonalDatesProps = {
   seasonalStartMonth: string | null | undefined;
 };
 
-const SeasonalDates = connect((state, props: Props) => {
+const SeasonalDates = connect((state, props: Omit<SeasonalDatesProps, "seasonalStartDay" | "seasonalEndDay" | "seasonalStartMonth" | "seasonalEndMonth">) => {
   return {
     seasonalEndDay: selector(state, `${props.field}.seasonal_end_day`),
     seasonalEndMonth: selector(state, `${props.field}.seasonal_end_month`),
@@ -204,7 +204,7 @@ type BasicInfoIndexOrManualProps = {
   isSaveClicked: boolean;
   leaseAttributes: Attributes;
   usersPermissions: UsersPermissionsType;
-  yearlyDueDates: Array<Record<string, any>>;
+  yearlyDueDates: Array<DueDate>;
 };
 
 const BasicInfoIndexOrManual = ({
@@ -390,7 +390,7 @@ type BasicInfoFixedProps = {
   isSaveClicked: boolean;
   leaseAttributes: Attributes;
   usersPermissions: UsersPermissionsType;
-  yearlyDueDates: Array<Record<string, any>>;
+  yearlyDueDates: Array<DueDate>;
 };
 
 const BasicInfoFixed = ({
@@ -568,7 +568,13 @@ const BasicInfoEdit = ({
     </Fragment>;
 };
 
-export default connect((state, props) => {
+type BasicInfoEditProps = {
+  field: string;
+  isSaveClicked: boolean;
+  rentType: string;
+}
+
+export default connect((state, props: BasicInfoEditProps) => {
   return {
     currentLease: getCurrentLease(state),
     cycle: selector(state, `${props.field}.cycle`),
