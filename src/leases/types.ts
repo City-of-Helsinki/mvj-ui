@@ -25,6 +25,47 @@ export type LeaseState = {
 export type Lease = Record<string, any>;
 export type LeaseList = ApiResponse;
 export type LeaseId = number;
+// Lease area object as expected from API response
+export type LeaseArea = {
+  id: number;
+  identifier: string;
+  area: number;
+  section_area: number | null;
+  geometry: Record<string, any> | null;
+  addresses: Array<LeaseAreaAddress>;
+  type: string;
+  location: string;
+  plots: Array<Record<string, any>>; // TODO type for Plot
+  plan_units: Array<Record<string, any>>; // TODO type for PlanUnit
+  preconstruction_state: string | null; // TODO enum type for ConstructabilityState
+  preconstruction_estimated_construction_readiness_moment: string | null;
+  preconstruction_inspection_moment: string | null;
+  demolition_state: string | null; // ConstructabilityState
+  polluted_land_state: string | null; // ConstructabilityState
+  polluted_land_rent_condition_state: string | null; // TODO enum type for PollutedLandRentConditionState
+  polluted_land_rent_condition_date: string | null;
+  polluted_land_planner: Record<string, any> | null; // TODO type for User as in backend
+  polluted_land_projectwise_number: string | null;
+  constructability_report_state: string | null; // ConstructabilityState
+  constructability_report_investigation_state: string | null; // TODO enum type for ConstructabilityReportInvestigationState
+  constructability_report_signing_date: string | null;
+  constructability_report_signer: string | null;
+  constructability_descriptions: Array<Record<string, any>>; // TODO type for ConstructabilityDescription
+  other_state: string | null; // ConstructabilityState
+  archived_decision: Record<string, any>; // TODO type for Decision
+  archived_at: string | null;
+  archived_note: string | null;
+  attachments: Array<Record<string, any>>; // TODO type for LeaseAreaAttachment
+  custom_detailed_plan: Record<string, any>; // TODO type for CustomDetailedPlan
+};
+// Lease area address object as expected from API response
+export type LeaseAreaAddress = {
+  id: number;
+  address: string;
+  postal_code: string | null;
+  city: string | null;
+  is_primary: boolean;
+};
 export type CreateChargePayload = {
   leaseId: LeaseId;
   data: Record<string, any>;
