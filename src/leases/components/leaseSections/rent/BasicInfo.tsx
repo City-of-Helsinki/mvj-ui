@@ -188,6 +188,17 @@ const BasicInfoIndexOrManual = ({
         </Column>
       </Row>
 
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+        <Row>
+          <Column>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+              {LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE}
+            </FormTextTitle>
+            <FormText>{rent?.override_receivable_type || '-'}</FormText>
+          </Column>
+        </Row>
+      </Authorization>     
+
       {oldValuesVisible && <Row>
           <Column small={12} medium={4} large={2}>
             <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.ELEMENTARY_INDEX) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.INDEX_ROUNDING)}>
@@ -314,6 +325,17 @@ const BasicInfoOneTime = ({
           </Column>
         </Row>
       </Authorization>
+
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+        <Row>
+          <Column>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+              {LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE}
+            </FormTextTitle>
+            <FormText>{rent?.override_receivable_type || '-'}</FormText>
+          </Column>
+        </Row>
+      </Authorization>
     </Fragment>;
 };
 
@@ -415,6 +437,16 @@ const BasicInfoFixed = ({
           </Authorization>
         </Column>
       </Row>
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+        <Row>
+          <Column>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+              {LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE}
+            </FormTextTitle>
+            <FormText>{rent?.override_receivable_type || '-'}</FormText>
+          </Column>
+        </Row>
+      </Authorization>
     </Fragment>;
 };
 
