@@ -228,20 +228,77 @@ export const getContentIntendedUse = (intendedUse: IntendedUse): Record<string, 
   };
 }
 
-
 /**
  * Get content lease address
  * @param {Object} lease
  * @returns {string}
  */
-export const getContentLeaseAddress = (lease: Record<string, any>): string | null | undefined => !isEmpty(lease) ? `${get(lease, 'lease_areas[0].addresses[0].address')}` : null;
+export const getContentLeaseAddress = (lease: Lease): string | null | undefined => {
+  if (isEmpty(lease)) {
+    return null;
+  }
+  else {
+    const area = getMainLeaseArea(lease);
+    const address = getMainLeaseAreaAddress(area);
+    return address?.address;
+  }
+}
+
+/**
+ * Select the lease area that can be considered the "main" area in the lease.
+ *
+ * Expectation: there are no leases where all areas are archived.
+ * @param {Object} lease
+ * @returns {Object}
+ */
+const getMainLeaseArea = (lease: Lease): LeaseArea | undefined => {
+  const areas: Array<LeaseArea> = lease.lease_areas;
+  const activeAreas = areas.filter(a => (a.archived_at === null));
+  return activeAreas?.[0]
+}
+
+/**
+ * Select the lease area address that can be considered the "main" address in the area.
+ * Returns:
+ *   - the first primary address,
+ *   - or the first non-primary address in the list if no primary addresses exist,
+ *   - or undefined if area has no addresses.
+ * @param {Object} area
+ * @returns {Object}
+ */
+const getMainLeaseAreaAddress = (area: LeaseArea): LeaseAreaAddress | undefined => {
+  const primaryAddressesFirst = [...area.addresses].sort((a, b) => sortIsPrimaryFirst(a,b));
+  return primaryAddressesFirst?.[0];
+}
+
+/**
+ * Sorting function to sort LeaseAreaAddresses with property is_primary with
+ * value true first.
+ * @param {Object} a left-hand-side item
+ * @param {Object} b right-hand-side item
+ */
+const sortIsPrimaryFirst = (a: LeaseAreaAddress, b: LeaseAreaAddress): number => {
+    if (b.is_primary && !a.is_primary) {
+      return 1;
+    } else if (a.is_primary && !b.is_primary) {
+      return -1;
+    }
+    return 0;
+}
 
 /**
  * Get content lease area identifiers
  * @param {Object} lease
  * @returns {string}
  */
-export const getContentLeaseAreaIdentifier = (lease: Record<string, any>): string | null | undefined => !isEmpty(lease) ? `${get(lease, 'lease_areas[0].identifier')}` : null;
+export const getContentLeaseAreaIdentifier = (lease: Lease): string | null | undefined => {
+  if (isEmpty(lease)) {
+    return null;
+  } else {
+    const area = getMainLeaseArea(lease);
+    return area?.identifier;
+  }
+}
 
 /**
  * Get lease infill development compensations content
