@@ -324,6 +324,17 @@ const BasicInfoIndexOrManual = ({
           </Authorization>
         </Column>
       </Row>
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+        <Row>
+          <Column small={12} medium={6} large={4}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}
+              name="override_receivable_type"
+            />
+          </Column>
+        </Row>
+      </Authorization>
     </Fragment>;
 };
 
@@ -377,6 +388,17 @@ const BasicInfoOneTime = ({
             <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.NOTE)} name='note' overrideValues={{
             label: LeaseRentsFieldTitles.NOTE
           }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.NOTE)} />
+          </Column>
+        </Row>
+      </Authorization>
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+        <Row>
+          <Column small={12} medium={6} large={4}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}
+              name="override_receivable_type"
+            />
           </Column>
         </Row>
       </Authorization>
@@ -474,6 +496,18 @@ const BasicInfoFixed = ({
           </Authorization>
         </Column>
       </Row>
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+        <Row>
+          <Column small={12} medium={6} large={4}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}
+              name="override_receivable_type"
+            />
+          </Column>
+        </Row>
+      </Authorization>
+
     </Fragment>;
 };
 

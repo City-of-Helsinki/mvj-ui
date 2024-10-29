@@ -871,7 +871,8 @@ export const LeaseRentsFieldPaths = {
   X_VALUE: 'rents.child.children.x_value',
   Y_VALUE: 'rents.child.children.y_value',
   YEARLY_DUE_DATES: 'rents.child.children.yearly_due_dates',
-  Y_VALUE_START: 'rents.child.children.y_value_start'
+  Y_VALUE_START: 'rents.child.children.y_value_start',
+  OVERRIDE_RECEIVABLE_TYPE: 'rents.child.children.override_receivable_type'
 };
 
 /**
@@ -905,7 +906,8 @@ export const LeaseRentsFieldTitles = {
   X_VALUE: 'X-luku',
   Y_VALUE: 'Y-luku',
   Y_VALUE_START: 'Y-luku alkaen',
-  YEARLY_DUE_DATES: 'Eräpäivät (pv.kk)'
+  YEARLY_DUE_DATES: 'Eräpäivät (pv.kk)',
+  OVERRIDE_RECEIVABLE_TYPE: 'Korvaava saamislaji'
 };
 
 /**

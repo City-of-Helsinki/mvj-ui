@@ -68,6 +68,8 @@ import type { Lease } from "@/leases/types";
 import type { LeaseTypeList } from "@/leaseType/types";
 import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "@/usersPermissions/types";
 import type { VatList } from "@/vat/types";
+import { getIsFetchingReceivableTypes } from "@/leaseCreateCharge/selectors";
+import { fetchReceivableTypes } from '@/leaseCreateCharge/actions';
 type Props = {
   areasFormValues: Record<string, any>;
   change: (...args: Array<any>) => any;
@@ -86,6 +88,7 @@ type Props = {
   fetchInvoicesByLease: (...args: Array<any>) => any;
   fetchLeaseTypes: (...args: Array<any>) => any;
   fetchSingleLease: (...args: Array<any>) => any;
+  fetchReceivableTypes: (...args: Array<any>) => any;
   fetchVats: (...args: Array<any>) => any;
   hideEditMode: (...args: Array<any>) => any;
   history: Record<string, any>;
@@ -95,6 +98,7 @@ type Props = {
   isEditMode: boolean;
   isFetching: boolean;
   isFetchingLeasePageAttributes: boolean;
+  isFetchingReceivableTypes: boolean;
   // get via withLeasePageAttributes HOC
   isFormValidFlags: Record<string, any>;
   isConstructabilityFormDirty: boolean;
@@ -215,7 +219,8 @@ class LeasePage extends Component<Props, State> {
           leaseId
         }
       },
-      usersPermissions
+      usersPermissions,
+      fetchReceivableTypes
     } = this.props;
     const {
       activeTab
@@ -261,6 +266,7 @@ class LeasePage extends Component<Props, State> {
 
     if (prevProps.currentLease !== currentLease) {
       this.setPageTitle();
+      fetchReceivableTypes();
     }
   }
 
@@ -331,15 +337,16 @@ class LeasePage extends Component<Props, State> {
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !invoices) {
       fetchInvoicesByLease(leaseId);
     }
-
+    
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASETYPE) && isEmpty(leaseTypeList)) {
       fetchLeaseTypes();
     }
-
+    
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_VAT) && isEmpty(vats)) {
       fetchVats();
     }
   };
+
   handlePopState = () => {
     const {
       location: {
@@ -810,6 +817,7 @@ class LeasePage extends Component<Props, State> {
       isEditMode,
       isFetching,
       isFetchingLeasePageAttributes,
+      isFetchingReceivableTypes,
       isInspectionsFormDirty,
       isInspectionsFormValid,
       isLeaseAreasFormDirty,
@@ -838,7 +846,7 @@ class LeasePage extends Component<Props, State> {
       return userActiveServiceUnit?.id === currentLease?.service_unit?.id;
     };
 
-    if (isFetching || isFetchingLeasePageAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (isFetching || isFetchingLeasePageAttributes || isFetchingReceivableTypes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
     if (!leaseMethods) return null;
     if (!isMethodAllowed(leaseMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.LEASE} /></PageContainer>;
     if (isEmpty(currentLease)) return null;
@@ -990,6 +998,7 @@ export default flowRight(withLeasePageAttributes, withUiDataList, withRouter, co
     isContractsFormValid: getIsFormValidById(state, FormNames.LEASE_CONTRACTS),
     isDecisionsFormDirty: isDirty(FormNames.LEASE_DECISIONS)(state),
     isDecisionsFormValid: getIsFormValidById(state, FormNames.LEASE_DECISIONS),
+    isFetchingReceivableTypes: getIsFetchingReceivableTypes(state),
     isInspectionsFormDirty: isDirty(FormNames.LEASE_INSPECTIONS)(state),
     isInspectionsFormValid: getIsFormValidById(state, FormNames.LEASE_INSPECTIONS),
     isLeaseAreasFormDirty: isDirty(FormNames.LEASE_AREAS)(state),
@@ -1021,6 +1030,7 @@ export default flowRight(withLeasePageAttributes, withUiDataList, withRouter, co
   fetchInvoicesByLease,
   fetchLeaseTypes,
   fetchSingleLease,
+  fetchReceivableTypes,
   fetchVats,
   hideEditMode,
   initialize,
