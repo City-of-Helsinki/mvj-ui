@@ -21,7 +21,6 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        console.log('fetchAttributesSaga', bodyAsJson.fields);
         const attributes = bodyAsJson.fields;
         const methods = bodyAsJson.methods;
         yield put(receiveAttributes(attributes));
