@@ -27,7 +27,7 @@ import { getRouteById, Routes } from "@/root/routes";
 import { getContactList, getIsFetching } from "@/contacts/selectors";
 import { withContactAttributes } from "@/components/attributes/ContactAttributes";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
-import type { ContactList } from "@/contacts/types";
+import type { ContactList, ContactRow, ContactsActiveLease } from "@/contacts/types";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { RootState } from "@/root/types";
 import type { UserServiceUnit } from "@/usersPermissions/types";
@@ -342,6 +342,15 @@ class ContactListPage extends Component<Props, State> {
       columns.push({
         key: 'service_unit.name',
         text: ContactFieldTitles.SERVICE_UNIT,
+        sortable: false
+      });
+    }
+
+    if (isFieldAllowedToRead(contactAttributes, ContactFieldPaths.ACTIVE_LEASES)) {
+      columns.push({
+        key: 'contacts_active_leases',
+        text: ContactFieldTitles.ACTIVE_LEASES,
+        renderer: (_val: ContactsActiveLease, row: ContactRow) => (row.contacts_active_leases || []).map((activeLease) => activeLease.lease_identifier).join(', ') || '',
         sortable: false
       });
     }
