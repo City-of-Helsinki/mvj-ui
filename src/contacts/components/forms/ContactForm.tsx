@@ -24,6 +24,7 @@ import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { RootState } from "@/root/types";
 import type { UserServiceUnit } from "@/usersPermissions/types";
+import { ContactsActiveLease } from "@/contacts/types";
 type Props = {
   attributes: Attributes;
   change: (...args: Array<any>) => any;
@@ -299,6 +300,20 @@ class ContactForm extends Component<Props> {
                   fieldType: FieldTypes.TEXTAREA,
                   label: ContactFieldTitles.NOTE
                 }} enableUiDataEdit uiDataKey={getUiDataContactKey(ContactFieldPaths.NOTE)} />
+                </Authorization>
+              </Column>
+            </Row>
+            <Row>
+            <Column small={12} medium={6} large={4}>
+                <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ACTIVE_LEASES)}>
+                  <>
+                  <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.ACTIVE_LEASES)}>
+                    {ContactFieldTitles.ACTIVE_LEASES}
+                  </FormTextTitle>
+                  <FormText>
+                    {(initialValues.contacts_active_leases || []).map((val: ContactsActiveLease) => val.lease_identifier).join(', ') || '-'}
+                  </FormText>
+                  </>
                 </Authorization>
               </Column>
             </Row>
