@@ -194,7 +194,7 @@ const BasicInfoIndexOrManual = ({
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
               {LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE}
             </FormTextTitle>
-            <FormText>{rent?.override_receivable_type?.name || '-'}</FormText>
+            <FormText>{rent?.override_receivable_type || '-'}</FormText>
           </Column>
         </Row>
       </Authorization>     
@@ -332,7 +332,7 @@ const BasicInfoOneTime = ({
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
               {LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE}
             </FormTextTitle>
-            <FormText>{rent?.override_receivable_type?.name || '-'}</FormText>
+            <FormText>{rent?.override_receivable_type || '-'}</FormText>
           </Column>
         </Row>
       </Authorization>
@@ -443,7 +443,7 @@ const BasicInfoFixed = ({
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
               {LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE}
             </FormTextTitle>
-            <FormText>{rent?.override_receivable_type?.name || '-'}</FormText>
+            <FormText>{rent?.override_receivable_type || '-'}</FormText>
           </Column>
         </Row>
       </Authorization>
