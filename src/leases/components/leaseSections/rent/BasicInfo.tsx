@@ -36,7 +36,8 @@ const SeasonalDates = ({
 
 type Props = {
   leaseAttributes: Attributes;
-  receivableTypes: Array<any> | null | undefined;
+  receivableTypes?: Array<any> | null | undefined;
+  receivableTypeOptions?: Array<any> | null | undefined;
   rent: Record<string, any>;
   rentType: string | null | undefined;
 };
@@ -510,7 +511,7 @@ const BasicInfoFree = ({
 
 const BasicInfo = ({
   leaseAttributes,
-  receivableTypeOptions,
+  receivableTypes,
   rent,
   rentType
 }: Props) => {
