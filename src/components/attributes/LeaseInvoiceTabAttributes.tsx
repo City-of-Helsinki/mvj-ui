@@ -7,14 +7,13 @@ import { fetchAttributes as fetchCollectionNoteAttributes } from "@/collectionNo
 import { fetchAttributes as fetchCreateCollectionLetterAttributes } from "@/createCollectionLetter/actions";
 import { fetchAttributes as fetchInvoiceNoteAttributes } from "@/invoiceNote/actions";
 import { fetchAttributes as fetchLeaseCreateChargeAttributes } from "@/leaseCreateCharge/actions";
-import { fetchReceivableTypes } from "@/leaseCreateCharge/actions";
 import { getAttributes as getCollectionCourtDecisionAttributes, getIsFetchingAttributes as getIsFetchingCollectionCourtDecisionAttributes, getMethods as getCollectionCourtDecisionMethods } from "@/collectionCourtDecision/selectors";
 import { getAttributes as getCollectionLetterAttributes, getIsFetchingAttributes as getIsFetchignCollectionLetterAttributes, getMethods as getCollectionLetterMethods } from "@/collectionLetter/selectors";
 import { getAttributes as getCollectionNoteAttributes, getIsFetchingAttributes as getIsFetchingCollectionNoteAttributes, getMethods as getCollectionNoteMethods } from "@/collectionNote/selectors";
 import { getAttributes as getCreateCollectionLetterAttributes, getIsFetchingAttributes as getIsFetchignCreateCollectionLetterAttributes } from "@/createCollectionLetter/selectors";
 import { getAttributes as getInvoiceNoteAttributes, getIsFetchingAttributes as getIsFetchingInvoiceNoteAttributes, getMethods as getInvoiceNoteMethods } from "@/invoiceNote/selectors";
 import { getAttributes as getLeaseCreateChargeAttributes, getIsFetchingAttributes as getIsFetchingLeaseCreateChargeAttributes } from "@/leaseCreateCharge/selectors";
-import { getIsFetchingReceivableTypes, getReceivableTypes } from "@/leaseCreateCharge/selectors";
+import { getReceivableTypes } from "@/leaseCreateCharge/selectors";
 import type { Attributes, Methods } from "types";
 
 function LeaseInvoiceTabAttributes(WrappedComponent: any) {
@@ -32,7 +31,6 @@ function LeaseInvoiceTabAttributes(WrappedComponent: any) {
     fetchCreateCollectionLetterAttributes: (...args: Array<any>) => any;
     fetchInvoiceNoteAttributes: (...args: Array<any>) => any;
     fetchLeaseCreateChargeAttributes: (...args: Array<any>) => any;
-    fetchReceivableTypes: (...args: Array<any>) => any;
     invoiceNoteAttributes: Attributes;
     invoiceNoteMethods: Methods;
     isFetchingCollectionCourtDecisionAttributes: boolean;
@@ -41,7 +39,6 @@ function LeaseInvoiceTabAttributes(WrappedComponent: any) {
     isFetchingCreateCollectionLetterAttributes: boolean;
     isFetchingInvoiceNoteAttributes: boolean;
     isFetchingLeaseCreateChargeAttributes: boolean;
-    isFetchingReceivableTypes: boolean;
     leaseCreateChargeAttributes: Attributes;
     receivableTypes: Record<string, any>;
   };
@@ -68,7 +65,6 @@ function LeaseInvoiceTabAttributes(WrappedComponent: any) {
         fetchCreateCollectionLetterAttributes,
         fetchInvoiceNoteAttributes,
         fetchLeaseCreateChargeAttributes,
-        fetchReceivableTypes,
         invoiceNoteAttributes,
         invoiceNoteMethods,
         isFetchingCollectionCourtDecisionAttributes,
@@ -77,7 +73,6 @@ function LeaseInvoiceTabAttributes(WrappedComponent: any) {
         isFetchingCreateCollectionLetterAttributes,
         isFetchingInvoiceNoteAttributes,
         isFetchingLeaseCreateChargeAttributes,
-        isFetchingReceivableTypes,
         leaseCreateChargeAttributes,
         receivableTypes
       } = this.props;
@@ -105,14 +100,10 @@ function LeaseInvoiceTabAttributes(WrappedComponent: any) {
       if (!isFetchingLeaseCreateChargeAttributes && !leaseCreateChargeAttributes) {
         fetchLeaseCreateChargeAttributes();
       }
-
-      if (!isFetchingReceivableTypes) {
-        fetchReceivableTypes();
-      }
     }
 
     componentDidUpdate(prevProps: Props) {
-      if (this.props.isFetchingCollectionCourtDecisionAttributes !== prevProps.isFetchingCollectionCourtDecisionAttributes || this.props.isFetchingCollectionLetterAttributes !== prevProps.isFetchingCollectionLetterAttributes || this.props.isFetchingCollectionNoteAttributes !== prevProps.isFetchingCollectionNoteAttributes || this.props.isFetchingCreateCollectionLetterAttributes !== prevProps.isFetchingCreateCollectionLetterAttributes || this.props.isFetchingInvoiceNoteAttributes !== prevProps.isFetchingInvoiceNoteAttributes || this.props.isFetchingLeaseCreateChargeAttributes !== prevProps.isFetchingLeaseCreateChargeAttributes || this.props.isFetchingReceivableTypes !== prevProps.isFetchingReceivableTypes) {
+      if (this.props.isFetchingCollectionCourtDecisionAttributes !== prevProps.isFetchingCollectionCourtDecisionAttributes || this.props.isFetchingCollectionLetterAttributes !== prevProps.isFetchingCollectionLetterAttributes || this.props.isFetchingCollectionNoteAttributes !== prevProps.isFetchingCollectionNoteAttributes || this.props.isFetchingCreateCollectionLetterAttributes !== prevProps.isFetchingCreateCollectionLetterAttributes || this.props.isFetchingInvoiceNoteAttributes !== prevProps.isFetchingInvoiceNoteAttributes || this.props.isFetchingLeaseCreateChargeAttributes !== prevProps.isFetchingLeaseCreateChargeAttributes) {
         this.setIsFetchingCommonAttributes();
       }
     }
@@ -125,9 +116,8 @@ function LeaseInvoiceTabAttributes(WrappedComponent: any) {
         isFetchingCreateCollectionLetterAttributes,
         isFetchingInvoiceNoteAttributes,
         isFetchingLeaseCreateChargeAttributes,
-        isFetchingReceivableTypes
       } = this.props;
-      const isFetching = isFetchingCollectionCourtDecisionAttributes || isFetchingCollectionLetterAttributes || isFetchingCollectionNoteAttributes || isFetchingCreateCollectionLetterAttributes || isFetchingInvoiceNoteAttributes || isFetchingLeaseCreateChargeAttributes || isFetchingReceivableTypes;
+      const isFetching = isFetchingCollectionCourtDecisionAttributes || isFetchingCollectionLetterAttributes || isFetchingCollectionNoteAttributes || isFetchingCreateCollectionLetterAttributes || isFetchingInvoiceNoteAttributes || isFetchingLeaseCreateChargeAttributes;
       this.setState({
         isFetchingLeaseInvoiceTabAttributes: isFetching
       });
@@ -158,7 +148,6 @@ const withLeaseInvoiceTabAttributes = flowRight(connect(state => {
     isFetchingInvoiceNoteAttributes: getIsFetchingInvoiceNoteAttributes(state),
     isFetchingLeaseCreateChargeAttributes: getIsFetchingLeaseCreateChargeAttributes(state),
     leaseCreateChargeAttributes: getLeaseCreateChargeAttributes(state),
-    isFetchingReceivableTypes: getIsFetchingReceivableTypes(state),
     receivableTypes: getReceivableTypes(state)
   };
 }, {
@@ -168,6 +157,5 @@ const withLeaseInvoiceTabAttributes = flowRight(connect(state => {
   fetchCreateCollectionLetterAttributes,
   fetchInvoiceNoteAttributes,
   fetchLeaseCreateChargeAttributes,
-  fetchReceivableTypes
 }), LeaseInvoiceTabAttributes);
 export { withLeaseInvoiceTabAttributes };
