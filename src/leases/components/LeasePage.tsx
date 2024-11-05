@@ -69,7 +69,7 @@ import type { LeaseTypeList } from "@/leaseType/types";
 import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "@/usersPermissions/types";
 import type { VatList } from "@/vat/types";
 import { getIsFetchingReceivableTypes } from "@/leaseCreateCharge/selectors";
-import { fetchReceivableTypes } from '../../leaseCreateCharge/actions';
+import { fetchReceivableTypes } from '@/leaseCreateCharge/actions';
 type Props = {
   areasFormValues: Record<string, any>;
   change: (...args: Array<any>) => any;
