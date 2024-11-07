@@ -17,6 +17,7 @@ export const ContactTypes = {
  * @enum {string}
  */
 export const ContactFieldPaths = {
+  ACTIVE_LEASES: 'contacts_active_leases',
   ADDRESS: 'address',
   ADDRESS_PROTECTION: 'address_protection',
   AUDIT_LOG: 'audit_log',
@@ -51,6 +52,7 @@ export const ContactFieldPaths = {
  * @enum {string}
  */
 export const ContactFieldTitles = {
+  ACTIVE_LEASES: 'Vuokraukset',
   ADDRESS: 'Katuosoite',
   ADDRESS_PROTECTION: 'Turvakielto',
   AUDIT_LOG: 'Muutoshistoria',

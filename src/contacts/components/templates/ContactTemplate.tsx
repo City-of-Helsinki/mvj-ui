@@ -13,6 +13,7 @@ import { getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "@/util/
 import { getAttributes } from "@/contacts/selectors";
 import { ContactTypes } from "@/contacts/enums";
 import type { Attributes } from "types";
+import { ContactsActiveLease } from "@/contacts/types";
 type Props = {
   attributes: Attributes;
   contact: Record<string, any> | null | undefined;
@@ -260,6 +261,18 @@ const ContactTemplate = ({
                 {ContactFieldTitles.NOTE}
               </FormTextTitle>
               <FormText>{contact.note || '-'}</FormText>
+              </>
+            </Authorization>
+          </Column>
+        </Row>
+        <Row>
+          <Column>
+            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ACTIVE_LEASES)}>
+              <>
+              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.ACTIVE_LEASES)}>
+                {ContactFieldTitles.ACTIVE_LEASES}
+              </FormTextTitle>
+              <FormText>{(contact.contacts_active_leases || []).map((val: ContactsActiveLease) => val.lease_identifier).join(', ') || '-'}</FormText>
               </>
             </Authorization>
           </Column>
