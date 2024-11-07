@@ -27,7 +27,8 @@ const FieldTypeIntendedUseSelect = ({
     const intendedUses = await fetchIntendedUses({
       search: inputValue,
       limit: 20,
-      service_unit: serviceUnit?.id || ""
+      service_unit: serviceUnit?.id || "",
+      is_active: "true"
     });
     callback(addEmptyOption(intendedUses.map((intendedUse) => getContentIntendedUse(intendedUse)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
   }, 500);
