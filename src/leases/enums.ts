@@ -872,7 +872,6 @@ export const LeaseRentsFieldPaths = {
   Y_VALUE: 'rents.child.children.y_value',
   YEARLY_DUE_DATES: 'rents.child.children.yearly_due_dates',
   Y_VALUE_START: 'rents.child.children.y_value_start',
-  OVERRIDE_RECEIVABLE_TYPE: 'rents.child.children.override_receivable_type'
 };
 
 /**
@@ -907,7 +906,6 @@ export const LeaseRentsFieldTitles = {
   Y_VALUE: 'Y-luku',
   Y_VALUE_START: 'Y-luku alkaen',
   YEARLY_DUE_DATES: 'Eräpäivät (pv.kk)',
-  OVERRIDE_RECEIVABLE_TYPE: 'Korvaava saamislaji'
 };
 
 /**
@@ -974,7 +972,9 @@ export const LeaseRentContractRentsFieldPaths = {
   END_DATE: 'rents.child.children.contract_rents.child.children.end_date',
   INDEX: 'rents.child.children.contract_rents.child.children.index',
   INTENDED_USE: 'rents.child.children.contract_rents.child.children.intended_use',
-  START_DATE: 'rents.child.children.contract_rents.child.children.start_date'
+  START_DATE: 'rents.child.children.contract_rents.child.children.start_date',
+  // OVERRIDE_RECEIVABLE_TYPE: 'rents.child.children.contract_rents.child.children.override_receivable_type' // TODO use this after moving property to model ContractRents instead of Rent
+  OVERRIDE_RECEIVABLE_TYPE: 'rents.child.children.override_receivable_type'
 };
 
 /**
@@ -994,7 +994,8 @@ export const LeaseRentContractRentsFieldTitles = {
   END_DATE: 'Loppupvm',
   INDEX: 'Indeksi',
   INTENDED_USE: 'Käyttötarkoitus',
-  START_DATE: 'Alkupvm'
+  START_DATE: 'Alkupvm',
+  OVERRIDE_RECEIVABLE_TYPE: 'Automaattisten laskujen saamislaji'
 };
 
 /**

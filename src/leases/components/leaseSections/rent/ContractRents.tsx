@@ -9,16 +9,21 @@ import BoxItemContainer from "@/components/content/BoxItemContainer";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import { LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, RentTypes } from "@/leases/enums";
+import { ServiceUnitIds } from "@/serviceUnits/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { withWindowResize } from "@/components/resize/WindowResizeHandler";
+import { getReceivableTypes } from "@/leaseCreateCharge/selectors";
 import type { Attributes } from "types";
 type Props = {
   contractRents: Array<Record<string, any>>;
   largeScreen: boolean;
   leaseAttributes: Attributes;
+  receivableTypes: Array<Record<string,any>>;
   rentType: string;
+  overrideReceivableTypeId: number;
+  serviceUnitId: number;
 };
 type State = {
   amountPeriodOptions: Array<Record<string, any>>;
@@ -26,6 +31,7 @@ type State = {
   intendedUseOptions: Array<Record<string, any>>;
   indexOptions: Array<Record<string, any>>;
   leaseAttributes: Attributes;
+  receivableTypeOptions: Array<Record<string, any>>;
 };
 
 class ContractRents extends PureComponent<Props, State> {
@@ -34,7 +40,8 @@ class ContractRents extends PureComponent<Props, State> {
     baseAmountPeriodOptions: [],
     intendedUseOptions: [],
     indexOptions: [],
-    leaseAttributes: null
+    leaseAttributes: null,
+    receivableTypeOptions: [],
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -46,6 +53,7 @@ class ContractRents extends PureComponent<Props, State> {
       newState.baseAmountPeriodOptions = getFieldOptions(props.leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
       newState.intendedUseOptions = getFieldOptions(props.leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE);
       newState.indexOptions = getFieldOptions(props.leaseAttributes, LeaseRentContractRentsFieldPaths.INDEX);
+      newState.receivableTypeOptions = getFieldOptions(props.leaseAttributes, LeaseRentContractRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE);
     }
 
     return newState;
@@ -56,15 +64,17 @@ class ContractRents extends PureComponent<Props, State> {
       contractRents,
       largeScreen,
       leaseAttributes,
-      rentType
+      rentType,
+      overrideReceivableTypeId,
+      serviceUnitId
     } = this.props;
     const {
       amountPeriodOptions,
       baseAmountPeriodOptions,
       intendedUseOptions,
-      indexOptions
+      indexOptions,
+      receivableTypeOptions
     } = this.state;
-
     const getAmountUiDataKey = () => {
       if (rentType === RentTypes.FIXED) {
         return getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.AMOUNT_FIXED_RENT);
@@ -121,6 +131,16 @@ class ContractRents extends PureComponent<Props, State> {
                     </>
                   </Authorization>
                 </Column>
+                {(serviceUnitId !== ServiceUnitIds.MAKE) && <Column small={6} medium={4} large={3}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+                    <>
+                    <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+                      {LeaseRentContractRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE || '-'}
+                    </FormTextTitle>
+                    <FormText>{getLabelOfOption(receivableTypeOptions, overrideReceivableTypeId) || '-'}</FormText>
+                    </>
+                  </Authorization>
+                </Column>}
                 {rentType === RentTypes.INDEX2022 && <Column small={6} medium={4} large={2}>
                     <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INDEX)}>
                       <>
@@ -200,6 +220,7 @@ class ContractRents extends PureComponent<Props, State> {
 
 export default flowRight(withWindowResize, connect(state => {
   return {
-    leaseAttributes: getLeaseAttributes(state)
+    leaseAttributes: getLeaseAttributes(state),
+    receivableTypes: getReceivableTypes(state)
   };
 }))(ContractRents);
