@@ -10,7 +10,7 @@ import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
-import { getReceivableTypes } from "@/leaseCreateCharge/selectors";
+import type { ServiceUnit } from "@/serviceUnits/types";
 type SeasonalDatesProps = {
   leaseAttributes: Attributes;
   rent: Record<string, any>;
@@ -36,17 +36,19 @@ const SeasonalDates = ({
 
 type Props = {
   leaseAttributes: Attributes;
-  receivableTypes?: Array<any> | null | undefined;
-  receivableTypeOptions?: Array<any> | null | undefined;
   rent: Record<string, any>;
   rentType: string | null | undefined;
 };
 
+type PropsWithServiceUnit = Props & {
+  serviceUnit: ServiceUnit;
+}
+
 const BasicInfoIndexOrManual = ({
   leaseAttributes,
-  receivableTypeOptions,
-  rent
-}: Props) => {
+  rent,
+  serviceUnit,
+}: PropsWithServiceUnit) => {
   const areOldInfoVisible = () => {
     return !isEmptyValue(rent.elementary_index) || !isEmptyValue(rent.index_rounding) || !isEmptyValue(rent.x_value) || !isEmptyValue(rent.y_value) || !isEmptyValue(rent.y_value_start) || !isEmptyValue(rent.equalization_start_date) || !isEmptyValue(rent.equalization_end_date);
   };
@@ -55,6 +57,7 @@ const BasicInfoIndexOrManual = ({
   const cycleOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.CYCLE);
   const indexTypeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.INDEX_TYPE);
   const dueDatesTypeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE);
+  const receivableTypeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE);
   const oldValuesVisible = areOldInfoVisible();
   return <Fragment>
       <Row>
@@ -174,12 +177,24 @@ const BasicInfoIndexOrManual = ({
         </Row>}
 
       <Row>
-        <Column small={12} medium={4} large={2}>
-          {
-          /* Authorization is implemented inside SeasonalDates component */
+        { serviceUnit.use_rent_override_receivable_type &&
+        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+          <Column small={12} medium={4} large={4}>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+              {LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE}
+            </FormTextTitle>
+            <FormText>{getLabelOfOption(receivableTypeOptions, rent.override_receivable_type) || '-'}</FormText>
+          </Column>
+        </Authorization>
         }
+
+        <Column small={12} medium={4} large={2}>
+          { /* Authorization is implemented inside SeasonalDates component */ }
           <SeasonalDates leaseAttributes={leaseAttributes} rent={rent} />
         </Column>
+      </Row>
+
+      <Row>
         <Column small={12} medium={8} large={10}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
             <>
@@ -191,17 +206,6 @@ const BasicInfoIndexOrManual = ({
           </Authorization>
         </Column>
       </Row>
-
-      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
-        <Row>
-          <Column>
-            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
-              {LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE}
-            </FormTextTitle>
-            <FormText>{getLabelOfOption(receivableTypeOptions, rent?.override_receivable_type) || '-'}</FormText>
-          </Column>
-        </Row>
-      </Authorization>     
 
       {oldValuesVisible && <Row>
           <Column small={12} medium={4} large={2}>
@@ -335,12 +339,13 @@ const BasicInfoOneTime = ({
 
 const BasicInfoFixed = ({
   leaseAttributes,
-  receivableTypeOptions,
-  rent
-}: Props) => {
+  rent,
+  serviceUnit,
+}: PropsWithServiceUnit) => {
   const dueDatesTypeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE);
   const typeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.TYPE);
-  
+  const receivableTypeOptions = getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE);
+
   return <Fragment>
       <Row>
         <Column small={6} medium={4} large={2}>
@@ -416,12 +421,24 @@ const BasicInfoFixed = ({
       </Row>
 
       <Row>
-        <Column small={12} medium={4} large={2}>
-          {
-          /* Authorization is implemented inside SeasonalDates component */
+        { serviceUnit.use_rent_override_receivable_type &&
+        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+          <Column small={12} medium={4} large={4}>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+              {LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE}
+            </FormTextTitle>
+            <FormText>{getLabelOfOption(receivableTypeOptions, rent.override_receivable_type) || '-'}</FormText>
+          </Column>
+        </Authorization>
         }
+
+        <Column small={12} medium={4} large={2}>
+          { /* Authorization is implemented inside SeasonalDates component */ }
           <SeasonalDates leaseAttributes={leaseAttributes} rent={rent} />
         </Column>
+      </Row>
+
+      <Row>
         <Column small={12} medium={8} large={10}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
             <>
@@ -433,16 +450,7 @@ const BasicInfoFixed = ({
           </Authorization>
         </Column>
       </Row>
-      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
-        <Row>
-          <Column>
-            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
-              {LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE}
-            </FormTextTitle>
-            <FormText>{getLabelOfOption(receivableTypeOptions, rent?.override_receivable_type) || '-'}</FormText>
-          </Column>
-        </Row>
-      </Authorization>
+
     </Fragment>;
 };
 
@@ -498,18 +506,18 @@ const BasicInfoFree = ({
     </Fragment>;
 };
 
+
 const BasicInfo = ({
   leaseAttributes,
-  receivableTypes,
   rent,
-  rentType
-}: Props) => {
-  const receivableTypeOptions = receivableTypes?.map((rt) => ({ value: rt.id, label: rt.name })) || [];
+  rentType,
+  serviceUnit,
+}: PropsWithServiceUnit) => {
   return <Fragment>
       {!rentType && <FormText>Vuokralajia ei ole valittu</FormText>}
-      {(rentType === RentTypes.INDEX || rentType === RentTypes.INDEX2022 || rentType === RentTypes.MANUAL) && <BasicInfoIndexOrManual leaseAttributes={leaseAttributes} receivableTypeOptions={receivableTypeOptions} rent={rent} rentType={rentType} />}
-      {rentType === RentTypes.ONE_TIME && <BasicInfoOneTime leaseAttributes={leaseAttributes} receivableTypeOptions={receivableTypeOptions} rent={rent} rentType={rentType} />}
-      {rentType === RentTypes.FIXED && <BasicInfoFixed leaseAttributes={leaseAttributes} receivableTypeOptions={receivableTypeOptions} rent={rent} rentType={rentType} />}
+      {(rentType === RentTypes.INDEX || rentType === RentTypes.INDEX2022 || rentType === RentTypes.MANUAL) && <BasicInfoIndexOrManual leaseAttributes={leaseAttributes} rent={rent} rentType={rentType} serviceUnit={serviceUnit}/>}
+      {rentType === RentTypes.ONE_TIME && <BasicInfoOneTime leaseAttributes={leaseAttributes} rent={rent} rentType={rentType} />}
+      {rentType === RentTypes.FIXED && <BasicInfoFixed leaseAttributes={leaseAttributes} rent={rent} rentType={rentType} serviceUnit={serviceUnit} />}
       {rentType === RentTypes.FREE && <BasicInfoFree leaseAttributes={leaseAttributes} rent={rent} rentType={rentType} />}
     </Fragment>;
 };
@@ -517,6 +525,5 @@ const BasicInfo = ({
 export default connect(state => {
   return {
     leaseAttributes: getLeaseAttributes(state),
-    receivableTypes: getReceivableTypes(state)
   };
 })(BasicInfo);

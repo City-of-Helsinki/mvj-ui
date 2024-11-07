@@ -67,14 +67,14 @@ const Rents = ({
         <>
         {!rents || !rents.length && <FormText className='no-margin'>Ei vuokria</FormText>}
         {rents && !!rents.length && rents.map(rent => {
-        return <RentItem key={rent.id} rent={rent} rents={rents} />;
+        return <RentItem key={rent.id} rent={rent} rents={rents} serviceUnit={currentLease.service_unit} />;
       })}
 
         {!!rentsArchived.length && <h3 style={{
         marginTop: 10,
         marginBottom: 5
       }}>Arkisto</h3>}
-        {!!rentsArchived.length && rentsArchived.map(rent => <RentItem key={rent.id} rent={rent} rents={rents} />)}
+        {!!rentsArchived.length && rentsArchived.map(rent => <RentItem key={rent.id} rent={rent} rents={rents} serviceUnit={currentLease.service_unit} />)}
         </>
       </Authorization>
 

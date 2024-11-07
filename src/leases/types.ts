@@ -32,6 +32,12 @@ export type FetchSingleLeaseAfterEditPayload = {
   leaseId: LeaseId;
   callbackFunctions?: Array<Record<string, any> | ((...args: Array<any>) => any)>;
 };
+export type ReceivableType = {
+  id: number;
+  name: string;
+  is_active: boolean;
+  service_unit_id: ServiceUnit["id"];
+};
 export type SendEmailPayload = {
   type: string;
   lease: LeaseId;

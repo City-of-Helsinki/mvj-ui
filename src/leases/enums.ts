@@ -907,7 +907,7 @@ export const LeaseRentsFieldTitles = {
   Y_VALUE: 'Y-luku',
   Y_VALUE_START: 'Y-luku alkaen',
   YEARLY_DUE_DATES: 'Eräpäivät (pv.kk)',
-  OVERRIDE_RECEIVABLE_TYPE: 'Korvaava saamislaji'
+  OVERRIDE_RECEIVABLE_TYPE: 'Automaattinen saamislaji'
 };
 
 /**

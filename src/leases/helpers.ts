@@ -1641,7 +1641,7 @@ export const getContentRents = (lease: Record<string, any>): Array<Record<string
     payable_rents: getContentPayableRents(rent),
     equalized_rents: getContentEqualizedRents(rent),
     yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
-    override_receivable_type: rent.override_receivable_type,
+    override_receivable_type: get(rent, 'override_receivable_type.id') || rent.override_receivable_type,
   };
 }).sort(sortByStartAndEndDateDesc);
 
@@ -2725,7 +2725,7 @@ export const addRentsFormValuesToPayload = (payload: Record<string, any>, formVa
       }
     }
 
-    // Patch seasonal dates, contract rents and rent adjustments data only if rent type is index, index2022, fixed or manual
+    // Patch some data only if rent type is index, index2022, fixed, or manual
     if (rent.type === RentTypes.INDEX || rent.type === RentTypes.INDEX2022 || rent.type === RentTypes.FIXED || rent.type === RentTypes.MANUAL) {
       rentData.seasonal_start_day = rent.seasonal_start_day || null;
       rentData.seasonal_start_month = rent.seasonal_start_month || null;
@@ -2733,6 +2733,7 @@ export const addRentsFormValuesToPayload = (payload: Record<string, any>, formVa
       rentData.seasonal_end_month = rent.seasonal_end_month || null;
       rentData.contract_rents = getPayloadContractRents(rent, rent.type);
       rentData.rent_adjustments = getPayloadRentAdjustments(rent);
+      rentData.override_receivable_type = get(rent, 'override_receivable_type.id') || rent.override_receivable_type;
     }
 
     return rentData;
@@ -2872,7 +2873,7 @@ export const formatDueDates = (dates: Array<DueDate>): string => {
 
 /**
  * Sort due dates by month and day
- * @param {Array<DueDate>} dueDates 
+ * @param {Array<DueDate>} dueDates
  * @returns {Array<DueDate>} Sorted array of due date objects with day and month properties.
  */
 export const sortDueDates = (dueDates: Array<DueDate>): Array<DueDate> => {
@@ -2931,7 +2932,7 @@ export const restructureLease = (lease: Record<string, any>): Record<string, any
 };
 
 /**
- * Sorts related leases and other items 
+ * Sorts related leases and other items
  * by comparing start dates or received dates.
  * @param {Object} lease
  * @returns {Object}

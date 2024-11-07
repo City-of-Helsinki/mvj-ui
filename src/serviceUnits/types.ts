@@ -1,6 +1,6 @@
 import type { Action } from "@/types";
-export type ServiceUnit = { id: number, name: string };
-export type ServiceUnits = Array<Record<string, any>>;
+export type ServiceUnit = { id: number, name: string, use_rent_override_receivable_type: boolean };
+export type ServiceUnits = Array<ServiceUnit>;
 export type ServiceUnitState = {
   isFetching: boolean;
   serviceUnits: ServiceUnits;

@@ -19,12 +19,14 @@ import { formatDueDates, formatSeasonalDate } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "@/leases/selectors";
+import { getReceivableTypes } from "@/leaseCreateCharge/selectors";
 import { getLeaseTypeList } from "@/leaseType/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { PlotSearchFieldPaths } from "@/plotSearch/enums";
 import type { Attributes } from "types";
-import type { DueDate, Lease } from "@/leases/types";
+import type { DueDate, Lease, ReceivableType } from "@/leases/types";
 import type { LeaseTypeList } from "@/leaseType/types";
+import type { ServiceUnit } from "@/serviceUnits/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
@@ -182,7 +184,7 @@ type BasicInfoEmptyProps = {
 
 const BasicInfoEmpty = ({
   isSaveClicked,
-  leaseAttributes
+  leaseAttributes,
 }: BasicInfoEmptyProps) => {
   return <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
       <Row>
@@ -203,6 +205,8 @@ type BasicInfoIndexOrManualProps = {
   rentType: string;
   isSaveClicked: boolean;
   leaseAttributes: Attributes;
+  receivableTypeOptions: Array<Record<string, any>>;
+  serviceUnit: ServiceUnit;
   usersPermissions: UsersPermissionsType;
   yearlyDueDates: Array<DueDate>;
 };
@@ -215,6 +219,8 @@ const BasicInfoIndexOrManual = ({
   rentType,
   isSaveClicked,
   leaseAttributes,
+  receivableTypeOptions,
+  serviceUnit,
   usersPermissions,
   yearlyDueDates
 }: BasicInfoIndexOrManualProps) => {
@@ -266,9 +272,7 @@ const BasicInfoIndexOrManual = ({
           </Authorization>
         </Column>
         {dueDatesType === RentDueDateTypes.CUSTOM && <Column small={6} medium={4} large={1}>
-            {
-          /* Authorization is done on renderDueDates component */
-        }
+            { /* Authorization is done on renderDueDates component */ }
             <FieldArray component={renderDueDates} dueDates={dueDates} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} name="due_dates" usersPermissions={usersPermissions} />
           </Column>}
         {dueDatesType === RentDueDateTypes.FIXED && <Column small={6} medium={4} large={1}>
@@ -310,12 +314,30 @@ const BasicInfoIndexOrManual = ({
         </Row>}
 
       <Row>
-        <Column small={12} medium={4} large={2}>
-          {
-          /* Authorization is done on SeasonalDates component */
+        { serviceUnit.use_rent_override_receivable_type &&
+        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+          <Column small={12} medium={6} large={4}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}
+              name="override_receivable_type"
+              overrideValues={{
+                label: LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE,
+                options: receivableTypeOptions,
+                required: true,
+              }}
+            />
+          </Column>
+        </Authorization>
         }
+
+        <Column small={12} medium={4} large={2}>
+          { /* Authorization is done on SeasonalDates component */ }
           <SeasonalDates field={field} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} />
         </Column>
+      </Row>
+
+      <Row>
         <Column small={12} medium={8} large={10}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
             <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.NOTE)} name='note' overrideValues={{
@@ -324,17 +346,7 @@ const BasicInfoIndexOrManual = ({
           </Authorization>
         </Column>
       </Row>
-      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
-        <Row>
-          <Column small={12} medium={6} large={4}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}
-              name="override_receivable_type"
-            />
-          </Column>
-        </Row>
-      </Authorization>
+
     </Fragment>;
 };
 
@@ -348,7 +360,7 @@ type BasicInfoOneTimeProps = {
 
 const BasicInfoOneTime = ({
   isSaveClicked,
-  leaseAttributes
+  leaseAttributes,
 }: BasicInfoOneTimeProps) => {
   return <Fragment>
       <Row>
@@ -381,7 +393,6 @@ const BasicInfoOneTime = ({
           </Authorization>
         </Column>
       </Row>
-
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
         <Row>
           <Column>
@@ -391,17 +402,7 @@ const BasicInfoOneTime = ({
           </Column>
         </Row>
       </Authorization>
-      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
-        <Row>
-          <Column small={12} medium={6} large={4}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}
-              name="override_receivable_type"
-            />
-          </Column>
-        </Row>
-      </Authorization>
+
     </Fragment>;
 };
 
@@ -411,6 +412,8 @@ type BasicInfoFixedProps = {
   field: string;
   isSaveClicked: boolean;
   leaseAttributes: Attributes;
+  receivableTypeOptions: Array<Record<string, any>>;
+  serviceUnit: ServiceUnit;
   usersPermissions: UsersPermissionsType;
   yearlyDueDates: Array<DueDate>;
 };
@@ -421,6 +424,8 @@ const BasicInfoFixed = ({
   field,
   isSaveClicked,
   leaseAttributes,
+  receivableTypeOptions,
+  serviceUnit,
   usersPermissions,
   yearlyDueDates
 }: BasicInfoFixedProps) => {
@@ -455,9 +460,7 @@ const BasicInfoFixed = ({
           </Authorization>
         </Column>
         {dueDatesType === RentDueDateTypes.CUSTOM && <Column small={6} medium={4} large={2}>
-            {
-          /* Authorization is done on renderDueDates component */
-        }
+            { /* Authorization is done on renderDueDates component */ }
             <FieldArray component={renderDueDates} dueDates={dueDates} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} name="due_dates" usersPermissions={usersPermissions} />
           </Column>}
         {dueDatesType === RentDueDateTypes.FIXED && <Column small={6} medium={4} large={1}>
@@ -482,12 +485,30 @@ const BasicInfoFixed = ({
       </Row>
 
       <Row>
-        <Column small={12} medium={4} large={2}>
-          {
-          /* Authorization is done on SeasonalDates component */
+        { serviceUnit.use_rent_override_receivable_type &&
+        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+          <Column small={12} medium={6} large={4}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}
+              name="override_receivable_type"
+              overrideValues={{
+                label: LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE,
+                options: receivableTypeOptions,
+                required: true,
+              }}
+            />
+          </Column>
+        </Authorization>
         }
+
+        <Column small={12} medium={4} large={2}>
+          { /* Authorization is done on SeasonalDates component */ }
           <SeasonalDates field={field} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} />
         </Column>
+      </Row>
+
+      <Row>
         <Column small={12} medium={8} large={10}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
             <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.NOTE)} name='note' overrideValues={{
@@ -496,17 +517,6 @@ const BasicInfoFixed = ({
           </Authorization>
         </Column>
       </Row>
-      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
-        <Row>
-          <Column small={12} medium={6} large={4}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}
-              name="override_receivable_type"
-            />
-          </Column>
-        </Row>
-      </Authorization>
 
     </Fragment>;
 };
@@ -557,6 +567,24 @@ const BasicInfoFree = ({
     </Fragment>;
 };
 
+/**
+ * Get receivable type options for override receivable type select.
+ * ReceivableTypes must be fetched separately from API, because receivabletype
+ * choices from leaseAttributes are not filtered by service unit.
+ *
+ * @param receivableTypes Receivable types filtered by lease's service unit
+ * @returns Array Receivabletype options for select element
+ */
+const getOverrideReceivableTypeOptions = (receivableTypes: Array<ReceivableType>) => {
+  const options = receivableTypes.map((rt) => ({
+    label: rt.name,
+    value: rt.id
+  }));
+  const sortedOptions = options.sort((a, b) => a.label.localeCompare(b.label));
+  const emptyItem = { label: "", value: "" };
+  return [emptyItem, ...sortedOptions];
+}
+
 type Props = {
   change: (...args: Array<any>) => any;
   currentLease: Lease;
@@ -568,6 +596,7 @@ type Props = {
   isSaveClicked: boolean;
   leaseAttributes: Attributes;
   leaseTypes: LeaseTypeList;
+  receivableTypes: Array<ReceivableType>;
   rentType: string | null | undefined;
   usersPermissions: UsersPermissionsType;
 };
@@ -582,6 +611,7 @@ const BasicInfoEdit = ({
   isSaveClicked,
   leaseAttributes,
   leaseTypes,
+  receivableTypes,
   rentType,
   usersPermissions
 }: Props) => {
@@ -591,13 +621,13 @@ const BasicInfoEdit = ({
     if (!dueDatesPerYear || !leaseType || dueDatesType !== RentDueDateTypes.FIXED) return [];
     return FixedDueDates[rentType === RentTypes.FIXED ? DueDatesPositions.START_OF_MONTH : leaseType.due_dates_position][dueDatesPerYear];
   };
-
   const yearlyDueDates = getYearlyDueDates();
+  const receivableTypeOptions=getOverrideReceivableTypeOptions(receivableTypes);
   return <Fragment>
       {!rentType && <BasicInfoEmpty isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} />}
-      {(rentType === RentTypes.INDEX || rentType === RentTypes.INDEX2022 || rentType === RentTypes.MANUAL) && <BasicInfoIndexOrManual cycle={cycle} dueDates={dueDates} dueDatesType={dueDatesType} field={field} rentType={rentType} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} usersPermissions={usersPermissions} yearlyDueDates={yearlyDueDates} />}
+      {(rentType === RentTypes.INDEX || rentType === RentTypes.INDEX2022 || rentType === RentTypes.MANUAL) && <BasicInfoIndexOrManual cycle={cycle} dueDates={dueDates} dueDatesType={dueDatesType} field={field} rentType={rentType} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} usersPermissions={usersPermissions} yearlyDueDates={yearlyDueDates} receivableTypeOptions={receivableTypeOptions} serviceUnit={currentLease.service_unit} />}
       {rentType === RentTypes.ONE_TIME && <BasicInfoOneTime dueDates={dueDates} dueDatesType={dueDatesType} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} usersPermissions={usersPermissions} />}
-      {rentType === RentTypes.FIXED && <BasicInfoFixed dueDates={dueDates} dueDatesType={dueDatesType} field={field} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} usersPermissions={usersPermissions} yearlyDueDates={yearlyDueDates} />}
+      {rentType === RentTypes.FIXED && <BasicInfoFixed dueDates={dueDates} dueDatesType={dueDatesType} field={field} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} usersPermissions={usersPermissions} yearlyDueDates={yearlyDueDates} receivableTypeOptions={receivableTypeOptions} serviceUnit={currentLease.service_unit} />}
       {rentType === RentTypes.FREE && <BasicInfoFree isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} />}
     </Fragment>;
 };
@@ -617,6 +647,7 @@ export default connect((state, props: BasicInfoEditProps) => {
     dueDates: selector(state, `${props.field}.due_dates`),
     leaseAttributes: getLeaseAttributes(state),
     leaseTypes: getLeaseTypeList(state),
+    receivableTypes: getReceivableTypes(state),
     usersPermissions: getUsersPermissions(state)
   };
 }, {

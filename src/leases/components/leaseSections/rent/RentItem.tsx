@@ -19,6 +19,8 @@ import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDateRange, getFieldOptions, getLabelOfOption, isActive, isArchived, isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes, getCollapseStateByKey } from "@/leases/selectors";
 import type { Attributes } from "types";
+import type { ServiceUnit } from "@/serviceUnits/types";
+
 const formName = FormNames.LEASE_RENTS;
 type Props = {
   contractRentsCollapseState: boolean;
@@ -32,6 +34,7 @@ type Props = {
   rents: Array<Record<string, any>>;
   rentAdjustmentsCollapseState: boolean;
   rentCollapseState: boolean;
+  serviceUnit: ServiceUnit;
 };
 
 const RentItem = ({
@@ -45,7 +48,8 @@ const RentItem = ({
   rent,
   rents,
   rentAdjustmentsCollapseState,
-  rentCollapseState
+  rentCollapseState,
+  serviceUnit,
 }: Props) => {
   const handleCollapseToggle = (key: string, val: boolean) => {
     receiveCollapseStates({
@@ -108,7 +112,7 @@ const RentItem = ({
         </Column>} headerTitle={<Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
           {getLabelOfOption(typeOptions, rentType) || '-'}
         </Authorization>} onToggle={handleRentCollapseToggle}>
-      <BasicInfo rent={rent} rentType={rentType} />
+      <BasicInfo rent={rent} rentType={rentType} serviceUnit={serviceUnit} />
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
         {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsManual) && <Collapse className='collapse__secondary' defaultOpen={fixedInitialYearRentsCollapseState !== undefined ? fixedInitialYearRentsCollapseState : true} headerTitle={`${LeaseRentFixedInitialYearRentsFieldTitles.FIXED_INITIAL_YEAR_RENTS} (${fixedInitialYearRents.length})`} onToggle={handleFixedInitialYearRentsCollapseToggle} uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
