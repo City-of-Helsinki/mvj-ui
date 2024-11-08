@@ -34,10 +34,6 @@ You can log into the container to execute some commands like so:
 docker exec -it mvj-ui bash
 ```
 
-If you want to set up full integration with mvj backend and tunnistamo, check
-[here](https://github.com/City-of-Helsinki/mvj#connecting-to-tunnistamo)
-for the guidance.
-
 ## Usage w/o Docker
 
 
