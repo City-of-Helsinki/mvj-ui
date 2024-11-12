@@ -1572,7 +1572,8 @@ export const getContentContractRents = (rent: Record<string, any>): Array<Record
     base_amount_period: item.base_amount_period,
     base_year_rent: item.base_year_rent,
     start_date: item.start_date,
-    end_date: item.end_date
+    end_date: item.end_date,
+    override_receivable_type: item.override_receivable_type,
   };
 }).sort(sortByStartAndEndDateDesc);
 
@@ -1641,7 +1642,6 @@ export const getContentRents = (lease: Record<string, any>): Array<Record<string
     payable_rents: getContentPayableRents(rent),
     equalized_rents: getContentEqualizedRents(rent),
     yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
-    override_receivable_type: rent.override_receivable_type,
   };
 }).sort(sortByStartAndEndDateDesc);
 
@@ -2872,7 +2872,7 @@ export const formatDueDates = (dates: Array<DueDate>): string => {
 
 /**
  * Sort due dates by month and day
- * @param {Array<DueDate>} dueDates 
+ * @param {Array<DueDate>} dueDates
  * @returns {Array<DueDate>} Sorted array of due date objects with day and month properties.
  */
 export const sortDueDates = (dueDates: Array<DueDate>): Array<DueDate> => {
@@ -2931,7 +2931,7 @@ export const restructureLease = (lease: Record<string, any>): Record<string, any
 };
 
 /**
- * Sorts related leases and other items 
+ * Sorts related leases and other items
  * by comparing start dates or received dates.
  * @param {Object} lease
  * @returns {Object}

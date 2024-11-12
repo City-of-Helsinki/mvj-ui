@@ -14,16 +14,12 @@ import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { withWindowResize } from "@/components/resize/WindowResizeHandler";
-import { getReceivableTypes } from "@/leaseCreateCharge/selectors";
 import type { Attributes } from "types";
 type Props = {
   contractRents: Array<Record<string, any>>;
   largeScreen: boolean;
   leaseAttributes: Attributes;
-  receivableTypes: Array<Record<string,any>>;
   rentType: string;
-  overrideReceivableTypeId: number;
-  serviceUnitId: number;
 };
 type State = {
   amountPeriodOptions: Array<Record<string, any>>;
@@ -65,8 +61,6 @@ class ContractRents extends PureComponent<Props, State> {
       largeScreen,
       leaseAttributes,
       rentType,
-      overrideReceivableTypeId,
-      serviceUnitId
     } = this.props;
     const {
       amountPeriodOptions,
@@ -131,13 +125,13 @@ class ContractRents extends PureComponent<Props, State> {
                     </>
                   </Authorization>
                 </Column>
-                {(serviceUnitId !== ServiceUnitIds.MAKE) && <Column small={6} medium={4} large={3}>
+                {(leaseAttributes.service_unit.id !== ServiceUnitIds.MAKE) && <Column small={6} medium={4} large={3}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
                     <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
                       {LeaseRentContractRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE || '-'}
                     </FormTextTitle>
-                    <FormText>{getLabelOfOption(receivableTypeOptions, overrideReceivableTypeId) || '-'}</FormText>
+                    <FormText>{getLabelOfOption(receivableTypeOptions, contractRent.override_receivable_type) || '-'}</FormText>
                     </>
                   </Authorization>
                 </Column>}
@@ -221,6 +215,5 @@ class ContractRents extends PureComponent<Props, State> {
 export default flowRight(withWindowResize, connect(state => {
   return {
     leaseAttributes: getLeaseAttributes(state),
-    receivableTypes: getReceivableTypes(state)
   };
 }))(ContractRents);

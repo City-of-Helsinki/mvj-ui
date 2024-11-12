@@ -973,8 +973,7 @@ export const LeaseRentContractRentsFieldPaths = {
   INDEX: 'rents.child.children.contract_rents.child.children.index',
   INTENDED_USE: 'rents.child.children.contract_rents.child.children.intended_use',
   START_DATE: 'rents.child.children.contract_rents.child.children.start_date',
-  // OVERRIDE_RECEIVABLE_TYPE: 'rents.child.children.contract_rents.child.children.override_receivable_type' // TODO use this after moving property to model ContractRents instead of Rent
-  OVERRIDE_RECEIVABLE_TYPE: 'rents.child.children.override_receivable_type'
+  OVERRIDE_RECEIVABLE_TYPE: 'rents.child.children.contract_rents.child.children.override_receivable_type'
 };
 
 /**
@@ -995,7 +994,7 @@ export const LeaseRentContractRentsFieldTitles = {
   INDEX: 'Indeksi',
   INTENDED_USE: 'Käyttötarkoitus',
   START_DATE: 'Alkupvm',
-  OVERRIDE_RECEIVABLE_TYPE: 'Automaattisten laskujen saamislaji'
+  OVERRIDE_RECEIVABLE_TYPE: 'Korvaava saamislaji laskuille'
 };
 
 /**
