@@ -14,9 +14,11 @@ import RemoveButton from "@/components/form/RemoveButton";
 import { FormNames } from "@/enums";
 import { ContractRentPeriods, LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, RentTypes } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
+import { ServiceUnitIds } from "@/serviceUnits/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatNumber, getFieldAttributes, getFieldOptions, getLabelOfOption, hasPermissions, isEmptyValue, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes, getIsSaveClicked } from "@/leases/selectors";
+import { getReceivableTypes } from "@/leaseCreateCharge/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { withWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
@@ -30,6 +32,7 @@ type Props = {
   largeScreen: boolean;
   leaseAttributes: Attributes;
   onRemove: (...args: Array<any>) => any;
+  receivableTypes: Array<Record<string, any>>;
   rentField: string;
   rentType: string;
   showRemove: boolean;
@@ -68,6 +71,7 @@ class ContractRentEdit extends PureComponent<Props> {
       largeScreen,
       leaseAttributes,
       onRemove,
+      receivableTypes,
       rentType,
       showRemove,
       usersPermissions
@@ -114,6 +118,22 @@ class ContractRentEdit extends PureComponent<Props> {
       return rentType === RentTypes.INDEX ? getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD).filter(option => option.value === ContractRentPeriods.PER_YEAR || option.value === '') : getFieldOptions(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD);
     };
 
+    /**
+     * ReceivableType options must be fetched separately from API, because
+     * receivabletype choices from leaseAttributes are not filtered by service
+     * unit.
+     * */
+    const getOverrideReceivableTypeOptions = () => {
+      const options = receivableTypes.map((receivableType) => ({
+        label: receivableType.name,
+        value: receivableType.id
+      }));
+      const sortedOptions = options.sort((a, b) => a.label.localeCompare(b.label));
+      const emptyItem = {label: "", value: ""};
+      return [emptyItem, ...sortedOptions];
+
+    }
+
     const amountField = <>
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)}>
           <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.AMOUNT)} enableUiDataEdit uiDataKey={getAmountUiDataKey()}>
@@ -144,11 +164,20 @@ class ContractRentEdit extends PureComponent<Props> {
           </Authorization>
         </Row>
       </>;
+
     const intendedUseField = <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)}>
         <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.INTENDED_USE)} name={`${field}.intended_use`} overrideValues={{
         label: LeaseRentContractRentsFieldTitles.INTENDED_USE
       }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldTitles.INTENDED_USE)} />
       </Authorization>;
+
+    const overrideReceivableTypeField = <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
+        <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)} name={`${field}.override_receivable_type`} overrideValues={{
+        label: LeaseRentContractRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE,
+        options: getOverrideReceivableTypeOptions(),
+      }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE)} />
+      </Authorization>;
+
     const baseAmountField = <>
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)}>
           <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_AMOUNT)} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldTitles.BASE_AMOUNT)}>
@@ -178,6 +207,7 @@ class ContractRentEdit extends PureComponent<Props> {
           </Authorization>
         </Row>
       </>;
+
     const baseYearRentField = <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)}>
         <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)} name={`${field}.base_year_rent`} unit='€' overrideValues={{
         label: LeaseRentContractRentsFieldTitles.BASE_YEAR_RENT
@@ -185,16 +215,21 @@ class ContractRentEdit extends PureComponent<Props> {
         right: 12
       }} uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT)} />
       </Authorization>;
+
     const startDateField = <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)}>
         <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.START_DATE)} name={`${field}.start_date`} overrideValues={{
         label: LeaseRentContractRentsFieldTitles.START_DATE
       }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.START_DATE)} />
       </Authorization>;
+
     const endDateField = <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}>
-        <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)} name={`${field}.end_date`} overrideValues={{
-        label: LeaseRentContractRentsFieldTitles.END_DATE
-      }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.END_DATE)} />
+        {leaseAttributes.service_unit.id !== ServiceUnitIds.MAKE &&
+          <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)} name={`${field}.end_date`} overrideValues={{
+            label: LeaseRentContractRentsFieldTitles.END_DATE
+          }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.END_DATE)} />
+        }
       </Authorization>;
+
     const indexField = <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INDEX)}>
         <FormField disableTouched={isSaveClicked} fieldAttributes={{ ...getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.INDEX),
         required: true
@@ -209,6 +244,9 @@ class ContractRentEdit extends PureComponent<Props> {
         </Column>
         <Column small={6} medium={4} large={2}>
           {intendedUseField}
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          {overrideReceivableTypeField}
         </Column>
         {rentType === RentTypes.INDEX2022 && <Column small={6} medium={4} large={2}>
             {indexField}
@@ -257,7 +295,6 @@ class ContractRentEdit extends PureComponent<Props> {
         </BoxContentWrapper>
       </BoxItem>;
   }
-
 }
 
 const formName = FormNames.LEASE_RENTS;
@@ -269,7 +306,8 @@ export default flowRight(withWindowResize, connect((state, props: Props) => {
     leaseAttributes: getLeaseAttributes(state),
     usersPermissions: getUsersPermissions(state),
     amount: selector(state, `${props.field}.amount`),
-    period: selector(state, `${props.field}.period`)
+    period: selector(state, `${props.field}.period`),
+    receivableTypes: getReceivableTypes(state)
   };
 }), reduxForm({
   form: formName,

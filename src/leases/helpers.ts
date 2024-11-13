@@ -1573,7 +1573,7 @@ export const getContentContractRents = (rent: Record<string, any>): Array<Record
     base_year_rent: item.base_year_rent,
     start_date: item.start_date,
     end_date: item.end_date,
-    override_receivable_type: item.override_receivable_type,
+    override_receivable_type: get(item, 'override_receivable_type.id') || item.override_receivable_type,
   };
 }).sort(sortByStartAndEndDateDesc);
 
@@ -2542,7 +2542,8 @@ export const getPayloadContractRents = (rent: Record<string, any>, rentType: str
     period: item.period,
     intended_use: get(item, 'intended_use.id') || item.intended_use,
     start_date: item.start_date,
-    end_date: item.end_date
+    end_date: item.end_date,
+    override_receivable_type: item.override_receivable_type,
   };
 
   // Patch these fields only if rent type is index or manual

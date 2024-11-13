@@ -40,7 +40,6 @@ const Rents = ({
   const rents = rentsAll.filter(rent => !isArchived(rent));
   const rentsArchived = rentsAll.filter(rent => isArchived(rent));
   const warnings = getRentWarnings(rents);
-  const serviceUnitId = currentLease.service_unit.id;
   return <Fragment>
       <Title uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}>
         {LeaseRentsFieldTitles.RENTS}
@@ -68,14 +67,14 @@ const Rents = ({
         <>
         {!rents || !rents.length && <FormText className='no-margin'>Ei vuokria</FormText>}
         {rents && !!rents.length && rents.map(rent => {
-        return <RentItem key={rent.id} rent={rent} rents={rents} serviceUnitId={serviceUnitId} />;
+        return <RentItem key={rent.id} rent={rent} rents={rents} />;
       })}
 
         {!!rentsArchived.length && <h3 style={{
         marginTop: 10,
         marginBottom: 5
       }}>Arkisto</h3>}
-        {!!rentsArchived.length && rentsArchived.map(rent => <RentItem key={rent.id} rent={rent} rents={rents} serviceUnitId={serviceUnitId} />)}
+        {!!rentsArchived.length && rentsArchived.map(rent => <RentItem key={rent.id} rent={rent} rents={rents} />)}
         </>
       </Authorization>
 
