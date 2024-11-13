@@ -337,11 +337,11 @@ class LeasePage extends Component<Props, State> {
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) && !invoices) {
       fetchInvoicesByLease(leaseId);
     }
-    
+
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASETYPE) && isEmpty(leaseTypeList)) {
       fetchLeaseTypes();
     }
-    
+
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_VAT) && isEmpty(vats)) {
       fetchVats();
     }
