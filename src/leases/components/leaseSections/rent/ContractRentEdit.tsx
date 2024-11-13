@@ -225,9 +225,9 @@ class ContractRentEdit extends PureComponent<Props> {
       </Authorization>;
 
     const endDateField = <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}>
-          <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)} name={`${field}.end_date`} overrideValues={{
-            label: LeaseRentContractRentsFieldTitles.END_DATE
-          }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.END_DATE)} />
+        <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)} name={`${field}.end_date`} overrideValues={{
+        label: LeaseRentContractRentsFieldTitles.END_DATE
+      }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.END_DATE)} />
       </Authorization>;
 
     const indexField = <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INDEX)}>
