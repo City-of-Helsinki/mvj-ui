@@ -271,7 +271,7 @@ const ApplicationFormSubsectionFields = connect((state, props) => ({
           type: 'radio-with-field'
         };
         fieldOverrides = {
-          options: getRadioButtonInlineFieldChoicesSorted(field, field.choices).map(choice => ({
+          options: getRadioButtonInlineFieldChoicesSorted(field, field.choices || []).map(choice => ({
             label: choice.text,
             value: choice.value,
             field: choice.has_text_input ? <FormField name={`${fieldName}.extraValue`} fieldAttributes={{
