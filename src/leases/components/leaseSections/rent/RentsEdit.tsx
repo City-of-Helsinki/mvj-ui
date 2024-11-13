@@ -58,6 +58,7 @@ type RentsProps = {
   archived: boolean;
   fields: any;
   rents: Array<Record<string, any>>;
+  serviceUnitId: number;
   usersPermissions: UsersPermissionsType;
 };
 
@@ -65,6 +66,7 @@ const renderRents = ({
   archived,
   fields,
   rents,
+  serviceUnitId,
   usersPermissions
 }: RentsProps): ReactElement => {
   const handleAdd = () => {
@@ -99,7 +101,7 @@ const renderRents = ({
             });
           };
 
-          return <RentItemEdit key={index} field={item} index={index} onRemove={handleRemove} rents={rents} />;
+          return <RentItemEdit key={index} field={item} index={index} onRemove={handleRemove} rents={rents} serviceUnitId={serviceUnitId}/>;
         })}
             {!archived && <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_RENT)}>
                 <Row>
@@ -219,6 +221,7 @@ class RentsEdit extends PureComponent<Props, State> {
 
   render() {
     const {
+      currentLease,
       editedActiveBasisOfRents,
       editedArchivedBasisOfRents,
       isRentInfoComplete,
@@ -282,7 +285,7 @@ class RentsEdit extends PureComponent<Props, State> {
                 <Field name='rentWarnings' component={RentWarnings} leaseAttributes={leaseAttributes} showWarning={true} />
                 <Divider />
 
-                <FieldArray component={renderRents} archive={false} name='rents' rents={rents} usersPermissions={usersPermissions} />
+                <FieldArray component={renderRents} archived={false} name='rents' rents={rents} usersPermissions={usersPermissions} serviceUnitId={currentLease.service_unit.id} />
 
                 {
               /* Archived rents */

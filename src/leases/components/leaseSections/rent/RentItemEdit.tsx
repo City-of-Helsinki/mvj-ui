@@ -49,6 +49,7 @@ type Props = {
   rentId: number;
   rents: Array<Record<string, any>>;
   rentType: string | null | undefined;
+  serviceUnitId: number;
   usersPermissions: UsersPermissionsType;
 };
 type State = {
@@ -237,6 +238,7 @@ class RentItemEdit extends PureComponent<Props, State> {
       rentCollapseState,
       rentType,
       rents,
+      serviceUnitId,
       usersPermissions
     } = this.props;
     const {
@@ -277,7 +279,7 @@ class RentItemEdit extends PureComponent<Props, State> {
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}>
           {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsFixed || rentTypeIsManual) && <Collapse className='collapse__secondary' defaultOpen={contractRentsCollapseState !== undefined ? contractRentsCollapseState : true} hasErrors={isSaveClicked && !isEmpty(contractRentErrors)} headerTitle={`${LeaseRentContractRentsFieldTitles.CONTRACT_RENTS} (${contractRents ? contractRents.length : 0})`} onToggle={this.handleContractRentsCollapseToggle} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}>
-              <FieldArray component={ContractRentsEdit} isSaveClicked={isSaveClicked} name={`${field}.contract_rents`} rentField={field} rentType={rentType} />
+              <FieldArray component={ContractRentsEdit} isSaveClicked={isSaveClicked} name={`${field}.contract_rents`} rentField={field} rentType={rentType} serviceUnitId={serviceUnitId}/>
             </Collapse>}
         </Authorization>
 

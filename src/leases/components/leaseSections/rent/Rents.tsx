@@ -67,7 +67,7 @@ const Rents = ({
         <>
         {!rents || !rents.length && <FormText className='no-margin'>Ei vuokria</FormText>}
         {rents && !!rents.length && rents.map(rent => {
-        return <RentItem key={rent.id} rent={rent} rents={rents} />;
+        return <RentItem key={rent.id} rent={rent} rents={rents} serviceUnitId={currentLease.service_unit.id} />;
       })}
 
         {!!rentsArchived.length && <h3 style={{

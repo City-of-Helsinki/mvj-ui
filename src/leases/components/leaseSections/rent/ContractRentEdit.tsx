@@ -35,6 +35,7 @@ type Props = {
   receivableTypes: Array<Record<string, any>>;
   rentField: string;
   rentType: string;
+  serviceUnitId: number;
   showRemove: boolean;
   usersPermissions: UsersPermissionsType;
   change: (...args: Array<any>) => any;
@@ -73,6 +74,7 @@ class ContractRentEdit extends PureComponent<Props> {
       onRemove,
       receivableTypes,
       rentType,
+      serviceUnitId: leaseServiceUnitId,
       showRemove,
       usersPermissions
     } = this.props;
@@ -223,11 +225,9 @@ class ContractRentEdit extends PureComponent<Props> {
       </Authorization>;
 
     const endDateField = <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)}>
-        {leaseAttributes.service_unit.id !== ServiceUnitIds.MAKE &&
           <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentContractRentsFieldPaths.END_DATE)} name={`${field}.end_date`} overrideValues={{
             label: LeaseRentContractRentsFieldTitles.END_DATE
           }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.END_DATE)} />
-        }
       </Authorization>;
 
     const indexField = <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.INDEX)}>
@@ -245,9 +245,9 @@ class ContractRentEdit extends PureComponent<Props> {
         <Column small={6} medium={4} large={2}>
           {intendedUseField}
         </Column>
-        <Column small={6} medium={4} large={2}>
+        { leaseServiceUnitId !== ServiceUnitIds.MAKE && <Column small={6} medium={4} large={2}>
           {overrideReceivableTypeField}
-        </Column>
+        </Column>}
         {rentType === RentTypes.INDEX2022 && <Column small={6} medium={4} large={2}>
             {indexField}
           </Column>}

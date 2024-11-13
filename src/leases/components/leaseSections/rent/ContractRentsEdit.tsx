@@ -11,23 +11,21 @@ import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { hasPermissions } from "@/util/helpers";
-import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
   fields: any;
-  leaseAttributes: Attributes;
   rentField: string;
   rentType: string;
+  serviceUnitId: number;
   usersPermissions: UsersPermissionsType;
 };
 
 const ContractRentsEdit = ({
   fields,
-  leaseAttributes,
   rentField,
   rentType,
+  serviceUnitId,
   usersPermissions
 }: Props) => {
   const handleAdd = () => {
@@ -60,7 +58,7 @@ const ContractRentsEdit = ({
               });
             };
 
-            return <ContractRentEdit key={index} field={rent} onRemove={handleRemove} rentField={rentField} rentType={rentType} showRemove={!!fields && fields.length > 1} />;
+            return <ContractRentEdit key={index} field={rent} onRemove={handleRemove} rentField={rentField} rentType={rentType} showRemove={!!fields && fields.length > 1} serviceUnitId={serviceUnitId} />;
           })}
               </BoxItemContainer>}
 
@@ -78,7 +76,6 @@ const ContractRentsEdit = ({
 
 export default connect(state => {
   return {
-    leaseAttributes: getLeaseAttributes(state),
     usersPermissions: getUsersPermissions(state)
   };
 })(ContractRentsEdit);

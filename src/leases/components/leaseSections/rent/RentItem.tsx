@@ -32,6 +32,7 @@ type Props = {
   rents: Array<Record<string, any>>;
   rentAdjustmentsCollapseState: boolean;
   rentCollapseState: boolean;
+  serviceUnitId: number;
 };
 
 const RentItem = ({
@@ -46,6 +47,7 @@ const RentItem = ({
   rents,
   rentAdjustmentsCollapseState,
   rentCollapseState,
+  serviceUnitId,
 }: Props) => {
   const handleCollapseToggle = (key: string, val: boolean) => {
     receiveCollapseStates({
@@ -118,7 +120,7 @@ const RentItem = ({
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}>
         {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsFixed || rentTypeIsManual) && <Collapse className='collapse__secondary' defaultOpen={contractRentsCollapseState !== undefined ? contractRentsCollapseState : true} headerTitle={`${LeaseRentContractRentsFieldTitles.CONTRACT_RENTS} (${contractRents.length})`} onToggle={handleContractRentsCollapseToggle} uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.CONTRACT_RENTS)}>
-            <ContractRents contractRents={contractRents} rentType={rentType} />
+            <ContractRents contractRents={contractRents} rentType={rentType} serviceUnitId={serviceUnitId}/>
           </Collapse>}
       </Authorization>
 

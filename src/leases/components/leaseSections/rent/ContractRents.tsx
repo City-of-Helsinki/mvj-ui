@@ -20,6 +20,7 @@ type Props = {
   largeScreen: boolean;
   leaseAttributes: Attributes;
   rentType: string;
+  serviceUnitId: number;
 };
 type State = {
   amountPeriodOptions: Array<Record<string, any>>;
@@ -61,6 +62,7 @@ class ContractRents extends PureComponent<Props, State> {
       largeScreen,
       leaseAttributes,
       rentType,
+      serviceUnitId,
     } = this.props;
     const {
       amountPeriodOptions,
@@ -125,7 +127,7 @@ class ContractRents extends PureComponent<Props, State> {
                     </>
                   </Authorization>
                 </Column>
-                {(leaseAttributes.service_unit.id !== ServiceUnitIds.MAKE) && <Column small={6} medium={4} large={3}>
+                {(serviceUnitId !== ServiceUnitIds.MAKE) && <Column small={6} medium={4} large={3}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
                     <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
