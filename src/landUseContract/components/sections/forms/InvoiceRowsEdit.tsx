@@ -17,9 +17,7 @@ import { InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "@/landUseInvoices
 import { getUiDataInvoiceKey } from "@/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToEdit, isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getInvoiceAttributes } from "@/landUseInvoices/selectors";
-// import {getReceivableTypes} from 'src/leaseCreateCharge/selectors';
 import type { Attributes } from "types";
-// import {receivableTypesFromAttributes, receivableTypeFromRows} from 'src/leaseCreateCharge/helpers';
 type Props = {
   fields: any;
   invoiceAttributes: Attributes;
@@ -153,7 +151,6 @@ const selector = formValueSelector(FormNames.LEASE_INVOICE_EDIT);
 export default connect(state => {
   return {
     invoiceAttributes: getInvoiceAttributes(state),
-    // receivableTypes: getReceivableTypes(state),
     rows: selector(state, `rows`)
   };
 })(InvoiceRowsEdit);

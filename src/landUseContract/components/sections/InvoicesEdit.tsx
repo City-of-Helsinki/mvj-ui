@@ -10,7 +10,7 @@ import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonW
 import FormField from "@/components/form/FormField";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import GreenBox from "@/components/content/GreenBox";
-import RemoveButton from "@/../../components/form/RemoveButton";
+import RemoveButton from "@/components/form/RemoveButton";
 import { receiveFormValidFlags } from "@/landUseContract/actions";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
