@@ -17,7 +17,7 @@ import { formatDate, isFieldAllowedToRead } from "@/util/helpers";
 import { ConfirmationModalTexts } from "@/enums";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import { ApplicantTypes } from "@/application/enums";
-import { getApplicationAttachmentDownloadLink, getFieldFileIds, getRadioButtonInlineFieldChoicesSorted, getSectionApplicantType, getSectionTemplate, valueToApplicantType } from "@/application/helpers";
+import { getApplicationAttachmentDownloadLink, getFieldChoicesSorted, getFieldFileIds, getSectionApplicantType, getSectionTemplate, valueToApplicantType } from "@/application/helpers";
 import { getAttachmentAttributes, getAttachmentMethods, getExistingUploads, getFieldTypeMapping, getIsFetchingApplicationRelatedAttachments, getIsFetchingAttachmentAttributes, getIsFetchingPendingUploads, getIsPerformingFileOperation, getPendingUploads } from "@/application/selectors";
 import { ApplicationSectionKeys } from "@/application/components/enums";
 import { APPLICANT_MAIN_IDENTIFIERS, APPLICANT_SECTION_IDENTIFIER, APPLICANT_TYPE_FIELD_IDENTIFIER, EMAIL_FIELD_IDENTIFIER, TARGET_SECTION_IDENTIFIER } from "@/application/constants";
@@ -271,7 +271,7 @@ const ApplicationFormSubsectionFields = connect((state, props) => ({
           type: 'radio-with-field'
         };
         fieldOverrides = {
-          options: getRadioButtonInlineFieldChoicesSorted(field, field.choices || []).map(choice => ({
+          options: getFieldChoicesSorted(field, field.choices || []).map(choice => ({
             label: choice.text,
             value: choice.value,
             field: choice.has_text_input ? <FormField name={`${fieldName}.extraValue`} fieldAttributes={{
