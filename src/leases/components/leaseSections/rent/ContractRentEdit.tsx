@@ -245,7 +245,8 @@ class ContractRentEdit extends PureComponent<Props> {
         <Column small={6} medium={4} large={2}>
           {intendedUseField}
         </Column>
-        { leaseServiceUnitId !== ServiceUnitIds.MAKE && <Column small={6} medium={4} large={2}>
+        { (leaseServiceUnitId !== ServiceUnitIds.MAKE) /* Override receivable type feature is only for AKV and KuVa leases */ &&
+        <Column small={6} medium={4} large={2}>
           {overrideReceivableTypeField}
         </Column>}
         {rentType === RentTypes.INDEX2022 && <Column small={6} medium={4} large={2}>

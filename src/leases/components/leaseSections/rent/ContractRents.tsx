@@ -127,7 +127,8 @@ class ContractRents extends PureComponent<Props, State> {
                     </>
                   </Authorization>
                 </Column>
-                {(serviceUnitId !== ServiceUnitIds.MAKE) && <Column small={6} medium={4} large={3}>
+                { (serviceUnitId !== ServiceUnitIds.MAKE) /* Override receivable type feature is only for AKV and KuVa leases */ &&
+                <Column small={6} medium={4} large={3}>
                   <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentContractRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
                     <>
                     <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentContractRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
