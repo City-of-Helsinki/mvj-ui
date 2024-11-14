@@ -398,7 +398,13 @@ export const prepareApplicationForSubmission = (sections: Record<string, any>): 
   }
 };
 
-export const getRadioButtonInlineFieldChoicesSorted = (field: FormField, choices: FormFieldChoice[]): FormFieldChoice[] => {
+/**
+ * Sorts the choices of a field based on the criteria specific to different field identifiers.
+ * @param {FormField} field
+ * @param {FormFieldChoice} choices
+ * @returns {FormFieldChoice[]}
+ */
+export const getFieldChoicesSorted = (field: FormField, choices: FormFieldChoice[]): FormFieldChoice[] => {
   if (field.identifier === APPLICANT_TYPE_FIELD_IDENTIFIER) {
     return choices.sort((a: FormFieldChoice, b: FormFieldChoice): number => parseInt(a.value) - parseInt(b.value) || 0);
   }
