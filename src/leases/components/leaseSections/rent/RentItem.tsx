@@ -20,6 +20,7 @@ import { formatDateRange, getFieldOptions, getLabelOfOption, isActive, isArchive
 import { getAttributes as getLeaseAttributes, getCollapseStateByKey } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { ServiceUnit } from "@/serviceUnits/types";
+import OldDwellingsInHousingCompaniesPriceIndex from "./OldDwellingsInHousingCompaniesPriceIndex";
 
 const formName = FormNames.LEASE_RENTS;
 type Props = {
@@ -112,6 +113,13 @@ const RentItem = ({
         </Column>} headerTitle={<Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
           {getLabelOfOption(typeOptions, rentType) || '-'}
         </Authorization>} onToggle={handleRentCollapseToggle}>
+
+      {/* TODO: Add authorization for OldDwellingsInHousingCompaniesPriceIndex */}
+      {/* <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}> */}
+      <Collapse className='collapse__secondary' defaultOpen={true} headerTitle='Tasotarkistus'>
+        <OldDwellingsInHousingCompaniesPriceIndex />
+      </Collapse>
+      {/* </Authorization> */}
       <BasicInfo rent={rent} rentType={rentType} serviceUnit={serviceUnit} />
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>

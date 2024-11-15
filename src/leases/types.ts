@@ -1,5 +1,7 @@
 import type { Action, ApiResponse, Attributes, Methods } from "@/types";
 import type { ServiceUnit } from "@/serviceUnits/types";
+import { year } from '../components/form/validations';
+import commentSaga from '@/comments/saga';
 export type LeaseState = {
   attributes: Attributes;
   byId: Record<string, any>;
@@ -49,6 +51,22 @@ export type IntendedUse = {
   name: string;
   service_unit: ServiceUnit["id"];
 };
+export type IndexNumberYearly = {
+  number: number;
+  year: number;
+  region: string;
+  comment: string;
+}
+export type OldDwellingsInHousingCompaniesPriceIndex = {
+  code: string;
+  name: string;
+  comment: string;
+  source: string;
+  source_table_updated?: string;
+  source_table_label: string;
+  url: string;
+  numbers: IndexNumberYearly[];
+}
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;

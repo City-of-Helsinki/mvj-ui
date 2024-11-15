@@ -867,7 +867,8 @@ export const LeaseRentsFieldPaths = {
   Y_VALUE: 'rents.child.children.y_value',
   YEARLY_DUE_DATES: 'rents.child.children.yearly_due_dates',
   Y_VALUE_START: 'rents.child.children.y_value_start',
-  OVERRIDE_RECEIVABLE_TYPE: 'rents.child.children.override_receivable_type'
+  OVERRIDE_RECEIVABLE_TYPE: 'rents.child.children.override_receivable_type',
+  OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX: 'rents.child.children.old_dwellings_in_housing_companies_price_index',
 };
 
 /**
