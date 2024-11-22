@@ -923,6 +923,30 @@ export const LeaseRentDueDatesFieldTitles = {
   MONTH: 'Kuukausi'
 };
 
+
+/**
+ * Lease rent old dwellings in housing companies price index field paths enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths = {
+  OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX: 'rents.child.children.old_dwellings_in_housing_companies_price_index',
+  NAME: 'rents.child.children.old_dwellings_in_housing_companies_price_index.name',
+  NUMBERS: 'rents.child.children.old_dwellings_in_housing_companies_price_index.numbers',
+};
+
+/**
+ * Lease rent old dwellings in housing companies price index field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles = {
+  OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX: 'Tasotarkistus',
+  NAME: 'Tyyppi',
+  NUMBERS: 'Indeksipisteluku',
+  REVIEW_DAYS: 'Tarkistuspäivät',
+};
+
 /**
  * Lease rent fixed initial year rents field paths enumerable.
  *

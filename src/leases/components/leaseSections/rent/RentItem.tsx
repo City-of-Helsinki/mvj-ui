@@ -95,6 +95,7 @@ const RentItem = ({
   const active = isActive(rent),
         archived = isArchived(rent),
         rentType = get(rent, 'type'),
+        oldDwellingsInHousingCompaniesPriceIndex = get(rent, 'old_dwellings_in_housing_companies_price_index', {}),
         fixedInitialYearRents = get(rent, 'fixed_initial_year_rents', []),
         contractRents = get(rent, 'contract_rents', []),
         indexAdjustedRents = get(rent, 'index_adjusted_rents', []),
@@ -106,6 +107,7 @@ const RentItem = ({
         rentTypeIsIndex2022 = rentType === RentTypes.INDEX2022,
         rentTypeIsManual = rentType === RentTypes.MANUAL,
         rentTypeIsFixed = rentType === RentTypes.FIXED;
+        
   return <Collapse archived={archived} defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active || rents.length === 1} headerSubtitles={<Column small={6} medium={8} large={10}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.START_DATE) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}>
             <CollapseHeaderSubtitle>{formatDateRange(rent.start_date, rent.end_date) || '-'}</CollapseHeaderSubtitle>
@@ -117,7 +119,7 @@ const RentItem = ({
       {/* TODO: Add authorization for OldDwellingsInHousingCompaniesPriceIndex */}
       {/* <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}> */}
       <Collapse className='collapse__secondary' defaultOpen={true} headerTitle='Tasotarkistus'>
-        <OldDwellingsInHousingCompaniesPriceIndex />
+        <OldDwellingsInHousingCompaniesPriceIndex oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex} />
       </Collapse>
       {/* </Authorization> */}
       <BasicInfo rent={rent} rentType={rentType} serviceUnit={serviceUnit} />

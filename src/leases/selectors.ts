@@ -36,3 +36,6 @@ export const getCollapseStateByKey: Selector<Record<string, any> | null | undefi
 };
 export const getLeasesForContractNumbers: Selector<LeaseList, void> = (state: RootState): LeaseList => state.lease.leasesForContractNumbers;
 export const getIsFetchingLeasesForContractNumbers: Selector<boolean, void> = (state: RootState): boolean => state.lease.isFetchingLeasesForContractNumbers;
+
+// Selectors for lease attributes
+export const getCurrentLeaseStartDate: Selector<string, void> = (state: RootState): string => get(state.lease.current, 'start_date', '');
