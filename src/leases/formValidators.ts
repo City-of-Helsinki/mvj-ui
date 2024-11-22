@@ -9,7 +9,7 @@ import { dateGreaterOrEqual } from "@/components/form/validations";
 import { isInvoiceBillingPeriodRequired } from "@/invoices/helpers";
 import { required } from "@/components/form/validations";
 
-/** 
+/**
  * Validate summary form
  * @param {Object} values
  * @returns {Object}
@@ -25,7 +25,7 @@ export const validateSummaryForm = (values: Record<string, any>): Record<string,
   return errors;
 };
 
-/** 
+/**
  * Get error of single tenants
  * @param {Object} tenant
  * @returns {Object}
@@ -37,7 +37,7 @@ const getTenantError = (tenant: Record<string, any>): Record<string, any> | null
   } : undefined;
 };
 
-/** 
+/**
  * Get tenants errors
  * @param {Object[]} tenants
  * @returns {Object[]}
@@ -87,7 +87,7 @@ const getTenantsErrors = (tenants: Array<Record<string, any>>): Array<Record<str
   return errorArray;
 };
 
-/** 
+/**
  * Validate tenants form
  * @param {Object} values
  * @returns {Object}
@@ -113,7 +113,7 @@ export const validateTenantForm = (values: Record<string, any>): Record<string, 
   return errors;
 };
 
-/** 
+/**
  * Get warning of tenants form
  * @param {Object} values
  * @returns {Object}
@@ -134,7 +134,7 @@ export const warnTenantForm = (values: Record<string, any>): Record<string, any>
   return warnings;
 };
 
-/** 
+/**
  * Get errors of fixed initial year rents
  * @param {Object} rent
  * @param {Object[]} fixedInitialYearRents
@@ -166,7 +166,7 @@ const getFixedInitialYearRentsErrors = (rent: Record<string, any>, fixedInitialY
   return errorArray;
 };
 
-/** 
+/**
  * Get errors of contract rents
  * @param {Object[]} rents
  * @returns {Object[]}
@@ -185,7 +185,7 @@ const getContractRentsErrors = (rents: Array<Record<string, any>>): Array<Record
   return errorArray;
 };
 
-/** 
+/**
  * Get errors of rent adjustments
  * @param {Object[]} rentAdjustments
  * @returns {Object[]}
@@ -206,7 +206,7 @@ const getRentAdjustmentsErrors = (rentAdjustments: Array<Record<string, any>>): 
   return errorArray;
 };
 
-/** 
+/**
  * Get errors of a single rent
  * @param {Object} rent
  * @returns {Object}
@@ -246,7 +246,7 @@ const getRentErrors = (rent: Record<string, any>): Record<string, any> => {
   return errors;
 };
 
-/** 
+/**
  * Get errors of all rents
  * @param {Object[]} rents
  * @returns {Object[]}
@@ -263,7 +263,7 @@ const getRentsErrors = (rents: Array<Record<string, any>>): Array<Record<string,
   return errorArray;
 };
 
-/** 
+/**
  * Validate rent form
  * @param {Object} values
  * @returns {Object}
@@ -289,7 +289,7 @@ export const validateRentForm = (values: Record<string, any>): Record<string, an
   return errors;
 };
 
-/** 
+/**
  * Get warning of rent form
  * @param {Object} values
  * @returns {Object}
@@ -308,7 +308,7 @@ export const warnRentForm = (values: Record<string, any>): Record<string, any> =
   return warnings;
 };
 
-/** 
+/**
  * Get contract collateral errors
  * @param {Object[]} collatarals
  * @returns {Object[]}
