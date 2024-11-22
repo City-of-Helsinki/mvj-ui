@@ -5,7 +5,7 @@ import { flowRight } from 'lodash';
 import { connect } from 'react-redux';
 import type { 
   OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps,
-  IndexNumberYearly as IndexNumberYearlyProps,
+  IndexPointFigureYearly as IndexPointFigureYearlyProps,
 } from '@/leases/types';
 import BoxItemContainer from '@/components/content/BoxItemContainer';
 import { withWindowResize } from '@/components/resize/WindowResizeHandler';
@@ -15,36 +15,38 @@ import { LeaseFieldTitles, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFiel
 import Authorization from '@/components/authorization/Authorization';
 import { getUiDataLeaseKey } from '@/uiData/helpers';
 import { formatDate } from '../../../../util/helpers';
+import { OldDwellingsInHousingCompaniesPriceIndex } from '../../../types';
 
 type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
   leaseStartDate: string;
 };
 
-const getLastYearsIndexPointNumber = (annualIndexNumbers: IndexNumberYearlyProps[]): string => {
+const getLastYearsIndexPointNumber = (pointFigures: IndexPointFigureYearlyProps[]): string => {
   const lastYear = new Date().getFullYear() - 1;
-  const lastYearIndex = annualIndexNumbers.find((x: IndexNumberYearlyProps) => x.year == lastYear);
-  return lastYearIndex ? `${lastYearIndex.year} * ${lastYearIndex.number}` : '';
+  const lastYearIndex = pointFigures?.find((x: IndexPointFigureYearlyProps) => x.year == lastYear) || null;
+  return lastYearIndex ? `${lastYearIndex.year} * ${lastYearIndex.value}` : 'Indeksipisteluvut puuttuvat';
 }
 
-const getReviewDaysSorted = (annualIndexNumbers: IndexNumberYearlyProps[]): IndexNumberYearlyProps[] => {
+const getReviewDaysSorted = (pointFigures: IndexPointFigureYearlyProps[]): IndexPointFigureYearlyProps[] => {
   // deep copy
-  const sortedNumbers = JSON.parse(JSON.stringify(annualIndexNumbers));
+  const sortedNumbers = JSON.parse(JSON.stringify(pointFigures));
   
-  sortedNumbers.sort((a: IndexNumberYearlyProps, b: IndexNumberYearlyProps) => a.year - b.year);
+  sortedNumbers.sort((a: IndexPointFigureYearlyProps, b: IndexPointFigureYearlyProps) => a.year - b.year);
   return sortedNumbers;
 }
 
-class OldDwellingsInHousingCompaniesPriceIndex extends PureComponent<Props> {
+class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> {
   render() {
     const {
-      oldDwellingsInHousingCompaniesPriceIndex: {
-        name,
-        numbers,
-        source_table_label: sourceTableLabel,
-      },
+      oldDwellingsInHousingCompaniesPriceIndex,
       leaseStartDate
     } = this.props;
+    const {
+      name,
+      point_figures: pointFigures,
+      source_table_label: sourceTableLabel
+    } = oldDwellingsInHousingCompaniesPriceIndex || {};
     return <Fragment>
       <BoxItemContainer>
         <Row>
@@ -74,7 +76,7 @@ class OldDwellingsInHousingCompaniesPriceIndex extends PureComponent<Props> {
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS)}>
                   {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.NUMBERS}
                 </FormTextTitle>
-                <FormText>{getLastYearsIndexPointNumber(numbers)}</FormText>
+                <FormText>{getLastYearsIndexPointNumber(pointFigures)}</FormText>
                 <FormText>{sourceTableLabel}</FormText>
               </>
             </Authorization>
@@ -87,9 +89,9 @@ class OldDwellingsInHousingCompaniesPriceIndex extends PureComponent<Props> {
                   {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS}
                 </FormTextTitle>
                   <>
-                    {numbers && !!numbers.length ? 
-                      getReviewDaysSorted(numbers).map(
-                        (number: IndexNumberYearlyProps, index: number) => {
+                    {pointFigures && !!pointFigures.length ? 
+                      getReviewDaysSorted(pointFigures).map(
+                        (number: IndexPointFigureYearlyProps, index: number) => {
                           return <FormText key={LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS + `[${index}]`}>
                             {`1.1.${number.year}`}
                           </FormText>
@@ -111,4 +113,4 @@ export default flowRight(withWindowResize, connect(state => {
     leaseAttributes: getLeaseAttributes(state),
     leaseStartDate: getCurrentLeaseStartDate(state)
   };
-}))(OldDwellingsInHousingCompaniesPriceIndex);
+}))(OldDwellingsInHousingCompaniesPriceIndexView);

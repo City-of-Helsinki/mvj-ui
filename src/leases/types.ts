@@ -1,7 +1,6 @@
 import type { Action, ApiResponse, Attributes, Methods } from "@/types";
 import type { ServiceUnit } from "@/serviceUnits/types";
-import { year } from '../components/form/validations';
-import commentSaga from '@/comments/saga';
+
 export type LeaseState = {
   attributes: Attributes;
   byId: Record<string, any>;
@@ -13,7 +12,7 @@ export type LeaseState = {
   isEditMode: boolean;
   isFetching: boolean;
   isFetchingByBBox: boolean;
-  isFetchingById: {};
+  isFetchingById: Record<string, any>;
   isFetchingAttributes: boolean;
   isSaveClicked: boolean;
   isSaving: boolean;
@@ -51,8 +50,8 @@ export type IntendedUse = {
   name: string;
   service_unit: ServiceUnit["id"];
 };
-export type IndexNumberYearly = {
-  number: number;
+export type IndexPointFigureYearly = {
+  value: number;
   year: number;
   region: string;
   comment: string;
@@ -65,7 +64,7 @@ export type OldDwellingsInHousingCompaniesPriceIndex = {
   source_table_updated?: string;
   source_table_label: string;
   url: string;
-  numbers: IndexNumberYearly[];
+  point_figures: IndexPointFigureYearly[];
 }
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
