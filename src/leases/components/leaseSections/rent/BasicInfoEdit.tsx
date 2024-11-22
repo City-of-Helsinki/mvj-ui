@@ -1,11 +1,10 @@
 import React, { Fragment, ReactElement } from "react";
 import { connect } from "react-redux";
-import { change, Field, FieldArray, formValueSelector } from "redux-form";
+import { change, FieldArray, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
-import ErrorField from "@/components/form/ErrorField";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
 import FormField from "@/components/form/FormField";
 import FormText from "@/components/form/FormText";
@@ -15,7 +14,7 @@ import { rentCustomDateOptions } from "@/leases/constants";
 import { FieldTypes, FormNames } from "@/enums";
 import { DueDatesPositions, FixedDueDates, LeaseRentDueDatesFieldPaths, LeaseRentDueDatesFieldTitles, LeaseRentsFieldPaths, LeaseRentsFieldTitles, RentCycles, RentTypes, RentDueDateTypes } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
-import { formatDueDates, formatSeasonalDate } from "@/leases/helpers";
+import { formatDueDates } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getFieldAttributes, hasPermissions, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes, getCurrentLease } from "@/leases/selectors";
@@ -30,83 +29,7 @@ import type { ServiceUnit } from "@/serviceUnits/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
-type SeasonalDatesProps = {
-  field: string;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-  seasonalEndDay: string | null | undefined;
-  seasonalEndMonth: string | null | undefined;
-  seasonalStartDay: string | null | undefined;
-  seasonalStartMonth: string | null | undefined;
-};
 
-const SeasonalDates = connect((state, props: Omit<SeasonalDatesProps, "seasonalStartDay" | "seasonalEndDay" | "seasonalStartMonth" | "seasonalEndMonth">) => {
-  return {
-    seasonalEndDay: selector(state, `${props.field}.seasonal_end_day`),
-    seasonalEndMonth: selector(state, `${props.field}.seasonal_end_month`),
-    seasonalStartDay: selector(state, `${props.field}.seasonal_start_day`),
-    seasonalStartMonth: selector(state, `${props.field}.seasonal_start_month`)
-  };
-})(({
-  isSaveClicked,
-  leaseAttributes,
-  seasonalEndDay,
-  seasonalEndMonth,
-  seasonalStartDay,
-  seasonalStartMonth
-}: SeasonalDatesProps) => {
-  const startText = formatSeasonalDate(seasonalStartDay, seasonalStartMonth);
-  const endText = formatSeasonalDate(seasonalEndDay, seasonalEndMonth);
-  return <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)}>
-      <>
-      <Row>
-        <Column small={12}>
-          <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.SEASONAL_DATES)}>
-            {LeaseRentsFieldTitles.SEASONAL_DATES}
-          </FormTextTitle>
-        </Column>
-      </Row>
-      <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY) || isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH) || isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY) || isFieldAllowedToEdit(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)} errorComponent={<FormText>{`${startText || ''} - ${endText || ''}`}</FormText>}>
-        <Row>
-          <Column small={3}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY)}>
-              <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_DAY)} name='seasonal_start_day' invisibleLabel overrideValues={{
-              label: LeaseRentsFieldTitles.SEASONAL_START_DAY
-            }} />
-            </Authorization>
-          </Column>
-          <Column small={3}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)}>
-              <FormField className='with-dot' disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_START_MONTH)} name='seasonal_start_month' invisibleLabel overrideValues={{
-              label: LeaseRentsFieldTitles.SEASONAL_START_MONTH
-            }} />
-            </Authorization>
-          </Column>
-          <Column small={3}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)}>
-              <FormField className='with-dash' disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)} name='seasonal_end_day' invisibleLabel overrideValues={{
-              label: LeaseRentsFieldTitles.SEASONAL_END_DAY
-            }} />
-            </Authorization>
-          </Column>
-          <Column small={3}>
-            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH)}>
-              <FormField className='with-dot' disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_MONTH)} name='seasonal_end_month' invisibleLabel overrideValues={{
-              label: LeaseRentsFieldTitles.SEASONAL_END_MONTH
-            }} />
-            </Authorization>
-          </Column>
-        </Row>
-      </Authorization>
-
-      <Row>
-        <Column>
-          <Field name="seasonalDates" component={ErrorField} showError={isSaveClicked} />
-        </Column>
-      </Row>
-      </>
-    </Authorization>;
-});
 type DueDatesProps = {
   dueDates: Array<DueDate>;
   fields: any;
@@ -215,7 +138,6 @@ const BasicInfoIndexOrManual = ({
   cycle,
   dueDates,
   dueDatesType,
-  field,
   rentType,
   isSaveClicked,
   leaseAttributes,
@@ -313,8 +235,7 @@ const BasicInfoIndexOrManual = ({
             </Column>}
         </Row>}
 
-      <Row>
-        { serviceUnit.use_rent_override_receivable_type &&
+      {serviceUnit.use_rent_override_receivable_type && <Row>
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
           <Column small={12} medium={6} large={4}>
             <FormField
@@ -329,13 +250,7 @@ const BasicInfoIndexOrManual = ({
             />
           </Column>
         </Authorization>
-        }
-
-        <Column small={12} medium={4} large={2}>
-          { /* Authorization is done on SeasonalDates component */ }
-          <SeasonalDates field={field} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} />
-        </Column>
-      </Row>
+      </Row>}
 
       <Row>
         <Column small={12} medium={8} large={10}>
@@ -484,8 +399,7 @@ const BasicInfoFixed = ({
           </Column>}
       </Row>
 
-      <Row>
-        { serviceUnit.use_rent_override_receivable_type &&
+      {serviceUnit.use_rent_override_receivable_type && <Row>
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
           <Column small={12} medium={6} large={4}>
             <FormField
@@ -500,13 +414,7 @@ const BasicInfoFixed = ({
             />
           </Column>
         </Authorization>
-        }
-
-        <Column small={12} medium={4} large={2}>
-          { /* Authorization is done on SeasonalDates component */ }
-          <SeasonalDates field={field} isSaveClicked={isSaveClicked} leaseAttributes={leaseAttributes} />
-        </Column>
-      </Row>
+      </Row>}
 
       <Row>
         <Column small={12} medium={8} large={10}>

@@ -5,34 +5,12 @@ import Authorization from "@/components/authorization/Authorization";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import { LeaseRentDueDatesFieldPaths, LeaseRentDueDatesFieldTitles, LeaseRentsFieldPaths, LeaseRentsFieldTitles, RentCycles, RentTypes, RentDueDateTypes, LeaseFieldPaths } from "@/leases/enums";
-import { formatDueDates, formatSeasonalDate, sortDueDates } from "@/leases/helpers";
+import { formatDueDates, sortDueDates } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDate, formatNumber, getFieldOptions, getLabelOfOption, isEmptyValue, isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { ServiceUnit } from "@/serviceUnits/types";
-type SeasonalDatesProps = {
-  leaseAttributes: Attributes;
-  rent: Record<string, any>;
-};
-
-const SeasonalDates = ({
-  leaseAttributes,
-  rent
-}: SeasonalDatesProps) => {
-  const startText = formatSeasonalDate(rent.seasonal_start_day, rent.seasonal_start_month);
-  const endText = formatSeasonalDate(rent.seasonal_end_day, rent.seasonal_end_month);
-  return <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)}>
-      <Row>
-        <Column>
-          <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.SEASONAL_DATES)}>
-            {LeaseRentsFieldTitles.SEASONAL_DATES}
-          </FormTextTitle>
-          <FormText>{`${startText || ''} - ${endText || ''}`}</FormText>
-        </Column>
-      </Row>
-    </Authorization>;
-};
 
 type Props = {
   leaseAttributes: Attributes;
@@ -176,8 +154,7 @@ const BasicInfoIndexOrManual = ({
             </Column>}
         </Row>}
 
-      <Row>
-        { serviceUnit.use_rent_override_receivable_type &&
+      {serviceUnit.use_rent_override_receivable_type && <Row>
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
           <Column small={12} medium={4} large={4}>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
@@ -186,13 +163,7 @@ const BasicInfoIndexOrManual = ({
             <FormText>{getLabelOfOption(receivableTypeOptions, rent.override_receivable_type) || '-'}</FormText>
           </Column>
         </Authorization>
-        }
-
-        <Column small={12} medium={4} large={2}>
-          { /* Authorization is implemented inside SeasonalDates component */ }
-          <SeasonalDates leaseAttributes={leaseAttributes} rent={rent} />
-        </Column>
-      </Row>
+      </Row>}
 
       <Row>
         <Column small={12} medium={8} large={10}>
@@ -420,8 +391,7 @@ const BasicInfoFixed = ({
           </Column>}
       </Row>
 
-      <Row>
-        { serviceUnit.use_rent_override_receivable_type &&
+      {serviceUnit.use_rent_override_receivable_type && <Row>
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
           <Column small={12} medium={4} large={4}>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE)}>
@@ -430,13 +400,7 @@ const BasicInfoFixed = ({
             <FormText>{getLabelOfOption(receivableTypeOptions, rent.override_receivable_type) || '-'}</FormText>
           </Column>
         </Authorization>
-        }
-
-        <Column small={12} medium={4} large={2}>
-          { /* Authorization is implemented inside SeasonalDates component */ }
-          <SeasonalDates leaseAttributes={leaseAttributes} rent={rent} />
-        </Column>
-      </Row>
+      </Row>}
 
       <Row>
         <Column small={12} medium={8} large={10}>

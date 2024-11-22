@@ -1626,10 +1626,6 @@ export const getContentRents = (lease: Record<string, any>): Array<Record<string
     y_value_start: rent.y_value_start,
     equalization_start_date: rent.equalization_start_date,
     equalization_end_date: rent.equalization_end_date,
-    seasonal_start_day: rent.seasonal_start_day,
-    seasonal_start_month: rent.seasonal_start_month,
-    seasonal_end_day: rent.seasonal_end_day,
-    seasonal_end_month: rent.seasonal_end_month,
     amount: rent.amount,
     note: rent.note,
     is_active: rent.is_active,
@@ -2727,10 +2723,6 @@ export const addRentsFormValuesToPayload = (payload: Record<string, any>, formVa
 
     // Patch some data only if rent type is index, index2022, fixed, or manual
     if (rent.type === RentTypes.INDEX || rent.type === RentTypes.INDEX2022 || rent.type === RentTypes.FIXED || rent.type === RentTypes.MANUAL) {
-      rentData.seasonal_start_day = rent.seasonal_start_day || null;
-      rentData.seasonal_start_month = rent.seasonal_start_month || null;
-      rentData.seasonal_end_day = rent.seasonal_end_day || null;
-      rentData.seasonal_end_month = rent.seasonal_end_month || null;
       rentData.contract_rents = getPayloadContractRents(rent, rent.type);
       rentData.rent_adjustments = getPayloadRentAdjustments(rent);
       rentData.override_receivable_type = get(rent, 'override_receivable_type.id') || rent.override_receivable_type;
@@ -2840,17 +2832,6 @@ export const mastCalculatorRent = (index: number, area: number): number => {
   if (index === 0 && area) return Number(1000 * Number(convertStrToDecimalNumber(area)));
   if (index === 1 && area) return Number(600 * Number(convertStrToDecimalNumber(area)));
   return 0;
-};
-
-/**
- * Format seasonal date as string
- * @param {string} day
- * @param {string} month
- * @returns {string}
- */
-export const formatSeasonalDate = (day: string | null | undefined, month: string | null | undefined): string | null | undefined => {
-  if (!day || !month) return null;
-  return `${day}.${month}.`;
 };
 
 /**
