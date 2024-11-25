@@ -1535,7 +1535,7 @@ export const LeaseInvoicingFieldTitles = {
   DEBT_COLLECTION: 'Perintä',
   INVOICES: 'Laskut',
   INVOICING: 'Laskutus',
-  INVOICING_DISABLED: 'Laskutus keskeytetty',
+  INVOICING_DISABLED: 'Laskutus ei käynnissä',
   INVOICING_ENABLED: 'Laskutus käynnissä',
   PREVIEW_INVOICES: 'Laskujen esikatselu'
 };
