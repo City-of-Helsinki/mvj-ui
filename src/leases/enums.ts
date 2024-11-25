@@ -1537,6 +1537,7 @@ export const LeaseInvoicingFieldTitles = {
   INVOICING: 'Laskutus',
   INVOICING_DISABLED: 'Laskutus ei käynnissä',
   INVOICING_ENABLED: 'Laskutus käynnissä',
+  INVOICING_INCOMPLETE_INFO: 'Tiedot keskeneräiset',
   PREVIEW_INVOICES: 'Laskujen esikatselu'
 };
 

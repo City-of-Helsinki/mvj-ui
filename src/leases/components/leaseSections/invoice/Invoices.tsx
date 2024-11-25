@@ -240,7 +240,7 @@ class Invoices extends PureComponent<Props, State> {
               }} showWarning={true} /> : currentLease.is_rent_info_complete ? <WarningField meta={{
                 warning: LeaseInvoicingFieldTitles.INVOICING_DISABLED
               }} showWarning={true} /> : <WarningField meta={{
-                warning: 'Tiedot keskeneräiset'
+                warning: LeaseInvoicingFieldTitles.INVOICING_INCOMPLETE_INFO
               }} showWarning={true} />}
                 </Authorization>
               </WarningContainer>
