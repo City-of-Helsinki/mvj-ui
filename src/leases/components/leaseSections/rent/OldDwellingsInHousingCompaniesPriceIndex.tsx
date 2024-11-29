@@ -12,10 +12,8 @@ import { withWindowResize } from '@/components/resize/WindowResizeHandler';
 import FormText from "@/components/form/FormText";
 import FormTextTitle from '@/components/form/FormTextTitle';
 import { LeaseFieldTitles, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles } from '@/leases/enums';
-import Authorization from '@/components/authorization/Authorization';
 import { getUiDataLeaseKey } from '@/uiData/helpers';
-import { formatDate } from '../../../../util/helpers';
-import { OldDwellingsInHousingCompaniesPriceIndex } from '../../../types';
+import { formatDate } from '@/util/helpers';
 
 type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
@@ -51,40 +49,25 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
       <BoxItemContainer>
         <Row>
           <Column>
-            <Authorization allow={true/*isFieldAllowedToRead(leaseAttributes, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NAME)*/}>
-              <>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NAME)}>
-                  {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.NAME}
-                </FormTextTitle>
-                <FormText>{name}</FormText>
-              </>
-            </Authorization>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NAME)}>
+              {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.NAME}
+            </FormTextTitle>
+            <FormText>{name}</FormText>
           </Column>
           <Column>
-          <Authorization allow={true/*isFieldAllowedToRead(leaseAttributes, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NAME)*/}>
-              <>
-                <FormTextTitle>
-                  {LeaseFieldTitles.START_DATE}
-                </FormTextTitle>
-                <FormText>{formatDate(leaseStartDate)}</FormText>
-              </>
-            </Authorization>
+            <FormTextTitle>
+              {LeaseFieldTitles.START_DATE}
+            </FormTextTitle>
+            <FormText>{formatDate(leaseStartDate)}</FormText>
           </Column>
           <Column>
-            <Authorization allow={true/*isFieldAllowedToRead(leaseAttributes, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NAME)*/}>
-              <>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS)}>
-                  {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.NUMBERS}
-                </FormTextTitle>
-                <FormText>{getLastYearsIndexPointNumber(pointFigures)}</FormText>
-                <FormText>{sourceTableLabel}</FormText>
-              </>
-            </Authorization>
-
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS)}>
+              {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.NUMBERS}
+            </FormTextTitle>
+            <FormText>{getLastYearsIndexPointNumber(pointFigures)}</FormText>
+            <FormText>{sourceTableLabel}</FormText>
           </Column>
           <Column>
-            <Authorization allow={true/*isFieldAllowedToRead(leaseAttributes, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NAME)*/}>
-              <>
                 <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS)}>
                   {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS}
                 </FormTextTitle>
@@ -99,8 +82,6 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
                       )
                       : ""}
                   </>
-              </>
-            </Authorization>
           </Column>
         </Row>
       </BoxItemContainer>

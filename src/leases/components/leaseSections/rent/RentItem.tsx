@@ -26,6 +26,7 @@ const formName = FormNames.LEASE_RENTS;
 type Props = {
   contractRentsCollapseState: boolean;
   equalizedRentsCollapseState: boolean;
+  oldDwellingsInHousingCompaniesPriceIndexCollapseState: boolean;
   fixedInitialYearRentsCollapseState: boolean;
   indexAdjustedRentsCollapseState: boolean;
   leaseAttributes: Attributes;
@@ -41,6 +42,7 @@ type Props = {
 const RentItem = ({
   contractRentsCollapseState,
   equalizedRentsCollapseState,
+  oldDwellingsInHousingCompaniesPriceIndexCollapseState,
   fixedInitialYearRentsCollapseState,
   indexAdjustedRentsCollapseState,
   leaseAttributes,
@@ -117,12 +119,12 @@ const RentItem = ({
         </Authorization>} onToggle={handleRentCollapseToggle}>
 
       {/* TODO: Add authorization for OldDwellingsInHousingCompaniesPriceIndex */}
-      { oldDwellingsInHousingCompaniesPriceIndex && 
-      /* <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}> */
-      <Collapse className='collapse__secondary' defaultOpen={true} headerTitle='Tasotarkistus'>
-        <OldDwellingsInHousingCompaniesPriceIndexView oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex} />
-      </Collapse>
-      {/* </Authorization> */}
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}>
+      {oldDwellingsInHousingCompaniesPriceIndex &&
+          <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} headerTitle='Tasotarkistus'>
+            <OldDwellingsInHousingCompaniesPriceIndexView oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex} />
+          </Collapse>}
+      </Authorization>
       <BasicInfo rent={rent} rentType={rentType} serviceUnit={serviceUnit} />
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
@@ -168,6 +170,7 @@ export default connect((state, props) => {
   return {
     contractRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.contract_rents`),
     equalizedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.equalized_rents`),
+    oldDwellingsInHousingCompaniesPriceIndexCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.old_dwellings_in_housing_companies_price_index`),
     fixedInitialYearRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.fixed_initial_year_rents`),
     indexAdjustedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.index_adjusted_rents`),
     leaseAttributes: getLeaseAttributes(state),
