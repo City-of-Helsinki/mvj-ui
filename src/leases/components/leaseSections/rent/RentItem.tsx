@@ -165,7 +165,7 @@ const RentItem = ({
     </Collapse>;
 };
 
-export default connect((state, props) => {
+export default connect((state, props: Props) => {
   const id = props.rent.id;
   return {
     contractRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.contract_rents`),
