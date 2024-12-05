@@ -117,15 +117,14 @@ const RentItem = ({
         </Column>} headerTitle={<Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
           {getLabelOfOption(typeOptions, rentType) || '-'}
         </Authorization>} onToggle={handleRentCollapseToggle}>
+        <BasicInfo rent={rent} rentType={rentType} serviceUnit={serviceUnit} />
 
-      {/* TODO: Add authorization for OldDwellingsInHousingCompaniesPriceIndex */}
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}>
       {oldDwellingsInHousingCompaniesPriceIndex &&
           <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} headerTitle='Tasotarkistus'>
             <OldDwellingsInHousingCompaniesPriceIndexView oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex} />
           </Collapse>}
       </Authorization>
-      <BasicInfo rent={rent} rentType={rentType} serviceUnit={serviceUnit} />
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
         {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsManual) && <Collapse className='collapse__secondary' defaultOpen={fixedInitialYearRentsCollapseState !== undefined ? fixedInitialYearRentsCollapseState : true} headerTitle={`${LeaseRentFixedInitialYearRentsFieldTitles.FIXED_INITIAL_YEAR_RENTS} (${fixedInitialYearRents.length})`} onToggle={handleFixedInitialYearRentsCollapseToggle} uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
