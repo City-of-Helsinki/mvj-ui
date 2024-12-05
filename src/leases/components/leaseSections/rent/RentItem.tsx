@@ -20,11 +20,13 @@ import { formatDateRange, getFieldOptions, getLabelOfOption, isActive, isArchive
 import { getAttributes as getLeaseAttributes, getCollapseStateByKey } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { ServiceUnit } from "@/serviceUnits/types";
+import OldDwellingsInHousingCompaniesPriceIndexView from "./OldDwellingsInHousingCompaniesPriceIndex";
 
 const formName = FormNames.LEASE_RENTS;
 type Props = {
   contractRentsCollapseState: boolean;
   equalizedRentsCollapseState: boolean;
+  oldDwellingsInHousingCompaniesPriceIndexCollapseState: boolean;
   fixedInitialYearRentsCollapseState: boolean;
   indexAdjustedRentsCollapseState: boolean;
   leaseAttributes: Attributes;
@@ -40,6 +42,7 @@ type Props = {
 const RentItem = ({
   contractRentsCollapseState,
   equalizedRentsCollapseState,
+  oldDwellingsInHousingCompaniesPriceIndexCollapseState,
   fixedInitialYearRentsCollapseState,
   indexAdjustedRentsCollapseState,
   leaseAttributes,
@@ -94,6 +97,7 @@ const RentItem = ({
   const active = isActive(rent),
         archived = isArchived(rent),
         rentType = get(rent, 'type'),
+        oldDwellingsInHousingCompaniesPriceIndex = get(rent, 'old_dwellings_in_housing_companies_price_index', {}),
         fixedInitialYearRents = get(rent, 'fixed_initial_year_rents', []),
         contractRents = get(rent, 'contract_rents', []),
         indexAdjustedRents = get(rent, 'index_adjusted_rents', []),
@@ -105,6 +109,7 @@ const RentItem = ({
         rentTypeIsIndex2022 = rentType === RentTypes.INDEX2022,
         rentTypeIsManual = rentType === RentTypes.MANUAL,
         rentTypeIsFixed = rentType === RentTypes.FIXED;
+        
   return <Collapse archived={archived} defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active || rents.length === 1} headerSubtitles={<Column small={6} medium={8} large={10}>
           <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.START_DATE) || isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}>
             <CollapseHeaderSubtitle>{formatDateRange(rent.start_date, rent.end_date) || '-'}</CollapseHeaderSubtitle>
@@ -112,7 +117,14 @@ const RentItem = ({
         </Column>} headerTitle={<Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
           {getLabelOfOption(typeOptions, rentType) || '-'}
         </Authorization>} onToggle={handleRentCollapseToggle}>
-      <BasicInfo rent={rent} rentType={rentType} serviceUnit={serviceUnit} />
+        <BasicInfo rent={rent} rentType={rentType} serviceUnit={serviceUnit} />
+
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}>
+      {oldDwellingsInHousingCompaniesPriceIndex &&
+          <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} headerTitle='Tasotarkistus'>
+            <OldDwellingsInHousingCompaniesPriceIndexView oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex} />
+          </Collapse>}
+      </Authorization>
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
         {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsManual) && <Collapse className='collapse__secondary' defaultOpen={fixedInitialYearRentsCollapseState !== undefined ? fixedInitialYearRentsCollapseState : true} headerTitle={`${LeaseRentFixedInitialYearRentsFieldTitles.FIXED_INITIAL_YEAR_RENTS} (${fixedInitialYearRents.length})`} onToggle={handleFixedInitialYearRentsCollapseToggle} uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
@@ -152,11 +164,12 @@ const RentItem = ({
     </Collapse>;
 };
 
-export default connect((state, props) => {
+export default connect((state, props: Props) => {
   const id = props.rent.id;
   return {
     contractRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.contract_rents`),
     equalizedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.equalized_rents`),
+    oldDwellingsInHousingCompaniesPriceIndexCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.old_dwellings_in_housing_companies_price_index`),
     fixedInitialYearRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.fixed_initial_year_rents`),
     indexAdjustedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.index_adjusted_rents`),
     leaseAttributes: getLeaseAttributes(state),

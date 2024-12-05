@@ -1638,6 +1638,7 @@ export const getContentRents = (lease: Record<string, any>): Array<Record<string
     equalized_rents: getContentEqualizedRents(rent),
     yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
     override_receivable_type: get(rent, 'override_receivable_type.id') || rent.override_receivable_type,
+    old_dwellings_in_housing_companies_price_index: rent.old_dwellings_in_housing_companies_price_index,
   };
 }).sort(sortByStartAndEndDateDesc);
 

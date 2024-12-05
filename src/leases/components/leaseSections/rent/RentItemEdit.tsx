@@ -17,7 +17,7 @@ import PayableRents from "./PayableRents";
 import RentAdjustmentsEdit from "./RentAdjustmentsEdit";
 import { receiveCollapseStates } from "@/leases/actions";
 import { FormNames, ViewModes } from "@/enums";
-import { ContractRentPeriods, LeaseRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles, LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, LeaseIndexAdjustedRentsFieldPaths, LeaseIndexAdjustedRentsFieldTitles, LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, LeasePayableRentsFieldPaths, LeasePayableRentsFieldTitles, LeaseEqualizedRentsFieldPaths, LeaseEqualizedRentsFieldTitles, RentDueDateTypes, RentTypes } from "@/leases/enums";
+import { ContractRentPeriods, LeaseRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles, LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, LeaseIndexAdjustedRentsFieldPaths, LeaseIndexAdjustedRentsFieldTitles, LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, LeasePayableRentsFieldPaths, LeasePayableRentsFieldTitles, LeaseEqualizedRentsFieldPaths, LeaseEqualizedRentsFieldTitles, RentDueDateTypes, RentTypes, LeaseRentsFieldTitles, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDateRange, getFieldOptions, getLabelOfOption, hasPermissions, isActive, isArchived, isEmptyValue, isFieldAllowedToRead } from "@/util/helpers";
@@ -25,6 +25,7 @@ import { getAttributes as getLeaseAttributes, getCollapseStateByKey, getErrorsBy
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import OldDwellingsInHousingCompaniesPriceIndexEdit from "./OldDwellingsInHousingCompaniesPriceIndexEdit";
 type Props = {
   change: (...args: Array<any>) => any;
   contractRentsCollapseState: boolean;
@@ -34,6 +35,7 @@ type Props = {
   equalizedRentsCollapseState: boolean;
   errors: Record<string, any> | null | undefined;
   field: string;
+  oldDwellingsInHousingCompaniesPriceIndexCollapseState: boolean;
   fixedInitialYearRents: Array<Record<string, any>>;
   fixedInitialYearRentsCollapseState: boolean;
   index: number;
@@ -194,6 +196,9 @@ class RentItemEdit extends PureComponent<Props, State> {
   handleRentCollapseToggle = (val: boolean) => {
     this.handleCollapseToggle('rent', val);
   };
+  handleOldDwellingsInHousingCompaniesPriceIndexCollapseState = (val: boolean) => {
+    this.handleCollapseToggle('old_dwellings_in_housing_companies_price_index', val);
+  }
   handleFixedInitialYearRentsCollapseToggle = (val: boolean) => {
     this.handleCollapseToggle('fixed_initial_year_rents', val);
   };
@@ -227,6 +232,7 @@ class RentItemEdit extends PureComponent<Props, State> {
       equalizedRentsCollapseState,
       field,
       fixedInitialYearRents,
+      oldDwellingsInHousingCompaniesPriceIndexCollapseState,
       fixedInitialYearRentsCollapseState,
       indexAdjustedRentsCollapseState,
       isSaveClicked,
@@ -256,6 +262,7 @@ class RentItemEdit extends PureComponent<Props, State> {
           rentTypeIsIndex2022 = rentType === RentTypes.INDEX2022,
           rentTypeIsManual = rentType === RentTypes.MANUAL,
           rentTypeIsFixed = rentType === RentTypes.FIXED;
+    const oldDwellingsInHousingCompaniesPriceIndex = get(savedRent, 'old_dwellings_in_housing_companies_price_index');
     return <Collapse archived={archived} defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active || rents.length === 1 && !archived} hasErrors={isSaveClicked && !isEmpty(rentErrors)} headerTitle={<Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
             {getLabelOfOption(typeOptions, get(savedRent, 'type')) || '-'}
           </Authorization>} headerSubtitles={<Column small={6} medium={8} large={10}>
@@ -268,6 +275,12 @@ class RentItemEdit extends PureComponent<Props, State> {
             <BasicInfoEdit field={field} isSaveClicked={isSaveClicked} rentType={rentType} />
           </BoxContentWrapper>
         </FormSection>
+
+        <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}>
+          <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} hasErrors={/*TODO: Error handling*/false} headerTitle={`${LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX}`} onToggle={this.handleFixedInitialYearRentsCollapseToggle}>
+              <OldDwellingsInHousingCompaniesPriceIndexEdit oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex} />
+            </Collapse>
+        </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
           {(rentTypeIsIndex || rentTypeIsIndex2022 || rentTypeIsManual) && <Collapse className='collapse__secondary' defaultOpen={fixedInitialYearRentsCollapseState !== undefined ? fixedInitialYearRentsCollapseState : true} hasErrors={isSaveClicked && !isEmpty(fixedInitialYearRentErrors)} headerTitle={`${LeaseRentFixedInitialYearRentsFieldTitles.FIXED_INITIAL_YEAR_RENTS} (${fixedInitialYearRents ? fixedInitialYearRents.length : 0})`} onToggle={this.handleFixedInitialYearRentsCollapseToggle} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
@@ -329,6 +342,7 @@ export default connect((state, props) => {
 
   if (id) {
     newProps.equalizedRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.equalized_rents`);
+    newProps.oldDwellingsInHousingCompaniesPriceIndexCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.old_dwellings_in_housing_companies_price_index`);
     newProps.fixedInitialYearRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.fixed_initial_year_rents`);
     newProps.indexAdjustedRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.index_adjusted_rents`);
     newProps.payableRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.payable_rents`);
