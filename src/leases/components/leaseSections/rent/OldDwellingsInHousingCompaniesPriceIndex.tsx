@@ -29,14 +29,6 @@ const getLastYearsIndexPointNumber = (pointFigures: IndexPointFigureYearlyProps[
   return lastYearIndex ? `${lastYearIndex.year} * ${lastYearIndex.value}` : 'Indeksipisteluvut puuttuvat';
 }
 
-const getReviewDaysSorted = (pointFigures: IndexPointFigureYearlyProps[]): IndexPointFigureYearlyProps[] => {
-  // deep copy
-  const sortedNumbers = JSON.parse(JSON.stringify(pointFigures));
-  
-  sortedNumbers.sort((a: IndexPointFigureYearlyProps, b: IndexPointFigureYearlyProps) => a.year - b.year);
-  return sortedNumbers;
-}
-
 class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> {
   render() {
     const {
