@@ -15,6 +15,7 @@ import FormTextTitle from '@/components/form/FormTextTitle';
 import { LeaseFieldTitles, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles, oldDwellingsInHousingCompaniesPriceIndexTypes } from '@/leases/enums';
 import { getUiDataLeaseKey } from '@/uiData/helpers';
 import { formatDate } from '@/util/helpers';
+import { getReviewDays } from '@/leases/helpers';
 
 type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
@@ -74,11 +75,11 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
                   {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS}
                 </FormTextTitle>
                   <>
-                    {pointFigures && !!pointFigures.length ? 
-                      getReviewDaysSorted(pointFigures).map(
-                        (number: IndexPointFigureYearlyProps, index: number) => {
+                    {leaseStartDate ? 
+                      getReviewDays(leaseStartDate, oldDwellingsInHousingCompaniesPriceIndexType).map(
+                        (date: string, index: number) => {
                           return <FormText key={LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS + `[${index}]`}>
-                            {`1.1.${number.year}`}
+                            {date}
                           </FormText>
                         }
                       )
