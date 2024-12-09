@@ -1611,3 +1611,8 @@ export const calculatorTypeOptions = [{
   value: 'device cabinet',
   label: 'Laitekaappi'
 }];
+
+export const oldDwellingsInHousingCompaniesPriceIndexTypes = {
+  ["TASOTARKISTUS_20_20"]: "Tasotarkistus 20v/20v",
+  ["TASOTARKISTUS_20_10"]: "Tasotarkistus 20v/10v",
+}

@@ -66,6 +66,8 @@ export type OldDwellingsInHousingCompaniesPriceIndex = {
   url: string;
   point_figures: IndexPointFigureYearly[];
 }
+export type OldDwellingsInHousingCompaniesPriceIndexType = "TASOTARKISTUS_20_20" | "TASOTARKISTUS_20_10";
+
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;

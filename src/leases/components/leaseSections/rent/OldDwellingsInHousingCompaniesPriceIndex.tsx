@@ -6,17 +6,19 @@ import { connect } from 'react-redux';
 import type { 
   OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps,
   IndexPointFigureYearly as IndexPointFigureYearlyProps,
+  OldDwellingsInHousingCompaniesPriceIndexType,
 } from '@/leases/types';
 import BoxItemContainer from '@/components/content/BoxItemContainer';
 import { withWindowResize } from '@/components/resize/WindowResizeHandler';
 import FormText from "@/components/form/FormText";
 import FormTextTitle from '@/components/form/FormTextTitle';
-import { LeaseFieldTitles, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles } from '@/leases/enums';
+import { LeaseFieldTitles, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles, oldDwellingsInHousingCompaniesPriceIndexTypes } from '@/leases/enums';
 import { getUiDataLeaseKey } from '@/uiData/helpers';
 import { formatDate } from '@/util/helpers';
 
 type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
+  oldDwellingsInHousingCompaniesPriceIndexType: OldDwellingsInHousingCompaniesPriceIndexType;
   leaseStartDate: string;
 };
 
@@ -38,10 +40,10 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
   render() {
     const {
       oldDwellingsInHousingCompaniesPriceIndex,
+      oldDwellingsInHousingCompaniesPriceIndexType,
       leaseStartDate
     } = this.props;
     const {
-      name,
       point_figures: pointFigures,
       source_table_label: sourceTableLabel
     } = oldDwellingsInHousingCompaniesPriceIndex || {};
@@ -52,7 +54,7 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NAME)}>
               {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.NAME}
             </FormTextTitle>
-            <FormText>{name}</FormText>
+            <FormText>{oldDwellingsInHousingCompaniesPriceIndexTypes[oldDwellingsInHousingCompaniesPriceIndexType]}</FormText>
           </Column>
           <Column>
             <FormTextTitle>
