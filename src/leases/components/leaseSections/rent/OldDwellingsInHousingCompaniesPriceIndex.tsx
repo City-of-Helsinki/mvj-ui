@@ -45,7 +45,7 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
         <Row>
           <Column>
             <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NAME)}>
-              {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.NAME}
+              {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE}
             </FormTextTitle>
             <FormText>{oldDwellingsInHousingCompaniesPriceIndexTypes[oldDwellingsInHousingCompaniesPriceIndexType]}</FormText>
           </Column>
