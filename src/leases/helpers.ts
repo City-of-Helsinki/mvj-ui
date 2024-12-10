@@ -7,8 +7,8 @@ import isEqual from "lodash/isEqual";
 import { isDirty } from "redux-form";
 import { getSplittedDateRangesWithItems, sortByStartAndEndDateDesc } from "@/util/date";
 import { FormNames, TableSortOrder } from "@/enums";
-import { CollateralTypes, ConstructabilityType, DecisionTypeKinds, LeaseState, LeaseTenantRentSharesFieldPaths, LeaseStatus, RecipientOptions, RelationTypes, RentAdjustmentAmountTypes, RentCycles, RentDueDateTypes, RentTypes, SubventionTypes, TenantContactType } from "./enums";
-import { CalculatorTypes } from "@/leases/enums";
+import { CollateralTypes, ConstructabilityType, DecisionTypeKinds, LeaseState, LeaseTenantRentSharesFieldPaths, LeaseStatus, RecipientOptions, RelationTypes, RentAdjustmentAmountTypes, RentCycles, RentDueDateTypes, RentTypes, SubventionTypes, TenantContactType, oldDwellingsInHousingCompaniesPriceIndexTypeOptions } from "./enums";
+import { CalculatorTypes } from '@/leases/enums';
 import { LeaseAreaAttachmentTypes } from "@/leaseAreaAttachment/enums";
 import { getContactFullName, getContentContact } from "@/contacts/helpers";
 import { getContentLessor } from "@/lessor/helpers";
@@ -18,7 +18,7 @@ import { addEmptyOption, convertStrToDecimalNumber, fixedLengthNumber, formatDat
 import { getCoordinatesOfGeometry } from "@/util/map";
 import { getIsEditMode } from "./selectors";
 import { removeSessionStorageItem } from "@/util/storage";
-import type { Lease, IntendedUse } from "./types";
+import type { Lease, IntendedUse, OldDwellingsInHousingCompaniesPriceIndexType } from "./types";
 import type { CommentList } from "@/comments/types";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
 import type { RootState } from "@/root/types";
@@ -1639,6 +1639,7 @@ export const getContentRents = (lease: Record<string, any>): Array<Record<string
     yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
     override_receivable_type: get(rent, 'override_receivable_type.id') || rent.override_receivable_type,
     old_dwellings_in_housing_companies_price_index: rent.old_dwellings_in_housing_companies_price_index,
+    old_dwellings_in_housing_companies_price_index_type: rent.old_dwellings_in_housing_companies_price_index_type,
   };
 }).sort(sortByStartAndEndDateDesc);
 
@@ -2933,3 +2934,32 @@ export const sortRelatedHistoryItems = (a: Record<string, any>, b: Record<string
     return 0;
   }
 };
+
+/**
+ * Get check days for old_dwellings_in_housing_companies_price_index of the given start date.
+ * @param {string} startDate
+ * @param {OldDwellingsInHousingCompaniesPriceIndexType} priceIndexType
+ * @returns {Array<string>}
+ */
+export const getReviewDays = (startDate: string, priceIndexType: OldDwellingsInHousingCompaniesPriceIndexType): Array<string> => {
+  const checkDays = [];
+  let increment: number;
+
+  if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TYPE_20_10) {
+    increment = 10;
+  } else if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TYPE_20_20) {
+    increment = 20;
+  } else {
+    return [];
+  }
+
+  for (let i = 1; i <= 3; i++) {
+    const date = new Date(startDate);
+    date.setDate(1);
+    date.setMonth(6);
+    date.setFullYear(date.getFullYear() + i * increment);
+    checkDays.push(date.toLocaleDateString('fi-FI'));
+  }
+
+  return checkDays;
+}
