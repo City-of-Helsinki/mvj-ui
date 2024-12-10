@@ -869,6 +869,7 @@ export const LeaseRentsFieldPaths = {
   Y_VALUE_START: 'rents.child.children.y_value_start',
   OVERRIDE_RECEIVABLE_TYPE: 'rents.child.children.override_receivable_type',
   OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX: 'rents.child.children.old_dwellings_in_housing_companies_price_index',
+  OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE: 'rents.child.children.old_dwellings_in_housing_companies_price_index_type',
 };
 
 /**
@@ -931,6 +932,7 @@ export const LeaseRentDueDatesFieldTitles = {
  */
 export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths = {
   OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX: 'rents.child.children.old_dwellings_in_housing_companies_price_index',
+  OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE: 'rents.child.children.old_dwellings_in_housing_companies_price_index_type',
   NAME: 'rents.child.children.old_dwellings_in_housing_companies_price_index.name',
   NUMBERS: 'rents.child.children.old_dwellings_in_housing_companies_price_index.numbers',
 };
@@ -942,7 +944,7 @@ export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths = {
  */
 export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles = {
   OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX: 'Tasotarkistus',
-  NAME: 'Tyyppi',
+  TYPE: 'Tyyppi',
   NUMBERS: 'Indeksipisteluku',
   REVIEW_DAYS: 'Tarkistuspäivät',
 };
