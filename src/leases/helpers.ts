@@ -2945,9 +2945,9 @@ export const getReviewDays = (startDate: string, priceIndexType: OldDwellingsInH
   const checkDays = [];
   let increments: Array<number>;
 
-  if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TYPE_20_10) {
+  if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TASOTARKISTUS_20_10) {
     increments = [20, 10, 10];
-  } else if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TYPE_20_20) {
+  } else if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TASOTARKISTUS_20_20) {
     increments = [20, 20, 20];
   } else {
     return [];

@@ -1615,11 +1615,11 @@ export const calculatorTypeOptions = [{
 }];
 
 export const oldDwellingsInHousingCompaniesPriceIndexTypes = {
-  ["TASOTARKISTUS_20_20"]: "Tasotarkistus 20v/20v",
-  ["TASOTARKISTUS_20_10"]: "Tasotarkistus 20v/10v",
+  TASOTARKISTUS_20_20: "Tasotarkistus 20v/20v",
+  TASOTARKISTUS_20_10: "Tasotarkistus 20v/10v",
 }
 
 export const oldDwellingsInHousingCompaniesPriceIndexTypeOptions = {
-  TYPE_20_20: "TASOTARKISTUS_20_20", 
-  TYPE_20_10: "TASOTARKISTUS_20_10", 
+  TASOTARKISTUS_20_20: "TASOTARKISTUS_20_20", 
+  TASOTARKISTUS_20_10: "TASOTARKISTUS_20_10", 
 };
