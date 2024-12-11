@@ -263,6 +263,7 @@ class RentItemEdit extends PureComponent<Props, State> {
           rentTypeIsManual = rentType === RentTypes.MANUAL,
           rentTypeIsFixed = rentType === RentTypes.FIXED;
     const oldDwellingsInHousingCompaniesPriceIndex = get(savedRent, 'old_dwellings_in_housing_companies_price_index');
+    const oldDwellingsInHousingCompaniesPriceIndexType = get(savedRent, 'old_dwellings_in_housing_companies_price_index_type');
     return <Collapse archived={archived} defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active || rents.length === 1 && !archived} hasErrors={isSaveClicked && !isEmpty(rentErrors)} headerTitle={<Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
             {getLabelOfOption(typeOptions, get(savedRent, 'type')) || '-'}
           </Authorization>} headerSubtitles={<Column small={6} medium={8} large={10}>
@@ -278,7 +279,10 @@ class RentItemEdit extends PureComponent<Props, State> {
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}>
           <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} hasErrors={/*TODO: Error handling*/false} headerTitle={`${LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX}`} onToggle={this.handleFixedInitialYearRentsCollapseToggle}>
-              <OldDwellingsInHousingCompaniesPriceIndexEdit oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex} />
+              <OldDwellingsInHousingCompaniesPriceIndexEdit 
+                oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex}
+                oldDwellingsInHousingCompaniesPriceIndexType={oldDwellingsInHousingCompaniesPriceIndexType}
+              />
             </Collapse>
         </Authorization>
 

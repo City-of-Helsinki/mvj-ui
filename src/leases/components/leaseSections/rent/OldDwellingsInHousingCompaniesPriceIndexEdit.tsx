@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import type {
   OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps,
   IndexPointFigureYearly as IndexPointFigureYearlyProps,
+  OldDwellingsInHousingCompaniesPriceIndexType,
 } from "@/leases/types";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import { withWindowResize } from "@/components/resize/WindowResizeHandler";
@@ -24,9 +25,11 @@ import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDate, getFieldAttributes } from "@/util/helpers";
 import FormField from "@/components/form/FormField";
 import { Attributes } from "@/types";
+import { getReviewDays } from "@/leases/helpers";
 
 type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
+  oldDwellingsInHousingCompaniesPriceIndexType: OldDwellingsInHousingCompaniesPriceIndexType;
   leaseAttributes: Attributes;
   leaseStartDate: string;
   isSaveClicked: boolean;
@@ -45,37 +48,24 @@ const getLastYearsIndexPointNumber = (
     : "Indeksipisteluvut puuttuvat";
 };
 
-const getReviewDaysSorted = (
-  pointFigures: IndexPointFigureYearlyProps[],
-): IndexPointFigureYearlyProps[] => {
-  // deep copy
-  const sortedNumbers = JSON.parse(JSON.stringify(pointFigures));
-
-  sortedNumbers.sort(
-    (a: IndexPointFigureYearlyProps, b: IndexPointFigureYearlyProps) =>
-      a.year - b.year,
-  );
-  return sortedNumbers;
-};
-
-class OldDwellingsInHousingCompaniesPriceIndexViewEdit extends PureComponent<Props> {
+class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> {
   render() {
     const {
       oldDwellingsInHousingCompaniesPriceIndex,
+      oldDwellingsInHousingCompaniesPriceIndexType,
       leaseAttributes,
       leaseStartDate,
       isSaveClicked,
     } = this.props;
 
     if (!oldDwellingsInHousingCompaniesPriceIndex) {
-      return <p>Lisää tasotarkistus</p>;
+      return null;
     }
 
     const {
       point_figures: pointFigures,
       source_table_label: sourceTableLabel,
     } = oldDwellingsInHousingCompaniesPriceIndex || {};
-    console.log("leaseAttributes", leaseAttributes);
     return (
       <Fragment>
         <BoxItemContainer>
@@ -90,7 +80,6 @@ class OldDwellingsInHousingCompaniesPriceIndexViewEdit extends PureComponent<Pro
                 name="old_dwellings_in_housing_companies_price_index_type"
                 overrideValues={{
                   label: LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE,
-                  type: "choice",
                 }}
                 // enableUiDataEdit
                 // uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE)}
@@ -124,22 +113,15 @@ class OldDwellingsInHousingCompaniesPriceIndexViewEdit extends PureComponent<Pro
                 }
               </FormTextTitle>
               <>
-                {pointFigures && !!pointFigures.length
-                  ? getReviewDaysSorted(pointFigures).map(
-                      (number: IndexPointFigureYearlyProps, index: number) => {
-                        return (
-                          <FormText
-                            key={
-                              LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS +
-                              `[${index}]`
-                            }
-                          >
-                            {`1.1.${number.year}`}
-                          </FormText>
-                        );
-                      },
-                    )
-                  : ""}
+                {leaseStartDate ? 
+                  getReviewDays(leaseStartDate, oldDwellingsInHousingCompaniesPriceIndexType).map(
+                    (date: string, index: number) => {
+                      return <FormText key={LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS + `[${index}]`}>
+                        {date}
+                      </FormText>
+                    }
+                  )
+                : ""}
               </>
             </Column>
           </Row>
@@ -157,4 +139,4 @@ export default flowRight(
       leaseStartDate: getCurrentLeaseStartDate(state),
     };
   }),
-)(OldDwellingsInHousingCompaniesPriceIndexViewEdit);
+)(OldDwellingsInHousingCompaniesPriceIndexEdit);

@@ -2943,23 +2943,24 @@ export const sortRelatedHistoryItems = (a: Record<string, any>, b: Record<string
  */
 export const getReviewDays = (startDate: string, priceIndexType: OldDwellingsInHousingCompaniesPriceIndexType): Array<string> => {
   const checkDays = [];
-  let increment: number;
+  let increments: Array<number>;
 
-  if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TYPE_20_10) {
-    increment = 10;
-  } else if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TYPE_20_20) {
-    increment = 20;
+  if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TASOTARKISTUS_20_10) {
+    increments = [20, 10, 10];
+  } else if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TASOTARKISTUS_20_20) {
+    increments = [20, 20, 20];
   } else {
     return [];
   }
 
-  for (let i = 1; i <= 3; i++) {
+  increments.forEach((_, i) => {
     const date = new Date(startDate);
     date.setDate(1);
     date.setMonth(6);
-    date.setFullYear(date.getFullYear() + i * increment);
+    const totalCurrentIncrements = increments.slice(0, i + 1).reduce((a, b) => a + b, 0);
+    date.setFullYear(date.getFullYear() + totalCurrentIncrements);
     checkDays.push(date.toLocaleDateString('fi-FI'));
-  }
+  })
 
   return checkDays;
 }
