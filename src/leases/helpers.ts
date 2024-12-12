@@ -18,7 +18,7 @@ import { addEmptyOption, convertStrToDecimalNumber, fixedLengthNumber, formatDat
 import { getCoordinatesOfGeometry } from "@/util/map";
 import { getIsEditMode } from "./selectors";
 import { removeSessionStorageItem } from "@/util/storage";
-import type { Lease, IntendedUse, OldDwellingsInHousingCompaniesPriceIndexType } from "./types";
+import type { Lease, LeaseArea, LeaseAreaAddress, IntendedUse, OldDwellingsInHousingCompaniesPriceIndexType } from "./types";
 import type { CommentList } from "@/comments/types";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
 import type { RootState } from "@/root/types";
@@ -87,13 +87,13 @@ export const getContentLeaseOption = (lease: Lease): Record<string, any> => ({
 });
 
 /**
- * Get full address of an item as string
- * @param {Object} item
+ * Get full address string of an lease area address
+ * @param {Object} areaAddress
  * @returns {string}
  */
-export const getFullAddress = (item: Record<string, any>): string | null | undefined => {
-  if (isEmpty(item)) return null;
-  return `${item.address || ''}${item.postal_code || item.city ? ', ' : ''}${item.postal_code ? item.postal_code + ' ' : ''}${item.city || ''}`;
+export const getFullAddress = (areaAddress: LeaseAreaAddress): string | null | undefined => {
+  if (isEmpty(areaAddress)) return null;
+  return `${areaAddress.address || ''}${areaAddress.postal_code || areaAddress.city ? ', ' : ''}${areaAddress.postal_code ? areaAddress.postal_code + ' ' : ''}${areaAddress.city || ''}`;
 };
 
 /**
@@ -115,28 +115,28 @@ export const getTitleText = (text: string | null | undefined, maxLength: number)
  * @param {Object} lease
  * @returns {string}
  */
-export const getContentLeaseIdentifier = (lease: Record<string, any>): string | null | undefined => !isEmpty(lease) ? `${get(lease, 'identifier.type.identifier')}${get(lease, 'identifier.municipality.identifier')}${fixedLengthNumber(get(lease, 'identifier.district.identifier'), 2)}-${get(lease, 'identifier.sequence')}` : null;
+export const getContentLeaseIdentifier = (lease: Lease): string | null | undefined => !isEmpty(lease) ? `${get(lease, 'identifier.type.identifier')}${get(lease, 'identifier.municipality.identifier')}${fixedLengthNumber(get(lease, 'identifier.district.identifier'), 2)}-${get(lease, 'identifier.sequence')}` : null;
 
 /**
  * Get content lease list area identifiers
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentLeaseListTenants = (lease: Record<string, any>, query: Record<string, any> = {}): Array<Record<string, any>> => get(lease, 'tenants', []).map(item => get(item, 'tenantcontact_set', []).find(x => x.type === TenantContactType.TENANT)).filter(tenant => query.only_past_tenants === 'true' ? isArchived(tenant) : !isArchived(tenant)).map(tenant => tenant ? getContactFullName(tenant.contact) : null).filter(name => name).sort(sortStringAsc);
+export const getContentLeaseListTenants = (lease: Lease, query: Record<string, any> = {}): Array<Record<string, any>> => get(lease, 'tenants', []).map(item => get(item, 'tenantcontact_set', []).find(x => x.type === TenantContactType.TENANT)).filter(tenant => query.only_past_tenants === 'true' ? isArchived(tenant) : !isArchived(tenant)).map(tenant => tenant ? getContactFullName(tenant.contact) : null).filter(name => name).sort(sortStringAsc);
 
 /**
  * Get content lease list area identifiers
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentLeaseListAreaIdentifiers = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'lease_areas', []).filter(area => !area.archived_at).map(area => area.identifier).sort(sortStringAsc);
+export const getContentLeaseListAreaIdentifiers = (lease: Lease): Array<Record<string, any>> => get(lease, 'lease_areas', []).filter(area => !area.archived_at).map(area => area.identifier).sort(sortStringAsc);
 
 /**
  * Get content lease list lease addresses
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentLeaseListLeaseAddresses = (lease: Record<string, any>): Array<Record<string, any>> => {
+export const getContentLeaseListLeaseAddresses = (lease: Lease): Array<Record<string, any>> => {
   const addresses = [];
   get(lease, 'lease_areas', []).filter(area => !area.archived_at).forEach(area => {
     get(area, 'addresses', []).forEach(address => {
@@ -153,7 +153,7 @@ export const getContentLeaseListLeaseAddresses = (lease: Record<string, any>): A
  * @param {Object} query
  * @returns {Object}
  */
-export const getContentLeaseListLease = (lease: Record<string, any>, query: Record<string, any> = {}): Record<string, any> => {
+export const getContentLeaseListLease = (lease: Lease, query: Record<string, any> = {}): Record<string, any> => {
   return {
     id: lease.id,
     identifier: getContentLeaseIdentifier(lease),
@@ -180,7 +180,7 @@ export const getContentLeaseListResults = (apiResponse: any, query: Record<strin
  * @param {Object} lease
  * @returns {string}
  */
-const getContentLeaseStatus = (lease: Record<string, any>): string => {
+const getContentLeaseStatus = (lease: Lease): string => {
   const startDate = lease.start_date,
         endDate = lease.end_date;
 
@@ -200,7 +200,7 @@ const getContentLeaseStatus = (lease: Record<string, any>): string => {
  * @param {Object} lease
  * @returns {Object}
  */
-export const getContentLeaseInfo = (lease: Record<string, any>): Record<string, any> => {
+export const getContentLeaseInfo = (lease: Lease): Record<string, any> => {
   return {
     address: getContentLeaseAddress(lease),
     area_identifier: getContentLeaseAreaIdentifier(lease),
@@ -213,7 +213,7 @@ export const getContentLeaseInfo = (lease: Record<string, any>): Record<string, 
 };
 
 /**
- * Get contenr for intended use
+ * Get content for intended use
  * @param {Object} intendedUse
  * @returns {Object}
  */
@@ -234,14 +234,14 @@ export const getContentIntendedUse = (intendedUse: IntendedUse): Record<string, 
  * @param {Object} lease
  * @returns {string}
  */
-export const getContentLeaseAddress = (lease: Record<string, any>): string | null | undefined => !isEmpty(lease) ? `${get(lease, 'lease_areas[0].addresses[0].address')}` : null;
+export const getContentLeaseAddress = (lease: Lease): string | null | undefined => !isEmpty(lease) ? `${get(lease, 'lease_areas[0].addresses[0].address')}` : null;
 
 /**
  * Get content lease area identifiers
  * @param {Object} lease
  * @returns {string}
  */
-export const getContentLeaseAreaIdentifier = (lease: Record<string, any>): string | null | undefined => !isEmpty(lease) ? `${get(lease, 'lease_areas[0].identifier')}` : null;
+export const getContentLeaseAreaIdentifier = (lease: Lease): string | null | undefined => !isEmpty(lease) ? `${get(lease, 'lease_areas[0].identifier')}` : null;
 
 /**
  * Get lease infill development compensations content
@@ -260,7 +260,7 @@ const getContentLeaseInfillDevelopmentCompensations = (lease: Lease): Array<Reco
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentLeaseMatchingBasisOfRents = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'matching_basis_of_rents', []).map(item => {
+export const getContentLeaseMatchingBasisOfRents = (lease: Lease): Array<Record<string, any>> => get(lease, 'matching_basis_of_rents', []).map(item => {
   return {
     id: item.id || undefined,
     property_identifiers: getContentPropertyIdentifiers(item)
@@ -272,7 +272,7 @@ export const getContentLeaseMatchingBasisOfRents = (lease: Record<string, any>):
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentLeaseSummary = (lease: Record<string, any>): Record<string, any> => {
+export const getContentLeaseSummary = (lease: Lease): Record<string, any> => {
   return {
     area_notes: get(lease, 'area_notes', []),
     // Set arrangement decision to true if there is any contract where is_readjustment_decision == true
@@ -333,7 +333,7 @@ export const getContentRelatedLease = (content: Record<string, any>, path: strin
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentRelatedLeasesFrom = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'related_leases.related_from', []).map(leaseHistoryItem => {
+export const getContentRelatedLeasesFrom = (lease: Lease): Array<Record<string, any>> => get(lease, 'related_leases.related_from', []).map(leaseHistoryItem => {
   return {
     head: lease.id,
     id: leaseHistoryItem.id,
@@ -347,7 +347,7 @@ export const getContentRelatedLeasesFrom = (lease: Record<string, any>): Array<R
  * @param {Object[]} leases
  * @returns {Object[]}
  */
-export const sortRelatedLeasesFrom = (leases: Record<string, any>[]): Array<Record<string, any>> => {
+export const sortRelatedLeasesFrom = (leases: Array<Lease>): Array<Lease> => {
   let current;
   let leaseHistoryItemsFromSorted = [];
   leases.forEach(lease => {
@@ -373,7 +373,7 @@ export const sortRelatedLeasesFrom = (leases: Record<string, any>[]): Array<Reco
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentRelatedLeasesTo = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'related_leases.related_to', []).map(leaseHistoryItem => {
+export const getContentRelatedLeasesTo = (lease: Lease): Array<Record<string, any>> => get(lease, 'related_leases.related_to', []).map(leaseHistoryItem => {
   return {
     id: leaseHistoryItem.id,
     lease: getContentRelatedLease(leaseHistoryItem, 'to_lease')
@@ -385,7 +385,7 @@ export const getContentRelatedLeasesTo = (lease: Record<string, any>): Array<Rec
  * @param {Object} area
  * @returns {Object[]}
  */
-export const getContentLeaseAreaAddresses = (area: Record<string, any>): Array<Record<string, any>> => {
+export const getContentLeaseAreaAddresses = (area: LeaseArea): Array<LeaseAreaAddress> => {
   return get(area, 'addresses', []).map(address => {
     return {
       id: address.id,
@@ -402,7 +402,7 @@ export const getContentLeaseAreaAddresses = (area: Record<string, any>): Array<R
  * @param {Object} area
  * @returns {Object[]}
  */
-export const getContentPlots = (area: Record<string, any>): Array<Record<string, any>> => get(area, 'plots', []).map(plot => {
+export const getContentPlots = (area: LeaseArea): Array<Record<string, any>> => get(area, 'plots', []).map(plot => {
   return {
     id: plot.id,
     identifier: plot.identifier,
@@ -421,7 +421,7 @@ export const getContentPlots = (area: Record<string, any>): Array<Record<string,
  * @param {Object} area
  * @returns {Object[]}
  */
-export const getContentPlanUnits = (area: Record<string, any>): Array<Record<string, any>> => get(area, 'plan_units', []).map(planunit => {
+export const getContentPlanUnits = (area: LeaseArea): Array<Record<string, any>> => get(area, 'plan_units', []).map(planunit => {
   return {
     id: planunit.id,
     identifier: planunit.identifier,
@@ -449,7 +449,7 @@ export const getContentPlanUnits = (area: Record<string, any>): Array<Record<str
  * @param {Object} area
  * @returns {Object}
  */
-export const getContentCustomDetailedPlan = (area: Record<string, any>): Record<string, any> => {
+export const getContentCustomDetailedPlan = (area: LeaseArea): Record<string, any> => {
   let customDetailedPlan = get(area, 'custom_detailed_plan');
 
   if (!customDetailedPlan) {
@@ -467,7 +467,7 @@ export const getContentCustomDetailedPlan = (area: Record<string, any>): Record<
  * @param {Object} area
  * @returns {Object}
  */
-export const getContentLeaseArea = (area: Record<string, any>): Record<string, any> => {
+export const getContentLeaseArea = (area: LeaseArea): Record<string, any> => {
   const plots: any = getContentPlots(area);
   const planUnits: any = getContentPlanUnits(area);
   return {
@@ -498,7 +498,7 @@ export const getContentLeaseArea = (area: Record<string, any>): Record<string, a
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentLeaseAreas = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'lease_areas', []).map(area => getContentLeaseArea(area));
+export const getContentLeaseAreas = (lease: Lease): Array<Record<string, any>> => get(lease, 'lease_areas', []).map(area => getContentLeaseArea(area));
 
 /**
  * Get lease area by id
@@ -546,7 +546,7 @@ export const getContentDecision = (decision: Record<string, any>): Record<string
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentDecisions = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'decisions', []).map(decision => getContentDecision(decision)).sort((a, b) => sortStringByKeyDesc(a, b, 'decision_date'));
+export const getContentDecisions = (lease: Lease): Array<Record<string, any>> => get(lease, 'decisions', []).map(decision => getContentDecision(decision)).sort((a, b) => sortStringByKeyDesc(a, b, 'decision_date'));
 
 /**
  * Get decision options from lease data
@@ -641,7 +641,7 @@ export const getContentContract = (contract: Record<string, any>): Record<string
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentContracts = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'contracts', []).map(contract => getContentContract(contract));
+export const getContentContracts = (lease: Lease): Array<Record<string, any>> => get(lease, 'contracts', []).map(contract => getContentContract(contract));
 
 /**
  * Get single inspection content
@@ -664,7 +664,7 @@ export const getContentInspection = (inspection: Record<string, any>): Record<st
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentInspections = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'inspections', []).map(inspection => getContentInspection(inspection));
+export const getContentInspections = (lease: Lease): Array<Record<string, any>> => get(lease, 'inspections', []).map(inspection => getContentInspection(inspection));
 
 /**
  * Get constructability email content
@@ -673,7 +673,7 @@ export const getContentInspections = (lease: Record<string, any>): Array<Record<
  * @param {Object} text
  * @returns {string}
  */
-export const getContentConstructabilityEmail = (lease: Record<string, any>, user: Record<string, any>, text: string | null | undefined): string => {
+export const getContentConstructabilityEmail = (lease: Lease, user: Record<string, any>, text: string | null | undefined): string => {
   let emailContent = `Vuokraustunnus: ${getContentLeaseIdentifier(lease) || '-'}\n`;
   const leaseAreas = get(lease, 'lease_areas', []);
   leaseAreas.forEach(area => {
@@ -716,7 +716,7 @@ export const getContentEmailLogs = (lease: Lease): Array<Record<string, any>> =>
  * @param {string} type
  * @returns {Object[]}
  */
-export const getContentConstructabilityDescriptions = (area: Record<string, any>, type: string): Array<Record<string, any>> => {
+export const getContentConstructabilityDescriptions = (area: LeaseArea, type: string): Array<Record<string, any>> => {
   return get(area, 'constructability_descriptions', []).filter(description => description.type === type).map(description => {
     return {
       id: description.id,
@@ -735,7 +735,7 @@ export const getContentConstructabilityDescriptions = (area: Record<string, any>
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentConstructabilityAreas = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'lease_areas', []).map(area => {
+export const getContentConstructabilityAreas = (lease: Lease): Array<Record<string, any>> => get(lease, 'lease_areas', []).map(area => {
   return {
     id: area.id,
     identifier: area.identifier,
@@ -845,7 +845,7 @@ export const getContentTenantContactPersons = (tenant: Record<string, any>): Arr
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentTenants = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'tenants', []).map(tenant => {
+export const getContentTenants = (lease: Lease): Array<Record<string, any>> => get(lease, 'tenants', []).map(tenant => {
   return {
     id: tenant.id,
     share_numerator: tenant.share_numerator,
@@ -1607,7 +1607,7 @@ export const getContentRentDueDate = (rent: Record<string, any>, path: string = 
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getContentRents = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'rents', []).map(rent => {
+export const getContentRents = (lease: Lease): Array<Record<string, any>> => get(lease, 'rents', []).map(rent => {
   return {
     id: rent.id,
     type: rent.type,
@@ -1679,11 +1679,11 @@ export const getRentWarnings = (rents: Array<Record<string, any>>): Array<string
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getContentBasisOfRents = (lease: Record<string, any>): Array<Record<string, any>> => {
+export const getContentBasisOfRents = (lease: Lease): Array<Record<string, any>> => {
   const allChildren = get(lease, 'basis_of_rents', []).flatMap(item => item.children);
 
   // Get children sorted ascending by id
-  const getSortedChildren = (lease: Record<string, any>, item: Record<string, any>): Array<Record<string, any>> => {
+  const getSortedChildren = (lease: Lease, item: Record<string, any>): Array<Record<string, any>> => {
     const children = get(lease, 'basis_of_rents', []).filter(filterItem => get(item, 'children', []).includes(filterItem.id));
     if (!children.length) return [];
     return [...children].sort((a, b) => a.id - b.id);
@@ -1723,7 +1723,7 @@ export const getContentBasisOfRents = (lease: Record<string, any>): Array<Record
  * @param {boolean} addTenants
  * @return {Object[]}
  */
-export const getInvoiceRecipientOptions = (lease: Record<string, any>, addAll: boolean, addTenants: boolean): Array<Record<string, any>> => {
+export const getInvoiceRecipientOptions = (lease: Lease, addAll: boolean, addTenants: boolean): Array<Record<string, any>> => {
   const items = getContentTenants(lease);
   const recipients = [];
 
@@ -1751,7 +1751,7 @@ export const getInvoiceRecipientOptions = (lease: Record<string, any>, addAll: b
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getInvoiceTenantOptions = (lease: Record<string, any>): Array<Record<string, any>> => {
+export const getInvoiceTenantOptions = (lease: Lease): Array<Record<string, any>> => {
   const items: any = getContentTenants(lease);
   return items.map(item => {
     return {
@@ -1766,7 +1766,7 @@ export const getInvoiceTenantOptions = (lease: Record<string, any>): Array<Recor
  * @param lease
  * @returns {Object[]}
  */
-export const getContentDebtCollectionDecisions = (lease: Record<string, any>): Array<Record<string, any>> => get(lease, 'decisions', []).filter(decision => get(decision, 'type.kind') === DecisionTypeKinds.LEASE_CANCELLATION).map(decision => getContentDecision(decision));
+export const getContentDebtCollectionDecisions = (lease: Lease): Array<Record<string, any>> => get(lease, 'decisions', []).filter(decision => get(decision, 'type.kind') === DecisionTypeKinds.LEASE_CANCELLATION).map(decision => getContentDecision(decision));
 
 /**
  * Get content leases features for geojson data
@@ -1960,7 +1960,7 @@ export const getLeaseCoordinates = (lease: Lease): Array<Record<string, any>> =>
  * @param {Object} lease
  * @returns {Object}
  */
-export const getPayloadCreateLease = (lease: Record<string, any>): Record<string, any> => {
+export const getPayloadCreateLease = (lease: Lease): Record<string, any> => {
   const relateTo = !isEmpty(lease.relate_to) ? !isEmptyValue(lease.relate_to.value) ? lease.relate_to.value : undefined : undefined;
   return {
     state: lease.state,
@@ -2907,7 +2907,7 @@ export const getLeasesWithContractNumber = (leasesForContractNumbers: LeaseList)
  * @param {Object} lease
  * @returns {Object}
  */
-export const restructureLease = (lease: Record<string, any>): Record<string, any> => {
+export const restructureLease = (lease: Lease): Record<string, any> => {
   let destructuredLease = lease.lease;
   return {
     related_lease_id: lease.id,
