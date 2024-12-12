@@ -30,6 +30,7 @@ import { getReviewDays } from "@/leases/helpers";
 type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
   oldDwellingsInHousingCompaniesPriceIndexType: OldDwellingsInHousingCompaniesPriceIndexType;
+  typeFieldName: string;
   leaseAttributes: Attributes;
   leaseStartDate: string;
   isSaveClicked: boolean;
@@ -53,6 +54,7 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
     const {
       oldDwellingsInHousingCompaniesPriceIndex,
       oldDwellingsInHousingCompaniesPriceIndexType,
+      typeFieldName,
       leaseAttributes,
       leaseStartDate,
       isSaveClicked,
@@ -77,7 +79,7 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
                   leaseAttributes,
                   LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE,
                 )}
-                name="old_dwellings_in_housing_companies_price_index_type"
+                name={typeFieldName}
                 overrideValues={{
                   label: LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE,
                 }}

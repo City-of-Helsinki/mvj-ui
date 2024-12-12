@@ -2680,7 +2680,8 @@ export const addRentsFormValuesToPayload = (payload: Record<string, any>, formVa
       type: rent.type,
       start_date: rent.start_date,
       end_date: rent.end_date,
-      note: rent.note
+      note: rent.note,
+      old_dwellings_in_housing_companies_price_index_type: rent.old_dwellings_in_housing_companies_price_index_type,
     };
 
     // Patch amount only if rent type is one time

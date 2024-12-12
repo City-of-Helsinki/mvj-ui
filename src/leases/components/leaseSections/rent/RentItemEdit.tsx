@@ -282,6 +282,7 @@ class RentItemEdit extends PureComponent<Props, State> {
               <OldDwellingsInHousingCompaniesPriceIndexEdit 
                 oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex}
                 oldDwellingsInHousingCompaniesPriceIndexType={oldDwellingsInHousingCompaniesPriceIndexType}
+                typeFieldName={`${field}.old_dwellings_in_housing_companies_price_index_type`}
               />
             </Collapse>
         </Authorization>
