@@ -26,11 +26,13 @@ import { formatDate, getFieldAttributes } from "@/util/helpers";
 import FormField from "@/components/form/FormField";
 import { Attributes } from "@/types";
 import { getReviewDays } from "@/leases/helpers";
+import AddButton from "@/components/form/AddButton";
 
 type Props = {
-  oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
+  oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps | null;
   oldDwellingsInHousingCompaniesPriceIndexType: OldDwellingsInHousingCompaniesPriceIndexType;
-  typeFieldName: string;
+  addOldDwellingsInHousingCompaniesPriceIndex: () => void;
+  field: string;
   leaseAttributes: Attributes;
   leaseStartDate: string;
   isSaveClicked: boolean;
@@ -54,21 +56,20 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
     const {
       oldDwellingsInHousingCompaniesPriceIndex,
       oldDwellingsInHousingCompaniesPriceIndexType,
-      typeFieldName,
+      addOldDwellingsInHousingCompaniesPriceIndex,
+      field,
       leaseAttributes,
       leaseStartDate,
       isSaveClicked,
     } = this.props;
 
-    if (!oldDwellingsInHousingCompaniesPriceIndex) {
-      return null;
-    }
 
     const {
       point_figures: pointFigures,
       source_table_label: sourceTableLabel,
     } = oldDwellingsInHousingCompaniesPriceIndex || {};
     return (
+      oldDwellingsInHousingCompaniesPriceIndex ?
       <Fragment>
         <BoxItemContainer>
           <Row>
@@ -79,7 +80,7 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
                   leaseAttributes,
                   LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE,
                 )}
-                name={typeFieldName}
+                name={`${field}.old_dwellings_in_housing_companies_price_index_type`}
                 overrideValues={{
                   label: LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE,
                 }}
@@ -129,7 +130,13 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
           </Row>
         </BoxItemContainer>
       </Fragment>
-    );
+    : 
+    <AddButton
+      className={'no-top-margin'}
+      label='Lisää tasotarkistus'
+      onClick={addOldDwellingsInHousingCompaniesPriceIndex} 
+    />
+  );
   }
 }
 

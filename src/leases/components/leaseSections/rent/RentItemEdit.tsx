@@ -26,6 +26,7 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import OldDwellingsInHousingCompaniesPriceIndexEdit from "./OldDwellingsInHousingCompaniesPriceIndexEdit";
+import { OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps } from "@/leases/types";
 type Props = {
   change: (...args: Array<any>) => any;
   contractRentsCollapseState: boolean;
@@ -35,6 +36,7 @@ type Props = {
   equalizedRentsCollapseState: boolean;
   errors: Record<string, any> | null | undefined;
   field: string;
+  oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
   oldDwellingsInHousingCompaniesPriceIndexCollapseState: boolean;
   fixedInitialYearRents: Array<Record<string, any>>;
   fixedInitialYearRentsCollapseState: boolean;
@@ -177,6 +179,59 @@ class RentItemEdit extends PureComponent<Props, State> {
       change(formName, `${field}.due_dates`, [{}]);
     }
   };
+  addOldDwellingsInHousingCompaniesPriceIndex = () => {
+    const {
+      change,
+      field
+    } = this.props;
+    
+    change(
+      formName,
+      `${field}.old_dwellings_in_housing_companies_price_index`,
+      {
+        id: 1,
+        point_figures: [
+          {
+            id: 4,
+            value: "97.4",
+            year: 2023,
+            region: "pks",
+            comment: ""
+          },
+          {
+            id: 3,
+            value: "105.7",
+            year: 2022,
+            region: "pks",
+            comment: ""
+          },
+          {
+            id: 2,
+            value: "105.6",
+            year: 2021,
+            region: "pks",
+            comment: ""
+          },
+          {
+            id: 1,
+            value: "100.0",
+            year: 2020,
+            region: "pks",
+            comment: ""
+          }
+        ],
+        created_at: "2024-11-14T15:12:50.310543+02:00",
+        modified_at: "2024-12-08T18:05:37.983780+02:00",
+        code: "ketj_P_QA_T",
+        name: "Indeksi (2020=100)",
+        comment: "Indeksi on suhdeluku, joka kuvaa jonkin muuttujan (esimerkiksi hinnan, määrän tai arvon) suhteellista muutosta perusjakson (esimerkiksi vuoden) suhteen. Kunkin ajankohdan indeksipisteluku ilmoittaa, kuinka monta prosenttia kyseisen ajankohdan tarkasteltava muuttuja on perusjakson arvosta tai määrästä. Perusjakson indeksipistelukujen keskiarvo on 100. Tilastossa julkaistavat hintaindeksit ovat laatuvakioituja ja niiden kehitys voi poiketa neliöhintojen kehityksestä.\r\n",
+        source: "Tilastokeskus, osakeasuntojen hinnat",
+        source_table_updated: "2024-05-03T08:00:00+03:00",
+        source_table_label: "Vanhojen osakeasuntojen hintaindeksi (2020=100) ja kauppojen lukumäärät, vuositasolla muuttujina Vuosi, Alue ja Tiedot",
+        url: "https://pxdata.stat.fi:443/PxWeb/api/v1/fi/StatFin/ashi/statfin_ashi_pxt_13mq.px"
+      },
+);
+  }
   handleCollapseToggle = (key: string, val: boolean) => {
     const {
       receiveCollapseStates,
@@ -232,6 +287,7 @@ class RentItemEdit extends PureComponent<Props, State> {
       equalizedRentsCollapseState,
       field,
       fixedInitialYearRents,
+      oldDwellingsInHousingCompaniesPriceIndex,
       oldDwellingsInHousingCompaniesPriceIndexCollapseState,
       fixedInitialYearRentsCollapseState,
       indexAdjustedRentsCollapseState,
@@ -282,7 +338,8 @@ class RentItemEdit extends PureComponent<Props, State> {
               <OldDwellingsInHousingCompaniesPriceIndexEdit 
                 oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex}
                 oldDwellingsInHousingCompaniesPriceIndexType={oldDwellingsInHousingCompaniesPriceIndexType}
-                typeFieldName={`${field}.old_dwellings_in_housing_companies_price_index_type`}
+                addOldDwellingsInHousingCompaniesPriceIndex={this.addOldDwellingsInHousingCompaniesPriceIndex}
+                field={field}
               />
             </Collapse>
         </Authorization>
@@ -329,7 +386,7 @@ class RentItemEdit extends PureComponent<Props, State> {
 
 const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
-export default connect((state, props) => {
+export default connect((state: State, props: Props) => {
   const id = selector(state, `${props.field}.id`);
   const newProps: any = {
     contractRents: selector(state, `${props.field}.contract_rents`),
@@ -339,6 +396,7 @@ export default connect((state, props) => {
     fixedInitialYearRents: selector(state, `${props.field}.fixed_initial_year_rents`),
     isSaveClicked: getIsSaveClicked(state),
     leaseAttributes: getLeaseAttributes(state),
+    oldDwellingsInHousingCompaniesPriceIndex: selector(state, `${props.field}.old_dwellings_in_housing_companies_price_index`),
     rentAdjustments: selector(state, `${props.field}.rent_adjustments`),
     rentId: id,
     rentType: selector(state, `${props.field}.type`),

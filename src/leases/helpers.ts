@@ -2681,6 +2681,7 @@ export const addRentsFormValuesToPayload = (payload: Record<string, any>, formVa
       start_date: rent.start_date,
       end_date: rent.end_date,
       note: rent.note,
+      old_dwellings_in_housing_companies_price_index: rent.old_dwellings_in_housing_companies_price_index?.id,
       old_dwellings_in_housing_companies_price_index_type: rent.old_dwellings_in_housing_companies_price_index_type,
     };
 
