@@ -91,22 +91,7 @@ export type IntendedUse = {
   name: string;
   service_unit: ServiceUnit["id"];
 };
-export type IndexPointFigureYearly = {
-  value: number;
-  year: number;
-  region: string;
-  comment: string;
-}
-export type OldDwellingsInHousingCompaniesPriceIndex = {
-  code: string;
-  name: string;
-  comment: string;
-  source: string;
-  source_table_updated?: string;
-  source_table_label: string;
-  url: string;
-  point_figures: IndexPointFigureYearly[];
-}
+
 export type OldDwellingsInHousingCompaniesPriceIndexType = "TASOTARKISTUS_20_20" | "TASOTARKISTUS_20_10";
 
 export type FetchAttributesAction = Action<string, void>;

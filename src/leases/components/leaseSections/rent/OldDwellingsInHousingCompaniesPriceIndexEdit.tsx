@@ -7,10 +7,12 @@ import {
 import { flowRight } from "lodash";
 import { connect } from "react-redux";
 import type {
-  OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps,
-  IndexPointFigureYearly as IndexPointFigureYearlyProps,
   OldDwellingsInHousingCompaniesPriceIndexType,
 } from "@/leases/types";
+import type {
+  OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps,
+  IndexPointFigureYearly as IndexPointFigureYearlyProps,
+} from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import { withWindowResize } from "@/components/resize/WindowResizeHandler";
 import FormText from "@/components/form/FormText";
