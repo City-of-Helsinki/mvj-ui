@@ -318,7 +318,6 @@ class RentItemEdit extends PureComponent<Props, State> {
           rentTypeIsIndex2022 = rentType === RentTypes.INDEX2022,
           rentTypeIsManual = rentType === RentTypes.MANUAL,
           rentTypeIsFixed = rentType === RentTypes.FIXED;
-    const oldDwellingsInHousingCompaniesPriceIndex = get(savedRent, 'old_dwellings_in_housing_companies_price_index');
     const oldDwellingsInHousingCompaniesPriceIndexType = get(savedRent, 'old_dwellings_in_housing_companies_price_index_type');
     return <Collapse archived={archived} defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active || rents.length === 1 && !archived} hasErrors={isSaveClicked && !isEmpty(rentErrors)} headerTitle={<Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
             {getLabelOfOption(typeOptions, get(savedRent, 'type')) || '-'}
