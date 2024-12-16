@@ -15,7 +15,7 @@ function* fetchOldDwellingsInHousingCompaniesPriceIndexSaga(): Generator<any, an
 
     switch (statusCode) {
       case 200:
-        yield put(receiveOldDwellingsInHousingCompaniesPriceIndex(bodyAsJson.results));
+        yield put(receiveOldDwellingsInHousingCompaniesPriceIndex(bodyAsJson));
         break;
 
       default:
