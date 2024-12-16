@@ -14,7 +14,8 @@ export default [
     languageOptions: { globals: globals.browser },
     files: ["src/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off"
+      "@typescript-eslint/no-explicit-any": "off",
+      "react/prop-types": "off"
     }
   }
 ];
