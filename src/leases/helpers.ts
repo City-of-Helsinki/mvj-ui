@@ -2966,3 +2966,14 @@ export const getReviewDays = (startDate: string, priceIndexType: OldDwellingsInH
 
   return checkDays;
 }
+
+/**
+ * Check if the lease is an A-typed lease.
+ * old_dwellings_in_housing_companies_price_index is only available for A-typed leases.
+ * @param {Lease} lease
+ * @returns {string}
+ */
+export const isATypedLease = (leaseTypeIdentifier: string): boolean => {
+  const identifier = leaseTypeIdentifier || '';
+  return identifier[0] === 'A';
+}

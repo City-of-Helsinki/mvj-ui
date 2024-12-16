@@ -21,13 +21,14 @@ import { ContractRentPeriods, LeaseRentsFieldPaths, LeaseRentFixedInitialYearRen
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDateRange, getFieldOptions, getLabelOfOption, hasPermissions, isActive, isArchived, isEmptyValue, isFieldAllowedToRead } from "@/util/helpers";
-import { getAttributes as getLeaseAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "@/leases/selectors";
+import { getAttributes as getLeaseAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked, getCurrentLeaseTypeIdentifier } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import OldDwellingsInHousingCompaniesPriceIndexEdit from "./OldDwellingsInHousingCompaniesPriceIndexEdit";
 import { OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
 import { getOldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/selectors";
+import { isATypedLease } from "@/leases/helpers";
 
 type Props = {
   change: (...args: Array<any>) => any;
@@ -47,6 +48,7 @@ type Props = {
   indexAdjustedRentsCollapseState: boolean;
   isSaveClicked: boolean;
   leaseAttributes: Attributes;
+  leaseTypeIdentifier: string;
   onRemove: (...args: Array<any>) => any;
   payableRentsCollapseState: boolean;
   receiveCollapseStates: (...args: Array<any>) => any;
@@ -256,6 +258,7 @@ class RentItemEdit extends PureComponent<Props, State> {
       indexAdjustedRentsCollapseState,
       isSaveClicked,
       leaseAttributes,
+      leaseTypeIdentifier,
       payableRentsCollapseState,
       rentAdjustments,
       rentAdjustmentsCollapseState,
@@ -296,14 +299,15 @@ class RentItemEdit extends PureComponent<Props, State> {
         </FormSection>
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}>
-          <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} hasErrors={/*TODO: Error handling*/false} headerTitle={`${LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX}`} onToggle={this.handleFixedInitialYearRentsCollapseToggle}>
+          {isATypedLease(leaseTypeIdentifier) && 
+            <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} hasErrors={/*TODO: Error handling*/false} headerTitle={`${LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX}`} onToggle={this.handleFixedInitialYearRentsCollapseToggle}>
               <OldDwellingsInHousingCompaniesPriceIndexEdit 
                 oldDwellingsInHousingCompaniesPriceIndex={rentOldDwellingsInHousingCompaniesPriceIndex}
                 oldDwellingsInHousingCompaniesPriceIndexType={oldDwellingsInHousingCompaniesPriceIndexType}
                 addOldDwellingsInHousingCompaniesPriceIndex={this.addOldDwellingsInHousingCompaniesPriceIndex}
                 field={field}
               />
-            </Collapse>
+            </Collapse>}
         </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
@@ -358,6 +362,7 @@ export default connect((state: State, props: Props) => {
     fixedInitialYearRents: selector(state, `${props.field}.fixed_initial_year_rents`),
     isSaveClicked: getIsSaveClicked(state),
     leaseAttributes: getLeaseAttributes(state),
+    leaseTypeIdentifier: getCurrentLeaseTypeIdentifier(state),
     oldDwellingsInHousingCompaniesPriceIndex: getOldDwellingsInHousingCompaniesPriceIndex(state),
     rentOldDwellingsInHousingCompaniesPriceIndex: selector(state, `${props.field}.old_dwellings_in_housing_companies_price_index`),
     rentAdjustments: selector(state, `${props.field}.rent_adjustments`),
