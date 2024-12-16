@@ -45,8 +45,6 @@ describe("oldDwellingsInHousingCompaniesPriceIndex", () => {
               comment: "",
             },
           ],
-          created_at: "2024-11-14T15:12:50.310543+02:00",
-          modified_at: "2024-12-08T18:05:37.983780+02:00",
           code: "ketj_P_QA_T",
           name: "Indeksi (2020=100)",
           comment:
