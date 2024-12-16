@@ -90,6 +90,7 @@ type Props = {
   isFetchingByBBox: boolean;
   isFetchingLeaseAttributes: boolean;
   isFetchingServiceUnits: boolean;
+  isFetchingOldDwellingsInHousingCompaniesPriceIndex: boolean;
   leaseAttributes: Attributes;
   leaseMethods: MethodsType;
   leases: LeaseList;
