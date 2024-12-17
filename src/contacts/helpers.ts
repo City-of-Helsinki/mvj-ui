@@ -61,7 +61,8 @@ export const getContentContact = (contact: Record<string, any>): Record<string, 
     electronic_billing_address: contact.electronic_billing_address,
     partner_code: contact.partner_code,
     is_lessor: contact.is_lessor,
-    note: contact.note
+    note: contact.note,
+    service_unit: contact.service_unit
   };
 };
 
