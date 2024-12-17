@@ -21,11 +21,15 @@ import { ContractRentPeriods, LeaseRentsFieldPaths, LeaseRentFixedInitialYearRen
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDateRange, getFieldOptions, getLabelOfOption, hasPermissions, isActive, isArchived, isEmptyValue, isFieldAllowedToRead } from "@/util/helpers";
-import { getAttributes as getLeaseAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "@/leases/selectors";
+import { getAttributes as getLeaseAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked, getCurrentLeaseTypeIdentifier } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import OldDwellingsInHousingCompaniesPriceIndexEdit from "./OldDwellingsInHousingCompaniesPriceIndexEdit";
+import { OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
+import { getOldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/selectors";
+import { isATypedLease } from "@/leases/helpers";
+
 type Props = {
   change: (...args: Array<any>) => any;
   contractRentsCollapseState: boolean;
@@ -35,6 +39,8 @@ type Props = {
   equalizedRentsCollapseState: boolean;
   errors: Record<string, any> | null | undefined;
   field: string;
+  oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps | null;
+  rentOldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps | null | undefined;
   oldDwellingsInHousingCompaniesPriceIndexCollapseState: boolean;
   fixedInitialYearRents: Array<Record<string, any>>;
   fixedInitialYearRentsCollapseState: boolean;
@@ -42,6 +48,7 @@ type Props = {
   indexAdjustedRentsCollapseState: boolean;
   isSaveClicked: boolean;
   leaseAttributes: Attributes;
+  leaseTypeIdentifier: string;
   onRemove: (...args: Array<any>) => any;
   payableRentsCollapseState: boolean;
   receiveCollapseStates: (...args: Array<any>) => any;
@@ -177,6 +184,19 @@ class RentItemEdit extends PureComponent<Props, State> {
       change(formName, `${field}.due_dates`, [{}]);
     }
   };
+  addOldDwellingsInHousingCompaniesPriceIndex = () => {
+    const {
+      change,
+      field,
+      oldDwellingsInHousingCompaniesPriceIndex,
+    } = this.props;
+    
+    change(
+      formName,
+      `${field}.old_dwellings_in_housing_companies_price_index`,
+      oldDwellingsInHousingCompaniesPriceIndex
+    );
+  }
   handleCollapseToggle = (key: string, val: boolean) => {
     const {
       receiveCollapseStates,
@@ -232,11 +252,13 @@ class RentItemEdit extends PureComponent<Props, State> {
       equalizedRentsCollapseState,
       field,
       fixedInitialYearRents,
+      rentOldDwellingsInHousingCompaniesPriceIndex,
       oldDwellingsInHousingCompaniesPriceIndexCollapseState,
       fixedInitialYearRentsCollapseState,
       indexAdjustedRentsCollapseState,
       isSaveClicked,
       leaseAttributes,
+      leaseTypeIdentifier,
       payableRentsCollapseState,
       rentAdjustments,
       rentAdjustmentsCollapseState,
@@ -262,7 +284,6 @@ class RentItemEdit extends PureComponent<Props, State> {
           rentTypeIsIndex2022 = rentType === RentTypes.INDEX2022,
           rentTypeIsManual = rentType === RentTypes.MANUAL,
           rentTypeIsFixed = rentType === RentTypes.FIXED;
-    const oldDwellingsInHousingCompaniesPriceIndex = get(savedRent, 'old_dwellings_in_housing_companies_price_index');
     const oldDwellingsInHousingCompaniesPriceIndexType = get(savedRent, 'old_dwellings_in_housing_companies_price_index_type');
     return <Collapse archived={archived} defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active || rents.length === 1 && !archived} hasErrors={isSaveClicked && !isEmpty(rentErrors)} headerTitle={<Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
             {getLabelOfOption(typeOptions, get(savedRent, 'type')) || '-'}
@@ -278,13 +299,15 @@ class RentItemEdit extends PureComponent<Props, State> {
         </FormSection>
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}>
-          <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} hasErrors={/*TODO: Error handling*/false} headerTitle={`${LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX}`} onToggle={this.handleFixedInitialYearRentsCollapseToggle}>
+          {isATypedLease(leaseTypeIdentifier) && 
+            <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} hasErrors={/*TODO: Error handling*/false} headerTitle={`${LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX}`} onToggle={this.handleFixedInitialYearRentsCollapseToggle}>
               <OldDwellingsInHousingCompaniesPriceIndexEdit 
-                oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex}
+                oldDwellingsInHousingCompaniesPriceIndex={rentOldDwellingsInHousingCompaniesPriceIndex}
                 oldDwellingsInHousingCompaniesPriceIndexType={oldDwellingsInHousingCompaniesPriceIndexType}
-                typeFieldName={`${field}.old_dwellings_in_housing_companies_price_index_type`}
+                addOldDwellingsInHousingCompaniesPriceIndex={this.addOldDwellingsInHousingCompaniesPriceIndex}
+                field={field}
               />
-            </Collapse>
+            </Collapse>}
         </Authorization>
 
         <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS)}>
@@ -329,7 +352,7 @@ class RentItemEdit extends PureComponent<Props, State> {
 
 const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
-export default connect((state, props) => {
+export default connect((state: State, props: Props) => {
   const id = selector(state, `${props.field}.id`);
   const newProps: any = {
     contractRents: selector(state, `${props.field}.contract_rents`),
@@ -339,6 +362,9 @@ export default connect((state, props) => {
     fixedInitialYearRents: selector(state, `${props.field}.fixed_initial_year_rents`),
     isSaveClicked: getIsSaveClicked(state),
     leaseAttributes: getLeaseAttributes(state),
+    leaseTypeIdentifier: getCurrentLeaseTypeIdentifier(state),
+    oldDwellingsInHousingCompaniesPriceIndex: getOldDwellingsInHousingCompaniesPriceIndex(state),
+    rentOldDwellingsInHousingCompaniesPriceIndex: selector(state, `${props.field}.old_dwellings_in_housing_companies_price_index`),
     rentAdjustments: selector(state, `${props.field}.rent_adjustments`),
     rentId: id,
     rentType: selector(state, `${props.field}.type`),

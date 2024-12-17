@@ -2681,6 +2681,7 @@ export const addRentsFormValuesToPayload = (payload: Record<string, any>, formVa
       start_date: rent.start_date,
       end_date: rent.end_date,
       note: rent.note,
+      old_dwellings_in_housing_companies_price_index: rent.old_dwellings_in_housing_companies_price_index?.id,
       old_dwellings_in_housing_companies_price_index_type: rent.old_dwellings_in_housing_companies_price_index_type,
     };
 
@@ -2947,7 +2948,7 @@ export const getReviewDays = (startDate: string, priceIndexType: OldDwellingsInH
   let increments: Array<number>;
 
   if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TASOTARKISTUS_20_10) {
-    increments = [20, 10, 10];
+    increments = [20, 10, 10, 10, 10, 10];
   } else if (priceIndexType === oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TASOTARKISTUS_20_20) {
     increments = [20, 20, 20];
   } else {
@@ -2964,4 +2965,15 @@ export const getReviewDays = (startDate: string, priceIndexType: OldDwellingsInH
   })
 
   return checkDays;
+}
+
+/**
+ * Check if the lease is an A-typed lease.
+ * old_dwellings_in_housing_companies_price_index is only available for A-typed leases.
+ * @param {Lease} lease
+ * @returns {string}
+ */
+export const isATypedLease = (leaseTypeIdentifier: string): boolean => {
+  const identifier = leaseTypeIdentifier || '';
+  return identifier[0] === 'A';
 }

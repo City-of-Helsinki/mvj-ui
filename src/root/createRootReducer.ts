@@ -29,6 +29,7 @@ import landUseInvoiceReducer from "@/landUseInvoices/reducer";
 import landUseContractReducer from "@/landUseContract/reducer";
 import landUseAgreementAttachmentReducer from "@/landUseAgreementAttachment/reducer";
 import leaseReducer from "@/leases/reducer";
+import oldDwellingsInHousingCompaniesPriceIndexReducer from "@/oldDwellingsInHousingCompaniesPriceIndex/reducer";
 import plotSearchReducer from "@/plotSearch/reducer";
 import plotApplicationsReducer from "@/plotApplications/reducer";
 import applicationReducer from "@/application/reducer";
@@ -86,6 +87,7 @@ export default ((history: Record<string, any>): Reducer<RootState> => combineRed
   leaseStatisticReport: leaseStatisticReportReducer,
   leaseType: leaseTypeReducer,
   lessor: lessorReducer,
+  oldDwellingsInHousingCompaniesPriceIndex: oldDwellingsInHousingCompaniesPriceIndexReducer,
   penaltyInterest: penaltyInterestReducer,
   previewInvoices: previewInvoicesReducer,
   rentBasis: rentBasisReducer,

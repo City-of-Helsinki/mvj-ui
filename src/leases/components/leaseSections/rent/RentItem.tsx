@@ -17,10 +17,11 @@ import { FormNames, ViewModes } from "@/enums";
 import { LeaseRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldPaths, LeaseRentFixedInitialYearRentsFieldTitles, LeaseRentContractRentsFieldPaths, LeaseRentContractRentsFieldTitles, LeaseIndexAdjustedRentsFieldPaths, LeaseIndexAdjustedRentsFieldTitles, LeaseRentAdjustmentsFieldPaths, LeaseRentAdjustmentsFieldTitles, LeasePayableRentsFieldPaths, LeasePayableRentsFieldTitles, LeaseEqualizedRentsFieldPaths, LeaseEqualizedRentsFieldTitles, RentTypes } from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDateRange, getFieldOptions, getLabelOfOption, isActive, isArchived, isFieldAllowedToRead } from "@/util/helpers";
-import { getAttributes as getLeaseAttributes, getCollapseStateByKey } from "@/leases/selectors";
+import { getAttributes as getLeaseAttributes, getCollapseStateByKey, getCurrentLeaseTypeIdentifier } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { ServiceUnit } from "@/serviceUnits/types";
 import OldDwellingsInHousingCompaniesPriceIndexView from "./OldDwellingsInHousingCompaniesPriceIndex";
+import { isATypedLease } from "@/leases/helpers";
 
 const formName = FormNames.LEASE_RENTS;
 type Props = {
@@ -30,6 +31,7 @@ type Props = {
   fixedInitialYearRentsCollapseState: boolean;
   indexAdjustedRentsCollapseState: boolean;
   leaseAttributes: Attributes;
+  leaseTypeIdentifier: string;
   payableRentsCollapseState: boolean;
   receiveCollapseStates: (...args: Array<any>) => any;
   rent: Record<string, any>;
@@ -46,6 +48,7 @@ const RentItem = ({
   fixedInitialYearRentsCollapseState,
   indexAdjustedRentsCollapseState,
   leaseAttributes,
+  leaseTypeIdentifier,
   payableRentsCollapseState,
   receiveCollapseStates,
   rent,
@@ -121,7 +124,7 @@ const RentItem = ({
         <BasicInfo rent={rent} rentType={rentType} serviceUnit={serviceUnit} />
 
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}>
-      {oldDwellingsInHousingCompaniesPriceIndex && oldDwellingsInHousingCompaniesPriceIndexType &&
+      {oldDwellingsInHousingCompaniesPriceIndex && isATypedLease(leaseTypeIdentifier) &&
           <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} headerTitle='Tasotarkistus'>
             <OldDwellingsInHousingCompaniesPriceIndexView oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex} oldDwellingsInHousingCompaniesPriceIndexType={oldDwellingsInHousingCompaniesPriceIndexType} />
           </Collapse>}
@@ -174,6 +177,7 @@ export default connect((state, props: Props) => {
     fixedInitialYearRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.fixed_initial_year_rents`),
     indexAdjustedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.index_adjusted_rents`),
     leaseAttributes: getLeaseAttributes(state),
+    leaseTypeIdentifier: getCurrentLeaseTypeIdentifier(state),
     payableRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.payable_rents`),
     rentCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.rent`),
     rentAdjustmentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${formName}.${id}.rent_adjustments`)
