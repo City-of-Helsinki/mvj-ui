@@ -68,8 +68,15 @@ import type { Lease } from "@/leases/types";
 import type { LeaseTypeList } from "@/leaseType/types";
 import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "@/usersPermissions/types";
 import type { VatList } from "@/vat/types";
+import { 
+  getOldDwellingsInHousingCompaniesPriceIndex,
+  getIsFetching as getIsFetchingOldDwellingsInHousingCompaniesPriceIndex
+} from "@/oldDwellingsInHousingCompaniesPriceIndex/selectors";
 import { getIsFetchingReceivableTypes } from "@/leaseCreateCharge/selectors";
 import { fetchReceivableTypes } from '@/leaseCreateCharge/actions';
+import { fetchOldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/actions";
+import { OldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
+
 type Props = {
   areasFormValues: Record<string, any>;
   change: (...args: Array<any>) => any;
@@ -88,6 +95,7 @@ type Props = {
   fetchInvoicesByLease: (...args: Array<any>) => any;
   fetchLeaseTypes: (...args: Array<any>) => any;
   fetchSingleLease: (...args: Array<any>) => any;
+  fetchOldDwellingsInHousingCompaniesPriceIndex: (...args: Array<any>) => any;
   fetchReceivableTypes: (...args: Array<any>) => any;
   fetchVats: (...args: Array<any>) => any;
   hideEditMode: (...args: Array<any>) => any;
@@ -99,6 +107,7 @@ type Props = {
   isFetching: boolean;
   isFetchingLeasePageAttributes: boolean;
   isFetchingReceivableTypes: boolean;
+  isFetchingOldDwellingsInHousingCompaniesPriceIndex: boolean;
   // get via withLeasePageAttributes HOC
   isFormValidFlags: Record<string, any>;
   isConstructabilityFormDirty: boolean;
@@ -127,6 +136,7 @@ type Props = {
   match: {
     params: Record<string, any>;
   };
+  oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndex | null;
   patchLease: (...args: Array<any>) => any;
   receiveSingleLease: (...args: Array<any>) => any;
   receiveFormValidFlags: (...args: Array<any>) => any;
@@ -171,7 +181,10 @@ class LeasePage extends Component<Props, State> {
       location: {
         search
       },
-      receiveTopNavigationSettings
+      fetchOldDwellingsInHousingCompaniesPriceIndex,
+      isFetchingOldDwellingsInHousingCompaniesPriceIndex,
+      receiveTopNavigationSettings,
+      oldDwellingsInHousingCompaniesPriceIndex,
     } = this.props;
     const query = getUrlParams(search);
     this.setPageTitle();
@@ -189,6 +202,11 @@ class LeasePage extends Component<Props, State> {
 
     this.fetchCurrentLeaseData();
     this.fetchLeaseRelatedData();
+    
+    if (!isFetchingOldDwellingsInHousingCompaniesPriceIndex && !oldDwellingsInHousingCompaniesPriceIndex) {
+      fetchOldDwellingsInHousingCompaniesPriceIndex();
+    }
+
     hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
     window.addEventListener('popstate', this.handlePopState);
@@ -998,6 +1016,7 @@ export default flowRight(withLeasePageAttributes, withUiDataList, withRouter, co
     isContractsFormValid: getIsFormValidById(state, FormNames.LEASE_CONTRACTS),
     isDecisionsFormDirty: isDirty(FormNames.LEASE_DECISIONS)(state),
     isDecisionsFormValid: getIsFormValidById(state, FormNames.LEASE_DECISIONS),
+    isFetchingOldDwellingsInHousingCompaniesPriceIndex: getIsFetchingOldDwellingsInHousingCompaniesPriceIndex(state),
     isFetchingReceivableTypes: getIsFetchingReceivableTypes(state),
     isInspectionsFormDirty: isDirty(FormNames.LEASE_INSPECTIONS)(state),
     isInspectionsFormValid: getIsFormValidById(state, FormNames.LEASE_INSPECTIONS),
@@ -1014,6 +1033,7 @@ export default flowRight(withLeasePageAttributes, withUiDataList, withRouter, co
     isSaveClicked: getIsSaveClicked(state),
     leaseTypeList: getLeaseTypeList(state),
     loggedUser: getLoggedInUser(state),
+    oldDwellingsInHousingCompaniesPriceIndex: getOldDwellingsInHousingCompaniesPriceIndex(state),
     rentsFormValues: getFormValues(FormNames.LEASE_RENTS)(state),
     summaryFormValues: getFormValues(FormNames.LEASE_SUMMARY)(state),
     tenantsFormValues: getFormValues(FormNames.LEASE_TENANTS)(state),
@@ -1029,6 +1049,7 @@ export default flowRight(withLeasePageAttributes, withUiDataList, withRouter, co
   fetchCommentsByLease,
   fetchInvoicesByLease,
   fetchLeaseTypes,
+  fetchOldDwellingsInHousingCompaniesPriceIndex,
   fetchSingleLease,
   fetchReceivableTypes,
   fetchVats,
