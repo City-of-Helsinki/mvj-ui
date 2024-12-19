@@ -111,6 +111,13 @@ export const getQueryParams = (formValues: Record<string, any>): any => {
   if (formValues) Object.entries(formValues).map(([key, value]) => {
     if (key.includes('date')) {
       query += `${key}=${format(value, 'yyyy-MM-dd')}&`;
+    } else if (key.includes('service_unit')) {
+      const serviceUnitIds = value
+      serviceUnitIds.forEach(id => {
+        if (id) {
+          query += `service_unit=${id}&`;
+        };
+      });
     } else query += `${key}=${value}&`;
   });
   return query.slice(0, -1);
@@ -148,27 +155,5 @@ export const formatType = (value: Record<string, any>): string => {
 
     default:
       return formattedValue;
-  }
-};
-
-/**
- * Parses the query params from service_unit=num1,num2 format
- * into service_unit=num1&service_unit=num2 format
- * @param {string} query
- * @return {string}
- */
-export const parseServiceUnitQuery = (query: string): string => {
-  const queryArray = query.split('&');
-  const serviceUnitIndex = queryArray.findIndex((item: string) => item.includes("service_unit"));
-
-  if (serviceUnitIndex !== -1) {
-    const serviceUnitQuery = queryArray.splice(serviceUnitIndex, 1);
-    const serviceUnitIds = serviceUnitQuery[0].split('=')[1].split(',');
-    serviceUnitIds.forEach(id => {
-      if (id) queryArray.push(`service_unit=${id}`);
-    });
-    return queryArray.join('&');
-  } else {
-    return query;
   }
 };
