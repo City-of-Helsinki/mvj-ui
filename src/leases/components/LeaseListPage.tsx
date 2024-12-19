@@ -55,12 +55,6 @@ import type { LeaseList } from "@/leases/types";
 import type { LessorList } from "@/lessor/types";
 import type { ServiceUnits } from "@/serviceUnits/types";
 import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "@/usersPermissions/types";
-import { 
-  getOldDwellingsInHousingCompaniesPriceIndex,
-  getIsFetching as getIsFetchingOldDwellingsInHousingCompaniesPriceIndex
-} from "@/oldDwellingsInHousingCompaniesPriceIndex/selectors";
-import { OldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
-import { fetchOldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/actions";
 
 const VisualizationTypes = {
   MAP: 'map',
@@ -83,20 +77,17 @@ type Props = {
   fetchLeasesByBBox: (...args: Array<any>) => any;
   fetchLessors: (...args: Array<any>) => any;
   fetchServiceUnits: (...args: Array<any>) => any;
-  fetchOldDwellingsInHousingCompaniesPriceIndex: (...args: Array<any>) => any;
   history: Record<string, any>;
   initialize: (...args: Array<any>) => any;
   isFetching: boolean;
   isFetchingByBBox: boolean;
   isFetchingLeaseAttributes: boolean;
   isFetchingServiceUnits: boolean;
-  isFetchingOldDwellingsInHousingCompaniesPriceIndex: boolean;
   leaseAttributes: Attributes;
   leaseMethods: MethodsType;
   leases: LeaseList;
   lessors: LessorList;
   location: Record<string, any>;
-  oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndex | null;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   serviceUnits: ServiceUnits;
   userActiveServiceUnit: UserServiceUnit;
@@ -140,11 +131,8 @@ class LeaseListPage extends PureComponent<Props, State> {
       fetchAreaNoteList,
       fetchLessors,
       fetchServiceUnits,
-      fetchOldDwellingsInHousingCompaniesPriceIndex,
       isFetchingServiceUnits,
-      isFetchingOldDwellingsInHousingCompaniesPriceIndex,
       lessors,
-      oldDwellingsInHousingCompaniesPriceIndex,
       receiveTopNavigationSettings,
       serviceUnits,
       leaseAttributes
@@ -168,10 +156,6 @@ class LeaseListPage extends PureComponent<Props, State> {
       fetchLessors({
         limit: 10000
       });
-    }
-
-    if (!isFetchingOldDwellingsInHousingCompaniesPriceIndex && !oldDwellingsInHousingCompaniesPriceIndex) {
-      fetchOldDwellingsInHousingCompaniesPriceIndex();
     }
 
     window.addEventListener('popstate', this.handlePopState);
@@ -740,12 +724,10 @@ export default flowRight(withLeaseAttributes, withUiDataList, connect(state => {
     isFetching: getIsFetching(state),
     isFetchingByBBox: getIsFetchingByBBox(state),
     isFetchingServiceUnits: getIsFetchingServiceUnits(state),
-    isFetchingOldDwellingsInHousingCompaniesPriceIndex: getIsFetchingOldDwellingsInHousingCompaniesPriceIndex(state),
     leases: getLeasesList(state),
     lessors: getLessorList(state),
     serviceUnits: getServiceUnits(state),
     userActiveServiceUnit: getUserActiveServiceUnit(state),
-    oldDwellingsInHousingCompaniesPriceIndex: getOldDwellingsInHousingCompaniesPriceIndex(state),
     usersPermissions: getUsersPermissions(state)
   };
 }, {
@@ -755,7 +737,6 @@ export default flowRight(withLeaseAttributes, withUiDataList, connect(state => {
   fetchLeasesByBBox,
   fetchLessors,
   fetchServiceUnits,
-  fetchOldDwellingsInHousingCompaniesPriceIndex,
   initialize,
   receiveTopNavigationSettings
 }))(LeaseListPage);
