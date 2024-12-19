@@ -931,10 +931,8 @@ export const LeaseRentDueDatesFieldTitles = {
  * @type {{}}
  */
 export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths = {
-  OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX: 'rents.child.children.old_dwellings_in_housing_companies_price_index',
   OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE: 'rents.child.children.old_dwellings_in_housing_companies_price_index_type',
-  NAME: 'rents.child.children.old_dwellings_in_housing_companies_price_index.name',
-  NUMBERS: 'rents.child.children.old_dwellings_in_housing_companies_price_index.numbers',
+  POINT_FIGURES: 'rents.child.children.old_dwellings_in_housing_companies_price_index.point_figures',
 };
 
 /**
@@ -945,7 +943,7 @@ export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths = {
 export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles = {
   OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX: 'Tasotarkistus',
   TYPE: 'Tyyppi',
-  NUMBERS: 'Indeksipisteluku',
+  POINT_FIGURES: 'Indeksipisteluku',
   REVIEW_DAYS: 'Tarkistuspäivät',
 };
 

@@ -14,7 +14,7 @@ import BoxItemContainer from '@/components/content/BoxItemContainer';
 import { withWindowResize } from '@/components/resize/WindowResizeHandler';
 import FormText from "@/components/form/FormText";
 import FormTextTitle from '@/components/form/FormTextTitle';
-import { LeaseFieldTitles, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles, oldDwellingsInHousingCompaniesPriceIndexTypes } from '@/leases/enums';
+import { LeaseFieldTitles, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles, LeaseRentsFieldPaths, oldDwellingsInHousingCompaniesPriceIndexTypes } from '@/leases/enums';
 import { getUiDataLeaseKey } from '@/uiData/helpers';
 import { formatDate } from '@/util/helpers';
 import { getReviewDays } from '@/leases/helpers';
@@ -46,7 +46,7 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
       <BoxItemContainer>
         <Row>
           <Column>
-            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NAME)}>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE)}>
               {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE}
             </FormTextTitle>
             <FormText>{oldDwellingsInHousingCompaniesPriceIndexTypes[oldDwellingsInHousingCompaniesPriceIndexType]}</FormText>
@@ -58,21 +58,21 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
             <FormText>{formatDate(leaseStartDate)}</FormText>
           </Column>
           <Column>
-            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS)}>
-              {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.NUMBERS}
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.POINT_FIGURES)}>
+              {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.POINT_FIGURES}
             </FormTextTitle>
             <FormText>{getLastYearsIndexPointNumber(pointFigures)}</FormText>
             <FormText>{sourceTableLabel}</FormText>
           </Column>
           <Column>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS)}>
+                <FormTextTitle>
                   {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS}
                 </FormTextTitle>
                   <>
                     {leaseStartDate ? 
                       getReviewDays(leaseStartDate, oldDwellingsInHousingCompaniesPriceIndexType).map(
                         (date: string, index: number) => {
-                          return <FormText key={LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS + `[${index}]`}>
+                          return <FormText key={LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS + `[${index}]`}>
                             {date}
                           </FormText>
                         }
