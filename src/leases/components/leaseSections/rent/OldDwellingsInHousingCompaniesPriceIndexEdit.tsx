@@ -86,8 +86,8 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
                 overrideValues={{
                   label: LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE,
                 }}
-                // enableUiDataEdit
-                // uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE)}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE)}
               />
             </Column>
             <Column>
@@ -96,23 +96,20 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
             </Column>
             <Column>
               <FormTextTitle
+                enableUiDataEdit
                 uiDataKey={getUiDataLeaseKey(
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS,
+                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.POINT_FIGURES,
                 )}
               >
                 {
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.NUMBERS
+                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.POINT_FIGURES
                 }
               </FormTextTitle>
               <FormText>{getLastYearsIndexPointNumber(pointFigures)}</FormText>
               <FormText>{sourceTableLabel}</FormText>
             </Column>
             <Column>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS,
-                )}
-              >
+              <FormTextTitle>
                 {
                   LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS
                 }
@@ -121,7 +118,7 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
                 {leaseStartDate ? 
                   getReviewDays(leaseStartDate, oldDwellingsInHousingCompaniesPriceIndexType).map(
                     (date: string, index: number) => {
-                      return <FormText key={LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.NUMBERS + `[${index}]`}>
+                      return <FormText key={LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.POINT_FIGURES + `[${index}]`}>
                         {date}
                       </FormText>
                     }
