@@ -52,7 +52,9 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
             <FormText>{oldDwellingsInHousingCompaniesPriceIndexTypes[oldDwellingsInHousingCompaniesPriceIndexType]}</FormText>
           </Column>
           <Column>
-            <FormTextTitle>
+            <FormTextTitle 
+              uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.START_DATE)}
+            >
               {LeaseFieldTitles.START_DATE}
             </FormTextTitle>
             <FormText>{formatDate(leaseStartDate)}</FormText>
@@ -65,7 +67,9 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
             <FormText>{sourceTableLabel}</FormText>
           </Column>
           <Column>
-                <FormTextTitle>
+                <FormTextTitle
+                  uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.REVIEW_DAYS)}
+                >
                   {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS}
                 </FormTextTitle>
                   <>
