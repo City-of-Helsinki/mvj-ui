@@ -933,6 +933,9 @@ export const LeaseRentDueDatesFieldTitles = {
 export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths = {
   OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE: 'rents.child.children.old_dwellings_in_housing_companies_price_index_type',
   POINT_FIGURES: 'rents.child.children.old_dwellings_in_housing_companies_price_index.point_figures',
+  // The following two are for the UI data purposes only
+  START_DATE: 'rents.child.children.old_dwellings_in_housing_companies_price_index.start_date',
+  REVIEW_DAYS: 'rents.child.children.old_dwellings_in_housing_companies_price_index.review_days',
 };
 
 /**
