@@ -4,7 +4,7 @@ import { getCurrentLeaseStartDate, getAttributes as getLeaseAttributes } from '@
 import { flowRight } from 'lodash';
 import { connect } from 'react-redux';
 import type { 
-  OldDwellingsInHousingCompaniesPriceIndexType,
+  PeriodicRentAdjustmentType,
 } from '@/leases/types';
 import type { 
   OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps,
@@ -14,14 +14,14 @@ import BoxItemContainer from '@/components/content/BoxItemContainer';
 import { withWindowResize } from '@/components/resize/WindowResizeHandler';
 import FormText from "@/components/form/FormText";
 import FormTextTitle from '@/components/form/FormTextTitle';
-import { LeaseFieldTitles, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles, LeaseRentsFieldPaths, oldDwellingsInHousingCompaniesPriceIndexTypes } from '@/leases/enums';
+import { LeaseFieldTitles, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths, LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles, LeaseRentsFieldPaths, periodicRentAdjustmentTypes } from '@/leases/enums';
 import { getUiDataLeaseKey } from '@/uiData/helpers';
 import { formatDate } from '@/util/helpers';
 import { getReviewDays } from '@/leases/helpers';
 
 type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
-  oldDwellingsInHousingCompaniesPriceIndexType: OldDwellingsInHousingCompaniesPriceIndexType;
+  periodicRentAdjustmentType: PeriodicRentAdjustmentType;
   leaseStartDate: string;
 };
 
@@ -35,7 +35,7 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
   render() {
     const {
       oldDwellingsInHousingCompaniesPriceIndex,
-      oldDwellingsInHousingCompaniesPriceIndexType,
+      periodicRentAdjustmentType,
       leaseStartDate
     } = this.props;
     const {
@@ -46,10 +46,10 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
       <BoxItemContainer>
         <Row>
           <Column>
-            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE)}>
+            <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.PERIODIC_RENT_ADJUSTMENT_TYPE)}>
               {LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE}
             </FormTextTitle>
-            <FormText>{oldDwellingsInHousingCompaniesPriceIndexTypes[oldDwellingsInHousingCompaniesPriceIndexType]}</FormText>
+            <FormText>{periodicRentAdjustmentTypes[periodicRentAdjustmentType]}</FormText>
           </Column>
           <Column>
             <FormTextTitle>
@@ -70,7 +70,7 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
                 </FormTextTitle>
                   <>
                     {leaseStartDate ? 
-                      getReviewDays(leaseStartDate, oldDwellingsInHousingCompaniesPriceIndexType).map(
+                      getReviewDays(leaseStartDate, periodicRentAdjustmentType).map(
                         (date: string, index: number) => {
                           return <FormText key={LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS + `[${index}]`}>
                             {date}

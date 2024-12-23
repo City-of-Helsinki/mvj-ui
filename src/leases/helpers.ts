@@ -18,7 +18,7 @@ import { addEmptyOption, convertStrToDecimalNumber, fixedLengthNumber, formatDat
 import { getCoordinatesOfGeometry } from "@/util/map";
 import { getIsEditMode } from "./selectors";
 import { removeSessionStorageItem } from "@/util/storage";
-import type { Lease, LeaseArea, LeaseAreaAddress, IntendedUse, OldDwellingsInHousingCompaniesPriceIndexType } from "./types";
+import type { Lease, LeaseArea, LeaseAreaAddress, IntendedUse, PeriodicRentAdjustmentType } from "./types";
 import type { CommentList } from "@/comments/types";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
 import type { RootState } from "@/root/types";
@@ -1639,7 +1639,7 @@ export const getContentRents = (lease: Lease): Array<Record<string, any>> => get
     yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
     override_receivable_type: get(rent, 'override_receivable_type.id') || rent.override_receivable_type,
     old_dwellings_in_housing_companies_price_index: rent.old_dwellings_in_housing_companies_price_index,
-    old_dwellings_in_housing_companies_price_index_type: rent.old_dwellings_in_housing_companies_price_index_type,
+    periodic_rent_adjustment_type: rent.periodic_rent_adjustment_type,
   };
 }).sort(sortByStartAndEndDateDesc);
 
@@ -2682,7 +2682,7 @@ export const addRentsFormValuesToPayload = (payload: Record<string, any>, formVa
       end_date: rent.end_date,
       note: rent.note,
       old_dwellings_in_housing_companies_price_index: rent.old_dwellings_in_housing_companies_price_index?.id,
-      old_dwellings_in_housing_companies_price_index_type: rent.old_dwellings_in_housing_companies_price_index_type,
+      periodic_rent_adjustment_type: rent.periodic_rent_adjustment_type,
     };
 
     // Patch amount only if rent type is one time
@@ -2940,10 +2940,10 @@ export const sortRelatedHistoryItems = (a: Record<string, any>, b: Record<string
 /**
  * Get check days for old_dwellings_in_housing_companies_price_index of the given start date.
  * @param {string} startDate
- * @param {OldDwellingsInHousingCompaniesPriceIndexType} priceIndexType
+ * @param {PeriodicRentAdjustmentType} priceIndexType
  * @returns {Array<string>}
  */
-export const getReviewDays = (startDate: string, priceIndexType: OldDwellingsInHousingCompaniesPriceIndexType): Array<string> => {
+export const getReviewDays = (startDate: string, priceIndexType: PeriodicRentAdjustmentType): Array<string> => {
   const checkDays = [];
   let increments: Array<number>;
 

@@ -101,7 +101,7 @@ const RentItem = ({
         archived = isArchived(rent),
         rentType = get(rent, 'type'),
         oldDwellingsInHousingCompaniesPriceIndex = get(rent, 'old_dwellings_in_housing_companies_price_index', {}),
-        oldDwellingsInHousingCompaniesPriceIndexType = get(rent, 'old_dwellings_in_housing_companies_price_index_type'),
+        periodicRentAdjustmentType = get(rent, 'periodic_rent_adjustment_type'),
         fixedInitialYearRents = get(rent, 'fixed_initial_year_rents', []),
         contractRents = get(rent, 'contract_rents', []),
         indexAdjustedRents = get(rent, 'index_adjusted_rents', []),
@@ -126,7 +126,7 @@ const RentItem = ({
       <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX)}>
       {oldDwellingsInHousingCompaniesPriceIndex && isATypedLease(leaseTypeIdentifier) &&
           <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} headerTitle='Tasotarkistus'>
-            <OldDwellingsInHousingCompaniesPriceIndexView oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex} oldDwellingsInHousingCompaniesPriceIndexType={oldDwellingsInHousingCompaniesPriceIndexType} />
+            <OldDwellingsInHousingCompaniesPriceIndexView oldDwellingsInHousingCompaniesPriceIndex={oldDwellingsInHousingCompaniesPriceIndex} periodicRentAdjustmentType={periodicRentAdjustmentType} />
           </Collapse>}
       </Authorization>
 
