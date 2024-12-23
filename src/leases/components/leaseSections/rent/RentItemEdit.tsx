@@ -284,7 +284,7 @@ class RentItemEdit extends PureComponent<Props, State> {
           rentTypeIsIndex2022 = rentType === RentTypes.INDEX2022,
           rentTypeIsManual = rentType === RentTypes.MANUAL,
           rentTypeIsFixed = rentType === RentTypes.FIXED;
-    const oldDwellingsInHousingCompaniesPriceIndexType = get(savedRent, 'old_dwellings_in_housing_companies_price_index_type');
+    const periodicRentAdjustmentType = get(savedRent, 'periodic_rent_adjustment_type');
     return <Collapse archived={archived} defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active || rents.length === 1 && !archived} hasErrors={isSaveClicked && !isEmpty(rentErrors)} headerTitle={<Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
             {getLabelOfOption(typeOptions, get(savedRent, 'type')) || '-'}
           </Authorization>} headerSubtitles={<Column small={6} medium={8} large={10}>
@@ -303,7 +303,7 @@ class RentItemEdit extends PureComponent<Props, State> {
             <Collapse className='collapse__secondary' defaultOpen={oldDwellingsInHousingCompaniesPriceIndexCollapseState !== undefined ? oldDwellingsInHousingCompaniesPriceIndexCollapseState : true} hasErrors={/*TODO: Error handling*/false} headerTitle={`${LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX}`} onToggle={this.handleFixedInitialYearRentsCollapseToggle}>
               <OldDwellingsInHousingCompaniesPriceIndexEdit 
                 oldDwellingsInHousingCompaniesPriceIndex={rentOldDwellingsInHousingCompaniesPriceIndex}
-                oldDwellingsInHousingCompaniesPriceIndexType={oldDwellingsInHousingCompaniesPriceIndexType}
+                periodicRentAdjustmentType={periodicRentAdjustmentType}
                 addOldDwellingsInHousingCompaniesPriceIndex={this.addOldDwellingsInHousingCompaniesPriceIndex}
                 field={field}
               />

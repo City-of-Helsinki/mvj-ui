@@ -869,7 +869,7 @@ export const LeaseRentsFieldPaths = {
   Y_VALUE_START: 'rents.child.children.y_value_start',
   OVERRIDE_RECEIVABLE_TYPE: 'rents.child.children.override_receivable_type',
   OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX: 'rents.child.children.old_dwellings_in_housing_companies_price_index',
-  OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE: 'rents.child.children.old_dwellings_in_housing_companies_price_index_type',
+  PERIODIC_RENT_ADJUSTMENT_TYPE: 'rents.child.children.periodic_rent_adjustment_type',
 };
 
 /**
@@ -924,14 +924,13 @@ export const LeaseRentDueDatesFieldTitles = {
   MONTH: 'Kuukausi'
 };
 
-
 /**
  * Lease rent old dwellings in housing companies price index field paths enumerable.
  *
  * @type {{}}
  */
 export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths = {
-  OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX_TYPE: 'rents.child.children.old_dwellings_in_housing_companies_price_index_type',
+  PERIODIC_RENT_ADJUSTMENT_TYPE: 'rents.child.children.periodic_rent_adjustment_type',
   POINT_FIGURES: 'rents.child.children.old_dwellings_in_housing_companies_price_index.point_figures',
   // The following two are for the UI data purposes only
   START_DATE: 'rents.child.children.old_dwellings_in_housing_companies_price_index.start_date',
@@ -1615,7 +1614,7 @@ export const calculatorTypeOptions = [{
   label: 'Laitekaappi'
 }];
 
-export const oldDwellingsInHousingCompaniesPriceIndexTypes = {
+export const periodicRentAdjustmentTypes = {
   TASOTARKISTUS_20_20: "Tasotarkistus 20v/20v",
   TASOTARKISTUS_20_10: "Tasotarkistus 20v/10v",
 }

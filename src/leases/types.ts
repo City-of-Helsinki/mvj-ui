@@ -92,7 +92,7 @@ export type IntendedUse = {
   service_unit: ServiceUnit["id"];
 };
 
-export type OldDwellingsInHousingCompaniesPriceIndexType = "TASOTARKISTUS_20_20" | "TASOTARKISTUS_20_10";
+export type PeriodicRentAdjustmentType = "TASOTARKISTUS_20_20" | "TASOTARKISTUS_20_10";
 
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
