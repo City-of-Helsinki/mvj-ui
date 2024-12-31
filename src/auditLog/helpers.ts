@@ -33,6 +33,9 @@ export const getAuditLogActionTypeInFinnish = (action: string) => {
  */
 const getGeneralAuditLogContentLabel = (key: string) => {
   switch (key) {
+    case 'areasearch':
+      return 'Aluehaku';
+
     case 'contract':
       return 'Sopimus';
 
@@ -71,6 +74,9 @@ const getGeneralAuditLogContentLabel = (key: string) => {
 
     case 'note':
       return 'Huomautus';
+    
+    case 'plotsearch':
+      return 'Tonttihaku';
 
     case 'rent':
       return 'Vuokra';
@@ -90,20 +96,26 @@ const getGeneralAuditLogContentLabel = (key: string) => {
 
 /** 
  * Get auditlog content label
+ * @param {Object} areaSearchAttributes
  * @param {Object} leaseAttributes
  * @param {Object} commentAttributes
  * @param {Object} contactAttributes
  * @param {Object} invoiceAttributes
  * @param {Object} infillDevelopmentCompensationAttributes
+ * @param {Object} plotSearchAttributes
  * @param {string} contentType
  * @param {string} key
  * @returns {string}
  */
-export const getAuditLogContentLabel = (leaseAttributes: Attributes, commentAttributes: Attributes, contactAttributes: Attributes, invoiceAttributes: Attributes, infillDevelopmentCompensationAttributes: Attributes, contentType: string, key: string) => {
+export const getAuditLogContentLabel = (areaSearchAttributes: Attributes, leaseAttributes: Attributes, commentAttributes: Attributes, contactAttributes: Attributes, invoiceAttributes: Attributes, infillDevelopmentCompensationAttributes: Attributes, plotSearchAttributes: Attributes, contentType: string,key: string) => {
   let fieldKey = key;
   let fieldAttributes = null;
 
   switch (contentType) {
+    case 'areasearch':
+      fieldAttributes = getFieldAttributes(areaSearchAttributes, key);
+      break;
+
     case 'comment':
       fieldAttributes = getFieldAttributes(commentAttributes, key);
       break;
@@ -217,6 +229,10 @@ export const getAuditLogContentLabel = (leaseAttributes: Attributes, commentAttr
     case 'plot':
       fieldKey = `${LeasePlotsFieldPaths.PLOTS}.child.children.${key}`;
       fieldAttributes = getFieldAttributes(leaseAttributes, fieldKey);
+      break;
+
+    case 'plotsearch':
+      fieldAttributes = getFieldAttributes(plotSearchAttributes, key);
       break;
 
     case 'rent':
