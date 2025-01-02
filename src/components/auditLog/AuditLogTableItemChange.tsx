@@ -42,7 +42,7 @@ const AuditLogTableItemChange = ({
       <td></td>
       <td></td>
       <td></td>
-      <td>{getAuditLogContentLabel(areaSearchAttributes, leaseAttributes, commentAttributes, contactAttributes, invoiceAttributes, infillDevelopmentCompensationAttributes, plotSearchAttributes, contentType,change.key) || '-'}
+      <td>{getAuditLogContentLabel(areaSearchAttributes, leaseAttributes, commentAttributes, contactAttributes, invoiceAttributes, infillDevelopmentCompensationAttributes, plotSearchAttributes, contentType, change.key) || '-'}
       </td>
       <td><ShowMore className='no-margin inside-table' text={change.oldValue || '-'} /></td>
       <td><ShowMore className='no-margin inside-table' text={change.newValue || '-'} /></td>
