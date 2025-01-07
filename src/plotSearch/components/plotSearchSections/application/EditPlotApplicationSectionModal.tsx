@@ -39,7 +39,7 @@ class EditPlotApplicationSectionModal extends Component<Props> {
         isOpen={isOpen}
         onClose={onClose}
         title='Muokkaa osiota'
-        wrapperClasses="modal__plot-application-section"
+        scrollable
       >
         <EditPlotApplicationSectionForm
           ref={this.setRefForForm}

@@ -15,7 +15,7 @@
     @include transition(0.5s, top, ease);
   }
 
-  &__plot-application-section {
+  &__scrollable {
     overflow: scroll;
   }
 

@@ -4,7 +4,7 @@ import CloseButton from "@/components/button/CloseButton";
 type Props = {
   children?: any;
   className?: string;
-  wrapperClasses?: string;
+  scrollable?: boolean;
   isOpen: boolean;
   onClose: (...args: Array<any>) => any;
   title: string;
@@ -58,7 +58,7 @@ class Modal extends Component<Props, State> {
       isOpen,
       onClose,
       title,
-      wrapperClasses,
+      scrollable = false,
     } = this.props;
     const {
       isClosing,
@@ -68,7 +68,7 @@ class Modal extends Component<Props, State> {
       'modal-open': isOpen
     })}>
         <div className='modal__overlay'></div>
-        <div className={wrapperClasses ? 'modal__wrapper ' + wrapperClasses : 'modal__wrapper'}>
+        <div className={scrollable ? 'modal__wrapper modal__scrollable' : 'modal__wrapper'}>
 
           <div className='modal__header' hidden={!isOpen && !isClosing && !isOpening}>
             <div className='modal__header_wrapper'>
