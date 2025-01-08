@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Modal from "@/components/modal/Modal";
 import EditPlotApplicationSectionForm from "@/plotSearch/components/plotSearchSections/application/EditPlotApplicationSectionForm";
+
 type Props = {
   isOpen: boolean;
   onClose: (...args: Array<any>) => any;
@@ -33,9 +34,22 @@ class EditPlotApplicationSectionModal extends Component<Props> {
       return null;
     }
 
-    return <Modal isOpen={isOpen} onClose={onClose} title='Muokkaa osiota'>
-        <EditPlotApplicationSectionForm ref={this.setRefForForm} onClose={onClose} onSubmit={onSubmit} sectionIndex={sectionIndex} isOpen={isOpen} />
-      </Modal>;
+    return (
+      <Modal 
+        isOpen={isOpen}
+        onClose={onClose}
+        title='Muokkaa osiota'
+        scrollable
+      >
+        <EditPlotApplicationSectionForm
+          ref={this.setRefForForm}
+          onClose={onClose}
+          onSubmit={onSubmit}
+          sectionIndex={sectionIndex}
+          isOpen={isOpen}
+        />
+      </Modal>
+    );
   }
 
 }

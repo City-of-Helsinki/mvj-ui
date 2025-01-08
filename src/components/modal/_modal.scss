@@ -15,6 +15,10 @@
     @include transition(0.5s, top, ease);
   }
 
+  &__scrollable {
+    overflow: scroll;
+  }
+
   &__header {
     padding: rem-calc(20px) rem-calc(20px) 0;
 
