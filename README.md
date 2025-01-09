@@ -17,6 +17,7 @@ City of Helsinki Land lease UI
 - [Redux](http://redux.js.org/) Predictable state container
 - [Lodash](https://lodash.com/) Utility library
 - [Eslint](http://eslint.org/) Linting utility
+- [Prettier](https://prettier.io/) Formatting utility
 
 ## Usage with Docker
 
@@ -82,3 +83,7 @@ yarn run test:watch
 ```bash
 yarn run test:coverage
 ```
+
+## Automatic Code formatting
+
+Install Prettier extension for VSCode. The editor will format TypeScript and SCSS files automatically on save.
