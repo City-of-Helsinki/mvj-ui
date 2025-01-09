@@ -1,48 +1,58 @@
 import { describe, expect, it } from "vitest";
-import { fetchContractFilesById, receiveContractFilesById, notFoundById } from "./actions";
+import {
+  fetchContractFilesById,
+  receiveContractFilesById,
+  notFoundById,
+} from "./actions";
 import contractFileReducer from "./reducer";
 import type { ContractFileState } from "./types";
 const defaultState: ContractFileState = {
   byId: {},
-  isFetchingById: {}
+  isFetchingById: {},
 };
 
-describe('contractFile', () => {
-  describe('Reducer', () => {
-    describe('contractFileReducer', () => {
-      it('should update isFetchingById flags when fetching contract files', () => {
+describe("contractFile", () => {
+  describe("Reducer", () => {
+    describe("contractFileReducer", () => {
+      it("should update isFetchingById flags when fetching contract files", () => {
         const dummyId = 1;
-        const newState = { ...defaultState,
+        const newState = {
+          ...defaultState,
           isFetchingById: {
-            [dummyId]: true
-          }
+            [dummyId]: true,
+          },
         };
         const state = contractFileReducer({}, fetchContractFilesById(dummyId));
         expect(state).to.deep.equal(newState);
       });
-      it('should update contract files', () => {
+      it("should update contract files", () => {
         const dummyId = 1;
         const dummyFiles = [];
-        const newState = { ...defaultState,
+        const newState = {
+          ...defaultState,
           byId: {
-            [dummyId]: dummyFiles
+            [dummyId]: dummyFiles,
           },
           isFetchingById: {
-            [dummyId]: false
-          }
+            [dummyId]: false,
+          },
         };
-        const state = contractFileReducer({}, receiveContractFilesById({
-          contractId: dummyId,
-          files: dummyFiles
-        }));
+        const state = contractFileReducer(
+          {},
+          receiveContractFilesById({
+            contractId: dummyId,
+            files: dummyFiles,
+          }),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetchingById flags when by notFoundById', () => {
+      it("should update isFetchingById flags when by notFoundById", () => {
         const dummyId = 1;
-        const newState = { ...defaultState,
+        const newState = {
+          ...defaultState,
           isFetchingById: {
-            [dummyId]: false
-          }
+            [dummyId]: false,
+          },
         };
         let state = contractFileReducer({}, fetchContractFilesById(dummyId));
         state = contractFileReducer(state, notFoundById(dummyId));

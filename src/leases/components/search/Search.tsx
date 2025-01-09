@@ -1,7 +1,12 @@
 import React, { Fragment, PureComponent } from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { clearFields, formValueSelector, getFormValues, reduxForm } from "redux-form";
+import {
+  clearFields,
+  formValueSelector,
+  getFormValues,
+  reduxForm,
+} from "redux-form";
 import { Row, Column } from "react-foundation";
 import debounce from "lodash/debounce";
 import flowRight from "lodash/flowRight";
@@ -17,12 +22,19 @@ import SearchLabelColumn from "@/components/search/SearchLabelColumn";
 import SearchRow from "@/components/search/SearchRow";
 import { fetchDistrictsByMunicipality } from "@/district/actions";
 import { FieldTypes, FormNames } from "@/enums";
-import { LeaseDecisionsFieldPaths, LeaseFieldPaths, LeaseTenantContactSetFieldPaths } from "@/leases/enums";
+import {
+  LeaseDecisionsFieldPaths,
+  LeaseFieldPaths,
+  LeaseTenantContactSetFieldPaths,
+} from "@/leases/enums";
 import { getContactOptions } from "@/contacts/helpers";
 import { getDistrictOptions } from "@/district/helpers";
 import { addEmptyOption, getFieldOptions, getUrlParams } from "@/util/helpers";
 import { getDistrictsByMunicipality } from "@/district/selectors";
-import { getAttributes as getLeaseAttributes, getIsFetchingAttributes } from "@/leases/selectors";
+import {
+  getAttributes as getLeaseAttributes,
+  getIsFetchingAttributes,
+} from "@/leases/selectors";
 import { getLessorList } from "@/lessor/selectors";
 import type { Attributes } from "types";
 import type { LessorList } from "@/lessor/types";
@@ -70,17 +82,14 @@ class Search extends PureComponent<Props, State> {
     municipalityOptions: [],
     tenantTypeOptions: [],
     typeOptions: [],
-    serviceUnitOptions: []
+    serviceUnitOptions: [],
   };
 
   componentDidMount() {
-    const {
-      fetchDistrictsByMunicipality,
-      municipality
-    } = this.props;
+    const { fetchDistrictsByMunicipality, municipality } = this.props;
     this._isMounted = true;
     this.setState({
-      isBasicSearch: this.isSearchBasicMode()
+      isBasicSearch: this.isSearchBasicMode(),
     });
 
     if (municipality) {
@@ -97,11 +106,27 @@ class Search extends PureComponent<Props, State> {
 
     if (props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.decisionMakerOptions = getFieldOptions(props.leaseAttributes, LeaseDecisionsFieldPaths.DECISION_MAKER);
-      newState.intendedUseOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.INTENDED_USE);
-      newState.municipalityOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.MUNICIPALITY);
-      newState.tenantTypeOptions = getFieldOptions(props.leaseAttributes, LeaseTenantContactSetFieldPaths.TYPE, false);
-      newState.typeOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.TYPE);
+      newState.decisionMakerOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseDecisionsFieldPaths.DECISION_MAKER,
+      );
+      newState.intendedUseOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseFieldPaths.INTENDED_USE,
+      );
+      newState.municipalityOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseFieldPaths.MUNICIPALITY,
+      );
+      newState.tenantTypeOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseTenantContactSetFieldPaths.TYPE,
+        false,
+      );
+      newState.typeOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseFieldPaths.TYPE,
+      );
     }
 
     if (props.lessors !== state.lessors) {
@@ -113,47 +138,50 @@ class Search extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const {
-      change,
-      fetchDistrictsByMunicipality,
-      isSearchInitialized
-    } = this.props;
+    const { change, fetchDistrictsByMunicipality, isSearchInitialized } =
+      this.props;
 
     if (prevProps.municipality != this.props.municipality) {
       if (this.props.municipality) {
         fetchDistrictsByMunicipality(this.props.municipality);
       }
 
-      change('district', '');
+      change("district", "");
     }
 
-    if (isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
+    if (
+      isSearchInitialized &&
+      !isEqual(prevProps.formValues, this.props.formValues)
+    ) {
       const {
-        location: {
-          search
-        }
+        location: { search },
       } = this.props;
       const searchQuery = getUrlParams(search);
-      const addOnlyActiveLeases = Object.prototype.hasOwnProperty.call(searchQuery, 'only_active_leases') || prevProps.formValues.only_active_leases !== this.props.formValues.only_active_leases;
+      const addOnlyActiveLeases =
+        Object.prototype.hasOwnProperty.call(
+          searchQuery,
+          "only_active_leases",
+        ) ||
+        prevProps.formValues.only_active_leases !==
+          this.props.formValues.only_active_leases;
       this.onSearchChange(addOnlyActiveLeases);
     }
   }
 
   handleSubmit = () => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
-    const addOnlyActiveLeases = Object.prototype.hasOwnProperty.call(searchQuery, 'only_active_leases');
+    const addOnlyActiveLeases = Object.prototype.hasOwnProperty.call(
+      searchQuery,
+      "only_active_leases",
+    );
     this.search(addOnlyActiveLeases);
   };
   isSearchBasicMode = () => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
     // Ignore these fields when testing is search query length
@@ -168,23 +196,23 @@ class Search extends PureComponent<Props, State> {
     delete searchQuery.service_unit;
     const keys = Object.keys(searchQuery);
 
-    if (!keys.length || keys.length === 1 && Object.prototype.hasOwnProperty.call(searchQuery, 'search')) {
+    if (
+      !keys.length ||
+      (keys.length === 1 &&
+        Object.prototype.hasOwnProperty.call(searchQuery, "search"))
+    ) {
       return true;
     }
 
     return false;
   };
-  onSearchChange = debounce(addOnlyActiveLeases => {
+  onSearchChange = debounce((addOnlyActiveLeases) => {
     this.search(addOnlyActiveLeases);
   }, 1000);
   search = (addOnlyActiveLeases: boolean) => {
     if (!this._isMounted) return;
-    const {
-      formValues,
-      onSearch
-    } = this.props;
-    const newValues = { ...formValues
-    };
+    const { formValues, onSearch } = this.props;
+    const newValues = { ...formValues };
 
     if (!addOnlyActiveLeases) {
       delete newValues.only_active_leases;
@@ -194,29 +222,21 @@ class Search extends PureComponent<Props, State> {
   };
   toggleSearchType = () => {
     this.setState({
-      isBasicSearch: !this.state.isBasicSearch
+      isBasicSearch: !this.state.isBasicSearch,
     });
   };
   handleClear = () => {
-    const {
-      onSearch
-    } = this.props;
+    const { onSearch } = this.props;
     const query = {};
     onSearch(query, true, true);
   };
   formHasNoName = () => {
-    const {
-      formValues
-    } = this.props;
-    return formValues ? formValues.tenant_name ? false : true : true;
+    const { formValues } = this.props;
+    return formValues ? (formValues.tenant_name ? false : true) : true;
   };
 
   render() {
-    const {
-      districts,
-      handleSubmit,
-      isFetchingAttributes
-    } = this.props;
+    const { districts, handleSubmit, isFetchingAttributes } = this.props;
     const {
       decisionMakerOptions,
       intendedUseOptions,
@@ -225,73 +245,114 @@ class Search extends PureComponent<Props, State> {
       municipalityOptions,
       tenantTypeOptions,
       typeOptions,
-      serviceUnitOptions
+      serviceUnitOptions,
     } = this.state;
     const districtOptions = getDistrictOptions(districts);
     const radioButtonsDisabled = this.formHasNoName();
-    return <SearchContainer onSubmit={handleSubmit(this.handleSubmit)}>
+    return (
+      <SearchContainer onSubmit={handleSubmit(this.handleSubmit)}>
         <Row>
           <Column small={12}>
-            <FormField autoBlur disableDirty fieldAttributes={{
-            label: 'Hae hakusanalla',
-            type: FieldTypes.SEARCH,
-            read_only: false
-          }} invisibleLabel name='search' />
+            <FormField
+              autoBlur
+              disableDirty
+              fieldAttributes={{
+                label: "Hae hakusanalla",
+                type: FieldTypes.SEARCH,
+                read_only: false,
+              }}
+              invisibleLabel
+              name="search"
+            />
           </Column>
         </Row>
-        {!isBasicSearch && <Fragment>
+        {!isBasicSearch && (
+          <Fragment>
             <Row>
-              {
-            /* First column */
-          }
+              {/* First column */}
               <Column small={12} large={6}>
                 <SearchRow>
                   <SearchLabelColumn>
                     <SearchLabel>Nimi</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Nimi',
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name='tenant_name' />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Nimi",
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="tenant_name"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
                 <SearchRow>
-                  <SearchLabelColumn>
-                  </SearchLabelColumn>
+                  <SearchLabelColumn></SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disabled={radioButtonsDisabled} disableDirty fieldAttributes={{
-                  label: 'Kaikki',
-                  type: FieldTypes.RADIO_WITH_FIELD,
-                  read_only: false
-                }} invisibleLabel name='tenant_activity' overrideValues={{
-                  options: [{
-                    value: '',
-                    label: 'Kaikki'
-                  }]
-                }} />
-                    <FormField autoBlur disabled={radioButtonsDisabled} disableDirty fieldAttributes={{
-                  label: 'Vain entiset asiakkaat',
-                  type: FieldTypes.RADIO_WITH_FIELD,
-                  read_only: false
-                }} invisibleLabel name='tenant_activity' overrideValues={{
-                  options: [{
-                    value: 'past',
-                    label: 'Vain entiset asiakkaat'
-                  }]
-                }} />
-                    <FormField autoBlur disabled={radioButtonsDisabled} disableDirty fieldAttributes={{
-                  label: 'Vain nykyiset asiakkaat',
-                  type: FieldTypes.RADIO_WITH_FIELD,
-                  read_only: false
-                }} invisibleLabel name='tenant_activity' overrideValues={{
-                  options: [{
-                    value: 'active',
-                    label: 'Vain nykyiset asiakkaat'
-                  }]
-                }} />
+                    <FormField
+                      autoBlur
+                      disabled={radioButtonsDisabled}
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Kaikki",
+                        type: FieldTypes.RADIO_WITH_FIELD,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="tenant_activity"
+                      overrideValues={{
+                        options: [
+                          {
+                            value: "",
+                            label: "Kaikki",
+                          },
+                        ],
+                      }}
+                    />
+                    <FormField
+                      autoBlur
+                      disabled={radioButtonsDisabled}
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Vain entiset asiakkaat",
+                        type: FieldTypes.RADIO_WITH_FIELD,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="tenant_activity"
+                      overrideValues={{
+                        options: [
+                          {
+                            value: "past",
+                            label: "Vain entiset asiakkaat",
+                          },
+                        ],
+                      }}
+                    />
+                    <FormField
+                      autoBlur
+                      disabled={radioButtonsDisabled}
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Vain nykyiset asiakkaat",
+                        type: FieldTypes.RADIO_WITH_FIELD,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="tenant_activity"
+                      overrideValues={{
+                        options: [
+                          {
+                            value: "active",
+                            label: "Vain nykyiset asiakkaat",
+                          },
+                        ],
+                      }}
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
@@ -300,13 +361,21 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Rooli</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: '',
-                  type: FieldTypes.MULTISELECT,
-                  read_only: false
-                }} invisibleLabel isLoading={isFetchingAttributes} name='tenantcontact_type' overrideValues={{
-                  options: tenantTypeOptions
-                }} />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "",
+                        type: FieldTypes.MULTISELECT,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      isLoading={isFetchingAttributes}
+                      name="tenantcontact_type"
+                      overrideValues={{
+                        options: tenantTypeOptions,
+                      }}
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
@@ -315,11 +384,17 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Y-tunnus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Y-tunnus',
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name='business_id' />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Y-tunnus",
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="business_id"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
@@ -328,11 +403,17 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Henkilötunnus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Henkilötunnus',
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name='national_identification_number' />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Henkilötunnus",
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="national_identification_number"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
@@ -341,13 +422,20 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Vuokranantaja</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Vuokranantaja',
-                  type: FieldTypes.CHOICE,
-                  read_only: false
-                }} invisibleLabel name='lessor' overrideValues={{
-                  options: lessorOptions
-                }} />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Vuokranantaja",
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="lessor"
+                      overrideValues={{
+                        options: lessorOptions,
+                      }}
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
@@ -358,38 +446,65 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField autoBlur disableDirty fieldAttributes={{
-                      label: 'Tyyppi',
-                      type: FieldTypes.CHOICE,
-                      read_only: false
-                    }} invisibleLabel name='type' overrideValues={{
-                      options: typeOptions
-                    }} />
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Tyyppi",
+                            type: FieldTypes.CHOICE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="type"
+                          overrideValues={{
+                            options: typeOptions,
+                          }}
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField autoBlur disableDirty fieldAttributes={{
-                      label: 'Kunta',
-                      type: FieldTypes.CHOICE,
-                      read_only: false
-                    }} invisibleLabel name='municipality' overrideValues={{
-                      options: municipalityOptions
-                    }} />
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Kunta",
+                            type: FieldTypes.CHOICE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="municipality"
+                          overrideValues={{
+                            options: municipalityOptions,
+                          }}
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField autoBlur disableDirty fieldAttributes={{
-                      label: 'Kaupunginosa',
-                      type: FieldTypes.CHOICE,
-                      read_only: false
-                    }} invisibleLabel name='district' overrideValues={{
-                      options: districtOptions
-                    }} />
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Kaupunginosa",
+                            type: FieldTypes.CHOICE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="district"
+                          overrideValues={{
+                            options: districtOptions,
+                          }}
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField autoBlur disableDirty fieldAttributes={{
-                      label: 'Juokseva numero',
-                      type: FieldTypes.STRING,
-                      read_only: false
-                    }} invisibleLabel name='sequence' />
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Juokseva numero",
+                            type: FieldTypes.STRING,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="sequence"
+                        />
                       </Column>
                     </Row>
                   </SearchInputColumn>
@@ -400,11 +515,17 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Kiinteistötunnus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Kiinteistötunnus',
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name='property_identifier' />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Kiinteistötunnus",
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="property_identifier"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
                 <SearchRow>
@@ -412,23 +533,30 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel></SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Geometria puuttuu',
-                  type: FieldTypes.CHECKBOX,
-                  read_only: false
-                }} invisibleLabel name='has_not_geometry' overrideValues={{
-                  options: [{
-                    value: true,
-                    label: 'Geometria puuttuu'
-                  }]
-                }} />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Geometria puuttuu",
+                        type: FieldTypes.CHECKBOX,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="has_not_geometry"
+                      overrideValues={{
+                        options: [
+                          {
+                            value: true,
+                            label: "Geometria puuttuu",
+                          },
+                        ],
+                      }}
+                    />
                   </SearchInputColumn>
                 </SearchRow>
               </Column>
 
-              {
-            /* Second column */
-          }
+              {/* Second column */}
               <Column small={12} large={6}>
                 <SearchRow>
                   <SearchLabelColumn>
@@ -437,18 +565,29 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField disableDirty fieldAttributes={{
-                      label: 'Vuokrauksen alkupvm alkaen',
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name='lease_start_date_start' />
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Vuokrauksen alkupvm alkaen",
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="lease_start_date_start"
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField className='with-dash' disableDirty fieldAttributes={{
-                      label: 'Vuokrauksen alkupvm loppuen',
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name='lease_start_date_end' />
+                        <FormField
+                          className="with-dash"
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Vuokrauksen alkupvm loppuen",
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="lease_start_date_end"
+                        />
                       </Column>
                     </Row>
                   </SearchInputColumn>
@@ -461,18 +600,29 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField disableDirty fieldAttributes={{
-                      label: 'Vuokrauksen loppupvm alkaen',
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name='lease_end_date_start' />
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Vuokrauksen loppupvm alkaen",
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="lease_end_date_start"
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField className='with-dash' disableDirty fieldAttributes={{
-                      label: 'Vuokrauksen loppupvm loppuen',
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name='lease_end_date_end' />
+                        <FormField
+                          className="with-dash"
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Vuokrauksen loppupvm loppuen",
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="lease_end_date_end"
+                        />
                       </Column>
                     </Row>
                   </SearchInputColumn>
@@ -483,28 +633,46 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField autoBlur disableDirty fieldAttributes={{
-                      label: 'Voimassa',
-                      type: FieldTypes.CHECKBOX,
-                      read_only: false
-                    }} invisibleLabel name='only_active_leases' overrideValues={{
-                      options: [{
-                        value: true,
-                        label: 'Voimassa'
-                      }]
-                    }} />
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Voimassa",
+                            type: FieldTypes.CHECKBOX,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="only_active_leases"
+                          overrideValues={{
+                            options: [
+                              {
+                                value: true,
+                                label: "Voimassa",
+                              },
+                            ],
+                          }}
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField autoBlur disableDirty fieldAttributes={{
-                      label: 'Päättyneet',
-                      type: FieldTypes.CHECKBOX,
-                      read_only: false
-                    }} invisibleLabel name='only_expired_leases' overrideValues={{
-                      options: [{
-                        value: true,
-                        label: 'Päättyneet'
-                      }]
-                    }} />
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Päättyneet",
+                            type: FieldTypes.CHECKBOX,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="only_expired_leases"
+                          overrideValues={{
+                            options: [
+                              {
+                                value: true,
+                                label: "Päättyneet",
+                              },
+                            ],
+                          }}
+                        />
                       </Column>
                     </Row>
                   </SearchInputColumn>
@@ -515,11 +683,17 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Vuokrakohteen osoite</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Vuokrakohteen osoite',
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name='address' />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Vuokrakohteen osoite",
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="address"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
@@ -528,11 +702,17 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Sopimusnro</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Sopimusnro',
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name='contract_number' />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Sopimusnro",
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="contract_number"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
@@ -543,27 +723,45 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={12}>
-                        <FormField autoBlur disableDirty fieldAttributes={{
-                      label: 'Päätöksen tekijä',
-                      type: FieldTypes.CHOICE,
-                      read_only: false
-                    }} invisibleLabel name='decision_maker' overrideValues={{
-                      options: decisionMakerOptions
-                    }} />
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Päätöksen tekijä",
+                            type: FieldTypes.CHOICE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="decision_maker"
+                          overrideValues={{
+                            options: decisionMakerOptions,
+                          }}
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField disableDirty fieldAttributes={{
-                      label: 'Päätöspvm',
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name='decision_date' />
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Päätöspvm",
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="decision_date"
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField disableDirty fieldAttributes={{
-                      label: 'Pykälä',
-                      type: FieldTypes.STRING,
-                      read_only: false
-                    }} invisibleLabel unit='§' name='decision_section' />
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Pykälä",
+                            type: FieldTypes.STRING,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          unit="§"
+                          name="decision_section"
+                        />
                       </Column>
                     </Row>
                   </SearchInputColumn>
@@ -574,11 +772,17 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Diaarinro</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Diaarinro',
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name='reference_number' />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Diaarinro",
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="reference_number"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
@@ -587,11 +791,17 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Laskunro</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Laskunro',
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name='invoice_number' />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Laskunro",
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="invoice_number"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
@@ -600,47 +810,66 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Vuokrauksen käyttötarkoitus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Vuokrauksen käyttötarkoitus',
-                  type: FieldTypes.CHOICE,
-                  read_only: false
-                }} invisibleLabel name='intended_use' overrideValues={{
-                  options: intendedUseOptions
-                }} />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Vuokrauksen käyttötarkoitus",
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="intended_use"
+                      overrideValues={{
+                        options: intendedUseOptions,
+                      }}
+                    />
                   </SearchInputColumn>
                 </SearchRow>
               </Column>
             </Row>
-          </Fragment>}
+          </Fragment>
+        )}
 
         <Row>
           <Column small={6}>
-            <SearchChangeTypeLink onClick={this.toggleSearchType}>{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</SearchChangeTypeLink>
+            <SearchChangeTypeLink onClick={this.toggleSearchType}>
+              {isBasicSearch ? "Tarkennettu haku" : "Yksinkertainen haku"}
+            </SearchChangeTypeLink>
           </Column>
           <Column small={6}>
-            <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
+            <SearchClearLink onClick={this.handleClear}>
+              Tyhjennä haku
+            </SearchClearLink>
           </Column>
         </Row>
-      </SearchContainer>;
+      </SearchContainer>
+    );
   }
-
 }
 
 const formName = FormNames.LEASE_SEARCH;
 const selector = formValueSelector(formName);
-export default flowRight(withRouter, connect(state => {
-  const municipality = selector(state, 'municipality');
-  return {
-    districts: getDistrictsByMunicipality(state, municipality),
-    formValues: getFormValues(formName)(state),
-    isFetchingAttributes: getIsFetchingAttributes(state),
-    leaseAttributes: getLeaseAttributes(state),
-    lessors: getLessorList(state),
-    municipality: municipality
-  };
-}, {
-  clearFields,
-  fetchDistrictsByMunicipality
-}), reduxForm({
-  form: formName
-}))(Search) as React.ComponentType<any>;
+export default flowRight(
+  withRouter,
+  connect(
+    (state) => {
+      const municipality = selector(state, "municipality");
+      return {
+        districts: getDistrictsByMunicipality(state, municipality),
+        formValues: getFormValues(formName)(state),
+        isFetchingAttributes: getIsFetchingAttributes(state),
+        leaseAttributes: getLeaseAttributes(state),
+        lessors: getLessorList(state),
+        municipality: municipality,
+      };
+    },
+    {
+      clearFields,
+      fetchDistrictsByMunicipality,
+    },
+  ),
+  reduxForm({
+    form: formName,
+  }),
+)(Search) as React.ComponentType<any>;

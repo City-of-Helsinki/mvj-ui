@@ -24,10 +24,28 @@ import { InvoiceFieldPaths, InvoiceRowsFieldPaths } from "@/invoices/enums";
 import { getContactFullName } from "@/contacts/helpers";
 import { formatReceivableTypesString } from "@/invoices/helpers";
 import { getContentLeaseIdentifier } from "@/leases/helpers";
-import { getSapInvoices, mapSapInvoiceSearchFilters } from "@/sapInvoice/helpers";
-import { formatDate, formatNumber, getApiResponseCount, getApiResponseMaxPage, getFieldOptions, getSearchQuery, getUrlParams, isEmptyValue, isFieldAllowedToRead, isMethodAllowed, setPageTitle } from "@/util/helpers";
+import {
+  getSapInvoices,
+  mapSapInvoiceSearchFilters,
+} from "@/sapInvoice/helpers";
+import {
+  formatDate,
+  formatNumber,
+  getApiResponseCount,
+  getApiResponseMaxPage,
+  getFieldOptions,
+  getSearchQuery,
+  getUrlParams,
+  isEmptyValue,
+  isFieldAllowedToRead,
+  isMethodAllowed,
+  setPageTitle,
+} from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
-import { getIsFetching, getSapInvoices as getSapInvoiceList } from "@/sapInvoice/selectors";
+import {
+  getIsFetching,
+  getSapInvoices as getSapInvoiceList,
+} from "@/sapInvoice/selectors";
 import { withSapInvoicesAttributes } from "@/components/attributes/SapInvoicesAttributes";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
@@ -35,66 +53,77 @@ import type { SapInvoiceList } from "@/sapInvoice/types";
 import type { UserServiceUnit } from "@/usersPermissions/types";
 
 const getColumns = (invoiceAttributes: Attributes) => {
-  const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
+  const receivableTypeOptions = getFieldOptions(
+    invoiceAttributes,
+    InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
+  );
   const columns = [];
 
   if (isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)) {
     columns.push({
-      key: 'send_to_sap_date',
-      text: 'Sap lähetyspvm',
-      renderer: val => formatDate(val)
+      key: "send_to_sap_date",
+      text: "Sap lähetyspvm",
+      renderer: (val) => formatDate(val),
     });
   }
 
   if (isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)) {
     columns.push({
-      key: 'recipient',
-      text: 'Laskunsaaja',
-      renderer: val => getContactFullName(val) || '-',
-      sortable: false
+      key: "recipient",
+      text: "Laskunsaaja",
+      renderer: (val) => getContactFullName(val) || "-",
+      sortable: false,
     });
   }
 
   if (isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)) {
     columns.push({
-      key: 'due_date',
-      text: 'Eräpäivä',
-      renderer: val => formatDate(val)
+      key: "due_date",
+      text: "Eräpäivä",
+      renderer: (val) => formatDate(val),
     });
   }
 
-  if (isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLED_AMOUNT)) {
+  if (
+    isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLED_AMOUNT)
+  ) {
     columns.push({
-      key: 'billed_amount',
-      text: 'Laskutettu',
-      renderer: val => !isEmptyValue(val) ? `${formatNumber(val)} €` : '-'
-    });
-  }
-
-  if (isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.LEASE)) {
-    columns.push({
-      key: 'lease',
-      text: 'Vuokraustunnus',
-      renderer: val => getContentLeaseIdentifier(val),
-      sortable: false
-    });
-  }
-
-  if (isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)) {
-    columns.push({
-      key: 'receivableTypes',
-      text: 'Saamislaji',
-      arrayRenderer: val => formatReceivableTypesString(receivableTypeOptions, val) || '-',
-      sortable: false
+      key: "billed_amount",
+      text: "Laskutettu",
+      renderer: (val) => (!isEmptyValue(val) ? `${formatNumber(val)} €` : "-"),
     });
   }
 
   if (isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.LEASE)) {
     columns.push({
-      key: 'link',
-      text: '',
-      renderer: () => <ExternalLinkIcon className='icon-small icon-green' />,
-      sortable: false
+      key: "lease",
+      text: "Vuokraustunnus",
+      renderer: (val) => getContentLeaseIdentifier(val),
+      sortable: false,
+    });
+  }
+
+  if (
+    isFieldAllowedToRead(
+      invoiceAttributes,
+      InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
+    )
+  ) {
+    columns.push({
+      key: "receivableTypes",
+      text: "Saamislaji",
+      arrayRenderer: (val) =>
+        formatReceivableTypesString(receivableTypeOptions, val) || "-",
+      sortable: false,
+    });
+  }
+
+  if (isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.LEASE)) {
+    columns.push({
+      key: "link",
+      text: "",
+      renderer: () => <ExternalLinkIcon className="icon-small icon-green" />,
+      sortable: false,
     });
   }
 
@@ -143,18 +172,16 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
     sapInvoiceList: null,
     sapInvoices: [],
     sortKey: DEFAULT_SORT_KEY,
-    sortOrder: DEFAULT_SORT_ORDER
+    sortOrder: DEFAULT_SORT_ORDER,
   };
 
   componentDidMount() {
-    const {
-      receiveTopNavigationSettings
-    } = this.props;
-    setPageTitle('SAP laskut');
+    const { receiveTopNavigationSettings } = this.props;
+    setPageTitle("SAP laskut");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.SAP_INVOICES),
-      pageTitle: 'SAP laskut',
-      showSearch: false
+      pageTitle: "SAP laskut",
+      showSearch: false,
     });
     this._isMounted = true;
   }
@@ -171,7 +198,10 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
       newState.sapInvoiceList = props.sapInvoiceList;
       newState.count = getApiResponseCount(props.sapInvoiceList);
       newState.sapInvoices = getSapInvoices(props.sapInvoiceList);
-      newState.maxPage = getApiResponseMaxPage(props.sapInvoiceList, LIST_TABLE_PAGE_SIZE);
+      newState.maxPage = getApiResponseMaxPage(
+        props.sapInvoiceList,
+        LIST_TABLE_PAGE_SIZE,
+      );
     }
 
     return !isEmpty(newState) ? newState : null;
@@ -179,16 +209,12 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
 
   componentDidUpdate(prevProps) {
     const {
-      location: {
-        search: currentSearch
-      },
-      userActiveServiceUnit
+      location: { search: currentSearch },
+      userActiveServiceUnit,
     } = this.props;
     const {
-      location: {
-        search: prevSearch
-      },
-      userActiveServiceUnit: prevUserActiveServiceUnit
+      location: { search: prevSearch },
+      userActiveServiceUnit: prevUserActiveServiceUnit,
     } = prevProps;
 
     const handleSearch = () => {
@@ -201,7 +227,10 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
         // No search has been done yet
         handleSearch();
         this._hasFetchedInvoices = true;
-      } else if (userActiveServiceUnit !== prevUserActiveServiceUnit && !currentSearch.includes('service_unit')) {
+      } else if (
+        userActiveServiceUnit !== prevUserActiveServiceUnit &&
+        !currentSearch.includes("service_unit")
+      ) {
         // Search again after changing user active service unit only if not explicitly setting the service unit filter
         handleSearch();
       }
@@ -213,7 +242,7 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('popstate', this.handlePopState);
+    window.removeEventListener("popstate", this.handlePopState);
     this._isMounted = false;
     this._hasFetchedInvoices = false;
   }
@@ -223,24 +252,21 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
   };
   setSearchValues = () => {
     const {
-      location: {
-        search
-      },
+      location: { search },
       initialize,
-      userActiveServiceUnit
+      userActiveServiceUnit,
     } = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     const setSearchFormReady = () => {
       this.setState({
-        isSearchInitialized: true
+        isSearchInitialized: true,
       });
     };
 
     const initializeSearchForm = async () => {
-      const initialValues = { ...searchQuery
-      };
+      const initialValues = { ...searchQuery };
 
       if (initialValues.service_unit === undefined && userActiveServiceUnit) {
         initialValues.service_unit = userActiveServiceUnit.id;
@@ -252,26 +278,29 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
       initialize(FormNames.SAP_INVOICE_SEARCH, initialValues);
     };
 
-    this.setState({
-      isSearchInitialized: false,
-      activePage: page,
-      sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
-      sortOrder: searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER
-    }, async () => {
-      await initializeSearchForm();
+    this.setState(
+      {
+        isSearchInitialized: false,
+        activePage: page,
+        sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
+        sortOrder: searchQuery.sort_order
+          ? searchQuery.sort_order
+          : DEFAULT_SORT_ORDER,
+      },
+      async () => {
+        await initializeSearchForm();
 
-      if (this._isMounted) {
-        setSearchFormReady();
-      }
-    });
+        if (this._isMounted) {
+          setSearchFormReady();
+        }
+      },
+    );
   };
   search = () => {
     const {
       fetchSapInvoices,
-      location: {
-        search
-      },
-      userActiveServiceUnit
+      location: { search },
+      userActiveServiceUnit,
     } = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
@@ -292,39 +321,36 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
     fetchSapInvoices(mapSapInvoiceSearchFilters(searchQuery));
   };
   handleRowClick = (id, row) => {
-    window.open(`${getRouteById(Routes.LEASES)}/${row.lease.id}?tab=6&opened_invoice=${id}`, '_blank');
+    window.open(
+      `${getRouteById(Routes.LEASES)}/${row.lease.id}?tab=6&opened_invoice=${id}`,
+      "_blank",
+    );
   };
   handleSearchChange = (query: any) => {
-    const {
-      history
-    } = this.props;
+    const { history } = this.props;
     return history.push({
       pathname: getRouteById(Routes.SAP_INVOICES),
-      search: getSearchQuery(query)
+      search: getSearchQuery(query),
     });
   };
-  handleSortingChange = ({
-    sortKey,
-    sortOrder
-  }) => {
+  handleSortingChange = ({ sortKey, sortOrder }) => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
     searchQuery.sort_key = sortKey;
     searchQuery.sort_order = sortOrder;
-    this.setState({
-      sortKey,
-      sortOrder
-    }, this.handleSearchChange(searchQuery));
+    this.setState(
+      {
+        sortKey,
+        sortOrder,
+      },
+      this.handleSearchChange(searchQuery),
+    );
   };
   handlePageClick = (page: number) => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
 
@@ -334,9 +360,12 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
       delete query.page;
     }
 
-    this.setState({
-      activePage: page
-    }, this.handleSearchChange(query));
+    this.setState(
+      {
+        activePage: page,
+      },
+      this.handleSearchChange(query),
+    );
   };
 
   render() {
@@ -344,7 +373,7 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
       invoiceMethods,
       isFetching,
       isFetchingInvoiceAttributes,
-      userActiveServiceUnit
+      userActiveServiceUnit,
     } = this.props;
     const {
       activePage,
@@ -354,42 +383,87 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
       maxPage,
       sapInvoices,
       sortKey,
-      sortOrder
+      sortOrder,
     } = this.state;
-    if (isFetchingInvoiceAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (isFetchingInvoiceAttributes)
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (!invoiceMethods) return null;
-    if (!isMethodAllowed(invoiceMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INVOICE} /></PageContainer>;
-    return <PageContainer>
+    if (!isMethodAllowed(invoiceMethods, Methods.GET))
+      return (
+        <PageContainer>
+          <AuthorizationError text={PermissionMissingTexts.INVOICE} />
+        </PageContainer>
+      );
+    return (
+      <PageContainer>
         <Row>
           <Column small={12} large={8} />
           <Column small={12} large={4}>
-            {userActiveServiceUnit && <Search isSearchInitialized={isSearchInitialized} onSearch={this.handleSearchChange} />}
+            {userActiveServiceUnit && (
+              <Search
+                isSearchInitialized={isSearchInitialized}
+                onSearch={this.handleSearchChange}
+              />
+            )}
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6}></Column>
           <Column small={12} medium={6}>
-            <TableFilters amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`} filterOptions={[]} filterValue={[]} />
+            <TableFilters
+              amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
+              filterOptions={[]}
+              filterValue={[]}
+            />
           </Column>
         </Row>
         <TableWrapper>
-          {isFetching && <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>}
-          <SortableTable columns={columns} data={sapInvoices} listTable onRowClick={this.handleRowClick} onSortingChange={this.handleSortingChange} serverSideSorting sortable sortKey={sortKey} sortOrder={sortOrder} />
-          <Pagination activePage={activePage} maxPage={maxPage} onPageClick={this.handlePageClick} />
+          {isFetching && (
+            <LoaderWrapper className="relative-overlay-wrapper">
+              <Loader isLoading={isFetching} />
+            </LoaderWrapper>
+          )}
+          <SortableTable
+            columns={columns}
+            data={sapInvoices}
+            listTable
+            onRowClick={this.handleRowClick}
+            onSortingChange={this.handleSortingChange}
+            serverSideSorting
+            sortable
+            sortKey={sortKey}
+            sortOrder={sortOrder}
+          />
+          <Pagination
+            activePage={activePage}
+            maxPage={maxPage}
+            onPageClick={this.handlePageClick}
+          />
         </TableWrapper>
-      </PageContainer>;
+      </PageContainer>
+    );
   }
-
 }
 
-export default flowRight(withSapInvoicesAttributes, withRouter, connect(state => {
-  return {
-    isFetching: getIsFetching(state),
-    sapInvoiceList: getSapInvoiceList(state),
-    userActiveServiceUnit: getUserActiveServiceUnit(state)
-  };
-}, {
-  fetchSapInvoices,
-  initialize,
-  receiveTopNavigationSettings
-}))(SapInvoicesListPage);
+export default flowRight(
+  withSapInvoicesAttributes,
+  withRouter,
+  connect(
+    (state) => {
+      return {
+        isFetching: getIsFetching(state),
+        sapInvoiceList: getSapInvoiceList(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
+      };
+    },
+    {
+      fetchSapInvoices,
+      initialize,
+      receiveTopNavigationSettings,
+    },
+  ),
+)(SapInvoicesListPage);

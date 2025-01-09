@@ -10,10 +10,21 @@ import { MAP_COLORS } from "@/util/constants";
 import { RentBasisFieldPaths } from "@/rentbasis/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getContentRentBasisGeoJson } from "@/rentbasis/helpers";
-import { getFieldOptions, hasPermissions, isFieldAllowedToRead } from "@/util/helpers";
-import { getBoundsFromCoordinates, getCenterFromCoordinates, getCoordinatesOfGeometry } from "@/util/map";
+import {
+  getFieldOptions,
+  hasPermissions,
+  isFieldAllowedToRead,
+} from "@/util/helpers";
+import {
+  getBoundsFromCoordinates,
+  getCenterFromCoordinates,
+  getCoordinatesOfGeometry,
+} from "@/util/map";
 import { getAreaNoteList } from "@/areaNote/selectors";
-import { getAttributes as getRentBasisAttributes, getRentBasis } from "@/rentbasis/selectors";
+import {
+  getAttributes as getRentBasisAttributes,
+  getRentBasis,
+} from "@/rentbasis/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes, LeafletGeoJson } from "types";
 import type { RentBasis } from "@/rentbasis/types";
@@ -44,22 +55,19 @@ class SingleRentBasisMap extends Component<Props, State> {
     center: undefined,
     financingOptions: [],
     geoJSON: {
-      type: 'FeatureCollection',
-      features: []
+      type: "FeatureCollection",
+      features: [],
     },
     indexOptions: [],
     managementOptions: [],
     overlayLayers: [],
     plotTypeOptions: [],
     rentBasis: {},
-    rentBasisAttributes: null
+    rentBasisAttributes: null,
   };
 
   componentDidMount() {
-    const {
-      fetchAreaNoteList,
-      usersPermissions
-    } = this.props;
+    const { fetchAreaNoteList, usersPermissions } = this.props;
 
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
       fetchAreaNoteList({});
@@ -72,17 +80,34 @@ class SingleRentBasisMap extends Component<Props, State> {
     if (props.rentBasis !== state.rentBasis) {
       const coordinates = getCoordinatesOfGeometry(props.rentBasis.geometry);
       newState.rentBasis = props.rentBasis;
-      newState.bounds = coordinates.length ? getBoundsFromCoordinates(coordinates) : undefined;
-      newState.center = coordinates.length ? getCenterFromCoordinates(coordinates) : undefined;
+      newState.bounds = coordinates.length
+        ? getBoundsFromCoordinates(coordinates)
+        : undefined;
+      newState.center = coordinates.length
+        ? getCenterFromCoordinates(coordinates)
+        : undefined;
       newState.geoJSON = getContentRentBasisGeoJson(props.rentBasis);
     }
 
     if (props.rentBasisAttributes !== state.rentBasisAttributes) {
       newState.rentBasisAttributes = props.rentBasisAttributes;
-      newState.financingOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.FINANCING);
-      newState.indexOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.INDEX, true);
-      newState.managementOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.MANAGEMENT);
-      newState.plotTypeOptions = getFieldOptions(props.rentBasisAttributes, RentBasisFieldPaths.PLOT_TYPE);
+      newState.financingOptions = getFieldOptions(
+        props.rentBasisAttributes,
+        RentBasisFieldPaths.FINANCING,
+      );
+      newState.indexOptions = getFieldOptions(
+        props.rentBasisAttributes,
+        RentBasisFieldPaths.INDEX,
+        true,
+      );
+      newState.managementOptions = getFieldOptions(
+        props.rentBasisAttributes,
+        RentBasisFieldPaths.MANAGEMENT,
+      );
+      newState.plotTypeOptions = getFieldOptions(
+        props.rentBasisAttributes,
+        RentBasisFieldPaths.PLOT_TYPE,
+      );
     }
 
     return newState;
@@ -94,51 +119,74 @@ class SingleRentBasisMap extends Component<Props, State> {
       geoJSON,
       indexOptions,
       managementOptions,
-      plotTypeOptions
+      plotTypeOptions,
     } = this.state;
-    const {
-      areaNotes,
-      rentBasisAttributes,
-      usersPermissions
-    } = this.props;
+    const { areaNotes, rentBasisAttributes, usersPermissions } = this.props;
     const layers = [];
 
-    if (isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY)) {
+    if (
+      isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY)
+    ) {
       layers.push({
         checked: true,
-        component: <RentBasisLayer color={MAP_COLORS[0]} financingOptions={financingOptions} geoJSON={geoJSON} indexOptions={indexOptions} managementOptions={managementOptions} plotTypeOptions={plotTypeOptions} />,
-        name: 'Vuokrausperiaatteet'
+        component: (
+          <RentBasisLayer
+            color={MAP_COLORS[0]}
+            financingOptions={financingOptions}
+            geoJSON={geoJSON}
+            indexOptions={indexOptions}
+            managementOptions={managementOptions}
+            plotTypeOptions={plotTypeOptions}
+          />
+        ),
+        name: "Vuokrausperiaatteet",
       });
     }
 
     {
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) && !isEmpty(areaNotes) && layers.push({
-        checked: false,
-        component: <AreaNotesLayer key='area_notes' allowToEdit={false} areaNotes={areaNotes} />,
-        name: 'Muistettavat ehdot'
-      });
+      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) &&
+        !isEmpty(areaNotes) &&
+        layers.push({
+          checked: false,
+          component: (
+            <AreaNotesLayer
+              key="area_notes"
+              allowToEdit={false}
+              areaNotes={areaNotes}
+            />
+          ),
+          name: "Muistettavat ehdot",
+        });
     }
     return layers;
   };
 
   render() {
-    const {
-      bounds,
-      center
-    } = this.state;
+    const { bounds, center } = this.state;
     const overlayLayers = this.getOverlayLayers();
-    return <AreaNotesEditMap allowToEdit={false} bounds={bounds} center={center} overlayLayers={overlayLayers} />;
+    return (
+      <AreaNotesEditMap
+        allowToEdit={false}
+        bounds={bounds}
+        center={center}
+        overlayLayers={overlayLayers}
+      />
+    );
   }
-
 }
 
-export default flowRight(connect(state => {
-  return {
-    areaNotes: getAreaNoteList(state),
-    rentBasis: getRentBasis(state),
-    rentBasisAttributes: getRentBasisAttributes(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  fetchAreaNoteList
-}))(SingleRentBasisMap);
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        areaNotes: getAreaNoteList(state),
+        rentBasis: getRentBasis(state),
+        rentBasisAttributes: getRentBasisAttributes(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+    {
+      fetchAreaNoteList,
+    },
+  ),
+)(SingleRentBasisMap);

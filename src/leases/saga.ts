@@ -1,22 +1,63 @@
-import { all, call, fork, put, select, takeEvery, takeLatest } from "redux-saga/effects";
+import {
+  all,
+  call,
+  fork,
+  put,
+  select,
+  takeEvery,
+  takeLatest,
+} from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
 import { getRouteById, Routes } from "@/root/routes";
-import { fetchSingleLeaseAfterEdit, hideAttachDecisionModal, hideCreateModal, hideEditMode, attributesNotFound, notFound, notFoundByBBox, notFoundById, receiveAttributes, receiveMethods, receiveIsSaveClicked, receiveLeases, receiveLeasesByBBox, receiveSingleLease, receiveLeaseById, receiveLeasesForContractNumbers } from "./actions";
+import {
+  fetchSingleLeaseAfterEdit,
+  hideAttachDecisionModal,
+  hideCreateModal,
+  hideEditMode,
+  attributesNotFound,
+  notFound,
+  notFoundByBBox,
+  notFoundById,
+  receiveAttributes,
+  receiveMethods,
+  receiveIsSaveClicked,
+  receiveLeases,
+  receiveLeasesByBBox,
+  receiveSingleLease,
+  receiveLeaseById,
+  receiveLeasesForContractNumbers,
+} from "./actions";
 import { receiveError } from "@/api/actions";
-import { fetchInvoicesByLease, receiveIsCreateInvoicePanelOpen } from "@/invoices/actions";
+import {
+  fetchInvoicesByLease,
+  receiveIsCreateInvoicePanelOpen,
+} from "@/invoices/actions";
 import { fetchInvoiceSetsByLease } from "@/invoiceSets/actions";
 import { displayUIMessage, getSearchQuery, getUrlParams } from "@/util/helpers";
-import { copyAreasToContract, copyDecisionToLeases, createCharge, createLease, deleteLease, fetchAttributes, fetchLeases, fetchSingleLease, patchLease, sendEmail, startInvoicing, stopInvoicing, setRentInfoComplete, setRentInfoUncomplete } from "./requests";
+import {
+  copyAreasToContract,
+  copyDecisionToLeases,
+  createCharge,
+  createLease,
+  deleteLease,
+  fetchAttributes,
+  fetchLeases,
+  fetchSingleLease,
+  patchLease,
+  sendEmail,
+  startInvoicing,
+  stopInvoicing,
+  setRentInfoComplete,
+  setRentInfoUncomplete,
+} from "./requests";
 import { getCurrentLease } from "./selectors";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -40,14 +81,12 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchLeasesSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchLeases, query);
 
     switch (statusCode) {
@@ -69,14 +108,12 @@ function* fetchLeasesSaga({
 
 function* fetchLeasesByBBoxSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchLeases, query);
 
     switch (statusCode) {
@@ -98,14 +135,12 @@ function* fetchLeasesByBBoxSaga({
 
 function* fetchSingleLeaseSaga({
   payload: id,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchSingleLease, id);
 
     switch (statusCode) {
@@ -115,8 +150,7 @@ function* fetchSingleLeaseSaga({
 
       case 404:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       default:
@@ -132,15 +166,13 @@ function* fetchSingleLeaseSaga({
 
 function* fetchSingleLeaseAfterEditSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const callbackFunctions = payload.callbackFunctions;
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchSingleLease, payload.leaseId);
 
     switch (statusCode) {
@@ -150,12 +182,12 @@ function* fetchSingleLeaseAfterEditSaga({
         if (callbackFunctions) {
           for (let i = 0; i < callbackFunctions.length; i++) {
             switch (typeof callbackFunctions[i]) {
-              case 'function':
+              case "function":
                 // Functions
                 callbackFunctions[i]();
                 break;
 
-              case 'object':
+              case "object":
                 // Redux saga functions
                 yield put(callbackFunctions[i]);
             }
@@ -166,8 +198,7 @@ function* fetchSingleLeaseAfterEditSaga({
 
       case 404:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -183,22 +214,22 @@ function* fetchSingleLeaseAfterEditSaga({
 
 function* fetchLeaseByIdSaga({
   payload: id,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchSingleLease, id);
 
     switch (statusCode) {
       case 200:
-        yield put(receiveLeaseById({
-          leaseId: id,
-          lease: bodyAsJson
-        }));
+        yield put(
+          receiveLeaseById({
+            leaseId: id,
+            lease: bodyAsJson,
+          }),
+        );
         break;
 
       default:
@@ -213,14 +244,12 @@ function* fetchLeaseByIdSaga({
 
 function* createLeaseSaga({
   payload: lease,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createLease, lease);
 
     switch (statusCode) {
@@ -229,15 +258,14 @@ function* createLeaseSaga({
         yield put(receiveIsSaveClicked(false));
         yield put(hideEditMode());
         displayUIMessage({
-          title: '',
-          body: 'Vuokraus luotu'
+          title: "",
+          body: "Vuokraus luotu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -254,26 +282,31 @@ function* createLeaseSaga({
 
 function* createLeaseAndUpdateCurrentLeaseSaga({
   payload: lease,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const currentLease = lease.relate_to;
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createLease, lease);
 
     switch (statusCode) {
       case 201:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: currentLease,
-          callbackFunctions: [hideCreateModal(), receiveIsSaveClicked(false), () => displayUIMessage({
-            title: '',
-            body: 'Vuokraus luotu'
-          })]
-        }));
+        yield put(
+          fetchSingleLeaseAfterEdit({
+            leaseId: currentLease,
+            callbackFunctions: [
+              hideCreateModal(),
+              receiveIsSaveClicked(false),
+              () =>
+                displayUIMessage({
+                  title: "",
+                  body: "Vuokraus luotu",
+                }),
+            ],
+          }),
+        );
         break;
 
       default:
@@ -290,14 +323,12 @@ function* createLeaseAndUpdateCurrentLeaseSaga({
 
 function* deleteLeaseSaga({
   payload: leaseId,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deleteLease, leaseId);
 
     switch (statusCode) {
@@ -308,18 +339,19 @@ function* deleteLeaseSaga({
         delete query.lease_area;
         delete query.plan_unit;
         delete query.plot;
-        yield put(push(`${getRouteById(Routes.LEASES)}/${getSearchQuery(query)}`));
+        yield put(
+          push(`${getRouteById(Routes.LEASES)}/${getSearchQuery(query)}`),
+        );
         displayUIMessage({
-          title: '',
-          body: 'Vuokraus poistettu'
+          title: "",
+          body: "Vuokraus poistettu",
         });
         break;
 
       case 400:
       case 401:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -336,33 +368,42 @@ function* deleteLeaseSaga({
 
 function* patchLeaseSaga({
   payload: lease,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(patchLease, lease);
 
     switch (statusCode) {
       case 200:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: lease.id,
-          callbackFunctions: [hideEditMode(), receiveIsSaveClicked(false), () => displayUIMessage({
-            title: '',
-            body: 'Vuokraus tallennettu'
-          })]
-        }));
+        yield put(
+          fetchSingleLeaseAfterEdit({
+            leaseId: lease.id,
+            callbackFunctions: [
+              hideEditMode(),
+              receiveIsSaveClicked(false),
+              () =>
+                displayUIMessage({
+                  title: "",
+                  body: "Vuokraus tallennettu",
+                }),
+            ],
+          }),
+        );
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         break;
 
       case 500:
@@ -379,33 +420,42 @@ function* patchLeaseSaga({
 
 function* patchLeaseInvoiceNotesSaga({
   payload: lease,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(patchLease, lease);
 
     switch (statusCode) {
       case 200:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: lease.id,
-          callbackFunctions: [hideEditMode(), receiveIsSaveClicked(false), () => displayUIMessage({
-            title: '',
-            body: 'Laskujen tiedotteet tallennettu'
-          })]
-        }));
+        yield put(
+          fetchSingleLeaseAfterEdit({
+            leaseId: lease.id,
+            callbackFunctions: [
+              hideEditMode(),
+              receiveIsSaveClicked(false),
+              () =>
+                displayUIMessage({
+                  title: "",
+                  body: "Laskujen tiedotteet tallennettu",
+                }),
+            ],
+          }),
+        );
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         break;
 
       case 500:
@@ -420,35 +470,39 @@ function* patchLeaseInvoiceNotesSaga({
   }
 }
 
-function* sendEmailSaga({
-  payload,
-  type: any
-}): Generator<any, any, any> {
+function* sendEmailSaga({ payload, type: any }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(sendEmail, payload);
 
     switch (statusCode) {
       case 200:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: payload.lease,
-          callbackFunctions: [() => displayUIMessage({
-            title: '',
-            body: 'Sähköposti lähetetty'
-          })]
-        }));
+        yield put(
+          fetchSingleLeaseAfterEdit({
+            leaseId: payload.lease,
+            callbackFunctions: [
+              () =>
+                displayUIMessage({
+                  title: "",
+                  body: "Sähköposti lähetetty",
+                }),
+            ],
+          }),
+        );
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         break;
 
       case 500:
@@ -465,28 +519,26 @@ function* sendEmailSaga({
 
 function* startInvoicingSaga({
   payload: leaseId,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(startInvoicing, leaseId);
 
     switch (statusCode) {
       case 200:
         const currentLease = yield select(getCurrentLease);
-        yield put(receiveSingleLease({ ...currentLease,
-          is_invoicing_enabled: true
-        }));
+        yield put(
+          receiveSingleLease({ ...currentLease, is_invoicing_enabled: true }),
+        );
         // Update invoice and invoice set lists after starting invoicing
         yield put(fetchInvoicesByLease(leaseId));
         yield put(fetchInvoiceSetsByLease(leaseId));
         displayUIMessage({
-          title: '',
-          body: 'Laskutus käynnistetty'
+          title: "",
+          body: "Laskutus käynnistetty",
         });
         break;
 
@@ -504,25 +556,23 @@ function* startInvoicingSaga({
 
 function* stopInvoicingSaga({
   payload: leaseId,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(stopInvoicing, leaseId);
 
     switch (statusCode) {
       case 200:
         const currentLease = yield select(getCurrentLease);
-        yield put(receiveSingleLease({ ...currentLease,
-          is_invoicing_enabled: false
-        }));
+        yield put(
+          receiveSingleLease({ ...currentLease, is_invoicing_enabled: false }),
+        );
         displayUIMessage({
-          title: '',
-          body: 'Laskutus keskeytetty'
+          title: "",
+          body: "Laskutus keskeytetty",
         });
         break;
 
@@ -540,25 +590,23 @@ function* stopInvoicingSaga({
 
 function* setRentInfoCompleteSaga({
   payload: leaseId,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(setRentInfoComplete, leaseId);
 
     switch (statusCode) {
       case 200:
         const currentLease = yield select(getCurrentLease);
-        yield put(receiveSingleLease({ ...currentLease,
-          is_rent_info_complete: true
-        }));
+        yield put(
+          receiveSingleLease({ ...currentLease, is_rent_info_complete: true }),
+        );
         displayUIMessage({
-          title: '',
-          body: 'Vuokratiedot on merkattu olevan kunnossa'
+          title: "",
+          body: "Vuokratiedot on merkattu olevan kunnossa",
         });
         break;
 
@@ -576,25 +624,23 @@ function* setRentInfoCompleteSaga({
 
 function* setRentInfoUncompleteSaga({
   payload: leaseId,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(setRentInfoUncomplete, leaseId);
 
     switch (statusCode) {
       case 200:
         const currentLease = yield select(getCurrentLease);
-        yield put(receiveSingleLease({ ...currentLease,
-          is_rent_info_complete: false
-        }));
+        yield put(
+          receiveSingleLease({ ...currentLease, is_rent_info_complete: false }),
+        );
         displayUIMessage({
-          title: '',
-          body: 'Vuokratiedot on merkattu keskeneräisiksi'
+          title: "",
+          body: "Vuokratiedot on merkattu keskeneräisiksi",
         });
         break;
 
@@ -610,19 +656,12 @@ function* setRentInfoUncompleteSaga({
   }
 }
 
-function* createChargeSaga({
-  payload,
-  type: any
-}): Generator<any, any, any> {
+function* createChargeSaga({ payload, type: any }): Generator<any, any, any> {
   try {
+    const { leaseId } = payload;
     const {
-      leaseId
-    } = payload;
-    const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createCharge, payload);
 
     switch (statusCode) {
@@ -631,14 +670,13 @@ function* createChargeSaga({
         yield put(fetchInvoiceSetsByLease(leaseId));
         yield put(receiveIsCreateInvoicePanelOpen(false));
         displayUIMessage({
-          title: '',
-          body: 'Laskut luotu'
+          title: "",
+          body: "Laskut luotu",
         });
         break;
 
       default:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -649,47 +687,50 @@ function* createChargeSaga({
 
 function* copyAreasToContractSaga({
   payload: leaseId,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(copyAreasToContract, leaseId);
 
     switch (statusCode) {
       case 200:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: leaseId,
-          callbackFunctions: [() => displayUIMessage({
-            title: '',
-            body: 'Kopioitu sopimukseen'
-          })]
-        }));
+        yield put(
+          fetchSingleLeaseAfterEdit({
+            leaseId: leaseId,
+            callbackFunctions: [
+              () =>
+                displayUIMessage({
+                  title: "",
+                  body: "Kopioitu sopimukseen",
+                }),
+            ],
+          }),
+        );
         break;
 
       default:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
-    console.error('Failed to copy lease areas to contract with error "%s"', error);
+    console.error(
+      'Failed to copy lease areas to contract with error "%s"',
+      error,
+    );
     yield put(receiveError(error));
   }
 }
 
 function* copyDecisionToLeasesSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      }
+      response: { status: statusCode },
     } = yield call(copyDecisionToLeases, payload);
 
     switch (statusCode) {
@@ -698,18 +739,21 @@ function* copyDecisionToLeasesSaga({
         // Set isSaving flag to false
         yield put(notFound());
         displayUIMessage({
-          title: '',
-          body: 'Päätös kopioitu vuokrauksiin'
+          title: "",
+          body: "Päätös kopioitu vuokrauksiin",
         });
         break;
 
       default:
-        displayUIMessage({
-          title: '',
-          body: 'Päätöksen kopioiminen vuokrauksiin epäonnistui'
-        }, {
-          type: 'error'
-        });
+        displayUIMessage(
+          {
+            title: "",
+            body: "Päätöksen kopioiminen vuokrauksiin epäonnistui",
+          },
+          {
+            type: "error",
+          },
+        );
         // Set isSaving flag to false
         yield put(notFound());
         break;
@@ -723,14 +767,12 @@ function* copyDecisionToLeasesSaga({
 
 function* fetchLeasesForContractNumbersSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchLeases, query);
 
     switch (statusCode) {
@@ -751,24 +793,52 @@ function* fetchLeasesForContractNumbersSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/leases/FETCH_ALL', fetchLeasesSaga);
-    yield takeLatest('mvj/leases/FETCH_BY_BBOX', fetchLeasesByBBoxSaga);
-    yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
-    yield takeLatest('mvj/leases/FETCH_SINGLE_AFTER_EDIT', fetchSingleLeaseAfterEditSaga);
-    yield takeEvery('mvj/leases/FETCH_BY_ID', fetchLeaseByIdSaga);
-    yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
-    yield takeLatest('mvj/leases/CREATE_AND_UPDATE', createLeaseAndUpdateCurrentLeaseSaga);
-    yield takeLatest('mvj/leases/DELETE', deleteLeaseSaga);
-    yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
-    yield takeLatest('mvj/leases/PATCH_INVOICE_NOTES', patchLeaseInvoiceNotesSaga);
-    yield takeLatest('mvj/leases/SEND_EMAIL', sendEmailSaga);
-    yield takeLatest('mvj/leases/START_INVOICING', startInvoicingSaga);
-    yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
-    yield takeLatest('mvj/leases/SET_RENT_INFO_COMPLETE', setRentInfoCompleteSaga), yield takeLatest('mvj/leases/SET_RENT_INFO_UNCOMPLETE', setRentInfoUncompleteSaga), yield takeLatest('mvj/leases/CREATE_CHARGE', createChargeSaga);
-    yield takeLatest('mvj/leases/COPY_AREAS_TO_CONTRACT', copyAreasToContractSaga);
-    yield takeLatest('mvj/leases/COPY_DECISION_TO_LEASES', copyDecisionToLeasesSaga);
-    yield takeLatest('mvj/leases/FETCH_LEASES_FOR_CONTRACT_NUMBERS', fetchLeasesForContractNumbersSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/leases/FETCH_ATTRIBUTES", fetchAttributesSaga);
+      yield takeLatest("mvj/leases/FETCH_ALL", fetchLeasesSaga);
+      yield takeLatest("mvj/leases/FETCH_BY_BBOX", fetchLeasesByBBoxSaga);
+      yield takeLatest("mvj/leases/FETCH_SINGLE", fetchSingleLeaseSaga);
+      yield takeLatest(
+        "mvj/leases/FETCH_SINGLE_AFTER_EDIT",
+        fetchSingleLeaseAfterEditSaga,
+      );
+      yield takeEvery("mvj/leases/FETCH_BY_ID", fetchLeaseByIdSaga);
+      yield takeLatest("mvj/leases/CREATE", createLeaseSaga);
+      yield takeLatest(
+        "mvj/leases/CREATE_AND_UPDATE",
+        createLeaseAndUpdateCurrentLeaseSaga,
+      );
+      yield takeLatest("mvj/leases/DELETE", deleteLeaseSaga);
+      yield takeLatest("mvj/leases/PATCH", patchLeaseSaga);
+      yield takeLatest(
+        "mvj/leases/PATCH_INVOICE_NOTES",
+        patchLeaseInvoiceNotesSaga,
+      );
+      yield takeLatest("mvj/leases/SEND_EMAIL", sendEmailSaga);
+      yield takeLatest("mvj/leases/START_INVOICING", startInvoicingSaga);
+      yield takeLatest("mvj/leases/STOP_INVOICING", stopInvoicingSaga);
+      yield takeLatest(
+        "mvj/leases/SET_RENT_INFO_COMPLETE",
+        setRentInfoCompleteSaga,
+      ),
+        yield takeLatest(
+          "mvj/leases/SET_RENT_INFO_UNCOMPLETE",
+          setRentInfoUncompleteSaga,
+        ),
+        yield takeLatest("mvj/leases/CREATE_CHARGE", createChargeSaga);
+      yield takeLatest(
+        "mvj/leases/COPY_AREAS_TO_CONTRACT",
+        copyAreasToContractSaga,
+      );
+      yield takeLatest(
+        "mvj/leases/COPY_DECISION_TO_LEASES",
+        copyDecisionToLeasesSaga,
+      );
+      yield takeLatest(
+        "mvj/leases/FETCH_LEASES_FOR_CONTRACT_NUMBERS",
+        fetchLeasesForContractNumbersSaga,
+      );
+    }),
+  ]);
 }

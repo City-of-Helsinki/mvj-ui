@@ -13,41 +13,46 @@ type Props = {
 const ControlButtonBar = ({
   buttonComponent,
   infoComponent,
-  onBack
-}: Props) => <AppConsumer>
-    {({
-    dispatch
-  }) => {
-    const handleBack = () => {
-      const hasDirtyPages = hasAnyPageDirtyForms();
+  onBack,
+}: Props) => (
+  <AppConsumer>
+    {({ dispatch }) => {
+      const handleBack = () => {
+        const hasDirtyPages = hasAnyPageDirtyForms();
 
-      if (hasDirtyPages) {
-        dispatch({
-          type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-          confirmationFunction: () => {
-            onBack();
-          },
-          confirmationModalButtonClassName: ButtonColors.ALERT,
-          confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
-          confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
-          confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE
-        });
-      } else {
-        onBack();
-      }
-    };
+        if (hasDirtyPages) {
+          dispatch({
+            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+            confirmationFunction: () => {
+              onBack();
+            },
+            confirmationModalButtonClassName: ButtonColors.ALERT,
+            confirmationModalButtonText:
+              ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+            confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+            confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
+          });
+        } else {
+          onBack();
+        }
+      };
 
-    return <div className='control-button-bar'>
-          <div className='control-button-bar__wrapper'>
-            {onBack && <div className='back-button-wrapper'>
+      return (
+        <div className="control-button-bar">
+          <div className="control-button-bar__wrapper">
+            {onBack && (
+              <div className="back-button-wrapper">
                 <BackButton onClick={handleBack} />
-              </div>}
+              </div>
+            )}
 
-            <div className='info-component-wrapper'>{infoComponent}</div>
-            <div className='control-buttons-wrapper'>{buttonComponent}</div>
+            <div className="info-component-wrapper">{infoComponent}</div>
+            <div className="control-buttons-wrapper">{buttonComponent}</div>
           </div>
-        </div>;
-  }}
-  </AppConsumer>;
+        </div>
+      );
+    }}
+  </AppConsumer>
+);
 
 export default ControlButtonBar;

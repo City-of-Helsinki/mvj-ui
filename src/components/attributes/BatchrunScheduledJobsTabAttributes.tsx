@@ -2,7 +2,11 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import { fetchScheduledJobAttributes as fetchBatchrunScheduledJobAttributes } from "@/batchrun/actions";
-import { getScheduledJobAttributes as getBatchrunScheduledJobAttributes, getIsFetchingScheduledJobAttributes as getIsFetchingBatchrunScheduledJobAttributes, getScheduledJobMethods as getBatchrunScheduledJobMethods } from "@/batchrun/selectors";
+import {
+  getScheduledJobAttributes as getBatchrunScheduledJobAttributes,
+  getIsFetchingScheduledJobAttributes as getIsFetchingBatchrunScheduledJobAttributes,
+  getScheduledJobMethods as getBatchrunScheduledJobMethods,
+} from "@/batchrun/selectors";
 import type { Attributes, Methods } from "types";
 
 function BatchrunScheduledJobTabAttributes(WrappedComponent: any) {
@@ -18,10 +22,14 @@ function BatchrunScheduledJobTabAttributes(WrappedComponent: any) {
         batchrunScheduledJobAttributes,
         batchrunScheduledJobMethods,
         fetchBatchrunScheduledJobAttributes,
-        isFetchingBatchrunScheduledJobAttributes
+        isFetchingBatchrunScheduledJobAttributes,
       } = this.props;
 
-      if (!isFetchingBatchrunScheduledJobAttributes && !batchrunScheduledJobAttributes && !batchrunScheduledJobMethods) {
+      if (
+        !isFetchingBatchrunScheduledJobAttributes &&
+        !batchrunScheduledJobAttributes &&
+        !batchrunScheduledJobMethods
+      ) {
         fetchBatchrunScheduledJobAttributes();
       }
     }
@@ -29,17 +37,24 @@ function BatchrunScheduledJobTabAttributes(WrappedComponent: any) {
     render() {
       return <WrappedComponent {...this.props} />;
     }
-
   };
 }
 
-const withBatchrunScheduledJobTabAttributes = flowRight(connect(state => {
-  return {
-    batchrunScheduledJobAttributes: getBatchrunScheduledJobAttributes(state),
-    batchrunScheduledJobMethods: getBatchrunScheduledJobMethods(state),
-    isFetchingBatchrunScheduledJobAttributes: getIsFetchingBatchrunScheduledJobAttributes(state)
-  };
-}, {
-  fetchBatchrunScheduledJobAttributes
-}), BatchrunScheduledJobTabAttributes);
+const withBatchrunScheduledJobTabAttributes = flowRight(
+  connect(
+    (state) => {
+      return {
+        batchrunScheduledJobAttributes:
+          getBatchrunScheduledJobAttributes(state),
+        batchrunScheduledJobMethods: getBatchrunScheduledJobMethods(state),
+        isFetchingBatchrunScheduledJobAttributes:
+          getIsFetchingBatchrunScheduledJobAttributes(state),
+      };
+    },
+    {
+      fetchBatchrunScheduledJobAttributes,
+    },
+  ),
+  BatchrunScheduledJobTabAttributes,
+);
 export { withBatchrunScheduledJobTabAttributes };

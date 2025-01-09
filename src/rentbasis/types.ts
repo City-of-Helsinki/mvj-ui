@@ -19,7 +19,10 @@ export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;
 export type RentBasisAttributesNotFoundAction = Action<string, void>;
-export type FetchRentBasisListAction = Action<string, Record<string, any> | null | undefined>;
+export type FetchRentBasisListAction = Action<
+  string,
+  Record<string, any> | null | undefined
+>;
 export type ReceiveRentBasisListAction = Action<string, RentBasisList>;
 export type FetchSingleRentBasisAction = Action<string, RentBasisId>;
 export type ReceiveSingleRentBasisAction = Action<string, RentBasis>;

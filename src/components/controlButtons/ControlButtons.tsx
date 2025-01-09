@@ -54,90 +54,143 @@ const ControlButtons = ({
   onSave,
   showCommentButton = true,
   showCopyButton = false,
-  saveButtonText = 'Tallenna'
+  saveButtonText = "Tallenna",
 }: Props): JSX.Element => {
   const handleComment = () => {
     onComment?.();
   };
 
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      const handleCancel = () => {
-        const hasDirtyPages = hasAnyPageDirtyForms();
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        const handleCancel = () => {
+          const hasDirtyPages = hasAnyPageDirtyForms();
 
-        if (hasDirtyPages) {
+          if (hasDirtyPages) {
+            dispatch({
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
+                if (onCancel) onCancel();
+              },
+              confirmationModalButtonClassName: ButtonColors.ALERT,
+              confirmationModalButtonText:
+                ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+              confirmationModalLabel:
+                ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+              confirmationModalTitle:
+                ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
+            });
+          } else {
+            if (onCancel) onCancel();
+          }
+        };
+
+        const handleCopy = () => {
+          const hasDirtyPages = hasAnyPageDirtyForms();
+
+          if (hasDirtyPages) {
+            dispatch({
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
+                if (onCopy) onCopy();
+              },
+              confirmationModalButtonClassName: ButtonColors.ALERT,
+              confirmationModalButtonText:
+                ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+              confirmationModalLabel:
+                ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+              confirmationModalTitle:
+                ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
+            });
+          } else {
+            if (onCopy) onCopy();
+          }
+        };
+
+        const handleDelete = () => {
           dispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
-              if (onCancel) onCancel();
+              if (onDelete) onDelete();
             },
-            confirmationModalButtonClassName: ButtonColors.ALERT,
-            confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
-            confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
-            confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE
+            confirmationModalButtonClassName: deleteModalTexts
+              ? deleteModalTexts.buttonClassName
+              : "",
+            confirmationModalButtonText: deleteModalTexts
+              ? deleteModalTexts.buttonText
+              : "",
+            confirmationModalLabel: deleteModalTexts
+              ? deleteModalTexts.label
+              : "",
+            confirmationModalTitle: deleteModalTexts
+              ? deleteModalTexts.title
+              : "",
           });
-        } else {
-          if (onCancel) onCancel();
-        }
-      };
+        };
 
-      const handleCopy = () => {
-        const hasDirtyPages = hasAnyPageDirtyForms();
-
-        if (hasDirtyPages) {
-          dispatch({
-            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-            confirmationFunction: () => {
-              if (onCopy) onCopy();
-            },
-            confirmationModalButtonClassName: ButtonColors.ALERT,
-            confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
-            confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
-            confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE
-          });
-        } else {
-          if (onCopy) onCopy();
-        }
-      };
-
-      const handleDelete = () => {
-        dispatch({
-          type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-          confirmationFunction: () => {
-            if (onDelete) onDelete();
-          },
-          confirmationModalButtonClassName: deleteModalTexts ? deleteModalTexts.buttonClassName : '',
-          confirmationModalButtonText: deleteModalTexts ? deleteModalTexts.buttonText : '',
-          confirmationModalLabel: deleteModalTexts ? deleteModalTexts.label : '',
-          confirmationModalTitle: deleteModalTexts ? deleteModalTexts.title : ''
-        });
-      };
-
-      return <div className='control-buttons'>
-            {isEditMode && <div className='control-buttons__left-button-wrapper'>
-                <Button className={ButtonColors.SECONDARY} disabled={isCancelDisabled} onClick={handleCancel} text='Hylkää muutokset' />
-                {showCopyButton && <Authorization allow={allowCopy}>
-                    <Button className={ButtonColors.NEUTRAL} disabled={isCopyDisabled} onClick={handleCopy} text='Kopioi' />
-                  </Authorization>}
-                {onDelete && <Authorization allow={allowDelete}>
-                    <Button className={ButtonColors.ALERT} onClick={handleDelete} text='Poista' />
-                  </Authorization>}
-                <Button className={ButtonColors.SUCCESS} disabled={!allowEdit || isSaveDisabled} onClick={onSave} text={saveButtonText} />
-              </div>}
-            {!isEditMode && <div className='control-buttons__left-button-wrapper'>
+        return (
+          <div className="control-buttons">
+            {isEditMode && (
+              <div className="control-buttons__left-button-wrapper">
+                <Button
+                  className={ButtonColors.SECONDARY}
+                  disabled={isCancelDisabled}
+                  onClick={handleCancel}
+                  text="Hylkää muutokset"
+                />
+                {showCopyButton && (
+                  <Authorization allow={allowCopy}>
+                    <Button
+                      className={ButtonColors.NEUTRAL}
+                      disabled={isCopyDisabled}
+                      onClick={handleCopy}
+                      text="Kopioi"
+                    />
+                  </Authorization>
+                )}
+                {onDelete && (
+                  <Authorization allow={allowDelete}>
+                    <Button
+                      className={ButtonColors.ALERT}
+                      onClick={handleDelete}
+                      text="Poista"
+                    />
+                  </Authorization>
+                )}
+                <Button
+                  className={ButtonColors.SUCCESS}
+                  disabled={!allowEdit || isSaveDisabled}
+                  onClick={onSave}
+                  text={saveButtonText}
+                />
+              </div>
+            )}
+            {!isEditMode && (
+              <div className="control-buttons__left-button-wrapper">
                 <Authorization allow={allowEdit}>
-                  <Button className={ButtonColors.SUCCESS} disabled={isEditDisabled} onClick={onEdit} text='Muokkaa' />
+                  <Button
+                    className={ButtonColors.SUCCESS}
+                    disabled={isEditDisabled}
+                    onClick={onEdit}
+                    text="Muokkaa"
+                  />
                 </Authorization>
-              </div>}
+              </div>
+            )}
 
-            {!!showCommentButton && <Authorization allow={allowComments}>
-                <CommentButton commentAmount={commentAmount} onClick={handleComment} />
-              </Authorization>}
-          </div>;
-    }}
-    </AppConsumer>;
+            {!!showCommentButton && (
+              <Authorization allow={allowComments}>
+                <CommentButton
+                  commentAmount={commentAmount}
+                  onClick={handleComment}
+                />
+              </Authorization>
+            )}
+          </div>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
 export default ControlButtons;

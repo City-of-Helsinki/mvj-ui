@@ -19,26 +19,19 @@ type State = {
 
 class FileDownloadLink extends PureComponent<Props, State> {
   state = {
-    isLoading: false
+    isLoading: false,
   };
   handleClick = () => {
-    const {
-      apiToken,
-      fileName: fileNameProp,
-      fileUrl,
-      label
-    } = this.props;
-    const {
-      isLoading
-    } = this.state;
+    const { apiToken, fileName: fileNameProp, fileUrl, label } = this.props;
+    const { isLoading } = this.state;
     if (isLoading) return;
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
 
     const stopLoader = () => {
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
     };
 
@@ -46,7 +39,7 @@ class FileDownloadLink extends PureComponent<Props, State> {
       const request = new Request(fileUrl);
 
       if (apiToken) {
-        request.headers.set('Authorization', `Bearer ${apiToken}`);
+        request.headers.set("Authorization", `Bearer ${apiToken}`);
       }
 
       try {
@@ -55,17 +48,22 @@ class FileDownloadLink extends PureComponent<Props, State> {
         switch (response.status) {
           case 200:
             const blob = await response.blob();
-            const filename = fileNameProp ? fileNameProp : getFileNameFromResponse(response);
+            const filename = fileNameProp
+              ? fileNameProp
+              : getFileNameFromResponse(response);
             saveAs(blob, filename || label);
             break;
 
           default:
-            displayUIMessage({
-              title: '',
-              body: 'Tiedoston lataaminen epäonnistui'
-            }, {
-              type: 'error'
-            });
+            displayUIMessage(
+              {
+                title: "",
+                body: "Tiedoston lataaminen epäonnistui",
+              },
+              {
+                type: "error",
+              },
+            );
             break;
         }
 
@@ -73,12 +71,15 @@ class FileDownloadLink extends PureComponent<Props, State> {
       } catch (e) {
         console.error(`Failed to download file with error ${e}`);
         stopLoader();
-        displayUIMessage({
-          title: '',
-          body: 'Tiedoston lataaminen epäonnistui'
-        }, {
-          type: 'error'
-        });
+        displayUIMessage(
+          {
+            title: "",
+            body: "Tiedoston lataaminen epäonnistui",
+          },
+          {
+            type: "error",
+          },
+        );
       }
     };
 
@@ -92,25 +93,28 @@ class FileDownloadLink extends PureComponent<Props, State> {
   };
 
   render() {
-    const {
-      className,
-      label
-    } = this.props;
-    const {
-      isLoading
-    } = this.state;
-    return <a className={classNames('file__file-download-link', className)} onClick={this.handleClick} onKeyDown={this.handleKeyDown} tabIndex={0}>
-      {label}
-      {isLoading && <LoaderWrapper className='small-inline-wrapper'>
-          <Loader isLoading={isLoading} className='small' />
-        </LoaderWrapper>}
-    </a>;
+    const { className, label } = this.props;
+    const { isLoading } = this.state;
+    return (
+      <a
+        className={classNames("file__file-download-link", className)}
+        onClick={this.handleClick}
+        onKeyDown={this.handleKeyDown}
+        tabIndex={0}
+      >
+        {label}
+        {isLoading && (
+          <LoaderWrapper className="small-inline-wrapper">
+            <Loader isLoading={isLoading} className="small" />
+          </LoaderWrapper>
+        )}
+      </a>
+    );
   }
-
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    apiToken: getApiToken(state)
+    apiToken: getApiToken(state),
   };
 })(FileDownloadLink);

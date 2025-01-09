@@ -3,7 +3,10 @@ import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import { fetchUsersPermissions } from "@/usersPermissions/actions";
-import { getUsersPermissions, getIsFetching as getIsFetchingUsersPermissions } from "@/usersPermissions/selectors";
+import {
+  getUsersPermissions,
+  getIsFetching as getIsFetchingUsersPermissions,
+} from "@/usersPermissions/selectors";
 import type { UsersPermissions } from "@/usersPermissions/types";
 
 function UsersPermissionsWrapper(WrappedComponent: any) {
@@ -17,7 +20,7 @@ function UsersPermissionsWrapper(WrappedComponent: any) {
       const {
         fetchUsersPermissions,
         isFetchingUsersPermissions,
-        usersPermissions
+        usersPermissions,
       } = this.props;
 
       if (!isFetchingUsersPermissions && isEmpty(usersPermissions)) {
@@ -28,16 +31,21 @@ function UsersPermissionsWrapper(WrappedComponent: any) {
     render() {
       return <WrappedComponent {...this.props} />;
     }
-
   };
 }
 
-const withUsersPermissions = flowRight(connect(state => {
-  return {
-    isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  fetchUsersPermissions
-}), UsersPermissionsWrapper);
+const withUsersPermissions = flowRight(
+  connect(
+    (state) => {
+      return {
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+    {
+      fetchUsersPermissions,
+    },
+  ),
+  UsersPermissionsWrapper,
+);
 export { withUsersPermissions };

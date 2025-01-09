@@ -31,11 +31,12 @@ class Search extends PureComponent<Props> {
   }
 
   componentDidUpdate(prevProps: Record<string, any>) {
-    const {
-      isSearchInitialized
-    } = this.props;
+    const { isSearchInitialized } = this.props;
 
-    if (isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
+    if (
+      isSearchInitialized &&
+      !isEqual(prevProps.formValues, this.props.formValues)
+    ) {
       this.onSearchChange();
     }
   }
@@ -45,14 +46,8 @@ class Search extends PureComponent<Props> {
     this.search();
   }, 1000);
   search = () => {
-    const {
-      formValues,
-      onSearch,
-      sortKey,
-      sortOrder
-    } = this.props;
-    const newValues = { ...formValues
-    };
+    const { formValues, onSearch, sortKey, sortOrder } = this.props;
+    const newValues = { ...formValues };
 
     if (sortKey) {
       newValues.sort_key = sortKey;
@@ -62,11 +57,7 @@ class Search extends PureComponent<Props> {
     onSearch(newValues, true);
   };
   handleClear = () => {
-    const {
-      onSearch,
-      sortKey,
-      sortOrder
-    } = this.props;
+    const { onSearch, sortKey, sortOrder } = this.props;
     const query: any = {};
 
     if (sortKey || sortOrder) {
@@ -78,48 +69,66 @@ class Search extends PureComponent<Props> {
   };
 
   render() {
-    const {
-      handleSubmit
-    } = this.props;
-    return <SearchContainer onSubmit={handleSubmit(this.search)}>
+    const { handleSubmit } = this.props;
+    return (
+      <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
           <Column large={12}>
-            <FormField disableDirty fieldAttributes={{
-            label: 'Hae hakusanalla',
-            type: FieldTypes.SEARCH,
-            read_only: false
-          }} invisibleLabel name='search' />
+            <FormField
+              disableDirty
+              fieldAttributes={{
+                label: "Hae hakusanalla",
+                type: FieldTypes.SEARCH,
+                read_only: false,
+              }}
+              invisibleLabel
+              name="search"
+            />
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6}>
-            <FormField autoBlur disableDirty fieldAttributes={{
-            label: 'Näytä poistetut',
-            type: FieldTypes.CHECKBOX,
-            read_only: false
-          }} invisibleLabel name='with_deleted' overrideValues={{
-            options: [{
-              value: true,
-              label: 'Näytä poistetut'
-            }]
-          }} />
+            <FormField
+              autoBlur
+              disableDirty
+              fieldAttributes={{
+                label: "Näytä poistetut",
+                type: FieldTypes.CHECKBOX,
+                read_only: false,
+              }}
+              invisibleLabel
+              name="with_deleted"
+              overrideValues={{
+                options: [
+                  {
+                    value: true,
+                    label: "Näytä poistetut",
+                  },
+                ],
+              }}
+            />
           </Column>
         </Row>
         <Row>
           <Column small={12}>
-            <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
+            <SearchClearLink onClick={this.handleClear}>
+              Tyhjennä haku
+            </SearchClearLink>
           </Column>
         </Row>
-      </SearchContainer>;
+      </SearchContainer>
+    );
   }
-
 }
 
 const formName = FormNames.LEASEHOLD_TRANSFER_SEARCH;
-export default flowRight(connect(state => {
-  return {
-    formValues: getFormValues(formName)(state)
-  };
-}), reduxForm({
-  form: formName
-}))(Search) as React.ComponentType<any>;
+export default flowRight(
+  connect((state) => {
+    return {
+      formValues: getFormValues(formName)(state),
+    };
+  }),
+  reduxForm({
+    form: formName,
+  }),
+)(Search) as React.ComponentType<any>;

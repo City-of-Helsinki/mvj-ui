@@ -2,7 +2,11 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import { fetchAttributes as fetchRentBasisAttributes } from "@/rentbasis/actions";
-import { getAttributes as getRentBasisAttributes, getIsFetchingAttributes as getIsFetchingRentBasisAttributes, getMethods as getRentBasisMethods } from "@/rentbasis/selectors";
+import {
+  getAttributes as getRentBasisAttributes,
+  getIsFetchingAttributes as getIsFetchingRentBasisAttributes,
+  getMethods as getRentBasisMethods,
+} from "@/rentbasis/selectors";
 import type { Attributes, Methods } from "types";
 
 function RentBasisAttributes(WrappedComponent: any) {
@@ -18,10 +22,14 @@ function RentBasisAttributes(WrappedComponent: any) {
         fetchRentBasisAttributes,
         isFetchingRentBasisAttributes,
         rentBasisAttributes,
-        rentBasisMethods
+        rentBasisMethods,
       } = this.props;
 
-      if (!isFetchingRentBasisAttributes && !rentBasisAttributes && !rentBasisMethods) {
+      if (
+        !isFetchingRentBasisAttributes &&
+        !rentBasisAttributes &&
+        !rentBasisMethods
+      ) {
         fetchRentBasisAttributes();
       }
     }
@@ -29,17 +37,22 @@ function RentBasisAttributes(WrappedComponent: any) {
     render() {
       return <WrappedComponent {...this.props} />;
     }
-
   };
 }
 
-const withRentBasisAttributes = flowRight(connect(state => {
-  return {
-    isFetchingRentBasisAttributes: getIsFetchingRentBasisAttributes(state),
-    rentBasisAttributes: getRentBasisAttributes(state),
-    rentBasisMethods: getRentBasisMethods(state)
-  };
-}, {
-  fetchRentBasisAttributes
-}), RentBasisAttributes);
+const withRentBasisAttributes = flowRight(
+  connect(
+    (state) => {
+      return {
+        isFetchingRentBasisAttributes: getIsFetchingRentBasisAttributes(state),
+        rentBasisAttributes: getRentBasisAttributes(state),
+        rentBasisMethods: getRentBasisMethods(state),
+      };
+    },
+    {
+      fetchRentBasisAttributes,
+    },
+  ),
+  RentBasisAttributes,
+);
 export { withRentBasisAttributes };

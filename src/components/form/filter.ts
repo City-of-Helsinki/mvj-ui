@@ -1,11 +1,15 @@
-const isValid = value => typeof value !== 'undefined' && value !== null && value !== '';
+const isValid = (value) =>
+  typeof value !== "undefined" && value !== null && value !== "";
 
-export const filterOptionsByLabel = (option: Record<string, any>, filterValue: string | null | undefined): boolean | null => {
+export const filterOptionsByLabel = (
+  option: Record<string, any>,
+  filterValue: string | null | undefined,
+): boolean | null => {
   if (!filterValue) {
     return true;
   }
 
-  const label = option['label'];
+  const label = option["label"];
   const hasLabel = isValid(label);
   let labelTest = hasLabel ? String(label) : null;
 

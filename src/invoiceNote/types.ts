@@ -18,7 +18,10 @@ export type ReceiveMethodsAction = Action<string, Methods>;
 export type AttributesNotFoundAction = Action<string, void>;
 export type FetchInvoiceNoteListAction = Action<string, Record<string, any>>;
 export type ReceiveInvoiceNoteListAction = Action<string, InvoiceNoteList>;
-export type CreateInvoiceNoteAndFetchListAction = Action<string, CreateInvoiceNoteAndFetchListPayload>;
+export type CreateInvoiceNoteAndFetchListAction = Action<
+  string,
+  CreateInvoiceNoteAndFetchListPayload
+>;
 export type NotFoundAction = Action<string, void>;
 export type HideCreateInvoiceNoteModalAction = Action<string, void>;
 export type ShowCreateInvoiceNoteModalAction = Action<string, void>;

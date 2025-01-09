@@ -13,7 +13,9 @@ export type LandUseContractState = {
 };
 export type FetchSingleLandUseContractAfterEditPayload = {
   id: any;
-  callbackFunctions?: Array<Record<string, any> | ((...args: Array<any>) => any)>;
+  callbackFunctions?: Array<
+    Record<string, any> | ((...args: Array<any>) => any)
+  >;
 };
 export type InvoiceListMap = Record<string, any>;
 export type LandUseContract = Record<string, any>;
@@ -24,10 +26,22 @@ export type ReceiveAttributesAction = Action<string, Attributes>;
 export type AttributesNotFoundAction = Action<string, void>;
 export type ReceiveMethodsAction = Action<string, Methods>;
 export type FetchLandUseContractListAction = Action<string, string>;
-export type ReceiveLandUseContractListAction = Action<string, LandUseContractList>;
-export type FetchSingleLandUseContractAction = Action<string, LandUseContractId>;
-export type ReceiveSingleLandUseContractAction = Action<string, LandUseContract>;
-export type FetchSingleLandUseContractAfterEditAction = Action<string, FetchSingleLandUseContractAfterEditPayload>;
+export type ReceiveLandUseContractListAction = Action<
+  string,
+  LandUseContractList
+>;
+export type FetchSingleLandUseContractAction = Action<
+  string,
+  LandUseContractId
+>;
+export type ReceiveSingleLandUseContractAction = Action<
+  string,
+  LandUseContract
+>;
+export type FetchSingleLandUseContractAfterEditAction = Action<
+  string,
+  FetchSingleLandUseContractAfterEditPayload
+>;
 export type DeleteLandUseContractAction = Action<string, LandUseContractId>;
 export type CreateLandUseContractAction = Action<string, LandUseContract>;
 export type EditLandUseContractAction = Action<string, LandUseContract>;

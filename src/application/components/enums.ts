@@ -1,4 +1,4 @@
 export const ApplicationSectionKeys = {
-  Subsections: 'sections',
-  Fields: 'fields'
+  Subsections: "sections",
+  Fields: "fields",
 };

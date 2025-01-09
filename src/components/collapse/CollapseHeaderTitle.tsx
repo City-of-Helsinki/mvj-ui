@@ -18,10 +18,10 @@ type State = {
 class CollapseHeaderTitle extends PureComponent<Props, State> {
   timer: any;
   state: State = {
-    showAddButton: false
+    showAddButton: false,
   };
   static defaultProps: $Shape<Props> = {
-    enableUiDataEdit: false
+    enableUiDataEdit: false,
   };
 
   componentWillUnmount() {
@@ -40,7 +40,9 @@ class CollapseHeaderTitle extends PureComponent<Props, State> {
   handleMouseEnter: () => void = () => {
     this.startTimer();
   };
-  handleMouseLeave: (arg0: React.MouseEvent<HTMLHeadingElement>) => void = event => {
+  handleMouseLeave: (arg0: React.MouseEvent<HTMLHeadingElement>) => void = (
+    event,
+  ) => {
     const target = event.currentTarget;
     const el = ReactDOM.findDOMNode(this);
 
@@ -55,12 +57,12 @@ class CollapseHeaderTitle extends PureComponent<Props, State> {
   };
   hideAddButton: () => void = () => {
     this.setState({
-      showAddButton: false
+      showAddButton: false,
     });
   };
   showAddButton: () => void = () => {
     this.setState({
-      showAddButton: true
+      showAddButton: true,
     });
   };
 
@@ -71,19 +73,31 @@ class CollapseHeaderTitle extends PureComponent<Props, State> {
       style,
       tooltipRef,
       tooltipStyle,
-      uiDataKey
+      uiDataKey,
     } = this.props;
-    const {
-      showAddButton
-    } = this.state;
-    return <span onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} className={classNames('collapse__header_title', {
-      'show-add-button': showAddButton
-    })} style={style}>
-      <span>{children}</span>
-      {(!!uiDataKey || enableUiDataEdit) && <UIDataTooltip innerRef={tooltipRef} enableUiDataEdit={enableUiDataEdit} onTooltipClose={this.handleTooltipClose} style={tooltipStyle} uiDataKey={uiDataKey} />}
-    </span>;
+    const { showAddButton } = this.state;
+    return (
+      <span
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+        className={classNames("collapse__header_title", {
+          "show-add-button": showAddButton,
+        })}
+        style={style}
+      >
+        <span>{children}</span>
+        {(!!uiDataKey || enableUiDataEdit) && (
+          <UIDataTooltip
+            innerRef={tooltipRef}
+            enableUiDataEdit={enableUiDataEdit}
+            onTooltipClose={this.handleTooltipClose}
+            style={tooltipStyle}
+            uiDataKey={uiDataKey}
+          />
+        )}
+      </span>
+    );
   }
-
 }
 
 export default CollapseHeaderTitle;

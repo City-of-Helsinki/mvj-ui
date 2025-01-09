@@ -5,7 +5,7 @@ import { TableSortOrder } from "@/enums";
  * @readonly
  * @const {string}
  */
-export const DEFAULT_SORT_KEY = 'name';
+export const DEFAULT_SORT_KEY = "name";
 
 /**
  * Default sort order of infill development compensation list page

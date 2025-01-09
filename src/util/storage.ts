@@ -7,10 +7,10 @@ import isString from "lodash/isString";
  * @returns {*}
  */
 export const getStorageItem = (key: string): string | null => {
-  const [root, ...rest] = key.split('.');
-  const item = localStorage.getItem(buildStorageKey(root)) || '';
+  const [root, ...rest] = key.split(".");
+  const item = localStorage.getItem(buildStorageKey(root)) || "";
   const value = isJson(item) ? JSON.parse(item) : item;
-  return rest.length ? get(value, rest.join('.')) : value;
+  return rest.length ? get(value, rest.join(".")) : value;
 };
 
 /**
@@ -19,7 +19,11 @@ export const getStorageItem = (key: string): string | null => {
  * @param {*} value
  * @param callback
  */
-export const setStorageItem = (key: string, value: any, callback: ((...args: Array<any>) => any) | null | undefined = null) => {
+export const setStorageItem = (
+  key: string,
+  value: any,
+  callback: ((...args: Array<any>) => any) | null | undefined = null,
+) => {
   if (!isString(value)) {
     value = JSON.stringify(value);
   }
@@ -27,11 +31,11 @@ export const setStorageItem = (key: string, value: any, callback: ((...args: Arr
   try {
     localStorage.setItem(buildStorageKey(key), value);
 
-    if (callback && typeof callback === 'function') {
+    if (callback && typeof callback === "function") {
       callback();
     }
   } catch (e) {
-    console.error('Failed to set item to local storage', e);
+    console.error("Failed to set item to local storage", e);
   }
 };
 
@@ -40,10 +44,13 @@ export const setStorageItem = (key: string, value: any, callback: ((...args: Arr
  * @param {string} key
  * @param callback
  */
-export const removeStorageItem = (key: string, callback: ((...args: Array<any>) => any) | null | undefined = null) => {
+export const removeStorageItem = (
+  key: string,
+  callback: ((...args: Array<any>) => any) | null | undefined = null,
+) => {
   localStorage.removeItem(buildStorageKey(key));
 
-  if (callback && typeof callback === 'function') {
+  if (callback && typeof callback === "function") {
     callback();
   }
 };
@@ -54,7 +61,7 @@ export const removeStorageItem = (key: string, callback: ((...args: Array<any>) 
  * @returns {*}
  */
 export const getSessionStorageItem = (key: string): any => {
-  const item = sessionStorage.getItem(key) || '';
+  const item = sessionStorage.getItem(key) || "";
   const value = isJson(item) ? JSON.parse(item) : item;
   return value;
 };
@@ -65,7 +72,11 @@ export const getSessionStorageItem = (key: string): any => {
  * @param {*} value
  * @param callback
  */
-export const setSessionStorageItem = (key: string, value: any, callback: ((...args: Array<any>) => any) | null | undefined = null) => {
+export const setSessionStorageItem = (
+  key: string,
+  value: any,
+  callback: ((...args: Array<any>) => any) | null | undefined = null,
+) => {
   if (!isString(value)) {
     value = JSON.stringify(value);
   }
@@ -73,11 +84,11 @@ export const setSessionStorageItem = (key: string, value: any, callback: ((...ar
   try {
     sessionStorage.setItem(key, value);
 
-    if (callback && typeof callback === 'function') {
+    if (callback && typeof callback === "function") {
       callback();
     }
   } catch (e) {
-    console.error('Failed to set item to session storage', e);
+    console.error("Failed to set item to session storage", e);
   }
 };
 
@@ -86,10 +97,13 @@ export const setSessionStorageItem = (key: string, value: any, callback: ((...ar
  * @param {string} key
  * @param callback
  */
-export const removeSessionStorageItem = (key: string, callback: ((...args: Array<any>) => any) | null | undefined = null) => {
+export const removeSessionStorageItem = (
+  key: string,
+  callback: ((...args: Array<any>) => any) | null | undefined = null,
+) => {
   sessionStorage.removeItem(key);
 
-  if (callback && typeof callback === 'function') {
+  if (callback && typeof callback === "function") {
     callback();
   }
 };
@@ -100,7 +114,7 @@ export const removeSessionStorageItem = (key: string, callback: ((...args: Array
  * @returns {string}
  */
 const buildStorageKey = (key: string) => {
-  return [import.meta.env.VITE_STORAGE_PREFIX, key].join('.');
+  return [import.meta.env.VITE_STORAGE_PREFIX, key].join(".");
 };
 
 /**
@@ -124,7 +138,7 @@ const isJson = (value: any) => {
  * @returns {string}
  */
 export const getRedirectUrlFromSessionStorage = (): any => {
-  return getSessionStorageItem('redirectURL');
+  return getSessionStorageItem("redirectURL");
 };
 
 /**
@@ -132,5 +146,5 @@ export const getRedirectUrlFromSessionStorage = (): any => {
  * @param {string} url
  */
 export const setRedirectUrlToSessionStorage = (url: string) => {
-  setSessionStorageItem('redirectURL', url);
+  setSessionStorageItem("redirectURL", url);
 };

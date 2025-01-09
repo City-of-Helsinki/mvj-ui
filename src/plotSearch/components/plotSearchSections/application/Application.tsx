@@ -5,7 +5,12 @@ import Loader from "@/components/loader/Loader";
 import { FormNames, ViewModes } from "@/enums";
 import Divider from "@/components/content/Divider";
 import Title from "@/components/content/Title";
-import { getCollapseStateByKey, getIsFetchingForm, getForm, getIsFetchingTemplateForms } from "@/plotSearch/selectors";
+import {
+  getCollapseStateByKey,
+  getIsFetchingForm,
+  getForm,
+  getIsFetchingTemplateForms,
+} from "@/plotSearch/selectors";
 import { receiveCollapseStates } from "@/plotSearch/actions";
 import { ApplicationFieldTitles } from "@/plotSearch/enums";
 import ApplicationPreviewSection from "@/plotSearch/components/plotSearchSections/application/ApplicationPreviewSection";
@@ -26,15 +31,13 @@ type State = {};
 
 class Application extends PureComponent<Props, State> {
   handleBasicInfoCollapseToggle = (val: boolean) => {
-    const {
-      receiveCollapseStates
-    } = this.props;
+    const { receiveCollapseStates } = this.props;
     receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.PLOT_SEARCH_APPLICATION]: {
-          application: val
-        }
-      }
+          application: val,
+        },
+      },
     });
   };
 
@@ -45,34 +48,51 @@ class Application extends PureComponent<Props, State> {
       isFetchingFormAttributes,
       isFetchingForm,
       isFetchingTemplateForms,
-      form
+      form,
     } = this.props;
 
     if (isFetchingFormAttributes || isFetchingForm || isFetchingTemplateForms) {
       return <Loader isLoading={true} />;
     }
 
-    return <Fragment>
-        <Title>
-          {ApplicationFieldTitles.APPLICATION}
-        </Title>
+    return (
+      <Fragment>
+        <Title>{ApplicationFieldTitles.APPLICATION}</Title>
         <Divider />
-        {form && form.sections.filter(section => section.visible).map((section, index) => <ApplicationPreviewSection section={section} key={index} handleToggle={() => this.handleBasicInfoCollapseToggle(index)} defaultOpen={applicationCollapseState} />)}
-        {!form && <FormText>Hakemuslomaketta ei ole vielä määritetty.</FormText>}
-      </Fragment>;
+        {form &&
+          form.sections
+            .filter((section) => section.visible)
+            .map((section, index) => (
+              <ApplicationPreviewSection
+                section={section}
+                key={index}
+                handleToggle={() => this.handleBasicInfoCollapseToggle(index)}
+                defaultOpen={applicationCollapseState}
+              />
+            ))}
+        {!form && (
+          <FormText>Hakemuslomaketta ei ole vielä määritetty.</FormText>
+        )}
+      </Fragment>
+    );
   }
-
 }
 
-export default (connect(state => {
-  return {
-    usersPermissions: getUsersPermissions(state),
-    applicationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_APPLICATION}.application`),
-    isFetchingFormAttributes: getIsFetchingFormAttributes(state),
-    isFetchingForm: getIsFetchingForm(state),
-    isFetchingTemplateForms: getIsFetchingTemplateForms(state),
-    form: getForm(state)
-  };
-}, {
-  receiveCollapseStates
-})(Application) as React.ComponentType<OwnProps>);
+export default connect(
+  (state) => {
+    return {
+      usersPermissions: getUsersPermissions(state),
+      applicationCollapseState: getCollapseStateByKey(
+        state,
+        `${ViewModes.READONLY}.${FormNames.PLOT_SEARCH_APPLICATION}.application`,
+      ),
+      isFetchingFormAttributes: getIsFetchingFormAttributes(state),
+      isFetchingForm: getIsFetchingForm(state),
+      isFetchingTemplateForms: getIsFetchingTemplateForms(state),
+      form: getForm(state),
+    };
+  },
+  {
+    receiveCollapseStates,
+  },
+)(Application) as React.ComponentType<OwnProps>;

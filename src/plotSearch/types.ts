@@ -43,9 +43,14 @@ export type PlanUnit = Record<string, any>;
 export type PlotSearchList = any;
 export type FetchSinglePlotSearchAfterEditPayload = {
   id: any;
-  callbackFunctions?: Array<Record<string, any> | ((...args: Array<any>) => any)>;
+  callbackFunctions?: Array<
+    Record<string, any> | ((...args: Array<any>) => any)
+  >;
 };
-export type ProtectedFormPathsSections = Record<string, ProtectedFormPathsSectionNode>;
+export type ProtectedFormPathsSections = Record<
+  string,
+  ProtectedFormPathsSectionNode
+>;
 export type ProtectedFormPathsSectionNode = {
   subsections?: ProtectedFormPathsSections;
   fields?: Array<string>;
@@ -58,7 +63,10 @@ export type PlotSearchAttributesNotFoundAction = Action<string, void>;
 export type CreatePlotSearchAction = Action<string, PlotSearch>;
 export type EditPlotSearchAction = Action<string, PlotSearch>;
 export type PlotSearchNotFoundAction = Action<string, void>;
-export type FetchSinglePlotSearchAfterEditAction = Action<string, FetchSinglePlotSearchAfterEditPayload>;
+export type FetchSinglePlotSearchAfterEditAction = Action<
+  string,
+  FetchSinglePlotSearchAfterEditPayload
+>;
 export type DeletePlotSearchAction = Action<string, PlotSearchId>;
 export type ReceiveIsSaveClickedAction = Action<string, boolean>;
 export type ReceiveFormValidFlagsAction = Action<string, Record<string, any>>;
@@ -77,13 +85,25 @@ export type PlanUnitAttributesNotFoundAction = Action<string, void>;
 export type PlanUnitNotFoundAction = Action<string, void>;
 export type ReceivePlanUnitAttributesAction = Action<string, Attributes>;
 export type FetchCustomDetailedPlanAction = Action<string, Record<string, any>>;
-export type ReceiveSingleCustomDetailedPlanAction = Action<string, CustomDetailedPlan>;
-export type FetchCustomDetailedPlanAttributesAction = Action<string, Record<string, any>>;
+export type ReceiveSingleCustomDetailedPlanAction = Action<
+  string,
+  CustomDetailedPlan
+>;
+export type FetchCustomDetailedPlanAttributesAction = Action<
+  string,
+  Record<string, any>
+>;
 export type CustomDetailedPlanAttributesNotFoundAction = Action<string, void>;
 export type CustomDetailedPlanNotFoundAction = Action<string, void>;
-export type ReceiveCustomDetailedPlanAttributesAction = Action<string, Attributes>;
+export type ReceiveCustomDetailedPlanAttributesAction = Action<
+  string,
+  Attributes
+>;
 export type FetchPlotSearchSubtypesAction = Action<string, void>;
-export type ReceivePlotSearchSubtypesAction = Action<string, Record<string, any>>;
+export type ReceivePlotSearchSubtypesAction = Action<
+  string,
+  Record<string, any>
+>;
 export type PlotSearchSubtypesNotFoundAction = Action<string, void>;
 export type NullPlanUnitsAction = Action<string, void>;
 export type FormNotFoundAction = Action<string, Record<string, any>>;
@@ -97,26 +117,47 @@ export type AddPlanUnitDecisionsAction = Action<string, Record<string, any>>;
 export type RemovePlanUnitDecisionsAction = Action<string, number>;
 export type ResetPlanUnitDecisionsAction = Action<string, void>;
 export type FetchPlotSearchStagesAction = Action<string, Record<string, any>>;
-export type ReceivePlotSearchStagesAction = Action<string, Array<Record<string, any>>>;
+export type ReceivePlotSearchStagesAction = Action<
+  string,
+  Array<Record<string, any>>
+>;
 export type PlotSearchStagesNotFoundAction = Action<string, void>;
-export type BatchCreateReservationIdentifiersAction = Action<string, Record<string, any>>;
+export type BatchCreateReservationIdentifiersAction = Action<
+  string,
+  Record<string, any>
+>;
 export type ReservationIdentifiersCreatedAction = Action<string, void>;
 export type ReservationIdentifiersCreationFailedAction = Action<string, any>;
 export type FetchReservationIdentifierUnitListsAction = Action<string, void>;
-export type ReceiveReservationIdentifierUnitListsAction = Action<string, Record<string, any>>;
+export type ReceiveReservationIdentifierUnitListsAction = Action<
+  string,
+  Record<string, any>
+>;
 export type ReservationIdentifierUnitListsNotFoundAction = Action<string, void>;
-export type CreateDirectReservationLinkAction = Action<string, {
-  data: Record<string, any>;
-  callBack: (...args: Array<any>) => any;
-}>;
+export type CreateDirectReservationLinkAction = Action<
+  string,
+  {
+    data: Record<string, any>;
+    callBack: (...args: Array<any>) => any;
+  }
+>;
 export type DirectReservationLinkCreatedAction = Action<string, void>;
 export type DirectReservationLinkCreationFailedAction = Action<string, any>;
 export type ClearSectionEditorCollapseStatesAction = Action<string, void>;
-export type SetSectionEditorCollapseStateAction = Action<string, {
-  key: string;
-  state: boolean;
-}>;
-export type InitializeSectionEditorCollapseStatesAction = Action<string, Record<string, boolean>>;
+export type SetSectionEditorCollapseStateAction = Action<
+  string,
+  {
+    key: string;
+    state: boolean;
+  }
+>;
+export type InitializeSectionEditorCollapseStatesAction = Action<
+  string,
+  Record<string, boolean>
+>;
 export type FetchPlotSearchRelatedApplicationsAction = Action<string, number>;
-export type ReceivePlotSearchRelatedApplicationsAction = Action<string, Array<Record<string, any>>>;
+export type ReceivePlotSearchRelatedApplicationsAction = Action<
+  string,
+  Array<Record<string, any>>
+>;
 export type PlotSearchRelatedApplicationsNotFoundAction = Action<string, any>;

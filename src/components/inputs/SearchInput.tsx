@@ -14,15 +14,29 @@ const SearchInput = ({
   onChange,
   onKeyUp,
   onSubmit,
-  placeholder = 'Hae hakusanalla',
-  type = 'text',
-  value = ''
+  placeholder = "Hae hakusanalla",
+  type = "text",
+  value = "",
 }: Props) => {
-  return <div className="search-input__component">
-      <label className='search-input__label' htmlFor='top-navigation__search'>Hae hakusanalla</label>
-      <input className='search-input' disabled={disabled} id='top-navigation__search' name='top-navigation__search' onChange={onChange} onKeyUp={onKeyUp} placeholder={placeholder} type={type} value={value} />
+  return (
+    <div className="search-input__component">
+      <label className="search-input__label" htmlFor="top-navigation__search">
+        Hae hakusanalla
+      </label>
+      <input
+        className="search-input"
+        disabled={disabled}
+        id="top-navigation__search"
+        name="top-navigation__search"
+        onChange={onChange}
+        onKeyUp={onKeyUp}
+        placeholder={placeholder}
+        type={type}
+        value={value}
+      />
       <span className="search-icon" onClick={onSubmit}></span>
-    </div>;
+    </div>
+  );
 };
 
 export default SearchInput;

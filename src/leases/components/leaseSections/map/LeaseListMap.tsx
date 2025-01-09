@@ -11,10 +11,18 @@ import { MAX_ZOOM_LEVEL_TO_FETCH_LEASES } from "@/leases/constants";
 import { LeaseFieldPaths } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getContentLeasesGeoJson } from "@/leases/helpers";
-import { getApiResponseResults, getFieldOptions, getUrlParams, hasPermissions } from "@/util/helpers";
+import {
+  getApiResponseResults,
+  getFieldOptions,
+  getUrlParams,
+  hasPermissions,
+} from "@/util/helpers";
 import { getBoundsFromBBox, getBoundsFromFeatures } from "@/util/map";
 import { getAreaNoteList } from "@/areaNote/selectors";
-import { getAttributes as getLeaseAttributes, getLeasesByBBox } from "@/leases/selectors";
+import {
+  getAttributes as getLeaseAttributes,
+  getLeasesByBBox,
+} from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes, LeafletGeoJson } from "types";
 import type { AreaNoteList } from "@/areaNote/types";
@@ -22,9 +30,7 @@ import type { LeaseList } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 
 const getMapBounds = () => {
-  const {
-    search
-  } = location;
+  const { search } = location;
   const searchQuery = getUrlParams(search);
   return getBoundsFromBBox(searchQuery.in_bbox);
 };
@@ -35,9 +41,7 @@ const getMapCenter = () => {
 };
 
 const getMapZoom = () => {
-  const {
-    search
-  } = location;
+  const { search } = location;
   const searchQuery = getUrlParams(search);
   return searchQuery.zoom || DEFAULT_ZOOM;
 };
@@ -69,10 +73,10 @@ class LeaseListMap extends PureComponent<Props, State> {
     leasesData: null,
     leasesGeoJson: {
       features: [],
-      type: 'FeatureCollection'
+      type: "FeatureCollection",
     },
     stateOptions: [],
-    zoom: getMapZoom()
+    zoom: getMapZoom(),
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -80,12 +84,17 @@ class LeaseListMap extends PureComponent<Props, State> {
 
     if (props.leasesData !== state.leasesData) {
       newState.leasesData = props.leasesData;
-      newState.leasesGeoJson = getContentLeasesGeoJson(getApiResponseResults(props.leasesData));
+      newState.leasesGeoJson = getContentLeasesGeoJson(
+        getApiResponseResults(props.leasesData),
+      );
     }
 
     if (props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.stateOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.STATE);
+      newState.stateOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseFieldPaths.STATE,
+      );
     }
 
     return !isEmpty(newState) ? newState : null;
@@ -93,75 +102,87 @@ class LeaseListMap extends PureComponent<Props, State> {
 
   getOverlayLayers = () => {
     const layers = [];
-    const {
-      areaNotes,
-      usersPermissions
-    } = this.props;
-    const {
-      leasesGeoJson,
-      stateOptions
-    } = this.state;
+    const { areaNotes, usersPermissions } = this.props;
+    const { leasesGeoJson, stateOptions } = this.state;
     {
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) && layers.push({
-        checked: false,
-        component: <AreaNotesLayer key='area_notes' allowToEdit={false} areaNotes={areaNotes} />,
-        name: 'Muistettavat ehdot'
-      });
+      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) &&
+        layers.push({
+          checked: false,
+          component: (
+            <AreaNotesLayer
+              key="area_notes"
+              allowToEdit={false}
+              areaNotes={areaNotes}
+            />
+          ),
+          name: "Muistettavat ehdot",
+        });
     }
     layers.push({
       checked: true,
-      component: <LeaseListLayer key='leases' color={MAP_COLORS[0 % MAP_COLORS.length]} leasesGeoJson={leasesGeoJson} stateOptions={stateOptions} />,
-      name: 'Vuokraukset'
+      component: (
+        <LeaseListLayer
+          key="leases"
+          color={MAP_COLORS[0 % MAP_COLORS.length]}
+          leasesGeoJson={leasesGeoJson}
+          stateOptions={stateOptions}
+        />
+      ),
+      name: "Vuokraukset",
     });
     return layers;
   };
 
   getBounds() {
+    const { bounds, leasesGeoJson } = this.state;
     const {
-      bounds,
-      leasesGeoJson
-    } = this.state;
-    const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
-    if (searchQuery && searchQuery.search && searchQuery.search.length > 6) return getBoundsFromFeatures(leasesGeoJson);else return bounds;
+    if (searchQuery && searchQuery.search && searchQuery.search.length > 6)
+      return getBoundsFromFeatures(leasesGeoJson);
+    else return bounds;
   }
 
   handleViewportChanged = (mapOptions: Record<string, any>) => {
-    const {
-      onViewportChanged
-    } = this.props;
+    const { onViewportChanged } = this.props;
     this.setState({
-      zoom: mapOptions.zoom
+      zoom: mapOptions.zoom,
     });
     onViewportChanged(mapOptions);
   };
 
   render() {
-    const {
-      isLoading
-    } = this.props;
-    const {
-      center,
-      zoom
-    } = this.state;
+    const { isLoading } = this.props;
+    const { center, zoom } = this.state;
     const overlayLayers = this.getOverlayLayers();
     const bounds = this.getBounds();
-    return <Fragment>
-        <AreaNotesEditMap allowToEdit={false} bounds={bounds} center={center} isLoading={isLoading} onViewportChanged={this.handleViewportChanged} overlayLayers={overlayLayers} showZoomLevelWarning={zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES} zoom={zoom} zoomLevelWarningText='Tarkenna lähemmäksi kartalla hakeaksesi vuokraukset' />
-      </Fragment>;
+    return (
+      <Fragment>
+        <AreaNotesEditMap
+          allowToEdit={false}
+          bounds={bounds}
+          center={center}
+          isLoading={isLoading}
+          onViewportChanged={this.handleViewportChanged}
+          overlayLayers={overlayLayers}
+          showZoomLevelWarning={zoom < MAX_ZOOM_LEVEL_TO_FETCH_LEASES}
+          zoom={zoom}
+          zoomLevelWarningText="Tarkenna lähemmäksi kartalla hakeaksesi vuokraukset"
+        />
+      </Fragment>
+    );
   }
-
 }
 
-export default flowRight(withRouter, connect(state => {
-  return {
-    areaNotes: getAreaNoteList(state),
-    leaseAttributes: getLeaseAttributes(state),
-    leasesData: getLeasesByBBox(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}))(LeaseListMap) as React.ComponentType<any>;
+export default flowRight(
+  withRouter,
+  connect((state) => {
+    return {
+      areaNotes: getAreaNoteList(state),
+      leaseAttributes: getLeaseAttributes(state),
+      leasesData: getLeasesByBBox(state),
+      usersPermissions: getUsersPermissions(state),
+    };
+  }),
+)(LeaseListMap) as React.ComponentType<any>;

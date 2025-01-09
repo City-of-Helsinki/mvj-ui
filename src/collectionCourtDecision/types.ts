@@ -24,11 +24,29 @@ export type DeleteCollectionCourtDecisionPayload = {
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;
-export type CollectionCourtDecisionAttributesNotFoundAction = Action<string, void>;
-export type FetchCollectionCourtDecisionsByLeaseAction = Action<string, LeaseId>;
-export type ReceiveCollectionCourtDecisionsByLeaseAction = Action<string, Record<string, any>>;
-export type CollectionCourtDecisionsNotFoundByLeaseAction = Action<string, LeaseId>;
-export type UploadCollectionCourtDecisionAction = Action<string, UploadCollectionCourtDecisionPayload>;
-export type DeleteCollectionCourtDecisionAction = Action<string, DeleteCollectionCourtDecisionPayload>;
+export type CollectionCourtDecisionAttributesNotFoundAction = Action<
+  string,
+  void
+>;
+export type FetchCollectionCourtDecisionsByLeaseAction = Action<
+  string,
+  LeaseId
+>;
+export type ReceiveCollectionCourtDecisionsByLeaseAction = Action<
+  string,
+  Record<string, any>
+>;
+export type CollectionCourtDecisionsNotFoundByLeaseAction = Action<
+  string,
+  LeaseId
+>;
+export type UploadCollectionCourtDecisionAction = Action<
+  string,
+  UploadCollectionCourtDecisionPayload
+>;
+export type DeleteCollectionCourtDecisionAction = Action<
+  string,
+  DeleteCollectionCourtDecisionPayload
+>;
 export type HideCollectionCourtDecisionPanelAction = Action<string, void>;
 export type ShowCollectionCourtDecisionPanelAction = Action<string, void>;

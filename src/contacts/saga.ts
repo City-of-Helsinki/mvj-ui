@@ -1,20 +1,34 @@
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
-import { hideContactModal, hideEditMode, receiveAttributes, receiveMethods, attributesNotFound, receiveContacts, receiveContactModalSettings, receiveSingleContact, notFound } from "./actions";
+import {
+  hideContactModal,
+  hideEditMode,
+  receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
+  receiveContacts,
+  receiveContactModalSettings,
+  receiveSingleContact,
+  notFound,
+} from "./actions";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
-import { createContact, editContact, fetchAttributes, fetchContacts, fetchSingleContact } from "./requests";
+import {
+  createContact,
+  editContact,
+  fetchAttributes,
+  fetchContacts,
+  fetchSingleContact,
+} from "./requests";
 import { getRouteById, Routes } from "@/root/routes";
 import { getContactModalSettings } from "./selectors";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -38,14 +52,12 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchContactsSaga({
   payload: params,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchContacts, params);
 
     switch (statusCode) {
@@ -68,14 +80,12 @@ function* fetchContactsSaga({
 
 function* fetchSingleContactSaga({
   payload: id,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchSingleContact, id);
 
     switch (statusCode) {
@@ -89,8 +99,7 @@ function* fetchSingleContactSaga({
 
       case 500:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -102,29 +111,26 @@ function* fetchSingleContactSaga({
 
 function* createContactSaga({
   payload: contact,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createContact, contact);
 
     switch (statusCode) {
       case 201:
         yield put(push(`${getRouteById(Routes.CONTACTS)}/${bodyAsJson.id}`));
         displayUIMessage({
-          title: '',
-          body: 'Asiakas luotu'
+          title: "",
+          body: "Asiakas luotu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -141,14 +147,12 @@ function* createContactSaga({
 
 function* editContactSaga({
   payload: contact,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(editContact, contact);
 
     switch (statusCode) {
@@ -156,15 +160,14 @@ function* editContactSaga({
         yield put(receiveSingleContact(bodyAsJson));
         yield put(hideEditMode());
         displayUIMessage({
-          title: '',
-          body: 'Asiakas tallennettu'
+          title: "",
+          body: "Asiakas tallennettu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -181,15 +184,13 @@ function* editContactSaga({
 
 function* createContactOnModalSaga({
   payload: contact,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const contactModalSettings = yield select(getContactModalSettings);
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createContact, contact);
 
     switch (statusCode) {
@@ -199,15 +200,14 @@ function* createContactOnModalSaga({
         yield put(receiveSingleContact(bodyAsJson));
         yield put(hideContactModal());
         displayUIMessage({
-          title: '',
-          body: 'Asiakas luotu'
+          title: "",
+          body: "Asiakas luotu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -224,15 +224,13 @@ function* createContactOnModalSaga({
 
 function* editContactOnModalSaga({
   payload: contact,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const contactModalSettings = yield select(getContactModalSettings);
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(editContact, contact);
 
     switch (statusCode) {
@@ -242,15 +240,14 @@ function* editContactOnModalSaga({
         yield put(receiveSingleContact(bodyAsJson));
         yield put(hideContactModal());
         displayUIMessage({
-          title: '',
-          body: 'Asiakas tallennettu'
+          title: "",
+          body: "Asiakas tallennettu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -266,13 +263,18 @@ function* editContactOnModalSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/contacts/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/contacts/FETCH_ALL', fetchContactsSaga);
-    yield takeLatest('mvj/contacts/FETCH_SINGLE', fetchSingleContactSaga);
-    yield takeLatest('mvj/contacts/CREATE', createContactSaga);
-    yield takeLatest('mvj/contacts/EDIT', editContactSaga);
-    yield takeLatest('mvj/contacts/CREATE_ON_MODAL', createContactOnModalSaga);
-    yield takeLatest('mvj/contacts/EDIT_ON_MODAL', editContactOnModalSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/contacts/FETCH_ATTRIBUTES", fetchAttributesSaga);
+      yield takeLatest("mvj/contacts/FETCH_ALL", fetchContactsSaga);
+      yield takeLatest("mvj/contacts/FETCH_SINGLE", fetchSingleContactSaga);
+      yield takeLatest("mvj/contacts/CREATE", createContactSaga);
+      yield takeLatest("mvj/contacts/EDIT", editContactSaga);
+      yield takeLatest(
+        "mvj/contacts/CREATE_ON_MODAL",
+        createContactOnModalSaga,
+      );
+      yield takeLatest("mvj/contacts/EDIT_ON_MODAL", editContactOnModalSaga);
+    }),
+  ]);
 }

@@ -4,11 +4,11 @@
  * @type {{SMALL: string, MEDIUM: string, LARGE: string, XLARGE: string, XXLARGE: string}}
  */
 export const Breakpoints = {
-  SMALL: 'small',
-  MEDIUM: 'medium',
-  LARGE: 'large',
-  XLARGE: 'xlarge',
-  XXLARGE: 'xxlarge'
+  SMALL: "small",
+  MEDIUM: "medium",
+  LARGE: "large",
+  XLARGE: "xlarge",
+  XXLARGE: "xxlarge",
 };
 
 /**
@@ -17,11 +17,11 @@ export const Breakpoints = {
  * @type {{PRIMARY: string: SECONDARY: string, SUCCESS: string, WARNING: string, ALERT: string}}
  */
 export const BadgeColors = {
-  INFO: 'info',
-  SECONDARY: 'secondary',
-  SUCCESS: 'success',
-  WARNING: 'warning',
-  ALERT: 'alert'
+  INFO: "info",
+  SECONDARY: "secondary",
+  SUCCESS: "success",
+  WARNING: "warning",
+  ALERT: "alert",
 };
 
 /**
@@ -30,11 +30,11 @@ export const BadgeColors = {
  * @type {{PRIMARY: string: SECONDARY: string, SUCCESS: string, WARNING: string, ALERT: string}}
  */
 export const ButtonColors = {
-  PRIMARY: 'primary',
-  SECONDARY: 'secondary',
-  SUCCESS: 'success',
-  WARNING: 'warning',
-  ALERT: 'alert'
+  PRIMARY: "primary",
+  SECONDARY: "secondary",
+  SUCCESS: "success",
+  WARNING: "warning",
+  ALERT: "alert",
 };
 
 /**
@@ -43,11 +43,11 @@ export const ButtonColors = {
  * @type {{PRIMARY: string: SECONDARY: string, SUCCESS: string, WARNING: string, ALERT: string}}
  */
 export const ButtonGroupColors = {
-  PRIMARY: 'primary',
-  SECONDARY: 'secondary',
-  SUCCESS: 'success',
-  WARNING: 'warning',
-  ALERT: 'alert'
+  PRIMARY: "primary",
+  SECONDARY: "secondary",
+  SUCCESS: "success",
+  WARNING: "warning",
+  ALERT: "alert",
 };
 
 /**
@@ -56,11 +56,11 @@ export const ButtonGroupColors = {
  * @type {{PRIMARY: string: SECONDARY: string, SUCCESS: string, WARNING: string, ALERT: string}}
  */
 export const CalloutColors = {
-  PRIMARY: 'primary',
-  SECONDARY: 'secondary',
-  SUCCESS: 'success',
-  WARNING: 'warning',
-  ALERT: 'alert'
+  PRIMARY: "primary",
+  SECONDARY: "secondary",
+  SUCCESS: "success",
+  WARNING: "warning",
+  ALERT: "alert",
 };
 
 /**
@@ -69,11 +69,11 @@ export const CalloutColors = {
  * @type {{INFO: string, SECONDARY: string, SUCCESS: string, WARNING: string, ALERT: string}}
  */
 export const LabelColors = {
-  INFO: 'info',
-  SECONDARY: 'secondary',
-  SUCCESS: 'success',
-  WARNING: 'warning',
-  ALERT: 'alert'
+  INFO: "info",
+  SECONDARY: "secondary",
+  SUCCESS: "success",
+  WARNING: "warning",
+  ALERT: "alert",
 };
 
 /**
@@ -82,10 +82,10 @@ export const LabelColors = {
  * @type {{SECONDARY: string, SUCCESS: string, WARNING: string, ALERT: string}}
  */
 export const ProgressColors = {
-  SECONDARY: 'secondary',
-  SUCCESS: 'success',
-  WARNING: 'warning',
-  ALERT: 'alert'
+  SECONDARY: "secondary",
+  SUCCESS: "success",
+  WARNING: "warning",
+  ALERT: "alert",
 };
 
 /**
@@ -94,12 +94,13 @@ export const ProgressColors = {
  *
  * @type {Object}
  */
-export const Colors = { ...BadgeColors,
+export const Colors = {
+  ...BadgeColors,
   ...ButtonColors,
   ...ButtonGroupColors,
   ...CalloutColors,
   ...LabelColors,
-  ...ProgressColors
+  ...ProgressColors,
 };
 
 /**
@@ -108,9 +109,9 @@ export const Colors = { ...BadgeColors,
  * @type {{TINY: string, SMALL: string, LARGE: string}}
  */
 export const ButtonSizes = {
-  TINY: 'tiny',
-  SMALL: 'small',
-  LARGE: 'large'
+  TINY: "tiny",
+  SMALL: "small",
+  LARGE: "large",
 };
 
 /**
@@ -119,9 +120,9 @@ export const ButtonSizes = {
  * @type {{TINY: string, SMALL: string, LARGE: string}}
  */
 export const ButtonGroupSizes = {
-  TINY: 'tiny',
-  SMALL: 'small',
-  LARGE: 'large'
+  TINY: "tiny",
+  SMALL: "small",
+  LARGE: "large",
 };
 
 /**
@@ -130,8 +131,8 @@ export const ButtonGroupSizes = {
  * @type {{SMALL: string, LARGE: string}}
  */
 export const CalloutSizes = {
-  SMALL: 'small',
-  LARGE: 'large'
+  SMALL: "small",
+  LARGE: "large",
 };
 
 /**
@@ -139,10 +140,10 @@ export const CalloutSizes = {
  * @type {{TINY: string, SMALL: string, LARGE: string, FULL: string}}
  */
 export const RevealSizes = {
-  TINY: 'tiny',
-  SMALL: 'small',
-  LARGE: 'large',
-  FULL: 'full'
+  TINY: "tiny",
+  SMALL: "small",
+  LARGE: "large",
+  FULL: "full",
 };
 
 /**
@@ -151,9 +152,9 @@ export const RevealSizes = {
  * @type {{TINY: string, SMALL: string, LARGE: string}}
  */
 export const SwitchSizes = {
-  TINY: 'tiny',
-  SMALL: 'small',
-  LARGE: 'large'
+  TINY: "tiny",
+  SMALL: "small",
+  LARGE: "large",
 };
 
 /**
@@ -162,11 +163,12 @@ export const SwitchSizes = {
  *
  * @type {Object}
  */
-export const Sizes = { ...ButtonSizes,
+export const Sizes = {
+  ...ButtonSizes,
   ...ButtonGroupSizes,
   ...CalloutSizes,
   ...RevealSizes,
-  ...SwitchSizes
+  ...SwitchSizes,
 };
 
 /**
@@ -175,10 +177,10 @@ export const Sizes = { ...ButtonSizes,
  * @type {{CENTER: string, RIGHT: string, JUSTIFY: string, SPACED: string}}
  */
 export const HorizontalAlignments = {
-  CENTER: 'center',
-  RIGHT: 'right',
-  JUSTIFY: 'justify',
-  SPACED: 'spaced'
+  CENTER: "center",
+  RIGHT: "right",
+  JUSTIFY: "justify",
+  SPACED: "spaced",
 };
 
 /**
@@ -187,10 +189,10 @@ export const HorizontalAlignments = {
  * @type {{TOP: string, MIDDLE: string, BOTTOM: string, STRETCH: string}}
  */
 export const VerticalAlignments = {
-  TOP: 'top',
-  MIDDLE: 'middle',
-  BOTTOM: 'bottom',
-  STRETCH: 'stretch'
+  TOP: "top",
+  MIDDLE: "middle",
+  BOTTOM: "bottom",
+  STRETCH: "stretch",
 };
 
 /**
@@ -199,8 +201,8 @@ export const VerticalAlignments = {
  * @type {{RIGHT: string, CENTER: string}}
  */
 export const MenuAlignments = {
-  RIGHT: 'right',
-  CENTER: 'center'
+  RIGHT: "right",
+  CENTER: "center",
 };
 
 /**
@@ -209,9 +211,10 @@ export const MenuAlignments = {
  *
  * @type {Object}
  */
-export const Alignments = { ...HorizontalAlignments,
+export const Alignments = {
+  ...HorizontalAlignments,
   ...VerticalAlignments,
-  ...MenuAlignments
+  ...MenuAlignments,
 };
 
 /**
@@ -220,9 +223,9 @@ export const Alignments = { ...HorizontalAlignments,
  * @type {{LEFT: string, CENTER: string, RIGHT: string}}
  */
 export const FloatTypes = {
-  LEFT: 'left',
-  CENTER: 'center',
-  RIGHT: 'right'
+  LEFT: "left",
+  CENTER: "center",
+  RIGHT: "right",
 };
 
 /**
@@ -231,8 +234,8 @@ export const FloatTypes = {
  * @type {{CHECKBOX: string, RADIO: string}}
  */
 export const SwitchInputTypes = {
-  CHECKBOX: 'checkbox',
-  RADIO: 'radio'
+  CHECKBOX: "checkbox",
+  RADIO: "radio",
 };
 
 /**
@@ -241,5 +244,4 @@ export const SwitchInputTypes = {
  *
  * @type {Object}
  */
-export const InputTypes = { ...SwitchInputTypes
-};
+export const InputTypes = { ...SwitchInputTypes };

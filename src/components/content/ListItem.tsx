@@ -5,9 +5,8 @@ type Props = {
   className?: string;
 };
 
-const ListItem = ({
-  children,
-  className
-}: Props) => <p className={classNames('content__list-item', className)}>{children}</p>;
+const ListItem = ({ children, className }: Props) => (
+  <p className={classNames("content__list-item", className)}>{children}</p>
+);
 
 export default ListItem;

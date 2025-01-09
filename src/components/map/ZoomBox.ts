@@ -16,7 +16,6 @@ class ZoomBox extends MapControl<LeafletElement, Props> {
   createLeafletElement(props: Props): LeafletElement {
     return new Control.ZoomBox(props);
   }
-
 }
 
 export default withLeaflet(ZoomBox);

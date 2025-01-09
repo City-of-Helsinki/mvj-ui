@@ -7,7 +7,8 @@ type Props = {
 const Authorization = ({
   allow,
   children,
-  errorComponent
-}: Props): JSX.Element => allow ? children || null : errorComponent ? errorComponent : null;
+  errorComponent,
+}: Props): JSX.Element =>
+  allow ? children || null : errorComponent ? errorComponent : null;
 
 export default Authorization;

@@ -2,16 +2,14 @@ import { $Shape } from "utility-types";
 import React from "react";
 const Context: React.Context<$Shape<AppContextState>> = React.createContext({});
 export const ActionTypes = {
-  HIDE_CONFIRMATION_MODAL: 'HIDE_CONFIRMATION_MODAL',
-  SHOW_CONFIRMATION_MODAL: 'SHOW_CONFIRMATION_MODAL'
+  HIDE_CONFIRMATION_MODAL: "HIDE_CONFIRMATION_MODAL",
+  SHOW_CONFIRMATION_MODAL: "SHOW_CONFIRMATION_MODAL",
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case ActionTypes.HIDE_CONFIRMATION_MODAL:
-      return { ...state,
-        isConfirmationModalOpen: false
-      };
+      return { ...state, isConfirmationModalOpen: false };
 
     case ActionTypes.SHOW_CONFIRMATION_MODAL:
       const {
@@ -19,15 +17,16 @@ const reducer = (state, action) => {
         confirmationModalButtonClassName,
         confirmationModalButtonText,
         confirmationModalLabel,
-        confirmationModalTitle
+        confirmationModalTitle,
       } = action;
-      return { ...state,
+      return {
+        ...state,
         confirmationFunction: confirmationFunction,
         confirmationModalButtonClassName: confirmationModalButtonClassName,
         confirmationModalButtonText: confirmationModalButtonText,
         confirmationModalLabel: confirmationModalLabel,
         confirmationModalTitle: confirmationModalTitle,
-        isConfirmationModalOpen: true
+        isConfirmationModalOpen: true,
       };
   }
 };
@@ -52,20 +51,17 @@ export class AppProvider extends React.Component<Props, AppContextState> {
     confirmationModalLabel: null,
     confirmationModalTitle: null,
     isConfirmationModalOpen: false,
-    dispatch: action => {
-      this.setState(state => reducer(state, action));
-    }
+    dispatch: (action) => {
+      this.setState((state) => reducer(state, action));
+    },
   };
 
   render() {
     const {
       state,
-      props: {
-        children
-      }
+      props: { children },
     } = this;
     return <Context.Provider value={state}>{children}</Context.Provider>;
   }
-
 }
 export const AppConsumer = Context.Consumer;

@@ -2,7 +2,11 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import { fetchAttributes as fetchAreaNoteAttributes } from "@/areaNote/actions";
-import { getAttributes as getAreaNoteAttributes, getIsFetchingAttributes as getIsFetchingAreaNoteAttributes, getMethods as getAreaNoteMethods } from "@/areaNote/selectors";
+import {
+  getAttributes as getAreaNoteAttributes,
+  getIsFetchingAttributes as getIsFetchingAreaNoteAttributes,
+  getMethods as getAreaNoteMethods,
+} from "@/areaNote/selectors";
 import type { Attributes, Methods } from "types";
 
 function AreaNoteAttributes(WrappedComponent: any) {
@@ -18,10 +22,14 @@ function AreaNoteAttributes(WrappedComponent: any) {
         areaNoteAttributes,
         areaNoteMethods,
         fetchAreaNoteAttributes,
-        isFetchingAreaNoteAttributes
+        isFetchingAreaNoteAttributes,
       } = this.props;
 
-      if (!isFetchingAreaNoteAttributes && !areaNoteAttributes && !areaNoteMethods) {
+      if (
+        !isFetchingAreaNoteAttributes &&
+        !areaNoteAttributes &&
+        !areaNoteMethods
+      ) {
         fetchAreaNoteAttributes();
       }
     }
@@ -29,17 +37,22 @@ function AreaNoteAttributes(WrappedComponent: any) {
     render() {
       return <WrappedComponent {...this.props} />;
     }
-
   };
 }
 
-const withAreaNoteAttributes = flowRight(connect(state => {
-  return {
-    areaNoteAttributes: getAreaNoteAttributes(state),
-    areaNoteMethods: getAreaNoteMethods(state),
-    isFetchingAreaNoteAttributes: getIsFetchingAreaNoteAttributes(state)
-  };
-}, {
-  fetchAreaNoteAttributes
-}), AreaNoteAttributes);
+const withAreaNoteAttributes = flowRight(
+  connect(
+    (state) => {
+      return {
+        areaNoteAttributes: getAreaNoteAttributes(state),
+        areaNoteMethods: getAreaNoteMethods(state),
+        isFetchingAreaNoteAttributes: getIsFetchingAreaNoteAttributes(state),
+      };
+    },
+    {
+      fetchAreaNoteAttributes,
+    },
+  ),
+  AreaNoteAttributes,
+);
 export { withAreaNoteAttributes };

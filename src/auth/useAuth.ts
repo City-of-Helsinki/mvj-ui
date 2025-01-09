@@ -1,5 +1,5 @@
-import { useEffect, useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   useApiTokens,
   useOidcClient,
@@ -7,19 +7,28 @@ import {
   isApiTokensUpdatedSignal,
   isApiTokensRemovedSignal,
   isApiTokensRenewalStartedSignal,
-  useAuthenticatedUser
-} from 'hds-react';
-import { setRedirectUrlToSessionStorage } from '@/util/storage';
-import { Routes, getRouteById } from '@/root/routes';
-import { clearApiToken, clearUser, userFound, receiveApiToken } from './actions';
-
+  useAuthenticatedUser,
+} from "hds-react";
+import { setRedirectUrlToSessionStorage } from "@/util/storage";
+import { Routes, getRouteById } from "@/root/routes";
+import {
+  clearApiToken,
+  clearUser,
+  userFound,
+  receiveApiToken,
+} from "./actions";
 
 const useAuth = () => {
   const [loggedIn, setLoggedIn] = useState(false);
-  const { login: oidcLogin, logout: oidcLogout, isRenewing: oidcIsRenewing } = useOidcClient();
+  const {
+    login: oidcLogin,
+    logout: oidcLogout,
+    isRenewing: oidcIsRenewing,
+  } = useOidcClient();
   const authenticatedUser = useAuthenticatedUser();
   const dispatch = useDispatch();
-  const [apiTokensClientSignal, apiTokensClientSignalReset, apiTokensClient] = useApiTokensClientTracking();
+  const [apiTokensClientSignal, apiTokensClientSignalReset, apiTokensClient] =
+    useApiTokensClientTracking();
   const { getStoredApiTokens } = useApiTokens();
 
   const setLoggedInIfApiTokenExists = useCallback(() => {
@@ -56,19 +65,22 @@ const useAuth = () => {
   }, [apiTokensClientSignal, dispatch]);
 
   const determineRedirectPath = (redirectPath: string): string => {
-    if (!redirectPath || redirectPath.startsWith('/callback')) {
+    if (!redirectPath || redirectPath.startsWith("/callback")) {
       return getRouteById(Routes.LEASES);
     }
     return redirectPath;
-  }
+  };
 
-  const login = useCallback((redirectPath: string) => {
-    // avoid setting redirectPath to `/callback`, which could happen if there was an error during login
-    // and user returns to the callback url with error, and then tries to log in again
-    const finalRedirectPath = determineRedirectPath(redirectPath);
-    setRedirectUrlToSessionStorage(finalRedirectPath);
-    oidcLogin();
-  }, [oidcLogin]);
+  const login = useCallback(
+    (redirectPath: string) => {
+      // avoid setting redirectPath to `/callback`, which could happen if there was an error during login
+      // and user returns to the callback url with error, and then tries to log in again
+      const finalRedirectPath = determineRedirectPath(redirectPath);
+      setRedirectUrlToSessionStorage(finalRedirectPath);
+      oidcLogin();
+    },
+    [oidcLogin],
+  );
 
   const logout = useCallback(() => {
     dispatch(clearApiToken());
@@ -81,7 +93,14 @@ const useAuth = () => {
     return oidcIsRenewing() || apiTokensClient.isRenewing();
   };
 
-  return { loggedIn, authenticatedUser, login, logout, isRenewing, setLoggedInIfApiTokenExists };
+  return {
+    loggedIn,
+    authenticatedUser,
+    login,
+    logout,
+    isRenewing,
+    setLoggedInIfApiTokenExists,
+  };
 };
 
 export default useAuth;

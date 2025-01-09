@@ -21,16 +21,21 @@ class CreateLandUseContractModal extends Component<Props> {
   };
 
   render() {
-    const {
-      isOpen,
-      onClose,
-      onSubmit
-    } = this.props;
-    return <Modal isOpen={isOpen} onClose={onClose} title='Luo uusi maankäyttösopimustunnus'>
-        <CreateLandUseContractForm ref={this.setRefForForm} onClose={onClose} onSubmit={onSubmit} />
-      </Modal>;
+    const { isOpen, onClose, onSubmit } = this.props;
+    return (
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Luo uusi maankäyttösopimustunnus"
+      >
+        <CreateLandUseContractForm
+          ref={this.setRefForForm}
+          onClose={onClose}
+          onSubmit={onSubmit}
+        />
+      </Modal>
+    );
   }
-
 }
 
 export default CreateLandUseContractModal;

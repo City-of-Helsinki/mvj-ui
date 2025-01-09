@@ -14,17 +14,18 @@ type Props = OwnProps & {
 
 class AreaSearchApplicantInfoCheck extends PureComponent<Props> {
   render(): JSX.Element {
-    const {
-      infoCheckAttributes,
-      infoCheckData
-    } = this.props;
-    const infoCheckStateOptions = getFieldOptions(infoCheckAttributes, 'state');
+    const { infoCheckAttributes, infoCheckData } = this.props;
+    const infoCheckStateOptions = getFieldOptions(infoCheckAttributes, "state");
     const infoChecks = getApplicantInfoCheckItems(infoCheckData);
-    return <ApplicantInfoCheck infoChecks={infoChecks} infoCheckStateOptions={infoCheckStateOptions} />;
+    return (
+      <ApplicantInfoCheck
+        infoChecks={infoChecks}
+        infoCheckStateOptions={infoCheckStateOptions}
+      />
+    );
   }
-
 }
 
-export default (connect(state => ({
-  infoCheckAttributes: getApplicantInfoCheckAttributes(state)
-}))(AreaSearchApplicantInfoCheck) as React.ComponentType<OwnProps>);
+export default connect((state) => ({
+  infoCheckAttributes: getApplicantInfoCheckAttributes(state),
+}))(AreaSearchApplicantInfoCheck) as React.ComponentType<OwnProps>;

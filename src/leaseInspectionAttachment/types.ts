@@ -11,5 +11,11 @@ export type DeleteLeaseInspectionAttachmentPayload = {
   id: number;
   lease: LeaseId;
 };
-export type CreateLeaseInspectionAttachmentAction = Action<string, CreateLeaseInspectionAttachmentPayload>;
-export type DeleteLeaseInspectionAttachmentAction = Action<string, DeleteLeaseInspectionAttachmentPayload>;
+export type CreateLeaseInspectionAttachmentAction = Action<
+  string,
+  CreateLeaseInspectionAttachmentPayload
+>;
+export type DeleteLeaseInspectionAttachmentAction = Action<
+  string,
+  DeleteLeaseInspectionAttachmentPayload
+>;

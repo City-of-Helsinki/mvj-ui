@@ -16,7 +16,7 @@ const TableFilters = ({
   filterOptions,
   filterValue,
   onFilterChange,
-  componentToRenderUnderTitle = null
+  componentToRenderUnderTitle = null,
 }: Props): JSX.Element => {
   const handleFilterChange = (values: Array<Record<string, any>>) => {
     if (onFilterChange) {
@@ -24,20 +24,34 @@ const TableFilters = ({
     }
   };
 
-  return <div className='table__filters'>
-      <div className='table__filters_filter-wrapper'>
-        <div className={classNames('table__filters_filter-inner-wrapper', {
-        'table__filters_filter-inner-wrapper--align-right': alignFiltersRight
-      })}>
-          {!!filterOptions.length && <p className='table__filters_filter-wrapper_title'>Suodatus</p>}
+  return (
+    <div className="table__filters">
+      <div className="table__filters_filter-wrapper">
+        <div
+          className={classNames("table__filters_filter-inner-wrapper", {
+            "table__filters_filter-inner-wrapper--align-right":
+              alignFiltersRight,
+          })}
+        >
+          {!!filterOptions.length && (
+            <p className="table__filters_filter-wrapper_title">Suodatus</p>
+          )}
           {!!componentToRenderUnderTitle && componentToRenderUnderTitle}
-          <CheckboxInput checkboxName='lease-type-checkbox' legend='Suodata' onChange={handleFilterChange} options={filterOptions} selectAllButton={false} value={filterValue} />
+          <CheckboxInput
+            checkboxName="lease-type-checkbox"
+            legend="Suodata"
+            onChange={handleFilterChange}
+            options={filterOptions}
+            selectAllButton={false}
+            value={filterValue}
+          />
         </div>
       </div>
-      <div className='table__filters_amount-wrapper'>
+      <div className="table__filters_amount-wrapper">
         <span>{amountText}</span>
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default TableFilters;

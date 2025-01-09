@@ -36,17 +36,29 @@ const BasicInfoDecisionEdit = ({
   initialValue,
   onChange,
   getPlotUnitDecisions,
-  cacheKey
+  cacheKey,
 }: Props) => {
-  return <Row>
+  return (
+    <Row>
       <Column large={8}>
-        <DecisionSelectInput value={initialValue?.id ? {
-        id: initialValue.id,
-        label: formatDecisionName(initialValue)
-      } : null} onChange={onChange} name={field} getOptions={getPlotUnitDecisions} hasError={initialValue?.id && !initialValue.relatedPlanUnitId} cacheOptions={false} key={cacheKey} />
+        <DecisionSelectInput
+          value={
+            initialValue?.id
+              ? {
+                  id: initialValue.id,
+                  label: formatDecisionName(initialValue),
+                }
+              : null
+          }
+          onChange={onChange}
+          name={field}
+          getOptions={getPlotUnitDecisions}
+          hasError={initialValue?.id && !initialValue.relatedPlanUnitId}
+          cacheOptions={false}
+          key={cacheKey}
+        />
       </Column>
-      {
-      /*<Column large={3}>
+      {/*<Column large={3}>
        <FormField
          disableTouched={isSaveClicked}
          fieldAttributes={get(attributes, 'decision.child.children.decision_to_list')}
@@ -57,19 +69,26 @@ const BasicInfoDecisionEdit = ({
          }}
          invisibleLabel
        />
-      </Column>*/
-    }
+      </Column>*/}
       <Column large={1}>
         <Authorization allow={true}>
-          {!disabled && <RemoveButton className='third-level' onClick={onRemove} style={{
-          height: 'unset'
-        }} title='Poista päätös' />}
+          {!disabled && (
+            <RemoveButton
+              className="third-level"
+              onClick={onRemove}
+              style={{
+                height: "unset",
+              }}
+              title="Poista päätös"
+            />
+          )}
         </Authorization>
       </Column>
-    </Row>;
+    </Row>
+  );
 };
 
-export default (connect((state, props: Props) => {
+export default connect((state, props: Props) => {
   const formName = props.formName;
   const selector = formValueSelector(formName);
   return {
@@ -77,6 +96,6 @@ export default (connect((state, props: Props) => {
     isSaveClicked: getIsSaveClicked(state),
     decisionToList: selector(state, `${props.field}.decision_to_list`),
     initialValue: selector(state, `${props.field}`),
-    usersPermissions: getUsersPermissions(state)
+    usersPermissions: getUsersPermissions(state),
   };
-})(BasicInfoDecisionEdit) as React.ComponentType<OwnProps>);
+})(BasicInfoDecisionEdit) as React.ComponentType<OwnProps>;

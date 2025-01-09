@@ -14,45 +14,55 @@ type Props = {
 
 class InvoiceSimulatorForm extends Component<Props> {
   handleSubmit = (e: any) => {
-    const {
-      onSubmit
-    } = this.props;
+    const { onSubmit } = this.props;
     onSubmit();
     e.preventDefault();
   };
 
   render() {
-    return <form onSubmit={this.handleSubmit}>
+    return (
+      <form onSubmit={this.handleSubmit}>
         <Row>
           <Column small={12}>
-            <FormField fieldAttributes={{
-            type: 'integer',
-            required: false,
-            read_only: false
-          }} name='invoice_simulator_year' disableDirty overrideValues={{
-            label: 'Vuosi'
-          }} />
+            <FormField
+              fieldAttributes={{
+                type: "integer",
+                required: false,
+                read_only: false,
+              }}
+              name="invoice_simulator_year"
+              disableDirty
+              overrideValues={{
+                label: "Vuosi",
+              }}
+            />
           </Column>
         </Row>
-      </form>;
+      </form>
+    );
   }
-
 }
 
 const formName = FormNames.INVOICE_SIMULATOR;
 const selector = formValueSelector(formName);
-export default flowRight(connect(state => {
-  const currentLease = getCurrentLease(state);
-  return {
-    billingPeriods: getBillingPeriodsByLease(state, currentLease.id),
-    billingPeriod: selector(state, 'billing_period')
-  };
-}, {
-  change
-}), reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-  initialValues: {
-    invoice_simulator_year: getCurrentYear()
-  }
-}))(InvoiceSimulatorForm) as React.ComponentType<any>;
+export default flowRight(
+  connect(
+    (state) => {
+      const currentLease = getCurrentLease(state);
+      return {
+        billingPeriods: getBillingPeriodsByLease(state, currentLease.id),
+        billingPeriod: selector(state, "billing_period"),
+      };
+    },
+    {
+      change,
+    },
+  ),
+  reduxForm({
+    form: formName,
+    destroyOnUnmount: false,
+    initialValues: {
+      invoice_simulator_year: getCurrentYear(),
+    },
+  }),
+)(InvoiceSimulatorForm) as React.ComponentType<any>;

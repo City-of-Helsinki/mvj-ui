@@ -6,16 +6,20 @@ type Props = {
 
 const TableFilterWrapper = ({
   filterComponent,
-  visualizationComponent
+  visualizationComponent,
 }: Props) => {
-  return <div className='table__table-filter-wrapper'>
-      {visualizationComponent && <div className='table__table-filter-wrapper_visualization-wrapper'>
+  return (
+    <div className="table__table-filter-wrapper">
+      {visualizationComponent && (
+        <div className="table__table-filter-wrapper_visualization-wrapper">
           {visualizationComponent}
-        </div>}
-      <div className='table__table-filter-wrapper_filter-wrapper'>
+        </div>
+      )}
+      <div className="table__table-filter-wrapper_filter-wrapper">
         {filterComponent}
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default TableFilterWrapper;

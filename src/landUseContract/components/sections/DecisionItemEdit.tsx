@@ -17,9 +17,19 @@ import FormField from "@/components/form/FormField";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
 import { receiveCollapseStates } from "@/landUseContract/actions";
-import { ConfirmationModalTexts, FieldTypes, FormNames, ViewModes } from "@/enums";
+import {
+  ConfirmationModalTexts,
+  FieldTypes,
+  FormNames,
+  ViewModes,
+} from "@/enums";
 import { ButtonColors } from "@/components/enums";
-import { getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldRequired } from "@/util/helpers";
+import {
+  getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
+  isFieldRequired,
+} from "@/util/helpers";
 import { getCollapseStateByKey } from "@/landUseContract/selectors";
 import { referenceNumber } from "@/components/form/validations";
 import { withWindowResize } from "@/components/resize/WindowResizeHandler";
@@ -39,117 +49,244 @@ const renderDecisionConditions = ({
   collapseState,
   errors,
   fields,
-  fields: {
-    name
-  },
+  fields: { name },
   isSaveClicked,
   largeScreen,
-  onCollapseToggle
+  onCollapseToggle,
 }: DecisionConditionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
 
   const decisionConditionsErrors = get(errors, name);
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      return <Collapse className='collapse__secondary' defaultOpen={collapseState !== undefined ? collapseState : true} hasErrors={isSaveClicked && !isEmpty(decisionConditionsErrors)} headerTitle='Ehdot' onToggle={onCollapseToggle}>
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <Collapse
+            className="collapse__secondary"
+            defaultOpen={collapseState !== undefined ? collapseState : true}
+            hasErrors={isSaveClicked && !isEmpty(decisionConditionsErrors)}
+            headerTitle="Ehdot"
+            onToggle={onCollapseToggle}
+          >
             <BoxItemContainer>
-              {largeScreen && <Row>
+              {largeScreen && (
+                <Row>
                   <Column large={2}>
-                    <FormTextTitle title='Ehtotyyppi' required={isFieldRequired(attributes, 'decisions.child.children.conditions.child.children.type')} />
+                    <FormTextTitle
+                      title="Ehtotyyppi"
+                      required={isFieldRequired(
+                        attributes,
+                        "decisions.child.children.conditions.child.children.type",
+                      )}
+                    />
                   </Column>
                   <Column large={2}>
-                    <FormTextTitle title='Valvontapvm' required={isFieldRequired(attributes, 'decisions.child.children.conditions.child.children.supervision_date')} />
+                    <FormTextTitle
+                      title="Valvontapvm"
+                      required={isFieldRequired(
+                        attributes,
+                        "decisions.child.children.conditions.child.children.supervision_date",
+                      )}
+                    />
                   </Column>
                   <Column large={2}>
-                    <FormTextTitle title='Valvottu pvm' required={isFieldRequired(attributes, 'decisions.child.children.conditions.child.children.supervised_date')} />
+                    <FormTextTitle
+                      title="Valvottu pvm"
+                      required={isFieldRequired(
+                        attributes,
+                        "decisions.child.children.conditions.child.children.supervised_date",
+                      )}
+                    />
                   </Column>
                   <Column large={6}>
-                    <FormTextTitle title='Huomautus' required={isFieldRequired(attributes, 'decisions.child.children.conditions.child.children.description')} />
+                    <FormTextTitle
+                      title="Huomautus"
+                      required={isFieldRequired(
+                        attributes,
+                        "decisions.child.children.conditions.child.children.description",
+                      )}
+                    />
                   </Column>
-                </Row>}
-              {fields && !!fields.length && fields.map((condition, index) => {
-            const handleRemove = () => {
-              dispatch({
-                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                confirmationFunction: () => {
-                  fields.remove(index);
-                },
-                confirmationModalButtonClassName: ButtonColors.ALERT,
-                confirmationModalButtonText: ConfirmationModalTexts.DELETE_CONDITION.BUTTON,
-                confirmationModalLabel: ConfirmationModalTexts.DELETE_CONDITION.LABEL,
-                confirmationModalTitle: ConfirmationModalTexts.DELETE_CONDITION.TITLE
-              });
-            };
+                </Row>
+              )}
+              {fields &&
+                !!fields.length &&
+                fields.map((condition, index) => {
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
+                        fields.remove(index);
+                      },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
+                      confirmationModalButtonText:
+                        ConfirmationModalTexts.DELETE_CONDITION.BUTTON,
+                      confirmationModalLabel:
+                        ConfirmationModalTexts.DELETE_CONDITION.LABEL,
+                      confirmationModalTitle:
+                        ConfirmationModalTexts.DELETE_CONDITION.TITLE,
+                    });
+                  };
 
-            if (largeScreen) {
-              return <Row key={index}>
-                      <Column large={2}>
-                        <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.type')} invisibleLabel name={`${condition}.type`} overrideValues={{
-                    label: 'Ehtotyyppi'
-                  }} />
-                      </Column>
-                      <Column large={2}>
-                        <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervision_date')} invisibleLabel name={`${condition}.supervision_date`} overrideValues={{
-                    label: 'Valvontapvm'
-                  }} />
-                      </Column>
-                      <Column large={2}>
-                        <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervised_date')} invisibleLabel name={`${condition}.supervised_date`} overrideValues={{
-                    label: 'Valvottu pvm'
-                  }} />
-                      </Column>
-                      <Column large={6}>
-                        <FieldAndRemoveButtonWrapper field={<FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.description')} invisibleLabel name={`${condition}.description`} overrideValues={{
-                    label: 'Huomautus',
-                    fieldType: FieldTypes.TEXTAREA
-                  }} />} removeButton={<RemoveButton className='third-level' onClick={handleRemove} title="Poista ehto" />} />
-                      </Column>
-                    </Row>;
-            } else {
-              return <BoxItem key={index}>
-                      <BoxContentWrapper>
-                        <ActionButtonWrapper>
-                          <RemoveButton onClick={handleRemove} title="Poista ehto" />
-                        </ActionButtonWrapper>
-                        <Row>
-                          <Column small={6} medium={4}>
-                            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.type')} name={`${condition}.type`} overrideValues={{
-                        label: 'Ehtotyyppi'
-                      }} />
-                          </Column>
-                          <Column small={6} medium={4}>
-                            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervision_date')} name={`${condition}.supervision_date`} overrideValues={{
-                        label: 'Valvontapvm'
-                      }} />
-                          </Column>
-                          <Column small={12} medium={4}>
-                            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.supervised_date')} name={`${condition}.supervised_date`} overrideValues={{
-                        label: 'Valvottu pvm'
-                      }} />
-                          </Column>
-                          <Column small={12} medium={12}>
-                            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.conditions.child.children.description')} name={`${condition}.description`} overrideValues={{
-                        label: 'Huomautus'
-                      }} />
-                          </Column>
-                        </Row>
-                      </BoxContentWrapper>
-                    </BoxItem>;
-            }
-          })}
+                  if (largeScreen) {
+                    return (
+                      <Row key={index}>
+                        <Column large={2}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(
+                              attributes,
+                              "decisions.child.children.conditions.child.children.type",
+                            )}
+                            invisibleLabel
+                            name={`${condition}.type`}
+                            overrideValues={{
+                              label: "Ehtotyyppi",
+                            }}
+                          />
+                        </Column>
+                        <Column large={2}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(
+                              attributes,
+                              "decisions.child.children.conditions.child.children.supervision_date",
+                            )}
+                            invisibleLabel
+                            name={`${condition}.supervision_date`}
+                            overrideValues={{
+                              label: "Valvontapvm",
+                            }}
+                          />
+                        </Column>
+                        <Column large={2}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(
+                              attributes,
+                              "decisions.child.children.conditions.child.children.supervised_date",
+                            )}
+                            invisibleLabel
+                            name={`${condition}.supervised_date`}
+                            overrideValues={{
+                              label: "Valvottu pvm",
+                            }}
+                          />
+                        </Column>
+                        <Column large={6}>
+                          <FieldAndRemoveButtonWrapper
+                            field={
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(
+                                  attributes,
+                                  "decisions.child.children.conditions.child.children.description",
+                                )}
+                                invisibleLabel
+                                name={`${condition}.description`}
+                                overrideValues={{
+                                  label: "Huomautus",
+                                  fieldType: FieldTypes.TEXTAREA,
+                                }}
+                              />
+                            }
+                            removeButton={
+                              <RemoveButton
+                                className="third-level"
+                                onClick={handleRemove}
+                                title="Poista ehto"
+                              />
+                            }
+                          />
+                        </Column>
+                      </Row>
+                    );
+                  } else {
+                    return (
+                      <BoxItem key={index}>
+                        <BoxContentWrapper>
+                          <ActionButtonWrapper>
+                            <RemoveButton
+                              onClick={handleRemove}
+                              title="Poista ehto"
+                            />
+                          </ActionButtonWrapper>
+                          <Row>
+                            <Column small={6} medium={4}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(
+                                  attributes,
+                                  "decisions.child.children.conditions.child.children.type",
+                                )}
+                                name={`${condition}.type`}
+                                overrideValues={{
+                                  label: "Ehtotyyppi",
+                                }}
+                              />
+                            </Column>
+                            <Column small={6} medium={4}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(
+                                  attributes,
+                                  "decisions.child.children.conditions.child.children.supervision_date",
+                                )}
+                                name={`${condition}.supervision_date`}
+                                overrideValues={{
+                                  label: "Valvontapvm",
+                                }}
+                              />
+                            </Column>
+                            <Column small={12} medium={4}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(
+                                  attributes,
+                                  "decisions.child.children.conditions.child.children.supervised_date",
+                                )}
+                                name={`${condition}.supervised_date`}
+                                overrideValues={{
+                                  label: "Valvottu pvm",
+                                }}
+                              />
+                            </Column>
+                            <Column small={12} medium={12}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(
+                                  attributes,
+                                  "decisions.child.children.conditions.child.children.description",
+                                )}
+                                name={`${condition}.description`}
+                                overrideValues={{
+                                  label: "Huomautus",
+                                }}
+                              />
+                            </Column>
+                          </Row>
+                        </BoxContentWrapper>
+                      </BoxItem>
+                    );
+                  }
+                })}
             </BoxItemContainer>
             <Row>
               <Column>
-                <AddButtonSecondary className={!fields.length ? 'no-top-margin' : '-'} label='Lisää ehto' onClick={handleAdd} />
+                <AddButtonSecondary
+                  className={!fields.length ? "no-top-margin" : "-"}
+                  label="Lisää ehto"
+                  onClick={handleAdd}
+                />
               </Column>
             </Row>
-          </Collapse>;
-    }}
-    </AppConsumer>;
+          </Collapse>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
 type Props = {
@@ -179,7 +316,7 @@ const DecisionItemEdit = ({
   isSaveClicked,
   largeScreen,
   onRemove,
-  receiveCollapseStates
+  receiveCollapseStates,
 }: Props) => {
   const handleRemove = () => {
     onRemove(index);
@@ -194,10 +331,10 @@ const DecisionItemEdit = ({
       [ViewModes.EDIT]: {
         [formName]: {
           [decisionId]: {
-            decision: val
-          }
-        }
-      }
+            decision: val,
+          },
+        },
+      },
     });
   };
 
@@ -210,68 +347,165 @@ const DecisionItemEdit = ({
       [ViewModes.EDIT]: {
         [formName]: {
           [decisionId]: {
-            conditions: val
-          }
-        }
-      }
+            conditions: val,
+          },
+        },
+      },
     });
   };
 
-  const getDecisionById = (decisions: Array<Record<string, any>>, decisionId: number) => decisions && decisions.length && decisionId ? decisions.find(decision => decision.id === decisionId) : {};
+  const getDecisionById = (
+    decisions: Array<Record<string, any>>,
+    decisionId: number,
+  ) =>
+    decisions && decisions.length && decisionId
+      ? decisions.find((decision) => decision.id === decisionId)
+      : {};
 
-  const decisionMakerOptions = getFieldOptions(attributes, 'decisions.child.children.decision_maker'),
-        decisionErrors = get(errors, field),
-        savedDecision = getDecisionById(decisionsData, decisionId);
-  return <Collapse defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : true} hasErrors={isSaveClicked && !isEmpty(decisionErrors)} headerTitle={savedDecision ? getLabelOfOption(decisionMakerOptions, savedDecision.decision_maker) || '-' : '-'} onRemove={handleRemove} onToggle={handleDecisionCollapseToggle}>
+  const decisionMakerOptions = getFieldOptions(
+      attributes,
+      "decisions.child.children.decision_maker",
+    ),
+    decisionErrors = get(errors, field),
+    savedDecision = getDecisionById(decisionsData, decisionId);
+  return (
+    <Collapse
+      defaultOpen={
+        decisionCollapseState !== undefined ? decisionCollapseState : true
+      }
+      hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
+      headerTitle={
+        savedDecision
+          ? getLabelOfOption(
+              decisionMakerOptions,
+              savedDecision.decision_maker,
+            ) || "-"
+          : "-"
+      }
+      onRemove={handleRemove}
+      onToggle={handleDecisionCollapseToggle}
+    >
       <BoxContentWrapper>
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.decision_maker')} name={`${field}.decision_maker`} overrideValues={{
-            label: 'Päättäjä'
-          }} />
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(
+                attributes,
+                "decisions.child.children.decision_maker",
+              )}
+              name={`${field}.decision_maker`}
+              overrideValues={{
+                label: "Päättäjä",
+              }}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.decision_date')} name={`${field}.decision_date`} overrideValues={{
-            label: 'Päätöspvm'
-          }} />
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(
+                attributes,
+                "decisions.child.children.decision_date",
+              )}
+              name={`${field}.decision_date`}
+              overrideValues={{
+                label: "Päätöspvm",
+              }}
+            />
           </Column>
           <Column small={6} medium={4} large={1}>
-            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.section')} name={`${field}.section`} unit='§' overrideValues={{
-            label: 'Pykälä'
-          }} />
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(
+                attributes,
+                "decisions.child.children.section",
+              )}
+              name={`${field}.section`}
+              unit="§"
+              overrideValues={{
+                label: "Pykälä",
+              }}
+            />
           </Column>
           <Column small={6} medium={8} large={3}>
-            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.type')} name={`${field}.type`} overrideValues={{
-            label: 'Päätöksen tyyppi'
-          }} />
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(
+                attributes,
+                "decisions.child.children.type",
+              )}
+              name={`${field}.type`}
+              overrideValues={{
+                label: "Päätöksen tyyppi",
+              }}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.reference_number')} name={`${field}.reference_number`} validate={referenceNumber} overrideValues={{
-            label: 'Diaarinumero',
-            fieldType: FieldTypes.REFERENCE_NUMBER
-          }} />
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(
+                attributes,
+                "decisions.child.children.reference_number",
+              )}
+              name={`${field}.reference_number`}
+              validate={referenceNumber}
+              overrideValues={{
+                label: "Diaarinumero",
+                fieldType: FieldTypes.REFERENCE_NUMBER,
+              }}
+            />
           </Column>
           <Column small={12}>
-            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'decisions.child.children.description')} name={`${field}.description`} overrideValues={{
-            label: 'Huomautus'
-          }} />
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={getFieldAttributes(
+                attributes,
+                "decisions.child.children.description",
+              )}
+              name={`${field}.description`}
+              overrideValues={{
+                label: "Huomautus",
+              }}
+            />
           </Column>
         </Row>
       </BoxContentWrapper>
 
-      <FieldArray attributes={attributes} collapseState={conditionsCollapseState} component={renderDecisionConditions} errors={errors} isSaveClicked={isSaveClicked} largeScreen={largeScreen} name={`${field}.conditions`} onCollapseToggle={handleConditionsCollapseToggle} />
-    </Collapse>;
+      <FieldArray
+        attributes={attributes}
+        collapseState={conditionsCollapseState}
+        component={renderDecisionConditions}
+        errors={errors}
+        isSaveClicked={isSaveClicked}
+        largeScreen={largeScreen}
+        name={`${field}.conditions`}
+        onCollapseToggle={handleConditionsCollapseToggle}
+      />
+    </Collapse>
+  );
 };
 
 const formName = FormNames.LAND_USE_CONTRACT_DECISIONS;
 const selector = formValueSelector(formName);
-export default flowRight(withWindowResize, connect((state, props) => {
-  const id = selector(state, `${props.field}.id`);
-  return {
-    conditionsCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.conditions`),
-    decisionCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.${id}.decision`),
-    decisionId: id
-  };
-}, {
-  receiveCollapseStates
-}))(DecisionItemEdit);
+export default flowRight(
+  withWindowResize,
+  connect(
+    (state, props) => {
+      const id = selector(state, `${props.field}.id`);
+      return {
+        conditionsCollapseState: getCollapseStateByKey(
+          state,
+          `${ViewModes.EDIT}.${formName}.${id}.conditions`,
+        ),
+        decisionCollapseState: getCollapseStateByKey(
+          state,
+          `${ViewModes.EDIT}.${formName}.${id}.decision`,
+        ),
+        decisionId: id,
+      };
+    },
+    {
+      receiveCollapseStates,
+    },
+  ),
+)(DecisionItemEdit);

@@ -1,8 +1,18 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchJobRunAttributes as fetchBatchrunJobRunAttributes, fetchJobRunLogEntryAttributes as fetchBatchrunJobRunLogEntryAttributes } from "@/batchrun/actions";
-import { getIsFetchingJobRunAttributes as getIsFetchingBatchrunJobRunAttributes, getIsFetchingJobRunLogEntryAttributes as getIsFetchingBatchrunJobRunLogEntryAttributes, getJobRunAttributes as getBatchrunJobRunAttributes, getJobRunMethods as getBatchrunJobRunMethods, getJobRunLogEntryAttributes as getBatchrunJobRunLogEntryAttributes, getJobRunLogEntryMethods as getBatchrunJobRunLogEntryMethods } from "@/batchrun/selectors";
+import {
+  fetchJobRunAttributes as fetchBatchrunJobRunAttributes,
+  fetchJobRunLogEntryAttributes as fetchBatchrunJobRunLogEntryAttributes,
+} from "@/batchrun/actions";
+import {
+  getIsFetchingJobRunAttributes as getIsFetchingBatchrunJobRunAttributes,
+  getIsFetchingJobRunLogEntryAttributes as getIsFetchingBatchrunJobRunLogEntryAttributes,
+  getJobRunAttributes as getBatchrunJobRunAttributes,
+  getJobRunMethods as getBatchrunJobRunMethods,
+  getJobRunLogEntryAttributes as getBatchrunJobRunLogEntryAttributes,
+  getJobRunLogEntryMethods as getBatchrunJobRunLogEntryMethods,
+} from "@/batchrun/selectors";
 import type { Attributes, Methods } from "types";
 
 function BatchrunJobRunTabAttributes(WrappedComponent: any) {
@@ -21,7 +31,7 @@ function BatchrunJobRunTabAttributes(WrappedComponent: any) {
   };
   return class BatchrunJobRunTabAttributes extends PureComponent<Props, State> {
     state = {
-      isFetchingAttributes: false
+      isFetchingAttributes: false,
     };
 
     componentDidMount() {
@@ -33,20 +43,33 @@ function BatchrunJobRunTabAttributes(WrappedComponent: any) {
         fetchBatchrunJobRunAttributes,
         fetchBatchrunJobRunLogEntryAttributes,
         isFetchingBatchrunJobRunAttributes,
-        isFetchingBatchrunJobRunLogEntryAttributes
+        isFetchingBatchrunJobRunLogEntryAttributes,
       } = this.props;
 
-      if (!isFetchingBatchrunJobRunAttributes && !batchrunJobRunAttributes && !batchrunJobRunMethods) {
+      if (
+        !isFetchingBatchrunJobRunAttributes &&
+        !batchrunJobRunAttributes &&
+        !batchrunJobRunMethods
+      ) {
         fetchBatchrunJobRunAttributes();
       }
 
-      if (!isFetchingBatchrunJobRunLogEntryAttributes && !batchrunJobRunLogEntryAttributes && !batchrunJobRunLogEntryMethods) {
+      if (
+        !isFetchingBatchrunJobRunLogEntryAttributes &&
+        !batchrunJobRunLogEntryAttributes &&
+        !batchrunJobRunLogEntryMethods
+      ) {
         fetchBatchrunJobRunLogEntryAttributes();
       }
     }
 
     componentDidUpdate(prevProps: Props) {
-      if (this.props.isFetchingBatchrunJobRunAttributes !== prevProps.isFetchingBatchrunJobRunAttributes || this.props.isFetchingBatchrunJobRunLogEntryAttributes !== prevProps.isFetchingBatchrunJobRunLogEntryAttributes) {
+      if (
+        this.props.isFetchingBatchrunJobRunAttributes !==
+          prevProps.isFetchingBatchrunJobRunAttributes ||
+        this.props.isFetchingBatchrunJobRunLogEntryAttributes !==
+          prevProps.isFetchingBatchrunJobRunLogEntryAttributes
+      ) {
         this.setIsFetchingAttributes();
       }
     }
@@ -54,32 +77,49 @@ function BatchrunJobRunTabAttributes(WrappedComponent: any) {
     setIsFetchingAttributes = () => {
       const {
         isFetchingBatchrunJobRunAttributes,
-        isFetchingBatchrunJobRunLogEntryAttributes
+        isFetchingBatchrunJobRunLogEntryAttributes,
       } = this.props;
-      const isFetching = isFetchingBatchrunJobRunAttributes || isFetchingBatchrunJobRunLogEntryAttributes;
+      const isFetching =
+        isFetchingBatchrunJobRunAttributes ||
+        isFetchingBatchrunJobRunLogEntryAttributes;
       this.setState({
-        isFetchingAttributes: isFetching
+        isFetchingAttributes: isFetching,
       });
     };
 
     render() {
-      return <WrappedComponent isFetchingBatchrunJobRunsTabAttributes={this.state.isFetchingAttributes} {...this.props} />;
+      return (
+        <WrappedComponent
+          isFetchingBatchrunJobRunsTabAttributes={
+            this.state.isFetchingAttributes
+          }
+          {...this.props}
+        />
+      );
     }
-
   };
 }
 
-const withBatchrunJobRunTabAttributes = flowRight(connect(state => {
-  return {
-    batchrunJobRunAttributes: getBatchrunJobRunAttributes(state),
-    batchrunJobRunMethods: getBatchrunJobRunMethods(state),
-    batchrunJobRunLogEntryAttributes: getBatchrunJobRunLogEntryAttributes(state),
-    batchrunJobRunLogEntryMethods: getBatchrunJobRunLogEntryMethods(state),
-    isFetchingBatchrunJobRunAttributes: getIsFetchingBatchrunJobRunAttributes(state),
-    isFetchingBatchrunJobRunLogEntryAttributes: getIsFetchingBatchrunJobRunLogEntryAttributes(state)
-  };
-}, {
-  fetchBatchrunJobRunAttributes,
-  fetchBatchrunJobRunLogEntryAttributes
-}), BatchrunJobRunTabAttributes);
+const withBatchrunJobRunTabAttributes = flowRight(
+  connect(
+    (state) => {
+      return {
+        batchrunJobRunAttributes: getBatchrunJobRunAttributes(state),
+        batchrunJobRunMethods: getBatchrunJobRunMethods(state),
+        batchrunJobRunLogEntryAttributes:
+          getBatchrunJobRunLogEntryAttributes(state),
+        batchrunJobRunLogEntryMethods: getBatchrunJobRunLogEntryMethods(state),
+        isFetchingBatchrunJobRunAttributes:
+          getIsFetchingBatchrunJobRunAttributes(state),
+        isFetchingBatchrunJobRunLogEntryAttributes:
+          getIsFetchingBatchrunJobRunLogEntryAttributes(state),
+      };
+    },
+    {
+      fetchBatchrunJobRunAttributes,
+      fetchBatchrunJobRunLogEntryAttributes,
+    },
+  ),
+  BatchrunJobRunTabAttributes,
+);
 export { withBatchrunJobRunTabAttributes };

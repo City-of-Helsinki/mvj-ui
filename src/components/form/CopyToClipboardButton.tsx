@@ -11,16 +11,19 @@ type Props = {
 };
 
 const CopyToClipboardButton = (props: Props): JSX.Element => {
-  const {
-    className,
-    disabled,
-    onClick,
-    title,
-    type = 'button'
-  } = props;
-  return <button {...props} className={classNames('form__copy-to-clipboard-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
-    <CopyToClipboardIcon className='icon-medium' />
-  </button>;
+  const { className, disabled, onClick, title, type = "button" } = props;
+  return (
+    <button
+      {...props}
+      className={classNames("form__copy-to-clipboard-button", className)}
+      disabled={disabled}
+      type={type}
+      title={title}
+      onClick={onClick}
+    >
+      <CopyToClipboardIcon className="icon-medium" />
+    </button>
+  );
 };
 
 export default CopyToClipboardButton;

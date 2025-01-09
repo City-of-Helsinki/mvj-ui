@@ -13,9 +13,11 @@ const CloseButton = ({
   onClick,
   setReference,
   title,
-  type = 'button'
+  type = "button",
 }: Props) => {
-  const handleSetReference = (element: Record<string, any> | null | undefined) => {
+  const handleSetReference = (
+    element: Record<string, any> | null | undefined,
+  ) => {
     if (element && setReference) {
       setReference(element);
     }
@@ -28,9 +30,22 @@ const CloseButton = ({
     }
   };
 
-  return <button ref={handleSetReference} aria-label='Sulje' className={classNames('close-button-component', className)} type={type} title={title} onClick={onClick} onKeyDown={handleKeyDown}>
-      <i className={classNames('.close-button-component.i', className)} aria-label='Poista' />
-    </button>;
+  return (
+    <button
+      ref={handleSetReference}
+      aria-label="Sulje"
+      className={classNames("close-button-component", className)}
+      type={type}
+      title={title}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+    >
+      <i
+        className={classNames(".close-button-component.i", className)}
+        aria-label="Poista"
+      />
+    </button>
+  );
 };
 
 export default CloseButton;

@@ -11,7 +11,10 @@ import CreateAndCreditInvoiceR from "./CreateAndCreditInvoiceR";
 import Divider from "@/components/content/Divider";
 import InvoiceTableAndPanelR from "./InvoiceTableAndPanelR";
 import Title from "@/components/content/Title";
-import { receiveCollapseStates, receiveInvoiceToCredit } from "@/landUseInvoices/actions";
+import {
+  receiveCollapseStates,
+  receiveInvoiceToCredit,
+} from "@/landUseInvoices/actions";
 import { PermissionMissingTexts, ViewModes } from "@/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { hasPermissions } from "@/util/helpers";
@@ -40,13 +43,11 @@ type State = {
 
 class InvoicesR extends PureComponent<Props, State> {
   state = {
-    currentLandUseContract: {}
+    currentLandUseContract: {},
   };
   creditPanel: any;
   componentDidMount = () => {
-    const {
-      receiveInvoiceToCredit
-    } = this.props;
+    const { receiveInvoiceToCredit } = this.props;
     receiveInvoiceToCredit(null);
   };
 
@@ -61,69 +62,87 @@ class InvoicesR extends PureComponent<Props, State> {
   }
 
   handleCollapseToggle = (key: string, val: boolean) => {
-    const {
-      receiveCollapseStates
-    } = this.props;
+    const { receiveCollapseStates } = this.props;
     receiveCollapseStates({
       [ViewModes.READONLY]: {
         invoices: {
-          [key]: val
-        }
-      }
+          [key]: val,
+        },
+      },
     });
   };
   handleInvoicesCollapseToggle = (val: boolean) => {
-    this.handleCollapseToggle('invoices', val);
+    this.handleCollapseToggle("invoices", val);
   };
   handlePreviewInvoicesCollapseToggle = (val: boolean) => {
-    this.handleCollapseToggle('preview_invoices', val);
+    this.handleCollapseToggle("preview_invoices", val);
   };
   handleInvoiceToCreditChange = (val: string) => {
-    const {
-      receiveInvoiceToCredit
-    } = this.props;
+    const { receiveInvoiceToCredit } = this.props;
     receiveInvoiceToCredit(val);
   };
 
   render() {
-    const {
-      invoicesCollapseState,
-      invoiceToCredit,
-      usersPermissions
-    } = this.props;
+    const { invoicesCollapseState, invoiceToCredit, usersPermissions } =
+      this.props;
     // if(isFetchingLeaseInvoiceTabAttributes) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
-    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
-    return <AppConsumer>
+    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE))
+      return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
+    return (
+      <AppConsumer>
         {() => {
-        return <Fragment>
-              <Title>
-                {LeaseInvoicingFieldTitles.INVOICING}
-              </Title>
+          return (
+            <Fragment>
+              <Title>{LeaseInvoicingFieldTitles.INVOICING}</Title>
               <Divider />
 
-              <Collapse defaultOpen={invoicesCollapseState !== undefined ? invoicesCollapseState : true} headerTitle={LeaseInvoicingFieldTitles.INVOICES} onToggle={this.handleInvoicesCollapseToggle}>
-                <InvoiceTableAndPanelR invoiceToCredit={invoiceToCredit} onInvoiceToCreditChange={this.handleInvoiceToCreditChange} />
-                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
+              <Collapse
+                defaultOpen={
+                  invoicesCollapseState !== undefined
+                    ? invoicesCollapseState
+                    : true
+                }
+                headerTitle={LeaseInvoicingFieldTitles.INVOICES}
+                onToggle={this.handleInvoicesCollapseToggle}
+              >
+                <InvoiceTableAndPanelR
+                  invoiceToCredit={invoiceToCredit}
+                  onInvoiceToCreditChange={this.handleInvoiceToCreditChange}
+                />
+                <Authorization
+                  allow={hasPermissions(
+                    usersPermissions,
+                    UsersPermissions.ADD_INVOICE,
+                  )}
+                >
                   <CreateAndCreditInvoiceR invoiceToCredit={invoiceToCredit} />
                 </Authorization>
               </Collapse>
-
-            </Fragment>;
-      }}
-      </AppConsumer>;
+            </Fragment>
+          );
+        }}
+      </AppConsumer>
+    );
   }
-
 }
 
-export default flowRight(withRouter, connect(state => {
-  const currentLandUseContract = getCurrentLandUseContract(state);
-  return {
-    currentLandUseContract: currentLandUseContract,
-    isInvoicingEnabled: currentLandUseContract ? currentLandUseContract.is_invoicing_enabled : null,
-    usersPermissions: getUsersPermissions(state),
-    invoiceToCredit: getInvoiceToCredit(state)
-  };
-}, {
-  receiveCollapseStates,
-  receiveInvoiceToCredit
-}))(InvoicesR) as React.ComponentType<any>;
+export default flowRight(
+  withRouter,
+  connect(
+    (state) => {
+      const currentLandUseContract = getCurrentLandUseContract(state);
+      return {
+        currentLandUseContract: currentLandUseContract,
+        isInvoicingEnabled: currentLandUseContract
+          ? currentLandUseContract.is_invoicing_enabled
+          : null,
+        usersPermissions: getUsersPermissions(state),
+        invoiceToCredit: getInvoiceToCredit(state),
+      };
+    },
+    {
+      receiveCollapseStates,
+      receiveInvoiceToCredit,
+    },
+  ),
+)(InvoicesR) as React.ComponentType<any>;

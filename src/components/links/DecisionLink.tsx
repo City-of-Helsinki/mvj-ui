@@ -6,11 +6,24 @@ type Props = {
   decisionOptions: Array<Record<string, any>>;
 };
 
-const DecisionLink = ({
-  decision,
-  decisionOptions
-}: Props) => decision ? <FormText>{decision.reference_number ? <a className='no-margin' href={getReferenceNumberLink(decision.reference_number)} target='_blank' rel="noopener noreferrer">
-      {getLabelOfOption(decisionOptions, decision.id)}
-    </a> : getLabelOfOption(decisionOptions, decision.id)}</FormText> : <FormText>-</FormText>;
+const DecisionLink = ({ decision, decisionOptions }: Props) =>
+  decision ? (
+    <FormText>
+      {decision.reference_number ? (
+        <a
+          className="no-margin"
+          href={getReferenceNumberLink(decision.reference_number)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {getLabelOfOption(decisionOptions, decision.id)}
+        </a>
+      ) : (
+        getLabelOfOption(decisionOptions, decision.id)
+      )}
+    </FormText>
+  ) : (
+    <FormText>-</FormText>
+  );
 
 export default DecisionLink;

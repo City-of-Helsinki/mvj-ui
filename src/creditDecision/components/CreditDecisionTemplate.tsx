@@ -13,11 +13,20 @@ const CreditDecisionTemplate = ({
   businessId,
   contactId,
   contactType,
-  nin
-}: Props) => <Fragment>
-    <CreditDecisionRequest contactType={contactType} contactId={contactId} businessId={businessId} nin={nin} />
+  nin,
+}: Props) => (
+  <Fragment>
+    <CreditDecisionRequest
+      contactType={contactType}
+      contactId={contactId}
+      businessId={businessId}
+      nin={nin}
+    />
 
-    {contactType !== ContactTypes.PERSON && <CreditDecisionHistory contactId={contactId} businessId={businessId} />}
-  </Fragment>;
+    {contactType !== ContactTypes.PERSON && (
+      <CreditDecisionHistory contactId={contactId} businessId={businessId} />
+    )}
+  </Fragment>
+);
 
 export default CreditDecisionTemplate;

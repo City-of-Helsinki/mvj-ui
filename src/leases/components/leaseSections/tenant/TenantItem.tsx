@@ -11,10 +11,22 @@ import FormWrapper from "@/components/form/FormWrapper";
 import FormWrapperLeft from "@/components/form/FormWrapperLeft";
 import FormWrapperRight from "@/components/form/FormWrapperRight";
 import SubTitle from "@/components/content/SubTitle";
-import { LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, LeaseTenantRentSharesFieldPaths, LeaseTenantRentSharesFieldTitles } from "@/leases/enums";
+import {
+  LeaseTenantsFieldPaths,
+  LeaseTenantsFieldTitles,
+  LeaseTenantContactSetFieldPaths,
+  LeaseTenantContactSetFieldTitles,
+  LeaseTenantRentSharesFieldPaths,
+  LeaseTenantRentSharesFieldTitles,
+} from "@/leases/enums";
 import { getContactFullName } from "@/contacts/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import { formatDate, getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "@/util/helpers";
+import {
+  formatDate,
+  getFieldOptions,
+  getLabelOfOption,
+  isFieldAllowedToRead,
+} from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
@@ -27,23 +39,41 @@ type RentSharesProps = {
 const RentShares = ({
   attributes,
   intendedUseOptions,
-  rentShares
+  rentShares,
 }: RentSharesProps) => {
-  return <Fragment>
+  return (
+    <Fragment>
       <SubTitle>{LeaseTenantRentSharesFieldTitles.RENT_SHARES}</SubTitle>
       {!rentShares.length && <FormText>Ei laskutusosuuksia</FormText>}
 
-      {!!rentShares.length && <Fragment>
+      {!!rentShares.length && (
+        <Fragment>
           <Row>
             <Column small={6} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.INTENDED_USE)}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  LeaseTenantRentSharesFieldPaths.INTENDED_USE,
+                )}
+              >
                 <FormTextTitle>
                   {LeaseTenantRentSharesFieldTitles.INTENDED_USE}
                 </FormTextTitle>
               </Authorization>
             </Column>
             <Column small={6} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.SHARE_DENOMINATOR) || isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR)}>
+              <Authorization
+                allow={
+                  isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantRentSharesFieldPaths.SHARE_DENOMINATOR,
+                  ) ||
+                  isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR,
+                  )
+                }
+              >
                 <FormTextTitle>
                   {LeaseTenantRentSharesFieldTitles.SHARE_FRACTION}
                 </FormTextTitle>
@@ -51,21 +81,49 @@ const RentShares = ({
             </Column>
           </Row>
           {rentShares.map((rentShare, index) => {
-        return <Row key={index}>
+            return (
+              <Row key={index}>
                 <Column small={6} medium={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.INTENDED_USE)}>
-                    <FormText>{getLabelOfOption(intendedUseOptions, rentShare.intended_use) || ''}</FormText>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      attributes,
+                      LeaseTenantRentSharesFieldPaths.INTENDED_USE,
+                    )}
+                  >
+                    <FormText>
+                      {getLabelOfOption(
+                        intendedUseOptions,
+                        rentShare.intended_use,
+                      ) || ""}
+                    </FormText>
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.SHARE_DENOMINATOR) || isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR)}>
-                    <FormText>{rentShare.share_numerator || ''} / {rentShare.share_denominator || ''}</FormText>
+                  <Authorization
+                    allow={
+                      isFieldAllowedToRead(
+                        attributes,
+                        LeaseTenantRentSharesFieldPaths.SHARE_DENOMINATOR,
+                      ) ||
+                      isFieldAllowedToRead(
+                        attributes,
+                        LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR,
+                      )
+                    }
+                  >
+                    <FormText>
+                      {rentShare.share_numerator || ""} /{" "}
+                      {rentShare.share_denominator || ""}
+                    </FormText>
                   </Authorization>
                 </Column>
-              </Row>;
-      })}
-        </Fragment>}
-    </Fragment>;
+              </Row>
+            );
+          })}
+        </Fragment>
+      )}
+    </Fragment>
+  );
 };
 
 type Props = {
@@ -74,27 +132,44 @@ type Props = {
   tenant: Record<string, any>;
 };
 
-const TenantItem = ({
-  attributes,
-  contact,
-  tenant
-}: Props) => {
+const TenantItem = ({ attributes, contact, tenant }: Props) => {
   const rentShares = tenant.rent_shares;
-  const intendedUseOptions = getFieldOptions(attributes, LeaseTenantRentSharesFieldPaths.INTENDED_USE);
+  const intendedUseOptions = getFieldOptions(
+    attributes,
+    LeaseTenantRentSharesFieldPaths.INTENDED_USE,
+  );
   if (!contact) return null;
-  return <Fragment>
+  return (
+    <Fragment>
       <FormWrapper>
         <FormWrapperLeft>
           <Row>
             <Column small={12}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  LeaseTenantContactSetFieldPaths.CONTACT,
+                )}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.CONTACT)}>
-                  {LeaseTenantContactSetFieldTitles.CONTACT}
-                </FormTextTitle>
-                <FormText>
-                  {contact ? <ExternalLink className='no-margin' href={`${getRouteById(Routes.CONTACTS)}/${contact.id}`} text={getContactFullName(contact)} /> : '-'}
-                </FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantContactSetFieldPaths.CONTACT,
+                    )}
+                  >
+                    {LeaseTenantContactSetFieldTitles.CONTACT}
+                  </FormTextTitle>
+                  <FormText>
+                    {contact ? (
+                      <ExternalLink
+                        className="no-margin"
+                        href={`${getRouteById(Routes.CONTACTS)}/${contact.id}`}
+                        text={getContactFullName(contact)}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </FormText>
                 </>
               </Authorization>
             </Column>
@@ -102,12 +177,21 @@ const TenantItem = ({
 
           <Row>
             <Column>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.REFERENCE)}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  LeaseTenantsFieldPaths.REFERENCE,
+                )}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.REFERENCE)}>
-                  {LeaseTenantsFieldTitles.REFERENCE}
-                </FormTextTitle>
-                <FormText>{tenant.reference || '-'}</FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantsFieldPaths.REFERENCE,
+                    )}
+                  >
+                    {LeaseTenantsFieldTitles.REFERENCE}
+                  </FormTextTitle>
+                  <FormText>{tenant.reference || "-"}</FormText>
                 </>
               </Authorization>
             </Column>
@@ -116,58 +200,113 @@ const TenantItem = ({
         <FormWrapperRight>
           <Row>
             <Column small={12} medium={6} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+              <Authorization
+                allow={
+                  isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantsFieldPaths.SHARE_DENOMINATOR,
+                  ) &&
+                  isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantsFieldPaths.SHARE_NUMERATOR,
+                  )
+                }
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_FRACTION)}>
-                  {LeaseTenantsFieldTitles.SHARE_FRACTION}
-                </FormTextTitle>
-                <FormText>{tenant.share_numerator || ''} / {tenant.share_denominator || ''}</FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantsFieldPaths.SHARE_FRACTION,
+                    )}
+                  >
+                    {LeaseTenantsFieldTitles.SHARE_FRACTION}
+                  </FormTextTitle>
+                  <FormText>
+                    {tenant.share_numerator || ""} /{" "}
+                    {tenant.share_denominator || ""}
+                  </FormText>
                 </>
               </Authorization>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  LeaseTenantContactSetFieldPaths.START_DATE,
+                )}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.START_DATE)}>
-                  {LeaseTenantContactSetFieldTitles.START_DATE}
-                </FormTextTitle>
-                <FormText>{formatDate(get(tenant, 'tenant.start_date'))}</FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantContactSetFieldPaths.START_DATE,
+                    )}
+                  >
+                    {LeaseTenantContactSetFieldTitles.START_DATE}
+                  </FormTextTitle>
+                  <FormText>
+                    {formatDate(get(tenant, "tenant.start_date"))}
+                  </FormText>
                 </>
               </Authorization>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  LeaseTenantContactSetFieldPaths.END_DATE,
+                )}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.END_DATE)}>
-                  {LeaseTenantContactSetFieldTitles.END_DATE}
-                </FormTextTitle>
-                <FormText>{formatDate(get(tenant, 'tenant.end_date'))}</FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantContactSetFieldPaths.END_DATE,
+                    )}
+                  >
+                    {LeaseTenantContactSetFieldTitles.END_DATE}
+                  </FormTextTitle>
+                  <FormText>
+                    {formatDate(get(tenant, "tenant.end_date"))}
+                  </FormText>
                 </>
               </Authorization>
             </Column>
           </Row>
 
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.RENT_SHARES)}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              attributes,
+              LeaseTenantRentSharesFieldPaths.RENT_SHARES,
+            )}
+          >
             <Row>
               <Column small={12}>
-                <RentShares attributes={attributes} intendedUseOptions={intendedUseOptions} rentShares={rentShares} />
+                <RentShares
+                  attributes={attributes}
+                  intendedUseOptions={intendedUseOptions}
+                  rentShares={rentShares}
+                />
               </Column>
             </Row>
           </Authorization>
         </FormWrapperRight>
       </FormWrapper>
 
-      <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseTenantContactSetFieldPaths.CONTACT,
+        )}
+      >
         <>
-        <SubTitle>Asiakkaan tiedot</SubTitle>
-        <ContactTemplate contact={contact} />
+          <SubTitle>Asiakkaan tiedot</SubTitle>
+          <ContactTemplate contact={contact} />
         </>
       </Authorization>
-    </Fragment>;
+    </Fragment>
+  );
 };
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    attributes: getAttributes(state)
+    attributes: getAttributes(state),
   };
 })(TenantItem);

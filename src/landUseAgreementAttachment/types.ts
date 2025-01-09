@@ -18,5 +18,11 @@ export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;
 export type AttributesNotFoundAction = Action<string, void>;
-export type CreateLandUseAgreementAttachmentAction = Action<string, CreateLandUseAgreementAttachmentPayload>;
-export type DeleteLandUseAgreementAttachmentAction = Action<string, DeleteLandUseAgreementAttachmentPayload>;
+export type CreateLandUseAgreementAttachmentAction = Action<
+  string,
+  CreateLandUseAgreementAttachmentPayload
+>;
+export type DeleteLandUseAgreementAttachmentAction = Action<
+  string,
+  DeleteLandUseAgreementAttachmentPayload
+>;

@@ -9,7 +9,15 @@ import Button from "@/components/button/Button";
 import CreditInvoiceForm from "./forms/CreditInvoiceForm";
 import NewInvoiceForm from "./forms/NewInvoiceForm";
 import { createCharge } from "@/landUseInvoices/actions";
-import { createInvoice, creditInvoice, deleteInvoice, receiveIsCreateClicked, receiveIsCreateInvoicePanelOpen, receiveIsCreditClicked, receiveIsCreditInvoicePanelOpen } from "@/landUseInvoices/actions";
+import {
+  createInvoice,
+  creditInvoice,
+  deleteInvoice,
+  receiveIsCreateClicked,
+  receiveIsCreateInvoicePanelOpen,
+  receiveIsCreditClicked,
+  receiveIsCreditInvoicePanelOpen,
+} from "@/landUseInvoices/actions";
 import { creditInvoiceSet } from "@/invoiceSets/actions";
 import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
@@ -18,7 +26,11 @@ import { getCreditInvoiceSetPayload } from "@/invoiceSets/helpers";
 import { getPayloadCreateInvoice } from "@/landUseContract/helpers";
 import { hasPermissions } from "@/util/helpers";
 import { getCurrentLandUseContract } from "@/landUseContract/selectors";
-import { getIsCreateInvoicePanelOpen, getIsCreditInvoicePanelOpen, getInvoicesByLandUseContractId } from "@/landUseInvoices/selectors";
+import {
+  getIsCreateInvoicePanelOpen,
+  getIsCreditInvoicePanelOpen,
+  getInvoicesByLandUseContractId,
+} from "@/landUseInvoices/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { AppConsumer, ActionTypes } from "@/app/AppContext";
 import { ConfirmationModalTexts } from "@/enums";
@@ -56,17 +68,15 @@ class CreateAndCreditInvoiceR extends Component<Props> {
     this.creditPanel = el;
   };
   handleOpenCreateInvoicePanelButtonClick = () => {
-    const {
-      receiveIsCreateClicked,
-      receiveIsCreateInvoicePanelOpen
-    } = this.props;
+    const { receiveIsCreateClicked, receiveIsCreateInvoicePanelOpen } =
+      this.props;
     receiveIsCreateClicked(false);
     receiveIsCreateInvoicePanelOpen(true);
     setTimeout(() => {
       scrollToComponent(this.createPanel, {
         offset: -200,
-        align: 'top',
-        duration: 450
+        align: "top",
+        duration: 450,
       });
       this.setFocusOnCreatePanel();
     }, 50);
@@ -80,44 +90,38 @@ class CreateAndCreditInvoiceR extends Component<Props> {
     }
   };
   handleCloseCreateInvoicePanel = () => {
-    const {
-      receiveIsCreateInvoicePanelOpen
-    } = this.props;
+    const { receiveIsCreateInvoicePanelOpen } = this.props;
     receiveIsCreateInvoicePanelOpen(false);
   };
   handleCreateInvoice = (invoice: Record<string, any>) => {
-    const {
-      createInvoice,
-      currentLandUseContract
-    } = this.props;
-    createInvoice(getPayloadCreateInvoice({ ...invoice,
-      land_use_agreement: currentLandUseContract.id
-    }));
+    const { createInvoice, currentLandUseContract } = this.props;
+    createInvoice(
+      getPayloadCreateInvoice({
+        ...invoice,
+        land_use_agreement: currentLandUseContract.id,
+      }),
+    );
   };
   handleOpenCreditInvoicePanelButtonClick = () => {
-    const {
-      receiveIsCreditClicked,
-      receiveIsCreditInvoicePanelOpen
-    } = this.props;
+    const { receiveIsCreditClicked, receiveIsCreditInvoicePanelOpen } =
+      this.props;
     receiveIsCreditClicked(false);
     receiveIsCreditInvoicePanelOpen(true);
     setTimeout(() => {
       scrollToComponent(this.creditPanel, {
         offset: -200,
-        align: 'top',
-        duration: 450
+        align: "top",
+        duration: 450,
       });
       this.setFocusOnCreditPanel();
     }, 50);
   };
   handleDeleteInvoicePanelButtonClick = () => {
-    const {
-      invoiceToCredit,
-      deleteInvoice,
-      currentLandUseContract
-    } = this.props;
-    deleteInvoice({ ...invoiceToCredit,
-      land_use_agreement: currentLandUseContract.id
+    const { invoiceToCredit, deleteInvoice, currentLandUseContract } =
+      this.props;
+    deleteInvoice({
+      ...invoiceToCredit,
+      land_use_agreement: currentLandUseContract.id,
     });
   };
   handleSetRefForCreditPanelFirstField = (element: any) => {
@@ -129,42 +133,31 @@ class CreateAndCreditInvoiceR extends Component<Props> {
     }
   };
   handleCloseCreditInvoicePanel = () => {
-    const {
-      receiveIsCreditInvoicePanelOpen
-    } = this.props;
+    const { receiveIsCreditInvoicePanelOpen } = this.props;
     receiveIsCreditInvoicePanelOpen(false);
   };
   handleCreditInvoice = (creditInvoiceData: Record<string, any>) => {
-    const {
-      currentLandUseContract,
-      invoiceToCredit
-    } = this.props,
-          isInvoiceSet = this.isInvoiceSet();
+    const { currentLandUseContract, invoiceToCredit } = this.props,
+      isInvoiceSet = this.isInvoiceSet();
 
     if (isInvoiceSet) {
-      const {
-        creditInvoiceSet
-      } = this.props;
+      const { creditInvoiceSet } = this.props;
       creditInvoiceSet({
         creditData: getCreditInvoiceSetPayload(creditInvoiceData),
         invoiceSetId: invoiceToCredit && invoiceToCredit.id,
-        landUseContract: currentLandUseContract.id
+        landUseContract: currentLandUseContract.id,
       });
     } else {
-      const {
-        creditInvoice
-      } = this.props;
+      const { creditInvoice } = this.props;
       creditInvoice({
         creditData: getPayloadCreditInvoice(creditInvoiceData),
         invoiceId: invoiceToCredit && invoiceToCredit.id,
-        landUseContract: currentLandUseContract.id
+        landUseContract: currentLandUseContract.id,
       });
     }
   };
   isInvoiceSet = () => {
-    const {
-      invoiceToCredit
-    } = this.props;
+    const { invoiceToCredit } = this.props;
     return invoiceToCredit && invoiceToCredit.tableGroupName ? true : false;
   };
 
@@ -174,83 +167,142 @@ class CreateAndCreditInvoiceR extends Component<Props> {
       isCreateInvoicePanelOpen,
       isCreditInvoicePanelOpen,
       usersPermissions,
-      currentLandUseContract
+      currentLandUseContract,
     } = this.props;
     // const isInvoiceSet = this.isInvoiceSet();
     const litigants = currentLandUseContract.litigants;
-    return <div className='invoice__new-invoice'>
-        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
-          <Button className={`${ButtonColors.NEUTRAL} no-margin`} disabled={!invoiceToCredit || isCreditInvoicePanelOpen} onClick={this.handleOpenCreditInvoicePanelButtonClick} text='Hyvitä lasku' />
+    return (
+      <div className="invoice__new-invoice">
+        <Authorization
+          allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+        >
+          <Button
+            className={`${ButtonColors.NEUTRAL} no-margin`}
+            disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
+            onClick={this.handleOpenCreditInvoicePanelButtonClick}
+            text="Hyvitä lasku"
+          />
         </Authorization>
 
         <AppConsumer>
-          {({
-          dispatch
-        }) => {
-          const handleDelete = () => {
-            dispatch({
-              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-              confirmationFunction: () => {
-                this.handleDeleteInvoicePanelButtonClick();
-              },
-              confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: ConfirmationModalTexts.DELETE_INVOICE.BUTTON,
-              confirmationModalLabel: ConfirmationModalTexts.DELETE_INVOICE.LABEL,
-              confirmationModalTitle: ConfirmationModalTexts.DELETE_INVOICE.TITLE
-            });
-          };
+          {({ dispatch }) => {
+            const handleDelete = () => {
+              dispatch({
+                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                confirmationFunction: () => {
+                  this.handleDeleteInvoicePanelButtonClick();
+                },
+                confirmationModalButtonClassName: ButtonColors.ALERT,
+                confirmationModalButtonText:
+                  ConfirmationModalTexts.DELETE_INVOICE.BUTTON,
+                confirmationModalLabel:
+                  ConfirmationModalTexts.DELETE_INVOICE.LABEL,
+                confirmationModalTitle:
+                  ConfirmationModalTexts.DELETE_INVOICE.TITLE,
+              });
+            };
 
-          return <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_INVOICE)}>
-                <Button className={ButtonColors.ALERT} disabled={!invoiceToCredit || isCreditInvoicePanelOpen || invoiceToCredit.number} onClick={handleDelete} text='Poista lasku' />
-              </Authorization>;
-        }}
+            return (
+              <Authorization
+                allow={hasPermissions(
+                  usersPermissions,
+                  UsersPermissions.DELETE_INVOICE,
+                )}
+              >
+                <Button
+                  className={ButtonColors.ALERT}
+                  disabled={
+                    !invoiceToCredit ||
+                    isCreditInvoicePanelOpen ||
+                    invoiceToCredit.number
+                  }
+                  onClick={handleDelete}
+                  text="Poista lasku"
+                />
+              </Authorization>
+            );
+          }}
         </AppConsumer>
 
-        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
+        <Authorization
+          allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+        >
           <div ref={this.setCreditPanelRef}>
-            {isCreditInvoicePanelOpen && <CreditInvoiceForm invoiceToCredit={invoiceToCredit} onClose={this.handleCloseCreditInvoicePanel} onSave={this.handleCreditInvoice} setRefForFirstField={this.handleSetRefForCreditPanelFirstField} />}
+            {isCreditInvoicePanelOpen && (
+              <CreditInvoiceForm
+                invoiceToCredit={invoiceToCredit}
+                onClose={this.handleCloseCreditInvoicePanel}
+                onSave={this.handleCreditInvoice}
+                setRefForFirstField={this.handleSetRefForCreditPanelFirstField}
+              />
+            )}
           </div>
         </Authorization>
 
-
-        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
+        <Authorization
+          allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+        >
           <Row>
             <Column>
-              <AddButton disabled={isCreateInvoicePanelOpen} label='Luo lasku' onClick={this.handleOpenCreateInvoicePanelButtonClick} style={{
-              marginTop: 15
-            }} />
+              <AddButton
+                disabled={isCreateInvoicePanelOpen}
+                label="Luo lasku"
+                onClick={this.handleOpenCreateInvoicePanelButtonClick}
+                style={{
+                  marginTop: 15,
+                }}
+              />
             </Column>
           </Row>
         </Authorization>
 
-        <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}>
+        <Authorization
+          allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+        >
           <div ref={this.setCreatePanelRef}>
-            {isCreateInvoicePanelOpen && <NewInvoiceForm litigants={litigants} onClose={this.handleCloseCreateInvoicePanel} onSave={this.handleCreateInvoice} setRefForFirstField={this.handleSetRefForCreatePanelFirstField} />}
+            {isCreateInvoicePanelOpen && (
+              <NewInvoiceForm
+                litigants={litigants}
+                onClose={this.handleCloseCreateInvoicePanel}
+                onSave={this.handleCreateInvoice}
+                setRefForFirstField={this.handleSetRefForCreatePanelFirstField}
+              />
+            )}
           </div>
         </Authorization>
-      </div>;
+      </div>
+    );
   }
-
 }
 
-export default flowRight(connect(state => {
-  const currentLandUseContract = getCurrentLandUseContract(state);
-  return {
-    currentLandUseContract: currentLandUseContract,
-    isCreateInvoicePanelOpen: getIsCreateInvoicePanelOpen(state),
-    isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
-    isInvoicingEnabled: currentLandUseContract ? currentLandUseContract.is_invoicing_enabled : null,
-    usersPermissions: getUsersPermissions(state),
-    invoices: getInvoicesByLandUseContractId(state, currentLandUseContract.id)
-  };
-}, {
-  createCharge,
-  createInvoice,
-  creditInvoice,
-  creditInvoiceSet,
-  receiveIsCreateInvoicePanelOpen,
-  receiveIsCreateClicked,
-  receiveIsCreditClicked,
-  receiveIsCreditInvoicePanelOpen,
-  deleteInvoice
-}))(CreateAndCreditInvoiceR);
+export default flowRight(
+  connect(
+    (state) => {
+      const currentLandUseContract = getCurrentLandUseContract(state);
+      return {
+        currentLandUseContract: currentLandUseContract,
+        isCreateInvoicePanelOpen: getIsCreateInvoicePanelOpen(state),
+        isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
+        isInvoicingEnabled: currentLandUseContract
+          ? currentLandUseContract.is_invoicing_enabled
+          : null,
+        usersPermissions: getUsersPermissions(state),
+        invoices: getInvoicesByLandUseContractId(
+          state,
+          currentLandUseContract.id,
+        ),
+      };
+    },
+    {
+      createCharge,
+      createInvoice,
+      creditInvoice,
+      creditInvoiceSet,
+      receiveIsCreateInvoicePanelOpen,
+      receiveIsCreateClicked,
+      receiveIsCreditClicked,
+      receiveIsCreditInvoicePanelOpen,
+      deleteInvoice,
+    },
+  ),
+)(CreateAndCreditInvoiceR);

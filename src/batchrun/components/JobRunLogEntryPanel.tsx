@@ -7,10 +7,23 @@ import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import SortableTable from "@/components/table/SortableTable";
 import TablePanel from "@/components/table/TablePanel";
 import { fetchJobRunLogEntriesByRun } from "@/batchrun/actions";
-import { JobRunLogEntryFieldPaths, JobRunLogEntryFieldTitles } from "@/batchrun/enums";
-import { copyElementContentsToClipboard, displayUIMessage, formatDate, getApiResponseResults, isFieldAllowedToRead } from "@/util/helpers";
+import {
+  JobRunLogEntryFieldPaths,
+  JobRunLogEntryFieldTitles,
+} from "@/batchrun/enums";
+import {
+  copyElementContentsToClipboard,
+  displayUIMessage,
+  formatDate,
+  getApiResponseResults,
+  isFieldAllowedToRead,
+} from "@/util/helpers";
 import { TableSortOrder } from "@/enums";
-import { getIsFetchingJobRunLogEntriesByRun, getJobRunLogEntryAttributes, getJobRunLogEntriesByRun } from "@/batchrun/selectors";
+import {
+  getIsFetchingJobRunLogEntriesByRun,
+  getJobRunLogEntryAttributes,
+  getJobRunLogEntriesByRun,
+} from "@/batchrun/selectors";
 import type { ApiResponse, Attributes } from "types";
 type Props = {
   fetchJobRunLogEntriesByRun: (...args: Array<any>) => any;
@@ -28,19 +41,14 @@ type State = {
 class JobRunLogEntryPanel extends PureComponent<Props, State> {
   state = {
     jobRunLogEntriesData: null,
-    jobRunLogEntries: []
+    jobRunLogEntries: [],
   };
 
   componentDidUpdate(prevProps: Props) {
-    const {
-      runId
-    } = this.props;
+    const { runId } = this.props;
 
     if (runId && runId !== prevProps.runId) {
-      const {
-        fetchJobRunLogEntriesByRun,
-        jobRunLogEntriesData
-      } = this.props;
+      const { fetchJobRunLogEntriesByRun, jobRunLogEntriesData } = this.props;
 
       if (!jobRunLogEntriesData) {
         fetchJobRunLogEntriesByRun(runId);
@@ -53,30 +61,40 @@ class JobRunLogEntryPanel extends PureComponent<Props, State> {
 
     if (props.jobRunLogEntriesData !== state.jobRunLogEntriesData) {
       newState.jobRunLogEntriesData = props.jobRunLogEntriesData;
-      newState.jobRunLogEntries = getApiResponseResults(props.jobRunLogEntriesData);
+      newState.jobRunLogEntries = getApiResponseResults(
+        props.jobRunLogEntriesData,
+      );
     }
 
     return !isEmpty(newState) ? newState : null;
   }
 
   getColumns = () => {
-    const {
-      jobRunLogEntryAttributes
-    } = this.props;
+    const { jobRunLogEntryAttributes } = this.props;
     const columns = [];
 
-    if (isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TIME)) {
+    if (
+      isFieldAllowedToRead(
+        jobRunLogEntryAttributes,
+        JobRunLogEntryFieldPaths.TIME,
+      )
+    ) {
       columns.push({
         key: JobRunLogEntryFieldPaths.TIME,
         text: JobRunLogEntryFieldTitles.TIME,
-        renderer: val => formatDate(val, 'dd.MM.yyyy H:mm:ss')
+        renderer: (val) => formatDate(val, "dd.MM.yyyy H:mm:ss"),
       });
     }
 
-    if (isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TEXT)) {
+    if (
+      isFieldAllowedToRead(
+        jobRunLogEntryAttributes,
+        JobRunLogEntryFieldPaths.TEXT,
+      )
+    ) {
       columns.push({
         key: JobRunLogEntryFieldPaths.TEXT,
-        text: JobRunLogEntryFieldTitles.TEXT
+        text: JobRunLogEntryFieldTitles.TEXT,
       });
     }
 
@@ -84,25 +102,23 @@ class JobRunLogEntryPanel extends PureComponent<Props, State> {
   };
   handleCopyToClipboard = () => {
     const tableContent = this.getTableContentForClipboard(),
-          el = document.createElement('table');
-    el.className = 'sortable-table__clipboard-table';
+      el = document.createElement("table");
+    el.className = "sortable-table__clipboard-table";
     el.innerHTML = tableContent;
 
     if (copyElementContentsToClipboard(el)) {
       displayUIMessage({
-        title: '',
-        body: 'Ajon tiedot on kopioitu leikepöydälle.'
+        title: "",
+        body: "Ajon tiedot on kopioitu leikepöydälle.",
       });
     }
   };
   getTableContentForClipboard = () => {
-    const {
-      jobRunLogEntryAttributes
-    } = this.props;
+    const { jobRunLogEntryAttributes } = this.props;
     return `<thead>
         <tr>
-          ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TIME) ? `<th>${JobRunLogEntryFieldTitles.TIME}</th>` : ''}
-          ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TEXT) ? `<th>${JobRunLogEntryFieldTitles.TEXT}</th>` : ''}
+          ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TIME) ? `<th>${JobRunLogEntryFieldTitles.TIME}</th>` : ""}
+          ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TEXT) ? `<th>${JobRunLogEntryFieldTitles.TEXT}</th>` : ""}
         </tr>
       </thead>
       <tbody>
@@ -110,54 +126,69 @@ class JobRunLogEntryPanel extends PureComponent<Props, State> {
       </tbody>`;
   };
   getTableBodyContent = (): string => {
-    const {
-      jobRunLogEntryAttributes
-    } = this.props;
-    const {
-      jobRunLogEntries
-    } = this.state;
-    let bodyHtml = '';
-    jobRunLogEntries.forEach(entry => {
+    const { jobRunLogEntryAttributes } = this.props;
+    const { jobRunLogEntries } = this.state;
+    let bodyHtml = "";
+    jobRunLogEntries.forEach((entry) => {
       bodyHtml += `<tr>
-        ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TIME) ? `<td>${formatDate(entry.time, 'dd.MM.yyyy H:mm:ss') || '-'}</td>` : ''}
-        ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TEXT) ? `<td>${entry.text || '-'}</td>` : ''}
+        ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TIME) ? `<td>${formatDate(entry.time, "dd.MM.yyyy H:mm:ss") || "-"}</td>` : ""}
+        ${isFieldAllowedToRead(jobRunLogEntryAttributes, JobRunLogEntryFieldPaths.TEXT) ? `<td>${entry.text || "-"}</td>` : ""}
       </tr>`;
     });
     return bodyHtml;
   };
 
   render() {
-    const {
-      isFetcingJobLogEntries,
-      onClose
-    } = this.props;
-    const {
-      jobRunLogEntries
-    } = this.state;
+    const { isFetcingJobLogEntries, onClose } = this.props;
+    const { jobRunLogEntries } = this.state;
     const columns = this.getColumns();
-    return <TablePanel onClose={onClose}>
-        {isFetcingJobLogEntries && <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>}
-        {!isFetcingJobLogEntries && <Fragment>
-            <CopyToClipboardButton onClick={this.handleCopyToClipboard} style={{
-          position: 'absolute',
-          right: 28,
-          top: 6
-        }} />
-            <SortableTable columns={columns} data={jobRunLogEntries} sortable defaultSortKey={JobRunLogEntryFieldPaths.TIME} defaultSortOrder={TableSortOrder.DESCENDING} />
-          </Fragment>}
-      </TablePanel>;
+    return (
+      <TablePanel onClose={onClose}>
+        {isFetcingJobLogEntries && (
+          <LoaderWrapper>
+            <Loader isLoading={true} />
+          </LoaderWrapper>
+        )}
+        {!isFetcingJobLogEntries && (
+          <Fragment>
+            <CopyToClipboardButton
+              onClick={this.handleCopyToClipboard}
+              style={{
+                position: "absolute",
+                right: 28,
+                top: 6,
+              }}
+            />
+            <SortableTable
+              columns={columns}
+              data={jobRunLogEntries}
+              sortable
+              defaultSortKey={JobRunLogEntryFieldPaths.TIME}
+              defaultSortOrder={TableSortOrder.DESCENDING}
+            />
+          </Fragment>
+        )}
+      </TablePanel>
+    );
   }
-
 }
 
-export default connect((state, props) => {
-  return {
-    isFetcingJobLogEntries: getIsFetchingJobRunLogEntriesByRun(state, props.runId || 0),
-    jobRunLogEntryAttributes: getJobRunLogEntryAttributes(state),
-    jobRunLogEntriesData: getJobRunLogEntriesByRun(state, props.runId || 0)
-  };
-}, {
-  fetchJobRunLogEntriesByRun
-}, null, {
-  forwardRef: true
-})(JobRunLogEntryPanel);
+export default connect(
+  (state, props) => {
+    return {
+      isFetcingJobLogEntries: getIsFetchingJobRunLogEntriesByRun(
+        state,
+        props.runId || 0,
+      ),
+      jobRunLogEntryAttributes: getJobRunLogEntryAttributes(state),
+      jobRunLogEntriesData: getJobRunLogEntriesByRun(state, props.runId || 0),
+    };
+  },
+  {
+    fetchJobRunLogEntriesByRun,
+  },
+  null,
+  {
+    forwardRef: true,
+  },
+)(JobRunLogEntryPanel);

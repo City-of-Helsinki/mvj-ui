@@ -5,7 +5,7 @@ import { TableSortOrder } from "@/enums";
  * @readonly
  * @const {string}
  */
-export const DEFAULT_SORT_KEY = 'due_date';
+export const DEFAULT_SORT_KEY = "due_date";
 
 /**
  * Default sort order of sap invoices list page

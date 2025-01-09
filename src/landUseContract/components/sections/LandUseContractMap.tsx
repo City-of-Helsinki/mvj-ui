@@ -8,7 +8,10 @@ import { fetchAreaNoteList } from "@/areaNote/actions";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { hasPermissions } from "@/util/helpers";
 import { getAreaNoteList } from "@/areaNote/selectors";
-import { getAttributes as getRentBasisAttributes, getRentBasis } from "@/rentbasis/selectors";
+import {
+  getAttributes as getRentBasisAttributes,
+  getRentBasis,
+} from "@/rentbasis/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { AreaNoteList } from "@/areaNote/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
@@ -20,10 +23,7 @@ type Props = {
 
 class LandUseContractMap extends Component<Props> {
   componentDidMount() {
-    const {
-      fetchAreaNoteList,
-      usersPermissions
-    } = this.props;
+    const { fetchAreaNoteList, usersPermissions } = this.props;
 
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
       fetchAreaNoteList({});
@@ -31,35 +31,46 @@ class LandUseContractMap extends Component<Props> {
   }
 
   getOverlayLayers = () => {
-    const {
-      areaNotes,
-      usersPermissions
-    } = this.props;
+    const { areaNotes, usersPermissions } = this.props;
     const layers = [];
     {
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) && !isEmpty(areaNotes) && layers.push({
-        checked: false,
-        component: <AreaNotesLayer key='area_notes' allowToEdit={false} areaNotes={areaNotes} />,
-        name: 'Muistettavat ehdot'
-      });
+      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) &&
+        !isEmpty(areaNotes) &&
+        layers.push({
+          checked: false,
+          component: (
+            <AreaNotesLayer
+              key="area_notes"
+              allowToEdit={false}
+              areaNotes={areaNotes}
+            />
+          ),
+          name: "Muistettavat ehdot",
+        });
     }
     return layers;
   };
 
   render() {
     const overlayLayers = this.getOverlayLayers();
-    return <AreaNotesEditMap allowToEdit={false} overlayLayers={overlayLayers} />;
+    return (
+      <AreaNotesEditMap allowToEdit={false} overlayLayers={overlayLayers} />
+    );
   }
-
 }
 
-export default flowRight(connect(state => {
-  return {
-    areaNotes: getAreaNoteList(state),
-    rentBasis: getRentBasis(state),
-    rentBasisAttributes: getRentBasisAttributes(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  fetchAreaNoteList
-}))(LandUseContractMap);
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        areaNotes: getAreaNoteList(state),
+        rentBasis: getRentBasis(state),
+        rentBasisAttributes: getRentBasisAttributes(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+    {
+      fetchAreaNoteList,
+    },
+  ),
+)(LandUseContractMap);

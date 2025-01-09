@@ -22,7 +22,7 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
   table: any;
   state = {
     tableHeight: null,
-    tableWidth: null
+    tableWidth: null,
   };
   container: any;
   panelWrapper: any;
@@ -36,7 +36,7 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
   componentDidMount() {
     this.calculateTableHeight();
     this.calculateTableWidth();
-    this.panelWrapper.addEventListener('transitionend', this.transitionEnds);
+    this.panelWrapper.addEventListener("transitionend", this.transitionEnds);
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -48,12 +48,18 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    this.panelWrapper.removeEventListener('transitionend', this.transitionEnds);
+    this.panelWrapper.removeEventListener("transitionend", this.transitionEnds);
   }
 
   setHidden = (isPanelOpen: boolean) => {
-    let wrapper = document.querySelector('.table__table-and-panel-wrapper') as HTMLElement;
-    wrapper ? isPanelOpen ? wrapper.style.overflow = 'visible' : wrapper.style.overflow = 'hidden' : null;
+    let wrapper = document.querySelector(
+      ".table__table-and-panel-wrapper",
+    ) as HTMLElement;
+    wrapper
+      ? isPanelOpen
+        ? (wrapper.style.overflow = "visible")
+        : (wrapper.style.overflow = "hidden")
+      : null;
   };
   setContainerRef = (el: any) => {
     this.container = el;
@@ -73,17 +79,13 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
     setTimeout(() => {
       scrollToComponent(this.panelWrapper, {
         offset: -190,
-        align: 'top',
-        duration: 450
+        align: "top",
+        duration: 450,
       });
     }, 50);
   };
   transitionEnds = () => {
-    const {
-      isPanelOpen,
-      onPanelClosed,
-      onPanelOpened
-    } = this.props;
+    const { isPanelOpen, onPanelClosed, onPanelOpened } = this.props;
 
     if (isPanelOpen) {
       if (onPanelOpened) {
@@ -96,28 +98,24 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
     }
   };
   calculateTableHeight = () => {
-    const {
-      isPanelOpen
-    } = this.props;
-    const {
-      scrollHeight: panelHeight
-    } = this.panelWrapper;
+    const { isPanelOpen } = this.props;
+    const { scrollHeight: panelHeight } = this.panelWrapper;
     const tableMinHeight = TABLE_MIN_HEIGHT,
-          borderHeight = 2;
+      borderHeight = 2;
     let tableHeight = 0;
-    tableHeight = isPanelOpen ? panelHeight > tableMinHeight ? panelHeight : tableMinHeight : tableMinHeight - borderHeight;
+    tableHeight = isPanelOpen
+      ? panelHeight > tableMinHeight
+        ? panelHeight
+        : tableMinHeight
+      : tableMinHeight - borderHeight;
     this.setState({
-      tableHeight: tableHeight
+      tableHeight: tableHeight,
     });
   };
   calculateTableWidth = () => {
     if (!this.container) return;
-    let {
-      clientWidth
-    } = this.container;
-    const {
-      isPanelOpen
-    } = this.props;
+    let { clientWidth } = this.container;
+    const { isPanelOpen } = this.props;
 
     if (isPanelOpen) {
       if (clientWidth - PANEL_WIDTH <= 0) {
@@ -128,43 +126,59 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
     }
 
     this.setState({
-      tableWidth: clientWidth
+      tableWidth: clientWidth,
     });
   };
 
   render() {
-    const {
-      hasData,
-      isPanelOpen,
-      panelComponent,
-      tableComponent
-    } = this.props;
-    const {
-      tableHeight,
-      tableWidth
-    } = this.state;
-    return <div className='table__table-and-panel-wrapper' ref={this.setContainerRef}>
-        <ReactResizeDetector handleWidth onResize={this.handleResize} refreshMode='debounce' refreshRate={400} />
-        <div className='table__table-and-panel-wrapper_table-wrapper' style={{
-        minHeight: hasData ? tableHeight || null : null,
-        maxWidth: tableWidth || null
-      }}>
+    const { hasData, isPanelOpen, panelComponent, tableComponent } = this.props;
+    const { tableHeight, tableWidth } = this.state;
+    return (
+      <div
+        className="table__table-and-panel-wrapper"
+        ref={this.setContainerRef}
+      >
+        <ReactResizeDetector
+          handleWidth
+          onResize={this.handleResize}
+          refreshMode="debounce"
+          refreshRate={400}
+        />
+        <div
+          className="table__table-and-panel-wrapper_table-wrapper"
+          style={{
+            minHeight: hasData ? tableHeight || null : null,
+            maxWidth: tableWidth || null,
+          }}
+        >
           {cloneElement(tableComponent, {
-          ref: this.setTableRef,
-          maxHeight: tableHeight
-        })}
+            ref: this.setTableRef,
+            maxHeight: tableHeight,
+          })}
         </div>
-        <div ref={this.setPanelWrapperRef} className={classNames('table__table-and-panel-wrapper_panel-wrapper', {
-        'table__table-and-panel-wrapper_panel-wrapper--is-open': isPanelOpen
-      })}>
-          <ReactResizeDetector handleHeight onResize={this.handlePanelResize} refreshMode='debounce' refreshRate={1} />
+        <div
+          ref={this.setPanelWrapperRef}
+          className={classNames(
+            "table__table-and-panel-wrapper_panel-wrapper",
+            {
+              "table__table-and-panel-wrapper_panel-wrapper--is-open":
+                isPanelOpen,
+            },
+          )}
+        >
+          <ReactResizeDetector
+            handleHeight
+            onResize={this.handlePanelResize}
+            refreshMode="debounce"
+            refreshRate={1}
+          />
           {cloneElement(panelComponent, {
-          ref: this.setPanelRef
-        })}
+            ref: this.setPanelRef,
+          })}
         </div>
-      </div>;
+      </div>
+    );
   }
-
 }
 
 export default TableAndPanelWrapper;

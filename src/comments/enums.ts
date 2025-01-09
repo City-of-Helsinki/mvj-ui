@@ -4,8 +4,8 @@
  * @enum {string}
  */
 export const CommentFieldPaths = {
-  TEXT: 'text',
-  TOPIC: 'topic'
+  TEXT: "text",
+  TOPIC: "topic",
 };
 
 /**
@@ -14,6 +14,6 @@ export const CommentFieldPaths = {
  * @enum {string}
  */
 export const CommentFieldTitles = {
-  TEXT: 'Kommentti',
-  TOPIC: 'Aihealue'
+  TEXT: "Kommentti",
+  TOPIC: "Aihealue",
 };

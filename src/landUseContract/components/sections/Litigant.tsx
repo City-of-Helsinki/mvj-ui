@@ -20,43 +20,72 @@ type Props = {
 const Litigant = ({
   collapseState,
   litigant,
-  receiveCollapseStates
+  receiveCollapseStates,
 }: Props) => {
   const handleCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.LAND_USE_CONTRACT_LITIGANTS]: {
           litigants: {
-            [litigant.id]: val
-          }
-        }
-      }
+            [litigant.id]: val,
+          },
+        },
+      },
     });
   };
 
-  const contact = get(litigant, 'litigant.contact');
+  const contact = get(litigant, "litigant.contact");
   const active = isActive(litigant.litigant);
   const archived = isArchived(litigant.litigant);
-  return <Collapse archived={archived} defaultOpen={collapseState !== undefined ? collapseState : active} headerSubtitles={<Fragment>
+  return (
+    <Collapse
+      archived={archived}
+      defaultOpen={collapseState !== undefined ? collapseState : active}
+      headerSubtitles={
+        <Fragment>
           <Column>
-            <CollapseHeaderSubtitle><span>Hallintaosuus:</span> {get(litigant, 'share_numerator', '')} / {get(litigant, 'share_denominator', '')}</CollapseHeaderSubtitle>
+            <CollapseHeaderSubtitle>
+              <span>Hallintaosuus:</span> {get(litigant, "share_numerator", "")}{" "}
+              / {get(litigant, "share_denominator", "")}
+            </CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(get(litigant, 'litigant.start_date'), get(litigant, 'litigant.end_date')) || '-'}</CollapseHeaderSubtitle>
+            <CollapseHeaderSubtitle>
+              <span>Välillä:</span>{" "}
+              {formatDateRange(
+                get(litigant, "litigant.start_date"),
+                get(litigant, "litigant.end_date"),
+              ) || "-"}
+            </CollapseHeaderSubtitle>
           </Column>
-        </Fragment>} headerTitle={getContactFullName(contact)} onToggle={handleCollapseToggle}>
+        </Fragment>
+      }
+      headerTitle={getContactFullName(contact)}
+      onToggle={handleCollapseToggle}
+    >
       <LitigantItem contact={contact} litigant={litigant} />
-      {litigant.landuseagreementlitigantcontact_set && !!litigant.landuseagreementlitigantcontact_set.length && litigant.landuseagreementlitigantcontact_set.map(person => {
-      return <LitigantBillingPerson key={person.id} billingPerson={person} />;
-    })}
-    </Collapse>;
+      {litigant.landuseagreementlitigantcontact_set &&
+        !!litigant.landuseagreementlitigantcontact_set.length &&
+        litigant.landuseagreementlitigantcontact_set.map((person) => {
+          return (
+            <LitigantBillingPerson key={person.id} billingPerson={person} />
+          );
+        })}
+    </Collapse>
+  );
 };
 
-export default connect((state, props) => {
-  const id = props.litigant.id;
-  return {
-    collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_LITIGANTS}.litigants.${id}`)
-  };
-}, {
-  receiveCollapseStates
-})(Litigant);
+export default connect(
+  (state, props) => {
+    const id = props.litigant.id;
+    return {
+      collapseState: getCollapseStateByKey(
+        state,
+        `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_LITIGANTS}.litigants.${id}`,
+      ),
+    };
+  },
+  {
+    receiveCollapseStates,
+  },
+)(Litigant);

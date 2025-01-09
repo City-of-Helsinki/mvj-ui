@@ -28,11 +28,12 @@ class Search extends PureComponent<Props> {
   }
 
   componentDidUpdate(prevProps: Record<string, any>) {
-    const {
-      isSearchInitialized
-    } = this.props;
+    const { isSearchInitialized } = this.props;
 
-    if (isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
+    if (
+      isSearchInitialized &&
+      !isEqual(prevProps.formValues, this.props.formValues)
+    ) {
       this.onSearchChange();
     }
   }
@@ -42,48 +43,51 @@ class Search extends PureComponent<Props> {
     this.search();
   }, 1000);
   search = () => {
-    const {
-      formValues,
-      onSearch
-    } = this.props;
-    onSearch({ ...formValues
-    });
+    const { formValues, onSearch } = this.props;
+    onSearch({ ...formValues });
   };
   handleClear = () => {
-    const {
-      onSearch
-    } = this.props;
+    const { onSearch } = this.props;
     onSearch({});
   };
 
   render() {
-    const {
-      handleSubmit
-    } = this.props;
-    return <SearchContainer onSubmit={handleSubmit(this.search)}>
+    const { handleSubmit } = this.props;
+    return (
+      <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
           <Column large={12}>
-            <FormField disableDirty fieldAttributes={{
-            label: 'Hae hakusanalla',
-            type: FieldTypes.SEARCH,
-            read_only: false
-          }} invisibleLabel name='search' />
+            <FormField
+              disableDirty
+              fieldAttributes={{
+                label: "Hae hakusanalla",
+                type: FieldTypes.SEARCH,
+                read_only: false,
+              }}
+              invisibleLabel
+              name="search"
+            />
           </Column>
         </Row>
         <Row>
           <Column small={6}></Column>
           <Column small={6}>
-            <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
+            <SearchClearLink onClick={this.handleClear}>
+              Tyhjennä haku
+            </SearchClearLink>
           </Column>
         </Row>
-      </SearchContainer>;
+      </SearchContainer>
+    );
   }
-
 }
 
 const formName = FormNames.AREA_NOTE_SEARCH;
-export default flowRight(connect(state => ({
-  formValues: getFormValues(formName)(state)
-})), reduxForm({
-  form: formName
-}))(Search) as React.ComponentType<any>;
+export default flowRight(
+  connect((state) => ({
+    formValues: getFormValues(formName)(state),
+  })),
+  reduxForm({
+    form: formName,
+  }),
+)(Search) as React.ComponentType<any>;

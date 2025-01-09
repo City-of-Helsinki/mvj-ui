@@ -21,18 +21,37 @@ const FieldTypeIntendedUseSelect = ({
   isDirty,
   onChange,
   placeholder,
-  serviceUnit
+  serviceUnit,
 }: Props): JSX.Element => {
-  const getIntendedUses = debounce(async (inputValue: string, callback: (...args: Array<any>) => any) => {
-    const intendedUses = await fetchIntendedUses({
-      search: inputValue,
-      limit: 20,
-      service_unit: serviceUnit?.id || "",
-      is_active: "true"
-    });
-    callback(addEmptyOption(intendedUses.map((intendedUse) => getContentIntendedUse(intendedUse)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
-  }, 500);
-  return <AsyncSelect disabled={disabled} displayError={displayError} getOptions={getIntendedUses} input={input} isDirty={isDirty} onChange={onChange} placeholder={placeholder} />;
+  const getIntendedUses = debounce(
+    async (inputValue: string, callback: (...args: Array<any>) => any) => {
+      const intendedUses = await fetchIntendedUses({
+        search: inputValue,
+        limit: 20,
+        service_unit: serviceUnit?.id || "",
+        is_active: "true",
+      });
+      callback(
+        addEmptyOption(
+          intendedUses
+            .map((intendedUse) => getContentIntendedUse(intendedUse))
+            .sort((a, b) => sortStringByKeyAsc(a, b, "label")),
+        ),
+      );
+    },
+    500,
+  );
+  return (
+    <AsyncSelect
+      disabled={disabled}
+      displayError={displayError}
+      getOptions={getIntendedUses}
+      input={input}
+      isDirty={isDirty}
+      onChange={onChange}
+      placeholder={placeholder}
+    />
+  );
 };
 
 export default FieldTypeIntendedUseSelect;

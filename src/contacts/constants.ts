@@ -5,7 +5,7 @@ import { TableSortOrder } from "@/enums";
  * @readonly
  * @const {string}
  */
-export const DEFAULT_SORT_KEY = 'names';
+export const DEFAULT_SORT_KEY = "names";
 
 /**
  * Default sort order of contact list page

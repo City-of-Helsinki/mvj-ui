@@ -70,9 +70,15 @@ export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;
 export type AttributesNotFoundAction = Action<string, void>;
 export type FetchAreaSearchListAction = Action<string, Record<string, any>>;
-export type FetchAreaSearchListByBBoxAction = Action<string, Record<string, any>>;
+export type FetchAreaSearchListByBBoxAction = Action<
+  string,
+  Record<string, any>
+>;
 export type ReceiveAreaSearchListAction = Action<string, Record<string, any>>;
-export type ReceiveAreaSearchListByBBoxAction = Action<string, Record<string, any>>;
+export type ReceiveAreaSearchListByBBoxAction = Action<
+  string,
+  Record<string, any>
+>;
 export type AreaSearchesNotFoundAction = Action<string, void>;
 export type AreaSearchesByBBoxNotFoundAction = Action<string, void>;
 export type FetchSingleAreaSearchAction = Action<string, number>;
@@ -92,27 +98,60 @@ export type InfoCheckBatchEditData = {
     data: Record<string, any>;
   }>;
 };
-export type BatchEditAreaSearchInfoChecksAction = Action<string, InfoCheckBatchEditData>;
-export type ReceiveAreaSearchInfoCheckBatchEditSuccessAction = Action<string, void>;
-export type ReceiveAreaSearchInfoCheckBatchEditFailureAction = Action<string, Record<string, any>>;
+export type BatchEditAreaSearchInfoChecksAction = Action<
+  string,
+  InfoCheckBatchEditData
+>;
+export type ReceiveAreaSearchInfoCheckBatchEditSuccessAction = Action<
+  string,
+  void
+>;
+export type ReceiveAreaSearchInfoCheckBatchEditFailureAction = Action<
+  string,
+  Record<string, any>
+>;
 export type EditAreaSearchAction = Action<string, Record<string, any>>;
 export type ReceiveAreaSearchEditedAction = Action<string, void>;
-export type ReceiveAreaSearchEditFailedAction = Action<string, Record<string, any>>;
-export type SetAreaSearchAttachmentsAction = Action<string, Array<UploadedAreaSearchAttachmentMeta>>;
+export type ReceiveAreaSearchEditFailedAction = Action<
+  string,
+  Record<string, any>
+>;
+export type SetAreaSearchAttachmentsAction = Action<
+  string,
+  Array<UploadedAreaSearchAttachmentMeta>
+>;
 export type CreateAreaSearchSpecsAction = Action<string, Record<string, any>>;
-export type ReceiveAreaSearchSpecsCreatedAction = Action<string, Record<string, any>>;
+export type ReceiveAreaSearchSpecsCreatedAction = Action<
+  string,
+  Record<string, any>
+>;
 export type ReceiveAreaSearchSpecsCreateFailedAction = Action<string, void>;
-export type CreateAreaSearchApplicationAction = Action<string, Record<string, any>>;
-export type ReceiveAreaSearchApplicationCreatedAction = Action<string, Record<string, any>>;
-export type ReceiveAreaSearchApplicationCreateFailedAction = Action<string, void>;
-export type DeleteAreaSearchAttachmentAction = Action<string, {
-  id: number;
-  callback?: () => void;
-}>;
-export type UploadAreaSearchAttachmentAction = Action<string, {
-  fileData: File;
-  callback?: (fileData: UploadedAreaSearchAttachmentMeta) => void;
-  areaSearch?: number;
-}>;
+export type CreateAreaSearchApplicationAction = Action<
+  string,
+  Record<string, any>
+>;
+export type ReceiveAreaSearchApplicationCreatedAction = Action<
+  string,
+  Record<string, any>
+>;
+export type ReceiveAreaSearchApplicationCreateFailedAction = Action<
+  string,
+  void
+>;
+export type DeleteAreaSearchAttachmentAction = Action<
+  string,
+  {
+    id: number;
+    callback?: () => void;
+  }
+>;
+export type UploadAreaSearchAttachmentAction = Action<
+  string,
+  {
+    fileData: File;
+    callback?: (fileData: UploadedAreaSearchAttachmentMeta) => void;
+    areaSearch?: number;
+  }
+>;
 export type ReceiveFileOperationFinishedAction = Action<string, void>;
 export type ReceiveFileOperationFailedAction = Action<string, any>;

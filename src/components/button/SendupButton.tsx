@@ -14,7 +14,7 @@ const SendupButton = ({
   onClick,
   text,
   title,
-  type = 'button'
+  type = "button",
 }: Props) => {
   const handleKeyDown = (e: any) => {
     if (e.keyCode === 13) {
@@ -23,10 +23,18 @@ const SendupButton = ({
     }
   };
 
-  return <button className={classNames('sendup-button', className)} type={type} title={title} onClick={onClick} onKeyDown={handleKeyDown}>
+  return (
+    <button
+      className={classNames("sendup-button", className)}
+      type={type}
+      title={title}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+    >
       {text}
-      <SendupIcon className='icon-small' />
-    </button>;
+      <SendupIcon className="icon-small" />
+    </button>
+  );
 };
 
 export default SendupButton;

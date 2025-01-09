@@ -10,14 +10,32 @@ import CloseButton from "@/components/button/CloseButton";
 import FormField from "@/components/form/FormField";
 import WhiteBox from "@/components/content/WhiteBox";
 import { receiveIsCreditClicked } from "@/invoices/actions";
-import { CreditInvoiceOptions, CreditInvoiceSetOptions } from "@/leases/constants";
+import {
+  CreditInvoiceOptions,
+  CreditInvoiceSetOptions,
+} from "@/leases/constants";
 import { FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
-import { InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles } from "@/invoices/enums";
+import {
+  InvoiceFieldPaths,
+  InvoiceFieldTitles,
+  InvoiceRowsFieldPaths,
+  InvoiceRowsFieldTitles,
+} from "@/invoices/enums";
 import { CreditInvoiceOptions as CreditInvoiceOptionsEnum } from "@/leases/enums";
 import { getUiDataCreditInvoiceKey } from "@/uiData/helpers";
-import { addEmptyOption, getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldAllowedToEdit, sortStringByKeyAsc } from "@/util/helpers";
-import { getAttributes as getInvoiceAttributes, getIsCreditClicked } from "@/invoices/selectors";
+import {
+  addEmptyOption,
+  getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
+  isFieldAllowedToEdit,
+  sortStringByKeyAsc,
+} from "@/util/helpers";
+import {
+  getAttributes as getInvoiceAttributes,
+  getIsCreditClicked,
+} from "@/invoices/selectors";
 import type { Attributes } from "types";
 type Props = {
   formValues: Record<string, any>;
@@ -44,7 +62,7 @@ const CreditInvoiceForm = ({
   receiveIsCreditClicked,
   setRefForFirstField,
   type,
-  valid
+  valid,
 }: Props) => {
   const handleSave = () => {
     receiveIsCreditClicked(true);
@@ -57,32 +75,42 @@ const CreditInvoiceForm = ({
   const getReceivableTypeOptions = () => {
     const receivableTypes = [];
     if (!invoiceToCredit) return receivableTypes;
-    const receivableTypeOptions = getFieldOptions(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE);
+    const receivableTypeOptions = getFieldOptions(
+      invoiceAttributes,
+      InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
+    );
 
     const addInvoiceReceivableTypes = (invoice: Record<string, any>) => {
-      invoice.rows.forEach(row => {
-        if (receivableTypes.findIndex(item => item.value === row.receivable_type) === -1) {
+      invoice.rows.forEach((row) => {
+        if (
+          receivableTypes.findIndex(
+            (item) => item.value === row.receivable_type,
+          ) === -1
+        ) {
           receivableTypes.push({
             value: row.receivable_type,
-            label: getLabelOfOption(receivableTypeOptions, row.receivable_type)
+            label: getLabelOfOption(receivableTypeOptions, row.receivable_type),
           });
         }
       });
     };
 
     if (isInvoiceSet) {
-      invoiceToCredit.tableRows.forEach(invoice => {
+      invoiceToCredit.tableRows.forEach((invoice) => {
         addInvoiceReceivableTypes(invoice);
       });
     } else {
       addInvoiceReceivableTypes(invoiceToCredit);
     }
 
-    return addEmptyOption(receivableTypes.sort((a, b) => sortStringByKeyAsc(a, b, 'label')));
+    return addEmptyOption(
+      receivableTypes.sort((a, b) => sortStringByKeyAsc(a, b, "label")),
+    );
   };
 
   const receivableTypeOptions = getReceivableTypeOptions();
-  return <form className='invoice__credit-invoice_form'>
+  return (
+    <form className="invoice__credit-invoice_form">
       <WhiteBox>
         <BoxContentWrapper>
           <h3>Hyvitys</h3>
@@ -90,75 +118,147 @@ const CreditInvoiceForm = ({
 
           <Row>
             <Column small={6} medium={4} large={2}>
-              <FormField disableTouched={isCreditClicked} fieldAttributes={{
-              type: 'choice',
-              required: true,
-              label: 'Hyvityksen tyyppi',
-              read_only: false
-            }} name='type' setRefForField={setRefForFirstField} overrideValues={{
-              options: isInvoiceSet ? CreditInvoiceSetOptions : CreditInvoiceOptions
-            }} enableUiDataEdit uiDataKey={getUiDataCreditInvoiceKey('type')} />
+              <FormField
+                disableTouched={isCreditClicked}
+                fieldAttributes={{
+                  type: "choice",
+                  required: true,
+                  label: "Hyvityksen tyyppi",
+                  read_only: false,
+                }}
+                name="type"
+                setRefForField={setRefForFirstField}
+                overrideValues={{
+                  options: isInvoiceSet
+                    ? CreditInvoiceSetOptions
+                    : CreditInvoiceOptions,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataCreditInvoiceKey("type")}
+              />
             </Column>
-            {(type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE || type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT) && <Column small={6} medium={4} large={2}>
-                <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
-                  <FormField disableTouched={isCreditClicked} fieldAttributes={{ ...getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE),
-                read_only: false,
-                required: true
-              }} name='receivable_type' overrideValues={{
-                label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE,
-                options: receivableTypeOptions
-              }} enableUiDataEdit uiDataKey={getUiDataCreditInvoiceKey(InvoiceRowsFieldPaths.RECEIVABLE_TYPE)} />
+            {(type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE ||
+              type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT) && (
+              <Column small={6} medium={4} large={2}>
+                <Authorization
+                  allow={isFieldAllowedToEdit(
+                    invoiceAttributes,
+                    InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
+                  )}
+                >
+                  <FormField
+                    disableTouched={isCreditClicked}
+                    fieldAttributes={{
+                      ...getFieldAttributes(
+                        invoiceAttributes,
+                        InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
+                      ),
+                      read_only: false,
+                      required: true,
+                    }}
+                    name="receivable_type"
+                    overrideValues={{
+                      label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE,
+                      options: receivableTypeOptions,
+                    }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataCreditInvoiceKey(
+                      InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
+                    )}
+                  />
                 </Authorization>
-              </Column>}
-            {type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT && <Column small={6} medium={4} large={2}>
-                <FormField disableTouched={isCreditClicked} fieldAttributes={{
-              type: 'decimal',
-              required: true,
-              read_only: false,
-              label: 'Hyvitettävä summa (alviton)',
-              decimal_places: 2,
-              max_digits: 10
-            }} name='amount' unit='€' enableUiDataEdit tooltipStyle={{
-              right: 12
-            }} uiDataKey={getUiDataCreditInvoiceKey('amount')} />
-              </Column>}
+              </Column>
+            )}
+            {type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT && (
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isCreditClicked}
+                  fieldAttributes={{
+                    type: "decimal",
+                    required: true,
+                    read_only: false,
+                    label: "Hyvitettävä summa (alviton)",
+                    decimal_places: 2,
+                    max_digits: 10,
+                  }}
+                  name="amount"
+                  unit="€"
+                  enableUiDataEdit
+                  tooltipStyle={{
+                    right: 12,
+                  }}
+                  uiDataKey={getUiDataCreditInvoiceKey("amount")}
+                />
+              </Column>
+            )}
           </Row>
           <Row>
             <Column small={12}>
-              <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.NOTES)}>
-                <FormField disableTouched={isCreditClicked} fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.NOTES)} name='notes' overrideValues={{
-                label: InvoiceFieldTitles.NOTES
-              }} enableUiDataEdit uiDataKey={getUiDataCreditInvoiceKey(InvoiceFieldPaths.NOTES)} />
+              <Authorization
+                allow={isFieldAllowedToEdit(
+                  invoiceAttributes,
+                  InvoiceFieldPaths.NOTES,
+                )}
+              >
+                <FormField
+                  disableTouched={isCreditClicked}
+                  fieldAttributes={getFieldAttributes(
+                    invoiceAttributes,
+                    InvoiceFieldPaths.NOTES,
+                  )}
+                  name="notes"
+                  overrideValues={{
+                    label: InvoiceFieldTitles.NOTES,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataCreditInvoiceKey(InvoiceFieldPaths.NOTES)}
+                />
               </Authorization>
             </Column>
           </Row>
           <Row>
             <Column>
-              <div className='button-wrapper'>
-                <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
-                <Button className={ButtonColors.SUCCESS} disabled={isCreditClicked || !valid} onClick={handleSave} text='Tallenna' />
+              <div className="button-wrapper">
+                <Button
+                  className={ButtonColors.SECONDARY}
+                  onClick={onClose}
+                  text="Peruuta"
+                />
+                <Button
+                  className={ButtonColors.SUCCESS}
+                  disabled={isCreditClicked || !valid}
+                  onClick={handleSave}
+                  text="Tallenna"
+                />
               </div>
             </Column>
           </Row>
         </BoxContentWrapper>
       </WhiteBox>
-    </form>;
+    </form>
+  );
 };
 
 const formName = FormNames.LEASE_REFUND;
 const selector = formValueSelector(formName);
-export default flowRight(connect(state => {
-  return {
-    formValues: getFormValues(formName)(state),
-    invoiceAttributes: getInvoiceAttributes(state),
-    isCreditClicked: getIsCreditClicked(state),
-    type: selector(state, 'type')
-  };
-}, {
-  receiveIsCreditClicked
-}), reduxForm({
-  form: formName,
-  initialValues: {
-    type: CreditInvoiceOptionsEnum.FULL
-  }
-}))(CreditInvoiceForm) as React.ComponentType<any>;
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        formValues: getFormValues(formName)(state),
+        invoiceAttributes: getInvoiceAttributes(state),
+        isCreditClicked: getIsCreditClicked(state),
+        type: selector(state, "type"),
+      };
+    },
+    {
+      receiveIsCreditClicked,
+    },
+  ),
+  reduxForm({
+    form: formName,
+    initialValues: {
+      type: CreditInvoiceOptionsEnum.FULL,
+    },
+  }),
+)(CreditInvoiceForm) as React.ComponentType<any>;

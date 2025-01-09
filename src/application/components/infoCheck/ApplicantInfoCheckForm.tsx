@@ -9,7 +9,10 @@ import { ButtonColors } from "@/components/enums";
 import FormField from "@/components/form/FormField";
 import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import Button from "@/components/button/Button";
-import { ApplicantInfoCheckFieldPaths, ApplicantInfoCheckFieldTitles } from "@/application/enums";
+import {
+  ApplicantInfoCheckFieldPaths,
+  ApplicantInfoCheckFieldTitles,
+} from "@/application/enums";
 import { getApplicantInfoCheckAttributes } from "@/application/selectors";
 import type { Attributes } from "types";
 type OwnProps = {
@@ -37,13 +40,8 @@ class ApplicantInfoCheckForm extends Component<Props> {
       return;
     }
 
-    const {
-      preparer,
-      ...rest
-    } = infoCheck.data;
-    this.props.initialize({ ...rest,
-      preparer
-    });
+    const { preparer, ...rest } = infoCheck.data;
+    this.props.initialize({ ...rest, preparer });
   }
 
   setRefForFirstField = (element: HTMLInputElement): void => {
@@ -55,63 +53,103 @@ class ApplicantInfoCheckForm extends Component<Props> {
     }
   };
   handleSave = (): void => {
-    const {
-      onSubmit,
-      formValues
-    } = this.props;
+    const { onSubmit, formValues } = this.props;
     onSubmit(formValues);
   };
 
   render(): JSX.Element {
-    const {
-      attributes,
-      valid,
-      onClose,
-      showMarkAll
-    } = this.props;
-    return <form>
+    const { attributes, valid, onClose, showMarkAll } = this.props;
+    return (
+      <form>
         <Row>
           <Column small={4}>
-            <FormField setRefForField={this.setRefForFirstField} fieldAttributes={get(attributes, ApplicantInfoCheckFieldPaths.PREPARER)} name={ApplicantInfoCheckFieldPaths.PREPARER} overrideValues={{
-            fieldType: FieldTypes.USER,
-            label: ApplicantInfoCheckFieldTitles.PREPARER
-          }} />
+            <FormField
+              setRefForField={this.setRefForFirstField}
+              fieldAttributes={get(
+                attributes,
+                ApplicantInfoCheckFieldPaths.PREPARER,
+              )}
+              name={ApplicantInfoCheckFieldPaths.PREPARER}
+              overrideValues={{
+                fieldType: FieldTypes.USER,
+                label: ApplicantInfoCheckFieldTitles.PREPARER,
+              }}
+            />
           </Column>
           <Column small={4}>
-            <FormField fieldAttributes={get(attributes, ApplicantInfoCheckFieldPaths.STATE)} name={ApplicantInfoCheckFieldPaths.STATE} overrideValues={{
-            label: ApplicantInfoCheckFieldTitles.STATE
-          }} />
+            <FormField
+              fieldAttributes={get(
+                attributes,
+                ApplicantInfoCheckFieldPaths.STATE,
+              )}
+              name={ApplicantInfoCheckFieldPaths.STATE}
+              overrideValues={{
+                label: ApplicantInfoCheckFieldTitles.STATE,
+              }}
+            />
           </Column>
-          {showMarkAll === true && <Column small={4}>
-              <FormField fieldAttributes={get(attributes, ApplicantInfoCheckFieldPaths.MARK_ALL)} name={ApplicantInfoCheckFieldPaths.MARK_ALL} overrideValues={{
-            label: ApplicantInfoCheckFieldTitles.MARK_ALL,
-            required: false
-          }} />
-            </Column>}
-          
+          {showMarkAll === true && (
+            <Column small={4}>
+              <FormField
+                fieldAttributes={get(
+                  attributes,
+                  ApplicantInfoCheckFieldPaths.MARK_ALL,
+                )}
+                name={ApplicantInfoCheckFieldPaths.MARK_ALL}
+                overrideValues={{
+                  label: ApplicantInfoCheckFieldTitles.MARK_ALL,
+                  required: false,
+                }}
+              />
+            </Column>
+          )}
         </Row>
         <Row>
           <Column small={12}>
-            <FormField fieldAttributes={get(attributes, ApplicantInfoCheckFieldPaths.COMMENT)} name={ApplicantInfoCheckFieldPaths.COMMENT} overrideValues={{
-            fieldType: FieldTypes.TEXTAREA,
-            label: ApplicantInfoCheckFieldTitles.COMMENT
-          }} />
+            <FormField
+              fieldAttributes={get(
+                attributes,
+                ApplicantInfoCheckFieldPaths.COMMENT,
+              )}
+              name={ApplicantInfoCheckFieldPaths.COMMENT}
+              overrideValues={{
+                fieldType: FieldTypes.TEXTAREA,
+                label: ApplicantInfoCheckFieldTitles.COMMENT,
+              }}
+            />
           </Column>
         </Row>
         <ModalButtonWrapper>
-          <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
-          <Button className={ButtonColors.SUCCESS} disabled={!valid} onClick={this.handleSave} text='Tallenna' />
+          <Button
+            className={ButtonColors.SECONDARY}
+            onClick={onClose}
+            text="Peruuta"
+          />
+          <Button
+            className={ButtonColors.SUCCESS}
+            disabled={!valid}
+            onClick={this.handleSave}
+            text="Tallenna"
+          />
         </ModalButtonWrapper>
-      </form>;
+      </form>
+    );
   }
-
 }
 
-export default (flowRight(connect(state => ({
-  attributes: getApplicantInfoCheckAttributes(state),
-  formValues: getFormValues(FormNames.APPLICANT_INFO_CHECK)(state)
-}), null, null, {
-  forwardRef: true
-}), reduxForm({
-  form: FormNames.APPLICANT_INFO_CHECK
-}))(ApplicantInfoCheckForm) as React.ComponentType<OwnProps>);
+export default flowRight(
+  connect(
+    (state) => ({
+      attributes: getApplicantInfoCheckAttributes(state),
+      formValues: getFormValues(FormNames.APPLICANT_INFO_CHECK)(state),
+    }),
+    null,
+    null,
+    {
+      forwardRef: true,
+    },
+  ),
+  reduxForm({
+    form: FormNames.APPLICANT_INFO_CHECK,
+  }),
+)(ApplicantInfoCheckForm) as React.ComponentType<OwnProps>;

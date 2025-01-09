@@ -11,7 +11,10 @@ export type FetchPreviewInvoicesPayload = {
 export type PreviewInvoices = Array<BillingPeriod> | null;
 export type BillingPeriod = Array<BillingPeriodInvoice>;
 export type BillingPeriodInvoice = Record<string, any>;
-export type FetchPreviewInvoicesAction = Action<string, FetchPreviewInvoicesPayload>;
+export type FetchPreviewInvoicesAction = Action<
+  string,
+  FetchPreviewInvoicesPayload
+>;
 export type ReceivePreviewInvoicesAction = Action<string, PreviewInvoices>;
 export type ClearPreviewInvoicesAction = Action<string, void>;
 export type PreviewInvoicesNotFoundAction = Action<string, void>;

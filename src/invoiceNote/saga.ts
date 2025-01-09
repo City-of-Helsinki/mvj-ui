@@ -1,17 +1,27 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveError } from "@/api/actions";
-import { attributesNotFound, fetchInvoiceNoteList, hideCreateInvoiceNoteModal, notFound, receiveAttributes, receiveInvoiceNoteList, receiveMethods } from "./actions";
+import {
+  attributesNotFound,
+  fetchInvoiceNoteList,
+  hideCreateInvoiceNoteModal,
+  notFound,
+  receiveAttributes,
+  receiveInvoiceNoteList,
+  receiveMethods,
+} from "./actions";
 import { displayUIMessage } from "@/util/helpers";
-import { createInvoiceNote, fetchAttributes, fetchInvoiceNotes } from "./requests";
+import {
+  createInvoiceNote,
+  fetchAttributes,
+  fetchInvoiceNotes,
+} from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -27,7 +37,10 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch invoice note attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch invoice note attributes with error "%s"',
+      error,
+    );
     yield put(attributesNotFound());
     yield put(receiveError(error));
   }
@@ -35,14 +48,12 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchInvoiceNotesSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchInvoiceNotes, query);
 
     switch (statusCode) {
@@ -62,26 +73,21 @@ function* fetchInvoiceNotesSaga({
 }
 
 function* createInvoiceNoteAndFetchListSaga({
-  payload: {
-    data,
-    query
-  },
-  type: any
+  payload: { data, query },
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createInvoiceNote, data);
 
     switch (statusCode) {
       case 201:
         yield put(hideCreateInvoiceNoteModal());
         displayUIMessage({
-          title: '',
-          body: 'Laskujen tiedote tallennettu'
+          title: "",
+          body: "Laskujen tiedote tallennettu",
         });
         yield put(fetchInvoiceNoteList(query));
         break;
@@ -93,8 +99,7 @@ function* createInvoiceNoteAndFetchListSaga({
 
       default:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -105,9 +110,14 @@ function* createInvoiceNoteAndFetchListSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/invoiceNote/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/invoiceNote/FETCH_ALL', fetchInvoiceNotesSaga);
-    yield takeLatest('mvj/invoiceNote/CREATE_AND_FETCH', createInvoiceNoteAndFetchListSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/invoiceNote/FETCH_ATTRIBUTES", fetchAttributesSaga);
+      yield takeLatest("mvj/invoiceNote/FETCH_ALL", fetchInvoiceNotesSaga);
+      yield takeLatest(
+        "mvj/invoiceNote/CREATE_AND_FETCH",
+        createInvoiceNoteAndFetchListSaga,
+      );
+    }),
+  ]);
 }

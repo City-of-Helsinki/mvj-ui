@@ -4,7 +4,9 @@
   }
 }
 
-.collapse.collapse__secondary .PlotApplicationInfoCheckCollapse.collapse__third.open:not(.is-expanding) > .collapse__content {
+.collapse.collapse__secondary
+  .PlotApplicationInfoCheckCollapse.collapse__third.open:not(.is-expanding)
+  > .collapse__content {
   // Fix cut-off dropdowns
   // The original rule in the collapse component is itself marked as important.
   overflow: visible !important;

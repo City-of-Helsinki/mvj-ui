@@ -3,7 +3,14 @@ import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import { fetchAttributes as fetchLeaseStatisticReportAttributes } from "@/leaseStatisticReport/actions";
 import { fetchReports } from "@/leaseStatisticReport/actions";
-import { getAttributes as getLeaseStatisticReportAttributes, getIsFetchingAttributes as getIsFetchingLeaseStatisticReportAttributes, getReports, getIsFetchingReports, getIsFetchingReportData, getIsSendingMail } from "@/leaseStatisticReport/selectors";
+import {
+  getAttributes as getLeaseStatisticReportAttributes,
+  getIsFetchingAttributes as getIsFetchingLeaseStatisticReportAttributes,
+  getReports,
+  getIsFetchingReports,
+  getIsFetchingReportData,
+  getIsSendingMail,
+} from "@/leaseStatisticReport/selectors";
 import type { Attributes, Methods, Reports } from "types";
 
 function LeaseStatisticReportTabAttributes(WrappedComponent: any) {
@@ -27,10 +34,14 @@ function LeaseStatisticReportTabAttributes(WrappedComponent: any) {
         isFetchingLeaseStatisticReportAttributes,
         reports,
         fetchReports,
-        isFetchingReports
+        isFetchingReports,
       } = this.props;
 
-      if (!isFetchingLeaseStatisticReportAttributes && !LeaseStatisticReportAttributes && !LeaseStatisticReportMethods) {
+      if (
+        !isFetchingLeaseStatisticReportAttributes &&
+        !LeaseStatisticReportAttributes &&
+        !LeaseStatisticReportMethods
+      ) {
         fetchLeaseStatisticReportAttributes();
       }
 
@@ -42,21 +53,28 @@ function LeaseStatisticReportTabAttributes(WrappedComponent: any) {
     render() {
       return <WrappedComponent {...this.props} />;
     }
-
   };
 }
 
-const withLeaseStatisticReportAttributes = flowRight(connect(state => {
-  return {
-    LeaseStatisticReportAttributes: getLeaseStatisticReportAttributes(state),
-    isFetchingLeaseStatisticReportAttributes: getIsFetchingLeaseStatisticReportAttributes(state),
-    reports: getReports(state),
-    isFetchingReports: getIsFetchingReports(state),
-    isFetchingReportData: getIsFetchingReportData(state),
-    isSendingMail: getIsSendingMail(state)
-  };
-}, {
-  fetchLeaseStatisticReportAttributes,
-  fetchReports
-}), LeaseStatisticReportTabAttributes);
+const withLeaseStatisticReportAttributes = flowRight(
+  connect(
+    (state) => {
+      return {
+        LeaseStatisticReportAttributes:
+          getLeaseStatisticReportAttributes(state),
+        isFetchingLeaseStatisticReportAttributes:
+          getIsFetchingLeaseStatisticReportAttributes(state),
+        reports: getReports(state),
+        isFetchingReports: getIsFetchingReports(state),
+        isFetchingReportData: getIsFetchingReportData(state),
+        isSendingMail: getIsSendingMail(state),
+      };
+    },
+    {
+      fetchLeaseStatisticReportAttributes,
+      fetchReports,
+    },
+  ),
+  LeaseStatisticReportTabAttributes,
+);
 export { withLeaseStatisticReportAttributes };

@@ -6,29 +6,25 @@ import { receiveError } from "@/api/actions";
 
 function* fetchUsersSaga({
   payload: search,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     let results = [];
     let {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson: body
+      response: { status: statusCode },
+      bodyAsJson: body,
     } = yield call(fetchUsers, search);
-    results = get(body, 'results', []);
+    results = get(body, "results", []);
 
-    while (statusCode === 200 && get(body, 'next')) {
-      const next = get(body, 'next');
+    while (statusCode === 200 && get(body, "next")) {
+      const next = get(body, "next");
       const {
-        response: {
-          status
-        },
-        bodyAsJson
-      } = yield call(fetchUsers, `?${next.split('?').pop()}`);
+        response: { status },
+        bodyAsJson,
+      } = yield call(fetchUsers, `?${next.split("?").pop()}`);
       statusCode = status;
       body = bodyAsJson;
-      results = [...results, ...get(body, 'results', [])];
+      results = [...results, ...get(body, "results", [])];
     }
 
     switch (statusCode) {
@@ -49,7 +45,9 @@ function* fetchUsersSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest("mvj/users/FETCH_ALL", fetchUsersSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/users/FETCH_ALL", fetchUsersSaga);
+    }),
+  ]);
 }

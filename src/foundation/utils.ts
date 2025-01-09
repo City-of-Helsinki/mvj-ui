@@ -19,7 +19,7 @@ export const GeneralPropTypes = {
   showForSr: PropTypes.bool,
   showOnFocus: PropTypes.bool,
   isClearfix: PropTypes.bool,
-  float: PropTypes.oneOf(objectValues(FloatTypes))
+  float: PropTypes.oneOf(objectValues(FloatTypes)),
 };
 
 /**
@@ -40,26 +40,26 @@ export function createClassName(...args) {
  */
 export function generalClassNames(props) {
   return {
-    'show-for-medium': props.showFor === Breakpoints.MEDIUM,
-    'show-for-large': props.showFor === Breakpoints.LARGE,
-    'show-for-small-only': props.showOnlyFor === Breakpoints.SMALL,
-    'show-for-medium-only': props.showOnlyFor === Breakpoints.MEDIUM,
-    'show-for-large-only': props.showOnlyFor === Breakpoints.LARGE,
-    'hide-for-medium': props.hideFor === Breakpoints.MEDIUM,
-    'hide-for-large': props.hideFor === Breakpoints.LARGE,
-    'hide-for-small-only': props.hideOnlyFor === Breakpoints.SMALL,
-    'hide-for-medium-only': props.hideOnlyFor === Breakpoints.MEDIUM,
-    'hide-for-large-only': props.hideOnlyFor === Breakpoints.LARGE,
-    'hide': props.isHidden,
-    'invisible': props.isInvisible,
-    'show-for-landscape': props.showForLandscape,
-    'show-for-portrait': props.showForPortrait,
-    'show-for-sr': props.showForSr,
-    'show-on-focus': props.showOnFocus,
-    'clearfix': props.isClearfix,
-    'float-left': props.float === FloatTypes.LEFT,
-    'float-center': props.float === FloatTypes.CENTER,
-    'float-right': props.float === FloatTypes.RIGHT
+    "show-for-medium": props.showFor === Breakpoints.MEDIUM,
+    "show-for-large": props.showFor === Breakpoints.LARGE,
+    "show-for-small-only": props.showOnlyFor === Breakpoints.SMALL,
+    "show-for-medium-only": props.showOnlyFor === Breakpoints.MEDIUM,
+    "show-for-large-only": props.showOnlyFor === Breakpoints.LARGE,
+    "hide-for-medium": props.hideFor === Breakpoints.MEDIUM,
+    "hide-for-large": props.hideFor === Breakpoints.LARGE,
+    "hide-for-small-only": props.hideOnlyFor === Breakpoints.SMALL,
+    "hide-for-medium-only": props.hideOnlyFor === Breakpoints.MEDIUM,
+    "hide-for-large-only": props.hideOnlyFor === Breakpoints.LARGE,
+    hide: props.isHidden,
+    invisible: props.isInvisible,
+    "show-for-landscape": props.showForLandscape,
+    "show-for-portrait": props.showForPortrait,
+    "show-for-sr": props.showForSr,
+    "show-on-focus": props.showOnFocus,
+    clearfix: props.isClearfix,
+    "float-left": props.float === FloatTypes.LEFT,
+    "float-center": props.float === FloatTypes.CENTER,
+    "float-right": props.float === FloatTypes.RIGHT,
   };
 }
 
@@ -105,7 +105,10 @@ export function removeProps(object, remove) {
   const result = {};
 
   for (const property in object) {
-    if (Object.prototype.hasOwnProperty.call(object, property) && remove.indexOf(property) === -1) {
+    if (
+      Object.prototype.hasOwnProperty.call(object, property) &&
+      remove.indexOf(property) === -1
+    ) {
       result[property] = object[property];
     }
   }
@@ -120,7 +123,7 @@ export function removeProps(object, remove) {
  * @returns {boolean}
  */
 export function isDefined(value) {
-  return typeof value !== 'undefined';
+  return typeof value !== "undefined";
 }
 
 /**
@@ -130,5 +133,5 @@ export function isDefined(value) {
  * @returns {string}
  */
 export function getComponentDisplayName(component) {
-  return component.displayName || component.name || 'Component';
+  return component.displayName || component.name || "Component";
 }

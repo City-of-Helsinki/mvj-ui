@@ -15,10 +15,21 @@ import FormWrapperRight from "@/components/form/FormWrapperRight";
 import SubTitle from "@/components/content/SubTitle";
 import { receiveCollapseStates } from "@/leases/actions";
 import { FormNames, ViewModes } from "@/enums";
-import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles } from "@/leases/enums";
+import {
+  LeaseTenantContactSetFieldPaths,
+  LeaseTenantContactSetFieldTitles,
+} from "@/leases/enums";
 import { getContactFullName } from "@/contacts/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import { formatDate, formatDateRange, getFieldOptions, getLabelOfOption, isActive, isArchived, isFieldAllowedToRead } from "@/util/helpers";
+import {
+  formatDate,
+  formatDateRange,
+  getFieldOptions,
+  getLabelOfOption,
+  isActive,
+  isArchived,
+  isFieldAllowedToRead,
+} from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import { getAttributes, getCollapseStateByKey } from "@/leases/selectors";
 import type { Attributes } from "types";
@@ -33,50 +44,98 @@ const OtherTenantItem = ({
   attributes,
   collapseState,
   receiveCollapseStates,
-  tenant
+  tenant,
 }: Props) => {
   const handleCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.LEASE_TENANTS]: {
           others: {
-            [tenant.id]: val
-          }
-        }
-      }
+            [tenant.id]: val,
+          },
+        },
+      },
     });
   };
 
-  const tenantTypeOptions = getFieldOptions(attributes, LeaseTenantContactSetFieldPaths.TYPE);
-  const contact = get(tenant, 'contact');
+  const tenantTypeOptions = getFieldOptions(
+    attributes,
+    LeaseTenantContactSetFieldPaths.TYPE,
+  );
+  const contact = get(tenant, "contact");
   const active = isActive(tenant);
   const archived = isArchived(tenant);
   const collapseDefault = collapseState !== undefined ? collapseState : active;
-  return <Collapse archived={archived} className={'collapse__secondary'} defaultOpen={collapseDefault} headerSubtitles={<Fragment>
+  return (
+    <Collapse
+      archived={archived}
+      className={"collapse__secondary"}
+      defaultOpen={collapseDefault}
+      headerSubtitles={
+        <Fragment>
           <Column></Column>
           <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE) && isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+            <Authorization
+              allow={
+                isFieldAllowedToRead(
+                  attributes,
+                  LeaseTenantContactSetFieldPaths.END_DATE,
+                ) &&
+                isFieldAllowedToRead(
+                  attributes,
+                  LeaseTenantContactSetFieldPaths.START_DATE,
+                )
+              }
+            >
               <CollapseHeaderSubtitle>
                 <span>Välillä:</span>
-                {formatDateRange(tenant.start_date, tenant.end_date) || '-'}
+                {formatDateRange(tenant.start_date, tenant.end_date) || "-"}
               </CollapseHeaderSubtitle>
             </Authorization>
           </Column>
-        </Fragment>} headerTitle={<Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.TYPE)}>
+        </Fragment>
+      }
+      headerTitle={
+        <Authorization
+          allow={isFieldAllowedToRead(
+            attributes,
+            LeaseTenantContactSetFieldPaths.TYPE,
+          )}
+        >
           {getLabelOfOption(tenantTypeOptions, tenant.type)}
-        </Authorization>} onToggle={handleCollapseToggle}>
+        </Authorization>
+      }
+      onToggle={handleCollapseToggle}
+    >
       <FormWrapper>
         <FormWrapperLeft>
           <Row>
             <Column small={12} medium={6} large={8}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  LeaseTenantContactSetFieldPaths.CONTACT,
+                )}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.CONTACT)}>
-                  {LeaseTenantContactSetFieldTitles.CONTACT}
-                </FormTextTitle>
-                <FormText>
-                  {contact ? <ExternalLink className='no-margin' href={`${getRouteById(Routes.CONTACTS)}/${contact.id}`} text={getContactFullName(contact)} /> : '-'}
-                </FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantContactSetFieldPaths.CONTACT,
+                    )}
+                  >
+                    {LeaseTenantContactSetFieldTitles.CONTACT}
+                  </FormTextTitle>
+                  <FormText>
+                    {contact ? (
+                      <ExternalLink
+                        className="no-margin"
+                        href={`${getRouteById(Routes.CONTACTS)}/${contact.id}`}
+                        text={getContactFullName(contact)}
+                      />
+                    ) : (
+                      "-"
+                    )}
+                  </FormText>
                 </>
               </Authorization>
             </Column>
@@ -85,22 +144,40 @@ const OtherTenantItem = ({
         <FormWrapperRight>
           <Row>
             <Column small={6} medium={3} large={2}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  LeaseTenantContactSetFieldPaths.START_DATE,
+                )}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.START_DATE)}>
-                  {LeaseTenantContactSetFieldTitles.START_DATE}
-                </FormTextTitle>
-                <FormText>{formatDate(tenant.start_date)}</FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantContactSetFieldPaths.START_DATE,
+                    )}
+                  >
+                    {LeaseTenantContactSetFieldTitles.START_DATE}
+                  </FormTextTitle>
+                  <FormText>{formatDate(tenant.start_date)}</FormText>
                 </>
               </Authorization>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  LeaseTenantContactSetFieldPaths.END_DATE,
+                )}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.END_DATE)}>
-                  {LeaseTenantContactSetFieldTitles.END_DATE}
-                </FormTextTitle>
-                <FormText>{formatDate(tenant.end_date)}</FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantContactSetFieldPaths.END_DATE,
+                    )}
+                  >
+                    {LeaseTenantContactSetFieldTitles.END_DATE}
+                  </FormTextTitle>
+                  <FormText>{formatDate(tenant.end_date)}</FormText>
                 </>
               </Authorization>
             </Column>
@@ -108,21 +185,33 @@ const OtherTenantItem = ({
         </FormWrapperRight>
       </FormWrapper>
 
-      <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseTenantContactSetFieldPaths.CONTACT,
+        )}
+      >
         <>
-        <SubTitle>Asiakkaan tiedot</SubTitle>
-        <ContactTemplate contact={contact} />
+          <SubTitle>Asiakkaan tiedot</SubTitle>
+          <ContactTemplate contact={contact} />
         </>
       </Authorization>
-    </Collapse>;
+    </Collapse>
+  );
 };
 
-export default connect((state, props: Props) => {
-  const id = props.tenant.id;
-  return {
-    attributes: getAttributes(state),
-    collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_TENANTS}.others.${id}`)
-  };
-}, {
-  receiveCollapseStates
-})(OtherTenantItem);
+export default connect(
+  (state, props: Props) => {
+    const id = props.tenant.id;
+    return {
+      attributes: getAttributes(state),
+      collapseState: getCollapseStateByKey(
+        state,
+        `${ViewModes.READONLY}.${FormNames.LEASE_TENANTS}.others.${id}`,
+      ),
+    };
+  },
+  {
+    receiveCollapseStates,
+  },
+)(OtherTenantItem);

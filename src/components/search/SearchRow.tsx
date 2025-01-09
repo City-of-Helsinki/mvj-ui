@@ -4,9 +4,10 @@ type Props = {
   style?: Record<string, any>;
 };
 
-const SearchRow = ({
-  children,
-  style
-}: Props) => <div className='search__row' style={style}>{children}</div>;
+const SearchRow = ({ children, style }: Props) => (
+  <div className="search__row" style={style}>
+    {children}
+  </div>
+);
 
 export default SearchRow;

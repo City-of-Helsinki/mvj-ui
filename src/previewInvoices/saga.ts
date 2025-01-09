@@ -5,14 +5,12 @@ import { fetchPreviewInvoices } from "./requests";
 
 function* fetchPreviewInvoicesSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchPreviewInvoices, payload);
 
     switch (statusCode) {
@@ -21,20 +19,27 @@ function* fetchPreviewInvoicesSaga({
         break;
 
       default:
-        yield put(receiveError({ ...bodyAsJson
-        }));
+        yield put(receiveError({ ...bodyAsJson }));
         yield put(notFound());
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch collection letters by lease with error "%s"', error);
+    console.error(
+      'Failed to fetch collection letters by lease with error "%s"',
+      error,
+    );
     yield put(notFound());
     yield put(receiveError(error));
   }
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/previewInvoices/FETCH_ALL', fetchPreviewInvoicesSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/previewInvoices/FETCH_ALL",
+        fetchPreviewInvoicesSaga,
+      );
+    }),
+  ]);
 }

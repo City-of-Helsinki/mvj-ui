@@ -26,17 +26,21 @@ class Litigants extends PureComponent<Props, State> {
     activeLitigants: [],
     archivedLitigants: [],
     currentLandUseContract: {},
-    litigants: []
+    litigants: [],
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
     if (props.currentLandUseContract !== state.currentLandUseContract) {
       const litigants = getContentLitigants(props.currentLandUseContract);
       return {
-        activeLitigants: litigants.filter(litigant => !isArchived(litigant.litigant)),
-        archivedLitigants: litigants.filter(litigant => isArchived(litigant.litigant)),
+        activeLitigants: litigants.filter(
+          (litigant) => !isArchived(litigant.litigant),
+        ),
+        archivedLitigants: litigants.filter((litigant) =>
+          isArchived(litigant.litigant),
+        ),
         currentLandUseContract: props.currentLandUseContract,
-        litigants: litigants
+        litigants: litigants,
       };
     }
 
@@ -44,33 +48,49 @@ class Litigants extends PureComponent<Props, State> {
   }
 
   render() {
-    const {
-      isFetchingContactAttributes
-    } = this.props;
-    const {
-      activeLitigants,
-      archivedLitigants
-    } = this.state;
-    if (isFetchingContactAttributes) return <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>;
-    return <Fragment>
-        {!activeLitigants.length && <FormText className='no-margin'>Ei osapuolia</FormText>}
-        {!!activeLitigants.length && activeLitigants.map((litigant, index) => <Litigant key={index} litigant={litigant} />)}
+    const { isFetchingContactAttributes } = this.props;
+    const { activeLitigants, archivedLitigants } = this.state;
+    if (isFetchingContactAttributes)
+      return (
+        <LoaderWrapper>
+          <Loader isLoading={true} />
+        </LoaderWrapper>
+      );
+    return (
+      <Fragment>
+        {!activeLitigants.length && (
+          <FormText className="no-margin">Ei osapuolia</FormText>
+        )}
+        {!!activeLitigants.length &&
+          activeLitigants.map((litigant, index) => (
+            <Litigant key={index} litigant={litigant} />
+          ))}
 
-        {
-        /* Archived litigants */
-      }
-        {!!archivedLitigants.length && <h3 style={{
-        marginTop: 10,
-        marginBottom: 5
-      }}>Arkisto</h3>}
-        {!!archivedLitigants.length && archivedLitigants.map((litigant, index) => <Litigant key={index} litigant={litigant} />)}
-      </Fragment>;
+        {/* Archived litigants */}
+        {!!archivedLitigants.length && (
+          <h3
+            style={{
+              marginTop: 10,
+              marginBottom: 5,
+            }}
+          >
+            Arkisto
+          </h3>
+        )}
+        {!!archivedLitigants.length &&
+          archivedLitigants.map((litigant, index) => (
+            <Litigant key={index} litigant={litigant} />
+          ))}
+      </Fragment>
+    );
   }
-
 }
 
-export default flowRight(withContactAttributes, connect(state => {
-  return {
-    currentLandUseContract: getCurrentLandUseContract(state)
-  };
-}))(Litigants) as React.ComponentType<any>;
+export default flowRight(
+  withContactAttributes,
+  connect((state) => {
+    return {
+      currentLandUseContract: getCurrentLandUseContract(state),
+    };
+  }),
+)(Litigants) as React.ComponentType<any>;

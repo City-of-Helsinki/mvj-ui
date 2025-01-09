@@ -19,37 +19,33 @@ class Dropdown extends Component<Props, State> {
   wrapper: Record<string, any> | null | undefined;
   state = {
     expanded: false,
-    hasFocus: false
+    hasFocus: false,
   };
   setWrapperRef = (el: Record<string, any> | null | undefined) => {
     this.wrapper = el;
   };
 
   componentDidMount() {
-    window.addEventListener('touchstart', this.handleDocumentClick);
-    window.addEventListener('mousedown', this.handleDocumentClick);
+    window.addEventListener("touchstart", this.handleDocumentClick);
+    window.addEventListener("mousedown", this.handleDocumentClick);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('touchstart', this.handleDocumentClick);
-    window.removeEventListener('mousedown', this.handleDocumentClick);
+    window.removeEventListener("touchstart", this.handleDocumentClick);
+    window.removeEventListener("mousedown", this.handleDocumentClick);
   }
 
   handleDocumentClick = (event: Event) => {
     if (this.wrapper && !this.wrapper.contains(event.target)) {
-      const {
-        onBlur
-      } = this.props;
-      const {
-        expanded
-      } = this.state;
+      const { onBlur } = this.props;
+      const { expanded } = this.state;
 
       if (expanded) {
         onBlur();
       }
 
       this.setState({
-        expanded: false
+        expanded: false,
       });
     }
   };
@@ -83,27 +79,21 @@ class Dropdown extends Component<Props, State> {
       e.preventDefault();
     }
   };
-  handleFocus = (e: {
-    target: any;
-  }) => {
-    const {
-      hasFocus
-    } = this.state;
+  handleFocus = (e: { target: any }) => {
+    const { hasFocus } = this.state;
 
     if (e.target === this.wrapper && !hasFocus) {
       this.setState({
-        hasFocus: true
+        hasFocus: true,
       });
     }
   };
   handleBlur = () => {
-    const {
-      hasFocus
-    } = this.state;
+    const { hasFocus } = this.state;
 
     if (hasFocus) {
       this.setState({
-        hasFocus: false
+        hasFocus: false,
       });
     }
   };
@@ -114,21 +104,15 @@ class Dropdown extends Component<Props, State> {
     this.handleHover(false);
   };
   handleHover = (toggleExpanded: boolean) => {
-    const {
-      shouldToggleOnHover
-    } = this.props;
+    const { shouldToggleOnHover } = this.props;
 
     if (shouldToggleOnHover) {
       this.toggleExpanded(toggleExpanded);
     }
   };
   toggleExpanded = (value: any) => {
-    const {
-      isLoading
-    } = this.props;
-    const {
-      expanded
-    } = this.state;
+    const { isLoading } = this.props;
+    const { expanded } = this.state;
 
     if (isLoading) {
       return;
@@ -136,7 +120,7 @@ class Dropdown extends Component<Props, State> {
 
     const newExpanded = value === undefined ? !expanded : !!value;
     this.setState({
-      expanded: newExpanded
+      expanded: newExpanded,
     });
 
     if (!newExpanded && this.wrapper) {
@@ -145,51 +129,71 @@ class Dropdown extends Component<Props, State> {
   };
 
   renderPanel() {
-    const {
-      contentComponent: ContentComponent,
-      contentProps
-    } = this.props;
-    return <div className='multi-select__dropdown-content'>
-      <ContentComponent {...contentProps} />
-    </div>;
+    const { contentComponent: ContentComponent, contentProps } = this.props;
+    return (
+      <div className="multi-select__dropdown-content">
+        <ContentComponent {...contentProps} />
+      </div>
+    );
   }
 
   render() {
-    const {
-      expanded,
-      hasFocus
-    } = this.state;
-    const {
-      children,
-      isLoading,
-      disabled
-    } = this.props;
-    return <div ref={this.setWrapperRef} className="multi-select__dropdown" tabIndex={0} role="combobox" aria-expanded={expanded} aria-readonly="false" aria-disabled={disabled} onKeyDown={this.handleKeyDown} onFocus={this.handleFocus} onBlur={this.handleBlur} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
-      <div className={classNames('multi-select__dropdown-heading', {
-        'is-expanded': expanded
-      }, {
-        'is-focused': hasFocus
-      })} onClick={this.toggleExpanded}>
-        <span className={classNames('multi-select__dropdown-heading-value', {
-          'disabled': disabled
-        })}>
-          {children}
-        </span>
-        <span className='multi-select__dropdown-loading-container'>
-          {isLoading && <LoadingIndicator />}
-        </span>
-        <span className="multi-select__dropdown-arrow">
-          <span className={classNames({
-            'multi-select__dropdown-arrow-up': expanded
-          }, {
-            'multi-select__dropdown-arrow-down': !expanded
-          })} />
-        </span>
+    const { expanded, hasFocus } = this.state;
+    const { children, isLoading, disabled } = this.props;
+    return (
+      <div
+        ref={this.setWrapperRef}
+        className="multi-select__dropdown"
+        tabIndex={0}
+        role="combobox"
+        aria-expanded={expanded}
+        aria-readonly="false"
+        aria-disabled={disabled}
+        onKeyDown={this.handleKeyDown}
+        onFocus={this.handleFocus}
+        onBlur={this.handleBlur}
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+      >
+        <div
+          className={classNames(
+            "multi-select__dropdown-heading",
+            {
+              "is-expanded": expanded,
+            },
+            {
+              "is-focused": hasFocus,
+            },
+          )}
+          onClick={this.toggleExpanded}
+        >
+          <span
+            className={classNames("multi-select__dropdown-heading-value", {
+              disabled: disabled,
+            })}
+          >
+            {children}
+          </span>
+          <span className="multi-select__dropdown-loading-container">
+            {isLoading && <LoadingIndicator />}
+          </span>
+          <span className="multi-select__dropdown-arrow">
+            <span
+              className={classNames(
+                {
+                  "multi-select__dropdown-arrow-up": expanded,
+                },
+                {
+                  "multi-select__dropdown-arrow-down": !expanded,
+                },
+              )}
+            />
+          </span>
+        </div>
+        {expanded && this.renderPanel()}
       </div>
-      {expanded && this.renderPanel()}
-    </div>;
+    );
   }
-
 }
 
 export default Dropdown;

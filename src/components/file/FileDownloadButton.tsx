@@ -25,7 +25,7 @@ const FileDownloadButton = ({
   payload,
   url,
   onFailure,
-  onSuccess
+  onSuccess,
 }: Props) => {
   const fetchFile = async () => {
     try {
@@ -34,16 +34,16 @@ const FileDownloadButton = ({
       if (payload) {
         const body = JSON.stringify(payload);
         request = new Request(url, {
-          method: 'POST',
-          body
+          method: "POST",
+          body,
         });
-        request.headers.set('Content-Type', 'application/json');
+        request.headers.set("Content-Type", "application/json");
       } else {
         request = new Request(url);
       }
 
       if (apiToken) {
-        request.headers.set('Authorization', `Bearer ${apiToken}`);
+        request.headers.set("Authorization", `Bearer ${apiToken}`);
       }
 
       const response = await fetch(request);
@@ -60,19 +60,25 @@ const FileDownloadButton = ({
           const errors = await response.json();
 
           if (errors && errors.detail) {
-            displayUIMessage({
-              title: '',
-              body: errors.detail
-            }, {
-              type: 'error'
-            });
+            displayUIMessage(
+              {
+                title: "",
+                body: errors.detail,
+              },
+              {
+                type: "error",
+              },
+            );
           } else {
-            displayUIMessage({
-              title: '',
-              body: 'Tiedoston lataaminen epäonnistui'
-            }, {
-              type: 'error'
-            });
+            displayUIMessage(
+              {
+                title: "",
+                body: "Tiedoston lataaminen epäonnistui",
+              },
+              {
+                type: "error",
+              },
+            );
           }
 
           onFailure && onFailure();
@@ -80,24 +86,34 @@ const FileDownloadButton = ({
       }
     } catch (e) {
       console.error(`Failed to download file with error ${e}`);
-      displayUIMessage({
-        title: '',
-        body: 'Tiedoston lataaminen epäonnistui'
-      }, {
-        type: 'error'
-      });
+      displayUIMessage(
+        {
+          title: "",
+          body: "Tiedoston lataaminen epäonnistui",
+        },
+        {
+          type: "error",
+        },
+      );
       onFailure && onFailure();
     }
   };
 
   const handleClick = debounce(fetchFile, 1000, {
-    leading: true
+    leading: true,
   });
-  return <Button className={`${ButtonColors.SUCCESS} no-margin`} disabled={disabled} onClick={handleClick} text={label} />;
+  return (
+    <Button
+      className={`${ButtonColors.SUCCESS} no-margin`}
+      disabled={disabled}
+      onClick={handleClick}
+      text={label}
+    />
+  );
 };
 
-export default (connect(state => {
+export default connect((state) => {
   return {
-    apiToken: getApiToken(state)
+    apiToken: getApiToken(state),
   };
-})(FileDownloadButton) as React.ComponentType<OwnProps>);
+})(FileDownloadButton) as React.ComponentType<OwnProps>;

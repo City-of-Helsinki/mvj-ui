@@ -3,8 +3,10 @@ type Props = {
   text: string;
 };
 
-const TruncatedText = ({
-  text
-}: Props) => <span title={text} className='content__truncated-text'>{text}</span>;
+const TruncatedText = ({ text }: Props) => (
+  <span title={text} className="content__truncated-text">
+    {text}
+  </span>
+);
 
 export default TruncatedText;

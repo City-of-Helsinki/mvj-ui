@@ -12,7 +12,7 @@ type Props = {
 class CreateLease extends Component<Props> {
   form: any;
   static defaultProps: $Shape<Props> = {
-    allowToChangeRelateTo: true
+    allowToChangeRelateTo: true,
   };
 
   componentDidUpdate(prevProps: Props) {
@@ -21,22 +21,24 @@ class CreateLease extends Component<Props> {
     }
   }
 
-  setRefForForm: (arg0: any) => void = element => {
+  setRefForForm: (arg0: any) => void = (element) => {
     this.form = element;
   };
 
   render(): JSX.Element {
-    const {
-      allowToChangeRelateTo,
-      isOpen,
-      onClose,
-      onSubmit
-    } = this.props;
-    return <Modal isOpen={isOpen} onClose={onClose} title='Luo vuokraustunnus'>
-        <CreateLeaseForm ref={this.setRefForForm} allowToChangeRelateTo={allowToChangeRelateTo} allowToChangeReferenceNumberAndNote onClose={onClose} onSubmit={onSubmit} />
-      </Modal>;
+    const { allowToChangeRelateTo, isOpen, onClose, onSubmit } = this.props;
+    return (
+      <Modal isOpen={isOpen} onClose={onClose} title="Luo vuokraustunnus">
+        <CreateLeaseForm
+          ref={this.setRefForForm}
+          allowToChangeRelateTo={allowToChangeRelateTo}
+          allowToChangeReferenceNumberAndNote
+          onClose={onClose}
+          onSubmit={onSubmit}
+        />
+      </Modal>
+    );
   }
-
 }
 
 export default CreateLease;

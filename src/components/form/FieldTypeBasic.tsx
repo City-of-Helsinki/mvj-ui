@@ -19,14 +19,11 @@ const FieldTypeBasic = ({
   displayError,
   disabled,
   input,
-  input: {
-    onBlur,
-    onChange
-  },
+  input: { onBlur, onChange },
   isDirty,
   placeholder,
   setRefForField,
-  type = 'text'
+  type = "text",
 }: Props): JSX.Element => {
   const handleChange = (e: any) => {
     if (autoBlur) {
@@ -42,11 +39,27 @@ const FieldTypeBasic = ({
     }
   };
 
-  return <input className={classNames('form-field__input', {
-    'has-error': displayError
-  }, {
-    'is-dirty': isDirty
-  })} ref={handleSetRefForField} id={input.name} autoComplete={autoComplete} disabled={disabled} placeholder={placeholder} type={type} {...input} onChange={handleChange} />;
+  return (
+    <input
+      className={classNames(
+        "form-field__input",
+        {
+          "has-error": displayError,
+        },
+        {
+          "is-dirty": isDirty,
+        },
+      )}
+      ref={handleSetRefForField}
+      id={input.name}
+      autoComplete={autoComplete}
+      disabled={disabled}
+      placeholder={placeholder}
+      type={type}
+      {...input}
+      onChange={handleChange}
+    />
+  );
 };
 
 export default FieldTypeBasic;

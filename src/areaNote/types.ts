@@ -15,7 +15,10 @@ export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;
 export type AttributesNotFoundAction = Action<string, void>;
-export type FetchAreaNoteListAction = Action<string, Record<string, any> | null | undefined>;
+export type FetchAreaNoteListAction = Action<
+  string,
+  Record<string, any> | null | undefined
+>;
 export type ReceiveAreaNoteListAction = Action<string, AreaNoteList>;
 export type CreateAreaNoteAction = Action<string, AreaNote>;
 export type DeleteAreaNoteAction = Action<string, number>;

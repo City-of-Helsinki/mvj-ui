@@ -19,17 +19,18 @@ const isFetchingReducer: Reducer<boolean> = handleActions(
   },
   false,
 );
-const latestReducer: Reducer<OldDwellingsInHousingCompaniesPriceIndex> = handleActions(
-  {
-    [RECEIVE_ACTION_STRING]: (
-      state: OldDwellingsInHousingCompaniesPriceIndex,
-      { payload }: ReceiveOldDwellingsInHousingCompaniesPriceIndexAction,
-    ) => {
-      return payload;
+const latestReducer: Reducer<OldDwellingsInHousingCompaniesPriceIndex> =
+  handleActions(
+    {
+      [RECEIVE_ACTION_STRING]: (
+        state: OldDwellingsInHousingCompaniesPriceIndex,
+        { payload }: ReceiveOldDwellingsInHousingCompaniesPriceIndexAction,
+      ) => {
+        return payload;
+      },
     },
-  },
-  null,
-);
+    null,
+  );
 export default combineReducers<Record<string, any>, any>({
   isFetching: isFetchingReducer,
   latest: latestReducer,

@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { fetchAuditLogByContact, receiveAuditLogByContact, notFoundByContact, fetchAuditLogByLease, receiveAuditLogByLease, notFoundByLease } from "./actions";
+import {
+  fetchAuditLogByContact,
+  receiveAuditLogByContact,
+  notFoundByContact,
+  fetchAuditLogByLease,
+  receiveAuditLogByLease,
+  notFoundByLease,
+} from "./actions";
 import auditLogReducer from "./reducer";
 import type { AuditLogState } from "./types";
 const defaultState: AuditLogState = {
@@ -8,86 +15,104 @@ const defaultState: AuditLogState = {
   byAreaSearch: {},
   isFetchingByContact: {},
   isFetchingByLease: {},
-  isFetchingByAreaSearch: {}
+  isFetchingByAreaSearch: {},
 };
 
-describe('AuditLog', () => {
-  describe('Reducer', () => {
-    describe('auditLogReducer', () => {
-      it('should update isFetchingByContact to true when fetching contact auditlog', () => {
+describe("AuditLog", () => {
+  describe("Reducer", () => {
+    describe("auditLogReducer", () => {
+      it("should update isFetchingByContact to true when fetching contact auditlog", () => {
         const dummyContactId = 123;
-        const newState = { ...defaultState,
+        const newState = {
+          ...defaultState,
           isFetchingByContact: {
-            [dummyContactId]: true
-          }
+            [dummyContactId]: true,
+          },
         };
-        const state = auditLogReducer({}, fetchAuditLogByContact(dummyContactId));
+        const state = auditLogReducer(
+          {},
+          fetchAuditLogByContact(dummyContactId),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetchingByContact to false by notFoundByContact', () => {
+      it("should update isFetchingByContact to false by notFoundByContact", () => {
         const dummyContactId = 123;
-        const newState = { ...defaultState,
+        const newState = {
+          ...defaultState,
           isFetchingByContact: {
-            [dummyContactId]: false
-          }
+            [dummyContactId]: false,
+          },
         };
         let state = auditLogReducer({}, fetchAuditLogByContact(dummyContactId));
         state = auditLogReducer(state, notFoundByContact(dummyContactId));
         expect(state).to.deep.equal(newState);
       });
-      it('should update auditLogByContact', () => {
-        const dummyContactId = '123';
+      it("should update auditLogByContact", () => {
+        const dummyContactId = "123";
         const dummyPayload = {
           [dummyContactId]: {
-            foo: 'bar'
-          }
+            foo: "bar",
+          },
         };
-        const newState = { ...defaultState,
+        const newState = {
+          ...defaultState,
           byContact: dummyPayload,
           isFetchingByContact: {
-            [dummyContactId]: false
-          }
+            [dummyContactId]: false,
+          },
         };
-        const state = auditLogReducer({}, receiveAuditLogByContact(dummyPayload));
+        const state = auditLogReducer(
+          {},
+          receiveAuditLogByContact(dummyPayload),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetchingByLease to true when fetching lease auditlog', () => {
-        const dummyLeaseId = '123';
-        const newState = { ...defaultState,
+      it("should update isFetchingByLease to true when fetching lease auditlog", () => {
+        const dummyLeaseId = "123";
+        const newState = {
+          ...defaultState,
           isFetchingByLease: {
-            [dummyLeaseId]: true
-          }
+            [dummyLeaseId]: true,
+          },
         };
-        const state = auditLogReducer({}, fetchAuditLogByLease({
-          id: dummyLeaseId
-        }));
+        const state = auditLogReducer(
+          {},
+          fetchAuditLogByLease({
+            id: dummyLeaseId,
+          }),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetchingByLease to false by notFoundByLease', () => {
+      it("should update isFetchingByLease to false by notFoundByLease", () => {
         const dummyLeaseId = 123;
-        const newState = { ...defaultState,
+        const newState = {
+          ...defaultState,
           isFetchingByLease: {
-            [dummyLeaseId]: false
-          }
+            [dummyLeaseId]: false,
+          },
         };
-        let state = auditLogReducer({}, fetchAuditLogByLease({
-          id: dummyLeaseId
-        }));
+        let state = auditLogReducer(
+          {},
+          fetchAuditLogByLease({
+            id: dummyLeaseId,
+          }),
+        );
         state = auditLogReducer(state, notFoundByLease(dummyLeaseId));
         expect(state).to.deep.equal(newState);
       });
-      it('should update auditLogByLease', () => {
-        const dummyLeaseId = '123';
+      it("should update auditLogByLease", () => {
+        const dummyLeaseId = "123";
         const dummyPayload = {
           [dummyLeaseId]: {
-            foo: 'bar'
-          }
+            foo: "bar",
+          },
         };
-        const newState = { ...defaultState,
+        const newState = {
+          ...defaultState,
           byLease: dummyPayload,
           isFetchingByLease: {
-            [dummyLeaseId]: false
-          }
+            [dummyLeaseId]: false,
+          },
         };
         const state = auditLogReducer({}, receiveAuditLogByLease(dummyPayload));
         expect(state).to.deep.equal(newState);

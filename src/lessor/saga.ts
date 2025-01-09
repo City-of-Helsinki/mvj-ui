@@ -4,17 +4,13 @@ import { fetchContacts } from "@/contacts/requests";
 
 function* fetchLessorsSaga({
   payload: params,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
-    } = yield call(fetchContacts, { ...params,
-      is_lessor: true
-    });
+      response: { status: statusCode },
+      bodyAsJson,
+    } = yield call(fetchContacts, { ...params, is_lessor: true });
 
     switch (statusCode) {
       case 200:
@@ -30,7 +26,9 @@ function* fetchLessorsSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/lessors/FETCH_ALL', fetchLessorsSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/lessors/FETCH_ALL", fetchLessorsSaga);
+    }),
+  ]);
 }

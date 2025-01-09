@@ -6,9 +6,7 @@ import {
 } from "@/leases/selectors";
 import { flowRight } from "lodash";
 import { connect } from "react-redux";
-import type {
-  PeriodicRentAdjustmentType,
-} from "@/leases/types";
+import type { PeriodicRentAdjustmentType } from "@/leases/types";
 import type {
   OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps,
   IndexPointFigureYearly as IndexPointFigureYearlyProps,
@@ -65,13 +63,11 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
       isSaveClicked,
     } = this.props;
 
-
     const {
       point_figures: pointFigures,
       source_table_label: sourceTableLabel,
     } = oldDwellingsInHousingCompaniesPriceIndex || {};
-    return (
-      oldDwellingsInHousingCompaniesPriceIndex ?
+    return oldDwellingsInHousingCompaniesPriceIndex ? (
       <Fragment>
         <BoxItemContainer>
           <Row>
@@ -84,16 +80,21 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
                 )}
                 name={`${field}.periodic_rent_adjustment_type`}
                 overrideValues={{
-                  label: LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE,
+                  label:
+                    LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE,
                 }}
                 enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.PERIODIC_RENT_ADJUSTMENT_TYPE)}
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.PERIODIC_RENT_ADJUSTMENT_TYPE,
+                )}
               />
             </Column>
             <Column>
               <FormTextTitle
                 enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.START_DATE)}
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.START_DATE,
+                )}
               >
                 {LeaseFieldTitles.START_DATE}
               </FormTextTitle>
@@ -125,27 +126,35 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
                 }
               </FormTextTitle>
               <>
-                {leaseStartDate ? 
-                  getReviewDays(leaseStartDate, periodicRentAdjustmentType).map(
-                    (date: string, index: number) => {
-                      return <FormText key={LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.POINT_FIGURES + `[${index}]`}>
-                        {date}
-                      </FormText>
-                    }
-                  )
-                : ""}
+                {leaseStartDate
+                  ? getReviewDays(
+                      leaseStartDate,
+                      periodicRentAdjustmentType,
+                    ).map((date: string, index: number) => {
+                      return (
+                        <FormText
+                          key={
+                            LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.POINT_FIGURES +
+                            `[${index}]`
+                          }
+                        >
+                          {date}
+                        </FormText>
+                      );
+                    })
+                  : ""}
               </>
             </Column>
           </Row>
         </BoxItemContainer>
       </Fragment>
-    : 
-    <AddButton
-      className={'no-top-margin'}
-      label='Lisää tasotarkistus'
-      onClick={addOldDwellingsInHousingCompaniesPriceIndex} 
-    />
-  );
+    ) : (
+      <AddButton
+        className={"no-top-margin"}
+        label="Lisää tasotarkistus"
+        onClick={addOldDwellingsInHousingCompaniesPriceIndex}
+      />
+    );
   }
 }
 

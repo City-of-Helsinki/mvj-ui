@@ -33,11 +33,11 @@ class AttachDecisionModal extends PureComponent<Props, State> {
   state = {
     copyConditions: false,
     filter: {
-      available: '',
-      selected: ''
+      available: "",
+      selected: "",
     },
     leaseOptions: [],
-    selectedLeases: []
+    selectedLeases: [],
   };
 
   componentDidUpdate(prevProps: Props) {
@@ -51,31 +51,36 @@ class AttachDecisionModal extends PureComponent<Props, State> {
       this.setState({
         copyConditions: false,
         filter: {
-          available: '',
-          selected: ''
+          available: "",
+          selected: "",
         },
-        selectedLeases: []
+        selectedLeases: [],
       });
       // Get default user list
-      this.getLeaseList('');
+      this.getLeaseList("");
     }
   }
 
   getLeaseList = async (search: string) => {
-    const {
-      currentLeaseId
-    } = this.props;
-    const {
-      selectedLeases
-    } = this.state;
+    const { currentLeaseId } = this.props;
+    const { selectedLeases } = this.state;
     const leases = await fetchLeases({
       succinct: true,
-      identifier: search
+      identifier: search,
     });
     // Both selected and available arrays on DualListBox use options for filtering. So add selectedUsers to search results and remove duplicates
-    const uniqueLeases = [...leases.map(lease => getContentLeaseOption(lease)), ...selectedLeases].filter((a, index, array) => currentLeaseId != a.value && array.findIndex(b => a.value === b.value) === index).sort((a, b) => sortStringByKeyAsc(a, b, 'label'));
+    const uniqueLeases = [
+      ...leases.map((lease) => getContentLeaseOption(lease)),
+      ...selectedLeases,
+    ]
+      .filter(
+        (a, index, array) =>
+          currentLeaseId != a.value &&
+          array.findIndex((b) => a.value === b.value) === index,
+      )
+      .sort((a, b) => sortStringByKeyAsc(a, b, "label"));
     this.setState({
-      leaseOptions: uniqueLeases
+      leaseOptions: uniqueLeases,
     });
   };
   getLeaseListDebounced = debounce((search: string) => {
@@ -83,15 +88,13 @@ class AttachDecisionModal extends PureComponent<Props, State> {
   }, 500);
   handleLeaseListChange = (selected: Array<Record<string, any>>) => {
     this.setState({
-      selectedLeases: selected
+      selectedLeases: selected,
     });
   };
   handleFilterChange = (filter: FilterProps) => {
-    const {
-      filter: selectedFilter
-    } = this.state;
+    const { filter: selectedFilter } = this.state;
     this.setState({
-      filter
+      filter,
     });
 
     if (filter.available !== selectedFilter.available) {
@@ -101,19 +104,14 @@ class AttachDecisionModal extends PureComponent<Props, State> {
   };
   handleCheckboxChange = (value: any) => {
     this.setState({
-      copyConditions: value
+      copyConditions: value,
     });
   };
   handleSubmit = () => {
-    const {
-      onSubmit
-    } = this.props;
-    const {
-      copyConditions,
-      selectedLeases
-    } = this.state;
+    const { onSubmit } = this.props;
+    const { copyConditions, selectedLeases } = this.state;
     const payload: any = {
-      leases: selectedLeases.map(lease => Number(lease.value))
+      leases: selectedLeases.map((lease) => Number(lease.value)),
     };
 
     if (copyConditions) {
@@ -124,33 +122,56 @@ class AttachDecisionModal extends PureComponent<Props, State> {
   };
 
   render() {
-    const {
-      isOpen,
-      onCancel,
-      onClose
-    } = this.props;
-    const {
-      copyConditions,
-      filter,
-      leaseOptions,
-      selectedLeases
-    } = this.state;
-    return <Modal className='modal-autoheight' title='Liitä vuokrauksiin' isOpen={isOpen} onClose={onClose}>
+    const { isOpen, onCancel, onClose } = this.props;
+    const { copyConditions, filter, leaseOptions, selectedLeases } = this.state;
+    return (
+      <Modal
+        className="modal-autoheight"
+        title="Liitä vuokrauksiin"
+        isOpen={isOpen}
+        onClose={onClose}
+      >
         <FormText>Valitse vuokratunnukset</FormText>
-        <DualListBox availableRef={ref => this.dualListBox = ref} canFilter filter={filter} filterPlaceholder='Hae vuokratunnuksia...' onChange={this.handleLeaseListChange} onFilterChange={this.handleFilterChange} options={leaseOptions} selected={selectedLeases} simpleValue={false} />
+        <DualListBox
+          availableRef={(ref) => (this.dualListBox = ref)}
+          canFilter
+          filter={filter}
+          filterPlaceholder="Hae vuokratunnuksia..."
+          onChange={this.handleLeaseListChange}
+          onFilterChange={this.handleFilterChange}
+          options={leaseOptions}
+          selected={selectedLeases}
+          simpleValue={false}
+        />
 
-        <CheckboxInput checkboxName='copy_conditions' value={copyConditions} onChange={this.handleCheckboxChange} options={[{
-        value: true,
-        label: 'Liitä myös ehdot'
-      }]} />
+        <CheckboxInput
+          checkboxName="copy_conditions"
+          value={copyConditions}
+          onChange={this.handleCheckboxChange}
+          options={[
+            {
+              value: true,
+              label: "Liitä myös ehdot",
+            },
+          ]}
+        />
 
         <ModalButtonWrapper>
-          <Button className={ButtonColors.SECONDARY} onClick={onCancel} text='Peruuta' />
-          <Button className={ButtonColors.SUCCESS} disabled={!selectedLeases.length} onClick={this.handleSubmit} text='Liitä' />
+          <Button
+            className={ButtonColors.SECONDARY}
+            onClick={onCancel}
+            text="Peruuta"
+          />
+          <Button
+            className={ButtonColors.SUCCESS}
+            disabled={!selectedLeases.length}
+            onClick={this.handleSubmit}
+            text="Liitä"
+          />
         </ModalButtonWrapper>
-      </Modal>;
+      </Modal>
+    );
   }
-
 }
 
 export default AttachDecisionModal;

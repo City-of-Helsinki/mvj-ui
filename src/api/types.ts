@@ -6,6 +6,6 @@ export type ApiState = {
   error: ApiError;
 };
 export type ApiSyncResponse<T> = {
-  response: Response,
-  bodyAsJson: T
+  response: Response;
+  bodyAsJson: T;
 };

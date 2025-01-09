@@ -1,8 +1,8 @@
 /**
  * Ui Data prefix enumerable
- * @readonly 
+ * @readonly
  * @enum {string}
  */
 export const RelatedLeasePaths = {
-  TO_LEASE: 'to_lease'
+  TO_LEASE: "to_lease",
 };

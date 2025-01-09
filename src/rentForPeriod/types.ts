@@ -19,8 +19,14 @@ export type DeleteRentForPeriodPayload = {
   leaseId: LeaseId;
 };
 export type RentForPeriod = Record<string, any>;
-export type FetchRentForPeriodAction = Action<string, FetchRentForPeriodPayload>;
+export type FetchRentForPeriodAction = Action<
+  string,
+  FetchRentForPeriodPayload
+>;
 export type ReceiveRentForPeriodByLeaseAction = Action<string, RentForPeriod>;
-export type DeleteRentForPeriodByLeaseAction = Action<string, DeleteRentForPeriodPayload>;
+export type DeleteRentForPeriodByLeaseAction = Action<
+  string,
+  DeleteRentForPeriodPayload
+>;
 export type RentForPeriodNotFoundAction = Action<string, void>;
 export type ReceiveIsSaveClickedAction = Action<string, boolean>;

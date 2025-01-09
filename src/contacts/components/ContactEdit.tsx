@@ -3,9 +3,11 @@ import ContactForm from "./forms/ContactForm";
 import GreenBox from "@/components/content/GreenBox";
 
 const ContactEdit = () => {
-  return <GreenBox className='no-margin'>
+  return (
+    <GreenBox className="no-margin">
       <ContactForm />
-    </GreenBox>;
+    </GreenBox>
+  );
 };
 
 export default ContactEdit;

@@ -5,65 +5,89 @@ import { Button } from "react-foundation";
 import { reveal } from "@/foundation/reveal";
 import { Sizes } from "@/foundation/enums";
 
-const ApiErrorModal = ({
-  data,
-  handleDismiss,
-  isOpen
-}) => <div className="api-error-modal">
+const ApiErrorModal = ({ data, handleDismiss, isOpen }) => (
+  <div className="api-error-modal">
     {data ? <ApiErrorContent data={data} /> : null}
-    <Button className="api-error-modal__close" disabled={!isOpen} size={Sizes.LARGE} onClick={handleDismiss}>Dismiss</Button>
-  </div>;
+    <Button
+      className="api-error-modal__close"
+      disabled={!isOpen}
+      size={Sizes.LARGE}
+      onClick={handleDismiss}
+    >
+      Dismiss
+    </Button>
+  </div>
+);
 
-const ApiErrorList = ({
-  errors
-}) => {
+const ApiErrorList = ({ errors }) => {
   const listObjectErrors = (obj: Record<string, any>) => {
-    return <ul>
+    return (
+      <ul>
         {Object.keys(obj).map(function (key, index) {
-        if (typeof obj[key] === 'object') {
-          return <li key={index}>{key}{listObjectErrors(obj[key])}</li>;
-        }
+          if (typeof obj[key] === "object") {
+            return (
+              <li key={index}>
+                {key}
+                {listObjectErrors(obj[key])}
+              </li>
+            );
+          }
 
-        return <li key={index}>{key}: {obj[key]}</li>;
-      })}
-      </ul>;
+          return (
+            <li key={index}>
+              {key}: {obj[key]}
+            </li>
+          );
+        })}
+      </ul>
+    );
   };
 
-  return <div className='api-error-modal__error-list'>
+  return (
+    <div className="api-error-modal__error-list">
       <h5 className="api-error-modal__error-list-heading">Error list</h5>
       {listObjectErrors(errors)}
-    </div>;
+    </div>
+  );
 };
 
-const ApiErrorStackTrace = ({
-  trace
-}) => <div className="api-error-modal__trace">
+const ApiErrorStackTrace = ({ trace }) => (
+  <div className="api-error-modal__trace">
     <h5 className="api-error-modal__trace-heading">Trace</h5>
     <ol className="api-error-modal__trace-nav">
-      {trace.filter(item => item.file).map((item, index) => <li className="api-error-modal__trace-item" key={index}>
-          <span className="api-error-modal__trace-source">
-            {item.file}({item.line})
-          </span>
-          &nbsp;
-          <span className="api-error-modal__trace-function">
-            {item.class ? `${item.class}::${item.function}` : item.function}
-          </span>
-        </li>)}
+      {trace
+        .filter((item) => item.file)
+        .map((item, index) => (
+          <li className="api-error-modal__trace-item" key={index}>
+            <span className="api-error-modal__trace-source">
+              {item.file}({item.line})
+            </span>
+            &nbsp;
+            <span className="api-error-modal__trace-function">
+              {item.class ? `${item.class}::${item.function}` : item.function}
+            </span>
+          </li>
+        ))}
     </ol>
-  </div>;
+  </div>
+);
 
-const ApiErrorContent = ({
-  data
-}) => {
-  return <div className="api-error-modal__content">
-    <h2 className="api-error-modal__title">Server error <small>{data.exception}</small></h2>
-    <div className="api-error-modal__message">{data.message}</div>
-    <div className="api-error-modal__source">{data.source}</div>
-    {data.errors ? <ApiErrorList errors={data.errors} /> : null}
-    {data.trace ? <ApiErrorStackTrace trace={data.trace} /> : null}
-  </div>;
+const ApiErrorContent = ({ data }) => {
+  return (
+    <div className="api-error-modal__content">
+      <h2 className="api-error-modal__title">
+        Server error <small>{data.exception}</small>
+      </h2>
+      <div className="api-error-modal__message">{data.message}</div>
+      <div className="api-error-modal__source">{data.source}</div>
+      {data.errors ? <ApiErrorList errors={data.errors} /> : null}
+      {data.trace ? <ApiErrorStackTrace trace={data.trace} /> : null}
+    </div>
+  );
 };
 
-export default flowRight(reveal({
-  name: 'apiError'
-}))(ApiErrorModal);
+export default flowRight(
+  reveal({
+    name: "apiError",
+  }),
+)(ApiErrorModal);

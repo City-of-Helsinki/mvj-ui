@@ -4,10 +4,10 @@
  * @enum {string}
  */
 export const LandUseAgreementAttachmentFieldPaths = {
-  ATTACHMENTS: 'attachments',
-  FILE: 'file',
-  UPLOADED_AT: 'uploaded_at',
-  UPLOADER: 'uploader'
+  ATTACHMENTS: "attachments",
+  FILE: "file",
+  UPLOADED_AT: "uploaded_at",
+  UPLOADER: "uploader",
 };
 
 /**
@@ -16,8 +16,8 @@ export const LandUseAgreementAttachmentFieldPaths = {
  * @enum {string}
  */
 export const LandUseAgreementAttachmentFieldTitles = {
-  ATTACHMENTS: 'Liitetiedostot',
-  FILE: 'Tiedoston nimi',
-  UPLOADED_AT: 'Ladattu',
-  UPLOADER: 'Lataaja'
+  ATTACHMENTS: "Liitetiedostot",
+  FILE: "Tiedoston nimi",
+  UPLOADED_AT: "Ladattu",
+  UPLOADER: "Lataaja",
 };

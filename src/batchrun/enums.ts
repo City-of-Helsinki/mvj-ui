@@ -4,10 +4,10 @@
  * @enum {string}
  */
 export const JobRunFieldPaths = {
-  ID: 'id',
-  EXIT_CODE: 'exit_code',
-  STARTED_AT: 'started_at',
-  STOPPED_AT: 'stopped_at'
+  ID: "id",
+  EXIT_CODE: "exit_code",
+  STARTED_AT: "started_at",
+  STOPPED_AT: "stopped_at",
 };
 
 /**
@@ -16,10 +16,10 @@ export const JobRunFieldPaths = {
  * @enum {string}
  */
 export const JobRunFieldTitles = {
-  ID: '',
-  EXIT_CODE: '',
-  STARTED_AT: 'Aloitusaika',
-  STOPPED_AT: 'Päättymisaika'
+  ID: "",
+  EXIT_CODE: "",
+  STARTED_AT: "Aloitusaika",
+  STOPPED_AT: "Päättymisaika",
 };
 
 /**
@@ -28,8 +28,8 @@ export const JobRunFieldTitles = {
  * @enum {string}
  */
 export const JobRunJobFieldPaths = {
-  COMMENT: 'job.children.comment',
-  NAME: 'job.children.name'
+  COMMENT: "job.children.comment",
+  NAME: "job.children.name",
 };
 
 /**
@@ -38,8 +38,8 @@ export const JobRunJobFieldPaths = {
  * @enum {string}
  */
 export const JobRunJobFieldTitles = {
-  COMMENT: 'Työn kommentti',
-  NAME: 'Työ'
+  COMMENT: "Työn kommentti",
+  NAME: "Työ",
 };
 
 /**
@@ -48,8 +48,8 @@ export const JobRunJobFieldTitles = {
  * @enum {string}
  */
 export const JobRunLogEntryFieldPaths = {
-  TEXT: 'text',
-  TIME: 'time'
+  TEXT: "text",
+  TIME: "time",
 };
 
 /**
@@ -58,8 +58,8 @@ export const JobRunLogEntryFieldPaths = {
  * @enum {string}
  */
 export const JobRunLogEntryFieldTitles = {
-  TEXT: 'Tulos',
-  TIME: 'Aika'
+  TEXT: "Tulos",
+  TIME: "Aika",
 };
 
 /**
@@ -68,15 +68,15 @@ export const JobRunLogEntryFieldTitles = {
  * @enum {string}
  */
 export const ScheduledJobFieldPaths = {
-  ID: 'id',
-  ENABLED: 'enabled',
-  YEARS: 'years',
-  MONTHS: 'months',
-  DAYS_OF_MONTH: 'days_of_month',
-  WEEKDAYS: 'weekdays',
-  HOURS: 'hours',
-  MINUTES: 'minutes',
-  COMMENT: 'comment'
+  ID: "id",
+  ENABLED: "enabled",
+  YEARS: "years",
+  MONTHS: "months",
+  DAYS_OF_MONTH: "days_of_month",
+  WEEKDAYS: "weekdays",
+  HOURS: "hours",
+  MINUTES: "minutes",
+  COMMENT: "comment",
 };
 
 /**
@@ -85,15 +85,15 @@ export const ScheduledJobFieldPaths = {
  * @enum {string}
  */
 export const ScheduledJobFieldTitles = {
-  ID: '',
-  ENABLED: 'Käytössä',
-  YEARS: 'Vuodet',
-  MONTHS: 'Kuukaudet',
-  DAYS_OF_MONTH: 'Päivät',
-  WEEKDAYS: 'Viikonpäivä',
-  HOURS: 'tunnit',
-  MINUTES: 'Minuutit',
-  COMMENT: 'Kommentti'
+  ID: "",
+  ENABLED: "Käytössä",
+  YEARS: "Vuodet",
+  MONTHS: "Kuukaudet",
+  DAYS_OF_MONTH: "Päivät",
+  WEEKDAYS: "Viikonpäivä",
+  HOURS: "tunnit",
+  MINUTES: "Minuutit",
+  COMMENT: "Kommentti",
 };
 
 /**
@@ -102,8 +102,8 @@ export const ScheduledJobFieldTitles = {
  * @enum {string}
  */
 export const ScheduledJobJobFieldPaths = {
-  COMMENT: 'job.children.comment',
-  NAME: 'job.children.comment'
+  COMMENT: "job.children.comment",
+  NAME: "job.children.comment",
 };
 
 /**
@@ -112,6 +112,6 @@ export const ScheduledJobJobFieldPaths = {
  * @enum {string}
  */
 export const ScheduledJobJobFieldTitles = {
-  COMMENT: 'Työn kommentti',
-  NAME: 'Työ'
+  COMMENT: "Työn kommentti",
+  NAME: "Työ",
 };

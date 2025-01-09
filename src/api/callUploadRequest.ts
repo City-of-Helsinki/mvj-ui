@@ -7,10 +7,10 @@ function* callUploadRequest(request: Request): Generator<any, any, any> {
   const apiToken = yield select(getApiToken);
 
   if (apiToken) {
-    request.headers.set('Authorization', `Bearer ${apiToken}`);
+    request.headers.set("Authorization", `Bearer ${apiToken}`);
   }
 
-  request.headers.set('Accept-Language', UI_ACCEPT_LANGUAGE_VALUE);
+  request.headers.set("Accept-Language", UI_ACCEPT_LANGUAGE_VALUE);
   const response = yield call(fetch, request);
   const status = response.status;
   const bodyAsJson = yield call([response, response.json]);
@@ -21,7 +21,7 @@ function* callUploadRequest(request: Request): Generator<any, any, any> {
 
   return {
     response,
-    bodyAsJson
+    bodyAsJson,
   };
 }
 

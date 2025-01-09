@@ -7,7 +7,7 @@
     max-width: 100%;
     padding-right: 0;
 
-    @media print,screen and (min-width:40em){
+    @media print, screen and (min-width: 40em) {
       flex: 0 0 50%;
       max-width: 50%;
       padding-right: rem-calc(35px);
@@ -19,7 +19,7 @@
     max-width: 100%;
     padding-right: 0;
 
-    @media print,screen and (min-width:40em){
+    @media print, screen and (min-width: 40em) {
       flex: 0 0 50%;
       max-width: 50%;
       padding-left: rem-calc(35px);
@@ -127,7 +127,8 @@
     margin-bottom: rem-calc(10px);
   }
 
-  &__boolean, &__checkbox {
+  &__boolean,
+  &__checkbox {
     legend {
       visibility: hidden;
       position: absolute;
@@ -441,7 +442,7 @@
 
     .form-field__component::before {
       position: absolute;
-      content: '–';
+      content: "–";
       left: rem-calc(-11px);
     }
   }
@@ -451,7 +452,7 @@
 
     .form-field__component::before {
       position: absolute;
-      content: '.';
+      content: ".";
       left: rem-calc(-9px);
       top: rem-calc(5px);
     }
@@ -462,7 +463,7 @@
 
     .form-field__component::before {
       position: absolute;
-      content: '/';
+      content: "/";
       left: rem-calc(-10px);
     }
   }
@@ -806,8 +807,6 @@
         }
       }
     }
-
-
 
     &.position-topright {
       position: absolute;

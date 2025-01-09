@@ -11,21 +11,22 @@ type Props = {
   rentBasisAttributes: Attributes;
 };
 
-const RentBasisInfo = ({
-  identifier,
-  rentBasisAttributes
-}: Props) => {
+const RentBasisInfo = ({ identifier, rentBasisAttributes }: Props) => {
   if (!identifier) return null;
-  return <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.ID)}>
-      <div className='rent-basis-page_info'>
+  return (
+    <Authorization
+      allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.ID)}
+    >
+      <div className="rent-basis-page_info">
         <FormTextTitle>{RentBasisFieldTitles.IDENTIFIER}</FormTextTitle>
-        <h1 className='rent-basis-page__info_identifier'>{identifier}</h1>
+        <h1 className="rent-basis-page__info_identifier">{identifier}</h1>
       </div>
-    </Authorization>;
+    </Authorization>
+  );
 };
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    rentBasisAttributes: getRentBasisAttributes(state)
+    rentBasisAttributes: getRentBasisAttributes(state),
   };
 })(RentBasisInfo);

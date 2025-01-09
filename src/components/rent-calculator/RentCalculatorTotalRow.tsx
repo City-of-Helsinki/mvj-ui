@@ -10,21 +10,26 @@ type Props = {
   rents: Array<Record<string, any>>;
 };
 
-const RentCalculatorTotalRow = ({
-  rents
-}: Props) => {
+const RentCalculatorTotalRow = ({ rents }: Props) => {
   const getEndDate = () => {
     let endDate = null;
-    rents.forEach(rent => {
-      get(rent, 'explanation.items', []).forEach(explanation => {
+    rents.forEach((rent) => {
+      get(rent, "explanation.items", []).forEach((explanation) => {
         let rentEndDate = null;
-        get(explanation, 'date_ranges', []).forEach(dateRange => {
-          if (dateRange.end_date && (!rentEndDate || isAfter(new Date(rentEndDate), new Date(dateRange.end_date)))) {
+        get(explanation, "date_ranges", []).forEach((dateRange) => {
+          if (
+            dateRange.end_date &&
+            (!rentEndDate ||
+              isAfter(new Date(rentEndDate), new Date(dateRange.end_date)))
+          ) {
             rentEndDate = dateRange.end_date;
           }
         });
 
-        if (rentEndDate && (!endDate || isAfter(new Date(endDate), new Date(rentEndDate)))) {
+        if (
+          rentEndDate &&
+          (!endDate || isAfter(new Date(endDate), new Date(rentEndDate)))
+        ) {
           endDate = rentEndDate;
         }
       });
@@ -38,19 +43,25 @@ const RentCalculatorTotalRow = ({
 
   const amount = getRentsTotalAmount(rents);
   const date = getEndDate();
-  return <div className='rent-calculator__rent'>
-      <Divider className='invoice-divider' />
+  return (
+    <div className="rent-calculator__rent">
+      <Divider className="invoice-divider" />
       <Row>
         <Column small={4}>
-          <FormText><strong>Yhteensä</strong></FormText>
+          <FormText>
+            <strong>Yhteensä</strong>
+          </FormText>
         </Column>
         <Column small={8}>
-          <FormText className='rent-calculator__rent_amount'>
-            <strong><AmountWithVat amount={amount} date={date} /></strong>
+          <FormText className="rent-calculator__rent_amount">
+            <strong>
+              <AmountWithVat amount={amount} date={date} />
+            </strong>
           </FormText>
         </Column>
       </Row>
-    </div>;
+    </div>
+  );
 };
 
 export default RentCalculatorTotalRow;

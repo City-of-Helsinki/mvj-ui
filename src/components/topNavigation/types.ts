@@ -5,4 +5,7 @@ export type TopNavigationSettings = {
   pageTitle: string;
   showSearch: boolean;
 };
-export type ReceiveTopNavigationSettingsAction = Action<string, TopNavigationSettings>;
+export type ReceiveTopNavigationSettingsAction = Action<
+  string,
+  TopNavigationSettings
+>;

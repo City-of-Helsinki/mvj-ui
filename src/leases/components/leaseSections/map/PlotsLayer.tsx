@@ -13,59 +13,65 @@ const PlotsLayer = ({
   color,
   defaultPlot,
   plotsGeoJson,
-  typeOptions
+  typeOptions,
 }: Props) => {
-  const onMouseOver = e => {
+  const onMouseOver = (e) => {
     const layer = e.target;
     layer.setStyle({
-      fillOpacity: 0.7
+      fillOpacity: 0.7,
     });
   };
 
-  const onMouseOut = e => {
+  const onMouseOut = (e) => {
     const layer = e.target;
     layer.setStyle({
-      fillOpacity: 0.2
+      fillOpacity: 0.2,
     });
   };
 
-  return <GeoJSON data={plotsGeoJson} onEachFeature={(feature, layer) => {
-    if (feature.properties) {
-      const {
-        area,
-        id,
-        identifier,
-        registration_date,
-        repeal_date,
-        section_area,
-        type
-      } = feature.properties;
-      const popupContent = `<p class='title'><strong>${getLabelOfOption(typeOptions, type) || '-'}</strong></p>
+  return (
+    <GeoJSON
+      data={plotsGeoJson}
+      onEachFeature={(feature, layer) => {
+        if (feature.properties) {
+          const {
+            area,
+            id,
+            identifier,
+            registration_date,
+            repeal_date,
+            section_area,
+            type,
+          } = feature.properties;
+          const popupContent = `<p class='title'><strong>${getLabelOfOption(typeOptions, type) || "-"}</strong></p>
             <p><strong>Id:</strong> ${id}</p>
             <p><strong>Tunnus:</strong> ${identifier}</p>
-            <p><strong>Kokonaisala:</strong> ${area || area === 0 ? `${formatNumber(area)} m²` : ''}</p>
-            <p><strong>Leikkausala:</strong> ${section_area || section_area === 0 ? `${formatNumber(section_area)} m²` : ''}</p>
-            <p><strong>Rekisteröintipvm:</strong> ${formatDate(registration_date) || '-'}</p>
-            <p><strong>Kumoamispvm:</strong> ${formatDate(repeal_date) || '-'}</p>`;
-      layer.bindPopup(popupContent);
+            <p><strong>Kokonaisala:</strong> ${area || area === 0 ? `${formatNumber(area)} m²` : ""}</p>
+            <p><strong>Leikkausala:</strong> ${section_area || section_area === 0 ? `${formatNumber(section_area)} m²` : ""}</p>
+            <p><strong>Rekisteröintipvm:</strong> ${formatDate(registration_date) || "-"}</p>
+            <p><strong>Kumoamispvm:</strong> ${formatDate(repeal_date) || "-"}</p>`;
+          layer.bindPopup(popupContent);
 
-      if (id === defaultPlot) {
-        layer.setStyle({
-          fillOpacity: 0.9
+          if (id === defaultPlot) {
+            layer.setStyle({
+              fillOpacity: 0.9,
+            });
+            setTimeout(() => {
+              layer.openPopup();
+            }, 100);
+          }
+        }
+
+        layer.on({
+          mouseover: onMouseOver,
+          mouseout: onMouseOut,
         });
-        setTimeout(() => {
-          layer.openPopup();
-        }, 100);
-      }
-    }
-
-    layer.on({
-      mouseover: onMouseOver,
-      mouseout: onMouseOut
-    });
-  }} style={{
-    color: color
-  }} />;
+      }}
+      style={{
+        color: color,
+      }}
+    />
+  );
 };
 
 export default PlotsLayer;

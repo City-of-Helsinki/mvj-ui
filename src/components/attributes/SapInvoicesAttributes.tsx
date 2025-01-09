@@ -2,7 +2,11 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import { fetchAttributes as fetchInvoiceAttributes } from "@/invoices/actions";
-import { getAttributes as getInvoiceAttributes, getIsFetchingAttributes as getIsFetchingInvoiceAttributes, getMethods as getInvoiceMethods } from "@/invoices/selectors";
+import {
+  getAttributes as getInvoiceAttributes,
+  getIsFetchingAttributes as getIsFetchingInvoiceAttributes,
+  getMethods as getInvoiceMethods,
+} from "@/invoices/selectors";
 import type { Attributes, Methods } from "types";
 
 function SapInvoicesAttributes(WrappedComponent: any) {
@@ -18,10 +22,14 @@ function SapInvoicesAttributes(WrappedComponent: any) {
         fetchInvoiceAttributes,
         invoiceAttributes,
         invoiceMethods,
-        isFetchingInvoiceAttributes
+        isFetchingInvoiceAttributes,
       } = this.props;
 
-      if (!isFetchingInvoiceAttributes && !invoiceMethods && !invoiceAttributes) {
+      if (
+        !isFetchingInvoiceAttributes &&
+        !invoiceMethods &&
+        !invoiceAttributes
+      ) {
         fetchInvoiceAttributes();
       }
     }
@@ -29,17 +37,22 @@ function SapInvoicesAttributes(WrappedComponent: any) {
     render() {
       return <WrappedComponent {...this.props} />;
     }
-
   };
 }
 
-const withSapInvoicesAttributes = flowRight(connect(state => {
-  return {
-    invoiceAttributes: getInvoiceAttributes(state),
-    invoiceMethods: getInvoiceMethods(state),
-    isFetchingInvoiceAttributes: getIsFetchingInvoiceAttributes(state)
-  };
-}, {
-  fetchInvoiceAttributes
-}), SapInvoicesAttributes);
+const withSapInvoicesAttributes = flowRight(
+  connect(
+    (state) => {
+      return {
+        invoiceAttributes: getInvoiceAttributes(state),
+        invoiceMethods: getInvoiceMethods(state),
+        isFetchingInvoiceAttributes: getIsFetchingInvoiceAttributes(state),
+      };
+    },
+    {
+      fetchInvoiceAttributes,
+    },
+  ),
+  SapInvoicesAttributes,
+);
 export { withSapInvoicesAttributes };

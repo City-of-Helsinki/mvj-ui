@@ -24,75 +24,117 @@ const SearchForm = ({
   formSelectedType,
   formValues,
   handleSubmit,
-  onSearch
+  onSearch,
 }: Props) => {
   const handleSearch = () => {
-    const newValues = { ...formValues
-    };
+    const newValues = { ...formValues };
     onSearch(newValues);
   };
 
-  return <GreenBox>
+  return (
+    <GreenBox>
       <form onSubmit={handleSubmit(handleSearch)}>
-        <SearchRow style={{
-        marginBottom: 15
-      }}>
-          <SearchLabelColumn style={{
-          width: 130,
-          marginRight: 10
-        }}>
+        <SearchRow
+          style={{
+            marginBottom: 15,
+          }}
+        >
+          <SearchLabelColumn
+            style={{
+              width: 130,
+              marginRight: 10,
+            }}
+          >
             <SearchLabel>{SearchLabels.CONTACT_TYPE}</SearchLabel>
           </SearchLabelColumn>
           <SearchInputColumn>
-            <FormField autoBlur disableDirty fieldAttributes={{
-            label: SearchLabels.CONTACT_TYPE,
-            type: FieldTypes.CHOICE,
-            read_only: false
-          }} invisibleLabel name='contact_type' overrideValues={{
-            options: [{
-              value: ContactTypes.BUSINESS,
-              label: CreditDecisionText.BUSINESS_TITLE
-            }, {
-              value: ContactTypes.PERSON,
-              label: CreditDecisionText.PERSON_TITLE
-            }]
-          }} />
+            <FormField
+              autoBlur
+              disableDirty
+              fieldAttributes={{
+                label: SearchLabels.CONTACT_TYPE,
+                type: FieldTypes.CHOICE,
+                read_only: false,
+              }}
+              invisibleLabel
+              name="contact_type"
+              overrideValues={{
+                options: [
+                  {
+                    value: ContactTypes.BUSINESS,
+                    label: CreditDecisionText.BUSINESS_TITLE,
+                  },
+                  {
+                    value: ContactTypes.PERSON,
+                    label: CreditDecisionText.PERSON_TITLE,
+                  },
+                ],
+              }}
+            />
           </SearchInputColumn>
         </SearchRow>
-        {formSelectedType && <Fragment>
-            <SearchRow style={{
-          marginBottom: 15
-        }}>
-              <SearchLabelColumn style={{
-            width: 130,
-            marginRight: 10
-          }}>
-                <SearchLabel>{formSelectedType === ContactTypes.BUSINESS ? SearchLabels.BUSINESS_ID : SearchLabels.NIN}</SearchLabel>
+        {formSelectedType && (
+          <Fragment>
+            <SearchRow
+              style={{
+                marginBottom: 15,
+              }}
+            >
+              <SearchLabelColumn
+                style={{
+                  width: 130,
+                  marginRight: 10,
+                }}
+              >
+                <SearchLabel>
+                  {formSelectedType === ContactTypes.BUSINESS
+                    ? SearchLabels.BUSINESS_ID
+                    : SearchLabels.NIN}
+                </SearchLabel>
               </SearchLabelColumn>
               <SearchInputColumn>
-                <FormField autoBlur disableDirty fieldAttributes={{
-              label: formSelectedType === ContactTypes.PERSON ? SearchLabels.BUSINESS_ID : SearchLabels.NIN,
-              type: FieldTypes.STRING,
-              read_only: false
-            }} invisibleLabel name='keyword' />
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label:
+                      formSelectedType === ContactTypes.PERSON
+                        ? SearchLabels.BUSINESS_ID
+                        : SearchLabels.NIN,
+                    type: FieldTypes.STRING,
+                    read_only: false,
+                  }}
+                  invisibleLabel
+                  name="keyword"
+                />
               </SearchInputColumn>
             </SearchRow>
-            <Button className={`${ButtonColors.SUCCESS} no-margin-right`} onClick={handleSearch} text={SearchLabels.CONTINUE} style={{
-          marginLeft: 140,
-          marginBottom: '1em'
-        }} />
-          </Fragment>}
+            <Button
+              className={`${ButtonColors.SUCCESS} no-margin-right`}
+              onClick={handleSearch}
+              text={SearchLabels.CONTINUE}
+              style={{
+                marginLeft: 140,
+                marginBottom: "1em",
+              }}
+            />
+          </Fragment>
+        )}
       </form>
-    </GreenBox>;
+    </GreenBox>
+  );
 };
 
 const formName = FormNames.CREDIT_DECISION_SEARCH;
 const selector = formValueSelector(formName);
-export default flowRight(connect(state => {
-  return {
-    formValues: getFormValues(formName)(state),
-    formSelectedType: selector(state, 'contact_type')
-  };
-}), reduxForm({
-  form: formName
-}))(SearchForm) as React.ComponentType<any>;
+export default flowRight(
+  connect((state) => {
+    return {
+      formValues: getFormValues(formName)(state),
+      formSelectedType: selector(state, "contact_type"),
+    };
+  }),
+  reduxForm({
+    form: formName,
+  }),
+)(SearchForm) as React.ComponentType<any>;

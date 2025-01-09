@@ -13,8 +13,15 @@ import RemoveButton from "@/components/form/RemoveButton";
 import { fetchPenaltyInterestByInvoice } from "@/penaltyInterest/actions";
 import { FormNames } from "@/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
-import { convertStrToDecimalNumber, formatNumber, hasPermissions } from "@/util/helpers";
-import { getIsFetchingByInvoice, getPenaltyInterestByInvoice } from "@/penaltyInterest/selectors";
+import {
+  convertStrToDecimalNumber,
+  formatNumber,
+  hasPermissions,
+} from "@/util/helpers";
+import {
+  getIsFetchingByInvoice,
+  getPenaltyInterestByInvoice,
+} from "@/penaltyInterest/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
@@ -35,14 +42,19 @@ type Props = {
 class CollectionLetterInvoiceRow extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
     if (prevProps.invoice && this.props.invoice) {
-      if (prevProps.invoice.invoice !== this.props.invoice.invoice && isEmpty(this.props.penaltyInterest)) {
-        const {
-          fetchPenaltyInterestByInvoice,
-          invoice,
-          usersPermissions
-        } = this.props;
+      if (
+        prevProps.invoice.invoice !== this.props.invoice.invoice &&
+        isEmpty(this.props.penaltyInterest)
+      ) {
+        const { fetchPenaltyInterestByInvoice, invoice, usersPermissions } =
+          this.props;
 
-        if (hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)) {
+        if (
+          hasPermissions(
+            usersPermissions,
+            UsersPermissions.ADD_COLLECTIONLETTER,
+          )
+        ) {
           fetchPenaltyInterestByInvoice(invoice.invoice);
         }
       }
@@ -50,17 +62,19 @@ class CollectionLetterInvoiceRow extends Component<Props> {
   }
 
   getTotalAmount = () => {
-    const {
-      collectionCharge,
-      penaltyInterest
-    } = this.props;
+    const { collectionCharge, penaltyInterest } = this.props;
 
     if (!penaltyInterest || isEmpty(penaltyInterest)) {
       return 0;
     }
 
-    const formatedCollectionCharge = convertStrToDecimalNumber(collectionCharge);
-    return penaltyInterest.outstanding_amount + penaltyInterest.total_interest_amount + (!isNaN(formatedCollectionCharge) ? formatedCollectionCharge : 0);
+    const formatedCollectionCharge =
+      convertStrToDecimalNumber(collectionCharge);
+    return (
+      penaltyInterest.outstanding_amount +
+      penaltyInterest.total_interest_amount +
+      (!isNaN(formatedCollectionCharge) ? formatedCollectionCharge : 0)
+    );
   };
 
   render() {
@@ -72,69 +86,117 @@ class CollectionLetterInvoiceRow extends Component<Props> {
       onRemove,
       penaltyInterest,
       selectedInvoices,
-      showDeleteButton
+      showDeleteButton,
     } = this.props;
-    const filteredInvoiceOptions = invoiceOptions.filter(invoice => selectedInvoices.indexOf(invoice.value) === -1);
-    return <Row>
+    const filteredInvoiceOptions = invoiceOptions.filter(
+      (invoice) => selectedInvoices.indexOf(invoice.value) === -1,
+    );
+    return (
+      <Row>
         <Column small={4}>
-          <FormField disableDirty={disableDirty} fieldAttributes={{
-          type: 'choice',
-          required: true,
-          label: 'Perittävä lasku',
-          read_only: false
-        }} invisibleLabel name={`${field}.invoice`} overrideValues={{
-          options: filteredInvoiceOptions
-        }} />
+          <FormField
+            disableDirty={disableDirty}
+            fieldAttributes={{
+              type: "choice",
+              required: true,
+              label: "Perittävä lasku",
+              read_only: false,
+            }}
+            invisibleLabel
+            name={`${field}.invoice`}
+            overrideValues={{
+              options: filteredInvoiceOptions,
+            }}
+          />
         </Column>
         <Column small={2}>
-          <LoaderWrapper className='invoice-row-wrapper'><Loader isLoading={isFetching} className='small' /></LoaderWrapper>
-          {!isFetching && <FormText>{!isEmpty(penaltyInterest) ? `${formatNumber(get(penaltyInterest, 'outstanding_amount'))} €` : '-'}</FormText>}
+          <LoaderWrapper className="invoice-row-wrapper">
+            <Loader isLoading={isFetching} className="small" />
+          </LoaderWrapper>
+          {!isFetching && (
+            <FormText>
+              {!isEmpty(penaltyInterest)
+                ? `${formatNumber(get(penaltyInterest, "outstanding_amount"))} €`
+                : "-"}
+            </FormText>
+          )}
         </Column>
         <Column small={2}>
-          <FormText>{!isEmpty(penaltyInterest) ? `${formatNumber(get(penaltyInterest, 'total_interest_amount'))} €` : '-'}</FormText>
+          <FormText>
+            {!isEmpty(penaltyInterest)
+              ? `${formatNumber(get(penaltyInterest, "total_interest_amount"))} €`
+              : "-"}
+          </FormText>
         </Column>
         <Column small={2}>
-          <FormField disableDirty={disableDirty} fieldAttributes={{
-          type: 'decimal',
-          required: true,
-          read_only: false,
-          label: 'Perimispalkkio',
-          decimal_places: 2,
-          max_digits: 12
-        }} invisibleLabel name={`${field}.collection_charge`} overrideValues={{
-          options: filteredInvoiceOptions
-        }} />
+          <FormField
+            disableDirty={disableDirty}
+            fieldAttributes={{
+              type: "decimal",
+              required: true,
+              read_only: false,
+              label: "Perimispalkkio",
+              decimal_places: 2,
+              max_digits: 12,
+            }}
+            invisibleLabel
+            name={`${field}.collection_charge`}
+            overrideValues={{
+              options: filteredInvoiceOptions,
+            }}
+          />
         </Column>
         <Column small={2}>
-          <FieldAndRemoveButtonWrapper field={<FormText className='full-width'>{!isEmpty(penaltyInterest) ? `${formatNumber(this.getTotalAmount())} €` : '-'}</FormText>} removeButton={showDeleteButton && <RemoveButton className='third-level' onClick={onRemove} style={{
-          height: 'unset'
-        }} title="Poista rivi" />} />
+          <FieldAndRemoveButtonWrapper
+            field={
+              <FormText className="full-width">
+                {!isEmpty(penaltyInterest)
+                  ? `${formatNumber(this.getTotalAmount())} €`
+                  : "-"}
+              </FormText>
+            }
+            removeButton={
+              showDeleteButton && (
+                <RemoveButton
+                  className="third-level"
+                  onClick={onRemove}
+                  style={{
+                    height: "unset",
+                  }}
+                  title="Poista rivi"
+                />
+              )
+            }
+          />
         </Column>
-      </Row>;
+      </Row>
+    );
   }
-
 }
 
 const formName = FormNames.LEASE_CREATE_COLLECTION_LETTER;
 const selector = formValueSelector(formName);
-export default connect((state, props) => {
-  const invoice = selector(state, props.field);
-  const selectedInvoices = [];
-  props.fields.forEach(field => {
-    const item = selector(state, field);
+export default connect(
+  (state, props) => {
+    const invoice = selector(state, props.field);
+    const selectedInvoices = [];
+    props.fields.forEach((field) => {
+      const item = selector(state, field);
 
-    if (item && item !== invoice) {
-      selectedInvoices.push(item);
-    }
-  });
-  return {
-    collectionCharge: selector(state, `${props.field}.collection_charge`),
-    isFetching: getIsFetchingByInvoice(state, invoice),
-    invoice: invoice,
-    penaltyInterest: getPenaltyInterestByInvoice(state, invoice.invoice),
-    selectedInvoices: selectedInvoices,
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  fetchPenaltyInterestByInvoice
-})(CollectionLetterInvoiceRow);
+      if (item && item !== invoice) {
+        selectedInvoices.push(item);
+      }
+    });
+    return {
+      collectionCharge: selector(state, `${props.field}.collection_charge`),
+      isFetching: getIsFetchingByInvoice(state, invoice),
+      invoice: invoice,
+      penaltyInterest: getPenaltyInterestByInvoice(state, invoice.invoice),
+      selectedInvoices: selectedInvoices,
+      usersPermissions: getUsersPermissions(state),
+    };
+  },
+  {
+    fetchPenaltyInterestByInvoice,
+  },
+)(CollectionLetterInvoiceRow);

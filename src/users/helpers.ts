@@ -7,8 +7,10 @@ import type { UserList } from "./types";
  * @returns {string}
  */
 export const getUserFullName = (user: Record<string, any>): string => {
-  if (!user) return '';
-  return user.last_name || user.first_name ? `${user.last_name} ${user.first_name}`.trim() : user.username;
+  if (!user) return "";
+  return user.last_name || user.first_name
+    ? `${user.last_name} ${user.first_name}`.trim()
+    : user.username;
 };
 
 /**
@@ -16,14 +18,16 @@ export const getUserFullName = (user: Record<string, any>): string => {
  * @param {Object} user
  * @returns {Object}
  */
-export const getContentUser = (user: Record<string, any> | null | undefined): Record<string, any> | null | undefined => {
+export const getContentUser = (
+  user: Record<string, any> | null | undefined,
+): Record<string, any> | null | undefined => {
   if (!user) return null;
   return {
     id: user.id,
     value: user.id,
     label: getUserFullName(user),
     first_name: user.first_name,
-    last_name: user.last_name
+    last_name: user.last_name,
   };
 };
 
@@ -33,10 +37,12 @@ export const getContentUser = (user: Record<string, any> | null | undefined): Re
  * @returns {Object[]}
  */
 export const getUserOptions = (users: UserList): Array<Record<string, any>> => {
-  return users.map(user => {
-    return {
-      value: user.id ? user.id.toString() : null,
-      label: getUserFullName(user)
-    };
-  }).sort((a, b) => sortStringByKeyAsc(a, b, 'label'));
+  return users
+    .map((user) => {
+      return {
+        value: user.id ? user.id.toString() : null,
+        label: getUserFullName(user),
+      };
+    })
+    .sort((a, b) => sortStringByKeyAsc(a, b, "label"));
 };

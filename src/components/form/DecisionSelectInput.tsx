@@ -24,37 +24,53 @@ const DecisionSelectInput = ({
   value,
   getOptions,
   cacheOptions,
-  hasError
+  hasError,
 }: Props): JSX.Element => {
-  const getDecisionOptions = (decisionList: Array<Record<string, any>>): Array<Record<string, any>> => decisionList.map(decision => {
-    return {
-      value: decision.id,
-      label: formatDecisionName(decision),
-      data: decision
-    };
-  });
+  const getDecisionOptions = (
+    decisionList: Array<Record<string, any>>,
+  ): Array<Record<string, any>> =>
+    decisionList.map((decision) => {
+      return {
+        value: decision.id,
+        label: formatDecisionName(decision),
+        data: decision,
+      };
+    });
 
-  const getDecisionList = debounce(async (inputValue: string, callback: (...args: Array<any>) => any) => {
-    let decisionList;
+  const getDecisionList = debounce(
+    async (inputValue: string, callback: (...args: Array<any>) => any) => {
+      let decisionList;
 
-    if (getOptions) {
-      decisionList = await getOptions(inputValue);
-    } else {
-      decisionList = await fetchDecisions({
-        reference_number: inputValue,
-        limit: 10
-      });
-    }
+      if (getOptions) {
+        decisionList = await getOptions(inputValue);
+      } else {
+        decisionList = await fetchDecisions({
+          reference_number: inputValue,
+          limit: 10,
+        });
+      }
 
-    callback(getDecisionOptions(decisionList));
-  }, 500);
+      callback(getDecisionOptions(decisionList));
+    },
+    500,
+  );
   const input = {
     name,
     onBlur,
     onChange,
-    value
+    value,
   };
-  return <AsyncSelect disabled={disabled} displayError={hasError} getOptions={getDecisionList} input={input} isDirty={false} placeholder={placeholder} cacheOptions={cacheOptions} />;
+  return (
+    <AsyncSelect
+      disabled={disabled}
+      displayError={hasError}
+      getOptions={getDecisionList}
+      input={input}
+      isDirty={false}
+      placeholder={placeholder}
+      cacheOptions={cacheOptions}
+    />
+  );
 };
 
 export default DecisionSelectInput;

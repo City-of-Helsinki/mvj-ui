@@ -13,15 +13,40 @@ import TabPane from "@/components/tabs/TabPane";
 import PageContainer from "@/components/content/PageContainer";
 import ContentContainer from "@/components/content/ContentContainer";
 import AreaSearchApplicationCreateSpecs from "@/areaSearch/components/AreaSearchApplicationCreateSpecs";
-import { createAreaSearchApplication, createAreaSearchSpecs, deleteUploadedAttachment, fetchAttributes, hideEditMode, receiveIsSaveClicked, receiveSingleAreaSearch, showEditMode, uploadAttachment } from "@/areaSearch/actions";
-import { getAttributes, getCurrentAreaSearch, getIsFetchingAttributes, getIsFormValidById, getIsSaveClicked, getIsPerformingFileOperation, getIsSubmittingAreaSearchSpecs, getIsSubmittingAreaSearchApplication } from "@/areaSearch/selectors";
+import {
+  createAreaSearchApplication,
+  createAreaSearchSpecs,
+  deleteUploadedAttachment,
+  fetchAttributes,
+  hideEditMode,
+  receiveIsSaveClicked,
+  receiveSingleAreaSearch,
+  showEditMode,
+  uploadAttachment,
+} from "@/areaSearch/actions";
+import {
+  getAttributes,
+  getCurrentAreaSearch,
+  getIsFetchingAttributes,
+  getIsFormValidById,
+  getIsSaveClicked,
+  getIsPerformingFileOperation,
+  getIsSubmittingAreaSearchSpecs,
+  getIsSubmittingAreaSearchApplication,
+} from "@/areaSearch/selectors";
 import { setPageTitle } from "@/util/helpers";
 import Loader from "@/components/loader/Loader";
 import AreaSearchApplicationCreateForm from "@/areaSearch/components/AreaSearchApplicationCreateForm";
 import { FormNames } from "@/enums";
-import { getInitialAreaSearchCreateForm, prepareAreaSearchDataForSubmission } from "@/areaSearch/helpers";
+import {
+  getInitialAreaSearchCreateForm,
+  prepareAreaSearchDataForSubmission,
+} from "@/areaSearch/helpers";
 import type { Attributes } from "types";
-import { getFormAttributes, getIsFetchingFormAttributes } from "@/application/selectors";
+import {
+  getFormAttributes,
+  getIsFetchingFormAttributes,
+} from "@/application/selectors";
 import { fetchFormAttributes } from "@/application/actions";
 import type { UploadedFileMeta } from "@/application/types";
 type OwnProps = {};
@@ -62,7 +87,7 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
   state: State = {
     activeTab: 0,
     attachments: [],
-    initialized: false
+    initialized: false,
   };
 
   componentDidMount() {
@@ -70,9 +95,9 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
       fetchAttributes,
       fetchFormAttributes,
       receiveSingleAreaSearch,
-      showEditMode
+      showEditMode,
     } = this.props;
-    setPageTitle('Uusi aluehakemus');
+    setPageTitle("Uusi aluehakemus");
     receiveSingleAreaSearch(null);
     showEditMode();
     fetchAttributes();
@@ -86,51 +111,42 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
   }
 
   initializeForms: () => void = () => {
-    const {
-      initialize
-    } = this.props;
-    initialize(FormNames.AREA_SEARCH_CREATE_SPECS, getInitialAreaSearchCreateForm());
+    const { initialize } = this.props;
+    initialize(
+      FormNames.AREA_SEARCH_CREATE_SPECS,
+      getInitialAreaSearchCreateForm(),
+    );
     initialize(FormNames.AREA_SEARCH_CREATE_FORM, {
-      form: null
+      form: null,
     });
     this.setState(() => ({
-      initialized: true
+      initialized: true,
     }));
   };
   destroyAllForms: () => void = () => {
-    const {
-      destroy
-    } = this.props;
+    const { destroy } = this.props;
     destroy(FormNames.AREA_SEARCH_CREATE_SPECS);
     destroy(FormNames.AREA_SEARCH_CREATE_FORM);
   };
 
   componentDidUpdate(prevProps: Props) {
-    const {
-      initialize,
-      specsFormValues
-    } = this.props;
+    const { initialize, specsFormValues } = this.props;
 
     if (this.props.currentAreaSearch && !prevProps.currentAreaSearch) {
       initialize(FormNames.AREA_SEARCH_CREATE_SPECS, specsFormValues);
       this.setState(() => ({
-        activeTab: 1
+        activeTab: 1,
       }));
       receiveIsSaveClicked(false);
     }
   }
 
   handleBack: () => void = () => {
-    const {
-      history
-    } = this.props;
+    const { history } = this.props;
     history.push(getRouteById(Routes.AREA_SEARCH));
   };
   saveChanges: () => void = () => {
-    const {
-      createAreaSearchApplication,
-      receiveIsSaveClicked
-    } = this.props;
+    const { createAreaSearchApplication, receiveIsSaveClicked } = this.props;
     receiveIsSaveClicked(true);
     const areFormsValid = this.areFormsValid();
 
@@ -147,62 +163,52 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
     }
   };
   submitSearchPart = () => {
-    const {
-      specsFormValues,
-      createAreaSearchSpecs,
-      receiveIsSaveClicked
-    } = this.props;
-    const {
-      attachments
-    } = this.state;
+    const { specsFormValues, createAreaSearchSpecs, receiveIsSaveClicked } =
+      this.props;
+    const { attachments } = this.state;
     receiveIsSaveClicked(true);
     const areFormsValid = this.areFormsValid();
 
     if (areFormsValid) {
       createAreaSearchSpecs({
-        area_search_attachments: attachments.map(attachment => attachment.id),
+        area_search_attachments: attachments.map((attachment) => attachment.id),
         ...specsFormValues,
-        end_date: specsFormValues.end_date || null
+        end_date: specsFormValues.end_date || null,
       });
     }
   };
   areFormsValid: () => boolean = () => {
-    const {
-      isSpecsFormValid,
-      isApplicationFormValid,
-      currentAreaSearch
-    } = this.props;
+    const { isSpecsFormValid, isApplicationFormValid, currentAreaSearch } =
+      this.props;
     return isSpecsFormValid && (!currentAreaSearch || isApplicationFormValid);
   };
   handleFileAdded = (file: File) => {
-    const {
-      uploadAttachment,
-      currentAreaSearch
-    } = this.props;
+    const { uploadAttachment, currentAreaSearch } = this.props;
     uploadAttachment({
       fileData: file,
       areaSearch: currentAreaSearch?.id,
-      callback: result => this.setState(state => ({
-        attachments: [...state.attachments, result]
-      }))
+      callback: (result) =>
+        this.setState((state) => ({
+          attachments: [...state.attachments, result],
+        })),
     });
   };
   handleFileRemoved = (id: number) => {
-    const {
-      deleteUploadedAttachment,
-      currentAreaSearch
-    } = this.props;
+    const { deleteUploadedAttachment, currentAreaSearch } = this.props;
 
     if (currentAreaSearch) {
       deleteUploadedAttachment({
         id,
-        callback: () => this.setState(state => ({
-          attachments: [...state.attachments.filter(file => file.id !== id)]
-        }))
+        callback: () =>
+          this.setState((state) => ({
+            attachments: [
+              ...state.attachments.filter((file) => file.id !== id),
+            ],
+          })),
       });
     } else {
-      this.setState(state => ({
-        attachments: [...state.attachments.filter(file => file.id !== id)]
+      this.setState((state) => ({
+        attachments: [...state.attachments.filter((file) => file.id !== id)],
       }));
     }
   };
@@ -218,86 +224,148 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
       isSpecsFormValid,
       isApplicationFormValid,
       isSpecsFormDirty,
-      isApplicationFormDirty
+      isApplicationFormDirty,
     } = this.props;
-    const {
-      activeTab,
-      attachments,
-      initialized
-    } = this.state;
+    const { activeTab, attachments, initialized } = this.state;
     const areFormsValid = this.areFormsValid();
 
     if (isFetchingAttributes || isFetchingFormAttributes) {
-      return <PageContainer>
-        <Loader isLoading={true} />
-      </PageContainer>;
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     }
 
-    return <FullWidthContainer>
+    return (
+      <FullWidthContainer>
         <PageNavigationWrapper>
-          <ControlButtonBar buttonComponent={<ControlButtons allowDelete={false} allowEdit={true} isCopyDisabled={true} isEditDisabled={true} isEditMode={true} isSaveDisabled={isSubmitting || isPerformingFileOperation || isSaveClicked && !areFormsValid} onCancel={this.handleBack} onSave={!currentAreaSearch ? this.submitSearchPart : this.saveChanges} showCommentButton={false} showCopyButton={false} saveButtonText={!currentAreaSearch ? 'Jatka lomakkeen täyttöön' : 'Tallenna'} />} infoComponent={<h1>
-              Uusi aluehakemus
-            </h1>} onBack={this.handleBack} />
-          <Tabs active={activeTab} isEditMode={true} tabs={[{
-          label: 'Aluehaun määritys',
-          allow: true,
-          isDirty: isSpecsFormDirty,
-          hasError: isSaveClicked && !isSpecsFormValid
-        }, {
-          label: 'Hakemus',
-          allow: !!currentAreaSearch,
-          isDirty: isApplicationFormDirty,
-          hasError: !currentAreaSearch || isSaveClicked && !isApplicationFormValid
-        }]} onTabClick={i => this.setState(() => ({
-          activeTab: i
-        }))} />
+          <ControlButtonBar
+            buttonComponent={
+              <ControlButtons
+                allowDelete={false}
+                allowEdit={true}
+                isCopyDisabled={true}
+                isEditDisabled={true}
+                isEditMode={true}
+                isSaveDisabled={
+                  isSubmitting ||
+                  isPerformingFileOperation ||
+                  (isSaveClicked && !areFormsValid)
+                }
+                onCancel={this.handleBack}
+                onSave={
+                  !currentAreaSearch ? this.submitSearchPart : this.saveChanges
+                }
+                showCommentButton={false}
+                showCopyButton={false}
+                saveButtonText={
+                  !currentAreaSearch ? "Jatka lomakkeen täyttöön" : "Tallenna"
+                }
+              />
+            }
+            infoComponent={<h1>Uusi aluehakemus</h1>}
+            onBack={this.handleBack}
+          />
+          <Tabs
+            active={activeTab}
+            isEditMode={true}
+            tabs={[
+              {
+                label: "Aluehaun määritys",
+                allow: true,
+                isDirty: isSpecsFormDirty,
+                hasError: isSaveClicked && !isSpecsFormValid,
+              },
+              {
+                label: "Hakemus",
+                allow: !!currentAreaSearch,
+                isDirty: isApplicationFormDirty,
+                hasError:
+                  !currentAreaSearch ||
+                  (isSaveClicked && !isApplicationFormValid),
+              },
+            ]}
+            onTabClick={(i) =>
+              this.setState(() => ({
+                activeTab: i,
+              }))
+            }
+          />
         </PageNavigationWrapper>
-        <PageContainer className='with-control-bar-and-tabs' hasTabs>
+        <PageContainer className="with-control-bar-and-tabs" hasTabs>
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
-                {initialized && <AreaSearchApplicationCreateSpecs attachments={attachments} onFileAdded={this.handleFileAdded} onFileRemoved={this.handleFileRemoved} />}
+                {initialized && (
+                  <AreaSearchApplicationCreateSpecs
+                    attachments={attachments}
+                    onFileAdded={this.handleFileAdded}
+                    onFileRemoved={this.handleFileRemoved}
+                  />
+                )}
               </ContentContainer>
             </TabPane>
             <TabPane>
               <ContentContainer>
-                {currentAreaSearch && <AreaSearchApplicationCreateForm formData={currentAreaSearch.form} />}
+                {currentAreaSearch && (
+                  <AreaSearchApplicationCreateForm
+                    formData={currentAreaSearch.form}
+                  />
+                )}
               </ContentContainer>
             </TabPane>
           </TabContent>
         </PageContainer>
-      </FullWidthContainer>;
+      </FullWidthContainer>
+    );
   }
-
 }
 
-export default (flowRight(connect(state => {
-  return {
-    isFetchingAttributes: getIsFetchingAttributes(state),
-    currentAreaSearch: getCurrentAreaSearch(state),
-    attributes: getAttributes(state),
-    formAttributes: getFormAttributes(state),
-    isFetchingFormAttributes: getIsFetchingFormAttributes(state),
-    specsFormValues: getFormValues(FormNames.AREA_SEARCH_CREATE_SPECS)(state),
-    isSpecsFormDirty: isDirty(FormNames.AREA_SEARCH_CREATE_SPECS)(state),
-    isSpecsFormValid: getIsFormValidById(state, FormNames.AREA_SEARCH_CREATE_SPECS),
-    isApplicationFormDirty: isDirty(FormNames.AREA_SEARCH_CREATE_FORM)(state),
-    isApplicationFormValid: getIsFormValidById(state, FormNames.AREA_SEARCH_CREATE_FORM),
-    isSaveClicked: getIsSaveClicked(state),
-    isPerformingFileOperation: getIsPerformingFileOperation(state),
-    isSubmitting: getIsSubmittingAreaSearchSpecs(state) || getIsSubmittingAreaSearchApplication(state)
-  };
-}, {
-  fetchAttributes,
-  fetchFormAttributes,
-  receiveSingleAreaSearch,
-  showEditMode,
-  hideEditMode,
-  createAreaSearchSpecs,
-  createAreaSearchApplication,
-  receiveIsSaveClicked,
-  uploadAttachment,
-  deleteUploadedAttachment,
-  initialize,
-  destroy
-}))(AreaSearchApplicationCreatePage) as React.ComponentType<OwnProps>);
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        isFetchingAttributes: getIsFetchingAttributes(state),
+        currentAreaSearch: getCurrentAreaSearch(state),
+        attributes: getAttributes(state),
+        formAttributes: getFormAttributes(state),
+        isFetchingFormAttributes: getIsFetchingFormAttributes(state),
+        specsFormValues: getFormValues(FormNames.AREA_SEARCH_CREATE_SPECS)(
+          state,
+        ),
+        isSpecsFormDirty: isDirty(FormNames.AREA_SEARCH_CREATE_SPECS)(state),
+        isSpecsFormValid: getIsFormValidById(
+          state,
+          FormNames.AREA_SEARCH_CREATE_SPECS,
+        ),
+        isApplicationFormDirty: isDirty(FormNames.AREA_SEARCH_CREATE_FORM)(
+          state,
+        ),
+        isApplicationFormValid: getIsFormValidById(
+          state,
+          FormNames.AREA_SEARCH_CREATE_FORM,
+        ),
+        isSaveClicked: getIsSaveClicked(state),
+        isPerformingFileOperation: getIsPerformingFileOperation(state),
+        isSubmitting:
+          getIsSubmittingAreaSearchSpecs(state) ||
+          getIsSubmittingAreaSearchApplication(state),
+      };
+    },
+    {
+      fetchAttributes,
+      fetchFormAttributes,
+      receiveSingleAreaSearch,
+      showEditMode,
+      hideEditMode,
+      createAreaSearchSpecs,
+      createAreaSearchApplication,
+      receiveIsSaveClicked,
+      uploadAttachment,
+      deleteUploadedAttachment,
+      initialize,
+      destroy,
+    },
+  ),
+)(AreaSearchApplicationCreatePage) as React.ComponentType<OwnProps>;

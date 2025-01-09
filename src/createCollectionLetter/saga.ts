@@ -6,10 +6,8 @@ import { receiveError } from "@/api/actions";
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -23,14 +21,22 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch create collection letter attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch create collection letter attributes with error "%s"',
+      error,
+    );
     yield put(attributesNotFound());
     yield put(receiveError(error));
   }
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/createCollectionLetter/FETCH_ATTRIBUTES', fetchAttributesSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/createCollectionLetter/FETCH_ATTRIBUTES",
+        fetchAttributesSaga,
+      );
+    }),
+  ]);
 }

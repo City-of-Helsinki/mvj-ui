@@ -33,12 +33,14 @@ const MultiSelect = ({
   shouldToggleOnHover = false,
   hasSelectAll = true,
   onSelectedChanged,
-  valueRenderer
+  valueRenderer,
 }: Props): JSX.Element => {
   const getSelectedText = () => {
-    const selectedOptions = selected.map(s => options.find(o => o.value === s));
-    const selectedLabels = selectedOptions.map(s => s ? s.label : '');
-    return isLoading ? '' : selectedLabels.join(', ');
+    const selectedOptions = selected.map((s) =>
+      options.find((o) => o.value === s),
+    );
+    const selectedLabels = selectedOptions.map((s) => (s ? s.label : ""));
+    return isLoading ? "" : selectedLabels.join(", ");
   };
 
   const handleBlur = () => onBlur(selected);
@@ -50,9 +52,11 @@ const MultiSelect = ({
     const customText = valueRenderer && valueRenderer(selected, options);
 
     if (noneSelected) {
-      return <span className='multi-select__none-selected'>
-        {customText || 'Valitse...'}
-      </span>;
+      return (
+        <span className="multi-select__none-selected">
+          {customText || "Valitse..."}
+        </span>
+      );
     }
 
     if (customText) {
@@ -60,14 +64,10 @@ const MultiSelect = ({
     }
 
     if (multipleSelected && !allSelected) {
-      return <span>
-        {`${selected.length} valittu`}
-      </span>;
+      return <span>{`${selected.length} valittu`}</span>;
     }
 
-    return <span>
-      {allSelected ? 'Kaikki valittu' : getSelectedText()}
-    </span>;
+    return <span>{allSelected ? "Kaikki valittu" : getSelectedText()}</span>;
   };
 
   const handleSelectedChanged = (selected: Array<any>) => {
@@ -80,22 +80,31 @@ const MultiSelect = ({
     }
   };
 
-  return <div className="multi-select">
-    <input id={id} hidden />
-    <Dropdown isLoading={isLoading} contentComponent={SelectPanel} shouldToggleOnHover={shouldToggleOnHover} contentProps={{
-      ItemRenderer,
-      options,
-      selected,
-      hasSelectAll,
-      selectAllLabel,
-      onSelectedChanged: handleSelectedChanged,
-      disabled,
-      disableSearch,
-      filterOptions
-    }} disabled={disabled} onBlur={handleBlur}>
-      {renderHeader()}
-    </Dropdown>
-  </div>;
+  return (
+    <div className="multi-select">
+      <input id={id} hidden />
+      <Dropdown
+        isLoading={isLoading}
+        contentComponent={SelectPanel}
+        shouldToggleOnHover={shouldToggleOnHover}
+        contentProps={{
+          ItemRenderer,
+          options,
+          selected,
+          hasSelectAll,
+          selectAllLabel,
+          onSelectedChanged: handleSelectedChanged,
+          disabled,
+          disableSearch,
+          filterOptions,
+        }}
+        disabled={disabled}
+        onBlur={handleBlur}
+      >
+        {renderHeader()}
+      </Dropdown>
+    </div>
+  );
 };
 
 export default MultiSelect;

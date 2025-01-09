@@ -30,7 +30,7 @@ type State = {
 class SaveConditionPanel extends Component<Props, State> {
   firstField: any;
   state = {
-    note: ''
+    note: "",
   };
 
   componentDidUpdate(prevProps: Props) {
@@ -44,30 +44,22 @@ class SaveConditionPanel extends Component<Props, State> {
   };
   setNoteField = (note: string) => {
     this.setState({
-      note: note
+      note: note,
     });
   };
   handleFieldChange = (e: any) => {
     this.setState({
-      note: e.target.value
+      note: e.target.value,
     });
   };
   handleCreate = () => {
-    const {
-      onCreate
-    } = this.props;
-    const {
-      note
-    } = this.state;
+    const { onCreate } = this.props;
+    const { note } = this.state;
     onCreate(note);
   };
   handleEdit = () => {
-    const {
-      onEdit
-    } = this.props;
-    const {
-      note
-    } = this.state;
+    const { onEdit } = this.props;
+    const { note } = this.state;
     onEdit(note);
   };
 
@@ -79,67 +71,127 @@ class SaveConditionPanel extends Component<Props, State> {
       isNew,
       onCancel,
       onDelete,
-      show
+      show,
     } = this.props;
-    const {
-      note
-    } = this.state;
-    return <AppConsumer>
-        {({
-        dispatch
-      }) => {
-        const handleDelete = () => {
-          dispatch({
-            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-            confirmationFunction: () => {
-              onDelete();
-            },
-            confirmationModalButtonClassName: ButtonColors.ALERT,
-            confirmationModalButtonText: ConfirmationModalTexts.DELETE_AREA_NOTE.BUTTON,
-            confirmationModalLabel: ConfirmationModalTexts.DELETE_AREA_NOTE.LABEL,
-            confirmationModalTitle: ConfirmationModalTexts.DELETE_AREA_NOTE.TITLE
-          });
-        };
+    const { note } = this.state;
+    return (
+      <AppConsumer>
+        {({ dispatch }) => {
+          const handleDelete = () => {
+            dispatch({
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
+                onDelete();
+              },
+              confirmationModalButtonClassName: ButtonColors.ALERT,
+              confirmationModalButtonText:
+                ConfirmationModalTexts.DELETE_AREA_NOTE.BUTTON,
+              confirmationModalLabel:
+                ConfirmationModalTexts.DELETE_AREA_NOTE.LABEL,
+              confirmationModalTitle:
+                ConfirmationModalTexts.DELETE_AREA_NOTE.TITLE,
+            });
+          };
 
-        return <div className={classNames('area-note-map__save-condition-panel', {
-          'area-note-map__save-condition-panel--is-open': show
-        })}>
-              <div className='area-note-map__save-condition-panel_container'>
-                <h2>{isNew ? 'Luo muistettava ehto' : 'Muokkaa muistettavaa ehtoa'}</h2>
+          return (
+            <div
+              className={classNames("area-note-map__save-condition-panel", {
+                "area-note-map__save-condition-panel--is-open": show,
+              })}
+            >
+              <div className="area-note-map__save-condition-panel_container">
+                <h2>
+                  {isNew
+                    ? "Luo muistettava ehto"
+                    : "Muokkaa muistettavaa ehtoa"}
+                </h2>
 
                 <Row>
                   <Column>
-                    <FormFieldLabel className='invisible' htmlFor='area-note__comment'>Kirjoita huomautus</FormFieldLabel>
-                    <TextAreaInput className="no-margin" id='area-note__comment' onChange={this.handleFieldChange} placeholder='Kirjoita huomautus' rows={4} setRefForField={this.setFirstFieldRef} value={note} />
+                    <FormFieldLabel
+                      className="invisible"
+                      htmlFor="area-note__comment"
+                    >
+                      Kirjoita huomautus
+                    </FormFieldLabel>
+                    <TextAreaInput
+                      className="no-margin"
+                      id="area-note__comment"
+                      onChange={this.handleFieldChange}
+                      placeholder="Kirjoita huomautus"
+                      rows={4}
+                      setRefForField={this.setFirstFieldRef}
+                      value={note}
+                    />
                   </Column>
                 </Row>
-                <div className='area-note-map__save-condition-panel_buttons-wrapper'>
+                <div className="area-note-map__save-condition-panel_buttons-wrapper">
                   <Row>
                     <Column>
-                      <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.DELETE)}>
-                        {!isNew && <Button className={ButtonColors.ALERT} disabled={disableDelete} onClick={handleDelete} text='Poista' />}
+                      <Authorization
+                        allow={isMethodAllowed(areaNoteMethods, Methods.DELETE)}
+                      >
+                        {!isNew && (
+                          <Button
+                            className={ButtonColors.ALERT}
+                            disabled={disableDelete}
+                            onClick={handleDelete}
+                            text="Poista"
+                          />
+                        )}
                       </Authorization>
-                      <Button className={ButtonColors.SECONDARY} onClick={onCancel} text='Peruuta' />
-                      {isNew ? <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.POST)}>
-                          <Button className={ButtonColors.SUCCESS} disabled={disableSave} onClick={this.handleCreate} text='Luo muistettava ehto' />
-                        </Authorization> : <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.PATCH)}>
-                          <Button className={ButtonColors.SUCCESS} disabled={disableSave} onClick={this.handleEdit} text='Tallenna' />
-                        </Authorization>}
+                      <Button
+                        className={ButtonColors.SECONDARY}
+                        onClick={onCancel}
+                        text="Peruuta"
+                      />
+                      {isNew ? (
+                        <Authorization
+                          allow={isMethodAllowed(areaNoteMethods, Methods.POST)}
+                        >
+                          <Button
+                            className={ButtonColors.SUCCESS}
+                            disabled={disableSave}
+                            onClick={this.handleCreate}
+                            text="Luo muistettava ehto"
+                          />
+                        </Authorization>
+                      ) : (
+                        <Authorization
+                          allow={isMethodAllowed(
+                            areaNoteMethods,
+                            Methods.PATCH,
+                          )}
+                        >
+                          <Button
+                            className={ButtonColors.SUCCESS}
+                            disabled={disableSave}
+                            onClick={this.handleEdit}
+                            text="Tallenna"
+                          />
+                        </Authorization>
+                      )}
                     </Column>
                   </Row>
                 </div>
               </div>
-            </div>;
-      }}
-      </AppConsumer>;
+            </div>
+          );
+        }}
+      </AppConsumer>
+    );
   }
-
 }
 
-export default connect(state => {
-  return {
-    areaNoteMethods: getAreaNoteMethods(state)
-  };
-}, null, null, {
-  forwardRef: true
-})(SaveConditionPanel);
+export default connect(
+  (state) => {
+    return {
+      areaNoteMethods: getAreaNoteMethods(state),
+    };
+  },
+  null,
+  null,
+  {
+    forwardRef: true,
+  },
+)(SaveConditionPanel);

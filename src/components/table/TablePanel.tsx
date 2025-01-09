@@ -5,14 +5,13 @@ type Props = {
   onClose: (...args: Array<any>) => any;
 };
 
-const TablePanel = ({
-  children,
-  onClose
-}: Props) => {
-  return <div className='table__table-panel'>
+const TablePanel = ({ children, onClose }: Props) => {
+  return (
+    <div className="table__table-panel">
       <CloseButton onClick={onClose} />
       {children}
-    </div>;
+    </div>
+  );
 };
 
 export default TablePanel;

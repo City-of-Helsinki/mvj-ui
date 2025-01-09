@@ -97,8 +97,8 @@
         display: inline-block;
         position: relative;
         vertical-align: middle;
-        animation: loaderSpinner .7s infinite linear;
-        -webkit-animation: loaderSpinner .7s infinite linear;
+        animation: loaderSpinner 0.7s infinite linear;
+        -webkit-animation: loaderSpinner 0.7s infinite linear;
       }
     }
 
@@ -159,7 +159,6 @@
     &-renderer {
       display: flex;
       align-items: center;
-
 
       input {
         margin: 0;

@@ -14,9 +14,17 @@ const ArchiveButton = ({
   disabled,
   onClick,
   title,
-  type = 'button'
-}: Props): JSX.Element => <button className={classNames('form__archive-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
-    <ArchiveIcon className='icon-medium' />
-  </button>;
+  type = "button",
+}: Props): JSX.Element => (
+  <button
+    className={classNames("form__archive-button", className)}
+    disabled={disabled}
+    type={type}
+    title={title}
+    onClick={onClick}
+  >
+    <ArchiveIcon className="icon-medium" />
+  </button>
+);
 
 export default ArchiveButton;

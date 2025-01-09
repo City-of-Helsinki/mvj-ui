@@ -21,11 +21,11 @@ type State = {
 class FormTextTitle extends PureComponent<Props, State> {
   timer: any;
   state: State = {
-    showAddButton: false
+    showAddButton: false,
   };
   static defaultProps: $Shape<Props> = {
     enableUiDataEdit: false,
-    required: false
+    required: false,
   };
 
   componentWillUnmount() {
@@ -44,9 +44,9 @@ class FormTextTitle extends PureComponent<Props, State> {
   handleMouseEnter: () => void = () => {
     this.startTimer();
   };
-  handleMouseLeave: (arg0: any) => void = event => {
+  handleMouseLeave: (arg0: any) => void = (event) => {
     const target = event.currentTarget,
-          el = ReactDOM.findDOMNode(this);
+      el = ReactDOM.findDOMNode(this);
 
     if (el && (target === el || el.contains(target))) {
       this.stopTimer();
@@ -59,12 +59,12 @@ class FormTextTitle extends PureComponent<Props, State> {
   };
   hideAddButton: () => void = () => {
     this.setState({
-      showAddButton: false
+      showAddButton: false,
     });
   };
   showAddButton: () => void = () => {
     this.setState({
-      showAddButton: true
+      showAddButton: true,
     });
   };
 
@@ -77,20 +77,32 @@ class FormTextTitle extends PureComponent<Props, State> {
       style,
       title,
       tooltipStyle,
-      uiDataKey
+      uiDataKey,
     } = this.props;
-    const {
-      showAddButton
-    } = this.state;
-    return <span onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} className={classNames('form__text-title', {
-      'show-add-button': showAddButton
-    })} style={style}>
-      {children || title}
-      {required && <i className='required'> *</i>}
-      {(!!uiDataKey || enableUiDataEdit) && <UIDataTooltip enableUiDataEdit={enableUiDataEdit} onTooltipClose={this.handleTooltipClose} relativeTo={relativeTo} style={tooltipStyle} uiDataKey={uiDataKey} />}
-    </span>;
+    const { showAddButton } = this.state;
+    return (
+      <span
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+        className={classNames("form__text-title", {
+          "show-add-button": showAddButton,
+        })}
+        style={style}
+      >
+        {children || title}
+        {required && <i className="required"> *</i>}
+        {(!!uiDataKey || enableUiDataEdit) && (
+          <UIDataTooltip
+            enableUiDataEdit={enableUiDataEdit}
+            onTooltipClose={this.handleTooltipClose}
+            relativeTo={relativeTo}
+            style={tooltipStyle}
+            uiDataKey={uiDataKey}
+          />
+        )}
+      </span>
+    );
   }
-
 }
 
 export default FormTextTitle;

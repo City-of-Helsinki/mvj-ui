@@ -1,6 +1,7 @@
 {
-    "editor.formatOnSave": true,
-    "gitlens.advanced.blame.customArguments": [
-        "--ignore-revs-file .git-blame-ignore-revs"
-    ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "gitlens.advanced.blame.customArguments": [
+    "--ignore-revs-file .git-blame-ignore-revs"
+  ]
 }

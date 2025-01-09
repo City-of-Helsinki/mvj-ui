@@ -25,27 +25,38 @@ class EditAreaSearchPreparerModal extends Component<Props> {
     }
   }
 
-  setRefForForm: (arg0: any) => void = element => {
+  setRefForForm: (arg0: any) => void = (element) => {
     this.form = element;
   };
 
   render(): JSX.Element {
-    const {
-      isOpen,
-      onClose,
-      onSubmit,
-      areaSearchData
-    } = this.props;
-    return <Modal isOpen={isOpen} onClose={onClose} title={areaSearchData?.identifier || ''} className="EditAreaSearchPreparerModal">
-        {areaSearchData && <FormText>
-          Saapunut {formatDate(areaSearchData.received_date)} - {areaSearchData.applicants.join(', ')}
-        </FormText>}
-        <EditAreaSearchPreparerForm ref={this.setRefForForm} onSubmit={onSubmit} onClose={onClose} areaSearchData={areaSearchData} />
-      </Modal>;
+    const { isOpen, onClose, onSubmit, areaSearchData } = this.props;
+    return (
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={areaSearchData?.identifier || ""}
+        className="EditAreaSearchPreparerModal"
+      >
+        {areaSearchData && (
+          <FormText>
+            Saapunut {formatDate(areaSearchData.received_date)} -{" "}
+            {areaSearchData.applicants.join(", ")}
+          </FormText>
+        )}
+        <EditAreaSearchPreparerForm
+          ref={this.setRefForForm}
+          onSubmit={onSubmit}
+          onClose={onClose}
+          areaSearchData={areaSearchData}
+        />
+      </Modal>
+    );
   }
-
 }
 
-export default (connect((state, props) => ({
-  areaSearchData: getAreaSearchList(state)?.results.find(search => search.id === props.areaSearchId)
-}))(EditAreaSearchPreparerModal) as React.ComponentType<OwnProps>);
+export default connect((state, props) => ({
+  areaSearchData: getAreaSearchList(state)?.results.find(
+    (search) => search.id === props.areaSearchId,
+  ),
+}))(EditAreaSearchPreparerModal) as React.ComponentType<OwnProps>;

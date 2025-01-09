@@ -4,13 +4,13 @@
  * @enum {string}
  */
 export const InvoiceNoteFieldPaths = {
-  ID: 'id',
-  CREATED_AT: 'created_at',
-  MODIFIED_AT: 'modified_at',
-  BILLING_PERIOD_START_DATE: 'billing_period_start_date',
-  BILLING_PERIOD_END_DATE: 'billing_period_end_date',
-  NOTES: 'notes',
-  LEASE: 'lease'
+  ID: "id",
+  CREATED_AT: "created_at",
+  MODIFIED_AT: "modified_at",
+  BILLING_PERIOD_START_DATE: "billing_period_start_date",
+  BILLING_PERIOD_END_DATE: "billing_period_end_date",
+  NOTES: "notes",
+  LEASE: "lease",
 };
 
 /**
@@ -19,11 +19,11 @@ export const InvoiceNoteFieldPaths = {
  * @enum {string}
  */
 export const InvoiceNoteFieldTitles = {
-  ID: 'Id',
-  CREATED_AT: 'Luotu',
-  MODIFIED_AT: 'Muokattu',
-  BILLING_PERIOD_START_DATE: 'Laskutuksen alkupvm',
-  BILLING_PERIOD_END_DATE: 'Laskutuksen loppupvm',
-  NOTES: 'Tiedote',
-  LEASE: 'Vuokraustunnus'
+  ID: "Id",
+  CREATED_AT: "Luotu",
+  MODIFIED_AT: "Muokattu",
+  BILLING_PERIOD_START_DATE: "Laskutuksen alkupvm",
+  BILLING_PERIOD_END_DATE: "Laskutuksen loppupvm",
+  NOTES: "Tiedote",
+  LEASE: "Vuokraustunnus",
 };

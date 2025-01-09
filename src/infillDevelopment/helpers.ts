@@ -1,12 +1,22 @@
 import get from "lodash/get";
 import { isDirty } from "redux-form";
 import { FormNames, TableSortOrder } from "@/enums";
-import { getContentLeaseIdentifier, getContentLeaseOption } from "@/leases/helpers";
+import {
+  getContentLeaseIdentifier,
+  getContentLeaseOption,
+} from "@/leases/helpers";
 import { getContentUser } from "@/users/helpers";
-import { convertStrToDecimalNumber, getApiResponseResults } from "@/util/helpers";
+import {
+  convertStrToDecimalNumber,
+  getApiResponseResults,
+} from "@/util/helpers";
 import { getIsEditMode } from "@/infillDevelopment/selectors";
 import { removeSessionStorageItem } from "@/util/storage";
-import { getContentLeaseAreasFeatures, getContentPlanUnitFeatures, getContentLeasePlotsFeatures } from "@/leases/helpers";
+import {
+  getContentLeaseAreasFeatures,
+  getContentPlanUnitFeatures,
+  getContentLeasePlotsFeatures,
+} from "@/leases/helpers";
 import type { LeafletGeoJson } from "types";
 import type { RootState } from "@/root/types";
 
@@ -17,14 +27,16 @@ import type { RootState } from "@/root/types";
  * @returns {Object[]}
  */
 export const getContentInfillDevelopmentListResults = (content: any) => {
-  return getApiResponseResults(content).map(item => {
-    const leases = get(item, 'infill_development_compensation_leases', []);
+  return getApiResponseResults(content).map((item) => {
+    const leases = get(item, "infill_development_compensation_leases", []);
     return {
       id: item.id,
       name: item.name,
       detailed_plan_identifier: item.detailed_plan_identifier,
-      leaseIdentifiers: leases.map(lease => getContentLeaseIdentifier(lease.lease)),
-      state: item.state
+      leaseIdentifiers: leases.map((lease) =>
+        getContentLeaseIdentifier(lease.lease),
+      ),
+      state: item.state,
     };
   });
 };
@@ -34,14 +46,16 @@ export const getContentInfillDevelopmentListResults = (content: any) => {
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getContentAttachments = (lease: Record<string, any>): Array<Record<string, any>> => {
-  return get(lease, 'attachments', []).map(item => {
+export const getContentAttachments = (
+  lease: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(lease, "attachments", []).map((item) => {
     return {
       id: item.id,
       file: item.file,
       filename: item.filename,
       uploaded_at: item.uploaded_at,
-      uploader: item.uploader
+      uploader: item.uploader,
     };
   });
 };
@@ -51,14 +65,16 @@ export const getContentAttachments = (lease: Record<string, any>): Array<Record<
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getContentDecisions = (lease: Record<string, any>): Array<Record<string, any>> => {
-  return get(lease, 'decisions', []).map(item => {
+export const getContentDecisions = (
+  lease: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(lease, "decisions", []).map((item) => {
     return {
       id: item.id,
       reference_number: item.reference_number,
-      decision_maker: get(item, 'decision_maker.id') || item.decision_maker,
+      decision_maker: get(item, "decision_maker.id") || item.decision_maker,
       decision_date: item.decision_date,
-      section: item.section
+      section: item.section,
     };
   });
 };
@@ -68,13 +84,15 @@ export const getContentDecisions = (lease: Record<string, any>): Array<Record<st
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getContentIntendedUses = (lease: Record<string, any>): Array<Record<string, any>> => {
-  return get(lease, 'intended_uses', []).map(item => {
+export const getContentIntendedUses = (
+  lease: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(lease, "intended_uses", []).map((item) => {
     return {
       id: item.id,
-      intended_use: get(item, 'intended_use.id') || item.intended_use,
+      intended_use: get(item, "intended_use.id") || item.intended_use,
       floor_m2: item.floor_m2,
-      amount_per_floor_m2: item.amount_per_floor_m2
+      amount_per_floor_m2: item.amount_per_floor_m2,
     };
   });
 };
@@ -84,8 +102,14 @@ export const getContentIntendedUses = (lease: Record<string, any>): Array<Record
  * @param {Object} infillDevelopment
  * @return {Object[]}
  */
-export const getContentInfillDevelopmentLeases = (infillDevelopment: Record<string, any>): Array<Record<string, any>> => {
-  return get(infillDevelopment, 'infill_development_compensation_leases', []).map(lease => {
+export const getContentInfillDevelopmentLeases = (
+  infillDevelopment: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(
+    infillDevelopment,
+    "infill_development_compensation_leases",
+    [],
+  ).map((lease) => {
     return {
       id: lease.id,
       lease: getContentLeaseOption(lease.lease),
@@ -100,7 +124,7 @@ export const getContentInfillDevelopmentLeases = (infillDevelopment: Record<stri
       sent_to_sap_date: lease.sent_to_sap_date,
       paid_date: lease.paid_date,
       note: lease.note,
-      attachments: getContentAttachments(lease)
+      attachments: getContentAttachments(lease),
     };
   });
 };
@@ -110,7 +134,9 @@ export const getContentInfillDevelopmentLeases = (infillDevelopment: Record<stri
  * @param {Object} infillDevelopment
  * @return {Object}
  */
-export const getContentInfillDevelopment = (infillDevelopment: Record<string, any>): Record<string, any> => {
+export const getContentInfillDevelopment = (
+  infillDevelopment: Record<string, any>,
+): Record<string, any> => {
   return {
     id: infillDevelopment.id,
     name: infillDevelopment.name,
@@ -120,7 +146,8 @@ export const getContentInfillDevelopment = (infillDevelopment: Record<string, an
     user: getContentUser(infillDevelopment.user),
     lease_contract_change_date: infillDevelopment.lease_contract_change_date,
     note: infillDevelopment.note,
-    infill_development_compensation_leases: getContentInfillDevelopmentLeases(infillDevelopment)
+    infill_development_compensation_leases:
+      getContentInfillDevelopmentLeases(infillDevelopment),
   };
 };
 
@@ -129,13 +156,15 @@ export const getContentInfillDevelopment = (infillDevelopment: Record<string, an
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getCopyOfDecisions = (lease: Record<string, any>): Array<Record<string, any>> => {
-  return get(lease, 'decisions', []).map(item => {
+export const getCopyOfDecisions = (
+  lease: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(lease, "decisions", []).map((item) => {
     return {
       reference_number: item.reference_number,
-      decision_maker: get(item, 'decision_maker.id') || item.decision_maker,
+      decision_maker: get(item, "decision_maker.id") || item.decision_maker,
       decision_date: item.decision_date,
-      section: item.section
+      section: item.section,
     };
   });
 };
@@ -145,13 +174,15 @@ export const getCopyOfDecisions = (lease: Record<string, any>): Array<Record<str
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getCopyOfIntendedUses = (lease: Record<string, any>): Array<Record<string, any>> => {
-  const intendedUses = get(lease, 'intended_uses', []);
-  return intendedUses.map(item => {
+export const getCopyOfIntendedUses = (
+  lease: Record<string, any>,
+): Array<Record<string, any>> => {
+  const intendedUses = get(lease, "intended_uses", []);
+  return intendedUses.map((item) => {
     return {
-      intended_use: get(item, 'intended_use.id') || item.intended_use,
+      intended_use: get(item, "intended_use.id") || item.intended_use,
       floor_m2: item.floor_m2,
-      amount_per_floor_m2: item.amount_per_floor_m2
+      amount_per_floor_m2: item.amount_per_floor_m2,
     };
   });
 };
@@ -161,8 +192,14 @@ export const getCopyOfIntendedUses = (lease: Record<string, any>): Array<Record<
  * @param {Object} infillDevelopment
  * @return {Object}
  */
-export const getCopyOfInfillDevelopmentLeases = (infillDevelopment: Record<string, any>): Array<Record<string, any>> => {
-  return get(infillDevelopment, 'infill_development_compensation_leases', []).map(lease => {
+export const getCopyOfInfillDevelopmentLeases = (
+  infillDevelopment: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(
+    infillDevelopment,
+    "infill_development_compensation_leases",
+    [],
+  ).map((lease) => {
     return {
       lease: getContentLeaseOption(lease.lease),
       decisions: getCopyOfDecisions(lease),
@@ -175,7 +212,7 @@ export const getCopyOfInfillDevelopmentLeases = (infillDevelopment: Record<strin
       year: lease.year,
       sent_to_sap_date: lease.sent_to_sap_date,
       paid_date: lease.paid_date,
-      note: lease.note
+      note: lease.note,
     };
   });
 };
@@ -185,7 +222,9 @@ export const getCopyOfInfillDevelopmentLeases = (infillDevelopment: Record<strin
  * @param {Object} infillDevelopment
  * @return {Object}
  */
-export const getCopyOfInfillDevelopment = (infillDevelopment: Record<string, any>) => {
+export const getCopyOfInfillDevelopment = (
+  infillDevelopment: Record<string, any>,
+) => {
   return {
     name: infillDevelopment.name,
     detailed_plan_identifier: infillDevelopment.detailed_plan_identifier,
@@ -194,7 +233,8 @@ export const getCopyOfInfillDevelopment = (infillDevelopment: Record<string, any
     user: getContentUser(infillDevelopment.user),
     lease_contract_change_date: infillDevelopment.lease_contract_change_date,
     note: infillDevelopment.note,
-    infill_development_compensation_leases: getCopyOfInfillDevelopmentLeases(infillDevelopment)
+    infill_development_compensation_leases:
+      getCopyOfInfillDevelopmentLeases(infillDevelopment),
   };
 };
 
@@ -203,14 +243,16 @@ export const getCopyOfInfillDevelopment = (infillDevelopment: Record<string, any
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getPayloadDecisions = (lease: Record<string, any>): Array<Record<string, any>> => {
-  return get(lease, 'decisions', []).map(item => {
+export const getPayloadDecisions = (
+  lease: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(lease, "decisions", []).map((item) => {
     return {
       id: item.id,
       reference_number: item.reference_number,
       decision_maker: item.decision_maker,
       decision_date: item.decision_date,
-      section: item.section
+      section: item.section,
     };
   });
 };
@@ -220,14 +262,16 @@ export const getPayloadDecisions = (lease: Record<string, any>): Array<Record<st
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getPayloadIntendedUses = (lease: Record<string, any>): Array<Record<string, any>> => {
-  const intendedUses = get(lease, 'intended_uses', []);
-  return intendedUses.map(item => {
+export const getPayloadIntendedUses = (
+  lease: Record<string, any>,
+): Array<Record<string, any>> => {
+  const intendedUses = get(lease, "intended_uses", []);
+  return intendedUses.map((item) => {
     return {
       id: item.id,
       intended_use: item.intended_use,
       floor_m2: convertStrToDecimalNumber(item.floor_m2),
-      amount_per_floor_m2: convertStrToDecimalNumber(item.amount_per_floor_m2)
+      amount_per_floor_m2: convertStrToDecimalNumber(item.amount_per_floor_m2),
     };
   });
 };
@@ -237,22 +281,34 @@ export const getPayloadIntendedUses = (lease: Record<string, any>): Array<Record
  * @param {Object} infillDevelopment
  * @return {Object[]}
  */
-export const getPayloadInfillDevelopmentLeases = (infillDevelopment: Record<string, any>): Array<Record<string, any>> => {
-  return get(infillDevelopment, 'infill_development_compensation_leases', []).map(lease => {
+export const getPayloadInfillDevelopmentLeases = (
+  infillDevelopment: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(
+    infillDevelopment,
+    "infill_development_compensation_leases",
+    [],
+  ).map((lease) => {
     return {
       id: lease.id,
-      lease: get(lease, 'lease.value'),
+      lease: get(lease, "lease.value"),
       decisions: getPayloadDecisions(lease),
       intended_uses: getPayloadIntendedUses(lease),
-      monetary_compensation_amount: convertStrToDecimalNumber(lease.monetary_compensation_amount),
-      compensation_investment_amount: convertStrToDecimalNumber(lease.compensation_investment_amount),
+      monetary_compensation_amount: convertStrToDecimalNumber(
+        lease.monetary_compensation_amount,
+      ),
+      compensation_investment_amount: convertStrToDecimalNumber(
+        lease.compensation_investment_amount,
+      ),
       increase_in_value: convertStrToDecimalNumber(lease.increase_in_value),
-      part_of_the_increase_in_value: convertStrToDecimalNumber(lease.part_of_the_increase_in_value),
+      part_of_the_increase_in_value: convertStrToDecimalNumber(
+        lease.part_of_the_increase_in_value,
+      ),
       discount_in_rent: convertStrToDecimalNumber(lease.discount_in_rent),
       year: lease.year,
       sent_to_sap_date: lease.sent_to_sap_date,
       paid_date: lease.paid_date,
-      note: lease.note
+      note: lease.note,
     };
   });
 };
@@ -262,7 +318,9 @@ export const getPayloadInfillDevelopmentLeases = (infillDevelopment: Record<stri
  * @param {Object} infillDevelopment
  * @return {Object}
  */
-export const getPayloadInfillDevelopment = (infillDevelopment: Record<string, any>): Record<string, any> => {
+export const getPayloadInfillDevelopment = (
+  infillDevelopment: Record<string, any>,
+): Record<string, any> => {
   return {
     id: infillDevelopment.id,
     name: infillDevelopment.name,
@@ -272,7 +330,8 @@ export const getPayloadInfillDevelopment = (infillDevelopment: Record<string, an
     user: getContentUser(infillDevelopment.user),
     lease_contract_change_date: infillDevelopment.lease_contract_change_date,
     note: infillDevelopment.note,
-    infill_development_compensation_leases: getPayloadInfillDevelopmentLeases(infillDevelopment)
+    infill_development_compensation_leases:
+      getPayloadInfillDevelopmentLeases(infillDevelopment),
   };
 };
 
@@ -281,26 +340,30 @@ export const getPayloadInfillDevelopment = (infillDevelopment: Record<string, an
  * @param {Object} lease
  * @returns {Object}
  */
-export const getContentInfillDevelopmentLeaseGeoJson = (lease: Record<string, any>): LeafletGeoJson => {
+export const getContentInfillDevelopmentLeaseGeoJson = (
+  lease: Record<string, any>,
+): LeafletGeoJson => {
   const features = [];
-  const areas = get(lease, 'lease_areas', []).filter(area => !area.archived_at);
+  const areas = get(lease, "lease_areas", []).filter(
+    (area) => !area.archived_at,
+  );
   const areasFeatures = getContentLeaseAreasFeatures(areas);
   features.push(...areasFeatures);
   const plots = [];
-  areas.forEach(area => {
-    plots.push(...get(area, 'plots', []));
+  areas.forEach((area) => {
+    plots.push(...get(area, "plots", []));
   });
   const plotFeatures = getContentLeasePlotsFeatures(plots);
   features.push(...plotFeatures);
   const planUnits = [];
-  areas.forEach(area => {
-    planUnits.push(...get(area, 'plan_units', []));
+  areas.forEach((area) => {
+    planUnits.push(...get(area, "plan_units", []));
   });
   const planUnitFeatures = getContentPlanUnitFeatures(planUnits);
   features.push(...planUnitFeatures);
   return {
-    type: 'FeatureCollection',
-    features: features
+    type: "FeatureCollection",
+    features: features,
   };
 };
 
@@ -309,15 +372,16 @@ export const getContentInfillDevelopmentLeaseGeoJson = (lease: Record<string, an
  * @param {Object} query
  * @returns {Object}
  */
-export const mapInfillDevelopmentSearchFilters = (query: Record<string, any>): Record<string, any> => {
-  const searchQuery = { ...query
-  };
+export const mapInfillDevelopmentSearchFilters = (
+  query: Record<string, any>,
+): Record<string, any> => {
+  const searchQuery = { ...query };
 
   if (searchQuery.sort_key) {
     searchQuery.ordering = [searchQuery.sort_key];
 
     if (searchQuery.sort_order === TableSortOrder.DESCENDING) {
-      searchQuery.ordering = searchQuery.ordering.map(key => `-${key}`);
+      searchQuery.ordering = searchQuery.ordering.map((key) => `-${key}`);
     }
 
     delete searchQuery.sort_key;
@@ -342,5 +406,5 @@ export const isInfillDevelopmentFormDirty = (state: RootState): boolean => {
  */
 export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.INFILL_DEVELOPMENT);
-  removeSessionStorageItem('infillDevelopmentId');
+  removeSessionStorageItem("infillDevelopmentId");
 };

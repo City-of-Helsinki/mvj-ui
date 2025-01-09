@@ -6,10 +6,12 @@ import { convertStrToDecimalNumber } from "@/util/helpers";
  * @param {Object} invoice
  * @returns {Object[]}
  */
-const getPayloadLeaseCreateChargeRows = (invoice: Record<string, any>): Array<Record<string, any>> => {
-  return get(invoice, 'rows', []).map(row => ({
+const getPayloadLeaseCreateChargeRows = (
+  invoice: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(invoice, "rows", []).map((row) => ({
     receivable_type: row.receivable_type,
-    amount: convertStrToDecimalNumber(row.amount)
+    amount: convertStrToDecimalNumber(row.amount),
   }));
 };
 
@@ -18,7 +20,9 @@ const getPayloadLeaseCreateChargeRows = (invoice: Record<string, any>): Array<Re
  * @param {Object} invoice
  * @returns {Object}
  */
-export const getPayloadLeaseCreateCharge = (invoice: Record<string, any>): Record<string, any> => {
+export const getPayloadLeaseCreateCharge = (
+  invoice: Record<string, any>,
+): Record<string, any> => {
   return {
     lease: invoice.lease,
     type: invoice.type,
@@ -26,7 +30,7 @@ export const getPayloadLeaseCreateCharge = (invoice: Record<string, any>): Recor
     billing_period_end_date: invoice.billing_period_end_date,
     billing_period_start_date: invoice.billing_period_start_date,
     notes: invoice.notes,
-    rows: getPayloadLeaseCreateChargeRows(invoice)
+    rows: getPayloadLeaseCreateChargeRows(invoice),
   };
 };
 
@@ -36,13 +40,18 @@ export const getPayloadLeaseCreateCharge = (invoice: Record<string, any>): Recor
  * @param {Object} receivableTypes
  * @returns {Object}
  */
-export const receivableTypesFromAttributes = (fieldAttributes: Record<string, any>, receivableTypes: Record<string, any>): Record<string, any> => {
+export const receivableTypesFromAttributes = (
+  fieldAttributes: Record<string, any>,
+  receivableTypes: Record<string, any>,
+): Record<string, any> => {
   const newChoices = fieldAttributes.choices
-    .filter(choice => receivableTypes.find(type => type.is_active && type.id === choice.value))
+    .filter((choice) =>
+      receivableTypes.find(
+        (type) => type.is_active && type.id === choice.value,
+      ),
+    )
     .sort((a, b) => a.display_name.localeCompare(b.display_name));
-  const newFieldAttributes = { ...fieldAttributes,
-    choices: newChoices
-  };
+  const newFieldAttributes = { ...fieldAttributes, choices: newChoices };
   return newFieldAttributes;
 };
 
@@ -51,6 +60,8 @@ export const receivableTypesFromAttributes = (fieldAttributes: Record<string, an
  * @param {Array<Object>} rows
  * @returns {Number}
  */
-export const receivableTypeFromRows = (rows: Array<Record<string, any>>): Number | null | undefined => {
+export const receivableTypeFromRows = (
+  rows: Array<Record<string, any>>,
+): Number | null | undefined => {
   return rows ? rows[0].receivable_type : null;
 };

@@ -4,10 +4,10 @@
  * @enum {string}
  */
 export const CollectionLetterFieldPaths = {
-  COLLECTION_LETTERS: 'collection_letters',
-  FILE: 'file',
-  UPLOADED_AT: 'uploaded_at',
-  UPLOADER: 'uploader'
+  COLLECTION_LETTERS: "collection_letters",
+  FILE: "file",
+  UPLOADED_AT: "uploaded_at",
+  UPLOADER: "uploader",
 };
 
 /**
@@ -16,8 +16,8 @@ export const CollectionLetterFieldPaths = {
  * @enum {string}
  */
 export const CollectionLetterFieldTitles = {
-  COLLECTION_LETTERS: 'Perintäkirjeet',
-  FILE: 'Tiedosto',
-  UPLOADED_AT: 'Lisätty',
-  UPLOADER: 'Lisääjä'
+  COLLECTION_LETTERS: "Perintäkirjeet",
+  FILE: "Tiedosto",
+  UPLOADED_AT: "Lisätty",
+  UPLOADER: "Lisääjä",
 };

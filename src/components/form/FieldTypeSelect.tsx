@@ -22,30 +22,22 @@ type State = {
 class FieldTypeSelect extends PureComponent<Props, State> {
   select: any;
   state: State = {
-    inputValue: ''
+    inputValue: "",
   };
   handleBlur: () => void = () => {
     const {
-      input: {
-        onBlur,
-        value
-      }
+      input: { onBlur, value },
     } = this.props;
     onBlur(value);
   };
   handleChange: (val?: any) => void = (val: any) => {
     const {
       autoBlur,
-      input: {
-        onBlur,
-        onChange
-      }
+      input: { onBlur, onChange },
     } = this.props;
 
     if (val) {
-      const {
-        value
-      } = val;
+      const { value } = val;
 
       if (autoBlur) {
         onBlur(value);
@@ -54,34 +46,31 @@ class FieldTypeSelect extends PureComponent<Props, State> {
       }
     }
   };
-  handleInputChange: (arg0: string, arg1: Record<string, any>) => void = (value, meta) => {
-    const {
-      action
-    } = meta;
+  handleInputChange: (arg0: string, arg1: Record<string, any>) => void = (
+    value,
+    meta,
+  ) => {
+    const { action } = meta;
 
     switch (action) {
-      case 'input-change':
+      case "input-change":
         this.setState({
-          inputValue: value
+          inputValue: value,
         });
         break;
     }
   };
   handleMenuOpen: () => void = () => {
-    const {
-      inputValue
-    } = this.state;
+    const { inputValue } = this.state;
 
     if (this.select.state.inputValue !== inputValue) {
       this.select.select.onInputChange(inputValue, {
-        action: 'input-change'
+        action: "input-change",
       });
     }
   };
-  setRef: (arg0: any) => void = element => {
-    const {
-      setRefForField
-    } = this.props;
+  setRef: (arg0: any) => void = (element) => {
+    const { setRefForField } = this.props;
     this.select = element;
 
     if (setRefForField && element) {
@@ -94,28 +83,51 @@ class FieldTypeSelect extends PureComponent<Props, State> {
       disabled,
       displayError,
       filterOption,
-      input: {
-        name,
-        value
-      },
+      input: { name, value },
       isDirty,
       isLoading,
       options,
-      placeholder
+      placeholder,
     } = this.props;
-    return <div className={classNames('form-field__select', {
-      'has-error': displayError
-    }, {
-      'is-dirty': isDirty
-    })}>
-        <Select ref={this.setRef} className='select-input' classNamePrefix='select-input' components={{
-        DropdownIndicator,
-        IndicatorSeparator: null,
-        LoadingIndicator
-      }} isDisabled={disabled} filterOption={filterOption} id={name} isLoading={isLoading} onBlur={this.handleBlur} onChange={this.handleChange} noOptionsMessage={() => 'Ei tuloksia'} onInputChange={this.handleInputChange} onMenuOpen={this.handleMenuOpen} options={options} placeholder={placeholder || 'Valitse...'} value={options && options.find(option => option.value == value) || ''} />
-      </div>;
+    return (
+      <div
+        className={classNames(
+          "form-field__select",
+          {
+            "has-error": displayError,
+          },
+          {
+            "is-dirty": isDirty,
+          },
+        )}
+      >
+        <Select
+          ref={this.setRef}
+          className="select-input"
+          classNamePrefix="select-input"
+          components={{
+            DropdownIndicator,
+            IndicatorSeparator: null,
+            LoadingIndicator,
+          }}
+          isDisabled={disabled}
+          filterOption={filterOption}
+          id={name}
+          isLoading={isLoading}
+          onBlur={this.handleBlur}
+          onChange={this.handleChange}
+          noOptionsMessage={() => "Ei tuloksia"}
+          onInputChange={this.handleInputChange}
+          onMenuOpen={this.handleMenuOpen}
+          options={options}
+          placeholder={placeholder || "Valitse..."}
+          value={
+            (options && options.find((option) => option.value == value)) || ""
+          }
+        />
+      </div>
+    );
   }
-
 }
 
 export default FieldTypeSelect;

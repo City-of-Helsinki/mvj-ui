@@ -23,20 +23,57 @@ import FormWrapperRight from "@/components/form/FormWrapperRight";
 import OtherTenantItemEdit from "./OtherTenantItemEdit";
 import RemoveButton from "@/components/form/RemoveButton";
 import SubTitle from "@/components/content/SubTitle";
-import { initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal } from "@/contacts/actions";
+import {
+  initializeContactForm,
+  receiveContactModalSettings,
+  receiveIsSaveClicked,
+  showContactModal,
+} from "@/contacts/actions";
 import { receiveCollapseStates } from "@/leases/actions";
 import { ButtonColors } from "@/components/enums";
-import { ConfirmationModalTexts, FieldTypes, FormNames, Methods, ViewModes } from "@/enums";
-import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, LeaseTenantRentSharesFieldPaths, LeaseTenantRentSharesFieldTitles, LeaseTenantsFieldPaths, LeaseTenantsFieldTitles, TenantContactType } from "@/leases/enums";
+import {
+  ConfirmationModalTexts,
+  FieldTypes,
+  FormNames,
+  Methods,
+  ViewModes,
+} from "@/enums";
+import {
+  LeaseTenantContactSetFieldPaths,
+  LeaseTenantContactSetFieldTitles,
+  LeaseTenantRentSharesFieldPaths,
+  LeaseTenantRentSharesFieldTitles,
+  LeaseTenantsFieldPaths,
+  LeaseTenantsFieldTitles,
+  TenantContactType,
+} from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getContactFullName } from "@/contacts/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import { formatDateRange, getFieldAttributes, hasPermissions, isActive, isArchived, isFieldAllowedToEdit, isFieldAllowedToRead, isFieldRequired, isMethodAllowed } from "@/util/helpers";
+import {
+  formatDateRange,
+  getFieldAttributes,
+  hasPermissions,
+  isActive,
+  isArchived,
+  isFieldAllowedToEdit,
+  isFieldAllowedToRead,
+  isFieldRequired,
+  isMethodAllowed,
+} from "@/util/helpers";
 import { getMethods as getContactMethods } from "@/contacts/selectors";
-import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "@/leases/selectors";
+import {
+  getAttributes,
+  getCollapseStateByKey,
+  getErrorsByFormName,
+  getIsSaveClicked,
+} from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
-import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "@/usersPermissions/types";
+import type {
+  UsersPermissions as UsersPermissionsType,
+  UserServiceUnit,
+} from "@/usersPermissions/types";
 type RentSharesProps = {
   archived: boolean;
   attributes: Attributes;
@@ -50,91 +87,216 @@ const renderRentShares = ({
   attributes,
   fields,
   isSaveClicked,
-  usersPermissions
+  usersPermissions,
 }: RentSharesProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
 
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      return <Fragment>
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <Fragment>
             <SubTitle>{LeaseTenantRentSharesFieldTitles.RENT_SHARES}</SubTitle>
 
-            {fields && !!fields.length && <Fragment>
+            {fields && !!fields.length && (
+              <Fragment>
                 <Row>
                   <Column small={6} large={4}>
-                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.INTENDED_USE)}>
-                      <FormTextTitle required={isFieldRequired(attributes, LeaseTenantRentSharesFieldPaths.INTENDED_USE)}>
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        attributes,
+                        LeaseTenantRentSharesFieldPaths.INTENDED_USE,
+                      )}
+                    >
+                      <FormTextTitle
+                        required={isFieldRequired(
+                          attributes,
+                          LeaseTenantRentSharesFieldPaths.INTENDED_USE,
+                        )}
+                      >
                         {LeaseTenantRentSharesFieldTitles.INTENDED_USE}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                   <Column small={6} large={4}>
-                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.SHARE_DENOMINATOR) || isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR)}>
-                      <FormTextTitle required={isFieldRequired(attributes, LeaseTenantRentSharesFieldPaths.SHARE_DENOMINATOR) || isFieldRequired(attributes, LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR)}>
+                    <Authorization
+                      allow={
+                        isFieldAllowedToRead(
+                          attributes,
+                          LeaseTenantRentSharesFieldPaths.SHARE_DENOMINATOR,
+                        ) ||
+                        isFieldAllowedToRead(
+                          attributes,
+                          LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR,
+                        )
+                      }
+                    >
+                      <FormTextTitle
+                        required={
+                          isFieldRequired(
+                            attributes,
+                            LeaseTenantRentSharesFieldPaths.SHARE_DENOMINATOR,
+                          ) ||
+                          isFieldRequired(
+                            attributes,
+                            LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR,
+                          )
+                        }
+                      >
                         {LeaseTenantRentSharesFieldTitles.SHARE_FRACTION}
                       </FormTextTitle>
                     </Authorization>
                   </Column>
                 </Row>
                 {fields.map((field, index) => {
-            const handleRemove = () => {
-              dispatch({
-                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                confirmationFunction: () => {
-                  fields.remove(index);
-                },
-                confirmationModalButtonClassName: ButtonColors.ALERT,
-                confirmationModalButtonText: ConfirmationModalTexts.DELETE_RENT_SHARE.BUTTON,
-                confirmationModalLabel: ConfirmationModalTexts.DELETE_RENT_SHARE.LABEL,
-                confirmationModalTitle: ConfirmationModalTexts.DELETE_RENT_SHARE.TITLE
-              });
-            };
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
+                        fields.remove(index);
+                      },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
+                      confirmationModalButtonText:
+                        ConfirmationModalTexts.DELETE_RENT_SHARE.BUTTON,
+                      confirmationModalLabel:
+                        ConfirmationModalTexts.DELETE_RENT_SHARE.LABEL,
+                      confirmationModalTitle:
+                        ConfirmationModalTexts.DELETE_RENT_SHARE.TITLE,
+                    });
+                  };
 
-            return <Row key={index}>
+                  return (
+                    <Row key={index}>
                       <Column small={6} medium={4}>
-                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.INTENDED_USE)}>
-                          <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseTenantRentSharesFieldPaths.INTENDED_USE)} name={`${field}.intended_use`} invisibleLabel overrideValues={{
-                    label: LeaseTenantRentSharesFieldTitles.INTENDED_USE
-                  }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantRentSharesFieldPaths.INTENDED_USE)} />
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            attributes,
+                            LeaseTenantRentSharesFieldPaths.INTENDED_USE,
+                          )}
+                        >
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={getFieldAttributes(
+                              attributes,
+                              LeaseTenantRentSharesFieldPaths.INTENDED_USE,
+                            )}
+                            name={`${field}.intended_use`}
+                            invisibleLabel
+                            overrideValues={{
+                              label:
+                                LeaseTenantRentSharesFieldTitles.INTENDED_USE,
+                            }}
+                            enableUiDataEdit
+                            uiDataKey={getUiDataLeaseKey(
+                              LeaseTenantRentSharesFieldPaths.INTENDED_USE,
+                            )}
+                          />
                         </Authorization>
                       </Column>
                       <Column small={6} medium={4}>
-                        <FieldAndRemoveButtonWrapper field={<Row>
+                        <FieldAndRemoveButtonWrapper
+                          field={
+                            <Row>
                               <Column small={6}>
-                                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR)}>
-                                  <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)} name={`${field}.share_numerator`} invisibleLabel overrideValues={{
-                        label: LeaseTenantRentSharesFieldTitles.SHARE_NUMERATOR
-                      }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR)} />
+                                <Authorization
+                                  allow={isFieldAllowedToRead(
+                                    attributes,
+                                    LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR,
+                                  )}
+                                >
+                                  <FormField
+                                    disableTouched={isSaveClicked}
+                                    fieldAttributes={getFieldAttributes(
+                                      attributes,
+                                      LeaseTenantsFieldPaths.SHARE_NUMERATOR,
+                                    )}
+                                    name={`${field}.share_numerator`}
+                                    invisibleLabel
+                                    overrideValues={{
+                                      label:
+                                        LeaseTenantRentSharesFieldTitles.SHARE_NUMERATOR,
+                                    }}
+                                    enableUiDataEdit
+                                    uiDataKey={getUiDataLeaseKey(
+                                      LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR,
+                                    )}
+                                  />
                                 </Authorization>
                               </Column>
                               <Column small={6}>
-                                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR)}>
-                                  <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR)} name={`${field}.share_denominator`} className='with-slash' invisibleLabel overrideValues={{
-                        label: LeaseTenantRentSharesFieldTitles.SHARE_DENOMINATOR
-                      }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantRentSharesFieldPaths.SHARE_DENOMINATOR)} />
+                                <Authorization
+                                  allow={isFieldAllowedToRead(
+                                    attributes,
+                                    LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR,
+                                  )}
+                                >
+                                  <FormField
+                                    disableTouched={isSaveClicked}
+                                    fieldAttributes={getFieldAttributes(
+                                      attributes,
+                                      LeaseTenantsFieldPaths.SHARE_DENOMINATOR,
+                                    )}
+                                    name={`${field}.share_denominator`}
+                                    className="with-slash"
+                                    invisibleLabel
+                                    overrideValues={{
+                                      label:
+                                        LeaseTenantRentSharesFieldTitles.SHARE_DENOMINATOR,
+                                    }}
+                                    enableUiDataEdit
+                                    uiDataKey={getUiDataLeaseKey(
+                                      LeaseTenantRentSharesFieldPaths.SHARE_DENOMINATOR,
+                                    )}
+                                  />
                                 </Authorization>
                               </Column>
-                            </Row>} removeButton={<Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_TENANTRENTSHARE)}>
-                              <RemoveButton className='third-level' onClick={handleRemove} title="Poista laskutusosuus" />
-                            </Authorization>} />
+                            </Row>
+                          }
+                          removeButton={
+                            <Authorization
+                              allow={hasPermissions(
+                                usersPermissions,
+                                UsersPermissions.DELETE_TENANTRENTSHARE,
+                              )}
+                            >
+                              <RemoveButton
+                                className="third-level"
+                                onClick={handleRemove}
+                                title="Poista laskutusosuus"
+                              />
+                            </Authorization>
+                          }
+                        />
                       </Column>
-                    </Row>;
-          })}
-              </Fragment>}
-            {!archived && <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_TENANTRENTSHARE)}>
+                    </Row>
+                  );
+                })}
+              </Fragment>
+            )}
+            {!archived && (
+              <Authorization
+                allow={hasPermissions(
+                  usersPermissions,
+                  UsersPermissions.ADD_TENANTRENTSHARE,
+                )}
+              >
                 <Row>
                   <Column>
-                    <AddButtonThird label='Lisää laskutusosuus' onClick={handleAdd} />
+                    <AddButtonThird
+                      label="Lisää laskutusosuus"
+                      onClick={handleAdd}
+                    />
                   </Column>
                 </Row>
-              </Authorization>}
-          </Fragment>;
-    }}
-    </AppConsumer>;
+              </Authorization>
+            )}
+          </Fragment>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
 type OtherTenantsProps = {
@@ -152,43 +314,74 @@ const renderOtherTenants = ({
   serviceUnit,
   showAddButton,
   tenant,
-  usersPermissions
+  usersPermissions,
 }: OtherTenantsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
 
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      return <Fragment>
-            {fields && !!fields.length && fields.map((field, index) => {
-          const handleRemove = () => {
-            dispatch({
-              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-              confirmationFunction: () => {
-                fields.remove(index);
-              },
-              confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: ConfirmationModalTexts.DELETE_OTHER_TENANT.BUTTON,
-              confirmationModalLabel: ConfirmationModalTexts.DELETE_OTHER_TENANT.LABEL,
-              confirmationModalTitle: ConfirmationModalTexts.DELETE_OTHER_TENANT.TITLE
-            });
-          };
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <Fragment>
+            {fields &&
+              !!fields.length &&
+              fields.map((field, index) => {
+                const handleRemove = () => {
+                  dispatch({
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
+                      fields.remove(index);
+                    },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
+                    confirmationModalButtonText:
+                      ConfirmationModalTexts.DELETE_OTHER_TENANT.BUTTON,
+                    confirmationModalLabel:
+                      ConfirmationModalTexts.DELETE_OTHER_TENANT.LABEL,
+                    confirmationModalTitle:
+                      ConfirmationModalTexts.DELETE_OTHER_TENANT.TITLE,
+                  });
+                };
 
-          return <OtherTenantItemEdit key={index} contactType={contactType} field={field} onRemove={handleRemove} serviceUnit={serviceUnit} tenant={tenant} />;
-        })}
-            {showAddButton && <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_TENANTCONTACT)}>
+                return (
+                  <OtherTenantItemEdit
+                    key={index}
+                    contactType={contactType}
+                    field={field}
+                    onRemove={handleRemove}
+                    serviceUnit={serviceUnit}
+                    tenant={tenant}
+                  />
+                );
+              })}
+            {showAddButton && (
+              <Authorization
+                allow={hasPermissions(
+                  usersPermissions,
+                  UsersPermissions.ADD_TENANTCONTACT,
+                )}
+              >
                 <Row>
                   <Column>
-                    <AddButtonSecondary className='no-top-margin' label={contactType === TenantContactType.BILLING ? 'Lisää laskunsaaja' : 'Lisää yhteyshenkilö'} onClick={handleAdd} />
+                    <AddButtonSecondary
+                      className="no-top-margin"
+                      label={
+                        contactType === TenantContactType.BILLING
+                          ? "Lisää laskunsaaja"
+                          : "Lisää yhteyshenkilö"
+                      }
+                      onClick={handleAdd}
+                    />
                   </Column>
                 </Row>
-              </Authorization>}
-          </Fragment>;
-    }}
-    </AppConsumer>;
+              </Authorization>
+            )}
+          </Fragment>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
 type Props = {
@@ -232,10 +425,10 @@ const TenantItemEdit = ({
   showContactModal,
   tenantId,
   tenants,
-  usersPermissions
+  usersPermissions,
 }: Props) => {
   const getTenantById = (id: number) => {
-    return id ? tenants.find(tenant => tenant.id === id) : {};
+    return id ? tenants.find((tenant) => tenant.id === id) : {};
   };
 
   const handleAddClick = () => {
@@ -243,19 +436,18 @@ const TenantItemEdit = ({
     receiveContactModalSettings({
       field: `${field}.tenant.contact`,
       contactId: null,
-      isNew: true
+      isNew: true,
     });
     receiveIsSaveClicked(false);
     showContactModal();
   };
 
   const handleEditClick = () => {
-    initializeContactForm({ ...contact
-    });
+    initializeContactForm({ ...contact });
     receiveContactModalSettings({
       field: `${field}.tenant.contact`,
       contactId: null,
-      isNew: false
+      isNew: false,
     });
     receiveIsSaveClicked(false);
     showContactModal();
@@ -267,10 +459,10 @@ const TenantItemEdit = ({
       [ViewModes.EDIT]: {
         [formName]: {
           tenants: {
-            [tenantId]: val
-          }
-        }
-      }
+            [tenantId]: val,
+          },
+        },
+      },
     });
   };
 
@@ -278,42 +470,115 @@ const TenantItemEdit = ({
   const active = isActive(savedTenant && savedTenant.tenant);
   const archived = isArchived(savedTenant && savedTenant.tenant);
   const tenantErrors = get(errors, field);
-  return <Collapse archived={archived} defaultOpen={collapseState !== undefined ? collapseState : active} hasErrors={isSaveClicked && !isEmpty(tenantErrors)} headerSubtitles={savedTenant && <Fragment>
-          <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
-              <CollapseHeaderSubtitle>
-                <span>{LeaseTenantsFieldTitles.SHARE_FRACTION}:</span>
-                {savedTenant.share_numerator || ''} / {savedTenant.share_denominator || ''}
-              </CollapseHeaderSubtitle>
-            </Authorization>
-          </Column>
-          <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE) && isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
-              <CollapseHeaderSubtitle>
-                <span>Välillä:</span>
-                {formatDateRange(get(savedTenant, 'tenant.start_date'), get(savedTenant, 'tenant.end_date')) || '-'}
-              </CollapseHeaderSubtitle>
-            </Authorization>
-          </Column>
-        </Fragment>} headerTitle={<Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
-          {getContactFullName(get(savedTenant, 'tenant.contact')) || '-'}
-        </Authorization>} onRemove={hasPermissions(usersPermissions, UsersPermissions.DELETE_TENANT) ? onRemove : null} onToggle={handleCollapseToggle}>
+  return (
+    <Collapse
+      archived={archived}
+      defaultOpen={collapseState !== undefined ? collapseState : active}
+      hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
+      headerSubtitles={
+        savedTenant && (
+          <Fragment>
+            <Column>
+              <Authorization
+                allow={
+                  isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantsFieldPaths.SHARE_DENOMINATOR,
+                  ) &&
+                  isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantsFieldPaths.SHARE_NUMERATOR,
+                  )
+                }
+              >
+                <CollapseHeaderSubtitle>
+                  <span>{LeaseTenantsFieldTitles.SHARE_FRACTION}:</span>
+                  {savedTenant.share_numerator || ""} /{" "}
+                  {savedTenant.share_denominator || ""}
+                </CollapseHeaderSubtitle>
+              </Authorization>
+            </Column>
+            <Column>
+              <Authorization
+                allow={
+                  isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantContactSetFieldPaths.END_DATE,
+                  ) &&
+                  isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantContactSetFieldPaths.START_DATE,
+                  )
+                }
+              >
+                <CollapseHeaderSubtitle>
+                  <span>Välillä:</span>
+                  {formatDateRange(
+                    get(savedTenant, "tenant.start_date"),
+                    get(savedTenant, "tenant.end_date"),
+                  ) || "-"}
+                </CollapseHeaderSubtitle>
+              </Authorization>
+            </Column>
+          </Fragment>
+        )
+      }
+      headerTitle={
+        <Authorization
+          allow={isFieldAllowedToRead(
+            attributes,
+            LeaseTenantContactSetFieldPaths.CONTACT,
+          )}
+        >
+          {getContactFullName(get(savedTenant, "tenant.contact")) || "-"}
+        </Authorization>
+      }
+      onRemove={
+        hasPermissions(usersPermissions, UsersPermissions.DELETE_TENANT)
+          ? onRemove
+          : null
+      }
+      onToggle={handleCollapseToggle}
+    >
       <BoxContentWrapper>
         <FormWrapper>
           <FormWrapperLeft>
             <Row>
               <Column small={9} medium={8}>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
-                  <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseTenantContactSetFieldPaths.CONTACT)} name={`${field}.tenant.contact`} overrideValues={{
-                  fieldType: FieldTypes.CONTACT,
-                  label: LeaseTenantContactSetFieldTitles.CONTACT
-                }} serviceUnit={serviceUnit} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.CONTACT)} />
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantContactSetFieldPaths.CONTACT,
+                  )}
+                >
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(
+                      attributes,
+                      LeaseTenantContactSetFieldPaths.CONTACT,
+                    )}
+                    name={`${field}.tenant.contact`}
+                    overrideValues={{
+                      fieldType: FieldTypes.CONTACT,
+                      label: LeaseTenantContactSetFieldTitles.CONTACT,
+                    }}
+                    serviceUnit={serviceUnit}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantContactSetFieldPaths.CONTACT,
+                    )}
+                  />
                 </Authorization>
               </Column>
               <Column small={3} medium={4}>
-                <Authorization allow={isMethodAllowed(contactMethods, Methods.POST)}>
-                  <div className='contact-buttons-wrapper'>
-                    <AddButtonThird label='Luo asiakas' onClick={handleAddClick} />
+                <Authorization
+                  allow={isMethodAllowed(contactMethods, Methods.POST)}
+                >
+                  <div className="contact-buttons-wrapper">
+                    <AddButtonThird
+                      label="Luo asiakas"
+                      onClick={handleAddClick}
+                    />
                   </div>
                 </Authorization>
               </Column>
@@ -321,10 +586,27 @@ const TenantItemEdit = ({
 
             <Row>
               <Column>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.REFERENCE)}>
-                  <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.REFERENCE)} name={`${field}.reference`} overrideValues={{
-                  label: LeaseTenantsFieldTitles.REFERENCE
-                }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.REFERENCE)} />
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantsFieldPaths.REFERENCE,
+                  )}
+                >
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(
+                      attributes,
+                      LeaseTenantsFieldPaths.REFERENCE,
+                    )}
+                    name={`${field}.reference`}
+                    overrideValues={{
+                      label: LeaseTenantsFieldTitles.REFERENCE,
+                    }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantsFieldPaths.REFERENCE,
+                    )}
+                  />
                 </Authorization>
               </Column>
             </Row>
@@ -332,52 +614,170 @@ const TenantItemEdit = ({
           <FormWrapperRight>
             <Row>
               <Column small={12} medium={6} large={4}>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR) && isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
+                <Authorization
+                  allow={
+                    isFieldAllowedToRead(
+                      attributes,
+                      LeaseTenantsFieldPaths.SHARE_DENOMINATOR,
+                    ) &&
+                    isFieldAllowedToRead(
+                      attributes,
+                      LeaseTenantsFieldPaths.SHARE_NUMERATOR,
+                    )
+                  }
+                >
                   <>
-                  <FormTextTitle required={isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR) || isFieldRequired(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR)} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.SHARE_FRACTION)}>
-                    {LeaseTenantsFieldTitles.SHARE_FRACTION}
-                  </FormTextTitle>
-                  <Authorization allow={isFieldAllowedToEdit(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR) || isFieldAllowedToEdit(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR)} errorComponent={<FormText>{shareNumerator || ''} / {shareDenominator || ''}</FormText>}>
-                    <Row>
-                      <Column small={6}>
-                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)}>
-                          <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.SHARE_NUMERATOR)} invisibleLabel name={`${field}.share_numerator`} overrideValues={{
-                          label: LeaseTenantsFieldTitles.SHARE_NUMERATOR
-                        }} />
-                        </Authorization>
-                      </Column>
-                      <Column small={6}>
-                        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR)}>
-                          <FormField disableTouched={isSaveClicked} className='with-slash' fieldAttributes={getFieldAttributes(attributes, LeaseTenantsFieldPaths.SHARE_DENOMINATOR)} invisibleLabel name={`${field}.share_denominator`} overrideValues={{
-                          label: LeaseTenantsFieldTitles.SHARE_DENOMINATOR
-                        }} />
-                        </Authorization>
-                      </Column>
-                    </Row>
-                  </Authorization>
+                    <FormTextTitle
+                      required={
+                        isFieldRequired(
+                          attributes,
+                          LeaseTenantsFieldPaths.SHARE_NUMERATOR,
+                        ) ||
+                        isFieldRequired(
+                          attributes,
+                          LeaseTenantsFieldPaths.SHARE_DENOMINATOR,
+                        )
+                      }
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(
+                        LeaseTenantsFieldPaths.SHARE_FRACTION,
+                      )}
+                    >
+                      {LeaseTenantsFieldTitles.SHARE_FRACTION}
+                    </FormTextTitle>
+                    <Authorization
+                      allow={
+                        isFieldAllowedToEdit(
+                          attributes,
+                          LeaseTenantsFieldPaths.SHARE_NUMERATOR,
+                        ) ||
+                        isFieldAllowedToEdit(
+                          attributes,
+                          LeaseTenantsFieldPaths.SHARE_DENOMINATOR,
+                        )
+                      }
+                      errorComponent={
+                        <FormText>
+                          {shareNumerator || ""} / {shareDenominator || ""}
+                        </FormText>
+                      }
+                    >
+                      <Row>
+                        <Column small={6}>
+                          <Authorization
+                            allow={isFieldAllowedToRead(
+                              attributes,
+                              LeaseTenantsFieldPaths.SHARE_NUMERATOR,
+                            )}
+                          >
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(
+                                attributes,
+                                LeaseTenantsFieldPaths.SHARE_NUMERATOR,
+                              )}
+                              invisibleLabel
+                              name={`${field}.share_numerator`}
+                              overrideValues={{
+                                label: LeaseTenantsFieldTitles.SHARE_NUMERATOR,
+                              }}
+                            />
+                          </Authorization>
+                        </Column>
+                        <Column small={6}>
+                          <Authorization
+                            allow={isFieldAllowedToRead(
+                              attributes,
+                              LeaseTenantsFieldPaths.SHARE_DENOMINATOR,
+                            )}
+                          >
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              className="with-slash"
+                              fieldAttributes={getFieldAttributes(
+                                attributes,
+                                LeaseTenantsFieldPaths.SHARE_DENOMINATOR,
+                              )}
+                              invisibleLabel
+                              name={`${field}.share_denominator`}
+                              overrideValues={{
+                                label:
+                                  LeaseTenantsFieldTitles.SHARE_DENOMINATOR,
+                              }}
+                            />
+                          </Authorization>
+                        </Column>
+                      </Row>
+                    </Authorization>
                   </>
                 </Authorization>
               </Column>
               <Column small={6} medium={3} large={2}>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
-                  <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseTenantContactSetFieldPaths.START_DATE)} name={`${field}.tenant.start_date`} overrideValues={{
-                  label: LeaseTenantContactSetFieldTitles.START_DATE
-                }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.START_DATE)} />
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantContactSetFieldPaths.START_DATE,
+                  )}
+                >
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(
+                      attributes,
+                      LeaseTenantContactSetFieldPaths.START_DATE,
+                    )}
+                    name={`${field}.tenant.start_date`}
+                    overrideValues={{
+                      label: LeaseTenantContactSetFieldTitles.START_DATE,
+                    }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantContactSetFieldPaths.START_DATE,
+                    )}
+                  />
                 </Authorization>
               </Column>
               <Column small={6} medium={3} large={2}>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}>
-                  <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseTenantContactSetFieldPaths.END_DATE)} name={`${field}.tenant.end_date`} overrideValues={{
-                  label: LeaseTenantContactSetFieldTitles.END_DATE
-                }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.END_DATE)} />
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantContactSetFieldPaths.END_DATE,
+                  )}
+                >
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={getFieldAttributes(
+                      attributes,
+                      LeaseTenantContactSetFieldPaths.END_DATE,
+                    )}
+                    name={`${field}.tenant.end_date`}
+                    overrideValues={{
+                      label: LeaseTenantContactSetFieldTitles.END_DATE,
+                    }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantContactSetFieldPaths.END_DATE,
+                    )}
+                  />
                 </Authorization>
               </Column>
             </Row>
 
             <Row>
               <Column small={12}>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantRentSharesFieldPaths.RENT_SHARES)}>
-                  <FieldArray component={renderRentShares} archived={archived} attributes={attributes} isSaveClicked={isSaveClicked} name={`${field}.rent_shares`} usersPermissions={usersPermissions} />
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantRentSharesFieldPaths.RENT_SHARES,
+                  )}
+                >
+                  <FieldArray
+                    component={renderRentShares}
+                    archived={archived}
+                    attributes={attributes}
+                    isSaveClicked={isSaveClicked}
+                    name={`${field}.rent_shares`}
+                    usersPermissions={usersPermissions}
+                  />
                 </Authorization>
               </Column>
             </Row>
@@ -385,43 +785,80 @@ const TenantItemEdit = ({
         </FormWrapper>
       </BoxContentWrapper>
 
-      <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.TENANTCONTACT_SET)}>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseTenantContactSetFieldPaths.TENANTCONTACT_SET,
+        )}
+      >
         <>
-        {!!contact && <SubTitle>Asiakkaan tiedot
-            <Authorization allow={isMethodAllowed(contactMethods, Methods.PATCH)}>
-              <EditButton className='inline-button' onClick={handleEditClick} title='Muokkaa asiakasta' />
-            </Authorization>
-          </SubTitle>}
-        <ContactTemplate contact={contact} />
+          {!!contact && (
+            <SubTitle>
+              Asiakkaan tiedot
+              <Authorization
+                allow={isMethodAllowed(contactMethods, Methods.PATCH)}
+              >
+                <EditButton
+                  className="inline-button"
+                  onClick={handleEditClick}
+                  title="Muokkaa asiakasta"
+                />
+              </Authorization>
+            </SubTitle>
+          )}
+          <ContactTemplate contact={contact} />
 
-        <FieldArray component={renderOtherTenants} contactType={TenantContactType.BILLING} name={`${field}.billing_persons`} serviceUnit={serviceUnit} showAddButton={!archived} tenant={savedTenant} usersPermissions={usersPermissions} />
+          <FieldArray
+            component={renderOtherTenants}
+            contactType={TenantContactType.BILLING}
+            name={`${field}.billing_persons`}
+            serviceUnit={serviceUnit}
+            showAddButton={!archived}
+            tenant={savedTenant}
+            usersPermissions={usersPermissions}
+          />
 
-        <FieldArray component={renderOtherTenants} contactType={TenantContactType.CONTACT} name={`${field}.contact_persons`} serviceUnit={serviceUnit} showAddButton={!archived} tenant={savedTenant} usersPermissions={usersPermissions} />
+          <FieldArray
+            component={renderOtherTenants}
+            contactType={TenantContactType.CONTACT}
+            name={`${field}.contact_persons`}
+            serviceUnit={serviceUnit}
+            showAddButton={!archived}
+            tenant={savedTenant}
+            usersPermissions={usersPermissions}
+          />
         </>
       </Authorization>
-    </Collapse>;
+    </Collapse>
+  );
 };
 
 const formName = FormNames.LEASE_TENANTS;
 const selector = formValueSelector(formName);
-export default connect((state, props) => {
-  const id = selector(state, `${props.field}.id`);
-  return {
-    attributes: getAttributes(state),
-    collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.tenants.${id}`),
-    contact: selector(state, `${props.field}.tenant.contact`),
-    contactMethods: getContactMethods(state),
-    errors: getErrorsByFormName(state, formName),
-    isSaveClicked: getIsSaveClicked(state),
-    shareDenominator: selector(state, `${props.field}.share_denominator`),
-    shareNumerator: selector(state, `${props.field}.share_numerator`),
-    tenantId: id,
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  initializeContactForm,
-  receiveContactModalSettings,
-  receiveCollapseStates,
-  receiveIsSaveClicked,
-  showContactModal
-})(TenantItemEdit);
+export default connect(
+  (state, props) => {
+    const id = selector(state, `${props.field}.id`);
+    return {
+      attributes: getAttributes(state),
+      collapseState: getCollapseStateByKey(
+        state,
+        `${ViewModes.EDIT}.${formName}.tenants.${id}`,
+      ),
+      contact: selector(state, `${props.field}.tenant.contact`),
+      contactMethods: getContactMethods(state),
+      errors: getErrorsByFormName(state, formName),
+      isSaveClicked: getIsSaveClicked(state),
+      shareDenominator: selector(state, `${props.field}.share_denominator`),
+      shareNumerator: selector(state, `${props.field}.share_numerator`),
+      tenantId: id,
+      usersPermissions: getUsersPermissions(state),
+    };
+  },
+  {
+    initializeContactForm,
+    receiveContactModalSettings,
+    receiveCollapseStates,
+    receiveIsSaveClicked,
+    showContactModal,
+  },
+)(TenantItemEdit);

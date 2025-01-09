@@ -43,67 +43,108 @@ class ArchiveAreaModal extends Component<Props> {
     this.firstField = element;
   };
   handleArchive = () => {
-    const {
-      archivedDecision,
-      archivedNote,
-      onArchive
-    } = this.props;
+    const { archivedDecision, archivedNote, onArchive } = this.props;
     onArchive({
       archived_at: new Date().toISOString(),
       archived_note: archivedNote,
-      archived_decision: archivedDecision
+      archived_decision: archivedDecision,
     });
   };
 
   render() {
-    const {
-      attributes,
-      decisionOptions,
-      onCancel,
-      onClose,
-      open,
-      valid
-    } = this.props;
-    return <div>
-        <Modal className='modal-small modal-autoheight' title={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.TITLE} isOpen={open} onClose={onClose}>
+    const { attributes, decisionOptions, onCancel, onClose, open, valid } =
+      this.props;
+    return (
+      <div>
+        <Modal
+          className="modal-small modal-autoheight"
+          title={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.TITLE}
+          isOpen={open}
+          onClose={onClose}
+        >
           <FormText>{ConfirmationModalTexts.ARCHIVE_LEASE_AREA.LABEL}</FormText>
           <Row>
             <Column>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)}>
-                <FormField setRefForField={this.setRefForFirstField} fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)} name='archived_decision' overrideValues={{
-                label: LeaseAreasFieldTitles.ARCHIVED_DECISION,
-                options: decisionOptions
-              }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.ARCHIVED_DECISION)} />
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  LeaseAreasFieldPaths.ARCHIVED_DECISION,
+                )}
+              >
+                <FormField
+                  setRefForField={this.setRefForFirstField}
+                  fieldAttributes={getFieldAttributes(
+                    attributes,
+                    LeaseAreasFieldPaths.ARCHIVED_DECISION,
+                  )}
+                  name="archived_decision"
+                  overrideValues={{
+                    label: LeaseAreasFieldTitles.ARCHIVED_DECISION,
+                    options: decisionOptions,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(
+                    LeaseAreasFieldPaths.ARCHIVED_DECISION,
+                  )}
+                />
               </Authorization>
             </Column>
           </Row>
           <Row>
             <Column>
-              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)}>
-                <FormField fieldAttributes={getFieldAttributes(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)} name='archived_note' overrideValues={{
-                label: LeaseAreasFieldTitles.ARCHIVED_NOTE
-              }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.ARCHIVED_NOTE)} />
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  LeaseAreasFieldPaths.ARCHIVED_NOTE,
+                )}
+              >
+                <FormField
+                  fieldAttributes={getFieldAttributes(
+                    attributes,
+                    LeaseAreasFieldPaths.ARCHIVED_NOTE,
+                  )}
+                  name="archived_note"
+                  overrideValues={{
+                    label: LeaseAreasFieldTitles.ARCHIVED_NOTE,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(
+                    LeaseAreasFieldPaths.ARCHIVED_NOTE,
+                  )}
+                />
               </Authorization>
             </Column>
           </Row>
-          <div className='confirmation-modal__footer'>
-            <Button className={ButtonColors.SECONDARY} onClick={onCancel} text='Peruuta' />
-            <Button className={ButtonColors.SUCCESS} disabled={!valid} onClick={this.handleArchive} text={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.BUTTON} />
+          <div className="confirmation-modal__footer">
+            <Button
+              className={ButtonColors.SECONDARY}
+              onClick={onCancel}
+              text="Peruuta"
+            />
+            <Button
+              className={ButtonColors.SUCCESS}
+              disabled={!valid}
+              onClick={this.handleArchive}
+              text={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.BUTTON}
+            />
           </div>
         </Modal>
-      </div>;
+      </div>
+    );
   }
-
 }
 
 const formName = FormNames.LEASE_ARCHIVE_AREA;
 const selector = formValueSelector(formName);
-export default flowRight(connect(state => {
-  return {
-    archivedDecision: selector(state, 'archived_decision'),
-    archivedNote: selector(state, 'archived_note'),
-    attributes: getAttributes(state)
-  };
-}), reduxForm({
-  form: formName
-}))(ArchiveAreaModal) as React.ComponentType<any>;
+export default flowRight(
+  connect((state) => {
+    return {
+      archivedDecision: selector(state, "archived_decision"),
+      archivedNote: selector(state, "archived_note"),
+      attributes: getAttributes(state),
+    };
+  }),
+  reduxForm({
+    form: formName,
+  }),
+)(ArchiveAreaModal) as React.ComponentType<any>;

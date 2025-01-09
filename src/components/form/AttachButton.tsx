@@ -14,9 +14,17 @@ const AttachButton = ({
   disabled,
   onClick,
   title,
-  type = 'button'
-}: Props): JSX.Element => <button className={classNames('form__attach-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
-    <AttachIcon className='icon-medium' />
-  </button>;
+  type = "button",
+}: Props): JSX.Element => (
+  <button
+    className={classNames("form__attach-button", className)}
+    disabled={disabled}
+    type={type}
+    title={title}
+    onClick={onClick}
+  >
+    <AttachIcon className="icon-medium" />
+  </button>
+);
 
 export default AttachButton;

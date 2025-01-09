@@ -22,18 +22,37 @@ const FieldTypeLeaseSelect = ({
   isDirty,
   onChange,
   placeholder,
-  serviceUnit
+  serviceUnit,
 }: Props): JSX.Element => {
-  const getLeases = debounce(async (inputValue: string, callback: (...args: Array<any>) => any) => {
-    const leases = await fetchLeases({
-      succinct: true,
-      identifier: inputValue,
-      limit: 15,
-      service_unit: serviceUnit?.id || ""
-    });
-    callback(addEmptyOption(leases.map(lease => getContentLeaseOption(lease)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
-  }, 500);
-  return <AsyncSelect disabled={disabled} displayError={displayError} getOptions={getLeases} input={input} isDirty={isDirty} onChange={onChange} placeholder={placeholder} />;
+  const getLeases = debounce(
+    async (inputValue: string, callback: (...args: Array<any>) => any) => {
+      const leases = await fetchLeases({
+        succinct: true,
+        identifier: inputValue,
+        limit: 15,
+        service_unit: serviceUnit?.id || "",
+      });
+      callback(
+        addEmptyOption(
+          leases
+            .map((lease) => getContentLeaseOption(lease))
+            .sort((a, b) => sortStringByKeyAsc(a, b, "label")),
+        ),
+      );
+    },
+    500,
+  );
+  return (
+    <AsyncSelect
+      disabled={disabled}
+      displayError={displayError}
+      getOptions={getLeases}
+      input={input}
+      isDirty={isDirty}
+      onChange={onChange}
+      placeholder={placeholder}
+    />
+  );
 };
 
 export default FieldTypeLeaseSelect;

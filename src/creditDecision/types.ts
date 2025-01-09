@@ -27,6 +27,15 @@ export type FetchCreditDecisionByNinAction = Action<string, string>;
 export type CreditDecisionNotFoundByBusinessIdAction = Action<string, string>;
 export type CreditDecisionNotFoundByContactIdAction = Action<string, string>;
 export type CreditDecisionNotFoundByNinAction = Action<string, string>;
-export type ReceiveCreditDecisionByBusinessIdAction = Action<string, CreditDecisionDataMap>;
-export type ReceiveCreditDecisionByContactIdAction = Action<string, CreditDecisionDataMap>;
-export type ReceiveCreditDecisionByNinAction = Action<string, CreditDecisionDataMap>;
+export type ReceiveCreditDecisionByBusinessIdAction = Action<
+  string,
+  CreditDecisionDataMap
+>;
+export type ReceiveCreditDecisionByContactIdAction = Action<
+  string,
+  CreditDecisionDataMap
+>;
+export type ReceiveCreditDecisionByNinAction = Action<
+  string,
+  CreditDecisionDataMap
+>;

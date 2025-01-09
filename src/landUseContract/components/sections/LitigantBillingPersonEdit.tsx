@@ -15,11 +15,27 @@ import FormWrapper from "@/components/form/FormWrapper";
 import FormWrapperLeft from "@/components/form/FormWrapperLeft";
 import FormWrapperRight from "@/components/form/FormWrapperRight";
 import SubTitle from "@/components/content/SubTitle";
-import { initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal } from "@/contacts/actions";
+import {
+  initializeContactForm,
+  receiveContactModalSettings,
+  receiveIsSaveClicked,
+  showContactModal,
+} from "@/contacts/actions";
 import { receiveCollapseStates } from "@/landUseContract/actions";
 import { FieldTypes, FormNames, ViewModes } from "@/enums";
-import { findItemById, formatDateRange, getFieldAttributes, isActive, isArchived } from "@/util/helpers";
-import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "@/landUseContract/selectors";
+import {
+  findItemById,
+  formatDateRange,
+  getFieldAttributes,
+  isActive,
+  isArchived,
+} from "@/util/helpers";
+import {
+  getAttributes,
+  getCollapseStateByKey,
+  getErrorsByFormName,
+  getIsSaveClicked,
+} from "@/landUseContract/selectors";
 import type { Attributes } from "types";
 type Props = {
   attributes: Attributes;
@@ -52,26 +68,25 @@ const LitigantBillingPersonEdit = ({
   receiveContactModalSettings,
   receiveIsSaveClicked,
   savedLitigant,
-  showContactModal
+  showContactModal,
 }: Props) => {
   const handleAddClick = () => {
     initializeContactForm({});
     receiveContactModalSettings({
       field: `${field}.contact`,
       contactId: null,
-      isNew: true
+      isNew: true,
     });
     receiveIsSaveClicked(false);
     showContactModal();
   };
 
   const handleEditClick = () => {
-    initializeContactForm({ ...contact
-    });
+    initializeContactForm({ ...contact });
     receiveContactModalSettings({
       field: `${field}.contact`,
       contactId: null,
-      isNew: false
+      isNew: false,
     });
     receiveIsSaveClicked(false);
     showContactModal();
@@ -86,24 +101,51 @@ const LitigantBillingPersonEdit = ({
       [ViewModes.EDIT]: {
         [formName]: {
           billing_persons: {
-            [billingPersonId]: val
-          }
-        }
-      }
+            [billingPersonId]: val,
+          },
+        },
+      },
     });
   };
 
-  const landuseAgreementLitigantContactSet = get(savedLitigant, 'landuseagreementlitigantcontact_set', []),
-        savedBillingPerson = findItemById(landuseAgreementLitigantContactSet, billingPersonId),
-        active = isActive(savedBillingPerson),
-        archived = isArchived(savedBillingPerson),
-        litigantErrors = get(errors, field);
-  return <Collapse archived={archived} className='collapse__secondary' defaultOpen={collapseState !== undefined ? collapseState : active} hasErrors={isSaveClicked && !isEmpty(litigantErrors)} headerSubtitles={savedBillingPerson && <Fragment>
-          <Column></Column>
-          <Column>
-            <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(savedBillingPerson.start_date, savedBillingPerson.end_date) || '-'}</CollapseHeaderSubtitle>
-          </Column>
-        </Fragment>} headerTitle='Laskunsaaja' onRemove={onRemove} onToggle={handleCollapseToggle}>
+  const landuseAgreementLitigantContactSet = get(
+      savedLitigant,
+      "landuseagreementlitigantcontact_set",
+      [],
+    ),
+    savedBillingPerson = findItemById(
+      landuseAgreementLitigantContactSet,
+      billingPersonId,
+    ),
+    active = isActive(savedBillingPerson),
+    archived = isArchived(savedBillingPerson),
+    litigantErrors = get(errors, field);
+  return (
+    <Collapse
+      archived={archived}
+      className="collapse__secondary"
+      defaultOpen={collapseState !== undefined ? collapseState : active}
+      hasErrors={isSaveClicked && !isEmpty(litigantErrors)}
+      headerSubtitles={
+        savedBillingPerson && (
+          <Fragment>
+            <Column></Column>
+            <Column>
+              <CollapseHeaderSubtitle>
+                <span>Välillä:</span>{" "}
+                {formatDateRange(
+                  savedBillingPerson.start_date,
+                  savedBillingPerson.end_date,
+                ) || "-"}
+              </CollapseHeaderSubtitle>
+            </Column>
+          </Fragment>
+        )
+      }
+      headerTitle="Laskunsaaja"
+      onRemove={onRemove}
+      onToggle={handleCollapseToggle}
+    >
       <BoxContentWrapper>
         <FormWrapper>
           <FormWrapperLeft>
@@ -111,14 +153,25 @@ const LitigantBillingPersonEdit = ({
               <Column small={12} medium={12} large={8}>
                 <Row>
                   <Column small={9} medium={8} large={8}>
-                    <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.landuseagreementlitigantcontact_set.child.children.contact')} name={`${field}.contact`} overrideValues={{
-                    fieldType: FieldTypes.CONTACT,
-                    label: 'Asiakas'
-                  }} />
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(
+                        attributes,
+                        "litigants.child.children.landuseagreementlitigantcontact_set.child.children.contact",
+                      )}
+                      name={`${field}.contact`}
+                      overrideValues={{
+                        fieldType: FieldTypes.CONTACT,
+                        label: "Asiakas",
+                      }}
+                    />
                   </Column>
                   <Column small={3} medium={4} large={4}>
-                    <div className='contact-buttons-wrapper'>
-                      <AddButtonThird label='Luo asiakas' onClick={handleAddClick} />
+                    <div className="contact-buttons-wrapper">
+                      <AddButtonThird
+                        label="Luo asiakas"
+                        onClick={handleAddClick}
+                      />
                     </div>
                   </Column>
                 </Row>
@@ -128,43 +181,73 @@ const LitigantBillingPersonEdit = ({
           <FormWrapperRight>
             <Row>
               <Column small={6} medium={3} large={2}>
-                <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.landuseagreementlitigantcontact_set.child.children.start_date')} name={`${field}.start_date`} overrideValues={{
-                label: 'Alkupvm'
-              }} />
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    attributes,
+                    "litigants.child.children.landuseagreementlitigantcontact_set.child.children.start_date",
+                  )}
+                  name={`${field}.start_date`}
+                  overrideValues={{
+                    label: "Alkupvm",
+                  }}
+                />
               </Column>
               <Column small={6} medium={3} large={2}>
-                <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, 'litigants.child.children.landuseagreementlitigantcontact_set.child.children.end_date')} name={`${field}.end_date`} overrideValues={{
-                label: 'Loppupvm'
-              }} />
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    attributes,
+                    "litigants.child.children.landuseagreementlitigantcontact_set.child.children.end_date",
+                  )}
+                  name={`${field}.end_date`}
+                  overrideValues={{
+                    label: "Loppupvm",
+                  }}
+                />
               </Column>
             </Row>
           </FormWrapperRight>
         </FormWrapper>
 
-        {!!contact && <SubTitle>Asiakkaan tiedot
-            <EditButton className='inline-button' onClick={handleEditClick} title='Muokkaa asiakasta' />
-          </SubTitle>}
+        {!!contact && (
+          <SubTitle>
+            Asiakkaan tiedot
+            <EditButton
+              className="inline-button"
+              onClick={handleEditClick}
+              title="Muokkaa asiakasta"
+            />
+          </SubTitle>
+        )}
         <ContactTemplate contact={contact} />
       </BoxContentWrapper>
-    </Collapse>;
+    </Collapse>
+  );
 };
 
 const formName = FormNames.LAND_USE_CONTRACT_LITIGANTS;
 const selector = formValueSelector(formName);
-export default connect((state, props) => {
-  const id = selector(state, `${props.field}.id`);
-  return {
-    attributes: getAttributes(state),
-    billingPersonId: id,
-    collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.billing_persons.${id}`),
-    contact: selector(state, `${props.field}.contact`),
-    errors: getErrorsByFormName(state, formName),
-    isSaveClicked: getIsSaveClicked(state)
-  };
-}, {
-  initializeContactForm,
-  receiveCollapseStates,
-  receiveContactModalSettings,
-  receiveIsSaveClicked,
-  showContactModal
-})(LitigantBillingPersonEdit);
+export default connect(
+  (state, props) => {
+    const id = selector(state, `${props.field}.id`);
+    return {
+      attributes: getAttributes(state),
+      billingPersonId: id,
+      collapseState: getCollapseStateByKey(
+        state,
+        `${ViewModes.EDIT}.${formName}.billing_persons.${id}`,
+      ),
+      contact: selector(state, `${props.field}.contact`),
+      errors: getErrorsByFormName(state, formName),
+      isSaveClicked: getIsSaveClicked(state),
+    };
+  },
+  {
+    initializeContactForm,
+    receiveCollapseStates,
+    receiveContactModalSettings,
+    receiveIsSaveClicked,
+    showContactModal,
+  },
+)(LitigantBillingPersonEdit);

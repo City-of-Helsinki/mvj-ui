@@ -8,7 +8,10 @@ import DropdownIndicator from "@/components/inputs/DropdownIndicator";
 import LoadingIndicator from "@/components/inputs/SelectLoadingIndicator";
 import { FormNames } from "@/enums";
 import { setUserActiveServiceUnit } from "@/usersPermissions/actions";
-import type { UserServiceUnit, UserServiceUnits } from "@/usersPermissions/types";
+import type {
+  UserServiceUnit,
+  UserServiceUnits,
+} from "@/usersPermissions/types";
 type Props = {
   userServiceUnits: UserServiceUnits;
   userActiveServiceUnit: UserServiceUnit;
@@ -17,57 +20,74 @@ type Props = {
 
 class UserServiceUnitSelectInput extends Component<Props, any> {
   handleChange = (val: any) => {
-    const {
-      setUserActiveServiceUnit,
-      userServiceUnits
-    } = this.props;
-    const selected = userServiceUnits.find(u => u.id === val?.value);
+    const { setUserActiveServiceUnit, userServiceUnits } = this.props;
+    const selected = userServiceUnits.find((u) => u.id === val?.value);
 
     if (selected) {
       setUserActiveServiceUnit(selected);
     }
   };
-  getOptions = (): Array<Record<string, any>> => this.props.userServiceUnits.map(userServiceUnit => {
-    return {
-      id: userServiceUnit.id,
-      value: userServiceUnit.id,
-      label: userServiceUnit.name
-    };
-  });
+  getOptions = (): Array<Record<string, any>> =>
+    this.props.userServiceUnits.map((userServiceUnit) => {
+      return {
+        id: userServiceUnit.id,
+        value: userServiceUnit.id,
+        label: userServiceUnit.name,
+      };
+    });
 
   render() {
-    const {
-      userActiveServiceUnit,
-      userServiceUnits
-    } = this.props;
+    const { userActiveServiceUnit, userServiceUnits } = this.props;
 
     if (!userServiceUnits.length || !userActiveServiceUnit) {
       return null;
     }
 
-    return <form>
-        <div className={'form-field'}>
-          <FormFieldLabel htmlFor={'userServiceUnitSelect'}>
+    return (
+      <form>
+        <div className={"form-field"}>
+          <FormFieldLabel htmlFor={"userServiceUnitSelect"}>
             Oma palvelukokonaisuus
           </FormFieldLabel>
-          <div className={'form-field__component'}>
-            <div className={'form-field__select'}>
-              <Select className='select-input' classNamePrefix='select-input' components={{
-              DropdownIndicator,
-              IndicatorSeparator: null,
-              LoadingIndicator
-            }} isDisabled={userActiveServiceUnit.length <= 1} id={'userServiceUnitSelect'} onBlur={this.handleChange} onChange={this.handleChange} noOptionsMessage={() => 'Ei tuloksia'} options={this.getOptions()} placeholder={'Valitse...'} value={this.getOptions() && this.getOptions().find(option => option.value == userActiveServiceUnit.id) || ''} />
+          <div className={"form-field__component"}>
+            <div className={"form-field__select"}>
+              <Select
+                className="select-input"
+                classNamePrefix="select-input"
+                components={{
+                  DropdownIndicator,
+                  IndicatorSeparator: null,
+                  LoadingIndicator,
+                }}
+                isDisabled={userActiveServiceUnit.length <= 1}
+                id={"userServiceUnitSelect"}
+                onBlur={this.handleChange}
+                onChange={this.handleChange}
+                noOptionsMessage={() => "Ei tuloksia"}
+                options={this.getOptions()}
+                placeholder={"Valitse..."}
+                value={
+                  (this.getOptions() &&
+                    this.getOptions().find(
+                      (option) => option.value == userActiveServiceUnit.id,
+                    )) ||
+                  ""
+                }
+              />
             </div>
           </div>
         </div>
-      </form>;
+      </form>
+    );
   }
-
 }
 
 const formName = FormNames.USER_SERVICE_UNIT_SELECT;
-export default flowRight(connect(state => ({}), {
-  setUserActiveServiceUnit
-}), reduxForm({
-  form: formName
-}))(UserServiceUnitSelectInput) as React.ComponentType<any>;
+export default flowRight(
+  connect((state) => ({}), {
+    setUserActiveServiceUnit,
+  }),
+  reduxForm({
+    form: formName,
+  }),
+)(UserServiceUnitSelectInput) as React.ComponentType<any>;

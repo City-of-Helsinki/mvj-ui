@@ -1,15 +1,36 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { receiveError } from "@/api/actions";
-import { notFoundJobRuns, notFoundJobRunAttributes, notFoundJobRunLogEntryAttributes, notFoundJobRunLogEntriesByRun, notFoundScheduledJobAttributes, notFoundScheduledJobs, receiveJobRunAttributes, receiveJobRunMethods, receiveJobRuns, receiveJobRunLogEntryAttributes, receiveJobRunLogEntryMethods, receiveJobRunLogEntriesByRun, receiveScheduledJobAttributes, receiveScheduledJobMethods, receiveScheduledJobs } from "@/batchrun/actions";
-import { fetchJobRunAttributes, fetchJobRuns, fetchJobRunLogEntryAttributes, fetchJobRunLogEntries, fetchScheduledJobAttributes, fetchScheduledJobs } from "@/batchrun/requests";
+import {
+  notFoundJobRuns,
+  notFoundJobRunAttributes,
+  notFoundJobRunLogEntryAttributes,
+  notFoundJobRunLogEntriesByRun,
+  notFoundScheduledJobAttributes,
+  notFoundScheduledJobs,
+  receiveJobRunAttributes,
+  receiveJobRunMethods,
+  receiveJobRuns,
+  receiveJobRunLogEntryAttributes,
+  receiveJobRunLogEntryMethods,
+  receiveJobRunLogEntriesByRun,
+  receiveScheduledJobAttributes,
+  receiveScheduledJobMethods,
+  receiveScheduledJobs,
+} from "@/batchrun/actions";
+import {
+  fetchJobRunAttributes,
+  fetchJobRuns,
+  fetchJobRunLogEntryAttributes,
+  fetchJobRunLogEntries,
+  fetchScheduledJobAttributes,
+  fetchScheduledJobs,
+} from "@/batchrun/requests";
 
 function* fetchJobRunAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchJobRunAttributes);
 
     switch (statusCode) {
@@ -25,7 +46,10 @@ function* fetchJobRunAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch batchrun job run attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch batchrun job run attributes with error "%s"',
+      error,
+    );
     yield put(notFoundJobRunAttributes());
     yield put(receiveError(error));
   }
@@ -33,14 +57,12 @@ function* fetchJobRunAttributesSaga(): Generator<any, any, any> {
 
 function* fetchJobRunsSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchJobRuns, query);
 
     switch (statusCode) {
@@ -63,10 +85,8 @@ function* fetchJobRunsSaga({
 function* fetchJobRunLogEntryAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchJobRunLogEntryAttributes);
 
     switch (statusCode) {
@@ -82,7 +102,10 @@ function* fetchJobRunLogEntryAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch batchrun job run log entry attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch batchrun job run log entry attributes with error "%s"',
+      error,
+    );
     yield put(notFoundJobRunLogEntryAttributes());
     yield put(receiveError(error));
   }
@@ -90,25 +113,25 @@ function* fetchJobRunLogEntryAttributesSaga(): Generator<any, any, any> {
 
 function* fetchJobRunLogEntriesByRunSaga({
   payload: run,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchJobRunLogEntries, {
       run: run,
-      limit: 10000
+      limit: 10000,
     });
 
     switch (statusCode) {
       case 200:
-        yield put(receiveJobRunLogEntriesByRun({
-          run: run,
-          data: bodyAsJson
-        }));
+        yield put(
+          receiveJobRunLogEntriesByRun({
+            run: run,
+            data: bodyAsJson,
+          }),
+        );
         break;
 
       case 404:
@@ -126,10 +149,8 @@ function* fetchJobRunLogEntriesByRunSaga({
 function* fetchScheduledJobAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchScheduledJobAttributes);
 
     switch (statusCode) {
@@ -145,7 +166,10 @@ function* fetchScheduledJobAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch batchrun scheduled job attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch batchrun scheduled job attributes with error "%s"',
+      error,
+    );
     yield put(notFoundScheduledJobAttributes());
     yield put(receiveError(error));
   }
@@ -153,14 +177,12 @@ function* fetchScheduledJobAttributesSaga(): Generator<any, any, any> {
 
 function* fetchScheduledJobsSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchScheduledJobs, query);
 
     switch (statusCode) {
@@ -181,12 +203,29 @@ function* fetchScheduledJobsSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/batchrun/FETCH_JOB_RUN_ATTRIBUTES', fetchJobRunAttributesSaga);
-    yield takeLatest('mvj/batchrun/FETCH_JOB_RUN_LOG_ENTRY_ATTRIBUTES', fetchJobRunLogEntryAttributesSaga);
-    yield takeLatest('mvj/batchrun/FETCH_SCHEDULED_JOB_ATTRIBUTES', fetchScheduledJobAttributesSaga);
-    yield takeLatest('mvj/batchrun/FETCH_JOB_RUNS', fetchJobRunsSaga);
-    yield takeLatest('mvj/batchrun/FETCH_JOB_RUN_LOG_ENTRIES_BY_ID', fetchJobRunLogEntriesByRunSaga);
-    yield takeLatest('mvj/batchrun/FETCH_SCHEDULED_JOBS', fetchScheduledJobsSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/batchrun/FETCH_JOB_RUN_ATTRIBUTES",
+        fetchJobRunAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/batchrun/FETCH_JOB_RUN_LOG_ENTRY_ATTRIBUTES",
+        fetchJobRunLogEntryAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/batchrun/FETCH_SCHEDULED_JOB_ATTRIBUTES",
+        fetchScheduledJobAttributesSaga,
+      );
+      yield takeLatest("mvj/batchrun/FETCH_JOB_RUNS", fetchJobRunsSaga);
+      yield takeLatest(
+        "mvj/batchrun/FETCH_JOB_RUN_LOG_ENTRIES_BY_ID",
+        fetchJobRunLogEntriesByRunSaga,
+      );
+      yield takeLatest(
+        "mvj/batchrun/FETCH_SCHEDULED_JOBS",
+        fetchScheduledJobsSaga,
+      );
+    }),
+  ]);
 }

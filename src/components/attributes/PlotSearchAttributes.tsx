@@ -1,9 +1,21 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { fetchAttributes as fetchPlotSearchAttributes, fetchPlotSearchSubtypes } from "@/plotSearch/actions";
-import { getAttributes as getPlotSearchAttributes, getIsFetchingAttributes as getIsFetchingPlotSearchAttributes, getPlotSearchMethods, getPlotSearchSubTypes, getIsFetching } from "@/plotSearch/selectors";
-import { getFormAttributes, getIsFetchingFormAttributes } from "@/application/selectors";
+import {
+  fetchAttributes as fetchPlotSearchAttributes,
+  fetchPlotSearchSubtypes,
+} from "@/plotSearch/actions";
+import {
+  getAttributes as getPlotSearchAttributes,
+  getIsFetchingAttributes as getIsFetchingPlotSearchAttributes,
+  getPlotSearchMethods,
+  getPlotSearchSubTypes,
+  getIsFetching,
+} from "@/plotSearch/selectors";
+import {
+  getFormAttributes,
+  getIsFetchingFormAttributes,
+} from "@/application/selectors";
 import { fetchFormAttributes } from "@/application/actions";
 import type { Attributes, Methods } from "types";
 
@@ -28,7 +40,7 @@ function PlotSearchAttributes(WrappedComponent: any) {
         plotSearchAttributes,
         fetchPlotSearchSubtypes,
         plotSearchSubTypes,
-        isFetching
+        isFetching,
       } = this.props;
 
       if (!isFetchingPlotSearchAttributes && !plotSearchAttributes) {
@@ -43,23 +55,29 @@ function PlotSearchAttributes(WrappedComponent: any) {
     render() {
       return <WrappedComponent {...this.props} />;
     }
-
   };
 }
 
-const withPlotSearchAttributes = (flowRight(connect(state => {
-  return {
-    plotSearchAttributes: getPlotSearchAttributes(state),
-    isFetchingPlotSearchAttributes: getIsFetchingPlotSearchAttributes(state),
-    plotSearchMethods: getPlotSearchMethods(state),
-    plotSearchSubTypes: getPlotSearchSubTypes(state),
-    isFetching: getIsFetching(state),
-    isFetchingFormAttributes: getIsFetchingFormAttributes(state),
-    formAttributes: getFormAttributes(state)
-  };
-}, {
-  fetchPlotSearchAttributes,
-  fetchPlotSearchSubtypes,
-  fetchFormAttributes
-}), PlotSearchAttributes) as (arg0: React.ComponentType<any>) => React.ComponentType<any>);
+const withPlotSearchAttributes = flowRight(
+  connect(
+    (state) => {
+      return {
+        plotSearchAttributes: getPlotSearchAttributes(state),
+        isFetchingPlotSearchAttributes:
+          getIsFetchingPlotSearchAttributes(state),
+        plotSearchMethods: getPlotSearchMethods(state),
+        plotSearchSubTypes: getPlotSearchSubTypes(state),
+        isFetching: getIsFetching(state),
+        isFetchingFormAttributes: getIsFetchingFormAttributes(state),
+        formAttributes: getFormAttributes(state),
+      };
+    },
+    {
+      fetchPlotSearchAttributes,
+      fetchPlotSearchSubtypes,
+      fetchFormAttributes,
+    },
+  ),
+  PlotSearchAttributes,
+) as (arg0: React.ComponentType<any>) => React.ComponentType<any>;
 export { withPlotSearchAttributes };

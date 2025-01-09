@@ -13,43 +13,59 @@ type Props = {
   currentLandUseContract: LandUseContract;
 };
 
-const Invoices = ({
-  currentLandUseContract
-}: Props) => {
+const Invoices = ({ currentLandUseContract }: Props) => {
   const invoices = getContentInvoices(currentLandUseContract);
-  return <GreenBox>
+  return (
+    <GreenBox>
       {!invoices.length && <p>Ei laskuja</p>}
-      {!!invoices.length && <div>
+      {!!invoices.length && (
+        <div>
           <Row>
-            <Column small={3} large={2}><FormTextTitle title='Määrä' /></Column>
-            <Column small={3} large={2}><FormTextTitle title='Eräpäivä' /></Column>
-            <Column small={3} large={2}><FormTextTitle title='Lähetetty pvm' /></Column>
-            <Column small={3} large={2}><FormTextTitle title='Maksettu pvm' /></Column>
+            <Column small={3} large={2}>
+              <FormTextTitle title="Määrä" />
+            </Column>
+            <Column small={3} large={2}>
+              <FormTextTitle title="Eräpäivä" />
+            </Column>
+            <Column small={3} large={2}>
+              <FormTextTitle title="Lähetetty pvm" />
+            </Column>
+            <Column small={3} large={2}>
+              <FormTextTitle title="Maksettu pvm" />
+            </Column>
           </Row>
           <ListItems>
             {invoices.map((invoice, index) => {
-          return <Row key={index}>
+              return (
+                <Row key={index}>
                   <Column small={3} large={2}>
-                    <ListItem>{invoice.amount ? `${formatNumber(invoice.amount)} €` : '-'}</ListItem>
+                    <ListItem>
+                      {invoice.amount
+                        ? `${formatNumber(invoice.amount)} €`
+                        : "-"}
+                    </ListItem>
                   </Column>
                   <Column small={3} large={2}>
-                    <ListItem>{formatDate(invoice.due_date) || '-'}</ListItem>
+                    <ListItem>{formatDate(invoice.due_date) || "-"}</ListItem>
                   </Column>
                   <Column small={3} large={2}>
-                    <ListItem>{formatDate(invoice.sent_date) || '-'}</ListItem>
+                    <ListItem>{formatDate(invoice.sent_date) || "-"}</ListItem>
                   </Column>
                   <Column small={3} large={2}>
-                    <ListItem>{formatDate(invoice.paid_date) || '-'}</ListItem>
+                    <ListItem>{formatDate(invoice.paid_date) || "-"}</ListItem>
                   </Column>
-                </Row>;
-        })}
+                </Row>
+              );
+            })}
           </ListItems>
-        </div>}
-    </GreenBox>;
+        </div>
+      )}
+    </GreenBox>
+  );
 };
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    currentLandUseContract: getCurrentLandUseContract(state)
+    currentLandUseContract: getCurrentLandUseContract(state),
   };
 })(Invoices);

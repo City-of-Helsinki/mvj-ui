@@ -72,7 +72,9 @@ export type CreateChargePayload = {
 };
 export type FetchSingleLeaseAfterEditPayload = {
   leaseId: LeaseId;
-  callbackFunctions?: Array<Record<string, any> | ((...args: Array<any>) => any)>;
+  callbackFunctions?: Array<
+    Record<string, any> | ((...args: Array<any>) => any)
+  >;
 };
 export type ReceivableType = {
   id: number;
@@ -92,7 +94,9 @@ export type IntendedUse = {
   service_unit: ServiceUnit["id"];
 };
 
-export type PeriodicRentAdjustmentType = "TASOTARKISTUS_20_20" | "TASOTARKISTUS_20_10";
+export type PeriodicRentAdjustmentType =
+  | "TASOTARKISTUS_20_20"
+  | "TASOTARKISTUS_20_10";
 
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
@@ -102,7 +106,10 @@ export type FetchLeasesByBBoxAction = Action<string, Record<string, any>>;
 export type ReceiveLeasesAction = Action<string, LeaseList>;
 export type ReceiveLeasesByBBoxAction = Action<string, LeaseList>;
 export type FetchSingleLeaseAction = Action<string, LeaseId>;
-export type FetchSingleLeaseAfterEditAction = Action<string, FetchSingleLeaseAfterEditPayload>;
+export type FetchSingleLeaseAfterEditAction = Action<
+  string,
+  FetchSingleLeaseAfterEditPayload
+>;
 export type ReceiveSingleLeaseAction = Action<string, Lease>;
 export type FetchLeaseByIdAction = Action<string, LeaseId>;
 export type ReceiveLeaseByIdAction = Action<string, Lease>;
@@ -133,10 +140,13 @@ export type CreateChargeAction = Action<string, CreateChargePayload>;
 export type ReceiveFormValidFlagsAction = Action<string, Record<string, any>>;
 export type ClearFormValidFlagsAction = Action<string, void>;
 export type ReceiveCollapseStatesAction = Action<string, Record<string, any>>;
-export type FetchLeasesForContractNumberAction = Action<string, Record<string, any>>;
+export type FetchLeasesForContractNumberAction = Action<
+  string,
+  Record<string, any>
+>;
 export type ReceiveLeasesForContractNumbersAction = Action<string, LeaseList>;
 export type DueDate = {
   id: number;
   day: number;
   month: number;
-}
+};

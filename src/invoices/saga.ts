@@ -1,17 +1,35 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
-import { fetchInvoicesByLease, receiveAttributes, receiveMethods, attributesNotFound, receiveInvoicesByLease, receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen, receiveIsEditClicked, receivePatchedInvoice, notFound } from "./actions";
+import {
+  fetchInvoicesByLease,
+  receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
+  receiveInvoicesByLease,
+  receiveInvoiceToCredit,
+  receiveIsCreateInvoicePanelOpen,
+  receiveIsCreditInvoicePanelOpen,
+  receiveIsEditClicked,
+  receivePatchedInvoice,
+  notFound,
+} from "./actions";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
-import { exportInvoiceToLaske, fetchAttributes, fetchInvoices, createInvoice, creditInvoice, patchInvoice, deleteInvoice } from "./requests";
+import {
+  exportInvoiceToLaske,
+  fetchAttributes,
+  fetchInvoices,
+  createInvoice,
+  creditInvoice,
+  patchInvoice,
+  deleteInvoice,
+} from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -35,28 +53,24 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchInvoicesByLeaseSaga({
   payload: leaseId,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     let {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson: body
+      response: { status: statusCode },
+      bodyAsJson: body,
     } = yield call(fetchInvoices, {
       lease: leaseId,
-      limit: 10000
+      limit: 10000,
     });
     let invoices = body.results;
 
     while (statusCode === 200 && body.next) {
       const {
-        response: {
-          status
-        },
-        bodyAsJson
-      // @ts-ignore: No overload matches this call
-      } = yield call(fetchInvoices, `?${body.next.split('?').pop()}`);
+        response: { status },
+        bodyAsJson,
+        // @ts-ignore: No overload matches this call
+      } = yield call(fetchInvoices, `?${body.next.split("?").pop()}`);
       statusCode = status;
       body = bodyAsJson;
       invoices = [...invoices, ...body.results];
@@ -64,10 +78,12 @@ function* fetchInvoicesByLeaseSaga({
 
     switch (statusCode) {
       case 200:
-        yield put(receiveInvoicesByLease({
-          leaseId: leaseId,
-          invoices: invoices
-        }));
+        yield put(
+          receiveInvoicesByLease({
+            leaseId: leaseId,
+            invoices: invoices,
+          }),
+        );
         break;
 
       case 404:
@@ -82,14 +98,12 @@ function* fetchInvoicesByLeaseSaga({
 
 function* createInvoiceSaga({
   payload: invoice,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createInvoice, invoice);
 
     switch (statusCode) {
@@ -97,15 +111,14 @@ function* createInvoiceSaga({
         yield put(fetchInvoicesByLease(invoice.lease));
         yield put(receiveIsCreateInvoicePanelOpen(false));
         displayUIMessage({
-          title: '',
-          body: 'Lasku luotu'
+          title: "",
+          body: "Lasku luotu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -121,22 +134,16 @@ function* createInvoiceSaga({
 }
 
 function* creditInvoiceSaga({
-  payload: {
-    creditData,
-    invoiceId,
-    lease
-  },
-  type: any
+  payload: { creditData, invoiceId, lease },
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(creditInvoice, {
       creditData: creditData,
-      invoiceId: invoiceId
+      invoiceId: invoiceId,
     });
 
     switch (statusCode) {
@@ -145,14 +152,13 @@ function* creditInvoiceSaga({
         yield put(receiveIsCreditInvoicePanelOpen(false));
         yield put(receiveInvoiceToCredit(null));
         displayUIMessage({
-          title: '',
-          body: 'Hyvityslasku luotu'
+          title: "",
+          body: "Hyvityslasku luotu",
         });
         break;
 
       default:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -163,14 +169,12 @@ function* creditInvoiceSaga({
 
 function* patchInvoiceSaga({
   payload: invoice,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(patchInvoice, invoice);
 
     switch (statusCode) {
@@ -179,17 +183,21 @@ function* patchInvoiceSaga({
         yield put(receivePatchedInvoice(bodyAsJson));
         yield put(receiveIsEditClicked(false));
         displayUIMessage({
-          title: '',
-          body: 'Lasku tallennettu'
+          title: "",
+          body: "Lasku tallennettu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         break;
 
       case 500:
@@ -205,30 +213,24 @@ function* patchInvoiceSaga({
 }
 
 function* exportInvoiceToLaskeAndUpdateListSaga({
-  payload: {
-    id,
-    lease
-  },
-  type: any
+  payload: { id, lease },
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(exportInvoiceToLaske, id);
 
     if (statusCode === 200 && bodyAsJson.success) {
       yield put(fetchInvoicesByLease(lease));
       displayUIMessage({
-        title: '',
-        body: 'Lasku lähetetty SAP:iin'
+        title: "",
+        body: "Lasku lähetetty SAP:iin",
       });
     } else {
       yield put(notFound());
-      yield put(receiveError(new SubmissionError({ ...bodyAsJson
-      })));
+      yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
     }
   } catch (error) {
     console.error('Failed to export invoice to laske with error "%s"', error);
@@ -239,26 +241,23 @@ function* exportInvoiceToLaskeAndUpdateListSaga({
 
 function* deleteInvoiceSaga({
   payload: invoice,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deleteInvoice, invoice.id);
 
     if (statusCode === 204) {
       yield put(fetchInvoicesByLease(invoice.lease));
       displayUIMessage({
-        title: '',
-        body: 'Lasku poistettu'
+        title: "",
+        body: "Lasku poistettu",
       });
     } else {
       yield put(notFound());
-      yield put(receiveError(new SubmissionError({ ...bodyAsJson
-      })));
+      yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
     }
   } catch (error) {
     console.error('Failed to delete invoice "%s"', error);
@@ -268,13 +267,18 @@ function* deleteInvoiceSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/invoices/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/invoices/FETCH_BY_LEASE', fetchInvoicesByLeaseSaga);
-    yield takeLatest('mvj/invoices/CREATE', createInvoiceSaga);
-    yield takeLatest('mvj/invoices/CREDIT_INVOICE', creditInvoiceSaga);
-    yield takeLatest('mvj/invoices/PATCH', patchInvoiceSaga);
-    yield takeLatest('mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE', exportInvoiceToLaskeAndUpdateListSaga);
-    yield takeLatest('mvj/invoices/DELETE', deleteInvoiceSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/invoices/FETCH_ATTRIBUTES", fetchAttributesSaga);
+      yield takeLatest("mvj/invoices/FETCH_BY_LEASE", fetchInvoicesByLeaseSaga);
+      yield takeLatest("mvj/invoices/CREATE", createInvoiceSaga);
+      yield takeLatest("mvj/invoices/CREDIT_INVOICE", creditInvoiceSaga);
+      yield takeLatest("mvj/invoices/PATCH", patchInvoiceSaga);
+      yield takeLatest(
+        "mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE",
+        exportInvoiceToLaskeAndUpdateListSaga,
+      );
+      yield takeLatest("mvj/invoices/DELETE", deleteInvoiceSaga);
+    }),
+  ]);
 }

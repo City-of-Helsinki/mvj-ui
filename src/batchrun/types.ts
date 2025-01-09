@@ -34,7 +34,10 @@ export type FetchJobRunsAction = Action<string, Record<string, any>>;
 export type ReceiveJobRunsAction = Action<string, Record<string, any>>;
 export type NotFoundJobRunsAction = Action<string, void>;
 export type FetchJobRunLogEntriesByRunAction = Action<string, number>;
-export type ReceiveJobRunLogEntriesByRunAction = Action<string, Record<string, any>>;
+export type ReceiveJobRunLogEntriesByRunAction = Action<
+  string,
+  Record<string, any>
+>;
 export type NotFoundJobRunLogEntriesByRunAction = Action<string, number>;
 export type FetchScheduledJobsAction = Action<string, Record<string, any>>;
 export type ReceiveScheduledJobsAction = Action<string, Record<string, any>>;

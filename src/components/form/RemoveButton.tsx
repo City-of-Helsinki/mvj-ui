@@ -1,5 +1,9 @@
 import React from "react";
-import { createClassName, generalClassNames, GeneralPropTypes } from "@/foundation/utils";
+import {
+  createClassName,
+  generalClassNames,
+  GeneralPropTypes,
+} from "@/foundation/utils";
 import TrashIcon from "@/components/icons/TrashIcon";
 type Props = {
   className?: string;
@@ -11,18 +15,24 @@ type Props = {
 };
 
 const RemoveButton = (props: Props): JSX.Element => {
-  const {
+  const { className, disabled, onClick, style, title, type = "button" } = props;
+  const createdClassName = createClassName(
+    "form__remove-button",
     className,
-    disabled,
-    onClick,
-    style,
-    title,
-    type = 'button'
-  } = props;
-  const createdClassName = createClassName('form__remove-button', className, generalClassNames(props));
-  return <button className={createdClassName} disabled={disabled} style={style} type={type} title={title} onClick={onClick}>
-      <TrashIcon className='icon-medium' />
-    </button>;
+    generalClassNames(props),
+  );
+  return (
+    <button
+      className={createdClassName}
+      disabled={disabled}
+      style={style}
+      type={type}
+      title={title}
+      onClick={onClick}
+    >
+      <TrashIcon className="icon-medium" />
+    </button>
+  );
 };
 
 export default RemoveButton;

@@ -6,12 +6,12 @@ type Props = {
   contact: Contact;
 };
 
-const ContactReadonly = ({
-  contact
-}: Props) => {
-  return <GreenBox>
+const ContactReadonly = ({ contact }: Props) => {
+  return (
+    <GreenBox>
       <ContactTemplate contact={contact} />
-    </GreenBox>;
+    </GreenBox>
+  );
 };
 
 export default ContactReadonly;

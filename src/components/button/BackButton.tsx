@@ -9,13 +9,15 @@ type Props = {
   type?: string;
 };
 
-const BackButton = ({
-  className,
-  onClick,
-  title,
-  type = 'button'
-}: Props) => <IconButton className={classNames('icon-button-component', className)} onClick={onClick} title={title} type={type}>
+const BackButton = ({ className, onClick, title, type = "button" }: Props) => (
+  <IconButton
+    className={classNames("icon-button-component", className)}
+    onClick={onClick}
+    title={title}
+    type={type}
+  >
     <BackIcon />
-  </IconButton>;
+  </IconButton>
+);
 
 export default BackButton;

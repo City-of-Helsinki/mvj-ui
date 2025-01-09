@@ -22,10 +22,10 @@
 .icon-and-text {
   display: inline-flex;
   align-items: center;
-  padding: .25rem;
+  padding: 0.25rem;
 
   svg {
-    margin-right: .5rem;
+    margin-right: 0.5rem;
   }
 }
 
@@ -34,19 +34,19 @@
   align-items: center;
 
   svg {
-    margin-right: .5rem;
+    margin-right: 0.5rem;
   }
 }
 
 .credit-decision {
   &__result {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
 
     .credit-decision-status-text {
       line-height: 1;
 
       svg {
-        margin-left: .5rem;
+        margin-left: 0.5rem;
       }
     }
   }
@@ -58,7 +58,7 @@
   &__business-data,
   &__meta {
     hr {
-      margin-top: .75rem;
+      margin-top: 0.75rem;
       margin-bottom: 1rem;
     }
   }

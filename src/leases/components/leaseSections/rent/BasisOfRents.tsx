@@ -6,10 +6,19 @@ import BoxItemContainer from "@/components/content/BoxItemContainer";
 import FormText from "@/components/form/FormText";
 import GrayBox from "@/components/content/GrayBox";
 import GreenBox from "@/components/content/GreenBox";
-import { BasisOfRentManagementSubventionsFieldPaths, LeaseBasisOfRentsFieldPaths } from "@/leases/enums";
-import { calculateBasisOfRentTotalDiscountedInitialYearRent, getContentBasisOfRents } from "@/leases/helpers";
+import {
+  BasisOfRentManagementSubventionsFieldPaths,
+  LeaseBasisOfRentsFieldPaths,
+} from "@/leases/enums";
+import {
+  calculateBasisOfRentTotalDiscountedInitialYearRent,
+  getContentBasisOfRents,
+} from "@/leases/helpers";
 import { getFieldOptions, isEmptyValue } from "@/util/helpers";
-import { getAttributes as getLeaseAttributes, getCurrentLease } from "@/leases/selectors";
+import {
+  getAttributes as getLeaseAttributes,
+  getCurrentLease,
+} from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 type Props = {
@@ -38,7 +47,7 @@ class BasisOfRents extends PureComponent<Props, State> {
     intendedUseOptions: [],
     leaseAttributes: null,
     managementTypeOptions: [],
-    subventionTypeOptions: []
+    subventionTypeOptions: [],
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -46,19 +55,41 @@ class BasisOfRents extends PureComponent<Props, State> {
 
     if (props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.areaUnitOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT).map(item => ({ ...item,
-        label: !isEmptyValue(item.label) ? item.label.replace('^2', '²') : item.label
+      newState.areaUnitOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+      ).map((item) => ({
+        ...item,
+        label: !isEmptyValue(item.label)
+          ? item.label.replace("^2", "²")
+          : item.label,
       }));
-      newState.indexOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX);
-      newState.intendedUseOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE);
-      newState.managementTypeOptions = getFieldOptions(props.leaseAttributes, BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT);
-      newState.subventionTypeOptions = getFieldOptions(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE);
+      newState.indexOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseBasisOfRentsFieldPaths.INDEX,
+      );
+      newState.intendedUseOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseBasisOfRentsFieldPaths.INTENDED_USE,
+      );
+      newState.managementTypeOptions = getFieldOptions(
+        props.leaseAttributes,
+        BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT,
+      );
+      newState.subventionTypeOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
+      );
     }
 
     if (props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease;
-      newState.basisOfRents = getContentBasisOfRents(props.currentLease).filter(item => !item.archived_at);
-      newState.basisOfRentsArchived = getContentBasisOfRents(props.currentLease).filter(item => item.archived_at);
+      newState.basisOfRents = getContentBasisOfRents(props.currentLease).filter(
+        (item) => !item.archived_at,
+      );
+      newState.basisOfRentsArchived = getContentBasisOfRents(
+        props.currentLease,
+      ).filter((item) => item.archived_at);
     }
 
     return newState;
@@ -72,40 +103,101 @@ class BasisOfRents extends PureComponent<Props, State> {
       indexOptions,
       intendedUseOptions,
       managementTypeOptions,
-      subventionTypeOptions
+      subventionTypeOptions,
     } = this.state;
-    const totalDiscountedInitialYearRent = calculateBasisOfRentTotalDiscountedInitialYearRent(basisOfRents, indexOptions);
-    const totalDiscountedInitialYearRentArchived = calculateBasisOfRentTotalDiscountedInitialYearRent(basisOfRentsArchived, indexOptions);
-    return <Fragment>
-        {!basisOfRents || !basisOfRents.length && <FormText className='no-margin'>Ei vuokralaskureita</FormText>}
-        {basisOfRents && !!basisOfRents.length && <GreenBox>
+    const totalDiscountedInitialYearRent =
+      calculateBasisOfRentTotalDiscountedInitialYearRent(
+        basisOfRents,
+        indexOptions,
+      );
+    const totalDiscountedInitialYearRentArchived =
+      calculateBasisOfRentTotalDiscountedInitialYearRent(
+        basisOfRentsArchived,
+        indexOptions,
+      );
+    return (
+      <Fragment>
+        {!basisOfRents ||
+          (!basisOfRents.length && (
+            <FormText className="no-margin">Ei vuokralaskureita</FormText>
+          ))}
+        {basisOfRents && !!basisOfRents.length && (
+          <GreenBox>
             <BoxItemContainer>
               {basisOfRents.map((basisOfRent, index) => {
-            return <BasisOfRent key={index} areaUnitOptions={areaUnitOptions} basisOfRent={basisOfRent} indexOptions={indexOptions} intendedUseOptions={intendedUseOptions} managementTypeOptions={managementTypeOptions} showTotal={basisOfRents.length > 1 && basisOfRents.length === index + 1} subventionTypeOptions={subventionTypeOptions} totalDiscountedInitialYearRent={totalDiscountedInitialYearRent} />;
-          })}
-              {basisOfRents.length > 1 && <CalculateRentTotal basisOfRents={basisOfRents} indexOptions={indexOptions} />}
+                return (
+                  <BasisOfRent
+                    key={index}
+                    areaUnitOptions={areaUnitOptions}
+                    basisOfRent={basisOfRent}
+                    indexOptions={indexOptions}
+                    intendedUseOptions={intendedUseOptions}
+                    managementTypeOptions={managementTypeOptions}
+                    showTotal={
+                      basisOfRents.length > 1 &&
+                      basisOfRents.length === index + 1
+                    }
+                    subventionTypeOptions={subventionTypeOptions}
+                    totalDiscountedInitialYearRent={
+                      totalDiscountedInitialYearRent
+                    }
+                  />
+                );
+              })}
+              {basisOfRents.length > 1 && (
+                <CalculateRentTotal
+                  basisOfRents={basisOfRents}
+                  indexOptions={indexOptions}
+                />
+              )}
             </BoxItemContainer>
-          </GreenBox>}
-        
-        {basisOfRentsArchived && !!basisOfRentsArchived.length && <h3 style={{
-        marginTop: 10,
-        marginBottom: 5
-      }}>Arkisto</h3>}
-        {basisOfRentsArchived && !!basisOfRentsArchived.length && <GrayBox>
+          </GreenBox>
+        )}
+
+        {basisOfRentsArchived && !!basisOfRentsArchived.length && (
+          <h3
+            style={{
+              marginTop: 10,
+              marginBottom: 5,
+            }}
+          >
+            Arkisto
+          </h3>
+        )}
+        {basisOfRentsArchived && !!basisOfRentsArchived.length && (
+          <GrayBox>
             <BoxItemContainer>
               {basisOfRentsArchived.map((basisOfRent, index) => {
-            return <BasisOfRent key={index} areaUnitOptions={areaUnitOptions} basisOfRent={basisOfRent} indexOptions={indexOptions} intendedUseOptions={intendedUseOptions} managementTypeOptions={managementTypeOptions} showTotal={basisOfRentsArchived.length > 1 && basisOfRentsArchived.length === index + 1} subventionTypeOptions={subventionTypeOptions} totalDiscountedInitialYearRent={totalDiscountedInitialYearRentArchived} />;
-          })}
+                return (
+                  <BasisOfRent
+                    key={index}
+                    areaUnitOptions={areaUnitOptions}
+                    basisOfRent={basisOfRent}
+                    indexOptions={indexOptions}
+                    intendedUseOptions={intendedUseOptions}
+                    managementTypeOptions={managementTypeOptions}
+                    showTotal={
+                      basisOfRentsArchived.length > 1 &&
+                      basisOfRentsArchived.length === index + 1
+                    }
+                    subventionTypeOptions={subventionTypeOptions}
+                    totalDiscountedInitialYearRent={
+                      totalDiscountedInitialYearRentArchived
+                    }
+                  />
+                );
+              })}
             </BoxItemContainer>
-          </GrayBox>}
-      </Fragment>;
+          </GrayBox>
+        )}
+      </Fragment>
+    );
   }
-
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
     currentLease: getCurrentLease(state),
-    leaseAttributes: getLeaseAttributes(state)
+    leaseAttributes: getLeaseAttributes(state),
   };
 })(BasisOfRents);

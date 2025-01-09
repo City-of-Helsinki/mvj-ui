@@ -11,10 +11,16 @@ import { store } from "@/index";
  */
 export const hasAnyPageDirtyForms = (): boolean => {
   const state = store.getState(),
-        isContactDirty = isContactFormDirty(state),
-        isInfillDevelopmentDirty = isInfillDevelopmentFormDirty(state),
-        isLandUseContractDirty = isAnyLandUseContractFormDirty(state),
-        isLeaseDirty = isAnyLeaseFormDirty(state),
-        isRentBasisDirty = isRentBasisFormDirty(state);
-  return isContactDirty || isInfillDevelopmentDirty || isLandUseContractDirty || isLeaseDirty || isRentBasisDirty;
+    isContactDirty = isContactFormDirty(state),
+    isInfillDevelopmentDirty = isInfillDevelopmentFormDirty(state),
+    isLandUseContractDirty = isAnyLandUseContractFormDirty(state),
+    isLeaseDirty = isAnyLeaseFormDirty(state),
+    isRentBasisDirty = isRentBasisFormDirty(state);
+  return (
+    isContactDirty ||
+    isInfillDevelopmentDirty ||
+    isLandUseContractDirty ||
+    isLeaseDirty ||
+    isRentBasisDirty
+  );
 };

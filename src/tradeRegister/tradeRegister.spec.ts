@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { fetchTradeRegisterCompanyExtendedById, companyExtendedNotFoundById, receiveTradeRegisterCompanyExtendedById, fetchTradeRegisterCompanyNoticeById, companyNoticeNotFoundById, receiveTradeRegisterCompanyNoticeById, fetchTradeRegisterCompanyRepresentById, companyRepresentNotFoundById, receiveTradeRegisterCompanyRepresentById, receiveCollapseStates } from "./actions";
+import {
+  fetchTradeRegisterCompanyExtendedById,
+  companyExtendedNotFoundById,
+  receiveTradeRegisterCompanyExtendedById,
+  fetchTradeRegisterCompanyNoticeById,
+  companyNoticeNotFoundById,
+  receiveTradeRegisterCompanyNoticeById,
+  fetchTradeRegisterCompanyRepresentById,
+  companyRepresentNotFoundById,
+  receiveTradeRegisterCompanyRepresentById,
+  receiveCollapseStates,
+} from "./actions";
 import tradeRegisterReducer from "./reducer";
 import type { TradeRegisterState } from "./types";
 const defaultState: TradeRegisterState = {
@@ -9,131 +20,177 @@ const defaultState: TradeRegisterState = {
   companyRepresentById: {},
   isFetchingCompanyExtendedById: {},
   isFetchingCompanyNoticeById: {},
-  isFetchingCompanyRepresentById: {}
+  isFetchingCompanyRepresentById: {},
 };
 
-describe('Trade register', () => {
-  describe('Reducer', () => {
-    describe('tradeRegisterReducer', () => {
-      it('should update isFetchingCompanyExtendedById to true when fetching company extended info', () => {
-        const dummyBusinessId = '123';
-        const newState = { ...defaultState,
+describe("Trade register", () => {
+  describe("Reducer", () => {
+    describe("tradeRegisterReducer", () => {
+      it("should update isFetchingCompanyExtendedById to true when fetching company extended info", () => {
+        const dummyBusinessId = "123";
+        const newState = {
+          ...defaultState,
           isFetchingCompanyExtendedById: {
-            [dummyBusinessId]: true
-          }
+            [dummyBusinessId]: true,
+          },
         };
-        const state = tradeRegisterReducer({}, fetchTradeRegisterCompanyExtendedById(dummyBusinessId));
+        const state = tradeRegisterReducer(
+          {},
+          fetchTradeRegisterCompanyExtendedById(dummyBusinessId),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetchingCompanyExtendedById to false when by companyExtendednotFoundById', () => {
-        const dummyBusinessId = '123';
-        const newState = { ...defaultState,
+      it("should update isFetchingCompanyExtendedById to false when by companyExtendednotFoundById", () => {
+        const dummyBusinessId = "123";
+        const newState = {
+          ...defaultState,
           isFetchingCompanyExtendedById: {
-            [dummyBusinessId]: false
-          }
+            [dummyBusinessId]: false,
+          },
         };
-        let state = tradeRegisterReducer({}, fetchTradeRegisterCompanyExtendedById(dummyBusinessId));
-        state = tradeRegisterReducer(state, companyExtendedNotFoundById(dummyBusinessId));
+        let state = tradeRegisterReducer(
+          {},
+          fetchTradeRegisterCompanyExtendedById(dummyBusinessId),
+        );
+        state = tradeRegisterReducer(
+          state,
+          companyExtendedNotFoundById(dummyBusinessId),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update companyExtendedById', () => {
-        const dummyBusinessId = '123';
+      it("should update companyExtendedById", () => {
+        const dummyBusinessId = "123";
         const dummyPayload = {
           [dummyBusinessId]: {
-            foo: 'bar'
-          }
+            foo: "bar",
+          },
         };
-        const newState = { ...defaultState,
+        const newState = {
+          ...defaultState,
           companyExtendedById: dummyPayload,
           isFetchingCompanyExtendedById: {
-            [dummyBusinessId]: false
-          }
+            [dummyBusinessId]: false,
+          },
         };
-        const state = tradeRegisterReducer({}, receiveTradeRegisterCompanyExtendedById(dummyPayload));
+        const state = tradeRegisterReducer(
+          {},
+          receiveTradeRegisterCompanyExtendedById(dummyPayload),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetchingCompanyNoticeById to true when fetching company notice info', () => {
-        const dummyBusinessId = '123';
-        const newState = { ...defaultState,
+      it("should update isFetchingCompanyNoticeById to true when fetching company notice info", () => {
+        const dummyBusinessId = "123";
+        const newState = {
+          ...defaultState,
           isFetchingCompanyNoticeById: {
-            [dummyBusinessId]: true
-          }
+            [dummyBusinessId]: true,
+          },
         };
-        const state = tradeRegisterReducer({}, fetchTradeRegisterCompanyNoticeById(dummyBusinessId));
+        const state = tradeRegisterReducer(
+          {},
+          fetchTradeRegisterCompanyNoticeById(dummyBusinessId),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetchingCompanyNoticeById to false when by companyNoticenotFoundById', () => {
-        const dummyBusinessId = '123';
-        const newState = { ...defaultState,
+      it("should update isFetchingCompanyNoticeById to false when by companyNoticenotFoundById", () => {
+        const dummyBusinessId = "123";
+        const newState = {
+          ...defaultState,
           isFetchingCompanyNoticeById: {
-            [dummyBusinessId]: false
-          }
+            [dummyBusinessId]: false,
+          },
         };
-        let state = tradeRegisterReducer({}, fetchTradeRegisterCompanyNoticeById(dummyBusinessId));
-        state = tradeRegisterReducer(state, companyNoticeNotFoundById(dummyBusinessId));
+        let state = tradeRegisterReducer(
+          {},
+          fetchTradeRegisterCompanyNoticeById(dummyBusinessId),
+        );
+        state = tradeRegisterReducer(
+          state,
+          companyNoticeNotFoundById(dummyBusinessId),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update companyNoticeById', () => {
-        const dummyBusinessId = '123';
+      it("should update companyNoticeById", () => {
+        const dummyBusinessId = "123";
         const dummyPayload = {
           [dummyBusinessId]: {
-            foo: 'bar'
-          }
+            foo: "bar",
+          },
         };
-        const newState = { ...defaultState,
+        const newState = {
+          ...defaultState,
           companyNoticeById: dummyPayload,
           isFetchingCompanyNoticeById: {
-            [dummyBusinessId]: false
-          }
+            [dummyBusinessId]: false,
+          },
         };
-        const state = tradeRegisterReducer({}, receiveTradeRegisterCompanyNoticeById(dummyPayload));
+        const state = tradeRegisterReducer(
+          {},
+          receiveTradeRegisterCompanyNoticeById(dummyPayload),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetchingCompanyRepresentById to true when fetching company represent info', () => {
-        const dummyBusinessId = '123';
-        const newState = { ...defaultState,
+      it("should update isFetchingCompanyRepresentById to true when fetching company represent info", () => {
+        const dummyBusinessId = "123";
+        const newState = {
+          ...defaultState,
           isFetchingCompanyRepresentById: {
-            [dummyBusinessId]: true
-          }
+            [dummyBusinessId]: true,
+          },
         };
-        const state = tradeRegisterReducer({}, fetchTradeRegisterCompanyRepresentById(dummyBusinessId));
+        const state = tradeRegisterReducer(
+          {},
+          fetchTradeRegisterCompanyRepresentById(dummyBusinessId),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetchingCompanyRepresentById to false when by companyRepresentnotFoundById', () => {
-        const dummyBusinessId = '123';
-        const newState = { ...defaultState,
+      it("should update isFetchingCompanyRepresentById to false when by companyRepresentnotFoundById", () => {
+        const dummyBusinessId = "123";
+        const newState = {
+          ...defaultState,
           isFetchingCompanyRepresentById: {
-            [dummyBusinessId]: false
-          }
+            [dummyBusinessId]: false,
+          },
         };
-        let state = tradeRegisterReducer({}, fetchTradeRegisterCompanyRepresentById(dummyBusinessId));
-        state = tradeRegisterReducer(state, companyRepresentNotFoundById(dummyBusinessId));
+        let state = tradeRegisterReducer(
+          {},
+          fetchTradeRegisterCompanyRepresentById(dummyBusinessId),
+        );
+        state = tradeRegisterReducer(
+          state,
+          companyRepresentNotFoundById(dummyBusinessId),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update companyRepresentById', () => {
-        const dummyBusinessId = '123';
+      it("should update companyRepresentById", () => {
+        const dummyBusinessId = "123";
         const dummyPayload = {
           [dummyBusinessId]: {
-            foo: 'bar'
-          }
+            foo: "bar",
+          },
         };
-        const newState = { ...defaultState,
+        const newState = {
+          ...defaultState,
           companyRepresentById: dummyPayload,
           isFetchingCompanyRepresentById: {
-            [dummyBusinessId]: false
-          }
+            [dummyBusinessId]: false,
+          },
         };
-        const state = tradeRegisterReducer({}, receiveTradeRegisterCompanyRepresentById(dummyPayload));
+        const state = tradeRegisterReducer(
+          {},
+          receiveTradeRegisterCompanyRepresentById(dummyPayload),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update collapseStates', () => {
+      it("should update collapseStates", () => {
         const dummyPayload = {
-          '123': false
+          "123": false,
         };
-        const newState = { ...defaultState,
-          collapseStates: dummyPayload
-        };
-        const state = tradeRegisterReducer({}, receiveCollapseStates(dummyPayload));
+        const newState = { ...defaultState, collapseStates: dummyPayload };
+        const state = tradeRegisterReducer(
+          {},
+          receiveCollapseStates(dummyPayload),
+        );
         expect(state).to.deep.equal(newState);
       });
     });

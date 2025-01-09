@@ -5,15 +5,12 @@ type Props = {
   isLoading: boolean;
 };
 
-const Loader = ({
-  className,
-  isLoading
-}: Props) => {
+const Loader = ({ className, isLoading }: Props) => {
   if (!isLoading) {
     return null;
   }
 
-  return <div className={classNames('loader', className)} />;
+  return <div className={classNames("loader", className)} />;
 };
 
 export default Loader;

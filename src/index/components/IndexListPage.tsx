@@ -14,7 +14,10 @@ import { getContentYearlyIndexes } from "@/index/helpers";
 import { hasPermissions, setPageTitle } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import { getIndexList, getIsFetching } from "@/index/selectors";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "@/usersPermissions/selectors";
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
 import type { IndexList } from "@/index/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
@@ -33,22 +36,19 @@ type State = {
 class IndexListPage extends PureComponent<Props, State> {
   state = {
     indexList: [],
-    yearlyIndexes: []
+    yearlyIndexes: [],
   };
 
   componentDidMount() {
-    const {
-      fetchIndexList,
-      receiveTopNavigationSettings
-    } = this.props;
-    setPageTitle('Elinkustannusindeksit');
+    const { fetchIndexList, receiveTopNavigationSettings } = this.props;
+    setPageTitle("Elinkustannusindeksit");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.INDEX),
-      pageTitle: 'Elinkustannusindeksit',
-      showSearch: false
+      pageTitle: "Elinkustannusindeksit",
+      showSearch: false,
     });
     fetchIndexList({
-      limit: 10000
+      limit: 10000,
     });
   }
 
@@ -68,30 +68,44 @@ class IndexListPage extends PureComponent<Props, State> {
       indexList,
       isFetching,
       isFetchingUsersPermissions,
-      usersPermissions
+      usersPermissions,
     } = this.props;
-    const {
-      yearlyIndexes
-    } = this.state;
-    if (isFetching || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    const { yearlyIndexes } = this.state;
+    if (isFetching || isFetchingUsersPermissions)
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (isEmpty(UsersPermissions)) return null;
-    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INDEX} /></PageContainer>;
+    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX))
+      return (
+        <PageContainer>
+          <AuthorizationError text={PermissionMissingTexts.INDEX} />
+        </PageContainer>
+      );
     getContentYearlyIndexes(indexList);
-    return <PageContainer>
+    return (
+      <PageContainer>
         <IndexTable yearlyIndexes={yearlyIndexes} />
-      </PageContainer>;
+      </PageContainer>
+    );
   }
-
 }
 
-export default flowRight(connect(state => {
-  return {
-    indexList: getIndexList(state),
-    isFetching: getIsFetching(state),
-    isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  fetchIndexList,
-  receiveTopNavigationSettings
-}))(IndexListPage);
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        indexList: getIndexList(state),
+        isFetching: getIsFetching(state),
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+    {
+      fetchIndexList,
+      receiveTopNavigationSettings,
+    },
+  ),
+)(IndexListPage);

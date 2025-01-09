@@ -19,11 +19,21 @@ const Button = ({
   style,
   text,
   title,
-  type = 'button'
+  type = "button",
 }: Props): JSX.Element => {
-  return <button ref={innerRef} className={classNames('mvj-button', className)} onClick={onClick} disabled={disabled} style={style} title={title} type={type}>
+  return (
+    <button
+      ref={innerRef}
+      className={classNames("mvj-button", className)}
+      onClick={onClick}
+      disabled={disabled}
+      style={style}
+      title={title}
+      type={type}
+    >
       {text}
-    </button>;
+    </button>
+  );
 };
 
 export default Button;

@@ -7,11 +7,7 @@ type Props = {
   disabled?: boolean;
 };
 
-const AddFileButton = ({
-  label,
-  name,
-  onChange
-}: Props): JSX.Element => {
+const AddFileButton = ({ label, name, onChange }: Props): JSX.Element => {
   let input: any;
 
   const handleKeyDown = (e: any) => {
@@ -25,13 +21,27 @@ const AddFileButton = ({
     input = element;
   };
 
-  return <div className='form__add-file-button'>
-      <label htmlFor={name} onKeyDown={handleKeyDown} className='form__add-file-button__label' tabIndex={0}>
+  return (
+    <div className="form__add-file-button">
+      <label
+        htmlFor={name}
+        onKeyDown={handleKeyDown}
+        className="form__add-file-button__label"
+        tabIndex={0}
+      >
         <AddIcon />
         {label}
       </label>
-      <input ref={setRefForFileInput} className='form__add-file-button__input' name={name} id={name} type='file' onChange={onChange} />
-    </div>;
+      <input
+        ref={setRefForFileInput}
+        className="form__add-file-button__input"
+        name={name}
+        id={name}
+        type="file"
+        onChange={onChange}
+      />
+    </div>
+  );
 };
 
 export default AddFileButton;

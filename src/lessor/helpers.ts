@@ -5,7 +5,9 @@ import { getContactFullName } from "@/contacts/helpers";
  * @params {Object} lessor
  * @returns {Object}
  */
-export const getContentLessor = (lessor: Record<string, any> | null | undefined): Record<string, any> => {
+export const getContentLessor = (
+  lessor: Record<string, any> | null | undefined,
+): Record<string, any> => {
   if (!lessor) return null;
   return {
     id: lessor.id,
@@ -14,6 +16,6 @@ export const getContentLessor = (lessor: Record<string, any> | null | undefined)
     type: lessor.type,
     first_name: lessor.first_name,
     last_name: lessor.last_name,
-    name: lessor.name
+    name: lessor.name,
   };
 };

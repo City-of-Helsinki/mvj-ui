@@ -13,10 +13,18 @@ import ListItems from "@/components/content/ListItems";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import { receiveCollapseStates } from "@/tradeRegister/actions";
-import { CollapseStatePaths, CompanyNoticeFieldPaths, CompanyNoticeFieldTitles } from "@/tradeRegister/enums";
+import {
+  CollapseStatePaths,
+  CompanyNoticeFieldPaths,
+  CompanyNoticeFieldTitles,
+} from "@/tradeRegister/enums";
 import { formatDate } from "@/util/helpers";
 import { getUiDataTradeRegisterCompanyNoticeKey } from "@/uiData/helpers";
-import { getCollapseStateByKey, getCompanyNoticeById, getIsFetchingCompanyNoticeById } from "@/tradeRegister/selectors";
+import {
+  getCollapseStateByKey,
+  getCompanyNoticeById,
+  getIsFetchingCompanyNoticeById,
+} from "@/tradeRegister/selectors";
 import { withWindowResize } from "@/components/resize/WindowResizeHandler";
 type Props = {
   businessId: string;
@@ -33,50 +41,98 @@ const CompanyNotice = ({
   companyNoticeCollapseState,
   isFetchingCompanyNotice,
   largeScreen,
-  receiveCollapseStates
+  receiveCollapseStates,
 }: Props) => {
   const handleCollapseToggleCompanyNotice = (val: boolean) => {
     receiveCollapseStates({
-      [`${CollapseStatePaths.COMPANY_NOTICE}.${businessId}`]: val
+      [`${CollapseStatePaths.COMPANY_NOTICE}.${businessId}`]: val,
     });
   };
 
   const notices = get(companyNotice, CompanyNoticeFieldPaths.NOTICE, []);
   if (companyNotice === undefined && !isFetchingCompanyNotice) return null;
-  return <Collapse defaultOpen={companyNoticeCollapseState !== undefined ? companyNoticeCollapseState : false} headerTitle={CompanyNoticeFieldTitles.NOTICE} onToggle={handleCollapseToggleCompanyNotice} enableUiDataEdit uiDataKey={getUiDataTradeRegisterCompanyNoticeKey(CompanyNoticeFieldPaths.NOTICE)}>
-      {isFetchingCompanyNotice && <LoaderWrapper>
+  return (
+    <Collapse
+      defaultOpen={
+        companyNoticeCollapseState !== undefined
+          ? companyNoticeCollapseState
+          : false
+      }
+      headerTitle={CompanyNoticeFieldTitles.NOTICE}
+      onToggle={handleCollapseToggleCompanyNotice}
+      enableUiDataEdit
+      uiDataKey={getUiDataTradeRegisterCompanyNoticeKey(
+        CompanyNoticeFieldPaths.NOTICE,
+      )}
+    >
+      {isFetchingCompanyNotice && (
+        <LoaderWrapper>
           <Loader isLoading={isFetchingCompanyNotice} />
-        </LoaderWrapper>}
-      {!isFetchingCompanyNotice && <Fragment>
-          {!companyNotice && <FormText>Vireillä olevat ilmoitukset ei saatavilla</FormText>}
-          {!!companyNotice && <Fragment>
-              {!notices.length && <FormText>Ei vireillä olevia ilmoituksia</FormText>}
+        </LoaderWrapper>
+      )}
+      {!isFetchingCompanyNotice && (
+        <Fragment>
+          {!companyNotice && (
+            <FormText>Vireillä olevat ilmoitukset ei saatavilla</FormText>
+          )}
+          {!!companyNotice && (
+            <Fragment>
+              {!notices.length && (
+                <FormText>Ei vireillä olevia ilmoituksia</FormText>
+              )}
 
-              {!!notices.length && <Fragment>
-                  {largeScreen && <Fragment>
+              {!!notices.length && (
+                <Fragment>
+                  {largeScreen && (
+                    <Fragment>
                       <Row>
                         <Column large={2}>
-                          <FormTextTitle enableUiDataEdit uiDataKey={CompanyNoticeFieldPaths.NOTICE_TYPE}>
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={CompanyNoticeFieldPaths.NOTICE_TYPE}
+                          >
                             {CompanyNoticeFieldTitles.NOTICE_TYPE}
                           </FormTextTitle>
                         </Column>
                         <Column large={2}>
-                          <FormTextTitle enableUiDataEdit uiDataKey={CompanyNoticeFieldPaths.NOTICE_RECORD_NUMBER}>
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={
+                              CompanyNoticeFieldPaths.NOTICE_RECORD_NUMBER
+                            }
+                          >
                             {CompanyNoticeFieldTitles.NOTICE_RECORD_NUMBER}
                           </FormTextTitle>
                         </Column>
                         <Column large={2}>
-                          <FormTextTitle enableUiDataEdit uiDataKey={CompanyNoticeFieldPaths.NOTICE_ARRIVAL_DATE}>
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={
+                              CompanyNoticeFieldPaths.NOTICE_ARRIVAL_DATE
+                            }
+                          >
                             {CompanyNoticeFieldTitles.NOTICE_ARRIVAL_DATE}
                           </FormTextTitle>
                         </Column>
                         <Column large={2}>
-                          <FormTextTitle enableUiDataEdit uiDataKey={CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_ARRIVAL_DATE}>
-                            {CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_ARRIVAL_DATE}
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={
+                              CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_ARRIVAL_DATE
+                            }
+                          >
+                            {
+                              CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_ARRIVAL_DATE
+                            }
                           </FormTextTitle>
                         </Column>
                         <Column large={2}>
-                          <FormTextTitle enableUiDataEdit uiDataKey={CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_NAME}>
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={
+                              CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_NAME
+                            }
+                          >
                             {CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_NAME}
                           </FormTextTitle>
                         </Column>
@@ -84,77 +140,151 @@ const CompanyNotice = ({
 
                       <ListItems>
                         {notices.map((notice, index) => {
-                return <Row key={index}>
+                          return (
+                            <Row key={index}>
                               <Column large={2}>
-                                <ListItem>{notice.type || '-'}</ListItem>
-                              </Column>
-                              <Column large={2}>
-                                <ListItem>{notice.recordNumber || '-'}</ListItem>
+                                <ListItem>{notice.type || "-"}</ListItem>
                               </Column>
                               <Column large={2}>
-                                <ListItem>{formatDate(notice.arrivalDate) || '-'}</ListItem>
+                                <ListItem>
+                                  {notice.recordNumber || "-"}
+                                </ListItem>
                               </Column>
                               <Column large={2}>
-                                <ListItem>{formatDate(notice.latestPhaseArrivalDate) || '-'}</ListItem>
+                                <ListItem>
+                                  {formatDate(notice.arrivalDate) || "-"}
+                                </ListItem>
                               </Column>
                               <Column large={2}>
-                                <ListItem>{notice.latestPhaseName || '-'}</ListItem>
+                                <ListItem>
+                                  {formatDate(notice.latestPhaseArrivalDate) ||
+                                    "-"}
+                                </ListItem>
                               </Column>
-                            </Row>;
-              })}
-                      </ListItems>
-                    </Fragment>}
-                  {!largeScreen && <BoxItemContainer>
-                      {notices.map((notice, index) => {
-              return <BoxItem key={index} className='no-border-on-first-child no-border-on-last-child'>
-                            <Row>
-                              <Column small={12} medium={4}>
-                                <FormTextTitle enableUiDataEdit uiDataKey={CompanyNoticeFieldPaths.NOTICE_TYPE}>
-                                  {CompanyNoticeFieldTitles.NOTICE_TYPE}
-                                </FormTextTitle>
-                                <FormText>{notice.type || '-'}</FormText>
-                              </Column>
-                              <Column small={12} medium={4}>
-                                <FormTextTitle enableUiDataEdit uiDataKey={CompanyNoticeFieldPaths.NOTICE_RECORD_NUMBER}>
-                                  {CompanyNoticeFieldTitles.NOTICE_RECORD_NUMBER}
-                                </FormTextTitle>
-                                <FormText>{notice.recordNumber || '-'}</FormText>
-                              </Column>
-                              <Column small={12} medium={4}>
-                                <FormTextTitle enableUiDataEdit uiDataKey={CompanyNoticeFieldPaths.NOTICE_ARRIVAL_DATE}>
-                                  {CompanyNoticeFieldTitles.NOTICE_ARRIVAL_DATE}
-                                </FormTextTitle>
-                                <FormText>{formatDate(notice.arrivalDate) || '-'}</FormText>
-                              </Column>
-                              <Column small={12} medium={4}>
-                                <FormTextTitle enableUiDataEdit uiDataKey={CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_ARRIVAL_DATE}>
-                                  {CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_ARRIVAL_DATE}
-                                </FormTextTitle>
-                                <FormText>{formatDate(notice.latestPhaseArrivalDate) || '-'}</FormText>
-                              </Column>
-                              <Column small={12} medium={4}>
-                                <FormTextTitle enableUiDataEdit uiDataKey={CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_NAME}>
-                                  {CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_NAME}
-                                </FormTextTitle>
-                                <FormText>{notice.latestPhaseName || '-'}</FormText>
+                              <Column large={2}>
+                                <ListItem>
+                                  {notice.latestPhaseName || "-"}
+                                </ListItem>
                               </Column>
                             </Row>
-                          </BoxItem>;
-            })}
-
-                    </BoxItemContainer>}
-                </Fragment>}
-            </Fragment>}
-        </Fragment>}
-    </Collapse>;
+                          );
+                        })}
+                      </ListItems>
+                    </Fragment>
+                  )}
+                  {!largeScreen && (
+                    <BoxItemContainer>
+                      {notices.map((notice, index) => {
+                        return (
+                          <BoxItem
+                            key={index}
+                            className="no-border-on-first-child no-border-on-last-child"
+                          >
+                            <Row>
+                              <Column small={12} medium={4}>
+                                <FormTextTitle
+                                  enableUiDataEdit
+                                  uiDataKey={
+                                    CompanyNoticeFieldPaths.NOTICE_TYPE
+                                  }
+                                >
+                                  {CompanyNoticeFieldTitles.NOTICE_TYPE}
+                                </FormTextTitle>
+                                <FormText>{notice.type || "-"}</FormText>
+                              </Column>
+                              <Column small={12} medium={4}>
+                                <FormTextTitle
+                                  enableUiDataEdit
+                                  uiDataKey={
+                                    CompanyNoticeFieldPaths.NOTICE_RECORD_NUMBER
+                                  }
+                                >
+                                  {
+                                    CompanyNoticeFieldTitles.NOTICE_RECORD_NUMBER
+                                  }
+                                </FormTextTitle>
+                                <FormText>
+                                  {notice.recordNumber || "-"}
+                                </FormText>
+                              </Column>
+                              <Column small={12} medium={4}>
+                                <FormTextTitle
+                                  enableUiDataEdit
+                                  uiDataKey={
+                                    CompanyNoticeFieldPaths.NOTICE_ARRIVAL_DATE
+                                  }
+                                >
+                                  {CompanyNoticeFieldTitles.NOTICE_ARRIVAL_DATE}
+                                </FormTextTitle>
+                                <FormText>
+                                  {formatDate(notice.arrivalDate) || "-"}
+                                </FormText>
+                              </Column>
+                              <Column small={12} medium={4}>
+                                <FormTextTitle
+                                  enableUiDataEdit
+                                  uiDataKey={
+                                    CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_ARRIVAL_DATE
+                                  }
+                                >
+                                  {
+                                    CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_ARRIVAL_DATE
+                                  }
+                                </FormTextTitle>
+                                <FormText>
+                                  {formatDate(notice.latestPhaseArrivalDate) ||
+                                    "-"}
+                                </FormText>
+                              </Column>
+                              <Column small={12} medium={4}>
+                                <FormTextTitle
+                                  enableUiDataEdit
+                                  uiDataKey={
+                                    CompanyNoticeFieldPaths.NOTICE_LATEST_PHASE_NAME
+                                  }
+                                >
+                                  {
+                                    CompanyNoticeFieldTitles.NOTICE_LATEST_PHASE_NAME
+                                  }
+                                </FormTextTitle>
+                                <FormText>
+                                  {notice.latestPhaseName || "-"}
+                                </FormText>
+                              </Column>
+                            </Row>
+                          </BoxItem>
+                        );
+                      })}
+                    </BoxItemContainer>
+                  )}
+                </Fragment>
+              )}
+            </Fragment>
+          )}
+        </Fragment>
+      )}
+    </Collapse>
+  );
 };
 
-export default flowRight(withWindowResize, connect((state, props: Props) => {
-  return {
-    companyNotice: getCompanyNoticeById(state, props.businessId),
-    companyNoticeCollapseState: getCollapseStateByKey(state, `${CollapseStatePaths.COMPANY_NOTICE}.${props.businessId}`),
-    isFetchingCompanyNotice: getIsFetchingCompanyNoticeById(state, props.businessId)
-  };
-}, {
-  receiveCollapseStates
-}))(CompanyNotice);
+export default flowRight(
+  withWindowResize,
+  connect(
+    (state, props: Props) => {
+      return {
+        companyNotice: getCompanyNoticeById(state, props.businessId),
+        companyNoticeCollapseState: getCollapseStateByKey(
+          state,
+          `${CollapseStatePaths.COMPANY_NOTICE}.${props.businessId}`,
+        ),
+        isFetchingCompanyNotice: getIsFetchingCompanyNoticeById(
+          state,
+          props.businessId,
+        ),
+      };
+    },
+    {
+      receiveCollapseStates,
+    },
+  ),
+)(CompanyNotice);

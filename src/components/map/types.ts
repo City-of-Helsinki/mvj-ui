@@ -1,4 +1,8 @@
-export type ControlPosition = "topleft" | "topright" | "bottomleft" | "bottomright";
+export type ControlPosition =
+  | "topleft"
+  | "topright"
+  | "bottomleft"
+  | "bottomright";
 
 interface ServiceMapAddress {
   object_type: "address";
@@ -29,28 +33,28 @@ interface ServiceMapAddress {
     type: "Point";
     coordinates: [number, number];
   };
-};
+}
 
 export interface ServiceMapResponse {
-    count: number;
-    next: string | null;
-    previous: string | null;
-    results: Array<ServiceMapAddress>;
-  };
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Array<ServiceMapAddress>;
+}
 
 export interface AddressResult {
   x: number;
   y: number;
   label: string;
-};
+}
 
 export interface ParseArgument<TData> {
   data: TData;
-};
+}
 
 export interface SearchArgument {
   query: string;
-};
+}
 
 export declare type PointTuple = [number, number];
 export declare type BoundsTuple = [PointTuple, PointTuple];

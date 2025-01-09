@@ -21,22 +21,30 @@ type Props = OwnProps & {
 
 class PlotApplicationApplicantInfoCheck extends PureComponent<Props> {
   render(): JSX.Element {
-    const {
-      infoCheckAttributes,
-      infoCheckData
-    } = this.props;
-    const infoCheckStateOptions = getFieldOptions(infoCheckAttributes, 'state');
-    return <PlotApplicationInfoCheckCollapse className="PlotApplicationApplicantInfoCheck" headerTitle="Hakijan käsittelytiedot">
+    const { infoCheckAttributes, infoCheckData } = this.props;
+    const infoCheckStateOptions = getFieldOptions(infoCheckAttributes, "state");
+    return (
+      <PlotApplicationInfoCheckCollapse
+        className="PlotApplicationApplicantInfoCheck"
+        headerTitle="Hakijan käsittelytiedot"
+      >
         <>
-        <h4>Tarkistettavat dokumentit</h4>
-        <ApplicantInfoCheck infoChecks={infoCheckData} infoCheckStateOptions={infoCheckStateOptions} />
+          <h4>Tarkistettavat dokumentit</h4>
+          <ApplicantInfoCheck
+            infoChecks={infoCheckData}
+            infoCheckStateOptions={infoCheckStateOptions}
+          />
         </>
-      </PlotApplicationInfoCheckCollapse>;
+      </PlotApplicationInfoCheckCollapse>
+    );
   }
-
 }
 
-export default (connect((state, props) => ({
+export default connect((state, props) => ({
   infoCheckAttributes: getApplicantInfoCheckAttributes(state),
-  infoCheckData: getApplicantInfoCheckItems(getApplicationApplicantInfoCheckData(state).filter(item => item.entry === props.identifier))
-}))(PlotApplicationApplicantInfoCheck) as React.ComponentType<OwnProps>);
+  infoCheckData: getApplicantInfoCheckItems(
+    getApplicationApplicantInfoCheckData(state).filter(
+      (item) => item.entry === props.identifier,
+    ),
+  ),
+}))(PlotApplicationApplicantInfoCheck) as React.ComponentType<OwnProps>;

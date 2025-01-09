@@ -18,36 +18,36 @@ class Modal extends Component<Props, State> {
   component: any;
   state: State = {
     isClosing: false,
-    isOpening: false
+    isOpening: false,
   };
 
   componentDidMount() {
-    this.component.addEventListener('transitionend', this.transitionEnds);
+    this.component.addEventListener("transitionend", this.transitionEnds);
   }
 
   componentWillUnmount() {
-    this.component.removeEventListener('transitionend', this.transitionEnds);
+    this.component.removeEventListener("transitionend", this.transitionEnds);
   }
 
   componentDidUpdate(prevProps: Props) {
     if (!prevProps.isOpen && this.props.isOpen) {
       this.setState({
-        isOpening: true
+        isOpening: true,
       });
     } else if (prevProps.isOpen && !this.props.isOpen) {
       this.setState({
-        isClosing: true
+        isClosing: true,
       });
     }
   }
 
-  setComponentRef: (arg0: any) => void = element => {
+  setComponentRef: (arg0: any) => void = (element) => {
     this.component = element;
   };
   transitionEnds: () => void = () => {
     this.setState({
       isClosing: false,
-      isOpening: false
+      isOpening: false,
     });
   };
 
@@ -60,29 +60,43 @@ class Modal extends Component<Props, State> {
       title,
       scrollable = false,
     } = this.props;
-    const {
-      isClosing,
-      isOpening
-    } = this.state;
-    return <div ref={this.setComponentRef} className={classnames('modal', className, {
-      'modal-open': isOpen
-    })}>
-        <div className='modal__overlay'></div>
-        <div className={scrollable ? 'modal__wrapper modal__scrollable' : 'modal__wrapper'}>
-
-          <div className='modal__header' hidden={!isOpen && !isClosing && !isOpening}>
-            <div className='modal__header_wrapper'>
-              <h1 className='title'>{title}</h1>
-              <CloseButton className='position-topright' onClick={onClose} title='Sulje' />
+    const { isClosing, isOpening } = this.state;
+    return (
+      <div
+        ref={this.setComponentRef}
+        className={classnames("modal", className, {
+          "modal-open": isOpen,
+        })}
+      >
+        <div className="modal__overlay"></div>
+        <div
+          className={
+            scrollable ? "modal__wrapper modal__scrollable" : "modal__wrapper"
+          }
+        >
+          <div
+            className="modal__header"
+            hidden={!isOpen && !isClosing && !isOpening}
+          >
+            <div className="modal__header_wrapper">
+              <h1 className="title">{title}</h1>
+              <CloseButton
+                className="position-topright"
+                onClick={onClose}
+                title="Sulje"
+              />
             </div>
           </div>
-          <div className='modal__content' hidden={!isOpen && !isClosing && !isOpening}>
+          <div
+            className="modal__content"
+            hidden={!isOpen && !isClosing && !isOpening}
+          >
             {children}
           </div>
         </div>
-      </div>;
+      </div>
+    );
   }
-
 }
 
 export default Modal;

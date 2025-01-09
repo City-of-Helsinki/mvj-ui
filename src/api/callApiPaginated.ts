@@ -8,7 +8,7 @@ function* callApiPaginated(request: Request): Generator<any, any, any> {
     let nextUrl = bodyAsJson.next;
     while (nextUrl !== null) {
       request = new Request(nextUrl, {
-        method: 'GET'
+        method: "GET",
       });
       ({ response, bodyAsJson } = yield callApi(request));
       const status = response.status;
@@ -19,21 +19,21 @@ function* callApiPaginated(request: Request): Generator<any, any, any> {
           break;
         case 204:
           return {
-            response
+            response,
           };
           break;
-      
+
         default:
           return {
             response,
             bodyAsJson: {
               exception: response.status,
-              message: response.statusText
-            }
+              message: response.statusText,
+            },
           };
           break;
       }
-      
+
       nextUrl = bodyAsJson.next || null;
     }
   }

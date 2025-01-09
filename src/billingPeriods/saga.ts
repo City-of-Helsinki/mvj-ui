@@ -5,22 +5,22 @@ import { receiveError } from "@/api/actions";
 
 function* fetchBillingPeriodsSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchBillingPeriods, payload);
 
     switch (statusCode) {
       case 200:
-        yield put(receiveBillingPeriodsByLease({
-          leaseId: payload.leaseId,
-          billingPeriods: bodyAsJson.billing_periods
-        }));
+        yield put(
+          receiveBillingPeriodsByLease({
+            leaseId: payload.leaseId,
+            billingPeriods: bodyAsJson.billing_periods,
+          }),
+        );
         break;
 
       case 404:
@@ -39,7 +39,9 @@ function* fetchBillingPeriodsSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/billingperiods/FETCH_ALL', fetchBillingPeriodsSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/billingperiods/FETCH_ALL", fetchBillingPeriodsSaga);
+    }),
+  ]);
 }

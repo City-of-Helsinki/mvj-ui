@@ -43,76 +43,124 @@ const LeaseHistoryItem = ({
   lease,
   id,
   deleteId,
-  itemTitle = '',
+  itemTitle = "",
   startDate,
   endDate,
   receivedAt,
   plotSearchType,
   plotSearchSubtype,
   applicantName,
-  itemType = '',
+  itemType = "",
   onDelete,
   stateOptions,
-  usersPermissions
+  usersPermissions,
 }: Props) => {
   const titleString = lease ? getContentLeaseIdentifier(lease) : itemTitle;
   const MAX_TITLE_LENGTH = 16;
   const title = getTitleText(titleString, MAX_TITLE_LENGTH);
-  const externalLinkHref = lease ? `${getRouteById(Routes.LEASES)}/${lease.id}` : itemType === LeaseHistoryItemTypes.PLOTSEARCH && id ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}` : itemType === LeaseHistoryItemTypes.PLOT_APPLICATION && id ? `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}` : itemType === LeaseHistoryItemTypes.AREA_SEARCH && id ? `${getRouteById(Routes.AREA_SEARCH)}/${id}` : null;
-  const permissions = hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASE_HISTORY_ITEM);
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      const handleDelete = () => {
-        dispatch({
-          type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-          confirmationFunction: () => {
-            if (onDelete) {
-              onDelete(deleteId);
-            }
-          },
-          confirmationModalButtonClassName: ButtonColors.ALERT,
-          confirmationModalButtonText: ConfirmationModalTexts.DELETE_RELATED_LEASE.BUTTON,
-          confirmationModalLabel: ConfirmationModalTexts.DELETE_RELATED_LEASE.LABEL,
-          confirmationModalTitle: ConfirmationModalTexts.DELETE_RELATED_LEASE.TITLE
-        });
-      };
+  const externalLinkHref = lease
+    ? `${getRouteById(Routes.LEASES)}/${lease.id}`
+    : itemType === LeaseHistoryItemTypes.PLOTSEARCH && id
+      ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}`
+      : itemType === LeaseHistoryItemTypes.PLOT_APPLICATION && id
+        ? `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`
+        : itemType === LeaseHistoryItemTypes.AREA_SEARCH && id
+          ? `${getRouteById(Routes.AREA_SEARCH)}/${id}`
+          : null;
+  const permissions = hasPermissions(
+    usersPermissions,
+    UsersPermissions.DELETE_LEASE_HISTORY_ITEM,
+  );
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        const handleDelete = () => {
+          dispatch({
+            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+            confirmationFunction: () => {
+              if (onDelete) {
+                onDelete(deleteId);
+              }
+            },
+            confirmationModalButtonClassName: ButtonColors.ALERT,
+            confirmationModalButtonText:
+              ConfirmationModalTexts.DELETE_RELATED_LEASE.BUTTON,
+            confirmationModalLabel:
+              ConfirmationModalTexts.DELETE_RELATED_LEASE.LABEL,
+            confirmationModalTitle:
+              ConfirmationModalTexts.DELETE_RELATED_LEASE.TITLE,
+          });
+        };
 
-      return <div className={classNames('related-leases-item', {
-        'active': active
-      }, {
-        'indented': indented
-      })}>
+        return (
+          <div
+            className={classNames(
+              "related-leases-item",
+              {
+                active: active,
+              },
+              {
+                indented: indented,
+              },
+            )}
+          >
             <div className="related-leases-item_wrapper">
               <div className="left-border-overlay" />
               <div className="connection-line" />
-              <div className={classNames('related-leases-item_badge')}>
+              <div className={classNames("related-leases-item_badge")}>
                 {!active && <AccordionIcon />}
               </div>
-              <div className={classNames('related-leases-item_info')}>
+              <div className={classNames("related-leases-item_info")}>
                 <p className="identifier">
-                  {active ? title : externalLinkHref ? <ExternalLink href={externalLinkHref} text={title || ''} /> : title}
+                  {active ? (
+                    title
+                  ) : externalLinkHref ? (
+                    <ExternalLink href={externalLinkHref} text={title || ""} />
+                  ) : (
+                    title
+                  )}
                 </p>
-                {receivedAt && <FormText>Saapunut {formatDate(receivedAt)}</FormText>}
-                {startDate && endDate && <FormText>{formatDate(startDate)} - {formatDate(endDate)}</FormText>}
+                {receivedAt && (
+                  <FormText>Saapunut {formatDate(receivedAt)}</FormText>
+                )}
+                {startDate && endDate && (
+                  <FormText>
+                    {formatDate(startDate)} - {formatDate(endDate)}
+                  </FormText>
+                )}
                 {plotSearchType && <FormText>{plotSearchType}</FormText>}
                 {plotSearchSubtype && <FormText>{plotSearchSubtype}</FormText>}
                 {applicantName && <FormText>{applicantName}</FormText>}
-                <FormText className="type">{lease ? getLabelOfOption(stateOptions, lease.state) : itemType}</FormText>
-                <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_LEASE_HISTORY_ITEM)}>
-                  {onDelete && deleteId && <RemoveButton className='related-leases-item_remove-button' onClick={handleDelete} title='Poista liitos' />}
+                <FormText className="type">
+                  {lease
+                    ? getLabelOfOption(stateOptions, lease.state)
+                    : itemType}
+                </FormText>
+                <Authorization
+                  allow={hasPermissions(
+                    usersPermissions,
+                    UsersPermissions.DELETE_LEASE_HISTORY_ITEM,
+                  )}
+                >
+                  {onDelete && deleteId && (
+                    <RemoveButton
+                      className="related-leases-item_remove-button"
+                      onClick={handleDelete}
+                      title="Poista liitos"
+                    />
+                  )}
                 </Authorization>
               </div>
-
             </div>
-          </div>;
-    }}
-    </AppConsumer>;
+          </div>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    usersPermissions: getUsersPermissions(state)
+    usersPermissions: getUsersPermissions(state),
   };
 })(LeaseHistoryItem);

@@ -17,18 +17,42 @@ import FormWrapper from "@/components/form/FormWrapper";
 import FormWrapperLeft from "@/components/form/FormWrapperLeft";
 import FormWrapperRight from "@/components/form/FormWrapperRight";
 import SubTitle from "@/components/content/SubTitle";
-import { initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal } from "@/contacts/actions";
+import {
+  initializeContactForm,
+  receiveContactModalSettings,
+  receiveIsSaveClicked,
+  showContactModal,
+} from "@/contacts/actions";
 import { receiveCollapseStates } from "@/leases/actions";
 import { FieldTypes, FormNames, Methods, ViewModes } from "@/enums";
-import { LeaseTenantContactSetFieldPaths, LeaseTenantContactSetFieldTitles, TenantContactType } from "@/leases/enums";
+import {
+  LeaseTenantContactSetFieldPaths,
+  LeaseTenantContactSetFieldTitles,
+  TenantContactType,
+} from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import { formatDateRange, hasPermissions, isActive, isArchived, isFieldAllowedToRead, isMethodAllowed } from "@/util/helpers";
+import {
+  formatDateRange,
+  hasPermissions,
+  isActive,
+  isArchived,
+  isFieldAllowedToRead,
+  isMethodAllowed,
+} from "@/util/helpers";
 import { getMethods as getContactMethods } from "@/contacts/selectors";
-import { getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked } from "@/leases/selectors";
+import {
+  getAttributes,
+  getCollapseStateByKey,
+  getErrorsByFormName,
+  getIsSaveClicked,
+} from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
-import type { UsersPermissions as UsersPermissionsType, UserServiceUnit } from "@/usersPermissions/types";
+import type {
+  UsersPermissions as UsersPermissionsType,
+  UserServiceUnit,
+} from "@/usersPermissions/types";
 type Props = {
   attributes: Attributes;
   collapseState: boolean;
@@ -69,11 +93,14 @@ const OtherTenantItemEdit = ({
   showContactModal,
   tenant,
   tenantId,
-  usersPermissions
+  usersPermissions,
 }: Props) => {
   const getOtherTenantById = (id: number) => {
-    const tenantContactSet = contactType === TenantContactType.BILLING ? get(tenant, 'billing_persons', []) : get(tenant, 'contact_persons', []);
-    return id ? tenantContactSet.find(tenant => tenant.id === id) : null;
+    const tenantContactSet =
+      contactType === TenantContactType.BILLING
+        ? get(tenant, "billing_persons", [])
+        : get(tenant, "contact_persons", []);
+    return id ? tenantContactSet.find((tenant) => tenant.id === id) : null;
   };
 
   const handleAddClick = () => {
@@ -81,19 +108,18 @@ const OtherTenantItemEdit = ({
     receiveContactModalSettings({
       field: `${field}.contact`,
       contactId: null,
-      isNew: true
+      isNew: true,
     });
     receiveIsSaveClicked(false);
     showContactModal();
   };
 
   const handleEditClick = () => {
-    initializeContactForm({ ...contact
-    });
+    initializeContactForm({ ...contact });
     receiveContactModalSettings({
       field: `${field}.contact`,
       contactId: null,
-      isNew: false
+      isNew: false,
     });
     receiveIsSaveClicked(false);
     showContactModal();
@@ -105,30 +131,71 @@ const OtherTenantItemEdit = ({
       [ViewModes.EDIT]: {
         [formName]: {
           others: {
-            [tenantId]: val
-          }
-        }
-      }
+            [tenantId]: val,
+          },
+        },
+      },
     });
   };
 
   const savedTenant = getOtherTenantById(tenantId),
-        active = isActive(savedTenant),
-        archived = isArchived(savedTenant),
-        tenantErrors = get(errors, field);
-  return <Collapse archived={archived} className={classNames('collapse__secondary')} defaultOpen={collapseState !== undefined ? collapseState : active} hasErrors={isSaveClicked && !isEmpty(tenantErrors)} headerSubtitles={<Fragment>
+    active = isActive(savedTenant),
+    archived = isArchived(savedTenant),
+    tenantErrors = get(errors, field);
+  return (
+    <Collapse
+      archived={archived}
+      className={classNames("collapse__secondary")}
+      defaultOpen={collapseState !== undefined ? collapseState : active}
+      hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
+      headerSubtitles={
+        <Fragment>
           <Column></Column>
           <Column>
-            {savedTenant && <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE) && isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+            {savedTenant && (
+              <Authorization
+                allow={
+                  isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantContactSetFieldPaths.END_DATE,
+                  ) &&
+                  isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantContactSetFieldPaths.START_DATE,
+                  )
+                }
+              >
                 <CollapseHeaderSubtitle>
                   <span>Välillä:</span>
-                  {formatDateRange(savedTenant.start_date, savedTenant.end_date) || '-'}
+                  {formatDateRange(
+                    savedTenant.start_date,
+                    savedTenant.end_date,
+                  ) || "-"}
                 </CollapseHeaderSubtitle>
-              </Authorization>}
+              </Authorization>
+            )}
           </Column>
-        </Fragment>} headerTitle={<Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.TYPE)}>
-          {contactType === TenantContactType.BILLING ? 'Laskunsaaja' : 'Yhteyshenkilö'}
-        </Authorization>} onRemove={hasPermissions(usersPermissions, UsersPermissions.DELETE_TENANTCONTACT) ? onRemove : null} onToggle={handleCollapseToggle}>
+        </Fragment>
+      }
+      headerTitle={
+        <Authorization
+          allow={isFieldAllowedToRead(
+            attributes,
+            LeaseTenantContactSetFieldPaths.TYPE,
+          )}
+        >
+          {contactType === TenantContactType.BILLING
+            ? "Laskunsaaja"
+            : "Yhteyshenkilö"}
+        </Authorization>
+      }
+      onRemove={
+        hasPermissions(usersPermissions, UsersPermissions.DELETE_TENANTCONTACT)
+          ? onRemove
+          : null
+      }
+      onToggle={handleCollapseToggle}
+    >
       <BoxContentWrapper>
         <FormWrapper>
           <FormWrapperLeft>
@@ -136,17 +203,40 @@ const OtherTenantItemEdit = ({
               <Column small={12}>
                 <Row>
                   <Column small={9} medium={8}>
-                    <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
-                      <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, LeaseTenantContactSetFieldPaths.CONTACT)} name={`${field}.contact`} overrideValues={{
-                      fieldType: FieldTypes.CONTACT,
-                      label: LeaseTenantContactSetFieldTitles.CONTACT
-                    }} serviceUnit={serviceUnit} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.CONTACT)} />
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        attributes,
+                        LeaseTenantContactSetFieldPaths.CONTACT,
+                      )}
+                    >
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(
+                          attributes,
+                          LeaseTenantContactSetFieldPaths.CONTACT,
+                        )}
+                        name={`${field}.contact`}
+                        overrideValues={{
+                          fieldType: FieldTypes.CONTACT,
+                          label: LeaseTenantContactSetFieldTitles.CONTACT,
+                        }}
+                        serviceUnit={serviceUnit}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(
+                          LeaseTenantContactSetFieldPaths.CONTACT,
+                        )}
+                      />
                     </Authorization>
                   </Column>
                   <Column small={3} medium={4}>
-                    <Authorization allow={isMethodAllowed(contactMethods, Methods.POST)}>
-                      <div className='contact-buttons-wrapper'>
-                        <AddButtonThird label='Luo asiakas' onClick={handleAddClick} />
+                    <Authorization
+                      allow={isMethodAllowed(contactMethods, Methods.POST)}
+                    >
+                      <div className="contact-buttons-wrapper">
+                        <AddButtonThird
+                          label="Luo asiakas"
+                          onClick={handleAddClick}
+                        />
                       </div>
                     </Authorization>
                   </Column>
@@ -158,55 +248,110 @@ const OtherTenantItemEdit = ({
           <FormWrapperRight>
             <Row>
               <Column small={6} medium={3} large={2}>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
-                  <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, LeaseTenantContactSetFieldPaths.START_DATE)} name={`${field}.start_date`} overrideValues={{
-                  label: LeaseTenantContactSetFieldTitles.START_DATE
-                }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.START_DATE)} />
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantContactSetFieldPaths.START_DATE,
+                  )}
+                >
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(
+                      attributes,
+                      LeaseTenantContactSetFieldPaths.START_DATE,
+                    )}
+                    name={`${field}.start_date`}
+                    overrideValues={{
+                      label: LeaseTenantContactSetFieldTitles.START_DATE,
+                    }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantContactSetFieldPaths.START_DATE,
+                    )}
+                  />
                 </Authorization>
               </Column>
               <Column small={6} medium={3} large={2}>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}>
-                  <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, LeaseTenantContactSetFieldPaths.END_DATE)} name={`${field}.end_date`} overrideValues={{
-                  label: LeaseTenantContactSetFieldTitles.END_DATE
-                }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseTenantContactSetFieldPaths.END_DATE)} />
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    attributes,
+                    LeaseTenantContactSetFieldPaths.END_DATE,
+                  )}
+                >
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(
+                      attributes,
+                      LeaseTenantContactSetFieldPaths.END_DATE,
+                    )}
+                    name={`${field}.end_date`}
+                    overrideValues={{
+                      label: LeaseTenantContactSetFieldTitles.END_DATE,
+                    }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantContactSetFieldPaths.END_DATE,
+                    )}
+                  />
                 </Authorization>
               </Column>
             </Row>
           </FormWrapperRight>
         </FormWrapper>
 
-        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+        <Authorization
+          allow={isFieldAllowedToRead(
+            attributes,
+            LeaseTenantContactSetFieldPaths.CONTACT,
+          )}
+        >
           <>
-          {!!contact && <SubTitle>Asiakkaan tiedot
-              <Authorization allow={isMethodAllowed(contactMethods, Methods.PATCH)}>
-                <EditButton className='inline-button' onClick={handleEditClick} title='Muokkaa asiakasta' />
-              </Authorization>
-            </SubTitle>}
-          <ContactTemplate contact={contact} />
+            {!!contact && (
+              <SubTitle>
+                Asiakkaan tiedot
+                <Authorization
+                  allow={isMethodAllowed(contactMethods, Methods.PATCH)}
+                >
+                  <EditButton
+                    className="inline-button"
+                    onClick={handleEditClick}
+                    title="Muokkaa asiakasta"
+                  />
+                </Authorization>
+              </SubTitle>
+            )}
+            <ContactTemplate contact={contact} />
           </>
         </Authorization>
       </BoxContentWrapper>
-    </Collapse>;
+    </Collapse>
+  );
 };
 
 const formName = FormNames.LEASE_TENANTS;
 const selector = formValueSelector(formName);
-export default connect((state, props) => {
-  const id = selector(state, `${props.field}.id`);
-  return {
-    attributes: getAttributes(state),
-    collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.others.${id}`),
-    contact: selector(state, `${props.field}.contact`),
-    contactMethods: getContactMethods(state),
-    errors: getErrorsByFormName(state, formName),
-    isSaveClicked: getIsSaveClicked(state),
-    tenantId: id,
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  initializeContactForm,
-  receiveCollapseStates,
-  receiveContactModalSettings,
-  receiveIsSaveClicked,
-  showContactModal
-})(OtherTenantItemEdit);
+export default connect(
+  (state, props) => {
+    const id = selector(state, `${props.field}.id`);
+    return {
+      attributes: getAttributes(state),
+      collapseState: getCollapseStateByKey(
+        state,
+        `${ViewModes.EDIT}.${formName}.others.${id}`,
+      ),
+      contact: selector(state, `${props.field}.contact`),
+      contactMethods: getContactMethods(state),
+      errors: getErrorsByFormName(state, formName),
+      isSaveClicked: getIsSaveClicked(state),
+      tenantId: id,
+      usersPermissions: getUsersPermissions(state),
+    };
+  },
+  {
+    initializeContactForm,
+    receiveCollapseStates,
+    receiveContactModalSettings,
+    receiveIsSaveClicked,
+    showContactModal,
+  },
+)(OtherTenantItemEdit);

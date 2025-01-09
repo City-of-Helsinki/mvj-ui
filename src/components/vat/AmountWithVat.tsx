@@ -16,12 +16,12 @@ type Props = {
 class AmountWithVat extends PureComponent<Props> {
   displayName: "test";
   getVatPercent = () => {
-    const {
-      date,
-      vats
-    } = this.props;
-    const vat = vats.find(vat => {
-      return (!vat.end_date || !isAfter(new Date(date), new Date(vat.end_date))) && (!vat.start_date || !isBefore(new Date(date), new Date(vat.start_date)));
+    const { date, vats } = this.props;
+    const vat = vats.find((vat) => {
+      return (
+        (!vat.end_date || !isAfter(new Date(date), new Date(vat.end_date))) &&
+        (!vat.start_date || !isBefore(new Date(date), new Date(vat.start_date)))
+      );
     });
 
     if (vat) {
@@ -32,21 +32,23 @@ class AmountWithVat extends PureComponent<Props> {
   };
 
   render() {
-    const {
-      amount,
-      isSubjectToVat
-    } = this.props;
+    const { amount, isSubjectToVat } = this.props;
     const vatPercent = this.getVatPercent();
     const amountWithVat = (1 + vatPercent / 100) * amount;
-    return <span>{isSubjectToVat ? `${formatNumber(amount)} € / ${formatNumber(amountWithVat)} € (alv ${vatPercent}%)` : `${formatNumber(amount)} €`}</span>;
+    return (
+      <span>
+        {isSubjectToVat
+          ? `${formatNumber(amount)} € / ${formatNumber(amountWithVat)} € (alv ${vatPercent}%)`
+          : `${formatNumber(amount)} €`}
+      </span>
+    );
   }
-
 }
 
-export default connect(state => {
+export default connect((state) => {
   const currentLease = getCurrentLease(state);
   return {
     isSubjectToVat: currentLease.is_subject_to_vat,
-    vats: getVats(state)
+    vats: getVats(state),
   };
 })(AmountWithVat);

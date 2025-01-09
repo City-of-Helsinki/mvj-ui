@@ -24,17 +24,61 @@ import Tabs from "@/components/tabs/Tabs";
 import TabContent from "@/components/tabs/TabContent";
 import TabPane from "@/components/tabs/TabPane";
 import Title from "@/components/content/Title";
-import { clearFormValidFlags, editInfillDevelopment, fetchSingleInfillDevelopment, hideEditMode, receiveFormInitialValues, receiveSingleInfillDevelopment, receiveIsSaveClicked, showEditMode } from "@/infillDevelopment/actions";
+import {
+  clearFormValidFlags,
+  editInfillDevelopment,
+  fetchSingleInfillDevelopment,
+  hideEditMode,
+  receiveFormInitialValues,
+  receiveSingleInfillDevelopment,
+  receiveIsSaveClicked,
+  showEditMode,
+} from "@/infillDevelopment/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
-import { ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts } from "@/enums";
-import { InfillDevelopmentCompensationFieldPaths, InfillDevelopmentCompensationFieldTitles, InfillDevelopmentCompensationLeasesFieldPaths } from "@/infillDevelopment/enums";
-import { clearUnsavedChanges, getContentInfillDevelopment, getCopyOfInfillDevelopment, getPayloadInfillDevelopment } from "@/infillDevelopment/helpers";
+import {
+  ConfirmationModalTexts,
+  FormNames,
+  Methods,
+  PermissionMissingTexts,
+} from "@/enums";
+import {
+  InfillDevelopmentCompensationFieldPaths,
+  InfillDevelopmentCompensationFieldTitles,
+  InfillDevelopmentCompensationLeasesFieldPaths,
+} from "@/infillDevelopment/enums";
+import {
+  clearUnsavedChanges,
+  getContentInfillDevelopment,
+  getCopyOfInfillDevelopment,
+  getPayloadInfillDevelopment,
+} from "@/infillDevelopment/helpers";
 import { getUiDataInfillDevelopmentKey } from "@/uiData/helpers";
-import { getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, scrollToTopPage, setPageTitle } from "@/util/helpers";
+import {
+  getSearchQuery,
+  getUrlParams,
+  isFieldAllowedToRead,
+  isMethodAllowed,
+  scrollToTopPage,
+  setPageTitle,
+} from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
-import { getCurrentInfillDevelopment, getIsEditMode, getIsFetching, getIsFormValidById, getIsSaveClicked, getIsSaving } from "@/infillDevelopment/selectors";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "@/usersPermissions/selectors";
-import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "@/util/storage";
+import {
+  getCurrentInfillDevelopment,
+  getIsEditMode,
+  getIsFetching,
+  getIsFormValidById,
+  getIsSaveClicked,
+  getIsSaving,
+} from "@/infillDevelopment/selectors";
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
+import {
+  getSessionStorageItem,
+  removeSessionStorageItem,
+  setSessionStorageItem,
+} from "@/util/storage";
 import { withInfillDevelopmentPageAttributes } from "@/components/attributes/InfillDevelopmentPageAttributes";
 import { withUiDataList } from "@/components/uiData/UiDataListHOC";
 import type { Attributes, Methods as MethodsType } from "types";
@@ -86,10 +130,10 @@ class InfillDevelopmentPage extends Component<Props, State> {
     activeTab: 0,
     formatedInfillDevelopment: {},
     currentInfillDevelopment: {},
-    isRestoreModalOpen: false
+    isRestoreModalOpen: false,
   };
   static contextTypes = {
-    router: PropTypes.object
+    router: PropTypes.object,
   };
   timerAutoSave: any;
 
@@ -97,43 +141,41 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const {
       fetchSingleInfillDevelopment,
       hideEditMode,
-      location: {
-        search
-      },
+      location: { search },
       match: {
-        params: {
-          infillDevelopmentId
-        }
+        params: { infillDevelopmentId },
       },
       receiveIsSaveClicked,
-      receiveTopNavigationSettings
+      receiveTopNavigationSettings,
     } = this.props;
     const query = getUrlParams(search);
     this.setPageTitle();
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),
-      pageTitle: 'Täydennysrakentamiskorvaukset',
-      showSearch: false
+      pageTitle: "Täydennysrakentamiskorvaukset",
+      showSearch: false,
     });
 
     if (query.tab) {
       this.setState({
-        activeTab: query.tab
+        activeTab: query.tab,
       });
     }
 
     receiveIsSaveClicked(false);
     fetchSingleInfillDevelopment(infillDevelopmentId);
     hideEditMode();
-    window.addEventListener('beforeunload', this.handleLeavePage);
-    window.addEventListener('popstate', this.handlePopState);
+    window.addEventListener("beforeunload", this.handleLeavePage);
+    window.addEventListener("popstate", this.handlePopState);
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
     if (props.currentInfillDevelopment !== state.currentInfillDevelopment) {
       return {
         currentInfillDevelopment: props.currentInfillDevelopment,
-        formatedInfillDevelopment: getContentInfillDevelopment(props.currentInfillDevelopment)
+        formatedInfillDevelopment: getContentInfillDevelopment(
+          props.currentInfillDevelopment,
+        ),
       };
     }
 
@@ -145,25 +187,26 @@ class InfillDevelopmentPage extends Component<Props, State> {
       currentInfillDevelopment,
       isEditMode,
       match: {
-        params: {
-          infillDevelopmentId
-        }
-      }
+        params: { infillDevelopmentId },
+      },
     } = this.props;
-    const {
-      activeTab
-    } = this.state;
+    const { activeTab } = this.state;
 
     if (prevProps.currentInfillDevelopment !== currentInfillDevelopment) {
       this.setPageTitle();
     }
 
-    if (isEmpty(prevProps.currentInfillDevelopment) && !isEmpty(currentInfillDevelopment)) {
-      const storedInfillDevelopmentId = getSessionStorageItem('infillDevelopmentId');
+    if (
+      isEmpty(prevProps.currentInfillDevelopment) &&
+      !isEmpty(currentInfillDevelopment)
+    ) {
+      const storedInfillDevelopmentId = getSessionStorageItem(
+        "infillDevelopmentId",
+      );
 
       if (Number(infillDevelopmentId) === storedInfillDevelopmentId) {
         this.setState({
-          isRestoreModalOpen: true
+          isRestoreModalOpen: true,
         });
       }
     }
@@ -183,17 +226,16 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const {
       hideEditMode,
       match: {
-        params: {
-          infillDevelopmentId
-        }
+        params: { infillDevelopmentId },
       },
-      location: {
-        pathname
-      },
-      receiveSingleInfillDevelopment
+      location: { pathname },
+      receiveSingleInfillDevelopment,
     } = this.props;
 
-    if (pathname !== `${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${infillDevelopmentId}`) {
+    if (
+      pathname !==
+      `${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${infillDevelopmentId}`
+    ) {
       clearUnsavedChanges();
     }
 
@@ -201,38 +243,32 @@ class InfillDevelopmentPage extends Component<Props, State> {
     // Clear current infill development compensation
     receiveSingleInfillDevelopment({});
     hideEditMode();
-    window.removeEventListener('beforeunload', this.handleLeavePage);
-    window.removeEventListener('popstate', this.handlePopState);
+    window.removeEventListener("beforeunload", this.handleLeavePage);
+    window.removeEventListener("popstate", this.handlePopState);
   }
 
   handlePopState = () => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
     const tab = query.tab ? Number(query.tab) : 0;
     // Set correct active tab on back/forward button press
     this.setState({
-      activeTab: tab
+      activeTab: tab,
     });
   };
   setPageTitle = () => {
-    const {
-      currentInfillDevelopment
-    } = this.props;
-    const name = currentInfillDevelopment && currentInfillDevelopment.name || '';
-    setPageTitle(`${name ? `${name} | ` : ''}Täydennysrakentamiskorvaus`);
+    const { currentInfillDevelopment } = this.props;
+    const name =
+      (currentInfillDevelopment && currentInfillDevelopment.name) || "";
+    setPageTitle(`${name ? `${name} | ` : ""}Täydennysrakentamiskorvaus`);
   };
-  handleLeavePage = e => {
-    const {
-      isEditMode,
-      isInfillDevelopmentFormDirty
-    } = this.props;
+  handleLeavePage = (e) => {
+    const { isEditMode, isInfillDevelopmentFormDirty } = this.props;
 
     if (isInfillDevelopmentFormDirty && isEditMode) {
-      const confirmationMessage = '';
+      const confirmationMessage = "";
       e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
 
       return confirmationMessage; // Gecko, WebKit, Chrome <34
@@ -249,52 +285,55 @@ class InfillDevelopmentPage extends Component<Props, State> {
       infillDevelopmentFormValues,
       isInfillDevelopmentFormDirty,
       match: {
-        params: {
-          infillDevelopmentId
-        }
-      }
+        params: { infillDevelopmentId },
+      },
     } = this.props;
 
     if (isInfillDevelopmentFormDirty) {
-      setSessionStorageItem(FormNames.INFILL_DEVELOPMENT, infillDevelopmentFormValues);
-      setSessionStorageItem('infillDevelopmentId', infillDevelopmentId);
+      setSessionStorageItem(
+        FormNames.INFILL_DEVELOPMENT,
+        infillDevelopmentFormValues,
+      );
+      setSessionStorageItem("infillDevelopmentId", infillDevelopmentId);
     } else {
       removeSessionStorageItem(FormNames.INFILL_DEVELOPMENT);
-      removeSessionStorageItem('infillDevelopmentId');
+      removeSessionStorageItem("infillDevelopmentId");
     }
   };
   cancelRestoreUnsavedChanges = () => {
     clearUnsavedChanges();
     this.setState({
-      isRestoreModalOpen: false
+      isRestoreModalOpen: false,
     });
   };
   restoreUnsavedChanges = () => {
-    const {
-      currentInfillDevelopment,
-      receiveFormInitialValues,
-      showEditMode
-    } = this.props;
+    const { currentInfillDevelopment, receiveFormInitialValues, showEditMode } =
+      this.props;
     showEditMode();
-    receiveFormInitialValues(getContentInfillDevelopment(currentInfillDevelopment));
+    receiveFormInitialValues(
+      getContentInfillDevelopment(currentInfillDevelopment),
+    );
     setTimeout(() => {
-      const storedInfillDevelopmentFormValues = getSessionStorageItem(FormNames.INFILL_DEVELOPMENT);
+      const storedInfillDevelopmentFormValues = getSessionStorageItem(
+        FormNames.INFILL_DEVELOPMENT,
+      );
 
       if (storedInfillDevelopmentFormValues) {
-        this.bulkChange(FormNames.INFILL_DEVELOPMENT, storedInfillDevelopmentFormValues);
+        this.bulkChange(
+          FormNames.INFILL_DEVELOPMENT,
+          storedInfillDevelopmentFormValues,
+        );
       }
     }, 20);
     this.startAutoSaveTimer();
     this.setState({
-      isRestoreModalOpen: false
+      isRestoreModalOpen: false,
     });
   };
   bulkChange = (formName: string, obj: Record<string, any>) => {
-    const {
-      change
-    } = this.props;
+    const { change } = this.props;
     const fields = Object.keys(obj);
-    fields.forEach(field => {
+    fields.forEach((field) => {
       change(formName, field, obj[field]);
     });
   };
@@ -303,35 +342,30 @@ class InfillDevelopmentPage extends Component<Props, State> {
       currentInfillDevelopment,
       hideEditMode,
       history,
-      location: {
-        search
-      },
-      receiveFormInitialValues
+      location: { search },
+      receiveFormInitialValues,
     } = this.props;
-    const infillDevelopment = { ...currentInfillDevelopment
-    };
+    const infillDevelopment = { ...currentInfillDevelopment };
     infillDevelopment.id = undefined;
     receiveFormInitialValues(getCopyOfInfillDevelopment(infillDevelopment));
     hideEditMode();
     clearUnsavedChanges();
     return history.push({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENT_NEW),
-      search: search
+      search: search,
     });
   };
   handleBack = () => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
     delete query.lease;
     delete query.tab;
     return history.push({
       pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}`,
-      search: getSearchQuery(query)
+      search: getSearchQuery(query),
     });
   };
   handleShowEditMode = () => {
@@ -340,62 +374,58 @@ class InfillDevelopmentPage extends Component<Props, State> {
       currentInfillDevelopment,
       receiveFormInitialValues,
       receiveIsSaveClicked,
-      showEditMode
+      showEditMode,
     } = this.props;
     receiveIsSaveClicked(false);
     showEditMode();
     clearFormValidFlags();
     this.destroyAllForms();
-    receiveFormInitialValues(getContentInfillDevelopment(currentInfillDevelopment));
+    receiveFormInitialValues(
+      getContentInfillDevelopment(currentInfillDevelopment),
+    );
     this.startAutoSaveTimer();
   };
   cancelChanges = () => {
-    const {
-      hideEditMode
-    } = this.props;
+    const { hideEditMode } = this.props;
     hideEditMode();
   };
   saveChanges = () => {
-    const {
-      isFormValid,
-      receiveIsSaveClicked
-    } = this.props;
+    const { isFormValid, receiveIsSaveClicked } = this.props;
     receiveIsSaveClicked(true);
 
     if (isFormValid) {
       const {
         currentInfillDevelopment,
         infillDevelopmentFormValues,
-        editInfillDevelopment
+        editInfillDevelopment,
       } = this.props;
-      const editedInfillDevelopment = getPayloadInfillDevelopment(infillDevelopmentFormValues);
+      const editedInfillDevelopment = getPayloadInfillDevelopment(
+        infillDevelopmentFormValues,
+      );
       editedInfillDevelopment.id = currentInfillDevelopment.id;
       editInfillDevelopment(editedInfillDevelopment);
     }
   };
   destroyAllForms = () => {
-    const {
-      destroy
-    } = this.props;
+    const { destroy } = this.props;
     destroy(FormNames.INFILL_DEVELOPMENT);
   };
-  handleTabClick = tabId => {
+  handleTabClick = (tabId) => {
     const {
       history,
       location,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
-    this.setState({
-      activeTab: tabId
-    }, () => {
-      query.tab = tabId;
-      return history.push({ ...location,
-        search: getSearchQuery(query)
-      });
-    });
+    this.setState(
+      {
+        activeTab: tabId,
+      },
+      () => {
+        query.tab = tabId;
+        return history.push({ ...location, search: getSearchQuery(query) });
+      },
+    );
   };
 
   render() {
@@ -410,100 +440,208 @@ class InfillDevelopmentPage extends Component<Props, State> {
       isInfillDevelopmentFormDirty,
       isSaveClicked,
       isSaving,
-      usersPermissions
+      usersPermissions,
     } = this.props;
-    const {
-      activeTab
-    } = this.state;
-    const {
-      formatedInfillDevelopment,
-      isRestoreModalOpen
-    } = this.state;
-    if (isFetching || isFetchingInfillDevelopmentPageAttributes || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    const { activeTab } = this.state;
+    const { formatedInfillDevelopment, isRestoreModalOpen } = this.state;
+    if (
+      isFetching ||
+      isFetchingInfillDevelopmentPageAttributes ||
+      isFetchingUsersPermissions
+    )
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (!infillDevelopmentMethods || isEmpty(usersPermissions)) return null;
-    if (!isMethodAllowed(infillDevelopmentMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.INFILL_DEVELOPMENT} /></PageContainer>;
-    return <FullWidthContainer>
+    if (!isMethodAllowed(infillDevelopmentMethods, Methods.GET))
+      return (
+        <PageContainer>
+          <AuthorizationError
+            text={PermissionMissingTexts.INFILL_DEVELOPMENT}
+          />
+        </PageContainer>
+      );
+    return (
+      <FullWidthContainer>
         <PageNavigationWrapper>
-          <ControlButtonBar buttonComponent={<ControlButtons allowCopy={isMethodAllowed(infillDevelopmentMethods, Methods.POST)} allowEdit={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)} isCancelDisabled={false} isCopyDisabled={false} isEditDisabled={false} isEditMode={isEditMode} isSaveDisabled={isSaveClicked && !isFormValid} onCancel={this.cancelChanges} onCopy={this.copyInfillDevelopment} onEdit={this.handleShowEditMode} onSave={this.saveChanges} showCommentButton={false} showCopyButton={true} />} infoComponent={<h1>{formatedInfillDevelopment.name}</h1>} onBack={this.handleBack} />
+          <ControlButtonBar
+            buttonComponent={
+              <ControlButtons
+                allowCopy={isMethodAllowed(
+                  infillDevelopmentMethods,
+                  Methods.POST,
+                )}
+                allowEdit={isMethodAllowed(
+                  infillDevelopmentMethods,
+                  Methods.PATCH,
+                )}
+                isCancelDisabled={false}
+                isCopyDisabled={false}
+                isEditDisabled={false}
+                isEditMode={isEditMode}
+                isSaveDisabled={isSaveClicked && !isFormValid}
+                onCancel={this.cancelChanges}
+                onCopy={this.copyInfillDevelopment}
+                onEdit={this.handleShowEditMode}
+                onSave={this.saveChanges}
+                showCommentButton={false}
+                showCopyButton={true}
+              />
+            }
+            infoComponent={<h1>{formatedInfillDevelopment.name}</h1>}
+            onBack={this.handleBack}
+          />
 
-          <Tabs active={activeTab} isEditMode={isEditMode} tabs={[{
-          label: InfillDevelopmentCompensationFieldTitles.BASIC_INFO,
-          allow: true,
-          isDirty: isInfillDevelopmentFormDirty,
-          hasError: isSaveClicked && !isFormValid
-        }, {
-          label: InfillDevelopmentCompensationFieldTitles.MAP,
-          allow: isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.LEASE)
-        }]} onTabClick={this.handleTabClick} />
+          <Tabs
+            active={activeTab}
+            isEditMode={isEditMode}
+            tabs={[
+              {
+                label: InfillDevelopmentCompensationFieldTitles.BASIC_INFO,
+                allow: true,
+                isDirty: isInfillDevelopmentFormDirty,
+                hasError: isSaveClicked && !isFormValid,
+              },
+              {
+                label: InfillDevelopmentCompensationFieldTitles.MAP,
+                allow: isFieldAllowedToRead(
+                  infillDevelopmentAttributes,
+                  InfillDevelopmentCompensationLeasesFieldPaths.LEASE,
+                ),
+              },
+            ]}
+            onTabClick={this.handleTabClick}
+          />
         </PageNavigationWrapper>
 
-        <PageContainer className='with-small-control-bar-and-tabs' hasTabs>
-          {isSaving && <LoaderWrapper className='overlay-wrapper'>
+        <PageContainer className="with-small-control-bar-and-tabs" hasTabs>
+          {isSaving && (
+            <LoaderWrapper className="overlay-wrapper">
               <Loader isLoading={isSaving} />
-            </LoaderWrapper>}
+            </LoaderWrapper>
+          )}
 
-          <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)}>
-            <ConfirmationModal confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON} isOpen={isRestoreModalOpen} label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL} onCancel={this.cancelRestoreUnsavedChanges} onClose={this.cancelRestoreUnsavedChanges} onSave={this.restoreUnsavedChanges} title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE} />
+          <Authorization
+            allow={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)}
+          >
+            <ConfirmationModal
+              confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON}
+              isOpen={isRestoreModalOpen}
+              label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL}
+              onCancel={this.cancelRestoreUnsavedChanges}
+              onClose={this.cancelRestoreUnsavedChanges}
+              onSave={this.restoreUnsavedChanges}
+              title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE}
+            />
           </Authorization>
-
 
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
-                <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.BASIC_INFO)}>
+                <Title
+                  enableUiDataEdit={isEditMode}
+                  uiDataKey={getUiDataInfillDevelopmentKey(
+                    InfillDevelopmentCompensationFieldPaths.BASIC_INFO,
+                  )}
+                >
                   {InfillDevelopmentCompensationFieldTitles.BASIC_INFO}
                 </Title>
                 <Divider />
 
-                {isEditMode ? <Authorization allow={isMethodAllowed(infillDevelopmentMethods, Methods.PATCH)} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}>
-                    <InfillDevelopmentForm infillDevelopment={formatedInfillDevelopment} />
-                  </Authorization> : <InfillDevelopmentTemplate infillDevelopment={formatedInfillDevelopment} />}
+                {isEditMode ? (
+                  <Authorization
+                    allow={isMethodAllowed(
+                      infillDevelopmentMethods,
+                      Methods.PATCH,
+                    )}
+                    errorComponent={
+                      <AuthorizationError
+                        text={PermissionMissingTexts.GENERAL}
+                      />
+                    }
+                  >
+                    <InfillDevelopmentForm
+                      infillDevelopment={formatedInfillDevelopment}
+                    />
+                  </Authorization>
+                ) : (
+                  <InfillDevelopmentTemplate
+                    infillDevelopment={formatedInfillDevelopment}
+                  />
+                )}
               </ContentContainer>
             </TabPane>
             <TabPane>
               <ContentContainer>
-                <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.LEASE)} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}>
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    infillDevelopmentAttributes,
+                    InfillDevelopmentCompensationLeasesFieldPaths.LEASE,
+                  )}
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
+                >
                   <>
-                  <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataInfillDevelopmentKey(InfillDevelopmentCompensationFieldPaths.MAP)}>
-                    {InfillDevelopmentCompensationFieldTitles.MAP}
-                  </Title>
-                  <Divider />
+                    <Title
+                      enableUiDataEdit={isEditMode}
+                      uiDataKey={getUiDataInfillDevelopmentKey(
+                        InfillDevelopmentCompensationFieldPaths.MAP,
+                      )}
+                    >
+                      {InfillDevelopmentCompensationFieldTitles.MAP}
+                    </Title>
+                    <Divider />
 
-                  <SingleInfillDevelopmentMap />
+                    <SingleInfillDevelopmentMap />
                   </>
                 </Authorization>
               </ContentContainer>
             </TabPane>
           </TabContent>
         </PageContainer>
-      </FullWidthContainer>;
+      </FullWidthContainer>
+    );
   }
-
 }
 
-export default flowRight(withUiDataList, withInfillDevelopmentPageAttributes, connect(state => {
-  return {
-    currentInfillDevelopment: getCurrentInfillDevelopment(state),
-    infillDevelopmentFormValues: getFormValues(FormNames.INFILL_DEVELOPMENT)(state),
-    isEditMode: getIsEditMode(state),
-    isFetching: getIsFetching(state),
-    isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-    isFormValid: getIsFormValidById(state, FormNames.INFILL_DEVELOPMENT),
-    isInfillDevelopmentFormDirty: isDirty(FormNames.INFILL_DEVELOPMENT)(state),
-    isSaveClicked: getIsSaveClicked(state),
-    isSaving: getIsSaving(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  change,
-  clearFormValidFlags,
-  destroy,
-  editInfillDevelopment,
-  fetchSingleInfillDevelopment,
-  hideEditMode,
-  receiveFormInitialValues,
-  receiveSingleInfillDevelopment,
-  receiveIsSaveClicked,
-  receiveTopNavigationSettings,
-  showEditMode
-}), withRouter)(InfillDevelopmentPage);
+export default flowRight(
+  withUiDataList,
+  withInfillDevelopmentPageAttributes,
+  connect(
+    (state) => {
+      return {
+        currentInfillDevelopment: getCurrentInfillDevelopment(state),
+        infillDevelopmentFormValues: getFormValues(
+          FormNames.INFILL_DEVELOPMENT,
+        )(state),
+        isEditMode: getIsEditMode(state),
+        isFetching: getIsFetching(state),
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        isFormValid: getIsFormValidById(state, FormNames.INFILL_DEVELOPMENT),
+        isInfillDevelopmentFormDirty: isDirty(FormNames.INFILL_DEVELOPMENT)(
+          state,
+        ),
+        isSaveClicked: getIsSaveClicked(state),
+        isSaving: getIsSaving(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+    {
+      change,
+      clearFormValidFlags,
+      destroy,
+      editInfillDevelopment,
+      fetchSingleInfillDevelopment,
+      hideEditMode,
+      receiveFormInitialValues,
+      receiveSingleInfillDevelopment,
+      receiveIsSaveClicked,
+      receiveTopNavigationSettings,
+      showEditMode,
+    },
+  ),
+  withRouter,
+)(InfillDevelopmentPage);

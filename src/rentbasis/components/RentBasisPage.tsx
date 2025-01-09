@@ -25,18 +25,55 @@ import Tabs from "@/components/tabs/Tabs";
 import TabContent from "@/components/tabs/TabContent";
 import TabPane from "@/components/tabs/TabPane";
 import Title from "@/components/content/Title";
-import { editRentBasis, fetchSingleRentBasis, hideEditMode, initializeRentBasis, receiveIsSaveClicked, showEditMode } from "@/rentbasis/actions";
+import {
+  editRentBasis,
+  fetchSingleRentBasis,
+  hideEditMode,
+  initializeRentBasis,
+  receiveIsSaveClicked,
+  showEditMode,
+} from "@/rentbasis/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
-import { ConfirmationModalTexts, Methods, PermissionMissingTexts } from "@/enums";
-import { getSearchQuery, getUrlParams, isFieldAllowedToRead, isMethodAllowed, scrollToTopPage, setPageTitle } from "@/util/helpers";
+import {
+  ConfirmationModalTexts,
+  Methods,
+  PermissionMissingTexts,
+} from "@/enums";
+import {
+  getSearchQuery,
+  getUrlParams,
+  isFieldAllowedToRead,
+  isMethodAllowed,
+  scrollToTopPage,
+  setPageTitle,
+} from "@/util/helpers";
 import { FormNames } from "@/enums";
 import { RentBasisFieldPaths, RentBasisFieldTitles } from "@/rentbasis/enums";
-import { clearUnsavedChanges, getPayloadRentBasis, getCopyOfRentBasis, getContentRentBasis } from "@/rentbasis/helpers";
+import {
+  clearUnsavedChanges,
+  getPayloadRentBasis,
+  getCopyOfRentBasis,
+  getContentRentBasis,
+} from "@/rentbasis/helpers";
 import { getUiDataRentBasisKey } from "@/uiData/helpers";
 import { getRouteById, Routes } from "@/root/routes";
-import { getIsEditMode, getIsFetching, getIsFormValid, getIsSaveClicked, getIsSaving, getRentBasis } from "@/rentbasis/selectors";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "@/usersPermissions/selectors";
-import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "@/util/storage";
+import {
+  getIsEditMode,
+  getIsFetching,
+  getIsFormValid,
+  getIsSaveClicked,
+  getIsSaving,
+  getRentBasis,
+} from "@/rentbasis/selectors";
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
+import {
+  getSessionStorageItem,
+  removeSessionStorageItem,
+  setSessionStorageItem,
+} from "@/util/storage";
 import { withRentBasisAttributes } from "@/components/attributes/RentBasisAttributes";
 import { withUiDataList } from "@/components/uiData/UiDataListHOC";
 import type { Attributes, Methods as MethodsType } from "types";
@@ -85,10 +122,10 @@ class RentBasisPage extends Component<Props, State> {
   state = {
     activeTab: 0,
     isCancelModalOpen: false,
-    isRestoreModalOpen: false
+    isRestoreModalOpen: false,
   };
   static contextTypes = {
-    router: PropTypes.object
+    router: PropTypes.object,
   };
   timerAutoSave: any;
 
@@ -96,53 +133,50 @@ class RentBasisPage extends Component<Props, State> {
     const {
       fetchSingleRentBasis,
       hideEditMode,
-      location: {
-        search
-      },
+      location: { search },
       match: {
-        params: {
-          rentBasisId
-        }
+        params: { rentBasisId },
       },
       receiveIsSaveClicked,
-      receiveTopNavigationSettings
+      receiveTopNavigationSettings,
     } = this.props;
     const query = getUrlParams(search);
     setPageTitle(`${rentBasisId} | Vuokrausperiaate`);
     receiveIsSaveClicked(false);
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.RENT_BASIS),
-      pageTitle: 'Vuokrausperiaatteet',
-      showSearch: false
+      pageTitle: "Vuokrausperiaatteet",
+      showSearch: false,
     });
 
     if (query.tab) {
       this.setState({
-        activeTab: query.tab
+        activeTab: query.tab,
       });
     }
 
     fetchSingleRentBasis(rentBasisId);
     hideEditMode();
-    window.addEventListener('beforeunload', this.handleLeavePage);
-    window.addEventListener('popstate', this.handlePopState);
+    window.addEventListener("beforeunload", this.handleLeavePage);
+    window.addEventListener("popstate", this.handlePopState);
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     const {
       match: {
-        params: {
-          rentBasisId
-        }
-      }
+        params: { rentBasisId },
+      },
     } = this.props;
 
-    if (isEmpty(prevProps.rentBasisData) && !isEmpty(this.props.rentBasisData)) {
-      const storedContactId = getSessionStorageItem('rentBasisId');
+    if (
+      isEmpty(prevProps.rentBasisData) &&
+      !isEmpty(this.props.rentBasisData)
+    ) {
+      const storedContactId = getSessionStorageItem("rentBasisId");
 
       if (Number(rentBasisId) === storedContactId) {
         this.setState({
-          isRestoreModalOpen: true
+          isRestoreModalOpen: true,
         });
       }
     }
@@ -155,14 +189,10 @@ class RentBasisPage extends Component<Props, State> {
   componentWillUnmount() {
     const {
       hideEditMode,
-      location: {
-        pathname
-      },
+      location: { pathname },
       match: {
-        params: {
-          rentBasisId
-        }
-      }
+        params: { rentBasisId },
+      },
     } = this.props;
     hideEditMode();
 
@@ -171,31 +201,26 @@ class RentBasisPage extends Component<Props, State> {
     }
 
     this.stopAutoSaveTimer();
-    window.removeEventListener('beforeunload', this.handleLeavePage);
-    window.removeEventListener('popstate', this.handlePopState);
+    window.removeEventListener("beforeunload", this.handleLeavePage);
+    window.removeEventListener("popstate", this.handlePopState);
   }
 
   handlePopState = () => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
     const tab = query.tab ? Number(query.tab) : 0;
     // Set correct active tab on back/forward button press
     this.setState({
-      activeTab: tab
+      activeTab: tab,
     });
   };
-  handleLeavePage = e => {
-    const {
-      isEditMode,
-      isFormDirty
-    } = this.props;
+  handleLeavePage = (e) => {
+    const { isEditMode, isFormDirty } = this.props;
 
     if (isFormDirty && isEditMode) {
-      const confirmationMessage = '';
+      const confirmationMessage = "";
       e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
 
       return confirmationMessage; // Gecko, WebKit, Chrome <34
@@ -212,32 +237,26 @@ class RentBasisPage extends Component<Props, State> {
       editedRentBasis,
       isFormDirty,
       match: {
-        params: {
-          rentBasisId
-        }
-      }
+        params: { rentBasisId },
+      },
     } = this.props;
 
     if (isFormDirty) {
       setSessionStorageItem(FormNames.RENT_BASIS, editedRentBasis);
-      setSessionStorageItem('rentBasisId', rentBasisId);
+      setSessionStorageItem("rentBasisId", rentBasisId);
     } else {
       removeSessionStorageItem(FormNames.RENT_BASIS);
-      removeSessionStorageItem('rentBasisId');
+      removeSessionStorageItem("rentBasisId");
     }
   };
   cancelRestoreUnsavedChanges = () => {
     clearUnsavedChanges();
     this.setState({
-      isRestoreModalOpen: false
+      isRestoreModalOpen: false,
     });
   };
   restoreUnsavedChanges = () => {
-    const {
-      initializeRentBasis,
-      rentBasisData,
-      showEditMode
-    } = this.props;
+    const { initializeRentBasis, rentBasisData, showEditMode } = this.props;
     showEditMode();
     initializeRentBasis(rentBasisData);
     setTimeout(() => {
@@ -250,15 +269,13 @@ class RentBasisPage extends Component<Props, State> {
       this.startAutoSaveTimer();
     }, 20);
     this.setState({
-      isRestoreModalOpen: false
+      isRestoreModalOpen: false,
     });
   };
   bulkChange = (formName: string, obj: Record<string, any>) => {
-    const {
-      change
-    } = this.props;
+    const { change } = this.props;
     const fields = Object.keys(obj);
-    fields.forEach(field => {
+    fields.forEach((field) => {
       change(formName, field, obj[field]);
     });
   };
@@ -266,16 +283,14 @@ class RentBasisPage extends Component<Props, State> {
     const {
       history,
       initializeRentBasis,
-      location: {
-        search
-      },
-      rentBasisData
+      location: { search },
+      rentBasisData,
     } = this.props;
     const rentBasis = getCopyOfRentBasis(rentBasisData);
     initializeRentBasis(rentBasis);
     return history.push({
       pathname: getRouteById(Routes.RENT_BASIS_NEW),
-      search: search
+      search: search,
     });
   };
   saveChanges = () => {
@@ -283,7 +298,7 @@ class RentBasisPage extends Component<Props, State> {
       editRentBasis,
       editedRentBasis,
       isFormValid,
-      receiveIsSaveClicked
+      receiveIsSaveClicked,
     } = this.props;
     receiveIsSaveClicked(true);
 
@@ -294,57 +309,52 @@ class RentBasisPage extends Component<Props, State> {
   handleBack = () => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
     // Remove page specific url parameters when moving to lease list page
     delete query.tab;
     return history.push({
       pathname: `${getRouteById(Routes.RENT_BASIS)}`,
-      search: getSearchQuery(query)
+      search: getSearchQuery(query),
     });
   };
   cancelChanges = () => {
-    const {
-      hideEditMode
-    } = this.props;
+    const { hideEditMode } = this.props;
     this.setState({
-      isCancelModalOpen: false
+      isCancelModalOpen: false,
     });
     hideEditMode();
   };
   showEditMode = () => {
     const {
-      initializeRentBasis,
-      rentBasisData,
-      receiveIsSaveClicked,
-      showEditMode
-    } = this.props,
-          rentBasis = getContentRentBasis(rentBasisData);
+        initializeRentBasis,
+        rentBasisData,
+        receiveIsSaveClicked,
+        showEditMode,
+      } = this.props,
+      rentBasis = getContentRentBasis(rentBasisData);
     receiveIsSaveClicked(false);
     initializeRentBasis(rentBasis);
     showEditMode();
     this.startAutoSaveTimer();
   };
-  handleTabClick = tabId => {
+  handleTabClick = (tabId) => {
     const {
       history,
       location,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
-    this.setState({
-      activeTab: tabId
-    }, () => {
-      query.tab = tabId;
-      return history.push({ ...location,
-        search: getSearchQuery(query)
-      });
-    });
+    this.setState(
+      {
+        activeTab: tabId,
+      },
+      () => {
+        query.tab = tabId;
+        return history.push({ ...location, search: getSearchQuery(query) });
+      },
+    );
   };
 
   render() {
@@ -360,73 +370,152 @@ class RentBasisPage extends Component<Props, State> {
       rentBasisData,
       rentBasisAttributes,
       rentBasisMethods,
-      usersPermissions
+      usersPermissions,
     } = this.props;
-    const {
-      activeTab,
-      isRestoreModalOpen
-    } = this.state;
+    const { activeTab, isRestoreModalOpen } = this.state;
     const rentBasis = getContentRentBasis(rentBasisData);
-    if (isFetching || isFetchingRentBasisAttributes || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (
+      isFetching ||
+      isFetchingRentBasisAttributes ||
+      isFetchingUsersPermissions
+    )
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (!rentBasisMethods || isEmpty(usersPermissions)) return null;
-    if (!isMethodAllowed(rentBasisMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.RENT_BASIS} /></PageContainer>;
-    return <FullWidthContainer>
+    if (!isMethodAllowed(rentBasisMethods, Methods.GET))
+      return (
+        <PageContainer>
+          <AuthorizationError text={PermissionMissingTexts.RENT_BASIS} />
+        </PageContainer>
+      );
+    return (
+      <FullWidthContainer>
         <PageNavigationWrapper>
-          <ControlButtonBar buttonComponent={<ControlButtons allowCopy={isMethodAllowed(rentBasisMethods, Methods.POST)} allowEdit={isMethodAllowed(rentBasisMethods, Methods.PATCH)} isCopyDisabled={false} isEditMode={isEditMode} isSaveDisabled={isSaveClicked && !isFormValid} onCancel={this.cancelChanges} onCopy={this.copyRentBasis} onEdit={this.showEditMode} onSave={this.saveChanges} showCommentButton={false} showCopyButton={true} />} infoComponent={<RentBasisInfo identifier={rentBasis.id} />} onBack={this.handleBack} />
-          <Tabs active={activeTab} isEditMode={isEditMode} tabs={[{
-          label: RentBasisFieldTitles.BASIC_INFO,
-          allow: true,
-          isDirty: isFormDirty,
-          hasError: isSaveClicked && !isFormValid
-        }, {
-          label: RentBasisFieldTitles.MAP,
-          allow: isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY)
-        }]} onTabClick={this.handleTabClick} />
+          <ControlButtonBar
+            buttonComponent={
+              <ControlButtons
+                allowCopy={isMethodAllowed(rentBasisMethods, Methods.POST)}
+                allowEdit={isMethodAllowed(rentBasisMethods, Methods.PATCH)}
+                isCopyDisabled={false}
+                isEditMode={isEditMode}
+                isSaveDisabled={isSaveClicked && !isFormValid}
+                onCancel={this.cancelChanges}
+                onCopy={this.copyRentBasis}
+                onEdit={this.showEditMode}
+                onSave={this.saveChanges}
+                showCommentButton={false}
+                showCopyButton={true}
+              />
+            }
+            infoComponent={<RentBasisInfo identifier={rentBasis.id} />}
+            onBack={this.handleBack}
+          />
+          <Tabs
+            active={activeTab}
+            isEditMode={isEditMode}
+            tabs={[
+              {
+                label: RentBasisFieldTitles.BASIC_INFO,
+                allow: true,
+                isDirty: isFormDirty,
+                hasError: isSaveClicked && !isFormValid,
+              },
+              {
+                label: RentBasisFieldTitles.MAP,
+                allow: isFieldAllowedToRead(
+                  rentBasisAttributes,
+                  RentBasisFieldPaths.GEOMETRY,
+                ),
+              },
+            ]}
+            onTabClick={this.handleTabClick}
+          />
         </PageNavigationWrapper>
 
-        <PageContainer className='with-control-bar-and-tabs' hasTabs>
-          {isSaving && <LoaderWrapper className='overlay-wrapper'>
+        <PageContainer className="with-control-bar-and-tabs" hasTabs>
+          {isSaving && (
+            <LoaderWrapper className="overlay-wrapper">
               <Loader isLoading={isSaving} />
-            </LoaderWrapper>}
+            </LoaderWrapper>
+          )}
 
-          <Authorization allow={isMethodAllowed(rentBasisMethods, Methods.PATCH)}>
-            <ConfirmationModal confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON} isOpen={isRestoreModalOpen} label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL} onCancel={this.cancelRestoreUnsavedChanges} onClose={this.restoreUnsavedChanges} onSave={this.restoreUnsavedChanges} title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE} />
+          <Authorization
+            allow={isMethodAllowed(rentBasisMethods, Methods.PATCH)}
+          >
+            <ConfirmationModal
+              confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON}
+              isOpen={isRestoreModalOpen}
+              label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL}
+              onCancel={this.cancelRestoreUnsavedChanges}
+              onClose={this.restoreUnsavedChanges}
+              onSave={this.restoreUnsavedChanges}
+              title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE}
+            />
           </Authorization>
-
 
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
-                <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.BASIC_INFO)}>
+                <Title
+                  enableUiDataEdit={isEditMode}
+                  uiDataKey={getUiDataRentBasisKey(
+                    RentBasisFieldPaths.BASIC_INFO,
+                  )}
+                >
                   {RentBasisFieldTitles.BASIC_INFO}
                 </Title>
                 <Divider />
 
-                {isEditMode ? <Authorization allow={rentBasisMethods.PATCH} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}>
+                {isEditMode ? (
+                  <Authorization
+                    allow={rentBasisMethods.PATCH}
+                    errorComponent={
+                      <AuthorizationError
+                        text={PermissionMissingTexts.GENERAL}
+                      />
+                    }
+                  >
                     <RentBasisEdit />
-                  </Authorization> : <RentBasisReadonly rentBasis={rentBasis} />}
+                  </Authorization>
+                ) : (
+                  <RentBasisReadonly rentBasis={rentBasis} />
+                )}
               </ContentContainer>
             </TabPane>
 
             <TabPane>
               <ContentContainer>
-                <Authorization allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY)} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}>
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    rentBasisAttributes,
+                    RentBasisFieldPaths.GEOMETRY,
+                  )}
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
+                >
                   <>
-                  <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.MAP)}>
-                    {RentBasisFieldTitles.MAP}
-                  </Title>
-                  <Divider />
+                    <Title
+                      enableUiDataEdit={isEditMode}
+                      uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.MAP)}
+                    >
+                      {RentBasisFieldTitles.MAP}
+                    </Title>
+                    <Divider />
 
-                  <SingleRentBasisMap />
+                    <SingleRentBasisMap />
                   </>
                 </Authorization>
               </ContentContainer>
             </TabPane>
           </TabContent>
         </PageContainer>
-      </FullWidthContainer>;
+      </FullWidthContainer>
+    );
   }
-
 }
 
 const mapStateToProps = (state: RootState) => {
@@ -440,17 +529,22 @@ const mapStateToProps = (state: RootState) => {
     isSaveClicked: getIsSaveClicked(state),
     isSaving: getIsSaving(state),
     rentBasisData: getRentBasis(state),
-    usersPermissions: getUsersPermissions(state)
+    usersPermissions: getUsersPermissions(state),
   };
 };
 
-export default flowRight(withRentBasisAttributes, withUiDataList, withRouter, connect(mapStateToProps, {
-  change,
-  editRentBasis,
-  fetchSingleRentBasis,
-  hideEditMode,
-  initializeRentBasis,
-  receiveIsSaveClicked,
-  receiveTopNavigationSettings,
-  showEditMode
-}))(RentBasisPage);
+export default flowRight(
+  withRentBasisAttributes,
+  withUiDataList,
+  withRouter,
+  connect(mapStateToProps, {
+    change,
+    editRentBasis,
+    fetchSingleRentBasis,
+    hideEditMode,
+    initializeRentBasis,
+    receiveIsSaveClicked,
+    receiveTopNavigationSettings,
+    showEditMode,
+  }),
+)(RentBasisPage);

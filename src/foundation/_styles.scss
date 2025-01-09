@@ -1,32 +1,34 @@
-.row{
+.row {
   margin-right: rem-calc(-7.5px);
   margin-left: rem-calc(-7.5px);
   max-width: unset;
 }
-.row .row{
+.row .row {
   margin-right: rem-calc(-7.5px);
   margin-left: rem-calc(-7.5px);
 }
-@media print,screen and (min-width:40em){
-  .row .row{
+@media print, screen and (min-width: 40em) {
+  .row .row {
     margin-right: rem-calc(-7.5px);
     margin-left: rem-calc(-7.5px);
   }
 }
-@media print,screen and (min-width:64em){
-  .row .row{
+@media print, screen and (min-width: 64em) {
+  .row .row {
     margin-right: rem-calc(-7.5px);
     margin-left: rem-calc(-7.5px);
   }
 }
 
-.column,.columns{
+.column,
+.columns {
   padding-right: rem-calc(7.5px);
   padding-left: rem-calc(7.5px);
 }
-@media print,screen and (min-width:40em){
-  .column,.columns{
+@media print, screen and (min-width: 40em) {
+  .column,
+  .columns {
     padding-right: rem-calc(7.5px);
-    padding-left: rem-calc(7.5px)
+    padding-left: rem-calc(7.5px);
   }
 }

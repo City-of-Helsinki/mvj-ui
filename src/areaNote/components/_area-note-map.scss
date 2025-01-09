@@ -7,7 +7,7 @@
     width: 350px;
     height: 100%;
     z-index: 1010;
-    background-color: rgba(0,0,0,0.35);
+    background-color: rgba(0, 0, 0, 0.35);
     box-shadow: -2px 0 5px 0 rgba(0, 0, 0, 0.07);
     padding: rem-calc(15px);
 
@@ -48,7 +48,7 @@
     display: none;
     position: absolute;
     bottom: 0;
-    left:0;
+    left: 0;
     right: 0;
     color: $white;
     font-size: rem-calc(20px);
@@ -56,7 +56,7 @@
     font-family: $font-family-source;
     text-align: center;
     padding: rem-calc(20px);
-    background-color: rgba(0,0,0,0.35);
+    background-color: rgba(0, 0, 0, 0.35);
 
     &--is-open {
       display: block;

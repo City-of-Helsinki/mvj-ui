@@ -42,13 +42,13 @@ class Search extends PureComponent<Props, State> {
   state = {
     decisionMakerOptions: [],
     isBasicSearch: false,
-    rentBasisAttributes: null
+    rentBasisAttributes: null,
   };
 
   componentDidMount() {
     this._isMounted = true;
     this.setState({
-      isBasicSearch: this.isSearchBasicMode()
+      isBasicSearch: this.isSearchBasicMode(),
     });
   }
 
@@ -61,33 +61,39 @@ class Search extends PureComponent<Props, State> {
 
     if (props.rentBasisAttributes !== state.rentBasisAttributes) {
       newState.rentBasisAttributes = props.rentBasisAttributes;
-      newState.decisionMakerOptions = getFieldOptions(props.rentBasisAttributes, RentBasisDecisionsFieldPaths.DECISION_MAKER);
+      newState.decisionMakerOptions = getFieldOptions(
+        props.rentBasisAttributes,
+        RentBasisDecisionsFieldPaths.DECISION_MAKER,
+      );
     }
 
     return !isEmpty(newState) ? newState : null;
   }
 
   componentDidUpdate(prevProps: Record<string, any>) {
-    const {
-      isSearchInitialized
-    } = this.props;
+    const { isSearchInitialized } = this.props;
 
-    if (isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
+    if (
+      isSearchInitialized &&
+      !isEqual(prevProps.formValues, this.props.formValues)
+    ) {
       this.onSearchChange();
     }
   }
 
   isSearchBasicMode = () => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
     delete query.page;
     delete query.sort_key;
     delete query.sort_order;
-    if (!Object.keys(query).length || Object.keys(query).length === 1 && query.search) return true;
+    if (
+      !Object.keys(query).length ||
+      (Object.keys(query).length === 1 && query.search)
+    )
+      return true;
     return false;
   };
   onSearchChange = debounce(() => {
@@ -95,14 +101,8 @@ class Search extends PureComponent<Props, State> {
     this.search();
   }, 1000);
   search = () => {
-    const {
-      formValues,
-      onSearch,
-      sortKey,
-      sortOrder
-    } = this.props;
-    const newValues = { ...formValues
-    };
+    const { formValues, onSearch, sortKey, sortOrder } = this.props;
+    const newValues = { ...formValues };
 
     if (sortKey || sortOrder) {
       newValues.sort_key = sortKey;
@@ -113,16 +113,11 @@ class Search extends PureComponent<Props, State> {
   };
   toggleSearchType = () => {
     this.setState({
-      isBasicSearch: !this.state.isBasicSearch
+      isBasicSearch: !this.state.isBasicSearch,
     });
   };
   handleClear = () => {
-    const {
-      initialize,
-      onSearch,
-      sortKey,
-      sortOrder
-    } = this.props;
+    const { initialize, onSearch, sortKey, sortOrder } = this.props;
     const query: any = {};
 
     if (sortKey || sortOrder) {
@@ -135,25 +130,27 @@ class Search extends PureComponent<Props, State> {
   };
 
   render() {
-    const {
-      handleSubmit
-    } = this.props;
-    const {
-      decisionMakerOptions,
-      isBasicSearch
-    } = this.state;
-    return <SearchContainer onSubmit={handleSubmit(this.search)}>
+    const { handleSubmit } = this.props;
+    const { decisionMakerOptions, isBasicSearch } = this.state;
+    return (
+      <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
           <Column small={12}>
-            <FormField disableDirty fieldAttributes={{
-            label: 'Hae hakusanalla',
-            type: FieldTypes.SEARCH,
-            read_only: false
-          }} invisibleLabel name='search' />
+            <FormField
+              disableDirty
+              fieldAttributes={{
+                label: "Hae hakusanalla",
+                type: FieldTypes.SEARCH,
+                read_only: false,
+              }}
+              invisibleLabel
+              name="search"
+            />
           </Column>
         </Row>
 
-        {!isBasicSearch && <Fragment>
+        {!isBasicSearch && (
+          <Fragment>
             <Row>
               <Column small={12} large={6}>
                 <SearchRow>
@@ -163,27 +160,45 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={12}>
-                        <FormField autoBlur disableDirty fieldAttributes={{
-                      label: 'Päätöksen tekijä',
-                      type: FieldTypes.CHOICE,
-                      read_only: false
-                    }} invisibleLabel name='decision_maker' overrideValues={{
-                      options: decisionMakerOptions
-                    }} />
+                        <FormField
+                          autoBlur
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Päätöksen tekijä",
+                            type: FieldTypes.CHOICE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="decision_maker"
+                          overrideValues={{
+                            options: decisionMakerOptions,
+                          }}
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField disableDirty fieldAttributes={{
-                      label: 'Päätöspvm',
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name='decision_date' />
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Päätöspvm",
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="decision_date"
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField disableDirty fieldAttributes={{
-                      label: 'Pykälä',
-                      type: FieldTypes.STRING,
-                      read_only: false
-                    }} invisibleLabel unit='§' name='decision_section' />
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            label: "Pykälä",
+                            type: FieldTypes.STRING,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          unit="§"
+                          name="decision_section"
+                        />
                       </Column>
                     </Row>
                   </SearchInputColumn>
@@ -195,36 +210,51 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Diaarinro</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Diaarinro',
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name='reference_number' />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Diaarinro",
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="reference_number"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
               </Column>
             </Row>
-          </Fragment>}
+          </Fragment>
+        )}
 
         <Row>
           <Column small={6}>
-            <SearchChangeTypeLink onClick={this.toggleSearchType}>{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</SearchChangeTypeLink>
+            <SearchChangeTypeLink onClick={this.toggleSearchType}>
+              {isBasicSearch ? "Tarkennettu haku" : "Yksinkertainen haku"}
+            </SearchChangeTypeLink>
           </Column>
           <Column small={6}>
-            <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
+            <SearchClearLink onClick={this.handleClear}>
+              Tyhjennä haku
+            </SearchClearLink>
           </Column>
         </Row>
-      </SearchContainer>;
+      </SearchContainer>
+    );
   }
-
 }
 
 const formName = FormNames.RENT_BASIS_SEARCH;
-export default flowRight(withRouter, connect(state => {
-  return {
-    formValues: getFormValues(formName)(state),
-    rentBasisAttributes: getRentBasisAttributes(state)
-  };
-}), reduxForm({
-  form: formName
-}))(Search) as React.ComponentType<any>;
+export default flowRight(
+  withRouter,
+  connect((state) => {
+    return {
+      formValues: getFormValues(formName)(state),
+      rentBasisAttributes: getRentBasisAttributes(state),
+    };
+  }),
+  reduxForm({
+    form: formName,
+  }),
+)(Search) as React.ComponentType<any>;

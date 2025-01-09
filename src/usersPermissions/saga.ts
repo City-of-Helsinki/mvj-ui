@@ -1,15 +1,19 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { receiveUserGroups, receiveUsersPermissions, receiveUserServiceUnits, setUserActiveServiceUnit, notFound } from "./actions";
+import {
+  receiveUserGroups,
+  receiveUsersPermissions,
+  receiveUserServiceUnits,
+  setUserActiveServiceUnit,
+  notFound,
+} from "./actions";
 import { fetchUsersPermissions } from "./requests";
 import { receiveError } from "@/api/actions";
 
 function* fetchUsersPermissionsSaga(): Generator<any, any, any> {
   try {
     let {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchUsersPermissions);
 
     switch (statusCode) {
@@ -33,7 +37,12 @@ function* fetchUsersPermissionsSaga(): Generator<any, any, any> {
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/usersPermissions/FETCH_ALL', fetchUsersPermissionsSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/usersPermissions/FETCH_ALL",
+        fetchUsersPermissionsSaga,
+      );
+    }),
+  ]);
 }

@@ -25,10 +25,8 @@ type State = {
 
 class AsyncSelect extends Component<Props, State> {
   select: any;
-  setSelectRef: (el: any) => void = el => {
-    const {
-      setRef
-    } = this.props;
+  setSelectRef: (el: any) => void = (el) => {
+    const { setRef } = this.props;
     this.select = el;
 
     if (setRef) {
@@ -40,30 +38,25 @@ class AsyncSelect extends Component<Props, State> {
     value: string;
   } = {
     disabled: false,
-    value: ''
+    value: "",
   };
   state: State = {
-    inputValue: '',
-    menuOpened: false
+    inputValue: "",
+    menuOpened: false,
   };
   handleBlur: () => void = () => {
     const {
-      input: {
-        onBlur,
-        value
-      }
+      input: { onBlur, value },
     } = this.props;
 
     if (onBlur) {
       onBlur(value);
     }
   };
-  handleChange: (value: Record<string, any>) => void = value => {
+  handleChange: (value: Record<string, any>) => void = (value) => {
     const {
-      input: {
-        onChange: inputOnChange
-      },
-      onChange
+      input: { onChange: inputOnChange },
+      onChange,
     } = this.props;
     inputOnChange(value);
 
@@ -72,53 +65,50 @@ class AsyncSelect extends Component<Props, State> {
     }
   };
   handleInputChange: (value: string, meta: any) => void = (value, meta) => {
-    const {
-      action
-    } = meta;
+    const { action } = meta;
 
     switch (action) {
-      case 'input-change':
+      case "input-change":
         this.setState({
-          inputValue: value
+          inputValue: value,
         });
         break;
     }
   };
   handleMenuOpen: () => void = () => {
-    const {
-      inputValue,
-      menuOpened
-    } = this.state;
+    const { inputValue, menuOpened } = this.state;
 
     if (!menuOpened) {
-      this.setState({
-        menuOpened: true
-      }, () => {
-        this.select.setState({
-          isLoading: true
-        });
-        this.loadOptions('', options => {
+      this.setState(
+        {
+          menuOpened: true,
+        },
+        () => {
           this.select.setState({
-            defaultOptions: options,
-            isLoading: false
+            isLoading: true,
           });
-        });
-      });
+          this.loadOptions("", (options) => {
+            this.select.setState({
+              defaultOptions: options,
+              isLoading: false,
+            });
+          });
+        },
+      );
     } else {
       if (this.select.state.inputValue !== inputValue) {
         this.select.select.onInputChange(inputValue, {
-          action: 'input-change'
+          action: "input-change",
         });
       }
     }
   };
-  loadOptions: (inputValue: string, callback: (...args: Array<any>) => any) => void = (inputValue, callback) => {
-    const {
-      getOptions
-    } = this.props;
-    const {
-      menuOpened
-    } = this.state;
+  loadOptions: (
+    inputValue: string,
+    callback: (...args: Array<any>) => any,
+  ) => void = (inputValue, callback) => {
+    const { getOptions } = this.props;
+    const { menuOpened } = this.state;
 
     if (menuOpened) {
       getOptions(inputValue, callback);
@@ -131,30 +121,56 @@ class AsyncSelect extends Component<Props, State> {
     const {
       disabled,
       displayError,
-      input: {
-        name,
-        value
-      },
+      input: { name, value },
       isDirty,
       isLoading,
       placeholder,
       initialValues,
       cacheOptions = true,
-      multiSelect
+      multiSelect,
     } = this.props;
-    return <div className={classNames('form-field__select', {
-      'has-error': displayError
-    }, {
-      'is-dirty': isDirty
-    })}>
-        <Async ref={this.setSelectRef} cacheOptions={cacheOptions} className='select-input' classNamePrefix='select-input' components={{
-        DropdownIndicator,
-        IndicatorSeparator: null,
-        LoadingIndicator
-      }} defaultOptions id={name} isDisabled={disabled} isLoading={isLoading} isMulti={multiSelect} loadingMessage={() => 'Ladataan...'} loadOptions={this.loadOptions} noOptionsMessage={() => 'Ei tuloksia'} onBlur={this.handleBlur} onChange={this.handleChange} onInputChange={this.handleInputChange} onMenuOpen={this.handleMenuOpen} options={[]} placeholder={placeholder || 'Valitse...'} value={value} defaultInputValue={initialValues ? initialValues : ''} />
-      </div>;
+    return (
+      <div
+        className={classNames(
+          "form-field__select",
+          {
+            "has-error": displayError,
+          },
+          {
+            "is-dirty": isDirty,
+          },
+        )}
+      >
+        <Async
+          ref={this.setSelectRef}
+          cacheOptions={cacheOptions}
+          className="select-input"
+          classNamePrefix="select-input"
+          components={{
+            DropdownIndicator,
+            IndicatorSeparator: null,
+            LoadingIndicator,
+          }}
+          defaultOptions
+          id={name}
+          isDisabled={disabled}
+          isLoading={isLoading}
+          isMulti={multiSelect}
+          loadingMessage={() => "Ladataan..."}
+          loadOptions={this.loadOptions}
+          noOptionsMessage={() => "Ei tuloksia"}
+          onBlur={this.handleBlur}
+          onChange={this.handleChange}
+          onInputChange={this.handleInputChange}
+          onMenuOpen={this.handleMenuOpen}
+          options={[]}
+          placeholder={placeholder || "Valitse..."}
+          value={value}
+          defaultInputValue={initialValues ? initialValues : ""}
+        />
+      </div>
+    );
   }
-
 }
 
 export default AsyncSelect;

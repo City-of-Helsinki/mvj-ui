@@ -36,16 +36,13 @@ class CreateLandUseContractForm extends Component<Props> {
 
   componentDidUpdate(prevProps) {
     if (this.props.municipality !== prevProps.municipality) {
-      const {
-        change,
-        fetchDistrictsByMunicipality
-      } = this.props;
+      const { change, fetchDistrictsByMunicipality } = this.props;
 
       if (this.props.municipality) {
         fetchDistrictsByMunicipality(this.props.municipality);
-        change('district', '');
+        change("district", "");
       } else {
-        change('district', '');
+        change("district", "");
       }
     }
   }
@@ -57,80 +54,99 @@ class CreateLandUseContractForm extends Component<Props> {
     this.firstField.focus();
   };
   handleCreate = () => {
-    const {
-      municipality,
-      district,
-      onSubmit,
-      definition,
-      status,
-      type
-    } = this.props;
+    const { municipality, district, onSubmit, definition, status, type } =
+      this.props;
     onSubmit({
       municipality: municipality,
       district: district,
       definition: definition,
       status: status,
-      type: type
+      type: type,
     });
   };
 
   render() {
-    const {
-      attributes,
-      districts,
-      onClose,
-      valid
-    } = this.props;
+    const { attributes, districts, onClose, valid } = this.props;
     const districtOptions = getDistrictOptions(districts);
-    const municipalityOptions = getFieldOptions(attributes, 'municipality');
-    return <form>
+    const municipalityOptions = getFieldOptions(attributes, "municipality");
+    return (
+      <form>
         <Row>
           <Column small={4}>
-            <FormField setRefForField={this.setRefForFirstField} fieldAttributes={get(attributes, 'municipality')} name='municipality' overrideValues={{
-            // label: 'Kunta',
-            options: municipalityOptions
-          }} />
+            <FormField
+              setRefForField={this.setRefForFirstField}
+              fieldAttributes={get(attributes, "municipality")}
+              name="municipality"
+              overrideValues={{
+                // label: 'Kunta',
+                options: municipalityOptions,
+              }}
+            />
           </Column>
           <Column small={4}>
-            <FormField fieldAttributes={get(attributes, 'district')} name='district' overrideValues={{
-            // label: 'Kaupunginosa',
-            options: districtOptions
-          }} />
-          </Column> 
-          <Column small={4}>
-            <FormField fieldAttributes={get(attributes, 'status')} name='status' />
+            <FormField
+              fieldAttributes={get(attributes, "district")}
+              name="district"
+              overrideValues={{
+                // label: 'Kaupunginosa',
+                options: districtOptions,
+              }}
+            />
           </Column>
           <Column small={4}>
-            <FormField fieldAttributes={get(attributes, 'type')} name='type' />
+            <FormField
+              fieldAttributes={get(attributes, "status")}
+              name="status"
+            />
+          </Column>
+          <Column small={4}>
+            <FormField fieldAttributes={get(attributes, "type")} name="type" />
           </Column>
         </Row>
         <ModalButtonWrapper>
-          <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
-          <Button className={ButtonColors.SUCCESS} disabled={!valid} onClick={this.handleCreate} text='Luo tunnus' />
+          <Button
+            className={ButtonColors.SECONDARY}
+            onClick={onClose}
+            text="Peruuta"
+          />
+          <Button
+            className={ButtonColors.SUCCESS}
+            disabled={!valid}
+            onClick={this.handleCreate}
+            text="Luo tunnus"
+          />
         </ModalButtonWrapper>
-      </form>;
+      </form>
+    );
   }
-
 }
 
 const formName = FormNames.LAND_USE_CONTRACT_CREATE;
 const selector = formValueSelector(formName);
-export default flowRight(connect(state => {
-  const municipality = selector(state, 'municipality');
-  return {
-    attributes: getAttributes(state),
-    district: selector(state, 'district'),
-    status: selector(state, 'status'),
-    type: selector(state, 'type'),
-    definition: selector(state, 'definition'),
-    districts: getDistrictsByMunicipality(state, municipality),
-    municipality: municipality
-  };
-}, {
-  change,
-  fetchDistrictsByMunicipality
-}, null, {
-  forwardRef: true
-}), reduxForm({
-  form: formName
-}))(CreateLandUseContractForm) as React.ComponentType<any>;
+export default flowRight(
+  connect(
+    (state) => {
+      const municipality = selector(state, "municipality");
+      return {
+        attributes: getAttributes(state),
+        district: selector(state, "district"),
+        status: selector(state, "status"),
+        type: selector(state, "type"),
+        definition: selector(state, "definition"),
+        districts: getDistrictsByMunicipality(state, municipality),
+        municipality: municipality,
+      };
+    },
+    {
+      change,
+      fetchDistrictsByMunicipality,
+    },
+    null,
+    {
+      forwardRef: true,
+    },
+  ),
+  reduxForm({
+    form: formName,
+  }),
+)(CreateLandUseContractForm) as React.ComponentType<any>;

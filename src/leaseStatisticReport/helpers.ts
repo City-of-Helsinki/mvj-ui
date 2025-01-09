@@ -11,13 +11,17 @@ import type { ReportOptions, ReportOutputField } from "./types";
  * @param {Reports} reports
  * @return {Report[]}
  */
-export const getReportTypeOptions = (reports: Reports): Array<Record<string, any>> => {
-  if (reports) return Object.entries(reports).map(([key, value]) => {
-    return {
-      value: key,
-      label: value.name
-    };
-  });else return [];
+export const getReportTypeOptions = (
+  reports: Reports,
+): Array<Record<string, any>> => {
+  if (reports)
+    return Object.entries(reports).map(([key, value]) => {
+      return {
+        value: key,
+        label: value.name,
+      };
+    });
+  else return [];
 };
 
 /**
@@ -27,10 +31,11 @@ export const getReportTypeOptions = (reports: Reports): Array<Record<string, any
  * @return {Report[]}
  */
 export const getReportUrl = (reports: Reports, reportType: string): string => {
-  let url = '';
-  if (reports) Object.entries(reports).map(([key, value]) => {
-    if (key === reportType) url = value.url;
-  });
+  let url = "";
+  if (reports)
+    Object.entries(reports).map(([key, value]) => {
+      if (key === reportType) url = value.url;
+    });
   return url;
 };
 
@@ -43,11 +48,15 @@ export const getReportUrl = (reports: Reports, reportType: string): string => {
  * @param {string} invoiceState
  * @return {Object[]}
  */
-export const getPayload = (query: string, url: string, reportType: string): Record<string, any> => {
+export const getPayload = (
+  query: string,
+  url: string,
+  reportType: string,
+): Record<string, any> => {
   return {
     url: url,
     report_type: reportType,
-    query: query
+    query: query,
   };
 };
 
@@ -57,9 +66,14 @@ export const getPayload = (query: string, url: string, reportType: string): Reco
  * @param {string} value
  * @return {string}
  */
-export const getDisplayName = (choices: Array<Record<string, any>>, value: string): string => {
+export const getDisplayName = (
+  choices: Array<Record<string, any>>,
+  value: string,
+): string => {
   let displayName = value;
-  const matchingName = choices.find(choice => choice.value === value)?.display_name;
+  const matchingName = choices.find(
+    (choice) => choice.value === value,
+  )?.display_name;
 
   if (matchingName) {
     displayName = matchingName;
@@ -74,10 +88,13 @@ export const getDisplayName = (choices: Array<Record<string, any>>, value: strin
  * @param {string} value
  * @return {string}
  */
-export const getFormattedValue = (formatType: string, value: string): string => {
+export const getFormattedValue = (
+  formatType: string,
+  value: string,
+): string => {
   switch (formatType) {
     case LeaseStatisticReportFormatOptions.DATE:
-      return formatDate(value, 'dd.MM.yyyy');
+      return formatDate(value, "dd.MM.yyyy");
 
     case LeaseStatisticReportFormatOptions.MONEY:
     case LeaseStatisticReportFormatOptions.BOLD_MONEY:
@@ -95,31 +112,32 @@ export const getFormattedValue = (formatType: string, value: string): string => 
 };
 
 /*
-* Get fields
-* @param {object} options
-*/
+ * Get fields
+ * @param {object} options
+ */
 export const getFields = (options: Record<string, any>): Array<any> => {
-  return get(options, 'actions.GET');
+  return get(options, "actions.GET");
 };
 
 /*
-* Get Query parameters
-* @param {object} formValues
-*/
+ * Get Query parameters
+ * @param {object} formValues
+ */
 export const getQueryParams = (formValues: Record<string, any>): any => {
-  let query = '';
-  if (formValues) Object.entries(formValues).map(([key, value]) => {
-    if (key.includes('date')) {
-      query += `${key}=${format(value, 'yyyy-MM-dd')}&`;
-    } else if (key.includes('service_unit')) {
-      const serviceUnitIds = value
-      serviceUnitIds.forEach(id => {
-        if (id) {
-          query += `service_unit=${id}&`;
-        };
-      });
-    } else query += `${key}=${value}&`;
-  });
+  let query = "";
+  if (formValues)
+    Object.entries(formValues).map(([key, value]) => {
+      if (key.includes("date")) {
+        query += `${key}=${format(value, "yyyy-MM-dd")}&`;
+      } else if (key.includes("service_unit")) {
+        const serviceUnitIds = value;
+        serviceUnitIds.forEach((id) => {
+          if (id) {
+            query += `service_unit=${id}&`;
+          }
+        });
+      } else query += `${key}=${value}&`;
+    });
   return query.slice(0, -1);
 };
 
@@ -128,16 +146,19 @@ export const getQueryParams = (formValues: Record<string, any>): any => {
  * @param {Object} options
  * @return {Array[]}
  */
-export const getOutputFields = (options: ReportOptions): Array<ReportOutputField> => {
-  if (options) return Object.entries(options.output_fields).map(([key, value]) => {
-    return {
-      key: key,
-      label: value.label,
-      choices: value.choices,
-      format: value.format,
-      isNumeric: value.is_numeric
-    };
-  });
+export const getOutputFields = (
+  options: ReportOptions,
+): Array<ReportOutputField> => {
+  if (options)
+    return Object.entries(options.output_fields).map(([key, value]) => {
+      return {
+        key: key,
+        label: value.label,
+        choices: value.choices,
+        format: value.format,
+        isNumeric: value.is_numeric,
+      };
+    });
   else return [];
 };
 
@@ -147,7 +168,11 @@ export const getOutputFields = (options: ReportOptions): Array<ReportOutputField
  * @return {string}
  */
 export const formatType = (value: Record<string, any>): string => {
-  const formattedValue = get(value, 'type').replace('Model', '').replace('Field', '').replace('Null', '').toLowerCase();
+  const formattedValue = get(value, "type")
+    .replace("Model", "")
+    .replace("Field", "")
+    .replace("Null", "")
+    .toLowerCase();
 
   switch (formattedValue) {
     case "multiplechoice":

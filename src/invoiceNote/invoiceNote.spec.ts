@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { fetchAttributes, attributesNotFound, receiveAttributes, receiveMethods, fetchInvoiceNoteList, receiveInvoiceNoteList, createInvoiceNoteAndFetchList, notFound, hideCreateInvoiceNoteModal, showCreateInvoiceNoteModal } from "./actions";
+import {
+  fetchAttributes,
+  attributesNotFound,
+  receiveAttributes,
+  receiveMethods,
+  fetchInvoiceNoteList,
+  receiveInvoiceNoteList,
+  createInvoiceNoteAndFetchList,
+  notFound,
+  hideCreateInvoiceNoteModal,
+  showCreateInvoiceNoteModal,
+} from "./actions";
 import invoiceNoteReducer from "./reducer";
 import type { InvoiceNoteState } from "./types";
 const defaultState: InvoiceNoteState = {
@@ -8,94 +19,81 @@ const defaultState: InvoiceNoteState = {
   isFetching: false,
   isFetchingAttributes: false,
   list: {},
-  methods: null
+  methods: null,
 };
 
-describe('Invoice Note', () => {
-  describe('Reducer', () => {
-    describe('invoiceNoteReducer', () => {
-      it('should update isFetchingAttributes flag to true when fetching attributes', () => {
-        const newState = { ...defaultState,
-          isFetchingAttributes: true
-        };
+describe("Invoice Note", () => {
+  describe("Reducer", () => {
+    describe("invoiceNoteReducer", () => {
+      it("should update isFetchingAttributes flag to true when fetching attributes", () => {
+        const newState = { ...defaultState, isFetchingAttributes: true };
         const state = invoiceNoteReducer({}, fetchAttributes());
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
-        const newState = { ...defaultState,
-          isFetchingAttributes: false
-        };
+      it("should update isFetchingAttributes flag to false by attributesNotFound", () => {
+        const newState = { ...defaultState, isFetchingAttributes: false };
         let state = invoiceNoteReducer({}, fetchAttributes());
         state = invoiceNoteReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
-      it('should update attributes', () => {
+      it("should update attributes", () => {
         const dummyAttributes = {
-          foo: 'bar'
+          foo: "bar",
         };
-        const newState = { ...defaultState,
-          attributes: dummyAttributes
-        };
-        const state = invoiceNoteReducer({}, receiveAttributes(dummyAttributes));
+        const newState = { ...defaultState, attributes: dummyAttributes };
+        const state = invoiceNoteReducer(
+          {},
+          receiveAttributes(dummyAttributes),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update methods', () => {
+      it("should update methods", () => {
         const dummyMethods = {
-          foo: 'bar'
+          foo: "bar",
         };
-        const newState = { ...defaultState,
-          methods: dummyMethods
-        };
+        const newState = { ...defaultState, methods: dummyMethods };
         const state = invoiceNoteReducer({}, receiveMethods(dummyMethods));
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetching flag to true when fetching invoice notes', () => {
-        const newState = { ...defaultState,
-          isFetching: true
-        };
+      it("should update isFetching flag to true when fetching invoice notes", () => {
+        const newState = { ...defaultState, isFetching: true };
         const state = invoiceNoteReducer({}, fetchInvoiceNoteList({}));
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetching flag to true when creting and fetching invoice notes', () => {
-        const newState = { ...defaultState,
-          isFetching: true
-        };
-        const state = invoiceNoteReducer({}, createInvoiceNoteAndFetchList({
-          data: {},
-          query: {}
-        }));
+      it("should update isFetching flag to true when creting and fetching invoice notes", () => {
+        const newState = { ...defaultState, isFetching: true };
+        const state = invoiceNoteReducer(
+          {},
+          createInvoiceNoteAndFetchList({
+            data: {},
+            query: {},
+          }),
+        );
         expect(state).to.deep.equal(newState);
       });
-      it('should update isFetching flag to false by notFound', () => {
-        const newState = { ...defaultState,
-          isFetching: false
-        };
+      it("should update isFetching flag to false by notFound", () => {
+        const newState = { ...defaultState, isFetching: false };
         let state = invoiceNoteReducer({}, fetchInvoiceNoteList({}));
         state = invoiceNoteReducer({}, notFound());
         expect(state).to.deep.equal(newState);
       });
-      it('should update invoice note list', () => {
+      it("should update invoice note list", () => {
         const dummyList = {
-          foo: 'bar'
+          foo: "bar",
         };
-        const newState = { ...defaultState
-        };
+        const newState = { ...defaultState };
         newState.list = dummyList;
         const state = invoiceNoteReducer({}, receiveInvoiceNoteList(dummyList));
         expect(state).to.deep.equal(newState);
       });
-      it('should set isCreateModalOpen to false', () => {
-        const newState = { ...defaultState,
-          isCreateModalOpen: false
-        };
+      it("should set isCreateModalOpen to false", () => {
+        const newState = { ...defaultState, isCreateModalOpen: false };
         let state = invoiceNoteReducer({}, showCreateInvoiceNoteModal());
         state = invoiceNoteReducer(state, hideCreateInvoiceNoteModal());
         expect(state).to.deep.equal(newState);
       });
-      it('should set isCreateModalOpen to true', () => {
-        const newState = { ...defaultState,
-          isCreateModalOpen: true
-        };
+      it("should set isCreateModalOpen to true", () => {
+        const newState = { ...defaultState, isCreateModalOpen: true };
         const state = invoiceNoteReducer({}, showCreateInvoiceNoteModal());
         expect(state).to.deep.equal(newState);
       });

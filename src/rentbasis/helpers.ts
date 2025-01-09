@@ -12,15 +12,18 @@ import type { RootState } from "@/root/types";
 /**
  * Get basis of rent rent rates
  * @param {Object} rentBasis
- * @returns {Object[]} 
+ * @returns {Object[]}
  */
-const getContentRentRates = (rentBasis: Record<string, any>): Array<Record<string, any>> => {
-  return get(rentBasis, 'rent_rates', []).map(item => {
+const getContentRentRates = (
+  rentBasis: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(rentBasis, "rent_rates", []).map((item) => {
     return {
       id: item.id,
-      build_permission_type: get(item, 'build_permission_type.id') || item.build_permission_type,
+      build_permission_type:
+        get(item, "build_permission_type.id") || item.build_permission_type,
       amount: item.amount,
-      area_unit: item.area_unit
+      area_unit: item.area_unit,
     };
   });
 };
@@ -28,13 +31,15 @@ const getContentRentRates = (rentBasis: Record<string, any>): Array<Record<strin
 /**
  * Get basis of rent property identifiers
  * @param {Object} rentBasis
- * @returns {Object[]} 
+ * @returns {Object[]}
  */
-export const getContentPropertyIdentifiers = (rentBasis: Record<string, any>): Array<Record<string, any>> => {
-  return get(rentBasis, 'property_identifiers', []).map(item => {
+export const getContentPropertyIdentifiers = (
+  rentBasis: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(rentBasis, "property_identifiers", []).map((item) => {
     return {
       id: item.id,
-      identifier: item.identifier
+      identifier: item.identifier,
     };
   });
 };
@@ -42,16 +47,18 @@ export const getContentPropertyIdentifiers = (rentBasis: Record<string, any>): A
 /**
  * Get basis of rent decisions
  * @param {Object} rentBasis
- * @returns {Object[]} 
+ * @returns {Object[]}
  */
-const getContentDecisions = (rentBasis: Record<string, any>): Array<Record<string, any>> => {
-  return get(rentBasis, 'decisions', []).map(item => {
+const getContentDecisions = (
+  rentBasis: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(rentBasis, "decisions", []).map((item) => {
     return {
       id: item.id,
       reference_number: item.reference_number,
-      decision_maker: get(item, 'decision_maker.id'),
+      decision_maker: get(item, "decision_maker.id"),
       decision_date: item.decision_date,
-      section: item.section
+      section: item.section,
     };
   });
 };
@@ -59,12 +66,14 @@ const getContentDecisions = (rentBasis: Record<string, any>): Array<Record<strin
 /**
  * Get basis of rent content
  * @param {Object} rentBasis
- * @returns {Object} 
+ * @returns {Object}
  */
-export const getContentRentBasis = (content: Record<string, any>): Record<string, any> => {
+export const getContentRentBasis = (
+  content: Record<string, any>,
+): Record<string, any> => {
   return {
     id: content.id,
-    plot_type: get(content, 'plot_type.id') || content.plot_type,
+    plot_type: get(content, "plot_type.id") || content.plot_type,
     start_date: content.start_date,
     end_date: content.end_date,
     detailed_plan_identifier: content.detailed_plan_identifier,
@@ -75,7 +84,7 @@ export const getContentRentBasis = (content: Record<string, any>): Record<string
     note: content.note,
     rent_rates: getContentRentRates(content),
     property_identifiers: getContentPropertyIdentifiers(content),
-    decisions: getContentDecisions(content)
+    decisions: getContentDecisions(content),
   };
 };
 
@@ -84,12 +93,15 @@ export const getContentRentBasis = (content: Record<string, any>): Record<string
  * @param {Object} rentBasis
  * @returns {Object[]}
  */
-const getContentCopiedRentRates = (rentBasis: Record<string, any>): Array<Record<string, any>> => {
-  return get(rentBasis, 'rent_rates', []).map(item => {
+const getContentCopiedRentRates = (
+  rentBasis: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(rentBasis, "rent_rates", []).map((item) => {
     return {
-      build_permission_type: get(item, 'build_permission_type.id') || item.build_permission_type,
+      build_permission_type:
+        get(item, "build_permission_type.id") || item.build_permission_type,
       amount: item.amount,
-      area_unit: item.area_unit
+      area_unit: item.area_unit,
     };
   });
 };
@@ -99,10 +111,12 @@ const getContentCopiedRentRates = (rentBasis: Record<string, any>): Array<Record
  * @param {Object} rentBasis
  * @returns {Object[]}
  */
-const getCopyOfPropertyIdentifiers = (rentBasis: Record<string, any>): Array<Record<string, any>> => {
-  return get(rentBasis, 'property_identifiers', []).map(item => {
+const getCopyOfPropertyIdentifiers = (
+  rentBasis: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(rentBasis, "property_identifiers", []).map((item) => {
     return {
-      identifier: item.identifier
+      identifier: item.identifier,
     };
   });
 };
@@ -112,13 +126,15 @@ const getCopyOfPropertyIdentifiers = (rentBasis: Record<string, any>): Array<Rec
  * @param {Object} rentBasis
  * @returns {Object[]}
  */
-const getCopyOfDecisions = (rentBasis: Record<string, any>): Array<Record<string, any>> => {
-  return get(rentBasis, 'decisions', []).map(item => {
+const getCopyOfDecisions = (
+  rentBasis: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(rentBasis, "decisions", []).map((item) => {
     return {
       reference_number: item.reference_number,
-      decision_maker: get(item, 'decision_maker.id'),
+      decision_maker: get(item, "decision_maker.id"),
       decision_date: item.decision_date,
-      section: item.section
+      section: item.section,
     };
   });
 };
@@ -128,9 +144,11 @@ const getCopyOfDecisions = (rentBasis: Record<string, any>): Array<Record<string
  * @param {Object} rentBasis
  * @returns {Object}
  */
-export const getCopyOfRentBasis = (rentBasis: Record<string, any>): Record<string, any> => {
+export const getCopyOfRentBasis = (
+  rentBasis: Record<string, any>,
+): Record<string, any> => {
   return {
-    plot_type: get(rentBasis, 'plot_type.id') || rentBasis.plot_type,
+    plot_type: get(rentBasis, "plot_type.id") || rentBasis.plot_type,
     start_date: rentBasis.start_date,
     end_date: rentBasis.end_date,
     detailed_plan_identifier: rentBasis.detailed_plan_identifier,
@@ -141,7 +159,7 @@ export const getCopyOfRentBasis = (rentBasis: Record<string, any>): Record<strin
     note: rentBasis.note,
     rent_rates: getContentCopiedRentRates(rentBasis),
     property_identifiers: getCopyOfPropertyIdentifiers(rentBasis),
-    decisions: getCopyOfDecisions(rentBasis)
+    decisions: getCopyOfDecisions(rentBasis),
   };
 };
 
@@ -150,11 +168,13 @@ export const getCopyOfRentBasis = (rentBasis: Record<string, any>): Record<strin
  * @param {Object} rentBasis
  * @returns {Object[]}
  */
-const getPayloadPropertyIdentifiers = (rentBasis: Record<string, any>): Array<Record<string, any>> => {
-  return get(rentBasis, 'property_identifiers', []).map(item => {
+const getPayloadPropertyIdentifiers = (
+  rentBasis: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(rentBasis, "property_identifiers", []).map((item) => {
     return {
       id: item.id,
-      identifier: item.identifier
+      identifier: item.identifier,
     };
   });
 };
@@ -164,14 +184,16 @@ const getPayloadPropertyIdentifiers = (rentBasis: Record<string, any>): Array<Re
  * @param {Object} rentBasis
  * @returns {Object[]}
  */
-const getPayloadDecisions = (rentBasis: Record<string, any>): Array<Record<string, any>> => {
-  return get(rentBasis, 'decisions', []).map(item => {
+const getPayloadDecisions = (
+  rentBasis: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(rentBasis, "decisions", []).map((item) => {
     return {
       id: item.id,
       reference_number: item.reference_number,
       decision_maker: item.decision_maker,
       decision_date: item.decision_date,
-      section: item.section
+      section: item.section,
     };
   });
 };
@@ -181,13 +203,15 @@ const getPayloadDecisions = (rentBasis: Record<string, any>): Array<Record<strin
  * @param {Object} rentBasis
  * @returns {Object[]}
  */
-const getPayloadRentRates = (rentBasis: Record<string, any>): Array<Record<string, any>> => {
-  return get(rentBasis, 'rent_rates', []).map(item => {
+const getPayloadRentRates = (
+  rentBasis: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(rentBasis, "rent_rates", []).map((item) => {
     return {
       id: item.id,
       build_permission_type: item.build_permission_type,
       amount: convertStrToDecimalNumber(item.amount),
-      area_unit: item.area_unit
+      area_unit: item.area_unit,
     };
   });
 };
@@ -197,7 +221,9 @@ const getPayloadRentRates = (rentBasis: Record<string, any>): Array<Record<strin
  * @param {Object} rentBasis
  * @returns {Object}
  */
-export const getPayloadRentBasis = (rentBasis: Record<string, any>): Record<string, any> => {
+export const getPayloadRentBasis = (
+  rentBasis: Record<string, any>,
+): Record<string, any> => {
   return {
     id: rentBasis.id,
     plot_type: rentBasis.plot_type,
@@ -211,7 +237,7 @@ export const getPayloadRentBasis = (rentBasis: Record<string, any>): Record<stri
     index: rentBasis.index,
     note: rentBasis.note,
     decisions: getPayloadDecisions(rentBasis),
-    rent_rates: getPayloadRentRates(rentBasis)
+    rent_rates: getPayloadRentRates(rentBasis),
   };
 };
 
@@ -220,12 +246,15 @@ export const getPayloadRentBasis = (rentBasis: Record<string, any>): Record<stri
  * @param {Object} rentBasis
  * @returns {Object}
  */
-export const getContentRentBasisGeoJson = (rentBasis: RentBasis): LeafletGeoJson => {
+export const getContentRentBasisGeoJson = (
+  rentBasis: RentBasis,
+): LeafletGeoJson => {
   const features = [];
   const geometry = rentBasis.geometry;
 
   if (!isEmpty(geometry)) {
-    features.push({ ...geometry,
+    features.push({
+      ...geometry,
       properties: {
         id: rentBasis.id,
         detailed_plan_identifier: rentBasis.detailed_plan_identifier,
@@ -234,39 +263,40 @@ export const getContentRentBasisGeoJson = (rentBasis: RentBasis): LeafletGeoJson
         index: rentBasis.index,
         lease_rights_end_date: rentBasis.lease_rights_end_date,
         management: rentBasis.management,
-        plot_type: get(rentBasis, 'plot_type.id'),
+        plot_type: get(rentBasis, "plot_type.id"),
         property_identifiers: rentBasis.property_identifiers,
-        start_date: rentBasis.start_date
-      }
+        start_date: rentBasis.start_date,
+      },
     });
   }
 
   return {
-    type: 'FeatureCollection',
-    features: features
+    type: "FeatureCollection",
+    features: features,
   };
 };
 
 /**
-* Map rent basis search filters for API
-* @param {Object} query
-* @returns {Object}
-*/
-export const mapRentBasisSearchFilters = (query: Record<string, any>): Record<string, any> => {
-  const searchQuery = { ...query
-  };
+ * Map rent basis search filters for API
+ * @param {Object} query
+ * @returns {Object}
+ */
+export const mapRentBasisSearchFilters = (
+  query: Record<string, any>,
+): Record<string, any> => {
+  const searchQuery = { ...query };
 
   if (searchQuery.sort_key) {
-    if (searchQuery.sort_key === 'start_date') {
-      searchQuery.ordering = ['start_date', 'end_date'];
-    } else if (searchQuery.sort_key === 'end_date') {
-      searchQuery.ordering = ['end_date', 'start_date'];
+    if (searchQuery.sort_key === "start_date") {
+      searchQuery.ordering = ["start_date", "end_date"];
+    } else if (searchQuery.sort_key === "end_date") {
+      searchQuery.ordering = ["end_date", "start_date"];
     } else {
       searchQuery.ordering = [searchQuery.sort_key];
     }
 
     if (searchQuery.sort_order === TableSortOrder.DESCENDING) {
-      searchQuery.ordering = searchQuery.ordering.map(key => `-${key}`);
+      searchQuery.ordering = searchQuery.ordering.map((key) => `-${key}`);
     }
 
     delete searchQuery.sort_key;
@@ -291,5 +321,5 @@ export const isRentBasisFormDirty = (state: RootState): boolean => {
  */
 export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.RENT_BASIS);
-  removeSessionStorageItem('rentBasisId');
+  removeSessionStorageItem("rentBasisId");
 };

@@ -5,9 +5,8 @@ type Props = {
   className?: string;
 };
 
-const WhiteBox = ({
-  children,
-  className
-}: Props) => <div className={classNames('content__white-box', className)}>{children}</div>;
+const WhiteBox = ({ children, className }: Props) => (
+  <div className={classNames("content__white-box", className)}>{children}</div>
+);
 
 export default WhiteBox;
