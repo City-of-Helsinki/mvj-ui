@@ -10,11 +10,19 @@ type Props = {
 const PlotApplicationInfoCheckCollapse: React.ComponentType<Props> = ({
   children,
   className,
-  headerTitle
+  headerTitle,
 }: Props) => {
-  return <Collapse className={classNames('collapse__third PlotApplicationInfoCheckCollapse', className)} headerTitle={headerTitle}>
+  return (
+    <Collapse
+      className={classNames(
+        "collapse__third PlotApplicationInfoCheckCollapse",
+        className,
+      )}
+      headerTitle={headerTitle}
+    >
       {children}
-    </Collapse>;
+    </Collapse>
+  );
 };
 
 export default PlotApplicationInfoCheckCollapse;

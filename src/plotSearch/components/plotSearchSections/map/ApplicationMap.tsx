@@ -20,10 +20,7 @@ type Props = OwnProps & {
 
 class ApplicationMap extends Component<Props> {
   componentDidMount() {
-    const {
-      fetchAreaNoteList,
-      usersPermissions
-    } = this.props;
+    const { fetchAreaNoteList, usersPermissions } = this.props;
 
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
       fetchAreaNoteList({});
@@ -31,33 +28,44 @@ class ApplicationMap extends Component<Props> {
   }
 
   getOverlayLayers = () => {
-    const {
-      areaNotes,
-      usersPermissions
-    } = this.props;
+    const { areaNotes, usersPermissions } = this.props;
     const layers = [];
     {
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) && !isEmpty(areaNotes) && layers.push({
-        checked: false,
-        component: <AreaNotesLayer key='area_notes' allowToEdit={false} areaNotes={areaNotes} />,
-        name: 'Muistettavat ehdot'
-      });
+      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) &&
+        !isEmpty(areaNotes) &&
+        layers.push({
+          checked: false,
+          component: (
+            <AreaNotesLayer
+              key="area_notes"
+              allowToEdit={false}
+              areaNotes={areaNotes}
+            />
+          ),
+          name: "Muistettavat ehdot",
+        });
     }
     return layers;
   };
 
   render() {
     const overlayLayers = this.getOverlayLayers();
-    return <AreaNotesEditMap allowToEdit={false} overlayLayers={overlayLayers} />;
+    return (
+      <AreaNotesEditMap allowToEdit={false} overlayLayers={overlayLayers} />
+    );
   }
-
 }
 
-export default (flowRight(connect(state => {
-  return {
-    areaNotes: getAreaNoteList(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  fetchAreaNoteList
-}))(ApplicationMap) as React.ComponentType<OwnProps>);
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        areaNotes: getAreaNoteList(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+    {
+      fetchAreaNoteList,
+    },
+  ),
+)(ApplicationMap) as React.ComponentType<OwnProps>;

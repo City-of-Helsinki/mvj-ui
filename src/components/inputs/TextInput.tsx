@@ -10,11 +10,20 @@ type Props = {
 const TextInput = ({
   disabled,
   onChange,
-  placeholder = '',
-  type = 'text',
-  value = ''
+  placeholder = "",
+  type = "text",
+  value = "",
 }: Props) => {
-  return <input className='text-input' disabled={disabled} onChange={onChange} placeholder={placeholder} type={type} value={value} />;
+  return (
+    <input
+      className="text-input"
+      disabled={disabled}
+      onChange={onChange}
+      placeholder={placeholder}
+      type={type}
+      value={value}
+    />
+  );
 };
 
 export default TextInput;

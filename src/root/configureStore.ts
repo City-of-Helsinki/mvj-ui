@@ -13,14 +13,19 @@ declare global {
   }
 }
 
-export default (() => {
+export default () => {
   const rootReducer = createRootReducer(history);
   const rootSaga = createRootSaga();
   const routerMiddleware = createRouterMiddleware(history);
   const sagaMiddleware = createSagaMiddleware();
-  const enhancer = compose(applyMiddleware(sagaMiddleware, routerMiddleware), window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f);
+  const enhancer = compose(
+    applyMiddleware(sagaMiddleware, routerMiddleware),
+    window.__REDUX_DEVTOOLS_EXTENSION__
+      ? window.__REDUX_DEVTOOLS_EXTENSION__()
+      : (f) => f,
+  );
   const store = createStore(rootReducer, enhancer);
   sagaMiddleware.run(rootSaga);
 
   return store;
-});
+};

@@ -14,21 +14,18 @@ type Props = OwnProps & {
   location: Record<string, any>;
 };
 
-const TargetListLayer = ({
-  color,
-  targetsGeoJson
-}: Props) => {
-  const onMouseOver = e => {
+const TargetListLayer = ({ color, targetsGeoJson }: Props) => {
+  const onMouseOver = (e) => {
     const layer = e.target;
     layer.setStyle({
-      fillOpacity: 0.7
+      fillOpacity: 0.7,
     });
   };
 
-  const onMouseOut = e => {
+  const onMouseOut = (e) => {
     const layer = e.target;
     layer.setStyle({
-      fillOpacity: 0.2
+      fillOpacity: 0.2,
     });
   };
 
@@ -36,23 +33,34 @@ const TargetListLayer = ({
     return `${getRouteById(Routes.PLOT_APPLICATIONS)}/?visualization=table&identifier=${identifier}`;
   };
 
-  return <>
-    {targetsGeoJson.features.map(feature => {
-      const {
-        target
-      } = feature.properties;
-      return <FeatureGroup key={target.identifier}>
-        <GeoJSON data={target.geometry} style={{
-          color: color
-        }} onMouseOver={onMouseOver} onMouseOut={onMouseOut} />
-        <Popup>
-          <Link to={`${getApplicationsLink(target.identifier)}`}>{target.identifier}</Link>
-          <br />
-          <strong>Osoite:</strong> {target.address.address}
-        </Popup>
-      </FeatureGroup>;
-    })}
-  </>;
+  return (
+    <>
+      {targetsGeoJson.features.map((feature) => {
+        const { target } = feature.properties;
+        return (
+          <FeatureGroup key={target.identifier}>
+            <GeoJSON
+              data={target.geometry}
+              style={{
+                color: color,
+              }}
+              onMouseOver={onMouseOver}
+              onMouseOut={onMouseOut}
+            />
+            <Popup>
+              <Link to={`${getApplicationsLink(target.identifier)}`}>
+                {target.identifier}
+              </Link>
+              <br />
+              <strong>Osoite:</strong> {target.address.address}
+            </Popup>
+          </FeatureGroup>
+        );
+      })}
+    </>
+  );
 };
 
-export default (flowRight(withRouter)(TargetListLayer) as React.ComponentType<OwnProps>);
+export default flowRight(withRouter)(
+  TargetListLayer,
+) as React.ComponentType<OwnProps>;

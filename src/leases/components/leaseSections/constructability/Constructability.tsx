@@ -36,7 +36,7 @@ class Constructability extends PureComponent<Props, State> {
     currentLease: {},
     locationOptions: [],
     pollutedLandRentConditionStateOptions: [],
-    typeOptions: []
+    typeOptions: [],
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -44,11 +44,27 @@ class Constructability extends PureComponent<Props, State> {
 
     if (props.attributes !== state.attributes) {
       newState.currentLease = props.currentLease;
-      newState.constructabilityReporInvestigationtStateOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE);
-      newState.constructabilityStateOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE);
-      newState.locationOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.LOCATION);
-      newState.pollutedLandRentConditionStateOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE);
-      newState.typeOptions = getFieldOptions(props.attributes, LeaseAreasFieldPaths.TYPE);
+      newState.constructabilityReporInvestigationtStateOptions =
+        getFieldOptions(
+          props.attributes,
+          LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE,
+        );
+      newState.constructabilityStateOptions = getFieldOptions(
+        props.attributes,
+        LeaseAreasFieldPaths.PRECONSTRUCTION_STATE,
+      );
+      newState.locationOptions = getFieldOptions(
+        props.attributes,
+        LeaseAreasFieldPaths.LOCATION,
+      );
+      newState.pollutedLandRentConditionStateOptions = getFieldOptions(
+        props.attributes,
+        LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE,
+      );
+      newState.typeOptions = getFieldOptions(
+        props.attributes,
+        LeaseAreasFieldPaths.TYPE,
+      );
     }
 
     if (props.currentLease !== state.currentLease) {
@@ -66,25 +82,47 @@ class Constructability extends PureComponent<Props, State> {
       constructabilityStateOptions,
       locationOptions,
       pollutedLandRentConditionStateOptions,
-      typeOptions
+      typeOptions,
     } = this.state;
-    return <Fragment>
-        <Title uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY)}>
+    return (
+      <Fragment>
+        <Title
+          uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY)}
+        >
           {LeaseAreasFieldTitles.CONSTRUCTABILITY}
         </Title>
         <Divider />
         <SendEmail />
 
-        {!areas || !areas.length && <FormText className='no-margin'>Ei vuokra-alueita</FormText>}
-        {areas && !!areas.length && areas.map(area => <ConstructabilityItem key={area.id} area={area} constructabilityReportInvestigationStateOptions={constructabilityReportInvestigationStateOptions} constructabilityStateOptions={constructabilityStateOptions} locationOptions={locationOptions} pollutedLandRentConditionStateOptions={pollutedLandRentConditionStateOptions} typeOptions={typeOptions} />)}
-      </Fragment>;
+        {!areas ||
+          (!areas.length && (
+            <FormText className="no-margin">Ei vuokra-alueita</FormText>
+          ))}
+        {areas &&
+          !!areas.length &&
+          areas.map((area) => (
+            <ConstructabilityItem
+              key={area.id}
+              area={area}
+              constructabilityReportInvestigationStateOptions={
+                constructabilityReportInvestigationStateOptions
+              }
+              constructabilityStateOptions={constructabilityStateOptions}
+              locationOptions={locationOptions}
+              pollutedLandRentConditionStateOptions={
+                pollutedLandRentConditionStateOptions
+              }
+              typeOptions={typeOptions}
+            />
+          ))}
+      </Fragment>
+    );
   }
-
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
     attributes: getAttributes(state),
-    currentLease: getCurrentLease(state)
+    currentLease: getCurrentLease(state),
   };
 })(Constructability);

@@ -7,7 +7,10 @@ import FormText from "@/components/form/FormText";
 import GreenBox from "@/components/content/GreenBox";
 import InspectionItem from "./InspectionItem";
 import { getContentInspections } from "@/leases/helpers";
-import { getAttributes as getLeaseAttributes, getCurrentLease } from "@/leases/selectors";
+import {
+  getAttributes as getLeaseAttributes,
+  getCurrentLease,
+} from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 type Props = {
@@ -22,7 +25,7 @@ type State = {
 class Inspections extends PureComponent<Props, State> {
   state = {
     currentLease: {},
-    inspections: []
+    inspections: [],
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -37,33 +40,46 @@ class Inspections extends PureComponent<Props, State> {
   }
 
   render() {
-    const {
-      leaseAttributes
-    } = this.props;
-    const {
-      inspections
-    } = this.state;
+    const { leaseAttributes } = this.props;
+    const { inspections } = this.state;
 
     if (!inspections || !inspections.length) {
-      return <FormText className='no-margin'>Ei tarkastuksia tai huomautuksia</FormText>;
+      return (
+        <FormText className="no-margin">
+          Ei tarkastuksia tai huomautuksia
+        </FormText>
+      );
     }
 
-    return <GreenBox>
-        {inspections && !!inspections.length && <BoxItemContainer>
-            {inspections.map(inspection => {
-          return <BoxItem key={inspection.id} className='no-border-on-first-child no-border-on-last-child'>
-                  <InspectionItem inspection={inspection} leaseAttributes={leaseAttributes} />
-                </BoxItem>;
-        })}
-          </BoxItemContainer>}
-      </GreenBox>;
+    return (
+      <GreenBox>
+        {inspections && !!inspections.length && (
+          <BoxItemContainer>
+            {inspections.map((inspection) => {
+              return (
+                <BoxItem
+                  key={inspection.id}
+                  className="no-border-on-first-child no-border-on-last-child"
+                >
+                  <InspectionItem
+                    inspection={inspection}
+                    leaseAttributes={leaseAttributes}
+                  />
+                </BoxItem>
+              );
+            })}
+          </BoxItemContainer>
+        )}
+      </GreenBox>
+    );
   }
-
 }
 
-export default flowRight(connect(state => {
-  return {
-    currentLease: getCurrentLease(state),
-    leaseAttributes: getLeaseAttributes(state)
-  };
-}))(Inspections);
+export default flowRight(
+  connect((state) => {
+    return {
+      currentLease: getCurrentLease(state),
+      leaseAttributes: getLeaseAttributes(state),
+    };
+  }),
+)(Inspections);

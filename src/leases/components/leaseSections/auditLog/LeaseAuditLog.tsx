@@ -11,7 +11,11 @@ import Title from "@/components/content/Title";
 import { fetchAuditLogByLease } from "@/auditLog/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import { LeaseFieldPaths, LeaseFieldTitles } from "@/leases/enums";
-import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults } from "@/util/helpers";
+import {
+  getApiResponseCount,
+  getApiResponseMaxPage,
+  getApiResponseResults,
+} from "@/util/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getAuditLogByLease, getIsFetchingByLease } from "@/auditLog/selectors";
 import { getIsEditMode } from "@/leases/selectors";
@@ -37,17 +41,14 @@ class LeaseAuditLog extends PureComponent<Props, State> {
     auditLogItems: [],
     auditLogList: {},
     count: 0,
-    maxPage: 0
+    maxPage: 0,
   };
 
   componentDidMount() {
-    const {
-      fetchAuditLogByLease,
-      leaseId
-    } = this.props;
+    const { fetchAuditLogByLease, leaseId } = this.props;
     fetchAuditLogByLease({
       id: leaseId,
-      limit: LIST_TABLE_PAGE_SIZE
+      limit: LIST_TABLE_PAGE_SIZE,
     });
   }
 
@@ -58,66 +59,77 @@ class LeaseAuditLog extends PureComponent<Props, State> {
       newState.auditLogList = props.auditLogList;
       newState.auditLogItems = getApiResponseResults(props.auditLogList);
       newState.count = getApiResponseCount(props.auditLogList);
-      newState.maxPage = getApiResponseMaxPage(props.auditLogList, LIST_TABLE_PAGE_SIZE);
+      newState.maxPage = getApiResponseMaxPage(
+        props.auditLogList,
+        LIST_TABLE_PAGE_SIZE,
+      );
     }
 
     return !isEmpty(newState) ? newState : null;
   }
 
   handlePageClick = (page: number) => {
-    const {
-      fetchAuditLogByLease,
-      leaseId
-    } = this.props;
-    this.setState({
-      activePage: page
-    }, () => {
-      const payload: any = {
-        id: leaseId,
-        limit: LIST_TABLE_PAGE_SIZE
-      };
+    const { fetchAuditLogByLease, leaseId } = this.props;
+    this.setState(
+      {
+        activePage: page,
+      },
+      () => {
+        const payload: any = {
+          id: leaseId,
+          limit: LIST_TABLE_PAGE_SIZE,
+        };
 
-      if (page > 1) {
-        payload.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
-      }
+        if (page > 1) {
+          payload.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
+        }
 
-      fetchAuditLogByLease(payload);
-    });
+        fetchAuditLogByLease(payload);
+      },
+    );
   };
 
   render() {
-    const {
-      isEditMode,
-      isFetching
-    } = this.props;
-    const {
-      activePage,
-      auditLogItems,
-      maxPage
-    } = this.state;
-    return <Fragment>
-        <Title enableUiDataEdit={isEditMode} uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.AUDIT_LOG)}>
+    const { isEditMode, isFetching } = this.props;
+    const { activePage, auditLogItems, maxPage } = this.state;
+    return (
+      <Fragment>
+        <Title
+          enableUiDataEdit={isEditMode}
+          uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.AUDIT_LOG)}
+        >
           {LeaseFieldTitles.AUDIT_LOG}
         </Title>
         <Divider />
 
         <TableWrapper>
-          {isFetching && <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>}
+          {isFetching && (
+            <LoaderWrapper className="relative-overlay-wrapper">
+              <Loader isLoading={isFetching} />
+            </LoaderWrapper>
+          )}
 
           <AuditLogTable items={auditLogItems} />
-          <Pagination activePage={activePage} maxPage={maxPage} onPageClick={this.handlePageClick} />
+          <Pagination
+            activePage={activePage}
+            maxPage={maxPage}
+            onPageClick={this.handlePageClick}
+          />
         </TableWrapper>
-      </Fragment>;
+      </Fragment>
+    );
   }
-
 }
 
-export default connect((state, props: Props) => {
-  return {
-    auditLogList: getAuditLogByLease(state, props.leaseId),
-    isEditMode: getIsEditMode(state),
-    isFetching: getIsFetchingByLease(state, props.leaseId)
-  };
-}, {
-  fetchAuditLogByLease
-})(LeaseAuditLog);
+export default connect(
+  (state, props: Props) => {
+    return {
+      auditLogList: getAuditLogByLease(state, props.leaseId),
+      isEditMode: getIsEditMode(state),
+      isFetching: getIsFetchingByLease(state, props.leaseId),
+    };
+  },
+  {
+    fetchAuditLogByLease,
+  },
+)(LeaseAuditLog);

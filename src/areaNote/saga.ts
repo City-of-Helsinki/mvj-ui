@@ -1,17 +1,30 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveError } from "@/api/actions";
-import { receiveAttributes, receiveMethods, attributesNotFound, hideEditMode, notFound, receiveAreaNoteList, receiveDeletedAreaNote, receiveEditedAreaNote } from "./actions";
+import {
+  receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
+  hideEditMode,
+  notFound,
+  receiveAreaNoteList,
+  receiveDeletedAreaNote,
+  receiveEditedAreaNote,
+} from "./actions";
 import { displayUIMessage } from "@/util/helpers";
-import { createAreaNote, deleteAreaNote, editAreaNote, fetchAreaNotes, fetchAttributes } from "./requests";
+import {
+  createAreaNote,
+  deleteAreaNote,
+  editAreaNote,
+  fetchAreaNotes,
+  fetchAttributes,
+} from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
     const attributes = bodyAsJson.fields;
     const methods = bodyAsJson.methods;
@@ -27,7 +40,10 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch area note attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch area note attributes with error "%s"',
+      error,
+    );
     yield put(attributesNotFound());
     yield put(receiveError(error));
   }
@@ -35,26 +51,20 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchAreaNoteListSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     let {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson: body
-    } = yield call(fetchAreaNotes, { ...query,
-      limit: 10000
-    });
+      response: { status: statusCode },
+      bodyAsJson: body,
+    } = yield call(fetchAreaNotes, { ...query, limit: 10000 });
     let areaNotes = body.results;
 
     while (statusCode === 200 && body.next) {
       const {
-        response: {
-          status
-        },
-        bodyAsJson
-      } = yield call(fetchAreaNotes, `?${body.next.split('?').pop()}`);
+        response: { status },
+        bodyAsJson,
+      } = yield call(fetchAreaNotes, `?${body.next.split("?").pop()}`);
       statusCode = status;
       body = bodyAsJson;
       areaNotes = [...areaNotes, ...body.results];
@@ -77,16 +87,11 @@ function* fetchAreaNoteListSaga({
   }
 }
 
-function* createAreaNoteSaga({
-  payload,
-  type: any
-}): Generator<any, any, any> {
+function* createAreaNoteSaga({ payload, type: any }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createAreaNote, payload);
 
     switch (statusCode) {
@@ -94,17 +99,21 @@ function* createAreaNoteSaga({
         yield put(receiveEditedAreaNote(bodyAsJson));
         yield put(hideEditMode());
         displayUIMessage({
-          title: '',
-          body: 'Muistettava ehto luotu'
+          title: "",
+          body: "Muistettava ehto luotu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         break;
 
       case 500:
@@ -121,14 +130,12 @@ function* createAreaNoteSaga({
 
 function* deleteAreaNoteSaga({
   payload: id,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deleteAreaNote, id);
 
     switch (statusCode) {
@@ -136,17 +143,21 @@ function* deleteAreaNoteSaga({
         yield put(receiveDeletedAreaNote(id));
         yield put(hideEditMode());
         displayUIMessage({
-          title: '',
-          body: 'Muistettava ehto poistettu'
+          title: "",
+          body: "Muistettava ehto poistettu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         break;
 
       case 500:
@@ -161,16 +172,11 @@ function* deleteAreaNoteSaga({
   }
 }
 
-function* editAreaNoteSaga({
-  payload,
-  type: any
-}): Generator<any, any, any> {
+function* editAreaNoteSaga({ payload, type: any }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(editAreaNote, payload);
 
     switch (statusCode) {
@@ -178,17 +184,21 @@ function* editAreaNoteSaga({
         yield put(receiveEditedAreaNote(bodyAsJson));
         yield put(hideEditMode());
         displayUIMessage({
-          title: '',
-          body: 'Muistettava ehto tallennettu'
+          title: "",
+          body: "Muistettava ehto tallennettu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         break;
 
       case 500:
@@ -204,11 +214,13 @@ function* editAreaNoteSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/areaNote/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/areaNote/FETCH_ALL', fetchAreaNoteListSaga);
-    yield takeLatest('mvj/areaNote/CREATE', createAreaNoteSaga);
-    yield takeLatest('mvj/areaNote/DELETE', deleteAreaNoteSaga);
-    yield takeLatest('mvj/areaNote/EDIT', editAreaNoteSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/areaNote/FETCH_ATTRIBUTES", fetchAttributesSaga);
+      yield takeLatest("mvj/areaNote/FETCH_ALL", fetchAreaNoteListSaga);
+      yield takeLatest("mvj/areaNote/CREATE", createAreaNoteSaga);
+      yield takeLatest("mvj/areaNote/DELETE", deleteAreaNoteSaga);
+      yield takeLatest("mvj/areaNote/EDIT", editAreaNoteSaga);
+    }),
+  ]);
 }

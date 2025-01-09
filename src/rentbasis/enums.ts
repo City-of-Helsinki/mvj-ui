@@ -4,19 +4,19 @@
  * @enum {string}
  */
 export const RentBasisFieldPaths = {
-  ID: 'id',
-  BASIC_INFO: 'basic_info',
-  DETAILED_PLAN_IDENTIFIER: 'detailed_plan_identifier',
-  END_DATE: 'end_date',
-  FINANCING: 'financing',
-  GEOMETRY: 'geometry',
-  INDEX: 'index',
-  LEASE_RIGHTS_END_DATE: 'lease_rights_end_date',
-  MANAGEMENT: 'management',
-  MAP: 'map',
-  NOTE: 'note',
-  PLOT_TYPE: 'plot_type',
-  START_DATE: 'start_date'
+  ID: "id",
+  BASIC_INFO: "basic_info",
+  DETAILED_PLAN_IDENTIFIER: "detailed_plan_identifier",
+  END_DATE: "end_date",
+  FINANCING: "financing",
+  GEOMETRY: "geometry",
+  INDEX: "index",
+  LEASE_RIGHTS_END_DATE: "lease_rights_end_date",
+  MANAGEMENT: "management",
+  MAP: "map",
+  NOTE: "note",
+  PLOT_TYPE: "plot_type",
+  START_DATE: "start_date",
 };
 
 /**
@@ -25,19 +25,19 @@ export const RentBasisFieldPaths = {
  * @enum {string}
  */
 export const RentBasisFieldTitles = {
-  IDENTIFIER: 'Vuokrausperiaatetunnus',
-  BASIC_INFO: 'Perustiedot',
-  DETAILED_PLAN_IDENTIFIER: 'Asemakaava',
-  END_DATE: 'Loppupvm',
-  FINANCING: 'Rahoitusmuoto',
-  GEOMETRY: 'Karttalinkki',
-  INDEX: 'Indeksi',
-  LEASE_RIGHTS_END_DATE: 'Vuokraoikeus päättyy',
-  MANAGEMENT: 'Hallintamuoto',
-  MAP: 'Kartta',
-  NOTE: 'Huomautus',
-  PLOT_TYPE: 'Tonttityyppi',
-  START_DATE: 'Alkupvm'
+  IDENTIFIER: "Vuokrausperiaatetunnus",
+  BASIC_INFO: "Perustiedot",
+  DETAILED_PLAN_IDENTIFIER: "Asemakaava",
+  END_DATE: "Loppupvm",
+  FINANCING: "Rahoitusmuoto",
+  GEOMETRY: "Karttalinkki",
+  INDEX: "Indeksi",
+  LEASE_RIGHTS_END_DATE: "Vuokraoikeus päättyy",
+  MANAGEMENT: "Hallintamuoto",
+  MAP: "Kartta",
+  NOTE: "Huomautus",
+  PLOT_TYPE: "Tonttityyppi",
+  START_DATE: "Alkupvm",
 };
 
 /**
@@ -46,8 +46,8 @@ export const RentBasisFieldTitles = {
  * @enum {string}
  */
 export const RentBasisPropertyIdentifiersFieldPaths = {
-  PROPERTY_IDENTIFIERS: 'property_identifiers',
-  IDENTIFIER: 'property_identifiers.child.children.identifier'
+  PROPERTY_IDENTIFIERS: "property_identifiers",
+  IDENTIFIER: "property_identifiers.child.children.identifier",
 };
 
 /**
@@ -56,8 +56,8 @@ export const RentBasisPropertyIdentifiersFieldPaths = {
  * @enum {string}
  */
 export const RentBasisPropertyIdentifiersFieldTitles = {
-  PROPERTY_IDENTIFIERS: 'Kiinteistötunnukset',
-  IDENTIFIER: 'Kiinteistötunnus'
+  PROPERTY_IDENTIFIERS: "Kiinteistötunnukset",
+  IDENTIFIER: "Kiinteistötunnus",
 };
 
 /**
@@ -66,11 +66,11 @@ export const RentBasisPropertyIdentifiersFieldTitles = {
  * @enum {string}
  */
 export const RentBasisDecisionsFieldPaths = {
-  DECISIONS: 'decisions',
-  DECISION_DATE: 'decisions.child.children.decision_date',
-  DECISION_MAKER: 'decisions.child.children.decision_maker',
-  REFERENCE_NUMBER: 'decisions.child.children.reference_number',
-  SECTION: 'decisions.child.children.section'
+  DECISIONS: "decisions",
+  DECISION_DATE: "decisions.child.children.decision_date",
+  DECISION_MAKER: "decisions.child.children.decision_maker",
+  REFERENCE_NUMBER: "decisions.child.children.reference_number",
+  SECTION: "decisions.child.children.section",
 };
 
 /**
@@ -79,11 +79,11 @@ export const RentBasisDecisionsFieldPaths = {
  * @enum {string}
  */
 export const RentBasisDecisionsFieldTitles = {
-  DECISIONS: 'Päätökset',
-  DECISION_DATE: 'Pvm',
-  DECISION_MAKER: 'Päättäjä',
-  REFERENCE_NUMBER: 'Hel diaarinumero',
-  SECTION: 'Pykälä'
+  DECISIONS: "Päätökset",
+  DECISION_DATE: "Pvm",
+  DECISION_MAKER: "Päättäjä",
+  REFERENCE_NUMBER: "Hel diaarinumero",
+  SECTION: "Pykälä",
 };
 
 /**
@@ -92,10 +92,10 @@ export const RentBasisDecisionsFieldTitles = {
  * @enum {string}
  */
 export const RentBasisRentRatesFieldPaths = {
-  RENT_RATES: 'rent_rates',
-  AMOUNT: 'rent_rates.child.children.amount',
-  AREA_UNIT: 'rent_rates.child.children.area_unit',
-  BUILD_PERMISSION_TYPE: 'rent_rates.child.children.build_permission_type'
+  RENT_RATES: "rent_rates",
+  AMOUNT: "rent_rates.child.children.amount",
+  AREA_UNIT: "rent_rates.child.children.area_unit",
+  BUILD_PERMISSION_TYPE: "rent_rates.child.children.build_permission_type",
 };
 
 /**
@@ -104,8 +104,8 @@ export const RentBasisRentRatesFieldPaths = {
  * @enum {string}
  */
 export const RentBasisRentRatesFieldTitles = {
-  RENT_RATES: 'Hinnat',
-  AMOUNT: 'Euroa',
-  AREA_UNIT: 'Yksikkö',
-  BUILD_PERMISSION_TYPE: 'Pääkäyttötarkoitus'
+  RENT_RATES: "Hinnat",
+  AMOUNT: "Euroa",
+  AREA_UNIT: "Yksikkö",
+  BUILD_PERMISSION_TYPE: "Pääkäyttötarkoitus",
 };

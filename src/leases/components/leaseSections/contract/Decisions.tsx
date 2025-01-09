@@ -2,7 +2,10 @@ import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import DecisionItem from "./DecisionItem";
 import FormText from "@/components/form/FormText";
-import { LeaseDecisionConditionsFieldPaths, LeaseDecisionsFieldPaths } from "@/leases/enums";
+import {
+  LeaseDecisionConditionsFieldPaths,
+  LeaseDecisionsFieldPaths,
+} from "@/leases/enums";
 import { getContentDecisions } from "@/leases/helpers";
 import { getFieldOptions } from "@/util/helpers";
 import { getAttributes, getCurrentLease } from "@/leases/selectors";
@@ -28,7 +31,7 @@ class Decisions extends PureComponent<Props, State> {
     currentLease: {},
     decisionMakerOptions: [],
     decisions: [],
-    typeOptions: []
+    typeOptions: [],
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -36,9 +39,18 @@ class Decisions extends PureComponent<Props, State> {
 
     if (props.attributes !== state.attributes) {
       newState.attributes = props.attributes;
-      newState.conditionTypeOptions = getFieldOptions(props.attributes, LeaseDecisionConditionsFieldPaths.TYPE);
-      newState.decisionMakerOptions = getFieldOptions(props.attributes, LeaseDecisionsFieldPaths.DECISION_MAKER);
-      newState.typeOptions = getFieldOptions(props.attributes, LeaseDecisionsFieldPaths.TYPE);
+      newState.conditionTypeOptions = getFieldOptions(
+        props.attributes,
+        LeaseDecisionConditionsFieldPaths.TYPE,
+      );
+      newState.decisionMakerOptions = getFieldOptions(
+        props.attributes,
+        LeaseDecisionsFieldPaths.DECISION_MAKER,
+      );
+      newState.typeOptions = getFieldOptions(
+        props.attributes,
+        LeaseDecisionsFieldPaths.TYPE,
+      );
     }
 
     if (props.currentLease !== state.currentLease) {
@@ -54,19 +66,33 @@ class Decisions extends PureComponent<Props, State> {
       conditionTypeOptions,
       decisionMakerOptions,
       decisions,
-      typeOptions
+      typeOptions,
     } = this.state;
-    return <Fragment>
-        {!decisions || !decisions.length && <FormText className='no-margin'>Ei päätöksiä</FormText>}
-        {decisions && !!decisions.length && decisions.map(decision => <DecisionItem key={decision.id} conditionTypeOptions={conditionTypeOptions} decisionMakerOptions={decisionMakerOptions} decision={decision} typeOptions={typeOptions} />)}
-      </Fragment>;
+    return (
+      <Fragment>
+        {!decisions ||
+          (!decisions.length && (
+            <FormText className="no-margin">Ei päätöksiä</FormText>
+          ))}
+        {decisions &&
+          !!decisions.length &&
+          decisions.map((decision) => (
+            <DecisionItem
+              key={decision.id}
+              conditionTypeOptions={conditionTypeOptions}
+              decisionMakerOptions={decisionMakerOptions}
+              decision={decision}
+              typeOptions={typeOptions}
+            />
+          ))}
+      </Fragment>
+    );
   }
-
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
     attributes: getAttributes(state),
-    currentLease: getCurrentLease(state)
+    currentLease: getCurrentLease(state),
   };
 })(Decisions);

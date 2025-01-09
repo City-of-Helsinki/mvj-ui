@@ -1,29 +1,37 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
-import { fetchInvoicesByLease, receiveInvoiceToCredit, receiveIsCreditInvoicePanelOpen } from "@/invoices/actions";
-import { fetchInvoiceSetsByLease as fetchInvoiceSetsByLeaseAction, notFound, receiveInvoiceSetsByLease } from "./actions";
+import {
+  fetchInvoicesByLease,
+  receiveInvoiceToCredit,
+  receiveIsCreditInvoicePanelOpen,
+} from "@/invoices/actions";
+import {
+  fetchInvoiceSetsByLease as fetchInvoiceSetsByLeaseAction,
+  notFound,
+  receiveInvoiceSetsByLease,
+} from "./actions";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
 import { creditInvoiceSet, fetchInvoiceSetsByLease } from "./requests";
 
 function* fetchInvoiceSetsByLeaseSaga({
   payload: leaseId,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchInvoiceSetsByLease, leaseId);
 
     switch (statusCode) {
       case 200:
-        yield put(receiveInvoiceSetsByLease({
-          leaseId: leaseId,
-          invoiceSets: bodyAsJson.results
-        }));
+        yield put(
+          receiveInvoiceSetsByLease({
+            leaseId: leaseId,
+            invoiceSets: bodyAsJson.results,
+          }),
+        );
         break;
 
       case 404:
@@ -42,22 +50,16 @@ function* fetchInvoiceSetsByLeaseSaga({
 }
 
 function* creditInvoiceSetSaga({
-  payload: {
-    creditData,
-    invoiceSetId,
-    lease
-  },
-  type: any
+  payload: { creditData, invoiceSetId, lease },
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(creditInvoiceSet, {
       creditData: creditData,
-      invoiceSetId: invoiceSetId
+      invoiceSetId: invoiceSetId,
     });
 
     switch (statusCode) {
@@ -67,14 +69,13 @@ function* creditInvoiceSetSaga({
         yield put(receiveIsCreditInvoicePanelOpen(false));
         yield put(receiveInvoiceToCredit(null));
         displayUIMessage({
-          title: '',
-          body: 'Hyvityslaskut luotu'
+          title: "",
+          body: "Hyvityslaskut luotu",
         });
         break;
 
       default:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -84,8 +85,16 @@ function* creditInvoiceSetSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/invoiceSets/FETCH_BY_LEASE', fetchInvoiceSetsByLeaseSaga);
-    yield takeLatest('mvj/invoiceSets/CREDIT_INVOICESET', creditInvoiceSetSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/invoiceSets/FETCH_BY_LEASE",
+        fetchInvoiceSetsByLeaseSaga,
+      );
+      yield takeLatest(
+        "mvj/invoiceSets/CREDIT_INVOICESET",
+        creditInvoiceSetSaga,
+      );
+    }),
+  ]);
 }

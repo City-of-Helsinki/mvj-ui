@@ -14,24 +14,32 @@ const TablePanelContainer = ({
   footer,
   innerRef,
   onClose,
-  title
+  title,
 }: Props) => {
-  return <div className='table__table-panel-container' ref={innerRef}>
+  return (
+    <div className="table__table-panel-container" ref={innerRef}>
       <div className="table__table-panel-container_wrapper">
-        <div className='table__table-panel-container_header'>
+        <div className="table__table-panel-container_header">
           <h3>{title}</h3>
-          <CloseButton className='position-topright' onClick={onClose} title='Sulje' />
+          <CloseButton
+            className="position-topright"
+            onClick={onClose}
+            title="Sulje"
+          />
         </div>
-        <div className={classNames('table__table-panel-container_body', {
-        'table__table-panel-container_body--with-footer': footer
-      })}>
+        <div
+          className={classNames("table__table-panel-container_body", {
+            "table__table-panel-container_body--with-footer": footer,
+          })}
+        >
           {children}
         </div>
-        {footer && <div className='table__table-panel-container_footer'>
-            {footer}
-          </div>}
+        {footer && (
+          <div className="table__table-panel-container_footer">{footer}</div>
+        )}
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default TablePanelContainer;

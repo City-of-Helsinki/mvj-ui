@@ -7,12 +7,12 @@ type Props = {
 };
 
 const FormText = (props: Props): JSX.Element => {
-  const {
-    children,
-    className,
-    style
-  } = props;
-  return <p {...props} className={classNames('form__text', className)} style={style}>{children}</p>;
+  const { children, className, style } = props;
+  return (
+    <p {...props} className={classNames("form__text", className)} style={style}>
+      {children}
+    </p>
+  );
 };
 
 export default FormText;

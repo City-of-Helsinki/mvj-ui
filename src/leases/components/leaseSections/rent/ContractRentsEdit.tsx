@@ -28,57 +28,85 @@ const ContractRentsEdit = ({
   leaseAttributes,
   rentField,
   rentType,
-  usersPermissions
+  usersPermissions,
 }: Props) => {
   const handleAdd = () => {
     fields.push({
-      period: 'per_year'
+      period: "per_year",
     });
   };
 
-  if (!hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACTRENT) && (!fields || !fields.length)) {
+  if (
+    !hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACTRENT) &&
+    (!fields || !fields.length)
+  ) {
     return <FormText>Ei sopimusvuokria</FormText>;
   }
 
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      return <Fragment>
-            {fields && !!fields.length && <BoxItemContainer>
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <Fragment>
+            {fields && !!fields.length && (
+              <BoxItemContainer>
                 {fields.map((rent, index) => {
-            const handleRemove = () => {
-              dispatch({
-                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                confirmationFunction: () => {
-                  fields.remove(index);
-                },
-                confirmationModalButtonClassName: ButtonColors.ALERT,
-                confirmationModalButtonText: ConfirmationModalTexts.DELETE_CONTRACT_RENT.BUTTON,
-                confirmationModalLabel: ConfirmationModalTexts.DELETE_CONTRACT_RENT.LABEL,
-                confirmationModalTitle: ConfirmationModalTexts.DELETE_CONTRACT_RENT.TITLE
-              });
-            };
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
+                        fields.remove(index);
+                      },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
+                      confirmationModalButtonText:
+                        ConfirmationModalTexts.DELETE_CONTRACT_RENT.BUTTON,
+                      confirmationModalLabel:
+                        ConfirmationModalTexts.DELETE_CONTRACT_RENT.LABEL,
+                      confirmationModalTitle:
+                        ConfirmationModalTexts.DELETE_CONTRACT_RENT.TITLE,
+                    });
+                  };
 
-            return <ContractRentEdit key={index} field={rent} onRemove={handleRemove} rentField={rentField} rentType={rentType} showRemove={!!fields && fields.length > 1} />;
-          })}
-              </BoxItemContainer>}
+                  return (
+                    <ContractRentEdit
+                      key={index}
+                      field={rent}
+                      onRemove={handleRemove}
+                      rentField={rentField}
+                      rentType={rentType}
+                      showRemove={!!fields && fields.length > 1}
+                    />
+                  );
+                })}
+              </BoxItemContainer>
+            )}
 
-            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACTRENT)}>
+            <Authorization
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.ADD_CONTRACTRENT,
+              )}
+            >
               <Row>
                 <Column>
-                  <AddButtonSecondary className={!fields || !fields.length ? 'no-top-margin' : ''} label='Lisää sopimusvuokra' onClick={handleAdd} />
+                  <AddButtonSecondary
+                    className={!fields || !fields.length ? "no-top-margin" : ""}
+                    label="Lisää sopimusvuokra"
+                    onClick={handleAdd}
+                  />
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>;
-    }}
-    </AppConsumer>;
+          </Fragment>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
-export default connect(state => {
+export default connect((state) => {
   return {
     leaseAttributes: getLeaseAttributes(state),
-    usersPermissions: getUsersPermissions(state)
+    usersPermissions: getUsersPermissions(state),
   };
 })(ContractRentsEdit);

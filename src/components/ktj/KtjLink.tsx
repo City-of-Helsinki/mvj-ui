@@ -4,7 +4,10 @@ import { saveAs } from "file-saver";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import { getApiToken } from "@/auth/selectors";
-import { displayUIMessage, getApiUrlWithOutVersionSuffix } from "@/util/helpers";
+import {
+  displayUIMessage,
+  getApiUrlWithOutVersionSuffix,
+} from "@/util/helpers";
 type Props = {
   apiToken: string;
   fileKey: string;
@@ -21,38 +24,38 @@ type State = {
 
 class KtjLink extends PureComponent<Props, State> {
   state = {
-    isLoading: false
+    isLoading: false,
   };
   handleClick = () => {
     const {
       apiToken,
       fileKey,
-      fileName = 'ktj_document',
+      fileName = "ktj_document",
       identifier,
-      idKey = 'kohdetunnus',
-      langCode = 'fi',
-      prefix = 'ktjkir'
+      idKey = "kohdetunnus",
+      langCode = "fi",
+      prefix = "ktjkir",
     } = this.props;
-    const {
-      isLoading
-    } = this.state;
+    const { isLoading } = this.state;
     const filename = `${fileName}_${identifier}.pdf`;
     if (isLoading) return;
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
     const apiUrlWithOutVersionSuffix = getApiUrlWithOutVersionSuffix();
-    const request = new Request(`${apiUrlWithOutVersionSuffix}/${prefix}/tuloste/${fileKey}/pdf?${idKey}=${identifier}&lang=${langCode}`);
+    const request = new Request(
+      `${apiUrlWithOutVersionSuffix}/${prefix}/tuloste/${fileKey}/pdf?${idKey}=${identifier}&lang=${langCode}`,
+    );
 
     if (apiToken) {
-      request.headers.set('Authorization', `Bearer ${apiToken}`);
+      request.headers.set("Authorization", `Bearer ${apiToken}`);
     }
 
-    request.headers.set('Content-Type', 'application/pdf');
+    request.headers.set("Content-Type", "application/pdf");
 
     const stopLoader = () => {
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
     };
 
@@ -67,24 +70,30 @@ class KtjLink extends PureComponent<Props, State> {
             break;
 
           default:
-            displayUIMessage({
-              title: '',
-              body: 'Tiedoston lataaminen epäonnistui'
-            }, {
-              type: 'error'
-            });
+            displayUIMessage(
+              {
+                title: "",
+                body: "Tiedoston lataaminen epäonnistui",
+              },
+              {
+                type: "error",
+              },
+            );
             break;
         }
 
         stopLoader();
       } catch (e) {
-        console.error('Error when downloading file: ', e);
-        displayUIMessage({
-          title: '',
-          body: 'Tiedoston lataaminen epäonnistui'
-        }, {
-          type: 'error'
-        });
+        console.error("Error when downloading file: ", e);
+        displayUIMessage(
+          {
+            title: "",
+            body: "Tiedoston lataaminen epäonnistui",
+          },
+          {
+            type: "error",
+          },
+        );
         stopLoader();
       }
     };
@@ -99,24 +108,21 @@ class KtjLink extends PureComponent<Props, State> {
   };
 
   render() {
-    const {
-      label
-    } = this.props,
-          {
-      isLoading
-    } = this.state;
-    return <a onClick={this.handleClick} onKeyDown={this.handleKeyDown} tabIndex={0}>
-      {label}
-      <LoaderWrapper className='small-inline-wrapper'>
-        <Loader isLoading={isLoading} className='small' />
-      </LoaderWrapper>
-    </a>;
+    const { label } = this.props,
+      { isLoading } = this.state;
+    return (
+      <a onClick={this.handleClick} onKeyDown={this.handleKeyDown} tabIndex={0}>
+        {label}
+        <LoaderWrapper className="small-inline-wrapper">
+          <Loader isLoading={isLoading} className="small" />
+        </LoaderWrapper>
+      </a>
+    );
   }
-
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    apiToken: getApiToken(state)
+    apiToken: getApiToken(state),
   };
 })(KtjLink);

@@ -1,28 +1,28 @@
 import createUrl from "@/api/createUrl";
 import callApiAsync from "@/api/callApiAsync";
-export const fetchUsers = async (query?: Record<string, any>): Promise<Array<Record<string, any>>> => {
+export const fetchUsers = async (
+  query?: Record<string, any>,
+): Promise<Array<Record<string, any>>> => {
   const {
-    response: {
-      status
-    },
-    bodyAsJson
-  } = await callApiAsync(new Request(createUrl('user/', query)));
+    response: { status },
+    bodyAsJson,
+  } = await callApiAsync(new Request(createUrl("user/", query)));
 
   switch (status) {
     case 200:
       return bodyAsJson.results;
 
     default:
-      console.error('Failed to fetch users');
+      console.error("Failed to fetch users");
       return [];
   }
 };
-export const fetchSingleUser = async (id: number): Promise<Record<string, any> | null> => {
+export const fetchSingleUser = async (
+  id: number,
+): Promise<Record<string, any> | null> => {
   const {
-    response: {
-      status
-    },
-    bodyAsJson
+    response: { status },
+    bodyAsJson,
   } = await callApiAsync(new Request(createUrl(`user/${id}/`)));
 
   switch (status) {
@@ -30,7 +30,7 @@ export const fetchSingleUser = async (id: number): Promise<Record<string, any> |
       return bodyAsJson;
 
     default:
-      console.error('Failed to fetch the user');
+      console.error("Failed to fetch the user");
       return null;
   }
 };

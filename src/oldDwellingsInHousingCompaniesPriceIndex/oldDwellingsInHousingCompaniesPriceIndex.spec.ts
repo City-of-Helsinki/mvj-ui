@@ -77,7 +77,10 @@ describe("oldDwellingsInHousingCompaniesPriceIndex", () => {
           {},
           fetchOldDwellingsInHousingCompaniesPriceIndex(),
         );
-        state = oldDwellingsInHousingCompaniesPriceIndexReducer(state, notFound());
+        state = oldDwellingsInHousingCompaniesPriceIndexReducer(
+          state,
+          notFound(),
+        );
         expect(state).to.deep.equal(newState);
       });
     });

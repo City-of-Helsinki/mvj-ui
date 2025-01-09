@@ -19,10 +19,18 @@ import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
 import { ConfirmationModalTexts, FieldTypes } from "@/enums";
 import { ButtonColors } from "@/components/enums";
-import { LeaseDecisionConditionsFieldPaths, LeaseDecisionConditionsFieldTitles } from "@/leases/enums";
+import {
+  LeaseDecisionConditionsFieldPaths,
+  LeaseDecisionConditionsFieldTitles,
+} from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import { getFieldAttributes, hasPermissions, isFieldAllowedToRead, isFieldRequired } from "@/util/helpers";
+import {
+  getFieldAttributes,
+  hasPermissions,
+  isFieldAllowedToRead,
+  isFieldRequired,
+} from "@/util/helpers";
 import { getAttributes } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { withWindowResize } from "@/components/resize/WindowResizeHandler";
@@ -44,13 +52,11 @@ const DecisionConditionsEdit = ({
   collapseState,
   errors,
   fields,
-  fields: {
-    name
-  },
+  fields: { name },
   isSaveClicked,
   largeScreen,
   onCollapseToggle,
-  usersPermissions
+  usersPermissions,
 }: Props) => {
   const handleCollapseToggle = (val: boolean) => {
     onCollapseToggle(val);
@@ -61,155 +67,401 @@ const DecisionConditionsEdit = ({
   };
 
   const decisionConditionsErrors = get(errors, name);
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      return <Collapse className='collapse__secondary' defaultOpen={collapseState !== undefined ? collapseState : true} hasErrors={isSaveClicked && !isEmpty(decisionConditionsErrors)} headerTitle={LeaseDecisionConditionsFieldTitles.CONDITIONS} onToggle={handleCollapseToggle} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.CONDITIONS)}>
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <Collapse
+            className="collapse__secondary"
+            defaultOpen={collapseState !== undefined ? collapseState : true}
+            hasErrors={isSaveClicked && !isEmpty(decisionConditionsErrors)}
+            headerTitle={LeaseDecisionConditionsFieldTitles.CONDITIONS}
+            onToggle={handleCollapseToggle}
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(
+              LeaseDecisionConditionsFieldPaths.CONDITIONS,
+            )}
+          >
+            {!hasPermissions(
+              usersPermissions,
+              UsersPermissions.ADD_CONDITION,
+            ) &&
+              (!fields || !fields.length) && <FormText>Ei ehtoja</FormText>}
 
-            {!hasPermissions(usersPermissions, UsersPermissions.ADD_CONDITION) && (!fields || !fields.length) && <FormText>Ei ehtoja</FormText>}
-
-            {fields && !!fields.length && <BoxItemContainer>
-                {largeScreen && <Row>
+            {fields && !!fields.length && (
+              <BoxItemContainer>
+                {largeScreen && (
+                  <Row>
                     <Column large={2}>
-                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}>
-                        <FormTextTitle required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.TYPE)} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.TYPE)}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          attributes,
+                          LeaseDecisionConditionsFieldPaths.TYPE,
+                        )}
+                      >
+                        <FormTextTitle
+                          required={isFieldRequired(
+                            attributes,
+                            LeaseDecisionConditionsFieldPaths.TYPE,
+                          )}
+                          enableUiDataEdit
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseDecisionConditionsFieldPaths.TYPE,
+                          )}
+                        >
                           {LeaseDecisionConditionsFieldTitles.TYPE}
                         </FormTextTitle>
                       </Authorization>
                     </Column>
                     <Column large={2}>
-                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
-                        <FormTextTitle required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          attributes,
+                          LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
+                        )}
+                      >
+                        <FormTextTitle
+                          required={isFieldRequired(
+                            attributes,
+                            LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
+                          )}
+                          enableUiDataEdit
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
+                          )}
+                        >
                           {LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE}
                         </FormTextTitle>
                       </Authorization>
                     </Column>
                     <Column large={2}>
-                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
-                        <FormTextTitle required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          attributes,
+                          LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
+                        )}
+                      >
+                        <FormTextTitle
+                          required={isFieldRequired(
+                            attributes,
+                            LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
+                          )}
+                          enableUiDataEdit
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
+                          )}
+                        >
                           {LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE}
                         </FormTextTitle>
                       </Authorization>
                     </Column>
                     <Column large={6}>
-                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
-                        <FormTextTitle required={isFieldRequired(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)} enableUiDataEdit tooltipStyle={{
-                  right: 20
-                }} uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          attributes,
+                          LeaseDecisionConditionsFieldPaths.DESCRIPTION,
+                        )}
+                      >
+                        <FormTextTitle
+                          required={isFieldRequired(
+                            attributes,
+                            LeaseDecisionConditionsFieldPaths.DESCRIPTION,
+                          )}
+                          enableUiDataEdit
+                          tooltipStyle={{
+                            right: 20,
+                          }}
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseDecisionConditionsFieldPaths.DESCRIPTION,
+                          )}
+                        >
                           {LeaseDecisionConditionsFieldTitles.DESCRIPTION}
                         </FormTextTitle>
                       </Authorization>
                     </Column>
-                  </Row>}
+                  </Row>
+                )}
                 {fields.map((condition, index) => {
-            const handleRemove = () => {
-              dispatch({
-                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                confirmationFunction: () => {
-                  fields.remove(index);
-                },
-                confirmationModalButtonClassName: ButtonColors.ALERT,
-                confirmationModalButtonText: ConfirmationModalTexts.DELETE_CONDITION.BUTTON,
-                confirmationModalLabel: ConfirmationModalTexts.DELETE_CONDITION.LABEL,
-                confirmationModalTitle: ConfirmationModalTexts.DELETE_CONDITION.TITLE
-              });
-            };
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
+                        fields.remove(index);
+                      },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
+                      confirmationModalButtonText:
+                        ConfirmationModalTexts.DELETE_CONDITION.BUTTON,
+                      confirmationModalLabel:
+                        ConfirmationModalTexts.DELETE_CONDITION.LABEL,
+                      confirmationModalTitle:
+                        ConfirmationModalTexts.DELETE_CONDITION.TITLE,
+                    });
+                  };
 
-            if (largeScreen) {
-              return <Row key={index}>
+                  if (largeScreen) {
+                    return (
+                      <Row key={index}>
                         <Column large={2}>
-                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}>
-                            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.TYPE)} invisibleLabel name={`${condition}.type`} overrideValues={{
-                      label: LeaseDecisionConditionsFieldTitles.TYPE
-                    }} />
+                          <Authorization
+                            allow={isFieldAllowedToRead(
+                              attributes,
+                              LeaseDecisionConditionsFieldPaths.TYPE,
+                            )}
+                          >
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(
+                                attributes,
+                                LeaseDecisionConditionsFieldPaths.TYPE,
+                              )}
+                              invisibleLabel
+                              name={`${condition}.type`}
+                              overrideValues={{
+                                label: LeaseDecisionConditionsFieldTitles.TYPE,
+                              }}
+                            />
                           </Authorization>
                         </Column>
                         <Column large={2}>
-                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
-                            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)} invisibleLabel name={`${condition}.supervision_date`} overrideValues={{
-                      label: LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE
-                    }} />
+                          <Authorization
+                            allow={isFieldAllowedToRead(
+                              attributes,
+                              LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
+                            )}
+                          >
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(
+                                attributes,
+                                LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
+                              )}
+                              invisibleLabel
+                              name={`${condition}.supervision_date`}
+                              overrideValues={{
+                                label:
+                                  LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE,
+                              }}
+                            />
                           </Authorization>
                         </Column>
                         <Column large={2}>
-                          <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
-                            <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)} invisibleLabel name={`${condition}.supervised_date`} overrideValues={{
-                      label: LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE
-                    }} />
+                          <Authorization
+                            allow={isFieldAllowedToRead(
+                              attributes,
+                              LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
+                            )}
+                          >
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(
+                                attributes,
+                                LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
+                              )}
+                              invisibleLabel
+                              name={`${condition}.supervised_date`}
+                              overrideValues={{
+                                label:
+                                  LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE,
+                              }}
+                            />
                           </Authorization>
                         </Column>
                         <Column large={6}>
-                          <FieldAndRemoveButtonWrapper field={<Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
-                                <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)} invisibleLabel name={`${condition}.description`} overrideValues={{
-                      label: LeaseDecisionConditionsFieldTitles.DESCRIPTION,
-                      fieldType: FieldTypes.TEXTAREA
-                    }} />
-                              </Authorization>} removeButton={<Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONDITION)}>
-                                <RemoveButton className='third-level' onClick={handleRemove} title="Poista ehto" />
-                              </Authorization>} />
+                          <FieldAndRemoveButtonWrapper
+                            field={
+                              <Authorization
+                                allow={isFieldAllowedToRead(
+                                  attributes,
+                                  LeaseDecisionConditionsFieldPaths.DESCRIPTION,
+                                )}
+                              >
+                                <FormField
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(
+                                    attributes,
+                                    LeaseDecisionConditionsFieldPaths.DESCRIPTION,
+                                  )}
+                                  invisibleLabel
+                                  name={`${condition}.description`}
+                                  overrideValues={{
+                                    label:
+                                      LeaseDecisionConditionsFieldTitles.DESCRIPTION,
+                                    fieldType: FieldTypes.TEXTAREA,
+                                  }}
+                                />
+                              </Authorization>
+                            }
+                            removeButton={
+                              <Authorization
+                                allow={hasPermissions(
+                                  usersPermissions,
+                                  UsersPermissions.DELETE_CONDITION,
+                                )}
+                              >
+                                <RemoveButton
+                                  className="third-level"
+                                  onClick={handleRemove}
+                                  title="Poista ehto"
+                                />
+                              </Authorization>
+                            }
+                          />
                         </Column>
-                      </Row>;
-            } else {
-              return <BoxItem key={index}>
+                      </Row>
+                    );
+                  } else {
+                    return (
+                      <BoxItem key={index}>
                         <BoxContentWrapper>
                           <ActionButtonWrapper>
-                            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.DELETE_CONDITION)}>
-                              <RemoveButton onClick={handleRemove} title="Poista ehto" />
+                            <Authorization
+                              allow={hasPermissions(
+                                usersPermissions,
+                                UsersPermissions.DELETE_CONDITION,
+                              )}
+                            >
+                              <RemoveButton
+                                onClick={handleRemove}
+                                title="Poista ehto"
+                              />
                             </Authorization>
                           </ActionButtonWrapper>
                           <Row>
                             <Column small={6} medium={4}>
-                              <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.TYPE)}>
-                                <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.TYPE)} name={`${condition}.type`} overrideValues={{
-                          label: LeaseDecisionConditionsFieldTitles.TYPE
-                        }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.TYPE)} />
+                              <Authorization
+                                allow={isFieldAllowedToRead(
+                                  attributes,
+                                  LeaseDecisionConditionsFieldPaths.TYPE,
+                                )}
+                              >
+                                <FormField
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(
+                                    attributes,
+                                    LeaseDecisionConditionsFieldPaths.TYPE,
+                                  )}
+                                  name={`${condition}.type`}
+                                  overrideValues={{
+                                    label:
+                                      LeaseDecisionConditionsFieldTitles.TYPE,
+                                  }}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(
+                                    LeaseDecisionConditionsFieldPaths.TYPE,
+                                  )}
+                                />
                               </Authorization>
                             </Column>
                             <Column small={6} medium={4}>
-                              <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)}>
-                                <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)} name={`${condition}.supervision_date`} overrideValues={{
-                          label: LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE
-                        }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE)} />
+                              <Authorization
+                                allow={isFieldAllowedToRead(
+                                  attributes,
+                                  LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
+                                )}
+                              >
+                                <FormField
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(
+                                    attributes,
+                                    LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
+                                  )}
+                                  name={`${condition}.supervision_date`}
+                                  overrideValues={{
+                                    label:
+                                      LeaseDecisionConditionsFieldTitles.SUPERVISION_DATE,
+                                  }}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(
+                                    LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
+                                  )}
+                                />
                               </Authorization>
                             </Column>
                             <Column small={12} medium={4}>
-                              <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)}>
-                                <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)} name={`${condition}.supervised_date`} overrideValues={{
-                          label: LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE
-                        }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE)} />
+                              <Authorization
+                                allow={isFieldAllowedToRead(
+                                  attributes,
+                                  LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
+                                )}
+                              >
+                                <FormField
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(
+                                    attributes,
+                                    LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
+                                  )}
+                                  name={`${condition}.supervised_date`}
+                                  overrideValues={{
+                                    label:
+                                      LeaseDecisionConditionsFieldTitles.SUPERVISED_DATE,
+                                  }}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(
+                                    LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
+                                  )}
+                                />
                               </Authorization>
                             </Column>
                             <Column small={12} medium={12}>
-                              <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)}>
-                                <FormField disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(attributes, LeaseDecisionConditionsFieldPaths.DESCRIPTION)} name={`${condition}.description`} overrideValues={{
-                          label: LeaseDecisionConditionsFieldTitles.DESCRIPTION,
-                          fieldType: FieldTypes.TEXTAREA
-                        }} enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseDecisionConditionsFieldPaths.DESCRIPTION)} />
+                              <Authorization
+                                allow={isFieldAllowedToRead(
+                                  attributes,
+                                  LeaseDecisionConditionsFieldPaths.DESCRIPTION,
+                                )}
+                              >
+                                <FormField
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(
+                                    attributes,
+                                    LeaseDecisionConditionsFieldPaths.DESCRIPTION,
+                                  )}
+                                  name={`${condition}.description`}
+                                  overrideValues={{
+                                    label:
+                                      LeaseDecisionConditionsFieldTitles.DESCRIPTION,
+                                    fieldType: FieldTypes.TEXTAREA,
+                                  }}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(
+                                    LeaseDecisionConditionsFieldPaths.DESCRIPTION,
+                                  )}
+                                />
                               </Authorization>
                             </Column>
                           </Row>
                         </BoxContentWrapper>
-                      </BoxItem>;
-            }
-          })}
-              </BoxItemContainer>}
+                      </BoxItem>
+                    );
+                  }
+                })}
+              </BoxItemContainer>
+            )}
 
-            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_CONDITION)}>
+            <Authorization
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.ADD_CONDITION,
+              )}
+            >
               <Row>
                 <Column>
-                  <AddButtonSecondary label='Lisää ehto' onClick={handleAdd} />
+                  <AddButtonSecondary label="Lisää ehto" onClick={handleAdd} />
                 </Column>
               </Row>
             </Authorization>
-          </Collapse>;
-    }}
-    </AppConsumer>;
+          </Collapse>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
-export default flowRight(withWindowResize, connect(state => {
-  return {
-    attributes: getAttributes(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}))(DecisionConditionsEdit);
+export default flowRight(
+  withWindowResize,
+  connect((state) => {
+    return {
+      attributes: getAttributes(state),
+      usersPermissions: getUsersPermissions(state),
+    };
+  }),
+)(DecisionConditionsEdit);

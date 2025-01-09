@@ -4,10 +4,7 @@ type Props = {
   onClick: (...args: Array<any>) => any;
 };
 
-const SearchChangeTypeLink = ({
-  children,
-  onClick
-}: Props) => {
+const SearchChangeTypeLink = ({ children, onClick }: Props) => {
   const handleKeyDown = (e: any) => {
     if (e.keyCode === 13) {
       e.preventDefault();
@@ -15,7 +12,16 @@ const SearchChangeTypeLink = ({
     }
   };
 
-  return <a tabIndex={0} onKeyDown={handleKeyDown} onClick={onClick} className='search__change-type-link'>{children}</a>;
+  return (
+    <a
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      onClick={onClick}
+      className="search__change-type-link"
+    >
+      {children}
+    </a>
+  );
 };
 
 export default SearchChangeTypeLink;

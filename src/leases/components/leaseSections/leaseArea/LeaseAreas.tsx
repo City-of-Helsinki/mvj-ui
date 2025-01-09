@@ -7,7 +7,11 @@ import LeaseAreaWithArchiceInfo from "./LeaseAreaWithArchiceInfo";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
 import { LeaseAreasFieldPaths } from "@/leases/enums";
-import { calculateAreasSum, getContentLeaseAreas, getDecisionOptions } from "@/leases/helpers";
+import {
+  calculateAreasSum,
+  getContentLeaseAreas,
+  getDecisionOptions,
+} from "@/leases/helpers";
 import { formatNumber, isFieldAllowedToRead } from "@/util/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getAttributes, getCurrentLease } from "@/leases/selectors";
@@ -18,38 +22,66 @@ type Props = {
   currentLease: Lease;
 };
 
-const LeaseAreas = ({
-  attributes,
-  currentLease
-}: Props) => {
+const LeaseAreas = ({ attributes, currentLease }: Props) => {
   const areas = getContentLeaseAreas(currentLease);
-  const activeAreas = areas.filter(area => !area.archived_at);
-  const archivedAreas = areas.filter(area => area.archived_at);
+  const activeAreas = areas.filter((area) => !area.archived_at);
+  const archivedAreas = areas.filter((area) => area.archived_at);
   const areasSum = calculateAreasSum(activeAreas);
   const decisionOptions = getDecisionOptions(currentLease);
-  return <div>
+  return (
+    <div>
       <Title uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LEASE_AREAS)}>
         Vuokra-alue
       </Title>
-      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
-        <WarningContainer alignCenter hideIcon>Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup></WarningContainer>
+      <Authorization
+        allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}
+      >
+        <WarningContainer alignCenter hideIcon>
+          Kokonaispinta-ala {formatNumber(areasSum) || "-"} m<sup>2</sup>
+        </WarningContainer>
       </Authorization>
       <Divider />
 
-      {!activeAreas || !activeAreas.length && <FormText className='no-margin'>Ei vuokra-alueita</FormText>}
-      {activeAreas && !!activeAreas.length && activeAreas.map((area, index) => <LeaseAreaWithArchiceInfo key={index} area={area} decisionOptions={decisionOptions} />)}
+      {!activeAreas ||
+        (!activeAreas.length && (
+          <FormText className="no-margin">Ei vuokra-alueita</FormText>
+        ))}
+      {activeAreas &&
+        !!activeAreas.length &&
+        activeAreas.map((area, index) => (
+          <LeaseAreaWithArchiceInfo
+            key={index}
+            area={area}
+            decisionOptions={decisionOptions}
+          />
+        ))}
 
-      {archivedAreas && !!archivedAreas.length && <h3 style={{
-      marginTop: 10,
-      marginBottom: 5
-    }}>Arkisto</h3>}
-      {archivedAreas && !!archivedAreas.length && archivedAreas.map((area, index) => <LeaseAreaWithArchiceInfo key={index} area={area} decisionOptions={decisionOptions} />)}
-    </div>;
+      {archivedAreas && !!archivedAreas.length && (
+        <h3
+          style={{
+            marginTop: 10,
+            marginBottom: 5,
+          }}
+        >
+          Arkisto
+        </h3>
+      )}
+      {archivedAreas &&
+        !!archivedAreas.length &&
+        archivedAreas.map((area, index) => (
+          <LeaseAreaWithArchiceInfo
+            key={index}
+            area={area}
+            decisionOptions={decisionOptions}
+          />
+        ))}
+    </div>
+  );
 };
 
-export default connect(state => {
+export default connect((state) => {
   return {
     attributes: getAttributes(state),
-    currentLease: getCurrentLease(state)
+    currentLease: getCurrentLease(state),
   };
 })(LeaseAreas);

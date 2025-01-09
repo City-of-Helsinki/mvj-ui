@@ -1,7 +1,14 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
-import { getAttributes, getIsFetchingAttributes, getIsFetchingListAttributes, getListAttributes, getListMethods, getMethods } from "@/areaSearch/selectors";
+import {
+  getAttributes,
+  getIsFetchingAttributes,
+  getIsFetchingListAttributes,
+  getListAttributes,
+  getListMethods,
+  getMethods,
+} from "@/areaSearch/selectors";
 import type { Attributes, Methods } from "types";
 import { fetchAttributes, fetchListAttributes } from "@/areaSearch/actions";
 import type { RootState } from "@/root/types";
@@ -24,7 +31,7 @@ function AreaSearchAttributes(WrappedComponent: React.ComponentType<any>) {
         areaSearchAttributes,
         areaSearchListAttributes,
         isFetchingAttributes,
-        isFetchingListAttributes
+        isFetchingListAttributes,
       } = this.props;
 
       if (!isFetchingAttributes && !areaSearchAttributes) {
@@ -39,21 +46,26 @@ function AreaSearchAttributes(WrappedComponent: React.ComponentType<any>) {
     render() {
       return <WrappedComponent {...this.props} />;
     }
-
   };
 }
 
-const withAreaSearchAttributes = (flowRight(connect((state: RootState) => {
-  return {
-    areaSearchAttributes: getAttributes(state),
-    areaSearchListAttributes: getListAttributes(state),
-    isFetchingAttributes: getIsFetchingAttributes(state),
-    isFetchingListAttributes: getIsFetchingListAttributes(state),
-    areaSearchMethods: getMethods(state),
-    areaSearchListMethods: getListMethods(state)
-  };
-}, {
-  fetchAttributes,
-  fetchListAttributes
-}), AreaSearchAttributes) as (arg0: React.ComponentType<any>) => React.ComponentType<any>);
+const withAreaSearchAttributes = flowRight(
+  connect(
+    (state: RootState) => {
+      return {
+        areaSearchAttributes: getAttributes(state),
+        areaSearchListAttributes: getListAttributes(state),
+        isFetchingAttributes: getIsFetchingAttributes(state),
+        isFetchingListAttributes: getIsFetchingListAttributes(state),
+        areaSearchMethods: getMethods(state),
+        areaSearchListMethods: getListMethods(state),
+      };
+    },
+    {
+      fetchAttributes,
+      fetchListAttributes,
+    },
+  ),
+  AreaSearchAttributes,
+) as (arg0: React.ComponentType<any>) => React.ComponentType<any>;
 export { withAreaSearchAttributes };

@@ -3,10 +3,16 @@ import { connect } from "react-redux";
 import { GeoJSON } from "react-leaflet";
 import { initializeAreaNote, showEditMode } from "@/areaNote/actions";
 import { Methods } from "@/enums";
-import { convertAreaNoteListToGeoJson, convertFeatureToFeatureCollection } from "@/areaNote/helpers";
+import {
+  convertAreaNoteListToGeoJson,
+  convertFeatureToFeatureCollection,
+} from "@/areaNote/helpers";
 import { getUserFullName } from "@/users/helpers";
 import { formatDate, isMethodAllowed } from "@/util/helpers";
-import { getIsEditMode, getMethods as getAreaNoteMethods } from "@/areaNote/selectors";
+import {
+  getIsEditMode,
+  getMethods as getAreaNoteMethods,
+} from "@/areaNote/selectors";
 import type { Methods as MethodsType } from "types";
 import type { AreaNoteList } from "@/areaNote/types";
 type Props = {
@@ -25,18 +31,18 @@ type State = {
 
 class AreaNotesLayer extends Component<Props, State> {
   static defaultProps = {
-    allowToEdit: false
+    allowToEdit: false,
   };
   state = {
     areaNotes: [],
-    areaNotesGeoJson: {}
+    areaNotesGeoJson: {},
   };
 
   static getDerivedStateFromProps(props, state) {
     if (props.areaNotes !== state.areaNotes) {
       return {
         areaNotesGeoJson: convertAreaNoteListToGeoJson(props.areaNotes),
-        areaNotes: props.areaNotes
+        areaNotes: props.areaNotes,
       };
     }
 
@@ -44,101 +50,92 @@ class AreaNotesLayer extends Component<Props, State> {
   }
 
   onClick = (e: any, feature: Record<string, any>) => {
-    const {
-      allowToEdit,
-      areaNoteMethods,
-      initializeAreaNote,
-      showEditMode
-    } = this.props;
-    if (!isMethodAllowed(areaNoteMethods, Methods.PATCH) || !allowToEdit) return;
+    const { allowToEdit, areaNoteMethods, initializeAreaNote, showEditMode } =
+      this.props;
+    if (!isMethodAllowed(areaNoteMethods, Methods.PATCH) || !allowToEdit)
+      return;
     initializeAreaNote({
       geoJSON: convertFeatureToFeatureCollection(feature),
       id: feature.properties.id,
       isNew: false,
-      note: feature.properties.note
+      note: feature.properties.note,
     });
     showEditMode();
     e.target.setStyle({
-      fillOpacity: 0.2
+      fillOpacity: 0.2,
     });
   };
   onMouseOver = (e: any) => {
-    const {
-      isEditMode
-    } = this.props;
+    const { isEditMode } = this.props;
 
     if (!isEditMode) {
       const layer = e.target;
       layer.setStyle({
-        fillOpacity: 0.7
+        fillOpacity: 0.7,
       });
     }
   };
   onMouseOut = (e: any) => {
-    const {
-      isEditMode
-    } = this.props;
+    const { isEditMode } = this.props;
 
     if (!isEditMode) {
       const layer = e.target;
       layer.setStyle({
-        fillOpacity: 0.2
+        fillOpacity: 0.2,
       });
     }
   };
 
   render() {
-    const {
-      defaultAreaNote
-    } = this.props;
-    const {
-      areaNotesGeoJson
-    } = this.state;
-    return <GeoJSON // Change key when area notes is changes to force update after editing shapes
-    key={JSON.stringify(areaNotesGeoJson)} data={areaNotesGeoJson} // Add this coodination convert function if want to to use EPSG:3879 projection
-    // coordsToLatLng={formatCoordsToLatLng(areaNotesGeoJson)}
-    onEachFeature={(feature, layer) => {
-      if (feature.properties) {
-        const {
-          id,
-          modified_at,
-          note,
-          user
-        } = feature.properties;
-        const popupContent = `<p>
+    const { defaultAreaNote } = this.props;
+    const { areaNotesGeoJson } = this.state;
+    return (
+      <GeoJSON // Change key when area notes is changes to force update after editing shapes
+        key={JSON.stringify(areaNotesGeoJson)}
+        data={areaNotesGeoJson} // Add this coodination convert function if want to to use EPSG:3879 projection
+        // coordsToLatLng={formatCoordsToLatLng(areaNotesGeoJson)}
+        onEachFeature={(feature, layer) => {
+          if (feature.properties) {
+            const { id, modified_at, note, user } = feature.properties;
+            const popupContent = `<p>
               <strong>${formatDate(modified_at)} ${getUserFullName(user)}</strong><br/>
-              ${note || '-'}
+              ${note || "-"}
             </p>`;
-        layer.bindPopup(popupContent);
+            layer.bindPopup(popupContent);
 
-        if (id === defaultAreaNote) {
-          layer.setStyle({
-            fillOpacity: 0.9
+            if (id === defaultAreaNote) {
+              layer.setStyle({
+                fillOpacity: 0.9,
+              });
+              setTimeout(() => {
+                layer.openPopup();
+              }, 100);
+            }
+          }
+
+          layer.on({
+            click: (e) => this.onClick(e, feature),
+            mouseover: this.onMouseOver,
+            mouseout: this.onMouseOut,
           });
-          setTimeout(() => {
-            layer.openPopup();
-          }, 100);
-        }
-      }
-
-      layer.on({
-        click: e => this.onClick(e, feature),
-        mouseover: this.onMouseOver,
-        mouseout: this.onMouseOut
-      });
-    }} style={{
-      color: '#2196f3'
-    }} />;
+        }}
+        style={{
+          color: "#2196f3",
+        }}
+      />
+    );
   }
-
 }
 
-export default connect(state => {
-  return {
-    areaNoteMethods: getAreaNoteMethods(state),
-    isEditMode: getIsEditMode(state)
-  };
-}, {
-  initializeAreaNote,
-  showEditMode
-})(AreaNotesLayer);
+export default connect(
+  (state) => {
+    return {
+      areaNoteMethods: getAreaNoteMethods(state),
+      isEditMode: getIsEditMode(state),
+    };
+  },
+  {
+    initializeAreaNote,
+    showEditMode,
+  },
+)(AreaNotesLayer);

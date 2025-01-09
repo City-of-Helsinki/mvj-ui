@@ -4,11 +4,11 @@
  * @enum {string}
  */
 export const LeaseCreateChargeFieldPaths = {
-  BILLING_PERIOD_END_DATE: 'billing_period_end_date',
-  BILLING_PERIOD_START_DATE: 'billing_period_start_date',
-  DUE_DATE: 'due_date',
-  LEASE: 'lease',
-  NOTES: 'notes'
+  BILLING_PERIOD_END_DATE: "billing_period_end_date",
+  BILLING_PERIOD_START_DATE: "billing_period_start_date",
+  DUE_DATE: "due_date",
+  LEASE: "lease",
+  NOTES: "notes",
 };
 
 /**
@@ -17,7 +17,7 @@ export const LeaseCreateChargeFieldPaths = {
  * @enum {string}
  */
 export const LeaseCreateChargeRowsFieldPaths = {
-  ROWS: 'rows',
-  AMOUNT: 'rows.child.children.amount',
-  RECEIVABLE_TYPE: 'rows.child.children.receivable_type'
+  ROWS: "rows",
+  AMOUNT: "rows.child.children.amount",
+  RECEIVABLE_TYPE: "rows.child.children.receivable_type",
 };

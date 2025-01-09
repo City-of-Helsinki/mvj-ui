@@ -14,14 +14,28 @@ import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import PageContainer from "@/components/content/PageContainer";
 import Search from "./search/Search";
-import { fetchAreaNoteList, hideEditMode, initializeAreaNote, showEditMode } from "@/areaNote/actions";
+import {
+  fetchAreaNoteList,
+  hideEditMode,
+  initializeAreaNote,
+  showEditMode,
+} from "@/areaNote/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
 import { getAreaNoteById, getAreaNoteCoordinates } from "@/areaNote/helpers";
-import { getSearchQuery, getUrlParams, isMethodAllowed, setPageTitle } from "@/util/helpers";
+import {
+  getSearchQuery,
+  getUrlParams,
+  isMethodAllowed,
+  setPageTitle,
+} from "@/util/helpers";
 import { getBoundsFromCoordinates, getCenterFromCoordinates } from "@/util/map";
 import { getRouteById, Routes } from "@/root/routes";
-import { getAreaNoteList, getIsEditMode, getIsFetching } from "@/areaNote/selectors";
+import {
+  getAreaNoteList,
+  getIsEditMode,
+  getIsFetching,
+} from "@/areaNote/selectors";
 import { withAreaNoteAttributes } from "@/components/attributes/AreaNoteAttributes";
 import type { Methods as MethodsType } from "types";
 import type { AreaNoteList } from "@/areaNote/types";
@@ -50,14 +64,27 @@ type State = {
   overlayLayers: Array<Record<string, any>>;
 };
 
-const getOverlayLayers = (areaNoteMethods: MethodsType, areaNotes: AreaNoteList, areaNoteId: number | null | undefined) => {
+const getOverlayLayers = (
+  areaNoteMethods: MethodsType,
+  areaNotes: AreaNoteList,
+  areaNoteId: number | null | undefined,
+) => {
   const layers = [];
   {
-    isMethodAllowed(areaNoteMethods, Methods.GET) && !isEmpty(areaNotes) && layers.push({
-      checked: true,
-      component: <AreaNotesLayer key='area_notes' allowToEdit={true} areaNotes={areaNotes} defaultAreaNote={areaNoteId} />,
-      name: 'Muistettavat ehdot'
-    });
+    isMethodAllowed(areaNoteMethods, Methods.GET) &&
+      !isEmpty(areaNotes) &&
+      layers.push({
+        checked: true,
+        component: (
+          <AreaNotesLayer
+            key="area_notes"
+            allowToEdit={true}
+            areaNotes={areaNotes}
+            defaultAreaNote={areaNoteId}
+          />
+        ),
+        name: "Muistettavat ehdot",
+      });
   }
   return layers;
 };
@@ -70,44 +97,51 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     bounds: null,
     center: null,
     isSearchInitialized: false,
-    overlayLayers: []
+    overlayLayers: [],
   };
 
   componentDidMount() {
-    const {
-      receiveTopNavigationSettings
-    } = this.props;
-    setPageTitle('Muistettavat ehdot');
+    const { receiveTopNavigationSettings } = this.props;
+    setPageTitle("Muistettavat ehdot");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.AREA_NOTES),
-      pageTitle: 'Muistettavat ehdot',
-      showSearch: false
+      pageTitle: "Muistettavat ehdot",
+      showSearch: false,
     });
     this.search();
     this.setSearchFormValues();
-    window.addEventListener('popstate', this.handlePopState);
+    window.addEventListener("popstate", this.handlePopState);
     this._isMounted = true;
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState: any = {};
 
-    if (props.areaNotes !== state.areaNotes || props.areaNoteMethods !== state.areaNoteMethods) {
+    if (
+      props.areaNotes !== state.areaNotes ||
+      props.areaNoteMethods !== state.areaNoteMethods
+    ) {
       const {
-        location: {
-          search
-        }
+        location: { search },
       } = props;
       const query = getUrlParams(search);
       const areaNoteId = query.area_note;
       newState.areaNotes = props.areaNotes;
-      newState.overlayLayers = getOverlayLayers(props.areaNoteMethods, props.areaNotes, Number(areaNoteId));
+      newState.overlayLayers = getOverlayLayers(
+        props.areaNoteMethods,
+        props.areaNotes,
+        Number(areaNoteId),
+      );
 
       if (areaNoteId) {
         const areaNote = getAreaNoteById(props.areaNotes, Number(areaNoteId));
         const coordinates = getAreaNoteCoordinates(areaNote);
-        newState.bounds = coordinates.length ? getBoundsFromCoordinates(coordinates) : undefined;
-        newState.center = coordinates.length ? getCenterFromCoordinates(coordinates) : undefined;
+        newState.bounds = coordinates.length
+          ? getBoundsFromCoordinates(coordinates)
+          : undefined;
+        newState.center = coordinates.length
+          ? getCenterFromCoordinates(coordinates)
+          : undefined;
       }
     }
 
@@ -116,14 +150,10 @@ class AreaNoteListPage extends PureComponent<Props, State> {
 
   componentDidUpdate(prevProps) {
     const {
-      location: {
-        search: currentSearch
-      }
+      location: { search: currentSearch },
     } = this.props;
     const {
-      location: {
-        search: prevSearch
-      }
+      location: { search: prevSearch },
     } = prevProps;
     const searchQuery = getUrlParams(currentSearch);
 
@@ -137,11 +167,9 @@ class AreaNoteListPage extends PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    const {
-      hideEditMode
-    } = this.props;
+    const { hideEditMode } = this.props;
     hideEditMode();
-    window.removeEventListener('popstate', this.handlePopState);
+    window.removeEventListener("popstate", this.handlePopState);
     this._isMounted = false;
   }
 
@@ -150,59 +178,55 @@ class AreaNoteListPage extends PureComponent<Props, State> {
   };
   setSearchFormValues = () => {
     const {
-      location: {
-        search
-      },
-      initialize
+      location: { search },
+      initialize,
     } = this.props;
     const searchQuery = getUrlParams(search);
 
     const setSearchFormReady = () => {
       this.setState({
-        isSearchInitialized: true
+        isSearchInitialized: true,
       });
     };
 
     const initializeSearchForm = async () => {
-      const initialValues = { ...searchQuery
-      };
+      const initialValues = { ...searchQuery };
       await initialize(FormNames.AREA_NOTE_SEARCH, initialValues);
     };
 
-    this.setState({
-      isSearchInitialized: false
-    }, async () => {
-      await initializeSearchForm();
+    this.setState(
+      {
+        isSearchInitialized: false,
+      },
+      async () => {
+        await initializeSearchForm();
 
-      if (this._isMounted) {
-        setSearchFormReady();
-      }
-    });
+        if (this._isMounted) {
+          setSearchFormReady();
+        }
+      },
+    );
   };
   handleCreateButtonClick = () => {
     this.props.initializeAreaNote({
       geoJSON: {},
       id: -1,
       isNew: true,
-      note: ''
+      note: "",
     });
     this.props.showEditMode();
   };
-  handleSearchChange = query => {
-    const {
-      history
-    } = this.props;
+  handleSearchChange = (query) => {
+    const { history } = this.props;
     return history.push({
       pathname: getRouteById(Routes.AREA_NOTES),
-      search: getSearchQuery(query)
+      search: getSearchQuery(query),
     });
   };
   search = () => {
     const {
       fetchAreaNoteList,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     fetchAreaNoteList(getUrlParams(search));
   };
@@ -215,52 +239,86 @@ class AreaNoteListPage extends PureComponent<Props, State> {
       isEditMode,
       isFetching,
       isFetchingCommonAttributes,
-      areaNoteMethods
+      areaNoteMethods,
     } = this.props;
-    const {
-      bounds,
-      center,
-      isSearchInitialized,
-      overlayLayers
-    } = this.state;
-    if (isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    const { bounds, center, isSearchInitialized, overlayLayers } = this.state;
+    if (isFetchingCommonAttributes)
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (!areaNoteMethods) return null;
-    if (!isMethodAllowed(areaNoteMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.AREA_NOTE} /></PageContainer>;
-    return <PageContainer>
+    if (!isMethodAllowed(areaNoteMethods, Methods.GET))
+      return (
+        <PageContainer>
+          <AuthorizationError text={PermissionMissingTexts.AREA_NOTE} />
+        </PageContainer>
+      );
+    return (
+      <PageContainer>
         <Row>
           <Column small={12} large={4}>
-            <Authorization allow={isMethodAllowed(areaNoteMethods, Methods.POST)}>
-              <AddButtonSecondary className='no-top-margin' disabled={isEditMode} label='Luo muistettava ehto' onClick={this.handleCreateButtonClick} />
+            <Authorization
+              allow={isMethodAllowed(areaNoteMethods, Methods.POST)}
+            >
+              <AddButtonSecondary
+                className="no-top-margin"
+                disabled={isEditMode}
+                label="Luo muistettava ehto"
+                onClick={this.handleCreateButtonClick}
+              />
             </Authorization>
           </Column>
           <Column small={12} large={8}>
-            <Search isSearchInitialized={isSearchInitialized} onSearch={this.handleSearchChange} />
+            <Search
+              isSearchInitialized={isSearchInitialized}
+              onSearch={this.handleSearchChange}
+            />
           </Column>
         </Row>
 
-        <div style={{
-        position: 'relative'
-      }}>
-          {isFetching && <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>}
+        <div
+          style={{
+            position: "relative",
+          }}
+        >
+          {isFetching && (
+            <LoaderWrapper className="relative-overlay-wrapper">
+              <Loader isLoading={isFetching} />
+            </LoaderWrapper>
+          )}
 
-          <AreaNotesEditMap allowToEdit bounds={bounds} center={center} overlayLayers={overlayLayers} />
+          <AreaNotesEditMap
+            allowToEdit
+            bounds={bounds}
+            center={center}
+            overlayLayers={overlayLayers}
+          />
         </div>
-      </PageContainer>;
+      </PageContainer>
+    );
   }
-
 }
 
-export default flowRight(withAreaNoteAttributes, withRouter, connect(state => {
-  return {
-    areaNotes: getAreaNoteList(state),
-    isEditMode: getIsEditMode(state),
-    isFetching: getIsFetching(state)
-  };
-}, {
-  fetchAreaNoteList,
-  hideEditMode,
-  initialize,
-  initializeAreaNote,
-  receiveTopNavigationSettings,
-  showEditMode
-}))(AreaNoteListPage);
+export default flowRight(
+  withAreaNoteAttributes,
+  withRouter,
+  connect(
+    (state) => {
+      return {
+        areaNotes: getAreaNoteList(state),
+        isEditMode: getIsEditMode(state),
+        isFetching: getIsFetching(state),
+      };
+    },
+    {
+      fetchAreaNoteList,
+      hideEditMode,
+      initialize,
+      initializeAreaNote,
+      receiveTopNavigationSettings,
+      showEditMode,
+    },
+  ),
+)(AreaNoteListPage);

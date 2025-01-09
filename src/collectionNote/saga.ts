@@ -1,18 +1,28 @@
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveError } from "@/api/actions";
-import { receiveAttributes, receiveMethods, attributesNotFound, fetchCollectionNotesByLease as fetchCollectionNotesByLeaseAction, receiveCollectionNotesByLease, notFoundByLease } from "./actions";
+import {
+  receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
+  fetchCollectionNotesByLease as fetchCollectionNotesByLeaseAction,
+  receiveCollectionNotesByLease,
+  notFoundByLease,
+} from "./actions";
 import { displayUIMessage } from "@/util/helpers";
-import { fetchAttributes, fetchCollectionNotesByLease, createCollectionNote, deleteCollectionNote } from "./requests";
+import {
+  fetchAttributes,
+  fetchCollectionNotesByLease,
+  createCollectionNote,
+  deleteCollectionNote,
+} from "./requests";
 import { getCollectionNotesByLease } from "./selectors";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -36,22 +46,22 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchCollectionNotesByLeaseSaga({
   payload: lease,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchCollectionNotesByLease, lease);
 
     switch (statusCode) {
       case 200:
-        yield put(receiveCollectionNotesByLease({
-          lease: lease,
-          collectionNotes: bodyAsJson.results
-        }));
+        yield put(
+          receiveCollectionNotesByLease({
+            lease: lease,
+            collectionNotes: bodyAsJson.results,
+          }),
+        );
         break;
 
       default:
@@ -59,7 +69,10 @@ function* fetchCollectionNotesByLeaseSaga({
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch collection notes by lease with error "%s"', error);
+    console.error(
+      'Failed to fetch collection notes by lease with error "%s"',
+      error,
+    );
     yield put(receiveError(error));
     yield put(notFoundByLease(lease));
   }
@@ -67,28 +80,25 @@ function* fetchCollectionNotesByLeaseSaga({
 
 function* createCollectionNoteSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createCollectionNote, payload);
 
     switch (statusCode) {
       case 201:
         yield put(fetchCollectionNotesByLeaseAction(payload.lease));
         displayUIMessage({
-          title: '',
-          body: 'Huomautus tallennettu'
+          title: "",
+          body: "Huomautus tallennettu",
         });
         break;
 
       default:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -99,32 +109,36 @@ function* createCollectionNoteSaga({
 
 function* deleteCollectionNoteSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deleteCollectionNote, payload.id);
 
     switch (statusCode) {
       case 204:
-        const currentNotes = yield select(getCollectionNotesByLease, payload.lease);
-        yield put(receiveCollectionNotesByLease({
-          lease: payload.lease,
-          collectionNotes: currentNotes.filter(note => note.id !== payload.id)
-        }));
+        const currentNotes = yield select(
+          getCollectionNotesByLease,
+          payload.lease,
+        );
+        yield put(
+          receiveCollectionNotesByLease({
+            lease: payload.lease,
+            collectionNotes: currentNotes.filter(
+              (note) => note.id !== payload.id,
+            ),
+          }),
+        );
         displayUIMessage({
-          title: '',
-          body: 'Huomautus poistettu'
+          title: "",
+          body: "Huomautus poistettu",
         });
         break;
 
       default:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -134,10 +148,18 @@ function* deleteCollectionNoteSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/collectionNote/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/collectionNote/FETCH_BY_LEASE', fetchCollectionNotesByLeaseSaga);
-    yield takeLatest('mvj/collectionNote/CREATE', createCollectionNoteSaga);
-    yield takeLatest('mvj/collectionNote/DELETE', deleteCollectionNoteSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/collectionNote/FETCH_ATTRIBUTES",
+        fetchAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/collectionNote/FETCH_BY_LEASE",
+        fetchCollectionNotesByLeaseSaga,
+      );
+      yield takeLatest("mvj/collectionNote/CREATE", createCollectionNoteSaga);
+      yield takeLatest("mvj/collectionNote/DELETE", deleteCollectionNoteSaga);
+    }),
+  ]);
 }

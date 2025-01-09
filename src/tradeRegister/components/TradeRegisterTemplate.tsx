@@ -7,8 +7,19 @@ import CompanyRepresent from "@/tradeRegister/components/CompanyRepresent";
 import DownloadableFiles from "@/tradeRegister/components/DownloadableFiles";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
-import { fetchTradeRegisterCompanyExtendedById, fetchTradeRegisterCompanyNoticeById, fetchTradeRegisterCompanyRepresentById } from "@/tradeRegister/actions";
-import { getCompanyExtendedById, getCompanyNoticeById, getCompanyRepresentById, getIsFetchingCompanyExtendedById, getIsFetchingCompanyNoticeById, getIsFetchingCompanyRepresentById } from "@/tradeRegister/selectors";
+import {
+  fetchTradeRegisterCompanyExtendedById,
+  fetchTradeRegisterCompanyNoticeById,
+  fetchTradeRegisterCompanyRepresentById,
+} from "@/tradeRegister/actions";
+import {
+  getCompanyExtendedById,
+  getCompanyNoticeById,
+  getCompanyRepresentById,
+  getIsFetchingCompanyExtendedById,
+  getIsFetchingCompanyNoticeById,
+  getIsFetchingCompanyRepresentById,
+} from "@/tradeRegister/selectors";
 type Props = {
   businessId: string;
   companyExtended: Record<string, any> | null | undefined;
@@ -28,9 +39,7 @@ class TradeRegisterTemplate extends PureComponent<Props> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const {
-      businessId
-    } = this.props;
+    const { businessId } = this.props;
 
     if (businessId !== prevProps.businessId) {
       this.fetchCompanyDataIfNeeded();
@@ -45,7 +54,7 @@ class TradeRegisterTemplate extends PureComponent<Props> {
       companyRepresent,
       fetchTradeRegisterCompanyExtendedById,
       fetchTradeRegisterCompanyNoticeById,
-      fetchTradeRegisterCompanyRepresentById
+      fetchTradeRegisterCompanyRepresentById,
     } = this.props;
     if (!businessId) return;
 
@@ -67,16 +76,23 @@ class TradeRegisterTemplate extends PureComponent<Props> {
       businessId,
       isFetchingCompanyExtended,
       isFetchingCompanyNotice,
-      isFetchingCompanyRepresent
+      isFetchingCompanyRepresent,
     } = this.props;
 
-    if (isFetchingCompanyExtended && isFetchingCompanyNotice && isFetchingCompanyRepresent) {
-      return <LoaderWrapper>
-        <Loader isLoading={true} />
-      </LoaderWrapper>;
+    if (
+      isFetchingCompanyExtended &&
+      isFetchingCompanyNotice &&
+      isFetchingCompanyRepresent
+    ) {
+      return (
+        <LoaderWrapper>
+          <Loader isLoading={true} />
+        </LoaderWrapper>
+      );
     }
 
-    return <Fragment>
+    return (
+      <Fragment>
         <DownloadableFiles businessId={businessId} />
 
         <CompanyExtended businessId={businessId} />
@@ -84,22 +100,36 @@ class TradeRegisterTemplate extends PureComponent<Props> {
         <CompanyRepresent businessId={businessId} />
 
         <CompanyNotice businessId={businessId} />
-      </Fragment>;
+      </Fragment>
+    );
   }
-
 }
 
-export default flowRight(connect((state, props: Props) => {
-  return {
-    companyExtended: getCompanyExtendedById(state, props.businessId),
-    companyNotice: getCompanyNoticeById(state, props.businessId),
-    companyRepresent: getCompanyRepresentById(state, props.businessId),
-    isFetchingCompanyExtended: getIsFetchingCompanyExtendedById(state, props.businessId),
-    isFetchingCompanyNotice: getIsFetchingCompanyNoticeById(state, props.businessId),
-    isFetchingCompanyRepresent: getIsFetchingCompanyRepresentById(state, props.businessId)
-  };
-}, {
-  fetchTradeRegisterCompanyExtendedById,
-  fetchTradeRegisterCompanyNoticeById,
-  fetchTradeRegisterCompanyRepresentById
-}))(TradeRegisterTemplate);
+export default flowRight(
+  connect(
+    (state, props: Props) => {
+      return {
+        companyExtended: getCompanyExtendedById(state, props.businessId),
+        companyNotice: getCompanyNoticeById(state, props.businessId),
+        companyRepresent: getCompanyRepresentById(state, props.businessId),
+        isFetchingCompanyExtended: getIsFetchingCompanyExtendedById(
+          state,
+          props.businessId,
+        ),
+        isFetchingCompanyNotice: getIsFetchingCompanyNoticeById(
+          state,
+          props.businessId,
+        ),
+        isFetchingCompanyRepresent: getIsFetchingCompanyRepresentById(
+          state,
+          props.businessId,
+        ),
+      };
+    },
+    {
+      fetchTradeRegisterCompanyExtendedById,
+      fetchTradeRegisterCompanyNoticeById,
+      fetchTradeRegisterCompanyRepresentById,
+    },
+  ),
+)(TradeRegisterTemplate);

@@ -14,38 +14,39 @@ class PageContainer extends PureComponent<Props> {
   };
 
   componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener("resize", this.handleResize);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener("resize", this.handleResize);
   }
 
   handleResize = () => {
-    const pageNavigation = document.getElementsByClassName('content__page-navigator-wrapper');
+    const pageNavigation = document.getElementsByClassName(
+      "content__page-navigator-wrapper",
+    );
 
     if (pageNavigation.length) {
-      const {
-        height
-      } = pageNavigation[0].getClientRects()[0];
-      this.component.style.marginTop = height + 'px';
+      const { height } = pageNavigation[0].getClientRects()[0];
+      this.component.style.marginTop = height + "px";
     }
   };
 
   render() {
-    const {
-      children,
-      className,
-      hasTabs
-    } = this.props;
-    return <div ref={this.setRef} className={classNames('content__page-container', className)} style={{
-      paddingTop: hasTabs ? 0 : null
-    }}>
-      <ReactResizeDetector handleHeight onResize={this.handleResize} />
-      {children}
-    </div>;
+    const { children, className, hasTabs } = this.props;
+    return (
+      <div
+        ref={this.setRef}
+        className={classNames("content__page-container", className)}
+        style={{
+          paddingTop: hasTabs ? 0 : null,
+        }}
+      >
+        <ReactResizeDetector handleHeight onResize={this.handleResize} />
+        {children}
+      </div>
+    );
   }
-
 }
 
 export default PageContainer;

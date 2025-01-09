@@ -10,7 +10,12 @@ import { receiveFormValidFlags } from "@/landUseContract/actions";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { getContentDecisions } from "@/landUseContract/helpers";
-import { getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked } from "@/landUseContract/selectors";
+import {
+  getAttributes,
+  getCurrentLandUseContract,
+  getErrorsByFormName,
+  getIsSaveClicked,
+} from "@/landUseContract/selectors";
 import type { Attributes } from "types";
 import type { LandUseContract } from "@/landUseContract/types";
 type DecisionsProps = {
@@ -27,41 +32,59 @@ const renderDecisions = ({
   decisionsData,
   errors,
   fields,
-  isSaveClicked
+  isSaveClicked,
 }: DecisionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
 
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      return <div>
-            {fields && !!fields.length && fields.map((decision, index) => {
-          const handleRemove = () => {
-            dispatch({
-              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-              confirmationFunction: () => {
-                fields.remove(index);
-              },
-              confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: ConfirmationModalTexts.DELETE_DECISION.BUTTON,
-              confirmationModalLabel: ConfirmationModalTexts.DELETE_DECISION.LABEL,
-              confirmationModalTitle: ConfirmationModalTexts.DELETE_DECISION.TITLE
-            });
-          };
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <div>
+            {fields &&
+              !!fields.length &&
+              fields.map((decision, index) => {
+                const handleRemove = () => {
+                  dispatch({
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
+                      fields.remove(index);
+                    },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
+                    confirmationModalButtonText:
+                      ConfirmationModalTexts.DELETE_DECISION.BUTTON,
+                    confirmationModalLabel:
+                      ConfirmationModalTexts.DELETE_DECISION.LABEL,
+                    confirmationModalTitle:
+                      ConfirmationModalTexts.DELETE_DECISION.TITLE,
+                  });
+                };
 
-          return <DecisionItemEdit key={index} attributes={attributes} decisionsData={decisionsData} errors={errors} field={decision} index={index} isSaveClicked={isSaveClicked} onRemove={handleRemove} />;
-        })}
+                return (
+                  <DecisionItemEdit
+                    key={index}
+                    attributes={attributes}
+                    decisionsData={decisionsData}
+                    errors={errors}
+                    field={decision}
+                    index={index}
+                    isSaveClicked={isSaveClicked}
+                    onRemove={handleRemove}
+                  />
+                );
+              })}
             <Row>
               <Column>
-                <AddButton label='Lisää päätös' onClick={handleAdd} />
+                <AddButton label="Lisää päätös" onClick={handleAdd} />
               </Column>
             </Row>
-          </div>;
-    }}
-    </AppConsumer>;
+          </div>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
 type Props = {
@@ -81,17 +104,15 @@ type State = {
 class DecisionsEdit extends Component<Props, State> {
   state = {
     currentLandUseContract: null,
-    decisionsData: []
+    decisionsData: [],
   };
 
   componentDidUpdate(prevProps) {
-    const {
-      receiveFormValidFlags
-    } = this.props;
+    const { receiveFormValidFlags } = this.props;
 
     if (prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.LAND_USE_CONTRACT_DECISIONS]: this.props.valid
+        [FormNames.LAND_USE_CONTRACT_DECISIONS]: this.props.valid,
       });
     }
   }
@@ -101,7 +122,7 @@ class DecisionsEdit extends Component<Props, State> {
       const decisions = getContentDecisions(props.currentLandUseContract);
       return {
         currentLandUseContract: props.currentLandUseContract,
-        decisionsData: decisions
+        decisionsData: decisions,
       };
     }
 
@@ -109,34 +130,42 @@ class DecisionsEdit extends Component<Props, State> {
   }
 
   render() {
-    const {
-      attributes,
-      errors,
-      formValues,
-      isSaveClicked
-    } = this.props,
-          {
-      decisionsData
-    } = this.state;
-    return <form>
-        <FieldArray attributes={attributes} component={renderDecisions} decisionsData={decisionsData} errors={errors} formValues={formValues} isSaveClicked={isSaveClicked} name="decisions" />
-      </form>;
+    const { attributes, errors, formValues, isSaveClicked } = this.props,
+      { decisionsData } = this.state;
+    return (
+      <form>
+        <FieldArray
+          attributes={attributes}
+          component={renderDecisions}
+          decisionsData={decisionsData}
+          errors={errors}
+          formValues={formValues}
+          isSaveClicked={isSaveClicked}
+          name="decisions"
+        />
+      </form>
+    );
   }
-
 }
 
 const formName = FormNames.LAND_USE_CONTRACT_DECISIONS;
-export default flowRight(connect(state => {
-  return {
-    attributes: getAttributes(state),
-    currentLandUseContract: getCurrentLandUseContract(state),
-    errors: getErrorsByFormName(state, formName),
-    formValues: getFormValues(formName)(state),
-    isSaveClicked: getIsSaveClicked(state)
-  };
-}, {
-  receiveFormValidFlags
-}), reduxForm({
-  form: formName,
-  destroyOnUnmount: false
-}))(DecisionsEdit) as React.ComponentType<any>;
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        attributes: getAttributes(state),
+        currentLandUseContract: getCurrentLandUseContract(state),
+        errors: getErrorsByFormName(state, formName),
+        formValues: getFormValues(formName)(state),
+        isSaveClicked: getIsSaveClicked(state),
+      };
+    },
+    {
+      receiveFormValidFlags,
+    },
+  ),
+  reduxForm({
+    form: formName,
+    destroyOnUnmount: false,
+  }),
+)(DecisionsEdit) as React.ComponentType<any>;

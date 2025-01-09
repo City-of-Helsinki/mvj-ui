@@ -27,47 +27,93 @@ const InvoiceSimulatorBillingPeriod = ({
   invoiceReceivableTypeOptions,
   invoiceTypeOptions,
   startDate,
-  totalAmount
+  totalAmount,
 }: Props) => {
-  return <Collapse className='collapse__secondary' defaultOpen={false} headerSubtitles={<Fragment>
+  return (
+    <Collapse
+      className="collapse__secondary"
+      defaultOpen={false}
+      headerSubtitles={
+        <Fragment>
           <Column>
-            <CollapseHeaderSubtitle>{formatDate(dueDate) || '-'}</CollapseHeaderSubtitle>
+            <CollapseHeaderSubtitle>
+              {formatDate(dueDate) || "-"}
+            </CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <CollapseHeaderSubtitle><AmountWithVat amount={totalAmount} date={dueDate} /></CollapseHeaderSubtitle>
+            <CollapseHeaderSubtitle>
+              <AmountWithVat amount={totalAmount} date={dueDate} />
+            </CollapseHeaderSubtitle>
           </Column>
-        </Fragment>} headerTitle={formatDateRange(startDate, endDate)}>
+        </Fragment>
+      }
+      headerTitle={formatDateRange(startDate, endDate)}
+    >
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='Laskutuskausi' text={formatDateRange(startDate, endDate)} />
+          <FormTitleAndText
+            title="Laskutuskausi"
+            text={formatDateRange(startDate, endDate)}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='Eräpäivä' text={formatDate(dueDate)} />
+          <FormTitleAndText title="Eräpäivä" text={formatDate(dueDate)} />
         </Column>
         <Column small={12} medium={4} large={8}>
-          <FormTitleAndText title='Summa yhteensä' text={<AmountWithVat amount={totalAmount} date={dueDate} />} />
+          <FormTitleAndText
+            title="Summa yhteensä"
+            text={<AmountWithVat amount={totalAmount} date={dueDate} />}
+          />
         </Column>
       </Row>
 
       <SubTitle>Laskelma</SubTitle>
       <Row>
-        <Column small={12} large={8} className='invoice-simulator__explanations'>
-          {explanations && explanations.length && explanations.map((explanation, index) => {
-          return <Fragment key={index}>
-                {explanation.items.map((item, index) => {
-              return <RentCalculatorExplanation date={dueDate} key={index} explanation={item} />;
+        <Column
+          small={12}
+          large={8}
+          className="invoice-simulator__explanations"
+        >
+          {explanations &&
+            explanations.length &&
+            explanations.map((explanation, index) => {
+              return (
+                <Fragment key={index}>
+                  {explanation.items.map((item, index) => {
+                    return (
+                      <RentCalculatorExplanation
+                        date={dueDate}
+                        key={index}
+                        explanation={item}
+                      />
+                    );
+                  })}
+                </Fragment>
+              );
             })}
-              </Fragment>;
-        })}
         </Column>
       </Row>
 
-
       <SubTitle>Laskut</SubTitle>
       {invoices.map((invoice, index) => {
-      return <InvoiceSimulatorInvoice key={index} billedAmount={invoice.billedAmount} dueDate={invoice.dueDate} endDate={invoice.endDate} explanations={invoice.explanations} receivableTypeOptions={invoiceReceivableTypeOptions} recipient={invoice.recipient} rows={invoice.rows} startDate={invoice.startDate} type={invoice.type} typeOptions={invoiceTypeOptions} />;
-    })}
-    </Collapse>;
+        return (
+          <InvoiceSimulatorInvoice
+            key={index}
+            billedAmount={invoice.billedAmount}
+            dueDate={invoice.dueDate}
+            endDate={invoice.endDate}
+            explanations={invoice.explanations}
+            receivableTypeOptions={invoiceReceivableTypeOptions}
+            recipient={invoice.recipient}
+            rows={invoice.rows}
+            startDate={invoice.startDate}
+            type={invoice.type}
+            typeOptions={invoiceTypeOptions}
+          />
+        );
+      })}
+    </Collapse>
+  );
 };
 
 export default InvoiceSimulatorBillingPeriod;

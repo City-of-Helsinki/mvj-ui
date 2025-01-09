@@ -17,11 +17,11 @@ type Props = OwnProps & {
 
 const CollectionLetterTotalRow = ({
   selectedInvoices,
-  penaltyInterestArray
+  penaltyInterestArray,
 }: Props) => {
   const getTotalOutstandingAmount = () => {
     let total = 0;
-    penaltyInterestArray.forEach(penaltyInterest => {
+    penaltyInterestArray.forEach((penaltyInterest) => {
       total += penaltyInterest.outstanding_amount;
     });
     return total;
@@ -29,7 +29,7 @@ const CollectionLetterTotalRow = ({
 
   const getTotalInterestAmount = () => {
     let total = 0;
-    penaltyInterestArray.forEach(penaltyInterest => {
+    penaltyInterestArray.forEach((penaltyInterest) => {
       total += penaltyInterest.total_interest_amount;
     });
     return total;
@@ -39,7 +39,7 @@ const CollectionLetterTotalRow = ({
     let total = 0;
 
     if (selectedInvoices) {
-      selectedInvoices.forEach(invoice => {
+      selectedInvoices.forEach((invoice) => {
         if (invoice.collection_charge) {
           total += convertStrToDecimalNumber(invoice.collection_charge) || 0;
         }
@@ -50,10 +50,12 @@ const CollectionLetterTotalRow = ({
   };
 
   const totalOutstandingAmount = getTotalOutstandingAmount(),
-        totalInterestAmount = getTotalInterestAmount(),
-        totalCollectionCharge = getTotalCollectionCharge(),
-        total = totalOutstandingAmount + totalInterestAmount + totalCollectionCharge;
-  return <Row>
+    totalInterestAmount = getTotalInterestAmount(),
+    totalCollectionCharge = getTotalCollectionCharge(),
+    total =
+      totalOutstandingAmount + totalInterestAmount + totalCollectionCharge;
+  return (
+    <Row>
       <Column small={4}>
         <FormText>Yhteensä</FormText>
       </Column>
@@ -67,24 +69,27 @@ const CollectionLetterTotalRow = ({
         <FormText>{`${formatNumber(totalCollectionCharge)} €`}</FormText>
       </Column>
       <Column small={2}>
-        <FormText><strong>{`${formatNumber(total)} €`}</strong></FormText>
+        <FormText>
+          <strong>{`${formatNumber(total)} €`}</strong>
+        </FormText>
       </Column>
-    </Row>;
+    </Row>
+  );
 };
 
 const formName = FormNames.LEASE_CREATE_COLLECTION_LETTER;
 const selector = formValueSelector(formName);
-export default (connect((state, props) => {
+export default connect((state, props) => {
   const penaltyInterestArray = [];
-  props.fields.forEach(field => {
+  props.fields.forEach((field) => {
     const invoice = selector(state, field),
-          penaltyInterest = getPenaltyInterestByInvoice(state, invoice.invoice);
+      penaltyInterest = getPenaltyInterestByInvoice(state, invoice.invoice);
 
     if (!isEmpty(penaltyInterest)) {
       penaltyInterestArray.push(penaltyInterest);
     }
   });
   return {
-    penaltyInterestArray: penaltyInterestArray
+    penaltyInterestArray: penaltyInterestArray,
   };
-})(CollectionLetterTotalRow) as React.ComponentType<OwnProps>);
+})(CollectionLetterTotalRow) as React.ComponentType<OwnProps>;

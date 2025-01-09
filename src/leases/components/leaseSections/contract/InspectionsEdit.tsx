@@ -34,60 +34,97 @@ const renderInspections = ({
   fields,
   leaseAttributes,
   username,
-  usersPermissions
+  usersPermissions,
 }: InspectionsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({
-      inspector: username
+      inspector: username,
     });
   };
 
   if (!fields || !fields.length) {
-    return <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseInspectionsFieldPaths.INSPECTIONS)} errorComponent={<FormText className='no-margin'>Ei tarkastuksia tai huomautuksia</FormText>}>
+    return (
+      <Authorization
+        allow={isFieldAllowedToEdit(
+          leaseAttributes,
+          LeaseInspectionsFieldPaths.INSPECTIONS,
+        )}
+        errorComponent={
+          <FormText className="no-margin">
+            Ei tarkastuksia tai huomautuksia
+          </FormText>
+        }
+      >
         <Row>
           <Column>
-            <AddButtonSecondary style={{
-            marginTop: 0
-          }} label='Lisää tarkastus' onClick={handleAdd} />
+            <AddButtonSecondary
+              style={{
+                marginTop: 0,
+              }}
+              label="Lisää tarkastus"
+              onClick={handleAdd}
+            />
           </Column>
         </Row>
-      </Authorization>;
+      </Authorization>
+    );
   }
 
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      return <GreenBox>
-            {fields && !!fields.length && <BoxItemContainer>
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <GreenBox>
+            {fields && !!fields.length && (
+              <BoxItemContainer>
                 {fields.map((field, index) => {
-            const handleRemove = () => {
-              dispatch({
-                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                confirmationFunction: () => {
-                  fields.remove(index);
-                },
-                confirmationModalButtonClassName: ButtonColors.ALERT,
-                confirmationModalButtonText: ConfirmationModalTexts.DELETE_INSPECTION.BUTTON,
-                confirmationModalLabel: ConfirmationModalTexts.DELETE_INSPECTION.LABEL,
-                confirmationModalTitle: ConfirmationModalTexts.DELETE_INSPECTION.TITLE
-              });
-            };
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
+                        fields.remove(index);
+                      },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
+                      confirmationModalButtonText:
+                        ConfirmationModalTexts.DELETE_INSPECTION.BUTTON,
+                      confirmationModalLabel:
+                        ConfirmationModalTexts.DELETE_INSPECTION.LABEL,
+                      confirmationModalTitle:
+                        ConfirmationModalTexts.DELETE_INSPECTION.TITLE,
+                    });
+                  };
 
-            return <InspectionItemEdit key={index} field={field} onRemove={handleRemove} />;
-          })}
-              </BoxItemContainer>}
+                  return (
+                    <InspectionItemEdit
+                      key={index}
+                      field={field}
+                      onRemove={handleRemove}
+                    />
+                  );
+                })}
+              </BoxItemContainer>
+            )}
 
-            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INSPECTION)}>
+            <Authorization
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.ADD_INSPECTION,
+              )}
+            >
               <Row>
                 <Column>
-                  <AddButtonSecondary label='Lisää tarkastus' onClick={handleAdd} />
+                  <AddButtonSecondary
+                    label="Lisää tarkastus"
+                    onClick={handleAdd}
+                  />
                 </Column>
               </Row>
             </Authorization>
-          </GreenBox>;
-    }}
-    </AppConsumer>;
+          </GreenBox>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
 type Props = {
@@ -101,50 +138,57 @@ type Props = {
 
 class InspectionsEdit extends PureComponent<Props> {
   componentDidUpdate(prevProps) {
-    const {
-      receiveFormValidFlags
-    } = this.props;
+    const { receiveFormValidFlags } = this.props;
 
     if (prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [formName]: this.props.valid
+        [formName]: this.props.valid,
       });
     }
   }
 
   render() {
-    const {
-      leaseAttributes,
-      usersPermissions,
-      user
-    } = this.props;
-    return <form>
+    const { leaseAttributes, usersPermissions, user } = this.props;
+    return (
+      <form>
         <GreenBox>
-          <FieldArray component={renderInspections} leaseAttributes={leaseAttributes} name="inspections" usersPermissions={usersPermissions} username={get(user, 'profile.name')} />
+          <FieldArray
+            component={renderInspections}
+            leaseAttributes={leaseAttributes}
+            name="inspections"
+            usersPermissions={usersPermissions}
+            username={get(user, "profile.name")}
+          />
         </GreenBox>
-      </form>;
+      </form>
+    );
   }
-
 }
 
 const formName = FormNames.LEASE_INSPECTIONS;
-export default flowRight(connect(state => {
-  const user = getLoggedInUser(state);
+export default flowRight(
+  connect(
+    (state) => {
+      const user = getLoggedInUser(state);
 
-  if (!user || user.expired) {
-    return {
-      user: null
-    };
-  }
+      if (!user || user.expired) {
+        return {
+          user: null,
+        };
+      }
 
-  return {
-    leaseAttributes: getLeaseAttributes(state),
-    usersPermissions: getUsersPermissions(state),
-    user
-  };
-}, {
-  receiveFormValidFlags
-}), reduxForm({
-  form: formName,
-  destroyOnUnmount: false
-}))(InspectionsEdit) as React.ComponentType<any>;
+      return {
+        leaseAttributes: getLeaseAttributes(state),
+        usersPermissions: getUsersPermissions(state),
+        user,
+      };
+    },
+    {
+      receiveFormValidFlags,
+    },
+  ),
+  reduxForm({
+    form: formName,
+    destroyOnUnmount: false,
+  }),
+)(InspectionsEdit) as React.ComponentType<any>;

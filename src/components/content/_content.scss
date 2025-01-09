@@ -61,8 +61,8 @@
     .map-link {
       .icon {
         width: rem-calc(22px);
-        height: rem-calc(22px);;
-        margin-right: rem-calc(5px);;
+        height: rem-calc(22px);
+        margin-right: rem-calc(5px);
         vertical-align: text-top;
 
         &:hover {
@@ -78,7 +78,6 @@
       text-transform: uppercase;
       margin: 0;
     }
-
 
     h3 {
       font-size: $font-regular !important;
@@ -237,7 +236,7 @@
       color: $black;
 
       .form-field__warning-field,
-      .form-field__success-field{
+      .form-field__success-field {
         font-weight: $semibold;
         font-size: rem-calc(16px);
         line-height: rem-calc(20px);

@@ -29,7 +29,7 @@ class Contracts extends PureComponent<Props, State> {
     contracts: [],
     currentLease: {},
     showContractModal: false,
-    typeOptions: []
+    typeOptions: [],
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -37,7 +37,10 @@ class Contracts extends PureComponent<Props, State> {
 
     if (props.attributes !== state.attributes) {
       newState.attributes = props.attributes;
-      newState.typeOptions = getFieldOptions(props.attributes, LeaseContractsFieldPaths.TYPE);
+      newState.typeOptions = getFieldOptions(
+        props.attributes,
+        LeaseContractsFieldPaths.TYPE,
+      );
     }
 
     if (props.currentLease !== state.currentLease) {
@@ -51,36 +54,48 @@ class Contracts extends PureComponent<Props, State> {
   handleShowContractFileModal = (contractId: number) => {
     this.setState({
       contractId,
-      showContractModal: true
+      showContractModal: true,
     });
   };
   handleCloseContractFileModal = () => {
     this.setState({
       contractId: -1,
-      showContractModal: false
+      showContractModal: false,
     });
   };
 
   render() {
-    const {
-      contractId,
-      contracts,
-      showContractModal,
-      typeOptions
-    } = this.state;
-    return <Fragment>
-        <ContractFileModal contractId={contractId} onClose={this.handleCloseContractFileModal} open={showContractModal} />
+    const { contractId, contracts, showContractModal, typeOptions } =
+      this.state;
+    return (
+      <Fragment>
+        <ContractFileModal
+          contractId={contractId}
+          onClose={this.handleCloseContractFileModal}
+          open={showContractModal}
+        />
 
-        {(!contracts || !contracts.length) && <FormText className='no-margin'>Ei sopimuksia</FormText>}
-        {contracts && !!contracts.length && contracts.map((contract, index) => <ContractItem key={index} contract={contract} onShowContractFileModal={this.handleShowContractFileModal} typeOptions={typeOptions} />)}
-      </Fragment>;
+        {(!contracts || !contracts.length) && (
+          <FormText className="no-margin">Ei sopimuksia</FormText>
+        )}
+        {contracts &&
+          !!contracts.length &&
+          contracts.map((contract, index) => (
+            <ContractItem
+              key={index}
+              contract={contract}
+              onShowContractFileModal={this.handleShowContractFileModal}
+              typeOptions={typeOptions}
+            />
+          ))}
+      </Fragment>
+    );
   }
-
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
     attributes: getAttributes(state),
-    currentLease: getCurrentLease(state)
+    currentLease: getCurrentLease(state),
   };
 })(Contracts);

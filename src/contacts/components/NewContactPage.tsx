@@ -14,9 +14,19 @@ import GreenBox from "@/components/content/GreenBox";
 import Loader from "@/components/loader/Loader";
 import PageContainer from "@/components/content/PageContainer";
 import PageNavigationWrapper from "@/components/content/PageNavigationWrapper";
-import { createContact, hideEditMode, receiveIsSaveClicked, showEditMode } from "@/contacts/actions";
+import {
+  createContact,
+  hideEditMode,
+  receiveIsSaveClicked,
+  showEditMode,
+} from "@/contacts/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
-import { ConfirmationModalTexts, FormNames, Methods, PermissionMissingTexts } from "@/enums";
+import {
+  ConfirmationModalTexts,
+  FormNames,
+  Methods,
+  PermissionMissingTexts,
+} from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { ContactTypes } from "@/contacts/enums";
 import { isEmptyValue, isMethodAllowed, setPageTitle } from "@/util/helpers";
@@ -48,37 +58,30 @@ type Props = {
 
 class NewContactPage extends Component<Props> {
   componentDidMount() {
-    const {
-      receiveIsSaveClicked,
-      receiveTopNavigationSettings,
-      showEditMode
-    } = this.props;
-    setPageTitle('Uusi asiakas');
+    const { receiveIsSaveClicked, receiveTopNavigationSettings, showEditMode } =
+      this.props;
+    setPageTitle("Uusi asiakas");
     receiveIsSaveClicked(false);
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.CONTACTS),
-      pageTitle: 'Asiakkaat',
-      showSearch: false
+      pageTitle: "Asiakkaat",
+      showSearch: false,
     });
     showEditMode();
-    window.addEventListener('beforeunload', this.handleLeavePage);
+    window.addEventListener("beforeunload", this.handleLeavePage);
   }
 
   componentWillUnmount() {
-    const {
-      hideEditMode
-    } = this.props;
+    const { hideEditMode } = this.props;
     hideEditMode();
-    window.removeEventListener('beforeunload', this.handleLeavePage);
+    window.removeEventListener("beforeunload", this.handleLeavePage);
   }
 
-  handleLeavePage = e => {
-    const {
-      isContactFormDirty
-    } = this.props;
+  handleLeavePage = (e) => {
+    const { isContactFormDirty } = this.props;
 
     if (isContactFormDirty) {
-      const confirmationMessage = '';
+      const confirmationMessage = "";
       e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
 
       return confirmationMessage; // Gecko, WebKit, Chrome <34
@@ -87,28 +90,21 @@ class NewContactPage extends Component<Props> {
   handleBack = () => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     return history.push({
       pathname: `${getRouteById(Routes.CONTACTS)}`,
-      search: search
+      search: search,
     });
   };
   cancelChanges = () => {
-    const {
-      history
-    } = this.props;
+    const { history } = this.props;
     return history.push({
-      pathname: getRouteById(Routes.CONTACTS)
+      pathname: getRouteById(Routes.CONTACTS),
     });
   };
   createContact = () => {
-    const {
-      contactFormValues,
-      createContact
-    } = this.props;
+    const { contactFormValues, createContact } = this.props;
     createContact(contactFormValues);
   };
 
@@ -117,69 +113,99 @@ class NewContactPage extends Component<Props> {
       contactMethods,
       isContactFormValid,
       isFetchingContactAttributes,
-      isSaveClicked
+      isSaveClicked,
     } = this.props;
-    if (isFetchingContactAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (isFetchingContactAttributes)
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (!contactMethods) return null;
-    if (!isMethodAllowed(contactMethods, Methods.POST)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
-    return <AppConsumer>
-        {({
-        dispatch
-      }) => {
-        const handleCreate = async () => {
-          const {
-            contactFormValues,
-            isContactFormValid,
-            receiveIsSaveClicked
-          } = this.props;
-          const {
-            business_id,
-            national_identification_number,
-            type
-          } = contactFormValues;
-          receiveIsSaveClicked(true);
-          if (!isContactFormValid) return;
-          const contactIdentifier = type ? type === ContactTypes.PERSON ? national_identification_number : business_id : null;
+    if (!isMethodAllowed(contactMethods, Methods.POST))
+      return (
+        <PageContainer>
+          <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+        </PageContainer>
+      );
+    return (
+      <AppConsumer>
+        {({ dispatch }) => {
+          const handleCreate = async () => {
+            const {
+              contactFormValues,
+              isContactFormValid,
+              receiveIsSaveClicked,
+            } = this.props;
+            const { business_id, national_identification_number, type } =
+              contactFormValues;
+            receiveIsSaveClicked(true);
+            if (!isContactFormValid) return;
+            const contactIdentifier = type
+              ? type === ContactTypes.PERSON
+                ? national_identification_number
+                : business_id
+              : null;
 
-          if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
-            const exists = await contactExists(contactIdentifier);
+            if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
+              const exists = await contactExists(contactIdentifier);
 
-            if (exists) {
-              dispatch({
-                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                confirmationFunction: () => {
-                  this.createContact();
-                },
-                confirmationModalButtonClassName: ButtonColors.SUCCESS,
-                confirmationModalButtonText: ConfirmationModalTexts.CREATE_CONTACT.BUTTON,
-                confirmationModalLabel: ConfirmationModalTexts.CREATE_CONTACT.LABEL,
-                confirmationModalTitle: ConfirmationModalTexts.CREATE_CONTACT.TITLE
-              });
+              if (exists) {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    this.createContact();
+                  },
+                  confirmationModalButtonClassName: ButtonColors.SUCCESS,
+                  confirmationModalButtonText:
+                    ConfirmationModalTexts.CREATE_CONTACT.BUTTON,
+                  confirmationModalLabel:
+                    ConfirmationModalTexts.CREATE_CONTACT.LABEL,
+                  confirmationModalTitle:
+                    ConfirmationModalTexts.CREATE_CONTACT.TITLE,
+                });
+              } else {
+                this.createContact();
+              }
             } else {
               this.createContact();
             }
-          } else {
-            this.createContact();
-          }
-        };
+          };
 
-        return <FullWidthContainer>
+          return (
+            <FullWidthContainer>
               <PageNavigationWrapper>
-                <ControlButtonBar buttonComponent={<ControlButtons allowEdit={isMethodAllowed(contactMethods, Methods.POST)} isCopyDisabled={true} isEditMode={true} isSaveDisabled={isSaveClicked && !isContactFormValid} onCancel={this.cancelChanges} onSave={handleCreate} showCommentButton={false} showCopyButton={true} />} infoComponent={<h1>Uusi asiakas</h1>} onBack={this.handleBack} />
+                <ControlButtonBar
+                  buttonComponent={
+                    <ControlButtons
+                      allowEdit={isMethodAllowed(contactMethods, Methods.POST)}
+                      isCopyDisabled={true}
+                      isEditMode={true}
+                      isSaveDisabled={isSaveClicked && !isContactFormValid}
+                      onCancel={this.cancelChanges}
+                      onSave={handleCreate}
+                      showCommentButton={false}
+                      showCopyButton={true}
+                    />
+                  }
+                  infoComponent={<h1>Uusi asiakas</h1>}
+                  onBack={this.handleBack}
+                />
               </PageNavigationWrapper>
 
-              <PageContainer className='with-small-control-bar'>
+              <PageContainer className="with-small-control-bar">
                 <ContentContainer>
-                  <GreenBox className='no-margin'>
+                  <GreenBox className="no-margin">
                     <ContactForm isFocusedOnMount />
                   </GreenBox>
                 </ContentContainer>
               </PageContainer>
-            </FullWidthContainer>;
-      }}
-      </AppConsumer>;
+            </FullWidthContainer>
+          );
+        }}
+      </AppConsumer>
+    );
   }
-
 }
 
 const mapStateToProps = (state: RootState) => {
@@ -187,14 +213,19 @@ const mapStateToProps = (state: RootState) => {
     contactFormValues: getFormValues(FormNames.CONTACT)(state),
     isContactFormDirty: isDirty(FormNames.CONTACT)(state),
     isContactFormValid: getIsContactFormValid(state),
-    isSaveClicked: getIsSaveClicked(state)
+    isSaveClicked: getIsSaveClicked(state),
   };
 };
 
-export default flowRight(withContactAttributes, withUiDataList, withRouter, connect(mapStateToProps, {
-  createContact,
-  hideEditMode,
-  receiveIsSaveClicked,
-  receiveTopNavigationSettings,
-  showEditMode
-}))(NewContactPage);
+export default flowRight(
+  withContactAttributes,
+  withUiDataList,
+  withRouter,
+  connect(mapStateToProps, {
+    createContact,
+    hideEditMode,
+    receiveIsSaveClicked,
+    receiveTopNavigationSettings,
+    showEditMode,
+  }),
+)(NewContactPage);

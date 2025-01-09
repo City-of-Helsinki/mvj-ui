@@ -8,7 +8,11 @@ import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import { receiveCollapseStates } from "@/tradeRegister/actions";
 import { CollapseStatePaths } from "@/tradeRegister/enums";
-import { getCollapseStateByKey, getCompanyExtendedById, getIsFetchingCompanyExtendedById } from "@/tradeRegister/selectors";
+import {
+  getCollapseStateByKey,
+  getCompanyExtendedById,
+  getIsFetchingCompanyExtendedById,
+} from "@/tradeRegister/selectors";
 import createUrlWithoutVersionSuffix from "@/api/createUrlWithoutVersionSuffix";
 type Props = {
   businessId: string;
@@ -23,43 +27,82 @@ const DownloadableFiles = ({
   companyExtended,
   downloadableFilesCollapseState,
   isFetchingCompanyExtended,
-  receiveCollapseStates
+  receiveCollapseStates,
 }: Props) => {
   const handleCollapseToggleDownloadableFiles = (val: boolean) => {
     receiveCollapseStates({
-      [`${CollapseStatePaths.DOWNLOADABLE_FILES}.${businessId}`]: val
+      [`${CollapseStatePaths.DOWNLOADABLE_FILES}.${businessId}`]: val,
     });
   };
 
   if (companyExtended === undefined && !isFetchingCompanyExtended) return null;
-  return <Collapse defaultOpen={downloadableFilesCollapseState !== undefined ? downloadableFilesCollapseState : true} headerTitle='Ladattavat tiedostot' onToggle={handleCollapseToggleDownloadableFiles}>
-      {isFetchingCompanyExtended && <LoaderWrapper>
+  return (
+    <Collapse
+      defaultOpen={
+        downloadableFilesCollapseState !== undefined
+          ? downloadableFilesCollapseState
+          : true
+      }
+      headerTitle="Ladattavat tiedostot"
+      onToggle={handleCollapseToggleDownloadableFiles}
+    >
+      {isFetchingCompanyExtended && (
+        <LoaderWrapper>
           <Loader isLoading={isFetchingCompanyExtended} />
-        </LoaderWrapper>}
-      {!isFetchingCompanyExtended && <Fragment>
-          {!companyExtended && <FormText>Ladattavia tiedostoja ei saatavilla</FormText>}
-          {!!companyExtended && <Fragment>
+        </LoaderWrapper>
+      )}
+      {!isFetchingCompanyExtended && (
+        <Fragment>
+          {!companyExtended && (
+            <FormText>Ladattavia tiedostoja ei saatavilla</FormText>
+          )}
+          {!!companyExtended && (
+            <Fragment>
               <Row>
                 <Column>
-                  <FileDownloadLink fileName={`kaupparekisteriote_${businessId}.pdf`} fileUrl={createUrlWithoutVersionSuffix(`trade_register/trade_register_entry/${businessId}/`)} label='Kaupparekisteriote (pdf)' />
+                  <FileDownloadLink
+                    fileName={`kaupparekisteriote_${businessId}.pdf`}
+                    fileUrl={createUrlWithoutVersionSuffix(
+                      `trade_register/trade_register_entry/${businessId}/`,
+                    )}
+                    label="Kaupparekisteriote (pdf)"
+                  />
                 </Column>
               </Row>
               <Row>
                 <Column>
-                  <FileDownloadLink fileName={`yhteisosaannot_${businessId}.pdf`} fileUrl={createUrlWithoutVersionSuffix(`trade_register/statute/${businessId}/`)} label='Yhteisösäännöt (pdf)' />
+                  <FileDownloadLink
+                    fileName={`yhteisosaannot_${businessId}.pdf`}
+                    fileUrl={createUrlWithoutVersionSuffix(
+                      `trade_register/statute/${businessId}/`,
+                    )}
+                    label="Yhteisösäännöt (pdf)"
+                  />
                 </Column>
               </Row>
-            </Fragment>}
-        </Fragment>}
-    </Collapse>;
+            </Fragment>
+          )}
+        </Fragment>
+      )}
+    </Collapse>
+  );
 };
 
-export default connect((state, props: Props) => {
-  return {
-    companyExtended: getCompanyExtendedById(state, props.businessId),
-    downloadableFilesCollapseState: getCollapseStateByKey(state, `${CollapseStatePaths.DOWNLOADABLE_FILES}.${props.businessId}`),
-    isFetchingCompanyExtended: getIsFetchingCompanyExtendedById(state, props.businessId)
-  };
-}, {
-  receiveCollapseStates
-})(DownloadableFiles);
+export default connect(
+  (state, props: Props) => {
+    return {
+      companyExtended: getCompanyExtendedById(state, props.businessId),
+      downloadableFilesCollapseState: getCollapseStateByKey(
+        state,
+        `${CollapseStatePaths.DOWNLOADABLE_FILES}.${props.businessId}`,
+      ),
+      isFetchingCompanyExtended: getIsFetchingCompanyExtendedById(
+        state,
+        props.businessId,
+      ),
+    };
+  },
+  {
+    receiveCollapseStates,
+  },
+)(DownloadableFiles);

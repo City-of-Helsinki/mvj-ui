@@ -1,30 +1,35 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { notFound, receiveIsSaveClicked, receiveRentForPeriodByLease } from "./actions";
+import {
+  notFound,
+  receiveIsSaveClicked,
+  receiveRentForPeriodByLease,
+} from "./actions";
 import { fetchRentForPeriod } from "./requests";
 import { receiveError } from "@/api/actions";
 
 function* fetchRentForPeriodSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchRentForPeriod, payload);
 
     switch (statusCode) {
       case 200:
-        yield put(receiveRentForPeriodByLease({
-          leaseId: payload.leaseId,
-          rent: { ...bodyAsJson,
-            id: payload.id,
-            allowDelete: payload.allowDelete,
-            rentCalculatorType: payload.rentCalculatorType
-          }
-        }));
+        yield put(
+          receiveRentForPeriodByLease({
+            leaseId: payload.leaseId,
+            rent: {
+              ...bodyAsJson,
+              id: payload.id,
+              allowDelete: payload.allowDelete,
+              rentCalculatorType: payload.rentCalculatorType,
+            },
+          }),
+        );
         yield put(receiveIsSaveClicked(false));
         break;
 
@@ -44,7 +49,9 @@ function* fetchRentForPeriodSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/rentforperiod/FETCH_ALL', fetchRentForPeriodSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/rentforperiod/FETCH_ALL", fetchRentForPeriodSaga);
+    }),
+  ]);
 }

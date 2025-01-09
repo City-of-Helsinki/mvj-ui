@@ -2,20 +2,35 @@ import { all, fork, put, takeLatest, call } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
 import { displayUIMessage, getSearchQuery, getUrlParams } from "@/util/helpers";
-import { hideEditMode, receiveAttributes, receiveLandUseContractList, receiveSingleLandUseContract, notFound, receiveIsSaveClicked, attributesNotFound, receiveMethods, fetchSingleLandUseContractAfterEdit } from "./actions";
+import {
+  hideEditMode,
+  receiveAttributes,
+  receiveLandUseContractList,
+  receiveSingleLandUseContract,
+  notFound,
+  receiveIsSaveClicked,
+  attributesNotFound,
+  receiveMethods,
+  fetchSingleLandUseContractAfterEdit,
+} from "./actions";
 import { receiveError } from "@/api/actions";
 import { getRouteById, Routes } from "@/root/routes";
-import { createLandUseContract, fetchAttributes, fetchLandUseContracts, fetchSingleLandUseContract, editLandUseContract, deleteLandUseContract } from "./requests";
+import {
+  createLandUseContract,
+  fetchAttributes,
+  fetchLandUseContracts,
+  fetchSingleLandUseContract,
+  editLandUseContract,
+  deleteLandUseContract,
+} from "./requests";
 
 // import attributesMockData from './attributes-mock-data.json';
 // import mockData from './mock-data.json';
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -39,14 +54,12 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchLandUseContractsSaga({
   payload: search,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchLandUseContracts, search);
 
     switch (statusCode) {
@@ -68,14 +81,12 @@ function* fetchLandUseContractsSaga({
 
 function* fetchSingleLandUseContractSaga({
   payload: contractId,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchSingleLandUseContract, contractId);
 
     switch (statusCode) {
@@ -85,8 +96,7 @@ function* fetchSingleLandUseContractSaga({
 
       case 404:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       default:
@@ -102,30 +112,29 @@ function* fetchSingleLandUseContractSaga({
 
 function* createLandUseContractSaga({
   payload: landUseContract,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createLandUseContract, landUseContract);
 
     switch (statusCode) {
       case 201:
-        yield put(push(`${getRouteById(Routes.LAND_USE_CONTRACTS)}/${bodyAsJson.id}`));
+        yield put(
+          push(`${getRouteById(Routes.LAND_USE_CONTRACTS)}/${bodyAsJson.id}`),
+        );
         yield put(receiveIsSaveClicked(false));
         displayUIMessage({
-          title: '',
-          body: 'Maankäyttösopimus luotu'
+          title: "",
+          body: "Maankäyttösopimus luotu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -142,33 +151,42 @@ function* createLandUseContractSaga({
 
 function* editLandUseContractSaga({
   payload: landUseContract,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(editLandUseContract, landUseContract);
 
     switch (statusCode) {
       case 200:
-        yield put(fetchSingleLandUseContractAfterEdit({
-          id: landUseContract.id,
-          callbackFunctions: [hideEditMode(), receiveIsSaveClicked(false), () => displayUIMessage({
-            title: '',
-            body: 'Maankäyttösopimus tallennettu'
-          })]
-        }));
+        yield put(
+          fetchSingleLandUseContractAfterEdit({
+            id: landUseContract.id,
+            callbackFunctions: [
+              hideEditMode(),
+              receiveIsSaveClicked(false),
+              () =>
+                displayUIMessage({
+                  title: "",
+                  body: "Maankäyttösopimus tallennettu",
+                }),
+            ],
+          }),
+        );
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         break;
 
       case 500:
@@ -185,15 +203,13 @@ function* editLandUseContractSaga({
 
 function* fetchSingleLandUseContractAfterEditSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const callbackFunctions = payload.callbackFunctions;
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchSingleLandUseContract, payload.id);
 
     switch (statusCode) {
@@ -203,12 +219,12 @@ function* fetchSingleLandUseContractAfterEditSaga({
         if (callbackFunctions) {
           for (let i = 0; i < callbackFunctions.length; i++) {
             switch (typeof callbackFunctions[i]) {
-              case 'function':
+              case "function":
                 // Functions
                 callbackFunctions[i]();
                 break;
 
-              case 'object':
+              case "object":
                 // Redux saga functions
                 yield put(callbackFunctions[i]);
             }
@@ -219,8 +235,7 @@ function* fetchSingleLandUseContractAfterEditSaga({
 
       case 404:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -236,14 +251,12 @@ function* fetchSingleLandUseContractAfterEditSaga({
 
 function* deleteLandUseSaga({
   payload: id,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deleteLandUseContract, id);
 
     switch (statusCode) {
@@ -251,18 +264,21 @@ function* deleteLandUseSaga({
         const query = getUrlParams(location.search);
         // Remove page specific url parameters when moving to landuse list page
         delete query.tab;
-        yield put(push(`${getRouteById(Routes.LAND_USE_CONTRACTS)}/${getSearchQuery(query)}`));
+        yield put(
+          push(
+            `${getRouteById(Routes.LAND_USE_CONTRACTS)}/${getSearchQuery(query)}`,
+          ),
+        );
         displayUIMessage({
-          title: '',
-          body: 'Maankäyttösopimus poistettu'
+          title: "",
+          body: "Maankäyttösopimus poistettu",
         });
         break;
 
       case 400:
       case 401:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -278,13 +294,27 @@ function* deleteLandUseSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/landUseContract/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/landUseContract/FETCH_ALL', fetchLandUseContractsSaga);
-    yield takeLatest('mvj/landUseContract/FETCH_SINGLE', fetchSingleLandUseContractSaga);
-    yield takeLatest('mvj/landUseContract/FETCH_SINGLE_AFTER_EDIT', fetchSingleLandUseContractAfterEditSaga);
-    yield takeLatest('mvj/landUseContract/CREATE', createLandUseContractSaga);
-    yield takeLatest('mvj/landUseContract/EDIT', editLandUseContractSaga);
-    yield takeLatest('mvj/landUseContract/DELETE', deleteLandUseSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/landUseContract/FETCH_ATTRIBUTES",
+        fetchAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/landUseContract/FETCH_ALL",
+        fetchLandUseContractsSaga,
+      );
+      yield takeLatest(
+        "mvj/landUseContract/FETCH_SINGLE",
+        fetchSingleLandUseContractSaga,
+      );
+      yield takeLatest(
+        "mvj/landUseContract/FETCH_SINGLE_AFTER_EDIT",
+        fetchSingleLandUseContractAfterEditSaga,
+      );
+      yield takeLatest("mvj/landUseContract/CREATE", createLandUseContractSaga);
+      yield takeLatest("mvj/landUseContract/EDIT", editLandUseContractSaga);
+      yield takeLatest("mvj/landUseContract/DELETE", deleteLandUseSaga);
+    }),
+  ]);
 }

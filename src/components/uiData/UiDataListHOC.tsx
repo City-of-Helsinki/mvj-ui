@@ -2,8 +2,17 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
-import { fetchAttributes as fetchUiDataAttributes, fetchUiDataList } from "@/uiData/actions";
-import { getAttributes as getUiDataAttributes, getIsFetching, getIsFetchingAttributes as getIsFetchingUiDataAttributes, getMethods as getUiDataMethods, getUiDataList } from "@/uiData/selectors";
+import {
+  fetchAttributes as fetchUiDataAttributes,
+  fetchUiDataList,
+} from "@/uiData/actions";
+import {
+  getAttributes as getUiDataAttributes,
+  getIsFetching,
+  getIsFetchingAttributes as getIsFetchingUiDataAttributes,
+  getMethods as getUiDataMethods,
+  getUiDataList,
+} from "@/uiData/selectors";
 import type { Attributes, Methods } from "types";
 import type { UiDataList } from "@/uiData/types";
 
@@ -26,7 +35,7 @@ function UiDataListHOC(WrappedComponent: any) {
         isFetchingUiDataList,
         uiDataAttributes,
         uiDataList,
-        uiDataMethods
+        uiDataMethods,
       } = this.props;
 
       if (!isFetchingUiDataAttributes && !uiDataAttributes && !uiDataMethods) {
@@ -35,7 +44,7 @@ function UiDataListHOC(WrappedComponent: any) {
 
       if (!isFetchingUiDataList && isEmpty(uiDataList)) {
         fetchUiDataList({
-          limit: 100000
+          limit: 100000,
         });
       }
     }
@@ -43,20 +52,25 @@ function UiDataListHOC(WrappedComponent: any) {
     render() {
       return <WrappedComponent {...this.props} />;
     }
-
   };
 }
 
-const withUiDataList = flowRight(connect(state => {
-  return {
-    isFetchingUiDataAttributes: getIsFetchingUiDataAttributes(state),
-    isFetchingUiDataList: getIsFetching(state),
-    uiDataAttributes: getUiDataAttributes(state),
-    uiDataList: getUiDataList(state),
-    uiDataMethods: getUiDataMethods(state)
-  };
-}, {
-  fetchUiDataAttributes,
-  fetchUiDataList
-}), UiDataListHOC);
+const withUiDataList = flowRight(
+  connect(
+    (state) => {
+      return {
+        isFetchingUiDataAttributes: getIsFetchingUiDataAttributes(state),
+        isFetchingUiDataList: getIsFetching(state),
+        uiDataAttributes: getUiDataAttributes(state),
+        uiDataList: getUiDataList(state),
+        uiDataMethods: getUiDataMethods(state),
+      };
+    },
+    {
+      fetchUiDataAttributes,
+      fetchUiDataList,
+    },
+  ),
+  UiDataListHOC,
+);
 export { withUiDataList };

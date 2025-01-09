@@ -17,12 +17,23 @@ const TextAreaInput = ({
   disabled,
   id,
   onChange,
-  placeholder = '',
+  placeholder = "",
   rows = 3,
   setRefForField,
-  value = ''
+  value = "",
 }: Props) => {
-  return <textarea ref={setRefForField} className={classNames('text-area-input', className)} id={id} disabled={disabled} onChange={onChange} placeholder={placeholder} rows={rows} value={value} />;
+  return (
+    <textarea
+      ref={setRefForField}
+      className={classNames("text-area-input", className)}
+      id={id}
+      disabled={disabled}
+      onChange={onChange}
+      placeholder={placeholder}
+      rows={rows}
+      value={value}
+    />
+  );
 };
 
 export default TextAreaInput;

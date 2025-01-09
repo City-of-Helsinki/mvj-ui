@@ -27,12 +27,22 @@ import UnitPricesUsedInCalculations from "./UnitPricesUsedInCalculations";
 import type { Attributes, Methods as MethodsType } from "types";
 import { getUserFullName } from "@/users/helpers";
 import { ConfirmationModalTexts, Methods } from "@/enums";
-import { formatDate, isFieldAllowedToRead, isMethodAllowed } from "@/util/helpers";
+import {
+  formatDate,
+  isFieldAllowedToRead,
+  isMethodAllowed,
+} from "@/util/helpers";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
 import { getUiDataLandUseAgreementAttachmentKey } from "@/uiData/helpers";
-import { getMethods as getLandUseAgreementAttachmentMethods, getAttributes as getLandUseAgreementAttachmentAttributes } from "@/landUseAgreementAttachment/selectors";
+import {
+  getMethods as getLandUseAgreementAttachmentMethods,
+  getAttributes as getLandUseAgreementAttachmentAttributes,
+} from "@/landUseAgreementAttachment/selectors";
 import { LandUseAgreementAttachmentFieldPaths } from "@/landUseAgreementAttachment/enums";
-import { createLandUseAgreementAttachment, deleteLandUseAgreementAttachment } from "@/landUseAgreementAttachment/actions";
+import {
+  createLandUseAgreementAttachment,
+  deleteLandUseAgreementAttachment,
+} from "@/landUseAgreementAttachment/actions";
 type InvoicesProps = {
   attributes: Attributes;
   fields: any;
@@ -44,67 +54,84 @@ type InvoicesProps = {
 const renderUnitPricesUsedInCalculation = ({
   attributes,
   fields,
-  isSaveClicked
+  isSaveClicked,
 }: InvoicesProps): ReactElement => {
   const handleAdd = () => fields.push({});
 
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      return <div>
-            {fields && !!fields.length && <div>
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <div>
+            {fields && !!fields.length && (
+              <div>
                 <Row>
                   <Column large={2}>
-                    <FormTextTitle title='Kaavayksikön käyttötarkoitus' />
+                    <FormTextTitle title="Kaavayksikön käyttötarkoitus" />
                   </Column>
                   <Column large={2}>
-                    <FormTextTitle title='Hallintamuoto' />
+                    <FormTextTitle title="Hallintamuoto" />
                   </Column>
                   <Column large={1}>
-                    <FormTextTitle title='Suojeltu' />
+                    <FormTextTitle title="Suojeltu" />
                   </Column>
                   <Column large={1}>
-                    <FormTextTitle title='k-m²' />
+                    <FormTextTitle title="k-m²" />
                   </Column>
                   <Column large={1}>
-                    <FormTextTitle title='Yksikköhinta €' />
+                    <FormTextTitle title="Yksikköhinta €" />
                   </Column>
                   <Column large={1}>
-                    <FormTextTitle title='Alennus %' />
+                    <FormTextTitle title="Alennus %" />
                   </Column>
                   <Column large={1}>
-                    <FormTextTitle title='Käytetty hinta' />
+                    <FormTextTitle title="Käytetty hinta" />
                   </Column>
                   <Column large={1}>
-                    <FormTextTitle title='Summa' />
+                    <FormTextTitle title="Summa" />
                   </Column>
                 </Row>
                 {fields.map((field, index) => {
-            const handleRemove = () => {
-              dispatch({
-                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                confirmationFunction: () => {
-                  fields.remove(index);
-                },
-                confirmationModalButtonClassName: ButtonColors.ALERT,
-                confirmationModalButtonText: 'Poista yksikköhinta',
-                confirmationModalLabel: 'Poista yksikköhinta',
-                confirmationModalTitle: 'Oletko varma että haluat poistaa yksikköhinnan'
-              });
-            };
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
+                        fields.remove(index);
+                      },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
+                      confirmationModalButtonText: "Poista yksikköhinta",
+                      confirmationModalLabel: "Poista yksikköhinta",
+                      confirmationModalTitle:
+                        "Oletko varma että haluat poistaa yksikköhinnan",
+                    });
+                  };
 
-            return <UnitPricesUsedInCalculations key={index} onRemove={handleRemove} attributes={attributes} isSaveClicked={isSaveClicked} formName={formName} field={field} />;
-          })}
-              </div>}
+                  return (
+                    <UnitPricesUsedInCalculations
+                      key={index}
+                      onRemove={handleRemove}
+                      attributes={attributes}
+                      isSaveClicked={isSaveClicked}
+                      formName={formName}
+                      field={field}
+                    />
+                  );
+                })}
+              </div>
+            )}
             <Row>
               <Column>
-                <AddButtonThird label='Lisää yksikköhinta' onClick={handleAdd} />
+                <AddButtonThird
+                  label="Lisää yksikköhinta"
+                  onClick={handleAdd}
+                />
               </Column>
             </Row>
-          </div>;
-    }}
-    </AppConsumer>;
+          </div>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
 type Props = {
@@ -126,13 +153,11 @@ type Props = {
 
 class CompensationsEdit extends Component<Props> {
   componentDidUpdate(prevProps) {
-    const {
-      receiveFormValidFlags
-    } = this.props;
+    const { receiveFormValidFlags } = this.props;
 
     if (prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [formName]: this.props.valid
+        [formName]: this.props.valid,
       });
     }
   }
@@ -142,32 +167,33 @@ class CompensationsEdit extends Component<Props> {
       cashCompensation,
       landCompensation,
       otherCompensation,
-      firstInstallmentIncrease
+      firstInstallmentIncrease,
     } = this.props;
-    return convertStrToDecimalNumber(cashCompensation) + convertStrToDecimalNumber(landCompensation) + convertStrToDecimalNumber(otherCompensation) + convertStrToDecimalNumber(firstInstallmentIncrease);
+    return (
+      convertStrToDecimalNumber(cashCompensation) +
+      convertStrToDecimalNumber(landCompensation) +
+      convertStrToDecimalNumber(otherCompensation) +
+      convertStrToDecimalNumber(firstInstallmentIncrease)
+    );
   };
-  handleFileChange = e => {
-    const {
-      createLandUseAgreementAttachment,
-      currentLandUseContract
-    } = this.props;
+  handleFileChange = (e) => {
+    const { createLandUseAgreementAttachment, currentLandUseContract } =
+      this.props;
     createLandUseAgreementAttachment({
       id: currentLandUseContract.id,
       data: {
         land_use_agreement: currentLandUseContract.id,
-        type: 'compensation_calculation'
+        type: "compensation_calculation",
       },
-      file: e.target.files[0]
+      file: e.target.files[0],
     });
   };
   handleDeleteLandUseAgreementAttachmentFile = (fileId: number) => {
-    const {
-      deleteLandUseAgreementAttachment,
-      currentLandUseContract
-    } = this.props;
+    const { deleteLandUseAgreementAttachment, currentLandUseContract } =
+      this.props;
     deleteLandUseAgreementAttachment({
       id: currentLandUseContract.id,
-      fileId
+      fileId,
     });
   };
 
@@ -178,11 +204,14 @@ class CompensationsEdit extends Component<Props> {
       change,
       currentLandUseContract,
       landUseAgreementAttachmentMethods,
-      landUseAgreementAttachmentAttributes
+      landUseAgreementAttachmentAttributes,
     } = this.props;
     const total = this.getTotal();
-    const attachments = get(currentLandUseContract, 'attachments', []).filter(file => file.type === 'compensation_calculation');
-    return <form>
+    const attachments = get(currentLandUseContract, "attachments", []).filter(
+      (file) => file.type === "compensation_calculation",
+    );
+    return (
+      <form>
         <GreenBox>
           <Row>
             <Column small={12} large={6}>
@@ -190,10 +219,10 @@ class CompensationsEdit extends Component<Props> {
               <WhiteBox>
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <FormTextTitle title='Maankäyttökorvaus' />
+                    <FormTextTitle title="Maankäyttökorvaus" />
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormTextTitle title='Korvauksen määrä' />
+                    <FormTextTitle title="Korvauksen määrä" />
                   </Column>
                 </Row>
                 <Row>
@@ -201,7 +230,16 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Rahakorvaus</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'compensations.children.cash_compensation')} invisibleLabel name='compensations.cash_compensation' unit='€' />
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(
+                        attributes,
+                        "compensations.children.cash_compensation",
+                      )}
+                      invisibleLabel
+                      name="compensations.cash_compensation"
+                      unit="€"
+                    />
                   </Column>
                 </Row>
                 <Row>
@@ -209,7 +247,16 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Maakorvaus</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'compensations.children.land_compensation')} invisibleLabel name='compensations.land_compensation' unit='€' />
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(
+                        attributes,
+                        "compensations.children.land_compensation",
+                      )}
+                      invisibleLabel
+                      name="compensations.land_compensation"
+                      unit="€"
+                    />
                   </Column>
                 </Row>
                 <Row>
@@ -217,21 +264,41 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Muu</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'compensations.children.other_compensation')} invisibleLabel name='compensations.other_compensation' unit='€' />
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(
+                        attributes,
+                        "compensations.children.other_compensation",
+                      )}
+                      invisibleLabel
+                      name="compensations.other_compensation"
+                      unit="€"
+                    />
                   </Column>
                 </Row>
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <FormText className='no-margin'>1. maksuerän korotus</FormText>
+                    <FormText className="no-margin">
+                      1. maksuerän korotus
+                    </FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'compensations.children.first_installment_increase')} invisibleLabel name='compensations.first_installment_increase' unit='€' />
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(
+                        attributes,
+                        "compensations.children.first_installment_increase",
+                      )}
+                      invisibleLabel
+                      name="compensations.first_installment_increase"
+                      unit="€"
+                    />
                   </Column>
                 </Row>
                 <Divider />
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <FormText className='semibold'>Yhteensä</FormText>
+                    <FormText className="semibold">Yhteensä</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
                     <FormText>{`${formatNumber(total)} €`}</FormText>
@@ -241,20 +308,20 @@ class CompensationsEdit extends Component<Props> {
             </Column>
           </Row>
         </GreenBox>
-        <GreenBox className={'with-top-margin'}>
+        <GreenBox className={"with-top-margin"}>
           <Row>
             <Column small={12} large={6}>
               <SubTitle>Korvauksetta luovutettavat yleiset alueet</SubTitle>
               <WhiteBox>
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <FormTextTitle title='Kaavayksikön käyttötarkoitus' />
+                    <FormTextTitle title="Kaavayksikön käyttötarkoitus" />
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormTextTitle title='Hankinta-arvo €' />
+                    <FormTextTitle title="Hankinta-arvo €" />
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormTextTitle title='m²' />
+                    <FormTextTitle title="m²" />
                   </Column>
                 </Row>
                 <Row>
@@ -262,10 +329,28 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Katu (9901)</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'compensations.children.street_acquisition_value')} invisibleLabel name='compensations.street_acquisition_value' unit='€' />
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(
+                        attributes,
+                        "compensations.children.street_acquisition_value",
+                      )}
+                      invisibleLabel
+                      name="compensations.street_acquisition_value"
+                      unit="€"
+                    />
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'compensations.children.street_area')} invisibleLabel name='compensations.street_area' unit='m²' />
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(
+                        attributes,
+                        "compensations.children.street_area",
+                      )}
+                      invisibleLabel
+                      name="compensations.street_area"
+                      unit="m²"
+                    />
                   </Column>
                 </Row>
                 <Row>
@@ -273,10 +358,28 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Puisto (9903)</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'compensations.children.park_acquisition_value')} invisibleLabel name='compensations.park_acquisition_value' unit='€' />
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(
+                        attributes,
+                        "compensations.children.park_acquisition_value",
+                      )}
+                      invisibleLabel
+                      name="compensations.park_acquisition_value"
+                      unit="€"
+                    />
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'compensations.children.park_area')} invisibleLabel name='compensations.park_area' unit='m²' />
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(
+                        attributes,
+                        "compensations.children.park_area",
+                      )}
+                      invisibleLabel
+                      name="compensations.park_area"
+                      unit="m²"
+                    />
                   </Column>
                 </Row>
                 <Row>
@@ -284,137 +387,254 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Muut</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'compensations.children.other_acquisition_value')} invisibleLabel name='compensations.other_acquisition_value' unit='€' />
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(
+                        attributes,
+                        "compensations.children.other_acquisition_value",
+                      )}
+                      invisibleLabel
+                      name="compensations.other_acquisition_value"
+                      unit="€"
+                    />
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'compensations.children.other_area')} invisibleLabel name='compensations.other_area' unit='m²' />
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(
+                        attributes,
+                        "compensations.children.other_area",
+                      )}
+                      invisibleLabel
+                      name="compensations.other_area"
+                      unit="m²"
+                    />
                   </Column>
                 </Row>
               </WhiteBox>
             </Column>
           </Row>
         </GreenBox>
-        <GreenBox className={'with-top-margin'}>
+        <GreenBox className={"with-top-margin"}>
           <Row>
             <Column small={12} large={6}>
               <SubTitle>Maankäyttökorvaus laskelma</SubTitle>
-            
-              <Authorization allow={isMethodAllowed(landUseAgreementAttachmentMethods, Methods.GET)}>
-                {!!currentLandUseContract.id && <AppConsumer>
-                  {({
-                  dispatch
-                }) => {
-                  return <Fragment>
-                        {!!attachments && !!attachments.length && <Fragment>
-                            <Row>
-                              <Column small={3} large={4}>
-                                <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.FILE)}>
-                                  <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.FILE)}>
-                                    {'Tiedoston nimi'}
-                                  </FormTextTitle>
-                                </Authorization>
-                              </Column>
-                              <Column small={3} large={2}>
-                                <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
-                                  <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
-                                    {'Ladattu'}
-                                  </FormTextTitle>
-                                </Authorization>
-                              </Column>
-                              <Column small={3} large={2}>
-                                <FormTextTitle enableUiDataEdit uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.UPLOADER)}>
-                                  {'Lataaja'}
-                                </FormTextTitle>
-                              </Column>
-                            </Row>
-                            {attachments.map((file, index) => {
-                        const handleRemove = () => {
-                          dispatch({
-                            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                            confirmationFunction: () => {
-                              this.handleDeleteLandUseAgreementAttachmentFile(file.id);
-                            },
-                            confirmationModalButtonClassName: ButtonColors.ALERT,
-                            confirmationModalButtonText: ConfirmationModalTexts.DELETE_ATTACHMENT.BUTTON,
-                            confirmationModalLabel: ConfirmationModalTexts.DELETE_ATTACHMENT.LABEL,
-                            confirmationModalTitle: ConfirmationModalTexts.DELETE_ATTACHMENT.TITLE
-                          });
-                        };
 
-                        return <Row key={index}>
-                                  <Column small={3} large={4}>
-                                    <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.FILE)}>
-                                      <FileDownloadLink fileUrl={file.file} label={file.filename} />
-                                    </Authorization>
-                                  </Column>
-                                  <Column small={3} large={2}>
-                                    <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
-                                      <FormText>{formatDate(file.uploaded_at) || '-'}</FormText>
-                                    </Authorization>
-                                  </Column>
-                                  <Column small={3} large={2}>
-                                    <FormText>{getUserFullName(file.uploader) || '-'}</FormText>
-                                  </Column>
-                                  <Column small={3} large={2}>
-                                    <Authorization allow={isMethodAllowed(landUseAgreementAttachmentMethods, Methods.DELETE)}>
-                                      <RemoveButton className='third-level' onClick={handleRemove} style={{
-                                right: 12
-                              }} title="Poista liitetiedosto" />
-                                    </Authorization>
-                                  </Column>
-                                </Row>;
-                      })}
-                          </Fragment>}
-                        <Authorization allow={isMethodAllowed(landUseAgreementAttachmentMethods, Methods.POST)}>
-                          <AddFileButton label='Lisää tiedosto' name={`${currentLandUseContract.id}`} onChange={this.handleFileChange} />
-                        </Authorization>
-                      </Fragment>;
-                }}
-                </AppConsumer>}
+              <Authorization
+                allow={isMethodAllowed(
+                  landUseAgreementAttachmentMethods,
+                  Methods.GET,
+                )}
+              >
+                {!!currentLandUseContract.id && (
+                  <AppConsumer>
+                    {({ dispatch }) => {
+                      return (
+                        <Fragment>
+                          {!!attachments && !!attachments.length && (
+                            <Fragment>
+                              <Row>
+                                <Column small={3} large={4}>
+                                  <Authorization
+                                    allow={isFieldAllowedToRead(
+                                      landUseAgreementAttachmentAttributes,
+                                      LandUseAgreementAttachmentFieldPaths.FILE,
+                                    )}
+                                  >
+                                    <FormTextTitle
+                                      enableUiDataEdit
+                                      uiDataKey={getUiDataLandUseAgreementAttachmentKey(
+                                        LandUseAgreementAttachmentFieldPaths.FILE,
+                                      )}
+                                    >
+                                      {"Tiedoston nimi"}
+                                    </FormTextTitle>
+                                  </Authorization>
+                                </Column>
+                                <Column small={3} large={2}>
+                                  <Authorization
+                                    allow={isFieldAllowedToRead(
+                                      landUseAgreementAttachmentAttributes,
+                                      LandUseAgreementAttachmentFieldPaths.UPLOADED_AT,
+                                    )}
+                                  >
+                                    <FormTextTitle
+                                      enableUiDataEdit
+                                      uiDataKey={getUiDataLandUseAgreementAttachmentKey(
+                                        LandUseAgreementAttachmentFieldPaths.UPLOADED_AT,
+                                      )}
+                                    >
+                                      {"Ladattu"}
+                                    </FormTextTitle>
+                                  </Authorization>
+                                </Column>
+                                <Column small={3} large={2}>
+                                  <FormTextTitle
+                                    enableUiDataEdit
+                                    uiDataKey={getUiDataLandUseAgreementAttachmentKey(
+                                      LandUseAgreementAttachmentFieldPaths.UPLOADER,
+                                    )}
+                                  >
+                                    {"Lataaja"}
+                                  </FormTextTitle>
+                                </Column>
+                              </Row>
+                              {attachments.map((file, index) => {
+                                const handleRemove = () => {
+                                  dispatch({
+                                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                                    confirmationFunction: () => {
+                                      this.handleDeleteLandUseAgreementAttachmentFile(
+                                        file.id,
+                                      );
+                                    },
+                                    confirmationModalButtonClassName:
+                                      ButtonColors.ALERT,
+                                    confirmationModalButtonText:
+                                      ConfirmationModalTexts.DELETE_ATTACHMENT
+                                        .BUTTON,
+                                    confirmationModalLabel:
+                                      ConfirmationModalTexts.DELETE_ATTACHMENT
+                                        .LABEL,
+                                    confirmationModalTitle:
+                                      ConfirmationModalTexts.DELETE_ATTACHMENT
+                                        .TITLE,
+                                  });
+                                };
+
+                                return (
+                                  <Row key={index}>
+                                    <Column small={3} large={4}>
+                                      <Authorization
+                                        allow={isFieldAllowedToRead(
+                                          landUseAgreementAttachmentAttributes,
+                                          LandUseAgreementAttachmentFieldPaths.FILE,
+                                        )}
+                                      >
+                                        <FileDownloadLink
+                                          fileUrl={file.file}
+                                          label={file.filename}
+                                        />
+                                      </Authorization>
+                                    </Column>
+                                    <Column small={3} large={2}>
+                                      <Authorization
+                                        allow={isFieldAllowedToRead(
+                                          landUseAgreementAttachmentAttributes,
+                                          LandUseAgreementAttachmentFieldPaths.UPLOADED_AT,
+                                        )}
+                                      >
+                                        <FormText>
+                                          {formatDate(file.uploaded_at) || "-"}
+                                        </FormText>
+                                      </Authorization>
+                                    </Column>
+                                    <Column small={3} large={2}>
+                                      <FormText>
+                                        {getUserFullName(file.uploader) || "-"}
+                                      </FormText>
+                                    </Column>
+                                    <Column small={3} large={2}>
+                                      <Authorization
+                                        allow={isMethodAllowed(
+                                          landUseAgreementAttachmentMethods,
+                                          Methods.DELETE,
+                                        )}
+                                      >
+                                        <RemoveButton
+                                          className="third-level"
+                                          onClick={handleRemove}
+                                          style={{
+                                            right: 12,
+                                          }}
+                                          title="Poista liitetiedosto"
+                                        />
+                                      </Authorization>
+                                    </Column>
+                                  </Row>
+                                );
+                              })}
+                            </Fragment>
+                          )}
+                          <Authorization
+                            allow={isMethodAllowed(
+                              landUseAgreementAttachmentMethods,
+                              Methods.POST,
+                            )}
+                          >
+                            <AddFileButton
+                              label="Lisää tiedosto"
+                              name={`${currentLandUseContract.id}`}
+                              onChange={this.handleFileChange}
+                            />
+                          </Authorization>
+                        </Fragment>
+                      );
+                    }}
+                  </AppConsumer>
+                )}
               </Authorization>
-              
             </Column>
           </Row>
         </GreenBox>
-        <GreenBox className={'with-top-margin'}>
+        <GreenBox className={"with-top-margin"}>
           <Row>
             <Column>
               <SubTitle>Laskelmassa käytetyt yksikköhinnat</SubTitle>
               <WhiteBox>
                 <Row>
                   <Column>
-                    <FieldArray component={renderUnitPricesUsedInCalculation} attributes={attributes} isSaveClicked={isSaveClicked} change={change} disabled={isSaveClicked} formName={FormNames.LAND_USE_CONTRACT_COMPENSATIONS} name={'compensations.unit_prices_used_in_calculation'} />
+                    <FieldArray
+                      component={renderUnitPricesUsedInCalculation}
+                      attributes={attributes}
+                      isSaveClicked={isSaveClicked}
+                      change={change}
+                      disabled={isSaveClicked}
+                      formName={FormNames.LAND_USE_CONTRACT_COMPENSATIONS}
+                      name={"compensations.unit_prices_used_in_calculation"}
+                    />
                   </Column>
                 </Row>
               </WhiteBox>
             </Column>
           </Row>
         </GreenBox>
-      </form>;
+      </form>
+    );
   }
-
 }
 
 const formName = FormNames.LAND_USE_CONTRACT_COMPENSATIONS;
 const selector = formValueSelector(formName);
-export default flowRight(connect(state => {
-  return {
-    attributes: getAttributes(state),
-    isSaveClicked: getIsSaveClicked(state),
-    cashCompensation: selector(state, 'compensations.cash_compensation'),
-    landCompensation: selector(state, 'compensations.land_compensation'),
-    otherCompensation: selector(state, 'compensations.other_compensation'),
-    firstInstallmentIncrease: selector(state, 'compensations.first_installment_increase'),
-    currentLandUseContract: getCurrentLandUseContract(state),
-    landUseAgreementAttachmentMethods: getLandUseAgreementAttachmentMethods(state),
-    landUseAgreementAttachmentAttributes: getLandUseAgreementAttachmentAttributes(state)
-  };
-}, {
-  receiveFormValidFlags,
-  createLandUseAgreementAttachment,
-  deleteLandUseAgreementAttachment
-}), reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-  change
-}))(CompensationsEdit) as React.ComponentType<any>;
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        attributes: getAttributes(state),
+        isSaveClicked: getIsSaveClicked(state),
+        cashCompensation: selector(state, "compensations.cash_compensation"),
+        landCompensation: selector(state, "compensations.land_compensation"),
+        otherCompensation: selector(state, "compensations.other_compensation"),
+        firstInstallmentIncrease: selector(
+          state,
+          "compensations.first_installment_increase",
+        ),
+        currentLandUseContract: getCurrentLandUseContract(state),
+        landUseAgreementAttachmentMethods:
+          getLandUseAgreementAttachmentMethods(state),
+        landUseAgreementAttachmentAttributes:
+          getLandUseAgreementAttachmentAttributes(state),
+      };
+    },
+    {
+      receiveFormValidFlags,
+      createLandUseAgreementAttachment,
+      deleteLandUseAgreementAttachment,
+    },
+  ),
+  reduxForm({
+    form: formName,
+    destroyOnUnmount: false,
+    change,
+  }),
+)(CompensationsEdit) as React.ComponentType<any>;

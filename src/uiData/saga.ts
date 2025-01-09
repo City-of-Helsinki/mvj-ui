@@ -1,17 +1,28 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveError } from "@/api/actions";
-import { attributesNotFound, fetchUiDataList as fetchUiDataListAction, receiveAttributes, receiveMethods, receiveUiDataList, notFound } from "./actions";
+import {
+  attributesNotFound,
+  fetchUiDataList as fetchUiDataListAction,
+  receiveAttributes,
+  receiveMethods,
+  receiveUiDataList,
+  notFound,
+} from "./actions";
 import { displayUIMessage } from "@/util/helpers";
-import { createUiData, deleteUiData, editUiData, fetchAttributes, fetchUiDataList } from "./requests";
+import {
+  createUiData,
+  deleteUiData,
+  editUiData,
+  fetchAttributes,
+  fetchUiDataList,
+} from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -35,14 +46,12 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchUiDataListSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchUiDataList, query);
 
     switch (statusCode) {
@@ -61,26 +70,23 @@ function* fetchUiDataListSaga({
   }
 }
 
-function* createUiDataSaga({
-  payload,
-  type: any
-}): Generator<any, any, any> {
+function* createUiDataSaga({ payload, type: any }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createUiData, payload);
 
     switch (statusCode) {
       case 201:
-        yield put(fetchUiDataListAction({
-          limit: 10000
-        }));
+        yield put(
+          fetchUiDataListAction({
+            limit: 10000,
+          }),
+        );
         displayUIMessage({
-          title: '',
-          body: 'Ohjeteksti tallennettu'
+          title: "",
+          body: "Ohjeteksti tallennettu",
         });
         break;
 
@@ -98,24 +104,24 @@ function* createUiDataSaga({
 
 function* deleteUiDataSaga({
   payload: id,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deleteUiData, id);
 
     switch (statusCode) {
       case 204:
-        yield put(fetchUiDataListAction({
-          limit: 10000
-        }));
+        yield put(
+          fetchUiDataListAction({
+            limit: 10000,
+          }),
+        );
         displayUIMessage({
-          title: '',
-          body: 'Ohjeteksti poistettu'
+          title: "",
+          body: "Ohjeteksti poistettu",
         });
         break;
 
@@ -131,26 +137,23 @@ function* deleteUiDataSaga({
   }
 }
 
-function* editUiDataSaga({
-  payload,
-  type: any
-}): Generator<any, any, any> {
+function* editUiDataSaga({ payload, type: any }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(editUiData, payload);
 
     switch (statusCode) {
       case 200:
-        yield put(fetchUiDataListAction({
-          limit: 10000
-        }));
+        yield put(
+          fetchUiDataListAction({
+            limit: 10000,
+          }),
+        );
         displayUIMessage({
-          title: '',
-          body: 'Ohjeteksti tallennettu'
+          title: "",
+          body: "Ohjeteksti tallennettu",
         });
         break;
 
@@ -167,11 +170,13 @@ function* editUiDataSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/uiData/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/uiData/FETCH_ALL', fetchUiDataListSaga);
-    yield takeLatest('mvj/uiData/CREATE', createUiDataSaga);
-    yield takeLatest('mvj/uiData/DELETE', deleteUiDataSaga);
-    yield takeLatest('mvj/uiData/EDIT', editUiDataSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/uiData/FETCH_ATTRIBUTES", fetchAttributesSaga);
+      yield takeLatest("mvj/uiData/FETCH_ALL", fetchUiDataListSaga);
+      yield takeLatest("mvj/uiData/CREATE", createUiDataSaga);
+      yield takeLatest("mvj/uiData/DELETE", deleteUiDataSaga);
+      yield takeLatest("mvj/uiData/EDIT", editUiDataSaga);
+    }),
+  ]);
 }

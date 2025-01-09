@@ -10,12 +10,14 @@ type Props = {
 const FormTitleAndText = ({
   text,
   textClassName,
-  title
+  title,
 }: Props): JSX.Element => {
-  return <div>
+  return (
+    <div>
       <FormTextTitle title={title} />
       <FormText className={textClassName}>{text}</FormText>
-    </div>;
+    </div>
+  );
 };
 
 export default FormTitleAndText;

@@ -4,9 +4,12 @@ type Props = {
   className?: string;
 };
 
-const AccordionIcon = ({
-  className
-}: Props) => <svg className={classNames('icons', className)} focusable='false' viewBox="0 0 10 20">
+const AccordionIcon = ({ className }: Props) => (
+  <svg
+    className={classNames("icons", className)}
+    focusable="false"
+    viewBox="0 0 10 20"
+  >
     <g transform="translate(-133.000000, -502.000000)">
       <g transform="translate(86.000000, 369.000000)">
         <g transform="translate(33.000000, 117.000000)">
@@ -14,6 +17,7 @@ const AccordionIcon = ({
         </g>
       </g>
     </g>
-  </svg>;
+  </svg>
+);
 
 export default AccordionIcon;

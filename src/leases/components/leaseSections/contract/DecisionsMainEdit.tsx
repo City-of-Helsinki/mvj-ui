@@ -6,7 +6,14 @@ import DecisionsEdit from "./DecisionsEdit";
 import Divider from "@/components/content/Divider";
 import InspectionsEdit from "./InspectionsEdit";
 import Title from "@/components/content/Title";
-import { LeaseContractsFieldPaths, LeaseContractsFieldTitles, LeaseDecisionsFieldPaths, LeaseDecisionsFieldTitles, LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles } from "@/leases/enums";
+import {
+  LeaseContractsFieldPaths,
+  LeaseContractsFieldTitles,
+  LeaseDecisionsFieldPaths,
+  LeaseDecisionsFieldTitles,
+  LeaseInspectionsFieldPaths,
+  LeaseInspectionsFieldTitles,
+} from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes } from "@/leases/selectors";
@@ -15,44 +22,70 @@ type Props = {
   attributes: Attributes;
 };
 
-const DecisionsMainEdit = ({
-  attributes
-}: Props) => {
-  return <Fragment>
-      <Authorization allow={isFieldAllowedToRead(attributes, LeaseDecisionsFieldPaths.DECISIONS)}>
+const DecisionsMainEdit = ({ attributes }: Props) => {
+  return (
+    <Fragment>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseDecisionsFieldPaths.DECISIONS,
+        )}
+      >
         <>
-        <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.DECISIONS)}>
-          {LeaseDecisionsFieldTitles.DECISIONS}
-        </Title>
-        <Divider />
-        <DecisionsEdit />
+          <Title
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(LeaseDecisionsFieldPaths.DECISIONS)}
+          >
+            {LeaseDecisionsFieldTitles.DECISIONS}
+          </Title>
+          <Divider />
+          <DecisionsEdit />
         </>
       </Authorization>
 
-      <Authorization allow={isFieldAllowedToRead(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseContractsFieldPaths.CONTRACTS,
+        )}
+      >
         <>
-        <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.CONTRACTS)}>
-          {LeaseContractsFieldTitles.CONTRACTS}
-        </Title>
-        <Divider />
-        <ContractsEdit />
+          <Title
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.CONTRACTS)}
+          >
+            {LeaseContractsFieldTitles.CONTRACTS}
+          </Title>
+          <Divider />
+          <ContractsEdit />
         </>
       </Authorization>
 
-      <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.INSPECTIONS)}>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          attributes,
+          LeaseInspectionsFieldPaths.INSPECTIONS,
+        )}
+      >
         <>
-        <Title enableUiDataEdit uiDataKey={getUiDataLeaseKey(LeaseInspectionsFieldPaths.INSPECTIONS)}>
-          {LeaseInspectionsFieldTitles.INSPECTIONS}
-        </Title>
-        <Divider />
-        <InspectionsEdit />
+          <Title
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(
+              LeaseInspectionsFieldPaths.INSPECTIONS,
+            )}
+          >
+            {LeaseInspectionsFieldTitles.INSPECTIONS}
+          </Title>
+          <Divider />
+          <InspectionsEdit />
         </>
       </Authorization>
-    </Fragment>;
+    </Fragment>
+  );
 };
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    attributes: getAttributes(state)
+    attributes: getAttributes(state),
   };
 })(DecisionsMainEdit);

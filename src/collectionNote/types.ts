@@ -21,7 +21,16 @@ export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;
 export type CollectionNoteAttributesNotFoundAction = Action<string, void>;
 export type FetchCollectionNotesByLeaseAction = Action<string, LeaseId>;
-export type ReceiveCollectionNotesByLeaseAction = Action<string, Record<string, any>>;
+export type ReceiveCollectionNotesByLeaseAction = Action<
+  string,
+  Record<string, any>
+>;
 export type CollectionNotesNotFoundByLeaseAction = Action<string, LeaseId>;
-export type CreateCollectionNoteAction = Action<string, CreateCollectionNotePayload>;
-export type DeleteCollectionNoteAction = Action<string, DeleteCollectionNotePayload>;
+export type CreateCollectionNoteAction = Action<
+  string,
+  CreateCollectionNotePayload
+>;
+export type DeleteCollectionNoteAction = Action<
+  string,
+  DeleteCollectionNotePayload
+>;

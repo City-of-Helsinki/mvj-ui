@@ -16,10 +16,19 @@ const AddButton = ({
   label,
   onClick,
   style,
-  title
-}: Props): JSX.Element => <button className={classNames('form__add-button', className)} disabled={disabled} onClick={onClick} style={style} title={title} type='button'>
+  title,
+}: Props): JSX.Element => (
+  <button
+    className={classNames("form__add-button", className)}
+    disabled={disabled}
+    onClick={onClick}
+    style={style}
+    title={title}
+    type="button"
+  >
     <AddIcon />
     <span>{label}</span>
-  </button>;
+  </button>
+);
 
 export default AddButton;

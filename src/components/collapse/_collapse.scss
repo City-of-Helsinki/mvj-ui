@@ -24,7 +24,6 @@
       @include focus();
     }
 
-
     .header-info-wrapper {
       flex: 1 1 0%;
       position: relative;
@@ -212,8 +211,7 @@
   }
 
   &.is-collapsing,
-  &.is-expanding
-   {
+  &.is-expanding {
     > .collapse__content {
       @include transition(0.4s, max-height, ease);
       overflow: hidden;
@@ -276,8 +274,7 @@
     }
 
     &.is-collapsing,
-    &.is-expanding
-     {
+    &.is-expanding {
       .collapse__content {
         overflow: hidden !important;
       }

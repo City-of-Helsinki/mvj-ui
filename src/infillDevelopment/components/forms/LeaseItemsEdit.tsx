@@ -24,49 +24,83 @@ const LeaseItemsEdit = ({
   fields,
   infillDevelopment,
   isSaveClicked,
-  usersPermissions
+  usersPermissions,
 }: Props): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
 
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      return <Fragment>
-            {!hasPermissions(usersPermissions, UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONLEASE) && (!fields || !fields.length) && <FormText>Ei vuokrauksia</FormText>}
-            {!!fields && !!fields.length && fields.map((lease, index) => {
-          const handleRemove = () => {
-            dispatch({
-              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-              confirmationFunction: () => {
-                fields.remove(index);
-              },
-              confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: ConfirmationModalTexts.DELETE_INFILL_DEVELOPMENT_COMPENSATION_LEASE.BUTTON,
-              confirmationModalLabel: ConfirmationModalTexts.DELETE_INFILL_DEVELOPMENT_COMPENSATION_LEASE.LABEL,
-              confirmationModalTitle: ConfirmationModalTexts.DELETE_INFILL_DEVELOPMENT_COMPENSATION_LEASE.TITLE
-            });
-          };
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <Fragment>
+            {!hasPermissions(
+              usersPermissions,
+              UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONLEASE,
+            ) &&
+              (!fields || !fields.length) && (
+                <FormText>Ei vuokrauksia</FormText>
+              )}
+            {!!fields &&
+              !!fields.length &&
+              fields.map((lease, index) => {
+                const handleRemove = () => {
+                  dispatch({
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
+                      fields.remove(index);
+                    },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
+                    confirmationModalButtonText:
+                      ConfirmationModalTexts
+                        .DELETE_INFILL_DEVELOPMENT_COMPENSATION_LEASE.BUTTON,
+                    confirmationModalLabel:
+                      ConfirmationModalTexts
+                        .DELETE_INFILL_DEVELOPMENT_COMPENSATION_LEASE.LABEL,
+                    confirmationModalTitle:
+                      ConfirmationModalTexts
+                        .DELETE_INFILL_DEVELOPMENT_COMPENSATION_LEASE.TITLE,
+                  });
+                };
 
-          return <LeaseItemEdit key={index} field={lease} fields={fields} infillDevelopment={infillDevelopment} index={index} isSaveClicked={isSaveClicked} onRemove={handleRemove} />;
-        })}
+                return (
+                  <LeaseItemEdit
+                    key={index}
+                    field={lease}
+                    fields={fields}
+                    infillDevelopment={infillDevelopment}
+                    index={index}
+                    isSaveClicked={isSaveClicked}
+                    onRemove={handleRemove}
+                  />
+                );
+              })}
 
-            <Authorization allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONLEASE)}>
+            <Authorization
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONLEASE,
+              )}
+            >
               <Row>
                 <Column>
-                  <AddButtonSecondary label='Lisää vuokraus' onClick={handleAdd} />
+                  <AddButtonSecondary
+                    label="Lisää vuokraus"
+                    onClick={handleAdd}
+                  />
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>;
-    }}
-    </AppConsumer>;
+          </Fragment>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    usersPermissions: getUsersPermissions(state)
+    usersPermissions: getUsersPermissions(state),
   };
 })(LeaseItemsEdit);

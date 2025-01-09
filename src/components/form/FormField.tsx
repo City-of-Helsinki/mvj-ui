@@ -30,7 +30,14 @@ import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import { FieldTypes as FieldTypeOptions } from "@/enums";
 import { getContactFullName } from "@/contacts/helpers";
-import { formatDate, formatNumber, getFieldAttributeOptions, getLabelOfOption, isEmptyValue, getReferenceNumberLink } from "@/util/helpers";
+import {
+  formatDate,
+  formatNumber,
+  getFieldAttributeOptions,
+  getLabelOfOption,
+  isEmptyValue,
+  getReferenceNumberLink,
+} from "@/util/helpers";
 import { getUserFullName } from "@/users/helpers";
 import { genericNormalizer } from "@/components/form/normalizers";
 import { getRouteById, Routes } from "@/root/routes";
@@ -60,18 +67,22 @@ const FieldTypes = {
   [FieldTypeOptions.USER]: FieldTypeUserSelect,
   [FieldTypeOptions.TIME]: FieldTypeTime,
   [FieldTypeOptions.FRACTIONAL]: FieldTypeFractional,
-  [FieldTypeOptions.HIDDEN]: FieldTypeHidden
+  [FieldTypeOptions.HIDDEN]: FieldTypeHidden,
 };
 const Types = {
-  [FieldTypeOptions.DECIMAL]: 'text',
-  [FieldTypeOptions.INTEGER]: 'text',
-  [FieldTypeOptions.REFERENCE_NUMBER]: 'text',
-  [FieldTypeOptions.STRING]: 'text',
-  [FieldTypeOptions.TEXTAREA]: 'text'
+  [FieldTypeOptions.DECIMAL]: "text",
+  [FieldTypeOptions.INTEGER]: "text",
+  [FieldTypeOptions.REFERENCE_NUMBER]: "text",
+  [FieldTypeOptions.STRING]: "text",
+  [FieldTypeOptions.TEXTAREA]: "text",
 };
 
-const resolveFieldType = (type: string): React.ComponentType<any>  => Object.prototype.hasOwnProperty.call(FieldTypes, type) ? FieldTypes[type] : FieldTypeBasic;
-const resolveType = (type: string): string | null | undefined => Object.prototype.hasOwnProperty.call(Types, type) ? Types[type] : null;
+const resolveFieldType = (type: string): React.ComponentType<any> =>
+  Object.prototype.hasOwnProperty.call(FieldTypes, type)
+    ? FieldTypes[type]
+    : FieldTypeBasic;
+const resolveType = (type: string): string | null | undefined =>
+  Object.prototype.hasOwnProperty.call(Types, type) ? Types[type] : null;
 
 type InputProps = {
   allowEdit: boolean;
@@ -114,7 +125,7 @@ const FormFieldInput = ({
   allowEdit,
   allowRead,
   autoBlur,
-  autoComplete = 'nope',
+  autoComplete = "nope",
   className,
   disabled,
   disableDirty,
@@ -144,13 +155,13 @@ const FormFieldInput = ({
   tooltipStyle,
   valueSelectedCallback,
   uiDataKey,
-  unit
+  unit,
 }: InputProps) => {
   const getText = (type: string, value: any) => {
     switch (type) {
       case FieldTypeOptions.BOOLEAN:
       case FieldTypeOptions.CHECKBOX:
-        return !isEmptyValue(value) ? value ? 'Kyllä' : 'Ei' : '-';
+        return !isEmptyValue(value) ? (value ? "Kyllä" : "Ei") : "-";
 
       case FieldTypeOptions.CHOICE:
       case FieldTypeOptions.FIELD:
@@ -161,10 +172,10 @@ const FormFieldInput = ({
 
       case FieldTypeOptions.TIME:
         if (value) {
-          return formatDate(value) + ', ' + getHoursAndMinutes(value);
+          return formatDate(value) + ", " + getHoursAndMinutes(value);
         }
 
-        return '-';
+        return "-";
 
       case FieldTypeOptions.ADDRESS:
       case FieldTypeOptions.INTEGER:
@@ -175,16 +186,30 @@ const FormFieldInput = ({
         return value;
 
       case FieldTypeOptions.INTENDED_USE:
-        return value?.name ?? '-';
+        return value?.name ?? "-";
 
       case FieldTypeOptions.REFERENCE_NUMBER:
-        return value ? <ExternalLink href={getReferenceNumberLink(value)} text={value} /> : null;
+        return value ? (
+          <ExternalLink href={getReferenceNumberLink(value)} text={value} />
+        ) : null;
 
       case FieldTypeOptions.DECIMAL:
-        return !isEmptyValue(value) ? unit ? `${formatNumber(value)} ${unit}` : formatNumber(value) : '-';
+        return !isEmptyValue(value)
+          ? unit
+            ? `${formatNumber(value)} ${unit}`
+            : formatNumber(value)
+          : "-";
 
       case FieldTypeOptions.CONTACT:
-        return value ? <ExternalLink className='no-margin' href={`${getRouteById(Routes.CONTACTS)}/${value.id}`} text={getContactFullName(value)} /> : '-';
+        return value ? (
+          <ExternalLink
+            className="no-margin"
+            href={`${getRouteById(Routes.CONTACTS)}/${value.id}`}
+            text={getContactFullName(value)}
+          />
+        ) : (
+          "-"
+        );
 
       case FieldTypeOptions.LESSOR:
         return getContactFullName(value);
@@ -194,7 +219,7 @@ const FormFieldInput = ({
 
       default:
         console.error(`Field type ${type} is not implemented`);
-        return 'NOT IMPLEMENTED';
+        return "NOT IMPLEMENTED";
     }
   };
 
@@ -204,54 +229,92 @@ const FormFieldInput = ({
   const type = resolveType(fieldType);
 
   if (allowEdit) {
-    return <div className={classNames('form-field', className)}>
-        {label && fieldType === FieldTypeOptions.BOOLEAN && !invisibleLabel && <FormTextTitle enableUiDataEdit={enableUiDataEdit} relativeTo={relativeTo} required={required} tooltipStyle={tooltipStyle} uiDataKey={uiDataKey}>
+    return (
+      <div className={classNames("form-field", className)}>
+        {label && fieldType === FieldTypeOptions.BOOLEAN && !invisibleLabel && (
+          <FormTextTitle
+            enableUiDataEdit={enableUiDataEdit}
+            relativeTo={relativeTo}
+            required={required}
+            tooltipStyle={tooltipStyle}
+            uiDataKey={uiDataKey}
+          >
             {label}
-          </FormTextTitle>}
-        {label && fieldType !== FieldTypeOptions.BOOLEAN && fieldType !== FieldTypeOptions.HIDDEN && <FormFieldLabel className={invisibleLabel ? 'invisible' : ''} htmlFor={input.name} enableUiDataEdit={enableUiDataEdit} relativeTo={relativeTo} required={required} tooltipStyle={tooltipStyle} uiDataKey={uiDataKey}>
-            {label}
-          </FormFieldLabel>}
-        <div className={classNames('form-field__component', {
-        'has-unit': unit
-      })}>
-        {
-          createElement(fieldComponent, {
-          autoBlur,
-          autoComplete,
-          displayError,
-          disabled,
-          filterOption,
-          input,
-          isDirty,
-          isLoading,
-          label,
-          language,
-          minDate,
-          maxDate,
-          multiSelect,
-          optionLabel,
-          placeholder,
-          options,
-          rows,
-          serviceUnit,
-          setRefForField,
-          type,
-          valueSelectedCallback
-        })}
-          {unit && <span className='form-field__unit'>{unit}</span>}
+          </FormTextTitle>
+        )}
+        {label &&
+          fieldType !== FieldTypeOptions.BOOLEAN &&
+          fieldType !== FieldTypeOptions.HIDDEN && (
+            <FormFieldLabel
+              className={invisibleLabel ? "invisible" : ""}
+              htmlFor={input.name}
+              enableUiDataEdit={enableUiDataEdit}
+              relativeTo={relativeTo}
+              required={required}
+              tooltipStyle={tooltipStyle}
+              uiDataKey={uiDataKey}
+            >
+              {label}
+            </FormFieldLabel>
+          )}
+        <div
+          className={classNames("form-field__component", {
+            "has-unit": unit,
+          })}
+        >
+          {createElement(fieldComponent, {
+            autoBlur,
+            autoComplete,
+            displayError,
+            disabled,
+            filterOption,
+            input,
+            isDirty,
+            isLoading,
+            label,
+            language,
+            minDate,
+            maxDate,
+            multiSelect,
+            optionLabel,
+            placeholder,
+            options,
+            rows,
+            serviceUnit,
+            setRefForField,
+            type,
+            valueSelectedCallback,
+          })}
+          {unit && <span className="form-field__unit">{unit}</span>}
         </div>
         {displayError && <ErrorComponent {...meta} />}
-      </div>;
+      </div>
+    );
   }
 
   if (allowRead) {
-    const text = multiSelect ? input.value.map(single => getText(fieldType, single)).join(', ') : getText(fieldType, input.value);
-    return <Fragment>
-        {!invisibleLabel && <FormTextTitle enableUiDataEdit={enableUiDataEdit} relativeTo={relativeTo} tooltipStyle={tooltipStyle} uiDataKey={uiDataKey}>
+    const text = multiSelect
+      ? input.value.map((single) => getText(fieldType, single)).join(", ")
+      : getText(fieldType, input.value);
+    return (
+      <Fragment>
+        {!invisibleLabel && (
+          <FormTextTitle
+            enableUiDataEdit={enableUiDataEdit}
+            relativeTo={relativeTo}
+            tooltipStyle={tooltipStyle}
+            uiDataKey={uiDataKey}
+          >
             {label}
-          </FormTextTitle>}
-        {readOnlyValueRenderer ? readOnlyValueRenderer(input.value, options) : <FormText>{text || '-'}</FormText>}
-      </Fragment>;
+          </FormTextTitle>
+        )}
+        {readOnlyValueRenderer ? (
+          readOnlyValueRenderer(input.value, options)
+        ) : (
+          <FormText>{text || "-"}</FormText>
+        )}
+      </Fragment>
+    );
   }
 
   return null;
@@ -311,7 +374,7 @@ class FormField extends PureComponent<Props, State> {
     label: null,
     options: [],
     required: false,
-    value: null
+    value: null,
   };
   static defaultProps: $Shape<Props> = {
     autoBlur: false,
@@ -322,60 +385,51 @@ class FormField extends PureComponent<Props, State> {
     fieldAttributes: null,
     invisibleLabel: false,
     isLoading: false,
-    onChange: () => {}
+    onChange: () => {},
   };
 
-  static getDerivedStateFromProps(props: Props, state: State): $Shape<State> | null {
-    const overrideableBoolean = fieldName => {
-      return get(props.overrideValues, fieldName) !== undefined ? !!get(props.overrideValues, fieldName) : !!get(props.fieldAttributes, fieldName);
+  static getDerivedStateFromProps(
+    props: Props,
+    state: State,
+  ): $Shape<State> | null {
+    const overrideableBoolean = (fieldName) => {
+      return get(props.overrideValues, fieldName) !== undefined
+        ? !!get(props.overrideValues, fieldName)
+        : !!get(props.fieldAttributes, fieldName);
     };
 
     if (props.fieldAttributes !== state.fieldAttributes) {
       return {
-        allowEdit: get(props.fieldAttributes, 'read_only') === false,
+        allowEdit: get(props.fieldAttributes, "read_only") === false,
         allowRead: !!props.fieldAttributes,
         fieldAttributes: props.fieldAttributes,
-        fieldType: get(props.fieldAttributes, 'type'),
-        label: get(props.overrideValues, 'label') || get(props.fieldAttributes, 'label'),
-        value: get(props.overrideValues, 'value'),
+        fieldType: get(props.fieldAttributes, "type"),
+        label:
+          get(props.overrideValues, "label") ||
+          get(props.fieldAttributes, "label"),
+        value: get(props.overrideValues, "value"),
         options: getFieldAttributeOptions(props.fieldAttributes),
-        required: overrideableBoolean('required')
+        required: overrideableBoolean("required"),
       };
     }
 
     return null;
   }
 
-  handleGenericNormalize: (arg0: any) => any = value => {
-    const {
-      fieldAttributes
-    } = this.props;
+  handleGenericNormalize: (arg0: any) => any = (value) => {
+    const { fieldAttributes } = this.props;
     // eslint-disable-next-line no-unused-vars
-    const {
-      fieldAttributes: _,
-      ...rest
-    } = this.state;
-    return genericNormalizer(value, { ...fieldAttributes,
-      ...rest
-    });
+    const { fieldAttributes: _, ...rest } = this.state;
+    return genericNormalizer(value, { ...fieldAttributes, ...rest });
   };
-  handleGenericValidate: (arg0: any) => any = value => {
-    const {
-      fieldAttributes
-    } = this.props;
+  handleGenericValidate: (arg0: any) => any = (value) => {
+    const { fieldAttributes } = this.props;
     // eslint-disable-next-line no-unused-vars
-    const {
-      fieldAttributes: _,
-      ...rest
-    } = this.state;
-    return genericValidator(value, { ...fieldAttributes,
-      ...rest
-    });
+    const { fieldAttributes: _, ...rest } = this.state;
+    return genericValidator(value, { ...fieldAttributes, ...rest });
   };
-  handleValidate: (value: any) => string | null | undefined = value => {
-    const {
-      validate
-    } = this.props;
+  handleValidate: (value: any) => string | null | undefined = (value) => {
+    const { validate } = this.props;
 
     if (!validate) {
       return undefined;
@@ -414,20 +468,56 @@ class FormField extends PureComponent<Props, State> {
       tooltipStyle,
       valueSelectedCallback,
       uiDataKey,
-      unit
+      unit,
     } = this.props;
-    const {
-      allowEdit,
-      allowRead,
-      fieldType,
-      label,
-      options,
-      required,
-      value
-    } = this.state;
-    return <Field allowEdit={allowEdit} allowRead={allowRead} autoBlur={autoBlur} autoComplete={autoComplete} className={className} component={FormFieldInput} disabled={disabled} disableDirty={disableDirty} disableTouched={disableTouched} enableUiDataEdit={enableUiDataEdit} ErrorComponent={ErrorComponent} fieldType={fieldType} filterOption={filterOption} invisibleLabel={invisibleLabel} isLoading={isLoading} label={label} language={language} minDate={minDate} maxDate={maxDate} name={name} normalize={this.handleGenericNormalize} onBlur={onBlur} onChange={onChange} optionLabel={optionLabel} options={options} placeholder={placeholder} readOnlyValueRenderer={readOnlyValueRenderer} relativeTo={relativeTo} required={required} rows={rows} serviceUnit={serviceUnit} setRefForField={setRefForField} tooltipStyle={tooltipStyle} validate={allowEdit ? [this.handleGenericValidate, this.handleValidate] : []} valueSelectedCallback={valueSelectedCallback} uiDataKey={uiDataKey} unit={unit} value={value} {...overrideValues} />;
+    const { allowEdit, allowRead, fieldType, label, options, required, value } =
+      this.state;
+    return (
+      <Field
+        allowEdit={allowEdit}
+        allowRead={allowRead}
+        autoBlur={autoBlur}
+        autoComplete={autoComplete}
+        className={className}
+        component={FormFieldInput}
+        disabled={disabled}
+        disableDirty={disableDirty}
+        disableTouched={disableTouched}
+        enableUiDataEdit={enableUiDataEdit}
+        ErrorComponent={ErrorComponent}
+        fieldType={fieldType}
+        filterOption={filterOption}
+        invisibleLabel={invisibleLabel}
+        isLoading={isLoading}
+        label={label}
+        language={language}
+        minDate={minDate}
+        maxDate={maxDate}
+        name={name}
+        normalize={this.handleGenericNormalize}
+        onBlur={onBlur}
+        onChange={onChange}
+        optionLabel={optionLabel}
+        options={options}
+        placeholder={placeholder}
+        readOnlyValueRenderer={readOnlyValueRenderer}
+        relativeTo={relativeTo}
+        required={required}
+        rows={rows}
+        serviceUnit={serviceUnit}
+        setRefForField={setRefForField}
+        tooltipStyle={tooltipStyle}
+        validate={
+          allowEdit ? [this.handleGenericValidate, this.handleValidate] : []
+        }
+        valueSelectedCallback={valueSelectedCallback}
+        uiDataKey={uiDataKey}
+        unit={unit}
+        value={value}
+        {...overrideValues}
+      />
+    );
   }
-
 }
 
 export default FormField;

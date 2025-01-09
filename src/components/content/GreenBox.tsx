@@ -5,9 +5,8 @@ type Props = {
   className?: string;
 };
 
-const GreenBox = ({
-  children,
-  className
-}: Props) => <div className={classNames('content__green-box', className)}>{children}</div>;
+const GreenBox = ({ children, className }: Props) => (
+  <div className={classNames("content__green-box", className)}>{children}</div>
+);
 
 export default GreenBox;

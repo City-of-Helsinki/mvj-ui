@@ -15,16 +15,26 @@ const DefaultItemRenderer = ({
   checked,
   option,
   onClick,
-  disabled
+  disabled,
 }: DefaultItemRendererProps) => {
-  return <span className="multi-select__select-item-renderer">
-    <input type="checkbox" onChange={onClick} checked={checked} tabIndex={-1} disabled={disabled} />
-    <span className={classNames('multi-select__select-item-renderer-label', {
-      'disabled': disabled
-    })}>
-      {option.label}
+  return (
+    <span className="multi-select__select-item-renderer">
+      <input
+        type="checkbox"
+        onChange={onClick}
+        checked={checked}
+        tabIndex={-1}
+        disabled={disabled}
+      />
+      <span
+        className={classNames("multi-select__select-item-renderer-label", {
+          disabled: disabled,
+        })}
+      >
+        {option.label}
+      </span>
     </span>
-  </span>;
+  );
 };
 
 type SelectItemProps = {
@@ -42,10 +52,10 @@ type SelectItemState = {
 
 class SelectItem extends Component<SelectItemProps, SelectItemState> {
   state = {
-    hovered: false
+    hovered: false,
   };
   static defaultProps = {
-    ItemRenderer: DefaultItemRenderer
+    ItemRenderer: DefaultItemRenderer,
   };
 
   componentDidMount() {
@@ -62,33 +72,22 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
       checked: boolean;
     };
   }) => {
-    const {
-      onSelectionChanged
-    } = this.props;
-    const {
-      checked
-    } = e.target;
+    const { onSelectionChanged } = this.props;
+    const { checked } = e.target;
     onSelectionChanged(checked);
   };
   toggleChecked = () => {
-    const {
-      checked,
-      onSelectionChanged
-    } = this.props;
+    const { checked, onSelectionChanged } = this.props;
     onSelectionChanged(!checked);
   };
   handleClick = (e: MouseEvent) => {
-    const {
-      onClick
-    } = this.props;
+    const { onClick } = this.props;
     this.toggleChecked();
     onClick(e);
   };
 
   updateFocus() {
-    const {
-      focused
-    } = this.props;
+    const { focused } = this.props;
 
     if (focused && this.itemRef) {
       this.itemRef.focus();
@@ -112,27 +111,38 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
   };
 
   render() {
-    const {
-      ItemRenderer,
-      option,
-      checked,
-      focused,
-      disabled
-    } = this.props;
-    const {
-      hovered
-    } = this.state;
-    return <label className={classNames('multi-select__select-item', {
-      'is-focused': focused || hovered
-    })} role="option" aria-selected={checked} tabIndex={-1} ref={ref => this.itemRef = ref} onKeyDown={this.handleKeyDown} onMouseOver={() => this.setState({
-      hovered: true
-    })} onMouseOut={() => this.setState({
-      hovered: false
-    })}>
-      <ItemRenderer option={option} checked={checked} onClick={this.handleClick} disabled={disabled} />
-    </label>;
+    const { ItemRenderer, option, checked, focused, disabled } = this.props;
+    const { hovered } = this.state;
+    return (
+      <label
+        className={classNames("multi-select__select-item", {
+          "is-focused": focused || hovered,
+        })}
+        role="option"
+        aria-selected={checked}
+        tabIndex={-1}
+        ref={(ref) => (this.itemRef = ref)}
+        onKeyDown={this.handleKeyDown}
+        onMouseOver={() =>
+          this.setState({
+            hovered: true,
+          })
+        }
+        onMouseOut={() =>
+          this.setState({
+            hovered: false,
+          })
+        }
+      >
+        <ItemRenderer
+          option={option}
+          checked={checked}
+          onClick={this.handleClick}
+          disabled={disabled}
+        />
+      </label>
+    );
   }
-
 }
 
 export default SelectItem;

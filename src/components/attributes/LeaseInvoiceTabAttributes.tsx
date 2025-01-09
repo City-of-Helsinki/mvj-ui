@@ -7,12 +7,34 @@ import { fetchAttributes as fetchCollectionNoteAttributes } from "@/collectionNo
 import { fetchAttributes as fetchCreateCollectionLetterAttributes } from "@/createCollectionLetter/actions";
 import { fetchAttributes as fetchInvoiceNoteAttributes } from "@/invoiceNote/actions";
 import { fetchAttributes as fetchLeaseCreateChargeAttributes } from "@/leaseCreateCharge/actions";
-import { getAttributes as getCollectionCourtDecisionAttributes, getIsFetchingAttributes as getIsFetchingCollectionCourtDecisionAttributes, getMethods as getCollectionCourtDecisionMethods } from "@/collectionCourtDecision/selectors";
-import { getAttributes as getCollectionLetterAttributes, getIsFetchingAttributes as getIsFetchignCollectionLetterAttributes, getMethods as getCollectionLetterMethods } from "@/collectionLetter/selectors";
-import { getAttributes as getCollectionNoteAttributes, getIsFetchingAttributes as getIsFetchingCollectionNoteAttributes, getMethods as getCollectionNoteMethods } from "@/collectionNote/selectors";
-import { getAttributes as getCreateCollectionLetterAttributes, getIsFetchingAttributes as getIsFetchignCreateCollectionLetterAttributes } from "@/createCollectionLetter/selectors";
-import { getAttributes as getInvoiceNoteAttributes, getIsFetchingAttributes as getIsFetchingInvoiceNoteAttributes, getMethods as getInvoiceNoteMethods } from "@/invoiceNote/selectors";
-import { getAttributes as getLeaseCreateChargeAttributes, getIsFetchingAttributes as getIsFetchingLeaseCreateChargeAttributes } from "@/leaseCreateCharge/selectors";
+import {
+  getAttributes as getCollectionCourtDecisionAttributes,
+  getIsFetchingAttributes as getIsFetchingCollectionCourtDecisionAttributes,
+  getMethods as getCollectionCourtDecisionMethods,
+} from "@/collectionCourtDecision/selectors";
+import {
+  getAttributes as getCollectionLetterAttributes,
+  getIsFetchingAttributes as getIsFetchignCollectionLetterAttributes,
+  getMethods as getCollectionLetterMethods,
+} from "@/collectionLetter/selectors";
+import {
+  getAttributes as getCollectionNoteAttributes,
+  getIsFetchingAttributes as getIsFetchingCollectionNoteAttributes,
+  getMethods as getCollectionNoteMethods,
+} from "@/collectionNote/selectors";
+import {
+  getAttributes as getCreateCollectionLetterAttributes,
+  getIsFetchingAttributes as getIsFetchignCreateCollectionLetterAttributes,
+} from "@/createCollectionLetter/selectors";
+import {
+  getAttributes as getInvoiceNoteAttributes,
+  getIsFetchingAttributes as getIsFetchingInvoiceNoteAttributes,
+  getMethods as getInvoiceNoteMethods,
+} from "@/invoiceNote/selectors";
+import {
+  getAttributes as getLeaseCreateChargeAttributes,
+  getIsFetchingAttributes as getIsFetchingLeaseCreateChargeAttributes,
+} from "@/leaseCreateCharge/selectors";
 import { getReceivableTypes } from "@/leaseCreateCharge/selectors";
 import type { Attributes, Methods } from "types";
 
@@ -47,7 +69,7 @@ function LeaseInvoiceTabAttributes(WrappedComponent: any) {
   };
   return class LeaseInvoiceTabAttributes extends PureComponent<Props, State> {
     state = {
-      isFetchingLeaseInvoiceTabAttributes: false
+      isFetchingLeaseInvoiceTabAttributes: false,
     };
 
     componentDidMount() {
@@ -74,36 +96,71 @@ function LeaseInvoiceTabAttributes(WrappedComponent: any) {
         isFetchingInvoiceNoteAttributes,
         isFetchingLeaseCreateChargeAttributes,
         leaseCreateChargeAttributes,
-        receivableTypes
+        receivableTypes,
       } = this.props;
 
-      if (!isFetchingCollectionCourtDecisionAttributes && !collectionCourtDecisionAttributes && !collectionCourtDecisionMethods) {
+      if (
+        !isFetchingCollectionCourtDecisionAttributes &&
+        !collectionCourtDecisionAttributes &&
+        !collectionCourtDecisionMethods
+      ) {
         fetchCollectionCourtDecisionAttributes();
       }
 
-      if (!isFetchingCollectionLetterAttributes && !collectionLetterAttributes && !collectionLetterMethods) {
+      if (
+        !isFetchingCollectionLetterAttributes &&
+        !collectionLetterAttributes &&
+        !collectionLetterMethods
+      ) {
         fetchCollectionLetterAttributes();
       }
 
-      if (!isFetchingCollectionNoteAttributes && !collectionNoteAttributes && !collectionNoteMethods) {
+      if (
+        !isFetchingCollectionNoteAttributes &&
+        !collectionNoteAttributes &&
+        !collectionNoteMethods
+      ) {
         fetchCollectionNoteAttributes();
       }
 
-      if (!isFetchingCreateCollectionLetterAttributes && !createCollectionLetterAttributes) {
+      if (
+        !isFetchingCreateCollectionLetterAttributes &&
+        !createCollectionLetterAttributes
+      ) {
         fetchCreateCollectionLetterAttributes();
       }
 
-      if (!isFetchingInvoiceNoteAttributes && !invoiceNoteMethods && !invoiceNoteAttributes) {
+      if (
+        !isFetchingInvoiceNoteAttributes &&
+        !invoiceNoteMethods &&
+        !invoiceNoteAttributes
+      ) {
         fetchInvoiceNoteAttributes();
       }
 
-      if (!isFetchingLeaseCreateChargeAttributes && !leaseCreateChargeAttributes) {
+      if (
+        !isFetchingLeaseCreateChargeAttributes &&
+        !leaseCreateChargeAttributes
+      ) {
         fetchLeaseCreateChargeAttributes();
       }
     }
 
     componentDidUpdate(prevProps: Props) {
-      if (this.props.isFetchingCollectionCourtDecisionAttributes !== prevProps.isFetchingCollectionCourtDecisionAttributes || this.props.isFetchingCollectionLetterAttributes !== prevProps.isFetchingCollectionLetterAttributes || this.props.isFetchingCollectionNoteAttributes !== prevProps.isFetchingCollectionNoteAttributes || this.props.isFetchingCreateCollectionLetterAttributes !== prevProps.isFetchingCreateCollectionLetterAttributes || this.props.isFetchingInvoiceNoteAttributes !== prevProps.isFetchingInvoiceNoteAttributes || this.props.isFetchingLeaseCreateChargeAttributes !== prevProps.isFetchingLeaseCreateChargeAttributes) {
+      if (
+        this.props.isFetchingCollectionCourtDecisionAttributes !==
+          prevProps.isFetchingCollectionCourtDecisionAttributes ||
+        this.props.isFetchingCollectionLetterAttributes !==
+          prevProps.isFetchingCollectionLetterAttributes ||
+        this.props.isFetchingCollectionNoteAttributes !==
+          prevProps.isFetchingCollectionNoteAttributes ||
+        this.props.isFetchingCreateCollectionLetterAttributes !==
+          prevProps.isFetchingCreateCollectionLetterAttributes ||
+        this.props.isFetchingInvoiceNoteAttributes !==
+          prevProps.isFetchingInvoiceNoteAttributes ||
+        this.props.isFetchingLeaseCreateChargeAttributes !==
+          prevProps.isFetchingLeaseCreateChargeAttributes
+      ) {
         this.setIsFetchingCommonAttributes();
       }
     }
@@ -117,45 +174,72 @@ function LeaseInvoiceTabAttributes(WrappedComponent: any) {
         isFetchingInvoiceNoteAttributes,
         isFetchingLeaseCreateChargeAttributes,
       } = this.props;
-      const isFetching = isFetchingCollectionCourtDecisionAttributes || isFetchingCollectionLetterAttributes || isFetchingCollectionNoteAttributes || isFetchingCreateCollectionLetterAttributes || isFetchingInvoiceNoteAttributes || isFetchingLeaseCreateChargeAttributes;
+      const isFetching =
+        isFetchingCollectionCourtDecisionAttributes ||
+        isFetchingCollectionLetterAttributes ||
+        isFetchingCollectionNoteAttributes ||
+        isFetchingCreateCollectionLetterAttributes ||
+        isFetchingInvoiceNoteAttributes ||
+        isFetchingLeaseCreateChargeAttributes;
       this.setState({
-        isFetchingLeaseInvoiceTabAttributes: isFetching
+        isFetchingLeaseInvoiceTabAttributes: isFetching,
       });
     };
 
     render() {
-      return <WrappedComponent isFetchingLeaseInvoiceTabAttributes={this.state.isFetchingLeaseInvoiceTabAttributes} {...this.props} />;
+      return (
+        <WrappedComponent
+          isFetchingLeaseInvoiceTabAttributes={
+            this.state.isFetchingLeaseInvoiceTabAttributes
+          }
+          {...this.props}
+        />
+      );
     }
-
   };
 }
 
-const withLeaseInvoiceTabAttributes = flowRight(connect(state => {
-  return {
-    collectionCourtDecisionAttributes: getCollectionCourtDecisionAttributes(state),
-    collectionCourtDecisionMethods: getCollectionCourtDecisionMethods(state),
-    collectionLetterAttributes: getCollectionLetterAttributes(state),
-    collectionLetterMethods: getCollectionLetterMethods(state),
-    collectionNoteAttributes: getCollectionNoteAttributes(state),
-    collectionNoteMethods: getCollectionNoteMethods(state),
-    createCollectionLetterAttributes: getCreateCollectionLetterAttributes(state),
-    invoiceNoteAttributes: getInvoiceNoteAttributes(state),
-    invoiceNoteMethods: getInvoiceNoteMethods(state),
-    isFetchingCollectionCourtDecisionAttributes: getIsFetchingCollectionCourtDecisionAttributes(state),
-    isFetchingCollectionLetterAttributes: getIsFetchignCollectionLetterAttributes(state),
-    isFetchingCollectionNoteAttributes: getIsFetchingCollectionNoteAttributes(state),
-    isFetchingCreateCollectionLetterAttributes: getIsFetchignCreateCollectionLetterAttributes(state),
-    isFetchingInvoiceNoteAttributes: getIsFetchingInvoiceNoteAttributes(state),
-    isFetchingLeaseCreateChargeAttributes: getIsFetchingLeaseCreateChargeAttributes(state),
-    leaseCreateChargeAttributes: getLeaseCreateChargeAttributes(state),
-    receivableTypes: getReceivableTypes(state)
-  };
-}, {
-  fetchCollectionCourtDecisionAttributes,
-  fetchCollectionLetterAttributes,
-  fetchCollectionNoteAttributes,
-  fetchCreateCollectionLetterAttributes,
-  fetchInvoiceNoteAttributes,
-  fetchLeaseCreateChargeAttributes,
-}), LeaseInvoiceTabAttributes);
+const withLeaseInvoiceTabAttributes = flowRight(
+  connect(
+    (state) => {
+      return {
+        collectionCourtDecisionAttributes:
+          getCollectionCourtDecisionAttributes(state),
+        collectionCourtDecisionMethods:
+          getCollectionCourtDecisionMethods(state),
+        collectionLetterAttributes: getCollectionLetterAttributes(state),
+        collectionLetterMethods: getCollectionLetterMethods(state),
+        collectionNoteAttributes: getCollectionNoteAttributes(state),
+        collectionNoteMethods: getCollectionNoteMethods(state),
+        createCollectionLetterAttributes:
+          getCreateCollectionLetterAttributes(state),
+        invoiceNoteAttributes: getInvoiceNoteAttributes(state),
+        invoiceNoteMethods: getInvoiceNoteMethods(state),
+        isFetchingCollectionCourtDecisionAttributes:
+          getIsFetchingCollectionCourtDecisionAttributes(state),
+        isFetchingCollectionLetterAttributes:
+          getIsFetchignCollectionLetterAttributes(state),
+        isFetchingCollectionNoteAttributes:
+          getIsFetchingCollectionNoteAttributes(state),
+        isFetchingCreateCollectionLetterAttributes:
+          getIsFetchignCreateCollectionLetterAttributes(state),
+        isFetchingInvoiceNoteAttributes:
+          getIsFetchingInvoiceNoteAttributes(state),
+        isFetchingLeaseCreateChargeAttributes:
+          getIsFetchingLeaseCreateChargeAttributes(state),
+        leaseCreateChargeAttributes: getLeaseCreateChargeAttributes(state),
+        receivableTypes: getReceivableTypes(state),
+      };
+    },
+    {
+      fetchCollectionCourtDecisionAttributes,
+      fetchCollectionLetterAttributes,
+      fetchCollectionNoteAttributes,
+      fetchCreateCollectionLetterAttributes,
+      fetchInvoiceNoteAttributes,
+      fetchLeaseCreateChargeAttributes,
+    },
+  ),
+  LeaseInvoiceTabAttributes,
+);
 export { withLeaseInvoiceTabAttributes };

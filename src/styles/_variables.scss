@@ -1,5 +1,5 @@
-$font-family-helsinki-grotesk: 'HelsinkiGrotesk', Arial, 'Liberation Sans';
-$font-family-source: 'HelsinkiGrotesk', Arial, 'Liberation Sans';
+$font-family-helsinki-grotesk: "HelsinkiGrotesk", Arial, "Liberation Sans";
+$font-family-source: "HelsinkiGrotesk", Arial, "Liberation Sans";
 
 /// @type Font
 $body-font-family: $font-family-source;
@@ -17,17 +17,17 @@ $semibold: 600;
 
 /// @type Map
 $foundation-palette: (
-  primary: #0072C6,
-  secondary: #6692AC,
+  primary: #0072c6,
+  secondary: #6692ac,
   success: #3adb76,
   warning: #ffae00,
-  alert: #EB1414,
+  alert: #eb1414,
 );
 
 /// @type Color
 $neutral-color: #666666 !default;
 $focus-color: #d5d5d5 !default;
-$is-dirty-color: #E5F1F9 !default;
+$is-dirty-color: #e5f1f9 !default;
 $red: #bd2719 !default;
 $red-hover: #ca5247 !default;
 $dark-green: #007a3a !default;
@@ -50,12 +50,12 @@ $lightest-gray: #fafafa !default;
 $white: #ffffff !default;
 
 $mvj-text-color: $black;
-$mvj-focus-color: #9BDCFB;
+$mvj-focus-color: #9bdcfb;
 $body-background: $light-gray !default;
 $body-font-color: $mvj-text-color !default;
 
 $gray-separator: #979797 !default;
 
-$blue: #0078C0 !default;
+$blue: #0078c0 !default;
 $blue-hover: #0084d6 !default;
-$light-blue: #E5F1F9 !default;
+$light-blue: #e5f1f9 !default;

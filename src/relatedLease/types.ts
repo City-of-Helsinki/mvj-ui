@@ -17,7 +17,19 @@ export type DeleteRelatedPlotApplicationPayload = {
   id: number;
   leaseId: number;
 };
-export type CreateRelatedLeaseAction = Action<string, CreateRelatedLeasePayload>;
-export type DeleteRelatedLeaseAction = Action<string, DeleteRelatedLeasePayload>;
-export type CreateRelatedPlotApplicationAction = Action<string, CreateRelatedPlotApplicationPayload>;
-export type DeleteRelatedPlotApplicationAction = Action<string, DeleteRelatedPlotApplicationPayload>;
+export type CreateRelatedLeaseAction = Action<
+  string,
+  CreateRelatedLeasePayload
+>;
+export type DeleteRelatedLeaseAction = Action<
+  string,
+  DeleteRelatedLeasePayload
+>;
+export type CreateRelatedPlotApplicationAction = Action<
+  string,
+  CreateRelatedPlotApplicationPayload
+>;
+export type DeleteRelatedPlotApplicationAction = Action<
+  string,
+  DeleteRelatedPlotApplicationPayload
+>;

@@ -6,13 +6,17 @@ function* callApi(request: Request): Generator<any, any, any> {
   const apiToken = yield select(getApiToken);
 
   if (apiToken) {
-    request.headers.set('Authorization', `Bearer ${apiToken}`);
+    request.headers.set("Authorization", `Bearer ${apiToken}`);
   }
 
-  request.headers.set('Accept-Language', UI_ACCEPT_LANGUAGE_VALUE);
+  request.headers.set("Accept-Language", UI_ACCEPT_LANGUAGE_VALUE);
 
-  if (request.method === 'PATCH' || request.method === 'POST' || request.method === 'PUT') {
-    request.headers.set('Content-Type', 'application/json');
+  if (
+    request.method === "PATCH" ||
+    request.method === "POST" ||
+    request.method === "PUT"
+  ) {
+    request.headers.set("Content-Type", "application/json");
   }
 
   const response = yield call(fetch, request);
@@ -21,7 +25,7 @@ function* callApi(request: Request): Generator<any, any, any> {
   switch (status) {
     case 204:
       return {
-        response
+        response,
       };
 
     case 500:
@@ -29,15 +33,15 @@ function* callApi(request: Request): Generator<any, any, any> {
         response,
         bodyAsJson: {
           exception: response.status,
-          message: response.statusText
-        }
+          message: response.statusText,
+        },
       };
   }
 
   const bodyAsJson = yield call([response, response.json]);
   return {
     response,
-    bodyAsJson
+    bodyAsJson,
   };
 }
 

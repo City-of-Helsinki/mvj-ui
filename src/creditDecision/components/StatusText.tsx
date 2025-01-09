@@ -3,39 +3,44 @@ import classNames from "classnames";
 import QuestionIcon from "@/components/icons/QuestionIcon";
 import SuccessIcon from "@/components/icons/SuccessIcon";
 import CancelIcon from "@/components/icons/CancelIcon";
-import { CreditDecisionStatus, CreditDecisionStatusLabels } from "@/creditDecision/enums";
+import {
+  CreditDecisionStatus,
+  CreditDecisionStatusLabels,
+} from "@/creditDecision/enums";
 type Props = {
   status: String;
   className?: String;
 };
 
-const StatusText = ({
-  status,
-  className
-}: Props) => {
-  const renderStatusIcon = status => {
+const StatusText = ({ status, className }: Props) => {
+  const renderStatusIcon = (status) => {
     let icon = <span />;
 
     switch (status) {
       case CreditDecisionStatus.NO:
-        icon = <CancelIcon className="icon-small credit-decision-cancel-icon" />;
+        icon = (
+          <CancelIcon className="icon-small credit-decision-cancel-icon" />
+        );
         break;
 
       case CreditDecisionStatus.YES:
-        icon = <SuccessIcon className="icon-small credit-decision-success-icon" />;
+        icon = (
+          <SuccessIcon className="icon-small credit-decision-success-icon" />
+        );
         break;
 
       case CreditDecisionStatus.CONSIDERATION:
-        icon = <QuestionIcon className="icon-small credit-decision-consideration-icon" />;
+        icon = (
+          <QuestionIcon className="icon-small credit-decision-consideration-icon" />
+        );
         break;
     }
 
-    ;
     return icon;
   };
 
-  const renderStatusLabel = status => {
-    let text = '';
+  const renderStatusLabel = (status) => {
+    let text = "";
 
     switch (status) {
       case CreditDecisionStatus.NO:
@@ -51,13 +56,14 @@ const StatusText = ({
         break;
     }
 
-    ;
     return text;
   };
 
-  return <span className={classNames('credit-decision-status-text', className)}>
+  return (
+    <span className={classNames("credit-decision-status-text", className)}>
       {renderStatusIcon(status)} <strong>{renderStatusLabel(status)}</strong>
-    </span>;
+    </span>
+  );
 };
 
 export default StatusText;

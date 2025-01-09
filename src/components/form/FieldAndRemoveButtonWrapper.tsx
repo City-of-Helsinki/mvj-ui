@@ -9,12 +9,16 @@ type Props = {
 const FieldAndRemoveButtonWrapper = ({
   className,
   field,
-  removeButton
-}: Props): JSX.Element => <div className={classNames('form__field-and-remove-button-wrapper', className)}>
+  removeButton,
+}: Props): JSX.Element => (
+  <div
+    className={classNames("form__field-and-remove-button-wrapper", className)}
+  >
     {field}
-    <div className='form__field-and-remove-button-wrapper_button'>
+    <div className="form__field-and-remove-button-wrapper_button">
       {removeButton}
     </div>
-  </div>;
+  </div>
+);
 
 export default FieldAndRemoveButtonWrapper;

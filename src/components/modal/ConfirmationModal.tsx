@@ -15,7 +15,7 @@ type Props = {
 
 class ConfirmationModal extends Component<Props> {
   cancelButton: any;
-  setCancelButtonRef: (arg0: any) => void = element => {
+  setCancelButtonRef: (arg0: any) => void = (element) => {
     this.cancelButton = element;
   };
 
@@ -30,25 +30,40 @@ class ConfirmationModal extends Component<Props> {
   render(): JSX.Element {
     const {
       confirmButtonClassName,
-      confirmButtonLabel = 'Tallenna',
+      confirmButtonLabel = "Tallenna",
       isOpen,
       label,
       onCancel,
       onClose,
       onSave,
-      title
+      title,
     } = this.props;
-    return <div className='confirmation-modal'>
-        <Modal className='modal-small modal-autoheight' title={title} isOpen={isOpen} onClose={onClose}>
+    return (
+      <div className="confirmation-modal">
+        <Modal
+          className="modal-small modal-autoheight"
+          title={title}
+          isOpen={isOpen}
+          onClose={onClose}
+        >
           <p>{label}</p>
-          <div className='confirmation-modal__footer'>
-            <Button className={ButtonColors.SECONDARY} innerRef={this.setCancelButtonRef} onClick={onCancel} text='Peruuta' />
-            <Button className={confirmButtonClassName || ButtonColors.SUCCESS} onClick={onSave} text={confirmButtonLabel || ''} />
+          <div className="confirmation-modal__footer">
+            <Button
+              className={ButtonColors.SECONDARY}
+              innerRef={this.setCancelButtonRef}
+              onClick={onCancel}
+              text="Peruuta"
+            />
+            <Button
+              className={confirmButtonClassName || ButtonColors.SUCCESS}
+              onClick={onSave}
+              text={confirmButtonLabel || ""}
+            />
           </div>
         </Modal>
-      </div>;
+      </div>
+    );
   }
-
 }
 
 export default ConfirmationModal;

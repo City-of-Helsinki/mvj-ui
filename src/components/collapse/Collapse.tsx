@@ -46,35 +46,53 @@ class Collapse extends PureComponent<Props, State> {
   static defaultProps: $Shape<Props> = {
     defaultOpen: false,
     hasErrors: false,
-    showTitleOnOpen: false
+    showTitleOnOpen: false,
   };
   state: State = {
-    contentHeight: (this.props.isOpen !== undefined ? this.props.isOpen : this.props.defaultOpen) ? null : 0,
+    contentHeight: (
+      this.props.isOpen !== undefined
+        ? this.props.isOpen
+        : this.props.defaultOpen
+    )
+      ? null
+      : 0,
     isCollapsing: false,
     isExpanding: false,
-    isOpen: this.props.isOpen !== undefined ? this.props.isOpen : this.props.defaultOpen
+    isOpen:
+      this.props.isOpen !== undefined
+        ? this.props.isOpen
+        : this.props.defaultOpen,
   };
-  setComponentRef: (arg0: any) => void = el => {
+  setComponentRef: (arg0: any) => void = (el) => {
     this.component = el;
   };
-  setContentRef: (arg0: any) => void = el => {
+  setContentRef: (arg0: any) => void = (el) => {
     this.content = el;
   };
 
   componentDidMount() {
-    this.component.addEventListener('transitionend', this.transitionEnds);
+    this.component.addEventListener("transitionend", this.transitionEnds);
   }
 
   componentWillUnmount() {
-    this.component.removeEventListener('transitionend', this.transitionEnds);
+    this.component.removeEventListener("transitionend", this.transitionEnds);
   }
 
-  componentDidUpdate(prevProps: Record<string, any>, prevState: Record<string, any>) {
-    if (this.props.isOpen !== undefined && this.props.isOpen !== this.state.isOpen) {
+  componentDidUpdate(
+    prevProps: Record<string, any>,
+    prevState: Record<string, any>,
+  ) {
+    if (
+      this.props.isOpen !== undefined &&
+      this.props.isOpen !== this.state.isOpen
+    ) {
       this.handleToggleStateChange(this.props.isOpen);
     }
 
-    if (this.state.isOpen && !this.state.contentHeight || this.state.isOpen !== prevState.isOpen) {
+    if (
+      (this.state.isOpen && !this.state.contentHeight) ||
+      this.state.isOpen !== prevState.isOpen
+    ) {
       this.calculateHeight();
     }
   }
@@ -83,35 +101,31 @@ class Collapse extends PureComponent<Props, State> {
     this.calculateHeight();
   };
   calculateHeight: () => void = () => {
-    const {
-      clientHeight
-    } = this.content;
-    const {
-      isOpen
-    } = this.state;
+    const { clientHeight } = this.content;
+    const { isOpen } = this.state;
     this.setState({
-      contentHeight: isOpen ? clientHeight || null : 0
+      contentHeight: isOpen ? clientHeight || null : 0,
     });
   };
   transitionEnds: () => void = () => {
     this.setState({
       isCollapsing: false,
-      isExpanding: false
+      isExpanding: false,
     });
   };
-  handleToggle: (arg0: React.SyntheticEvent<HTMLAnchorElement>) => void = e => {
-    const {
-      onToggle,
-      isOpen: externalIsOpen
-    } = this.props;
-    const {
-      isOpen
-    } = this.state;
+  handleToggle: (arg0: React.SyntheticEvent<HTMLAnchorElement>) => void = (
+    e,
+  ) => {
+    const { onToggle, isOpen: externalIsOpen } = this.props;
+    const { isOpen } = this.state;
     const target = e.currentTarget;
     const tooltipEl = ReactDOM.findDOMNode(this.tooltip);
     const isExternallyControlled = externalIsOpen !== undefined;
 
-    if (!tooltipEl || tooltipEl && target !== tooltipEl && !tooltipEl.contains(target)) {
+    if (
+      !tooltipEl ||
+      (tooltipEl && target !== tooltipEl && !tooltipEl.contains(target))
+    ) {
       if (!isExternallyControlled) {
         this.handleToggleStateChange(!isOpen);
       }
@@ -121,22 +135,24 @@ class Collapse extends PureComponent<Props, State> {
       }
     }
   };
-  handleToggleStateChange: (arg0: boolean) => void = newIsOpen => {
+  handleToggleStateChange: (arg0: boolean) => void = (newIsOpen) => {
     if (newIsOpen) {
       this.setState({
         isCollapsing: false,
         isExpanding: true,
-        isOpen: true
+        isOpen: true,
       });
     } else {
       this.setState({
         isCollapsing: true,
         isExpanding: false,
-        isOpen: false
+        isOpen: false,
       });
     }
   };
-  handleKeyDown: (arg0: React.KeyboardEvent<HTMLAnchorElement>) => void = e => {
+  handleKeyDown: (arg0: React.KeyboardEvent<HTMLAnchorElement>) => void = (
+    e,
+  ) => {
     if (e.keyCode === 13) {
       e.preventDefault();
       this.handleToggle(e);
@@ -144,12 +160,7 @@ class Collapse extends PureComponent<Props, State> {
   };
 
   render(): JSX.Element {
-    const {
-      contentHeight,
-      isOpen,
-      isCollapsing,
-      isExpanding
-    } = this.state;
+    const { contentHeight, isOpen, isCollapsing, isExpanding } = this.state;
     const {
       archived,
       children,
@@ -166,53 +177,87 @@ class Collapse extends PureComponent<Props, State> {
       onUnarchive,
       showTitleOnOpen,
       tooltipStyle,
-      uiDataKey
+      uiDataKey,
     } = this.props;
-    return <div ref={this.setComponentRef} className={classNames('collapse', className, {
-      'open': isOpen
-    }, {
-      'is-archived': archived
-    }, {
-      'is-collapsing': isCollapsing
-    }, {
-      'is-expanding': isExpanding
-    })}>
+    return (
+      <div
+        ref={this.setComponentRef}
+        className={classNames(
+          "collapse",
+          className,
+          {
+            open: isOpen,
+          },
+          {
+            "is-archived": archived,
+          },
+          {
+            "is-collapsing": isCollapsing,
+          },
+          {
+            "is-expanding": isExpanding,
+          },
+        )}
+      >
         <div className="collapse__header">
-          <div className='header-info-wrapper'>
+          <div className="header-info-wrapper">
             <Row>
-              {headerTitle && <Column>
-                  <a tabIndex={0} className='header-info-link' onKeyDown={this.handleKeyDown} onClick={this.handleToggle}>
+              {headerTitle && (
+                <Column>
+                  <a
+                    tabIndex={0}
+                    className="header-info-link"
+                    onKeyDown={this.handleKeyDown}
+                    onClick={this.handleToggle}
+                  >
                     <AccordionIcon className="arrow-icon" />
-                    <CollapseHeaderTitle enableUiDataEdit={enableUiDataEdit} uiDataKey={uiDataKey} tooltipRef={ref => this.tooltip = ref} tooltipStyle={tooltipStyle}>
+                    <CollapseHeaderTitle
+                      enableUiDataEdit={enableUiDataEdit}
+                      uiDataKey={uiDataKey}
+                      tooltipRef={(ref) => (this.tooltip = ref)}
+                      tooltipStyle={tooltipStyle}
+                    >
                       {headerTitle}
                     </CollapseHeaderTitle>
                   </a>
                   {headerExtras}
-                </Column>}
+                </Column>
+              )}
               {(showTitleOnOpen || !isOpen) && headerSubtitles}
             </Row>
-            <div className='collapse__header_button-wrapper'>
-              {!isOpen && hasErrors && <span className='collapse__header_error-badge' />}
+            <div className="collapse__header_button-wrapper">
+              {!isOpen && hasErrors && (
+                <span className="collapse__header_error-badge" />
+              )}
 
               {onAttach && <AttachButton onClick={onAttach} />}
-              {onCopyToClipboard && <CopyToClipboardButton onClick={onCopyToClipboard} />}
+              {onCopyToClipboard && (
+                <CopyToClipboardButton onClick={onCopyToClipboard} />
+              )}
               {onArchive && <ArchiveButton onClick={onArchive} />}
               {onUnarchive && <UnarchiveButton onClick={onUnarchive} />}
               {onRemove && <RemoveButton onClick={onRemove} />}
             </div>
           </div>
         </div>
-        <div className={classNames('collapse__content')} style={{
-        maxHeight: contentHeight
-      }}>
-          <div ref={this.setContentRef} className="collapse__content-wrapper" hidden={!isOpen && !isCollapsing && !isExpanding}>
+        <div
+          className={classNames("collapse__content")}
+          style={{
+            maxHeight: contentHeight,
+          }}
+        >
+          <div
+            ref={this.setContentRef}
+            className="collapse__content-wrapper"
+            hidden={!isOpen && !isCollapsing && !isExpanding}
+          >
             <ReactResizeDetector handleHeight onResize={this.onResize} />
             {children}
           </div>
         </div>
-      </div>;
+      </div>
+    );
   }
-
 }
 
 export default Collapse;

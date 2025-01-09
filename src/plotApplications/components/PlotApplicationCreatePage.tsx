@@ -15,7 +15,10 @@ import TabContent from "@/components/tabs/TabContent";
 import TabPane from "@/components/tabs/TabPane";
 import Tabs from "@/components/tabs/Tabs";
 import ContentContainer from "@/components/content/ContentContainer";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "@/usersPermissions/selectors";
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
 import PageNavigationWrapper from "@/components/content/PageNavigationWrapper";
 import ControlButtonBar from "@/components/controlButtons/ControlButtonBar";
 import ControlButtons from "@/components/controlButtons/ControlButtons";
@@ -23,13 +26,43 @@ import { withPlotApplicationsAttributes } from "@/components/attributes/PlotAppl
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { getRouteById, Routes } from "@/root/routes";
 import { Methods, PermissionMissingTexts } from "@/enums";
-import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "@/util/storage";
-import { getIsFetching, getCurrentPlotApplication, getIsSaveClicked, getIsFormValidById, getIsFormValidFlags, getIsPerformingFileOperation, getIsSaving } from "@/plotApplications/selectors";
-import { fetchSinglePlotApplication, showEditMode, receiveIsSaveClicked, hideEditMode, clearFormValidFlags, receiveFormValidFlags, editPlotApplication, createPlotApplication } from "@/plotApplications/actions";
-import { getUrlParams, setPageTitle, isMethodAllowed, getSearchQuery, scrollToTopPage } from "@/util/helpers";
+import {
+  getSessionStorageItem,
+  removeSessionStorageItem,
+  setSessionStorageItem,
+} from "@/util/storage";
+import {
+  getIsFetching,
+  getCurrentPlotApplication,
+  getIsSaveClicked,
+  getIsFormValidById,
+  getIsFormValidFlags,
+  getIsPerformingFileOperation,
+  getIsSaving,
+} from "@/plotApplications/selectors";
+import {
+  fetchSinglePlotApplication,
+  showEditMode,
+  receiveIsSaveClicked,
+  hideEditMode,
+  clearFormValidFlags,
+  receiveFormValidFlags,
+  editPlotApplication,
+  createPlotApplication,
+} from "@/plotApplications/actions";
+import {
+  getUrlParams,
+  setPageTitle,
+  isMethodAllowed,
+  getSearchQuery,
+  scrollToTopPage,
+} from "@/util/helpers";
 import PlotApplicationInfo from "@/plotApplications/components/PlotApplicationInfo";
 import { fetchPlotSearchList } from "@/plotSearch/actions";
-import { getPlotSearchList, getIsFetching as getIsFetchingPlotSearchList } from "@/plotSearch/selectors";
+import {
+  getPlotSearchList,
+  getIsFetching as getIsFetchingPlotSearchList,
+} from "@/plotSearch/selectors";
 import { preparePlotApplicationForSubmission } from "@/plotApplications/helpers";
 import PlotApplicationCreate from "@/plotApplications/components/PlotApplicationCreate";
 import type { PlotApplication as PlotApplicationType } from "@/plotApplications/types";
@@ -72,10 +105,10 @@ type State = {
 class PlotApplicationsPage extends Component<Props, State> {
   state = {
     activeTab: 0,
-    isRestoreModalOpen: false
+    isRestoreModalOpen: false,
   };
   static contextTypes = {
-    router: PropTypes.object
+    router: PropTypes.object,
   };
   timerAutoSave: any;
 
@@ -83,17 +116,15 @@ class PlotApplicationsPage extends Component<Props, State> {
     const {
       clearFormValidFlags,
       receiveTopNavigationSettings,
-      location: {
-        search
-      },
+      location: { search },
       receiveIsSaveClicked,
-      fetchPlotSearchList
+      fetchPlotSearchList,
     } = this.props;
     const query = getUrlParams(search);
 
     if (query.tab) {
       this.setState({
-        activeTab: query.tab
+        activeTab: query.tab,
       });
     }
 
@@ -101,25 +132,22 @@ class PlotApplicationsPage extends Component<Props, State> {
     receiveIsSaveClicked(false);
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.PLOT_APPLICATIONS),
-      pageTitle: 'Tonttihakemukset',
-      showSearch: true
+      pageTitle: "Tonttihakemukset",
+      showSearch: true,
     });
 
     if (query.tab) {
       this.setState({
-        activeTab: query.tab
+        activeTab: query.tab,
       });
     }
 
     fetchPlotSearchList();
-    setPageTitle('Uusi hakemus');
+    setPageTitle("Uusi hakemus");
   }
 
   handleShowEditMode = () => {
-    const {
-      showEditMode,
-      currentPlotApplication
-    } = this.props;
+    const { showEditMode, currentPlotApplication } = this.props;
     clearFormValidFlags();
     showEditMode();
     this.destroyAllForms();
@@ -133,90 +161,80 @@ class PlotApplicationsPage extends Component<Props, State> {
     const {
       basicInformationFormValues,
       isApplicationFormDirty,
-      isFormValidFlags
+      isFormValidFlags,
     } = this.props;
     let isDirty = false;
 
     if (isApplicationFormDirty) {
-      setSessionStorageItem(FormNames.PLOT_APPLICATION, basicInformationFormValues);
+      setSessionStorageItem(
+        FormNames.PLOT_APPLICATION,
+        basicInformationFormValues,
+      );
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.PLOT_APPLICATION);
     }
 
     if (isDirty) {
-      setSessionStorageItem('newPlotApplicationValidity', isFormValidFlags);
+      setSessionStorageItem("newPlotApplicationValidity", isFormValidFlags);
     } else {
-      removeSessionStorageItem('newPlotApplicationValidity');
+      removeSessionStorageItem("newPlotApplicationValidity");
     }
   };
   getAreFormsValid = () => {
-    const {
-      isApplicationFormValid
-    } = this.props;
+    const { isApplicationFormValid } = this.props;
     return isApplicationFormValid;
   };
   cancelChanges = () => {
-    const {
-      history
-    } = this.props;
+    const { history } = this.props;
     history.push(getRouteById(Routes.PLOT_APPLICATIONS));
   };
   handleBack = () => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
     // Remove page specific url parameters when moving to application list page
     delete query.tab;
     return history.push({
       pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}`,
-      search: getSearchQuery(query)
+      search: getSearchQuery(query),
     });
   };
-  handleTabClick = tabId => {
+  handleTabClick = (tabId) => {
     const {
       history,
       location,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
-    this.setState({
-      activeTab: tabId
-    }, () => {
-      query.tab = tabId;
-      return history.push({ ...location,
-        search: getSearchQuery(query)
-      });
-    });
+    this.setState(
+      {
+        activeTab: tabId,
+      },
+      () => {
+        query.tab = tabId;
+        return history.push({ ...location, search: getSearchQuery(query) });
+      },
+    );
   };
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     const {
-      location: {
-        search
-      },
+      location: { search },
       currentPlotApplication,
       match: {
-        params: {
-          plotApplicationId
-        }
-      }
+        params: { plotApplicationId },
+      },
     } = this.props;
-    const {
-      activeTab
-    } = this.state;
+    const { activeTab } = this.state;
     const query = getUrlParams(search);
     const tab = query.tab ? Number(query.tab) : 0;
 
     if (tab !== activeTab) {
       this.setState({
-        activeTab: tab
+        activeTab: tab,
       });
     }
 
@@ -224,19 +242,21 @@ class PlotApplicationsPage extends Component<Props, State> {
       scrollToTopPage();
     }
 
-    if (isEmpty(prevProps.currentPlotApplication) && !isEmpty(currentPlotApplication)) {
-      const storedPlotApplicationId = getSessionStorageItem('plotApplicationId');
+    if (
+      isEmpty(prevProps.currentPlotApplication) &&
+      !isEmpty(currentPlotApplication)
+    ) {
+      const storedPlotApplicationId =
+        getSessionStorageItem("plotApplicationId");
 
-      if (Number(plotApplicationId) === storedPlotApplicationId) {// this.setState({isRestoreModalOpen: true});
+      if (Number(plotApplicationId) === storedPlotApplicationId) {
+        // this.setState({isRestoreModalOpen: true});
       }
     }
   }
 
   saveChanges = () => {
-    const {
-      createPlotApplication,
-      receiveIsSaveClicked
-    } = this.props;
+    const { createPlotApplication, receiveIsSaveClicked } = this.props;
     receiveIsSaveClicked(true);
     const areFormsValid = this.getAreFormsValid();
 
@@ -258,18 +278,21 @@ class PlotApplicationsPage extends Component<Props, State> {
       clearFormValidFlags,
       currentPlotApplication,
       receiveFormValidFlags,
-      showEditMode
+      showEditMode,
     } = this.props;
     showEditMode();
     clearFormValidFlags();
     this.destroyAllForms();
     this.initializeForms(currentPlotApplication);
-    const storedBasicInformationFormValues = getSessionStorageItem(FormNames.PLOT_APPLICATION);
+    const storedBasicInformationFormValues = getSessionStorageItem(
+      FormNames.PLOT_APPLICATION,
+    );
 
-    if (storedBasicInformationFormValues) {// this.bulkChange(FormNames.PLOT_APPLICATION, storedBasicInformationFormValues);
+    if (storedBasicInformationFormValues) {
+      // this.bulkChange(FormNames.PLOT_APPLICATION, storedBasicInformationFormValues);
     }
 
-    const storedFormValidity = getSessionStorageItem('plotApplicationValidity');
+    const storedFormValidity = getSessionStorageItem("plotApplicationValidity");
 
     if (storedFormValidity) {
       receiveFormValidFlags(storedFormValidity);
@@ -278,22 +301,16 @@ class PlotApplicationsPage extends Component<Props, State> {
     this.startAutoSaveTimer(); // this.hideModal('Restore');
   };
   destroyAllForms = () => {
-    const {
-      destroy
-    } = this.props;
+    const { destroy } = this.props;
     destroy(FormNames.PLOT_APPLICATION);
   };
   initializeForms = (currentPlotApplication: PlotApplicationType) => {
-    const {
-      initialize
-    } = this.props;
+    const { initialize } = this.props;
     initialize(FormNames.PLOT_APPLICATION, currentPlotApplication);
   };
 
   render() {
-    const {
-      activeTab
-    } = this.state;
+    const { activeTab } = this.state;
     const {
       currentPlotApplication,
       isFetchingPlotApplicationsAttributes,
@@ -307,36 +324,90 @@ class PlotApplicationsPage extends Component<Props, State> {
       isApplicationFormValid,
       isFetchingPlotSearchList,
       isPerformingFileOperation,
-      isSaving
+      isSaving,
     } = this.props;
     const areFormsValid = this.getAreFormsValid();
 
-    if (isFetching || isFetchingUsersPermissions || isFetchingPlotApplicationsAttributes || isFetchingPlotSearchList) {
-      return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (
+      isFetching ||
+      isFetchingUsersPermissions ||
+      isFetchingPlotApplicationsAttributes ||
+      isFetchingPlotSearchList
+    ) {
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     }
 
-    if (!plotApplicationsAttributes || !plotApplicationsMethods || isEmpty(usersPermissions)) {
+    if (
+      !plotApplicationsAttributes ||
+      !plotApplicationsMethods ||
+      isEmpty(usersPermissions)
+    ) {
       return null;
     }
 
     if (!isMethodAllowed(plotApplicationsMethods, Methods.GET)) {
-      return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_APPLICATIONS} /></PageContainer>;
+      return (
+        <PageContainer>
+          <AuthorizationError text={PermissionMissingTexts.PLOT_APPLICATIONS} />
+        </PageContainer>
+      );
     }
 
-    return <FullWidthContainer>
+    return (
+      <FullWidthContainer>
         <PageNavigationWrapper>
-          <ControlButtonBar buttonComponent={<ControlButtons allowDelete={false} allowEdit={isMethodAllowed(plotApplicationsMethods, Methods.PATCH)} isCancelDisabled={isPerformingFileOperation || isSaving} isCopyDisabled={true} isEditDisabled={false} isEditMode={true} isSaveDisabled={isPerformingFileOperation || isSaving || isSaveClicked && !areFormsValid} onCancel={this.cancelChanges} onEdit={this.handleShowEditMode} onSave={this.saveChanges} showCommentButton={false} showCopyButton={false} />} infoComponent={<PlotApplicationInfo title={currentPlotApplication.plot_search} />} onBack={this.handleBack} />
-          <Tabs active={activeTab} isEditMode={true} tabs={[{
-          label: 'Hakemus',
-          allow: true,
-          isDirty: isApplicationFormDirty,
-          hasError: isSaveClicked && !isApplicationFormValid
-        }, {
-          label: 'Muutoshistoria',
-          allow: true
-        }]} onTabClick={this.handleTabClick} />
+          <ControlButtonBar
+            buttonComponent={
+              <ControlButtons
+                allowDelete={false}
+                allowEdit={isMethodAllowed(
+                  plotApplicationsMethods,
+                  Methods.PATCH,
+                )}
+                isCancelDisabled={isPerformingFileOperation || isSaving}
+                isCopyDisabled={true}
+                isEditDisabled={false}
+                isEditMode={true}
+                isSaveDisabled={
+                  isPerformingFileOperation ||
+                  isSaving ||
+                  (isSaveClicked && !areFormsValid)
+                }
+                onCancel={this.cancelChanges}
+                onEdit={this.handleShowEditMode}
+                onSave={this.saveChanges}
+                showCommentButton={false}
+                showCopyButton={false}
+              />
+            }
+            infoComponent={
+              <PlotApplicationInfo title={currentPlotApplication.plot_search} />
+            }
+            onBack={this.handleBack}
+          />
+          <Tabs
+            active={activeTab}
+            isEditMode={true}
+            tabs={[
+              {
+                label: "Hakemus",
+                allow: true,
+                isDirty: isApplicationFormDirty,
+                hasError: isSaveClicked && !isApplicationFormValid,
+              },
+              {
+                label: "Muutoshistoria",
+                allow: true,
+              },
+            ]}
+            onTabClick={this.handleTabClick}
+          />
         </PageNavigationWrapper>
-        <PageContainer className='with-control-bar-and-tabs' hasTabs>
+        <PageContainer className="with-control-bar-and-tabs" hasTabs>
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
@@ -345,44 +416,54 @@ class PlotApplicationsPage extends Component<Props, State> {
             </TabPane>
 
             <TabPane>
-              <ContentContainer>
-                {'Muutoshistoria'}
-              </ContentContainer>
+              <ContentContainer>{"Muutoshistoria"}</ContentContainer>
             </TabPane>
           </TabContent>
         </PageContainer>
-      </FullWidthContainer>;
+      </FullWidthContainer>
+    );
   }
-
 }
 
-export default (flowRight(withRouter, withPlotApplicationsAttributes, connect(state => {
-  return {
-    basicInformationFormValues: getFormValues(FormNames.PLOT_APPLICATION)(state),
-    currentPlotApplication: getCurrentPlotApplication(state),
-    isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-    usersPermissions: getUsersPermissions(state),
-    isFetching: getIsFetching(state),
-    isSaveClicked: getIsSaveClicked(state),
-    isApplicationFormDirty: isDirty(FormNames.PLOT_APPLICATION)(state),
-    isApplicationFormValid: getIsFormValidById(state, FormNames.PLOT_APPLICATION),
-    isFormValidFlags: getIsFormValidFlags(state),
-    isFetchingPlotSearchList: getIsFetchingPlotSearchList(state),
-    isPerformingFileOperation: getIsPerformingFileOperation(state),
-    plotSearches: getPlotSearchList(state),
-    isSaving: getIsSaving(state)
-  };
-}, {
-  destroy,
-  fetchSinglePlotApplication,
-  receiveTopNavigationSettings,
-  showEditMode,
-  hideEditMode,
-  receiveIsSaveClicked,
-  initialize,
-  clearFormValidFlags,
-  receiveFormValidFlags,
-  editPlotApplication,
-  fetchPlotSearchList,
-  createPlotApplication
-}))(PlotApplicationsPage) as React.ComponentType<OwnProps>);
+export default flowRight(
+  withRouter,
+  withPlotApplicationsAttributes,
+  connect(
+    (state) => {
+      return {
+        basicInformationFormValues: getFormValues(FormNames.PLOT_APPLICATION)(
+          state,
+        ),
+        currentPlotApplication: getCurrentPlotApplication(state),
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        usersPermissions: getUsersPermissions(state),
+        isFetching: getIsFetching(state),
+        isSaveClicked: getIsSaveClicked(state),
+        isApplicationFormDirty: isDirty(FormNames.PLOT_APPLICATION)(state),
+        isApplicationFormValid: getIsFormValidById(
+          state,
+          FormNames.PLOT_APPLICATION,
+        ),
+        isFormValidFlags: getIsFormValidFlags(state),
+        isFetchingPlotSearchList: getIsFetchingPlotSearchList(state),
+        isPerformingFileOperation: getIsPerformingFileOperation(state),
+        plotSearches: getPlotSearchList(state),
+        isSaving: getIsSaving(state),
+      };
+    },
+    {
+      destroy,
+      fetchSinglePlotApplication,
+      receiveTopNavigationSettings,
+      showEditMode,
+      hideEditMode,
+      receiveIsSaveClicked,
+      initialize,
+      clearFormValidFlags,
+      receiveFormValidFlags,
+      editPlotApplication,
+      fetchPlotSearchList,
+      createPlotApplication,
+    },
+  ),
+)(PlotApplicationsPage) as React.ComponentType<OwnProps>;

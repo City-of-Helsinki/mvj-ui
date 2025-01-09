@@ -16,7 +16,7 @@ export type ContactState = {
 };
 export type ContactExistsResponse = {
   exists: boolean;
-}
+};
 export type Contact = Record<string, any>;
 export type ContactId = number;
 export type ContactList = any;
@@ -41,11 +41,14 @@ export type HideEditModeAction = Action<string, void>;
 export type ShowEditModeAction = Action<string, void>;
 export type HideContactModalAction = Action<string, void>;
 export type ShowContactModalAction = Action<string, void>;
-export type ReceiveContactModalSettingsAction = Action<string, ContactModalSettings>;
+export type ReceiveContactModalSettingsAction = Action<
+  string,
+  ContactModalSettings
+>;
 export type ContactsActiveLease = {
   lease_id: number;
   lease_identifier: string;
-}
+};
 export type ContactRow = {
   contacts_active_leases?: Array<ContactsActiveLease>;
-}
+};

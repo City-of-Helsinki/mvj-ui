@@ -2,7 +2,11 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import { fetchAttributes as fetchContactAttributes } from "@/contacts/actions";
-import { getAttributes as getContactAttributes, getIsFetchingAttributes as getIsFetchingContactAttributes, getMethods as getContactMethods } from "@/contacts/selectors";
+import {
+  getAttributes as getContactAttributes,
+  getIsFetchingAttributes as getIsFetchingContactAttributes,
+  getMethods as getContactMethods,
+} from "@/contacts/selectors";
 import type { Attributes, Methods } from "types";
 
 function ContactAttributes(WrappedComponent: any) {
@@ -18,10 +22,14 @@ function ContactAttributes(WrappedComponent: any) {
         contactAttributes,
         contactMethods,
         fetchContactAttributes,
-        isFetchingContactAttributes
+        isFetchingContactAttributes,
       } = this.props;
 
-      if (!isFetchingContactAttributes && !contactMethods && !contactAttributes) {
+      if (
+        !isFetchingContactAttributes &&
+        !contactMethods &&
+        !contactAttributes
+      ) {
         fetchContactAttributes();
       }
     }
@@ -29,17 +37,22 @@ function ContactAttributes(WrappedComponent: any) {
     render() {
       return <WrappedComponent {...this.props} />;
     }
-
   };
 }
 
-const withContactAttributes = flowRight(connect(state => {
-  return {
-    contactAttributes: getContactAttributes(state),
-    contactMethods: getContactMethods(state),
-    isFetchingContactAttributes: getIsFetchingContactAttributes(state)
-  };
-}, {
-  fetchContactAttributes
-}), ContactAttributes);
+const withContactAttributes = flowRight(
+  connect(
+    (state) => {
+      return {
+        contactAttributes: getContactAttributes(state),
+        contactMethods: getContactMethods(state),
+        isFetchingContactAttributes: getIsFetchingContactAttributes(state),
+      };
+    },
+    {
+      fetchContactAttributes,
+    },
+  ),
+  ContactAttributes,
+);
 export { withContactAttributes };

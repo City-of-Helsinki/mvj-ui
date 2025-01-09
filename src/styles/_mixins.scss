@@ -3,7 +3,7 @@
   padding: 0 1rem;
 }
 
-@mixin lightButton($background: #F7FCFF) {
+@mixin lightButton($background: #f7fcff) {
   @include button(true);
   background: $background;
   border-color: darken($background, 5%);
@@ -44,15 +44,17 @@
   }
 }
 
-@mixin transition($speed:300ms, $property:all, $ease:ease-out, $delay:null) {
+@mixin transition(
+  $speed: 300ms,
+  $property: all,
+  $ease: ease-out,
+  $delay: null
+) {
   $transition: none;
 
   @if length($property) > 1 {
-
     @each $transition_list in $property {
-
       @for $i from 1 through length($transition_list) {
-
         @if $i == 1 {
           $_property: nth($transition_list, $i);
         }
@@ -85,17 +87,19 @@
       @if $transition == none {
         $transition: $_property $_speed $_ease $_delay;
       } @else {
-        $transition: $transition, $_property $_speed $_ease $_delay;
+        $transition:
+          $transition,
+          $_property $_speed $_ease $_delay;
       }
     }
   } @else {
-
     @each $prop in $property {
-
       @if $transition == none {
         $transition: $prop $speed $ease $delay;
       } @else {
-        $transition: $transition, $prop $speed $ease $delay;
+        $transition:
+          $transition,
+          $prop $speed $ease $delay;
       }
     }
   }
@@ -111,10 +115,10 @@
   transform: $args;
 }
 
-@mixin rotate( $deg: 0deg ) {
+@mixin rotate($deg: 0deg) {
   @include transform(rotate($deg));
 }
 
-@mixin scale( $ratio: 1 ) {
+@mixin scale($ratio: 1) {
   @include transform(scale($ratio));
 }

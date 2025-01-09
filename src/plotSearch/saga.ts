@@ -1,11 +1,82 @@
-import { all, fork, put, takeLatest, call, takeEvery, take } from "redux-saga/effects";
+import {
+  all,
+  fork,
+  put,
+  takeLatest,
+  call,
+  takeEvery,
+  take,
+} from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { SubmissionError } from "redux-form";
 import { displayUIMessage, getSearchQuery, getUrlParams } from "@/util/helpers";
-import { hideEditMode, receiveAttributes, receivePlotSearchList, receiveSinglePlotSearch, receiveMethods, attributesNotFound, notFound, receiveIsSaveClicked, fetchSinglePlotSearchAfterEdit, receivePlanUnitAttributes, planUnitAttributesNotFound, receiveSinglePlanUnit, planUnitNotFound, customDetailedPlanAttributesNotFound, customDetailedPlanNotFound, receiveCustomDetailedPlanAttributes, receiveSingleCustomDetailedPlan, receivePlotSearchSubtype, plotSearchSubtypesNotFound, nullPlanUnits, receiveForm, formNotFound, fetchTemplateForms, receiveTemplateForms, templateFormsNotFound, addPlanUnitDecisions, resetPlanUnitDecisions, editForm, receiveStages, stagesNotFound, fetchStages, reservationIdentifiersCreated, reservationIdentifiersCreationFailed, reservationIdentifierUnitListsNotFound, receiveReservationIdentifierUnitLists, directReservationLinkCreated, directReservationLinkCreationFailed, receivePlotSearchRelatedApplications, plotSearchRelatedApplicationsNotFound, fetchPlotSearchRelatedApplications } from "@/plotSearch/actions";
+import {
+  hideEditMode,
+  receiveAttributes,
+  receivePlotSearchList,
+  receiveSinglePlotSearch,
+  receiveMethods,
+  attributesNotFound,
+  notFound,
+  receiveIsSaveClicked,
+  fetchSinglePlotSearchAfterEdit,
+  receivePlanUnitAttributes,
+  planUnitAttributesNotFound,
+  receiveSinglePlanUnit,
+  planUnitNotFound,
+  customDetailedPlanAttributesNotFound,
+  customDetailedPlanNotFound,
+  receiveCustomDetailedPlanAttributes,
+  receiveSingleCustomDetailedPlan,
+  receivePlotSearchSubtype,
+  plotSearchSubtypesNotFound,
+  nullPlanUnits,
+  receiveForm,
+  formNotFound,
+  fetchTemplateForms,
+  receiveTemplateForms,
+  templateFormsNotFound,
+  addPlanUnitDecisions,
+  resetPlanUnitDecisions,
+  editForm,
+  receiveStages,
+  stagesNotFound,
+  fetchStages,
+  reservationIdentifiersCreated,
+  reservationIdentifiersCreationFailed,
+  reservationIdentifierUnitListsNotFound,
+  receiveReservationIdentifierUnitLists,
+  directReservationLinkCreated,
+  directReservationLinkCreationFailed,
+  receivePlotSearchRelatedApplications,
+  plotSearchRelatedApplicationsNotFound,
+  fetchPlotSearchRelatedApplications,
+} from "@/plotSearch/actions";
 import { receiveError } from "@/api/actions";
 import { getRouteById, Routes } from "@/root/routes";
-import { fetchAttributes, createPlotSearch, fetchPlotSearches, fetchSinglePlotSearch, editPlotSearch as editPlotSearchRequest, deletePlotSearch, fetchPlanUnitAttributes, fetchPlanUnit, fetchCustomDetailedPlanAttributes, fetchCustomDetailedPlan, fetchPlotSearchSubtypesRequest, fetchFormRequest, fetchTemplateFormsRequest, editFormRequest, fetchStagesRequest, editTargetPlotSearchRelationRequest, fetchAllMunicipalitiesRequest, fetchAllDistrictsRequest, createDirectReservationLinkRequest, fetchPlotSearchApplicationsRequest, createPlotSearchApplicationsOpeningRecords } from "@/plotSearch/requests";
+import {
+  fetchAttributes,
+  createPlotSearch,
+  fetchPlotSearches,
+  fetchSinglePlotSearch,
+  editPlotSearch as editPlotSearchRequest,
+  deletePlotSearch,
+  fetchPlanUnitAttributes,
+  fetchPlanUnit,
+  fetchCustomDetailedPlanAttributes,
+  fetchCustomDetailedPlan,
+  fetchPlotSearchSubtypesRequest,
+  fetchFormRequest,
+  fetchTemplateFormsRequest,
+  editFormRequest,
+  fetchStagesRequest,
+  editTargetPlotSearchRelationRequest,
+  fetchAllMunicipalitiesRequest,
+  fetchAllDistrictsRequest,
+  createDirectReservationLinkRequest,
+  fetchPlotSearchApplicationsRequest,
+  createPlotSearchApplicationsOpeningRecords,
+} from "@/plotSearch/requests";
 import { createLease } from "@/leases/requests";
 import { RelationTypes } from "@/leases/enums";
 import { fetchLeaseTypes } from "@/leaseType/requests";
@@ -14,16 +85,13 @@ import { fetchFormAttributes } from "@/application/actions";
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
       case 200:
-        const attributes = { ...bodyAsJson.fields
-        };
+        const attributes = { ...bodyAsJson.fields };
         const methods = bodyAsJson.methods;
         yield put(receiveAttributes(attributes));
         yield put(receiveMethods(methods));
@@ -42,22 +110,22 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchPlotSearchSaga({
   payload: query,
-  type: string
+  type: string,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchPlotSearches, query);
 
     switch (statusCode) {
       case 200:
-        yield put(receivePlotSearchList({
-          count: bodyAsJson.count,
-          results: bodyAsJson.results
-        }));
+        yield put(
+          receivePlotSearchList({
+            count: bodyAsJson.count,
+            results: bodyAsJson.results,
+          }),
+        );
         break;
 
       case 404:
@@ -74,20 +142,17 @@ function* fetchPlotSearchSaga({
 
 function* fetchSinglePlotSearchSaga({
   payload: id,
-  type: string
+  type: string,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchSinglePlotSearch, id);
 
     switch (statusCode) {
       case 200:
-        yield put(receiveSinglePlotSearch({ ...bodyAsJson
-        }));
+        yield put(receiveSinglePlotSearch({ ...bodyAsJson }));
         yield put(fetchTemplateForms());
         yield put(fetchStages());
 
@@ -110,8 +175,7 @@ function* fetchSinglePlotSearchSaga({
 
       case 404:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       default:
@@ -128,10 +192,8 @@ function* fetchSinglePlotSearchSaga({
 function* fetchTemplateFormsSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchTemplateFormsRequest);
 
     switch (statusCode) {
@@ -141,8 +203,7 @@ function* fetchTemplateFormsSaga(): Generator<any, any, any> {
 
       case 404:
         yield put(templateFormsNotFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       default:
@@ -158,14 +219,12 @@ function* fetchTemplateFormsSaga(): Generator<any, any, any> {
 
 function* createPlotSearchSaga({
   payload: plotSearch,
-  type: string
+  type: string,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createPlotSearch, plotSearch);
 
     switch (statusCode) {
@@ -173,15 +232,14 @@ function* createPlotSearchSaga({
         yield put(push(`${getRouteById(Routes.PLOT_SEARCH)}/${bodyAsJson.id}`));
         yield put(receiveIsSaveClicked(false));
         displayUIMessage({
-          title: '',
-          body: 'Tonttihaku luotu'
+          title: "",
+          body: "Tonttihaku luotu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -197,28 +255,25 @@ function* createPlotSearchSaga({
 }
 
 function* editPlotSearchSaga({
-  payload: {
-    basicInfo,
-    form,
-    openingRecord
-  },
-  type: any
+  payload: { basicInfo, form, openingRecord },
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(editPlotSearchRequest, basicInfo);
 
     switch (statusCode) {
       case 200:
         if (form && form.id === bodyAsJson.form?.id) {
           yield put(editForm(form));
-          const result = yield take(['mvj/plotSearch/RECEIVE_FORM', 'mvj/api/RECEIVE_ERROR']);
+          const result = yield take([
+            "mvj/plotSearch/RECEIVE_FORM",
+            "mvj/api/RECEIVE_ERROR",
+          ]);
 
-          if (result.type === 'mvj/api/RECEIVE_ERROR') {
+          if (result.type === "mvj/api/RECEIVE_ERROR") {
             yield receiveIsSaveClicked(false);
             break;
           }
@@ -226,37 +281,56 @@ function* editPlotSearchSaga({
 
         if (openingRecord) {
           const {
-            response: {
-              status: openingRecordStatus
-            },
-            bodyAsJson: openingRecordBody
-          } = yield call(createPlotSearchApplicationsOpeningRecords, basicInfo.id, openingRecord);
+            response: { status: openingRecordStatus },
+            bodyAsJson: openingRecordBody,
+          } = yield call(
+            createPlotSearchApplicationsOpeningRecords,
+            basicInfo.id,
+            openingRecord,
+          );
 
           if (![200, 201, 204].includes(openingRecordStatus)) {
-            yield put(receiveError(new SubmissionError({
-              post: 'open_answers',
-              ...openingRecordBody
-            })));
+            yield put(
+              receiveError(
+                new SubmissionError({
+                  post: "open_answers",
+                  ...openingRecordBody,
+                }),
+              ),
+            );
             yield receiveIsSaveClicked(false);
             break;
           }
         }
 
-        yield put(fetchSinglePlotSearchAfterEdit({
-          id: basicInfo.id,
-          callbackFunctions: [hideEditMode(), fetchPlotSearchRelatedApplications(basicInfo.id), receiveIsSaveClicked(false), () => displayUIMessage({
-            title: '',
-            body: 'Tonttihaku tallennettu'
-          }), nullPlanUnits()]
-        }));
+        yield put(
+          fetchSinglePlotSearchAfterEdit({
+            id: basicInfo.id,
+            callbackFunctions: [
+              hideEditMode(),
+              fetchPlotSearchRelatedApplications(basicInfo.id),
+              receiveIsSaveClicked(false),
+              () =>
+                displayUIMessage({
+                  title: "",
+                  body: "Tonttihaku tallennettu",
+                }),
+              nullPlanUnits(),
+            ],
+          }),
+        );
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         break;
 
       case 500:
@@ -273,15 +347,13 @@ function* editPlotSearchSaga({
 
 function* fetchSinglePlotSearchAfterEditSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const callbackFunctions = payload.callbackFunctions;
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchSinglePlotSearch, payload.id);
 
     switch (statusCode) {
@@ -298,12 +370,12 @@ function* fetchSinglePlotSearchAfterEditSaga({
         if (callbackFunctions) {
           for (let i = 0; i < callbackFunctions.length; i++) {
             switch (typeof callbackFunctions[i]) {
-              case 'function':
+              case "function":
                 // Functions
                 callbackFunctions[i]();
                 break;
 
-              case 'object':
+              case "object":
                 // Redux saga functions
                 yield put(callbackFunctions[i]);
             }
@@ -314,8 +386,7 @@ function* fetchSinglePlotSearchAfterEditSaga({
 
       case 404:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -331,14 +402,12 @@ function* fetchSinglePlotSearchAfterEditSaga({
 
 function* deletePlotSearchSaga({
   payload: id,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deletePlotSearch, id);
 
     switch (statusCode) {
@@ -346,18 +415,19 @@ function* deletePlotSearchSaga({
         const query = getUrlParams(location.search);
         // Remove page specific url parameters when moving to landuse list page
         delete query.tab;
-        yield put(push(`${getRouteById(Routes.PLOT_SEARCH)}/${getSearchQuery(query)}`));
+        yield put(
+          push(`${getRouteById(Routes.PLOT_SEARCH)}/${getSearchQuery(query)}`),
+        );
         displayUIMessage({
-          title: '',
-          body: 'Tonttihaku poistettu'
+          title: "",
+          body: "Tonttihaku poistettu",
         });
         break;
 
       case 400:
       case 401:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -375,10 +445,8 @@ function* deletePlotSearchSaga({
 function* fetchPlanUnitAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchPlanUnitAttributes);
 
     switch (statusCode) {
@@ -392,7 +460,10 @@ function* fetchPlanUnitAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch plan unit attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch plan unit attributes with error "%s"',
+      error,
+    );
     yield put(planUnitAttributesNotFound());
     yield put(receiveError(error));
   }
@@ -400,30 +471,29 @@ function* fetchPlanUnitAttributesSaga(): Generator<any, any, any> {
 
 function* fetchPlanUnitSaga({
   payload: value,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   const id = value?.value;
 
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchPlanUnit, id);
 
     switch (statusCode) {
       case 200:
-        yield put(receiveSinglePlanUnit({
-          [id]: bodyAsJson
-        }));
+        yield put(
+          receiveSinglePlanUnit({
+            [id]: bodyAsJson,
+          }),
+        );
         yield put(addPlanUnitDecisions(bodyAsJson));
         break;
 
       case 404:
         yield put(planUnitNotFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       default:
@@ -440,10 +510,8 @@ function* fetchPlanUnitSaga({
 function* fetchCustomDetailedPlanAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchCustomDetailedPlanAttributes);
 
     switch (statusCode) {
@@ -457,7 +525,10 @@ function* fetchCustomDetailedPlanAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch custom detailed plan attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch custom detailed plan attributes with error "%s"',
+      error,
+    );
     yield put(customDetailedPlanAttributesNotFound());
     yield put(receiveError(error));
   }
@@ -465,29 +536,28 @@ function* fetchCustomDetailedPlanAttributesSaga(): Generator<any, any, any> {
 
 function* fetchCustomDetailedPlanSaga({
   payload: value,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   const id = value?.value;
 
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchCustomDetailedPlan, id);
 
     switch (statusCode) {
       case 200:
-        yield put(receiveSingleCustomDetailedPlan({
-          [id]: bodyAsJson
-        }));
+        yield put(
+          receiveSingleCustomDetailedPlan({
+            [id]: bodyAsJson,
+          }),
+        );
         break;
 
       case 404:
         yield put(customDetailedPlanNotFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       default:
@@ -495,7 +565,10 @@ function* fetchCustomDetailedPlanSaga({
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch custom detailed plan with error "%s"', error);
+    console.error(
+      'Failed to fetch custom detailed plan with error "%s"',
+      error,
+    );
     yield put(customDetailedPlanNotFound());
     yield put(receiveError(error));
   }
@@ -504,10 +577,8 @@ function* fetchCustomDetailedPlanSaga({
 function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchPlotSearchSubtypesRequest);
 
     switch (statusCode) {
@@ -518,9 +589,11 @@ function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
 
       case 403:
         yield put(plotSearchSubtypesNotFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson,
-          get: 'plot_search_subtype'
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({ ...bodyAsJson, get: "plot_search_subtype" }),
+          ),
+        );
         break;
 
       default:
@@ -528,22 +601,20 @@ function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch plot search subtypes with error "%s"', error);
+    console.error(
+      'Failed to fetch plot search subtypes with error "%s"',
+      error,
+    );
     yield put(plotSearchSubtypesNotFound());
     yield put(receiveError(error));
   }
 }
 
-function* fetchFormSaga({
-  payload: id,
-  type: any
-}): Generator<any, any, any> {
+function* fetchFormSaga({ payload: id, type: any }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchFormRequest, id);
 
     switch (statusCode) {
@@ -553,8 +624,7 @@ function* fetchFormSaga({
 
       case 404:
         yield put(formNotFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       default:
@@ -568,16 +638,11 @@ function* fetchFormSaga({
   }
 }
 
-function* editFormSaga({
-  payload: form,
-  type: any
-}): Generator<any, any, any> {
+function* editFormSaga({ payload: form, type: any }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(editFormRequest, form);
 
     switch (statusCode) {
@@ -586,10 +651,14 @@ function* editFormSaga({
         break;
 
       case 400:
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         break;
 
       case 500:
@@ -605,10 +674,8 @@ function* editFormSaga({
 function* fetchStagesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchStagesRequest);
 
     switch (statusCode) {
@@ -618,9 +685,11 @@ function* fetchStagesSaga(): Generator<any, any, any> {
 
       case 403:
         yield put(stagesNotFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson,
-          get: 'plot_search_stage'
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({ ...bodyAsJson, get: "plot_search_stage" }),
+          ),
+        );
         break;
 
       default:
@@ -636,76 +705,79 @@ function* fetchStagesSaga(): Generator<any, any, any> {
 
 function* batchCreateReservationIdentifiersSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   const errors: Array<any> = [];
-  yield all(payload.data.map(row => call(function* (row) {
-    try {
-      const {
-        response: {
-          status: statusCode
-        },
-        bodyAsJson
-      } = yield call(createLease, {
-        type: row.type,
-        state: row.state,
-        municipality: row.municipality,
-        district: row.district,
-        relate_to: row.leaseId,
-        relation_type: RelationTypes.TRANSFER
-      });
-
-      switch (statusCode) {
-        case 200:
-        case 201:
+  yield all(
+    payload.data.map((row) =>
+      call(function* (row) {
+        try {
           const {
-            response: {
-              status: targetRelationEditStatusCode
-            },
-            bodyAsJson: targetRelationEditBodyAsJson
-          } = yield call(editTargetPlotSearchRelationRequest, {
-            id: row.targetId,
-            reservation_identifier: bodyAsJson.id
+            response: { status: statusCode },
+            bodyAsJson,
+          } = yield call(createLease, {
+            type: row.type,
+            state: row.state,
+            municipality: row.municipality,
+            district: row.district,
+            relate_to: row.leaseId,
+            relation_type: RelationTypes.TRANSFER,
           });
 
-          if (targetRelationEditStatusCode !== 200) {
-            errors.push({
-              id: row.targetId,
-              error: targetRelationEditBodyAsJson
-            });
+          switch (statusCode) {
+            case 200:
+            case 201:
+              const {
+                response: { status: targetRelationEditStatusCode },
+                bodyAsJson: targetRelationEditBodyAsJson,
+              } = yield call(editTargetPlotSearchRelationRequest, {
+                id: row.targetId,
+                reservation_identifier: bodyAsJson.id,
+              });
+
+              if (targetRelationEditStatusCode !== 200) {
+                errors.push({
+                  id: row.targetId,
+                  error: targetRelationEditBodyAsJson,
+                });
+              }
+
+              break;
+
+            default:
+              console.error(bodyAsJson);
+              errors.push({
+                id: row.targetId,
+                error: bodyAsJson,
+              });
           }
-
-          break;
-
-        default:
-          console.error(bodyAsJson);
+        } catch (e) {
+          console.error(e);
           errors.push({
             id: row.targetId,
-            error: bodyAsJson
+            error: e,
           });
-      }
-    } catch (e) {
-      console.error(e);
-      errors.push({
-        id: row.targetId,
-        error: e
-      });
-    }
-  }, row)));
+        }
+      }, row),
+    ),
+  );
 
   if (errors.length > 0) {
     yield put(reservationIdentifiersCreationFailed(errors));
-    displayUIMessage({
-      title: '',
-      body: 'Vuokratunnusten luonti keskeytyi virheeseen!'
-    }, {
-      type: 'error'
-    });
+    displayUIMessage(
+      {
+        title: "",
+        body: "Vuokratunnusten luonti keskeytyi virheeseen!",
+      },
+      {
+        type: "error",
+      },
+    );
   } else {
     yield put(reservationIdentifiersCreated());
     displayUIMessage({
-      title: '',
-      body: 'Varaustunnukset luotu'
+      title: "",
+      body: "Varaustunnukset luotu",
     });
 
     if (payload.callback) {
@@ -715,44 +787,40 @@ function* batchCreateReservationIdentifiersSaga({
 }
 
 function* fetchReservationIdentifierUnitListsSaga(): Generator<any, any, any> {
-  const {
-    response: typeResponse,
-    bodyAsJson: typeBody
-  } = yield call(fetchLeaseTypes);
-  const {
-    response: municipalityResponse,
-    bodyAsJson: municipalityBody
-  } = yield call(fetchAllMunicipalitiesRequest);
-  const {
-    response: districtResponse,
-    bodyAsJson: districtBody
-  } = yield call(fetchAllDistrictsRequest);
+  const { response: typeResponse, bodyAsJson: typeBody } =
+    yield call(fetchLeaseTypes);
+  const { response: municipalityResponse, bodyAsJson: municipalityBody } =
+    yield call(fetchAllMunicipalitiesRequest);
+  const { response: districtResponse, bodyAsJson: districtBody } = yield call(
+    fetchAllDistrictsRequest,
+  );
 
-  if (typeResponse.status !== 200 || municipalityResponse.status !== 200 || districtResponse.status !== 200) {
+  if (
+    typeResponse.status !== 200 ||
+    municipalityResponse.status !== 200 ||
+    districtResponse.status !== 200
+  ) {
     yield put(reservationIdentifierUnitListsNotFound());
   } else {
-    yield put(receiveReservationIdentifierUnitLists({
-      types: typeBody.results,
-      municipalities: municipalityBody.results,
-      districts: districtBody.results
-    }));
+    yield put(
+      receiveReservationIdentifierUnitLists({
+        types: typeBody.results,
+        municipalities: municipalityBody.results,
+        districts: districtBody.results,
+      }),
+    );
   }
 }
 
 function* createDirectReservationLinkSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
+    const { data, callBack } = payload;
     const {
-      data,
-      callBack
-    } = payload;
-    const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createDirectReservationLinkRequest, data);
 
     switch (statusCode) {
@@ -760,43 +828,47 @@ function* createDirectReservationLinkSaga({
       case 201:
         yield put(directReservationLinkCreated());
         displayUIMessage({
-          title: 'Suoravarauslinkki lähetetty',
-          body: `Suoravarauslinkki: ${bodyAsJson.url}`
+          title: "Suoravarauslinkki lähetetty",
+          body: `Suoravarauslinkki: ${bodyAsJson.url}`,
         });
         callBack();
         break;
 
       default:
         yield put(directReservationLinkCreationFailed());
-        displayUIMessage({
-          title: '',
-          body: 'Suoravarauslinkin lähetys epäonnistui'
-        }, {
-          type: 'error'
-        });
+        displayUIMessage(
+          {
+            title: "",
+            body: "Suoravarauslinkin lähetys epäonnistui",
+          },
+          {
+            type: "error",
+          },
+        );
     }
   } catch (e) {
     yield put(directReservationLinkCreationFailed());
     console.log(e);
-    displayUIMessage({
-      title: '',
-      body: 'Suoravarauslinkin lähetys epäonnistui'
-    }, {
-      type: 'error'
-    });
+    displayUIMessage(
+      {
+        title: "",
+        body: "Suoravarauslinkin lähetys epäonnistui",
+      },
+      {
+        type: "error",
+      },
+    );
   }
 }
 
 function* fetchRelatedApplicationsSaga({
   payload: id,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchPlotSearchApplicationsRequest, id);
 
     switch (statusCode) {
@@ -806,9 +878,9 @@ function* fetchRelatedApplicationsSaga({
 
       case 403:
         yield put(plotSearchRelatedApplicationsNotFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson,
-          get: 'answer'
-        })));
+        yield put(
+          receiveError(new SubmissionError({ ...bodyAsJson, get: "answer" })),
+        );
         break;
 
       default:
@@ -816,33 +888,74 @@ function* fetchRelatedApplicationsSaga({
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch plot search related applications with error "%s"', error);
+    console.error(
+      'Failed to fetch plot search related applications with error "%s"',
+      error,
+    );
     yield put(plotSearchRelatedApplicationsNotFound());
     yield put(receiveError(error));
   }
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/plotSearch/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/plotSearch/FETCH_ALL', fetchPlotSearchSaga);
-    yield takeLatest('mvj/plotSearch/FETCH_SINGLE', fetchSinglePlotSearchSaga);
-    yield takeLatest('mvj/plotSearch/CREATE', createPlotSearchSaga);
-    yield takeLatest('mvj/plotSearch/EDIT', editPlotSearchSaga);
-    yield takeLatest('mvj/plotSearch/FETCH_SINGLE_AFTER_EDIT', fetchSinglePlotSearchAfterEditSaga);
-    yield takeLatest('mvj/plotSearch/DELETE', deletePlotSearchSaga);
-    yield takeLatest('mvj/plotSearch/FETCH_TEMPLATE_FORMS', fetchTemplateFormsSaga);
-    yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES', fetchPlanUnitAttributesSaga);
-    yield takeEvery('mvj/plotSearch/FETCH_PLAN_UNIT', fetchPlanUnitSaga);
-    yield takeEvery('mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN', fetchCustomDetailedPlanSaga);
-    yield takeEvery('mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN_ATTRIBUTES', fetchCustomDetailedPlanAttributesSaga);
-    yield takeEvery('mvj/plotSearch/FETCH_FORM', fetchFormSaga);
-    yield takeEvery('mvj/plotSearch/EDIT_FORM', editFormSaga);
-    yield takeLatest('mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES', fetchPlotSearchSubtypesSaga);
-    yield takeLatest('mvj/plotSearch/FETCH_PLOT_SEARCH_STAGES', fetchStagesSaga);
-    yield takeLatest('mvj/plotSearch/BATCH_CREATE_RESERVATION_IDENTIFIERS', batchCreateReservationIdentifiersSaga);
-    yield takeLatest('mvj/plotSearch/FETCH_RESERVATION_IDENTIFIER_UNIT_LISTS', fetchReservationIdentifierUnitListsSaga);
-    yield takeLatest('mvj/plotSearch/CREATE_DIRECT_RESERVATION_LINK', createDirectReservationLinkSaga);
-    yield takeLatest('mvj/plotSearch/FETCH_RELATED_APPLICATIONS', fetchRelatedApplicationsSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/plotSearch/FETCH_ATTRIBUTES", fetchAttributesSaga);
+      yield takeLatest("mvj/plotSearch/FETCH_ALL", fetchPlotSearchSaga);
+      yield takeLatest(
+        "mvj/plotSearch/FETCH_SINGLE",
+        fetchSinglePlotSearchSaga,
+      );
+      yield takeLatest("mvj/plotSearch/CREATE", createPlotSearchSaga);
+      yield takeLatest("mvj/plotSearch/EDIT", editPlotSearchSaga);
+      yield takeLatest(
+        "mvj/plotSearch/FETCH_SINGLE_AFTER_EDIT",
+        fetchSinglePlotSearchAfterEditSaga,
+      );
+      yield takeLatest("mvj/plotSearch/DELETE", deletePlotSearchSaga);
+      yield takeLatest(
+        "mvj/plotSearch/FETCH_TEMPLATE_FORMS",
+        fetchTemplateFormsSaga,
+      );
+      yield takeEvery(
+        "mvj/plotSearch/FETCH_PLAN_UNIT_ATTRIBUTES",
+        fetchPlanUnitAttributesSaga,
+      );
+      yield takeEvery("mvj/plotSearch/FETCH_PLAN_UNIT", fetchPlanUnitSaga);
+      yield takeEvery(
+        "mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN",
+        fetchCustomDetailedPlanSaga,
+      );
+      yield takeEvery(
+        "mvj/plotSearch/FETCH_CUSTOM_DETAILED_PLAN_ATTRIBUTES",
+        fetchCustomDetailedPlanAttributesSaga,
+      );
+      yield takeEvery("mvj/plotSearch/FETCH_FORM", fetchFormSaga);
+      yield takeEvery("mvj/plotSearch/EDIT_FORM", editFormSaga);
+      yield takeLatest(
+        "mvj/plotSearch/FETCH_PLOT_SEARCH_SUB_TYPES",
+        fetchPlotSearchSubtypesSaga,
+      );
+      yield takeLatest(
+        "mvj/plotSearch/FETCH_PLOT_SEARCH_STAGES",
+        fetchStagesSaga,
+      );
+      yield takeLatest(
+        "mvj/plotSearch/BATCH_CREATE_RESERVATION_IDENTIFIERS",
+        batchCreateReservationIdentifiersSaga,
+      );
+      yield takeLatest(
+        "mvj/plotSearch/FETCH_RESERVATION_IDENTIFIER_UNIT_LISTS",
+        fetchReservationIdentifierUnitListsSaga,
+      );
+      yield takeLatest(
+        "mvj/plotSearch/CREATE_DIRECT_RESERVATION_LINK",
+        createDirectReservationLinkSaga,
+      );
+      yield takeLatest(
+        "mvj/plotSearch/FETCH_RELATED_APPLICATIONS",
+        fetchRelatedApplicationsSaga,
+      );
+    }),
+  ]);
 }

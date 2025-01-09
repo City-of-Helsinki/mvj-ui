@@ -1,18 +1,24 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
-import { attributesNotFound, receiveAttributes, receiveMethods } from "./actions";
+import {
+  attributesNotFound,
+  receiveAttributes,
+  receiveMethods,
+} from "./actions";
 import { fetchSingleInfillDevelopment } from "@/infillDevelopment/actions";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
-import { fetchAttributes, createInfillDevelopmentAttachment, deleteInfillDevelopmentAttachment } from "./requests";
+import {
+  fetchAttributes,
+  createInfillDevelopmentAttachment,
+  deleteInfillDevelopmentAttachment,
+} from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
     const attributes = bodyAsJson.fields;
     const methods = bodyAsJson.methods;
@@ -28,7 +34,10 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch infill development attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch infill development attributes with error "%s"',
+      error,
+    );
     yield put(attributesNotFound());
     yield put(receiveError(error));
   }
@@ -36,28 +45,25 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* createInfillDevelopmentAttachmentSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createInfillDevelopmentAttachment, payload);
 
     switch (statusCode) {
       case 201:
         yield put(fetchSingleInfillDevelopment(payload.id));
         displayUIMessage({
-          title: '',
-          body: 'Tiedosto ladattu'
+          title: "",
+          body: "Tiedosto ladattu",
         });
         break;
 
       case 404:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -68,28 +74,25 @@ function* createInfillDevelopmentAttachmentSaga({
 
 function* deleteInfillDevelopmentAttachmentSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deleteInfillDevelopmentAttachment, payload.fileId);
 
     switch (statusCode) {
       case 204:
         yield put(fetchSingleInfillDevelopment(payload.id));
         displayUIMessage({
-          title: '',
-          body: 'Tiedosto poistettu'
+          title: "",
+          body: "Tiedosto poistettu",
         });
         break;
 
       case 404:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -99,9 +102,20 @@ function* deleteInfillDevelopmentAttachmentSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/infillDevelopmentAttachment/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/infillDevelopmentAttachment/CREATE', createInfillDevelopmentAttachmentSaga);
-    yield takeLatest('mvj/infillDevelopmentAttachment/DELETE', deleteInfillDevelopmentAttachmentSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/infillDevelopmentAttachment/FETCH_ATTRIBUTES",
+        fetchAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/infillDevelopmentAttachment/CREATE",
+        createInfillDevelopmentAttachmentSaga,
+      );
+      yield takeLatest(
+        "mvj/infillDevelopmentAttachment/DELETE",
+        deleteInfillDevelopmentAttachmentSaga,
+      );
+    }),
+  ]);
 }

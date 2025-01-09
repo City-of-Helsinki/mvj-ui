@@ -8,8 +8,15 @@ import Pagination from "@/components/table/Pagination";
 import TableWrapper from "@/components/table/TableWrapper";
 import { fetchAuditLogByContact } from "@/auditLog/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
-import { getApiResponseCount, getApiResponseMaxPage, getApiResponseResults } from "@/util/helpers";
-import { getAuditLogByContact, getIsFetchingByContact } from "@/auditLog/selectors";
+import {
+  getApiResponseCount,
+  getApiResponseMaxPage,
+  getApiResponseResults,
+} from "@/util/helpers";
+import {
+  getAuditLogByContact,
+  getIsFetchingByContact,
+} from "@/auditLog/selectors";
 import type { AuditLogList } from "@/auditLog/types";
 type Props = {
   auditLogList?: AuditLogList;
@@ -31,17 +38,14 @@ class ContactAuditLog extends PureComponent<Props, State> {
     auditLogItems: [],
     auditLogList: {},
     count: 0,
-    maxPage: 0
+    maxPage: 0,
   };
 
   componentDidMount() {
-    const {
-      fetchAuditLogByContact,
-      contactId
-    } = this.props;
+    const { fetchAuditLogByContact, contactId } = this.props;
     fetchAuditLogByContact({
       id: contactId,
-      limit: LIST_TABLE_PAGE_SIZE
+      limit: LIST_TABLE_PAGE_SIZE,
     });
   }
 
@@ -52,59 +56,68 @@ class ContactAuditLog extends PureComponent<Props, State> {
       newState.auditLogList = props.auditLogList;
       newState.auditLogItems = getApiResponseResults(props.auditLogList);
       newState.count = getApiResponseCount(props.auditLogList);
-      newState.maxPage = getApiResponseMaxPage(props.auditLogList, LIST_TABLE_PAGE_SIZE);
+      newState.maxPage = getApiResponseMaxPage(
+        props.auditLogList,
+        LIST_TABLE_PAGE_SIZE,
+      );
     }
 
     return !isEmpty(newState) ? newState : null;
   }
 
   handlePageClick = (page: number) => {
-    const {
-      fetchAuditLogByContact,
-      contactId
-    } = this.props;
-    this.setState({
-      activePage: page
-    }, () => {
-      const payload: any = {
-        id: contactId,
-        limit: LIST_TABLE_PAGE_SIZE
-      };
+    const { fetchAuditLogByContact, contactId } = this.props;
+    this.setState(
+      {
+        activePage: page,
+      },
+      () => {
+        const payload: any = {
+          id: contactId,
+          limit: LIST_TABLE_PAGE_SIZE,
+        };
 
-      if (page > 1) {
-        payload.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
-      }
+        if (page > 1) {
+          payload.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
+        }
 
-      fetchAuditLogByContact(payload);
-    });
+        fetchAuditLogByContact(payload);
+      },
+    );
   };
 
   render() {
-    const {
-      isFetching
-    } = this.props;
-    const {
-      activePage,
-      auditLogItems,
-      maxPage
-    } = this.state;
-    return <Fragment>
+    const { isFetching } = this.props;
+    const { activePage, auditLogItems, maxPage } = this.state;
+    return (
+      <Fragment>
         <TableWrapper>
-          {isFetching && <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>}
+          {isFetching && (
+            <LoaderWrapper className="relative-overlay-wrapper">
+              <Loader isLoading={isFetching} />
+            </LoaderWrapper>
+          )}
 
           <AuditLogTable items={auditLogItems} />
-          <Pagination activePage={activePage} maxPage={maxPage} onPageClick={this.handlePageClick} />
+          <Pagination
+            activePage={activePage}
+            maxPage={maxPage}
+            onPageClick={this.handlePageClick}
+          />
         </TableWrapper>
-      </Fragment>;
+      </Fragment>
+    );
   }
-
 }
 
-export default connect((state, props: Props) => {
-  return {
-    auditLogList: getAuditLogByContact(state, props.contactId),
-    isFetching: getIsFetchingByContact(state, props.contactId)
-  };
-}, {
-  fetchAuditLogByContact
-})(ContactAuditLog);
+export default connect(
+  (state, props: Props) => {
+    return {
+      auditLogList: getAuditLogByContact(state, props.contactId),
+      isFetching: getIsFetchingByContact(state, props.contactId),
+    };
+  },
+  {
+    fetchAuditLogByContact,
+  },
+)(ContactAuditLog);

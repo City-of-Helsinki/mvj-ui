@@ -107,8 +107,10 @@
         font-size: 9.5px;
       }
     }
-    tbody, tfoot {
-      th, td {
+    tbody,
+    tfoot {
+      th,
+      td {
         background: transparent;
         vertical-align: top;
         font-size: 9.5px;
@@ -130,13 +132,14 @@
         border-bottom: 1px solid $medium-gray;
       }
 
-      thead td, thead th {
+      thead td,
+      thead th {
         background-color: $white;
         font-size: rem-calc(13px);
-    	  font-weight: $semibold;
+        font-weight: $semibold;
         white-space: nowrap;
         text-align: left;
-    	  color: $black;
+        color: $black;
         padding: 0;
         border: none;
 
@@ -145,7 +148,7 @@
           margin-left: 5px;
           height: 14px;
           width: 14px;
-          min-width: 14px
+          min-width: 14px;
         }
 
         div {
@@ -161,11 +164,13 @@
         }
       }
 
-      tbody tr, tfoot tr {
+      tbody tr,
+      tfoot tr {
         td {
           line-height: rem-calc(16px);
         }
-        td, th {
+        td,
+        th {
           background-color: $white;
           border-bottom: 1px solid $light-gray;
           padding: rem-calc(5px 8px);
@@ -227,7 +232,8 @@
       }
 
       &.sortable-table {
-        thead td, thead th {
+        thead td,
+        thead th {
           &.sortable {
             cursor: pointer;
           }
@@ -283,7 +289,8 @@
       }
 
       &.list-table {
-        thead td, thead th {
+        thead td,
+        thead th {
           background-color: $blue;
           font-size: rem-calc(14px);
           color: $white;
@@ -455,7 +462,7 @@
   &__table-filter-wrapper {
     display: flex;
 
-    @include breakpoint(medium down){
+    @include breakpoint(medium down) {
       flex-direction: column;
     }
 
@@ -534,7 +541,7 @@
 
       h3 {
         font-family: $font-family-source;
-  	    font-size: $font-large;
+        font-size: $font-large;
         font-weight: $semibold;
         margin: 0 0 rem-calc(20px) !important;
         color: $black;

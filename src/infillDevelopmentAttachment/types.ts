@@ -18,5 +18,11 @@ export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;
 export type AttributesNotFoundAction = Action<string, void>;
-export type CreateInfillDevelopmentAttachmentAction = Action<string, CreateInfillDevelopmentAttachmentPayload>;
-export type DeleteInfillDevelopmentAttachmentAction = Action<string, DeleteInfillDevelopmentAttachmentPayload>;
+export type CreateInfillDevelopmentAttachmentAction = Action<
+  string,
+  CreateInfillDevelopmentAttachmentPayload
+>;
+export type DeleteInfillDevelopmentAttachmentAction = Action<
+  string,
+  DeleteInfillDevelopmentAttachmentPayload
+>;

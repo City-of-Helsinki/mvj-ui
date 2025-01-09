@@ -1,5 +1,5 @@
-.application{
-  &__white-stripes{
+.application {
+  &__white-stripes {
     background: repeating-linear-gradient(
       135deg,
       #acacac46,
@@ -9,17 +9,17 @@
     );
     background-color: #fff;
   }
-  &__input{
-    input{
+  &__input {
+    input {
       background-color: #ffffff88;
-    };
-    textarea{
+    }
+    textarea {
       background-color: #ffffff88;
-    };
-    .select-input__control{
+    }
+    .select-input__control {
       background-color: #ffffff88;
-    };
-    .option-label{
+    }
+    .option-label {
       width: 100%;
     }
   }
@@ -61,7 +61,7 @@
   border-bottom: 1px solid $gray-separator;
 
   .section-field {
-    padding: .75rem 0;
+    padding: 0.75rem 0;
     margin-right: rem-calc(-10px);
     margin-left: rem-calc(-10px);
     background-color: $light-gray;
@@ -90,7 +90,7 @@
 
   .section-editor,
   .section-field-editor {
-    padding: .75rem 0;
+    padding: 0.75rem 0;
     margin-right: rem-calc(-10px);
     margin-left: rem-calc(-10px);
     border-bottom: 1px solid $gray-separator;
@@ -117,7 +117,9 @@
     background-color: $light-gray;
   }
 
-  .collapse.collapse__secondary > .collapse__content > .collapse__content-wrapper,
+  .collapse.collapse__secondary
+    > .collapse__content
+    > .collapse__content-wrapper,
   .collapse.collapse__third > .collapse__content > .collapse__content-wrapper {
     margin-bottom: rem-calc(8px);
   }
@@ -126,16 +128,19 @@
     overflow: visible !important;
   }
 
-  .collapse.collapse__third .edit-plot-application-form__section-fields-container {
+  .collapse.collapse__third
+    .edit-plot-application-form__section-fields-container {
     margin-bottom: 0;
   }
 
-  .section-field, .collapse__header {
+  .section-field,
+  .collapse__header {
     .form-field {
       width: auto;
       align-self: auto;
 
-      &, & input {
+      &,
+      & input {
         margin-bottom: 0;
       }
       .option-label {
@@ -175,7 +180,8 @@
       }
     }
 
-    fieldset, fieldset label {
+    fieldset,
+    fieldset label {
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -198,7 +204,7 @@
   }
 
   .edit-plot-application-form__section-fields-container {
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
   }
 
   $section-indent-amount: 1.5rem;
@@ -215,7 +221,8 @@
       > .collapse__content > .collapse__content-wrapper {
         > .edit-plot-application-form__section-fields-container {
           > .section-field .columns:first-child {
-            .form-field, .mvj-button {
+            .form-field,
+            .mvj-button {
               margin-left: ($level - 1) * $section-indent-amount;
             }
           }
@@ -246,18 +253,21 @@
       margin-left: rem-calc(4px);
     }
 
-    .icons, .icons__trash #Artboard {
+    .icons,
+    .icons__trash #Artboard {
       fill: $black;
     }
 
     &:hover {
-      .icons, .icons__trash #Artboard {
+      .icons,
+      .icons__trash #Artboard {
         fill: $blue;
       }
     }
 
     &:disabled {
-      .icons, .icons__trash #Artboard {
+      .icons,
+      .icons__trash #Artboard {
         fill: $medium-gray !important;
       }
     }

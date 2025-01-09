@@ -5,9 +5,8 @@ type Props = {
   className?: string;
 };
 
-const LoaderWrapper = ({
-  children,
-  className
-}: Props) => <div className={classNames('loader__wrapper', className)}>{children}</div>;
+const LoaderWrapper = ({ children, className }: Props) => (
+  <div className={classNames("loader__wrapper", className)}>{children}</div>
+);
 
 export default LoaderWrapper;

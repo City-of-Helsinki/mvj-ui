@@ -13,42 +13,50 @@ type State = {
 
 class FieldTypeCheckboxDateTime extends PureComponent<Props, State> {
   state: State = {
-    defaultValue: this.props.input.value
+    defaultValue: this.props.input.value,
   };
   handleChange: () => void = () => {
     const {
-      input: {
-        onBlur,
-        value
-      }
+      input: { onBlur, value },
     } = this.props;
-    const {
-      defaultValue
-    } = this.state;
-    onBlur(value ? null : defaultValue ? defaultValue : new Date().toISOString());
+    const { defaultValue } = this.state;
+    onBlur(
+      value ? null : defaultValue ? defaultValue : new Date().toISOString(),
+    );
   };
 
   render(): JSX.Element {
     const {
       disabled = false,
       displayError = false,
-      input: {
-        name,
-        value
-      },
+      input: { name, value },
       isDirty = false,
-      label
+      label,
     } = this.props;
-    return <label className={classNames('form-field__checkbox-date-time', {
-      'has-error': displayError
-    }, {
-      'is-dirty': isDirty
-    })}>
-        <input type='checkbox' checked={value} disabled={disabled} name={name} onChange={this.handleChange} value={value} />
+    return (
+      <label
+        className={classNames(
+          "form-field__checkbox-date-time",
+          {
+            "has-error": displayError,
+          },
+          {
+            "is-dirty": isDirty,
+          },
+        )}
+      >
+        <input
+          type="checkbox"
+          checked={value}
+          disabled={disabled}
+          name={name}
+          onChange={this.handleChange}
+          value={value}
+        />
         <span>{label}</span>
-      </label>;
+      </label>
+    );
   }
-
 }
 
 export default FieldTypeCheckboxDateTime;

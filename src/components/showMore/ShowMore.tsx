@@ -15,7 +15,7 @@ type State = {
 class ShowMore extends PureComponent<Props, State> {
   state: State = {
     open: this.props.open || false,
-    overflows: false
+    overflows: false,
   };
 
   componentDidMount() {
@@ -27,28 +27,25 @@ class ShowMore extends PureComponent<Props, State> {
   }
 
   checkOverflow = (textOverFlow?: string | null | undefined) => {
-    const {
-      maxChars,
-      text
-    } = this.props;
+    const { maxChars, text } = this.props;
     const t = textOverFlow || text;
 
     if (t && t.length > (maxChars || MAX_CHARS)) {
       this.setState({
-        overflows: true
+        overflows: true,
       });
     } else {
       this.setState({
-        overflows: false
+        overflows: false,
       });
     }
   };
   getLinkText = () => {
-    return this.state.open ? 'Näytä vähemmän' : 'Näytä lisää';
+    return this.state.open ? "Näytä vähemmän" : "Näytä lisää";
   };
   handleReadMoreClick = () => {
     this.setState({
-      open: !this.state.open
+      open: !this.state.open,
     });
     this.checkOverflow();
   };
@@ -59,44 +56,53 @@ class ShowMore extends PureComponent<Props, State> {
     }
   };
   replaceLineBreakWithBr = (text: string): any => {
-    const items = text.split('\n');
-    return items.map((item, index) => <span key={index}>
+    const items = text.split("\n");
+    return items.map((item, index) => (
+      <span key={index}>
         {item}
         {index < items.length - 1 && <br />}
-      </span>);
+      </span>
+    ));
   };
   getTextToDisplay = () => {
-    const {
-      maxChars,
-      text
-    } = this.props;
+    const { maxChars, text } = this.props;
 
     if (this.state.open) {
       return this.replaceLineBreakWithBr(text);
     }
 
     if (text && text.length > (maxChars || MAX_CHARS)) {
-      return this.replaceLineBreakWithBr(`${this.props.text.substring(0, maxChars || MAX_CHARS)}...`);
+      return this.replaceLineBreakWithBr(
+        `${this.props.text.substring(0, maxChars || MAX_CHARS)}...`,
+      );
     } else {
       return this.replaceLineBreakWithBr(text);
     }
   };
 
   render() {
-    const {
-      className
-    } = this.props,
-          {
-      overflows
-    } = this.state;
-    return <div className={classNames('show-more', className)}>
+    const { className } = this.props,
+      { overflows } = this.state;
+    return (
+      <div className={classNames("show-more", className)}>
         <p>
-          <span className='show-more__text'>{this.getTextToDisplay()}&nbsp;</span>
-          {overflows && <a className={classNames('show-more__read-more')} onClick={this.handleReadMoreClick} onKeyDown={this.handleKeyDown} tabIndex={0}>{this.getLinkText()}</a>}
+          <span className="show-more__text">
+            {this.getTextToDisplay()}&nbsp;
+          </span>
+          {overflows && (
+            <a
+              className={classNames("show-more__read-more")}
+              onClick={this.handleReadMoreClick}
+              onKeyDown={this.handleKeyDown}
+              tabIndex={0}
+            >
+              {this.getLinkText()}
+            </a>
+          )}
         </p>
-      </div>;
+      </div>
+    );
   }
-
 }
 
 export default ShowMore;

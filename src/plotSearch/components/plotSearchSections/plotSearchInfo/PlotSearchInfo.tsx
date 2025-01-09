@@ -4,16 +4,16 @@ type Props = {
   title: string;
 };
 
-const PlotSearchInfo = ({
-  title
-}: Props): JSX.Element => {
-  return <div className='lease-info'>
+const PlotSearchInfo = ({ title }: Props): JSX.Element => {
+  return (
+    <div className="lease-info">
       <Row>
         <Column>
-          <h1 className='lease-info__identifier'>{title}</h1>
+          <h1 className="lease-info__identifier">{title}</h1>
         </Column>
       </Row>
-    </div>;
+    </div>
+  );
 };
 
 export default PlotSearchInfo;

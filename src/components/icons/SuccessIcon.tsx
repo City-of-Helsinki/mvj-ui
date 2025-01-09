@@ -4,9 +4,11 @@ type Props = {
   className?: string;
 };
 
-const SuccessIcon = ({
-  className
-}: Props) => <svg viewBox="0 0 20 20" className={classNames('icons', 'icons__success', className)}>
+const SuccessIcon = ({ className }: Props) => (
+  <svg
+    viewBox="0 0 20 20"
+    className={classNames("icons", "icons__success", className)}
+  >
     <title>Onnistuminen</title>
     <g stroke="none" fill="none">
       <g id="Artboard" transform="translate(-460.000000, -212.000000)">
@@ -15,6 +17,7 @@ const SuccessIcon = ({
         </g>
       </g>
     </g>
-  </svg>;
+  </svg>
+);
 
 export default SuccessIcon;

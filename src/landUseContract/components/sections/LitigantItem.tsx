@@ -16,20 +16,31 @@ type Props = {
   litigant: Record<string, any>;
 };
 
-const LitigantItem = ({
-  contact,
-  litigant
-}: Props) => {
+const LitigantItem = ({ contact, litigant }: Props) => {
   if (!contact) {
     return null;
   }
 
-  return <Fragment>
+  return (
+    <Fragment>
       <FormWrapper>
         <FormWrapperLeft>
           <Row>
             <Column>
-              <FormTitleAndText title='Asiakas' text={contact ? <ExternalLink className='no-margin' href={`${getRouteById(Routes.CONTACTS)}/${contact.id}`} text={getContactFullName(contact)} /> : '-'} />
+              <FormTitleAndText
+                title="Asiakas"
+                text={
+                  contact ? (
+                    <ExternalLink
+                      className="no-margin"
+                      href={`${getRouteById(Routes.CONTACTS)}/${contact.id}`}
+                      text={getContactFullName(contact)}
+                    />
+                  ) : (
+                    "-"
+                  )
+                }
+              />
             </Column>
           </Row>
         </FormWrapperLeft>
@@ -38,10 +49,16 @@ const LitigantItem = ({
             <Column small={12} medium={6} large={4}>
               <Row>
                 <Column>
-                  <FormTitleAndText title='Alkupvm' text={formatDate(get(litigant, 'litigant.start_date'))} />
+                  <FormTitleAndText
+                    title="Alkupvm"
+                    text={formatDate(get(litigant, "litigant.start_date"))}
+                  />
                 </Column>
                 <Column>
-                  <FormTitleAndText title='Loppupvm' text={formatDate(get(litigant, 'litigant.end_date'))} />
+                  <FormTitleAndText
+                    title="Loppupvm"
+                    text={formatDate(get(litigant, "litigant.end_date"))}
+                  />
                 </Column>
               </Row>
             </Column>
@@ -51,7 +68,10 @@ const LitigantItem = ({
         <FormWrapperLeft>
           <Row>
             <Column>
-              <FormTitleAndText title='Viite' text={litigant.reference || '-'} />
+              <FormTitleAndText
+                title="Viite"
+                text={litigant.reference || "-"}
+              />
             </Column>
           </Row>
         </FormWrapperLeft>
@@ -59,7 +79,8 @@ const LitigantItem = ({
 
       <SubTitle>Asiakkaan tiedot</SubTitle>
       <ContactTemplate contact={contact} />
-    </Fragment>;
+    </Fragment>
+  );
 };
 
 export default LitigantItem;

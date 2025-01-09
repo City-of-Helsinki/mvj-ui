@@ -6,13 +6,15 @@ type Props = {
 };
 
 const WarningField = ({
-  meta: {
-    warning
-  },
+  meta: { warning },
   showWarning = true,
-  style
+  style,
 }: Props): JSX.Element => {
-  return showWarning && warning ? <span className="form-field__warning-field" role="alert" style={style}>{warning}</span> : null;
+  return showWarning && warning ? (
+    <span className="form-field__warning-field" role="alert" style={style}>
+      {warning}
+    </span>
+  ) : null;
 };
 
 export default WarningField;

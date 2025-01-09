@@ -4,14 +4,12 @@ import { fetchIndexList } from "./requests";
 
 function* fetchIndexListSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchIndexList, query);
 
     switch (statusCode) {
@@ -30,7 +28,9 @@ function* fetchIndexListSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/index/FETCH_ALL', fetchIndexListSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/index/FETCH_ALL", fetchIndexListSaga);
+    }),
+  ]);
 }

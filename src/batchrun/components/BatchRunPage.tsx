@@ -19,9 +19,17 @@ import Title from "@/components/content/Title";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { PermissionMissingTexts } from "@/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
-import { getSearchQuery, getUrlParams, hasPermissions, setPageTitle } from "@/util/helpers";
+import {
+  getSearchQuery,
+  getUrlParams,
+  hasPermissions,
+  setPageTitle,
+} from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "@/usersPermissions/selectors";
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
   history: Record<string, any>;
@@ -36,25 +44,23 @@ type State = {
 
 class BatchJobsPage extends PureComponent<Props, State> {
   state = {
-    activeTab: 0
+    activeTab: 0,
   };
 
   componentDidMount() {
-    const {
-      receiveTopNavigationSettings
-    } = this.props;
-    setPageTitle('Eräajot');
+    const { receiveTopNavigationSettings } = this.props;
+    setPageTitle("Eräajot");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.BATCH_RUN),
-      pageTitle: 'Eräajot',
-      showSearch: false
+      pageTitle: "Eräajot",
+      showSearch: false,
     });
     this.setStateFromUrl();
-    window.addEventListener('popstate', this.handlePopState);
+    window.addEventListener("popstate", this.handlePopState);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('popstate', this.handlePopState);
+    window.removeEventListener("popstate", this.handlePopState);
   }
 
   handlePopState = () => {
@@ -62,58 +68,71 @@ class BatchJobsPage extends PureComponent<Props, State> {
   };
   setStateFromUrl = () => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
     const tab = query.tab ? Number(query.tab) : 0;
     this.setState({
-      activeTab: tab
+      activeTab: tab,
     });
   };
   handleTabClick = (tab: number) => {
     const {
       history,
       location,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
-    this.setState({
-      activeTab: tab
-    }, () => {
-      query.tab = tab;
-      return history.push({ ...location,
-        search: getSearchQuery(query)
-      });
-    });
+    this.setState(
+      {
+        activeTab: tab,
+      },
+      () => {
+        query.tab = tab;
+        return history.push({ ...location, search: getSearchQuery(query) });
+      },
+    );
   };
 
   render() {
-    const {
-      isFetchingUsersPermissions,
-      usersPermissions
-    } = this.props;
-    const {
-      activeTab
-    } = this.state;
-    if (isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    const { isFetchingUsersPermissions, usersPermissions } = this.props;
+    const { activeTab } = this.state;
+    if (isFetchingUsersPermissions)
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (isEmpty(usersPermissions)) return null;
-    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN) && !hasPermissions(usersPermissions, UsersPermissions.VIEW_SCHEDULEDJOB)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.BATCHRUN} /></PageContainer>;
-    return <FullWidthContainer>
+    if (
+      !hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN) &&
+      !hasPermissions(usersPermissions, UsersPermissions.VIEW_SCHEDULEDJOB)
+    )
+      return (
+        <PageContainer>
+          <AuthorizationError text={PermissionMissingTexts.BATCHRUN} />
+        </PageContainer>
+      );
+    return (
+      <FullWidthContainer>
         <PageNavigationWrapper>
-          <Tabs active={activeTab} tabs={[{
-          label: 'Ajot',
-          allow: true
-        }, {
-          label: 'Ajastukset',
-          allow: true
-        }]} onTabClick={this.handleTabClick} />
+          <Tabs
+            active={activeTab}
+            tabs={[
+              {
+                label: "Ajot",
+                allow: true,
+              },
+              {
+                label: "Ajastukset",
+                allow: true,
+              },
+            ]}
+            onTabClick={this.handleTabClick}
+          />
         </PageNavigationWrapper>
 
-        <PageContainer className='with-tabs' hasTabs>
+        <PageContainer className="with-tabs" hasTabs>
           <TabContent active={activeTab}>
             <TabPane>
               <ContentContainer>
@@ -133,18 +152,23 @@ class BatchJobsPage extends PureComponent<Props, State> {
               </ContentContainer>
             </TabPane>
           </TabContent>
-
         </PageContainer>
-      </FullWidthContainer>;
+      </FullWidthContainer>
+    );
   }
-
 }
 
-export default flowRight(withRouter, connect(state => {
-  return {
-    isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  receiveTopNavigationSettings
-}))(BatchJobsPage);
+export default flowRight(
+  withRouter,
+  connect(
+    (state) => {
+      return {
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+    {
+      receiveTopNavigationSettings,
+    },
+  ),
+)(BatchJobsPage);

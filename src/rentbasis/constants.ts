@@ -5,7 +5,7 @@ import { TableSortOrder } from "@/enums";
  * @readonly
  * @const {string}
  */
-export const DEFAULT_SORT_KEY = 'start_date';
+export const DEFAULT_SORT_KEY = "start_date";
 
 /**
  * Default sort order of basis of rent list page

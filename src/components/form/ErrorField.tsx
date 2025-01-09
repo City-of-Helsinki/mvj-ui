@@ -6,11 +6,14 @@ type Props = {
 };
 
 const ErrorField = ({
-  meta: {
-    error
-  },
+  meta: { error },
   showError = false,
-  style
-}: Props): JSX.Element => showError && error ? <span className="form-field__error-field" role="alert" style={style}>{error}</span> : null;
+  style,
+}: Props): JSX.Element =>
+  showError && error ? (
+    <span className="form-field__error-field" role="alert" style={style}>
+      {error}
+    </span>
+  ) : null;
 
 export default ErrorField;

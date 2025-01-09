@@ -13,13 +13,23 @@ import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import PageContainer from "@/components/content/PageContainer";
 import PageNavigationWrapper from "@/components/content/PageNavigationWrapper";
-import { clearFormValidFlags, createInfillDevelopment, hideEditMode, receiveIsSaveClicked, showEditMode } from "@/infillDevelopment/actions";
+import {
+  clearFormValidFlags,
+  createInfillDevelopment,
+  hideEditMode,
+  receiveIsSaveClicked,
+  showEditMode,
+} from "@/infillDevelopment/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
 import { getPayloadInfillDevelopment } from "@/infillDevelopment/helpers";
 import { isMethodAllowed, setPageTitle } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
-import { getIsFormValidById, getIsSaveClicked, getIsSaving } from "@/infillDevelopment/selectors";
+import {
+  getIsFormValidById,
+  getIsSaveClicked,
+  getIsSaving,
+} from "@/infillDevelopment/selectors";
 import { withInfillDevelopmentPageAttributes } from "@/components/attributes/InfillDevelopmentPageAttributes";
 import { withUiDataList } from "@/components/uiData/UiDataListHOC";
 import type { Methods as MethodsType } from "types";
@@ -50,35 +60,31 @@ class NewInfillDevelopmentPage extends Component<Props> {
       clearFormValidFlags,
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
-      showEditMode
+      showEditMode,
     } = this.props;
-    setPageTitle('Uusi täydennysrakentamiskorvaus');
+    setPageTitle("Uusi täydennysrakentamiskorvaus");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),
-      pageTitle: 'Täydennysrakantamiskorvaus',
-      showSearch: false
+      pageTitle: "Täydennysrakantamiskorvaus",
+      showSearch: false,
     });
     receiveIsSaveClicked(false);
     clearFormValidFlags();
     showEditMode();
-    window.addEventListener('beforeunload', this.handleLeavePage);
+    window.addEventListener("beforeunload", this.handleLeavePage);
   }
 
   componentWillUnmount() {
-    const {
-      hideEditMode
-    } = this.props;
+    const { hideEditMode } = this.props;
     hideEditMode();
-    window.removeEventListener('beforeunload', this.handleLeavePage);
+    window.removeEventListener("beforeunload", this.handleLeavePage);
   }
 
-  handleLeavePage = e => {
-    const {
-      isFormDirty
-    } = this.props;
+  handleLeavePage = (e) => {
+    const { isFormDirty } = this.props;
 
     if (isFormDirty) {
-      const confirmationMessage = '';
+      const confirmationMessage = "";
       e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
 
       return confirmationMessage; // Gecko, WebKit, Chrome <34
@@ -87,21 +93,17 @@ class NewInfillDevelopmentPage extends Component<Props> {
   handleBack = () => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     return history.push({
       pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}`,
-      search: search
+      search: search,
     });
   };
   cancelChanges = () => {
-    const {
-      history
-    } = this.props;
+    const { history } = this.props;
     return history.push({
-      pathname: getRouteById(Routes.INFILL_DEVELOPMENTS)
+      pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
     });
   };
   saveChanges = () => {
@@ -109,7 +111,7 @@ class NewInfillDevelopmentPage extends Component<Props> {
       formValues,
       createInfillDevelopment,
       isFormValid,
-      receiveIsSaveClicked
+      receiveIsSaveClicked,
     } = this.props;
     receiveIsSaveClicked(true);
 
@@ -124,28 +126,59 @@ class NewInfillDevelopmentPage extends Component<Props> {
       isFetchingInfillDevelopmentPageAttributes,
       isFormValid,
       isSaveClicked,
-      isSaving
+      isSaving,
     } = this.props;
-    if (isFetchingInfillDevelopmentPageAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (isFetchingInfillDevelopmentPageAttributes)
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (!infillDevelopmentMethods) return null;
-    if (!isMethodAllowed(infillDevelopmentMethods, Methods.POST)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.GENERAL} /></PageContainer>;
-    return <FullWidthContainer>
+    if (!isMethodAllowed(infillDevelopmentMethods, Methods.POST))
+      return (
+        <PageContainer>
+          <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+        </PageContainer>
+      );
+    return (
+      <FullWidthContainer>
         <PageNavigationWrapper>
-          <ControlButtonBar buttonComponent={<ControlButtons allowEdit={isMethodAllowed(infillDevelopmentMethods, Methods.POST)} isCopyDisabled={true} isEditMode={true} isSaveDisabled={isSaveClicked && !isFormValid} onCancel={this.cancelChanges} onSave={this.saveChanges} showCommentButton={false} showCopyButton={true} />} infoComponent={<h1>Uusi täydennysrakentamiskorvaus</h1>} onBack={this.handleBack} />
+          <ControlButtonBar
+            buttonComponent={
+              <ControlButtons
+                allowEdit={isMethodAllowed(
+                  infillDevelopmentMethods,
+                  Methods.POST,
+                )}
+                isCopyDisabled={true}
+                isEditMode={true}
+                isSaveDisabled={isSaveClicked && !isFormValid}
+                onCancel={this.cancelChanges}
+                onSave={this.saveChanges}
+                showCommentButton={false}
+                showCopyButton={true}
+              />
+            }
+            infoComponent={<h1>Uusi täydennysrakentamiskorvaus</h1>}
+            onBack={this.handleBack}
+          />
         </PageNavigationWrapper>
 
-        <PageContainer className='with-small-control-bar'>
-          {isSaving && <LoaderWrapper className='overlay-wrapper'>
+        <PageContainer className="with-small-control-bar">
+          {isSaving && (
+            <LoaderWrapper className="overlay-wrapper">
               <Loader isLoading={isSaving} />
-            </LoaderWrapper>}
+            </LoaderWrapper>
+          )}
 
           <ContentContainer>
             <InfillDevelopmentForm isFocusedOnMount />
           </ContentContainer>
         </PageContainer>
-      </FullWidthContainer>;
+      </FullWidthContainer>
+    );
   }
-
 }
 
 const mapStateToProps = (state: RootState) => {
@@ -154,15 +187,20 @@ const mapStateToProps = (state: RootState) => {
     isFormValid: getIsFormValidById(state, FormNames.INFILL_DEVELOPMENT),
     isFormDirty: isDirty(FormNames.INFILL_DEVELOPMENT)(state),
     isSaveClicked: getIsSaveClicked(state),
-    isSaving: getIsSaving(state)
+    isSaving: getIsSaving(state),
   };
 };
 
-export default flowRight(withInfillDevelopmentPageAttributes, withUiDataList, withRouter, connect(mapStateToProps, {
-  clearFormValidFlags,
-  createInfillDevelopment,
-  hideEditMode,
-  receiveIsSaveClicked,
-  receiveTopNavigationSettings,
-  showEditMode
-}))(NewInfillDevelopmentPage);
+export default flowRight(
+  withInfillDevelopmentPageAttributes,
+  withUiDataList,
+  withRouter,
+  connect(mapStateToProps, {
+    clearFormValidFlags,
+    createInfillDevelopment,
+    hideEditMode,
+    receiveIsSaveClicked,
+    receiveTopNavigationSettings,
+    showEditMode,
+  }),
+)(NewInfillDevelopmentPage);

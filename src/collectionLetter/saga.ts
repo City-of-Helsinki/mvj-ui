@@ -1,18 +1,28 @@
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveError } from "@/api/actions";
-import { attributesNotFound, receiveAttributes, receiveMethods, fetchCollectionLettersByLease as fetchCollectionLettersByLeaseAction, receiveCollectionLettersByLease, notFoundByLease } from "./actions";
+import {
+  attributesNotFound,
+  receiveAttributes,
+  receiveMethods,
+  fetchCollectionLettersByLease as fetchCollectionLettersByLeaseAction,
+  receiveCollectionLettersByLease,
+  notFoundByLease,
+} from "./actions";
 import { displayUIMessage } from "@/util/helpers";
-import { fetchAttributes, fetchCollectionLettersByLease, uploadCollectionLetter, deleteCollectionLetter } from "./requests";
+import {
+  fetchAttributes,
+  fetchCollectionLettersByLease,
+  uploadCollectionLetter,
+  deleteCollectionLetter,
+} from "./requests";
 import { getCollectionLettersByLease } from "./selectors";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -36,22 +46,22 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchCollectionLettersByLeaseSaga({
   payload: lease,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchCollectionLettersByLease, lease);
 
     switch (statusCode) {
       case 200:
-        yield put(receiveCollectionLettersByLease({
-          lease: lease,
-          collectionLetters: bodyAsJson.results
-        }));
+        yield put(
+          receiveCollectionLettersByLease({
+            lease: lease,
+            collectionLetters: bodyAsJson.results,
+          }),
+        );
         break;
 
       default:
@@ -59,35 +69,35 @@ function* fetchCollectionLettersByLeaseSaga({
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch collection letters by lease with error "%s"', error);
+    console.error(
+      'Failed to fetch collection letters by lease with error "%s"',
+      error,
+    );
     yield put(notFoundByLease(lease));
   }
 }
 
 function* uploadCollectionLetterSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(uploadCollectionLetter, payload);
 
     switch (statusCode) {
       case 201:
         yield put(fetchCollectionLettersByLeaseAction(payload.data.lease));
         displayUIMessage({
-          title: '',
-          body: 'Perintäkirje tallennettu'
+          title: "",
+          body: "Perintäkirje tallennettu",
         });
         break;
 
       default:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -98,32 +108,36 @@ function* uploadCollectionLetterSaga({
 
 function* deleteCollectionLetterSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deleteCollectionLetter, payload.id);
 
     switch (statusCode) {
       case 204:
-        const currentLetters = yield select(getCollectionLettersByLease, payload.lease);
-        yield put(receiveCollectionLettersByLease({
-          lease: payload.lease,
-          collectionLetters: currentLetters.filter(letter => letter.id !== payload.id)
-        }));
+        const currentLetters = yield select(
+          getCollectionLettersByLease,
+          payload.lease,
+        );
+        yield put(
+          receiveCollectionLettersByLease({
+            lease: payload.lease,
+            collectionLetters: currentLetters.filter(
+              (letter) => letter.id !== payload.id,
+            ),
+          }),
+        );
         displayUIMessage({
-          title: '',
-          body: 'Perintäkirje poistettu'
+          title: "",
+          body: "Perintäkirje poistettu",
         });
         break;
 
       default:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -133,10 +147,24 @@ function* deleteCollectionLetterSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/collectionLetter/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/collectionLetter/FETCH_BY_LEASE', fetchCollectionLettersByLeaseSaga);
-    yield takeLatest('mvj/collectionLetter/UPLOAD', uploadCollectionLetterSaga);
-    yield takeLatest('mvj/collectionLetter/DELETE', deleteCollectionLetterSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/collectionLetter/FETCH_ATTRIBUTES",
+        fetchAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/collectionLetter/FETCH_BY_LEASE",
+        fetchCollectionLettersByLeaseSaga,
+      );
+      yield takeLatest(
+        "mvj/collectionLetter/UPLOAD",
+        uploadCollectionLetterSaga,
+      );
+      yield takeLatest(
+        "mvj/collectionLetter/DELETE",
+        deleteCollectionLetterSaga,
+      );
+    }),
+  ]);
 }

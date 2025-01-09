@@ -31,35 +31,63 @@ const InvoiceSimulatorInvoice = ({
   rows,
   startDate,
   type,
-  typeOptions
+  typeOptions,
 }: Props) => {
-  return <Collapse className='collapse__third' defaultOpen={false} headerSubtitles={<Fragment>
+  return (
+    <Collapse
+      className="collapse__third"
+      defaultOpen={false}
+      headerSubtitles={
+        <Fragment>
           <Column>
-            <CollapseHeaderSubtitle>{formatDate(dueDate) || '-'}</CollapseHeaderSubtitle>
+            <CollapseHeaderSubtitle>
+              {formatDate(dueDate) || "-"}
+            </CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <CollapseHeaderSubtitle><AmountWithVat amount={billedAmount} date={dueDate} /></CollapseHeaderSubtitle>
+            <CollapseHeaderSubtitle>
+              <AmountWithVat amount={billedAmount} date={dueDate} />
+            </CollapseHeaderSubtitle>
           </Column>
-        </Fragment>} headerTitle={getContactFullName(recipient)}>
+        </Fragment>
+      }
+      headerTitle={getContactFullName(recipient)}
+    >
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='Laskutuskausi' text={formatDateRange(startDate, endDate)} />
+          <FormTitleAndText
+            title="Laskutuskausi"
+            text={formatDateRange(startDate, endDate)}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='Eräpäivä' text={formatDate(dueDate)} />
+          <FormTitleAndText title="Eräpäivä" text={formatDate(dueDate)} />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='Summa' text={<AmountWithVat amount={billedAmount} date={dueDate} />} />
+          <FormTitleAndText
+            title="Summa"
+            text={<AmountWithVat amount={billedAmount} date={dueDate} />}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='Tyyppi' text={getLabelOfOption(typeOptions, type)} />
+          <FormTitleAndText
+            title="Tyyppi"
+            text={getLabelOfOption(typeOptions, type)}
+          />
         </Column>
       </Row>
 
       <SubTitle>Erittely</SubTitle>
       {!rows.length && <FormText>Ei rivejä</FormText>}
-      {!!rows.length && <InvoiceSimulatorInvoiceRows dueDate={dueDate} receivableTypeOptions={receivableTypeOptions} rows={rows} />}
-    </Collapse>;
+      {!!rows.length && (
+        <InvoiceSimulatorInvoiceRows
+          dueDate={dueDate}
+          receivableTypeOptions={receivableTypeOptions}
+          rows={rows}
+        />
+      )}
+    </Collapse>
+  );
 };
 
 export default InvoiceSimulatorInvoice;

@@ -16,31 +16,29 @@ type State = {
 
 class Tooltip extends Component<Props, State> {
   state: State = {
-    position: 'bottom-left'
+    position: "bottom-left",
   };
 
   componentDidMount() {
-    window.addEventListener('click', this.onDocumentClick);
+    window.addEventListener("click", this.onDocumentClick);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('click', this.onDocumentClick);
+    window.removeEventListener("click", this.onDocumentClick);
   }
 
   componentDidUpdate(prevProps: Props) {
     if (this.props.isOpen && !prevProps.isOpen) {
       this.setState(() => {
         return {
-          position: this.calculatePosition()
+          position: this.calculatePosition(),
         };
       });
     }
   }
 
-  onDocumentClick: (arg0: Event) => void = event => {
-    const {
-      isOpen
-    } = this.props;
+  onDocumentClick: (arg0: Event) => void = (event) => {
+    const { isOpen } = this.props;
     const target = event.target;
     const el = ReactDOM.findDOMNode(this);
 
@@ -49,14 +47,17 @@ class Tooltip extends Component<Props, State> {
       event.preventDefault();
     }
 
-    if (isOpen && el && target !== el && (!(target instanceof Node) || !el.contains(target))) {
+    if (
+      isOpen &&
+      el &&
+      target !== el &&
+      (!(target instanceof Node) || !el.contains(target))
+    ) {
       this.onClose(event);
     }
   };
-  onClose: (arg0: Event) => void = event => {
-    const {
-      onClose
-    } = this.props;
+  onClose: (arg0: Event) => void = (event) => {
+    const { onClose } = this.props;
 
     if (event) {
       event.preventDefault();
@@ -65,13 +66,8 @@ class Tooltip extends Component<Props, State> {
     }
   };
   calculatePosition: () => TooltipPosition = () => {
-    const {
-      relativeTo
-    } = this.props;
-    let {
-      innerHeight: height,
-      innerWidth: width
-    } = window;
+    const { relativeTo } = this.props;
+    let { innerHeight: height, innerWidth: width } = window;
     const el = ReactDOM.findDOMNode(this)?.parentNode;
 
     if (el) {
@@ -83,7 +79,7 @@ class Tooltip extends Component<Props, State> {
           x: x2,
           y: y2,
           height: height2,
-          width: width2
+          width: width2,
         } = relativeTo.getBoundingClientRect();
         x -= x2;
         y -= y2;
@@ -96,41 +92,44 @@ class Tooltip extends Component<Props, State> {
 
       if (top) {
         if (left) {
-          return 'top-left';
+          return "top-left";
         } else {
-          return 'top-right';
+          return "top-right";
         }
       } else {
         if (left) {
-          return 'bottom-left';
+          return "bottom-left";
         } else {
-          return 'bottom-right';
+          return "bottom-right";
         }
       }
     }
 
-    return 'bottom-right';
+    return "bottom-right";
   };
 
   render(): JSX.Element {
-    const {
-      isOpen,
-      className,
-      children
-    } = this.props;
-    const {
-      position
-    } = this.state;
-    return <Fragment>
-      {isOpen && <div className={classNames('tooltip__text-container', `tooltip__text-container--position-${position}`, className)}>
-        <div className={classNames('tooltip__text-container-wrapper')}>
-          <CloseButton onClick={this.onClose} />
-          {children}
-        </div>
-      </div>}
-    </Fragment>;
+    const { isOpen, className, children } = this.props;
+    const { position } = this.state;
+    return (
+      <Fragment>
+        {isOpen && (
+          <div
+            className={classNames(
+              "tooltip__text-container",
+              `tooltip__text-container--position-${position}`,
+              className,
+            )}
+          >
+            <div className={classNames("tooltip__text-container-wrapper")}>
+              <CloseButton onClick={this.onClose} />
+              {children}
+            </div>
+          </div>
+        )}
+      </Fragment>
+    );
   }
-
 }
 
 export default Tooltip;

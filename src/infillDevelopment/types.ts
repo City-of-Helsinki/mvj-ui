@@ -20,10 +20,22 @@ export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;
 export type InfillDevelopmentAttributesNotFoundAction = Action<string, void>;
-export type FetchInfillDevelopmentListAction = Action<string, Record<string, any>>;
-export type ReceiveInfillDevelopmentListAction = Action<string, InfillDevelopmentList>;
-export type FetchSingleInfillDevelopmentAction = Action<string, InfillDevelopmentId>;
-export type ReceiveSingleInfillDevelopmentAction = Action<string, InfillDevelopment>;
+export type FetchInfillDevelopmentListAction = Action<
+  string,
+  Record<string, any>
+>;
+export type ReceiveInfillDevelopmentListAction = Action<
+  string,
+  InfillDevelopmentList
+>;
+export type FetchSingleInfillDevelopmentAction = Action<
+  string,
+  InfillDevelopmentId
+>;
+export type ReceiveSingleInfillDevelopmentAction = Action<
+  string,
+  InfillDevelopment
+>;
 export type CreateInfillDevelopmentAction = Action<string, InfillDevelopment>;
 export type EditInfillDevelopmentAction = Action<string, InfillDevelopment>;
 export type InfillDevelopmentNotFoundAction = Action<string, void>;

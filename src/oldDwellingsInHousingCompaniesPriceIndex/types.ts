@@ -5,7 +5,7 @@ export type IndexPointFigureYearly = {
   year: number;
   region: string;
   comment: string;
-}
+};
 
 export type OldDwellingsInHousingCompaniesPriceIndex = {
   code: string;
@@ -16,7 +16,7 @@ export type OldDwellingsInHousingCompaniesPriceIndex = {
   source_table_label: string;
   url: string;
   point_figures: IndexPointFigureYearly[];
-}
+};
 export type OldDwellingsInHousingCompaniesPriceIndexId = number;
 
 export type OldDwellingsInHousingCompaniesPriceIndexState = {
@@ -24,6 +24,15 @@ export type OldDwellingsInHousingCompaniesPriceIndexState = {
   latest: OldDwellingsInHousingCompaniesPriceIndex;
 };
 
-export type FetchOldDwellingsInHousingCompaniesPriceIndexAction = Action<string, void>;
-export type ReceiveOldDwellingsInHousingCompaniesPriceIndexAction = Action<string, OldDwellingsInHousingCompaniesPriceIndex>;
-export type OldDwellingsInHousingCompaniesPriceIndexNotFoundAction = Action<string, void>;
+export type FetchOldDwellingsInHousingCompaniesPriceIndexAction = Action<
+  string,
+  void
+>;
+export type ReceiveOldDwellingsInHousingCompaniesPriceIndexAction = Action<
+  string,
+  OldDwellingsInHousingCompaniesPriceIndex
+>;
+export type OldDwellingsInHousingCompaniesPriceIndexNotFoundAction = Action<
+  string,
+  void
+>;

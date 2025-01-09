@@ -6,10 +6,8 @@ import { receiveError } from "@/api/actions";
 function* fetchVatsSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchVats);
 
     switch (statusCode) {
@@ -29,7 +27,9 @@ function* fetchVatsSaga(): Generator<any, any, any> {
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/vat/FETCH_ALL', fetchVatsSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/vat/FETCH_ALL", fetchVatsSaga);
+    }),
+  ]);
 }

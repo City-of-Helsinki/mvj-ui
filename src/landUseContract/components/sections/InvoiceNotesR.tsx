@@ -16,11 +16,27 @@ import ListItem from "@/components/content/ListItem";
 import ListItems from "@/components/content/ListItems";
 import RemoveButton from "@/components/form/RemoveButton";
 import { patchLeaseInvoiceNotes } from "@/leases/actions";
-import { ConfirmationModalTexts, FieldTypes, FormNames, Methods } from "@/enums";
+import {
+  ConfirmationModalTexts,
+  FieldTypes,
+  FormNames,
+  Methods,
+} from "@/enums";
 import { ButtonColors } from "@/components/enums";
-import { InvoiceNoteFieldPaths, InvoiceNoteFieldTitles } from "@/invoiceNote/enums";
-import { formatDate, getFieldAttributes, isFieldAllowedToRead, isMethodAllowed } from "@/util/helpers";
-import { getAttributes as getInvoiceNoteAttributes, getMethods as getInvoiceNoteMethods } from "@/invoiceNote/selectors";
+import {
+  InvoiceNoteFieldPaths,
+  InvoiceNoteFieldTitles,
+} from "@/invoiceNote/enums";
+import {
+  formatDate,
+  getFieldAttributes,
+  isFieldAllowedToRead,
+  isMethodAllowed,
+} from "@/util/helpers";
+import {
+  getAttributes as getInvoiceNoteAttributes,
+  getMethods as getInvoiceNoteMethods,
+} from "@/invoiceNote/selectors";
 import { getCurrentLease } from "@/leases/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { Lease } from "@/leases/types";
@@ -31,51 +47,93 @@ type ReadOnlyProps = {
 
 const InvoiceNotesReadOnly = ({
   invoiceNoteAttributes,
-  invoiceNotes
+  invoiceNotes,
 }: ReadOnlyProps) => {
   if (!invoiceNotes.length) {
     return <FormText>Ei laskujen tiedotteita</FormText>;
   }
 
-  return <Fragment>
+  return (
+    <Fragment>
       <Row>
         <Column small={3} large={2}>
-          <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE)}>
-            <FormTextTitle>{InvoiceNoteFieldTitles.BILLING_PERIOD_START_DATE}</FormTextTitle>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              invoiceNoteAttributes,
+              InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE,
+            )}
+          >
+            <FormTextTitle>
+              {InvoiceNoteFieldTitles.BILLING_PERIOD_START_DATE}
+            </FormTextTitle>
           </Authorization>
         </Column>
         <Column small={3} large={2}>
-          <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE)}>
-            <FormTextTitle>{InvoiceNoteFieldTitles.BILLING_PERIOD_END_DATE}</FormTextTitle>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              invoiceNoteAttributes,
+              InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE,
+            )}
+          >
+            <FormTextTitle>
+              {InvoiceNoteFieldTitles.BILLING_PERIOD_END_DATE}
+            </FormTextTitle>
           </Authorization>
         </Column>
         <Column small={6} large={8}>
-          <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.NOTES)}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              invoiceNoteAttributes,
+              InvoiceNoteFieldPaths.NOTES,
+            )}
+          >
             <FormTextTitle>{InvoiceNoteFieldTitles.NOTES}</FormTextTitle>
           </Authorization>
         </Column>
       </Row>
 
       <ListItems>
-        {invoiceNotes.map((note, index) => <Row key={index}>
+        {invoiceNotes.map((note, index) => (
+          <Row key={index}>
             <Column small={3} large={2}>
-              <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE)}>
-                <ListItem>{formatDate(note.billing_period_start_date) || '-'}</ListItem>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  invoiceNoteAttributes,
+                  InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE,
+                )}
+              >
+                <ListItem>
+                  {formatDate(note.billing_period_start_date) || "-"}
+                </ListItem>
               </Authorization>
             </Column>
             <Column small={3} large={2}>
-              <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE)}>
-                <ListItem>{formatDate(note.billing_period_end_date) || '-'}</ListItem>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  invoiceNoteAttributes,
+                  InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE,
+                )}
+              >
+                <ListItem>
+                  {formatDate(note.billing_period_end_date) || "-"}
+                </ListItem>
               </Authorization>
             </Column>
             <Column small={6} large={8}>
-              <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.NOTES)}>
-                <ListItem>{note.notes || '-'}</ListItem>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  invoiceNoteAttributes,
+                  InvoiceNoteFieldPaths.NOTES,
+                )}
+              >
+                <ListItem>{note.notes || "-"}</ListItem>
               </Authorization>
             </Column>
-          </Row>)}
+          </Row>
+        ))}
       </ListItems>
-    </Fragment>;
+    </Fragment>
+  );
 };
 
 type EditProps = {
@@ -87,87 +145,175 @@ type EditProps = {
 const InvoiceNotesEdit = ({
   fields,
   invoiceNoteAttributes,
-  invoiceNoteMethods
+  invoiceNoteMethods,
 }: EditProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
 
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      return <Fragment>
-            {fields && !!fields.length && <Row>
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <Fragment>
+            {fields && !!fields.length && (
+              <Row>
                 <Column small={3} large={2}>
-                  <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE)}>
-                    <FormTextTitle>{InvoiceNoteFieldTitles.BILLING_PERIOD_START_DATE}</FormTextTitle>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      invoiceNoteAttributes,
+                      InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE,
+                    )}
+                  >
+                    <FormTextTitle>
+                      {InvoiceNoteFieldTitles.BILLING_PERIOD_START_DATE}
+                    </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column small={3} large={2}>
-                  <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE)}>
-                    <FormTextTitle>{InvoiceNoteFieldTitles.BILLING_PERIOD_END_DATE}</FormTextTitle>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      invoiceNoteAttributes,
+                      InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE,
+                    )}
+                  >
+                    <FormTextTitle>
+                      {InvoiceNoteFieldTitles.BILLING_PERIOD_END_DATE}
+                    </FormTextTitle>
                   </Authorization>
                 </Column>
                 <Column small={6} large={8}>
-                  <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.NOTES)}>
-                    <FormTextTitle>{InvoiceNoteFieldTitles.NOTES}</FormTextTitle>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      invoiceNoteAttributes,
+                      InvoiceNoteFieldPaths.NOTES,
+                    )}
+                  >
+                    <FormTextTitle>
+                      {InvoiceNoteFieldTitles.NOTES}
+                    </FormTextTitle>
                   </Authorization>
                 </Column>
-              </Row>}
+              </Row>
+            )}
 
             {fields.map((note, index) => {
-          const handleRemove = () => {
-            dispatch({
-              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-              confirmationFunction: () => {
-                fields.remove(index);
-              },
-              confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: ConfirmationModalTexts.DELETE_INVOICE_NOTE.BUTTON,
-              confirmationModalLabel: ConfirmationModalTexts.DELETE_INVOICE_NOTE.LABEL,
-              confirmationModalTitle: ConfirmationModalTexts.DELETE_INVOICE_NOTE.TITLE
-            });
-          };
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    fields.remove(index);
+                  },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
+                  confirmationModalButtonText:
+                    ConfirmationModalTexts.DELETE_INVOICE_NOTE.BUTTON,
+                  confirmationModalLabel:
+                    ConfirmationModalTexts.DELETE_INVOICE_NOTE.LABEL,
+                  confirmationModalTitle:
+                    ConfirmationModalTexts.DELETE_INVOICE_NOTE.TITLE,
+                });
+              };
 
-          return <Row key={index}>
+              return (
+                <Row key={index}>
                   <Column small={3} large={2}>
-                    <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE)}>
-                      <FormField fieldAttributes={getFieldAttributes(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE)} name={`${note}.billing_period_start_date`} invisibleLabel overrideValues={{
-                  label: InvoiceNoteFieldTitles.BILLING_PERIOD_START_DATE
-                }} />
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        invoiceNoteAttributes,
+                        InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE,
+                      )}
+                    >
+                      <FormField
+                        fieldAttributes={getFieldAttributes(
+                          invoiceNoteAttributes,
+                          InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE,
+                        )}
+                        name={`${note}.billing_period_start_date`}
+                        invisibleLabel
+                        overrideValues={{
+                          label:
+                            InvoiceNoteFieldTitles.BILLING_PERIOD_START_DATE,
+                        }}
+                      />
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
-                    <Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE)}>
-                      <FormField disableTouched fieldAttributes={getFieldAttributes(invoiceNoteAttributes, InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE)} name={`${note}.billing_period_end_date`} invisibleLabel overrideValues={{
-                  label: InvoiceNoteFieldTitles.BILLING_PERIOD_END_DATE
-                }} />
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        invoiceNoteAttributes,
+                        InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE,
+                      )}
+                    >
+                      <FormField
+                        disableTouched
+                        fieldAttributes={getFieldAttributes(
+                          invoiceNoteAttributes,
+                          InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE,
+                        )}
+                        name={`${note}.billing_period_end_date`}
+                        invisibleLabel
+                        overrideValues={{
+                          label: InvoiceNoteFieldTitles.BILLING_PERIOD_END_DATE,
+                        }}
+                      />
                     </Authorization>
                   </Column>
                   <Column small={6} large={8}>
-                    <FieldAndRemoveButtonWrapper field={<Authorization allow={isFieldAllowedToRead(invoiceNoteAttributes, InvoiceNoteFieldPaths.NOTES)}>
-                          <FormField fieldAttributes={getFieldAttributes(invoiceNoteAttributes, InvoiceNoteFieldPaths.NOTES)} name={`${note}.notes`} invisibleLabel overrideValues={{
-                  label: InvoiceNoteFieldTitles.NOTES,
-                  fieldType: FieldTypes.TEXTAREA
-                }} />
-                        </Authorization>} removeButton={<Authorization allow={isMethodAllowed(invoiceNoteMethods, Methods.DELETE)}>
-                          <RemoveButton className='third-level' onClick={handleRemove} title="Poista tiedote" />
-                        </Authorization>} />
-
+                    <FieldAndRemoveButtonWrapper
+                      field={
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            invoiceNoteAttributes,
+                            InvoiceNoteFieldPaths.NOTES,
+                          )}
+                        >
+                          <FormField
+                            fieldAttributes={getFieldAttributes(
+                              invoiceNoteAttributes,
+                              InvoiceNoteFieldPaths.NOTES,
+                            )}
+                            name={`${note}.notes`}
+                            invisibleLabel
+                            overrideValues={{
+                              label: InvoiceNoteFieldTitles.NOTES,
+                              fieldType: FieldTypes.TEXTAREA,
+                            }}
+                          />
+                        </Authorization>
+                      }
+                      removeButton={
+                        <Authorization
+                          allow={isMethodAllowed(
+                            invoiceNoteMethods,
+                            Methods.DELETE,
+                          )}
+                        >
+                          <RemoveButton
+                            className="third-level"
+                            onClick={handleRemove}
+                            title="Poista tiedote"
+                          />
+                        </Authorization>
+                      }
+                    />
                   </Column>
-                </Row>;
-        })}
-            <Authorization allow={isMethodAllowed(invoiceNoteMethods, Methods.POST)}>
+                </Row>
+              );
+            })}
+            <Authorization
+              allow={isMethodAllowed(invoiceNoteMethods, Methods.POST)}
+            >
               <Row>
                 <Column>
-                  <AddButton label='Lisää tiedote' onClick={handleAdd} />
+                  <AddButton label="Lisää tiedote" onClick={handleAdd} />
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>;
-    }}
-    </AppConsumer>;
+          </Fragment>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
 type Props = {
@@ -184,23 +330,19 @@ type Props = {
 
 class InvoiceNotes extends PureComponent<Props> {
   handleCancel = () => {
-    const {
-      reset
-    } = this.props;
+    const { reset } = this.props;
     reset();
   };
   handleSave = () => {
-    const {
-      currentLease,
-      editedInvoiceNotes,
-      patchLeaseInvoiceNotes
-    } = this.props;
-    const invoiceNotes = editedInvoiceNotes.map(note => ({ ...note,
-      lease: currentLease.id
+    const { currentLease, editedInvoiceNotes, patchLeaseInvoiceNotes } =
+      this.props;
+    const invoiceNotes = editedInvoiceNotes.map((note) => ({
+      ...note,
+      lease: currentLease.id,
     }));
     patchLeaseInvoiceNotes({
       id: currentLease.id,
-      invoice_notes: invoiceNotes
+      invoice_notes: invoiceNotes,
     });
   };
 
@@ -210,66 +352,100 @@ class InvoiceNotes extends PureComponent<Props> {
       invoiceNoteAttributes,
       invoiceNoteMethods,
       invoiceNotes,
-      valid
+      valid,
     } = this.props;
-    return <form>
-        <Authorization allow={isMethodAllowed(invoiceNoteMethods, Methods.GET) && !isMethodAllowed(invoiceNoteMethods, Methods.PATCH)}>
-          <InvoiceNotesReadOnly invoiceNoteAttributes={invoiceNoteAttributes} invoiceNotes={invoiceNotes} />
+    return (
+      <form>
+        <Authorization
+          allow={
+            isMethodAllowed(invoiceNoteMethods, Methods.GET) &&
+            !isMethodAllowed(invoiceNoteMethods, Methods.PATCH)
+          }
+        >
+          <InvoiceNotesReadOnly
+            invoiceNoteAttributes={invoiceNoteAttributes}
+            invoiceNotes={invoiceNotes}
+          />
         </Authorization>
-        <Authorization allow={isMethodAllowed(invoiceNoteMethods, Methods.PATCH)}>
+        <Authorization
+          allow={isMethodAllowed(invoiceNoteMethods, Methods.PATCH)}
+        >
           <AppConsumer>
-            {({
-            dispatch
-          }) => {
-            const handleCancel = () => {
-              if (dirty) {
-                dispatch({
-                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                  confirmationFunction: () => {
-                    this.handleCancel();
-                  },
-                  confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText: ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
-                  confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
-                  confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE
-                });
-              } else {
-                this.handleCancel();
-              }
-            };
+            {({ dispatch }) => {
+              const handleCancel = () => {
+                if (dirty) {
+                  dispatch({
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
+                      this.handleCancel();
+                    },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
+                    confirmationModalButtonText:
+                      ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+                    confirmationModalLabel:
+                      ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+                    confirmationModalTitle:
+                      ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
+                  });
+                } else {
+                  this.handleCancel();
+                }
+              };
 
-            return <Fragment>
-                  <FieldArray invoiceNoteAttributes={invoiceNoteAttributes} invoiceNoteMethods={invoiceNoteMethods} component={InvoiceNotesEdit} name='invoice_notes' />
+              return (
+                <Fragment>
+                  <FieldArray
+                    invoiceNoteAttributes={invoiceNoteAttributes}
+                    invoiceNoteMethods={invoiceNoteMethods}
+                    component={InvoiceNotesEdit}
+                    name="invoice_notes"
+                  />
 
                   <Row>
                     <Column>
                       <ButtonWrapper>
-                        <Button className={ButtonColors.SECONDARY} onClick={handleCancel} text='Peruuta' />
-                        <Button className={ButtonColors.SUCCESS} disabled={!valid} onClick={this.handleSave} text='Tallenna' />
+                        <Button
+                          className={ButtonColors.SECONDARY}
+                          onClick={handleCancel}
+                          text="Peruuta"
+                        />
+                        <Button
+                          className={ButtonColors.SUCCESS}
+                          disabled={!valid}
+                          onClick={this.handleSave}
+                          text="Tallenna"
+                        />
                       </ButtonWrapper>
                     </Column>
                   </Row>
-                </Fragment>;
-          }}
+                </Fragment>
+              );
+            }}
           </AppConsumer>
         </Authorization>
-      </form>;
+      </form>
+    );
   }
-
 }
 
 const formName = FormNames.LEASE_INVOICE_NOTES;
 const selector = formValueSelector(formName);
-export default flowRight(connect(state => {
-  return {
-    currentLease: getCurrentLease(state),
-    editedInvoiceNotes: selector(state, 'invoice_notes'),
-    invoiceNoteAttributes: getInvoiceNoteAttributes(state),
-    invoiceNoteMethods: getInvoiceNoteMethods(state)
-  };
-}, {
-  patchLeaseInvoiceNotes
-}), reduxForm({
-  form: formName,
-  enableReinitialize: true
-}))(InvoiceNotes);
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        currentLease: getCurrentLease(state),
+        editedInvoiceNotes: selector(state, "invoice_notes"),
+        invoiceNoteAttributes: getInvoiceNoteAttributes(state),
+        invoiceNoteMethods: getInvoiceNoteMethods(state),
+      };
+    },
+    {
+      patchLeaseInvoiceNotes,
+    },
+  ),
+  reduxForm({
+    form: formName,
+    enableReinitialize: true,
+  }),
+)(InvoiceNotes);

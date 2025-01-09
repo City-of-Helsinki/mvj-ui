@@ -7,10 +7,10 @@ type Props = {
 };
 
 class TooltipToggleButton extends Component<Props> {
-  openTooltip: (arg0: React.MouseEvent<HTMLButtonElement>) => void = event => {
-    const {
-      onClick
-    } = this.props;
+  openTooltip: (arg0: React.MouseEvent<HTMLButtonElement>) => void = (
+    event,
+  ) => {
+    const { onClick } = this.props;
 
     if (event) {
       event.stopPropagation();
@@ -20,16 +20,18 @@ class TooltipToggleButton extends Component<Props> {
   };
 
   render(): JSX.Element {
-    const {
-      className,
-      style,
-      children
-    } = this.props;
-    return <button className={className} style={style} onClick={this.openTooltip} type='button'>
+    const { className, style, children } = this.props;
+    return (
+      <button
+        className={className}
+        style={style}
+        onClick={this.openTooltip}
+        type="button"
+      >
         {children}
-      </button>;
+      </button>
+    );
   }
-
 }
 
 export default TooltipToggleButton;

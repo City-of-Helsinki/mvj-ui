@@ -21,16 +21,17 @@ class CreatePlotSearchModal extends Component<Props> {
   };
 
   render(): JSX.Element {
-    const {
-      isOpen,
-      onClose,
-      onSubmit
-    } = this.props;
-    return <Modal isOpen={isOpen} onClose={onClose} title='Luo uusi tonttihaku'>
-        <CreatePlotSearchForm ref={this.setRefForForm} onClose={onClose} onSubmit={onSubmit} />
-      </Modal>;
+    const { isOpen, onClose, onSubmit } = this.props;
+    return (
+      <Modal isOpen={isOpen} onClose={onClose} title="Luo uusi tonttihaku">
+        <CreatePlotSearchForm
+          ref={this.setRefForForm}
+          onClose={onClose}
+          onSubmit={onSubmit}
+        />
+      </Modal>
+    );
   }
-
 }
 
 export default CreatePlotSearchModal;

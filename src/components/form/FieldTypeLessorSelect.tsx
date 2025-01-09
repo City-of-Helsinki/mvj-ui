@@ -22,17 +22,36 @@ const FieldTypeLessorSelect = ({
   isDirty,
   onChange,
   placeholder,
-  serviceUnit
+  serviceUnit,
 }: Props): JSX.Element => {
-  const getLessors = debounce(async (inputValue: string, callback: (...args: Array<any>) => any) => {
-    const lessors = await fetchContacts({
-      is_lessor: true,
-      search: inputValue,
-      service_unit: serviceUnit?.id || ""
-    });
-    callback(addEmptyOption(lessors.map(lessor => getContentLessor(lessor)).sort((a, b) => sortStringByKeyAsc(a, b, 'label'))));
-  }, 500);
-  return <AsyncSelect disabled={disabled} displayError={displayError} getOptions={getLessors} input={input} isDirty={isDirty} onChange={onChange} placeholder={placeholder} />;
+  const getLessors = debounce(
+    async (inputValue: string, callback: (...args: Array<any>) => any) => {
+      const lessors = await fetchContacts({
+        is_lessor: true,
+        search: inputValue,
+        service_unit: serviceUnit?.id || "",
+      });
+      callback(
+        addEmptyOption(
+          lessors
+            .map((lessor) => getContentLessor(lessor))
+            .sort((a, b) => sortStringByKeyAsc(a, b, "label")),
+        ),
+      );
+    },
+    500,
+  );
+  return (
+    <AsyncSelect
+      disabled={disabled}
+      displayError={displayError}
+      getOptions={getLessors}
+      input={input}
+      isDirty={isDirty}
+      onChange={onChange}
+      placeholder={placeholder}
+    />
+  );
 };
 
 export default FieldTypeLessorSelect;

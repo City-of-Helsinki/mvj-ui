@@ -17,7 +17,7 @@ const SingleRadioInput = ({
   invisibleLabel,
   label,
   name,
-  onChange
+  onChange,
 }: Props) => {
   const handleChange = (e: any) => {
     onChange(e.target.value);
@@ -36,14 +36,28 @@ const SingleRadioInput = ({
     }
   };
 
-  return <Fragment>
-      <label className={classNames('form-field__label', {
-      'invisible': invisibleLabel
-    })} htmlFor={name}>
+  return (
+    <Fragment>
+      <label
+        className={classNames("form-field__label", {
+          invisible: invisibleLabel,
+        })}
+        htmlFor={name}
+      >
         {label}
       </label>
-      <input type='radio' checked={checked} disabled={disabled} id={name} name={name} onChange={handleChange} onClick={handleClick} onKeyDown={handleKeyDown} />
-    </Fragment>;
+      <input
+        type="radio"
+        checked={checked}
+        disabled={disabled}
+        id={name}
+        name={name}
+        onChange={handleChange}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+      />
+    </Fragment>
+  );
 };
 
 export default SingleRadioInput;

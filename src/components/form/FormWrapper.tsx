@@ -3,8 +3,8 @@ type Props = {
   children?: any;
 };
 
-const FormWrapper = ({
-  children
-}: Props): JSX.Element => <div className='form-wrapper'>{children}</div>;
+const FormWrapper = ({ children }: Props): JSX.Element => (
+  <div className="form-wrapper">{children}</div>
+);
 
 export default FormWrapper;

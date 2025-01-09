@@ -16,9 +16,22 @@ import { FormNames, ViewModes } from "@/enums";
 import { LandUseAgreementAttachmentFieldPaths } from "@/landUseAgreementAttachment/enums";
 import { getContentBasicInformation } from "@/landUseContract/helpers";
 import { getUserFullName } from "@/users/helpers";
-import { formatDate, getFieldOptions, getLabelOfOption, getReferenceNumberLink, isFieldAllowedToRead } from "@/util/helpers";
-import { getAttributes, getCollapseStateByKey, getCurrentLandUseContract } from "@/landUseContract/selectors";
-import { getUiDataLandUseContractKey, getUiDataLandUseAgreementAttachmentKey } from "@/uiData/helpers";
+import {
+  formatDate,
+  getFieldOptions,
+  getLabelOfOption,
+  getReferenceNumberLink,
+  isFieldAllowedToRead,
+} from "@/util/helpers";
+import {
+  getAttributes,
+  getCollapseStateByKey,
+  getCurrentLandUseContract,
+} from "@/landUseContract/selectors";
+import {
+  getUiDataLandUseContractKey,
+  getUiDataLandUseAgreementAttachmentKey,
+} from "@/uiData/helpers";
 import { getAttributes as getLandUseAgreementAttachmentAttributes } from "@/landUseAgreementAttachment/selectors";
 import type { Attributes } from "types";
 import type { LandUseContract } from "@/landUseContract/types";
@@ -36,231 +49,431 @@ const BasicInformation = ({
   basicInformationCollapseState,
   currentLandUseContract,
   receiveCollapseStates,
-  landUseAgreementAttachmentAttributes
+  landUseAgreementAttachmentAttributes,
 }: Props) => {
   const handleBasicInformationCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION]: {
-          basic_information: val
-        }
-      }
+          basic_information: val,
+        },
+      },
     });
   };
 
   const basicInformation = getContentBasicInformation(currentLandUseContract),
-        stateOptions = getFieldOptions(attributes, 'state'),
-        planAcceptorOptions = getFieldOptions(attributes, 'plan_acceptor'),
-        landUseContractTypeOptions = getFieldOptions(attributes, 'type'),
-        landUseContractDefinitionOptions = getFieldOptions(attributes, 'definition'),
-        landUseContractStatusOptions = getFieldOptions(attributes, 'status'),
-        attachments = get(currentLandUseContract, 'attachments', []).filter(file => file.type === 'general');
-  return <Fragment>
+    stateOptions = getFieldOptions(attributes, "state"),
+    planAcceptorOptions = getFieldOptions(attributes, "plan_acceptor"),
+    landUseContractTypeOptions = getFieldOptions(attributes, "type"),
+    landUseContractDefinitionOptions = getFieldOptions(
+      attributes,
+      "definition",
+    ),
+    landUseContractStatusOptions = getFieldOptions(attributes, "status"),
+    attachments = get(currentLandUseContract, "attachments", []).filter(
+      (file) => file.type === "general",
+    );
+  return (
+    <Fragment>
       <h2>Perustiedot</h2>
       <Divider />
-      <Collapse defaultOpen={basicInformationCollapseState !== undefined ? basicInformationCollapseState : true} headerTitle='Perustiedot' onToggle={handleBasicInformationCollapseToggle}>
+      <Collapse
+        defaultOpen={
+          basicInformationCollapseState !== undefined
+            ? basicInformationCollapseState
+            : true
+        }
+        headerTitle="Perustiedot"
+        onToggle={handleBasicInformationCollapseToggle}
+      >
         <Row>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'estate_ids')}>
+          <Authorization allow={isFieldAllowedToRead(attributes, "estate_ids")}>
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle title='Kiinteistötunnus' uiDataKey={getUiDataLandUseContractKey('estate_ids')} />
-              {!!basicInformation.estate_ids && !!basicInformation.estate_ids.length ? <ListItems>
-                  {basicInformation.estate_ids.map((estate_id, index) => <ListItem key={index}>{estate_id.estate_id || '-'}</ListItem>)}
-                </ListItems> : <FormText>-</FormText>}
+              <FormTextTitle
+                title="Kiinteistötunnus"
+                uiDataKey={getUiDataLandUseContractKey("estate_ids")}
+              />
+              {!!basicInformation.estate_ids &&
+              !!basicInformation.estate_ids.length ? (
+                <ListItems>
+                  {basicInformation.estate_ids.map((estate_id, index) => (
+                    <ListItem key={index}>
+                      {estate_id.estate_id || "-"}
+                    </ListItem>
+                  ))}
+                </ListItems>
+              ) : (
+                <FormText>-</FormText>
+              )}
             </Column>
           </Authorization>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'definition')}>
+          <Authorization allow={isFieldAllowedToRead(attributes, "definition")}>
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('definition')}>
-                {get(attributes, 'definition.label') || 'Maankäyttösopimuksen määritelmä'}
+              <FormTextTitle
+                uiDataKey={getUiDataLandUseContractKey("definition")}
+              >
+                {get(attributes, "definition.label") ||
+                  "Maankäyttösopimuksen määritelmä"}
               </FormTextTitle>
-              <FormText>{getLabelOfOption(landUseContractDefinitionOptions, basicInformation.definition) || '-'}</FormText>
+              <FormText>
+                {getLabelOfOption(
+                  landUseContractDefinitionOptions,
+                  basicInformation.definition,
+                ) || "-"}
+              </FormText>
             </Column>
           </Authorization>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'preparer')}>
+          <Authorization allow={isFieldAllowedToRead(attributes, "preparer")}>
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle title='Valmistelijat' uiDataKey={getUiDataLandUseContractKey('preparer')} />
+              <FormTextTitle
+                title="Valmistelijat"
+                uiDataKey={getUiDataLandUseContractKey("preparer")}
+              />
               <ListItems>
-                <ListItem>{getUserFullName(basicInformation.preparer) || '-'}</ListItem>
-                <ListItem>{getUserFullName(basicInformation.preparer2) || '-'}</ListItem>
+                <ListItem>
+                  {getUserFullName(basicInformation.preparer) || "-"}
+                </ListItem>
+                <ListItem>
+                  {getUserFullName(basicInformation.preparer2) || "-"}
+                </ListItem>
               </ListItems>
             </Column>
           </Authorization>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'type')}>
+          <Authorization allow={isFieldAllowedToRead(attributes, "type")}>
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('type')}>
-                {'Maankäyttösopimuksen tyyppi'}
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey("type")}>
+                {"Maankäyttösopimuksen tyyppi"}
               </FormTextTitle>
-              <FormText>{getLabelOfOption(landUseContractTypeOptions, basicInformation.type) || '-'}</FormText>
+              <FormText>
+                {getLabelOfOption(
+                  landUseContractTypeOptions,
+                  basicInformation.type,
+                ) || "-"}
+              </FormText>
             </Column>
           </Authorization>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'status')}>
+          <Authorization allow={isFieldAllowedToRead(attributes, "status")}>
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('status')}>
-                {'Maankäyttösopimuksen tila'}
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey("status")}>
+                {"Maankäyttösopimuksen tila"}
               </FormTextTitle>
-              <FormText>{getLabelOfOption(landUseContractStatusOptions, basicInformation.status) || '-'}</FormText>
+              <FormText>
+                {getLabelOfOption(
+                  landUseContractStatusOptions,
+                  basicInformation.status,
+                ) || "-"}
+              </FormText>
             </Column>
           </Authorization>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'estimated_completion_year')}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              attributes,
+              "estimated_completion_year",
+            )}
+          >
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('estimated_completion_year')}>
-                {'Arvioitu toteutumisvuosi'}
+              <FormTextTitle
+                uiDataKey={getUiDataLandUseContractKey(
+                  "estimated_completion_year",
+                )}
+              >
+                {"Arvioitu toteutumisvuosi"}
               </FormTextTitle>
-              <FormText>{basicInformation.estimated_completion_year || '-'}</FormText>
+              <FormText>
+                {basicInformation.estimated_completion_year || "-"}
+              </FormText>
             </Column>
           </Authorization>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'estimated_introduction_year')}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              attributes,
+              "estimated_introduction_year",
+            )}
+          >
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('estimated_introduction_year')}>
-                {'Arvioitu esittelyvuosi'}
+              <FormTextTitle
+                uiDataKey={getUiDataLandUseContractKey(
+                  "estimated_introduction_year",
+                )}
+              >
+                {"Arvioitu esittelyvuosi"}
               </FormTextTitle>
-              <FormText>{basicInformation.estimated_introduction_year || '-'}</FormText>
+              <FormText>
+                {basicInformation.estimated_introduction_year || "-"}
+              </FormText>
             </Column>
           </Authorization>
         </Row>
 
         <SubTitle>Osoitteet</SubTitle>
-        {basicInformation.addresses && basicInformation.addresses.map((address, index) => <Row key={index}>
-            <Authorization allow={isFieldAllowedToRead(attributes, 'addresses.child.children.address')}>
-              <Column small={6} medium={4} large={2}>
-                <FormTextTitle uiDataKey={getUiDataLandUseContractKey('addresses.child.children.address')}>
-                  {'Osoite'}
-                </FormTextTitle>
-                <FormText>{address.address || '-'}</FormText>
-              </Column>
-            </Authorization>
-            <Authorization allow={isFieldAllowedToRead(attributes, 'addresses.child.children.postal_code')}>
-              <Column small={6} medium={4} large={2}>
-                <FormTextTitle uiDataKey={getUiDataLandUseContractKey('addresses.child.children.postal_code')}>
-                  {'Postinumero'}
-                </FormTextTitle>
-                <FormText>{address.postal_code || '-'}</FormText>
-              </Column>
-            </Authorization>
+        {basicInformation.addresses &&
+          basicInformation.addresses.map((address, index) => (
+            <Row key={index}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  "addresses.child.children.address",
+                )}
+              >
+                <Column small={6} medium={4} large={2}>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLandUseContractKey(
+                      "addresses.child.children.address",
+                    )}
+                  >
+                    {"Osoite"}
+                  </FormTextTitle>
+                  <FormText>{address.address || "-"}</FormText>
+                </Column>
+              </Authorization>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  "addresses.child.children.postal_code",
+                )}
+              >
+                <Column small={6} medium={4} large={2}>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLandUseContractKey(
+                      "addresses.child.children.postal_code",
+                    )}
+                  >
+                    {"Postinumero"}
+                  </FormTextTitle>
+                  <FormText>{address.postal_code || "-"}</FormText>
+                </Column>
+              </Authorization>
 
-            <Authorization allow={isFieldAllowedToRead(attributes, 'addresses.child.children.city')}>
-              <Column small={6} medium={4} large={2}>
-                <FormTextTitle uiDataKey={getUiDataLandUseContractKey('addresses.child.children.city')}>
-                  {'Kaupunki'}
-                </FormTextTitle>
-                <FormText>{address.city || '-'}</FormText>
-              </Column>
-            </Authorization>
-            <Authorization allow={isFieldAllowedToRead(attributes, 'addresses.child.children.is_primary')}>
-              <Column small={6} medium={4} large={2}>
-                <FormTextTitle uiDataKey={getUiDataLandUseContractKey('addresses.child.children.is_primary')}>
-                  {'Ensisijainen osoite'}
-                </FormTextTitle>
-                <FormText>{address.is_primary ? 'Kyllä' : 'ei'}</FormText>
-              </Column>
-            </Authorization>
-          </Row>)}
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  "addresses.child.children.city",
+                )}
+              >
+                <Column small={6} medium={4} large={2}>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLandUseContractKey(
+                      "addresses.child.children.city",
+                    )}
+                  >
+                    {"Kaupunki"}
+                  </FormTextTitle>
+                  <FormText>{address.city || "-"}</FormText>
+                </Column>
+              </Authorization>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  "addresses.child.children.is_primary",
+                )}
+              >
+                <Column small={6} medium={4} large={2}>
+                  <FormTextTitle
+                    uiDataKey={getUiDataLandUseContractKey(
+                      "addresses.child.children.is_primary",
+                    )}
+                  >
+                    {"Ensisijainen osoite"}
+                  </FormTextTitle>
+                  <FormText>{address.is_primary ? "Kyllä" : "ei"}</FormText>
+                </Column>
+              </Authorization>
+            </Row>
+          ))}
 
         {!attachments.length && <FormText>Ei liitetiedostoja</FormText>}
-        {!!attachments.length && <Fragment>
+        {!!attachments.length && (
+          <Fragment>
             <Row>
               <Column small={3} large={4}>
-                <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.FILE)}>
-                  <FormTextTitle uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.FILE)}>
-                    {'Tiedoston nimi'}
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    landUseAgreementAttachmentAttributes,
+                    LandUseAgreementAttachmentFieldPaths.FILE,
+                  )}
+                >
+                  <FormTextTitle
+                    uiDataKey={getUiDataLandUseAgreementAttachmentKey(
+                      LandUseAgreementAttachmentFieldPaths.FILE,
+                    )}
+                  >
+                    {"Tiedoston nimi"}
                   </FormTextTitle>
                 </Authorization>
               </Column>
               <Column small={3} large={2}>
-                <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
-                  <FormTextTitle uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
-                    {'Ladattu'}
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    landUseAgreementAttachmentAttributes,
+                    LandUseAgreementAttachmentFieldPaths.UPLOADED_AT,
+                  )}
+                >
+                  <FormTextTitle
+                    uiDataKey={getUiDataLandUseAgreementAttachmentKey(
+                      LandUseAgreementAttachmentFieldPaths.UPLOADED_AT,
+                    )}
+                  >
+                    {"Ladattu"}
                   </FormTextTitle>
                 </Authorization>
               </Column>
               <Column small={3} large={2}>
-                <FormTextTitle uiDataKey={getUiDataLandUseAgreementAttachmentKey(LandUseAgreementAttachmentFieldPaths.UPLOADER)}>
-                  {'Lataaja'}
+                <FormTextTitle
+                  uiDataKey={getUiDataLandUseAgreementAttachmentKey(
+                    LandUseAgreementAttachmentFieldPaths.UPLOADER,
+                  )}
+                >
+                  {"Lataaja"}
                 </FormTextTitle>
               </Column>
             </Row>
 
             {attachments.map((file, index) => {
-          return <Row key={index}>
+              return (
+                <Row key={index}>
                   <Column small={3} large={4}>
-                    <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.FILE)}>
-                      <FileDownloadLink fileUrl={file.file} label={file.filename} />
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        landUseAgreementAttachmentAttributes,
+                        LandUseAgreementAttachmentFieldPaths.FILE,
+                      )}
+                    >
+                      <FileDownloadLink
+                        fileUrl={file.file}
+                        label={file.filename}
+                      />
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
-                    <Authorization allow={isFieldAllowedToRead(landUseAgreementAttachmentAttributes, LandUseAgreementAttachmentFieldPaths.UPLOADED_AT)}>
-                      <FormText>{formatDate(file.uploaded_at) || '-'}</FormText>
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        landUseAgreementAttachmentAttributes,
+                        LandUseAgreementAttachmentFieldPaths.UPLOADED_AT,
+                      )}
+                    >
+                      <FormText>{formatDate(file.uploaded_at) || "-"}</FormText>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
-                    <FormText>{getUserFullName(file.uploader) || '-'}</FormText>
+                    <FormText>{getUserFullName(file.uploader) || "-"}</FormText>
                   </Column>
-                </Row>;
-        })}
-          </Fragment>}
+                </Row>
+              );
+            })}
+          </Fragment>
+        )}
 
         <SubTitle>Asemakaavatiedot</SubTitle>
         <Row>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'plan_reference_number')}>
+          <Authorization
+            allow={isFieldAllowedToRead(attributes, "plan_reference_number")}
+          >
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('plan_reference_number')}>
-                {'Asemakaavan diaarinumero'}
+              <FormTextTitle
+                uiDataKey={getUiDataLandUseContractKey("plan_reference_number")}
+              >
+                {"Asemakaavan diaarinumero"}
               </FormTextTitle>
-              <FormText>{basicInformation.plan_reference_number ? <ExternalLink className='no-margin' href={getReferenceNumberLink(basicInformation.plan_reference_number)} text={basicInformation.plan_reference_number} /> : '-'}</FormText>
+              <FormText>
+                {basicInformation.plan_reference_number ? (
+                  <ExternalLink
+                    className="no-margin"
+                    href={getReferenceNumberLink(
+                      basicInformation.plan_reference_number,
+                    )}
+                    text={basicInformation.plan_reference_number}
+                  />
+                ) : (
+                  "-"
+                )}
+              </FormText>
             </Column>
           </Authorization>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'plan_number')}>
+          <Authorization
+            allow={isFieldAllowedToRead(attributes, "plan_number")}
+          >
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('plan_number')}>
-                {'Asemakaavan numero'}
+              <FormTextTitle
+                uiDataKey={getUiDataLandUseContractKey("plan_number")}
+              >
+                {"Asemakaavan numero"}
               </FormTextTitle>
-              <FormText>{basicInformation.plan_number || '-'}</FormText>
+              <FormText>{basicInformation.plan_number || "-"}</FormText>
             </Column>
           </Authorization>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'state')}>
+          <Authorization allow={isFieldAllowedToRead(attributes, "state")}>
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('state')}>
-                {'Asemakaavan käsittelyvaihe'}
+              <FormTextTitle uiDataKey={getUiDataLandUseContractKey("state")}>
+                {"Asemakaavan käsittelyvaihe"}
               </FormTextTitle>
-              <FormText>{getLabelOfOption(stateOptions, basicInformation.state) || '-'}</FormText>
+              <FormText>
+                {getLabelOfOption(stateOptions, basicInformation.state) || "-"}
+              </FormText>
             </Column>
           </Authorization>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'plan_acceptor')}>
+          <Authorization
+            allow={isFieldAllowedToRead(attributes, "plan_acceptor")}
+          >
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('plan_acceptor')}>
-                {'Asemakaavan hyväksyjä'}
+              <FormTextTitle
+                uiDataKey={getUiDataLandUseContractKey("plan_acceptor")}
+              >
+                {"Asemakaavan hyväksyjä"}
               </FormTextTitle>
-              <FormText>{getLabelOfOption(planAcceptorOptions, basicInformation.plan_acceptor) || '-'}</FormText>
+              <FormText>
+                {getLabelOfOption(
+                  planAcceptorOptions,
+                  basicInformation.plan_acceptor,
+                ) || "-"}
+              </FormText>
             </Column>
           </Authorization>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'plan_lawfulness_date')}>
+          <Authorization
+            allow={isFieldAllowedToRead(attributes, "plan_lawfulness_date")}
+          >
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('plan_lawfulness_date')}>
-                {'Asemakaavan lainvoimaisuuspvm'}
+              <FormTextTitle
+                uiDataKey={getUiDataLandUseContractKey("plan_lawfulness_date")}
+              >
+                {"Asemakaavan lainvoimaisuuspvm"}
               </FormTextTitle>
-              <FormText>{formatDate(basicInformation.plan_lawfulness_date) || '-'}</FormText>
+              <FormText>
+                {formatDate(basicInformation.plan_lawfulness_date) || "-"}
+              </FormText>
             </Column>
           </Authorization>
-          <Authorization allow={isFieldAllowedToRead(attributes, 'project_area')}>
+          <Authorization
+            allow={isFieldAllowedToRead(attributes, "project_area")}
+          >
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle uiDataKey={getUiDataLandUseContractKey('project_area')}>
-                {'Hankealue'}
+              <FormTextTitle
+                uiDataKey={getUiDataLandUseContractKey("project_area")}
+              >
+                {"Hankealue"}
               </FormTextTitle>
-              <FormText>{basicInformation.project_area || '-'}</FormText>
+              <FormText>{basicInformation.project_area || "-"}</FormText>
             </Column>
           </Authorization>
         </Row>
       </Collapse>
-    </Fragment>;
+    </Fragment>
+  );
 };
 
-export default connect(state => {
-  return {
-    attributes: getAttributes(state),
-    basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION}.basic_information`),
-    currentLandUseContract: getCurrentLandUseContract(state),
-    landUseAgreementAttachmentAttributes: getLandUseAgreementAttachmentAttributes(state)
-  };
-}, {
-  receiveCollapseStates
-})(BasicInformation);
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      basicInformationCollapseState: getCollapseStateByKey(
+        state,
+        `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION}.basic_information`,
+      ),
+      currentLandUseContract: getCurrentLandUseContract(state),
+      landUseAgreementAttachmentAttributes:
+        getLandUseAgreementAttachmentAttributes(state),
+    };
+  },
+  {
+    receiveCollapseStates,
+  },
+)(BasicInformation);

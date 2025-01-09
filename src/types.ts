@@ -8,12 +8,18 @@ export type Selector<Value, Props> = (state: RootState, props: Props) => Value;
 export type Attributes = Record<string, any> | null | undefined;
 export type Reports = Record<string, any> | null | undefined;
 export type Methods = Record<string, any> | null | undefined;
-export type ApiResponse<T = any> = ({
-  count: number;
-  next: string | null | undefined;
-  previous: string | null | undefined;
-  results: Array<T>;
-} | null | undefined) | null;
+export type ApiResponse<T = any> =
+  | (
+      | {
+          count: number;
+          next: string | null | undefined;
+          previous: string | null | undefined;
+          results: Array<T>;
+        }
+      | null
+      | undefined
+    )
+  | null;
 type Coordinate = Array<number>;
 export type LeafletFeatureGeometry = {
   coordinates: Array<Coordinate>;

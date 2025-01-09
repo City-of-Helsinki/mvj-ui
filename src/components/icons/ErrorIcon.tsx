@@ -4,9 +4,11 @@ type Props = {
   className?: string;
 };
 
-const ErrorIcon = ({
-  className
-}: Props) => <svg viewBox="0 0 16 16" className={classNames('icons', 'icons__error', className)}>
+const ErrorIcon = ({ className }: Props) => (
+  <svg
+    viewBox="0 0 16 16"
+    className={classNames("icons", "icons__error", className)}
+  >
     <title>Virhe</title>
     <g stroke="none">
       <g transform="translate(-610.000000, -338.000000)">
@@ -15,6 +17,7 @@ const ErrorIcon = ({
         </g>
       </g>
     </g>
-  </svg>;
+  </svg>
+);
 
 export default ErrorIcon;

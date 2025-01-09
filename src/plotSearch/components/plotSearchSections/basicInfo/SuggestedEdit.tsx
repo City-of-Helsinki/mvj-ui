@@ -31,34 +31,71 @@ const SuggestedEdit = ({
   field,
   isSaveClicked,
   attributes,
-  onRemove
+  onRemove,
 }: Props) => {
-  const suggestedOptions = getFieldOptions(attributes, 'plotSearch_sites.child.children.suggested.child.children.name');
-  return <Row>
+  const suggestedOptions = getFieldOptions(
+    attributes,
+    "plotSearch_sites.child.children.suggested.child.children.name",
+  );
+  return (
+    <Row>
       <Column large={7}>
-        <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'plotSearch_sites.child.children.suggested.child.children.name')} name={`${field}.name`} overrideValues={{
-        label: 'Ehdotettu varauksensaaja',
-        options: suggestedOptions
-      }} invisibleLabel />
+        <FormField
+          disableTouched={isSaveClicked}
+          fieldAttributes={get(
+            attributes,
+            "plotSearch_sites.child.children.suggested.child.children.name",
+          )}
+          name={`${field}.name`}
+          overrideValues={{
+            label: "Ehdotettu varauksensaaja",
+            options: suggestedOptions,
+          }}
+          invisibleLabel
+        />
       </Column>
       <Column large={1.5}>
-        <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'plotSearch_sites.child.children.suggested.child.children.share_numerator')} name={`${field}.share_numerator`} invisibleLabel />
+        <FormField
+          disableTouched={isSaveClicked}
+          fieldAttributes={get(
+            attributes,
+            "plotSearch_sites.child.children.suggested.child.children.share_numerator",
+          )}
+          name={`${field}.share_numerator`}
+          invisibleLabel
+        />
       </Column>
-      {'/'}
+      {"/"}
       <Column large={1.5}>
-        <FormField disableTouched={isSaveClicked} fieldAttributes={get(attributes, 'plotSearch_sites.child.children.suggested.child.children.share_denominator')} name={`${field}.share_denominator`} invisibleLabel />
+        <FormField
+          disableTouched={isSaveClicked}
+          fieldAttributes={get(
+            attributes,
+            "plotSearch_sites.child.children.suggested.child.children.share_denominator",
+          )}
+          name={`${field}.share_denominator`}
+          invisibleLabel
+        />
       </Column>
       <Column large={1}>
         <Authorization allow={true}>
-          {!disabled && <RemoveButton className='third-level' onClick={onRemove} style={{
-          height: 'unset'
-        }} title='Poista päätös' />}
+          {!disabled && (
+            <RemoveButton
+              className="third-level"
+              onClick={onRemove}
+              style={{
+                height: "unset",
+              }}
+              title="Poista päätös"
+            />
+          )}
         </Authorization>
       </Column>
-    </Row>;
+    </Row>
+  );
 };
 
-export default (connect((state, props: Props) => {
+export default connect((state, props: Props) => {
   const formName = props.formName;
   const selector = formValueSelector(formName);
   return {
@@ -66,6 +103,6 @@ export default (connect((state, props: Props) => {
     isSaveClicked: getIsSaveClicked(state),
     type: selector(state, `${props.field}.type`),
     decisionToList: selector(state, `${props.field}.decision_to_list`),
-    usersPermissions: getUsersPermissions(state)
+    usersPermissions: getUsersPermissions(state),
   };
-})(SuggestedEdit) as React.ComponentType<OwnProps>);
+})(SuggestedEdit) as React.ComponentType<OwnProps>;

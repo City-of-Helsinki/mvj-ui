@@ -1,15 +1,18 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { receiveAttributes, attributesNotFound, receiveReceivableTypes, receivableTypesNotFound } from "./actions";
+import {
+  receiveAttributes,
+  attributesNotFound,
+  receiveReceivableTypes,
+  receivableTypesNotFound,
+} from "./actions";
 import { receiveError } from "@/api/actions";
 import { fetchAttributes, fetchReceivableTypes } from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -23,7 +26,10 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch lease create charge attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch lease create charge attributes with error "%s"',
+      error,
+    );
     yield put(attributesNotFound());
     yield put(receiveError(error));
   }
@@ -32,10 +38,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 function* fetchReceivableTypesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchReceivableTypes);
 
     switch (statusCode) {
@@ -56,8 +60,16 @@ function* fetchReceivableTypesSaga(): Generator<any, any, any> {
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/leaseCreateCharge/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/leaseCreateCharge/FETCH_RECEIVABLE_TYPES', fetchReceivableTypesSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/leaseCreateCharge/FETCH_ATTRIBUTES",
+        fetchAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/leaseCreateCharge/FETCH_RECEIVABLE_TYPES",
+        fetchReceivableTypesSaga,
+      );
+    }),
+  ]);
 }

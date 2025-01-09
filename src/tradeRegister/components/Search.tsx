@@ -20,47 +20,65 @@ type Props = {
 const Search = ({
   formValues,
   handleSubmit,
-  onSearch
+  onSearch,
 }: Props): React.JSX.Element => {
   const handleSearch = () => {
-    const newValues = { ...formValues
-    };
+    const newValues = { ...formValues };
     onSearch(newValues);
   };
 
-  return <form onSubmit={handleSubmit(handleSearch)}>
+  return (
+    <form onSubmit={handleSubmit(handleSearch)}>
       <Row>
         <Column small={12}>
-          <SearchRow style={{
-          marginBottom: 15
-        }}>
-            <SearchLabelColumn style={{
-            width: 'unset',
-            marginRight: 10
-          }}>
+          <SearchRow
+            style={{
+              marginBottom: 15,
+            }}
+          >
+            <SearchLabelColumn
+              style={{
+                width: "unset",
+                marginRight: 10,
+              }}
+            >
               <SearchLabel>Y-tunnus</SearchLabel>
             </SearchLabelColumn>
             <SearchInputColumn>
-              <FormField autoBlur disableDirty fieldAttributes={{
-              label: 'Y-tunnus',
-              type: FieldTypes.STRING,
-              read_only: false
-            }} invisibleLabel name='business_id' />
+              <FormField
+                autoBlur
+                disableDirty
+                fieldAttributes={{
+                  label: "Y-tunnus",
+                  type: FieldTypes.STRING,
+                  read_only: false,
+                }}
+                invisibleLabel
+                name="business_id"
+              />
             </SearchInputColumn>
 
-            <Button className={`${ButtonColors.SUCCESS} no-margin-right`} onClick={handleSearch} text='Hae' />
+            <Button
+              className={`${ButtonColors.SUCCESS} no-margin-right`}
+              onClick={handleSearch}
+              text="Hae"
+            />
           </SearchRow>
         </Column>
       </Row>
-    </form>;
+    </form>
+  );
 };
 
 const formName = FormNames.TRADE_REGISTER_SEARCH;
 
-export default flowRight(connect(state => {
-  return {
-    formValues: getFormValues(formName)(state)
-  };
-}), reduxForm({
-  form: formName
-}))(Search) as React.ComponentType<any>;
+export default flowRight(
+  connect((state) => {
+    return {
+      formValues: getFormValues(formName)(state),
+    };
+  }),
+  reduxForm({
+    form: formName,
+  }),
+)(Search) as React.ComponentType<any>;

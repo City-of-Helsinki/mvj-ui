@@ -5,9 +5,10 @@ type Props = {
   className?: string;
 };
 
-const FullWidthContainer = ({
-  children,
-  className
-}: Props) => <div className={classNames('content__full-width-container', className)}>{children}</div>;
+const FullWidthContainer = ({ children, className }: Props) => (
+  <div className={classNames("content__full-width-container", className)}>
+    {children}
+  </div>
+);
 
 export default FullWidthContainer;

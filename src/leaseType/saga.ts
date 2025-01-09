@@ -6,17 +6,13 @@ import { fetchLeaseTypes } from "./requests";
 function* fetchLeaseTypesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchLeaseTypes);
 
     switch (statusCode) {
       case 200:
-        const {
-          results
-        } = bodyAsJson;
+        const { results } = bodyAsJson;
         yield put(receiveLeaseTypes(results));
         break;
 
@@ -33,7 +29,9 @@ function* fetchLeaseTypesSaga(): Generator<any, any, any> {
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/leaseType/FETCH_ALL', fetchLeaseTypesSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/leaseType/FETCH_ALL", fetchLeaseTypesSaga);
+    }),
+  ]);
 }

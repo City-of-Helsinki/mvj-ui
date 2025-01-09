@@ -9,30 +9,34 @@ export function withWindowResize(WrappedComponent: any) {
   return class WindowResizeHandler extends PureComponent<Props, State> {
     _isMounted: boolean;
     state = {
-      largeScreen: isLargeScreen()
+      largeScreen: isLargeScreen(),
     };
 
     componentDidMount() {
       this._isMounted = true;
-      window.addEventListener('resize', this.handleResize);
+      window.addEventListener("resize", this.handleResize);
     }
 
     componentWillUnmount() {
       this._isMounted = false;
-      window.removeEventListener('resize', this.handleResize);
+      window.removeEventListener("resize", this.handleResize);
     }
 
     handleResize = throttle(() => {
       if (this._isMounted) {
         this.setState({
-          largeScreen: isLargeScreen()
+          largeScreen: isLargeScreen(),
         });
       }
     }, 100);
 
     render() {
-      return <WrappedComponent largeScreen={this.state.largeScreen} {...this.props} />;
+      return (
+        <WrappedComponent
+          largeScreen={this.state.largeScreen}
+          {...this.props}
+        />
+      );
     }
-
   };
 }

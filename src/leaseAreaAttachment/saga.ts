@@ -3,34 +3,39 @@ import { SubmissionError } from "redux-form";
 import { fetchSingleLeaseAfterEdit } from "@/leases/actions";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
-import { createLeaseAreaAttachment, deleteLeaseAreaAttachment } from "./requests";
+import {
+  createLeaseAreaAttachment,
+  deleteLeaseAreaAttachment,
+} from "./requests";
 
 function* createLeaseAreaAttachmentSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createLeaseAreaAttachment, payload);
 
     switch (statusCode) {
       case 201:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: payload.lease,
-          callbackFunctions: [() => displayUIMessage({
-            title: '',
-            body: 'Tiedosto lisätty'
-          })]
-        }));
+        yield put(
+          fetchSingleLeaseAfterEdit({
+            leaseId: payload.lease,
+            callbackFunctions: [
+              () =>
+                displayUIMessage({
+                  title: "",
+                  body: "Tiedosto lisätty",
+                }),
+            ],
+          }),
+        );
         break;
 
       case 404:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -41,30 +46,32 @@ function* createLeaseAreaAttachmentSaga({
 
 function* deleteLeaseAreaAttachmentSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deleteLeaseAreaAttachment, payload.id);
 
     switch (statusCode) {
       case 204:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: payload.lease,
-          callbackFunctions: [() => displayUIMessage({
-            title: '',
-            body: 'Tiedosto poistettu'
-          })]
-        }));
+        yield put(
+          fetchSingleLeaseAfterEdit({
+            leaseId: payload.lease,
+            callbackFunctions: [
+              () =>
+                displayUIMessage({
+                  title: "",
+                  body: "Tiedosto poistettu",
+                }),
+            ],
+          }),
+        );
         break;
 
       case 404:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -74,8 +81,16 @@ function* deleteLeaseAreaAttachmentSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/leaseAreaAttachment/CREATE', createLeaseAreaAttachmentSaga);
-    yield takeLatest('mvj/leaseAreaAttachment/DELETE', deleteLeaseAreaAttachmentSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/leaseAreaAttachment/CREATE",
+        createLeaseAreaAttachmentSaga,
+      );
+      yield takeLatest(
+        "mvj/leaseAreaAttachment/DELETE",
+        deleteLeaseAreaAttachmentSaga,
+      );
+    }),
+  ]);
 }

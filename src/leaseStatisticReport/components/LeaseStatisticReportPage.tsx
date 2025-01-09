@@ -16,12 +16,19 @@ import { getRouteById, Routes } from "@/root/routes";
 import { getReportTypeOptions } from "@/leaseStatisticReport/helpers";
 import LeaseStatisticReportForm from "./LeaseStatisticReportForm";
 import LeaseInvoicingConfirmationReport from "./LeaseInvoicingConfirmationReport";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "@/usersPermissions/selectors";
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import type { Reports } from "types";
 import GreenBox from "@/components/content/GreenBox";
 import SubTitle from "@/components/content/SubTitle";
-import { getIsFetchingReportData, getPayload, getReports } from "@/leaseStatisticReport/selectors";
+import {
+  getIsFetchingReportData,
+  getPayload,
+  getReports,
+} from "@/leaseStatisticReport/selectors";
 import { getReportData } from "@/leaseStatisticReport/selectors";
 import { getLabelOfOption } from "@/util/helpers";
 type Props = {
@@ -39,14 +46,12 @@ class LeaseStatisticReportPage extends PureComponent<Props, State> {
   state = {};
 
   componentDidMount() {
-    const {
-      receiveTopNavigationSettings
-    } = this.props;
-    setPageTitle('Tilastot ja raportit');
+    const { receiveTopNavigationSettings } = this.props;
+    setPageTitle("Tilastot ja raportit");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LEASE_STATISTIC_REPORT),
-      pageTitle: 'Tilastot ja raportit',
-      showSearch: false
+      pageTitle: "Tilastot ja raportit",
+      showSearch: false,
     });
   }
 
@@ -57,43 +62,65 @@ class LeaseStatisticReportPage extends PureComponent<Props, State> {
       reportData,
       isFetchingReportData,
       payload,
-      reports
+      reports,
     } = this.props;
     const reportTypeOptions = getReportTypeOptions(reports);
-    if (isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (isFetchingUsersPermissions)
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (isEmpty(usersPermissions)) return null;
-    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.STATISTICS_AND_REPORTS} /></PageContainer>;
-    return <PageContainer>
+    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE))
+      return (
+        <PageContainer>
+          <AuthorizationError
+            text={PermissionMissingTexts.STATISTICS_AND_REPORTS}
+          />
+        </PageContainer>
+      );
+    return (
+      <PageContainer>
         <ContentContainer>
           <h2>RAPORTIT</h2>
           <Divider />
           <GreenBox>
             <LeaseStatisticReportForm />
           </GreenBox>
-          {(!!reportData || isFetchingReportData) && <GreenBox className='with-top-margin'>
-            <SubTitle style={{
-            textTransform: 'uppercase'
-          }}>
-              {getLabelOfOption(reportTypeOptions, payload.report_type)}
-            </SubTitle>
-            <LeaseInvoicingConfirmationReport />
-          </GreenBox>}
-
+          {(!!reportData || isFetchingReportData) && (
+            <GreenBox className="with-top-margin">
+              <SubTitle
+                style={{
+                  textTransform: "uppercase",
+                }}
+              >
+                {getLabelOfOption(reportTypeOptions, payload.report_type)}
+              </SubTitle>
+              <LeaseInvoicingConfirmationReport />
+            </GreenBox>
+          )}
         </ContentContainer>
-      </PageContainer>;
+      </PageContainer>
+    );
   }
-
 }
 
-export default flowRight(withRouter, connect(state => {
-  return {
-    isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-    usersPermissions: getUsersPermissions(state),
-    reportData: getReportData(state),
-    isFetchingReportData: getIsFetchingReportData(state),
-    payload: getPayload(state),
-    reports: getReports(state)
-  };
-}, {
-  receiveTopNavigationSettings
-}))(LeaseStatisticReportPage);
+export default flowRight(
+  withRouter,
+  connect(
+    (state) => {
+      return {
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        usersPermissions: getUsersPermissions(state),
+        reportData: getReportData(state),
+        isFetchingReportData: getIsFetchingReportData(state),
+        payload: getPayload(state),
+        reports: getReports(state),
+      };
+    },
+    {
+      receiveTopNavigationSettings,
+    },
+  ),
+)(LeaseStatisticReportPage);

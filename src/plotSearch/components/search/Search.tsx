@@ -27,13 +27,14 @@ type OwnProps = {
   onSearch: (...args: Array<any>) => any;
   states: Array<Record<string, any>>;
 };
-type Props = OwnProps & ContextRouter & {
-  formValues: Record<string, any>;
-  attributes: Attributes;
-  plotSearchSubtypes: Record<string, any>;
-  selectedMainType: (number | string) | null | undefined;
-  change: (...args: Array<any>) => any;
-};
+type Props = OwnProps &
+  ContextRouter & {
+    formValues: Record<string, any>;
+    attributes: Attributes;
+    plotSearchSubtypes: Record<string, any>;
+    selectedMainType: (number | string) | null | undefined;
+    change: (...args: Array<any>) => any;
+  };
 type State = {
   isBasicSearch: boolean;
   attributes: Attributes;
@@ -47,22 +48,20 @@ class Search extends Component<Props, State> {
     isBasicSearch: true,
     attributes: null,
     typeOptions: [],
-    subtypeOptions: []
+    subtypeOptions: [],
   };
 
   componentDidMount() {
     this._isMounted = true;
     this.setState({
-      isBasicSearch: this.isSearchBasicMode()
+      isBasicSearch: this.isSearchBasicMode(),
     });
     this.updateSubtypes();
   }
 
   isSearchBasicMode = () => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
     // Ignore these fields when testing is search query length
@@ -75,7 +74,10 @@ class Search extends Component<Props, State> {
     delete searchQuery.zoom;
     const keys = Object.keys(searchQuery);
 
-    if (keys.length === 0 || keys.length === 1 && searchQuery.q !== undefined) {
+    if (
+      keys.length === 0 ||
+      (keys.length === 1 && searchQuery.q !== undefined)
+    ) {
       return true;
     }
 
@@ -87,11 +89,12 @@ class Search extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Record<string, any>) {
-    const {
-      isSearchInitialized
-    } = this.props;
+    const { isSearchInitialized } = this.props;
 
-    if (isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
+    if (
+      isSearchInitialized &&
+      !isEqual(prevProps.formValues, this.props.formValues)
+    ) {
       this.onSearchChange();
     }
 
@@ -102,43 +105,38 @@ class Search extends Component<Props, State> {
 
   updateSubtypes = () => {
     this.setState(() => ({
-      subtypeOptions: [{
-        value: '',
-        label: '',
-        parent: null
-      }, ...(this.props.plotSearchSubtypes?.map(subtype => ({
-        value: subtype.id,
-        label: subtype.name,
-        parent: subtype.plot_search_type.id
-      })) || [])]
+      subtypeOptions: [
+        {
+          value: "",
+          label: "",
+          parent: null,
+        },
+        ...(this.props.plotSearchSubtypes?.map((subtype) => ({
+          value: subtype.id,
+          label: subtype.name,
+          parent: subtype.plot_search_type.id,
+        })) || []),
+      ],
     }));
   };
   resetSelectedSubtype = () => {
-    this.props.change('subtype', '');
+    this.props.change("subtype", "");
   };
   onSearchChange = debounce(() => {
     if (!this._isMounted) return;
     this.search();
   }, 1000);
   search = () => {
-    const {
-      formValues,
-      onSearch,
-      states
-    } = this.props;
-    onSearch({ ...formValues,
-      state: states.length ? states : undefined
-    });
+    const { formValues, onSearch, states } = this.props;
+    onSearch({ ...formValues, state: states.length ? states : undefined });
   };
   handleClear = () => {
-    const {
-      onSearch
-    } = this.props;
+    const { onSearch } = this.props;
     onSearch({});
   };
   toggleSearchType = () => {
     this.setState({
-      isBasicSearch: !this.state.isBasicSearch
+      isBasicSearch: !this.state.isBasicSearch,
     });
   };
 
@@ -146,50 +144,62 @@ class Search extends Component<Props, State> {
     const newState: any = {};
 
     if (props.attributes !== state.attributes) {
-      newState.typeOptions = getFieldOptions(props.attributes, PlotSearchFieldPaths.TYPE);
+      newState.typeOptions = getFieldOptions(
+        props.attributes,
+        PlotSearchFieldPaths.TYPE,
+      );
     }
 
     return !isEmpty(newState) ? newState : null;
   }
 
   render() {
-    const {
-      handleSubmit,
-      selectedMainType
-    } = this.props;
-    const {
-      isBasicSearch,
-      typeOptions,
-      subtypeOptions
-    } = this.state;
-    const filteredSubtypeOptions = subtypeOptions?.filter(type => type.parent === Number(selectedMainType) || type.parent === null) || [];
-    return <SearchContainer onSubmit={handleSubmit(this.search)}>
+    const { handleSubmit, selectedMainType } = this.props;
+    const { isBasicSearch, typeOptions, subtypeOptions } = this.state;
+    const filteredSubtypeOptions =
+      subtypeOptions?.filter(
+        (type) =>
+          type.parent === Number(selectedMainType) || type.parent === null,
+      ) || [];
+    return (
+      <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
           <Column large={12}>
-            <FormField disableDirty fieldAttributes={{
-            label: 'Hae hakusanalla',
-            type: FieldTypes.SEARCH,
-            read_only: false
-          }} invisibleLabel name='q' />
+            <FormField
+              disableDirty
+              fieldAttributes={{
+                label: "Hae hakusanalla",
+                type: FieldTypes.SEARCH,
+                read_only: false,
+              }}
+              invisibleLabel
+              name="q"
+            />
           </Column>
         </Row>
-        {!isBasicSearch && <Fragment>
+        {!isBasicSearch && (
+          <Fragment>
             <Row>
-              {
-            /* First column */
-          }
+              {/* First column */}
               <Column small={12} large={6}>
                 <SearchRow>
                   <SearchLabelColumn>
                     <SearchLabel>Hakutyyppi</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField disableDirty fieldAttributes={{
-                  type: FieldTypes.CHOICE,
-                  read_only: false
-                }} invisibleLabel name='type' overrideValues={{
-                  options: typeOptions
-                }} onChange={this.resetSelectedSubtype} />
+                    <FormField
+                      disableDirty
+                      fieldAttributes={{
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="type"
+                      overrideValues={{
+                        options: typeOptions,
+                      }}
+                      onChange={this.resetSelectedSubtype}
+                    />
                   </SearchInputColumn>
                 </SearchRow>
               </Column>
@@ -200,13 +210,21 @@ class Search extends Component<Props, State> {
                     <SearchLabel>Haun alatyyppi</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField disableDirty fieldAttributes={{
-                  type: FieldTypes.CHOICE,
-                  read_only: false
-                }} invisibleLabel name='subtype' overrideValues={{
-                  options: filteredSubtypeOptions,
-                  disabled: filteredSubtypeOptions.length <= 1 || !selectedMainType
-                }} />
+                    <FormField
+                      disableDirty
+                      fieldAttributes={{
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="subtype"
+                      overrideValues={{
+                        options: filteredSubtypeOptions,
+                        disabled:
+                          filteredSubtypeOptions.length <= 1 ||
+                          !selectedMainType,
+                      }}
+                    />
                   </SearchInputColumn>
                 </SearchRow>
               </Column>
@@ -219,16 +237,27 @@ class Search extends Component<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField disableDirty fieldAttributes={{
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name='begin_at_after' />
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="begin_at_after"
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField className='with-dash' disableDirty fieldAttributes={{
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name='begin_at_before' />
+                        <FormField
+                          className="with-dash"
+                          disableDirty
+                          fieldAttributes={{
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="begin_at_before"
+                        />
                       </Column>
                     </Row>
                   </SearchInputColumn>
@@ -243,44 +272,64 @@ class Search extends Component<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField disableDirty fieldAttributes={{
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name='end_at_after' />
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="end_at_after"
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField className='with-dash' disableDirty fieldAttributes={{
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name='end_at_before' />
+                        <FormField
+                          className="with-dash"
+                          disableDirty
+                          fieldAttributes={{
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="end_at_before"
+                        />
                       </Column>
                     </Row>
                   </SearchInputColumn>
                 </SearchRow>
               </Column>
             </Row>
-          </Fragment>}
+          </Fragment>
+        )}
         <Row>
           <Column small={6}>
-            <SearchChangeTypeLink onClick={this.toggleSearchType}>{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</SearchChangeTypeLink>
+            <SearchChangeTypeLink onClick={this.toggleSearchType}>
+              {isBasicSearch ? "Tarkennettu haku" : "Yksinkertainen haku"}
+            </SearchChangeTypeLink>
           </Column>
           <Column small={6}>
-            <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
+            <SearchClearLink onClick={this.handleClear}>
+              Tyhjennä haku
+            </SearchClearLink>
           </Column>
         </Row>
-      </SearchContainer>;
+      </SearchContainer>
+    );
   }
-
 }
 
 const formName = FormNames.PLOT_SEARCH_SEARCH;
-export default (flowRight(withRouter, connect(state => {
-  return {
-    formValues: getFormValues(formName)(state),
-    attributes: getAttributes(state),
-    plotSearchSubtypes: getPlotSearchSubTypes(state),
-    selectedMainType: formValueSelector(formName)(state, 'type')
-  };
-}), reduxForm({
-  form: formName
-}))(Search) as React.ComponentType<OwnProps>);
+export default flowRight(
+  withRouter,
+  connect((state) => {
+    return {
+      formValues: getFormValues(formName)(state),
+      attributes: getAttributes(state),
+      plotSearchSubtypes: getPlotSearchSubTypes(state),
+      selectedMainType: formValueSelector(formName)(state, "type"),
+    };
+  }),
+  reduxForm({
+    form: formName,
+  }),
+)(Search) as React.ComponentType<OwnProps>;

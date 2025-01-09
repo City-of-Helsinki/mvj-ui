@@ -11,7 +11,12 @@ import { ConfirmationModalTexts, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { getContentContracts } from "@/landUseContract/helpers";
 import { getFieldOptions } from "@/util/helpers";
-import { getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked } from "@/landUseContract/selectors";
+import {
+  getAttributes,
+  getCurrentLandUseContract,
+  getErrorsByFormName,
+  getIsSaveClicked,
+} from "@/landUseContract/selectors";
 import { getDecisionOptions } from "@/landUseContract/helpers";
 import type { Attributes } from "types";
 import type { LandUseContract } from "@/landUseContract/types";
@@ -32,42 +37,66 @@ const renderContracts = ({
   fields,
   isSaveClicked,
   currentLandUseContract,
-  decisionOptions
+  decisionOptions,
 }: ContractsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
   };
 
-  const contractTypeOptions = getFieldOptions(attributes, 'contracts.child.children.type');
-  return <AppConsumer>
-      {({
-      dispatch
-    }) => {
-      return <div>
-            {fields && !!fields.length && fields.map((contract, index) => {
-          const handleRemove = () => {
-            dispatch({
-              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-              confirmationFunction: () => {
-                fields.remove(index);
-              },
-              confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText: ConfirmationModalTexts.DELETE_CONTRACT.BUTTON,
-              confirmationModalLabel: ConfirmationModalTexts.DELETE_CONTRACT.LABEL,
-              confirmationModalTitle: ConfirmationModalTexts.DELETE_CONTRACT.TITLE
-            });
-          };
+  const contractTypeOptions = getFieldOptions(
+    attributes,
+    "contracts.child.children.type",
+  );
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <div>
+            {fields &&
+              !!fields.length &&
+              fields.map((contract, index) => {
+                const handleRemove = () => {
+                  dispatch({
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
+                      fields.remove(index);
+                    },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
+                    confirmationModalButtonText:
+                      ConfirmationModalTexts.DELETE_CONTRACT.BUTTON,
+                    confirmationModalLabel:
+                      ConfirmationModalTexts.DELETE_CONTRACT.LABEL,
+                    confirmationModalTitle:
+                      ConfirmationModalTexts.DELETE_CONTRACT.TITLE,
+                  });
+                };
 
-          return <ContractItemEdit key={index} attributes={attributes} contractsData={contractsData} errors={errors} field={contract} index={index} isSaveClicked={isSaveClicked} onRemove={handleRemove} contractTypeOptions={contractTypeOptions} currentLandUseContract={currentLandUseContract} decisionOptions={decisionOptions} />;
-        })}
+                return (
+                  <ContractItemEdit
+                    key={index}
+                    attributes={attributes}
+                    contractsData={contractsData}
+                    errors={errors}
+                    field={contract}
+                    index={index}
+                    isSaveClicked={isSaveClicked}
+                    onRemove={handleRemove}
+                    contractTypeOptions={contractTypeOptions}
+                    currentLandUseContract={currentLandUseContract}
+                    decisionOptions={decisionOptions}
+                  />
+                );
+              })}
             <Row>
               <Column>
-                <AddButton label='Lisää sopimus' onClick={handleAdd} />
+                <AddButton label="Lisää sopimus" onClick={handleAdd} />
               </Column>
             </Row>
-          </div>;
-    }}
-    </AppConsumer>;
+          </div>
+        );
+      }}
+    </AppConsumer>
+  );
 };
 
 type Props = {
@@ -88,17 +117,15 @@ class ContractsEdit extends Component<Props, State> {
   state = {
     contractsData: [],
     currentLandUseContract: null,
-    decisionOptions: []
+    decisionOptions: [],
   };
 
   componentDidUpdate(prevProps) {
-    const {
-      receiveFormValidFlags
-    } = this.props;
+    const { receiveFormValidFlags } = this.props;
 
     if (prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.LAND_USE_CONTRACT_CONTRACTS]: this.props.valid
+        [FormNames.LAND_USE_CONTRACT_CONTRACTS]: this.props.valid,
       });
     }
   }
@@ -108,7 +135,7 @@ class ContractsEdit extends Component<Props, State> {
       return {
         contractsData: getContentContracts(props.currentLandUseContract),
         currentLandUseContract: props.currentLandUseContract,
-        decisionOptions: getDecisionOptions(props.currentLandUseContract)
+        decisionOptions: getDecisionOptions(props.currentLandUseContract),
       };
     }
 
@@ -116,33 +143,41 @@ class ContractsEdit extends Component<Props, State> {
   }
 
   render() {
-    const {
-      attributes,
-      errors,
-      isSaveClicked
-    } = this.props,
-          {
-      contractsData,
-      decisionOptions
-    } = this.state;
-    return <form>
-        <FieldArray attributes={attributes} contractsData={contractsData} component={renderContracts} errors={errors} isSaveClicked={isSaveClicked} name="contracts" decisionOptions={decisionOptions} />
-      </form>;
+    const { attributes, errors, isSaveClicked } = this.props,
+      { contractsData, decisionOptions } = this.state;
+    return (
+      <form>
+        <FieldArray
+          attributes={attributes}
+          contractsData={contractsData}
+          component={renderContracts}
+          errors={errors}
+          isSaveClicked={isSaveClicked}
+          name="contracts"
+          decisionOptions={decisionOptions}
+        />
+      </form>
+    );
   }
-
 }
 
 const formName = FormNames.LAND_USE_CONTRACT_CONTRACTS;
-export default flowRight(connect(state => {
-  return {
-    attributes: getAttributes(state),
-    currentLandUseContract: getCurrentLandUseContract(state),
-    errors: getErrorsByFormName(state, formName),
-    isSaveClicked: getIsSaveClicked(state)
-  };
-}, {
-  receiveFormValidFlags
-}), reduxForm({
-  form: formName,
-  destroyOnUnmount: false
-}))(ContractsEdit) as React.ComponentType<any>;
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        attributes: getAttributes(state),
+        currentLandUseContract: getCurrentLandUseContract(state),
+        errors: getErrorsByFormName(state, formName),
+        isSaveClicked: getIsSaveClicked(state),
+      };
+    },
+    {
+      receiveFormValidFlags,
+    },
+  ),
+  reduxForm({
+    form: formName,
+    destroyOnUnmount: false,
+  }),
+)(ContractsEdit) as React.ComponentType<any>;

@@ -9,5 +9,8 @@ export type ContractFileState = {
   isFetchingById: Record<string, any>;
 };
 export type FetchContractFilesByIdAction = Action<string, ContractId>;
-export type ReceiveContractFilesByIdAction = Action<string, ReceiveContractFilePayload>;
+export type ReceiveContractFilesByIdAction = Action<
+  string,
+  ReceiveContractFilePayload
+>;
 export type NotFoundByIdAction = Action<string, ContractId>;

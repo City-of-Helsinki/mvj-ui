@@ -29,88 +29,184 @@ const DecisionConditions = ({
   conditions,
   decisionId,
   largeScreen,
-  receiveCollapseStates
+  receiveCollapseStates,
 }: Props) => {
   const handleCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.LAND_USE_CONTRACT_DECISIONS]: {
           [decisionId]: {
-            conditions: val
-          }
-        }
-      }
+            conditions: val,
+          },
+        },
+      },
     });
   };
 
-  const typeOptions = getFieldOptions(attributes, 'decisions.child.children.conditions.child.children.type');
-  return <Collapse className='collapse__secondary' defaultOpen={collapseState !== undefined ? collapseState : true} headerTitle='Ehdot' onToggle={handleCollapseToggle}>
+  const typeOptions = getFieldOptions(
+    attributes,
+    "decisions.child.children.conditions.child.children.type",
+  );
+  return (
+    <Collapse
+      className="collapse__secondary"
+      defaultOpen={collapseState !== undefined ? collapseState : true}
+      headerTitle="Ehdot"
+      onToggle={handleCollapseToggle}
+    >
       <BoxItemContainer>
         {!conditions.length && <p>Ei ehtoja</p>}
-        {!!conditions.length && <div>
-            {largeScreen && <Row>
+        {!!conditions.length && (
+          <div>
+            {largeScreen && (
+              <Row>
                 <Column large={2}>
-                  <FormTextTitle title='Ehtotyyppi' />
+                  <FormTextTitle title="Ehtotyyppi" />
                 </Column>
                 <Column large={2}>
-                  <FormTextTitle title='Valvontapvm' />
+                  <FormTextTitle title="Valvontapvm" />
                 </Column>
                 <Column large={2}>
-                  <FormTextTitle title='Valvottu pvm' />
+                  <FormTextTitle title="Valvottu pvm" />
                 </Column>
                 <Column large={6}>
-                  <FormTextTitle title='Huomautus' />
+                  <FormTextTitle title="Huomautus" />
                 </Column>
-              </Row>}
+              </Row>
+            )}
             {conditions.map((condition, index) => {
-          if (largeScreen) {
-            return <Row key={index}>
+              if (largeScreen) {
+                return (
+                  <Row key={index}>
                     <Column large={2}>
-                      <FormText>{getLabelOfOption(typeOptions, condition.type) || '–'}</FormText>
-                    </Column>
-                    <Column large={2}>
-                      <FormText className={condition.supervision_date && !condition.supervised_date ? 'alert' : ''}>
-                        {condition.supervision_date ? <span><i />{formatDate(condition.supervision_date)}</span> : '–'}
+                      <FormText>
+                        {getLabelOfOption(typeOptions, condition.type) || "–"}
                       </FormText>
                     </Column>
                     <Column large={2}>
-                      <FormText className={condition.supervised_date ? 'success' : ''}>
-                        {condition.supervised_date ? <span><i />{formatDate(condition.supervised_date)}</span> : '–'}
+                      <FormText
+                        className={
+                          condition.supervision_date &&
+                          !condition.supervised_date
+                            ? "alert"
+                            : ""
+                        }
+                      >
+                        {condition.supervision_date ? (
+                          <span>
+                            <i />
+                            {formatDate(condition.supervision_date)}
+                          </span>
+                        ) : (
+                          "–"
+                        )}
+                      </FormText>
+                    </Column>
+                    <Column large={2}>
+                      <FormText
+                        className={condition.supervised_date ? "success" : ""}
+                      >
+                        {condition.supervised_date ? (
+                          <span>
+                            <i />
+                            {formatDate(condition.supervised_date)}
+                          </span>
+                        ) : (
+                          "–"
+                        )}
                       </FormText>
                     </Column>
                     <Column large={6}>
-                      <FormText>{condition.description || '–'}</FormText>
+                      <FormText>{condition.description || "–"}</FormText>
                     </Column>
-                  </Row>;
-          } else {
-            return <BoxItem key={index} className='no-border-on-first-child no-border-on-last-child'>
+                  </Row>
+                );
+              } else {
+                return (
+                  <BoxItem
+                    key={index}
+                    className="no-border-on-first-child no-border-on-last-child"
+                  >
                     <Row>
                       <Column small={6} medium={4}>
-                        <FormTitleAndText title='Ehtotyyppi' text={getLabelOfOption(typeOptions, condition.type) || '–'} />
+                        <FormTitleAndText
+                          title="Ehtotyyppi"
+                          text={
+                            getLabelOfOption(typeOptions, condition.type) || "–"
+                          }
+                        />
                       </Column>
                       <Column small={6} medium={4}>
-                        <FormTitleAndText title='Valvontapvm' text={condition.supervision_date ? <span><i />{formatDate(condition.supervision_date)}</span> : '–'} textClassName={condition.supervision_date && !condition.supervised_date ? 'alert' : ''} />
+                        <FormTitleAndText
+                          title="Valvontapvm"
+                          text={
+                            condition.supervision_date ? (
+                              <span>
+                                <i />
+                                {formatDate(condition.supervision_date)}
+                              </span>
+                            ) : (
+                              "–"
+                            )
+                          }
+                          textClassName={
+                            condition.supervision_date &&
+                            !condition.supervised_date
+                              ? "alert"
+                              : ""
+                          }
+                        />
                       </Column>
                       <Column small={6} medium={4}>
-                        <FormTitleAndText title='Valvottu pvm' text={condition.supervised_date ? <span><i />{formatDate(condition.supervised_date)}</span> : '–'} textClassName={condition.supervised_date ? 'success' : ''} />
+                        <FormTitleAndText
+                          title="Valvottu pvm"
+                          text={
+                            condition.supervised_date ? (
+                              <span>
+                                <i />
+                                {formatDate(condition.supervised_date)}
+                              </span>
+                            ) : (
+                              "–"
+                            )
+                          }
+                          textClassName={
+                            condition.supervised_date ? "success" : ""
+                          }
+                        />
                       </Column>
                       <Column small={12} medium={12}>
-                        <FormTitleAndText title='Huomautus' text={condition.description || '–'} />
+                        <FormTitleAndText
+                          title="Huomautus"
+                          text={condition.description || "–"}
+                        />
                       </Column>
                     </Row>
-                  </BoxItem>;
-          }
-        })}
-          </div>}
+                  </BoxItem>
+                );
+              }
+            })}
+          </div>
+        )}
       </BoxItemContainer>
-    </Collapse>;
+    </Collapse>
+  );
 };
 
-export default flowRight(withWindowResize, connect((state, props) => {
-  const decisionId = props.decisionId;
-  return {
-    collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_DECISIONS}.${decisionId}.conditions`)
-  };
-}, {
-  receiveCollapseStates
-}))(DecisionConditions);
+export default flowRight(
+  withWindowResize,
+  connect(
+    (state, props) => {
+      const decisionId = props.decisionId;
+      return {
+        collapseState: getCollapseStateByKey(
+          state,
+          `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_DECISIONS}.${decisionId}.conditions`,
+        ),
+      };
+    },
+    {
+      receiveCollapseStates,
+    },
+  ),
+)(DecisionConditions);

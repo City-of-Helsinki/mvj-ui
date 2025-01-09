@@ -23,26 +23,39 @@ const SteppedDiscountModal = ({
   isOpen,
   onClose,
   onSave,
-  valid
+  valid,
 }: Props) => {
   const handleSave = () => {
     onSave(formValues);
   };
 
-  return <Modal isOpen={isOpen} onClose={onClose} title='Porrastettu alennus'>
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title="Porrastettu alennus">
       <SteppedDiscountForm decisionOptions={decisionOptions} />
 
       <ModalButtonWrapper>
-        <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
-        <Button className={ButtonColors.SUCCESS} disabled={!valid} onClick={handleSave} text='Tallenna' />
+        <Button
+          className={ButtonColors.SECONDARY}
+          onClick={onClose}
+          text="Peruuta"
+        />
+        <Button
+          className={ButtonColors.SUCCESS}
+          disabled={!valid}
+          onClick={handleSave}
+          text="Tallenna"
+        />
       </ModalButtonWrapper>
-    </Modal>;
+    </Modal>
+  );
 };
 
 const formName = FormNames.LEASE_STEPPED_DISCOUNT;
-export default flowRight(connect(state => {
-  return {
-    formValues: getFormValues(formName)(state),
-    valid: isValid(formName)(state)
-  };
-}))(SteppedDiscountModal);
+export default flowRight(
+  connect((state) => {
+    return {
+      formValues: getFormValues(formName)(state),
+      valid: isValid(formName)(state),
+    };
+  }),
+)(SteppedDiscountModal);

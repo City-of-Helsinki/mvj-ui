@@ -17,13 +17,10 @@ const FieldTypeSearch = ({
   displayError,
   disabled,
   input,
-  input: {
-    onBlur,
-    onChange
-  },
+  input: { onBlur, onChange },
   isDirty,
   placeholder,
-  type = 'text'
+  type = "text",
 }: Props): JSX.Element => {
   const handleChange = (e: any) => {
     if (autoBlur) {
@@ -33,14 +30,30 @@ const FieldTypeSearch = ({
     }
   };
 
-  return <div className={classNames('form-field__search', {
-    'has-error': displayError
-  }, {
-    'is-dirty': isDirty
-  })}>
-      <input id={input.name} autoComplete={autoComplete} disabled={disabled} placeholder={placeholder} type={type} {...input} onChange={handleChange} />
-      <span className='form-field__search_icon'></span>
-    </div>;
+  return (
+    <div
+      className={classNames(
+        "form-field__search",
+        {
+          "has-error": displayError,
+        },
+        {
+          "is-dirty": isDirty,
+        },
+      )}
+    >
+      <input
+        id={input.name}
+        autoComplete={autoComplete}
+        disabled={disabled}
+        placeholder={placeholder}
+        type={type}
+        {...input}
+        onChange={handleChange}
+      />
+      <span className="form-field__search_icon"></span>
+    </div>
+  );
 };
 
 export default FieldTypeSearch;

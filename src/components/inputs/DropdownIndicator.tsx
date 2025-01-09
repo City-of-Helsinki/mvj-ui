@@ -8,13 +8,15 @@ export type IndicatorProps = {
 
 const DropdownIndicator = (props: IndicatorProps) => {
   const {
-    selectProps: {
-      menuIsOpen
-    }
+    selectProps: { menuIsOpen },
   } = props;
-  return <i className={classNames('select-input__dropdown-indicator', {
-    'menu-is-open': menuIsOpen
-  })} />;
+  return (
+    <i
+      className={classNames("select-input__dropdown-indicator", {
+        "menu-is-open": menuIsOpen,
+      })}
+    />
+  );
 };
 
 export default DropdownIndicator;

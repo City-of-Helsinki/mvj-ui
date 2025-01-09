@@ -5,17 +5,13 @@ import { fetchInvoices } from "@/invoices/requests";
 
 function* fetchSapInvoicesSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     let {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
-    } = yield call(fetchInvoices, { ...query,
-      going_to_sap: true
-    });
+      response: { status: statusCode },
+      bodyAsJson,
+    } = yield call(fetchInvoices, { ...query, going_to_sap: true });
 
     switch (statusCode) {
       case 200:
@@ -34,7 +30,9 @@ function* fetchSapInvoicesSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/sapInvoice/FETCH_ALL', fetchSapInvoicesSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/sapInvoice/FETCH_ALL", fetchSapInvoicesSaga);
+    }),
+  ]);
 }

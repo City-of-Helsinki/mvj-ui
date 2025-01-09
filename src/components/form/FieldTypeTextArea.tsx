@@ -20,15 +20,12 @@ const FieldTypeTextArea = ({
   displayError,
   disabled,
   input,
-  input: {
-    onBlur,
-    onChange
-  },
+  input: { onBlur, onChange },
   isDirty,
   placeholder,
   rows = 3,
   setRefForField,
-  type = 'text'
+  type = "text",
 }: Props): JSX.Element => {
   const handleChange = (e: any) => {
     if (autoBlur) {
@@ -44,11 +41,27 @@ const FieldTypeTextArea = ({
     }
   };
 
-  return <textarea className={classNames('form-field__textarea', {
-    'has-error': displayError
-  }, {
-    'is-dirty': isDirty
-  })} ref={handleSetRefForField} id={input.name} autoComplete={autoComplete} disabled={disabled} placeholder={placeholder} rows={rows} {...input} onChange={handleChange} />;
+  return (
+    <textarea
+      className={classNames(
+        "form-field__textarea",
+        {
+          "has-error": displayError,
+        },
+        {
+          "is-dirty": isDirty,
+        },
+      )}
+      ref={handleSetRefForField}
+      id={input.name}
+      autoComplete={autoComplete}
+      disabled={disabled}
+      placeholder={placeholder}
+      rows={rows}
+      {...input}
+      onChange={handleChange}
+    />
+  );
 };
 
 export default FieldTypeTextArea;

@@ -6,10 +6,8 @@ import { receiveError } from "@/api/actions";
 function* fetchServiceUnitsSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchServiceUnits);
 
     switch (statusCode) {
@@ -30,7 +28,9 @@ function* fetchServiceUnitsSaga(): Generator<any, any, any> {
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/serviceUnits/FETCH_ALL', fetchServiceUnitsSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/serviceUnits/FETCH_ALL", fetchServiceUnitsSaga);
+    }),
+  ]);
 }

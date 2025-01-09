@@ -4,11 +4,11 @@
  * @enum {string}
  */
 export const ButtonColors = {
-  SUCCESS: 'success',
-  ALERT: 'alert',
-  NEUTRAL: 'neutral',
-  SECONDARY: 'secondary',
-  LINK: 'link'
+  SUCCESS: "success",
+  ALERT: "alert",
+  NEUTRAL: "neutral",
+  SECONDARY: "secondary",
+  LINK: "link",
 };
 
 /**
@@ -17,9 +17,9 @@ export const ButtonColors = {
  * @enum {string}
  */
 export const RentCalculatorTypes = {
-  YEAR: 'year',
-  RANGE: 'range',
-  BILLING_PERIOD: 'billing_period'
+  YEAR: "year",
+  RANGE: "range",
+  BILLING_PERIOD: "billing_period",
 };
 
 /**
@@ -28,8 +28,8 @@ export const RentCalculatorTypes = {
  * @enum {string}
  */
 export const RentCalculatorFieldPaths = {
-  RENT_CALCULATOR: 'rent-calculator',
-  TYPE: 'type'
+  RENT_CALCULATOR: "rent-calculator",
+  TYPE: "type",
 };
 
 /**
@@ -38,8 +38,8 @@ export const RentCalculatorFieldPaths = {
  * @enum {string}
  */
 export const RentCalculatorFieldTitles = {
-  RENT_CALCULATOR: 'Vuokralaskelma',
-  TYPE: 'Vuokra ajalle'
+  RENT_CALCULATOR: "Vuokralaskelma",
+  TYPE: "Vuokra ajalle",
 };
 
 /**
@@ -48,9 +48,9 @@ export const RentCalculatorFieldTitles = {
  * @enum {string}
  */
 export const RentExplanationSubjectType = {
-  CONTRACT_RENT: 'contractrent',
-  FIXED_INITIAL_YEAR_RENT: 'fixedinitialyearrent',
-  RENT: 'rent'
+  CONTRACT_RENT: "contractrent",
+  FIXED_INITIAL_YEAR_RENT: "fixedinitialyearrent",
+  RENT: "rent",
 };
 
 /**
@@ -59,10 +59,10 @@ export const RentExplanationSubjectType = {
  * @enum {string}
  */
 export const RentExplanationType = {
-  FIXED: 'fixed',
-  FREE: 'free',
-  INDEX: 'index',
-  ONE_TIME: 'one_time'
+  FIXED: "fixed",
+  FREE: "free",
+  INDEX: "index",
+  ONE_TIME: "one_time",
 };
 
 /**
@@ -71,11 +71,11 @@ export const RentExplanationType = {
  * @enum {string}
  */
 export const RentSubItemSubjectType = {
-  INDEX: 'index',
-  NEW_BASE_RENT: 'new_base_rent',
-  NOTICE: 'notice',
-  RATIO: 'ratio',
-  RENT_ADJUSTMENT: 'rentadjustment'
+  INDEX: "index",
+  NEW_BASE_RENT: "new_base_rent",
+  NOTICE: "notice",
+  RATIO: "ratio",
+  RENT_ADJUSTMENT: "rentadjustment",
 };
 
 /**
@@ -84,8 +84,8 @@ export const RentSubItemSubjectType = {
  * @enum {string}
  */
 export const RentSubItemType = {
-  DISCOUNT: 'discount',
-  INCREASE: 'increase'
+  DISCOUNT: "discount",
+  INCREASE: "increase",
 };
 
 /**
@@ -94,5 +94,5 @@ export const RentSubItemType = {
  * @enum {string}
  */
 export const AddressFieldMunicipalities = {
-  HELSINKI: 'helsinki'
+  HELSINKI: "helsinki",
 };

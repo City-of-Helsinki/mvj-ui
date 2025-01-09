@@ -9,6 +9,9 @@ export type FetchBillingPeriodsPayload = {
   year: number;
 };
 export type BillingPeriodList = Array<Record<string, any>>;
-export type FetchBillingPeriodsAction = Action<string, FetchBillingPeriodsPayload>;
+export type FetchBillingPeriodsAction = Action<
+  string,
+  FetchBillingPeriodsPayload
+>;
 export type ReceiveBillingPeriodsAction = Action<string, Record<string, any>>;
 export type BillingPeriodsNotFoundAction = Action<string, void>;

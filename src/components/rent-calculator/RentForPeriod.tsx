@@ -13,18 +13,15 @@ type Props = {
   rentForPeriod: Record<string, any>;
 };
 
-const RentForPeriod = ({
-  onRemove,
-  rentForPeriod
-}: Props) => {
+const RentForPeriod = ({ onRemove, rentForPeriod }: Props) => {
   const getTitle = () => {
     switch (rentForPeriod.rentCalculatorType) {
       case RentCalculatorTypes.YEAR:
-        return `${getLabelOfOption(RentCalculatorTypeOptions, rentForPeriod.rentCalculatorType) || ''} ${new Date(rentForPeriod.start_date).getFullYear()}`;
+        return `${getLabelOfOption(RentCalculatorTypeOptions, rentForPeriod.rentCalculatorType) || ""} ${new Date(rentForPeriod.start_date).getFullYear()}`;
 
       case RentCalculatorTypes.RANGE:
       case RentCalculatorTypes.BILLING_PERIOD:
-        return `${getLabelOfOption(RentCalculatorTypeOptions, rentForPeriod.rentCalculatorType) || ''} ${formatDateRange(rentForPeriod.start_date, rentForPeriod.end_date)}`;
+        return `${getLabelOfOption(RentCalculatorTypeOptions, rentForPeriod.rentCalculatorType) || ""} ${formatDateRange(rentForPeriod.start_date, rentForPeriod.end_date)}`;
     }
   };
 
@@ -32,23 +29,33 @@ const RentForPeriod = ({
     onRemove(rentForPeriod.id);
   };
 
-  const rents = get(rentForPeriod, 'rents', []);
+  const rents = get(rentForPeriod, "rents", []);
   const title = getTitle();
-  return <div className='rent-calculator__rent-wrapper'>
-      <div className='rent-calculator__rent-inner-wrapper'>
-        <span className='rent-calculator__rent-title'>{title}</span>
-        {rentForPeriod.allowDelete && <RemoveButton className='position-topright' onClick={handleRemove} title='Poista' />}
+  return (
+    <div className="rent-calculator__rent-wrapper">
+      <div className="rent-calculator__rent-inner-wrapper">
+        <span className="rent-calculator__rent-title">{title}</span>
+        {rentForPeriod.allowDelete && (
+          <RemoveButton
+            className="position-topright"
+            onClick={handleRemove}
+            title="Poista"
+          />
+        )}
         {(!rents || !rents.length) && <FormText>Ei vuokria</FormText>}
-        {!!rents && !!rents.length && <Row>
+        {!!rents && !!rents.length && (
+          <Row>
             <Column small={12} large={8}>
               {rents.map((rent, index) => {
-            return <RentCalculatorRent key={index} rent={rent} />;
-          })}
+                return <RentCalculatorRent key={index} rent={rent} />;
+              })}
               <RentCalculatorTotalRow rents={rents} />
             </Column>
-          </Row>}
+          </Row>
+        )}
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default RentForPeriod;

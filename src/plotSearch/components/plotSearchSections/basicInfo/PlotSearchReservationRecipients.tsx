@@ -8,9 +8,10 @@ type Props = {
 };
 
 const PlotSearchReservationRecipients = ({
-  reservationRecipients
+  reservationRecipients,
 }: Props): JSX.Element => {
-  return <Row>
+  return (
+    <Row>
       <Column small={9} medium={9} large={8}>
         <FormTextTitle>
           {PlotSearchFieldTitles.RESERVATION_RECIPIENT}
@@ -21,24 +22,23 @@ const PlotSearchReservationRecipients = ({
           {PlotSearchFieldTitles.RESERVATION_RECIPIENT_SHARE_OF_RENTAL}
         </FormTextTitle>
       </Column>
-      {reservationRecipients.length === 0 && <Column small={12}>
-        <FormText>
-          Ei ehdotettuja varauksensaajia.
-        </FormText>
-      </Column>}
-      {reservationRecipients.map(applicant => <Fragment key={applicant.id}>
-        <Column small={9} medium={9} large={8}>
-          <FormText>
-            {applicant.reservation_recipients.join(', ')}
-          </FormText>
+      {reservationRecipients.length === 0 && (
+        <Column small={12}>
+          <FormText>Ei ehdotettuja varauksensaajia.</FormText>
         </Column>
-        <Column small={3} medium={3} large={4}>
-          <FormText>
-            {applicant.share_of_rental}
-          </FormText>
-        </Column>
-      </Fragment>)}
-    </Row>;
+      )}
+      {reservationRecipients.map((applicant) => (
+        <Fragment key={applicant.id}>
+          <Column small={9} medium={9} large={8}>
+            <FormText>{applicant.reservation_recipients.join(", ")}</FormText>
+          </Column>
+          <Column small={3} medium={3} large={4}>
+            <FormText>{applicant.share_of_rental}</FormText>
+          </Column>
+        </Fragment>
+      ))}
+    </Row>
+  );
 };
 
 export default PlotSearchReservationRecipients;

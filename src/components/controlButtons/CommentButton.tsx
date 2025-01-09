@@ -5,10 +5,7 @@ type Props = {
   onClick: (...args: Array<any>) => any;
 };
 
-const CommentButton = ({
-  commentAmount,
-  onClick
-}: Props) => {
+const CommentButton = ({ commentAmount, onClick }: Props) => {
   const handleClick = () => {
     onClick();
   };
@@ -20,10 +17,17 @@ const CommentButton = ({
     }
   };
 
-  return <div className='control-buttons__comment-button' onClick={handleClick} onKeyDown={handleKeyDown} tabIndex={0}>
+  return (
+    <div
+      className="control-buttons__comment-button"
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+    >
       <CommentIcon />
-      <div className='comment-amount'>{commentAmount}</div>
-    </div>;
+      <div className="comment-amount">{commentAmount}</div>
+    </div>
+  );
 };
 
 export default CommentButton;

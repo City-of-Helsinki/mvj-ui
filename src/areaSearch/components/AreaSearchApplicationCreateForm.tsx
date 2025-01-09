@@ -27,55 +27,68 @@ class AreaSearchApplicationCreateForm extends Component<Props> {
       formValues,
       fieldTypeMapping,
       receiveFormValidFlags,
-      valid
+      valid,
     } = this.props;
     receiveFormValidFlags({
-      [FormNames.AREA_SEARCH_CREATE_FORM]: valid
+      [FormNames.AREA_SEARCH_CREATE_FORM]: valid,
     });
 
     if (formValues.form === null) {
       initialize({
-        form: getInitialApplicationForm(fieldTypeMapping, formData)
+        form: getInitialApplicationForm(fieldTypeMapping, formData),
       });
     }
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      receiveFormValidFlags
-    } = this.props;
+    const { receiveFormValidFlags } = this.props;
 
     if (prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.AREA_SEARCH_CREATE_FORM]: this.props.valid
+        [FormNames.AREA_SEARCH_CREATE_FORM]: this.props.valid,
       });
     }
   }
 
   render(): JSX.Element {
-    const {
-      formData,
-      formValues
-    } = this.props;
+    const { formData, formValues } = this.props;
 
     if (!formValues?.form) {
       return null;
     }
 
-    return <div>
-        {formData.sections.map(section => <ApplicationSubsection path={['form.sections']} section={section} headerTag="h2" key={section.id} formName={FormNames.AREA_SEARCH_CREATE_FORM} formPath='form' sectionTitleTransformers={[]} answerId={null} />)}
-      </div>;
+    return (
+      <div>
+        {formData.sections.map((section) => (
+          <ApplicationSubsection
+            path={["form.sections"]}
+            section={section}
+            headerTag="h2"
+            key={section.id}
+            formName={FormNames.AREA_SEARCH_CREATE_FORM}
+            formPath="form"
+            sectionTitleTransformers={[]}
+            answerId={null}
+          />
+        ))}
+      </div>
+    );
   }
-
 }
 
-export default (flowRight(connect(state => ({
-  fieldTypeMapping: getFieldTypeMapping(state),
-  formValues: getFormValues(FormNames.AREA_SEARCH_CREATE_FORM)(state)
-}), {
-  receiveFormValidFlags
-}), reduxForm({
-  form: FormNames.AREA_SEARCH_CREATE_FORM,
-  destroyOnUnmount: false,
-  validate: validateApplicationForm('form')
-}))(AreaSearchApplicationCreateForm) as React.ComponentType<OwnProps>);
+export default flowRight(
+  connect(
+    (state) => ({
+      fieldTypeMapping: getFieldTypeMapping(state),
+      formValues: getFormValues(FormNames.AREA_SEARCH_CREATE_FORM)(state),
+    }),
+    {
+      receiveFormValidFlags,
+    },
+  ),
+  reduxForm({
+    form: FormNames.AREA_SEARCH_CREATE_FORM,
+    destroyOnUnmount: false,
+    validate: validateApplicationForm("form"),
+  }),
+)(AreaSearchApplicationCreateForm) as React.ComponentType<OwnProps>;

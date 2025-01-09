@@ -2,7 +2,11 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import { fetchAttributes as fetchInfillDevelopmentAttributes } from "@/infillDevelopment/actions";
-import { getAttributes as getInfillDevelopmentAttributes, getIsFetchingAttributes as getIsFetchingInfillDevelopmentAttributes, getMethods as getInfillDevelopmentMethods } from "@/infillDevelopment/selectors";
+import {
+  getAttributes as getInfillDevelopmentAttributes,
+  getIsFetchingAttributes as getIsFetchingInfillDevelopmentAttributes,
+  getMethods as getInfillDevelopmentMethods,
+} from "@/infillDevelopment/selectors";
 import type { Attributes, Methods } from "types";
 
 function InfillDevelopmentListPageAttributes(WrappedComponent: any) {
@@ -18,10 +22,14 @@ function InfillDevelopmentListPageAttributes(WrappedComponent: any) {
         fetchInfillDevelopmentAttributes,
         infillDevelopmentAttributes,
         infillDevelopmentMethods,
-        isFetchingInfillDevelopmentAttributes
+        isFetchingInfillDevelopmentAttributes,
       } = this.props;
 
-      if (!isFetchingInfillDevelopmentAttributes && !infillDevelopmentAttributes && !infillDevelopmentMethods) {
+      if (
+        !isFetchingInfillDevelopmentAttributes &&
+        !infillDevelopmentAttributes &&
+        !infillDevelopmentMethods
+      ) {
         fetchInfillDevelopmentAttributes();
       }
     }
@@ -29,17 +37,23 @@ function InfillDevelopmentListPageAttributes(WrappedComponent: any) {
     render() {
       return <WrappedComponent {...this.props} />;
     }
-
   };
 }
 
-const withInfillDevelopmentListPageAttributes = flowRight(connect(state => {
-  return {
-    infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
-    infillDevelopmentMethods: getInfillDevelopmentMethods(state),
-    isFetchingInfillDevelopmentAttributes: getIsFetchingInfillDevelopmentAttributes(state)
-  };
-}, {
-  fetchInfillDevelopmentAttributes
-}), InfillDevelopmentListPageAttributes);
+const withInfillDevelopmentListPageAttributes = flowRight(
+  connect(
+    (state) => {
+      return {
+        infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
+        infillDevelopmentMethods: getInfillDevelopmentMethods(state),
+        isFetchingInfillDevelopmentAttributes:
+          getIsFetchingInfillDevelopmentAttributes(state),
+      };
+    },
+    {
+      fetchInfillDevelopmentAttributes,
+    },
+  ),
+  InfillDevelopmentListPageAttributes,
+);
 export { withInfillDevelopmentListPageAttributes };

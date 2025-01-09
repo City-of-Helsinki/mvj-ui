@@ -1,26 +1,62 @@
-import { all, call, fork, put, select, takeEvery, takeLatest } from "redux-saga/effects";
+import {
+  all,
+  call,
+  fork,
+  put,
+  select,
+  takeEvery,
+  takeLatest,
+} from "redux-saga/effects";
 import { getFormValues, initialize } from "redux-form";
-import { applicantInfoCheckAttributesNotFound, applicationRelatedAttachmentsNotFound, attachmentAttributesNotFound, attributesNotFound, fetchApplicationRelatedAttachments, fetchPendingUploads, formAttributesNotFound, pendingUploadsNotFound, receiveApplicantInfoCheckAttributes, receiveApplicationRelatedAttachments, receiveAttachmentAttributes, receiveAttachmentMethods, receiveAttributes, receiveFileOperationFinished, receiveFormAttributes, receiveMethods, receivePendingUploads } from "@/application/actions";
+import {
+  applicantInfoCheckAttributesNotFound,
+  applicationRelatedAttachmentsNotFound,
+  attachmentAttributesNotFound,
+  attributesNotFound,
+  fetchApplicationRelatedAttachments,
+  fetchPendingUploads,
+  formAttributesNotFound,
+  pendingUploadsNotFound,
+  receiveApplicantInfoCheckAttributes,
+  receiveApplicationRelatedAttachments,
+  receiveAttachmentAttributes,
+  receiveAttachmentMethods,
+  receiveAttributes,
+  receiveFileOperationFinished,
+  receiveFormAttributes,
+  receiveMethods,
+  receivePendingUploads,
+} from "@/application/actions";
 import { receiveError } from "@/api/actions";
-import { deleteUploadRequest, fetchApplicantInfoCheckAttributesRequest, fetchAttachmentAttributesRequest, fetchAttributesRequest, fetchFormAttributesRequest, fetchPendingUploadsRequest, fetchSingleApplicationAttachments, uploadFileRequest } from "@/application/requests";
+import {
+  deleteUploadRequest,
+  fetchApplicantInfoCheckAttributesRequest,
+  fetchAttachmentAttributesRequest,
+  fetchAttributesRequest,
+  fetchFormAttributesRequest,
+  fetchPendingUploadsRequest,
+  fetchSingleApplicationAttachments,
+  uploadFileRequest,
+} from "@/application/requests";
 import { getApplicantInfoCheckFormName } from "@/application/helpers";
 import { getContentUser } from "@/users/helpers";
 import { displayUIMessage } from "@/util/helpers";
-import type { DeleteUploadAction, ReceiveUpdatedTargetInfoCheckItemAction, UploadFileAction } from "@/application/types";
+import type {
+  DeleteUploadAction,
+  ReceiveUpdatedTargetInfoCheckItemAction,
+  UploadFileAction,
+} from "@/application/types";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributesRequest);
 
     switch (statusCode) {
       case 200:
-        const attributes = { ...bodyAsJson.fields
-        };
+        const attributes = { ...bodyAsJson.fields };
         const methods = bodyAsJson.methods;
         yield put(receiveAttributes(attributes));
         yield put(receiveMethods(methods));
@@ -39,16 +75,13 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 function* fetchApplicantInfoCheckAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchApplicantInfoCheckAttributesRequest);
 
     switch (statusCode) {
       case 200:
-        const attributes = { ...bodyAsJson.fields
-        };
+        const attributes = { ...bodyAsJson.fields };
         yield put(receiveApplicantInfoCheckAttributes(attributes));
         break;
 
@@ -56,7 +89,10 @@ function* fetchApplicantInfoCheckAttributesSaga(): Generator<any, any, any> {
         yield put(applicantInfoCheckAttributesNotFound());
     }
   } catch (error) {
-    console.error('Failed to fetch info check attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch info check attributes with error "%s"',
+      error,
+    );
     yield put(applicantInfoCheckAttributesNotFound());
     yield put(receiveError(error));
   }
@@ -64,27 +100,29 @@ function* fetchApplicantInfoCheckAttributesSaga(): Generator<any, any, any> {
 
 function* receiveUpdatedApplicantInfoCheckItemSaga({
   payload,
-  type
+  type,
 }: ReceiveUpdatedTargetInfoCheckItemAction): Generator<any, any, any> {
   const formName = getApplicantInfoCheckFormName(payload.id);
   const oldValues = yield select(getFormValues(formName));
-  yield put(initialize(formName, { ...oldValues,
-    data: { ...payload.data,
-      preparer: getContentUser(payload.data.preparer)
-    }
-  }));
+  yield put(
+    initialize(formName, {
+      ...oldValues,
+      data: {
+        ...payload.data,
+        preparer: getContentUser(payload.data.preparer),
+      },
+    }),
+  );
 }
 
 function* fetchFormAttributesSaga({
   payload: id,
-  type
+  type,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchFormAttributesRequest, id);
 
     switch (statusCode) {
@@ -107,16 +145,13 @@ function* fetchFormAttributesSaga({
 export function* fetchAttachmentAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttachmentAttributesRequest);
 
     switch (statusCode) {
       case 200:
-        const attributes = { ...bodyAsJson.fields
-        };
+        const attributes = { ...bodyAsJson.fields };
         const methods = bodyAsJson.methods;
         yield put(receiveAttachmentAttributes(attributes));
         yield put(receiveAttachmentMethods(methods));
@@ -126,7 +161,10 @@ export function* fetchAttachmentAttributesSaga(): Generator<any, any, any> {
         yield put(attachmentAttributesNotFound());
     }
   } catch (error) {
-    console.error('Failed to fetch attachment attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch attachment attributes with error "%s"',
+      error,
+    );
     yield put(attachmentAttributesNotFound());
     yield put(receiveError(error));
   }
@@ -134,14 +172,12 @@ export function* fetchAttachmentAttributesSaga(): Generator<any, any, any> {
 
 function* fetchApplicationRelatedAttachmentsSaga({
   payload: id,
-  type
+  type,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchSingleApplicationAttachments, id);
 
     switch (statusCode) {
@@ -151,27 +187,33 @@ function* fetchApplicationRelatedAttachmentsSaga({
 
       default:
         yield put(applicationRelatedAttachmentsNotFound());
-        displayUIMessage({
-          title: '',
-          body: 'Hakemuksen liitteitä ei löytynyt!'
-        }, {
-          type: 'error'
-        });
+        displayUIMessage(
+          {
+            title: "",
+            body: "Hakemuksen liitteitä ei löytynyt!",
+          },
+          {
+            type: "error",
+          },
+        );
     }
   } catch (e) {
     yield put(applicationRelatedAttachmentsNotFound());
-    displayUIMessage({
-      title: '',
-      body: 'Hakemuksen liitteitä ei löytynyt!'
-    }, {
-      type: 'error'
-    });
+    displayUIMessage(
+      {
+        title: "",
+        body: "Hakemuksen liitteitä ei löytynyt!",
+      },
+      {
+        type: "error",
+      },
+    );
   }
 }
 
 function* deleteUploadSaga({
   payload,
-  type
+  type,
 }: DeleteUploadAction): Generator<any, any, any> {
   try {
     yield call(deleteUploadRequest, payload.id);
@@ -191,14 +233,10 @@ function* deleteUploadSaga({
 
 function* uploadFileSaga({
   payload,
-  type
+  type,
 }: UploadFileAction): Generator<any, any, any> {
   try {
-    const {
-      path,
-      callback,
-      fileData
-    } = payload;
+    const { path, callback, fileData } = payload;
     const result = yield call(uploadFileRequest, fileData);
     yield put(receiveFileOperationFinished());
 
@@ -220,10 +258,7 @@ function* uploadFileSaga({
 
 function* fetchPendingUploadsSaga(): Generator<any, any, any> {
   try {
-    const {
-      response,
-      bodyAsJson
-    } = yield call(fetchPendingUploadsRequest);
+    const { response, bodyAsJson } = yield call(fetchPendingUploadsRequest);
 
     switch (response.status) {
       case 200:
@@ -243,22 +278,45 @@ function* fetchPendingUploadsSaga(): Generator<any, any, any> {
 
 function* receiveUpdatedTargetInfoCheckItemSaga({
   payload,
-  type
+  type,
 }: ReceiveUpdatedTargetInfoCheckItemAction): Generator<any, any, any> {
   yield put(initialize(payload.targetForm, payload.data));
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/application/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/application/FETCH_APPLICANT_INFO_CHECK_ATTRIBUTES', fetchApplicantInfoCheckAttributesSaga);
-    yield takeEvery('mvj/application/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM', receiveUpdatedApplicantInfoCheckItemSaga);
-    yield takeLatest('mvj/application/FETCH_FORM_ATTRIBUTES', fetchFormAttributesSaga);
-    yield takeLatest('mvj/application/FETCH_ATTACHMENT_ATTRIBUTES', fetchAttachmentAttributesSaga);
-    yield takeLatest('mvj/application/FETCH_ATTACHMENTS', fetchApplicationRelatedAttachmentsSaga);
-    yield takeEvery('mvj/application/UPLOAD_FILE', uploadFileSaga);
-    yield takeEvery('mvj/application/DELETE_UPLOAD', deleteUploadSaga);
-    yield takeLatest('mvj/application/FETCH_PENDING_UPLOADS', fetchPendingUploadsSaga);
-    yield takeEvery('mvj/application/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM', receiveUpdatedTargetInfoCheckItemSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/application/FETCH_ATTRIBUTES", fetchAttributesSaga);
+      yield takeLatest(
+        "mvj/application/FETCH_APPLICANT_INFO_CHECK_ATTRIBUTES",
+        fetchApplicantInfoCheckAttributesSaga,
+      );
+      yield takeEvery(
+        "mvj/application/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM",
+        receiveUpdatedApplicantInfoCheckItemSaga,
+      );
+      yield takeLatest(
+        "mvj/application/FETCH_FORM_ATTRIBUTES",
+        fetchFormAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/application/FETCH_ATTACHMENT_ATTRIBUTES",
+        fetchAttachmentAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/application/FETCH_ATTACHMENTS",
+        fetchApplicationRelatedAttachmentsSaga,
+      );
+      yield takeEvery("mvj/application/UPLOAD_FILE", uploadFileSaga);
+      yield takeEvery("mvj/application/DELETE_UPLOAD", deleteUploadSaga);
+      yield takeLatest(
+        "mvj/application/FETCH_PENDING_UPLOADS",
+        fetchPendingUploadsSaga,
+      );
+      yield takeEvery(
+        "mvj/application/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM",
+        receiveUpdatedTargetInfoCheckItemSaga,
+      );
+    }),
+  ]);
 }

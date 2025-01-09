@@ -9,40 +9,39 @@ type Props = {
 
 class MultiItemCollapse extends PureComponent<Props> {
   render() {
-    const {
-      items,
-      itemRenderer,
-      open
-    } = this.props;
+    const { items, itemRenderer, open } = this.props;
 
     if (!items || !items.length) {
-      return '-';
+      return "-";
     }
 
     if (items.length === 1) {
       return itemRenderer(items[0]);
     }
 
-    return <div className={classNames('sortable-table__multi-item-collapse', {
-      'is-open': open
-    })}>
-        <div className='sortable-table__multi-item-collapse_header'>
-          <span className='sortable-table__multi-item-collapse_header_title'>{itemRenderer(items[0])}</span>
-          <div className='sortable-table__multi-item-collapse_header_arrow-wrapper'>
+    return (
+      <div
+        className={classNames("sortable-table__multi-item-collapse", {
+          "is-open": open,
+        })}
+      >
+        <div className="sortable-table__multi-item-collapse_header">
+          <span className="sortable-table__multi-item-collapse_header_title">
+            {itemRenderer(items[0])}
+          </span>
+          <div className="sortable-table__multi-item-collapse_header_arrow-wrapper">
             <span>({items.length})</span>
           </div>
         </div>
-        <div className='sortable-table__multi-item-collapse_items'>
+        <div className="sortable-table__multi-item-collapse_items">
           {items.map((item, index) => {
-          if (!index) return null;
-          return <ListItem key={index}>
-              {itemRenderer(item)}
-            </ListItem>;
-        })}
+            if (!index) return null;
+            return <ListItem key={index}>{itemRenderer(item)}</ListItem>;
+          })}
         </div>
-      </div>;
+      </div>
+    );
   }
-
 }
 
 export default MultiItemCollapse;

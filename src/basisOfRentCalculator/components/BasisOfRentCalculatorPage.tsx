@@ -11,7 +11,10 @@ import { PermissionMissingTexts } from "@/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { hasPermissions, setPageTitle } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "@/usersPermissions/selectors";
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
 import { withLeaseAttributes } from "@/components/attributes/LeaseAttributes";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
@@ -23,14 +26,12 @@ type Props = {
 
 class BasisOfRentCalculatorPage extends PureComponent<Props> {
   componentDidMount() {
-    const {
-      receiveTopNavigationSettings
-    } = this.props;
-    setPageTitle('Vuokralaskuri');
+    const { receiveTopNavigationSettings } = this.props;
+    setPageTitle("Vuokralaskuri");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.BASIS_OF_RENT_CALCULATOR),
-      pageTitle: 'Vuokralaskuri',
-      showSearch: false
+      pageTitle: "Vuokralaskuri",
+      showSearch: false,
     });
   }
 
@@ -38,27 +39,50 @@ class BasisOfRentCalculatorPage extends PureComponent<Props> {
     const {
       isFetchingLeaseAttributes,
       isFetchingUsersPermissions,
-      usersPermissions
+      usersPermissions,
     } = this.props;
-    if (isFetchingLeaseAttributes || isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (isFetchingLeaseAttributes || isFetchingUsersPermissions)
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (!usersPermissions) return null;
-    if (!hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.BASIS_OF_RENT_CALCULATOR} /></PageContainer>;
-    return <PageContainer hasTabs>
+    if (
+      !hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT)
+    )
+      return (
+        <PageContainer>
+          <AuthorizationError
+            text={PermissionMissingTexts.BASIS_OF_RENT_CALCULATOR}
+          />
+        </PageContainer>
+      );
+    return (
+      <PageContainer hasTabs>
         <ContentContainer>
-          <BasisOfRentCalculatorForm initialValues={{
-          basis_of_rents: [{}]
-        }} />
+          <BasisOfRentCalculatorForm
+            initialValues={{
+              basis_of_rents: [{}],
+            }}
+          />
         </ContentContainer>
-      </PageContainer>;
+      </PageContainer>
+    );
   }
-
 }
 
-export default flowRight(withLeaseAttributes, connect(state => {
-  return {
-    isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  receiveTopNavigationSettings
-}))(BasisOfRentCalculatorPage);
+export default flowRight(
+  withLeaseAttributes,
+  connect(
+    (state) => {
+      return {
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+    {
+      receiveTopNavigationSettings,
+    },
+  ),
+)(BasisOfRentCalculatorPage);

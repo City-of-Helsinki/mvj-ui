@@ -11,7 +11,10 @@ import { ButtonColors } from "@/components/enums";
 import { CommentFieldPaths, CommentFieldTitles } from "@/comments/enums";
 import { getUiDataCommentKey } from "@/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
-import { getAttributes as getCommentAttributes, getIsSaveClicked } from "@/comments/selectors";
+import {
+  getAttributes as getCommentAttributes,
+  getIsSaveClicked,
+} from "@/comments/selectors";
 import type { Attributes } from "types";
 import type { RootState } from "@/root/types";
 type Props = {
@@ -31,7 +34,7 @@ const NewCommentForm = ({
   receiveIsSaveClicked,
   text,
   topic,
-  valid
+  valid,
 }: Props) => {
   const handleAddComment = () => {
     receiveIsSaveClicked(true);
@@ -41,20 +44,53 @@ const NewCommentForm = ({
     }
   };
 
-  return <form>
-      <Authorization allow={isFieldAllowedToEdit(commentAttributes, CommentFieldPaths.TOPIC)}>
-        <FormField disableDirty disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(commentAttributes, CommentFieldPaths.TOPIC)} name='topic' overrideValues={{
-        label: CommentFieldTitles.TOPIC
-      }} enableUiDataEdit uiDataKey={getUiDataCommentKey(CommentFieldPaths.TOPIC)} />
+  return (
+    <form>
+      <Authorization
+        allow={isFieldAllowedToEdit(commentAttributes, CommentFieldPaths.TOPIC)}
+      >
+        <FormField
+          disableDirty
+          disableTouched={isSaveClicked}
+          fieldAttributes={getFieldAttributes(
+            commentAttributes,
+            CommentFieldPaths.TOPIC,
+          )}
+          name="topic"
+          overrideValues={{
+            label: CommentFieldTitles.TOPIC,
+          }}
+          enableUiDataEdit
+          uiDataKey={getUiDataCommentKey(CommentFieldPaths.TOPIC)}
+        />
       </Authorization>
-      <Authorization allow={isFieldAllowedToEdit(commentAttributes, CommentFieldPaths.TEXT)}>
-        <FormField disableDirty disableTouched={isSaveClicked} fieldAttributes={getFieldAttributes(commentAttributes, CommentFieldPaths.TEXT)} name='text' overrideValues={{
-        label: CommentFieldTitles.TEXT,
-        fieldType: FieldTypes.TEXTAREA
-      }} enableUiDataEdit uiDataKey={getUiDataCommentKey(CommentFieldPaths.TEXT)} />
+      <Authorization
+        allow={isFieldAllowedToEdit(commentAttributes, CommentFieldPaths.TEXT)}
+      >
+        <FormField
+          disableDirty
+          disableTouched={isSaveClicked}
+          fieldAttributes={getFieldAttributes(
+            commentAttributes,
+            CommentFieldPaths.TEXT,
+          )}
+          name="text"
+          overrideValues={{
+            label: CommentFieldTitles.TEXT,
+            fieldType: FieldTypes.TEXTAREA,
+          }}
+          enableUiDataEdit
+          uiDataKey={getUiDataCommentKey(CommentFieldPaths.TEXT)}
+        />
       </Authorization>
-      <Button className={`${ButtonColors.SUCCESS} no-margin`} disabled={isSaveClicked && !valid} onClick={handleAddComment} text='Kommentoi' />
-    </form>;
+      <Button
+        className={`${ButtonColors.SUCCESS} no-margin`}
+        disabled={isSaveClicked && !valid}
+        onClick={handleAddComment}
+        text="Kommentoi"
+      />
+    </form>
+  );
 };
 
 const formName = FormNames.LEASE_NEW_COMMENT;
@@ -64,13 +100,16 @@ const mapStateToProps = (state: RootState) => {
   return {
     commentAttributes: getCommentAttributes(state),
     isSaveClicked: getIsSaveClicked(state),
-    text: selector(state, 'text'),
-    topic: selector(state, 'topic')
+    text: selector(state, "text"),
+    topic: selector(state, "topic"),
   };
 };
 
-export default flowRight(connect(mapStateToProps, {
-  receiveIsSaveClicked
-}), reduxForm({
-  form: formName
-}))(NewCommentForm) as React.ComponentType<any>;
+export default flowRight(
+  connect(mapStateToProps, {
+    receiveIsSaveClicked,
+  }),
+  reduxForm({
+    form: formName,
+  }),
+)(NewCommentForm) as React.ComponentType<any>;

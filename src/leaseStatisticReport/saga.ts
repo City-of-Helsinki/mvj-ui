@@ -1,17 +1,38 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
-import { receiveAttributes, attributesNotFound, receiveLeaseInvoicingConfirmationReportAttributes, leaseInvoicingConfirmationReportAttributesNotFound, receiveLeaseInvoicingConfrimationReports, notFoundLeaseInvoicingConfrimationReports, receiveReports, reportsNotFound, receiveReportData, reportDataNotFound, mailSent, noMailSent, receiveOptions, optionsNotFound } from "./actions";
-import { fetchAttributes, fetchLeaseInvoicingConfirmationReportAttributes, fetchLeaseInvoicingConfrimationReports, fetchReports, fetchReportData, sendReportToMail, fetchOptions } from "./requests";
+import {
+  receiveAttributes,
+  attributesNotFound,
+  receiveLeaseInvoicingConfirmationReportAttributes,
+  leaseInvoicingConfirmationReportAttributesNotFound,
+  receiveLeaseInvoicingConfrimationReports,
+  notFoundLeaseInvoicingConfrimationReports,
+  receiveReports,
+  reportsNotFound,
+  receiveReportData,
+  reportDataNotFound,
+  mailSent,
+  noMailSent,
+  receiveOptions,
+  optionsNotFound,
+} from "./actions";
+import {
+  fetchAttributes,
+  fetchLeaseInvoicingConfirmationReportAttributes,
+  fetchLeaseInvoicingConfrimationReports,
+  fetchReports,
+  fetchReportData,
+  sendReportToMail,
+  fetchOptions,
+} from "./requests";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -25,7 +46,10 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch lease statistic report attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch lease statistic report attributes with error "%s"',
+      error,
+    );
     yield put(attributesNotFound());
     yield put(receiveError(error));
   }
@@ -34,10 +58,8 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 function* fetchReportsSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchReports);
 
     switch (statusCode) {
@@ -46,10 +68,14 @@ function* fetchReportsSaga(): Generator<any, any, any> {
         break;
 
       case 403:
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 403',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 403",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         yield put(reportsNotFound());
         break;
 
@@ -66,14 +92,12 @@ function* fetchReportsSaga(): Generator<any, any, any> {
 
 function* fetchReportDataSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchReportData, payload);
 
     switch (statusCode) {
@@ -84,8 +108,7 @@ function* fetchReportDataSaga({
       case 400:
         yield put(reportDataNotFound());
         yield put(receiveReportData([]));
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       default:
@@ -99,19 +122,23 @@ function* fetchReportDataSaga({
   }
 }
 
-function* fetchLeaseInvoicingConfirmationReportAttributesSaga(): Generator<any, any, any> {
+function* fetchLeaseInvoicingConfirmationReportAttributesSaga(): Generator<
+  any,
+  any,
+  any
+> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchLeaseInvoicingConfirmationReportAttributes);
 
     switch (statusCode) {
       case 200:
         const attributes = bodyAsJson.fields;
-        yield put(receiveLeaseInvoicingConfirmationReportAttributes(attributes));
+        yield put(
+          receiveLeaseInvoicingConfirmationReportAttributes(attributes),
+        );
         break;
 
       default:
@@ -119,7 +146,10 @@ function* fetchLeaseInvoicingConfirmationReportAttributesSaga(): Generator<any, 
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch lease statistic report attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch lease statistic report attributes with error "%s"',
+      error,
+    );
     yield put(leaseInvoicingConfirmationReportAttributesNotFound());
     yield put(receiveError(error));
   }
@@ -127,14 +157,12 @@ function* fetchLeaseInvoicingConfirmationReportAttributesSaga(): Generator<any, 
 
 function* fetchLeaseInvoicingConfrimationReportsSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchLeaseInvoicingConfrimationReports, query);
 
     switch (statusCode) {
@@ -156,47 +184,57 @@ function* fetchLeaseInvoicingConfrimationReportsSaga({
 
 function* sendReportToMailSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(sendReportToMail, query);
 
     switch (statusCode) {
       case 200:
         displayUIMessage({
-          title: '',
-          body: bodyAsJson.message
+          title: "",
+          body: bodyAsJson.message,
         });
         yield put(mailSent());
         break;
 
       case 400:
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         yield put(noMailSent());
         break;
 
       case 403:
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 403',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 403",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         yield put(noMailSent());
         break;
 
       case 404:
       case 500:
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 500',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 500",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         yield put(noMailSent());
         break;
     }
@@ -207,16 +245,11 @@ function* sendReportToMailSaga({
   }
 }
 
-function* fetchOptionsSaga({
-  payload,
-  type: any
-}): Generator<any, any, any> {
+function* fetchOptionsSaga({ payload, type: any }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchOptions, payload);
 
     switch (statusCode) {
@@ -236,13 +269,36 @@ function* fetchOptionsSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/leaseStatisticReport/FETCH_REPORTS', fetchReportsSaga);
-    yield takeLatest('mvj/leaseStatisticReport/FETCH_REPORT_DATA', fetchReportDataSaga);
-    yield takeLatest('mvj/leaseStatisticReport/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/leaseStatisticReport/FETCH_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES', fetchLeaseInvoicingConfirmationReportAttributesSaga);
-    yield takeLatest('mvj/leaseStatisticReport/FETCH_LEASE_INVOICING_CONFIRMATION_REPORTS', fetchLeaseInvoicingConfrimationReportsSaga);
-    yield takeLatest('mvj/leaseStatisticReport/SEND_REPORT_TO_MAIL', sendReportToMailSaga);
-    yield takeLatest('mvj/leaseStatisticReport/FETCH_OPTIONS', fetchOptionsSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/leaseStatisticReport/FETCH_REPORTS",
+        fetchReportsSaga,
+      );
+      yield takeLatest(
+        "mvj/leaseStatisticReport/FETCH_REPORT_DATA",
+        fetchReportDataSaga,
+      );
+      yield takeLatest(
+        "mvj/leaseStatisticReport/FETCH_ATTRIBUTES",
+        fetchAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/leaseStatisticReport/FETCH_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES",
+        fetchLeaseInvoicingConfirmationReportAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/leaseStatisticReport/FETCH_LEASE_INVOICING_CONFIRMATION_REPORTS",
+        fetchLeaseInvoicingConfrimationReportsSaga,
+      );
+      yield takeLatest(
+        "mvj/leaseStatisticReport/SEND_REPORT_TO_MAIL",
+        sendReportToMailSaga,
+      );
+      yield takeLatest(
+        "mvj/leaseStatisticReport/FETCH_OPTIONS",
+        fetchOptionsSaga,
+      );
+    }),
+  ]);
 }

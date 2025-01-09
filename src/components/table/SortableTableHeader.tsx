@@ -1,7 +1,11 @@
 import React from "react";
 import classNames from "classnames";
 import kebabCase from "lodash/kebabCase";
-import { SortIconBoth, SortIconDesc, SortIconAsc } from "@/components/table/Icons";
+import {
+  SortIconBoth,
+  SortIconDesc,
+  SortIconAsc,
+} from "@/components/table/Icons";
 import { TableSortOrder } from "@/enums";
 import type { Column } from "./SortableTable";
 type Props = {
@@ -25,7 +29,7 @@ const SortableTableHeader = ({
   showCollapseArrowColumn,
   sortable,
   sortKey,
-  sortOrder
+  sortOrder,
 }: Props): JSX.Element => {
   const setTheadRef = (el: any) => {
     if (getRef) {
@@ -51,41 +55,57 @@ const SortableTableHeader = ({
     return null;
   };
 
-  return <thead ref={setTheadRef}>
+  return (
+    <thead ref={setTheadRef}>
       <tr>
         {showCollapseArrowColumn && <th></th>}
 
         {columns.map((column, index) => {
-        const handleColumnClick = () => {
-          if (isSortable && onColumnClick) {
-            onColumnClick(column);
-          }
-        };
+          const handleColumnClick = () => {
+            if (isSortable && onColumnClick) {
+              onColumnClick(column);
+            }
+          };
 
-        const handleKeyDown = (e: any) => {
-          if (e.keyCode === 13) {
-            e.preventDefault();
-            handleColumnClick();
-          }
-        };
+          const handleKeyDown = (e: any) => {
+            if (e.keyCode === 13) {
+              e.preventDefault();
+              handleColumnClick();
+            }
+          };
 
-        const isSortable = !!(sortable && column.sortable !== false);
-        const sortIcon = getSortIcon(column, isSortable);
-        const columnStyle = columnStyles && columnStyles.length > index ? columnStyles[index] : {};
-        return <th key={column.key} className={classNames(kebabCase(column.key), {
-          'sortable': isSortable
-        })} style={{ ...column.style,
-          ...columnStyle,
-          minWidth: column.minWidth
-        }} onClick={handleColumnClick}>
-              <div onKeyDown={handleKeyDown} tabIndex={isSortable && !fixedHeader ? 0 : undefined}>
+          const isSortable = !!(sortable && column.sortable !== false);
+          const sortIcon = getSortIcon(column, isSortable);
+          const columnStyle =
+            columnStyles && columnStyles.length > index
+              ? columnStyles[index]
+              : {};
+          return (
+            <th
+              key={column.key}
+              className={classNames(kebabCase(column.key), {
+                sortable: isSortable,
+              })}
+              style={{
+                ...column.style,
+                ...columnStyle,
+                minWidth: column.minWidth,
+              }}
+              onClick={handleColumnClick}
+            >
+              <div
+                onKeyDown={handleKeyDown}
+                tabIndex={isSortable && !fixedHeader ? 0 : undefined}
+              >
                 {column.text}
                 {isSortable && sortIcon}
               </div>
-            </th>;
-      })}
+            </th>
+          );
+        })}
       </tr>
-    </thead>;
+    </thead>
+  );
 };
 
 export default SortableTableHeader;

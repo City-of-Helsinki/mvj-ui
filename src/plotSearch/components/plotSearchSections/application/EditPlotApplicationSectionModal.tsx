@@ -23,22 +23,17 @@ class EditPlotApplicationSectionModal extends Component<Props> {
   };
 
   render(): JSX.Element {
-    const {
-      isOpen,
-      onClose,
-      onSubmit,
-      sectionIndex
-    } = this.props;
+    const { isOpen, onClose, onSubmit, sectionIndex } = this.props;
 
     if (sectionIndex === -1) {
       return null;
     }
 
     return (
-      <Modal 
+      <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title='Muokkaa osiota'
+        title="Muokkaa osiota"
         scrollable
       >
         <EditPlotApplicationSectionForm
@@ -51,7 +46,6 @@ class EditPlotApplicationSectionModal extends Component<Props> {
       </Modal>
     );
   }
-
 }
 
 export default EditPlotApplicationSectionModal;

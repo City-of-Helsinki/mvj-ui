@@ -15,9 +15,17 @@ import TradeRegisterTemplate from "@/tradeRegister/components/TradeRegisterTempl
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { FormNames, PermissionMissingTexts } from "@/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
-import { hasPermissions, getSearchQuery, getUrlParams, setPageTitle } from "@/util/helpers";
+import {
+  hasPermissions,
+  getSearchQuery,
+  getUrlParams,
+  setPageTitle,
+} from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
-import { getIsFetching as getIsFetchingUsersPermissions, getUsersPermissions } from "@/usersPermissions/selectors";
+import {
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
   history: Record<string, any>;
@@ -33,28 +41,26 @@ type State = {
 
 class TradeRegisterSearchPage extends PureComponent<Props, State> {
   state = {
-    businessId: ''
+    businessId: "",
   };
 
   componentDidMount() {
     const {
       initialize,
-      location: {
-        search
-      },
-      receiveTopNavigationSettings
+      location: { search },
+      receiveTopNavigationSettings,
     } = this.props;
     const query = getUrlParams(search);
-    setPageTitle('Kaupparekisterihaku');
+    setPageTitle("Kaupparekisterihaku");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.TRADE_REGISTER),
-      pageTitle: 'Kaupparekisterihaku',
-      showSearch: false
+      pageTitle: "Kaupparekisterihaku",
+      showSearch: false,
     });
 
     if (query.business_id) {
       this.setState({
-        businessId: query.business_id
+        businessId: query.business_id,
       });
     }
 
@@ -63,53 +69,59 @@ class TradeRegisterSearchPage extends PureComponent<Props, State> {
 
   componentDidUpdate(prevProps) {
     const {
-      location: {
-        search: currentSearch
-      },
-      initialize
+      location: { search: currentSearch },
+      initialize,
     } = this.props;
     const {
-      location: {
-        search: prevSearch
-      }
+      location: { search: prevSearch },
     } = prevProps;
     const searchQuery = getUrlParams(currentSearch);
 
     if (currentSearch !== prevSearch) {
-      this.setState({
-        businessId: searchQuery.business_id || ''
-      }, () => {
-        initialize(FormNames.TRADE_REGISTER_SEARCH, {
-          business_id: searchQuery.business_id || ''
-        });
-      });
+      this.setState(
+        {
+          businessId: searchQuery.business_id || "",
+        },
+        () => {
+          initialize(FormNames.TRADE_REGISTER_SEARCH, {
+            business_id: searchQuery.business_id || "",
+          });
+        },
+      );
     }
   }
 
-  handleSearchChange = query => {
-    const {
-      history
-    } = this.props;
-    this.setState({
-      businessId: query.business_id
-    }, history.push({
-      pathname: getRouteById(Routes.TRADE_REGISTER),
-      search: getSearchQuery(query)
-    }));
+  handleSearchChange = (query) => {
+    const { history } = this.props;
+    this.setState(
+      {
+        businessId: query.business_id,
+      },
+      history.push({
+        pathname: getRouteById(Routes.TRADE_REGISTER),
+        search: getSearchQuery(query),
+      }),
+    );
   };
 
   render() {
-    const {
-      isFetchingUsersPermissions,
-      usersPermissions
-    } = this.props;
-    const {
-      businessId
-    } = this.state;
-    if (isFetchingUsersPermissions) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    const { isFetchingUsersPermissions, usersPermissions } = this.props;
+    const { businessId } = this.state;
+    if (isFetchingUsersPermissions)
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (isEmpty(usersPermissions)) return null;
-    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.TRADE_REGISTER} /></PageContainer>;
-    return <PageContainer>
+    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE))
+      return (
+        <PageContainer>
+          <AuthorizationError text={PermissionMissingTexts.TRADE_REGISTER} />
+        </PageContainer>
+      );
+    return (
+      <PageContainer>
         <Row>
           <Column small={12} medium={6} large={8}></Column>
           <Column small={12} medium={6} large={4}>
@@ -117,23 +129,31 @@ class TradeRegisterSearchPage extends PureComponent<Props, State> {
           </Column>
         </Row>
 
-        {businessId && <ContentContainer>
+        {businessId && (
+          <ContentContainer>
             <h2>{businessId}</h2>
             <Divider />
 
             <TradeRegisterTemplate businessId={businessId} />
-          </ContentContainer>}
-      </PageContainer>;
+          </ContentContainer>
+        )}
+      </PageContainer>
+    );
   }
-
 }
 
-export default flowRight(withRouter, connect(state => {
-  return {
-    isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  initialize,
-  receiveTopNavigationSettings
-}))(TradeRegisterSearchPage);
+export default flowRight(
+  withRouter,
+  connect(
+    (state) => {
+      return {
+        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+    {
+      initialize,
+      receiveTopNavigationSettings,
+    },
+  ),
+)(TradeRegisterSearchPage);

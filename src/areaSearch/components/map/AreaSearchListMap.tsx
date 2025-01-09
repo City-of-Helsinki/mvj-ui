@@ -18,9 +18,7 @@ import type { AreaNoteList } from "@/areaNote/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 
 const getMapBounds = () => {
-  const {
-    search
-  } = location;
+  const { search } = location;
   const searchQuery = getUrlParams(search);
   return getBoundsFromBBox(searchQuery.in_bbox);
 };
@@ -31,9 +29,7 @@ const getMapCenter = () => {
 };
 
 const getMapZoom = () => {
-  const {
-    search
-  } = location;
+  const { search } = location;
   const searchQuery = getUrlParams(search);
   return searchQuery.zoom || DEFAULT_ZOOM;
 };
@@ -65,10 +61,10 @@ class AreaSearchListMap extends PureComponent<Props, State> {
     searchData: null,
     searchGeoJson: {
       features: [],
-      type: 'FeatureCollection'
+      type: "FeatureCollection",
     },
     stateOptions: [],
-    zoom: getMapZoom()
+    zoom: getMapZoom(),
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -76,7 +72,9 @@ class AreaSearchListMap extends PureComponent<Props, State> {
 
     if (JSON.stringify(props.searchData) !== JSON.stringify(state.searchData)) {
       newState.searchData = props.searchData;
-      newState.searchGeoJson = getAreaSearchGeoJson(getApiResponseResults(props.searchData) || []);
+      newState.searchGeoJson = getAreaSearchGeoJson(
+        getApiResponseResults(props.searchData) || [],
+      );
     }
 
     return !isEmpty(newState) ? newState : null;
@@ -84,27 +82,26 @@ class AreaSearchListMap extends PureComponent<Props, State> {
 
   getOverlayLayers = () => {
     const layers = [];
-    const {
-      searchGeoJson,
-      stateOptions
-    } = this.state;
+    const { searchGeoJson, stateOptions } = this.state;
     layers.push({
       checked: true,
-      component: <AreaSearchLayer key='plot_search_targets' color={MAP_COLORS[0]} areaSearchesGeoJson={searchGeoJson} stateOptions={stateOptions} />,
-      name: 'Kohteet'
+      component: (
+        <AreaSearchLayer
+          key="plot_search_targets"
+          color={MAP_COLORS[0]}
+          areaSearchesGeoJson={searchGeoJson}
+          stateOptions={stateOptions}
+        />
+      ),
+      name: "Kohteet",
     });
     return layers;
   };
 
   getBounds() {
+    const { bounds, searchGeoJson } = this.state;
     const {
-      bounds,
-      searchGeoJson
-    } = this.state;
-    const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
 
@@ -116,36 +113,43 @@ class AreaSearchListMap extends PureComponent<Props, State> {
   }
 
   handleViewportChanged = (mapOptions: Record<string, any>) => {
-    const {
-      onViewportChanged
-    } = this.props;
+    const { onViewportChanged } = this.props;
     this.setState({
-      zoom: mapOptions.zoom
+      zoom: mapOptions.zoom,
     });
     onViewportChanged(mapOptions);
   };
 
   render() {
-    const {
-      isLoading
-    } = this.props;
-    const {
-      center,
-      zoom
-    } = this.state;
+    const { isLoading } = this.props;
+    const { center, zoom } = this.state;
     const overlayLayers = this.getOverlayLayers();
     const bounds = this.getBounds();
-    return <Fragment>
-        <AreaNotesEditMap allowToEdit={false} bounds={bounds} center={center || undefined} isLoading={isLoading} onViewportChanged={this.handleViewportChanged} overlayLayers={overlayLayers} showZoomLevelWarning={zoom < MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES} zoom={zoom} zoomLevelWarningText='Tarkenna lähemmäksi kartalla hakeaksesi hakemusten kohteet' />
-      </Fragment>;
+    return (
+      <Fragment>
+        <AreaNotesEditMap
+          allowToEdit={false}
+          bounds={bounds}
+          center={center || undefined}
+          isLoading={isLoading}
+          onViewportChanged={this.handleViewportChanged}
+          overlayLayers={overlayLayers}
+          showZoomLevelWarning={zoom < MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES}
+          zoom={zoom}
+          zoomLevelWarningText="Tarkenna lähemmäksi kartalla hakeaksesi hakemusten kohteet"
+        />
+      </Fragment>
+    );
   }
-
 }
 
-export default (flowRight(withRouter, connect(state => {
-  return {
-    searchData: getAreaSearchListByBBox(state),
-    areaNotes: getAreaNoteList(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}))(AreaSearchListMap) as React.ComponentType<OwnProps>);
+export default flowRight(
+  withRouter,
+  connect((state) => {
+    return {
+      searchData: getAreaSearchListByBBox(state),
+      areaNotes: getAreaNoteList(state),
+      usersPermissions: getUsersPermissions(state),
+    };
+  }),
+)(AreaSearchListMap) as React.ComponentType<OwnProps>;

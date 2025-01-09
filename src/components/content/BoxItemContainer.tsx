@@ -5,9 +5,8 @@ type Props = {
   className?: string;
 };
 
-const BoxItemContainer = ({
-  children,
-  className
-}: Props) => <div className={classNames('box-item-container', className)}>{children}</div>;
+const BoxItemContainer = ({ children, className }: Props) => (
+  <div className={classNames("box-item-container", className)}>{children}</div>
+);
 
 export default BoxItemContainer;

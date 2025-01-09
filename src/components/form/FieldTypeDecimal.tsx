@@ -21,41 +21,42 @@ const formatDecimalNumber = (val: string) => {
   if (isDecimalNumberStr(val)) {
     return formatNumber(convertStrToDecimalNumber(val));
   } else {
-    return val || '';
+    return val || "";
   }
 };
 
 class FieldTypeDecimal extends PureComponent<Props, State> {
   state: State = {
-    innerValue: formatDecimalNumber(this.props.input.value)
+    innerValue: formatDecimalNumber(this.props.input.value),
   };
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    if (prevState.innerValue === this.state.innerValue && this.props.input.value !== prevState.innerValue) {
+    if (
+      prevState.innerValue === this.state.innerValue &&
+      this.props.input.value !== prevState.innerValue
+    ) {
       this.setState({
-        innerValue: formatDecimalNumber(this.props.input.value)
+        innerValue: formatDecimalNumber(this.props.input.value),
       });
     }
   }
 
-  handleBlur: (arg0: React.SyntheticEvent<HTMLInputElement>) => void = e => {
+  handleBlur: (arg0: React.SyntheticEvent<HTMLInputElement>) => void = (e) => {
     const {
-      input: {
-        onBlur
-      }
+      input: { onBlur },
     } = this.props;
     const formattedNumber = formatDecimalNumber(e.currentTarget.value);
     onBlur(formattedNumber);
     this.setState({
-      innerValue: formattedNumber
+      innerValue: formattedNumber,
     });
   };
-  handleChange: (arg0: React.SyntheticEvent<HTMLInputElement>) => void = e => {
+  handleChange: (arg0: React.SyntheticEvent<HTMLInputElement>) => void = (
+    e,
+  ) => {
     const {
       autoBlur,
-      input: {
-        onChange
-      }
+      input: { onChange },
     } = this.props;
 
     if (autoBlur) {
@@ -63,14 +64,12 @@ class FieldTypeDecimal extends PureComponent<Props, State> {
     } else {
       onChange(e.currentTarget.value);
       this.setState({
-        innerValue: e.currentTarget.value
+        innerValue: e.currentTarget.value,
       });
     }
   };
-  handleSetRefForField: (arg0: any) => void = element => {
-    const {
-      setRefForField
-    } = this.props;
+  handleSetRefForField: (arg0: any) => void = (element) => {
+    const { setRefForField } = this.props;
 
     if (setRefForField) {
       setRefForField(element);
@@ -84,18 +83,33 @@ class FieldTypeDecimal extends PureComponent<Props, State> {
       displayError,
       input,
       isDirty,
-      placeholder
+      placeholder,
     } = this.props;
-    const {
-      innerValue
-    } = this.state;
-    return <input className={classNames('form-field__input', {
-      'has-error': displayError
-    }, {
-      'is-dirty': isDirty
-    })} ref={this.handleSetRefForField} id={input.name} autoComplete={autoComplete} disabled={disabled} placeholder={placeholder} type='text' {...input} onBlur={this.handleBlur} onChange={this.handleChange} value={innerValue} />;
+    const { innerValue } = this.state;
+    return (
+      <input
+        className={classNames(
+          "form-field__input",
+          {
+            "has-error": displayError,
+          },
+          {
+            "is-dirty": isDirty,
+          },
+        )}
+        ref={this.handleSetRefForField}
+        id={input.name}
+        autoComplete={autoComplete}
+        disabled={disabled}
+        placeholder={placeholder}
+        type="text"
+        {...input}
+        onBlur={this.handleBlur}
+        onChange={this.handleChange}
+        value={innerValue}
+      />
+    );
   }
-
 }
 
 export default FieldTypeDecimal;

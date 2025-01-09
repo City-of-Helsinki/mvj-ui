@@ -7,18 +7,13 @@ type Props = {
 
 class TooltipWrapper extends Component<Props> {
   render(): JSX.Element {
-    const {
-      style,
-      innerRef,
-      children
-    } = this.props;
-    return <div className='tooltip__component' ref={innerRef} style={style}>
-        <div className='tooltip__container'>
-          {children}
-        </div>
-      </div>;
+    const { style, innerRef, children } = this.props;
+    return (
+      <div className="tooltip__component" ref={innerRef} style={style}>
+        <div className="tooltip__container">{children}</div>
+      </div>
+    );
   }
-
 }
 
 export default TooltipWrapper;

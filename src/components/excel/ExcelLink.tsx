@@ -20,35 +20,33 @@ type State = {
 
 class ExcelLink extends PureComponent<Props, State> {
   state = {
-    isLoading: false
+    isLoading: false,
   };
   handleClick = () => {
     const {
       apiToken,
-      fileName = 'Raportti',
+      fileName = "Raportti",
       identifier,
       url,
-      query
+      query,
     } = this.props;
-    const {
-      isLoading
-    } = this.state;
+    const { isLoading } = this.state;
     const filename = `${identifier}-${fileName}.xlsx`;
     if (isLoading) return;
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
     const request = new Request(`${url}?${query}&format=xlsx`);
 
     if (apiToken) {
-      request.headers.set('Authorization', `Bearer ${apiToken}`);
+      request.headers.set("Authorization", `Bearer ${apiToken}`);
     }
 
-    request.headers.set('Content-Type', 'application/xlsx');
+    request.headers.set("Content-Type", "application/xlsx");
 
     const stopLoader = () => {
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
     };
 
@@ -63,24 +61,30 @@ class ExcelLink extends PureComponent<Props, State> {
             break;
 
           default:
-            displayUIMessage({
-              title: '',
-              body: 'Tiedoston lataaminen epäonnistui'
-            }, {
-              type: 'error'
-            });
+            displayUIMessage(
+              {
+                title: "",
+                body: "Tiedoston lataaminen epäonnistui",
+              },
+              {
+                type: "error",
+              },
+            );
             break;
         }
 
         stopLoader();
       } catch (e) {
-        console.error('Error when downloading file: ', e);
-        displayUIMessage({
-          title: '',
-          body: 'Tiedoston lataaminen epäonnistui'
-        }, {
-          type: 'error'
-        });
+        console.error("Error when downloading file: ", e);
+        displayUIMessage(
+          {
+            title: "",
+            body: "Tiedoston lataaminen epäonnistui",
+          },
+          {
+            type: "error",
+          },
+        );
         stopLoader();
       }
     };
@@ -95,25 +99,22 @@ class ExcelLink extends PureComponent<Props, State> {
   };
 
   render() {
-    const {
-      label
-    } = this.props,
-          {
-      isLoading
-    } = this.state;
-    return <a onClick={this.handleClick} onKeyDown={this.handleKeyDown} tabIndex={0}>
-      <ExcelIcon />
-      {label}
-      <LoaderWrapper className='small-inline-wrapper'>
-        <Loader isLoading={isLoading} className='small' />
-      </LoaderWrapper>
-    </a>;
+    const { label } = this.props,
+      { isLoading } = this.state;
+    return (
+      <a onClick={this.handleClick} onKeyDown={this.handleKeyDown} tabIndex={0}>
+        <ExcelIcon />
+        {label}
+        <LoaderWrapper className="small-inline-wrapper">
+          <Loader isLoading={isLoading} className="small" />
+        </LoaderWrapper>
+      </a>
+    );
   }
-
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    apiToken: getApiToken(state)
+    apiToken: getApiToken(state),
   };
 })(ExcelLink);

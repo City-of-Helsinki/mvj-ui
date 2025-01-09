@@ -1,6 +1,6 @@
-import * as L from 'leaflet';
+import * as L from "leaflet";
 
-declare module 'leaflet' {
+declare module "leaflet" {
   namespace Control {
     class ZoomBox extends L.Control {
       includes: any;
@@ -13,7 +13,7 @@ declare module 'leaflet' {
         title: string;
       };
 
-      constructor(options?: Partial<ZoomBox['options']>);
+      constructor(options?: Partial<ZoomBox["options"]>);
 
       onAdd(map: L.Map): HTMLElement;
       activate(): void;
@@ -21,5 +21,7 @@ declare module 'leaflet' {
     }
   }
 
-  function control(options?: Partial<Control.ZoomBox['options']>): Control.ZoomBox;
+  function control(
+    options?: Partial<Control.ZoomBox["options"]>,
+  ): Control.ZoomBox;
 }

@@ -1,16 +1,25 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { receiveAttributes, receiveMethods, attributesNotFound, fetchLeaseholdTransferList as fetchLeaseholdTransferListAction, receiveLeaseholdTransferList, notFound } from "./actions";
+import {
+  receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
+  fetchLeaseholdTransferList as fetchLeaseholdTransferListAction,
+  receiveLeaseholdTransferList,
+  notFound,
+} from "./actions";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
-import { deleteLeaseholdTransfer, fetchAttributes, fetchLeaseholdTransferList } from "./requests";
+import {
+  deleteLeaseholdTransfer,
+  fetchAttributes,
+  fetchLeaseholdTransferList,
+} from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -26,7 +35,10 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch leasehold transfer attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch leasehold transfer attributes with error "%s"',
+      error,
+    );
     yield put(attributesNotFound());
     yield put(receiveError(error));
   }
@@ -34,14 +46,12 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchLeaseholdTransferListSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchLeaseholdTransferList, query);
 
     switch (statusCode) {
@@ -50,43 +60,41 @@ function* fetchLeaseholdTransferListSaga({
         break;
 
       default:
-        console.error('Failed to fetch leasehold transfer list');
+        console.error("Failed to fetch leasehold transfer list");
         yield put(notFound());
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch leasehold transfer list with error "%s"', error);
+    console.error(
+      'Failed to fetch leasehold transfer list with error "%s"',
+      error,
+    );
     yield put(notFound());
     yield put(receiveError(error));
   }
 }
 
 function* deleteLeaseholdTransferAndupdateListSaga({
-  payload: {
-    id,
-    searchQuery
-  },
-  type: any
+  payload: { id, searchQuery },
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deleteLeaseholdTransfer, id);
 
     switch (statusCode) {
       case 204:
         yield put(fetchLeaseholdTransferListAction(searchQuery));
         displayUIMessage({
-          title: '',
-          body: 'Vuokraoikeuden siirto poistettu'
+          title: "",
+          body: "Vuokraoikeuden siirto poistettu",
         });
         break;
 
       default:
-        console.error('Failed to delete fetch leasehold transfer');
+        console.error("Failed to delete fetch leasehold transfer");
         yield put(receiveError(bodyAsJson));
         yield put(notFound());
         break;
@@ -99,9 +107,20 @@ function* deleteLeaseholdTransferAndupdateListSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/leaseholdTransfer/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/leaseholdTransfer/FETCH_ALL', fetchLeaseholdTransferListSaga);
-    yield takeLatest('mvj/leaseholdTransfer/DELETE_AND_UPDATE', deleteLeaseholdTransferAndupdateListSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/leaseholdTransfer/FETCH_ATTRIBUTES",
+        fetchAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/leaseholdTransfer/FETCH_ALL",
+        fetchLeaseholdTransferListSaga,
+      );
+      yield takeLatest(
+        "mvj/leaseholdTransfer/DELETE_AND_UPDATE",
+        deleteLeaseholdTransferAndupdateListSaga,
+      );
+    }),
+  ]);
 }

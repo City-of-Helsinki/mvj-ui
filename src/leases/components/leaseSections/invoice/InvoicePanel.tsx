@@ -11,7 +11,11 @@ import { receiveIsEditClicked } from "@/invoices/actions";
 import { FormNames, Methods } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { isMethodAllowed } from "@/util/helpers";
-import { getInvoicesByLease, getIsEditClicked, getMethods as getInvoiceMethods } from "@/invoices/selectors";
+import {
+  getInvoicesByLease,
+  getIsEditClicked,
+  getMethods as getInvoiceMethods,
+} from "@/invoices/selectors";
 import { getCurrentLease } from "@/leases/selectors";
 import type { Methods as MethodsType } from "types";
 import type { Invoice, InvoiceList } from "@/invoices/types";
@@ -40,7 +44,7 @@ class InvoicePanel extends PureComponent<Props, State> {
   state = {
     creditedInvoice: null,
     interestInvoiceFor: null,
-    invoice: null
+    invoice: null,
   };
   setComponentRef = (el: any) => {
     this.component = el;
@@ -53,20 +57,21 @@ class InvoicePanel extends PureComponent<Props, State> {
       const invoice = props.invoice;
       const invoices = props.invoices;
       newState.invoice = invoice;
-      newState.creditedInvoice = invoice && invoice.credited_invoice && !isEmpty(invoices) ? invoices.find(item => item.id === invoice.credited_invoice) : null;
-      newState.interestInvoiceFor = invoice && invoice.interest_invoice_for && !isEmpty(invoices) ? invoices.find(item => item.id === invoice.interest_invoice_for) : null;
+      newState.creditedInvoice =
+        invoice && invoice.credited_invoice && !isEmpty(invoices)
+          ? invoices.find((item) => item.id === invoice.credited_invoice)
+          : null;
+      newState.interestInvoiceFor =
+        invoice && invoice.interest_invoice_for && !isEmpty(invoices)
+          ? invoices.find((item) => item.id === invoice.interest_invoice_for)
+          : null;
     }
 
     return !isEmpty(newState) ? newState : null;
   }
 
   handleSave = () => {
-    const {
-      formValues,
-      onSave,
-      receiveIsEditClicked,
-      valid
-    } = this.props;
+    const { formValues, onSave, receiveIsEditClicked, valid } = this.props;
     receiveIsEditClicked(true);
 
     if (valid) {
@@ -81,60 +86,79 @@ class InvoicePanel extends PureComponent<Props, State> {
       isEditClicked,
       onClose,
       onInvoiceLinkClick,
-      valid
+      valid,
     } = this.props;
-    const {
-      creditedInvoice,
-      interestInvoiceFor
-    } = this.state;
-    
+    const { creditedInvoice, interestInvoiceFor } = this.state;
+
     return (
-    <TablePanelContainer 
-      innerRef={this.setComponentRef}
-      footer={invoice && !invoice.sap_id && 
-        <Authorization allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}>
-          <>
-            <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
-            <Button className={ButtonColors.SUCCESS} disabled={isEditClicked || !valid} onClick={this.handleSave} text='Tallenna' />
-          </>
-        </Authorization>}
-      onClose={onClose} 
-      title='Laskun tiedot'>
-        {isMethodAllowed(invoiceMethods, Methods.PATCH) && (!invoice || !invoice.sap_id) 
-          ? <EditInvoiceForm 
-              creditedInvoice={creditedInvoice} 
-              interestInvoiceFor={interestInvoiceFor} 
-              invoice={invoice} 
-              initialValues={{ ...invoice}} 
-              onInvoiceLinkClick={onInvoiceLinkClick} 
-              relativeTo={this.component} 
-            />
-          : <InvoiceTemplate 
-              creditedInvoice={creditedInvoice} 
-              interestInvoiceFor={interestInvoiceFor} 
-              invoice={invoice} 
-              onInvoiceLinkClick={onInvoiceLinkClick} 
-              relativeTo={this.component} 
-            />
+      <TablePanelContainer
+        innerRef={this.setComponentRef}
+        footer={
+          invoice &&
+          !invoice.sap_id && (
+            <Authorization
+              allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}
+            >
+              <>
+                <Button
+                  className={ButtonColors.SECONDARY}
+                  onClick={onClose}
+                  text="Peruuta"
+                />
+                <Button
+                  className={ButtonColors.SUCCESS}
+                  disabled={isEditClicked || !valid}
+                  onClick={this.handleSave}
+                  text="Tallenna"
+                />
+              </>
+            </Authorization>
+          )
         }
+        onClose={onClose}
+        title="Laskun tiedot"
+      >
+        {isMethodAllowed(invoiceMethods, Methods.PATCH) &&
+        (!invoice || !invoice.sap_id) ? (
+          <EditInvoiceForm
+            creditedInvoice={creditedInvoice}
+            interestInvoiceFor={interestInvoiceFor}
+            invoice={invoice}
+            initialValues={{ ...invoice }}
+            onInvoiceLinkClick={onInvoiceLinkClick}
+            relativeTo={this.component}
+          />
+        ) : (
+          <InvoiceTemplate
+            creditedInvoice={creditedInvoice}
+            interestInvoiceFor={interestInvoiceFor}
+            invoice={invoice}
+            onInvoiceLinkClick={onInvoiceLinkClick}
+            relativeTo={this.component}
+          />
+        )}
       </TablePanelContainer>
     );
   }
-
 }
 
 const formName = FormNames.LEASE_INVOICE_EDIT;
-export default connect(state => {
-  const currentLease = getCurrentLease(state);
-  return {
-    formValues: getFormValues(formName)(state),
-    invoiceMethods: getInvoiceMethods(state),
-    invoices: getInvoicesByLease(state, currentLease.id),
-    isEditClicked: getIsEditClicked(state),
-    valid: isValid(formName)(state)
-  };
-}, {
-  receiveIsEditClicked
-}, null, {
-  forwardRef: true
-})(InvoicePanel);
+export default connect(
+  (state) => {
+    const currentLease = getCurrentLease(state);
+    return {
+      formValues: getFormValues(formName)(state),
+      invoiceMethods: getInvoiceMethods(state),
+      invoices: getInvoicesByLease(state, currentLease.id),
+      isEditClicked: getIsEditClicked(state),
+      valid: isValid(formName)(state),
+    };
+  },
+  {
+    receiveIsEditClicked,
+  },
+  null,
+  {
+    forwardRef: true,
+  },
+)(InvoicePanel);

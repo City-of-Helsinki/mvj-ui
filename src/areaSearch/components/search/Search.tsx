@@ -58,37 +58,36 @@ class Search extends Component<Props, State> {
     areaSearches: null,
     areaSearchAttributes: {},
     attributes: {},
-    serviceUnitOptions: []
+    serviceUnitOptions: [],
   };
 
   componentDidMount() {
     this._isMounted = true;
     this.setState({
-      isBasicSearch: this.isSearchBasicMode()
+      isBasicSearch: this.isSearchBasicMode(),
     });
   }
 
   componentDidUpdate(prevProps: Props) {
-    const {
-      isSearchInitialized
-    } = this.props;
+    const { isSearchInitialized } = this.props;
 
-    if (isSearchInitialized && !isEqual(prevProps.formValues, this.props.formValues)) {
+    if (
+      isSearchInitialized &&
+      !isEqual(prevProps.formValues, this.props.formValues)
+    ) {
       this.onSearchChange();
     }
 
     if (this.props.context !== prevProps.context) {
       this.setState({
-        isBasicSearch: this.isSearchBasicMode()
+        isBasicSearch: this.isSearchBasicMode(),
       });
     }
   }
 
   isSearchBasicMode = () => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
     // Ignore these fields when testing is search query length
@@ -100,7 +99,11 @@ class Search extends Component<Props, State> {
     delete searchQuery.zoom;
     const keys = Object.keys(searchQuery);
 
-    if (!keys.length || keys.length === 1 && Object.prototype.hasOwnProperty.call(searchQuery, 'search')) {
+    if (
+      !keys.length ||
+      (keys.length === 1 &&
+        Object.prototype.hasOwnProperty.call(searchQuery, "search"))
+    ) {
       return true;
     }
 
@@ -119,33 +122,28 @@ class Search extends Component<Props, State> {
     this.search();
   }, 1000);
   search = () => {
-    const {
-      formValues,
-      onSearch,
-      states
-    } = this.props;
+    const { formValues, onSearch, states } = this.props;
     let searchParams: Record<string, any> = formValues || {};
 
     if (this.state.isBasicSearch) {
       searchParams = {
-        q: formValues.q
+        q: formValues.q,
       };
     }
 
-    onSearch({ ...searchParams,
+    onSearch({
+      ...searchParams,
       preparer: searchParams.preparer?.id || undefined,
-      state: states.length ? states : undefined
+      state: states.length ? states : undefined,
     });
   };
   handleClear = () => {
-    const {
-      onSearch
-    } = this.props;
+    const { onSearch } = this.props;
     onSearch({});
   };
   toggleSearchType = () => {
     this.setState({
-      isBasicSearch: !this.state.isBasicSearch
+      isBasicSearch: !this.state.isBasicSearch,
     });
   };
 
@@ -153,53 +151,73 @@ class Search extends Component<Props, State> {
     const newState: any = {};
 
     if (props.areaSearchAttributes !== state.areaSearchAttributes) {
-      newState.intendedUseOptions = getFieldOptions(props.areaSearchAttributes, AreaSearchFieldPaths.INTENDED_USE);
-      newState.lessorOptions = getFieldOptions(props.areaSearchAttributes, AreaSearchFieldPaths.LESSOR);
-      newState.serviceUnitOptions = getFieldOptions(props.areaSearchAttributes, 'service_unit', true);
+      newState.intendedUseOptions = getFieldOptions(
+        props.areaSearchAttributes,
+        AreaSearchFieldPaths.INTENDED_USE,
+      );
+      newState.lessorOptions = getFieldOptions(
+        props.areaSearchAttributes,
+        AreaSearchFieldPaths.LESSOR,
+      );
+      newState.serviceUnitOptions = getFieldOptions(
+        props.areaSearchAttributes,
+        "service_unit",
+        true,
+      );
     }
 
     return !isEmpty(newState) ? newState : null;
   }
 
   render() {
-    const {
-      handleSubmit,
-      formValues
-    } = this.props;
+    const { handleSubmit, formValues } = this.props;
     const {
       isBasicSearch,
       intendedUseOptions,
       lessorOptions,
-      serviceUnitOptions
+      serviceUnitOptions,
     } = this.state;
-    return <SearchContainer onSubmit={e => {
-      e.preventDefault();
-      handleSubmit(this.search);
-    }}>
+    return (
+      <SearchContainer
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(this.search);
+        }}
+      >
         <Row>
           <Column large={12}>
-            <FormField disableDirty fieldAttributes={{
-            label: 'Hae hakusanalla',
-            type: FieldTypes.SEARCH,
-            read_only: false
-          }} invisibleLabel name="q" />
+            <FormField
+              disableDirty
+              fieldAttributes={{
+                label: "Hae hakusanalla",
+                type: FieldTypes.SEARCH,
+                read_only: false,
+              }}
+              invisibleLabel
+              name="q"
+            />
           </Column>
         </Row>
-        {!isBasicSearch && <Fragment>
+        {!isBasicSearch && (
+          <Fragment>
             <Row>
-              {
-            /* First column */
-          }
+              {/* First column */}
               <Column small={12} large={6}>
                 <SearchRow>
                   <SearchLabelColumn>
                     <SearchLabel>Hakemustunnus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name="identifier" />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="identifier"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
@@ -210,16 +228,27 @@ class Search extends Component<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField disableDirty fieldAttributes={{
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name="received_date_after" />
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="received_date_after"
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField className="with-dash" disableDirty fieldAttributes={{
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name="received_date_before" />
+                        <FormField
+                          className="with-dash"
+                          disableDirty
+                          fieldAttributes={{
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="received_date_before"
+                        />
                       </Column>
                     </Row>
                   </SearchInputColumn>
@@ -229,12 +258,19 @@ class Search extends Component<Props, State> {
                     <SearchLabel>Käyttötarkoitus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  type: FieldTypes.CHOICE,
-                  read_only: false
-                }} invisibleLabel overrideValues={{
-                  options: intendedUseOptions
-                }} name="intended_use" />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      overrideValues={{
+                        options: intendedUseOptions,
+                      }}
+                      name="intended_use"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
                 <SearchRow>
@@ -242,10 +278,16 @@ class Search extends Component<Props, State> {
                     <SearchLabel>Osoite</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name="address" />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="address"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
                 <SearchRow>
@@ -253,10 +295,16 @@ class Search extends Component<Props, State> {
                     <SearchLabel>Kaupunginosa</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name="district" />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="district"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
                 <SearchRow>
@@ -264,15 +312,20 @@ class Search extends Component<Props, State> {
                     <SearchLabel>Käsittelijä</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  type: FieldTypes.USER,
-                  read_only: false
-                }} invisibleLabel name="preparer" />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        type: FieldTypes.USER,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="preparer"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
-                {
-              /*<SearchRow>
+                {/*<SearchRow>
                <SearchLabelColumn>
                </SearchLabelColumn>
                <SearchInputColumn>
@@ -307,23 +360,26 @@ class Search extends Component<Props, State> {
                    name="ended"
                  />
                </SearchInputColumn>
-              </SearchRow>*/
-            }
+              </SearchRow>*/}
               </Column>
 
-              {
-            /* Second column */
-          }
+              {/* Second column */}
               <Column small={12} large={6}>
                 <SearchRow>
                   <SearchLabelColumn>
                     <SearchLabel>Hakija</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  type: FieldTypes.STRING,
-                  read_only: false
-                }} invisibleLabel name="applicant" />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="applicant"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
 
@@ -339,16 +395,27 @@ class Search extends Component<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField disableDirty fieldAttributes={{
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name="start_date_after" />
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="start_date_after"
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField className="with-dash" disableDirty fieldAttributes={{
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name="start_date_before" />
+                        <FormField
+                          className="with-dash"
+                          disableDirty
+                          fieldAttributes={{
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="start_date_before"
+                        />
                       </Column>
                     </Row>
                   </SearchInputColumn>
@@ -360,16 +427,27 @@ class Search extends Component<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField disableDirty fieldAttributes={{
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name="end_date_after" />
+                        <FormField
+                          disableDirty
+                          fieldAttributes={{
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="end_date_after"
+                        />
                       </Column>
                       <Column small={6}>
-                        <FormField className="with-dash" disableDirty fieldAttributes={{
-                      type: FieldTypes.DATE,
-                      read_only: false
-                    }} invisibleLabel name="end_date_before" />
+                        <FormField
+                          className="with-dash"
+                          disableDirty
+                          fieldAttributes={{
+                            type: FieldTypes.DATE,
+                            read_only: false,
+                          }}
+                          invisibleLabel
+                          name="end_date_before"
+                        />
                       </Column>
                     </Row>
                   </SearchInputColumn>
@@ -379,13 +457,20 @@ class Search extends Component<Props, State> {
                     <SearchLabel>Vuokranantaja</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Vuokranantaja',
-                  type: FieldTypes.CHOICE,
-                  read_only: false
-                }} invisibleLabel overrideValues={{
-                  options: lessorOptions
-                }} name="lessor" />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Vuokranantaja",
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      overrideValues={{
+                        options: lessorOptions,
+                      }}
+                      name="lessor"
+                    />
                   </SearchInputColumn>
                 </SearchRow>
                 <SearchRow>
@@ -393,41 +478,56 @@ class Search extends Component<Props, State> {
                     <SearchLabel>Palvelukokonaisuus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField autoBlur disableDirty fieldAttributes={{
-                  label: 'Palvelukokonaisuus',
-                  type: FieldTypes.CHOICE,
-                  read_only: false
-                }} invisibleLabel name='service_unit' overrideValues={{
-                  options: serviceUnitOptions
-                }} />
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Palvelukokonaisuus",
+                        type: FieldTypes.CHOICE,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="service_unit"
+                      overrideValues={{
+                        options: serviceUnitOptions,
+                      }}
+                    />
                   </SearchInputColumn>
                 </SearchRow>
-
               </Column>
             </Row>
-          </Fragment>}
+          </Fragment>
+        )}
         <Row>
           <Column small={6}>
-            <SearchChangeTypeLink onClick={this.toggleSearchType}>{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</SearchChangeTypeLink>
+            <SearchChangeTypeLink onClick={this.toggleSearchType}>
+              {isBasicSearch ? "Tarkennettu haku" : "Yksinkertainen haku"}
+            </SearchChangeTypeLink>
           </Column>
           <Column small={6}>
-            <SearchClearLink onClick={this.handleClear}>Tyhjennä haku</SearchClearLink>
+            <SearchClearLink onClick={this.handleClear}>
+              Tyhjennä haku
+            </SearchClearLink>
           </Column>
         </Row>
-      </SearchContainer>;
+      </SearchContainer>
+    );
   }
-
 }
 
 const formName = FormNames.AREA_SEARCH_SEARCH;
-export default (flowRight(withRouter, connect(state => {
-  return {
-    formValues: getFormValues(formName)(state),
-    areaSearchAttributes: getAttributes(state),
-    areaSearches: getAreaSearchList(state),
-    selectedMainType: formValueSelector(formName)(state, 'plot_search_type'),
-    isFetchingDistricts: getIsFetchingDistricts(state)
-  };
-}, {}), reduxForm({
-  form: formName
-}))(Search) as React.ComponentType<OwnProps>);
+export default flowRight(
+  withRouter,
+  connect((state) => {
+    return {
+      formValues: getFormValues(formName)(state),
+      areaSearchAttributes: getAttributes(state),
+      areaSearches: getAreaSearchList(state),
+      selectedMainType: formValueSelector(formName)(state, "plot_search_type"),
+      isFetchingDistricts: getIsFetchingDistricts(state),
+    };
+  }, {}),
+  reduxForm({
+    form: formName,
+  }),
+)(Search) as React.ComponentType<OwnProps>;

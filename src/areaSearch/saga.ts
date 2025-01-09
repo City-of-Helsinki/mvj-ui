@@ -1,28 +1,62 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { receiveError } from "@/api/actions";
-import { receiveAttributes, receiveMethods, attributesNotFound, receiveAreaSearchList, areaSearchesNotFound, areaSearchesByBBoxNotFound, receiveAreaSearchByBBoxList, receiveSingleAreaSearch, singleAreaSearchNotFound, listAttributesNotFound, receiveListAttributes, receiveListMethods, receiveAreaSearchInfoChecksBatchEditFailure, receiveAreaSearchInfoChecksBatchEditSuccess, hideEditMode, fetchSingleAreaSearch, receiveAreaSearchEdited, receiveAreaSearchEditFailed, receiveAreaSearchSpecsCreated, receiveAreaSearchSpecsCreateFailed, receiveAreaSearchApplicationCreated, receiveAreaSearchApplicationCreateFailed, receiveFileOperationFailed, receiveFileOperationFinished } from "@/areaSearch/actions";
-import { editSingleAreaSearchRequest, fetchAreaSearchAttributesRequest, fetchAreaSearchesRequest, fetchAreaSearchListAttributesRequest, fetchSingleAreaSearchRequest, createAreaSearchSpecsRequest, deleteAreaSearchAttachmentRequest, uploadAreaSearchAttachmentRequest } from "@/areaSearch/requests";
+import {
+  receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
+  receiveAreaSearchList,
+  areaSearchesNotFound,
+  areaSearchesByBBoxNotFound,
+  receiveAreaSearchByBBoxList,
+  receiveSingleAreaSearch,
+  singleAreaSearchNotFound,
+  listAttributesNotFound,
+  receiveListAttributes,
+  receiveListMethods,
+  receiveAreaSearchInfoChecksBatchEditFailure,
+  receiveAreaSearchInfoChecksBatchEditSuccess,
+  hideEditMode,
+  fetchSingleAreaSearch,
+  receiveAreaSearchEdited,
+  receiveAreaSearchEditFailed,
+  receiveAreaSearchSpecsCreated,
+  receiveAreaSearchSpecsCreateFailed,
+  receiveAreaSearchApplicationCreated,
+  receiveAreaSearchApplicationCreateFailed,
+  receiveFileOperationFailed,
+  receiveFileOperationFinished,
+} from "@/areaSearch/actions";
+import {
+  editSingleAreaSearchRequest,
+  fetchAreaSearchAttributesRequest,
+  fetchAreaSearchesRequest,
+  fetchAreaSearchListAttributesRequest,
+  fetchSingleAreaSearchRequest,
+  createAreaSearchSpecsRequest,
+  deleteAreaSearchAttachmentRequest,
+  uploadAreaSearchAttachmentRequest,
+} from "@/areaSearch/requests";
 import { editApplicantInfoCheckItemRequest } from "@/plotApplications/requests";
 import { receiveUpdatedApplicantInfoCheckItem } from "@/application/actions";
 import { displayUIMessage } from "@/util/helpers";
 import { push } from "react-router-redux";
 import { getRouteById, Routes } from "@/root/routes";
 import { createApplicationRequest } from "@/application/requests";
-import type { DeleteAreaSearchAttachmentAction, UploadAreaSearchAttachmentAction } from "@/areaSearch/types";
+import type {
+  DeleteAreaSearchAttachmentAction,
+  UploadAreaSearchAttachmentAction,
+} from "@/areaSearch/types";
 
 function* fetchListAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAreaSearchListAttributesRequest);
 
     switch (statusCode) {
       case 200:
-        const attributes = { ...bodyAsJson.fields
-        };
+        const attributes = { ...bodyAsJson.fields };
         const methods = bodyAsJson.methods;
         yield put(receiveListAttributes(attributes));
         yield put(receiveListMethods(methods));
@@ -41,16 +75,13 @@ function* fetchListAttributesSaga(): Generator<any, any, any> {
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAreaSearchAttributesRequest);
 
     switch (statusCode) {
       case 200:
-        const attributes = { ...bodyAsJson.fields
-        };
+        const attributes = { ...bodyAsJson.fields };
         const methods = bodyAsJson.methods;
         yield put(receiveAttributes(attributes));
         yield put(receiveMethods(methods));
@@ -68,14 +99,12 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchAreaSearchListSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAreaSearchesRequest, query);
 
     switch (statusCode) {
@@ -95,14 +124,12 @@ function* fetchAreaSearchListSaga({
 
 function* fetchAreaSearchesByBBoxSaga({
   payload: query,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAreaSearchesRequest, query);
 
     switch (statusCode) {
@@ -116,7 +143,10 @@ function* fetchAreaSearchesByBBoxSaga({
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch area searches by bbox with error "%s"', error);
+    console.error(
+      'Failed to fetch area searches by bbox with error "%s"',
+      error,
+    );
     yield put(areaSearchesByBBoxNotFound());
     yield put(receiveError(error));
   }
@@ -124,14 +154,12 @@ function* fetchAreaSearchesByBBoxSaga({
 
 function* fetchCurrentAreaSearchSaga({
   payload: id,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchSingleAreaSearchRequest, id);
 
     switch (statusCode) {
@@ -151,60 +179,62 @@ function* fetchCurrentAreaSearchSaga({
 
 function* batchEditAreaSearchInfoChecksSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   const errors = {
     areaSearch: [],
-    applicant: []
+    applicant: [],
   };
-  yield all(payload.applicant.map(applicant => call(function* ({
-    id,
-    kind,
-    data
-  }) {
-    try {
-      const {
-        response: {
-          status: statusCode
-        },
-        bodyAsJson
-      } = yield call(editApplicantInfoCheckItemRequest, data);
+  yield all(
+    payload.applicant.map((applicant) =>
+      call(function* ({ id, kind, data }) {
+        try {
+          const {
+            response: { status: statusCode },
+            bodyAsJson,
+          } = yield call(editApplicantInfoCheckItemRequest, data);
 
-      switch (statusCode) {
-        case 200:
-        case 204:
-          yield put(receiveUpdatedApplicantInfoCheckItem({
-            id: data.id,
-            data: bodyAsJson
-          }));
-          break;
+          switch (statusCode) {
+            case 200:
+            case 204:
+              yield put(
+                receiveUpdatedApplicantInfoCheckItem({
+                  id: data.id,
+                  data: bodyAsJson,
+                }),
+              );
+              break;
 
-        default:
-          console.error(bodyAsJson);
-          console.log(kind);
+            default:
+              console.error(bodyAsJson);
+              console.log(kind);
+              errors.applicant.push({
+                id,
+                kind,
+                error: bodyAsJson,
+              });
+          }
+        } catch (e) {
+          console.error(e);
           errors.applicant.push({
             id,
             kind,
-            error: bodyAsJson
+            error: e,
           });
-      }
-    } catch (e) {
-      console.error(e);
-      errors.applicant.push({
-        id,
-        kind,
-        error: e
-      });
-    }
-  }, applicant)));
+        }
+      }, applicant),
+    ),
+  );
 
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
-    } = yield call(editSingleAreaSearchRequest, payload.areaSearch.id, payload.areaSearch);
+      response: { status: statusCode },
+      bodyAsJson,
+    } = yield call(
+      editSingleAreaSearchRequest,
+      payload.areaSearch.id,
+      payload.areaSearch,
+    );
 
     switch (statusCode) {
       case 200:
@@ -227,73 +257,75 @@ function* batchEditAreaSearchInfoChecksSaga({
     yield put(fetchSingleAreaSearch(payload.areaSearch.id));
     yield put(hideEditMode());
     displayUIMessage({
-      title: '',
-      body: 'Käsittelytiedot päivitetty'
+      title: "",
+      body: "Käsittelytiedot päivitetty",
     });
   } else {
     yield put(receiveAreaSearchInfoChecksBatchEditFailure(errors));
-    displayUIMessage({
-      title: '',
-      body: `${errorCount} käsittelytiedon päivitys epäonnistui!`
-    }, {
-      type: 'error'
-    });
+    displayUIMessage(
+      {
+        title: "",
+        body: `${errorCount} käsittelytiedon päivitys epäonnistui!`,
+      },
+      {
+        type: "error",
+      },
+    );
   }
 }
 
-function* editAreaSearchSaga({
-  payload,
-  type: any
-}): Generator<any, any, any> {
+function* editAreaSearchSaga({ payload, type: any }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(editSingleAreaSearchRequest, payload.id, payload);
 
     switch (statusCode) {
       case 200:
         yield put(receiveAreaSearchEdited());
         displayUIMessage({
-          title: '',
-          body: 'Käsittelijä ja vuokranantaja päivitetty'
+          title: "",
+          body: "Käsittelijä ja vuokranantaja päivitetty",
         });
         break;
 
       default:
         console.error(bodyAsJson);
         yield put(receiveAreaSearchEditFailed(bodyAsJson));
-        displayUIMessage({
-          title: '',
-          body: 'Tietojen päivitys epäonnistui!'
-        }, {
-          type: 'error'
-        });
+        displayUIMessage(
+          {
+            title: "",
+            body: "Tietojen päivitys epäonnistui!",
+          },
+          {
+            type: "error",
+          },
+        );
     }
   } catch (e) {
     console.error(e);
     yield put(receiveAreaSearchEditFailed(e));
-    displayUIMessage({
-      title: '',
-      body: 'Tietojen päivitys epäonnistui!'
-    }, {
-      type: 'error'
-    });
+    displayUIMessage(
+      {
+        title: "",
+        body: "Tietojen päivitys epäonnistui!",
+      },
+      {
+        type: "error",
+      },
+    );
   }
 }
 
 function* createAreaSearchSpecsSaga({
   payload,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createAreaSearchSpecsRequest, payload);
 
     switch (statusCode) {
@@ -305,50 +337,51 @@ function* createAreaSearchSpecsSaga({
       default:
         console.error(bodyAsJson);
         yield put(receiveAreaSearchSpecsCreateFailed());
-        displayUIMessage({
-          title: '',
-          body: 'Aluehaun tallennus epäonnistui!'
-        }, {
-          type: 'error'
-        });
+        displayUIMessage(
+          {
+            title: "",
+            body: "Aluehaun tallennus epäonnistui!",
+          },
+          {
+            type: "error",
+          },
+        );
     }
   } catch (e) {
     console.error(e);
     yield put(receiveAreaSearchSpecsCreateFailed());
-    displayUIMessage({
-      title: '',
-      body: 'Aluehaun tallennus epäonnistui!'
-    }, {
-      type: 'error'
-    });
+    displayUIMessage(
+      {
+        title: "",
+        body: "Aluehaun tallennus epäonnistui!",
+      },
+      {
+        type: "error",
+      },
+    );
   }
 }
 
 function* createAreaSearchApplicationSaga({
-  payload: {
-    application,
-    specs
-  },
-  type: any
+  payload: { application, specs },
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: applicationStatusCode
-      },
-      bodyAsJson: applicationBody
+      response: { status: applicationStatusCode },
+      bodyAsJson: applicationBody,
     } = yield call(createApplicationRequest, application);
 
     if (![200, 201].includes(applicationStatusCode)) {
       // noinspection ExceptionCaughtLocallyJS
-      throw new Error(`Could not save application: ${JSON.stringify(applicationBody)}`);
+      throw new Error(
+        `Could not save application: ${JSON.stringify(applicationBody)}`,
+      );
     }
 
     const {
-      response: {
-        status: areaSearchStatusCode
-      },
-      bodyAsJson: areaSearchBody
+      response: { status: areaSearchStatusCode },
+      bodyAsJson: areaSearchBody,
     } = yield call(editSingleAreaSearchRequest, specs.id, specs);
 
     switch (areaSearchStatusCode) {
@@ -356,43 +389,48 @@ function* createAreaSearchApplicationSaga({
       case 201:
         yield put(receiveAreaSearchApplicationCreated());
         yield put(receiveSingleAreaSearch(null));
-        yield put(push(`${getRouteById(Routes.AREA_SEARCH)}/${application.area_search}`));
+        yield put(
+          push(
+            `${getRouteById(Routes.AREA_SEARCH)}/${application.area_search}`,
+          ),
+        );
         yield put(hideEditMode());
         displayUIMessage({
-          title: '',
-          body: 'Hakemus luotu'
+          title: "",
+          body: "Hakemus luotu",
         });
         break;
 
       default:
         // noinspection ExceptionCaughtLocallyJS
-        throw new Error(`Could not save area search: ${JSON.stringify(areaSearchBody)}`);
+        throw new Error(
+          `Could not save area search: ${JSON.stringify(areaSearchBody)}`,
+        );
     }
   } catch (e) {
     yield put(receiveAreaSearchApplicationCreateFailed());
     console.log(e);
-    displayUIMessage({
-      title: '',
-      body: 'Hakemuksen tallennus epäonnistui'
-    }, {
-      type: 'error'
-    });
+    displayUIMessage(
+      {
+        title: "",
+        body: "Hakemuksen tallennus epäonnistui",
+      },
+      {
+        type: "error",
+      },
+    );
   }
 }
 
 function* uploadAttachmentSaga({
   payload,
-  type: any
+  type: any,
 }: UploadAreaSearchAttachmentAction): Generator<any, any, any> {
   try {
-    const {
-      areaSearch,
-      fileData,
-      callback
-    } = payload;
+    const { areaSearch, fileData, callback } = payload;
     const result = yield call(uploadAreaSearchAttachmentRequest, {
       file: fileData,
-      areaSearch
+      areaSearch,
     });
     yield put(receiveFileOperationFinished());
 
@@ -408,7 +446,7 @@ function* uploadAttachmentSaga({
 
 function* deleteAttachmentSaga({
   payload,
-  type: any
+  type: any,
 }: DeleteAreaSearchAttachmentAction): Generator<any, any, any> {
   try {
     yield call(deleteAreaSearchAttachmentRequest, payload.id);
@@ -425,17 +463,43 @@ function* deleteAttachmentSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/areaSearch/FETCH_LIST_ATTRIBUTES', fetchListAttributesSaga);
-    yield takeLatest('mvj/areaSearch/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/areaSearch/FETCH_ALL', fetchAreaSearchListSaga);
-    yield takeLatest('mvj/areaSearch/FETCH_ALL_BY_BBOX', fetchAreaSearchesByBBoxSaga);
-    yield takeLatest('mvj/areaSearch/FETCH_SINGLE', fetchCurrentAreaSearchSaga);
-    yield takeLatest('mvj/areaSearch/BATCH_EDIT_INFO_CHECKS', batchEditAreaSearchInfoChecksSaga);
-    yield takeLatest('mvj/areaSearch/EDIT', editAreaSearchSaga);
-    yield takeLatest('mvj/areaSearch/CREATE_SPECS', createAreaSearchSpecsSaga);
-    yield takeLatest('mvj/areaSearch/CREATE_APPLICATION', createAreaSearchApplicationSaga);
-    yield takeLatest('mvj/areaSearch/UPLOAD_ATTACHMENT', uploadAttachmentSaga);
-    yield takeLatest('mvj/areaSearch/DELETE_ATTACHMENT', deleteAttachmentSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/areaSearch/FETCH_LIST_ATTRIBUTES",
+        fetchListAttributesSaga,
+      );
+      yield takeLatest("mvj/areaSearch/FETCH_ATTRIBUTES", fetchAttributesSaga);
+      yield takeLatest("mvj/areaSearch/FETCH_ALL", fetchAreaSearchListSaga);
+      yield takeLatest(
+        "mvj/areaSearch/FETCH_ALL_BY_BBOX",
+        fetchAreaSearchesByBBoxSaga,
+      );
+      yield takeLatest(
+        "mvj/areaSearch/FETCH_SINGLE",
+        fetchCurrentAreaSearchSaga,
+      );
+      yield takeLatest(
+        "mvj/areaSearch/BATCH_EDIT_INFO_CHECKS",
+        batchEditAreaSearchInfoChecksSaga,
+      );
+      yield takeLatest("mvj/areaSearch/EDIT", editAreaSearchSaga);
+      yield takeLatest(
+        "mvj/areaSearch/CREATE_SPECS",
+        createAreaSearchSpecsSaga,
+      );
+      yield takeLatest(
+        "mvj/areaSearch/CREATE_APPLICATION",
+        createAreaSearchApplicationSaga,
+      );
+      yield takeLatest(
+        "mvj/areaSearch/UPLOAD_ATTACHMENT",
+        uploadAttachmentSaga,
+      );
+      yield takeLatest(
+        "mvj/areaSearch/DELETE_ATTACHMENT",
+        deleteAttachmentSaga,
+      );
+    }),
+  ]);
 }

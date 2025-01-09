@@ -1,5 +1,7 @@
 .ApplicantInfoCheck {
-  &, span, a {
+  &,
+  span,
+  a {
     font-size: $font-small;
   }
 
@@ -9,8 +11,11 @@
 }
 
 .ApplicantInfoCheckEdit {
-  &, span, a {
+  &,
+  span,
+  a {
     font-size: $font-small;
+    color: black;
   }
 
   .ApplicantInfoCheckEditItem--dirty {
@@ -19,4 +24,3 @@
     }
   }
 }
-

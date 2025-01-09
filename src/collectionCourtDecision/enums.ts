@@ -4,12 +4,12 @@
  * @enum {string}
  */
 export const CollectionCourtDecisionFieldPaths = {
-  COLLECTION_COURT_DECISIONS: 'collection_court_decisions',
-  DECISION_DATE: 'decision_date',
-  FILE: 'file',
-  NOTE: 'note',
-  UPLOADED_AT: 'uploaded_at',
-  UPLOADER: 'uploader'
+  COLLECTION_COURT_DECISIONS: "collection_court_decisions",
+  DECISION_DATE: "decision_date",
+  FILE: "file",
+  NOTE: "note",
+  UPLOADED_AT: "uploaded_at",
+  UPLOADER: "uploader",
 };
 
 /**
@@ -18,10 +18,10 @@ export const CollectionCourtDecisionFieldPaths = {
  * @enum {string}
  */
 export const CollectionCourtDecisionFieldTitles = {
-  COLLECTION_COURT_DECISIONS: 'Käräjäoikeuden päätökset',
-  DECISION_DATE: 'Päätöksen pvm',
-  FILE: 'Tiedosto',
-  NOTE: 'Päätöksen huomautus',
-  UPLOADED_AT: 'Lisätty',
-  UPLOADER: 'Lisääjä'
+  COLLECTION_COURT_DECISIONS: "Käräjäoikeuden päätökset",
+  DECISION_DATE: "Päätöksen pvm",
+  FILE: "Tiedosto",
+  NOTE: "Päätöksen huomautus",
+  UPLOADED_AT: "Lisätty",
+  UPLOADER: "Lisääjä",
 };

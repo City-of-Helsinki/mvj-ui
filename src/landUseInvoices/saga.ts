@@ -1,19 +1,37 @@
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveSingleLandUseContract } from "@/landUseContract/actions";
-import { fetchInvoicesByLandUseContract, receiveAttributes, receiveMethods, attributesNotFound, receiveInvoicesByLandUseContract, receiveIsCreateInvoicePanelOpen, receiveIsEditClicked, receivePatchedInvoice, notFound, receiveIsCreditInvoicePanelOpen, receiveInvoiceToCredit } from "./actions";
+import {
+  fetchInvoicesByLandUseContract,
+  receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
+  receiveInvoicesByLandUseContract,
+  receiveIsCreateInvoicePanelOpen,
+  receiveIsEditClicked,
+  receivePatchedInvoice,
+  notFound,
+  receiveIsCreditInvoicePanelOpen,
+  receiveInvoiceToCredit,
+} from "./actions";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
-import { fetchAttributes, createInvoice, patchInvoice, deleteInvoice, fetchInvoices, exportInvoiceToLaske, creditInvoice } from "./requests";
+import {
+  fetchAttributes,
+  createInvoice,
+  patchInvoice,
+  deleteInvoice,
+  fetchInvoices,
+  exportInvoiceToLaske,
+  creditInvoice,
+} from "./requests";
 import { getCurrentLandUseContract } from "@/landUseContract/selectors";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
@@ -29,7 +47,10 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch land use invoice attributes with error "%s"', error);
+    console.error(
+      'Failed to fetch land use invoice attributes with error "%s"',
+      error,
+    );
     yield put(attributesNotFound());
     yield put(receiveError(error));
   }
@@ -37,26 +58,22 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchInvoicesByLandUseContractSaga({
   payload: search,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     let {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson: body
+      response: { status: statusCode },
+      bodyAsJson: body,
     } = yield call(fetchInvoices, {
-      land_use_agreement: search
+      land_use_agreement: search,
     });
     let invoices = body.results;
 
     while (statusCode === 200 && body.next) {
       const {
-        response: {
-          status
-        },
-        bodyAsJson
-      } = yield call(fetchInvoices, `?${body.next.split('?').pop()}`);
+        response: { status },
+        bodyAsJson,
+      } = yield call(fetchInvoices, `?${body.next.split("?").pop()}`);
       statusCode = status;
       body = bodyAsJson;
       invoices = [...invoices, ...body.results];
@@ -64,10 +81,12 @@ function* fetchInvoicesByLandUseContractSaga({
 
     switch (statusCode) {
       case 200:
-        yield put(receiveInvoicesByLandUseContract({
-          id: search,
-          invoices: invoices
-        }));
+        yield put(
+          receiveInvoicesByLandUseContract({
+            id: search,
+            invoices: invoices,
+          }),
+        );
         break;
 
       case 404:
@@ -82,14 +101,12 @@ function* fetchInvoicesByLandUseContractSaga({
 
 function* createInvoiceSaga({
   payload: invoice,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(createInvoice, invoice);
 
     switch (statusCode) {
@@ -97,15 +114,14 @@ function* createInvoiceSaga({
         yield put(fetchInvoicesByLandUseContract(invoice.land_use_agreement));
         yield put(receiveIsCreateInvoicePanelOpen(false));
         displayUIMessage({
-          title: '',
-          body: 'Lasku luotu'
+          title: "",
+          body: "Lasku luotu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
 
       case 500:
@@ -122,14 +138,12 @@ function* createInvoiceSaga({
 
 function* patchInvoiceSaga({
   payload: invoice,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(patchInvoice, invoice);
 
     switch (statusCode) {
@@ -138,17 +152,21 @@ function* patchInvoiceSaga({
         yield put(receivePatchedInvoice(bodyAsJson));
         yield put(receiveIsEditClicked(false));
         displayUIMessage({
-          title: '',
-          body: 'Lasku tallennettu'
+          title: "",
+          body: "Lasku tallennettu",
         });
         break;
 
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({
-          _error: 'Server error 400',
-          ...bodyAsJson
-        })));
+        yield put(
+          receiveError(
+            new SubmissionError({
+              _error: "Server error 400",
+              ...bodyAsJson,
+            }),
+          ),
+        );
         break;
 
       case 500:
@@ -165,26 +183,23 @@ function* patchInvoiceSaga({
 
 function* deleteInvoiceSaga({
   payload: invoice,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(deleteInvoice, invoice.id);
 
     if (statusCode === 204) {
       yield put(fetchInvoicesByLandUseContract(invoice.land_use_agreement));
       displayUIMessage({
-        title: '',
-        body: 'Lasku poistettu'
+        title: "",
+        body: "Lasku poistettu",
       });
     } else {
       yield put(notFound());
-      yield put(receiveError(new SubmissionError({ ...bodyAsJson
-      })));
+      yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
     }
   } catch (error) {
     console.error('Failed to delete land use invoice "%s"', error);
@@ -195,59 +210,59 @@ function* deleteInvoiceSaga({
 
 function* startInvoicingSaga({
   payload: Id,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   console.log(Id);
   const currentLandUseContract = yield select(getCurrentLandUseContract);
-  yield put(receiveSingleLandUseContract({ ...currentLandUseContract,
-    is_invoicing_enabled: true
-  }));
+  yield put(
+    receiveSingleLandUseContract({
+      ...currentLandUseContract,
+      is_invoicing_enabled: true,
+    }),
+  );
   displayUIMessage({
-    title: '',
-    body: 'Laskutus käynnistetty'
+    title: "",
+    body: "Laskutus käynnistetty",
   });
 }
 
 function* stopInvoicingSaga({
   payload: Id,
-  type: any
+  type: any,
 }): Generator<any, any, any> {
   console.log(Id);
   const currentLandUseContract = yield select(getCurrentLandUseContract);
-  yield put(receiveSingleLandUseContract({ ...currentLandUseContract,
-    is_invoicing_enabled: false
-  }));
+  yield put(
+    receiveSingleLandUseContract({
+      ...currentLandUseContract,
+      is_invoicing_enabled: false,
+    }),
+  );
   displayUIMessage({
-    title: '',
-    body: 'Laskutus keskeytetty'
+    title: "",
+    body: "Laskutus keskeytetty",
   });
 }
 
 function* exportInvoiceToLaskeAndUpdateListSaga({
-  payload: {
-    id,
-    landUseContract
-  },
-  type: any
+  payload: { id, landUseContract },
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(exportInvoiceToLaske, id);
 
     if (statusCode === 200 && bodyAsJson.success) {
       yield put(fetchInvoicesByLandUseContract(landUseContract));
       displayUIMessage({
-        title: '',
-        body: 'Lasku lähetetty SAP:iin'
+        title: "",
+        body: "Lasku lähetetty SAP:iin",
       });
     } else {
       yield put(notFound());
-      yield put(receiveError(new SubmissionError({ ...bodyAsJson
-      })));
+      yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
     }
   } catch (error) {
     console.error('Failed to export invoice to laske with error "%s"', error);
@@ -257,22 +272,16 @@ function* exportInvoiceToLaskeAndUpdateListSaga({
 }
 
 function* creditInvoiceSaga({
-  payload: {
-    creditData,
-    invoiceId,
-    landUseContract
-  },
-  type: any
+  payload: { creditData, invoiceId, landUseContract },
+  type: any,
 }): Generator<any, any, any> {
   try {
     const {
-      response: {
-        status: statusCode
-      },
-      bodyAsJson
+      response: { status: statusCode },
+      bodyAsJson,
     } = yield call(creditInvoice, {
       creditData: creditData,
-      invoiceId: invoiceId
+      invoiceId: invoiceId,
     });
 
     switch (statusCode) {
@@ -281,14 +290,13 @@ function* creditInvoiceSaga({
         yield put(receiveIsCreditInvoicePanelOpen(false));
         yield put(receiveInvoiceToCredit(null));
         displayUIMessage({
-          title: '',
-          body: 'Hyvityslasku luotu'
+          title: "",
+          body: "Hyvityslasku luotu",
         });
         break;
 
       default:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson
-        })));
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
         break;
     }
   } catch (error) {
@@ -298,15 +306,29 @@ function* creditInvoiceSaga({
 }
 
 export default function* (): Generator<any, any, any> {
-  yield all([fork(function* (): Generator<any, any, any> {
-    yield takeLatest('mvj/landUseInvoices/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    yield takeLatest('mvj/landUseInvoices/FETCH_BY_LAND_USE_CONTRACT', fetchInvoicesByLandUseContractSaga);
-    yield takeLatest('mvj/landUseInvoices/CREATE', createInvoiceSaga);
-    yield takeLatest('mvj/landUseInvoices/PATCH', patchInvoiceSaga);
-    yield takeLatest('mvj/landUseInvoices/DELETE', deleteInvoiceSaga);
-    yield takeLatest('mvj/landUseInvoices/START_INVOICING', startInvoicingSaga);
-    yield takeLatest('mvj/landUseInvoices/STOP_INVOICING', stopInvoicingSaga);
-    yield takeLatest('mvj/landUseInvoices/EXPORT_TO_LASKE_AND_UPDATE', exportInvoiceToLaskeAndUpdateListSaga);
-    yield takeLatest('mvj/landUseInvoices/CREDIT_INVOICE', creditInvoiceSaga);
-  })]);
+  yield all([
+    fork(function* (): Generator<any, any, any> {
+      yield takeLatest(
+        "mvj/landUseInvoices/FETCH_ATTRIBUTES",
+        fetchAttributesSaga,
+      );
+      yield takeLatest(
+        "mvj/landUseInvoices/FETCH_BY_LAND_USE_CONTRACT",
+        fetchInvoicesByLandUseContractSaga,
+      );
+      yield takeLatest("mvj/landUseInvoices/CREATE", createInvoiceSaga);
+      yield takeLatest("mvj/landUseInvoices/PATCH", patchInvoiceSaga);
+      yield takeLatest("mvj/landUseInvoices/DELETE", deleteInvoiceSaga);
+      yield takeLatest(
+        "mvj/landUseInvoices/START_INVOICING",
+        startInvoicingSaga,
+      );
+      yield takeLatest("mvj/landUseInvoices/STOP_INVOICING", stopInvoicingSaga);
+      yield takeLatest(
+        "mvj/landUseInvoices/EXPORT_TO_LASKE_AND_UPDATE",
+        exportInvoiceToLaskeAndUpdateListSaga,
+      );
+      yield takeLatest("mvj/landUseInvoices/CREDIT_INVOICE", creditInvoiceSaga);
+    }),
+  ]);
 }

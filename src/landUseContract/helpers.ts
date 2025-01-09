@@ -4,53 +4,81 @@ import { isDirty } from "redux-form";
 import { FormNames } from "@/enums";
 import { LitigantContactType } from "./enums";
 import { getContentUser } from "@/users/helpers";
-import { fixedLengthNumber, getApiResponseResults, isArchived, sortStringByKeyDesc, addEmptyOption, formatDate, convertStrToDecimalNumber } from "@/util/helpers";
+import {
+  fixedLengthNumber,
+  getApiResponseResults,
+  isArchived,
+  sortStringByKeyDesc,
+  addEmptyOption,
+  formatDate,
+  convertStrToDecimalNumber,
+} from "@/util/helpers";
 import { getIsEditMode } from "@/landUseContract/selectors";
 import { removeSessionStorageItem } from "@/util/storage";
 import { getContactFullName, getContentContact } from "@/contacts/helpers";
 import type { LandUseContract } from "./types";
 import type { RootState } from "@/root/types";
 
-/** 
+/**
  * Get land use contract identifier
  * @param {Object} item
  * @return {string}
  */
-export const getContentLandUseContractIdentifier = (item: Record<string, any>): string | null | undefined => {
+export const getContentLandUseContractIdentifier = (
+  item: Record<string, any>,
+): string | null | undefined => {
   if (isEmpty(item)) {
     return null;
   }
 
-  return `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
+  return `${get(item, "identifier.type.identifier")}${get(item, "identifier.municipality.identifier")}${fixedLengthNumber(get(item, "identifier.district.identifier"), 2)}-${get(item, "identifier.sequence")}`;
 };
 
-/** 
+/**
  * Get land use contract list litigant name
  * @param {Object} litigant
  * @return {string}
  */
-export const getListLitigantName = (litigant: Record<string, any>): string | null | undefined => litigant ? getContactFullName(litigant.contact) : null;
+export const getListLitigantName = (
+  litigant: Record<string, any>,
+): string | null | undefined =>
+  litigant ? getContactFullName(litigant.contact) : null;
 
-/** 
+/**
  * Get land use contract list litigants
  * @param {Object} contract
  * @return {Object[]}
  */
-export const getContentListLitigants = (contract: Record<string, any>): Array<Record<string, any>> => get(contract, 'litigants', []).map(litigant => get(litigant, 'landuseagreementlitigantcontact_set', []).find(x => x.type === LitigantContactType.TENANT)).filter(litigant => !isArchived(litigant)).map(litigant => getListLitigantName(litigant));
+export const getContentListLitigants = (
+  contract: Record<string, any>,
+): Array<Record<string, any>> =>
+  get(contract, "litigants", [])
+    .map((litigant) =>
+      get(litigant, "landuseagreementlitigantcontact_set", []).find(
+        (x) => x.type === LitigantContactType.TENANT,
+      ),
+    )
+    .filter((litigant) => !isArchived(litigant))
+    .map((litigant) => getListLitigantName(litigant));
 
-/** 
+/**
  * Get land use contract list estate ids
  * @param {Object} contract
  * @return {Object[]}
  */
-export const getContentListEstateIds = (contract: Record<string, any>): Array<Record<string, any>> => get(contract, 'estate_ids', []).map(estate_id => estate_id.estate_id);
+export const getContentListEstateIds = (
+  contract: Record<string, any>,
+): Array<Record<string, any>> =>
+  get(contract, "estate_ids", []).map((estate_id) => estate_id.estate_id);
 
-/** 
+/**
  * Get land use contract list item
  * @param {Object} contract
  * @return {Object}
  */
-export const getContentLandUseContractListItem = (contract: LandUseContract): Record<string, any> => {
+export const getContentLandUseContractListItem = (
+  contract: LandUseContract,
+): Record<string, any> => {
   return {
     id: contract.id,
     identifier: getContentLandUseContractIdentifier(contract),
@@ -58,88 +86,120 @@ export const getContentLandUseContractListItem = (contract: LandUseContract): Re
     plan_number: contract.plan_number,
     estate_ids: getContentListEstateIds(contract),
     project_area: contract.project_area,
-    state: contract.state
+    state: contract.state,
   };
 };
 
-/** 
+/**
  * Get land use contract list results
  * @param {Object} content
  * @return {Object[]}
  */
-export const getContentLandUseContractListResults = (content: any): Array<Record<string, any>> => getApiResponseResults(content).map(contract => getContentLandUseContractListItem(contract));
+export const getContentLandUseContractListResults = (
+  content: any,
+): Array<Record<string, any>> =>
+  getApiResponseResults(content).map((contract) =>
+    getContentLandUseContractListItem(contract),
+  );
 
-/** 
+/**
  * Get land use contract estate ids
  * @param {Object} contract
  * @return {Object[]}
  */
-const getContentEstateIds = (contract: LandUseContract): Array<Record<string, any>> => get(contract, 'estate_ids', []).map(estate_id => {
-  return {
-    estate_id: estate_id.estate_id
-  };
-});
+const getContentEstateIds = (
+  contract: LandUseContract,
+): Array<Record<string, any>> =>
+  get(contract, "estate_ids", []).map((estate_id) => {
+    return {
+      estate_id: estate_id.estate_id,
+    };
+  });
 
-/** 
+/**
  * Get land use contract litigant details
  * @param {Object} litigant
  * @return {Object}
  */
-export const getContentLitigantDetails = (litigant: Record<string, any>): Record<string, any> => {
-  const contact = get(litigant, 'landuseagreementlitigantcontact_set', []).find(x => x.type === LitigantContactType.TENANT);
-  return contact ? {
-    id: contact.id,
-    type: contact.type,
-    contact: getContentContact(contact.contact),
-    start_date: contact.start_date,
-    end_date: contact.end_date
-  } : {};
+export const getContentLitigantDetails = (
+  litigant: Record<string, any>,
+): Record<string, any> => {
+  const contact = get(litigant, "landuseagreementlitigantcontact_set", []).find(
+    (x) => x.type === LitigantContactType.TENANT,
+  );
+  return contact
+    ? {
+        id: contact.id,
+        type: contact.type,
+        contact: getContentContact(contact.contact),
+        start_date: contact.start_date,
+        end_date: contact.end_date,
+      }
+    : {};
 };
 
-/** 
+/**
  * Get land use contract litigant contact set
  * @param {Object} litigant
  * @return {Object[]}
  */
-export const getContentLitigantContactSet = (litigant: Record<string, any>): Array<Record<string, any>> => get(litigant, 'landuseagreementlitigantcontact_set', []).filter(x => x.type !== LitigantContactType.TENANT).map(contact => {
-  return {
-    id: contact.id,
-    type: contact.type,
-    contact: getContentContact(contact.contact),
-    start_date: contact.start_date,
-    end_date: contact.end_date
-  };
-}).sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
+export const getContentLitigantContactSet = (
+  litigant: Record<string, any>,
+): Array<Record<string, any>> =>
+  get(litigant, "landuseagreementlitigantcontact_set", [])
+    .filter((x) => x.type !== LitigantContactType.TENANT)
+    .map((contact) => {
+      return {
+        id: contact.id,
+        type: contact.type,
+        contact: getContentContact(contact.contact),
+        start_date: contact.start_date,
+        end_date: contact.end_date,
+      };
+    })
+    .sort((a, b) => sortStringByKeyDesc(a, b, "start_date"));
 
-/** 
+/**
  * Get land use contract litigant
  * @param {Object} litigant
  * @return {Object}
  */
-export const getContentLitigant = (litigant: Record<string, any>): Record<string, any> => {
-  return litigant ? {
-    id: litigant.id,
-    share_numerator: litigant.share_numerator,
-    share_denominator: litigant.share_denominator,
-    reference: litigant.reference,
-    litigant: getContentLitigantDetails(litigant),
-    landuseagreementlitigantcontact_set: getContentLitigantContactSet(litigant)
-  } : {};
+export const getContentLitigant = (
+  litigant: Record<string, any>,
+): Record<string, any> => {
+  return litigant
+    ? {
+        id: litigant.id,
+        share_numerator: litigant.share_numerator,
+        share_denominator: litigant.share_denominator,
+        reference: litigant.reference,
+        litigant: getContentLitigantDetails(litigant),
+        landuseagreementlitigantcontact_set:
+          getContentLitigantContactSet(litigant),
+      }
+    : {};
 };
 
-/** 
+/**
  * Get land use contract litigants
  * @param {Object} contract
  * @return {Object[]}
  */
-export const getContentLitigants = (contract: LandUseContract): Array<Record<string, any>> => get(contract, 'litigants', []).map(litigant => getContentLitigant(litigant));
+export const getContentLitigants = (
+  contract: LandUseContract,
+): Array<Record<string, any>> =>
+  get(contract, "litigants", []).map((litigant) =>
+    getContentLitigant(litigant),
+  );
 
-/** 
+/**
  * Get land use contract basic information content
  * @param {Object} contract
  * @return {Object}
  */
-export const getContentBasicInformation = (contract: LandUseContract): Record<string, any> => {
+export const getContentBasicInformation = (
+  contract: LandUseContract,
+): Record<string, any> => {
   return {
     id: contract.id,
     type: contract.type,
@@ -158,25 +218,28 @@ export const getContentBasicInformation = (contract: LandUseContract): Record<st
     definition: contract.definition,
     status: contract.status,
     addresses: contract.addresses,
-    plots: contract.plots
+    plots: contract.plots,
   };
 };
 
-/** 
+/**
  * Get land use contract decision conditions
  * @param {Object} decision
  * @return {Object[]}
  */
-const getContentDecisionConditions = (decision: Record<string, any>): Array<Record<string, any>> => get(decision, 'conditions', []).map(condition => {
-  return {
-    type: condition.type,
-    supervision_date: condition.supervision_date,
-    supervised_date: condition.supervised_date,
-    description: condition.description
-  };
-});
+const getContentDecisionConditions = (
+  decision: Record<string, any>,
+): Array<Record<string, any>> =>
+  get(decision, "conditions", []).map((condition) => {
+    return {
+      type: condition.type,
+      supervision_date: condition.supervision_date,
+      supervised_date: condition.supervised_date,
+      description: condition.description,
+    };
+  });
 
-/** 
+/**
  * Get land use contract decision
  * @param {Object} decision
  * @return {Object}
@@ -190,23 +253,30 @@ const getContentDecision = (decision: Record<string, any>) => {
     type: decision.type,
     description: decision.description,
     reference_number: decision.reference_number,
-    conditions: getContentDecisionConditions(decision)
+    conditions: getContentDecisionConditions(decision),
   };
 };
 
-/** 
+/**
  * Get land use contract decisions
  * @param {Object} contract
  * @return {Object[]}
  */
-export const getContentDecisions = (contract: LandUseContract): Array<Record<string, any>> => get(contract, 'decisions', []).map(decision => getContentDecision(decision));
+export const getContentDecisions = (
+  contract: LandUseContract,
+): Array<Record<string, any>> =>
+  get(contract, "decisions", []).map((decision) =>
+    getContentDecision(decision),
+  );
 
-/** 
+/**
  * Get contract of land use contract
  * @param {Object} contract
  * @return {Object}
  */
-const getContentContract = (contract: Record<string, any>): Record<string, any> => {
+const getContentContract = (
+  contract: Record<string, any>,
+): Record<string, any> => {
   return {
     type: contract.type,
     id: contract.id,
@@ -233,7 +303,7 @@ const getContentContract = (contract: Record<string, any>): Record<string, any> 
     second_call_sent: contract.second_call_sent,
     sign_by_date: contract.sign_by_date,
     signing_note: contract.signing_note,
-    third_call_sent: contract.third_call_sent
+    third_call_sent: contract.third_call_sent,
   };
 };
 
@@ -242,12 +312,17 @@ const getContentContract = (contract: Record<string, any>): Record<string, any> 
  * @param {Object} lease
  * @return {Object[]};
  */
-export const getDecisionOptions = (contract: LandUseContract): Array<Record<string, any>> => {
+export const getDecisionOptions = (
+  contract: LandUseContract,
+): Array<Record<string, any>> => {
   const decisions = getContentDecisions(contract);
-  const decisionOptions = decisions.map(item => {
+  const decisionOptions = decisions.map((item) => {
     return {
       value: item.id,
-      label: !item.reference_number && !item.decision_date && !item.section ? item.id : `${item.reference_number ? item.reference_number + ', ' : ''}${item.section ? item.section + ' §, ' : ''}${formatDate(item.decision_date) || ''}`
+      label:
+        !item.reference_number && !item.decision_date && !item.section
+          ? item.id
+          : `${item.reference_number ? item.reference_number + ", " : ""}${item.section ? item.section + " §, " : ""}${formatDate(item.decision_date) || ""}`,
     };
   });
   return addEmptyOption(decisionOptions);
@@ -259,97 +334,127 @@ export const getDecisionOptions = (contract: LandUseContract): Array<Record<stri
  * @param {number} id
  * @returns {Object}
  */
-export const getDecisionById = (contract: LandUseContract, id: number | null | undefined): Record<string, any> | null | undefined => getContentDecisions(contract).find(decision => decision.id === id);
+export const getDecisionById = (
+  contract: LandUseContract,
+  id: number | null | undefined,
+): Record<string, any> | null | undefined =>
+  getContentDecisions(contract).find((decision) => decision.id === id);
 
-/** 
+/**
  * Get land use contract collaterals
  * @param {Object} decision
  * @return {Object[]}
  */
-const getContractCollaterals = (contract: Record<string, any>): Array<Record<string, any>> => get(contract, 'collaterals', []).map(contract => {
-  return {
-    type: contract.type,
-    start_date: contract.start_date,
-    end_date: contract.end_date,
-    note: contract.note,
-    deed_date: contract.deed_date,
-    id: contract.id,
-    number: contract.number,
-    other_type: contract.other_type,
-    paid_date: contract.paid_date,
-    returned_date: contract.returned_date,
-    total_amount: contract.total_amount
-  };
-});
+const getContractCollaterals = (
+  contract: Record<string, any>,
+): Array<Record<string, any>> =>
+  get(contract, "collaterals", []).map((contract) => {
+    return {
+      type: contract.type,
+      start_date: contract.start_date,
+      end_date: contract.end_date,
+      note: contract.note,
+      deed_date: contract.deed_date,
+      id: contract.id,
+      number: contract.number,
+      other_type: contract.other_type,
+      paid_date: contract.paid_date,
+      returned_date: contract.returned_date,
+      total_amount: contract.total_amount,
+    };
+  });
 
-/** 
+/**
  * Get contracts of land use contract
  * @param {Object} contract
  * @return {Object[]}
  */
-export const getContentContracts = (contract: LandUseContract): Array<Record<string, any>> => get(contract, 'contracts', []).map(contract => getContentContract(contract));
+export const getContentContracts = (
+  contract: LandUseContract,
+): Array<Record<string, any>> =>
+  get(contract, "contracts", []).map((contract) =>
+    getContentContract(contract),
+  );
 
-/** 
+/**
  * Get land use contract compensation invoices
  * @param {Object} compensation
  * @return {Object[]}
  */
-export const getContentCompensationInvoices = (compensation: Record<string, any>): Array<Record<string, any>> => get(compensation, 'invoices', []).map(invoice => {
-  return {
-    amount: invoice.amount,
-    due_date: invoice.due_date
-  };
-});
+export const getContentCompensationInvoices = (
+  compensation: Record<string, any>,
+): Array<Record<string, any>> =>
+  get(compensation, "invoices", []).map((invoice) => {
+    return {
+      amount: invoice.amount,
+      due_date: invoice.due_date,
+    };
+  });
 
-/** 
+/**
  * Get land use contract compensations
  * @param {Object} contract
  * @return {Object}
  */
-export const getContentCompensations = (contract: LandUseContract): Record<string, any> => {
-  const compensations = get(contract, 'compensations', {});
+export const getContentCompensations = (
+  contract: LandUseContract,
+): Record<string, any> => {
+  const compensations = get(contract, "compensations", {});
   return {
-    cash_compensation: get(compensations, 'cash_compensation'),
-    land_compensation: get(compensations, 'land_compensation'),
-    other_compensation: get(compensations, 'other_compensation'),
-    first_installment_increase: get(compensations, 'first_installment_increase'),
-    street_acquisition_value: get(compensations, 'street_acquisition_value'),
-    street_area: get(compensations, 'street_area'),
-    park_acquisition_value: get(compensations, 'park_acquisition_value'),
-    park_area: get(compensations, 'park_area'),
-    other_acquisition_value: get(compensations, 'other_acquisition_value'),
-    other_area: get(compensations, 'other_area'),
-    unit_prices_used_in_calculation: get(compensations, 'unit_prices_used_in_calculation')
+    cash_compensation: get(compensations, "cash_compensation"),
+    land_compensation: get(compensations, "land_compensation"),
+    other_compensation: get(compensations, "other_compensation"),
+    first_installment_increase: get(
+      compensations,
+      "first_installment_increase",
+    ),
+    street_acquisition_value: get(compensations, "street_acquisition_value"),
+    street_area: get(compensations, "street_area"),
+    park_acquisition_value: get(compensations, "park_acquisition_value"),
+    park_area: get(compensations, "park_area"),
+    other_acquisition_value: get(compensations, "other_acquisition_value"),
+    other_area: get(compensations, "other_area"),
+    unit_prices_used_in_calculation: get(
+      compensations,
+      "unit_prices_used_in_calculation",
+    ),
   };
 };
 
-/** 
+/**
  * Get land use contract invoice
  * @param {Object} invoice
  * @return {Object[]}
  */
-const getContentInvoice = (invoice: Record<string, any>): Record<string, any> => {
+const getContentInvoice = (
+  invoice: Record<string, any>,
+): Record<string, any> => {
   return {
     amount: invoice.amount,
     due_date: invoice.due_date,
     sent_date: invoice.sent_date,
-    paid_date: invoice.paid_date
+    paid_date: invoice.paid_date,
   };
 };
 
-/** 
+/**
  * Get land use contract invoices
  * @param {Object} contract
  * @return {Object[]}
  */
-export const getContentInvoices = (contract: LandUseContract): Array<Record<string, any>> => get(contract, 'invoices', []).map(invoice => getContentInvoice(invoice));
+export const getContentInvoices = (
+  contract: LandUseContract,
+): Array<Record<string, any>> =>
+  get(contract, "invoices", []).map((invoice) => getContentInvoice(invoice));
 
-/** 
+/**
  * Get land use contract litigant contact set payload
  * @param {Object} litigant
  * @return {Object[]}
  */
-const getPayloadLitigantContactSet = (litigant: Record<string, any>): Array<Record<string, any>> => {
+const getPayloadLitigantContactSet = (
+  litigant: Record<string, any>,
+): Array<Record<string, any>> => {
   let contacts = [];
   const contact = litigant.litigant;
   contacts.push({
@@ -357,66 +462,85 @@ const getPayloadLitigantContactSet = (litigant: Record<string, any>): Array<Reco
     type: LitigantContactType.TENANT,
     contact: contact.contact,
     start_date: contact.start_date,
-    end_date: contact.end_date
+    end_date: contact.end_date,
   });
-  const billingPersons = get(litigant, 'landuseagreementlitigantcontact_set', []);
-  billingPersons.forEach(person => {
+  const billingPersons = get(
+    litigant,
+    "landuseagreementlitigantcontact_set",
+    [],
+  );
+  billingPersons.forEach((person) => {
     contacts.push({
       id: person.id,
       type: LitigantContactType.BILLING,
       contact: person.contact,
       start_date: person.start_date,
-      end_date: person.end_date
+      end_date: person.end_date,
     });
   });
   return contacts;
 };
 
-/** 
+/**
  * Add litigants form values to payload
  * @param {Object} payload
  * @param {Object} formValues
  * @return {Object}
  */
-export const addLitigantsFormValuesToPayload = (payload: Record<string, any>, formValues: Record<string, any>): Record<string, any> => {
-  const newPayload = { ...payload
-  };
-  const litigants = [...formValues.activeLitigants, ...formValues.archivedLitigants];
-  newPayload.litigants = litigants.map(litigant => {
+export const addLitigantsFormValuesToPayload = (
+  payload: Record<string, any>,
+  formValues: Record<string, any>,
+): Record<string, any> => {
+  const newPayload = { ...payload };
+  const litigants = [
+    ...formValues.activeLitigants,
+    ...formValues.archivedLitigants,
+  ];
+  newPayload.litigants = litigants.map((litigant) => {
     return {
       id: litigant.id,
       share_numerator: litigant.share_numerator,
       share_denominator: litigant.share_denominator,
       reference: litigant.reference,
-      landuseagreementlitigantcontact_set: getPayloadLitigantContactSet(litigant)
+      landuseagreementlitigantcontact_set:
+        getPayloadLitigantContactSet(litigant),
     };
   });
   return newPayload;
 };
 
-/** 
+/**
  * Get land use contract conditions
  * @param {Object} contract
  * @return {Object[]}
  */
-export const getContentConditions = (contract: LandUseContract): Record<string, any> => get(contract, 'conditions', []).map(condition => getContentCondition(condition));
+export const getContentConditions = (
+  contract: LandUseContract,
+): Record<string, any> =>
+  get(contract, "conditions", []).map((condition) =>
+    getContentCondition(condition),
+  );
 
-/** 
+/**
  * Get land use contract condition
  * @param {Object} condition
  * @return {Object}
  */
-export const getContentCondition = (condition: Record<string, any>): Record<string, any> => {
-  return condition ? {
-    actualized_area: condition.actualized_area,
-    compensation_pc: condition.compensation_pc,
-    form_of_management: condition.form_of_management,
-    id: condition.id,
-    obligated_area: condition.obligated_area,
-    subvention_amount: condition.subvention_amount,
-    supervised_date: condition.supervised_date,
-    supervision_date: condition.supervision_date
-  } : {};
+export const getContentCondition = (
+  condition: Record<string, any>,
+): Record<string, any> => {
+  return condition
+    ? {
+        actualized_area: condition.actualized_area,
+        compensation_pc: condition.compensation_pc,
+        form_of_management: condition.form_of_management,
+        id: condition.id,
+        obligated_area: condition.obligated_area,
+        subvention_amount: condition.subvention_amount,
+        supervised_date: condition.supervised_date,
+        supervision_date: condition.supervision_date,
+      }
+    : {};
 };
 
 /**
@@ -424,9 +548,11 @@ export const getContentCondition = (condition: Record<string, any>): Record<stri
  * @param {Object} plan_acceptor
  * @returns {string}
  */
-export const getPlanAcceptorName = (plan_acceptor: Record<string, any>): string => {
-  if (!plan_acceptor) return '';
-  return plan_acceptor.name ? `${plan_acceptor.name}` : '-';
+export const getPlanAcceptorName = (
+  plan_acceptor: Record<string, any>,
+): string => {
+  if (!plan_acceptor) return "";
+  return plan_acceptor.name ? `${plan_acceptor.name}` : "-";
 };
 
 /**
@@ -436,7 +562,14 @@ export const getPlanAcceptorName = (plan_acceptor: Record<string, any>): string 
  */
 export const isAnyLandUseContractFormDirty = (state: RootState): boolean => {
   const isEditMode = getIsEditMode(state);
-  return isEditMode && (isDirty(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION)(state) || isDirty(FormNames.LAND_USE_CONTRACT_COMPENSATIONS)(state) || isDirty(FormNames.LAND_USE_CONTRACT_CONTRACTS)(state) || isDirty(FormNames.LAND_USE_CONTRACT_DECISIONS)(state) || isDirty(FormNames.LAND_USE_CONTRACT_INVOICES)(state));
+  return (
+    isEditMode &&
+    (isDirty(FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION)(state) ||
+      isDirty(FormNames.LAND_USE_CONTRACT_COMPENSATIONS)(state) ||
+      isDirty(FormNames.LAND_USE_CONTRACT_CONTRACTS)(state) ||
+      isDirty(FormNames.LAND_USE_CONTRACT_DECISIONS)(state) ||
+      isDirty(FormNames.LAND_USE_CONTRACT_INVOICES)(state))
+  );
 };
 
 /**
@@ -448,8 +581,8 @@ export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_CONTRACTS);
   removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_DECISIONS);
   removeSessionStorageItem(FormNames.LAND_USE_CONTRACT_INVOICES);
-  removeSessionStorageItem('landUseContractId');
-  removeSessionStorageItem('landUseContractValidity');
+  removeSessionStorageItem("landUseContractId");
+  removeSessionStorageItem("landUseContractValidity");
 };
 
 /**
@@ -469,30 +602,64 @@ export const getUsedPrice = (unitValue: string, discount: string): number => {
  * @param {Object} values
  * @return {Object}
  */
-export const convertCompensationValuesToDecimalNumber = (values: Record<string, any>): Record<string, any> => {
+export const convertCompensationValuesToDecimalNumber = (
+  values: Record<string, any>,
+): Record<string, any> => {
   return {
-    compensations: { ...values.compensations,
-      cash_compensation: Number(convertStrToDecimalNumber(values.compensations.cash_compensation)),
-      first_installment_increase: Number(convertStrToDecimalNumber(values.compensations.first_installment_increase)),
-      land_compensation: Number(convertStrToDecimalNumber(values.compensations.land_compensation)),
-      other_acquisition_value: Number(convertStrToDecimalNumber(values.compensations.other_acquisition_value)),
-      other_area: Number(convertStrToDecimalNumber(values.compensations.other_area)),
-      other_compensation: Number(convertStrToDecimalNumber(values.compensations.other_compensation)),
-      park_acquisition_value: Number(convertStrToDecimalNumber(values.compensations.park_acquisition_value)),
-      park_area: Number(convertStrToDecimalNumber(values.compensations.park_area)),
-      street_acquisition_value: Number(convertStrToDecimalNumber(values.compensations.street_acquisition_value)),
-      street_area: Number(convertStrToDecimalNumber(values.compensations.street_area)),
-      unit_prices_used_in_calculation: convertUnitPricesUsedInCalculations(values.compensations.unit_prices_used_in_calculation)
-    }
+    compensations: {
+      ...values.compensations,
+      cash_compensation: Number(
+        convertStrToDecimalNumber(values.compensations.cash_compensation),
+      ),
+      first_installment_increase: Number(
+        convertStrToDecimalNumber(
+          values.compensations.first_installment_increase,
+        ),
+      ),
+      land_compensation: Number(
+        convertStrToDecimalNumber(values.compensations.land_compensation),
+      ),
+      other_acquisition_value: Number(
+        convertStrToDecimalNumber(values.compensations.other_acquisition_value),
+      ),
+      other_area: Number(
+        convertStrToDecimalNumber(values.compensations.other_area),
+      ),
+      other_compensation: Number(
+        convertStrToDecimalNumber(values.compensations.other_compensation),
+      ),
+      park_acquisition_value: Number(
+        convertStrToDecimalNumber(values.compensations.park_acquisition_value),
+      ),
+      park_area: Number(
+        convertStrToDecimalNumber(values.compensations.park_area),
+      ),
+      street_acquisition_value: Number(
+        convertStrToDecimalNumber(
+          values.compensations.street_acquisition_value,
+        ),
+      ),
+      street_area: Number(
+        convertStrToDecimalNumber(values.compensations.street_area),
+      ),
+      unit_prices_used_in_calculation: convertUnitPricesUsedInCalculations(
+        values.compensations.unit_prices_used_in_calculation,
+      ),
+    },
   };
 };
-export const convertUnitPricesUsedInCalculations = (UnitPrices: Record<string, any>): Record<string, any> => {
-  if (UnitPrices) return UnitPrices.map(UnitPrice => ({ ...UnitPrice,
-    area: Number(convertStrToDecimalNumber(UnitPrice.area)),
-    unit_value: Number(convertStrToDecimalNumber(UnitPrice.unit_value)),
-    discount: Number(convertStrToDecimalNumber(UnitPrice.discount)),
-    used_price: Number(convertStrToDecimalNumber(UnitPrice.used_price))
-  }));else return [];
+export const convertUnitPricesUsedInCalculations = (
+  UnitPrices: Record<string, any>,
+): Record<string, any> => {
+  if (UnitPrices)
+    return UnitPrices.map((UnitPrice) => ({
+      ...UnitPrice,
+      area: Number(convertStrToDecimalNumber(UnitPrice.area)),
+      unit_value: Number(convertStrToDecimalNumber(UnitPrice.unit_value)),
+      discount: Number(convertStrToDecimalNumber(UnitPrice.discount)),
+      used_price: Number(convertStrToDecimalNumber(UnitPrice.used_price)),
+    }));
+  else return [];
 };
 
 /**
@@ -512,13 +679,24 @@ export const getSum = (area: string, usedPrice: number): number => {
  * @param {Object[]} litigants
  * @return {Object[]}
  */
-export const getRecipientOptionsFromLitigants = (litigants: Array<Record<string, any>>): Array<Record<string, any>> => {
-  if (litigants) return litigants.map(litigant => get(litigant, 'landuseagreementlitigantcontact_set', []).find(x => x.type === LitigantContactType.TENANT)).filter(litigant => !isArchived(litigant)).map(litigant => {
-    return {
-      value: get(get(litigant, 'contact'), 'id'),
-      label: getListLitigantName(litigant)
-    };
-  });else return [];
+export const getRecipientOptionsFromLitigants = (
+  litigants: Array<Record<string, any>>,
+): Array<Record<string, any>> => {
+  if (litigants)
+    return litigants
+      .map((litigant) =>
+        get(litigant, "landuseagreementlitigantcontact_set", []).find(
+          (x) => x.type === LitigantContactType.TENANT,
+        ),
+      )
+      .filter((litigant) => !isArchived(litigant))
+      .map((litigant) => {
+        return {
+          value: get(get(litigant, "contact"), "id"),
+          label: getListLitigantName(litigant),
+        };
+      });
+  else return [];
 };
 
 /**
@@ -526,7 +704,9 @@ export const getRecipientOptionsFromLitigants = (litigants: Array<Record<string,
  * @param {Object} invoice
  * @returns {Object}
  */
-export const getPayloadCreateInvoice = (invoice: Record<string, any>): Record<string, any> => {
+export const getPayloadCreateInvoice = (
+  invoice: Record<string, any>,
+): Record<string, any> => {
   return {
     land_use_agreement: invoice.land_use_agreement,
     recipient: invoice.recipient,
@@ -534,7 +714,7 @@ export const getPayloadCreateInvoice = (invoice: Record<string, any>): Record<st
     due_date: invoice.due_date,
     total_amount: convertStrToDecimalNumber(invoice.total_amount),
     notes: invoice.notes,
-    rows: getPayloadInvoiceRows(invoice)
+    rows: getPayloadInvoiceRows(invoice),
   };
 };
 
@@ -543,8 +723,10 @@ export const getPayloadCreateInvoice = (invoice: Record<string, any>): Record<st
  * @param {Object} invoice
  * @returns {Object[]}
  */
-const getPayloadInvoiceRows = (invoice: Record<string, any>): Array<Record<string, any>> => {
-  return get(invoice, 'rows', []).map(row => {
+const getPayloadInvoiceRows = (
+  invoice: Record<string, any>,
+): Array<Record<string, any>> => {
+  return get(invoice, "rows", []).map((row) => {
     return {
       tenant: row.tenant,
       compensation_amount: convertStrToDecimalNumber(row.compensation_amount),
@@ -553,7 +735,7 @@ const getPayloadInvoiceRows = (invoice: Record<string, any>): Array<Record<strin
       plan_lawfulness_date: row.plan_lawfulness_date,
       receivable_type: row.receivable_type,
       sign_date: row.sign_date,
-      description: row.description
+      description: row.description,
     };
   });
 };

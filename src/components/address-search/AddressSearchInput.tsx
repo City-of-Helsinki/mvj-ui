@@ -73,10 +73,10 @@ class AddressSearchInput extends Component<Props, State> {
     isLoading: false,
     menuOpen: false,
     selectedAddress: null,
-    value: ''
+    value: "",
   };
   static defaultProps = {
-    language: 'fi'
+    language: "fi",
   };
   setInputRef = (el: any) => {
     this.input = el;
@@ -86,8 +86,8 @@ class AddressSearchInput extends Component<Props, State> {
   };
 
   componentDidMount() {
-    window.addEventListener('click', this.onDocumentClick);
-    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener("click", this.onDocumentClick);
+    window.addEventListener("keydown", this.onKeyDown);
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -95,27 +95,30 @@ class AddressSearchInput extends Component<Props, State> {
       this.scrollToFocusedItem();
     }
 
-    if (this.props.selected !== undefined && this.props.selected !== prevProps.selected) {
+    if (
+      this.props.selected !== undefined &&
+      this.props.selected !== prevProps.selected
+    ) {
       this.setState({
-        value: this.props.selected
+        value: this.props.selected,
       });
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('click', this.onDocumentClick);
-    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener("click", this.onDocumentClick);
+    window.removeEventListener("keydown", this.onKeyDown);
   }
 
   scrollToFocusedItem = () => {
-    const focusedItems = this.menuList.getElementsByClassName('is-focused');
+    const focusedItems = this.menuList.getElementsByClassName("is-focused");
 
     if (focusedItems.length) {
       const focusedItem = focusedItems[0],
-            top = focusedItem.offsetTop,
-            height = focusedItem.offsetHeight,
-            menuScrollTop = this.menuList.scrollTop,
-            menuHeight = this.menuList.clientHeight;
+        top = focusedItem.offsetTop,
+        height = focusedItem.offsetHeight,
+        menuScrollTop = this.menuList.scrollTop,
+        menuHeight = this.menuList.clientHeight;
 
       if (top < menuScrollTop) {
         this.menuList.scrollTop = top;
@@ -125,51 +128,44 @@ class AddressSearchInput extends Component<Props, State> {
     }
   };
   onDocumentClick = (event: any) => {
-    const {
-      menuOpen
-    } = this.state;
+    const { menuOpen } = this.state;
     const target = event.target,
-          el = ReactDOM.findDOMNode(this);
+      el = ReactDOM.findDOMNode(this);
 
     if (menuOpen && el && target !== el && !el.contains(target)) {
       this.closeMenu();
     }
   };
   openMenuIfNeeded = () => {
-    const {
-      menuOpen
-    } = this.state;
+    const { menuOpen } = this.state;
 
     if (!menuOpen) {
       this.setState({
-        menuOpen: true
+        menuOpen: true,
       });
     }
   };
   closeMenu = () => {
     this.setState({
       focusedValue: null,
-      menuOpen: false
+      menuOpen: false,
     });
   };
   onKeyDown = (e: any) => {
-    const {
-      focusedValue,
-      hasFocus
-    } = this.state;
+    const { focusedValue, hasFocus } = this.state;
 
     if (hasFocus) {
       switch (e.keyCode) {
         case KeyCodes.ARROW_DOWN:
           e.preventDefault();
           this.openMenuIfNeeded();
-          this.focusValue('next');
+          this.focusValue("next");
           break;
 
         case KeyCodes.ARROW_UP:
           e.preventDefault();
           this.openMenuIfNeeded();
-          this.focusValue('previous');
+          this.focusValue("previous");
           break;
 
         case KeyCodes.ENTER:
@@ -191,14 +187,10 @@ class AddressSearchInput extends Component<Props, State> {
     }
   };
   handleBlur = () => {
-    const {
-      onBlur
-    } = this.props;
-    const {
-      value
-    } = this.state;
+    const { onBlur } = this.props;
+    const { value } = this.state;
     this.setState({
-      hasFocus: false
+      hasFocus: false,
     });
 
     if (onBlur) {
@@ -207,34 +199,30 @@ class AddressSearchInput extends Component<Props, State> {
   };
   handleFocus = () => {
     this.setState({
-      hasFocus: true
+      hasFocus: true,
     });
   };
   focusValue = (direction: "next" | "previous") => {
-    const {
-      focusedValue
-    } = this.state;
-    const {
-      addresses
-    } = this.state;
-    const index = addresses.findIndex(address => focusedValue === address);
+    const { focusedValue } = this.state;
+    const { addresses } = this.state;
+    const index = addresses.findIndex((address) => focusedValue === address);
 
     switch (direction) {
-      case 'next':
+      case "next":
         if (index < addresses.length - 1) {
           this.setState({
             focusedValue: addresses[index + 1],
-            menuOpen: true
+            menuOpen: true,
           });
         }
 
         break;
 
-      case 'previous':
+      case "previous":
         if (index > 0) {
           this.setState({
             focusedValue: addresses[index - 1],
-            menuOpen: true
+            menuOpen: true,
           });
         }
 
@@ -245,50 +233,50 @@ class AddressSearchInput extends Component<Props, State> {
     const fetchByKeyword = (language: Language) => {
       const url = `${SERVICE_MAP_URL}/search/?${stringifyQuery({
         page_size: 25,
-        type: 'address',
+        type: "address",
         input: input,
-        language: language
+        language: language,
       })}`;
       const request = new Request(url);
       return fetch(request);
     };
 
     const fetchResults = async () => {
-      const fiResponse = await fetchByKeyword('fi');
+      const fiResponse = await fetchByKeyword("fi");
       const fiResults = await fiResponse.json();
-      return [...fiResults.results.map(address => ({ ...address,
-        language: 'fi'
-      }))];
+      return [
+        ...fiResults.results.map((address) => ({ ...address, language: "fi" })),
+      ];
     };
 
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
-    fetchResults().then(results => {
-      if (results.length) {
+    fetchResults()
+      .then((results) => {
+        if (results.length) {
+          this.setState({
+            addresses: results,
+            selectedAddress: results[0],
+          });
+          this.setState({
+            isLoading: false,
+          });
+        } else {
+          this.setState({
+            isLoading: false,
+          });
+        }
+      })
+      .catch((error) => {
         this.setState({
-          addresses: results,
-          selectedAddress: results[0]
+          isLoading: false,
         });
-        this.setState({
-          isLoading: false
-        });
-      } else {
-        this.setState({
-          isLoading: false
-        });
-      }
-    }).catch(error => {
-      this.setState({
-        isLoading: false
+        console.error(`Failed to fetch by keyword with error ${error}`);
       });
-      console.error(`Failed to fetch by keyword with error ${error}`);
-    });
   }, DEBOUNCE_TIME_MILLISECONDS);
   handleOnChange = (e: any) => {
-    const {
-      onChange
-    } = this.props;
+    const { onChange } = this.props;
     const newValue = e.target.value;
 
     if (newValue && newValue?.length >= MINIMUM_SEARCH_STRING) {
@@ -297,13 +285,13 @@ class AddressSearchInput extends Component<Props, State> {
 
     if (!newValue || newValue?.length < MINIMUM_SEARCH_STRING) {
       this.setState({
-        addresses: []
+        addresses: [],
       });
     }
 
     this.setState({
       menuOpen: newValue ? true : false,
-      value: newValue
+      value: newValue,
     });
 
     if (onChange) {
@@ -311,12 +299,10 @@ class AddressSearchInput extends Component<Props, State> {
     }
   };
   handleAddressItemClick = (address: Address) => {
-    const {
-      onChange
-    } = this.props,
-          newValue = address.name.fi;
+    const { onChange } = this.props,
+      newValue = address.name.fi;
     this.setState({
-      value: newValue
+      value: newValue,
     });
     this.closeMenu();
     this.fetchAddressDetails(address);
@@ -330,79 +316,116 @@ class AddressSearchInput extends Component<Props, State> {
     }
   };
   fetchAddressDetails = (address: Address) => {
-    const {
-      addressDetailsCallBack
-    } = this.props;
+    const { addressDetailsCallBack } = this.props;
     const coordinates = address.location.coordinates;
 
     if (coordinates.length >= 2) {
-      const url = `${SERVICE_MAP_URL}/administrative_division/?${stringifyQuery({
-        lon: coordinates[0],
-        lat: coordinates[1],
-        type: 'postcode_area'
-      })}`;
+      const url = `${SERVICE_MAP_URL}/administrative_division/?${stringifyQuery(
+        {
+          lon: coordinates[0],
+          lat: coordinates[1],
+          type: "postcode_area",
+        },
+      )}`;
       const request = new Request(url);
-      fetch(request).then(response => response.json()).then(results => {
-        const details = results.results;
-        const postalCode = details.length && details[0].name && details[0].name.fi ? details[0].name.fi : details.length ? details[0].origin_id || '' : '';
-        const country = details.length ? findFromOcdString(details[0].ocd_id, 'country') || '' : '';
+      fetch(request)
+        .then((response) => response.json())
+        .then((results) => {
+          const details = results.results;
+          const postalCode =
+            details.length && details[0].name && details[0].name.fi
+              ? details[0].name.fi
+              : details.length
+                ? details[0].origin_id || ""
+                : "";
+          const country = details.length
+            ? findFromOcdString(details[0].ocd_id, "country") || ""
+            : "";
 
-        if (addressDetailsCallBack) {
-          addressDetailsCallBack({
-            postalCode,
-            city: address.municipality.name.fi ? capitalize(address.municipality.name.fi) : '',
-            country
-          });
-        }
-      }).catch(error => {
-        console.error(`Failed to fetch address details with error ${error}`);
-      });
+          if (addressDetailsCallBack) {
+            addressDetailsCallBack({
+              postalCode,
+              city: address.municipality.name.fi
+                ? capitalize(address.municipality.name.fi)
+                : "",
+              country,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error(`Failed to fetch address details with error ${error}`);
+        });
     } else {
       console.error(`Failed to fetch address details. Coordinates are missing`);
     }
   };
 
   render() {
-    const {
-      id,
-      name,
-      selected
-    } = this.props;
+    const { id, name, selected } = this.props;
     const {
       addresses,
       focusedValue,
       isLoading,
       menuOpen,
       selectedAddress,
-      value
+      value,
     } = this.state;
-    return <div className={classNames('address-search-input', {
-      'open': menuOpen
-    })}>
-        {menuOpen && <LoaderWrapper className='address-input-wrapper'><Loader isLoading={isLoading} className='small' /></LoaderWrapper>}
-        <input ref={this.setInputRef} autoComplete="off" id={id} name={name} onBlur={this.handleBlur} onChange={this.handleOnChange} onFocus={this.handleFocus} type='text' value={selected !== undefined ? selected : value} />
-        <div className={classNames('address-search-input__dropdown', {
-        'open': menuOpen
-      })}>
-          <ul ref={this.refMenuListRef}>
-            {selectedAddress && !addresses.length && <li className='no-result-item'>Ei osoitteita.</li>}
-            {selectedAddress && !!addresses.length && addresses.map((address, index) => {
-            const handleClick = () => {
-              this.handleAddressItemClick(address);
-            };
-
-            const text = `${address.name.fi}, ${address.municipality.name.fi}`;
-            return <li key={index} onClick={handleClick} className={classNames('list-item', {
-              'is-focused': focusedValue === address
-            })}>
-                {text}
-              </li>;
+    return (
+      <div
+        className={classNames("address-search-input", {
+          open: menuOpen,
+        })}
+      >
+        {menuOpen && (
+          <LoaderWrapper className="address-input-wrapper">
+            <Loader isLoading={isLoading} className="small" />
+          </LoaderWrapper>
+        )}
+        <input
+          ref={this.setInputRef}
+          autoComplete="off"
+          id={id}
+          name={name}
+          onBlur={this.handleBlur}
+          onChange={this.handleOnChange}
+          onFocus={this.handleFocus}
+          type="text"
+          value={selected !== undefined ? selected : value}
+        />
+        <div
+          className={classNames("address-search-input__dropdown", {
+            open: menuOpen,
           })}
+        >
+          <ul ref={this.refMenuListRef}>
+            {selectedAddress && !addresses.length && (
+              <li className="no-result-item">Ei osoitteita.</li>
+            )}
+            {selectedAddress &&
+              !!addresses.length &&
+              addresses.map((address, index) => {
+                const handleClick = () => {
+                  this.handleAddressItemClick(address);
+                };
+
+                const text = `${address.name.fi}, ${address.municipality.name.fi}`;
+                return (
+                  <li
+                    key={index}
+                    onClick={handleClick}
+                    className={classNames("list-item", {
+                      "is-focused": focusedValue === address,
+                    })}
+                  >
+                    {text}
+                  </li>
+                );
+              })}
           </ul>
         </div>
-      </div>;
+      </div>
+    );
   }
-
 }
 
 export default AddressSearchInput;

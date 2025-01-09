@@ -14,9 +14,17 @@ const EditButton = ({
   disabled,
   onClick,
   title,
-  type = 'button'
-}: Props): JSX.Element => <button className={classNames('form__edit-button', className)} disabled={disabled} type={type} title={title} onClick={onClick}>
-    <EditIcon className='icon-medium' />
-  </button>;
+  type = "button",
+}: Props): JSX.Element => (
+  <button
+    className={classNames("form__edit-button", className)}
+    disabled={disabled}
+    type={type}
+    title={title}
+    onClick={onClick}
+  >
+    <EditIcon className="icon-medium" />
+  </button>
+);
 
 export default EditButton;

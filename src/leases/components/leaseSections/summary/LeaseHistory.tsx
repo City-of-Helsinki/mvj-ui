@@ -2,11 +2,23 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import LeaseHistoryItem from "./LeaseHistoryItem";
 import TitleH3 from "@/components/content/TitleH3";
-import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryContentTypes, LeaseHistoryItemTypes } from "@/leases/enums";
-import { getContentRelatedLeasesFrom, getContentRelatedLeasesTo, sortRelatedLeasesFrom } from "@/leases/helpers";
+import {
+  LeaseFieldPaths,
+  LeaseFieldTitles,
+  LeaseHistoryContentTypes,
+  LeaseHistoryItemTypes,
+} from "@/leases/enums";
+import {
+  getContentRelatedLeasesFrom,
+  getContentRelatedLeasesTo,
+  sortRelatedLeasesFrom,
+} from "@/leases/helpers";
 import { getFieldOptions } from "@/util/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import { getAttributes as getLeaseAttributes, getCurrentLease } from "@/leases/selectors";
+import {
+  getAttributes as getLeaseAttributes,
+  getCurrentLease,
+} from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 import { restructureLease, sortRelatedHistoryItems } from "@/leases/helpers";
@@ -28,7 +40,7 @@ class LeaseHistory extends PureComponent<Props, State> {
     leaseAttributes: null,
     relatedLeasesFrom: [],
     relatedLeasesTo: [],
-    stateOptions: []
+    stateOptions: [],
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -36,12 +48,17 @@ class LeaseHistory extends PureComponent<Props, State> {
 
     if (props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.stateOptions = getFieldOptions(props.leaseAttributes, LeaseFieldPaths.STATE);
+      newState.stateOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseFieldPaths.STATE,
+      );
     }
 
     if (props.currentLease !== state.currentLease) {
       newState.currentLease = props.currentLease;
-      newState.relatedLeasesFrom = sortRelatedLeasesFrom(getContentRelatedLeasesFrom(props.currentLease));
+      newState.relatedLeasesFrom = sortRelatedLeasesFrom(
+        getContentRelatedLeasesFrom(props.currentLease),
+      );
       newState.relatedLeasesTo = getContentRelatedLeasesTo(props.currentLease);
     }
 
@@ -49,20 +66,14 @@ class LeaseHistory extends PureComponent<Props, State> {
   }
 
   render() {
-    const {
-      currentLease
-    } = this.props;
-    const {
-      relatedLeasesFrom,
-      relatedLeasesTo,
-      stateOptions
-    } = this.state;
+    const { currentLease } = this.props;
+    const { relatedLeasesFrom, relatedLeasesTo, stateOptions } = this.state;
 
     const renderLeaseWithPlotSearchesAndApplications = (lease, active) => {
       const historyItems = [];
 
       if (lease.plot_searches?.length) {
-        lease.plot_searches.forEach(plotSearch => {
+        lease.plot_searches.forEach((plotSearch) => {
           historyItems.push({
             key: `plot-search-${plotSearch.name}-${Math.random().toString()}`,
             id: plotSearch.id,
@@ -71,42 +82,43 @@ class LeaseHistory extends PureComponent<Props, State> {
             endDate: plotSearch.end_at,
             plotSearchType: plotSearch.type,
             plotSearchSubtype: plotSearch.subtype,
-            itemType: LeaseHistoryItemTypes.PLOTSEARCH
+            itemType: LeaseHistoryItemTypes.PLOTSEARCH,
           });
         });
       }
 
       if (lease.target_statuses?.length) {
-        lease.target_statuses.forEach(plotApplication => {
+        lease.target_statuses.forEach((plotApplication) => {
           historyItems.push({
             key: `plot-application-${plotApplication.application_identifier}-${Math.random().toString()}`,
             id: plotApplication.id,
             itemTitle: plotApplication.application_identifier,
             receivedAt: plotApplication.received_at,
-            itemType: LeaseHistoryItemTypes.PLOT_APPLICATION
+            itemType: LeaseHistoryItemTypes.PLOT_APPLICATION,
           });
         });
       }
 
       if (lease.area_searches?.length) {
-        lease.area_searches.forEach(areaSearch => {
+        lease.area_searches.forEach((areaSearch) => {
           historyItems.push({
             key: `area-search-${areaSearch.identifier}-${Math.random().toString()}`,
             id: areaSearch.id,
             itemTitle: areaSearch.identifier,
             receivedAt: areaSearch.received_date,
             applicantName: `${areaSearch.applicant_names.join(" ")}`,
-            itemType: LeaseHistoryItemTypes.AREA_SEARCH
+            itemType: LeaseHistoryItemTypes.AREA_SEARCH,
           });
         });
       }
 
       if (lease.related_plot_applications?.length) {
-        lease.related_plot_applications.forEach(relatedPlotApplication => {
-          if (relatedPlotApplication.content_type?.model === LeaseHistoryContentTypes.PLOTSEARCH) {
-            const {
-              content_object
-            } = relatedPlotApplication;
+        lease.related_plot_applications.forEach((relatedPlotApplication) => {
+          if (
+            relatedPlotApplication.content_type?.model ===
+            LeaseHistoryContentTypes.PLOTSEARCH
+          ) {
+            const { content_object } = relatedPlotApplication;
             historyItems.push({
               key: `related-plot-application-plotsearch-${content_object.id}-${Math.random().toString()}`,
               id: content_object.id,
@@ -115,32 +127,34 @@ class LeaseHistory extends PureComponent<Props, State> {
               endDate: content_object.end_at,
               plotSearchType: content_object.type,
               plotSearchSubtype: content_object.subtype,
-              itemType: LeaseHistoryItemTypes.PLOTSEARCH
+              itemType: LeaseHistoryItemTypes.PLOTSEARCH,
             });
           }
 
-          if (relatedPlotApplication.content_type?.model === LeaseHistoryContentTypes.TARGET_STATUS) {
-            const {
-              content_object
-            } = relatedPlotApplication;
+          if (
+            relatedPlotApplication.content_type?.model ===
+            LeaseHistoryContentTypes.TARGET_STATUS
+          ) {
+            const { content_object } = relatedPlotApplication;
             historyItems.push({
               key: `related-plot-application-targetstatus-${content_object.id}-${Math.random().toString()}`,
               id: content_object.id,
               itemTitle: content_object.application_identifier,
               receivedAt: content_object.received_at,
-              itemType: LeaseHistoryItemTypes.PLOT_APPLICATION
+              itemType: LeaseHistoryItemTypes.PLOT_APPLICATION,
             });
-          } else if (relatedPlotApplication.content_type?.model === LeaseHistoryContentTypes.AREA_SEARCH) {
-            const {
-              content_object
-            } = relatedPlotApplication;
+          } else if (
+            relatedPlotApplication.content_type?.model ===
+            LeaseHistoryContentTypes.AREA_SEARCH
+          ) {
+            const { content_object } = relatedPlotApplication;
             historyItems.push({
               key: `related-plot-application-areasearch-${content_object.id}-${Math.random().toString()}`,
               id: content_object.id,
               itemTitle: content_object.identifier,
               applicantName: `${content_object.applicant_names.join(" ")}`,
               receivedAt: content_object.received_date,
-              itemType: LeaseHistoryItemTypes.AREA_SEARCH
+              itemType: LeaseHistoryItemTypes.AREA_SEARCH,
             });
           }
         });
@@ -151,7 +165,7 @@ class LeaseHistory extends PureComponent<Props, State> {
         id: lease.id,
         lease: lease,
         startDate: lease.start_date,
-        endDate: lease.end_date
+        endDate: lease.end_date,
       };
 
       // used for highlighting the current lease
@@ -161,31 +175,43 @@ class LeaseHistory extends PureComponent<Props, State> {
 
       historyItems.push(leaseProps);
       historyItems.sort(sortRelatedHistoryItems);
-      return historyItems.map(item => {
-        return <LeaseHistoryItem {...item} stateOptions={this.state.stateOptions} />;
+      return historyItems.map((item) => {
+        return (
+          <LeaseHistoryItem {...item} stateOptions={this.state.stateOptions} />
+        );
       });
     };
 
-    return <div className="summary__related-leases">
+    return (
+      <div className="summary__related-leases">
         <TitleH3 uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HISTORY)}>
           {LeaseFieldTitles.HISTORY}
         </TitleH3>
         <div className="summary__related-leases_items">
           <div className="summary__related-leases_items_border-left" />
-          {!!relatedLeasesTo && !!relatedLeasesTo.length && relatedLeasesTo.map(restructureLease).map(renderLeaseWithPlotSearchesAndApplications)}
+          {!!relatedLeasesTo &&
+            !!relatedLeasesTo.length &&
+            relatedLeasesTo
+              .map(restructureLease)
+              .map(renderLeaseWithPlotSearchesAndApplications)}
 
-          {!!currentLease && renderLeaseWithPlotSearchesAndApplications(currentLease, true)}
+          {!!currentLease &&
+            renderLeaseWithPlotSearchesAndApplications(currentLease, true)}
 
-          {!!relatedLeasesFrom && !!relatedLeasesFrom.length && relatedLeasesFrom.map(restructureLease).map(renderLeaseWithPlotSearchesAndApplications)}
+          {!!relatedLeasesFrom &&
+            !!relatedLeasesFrom.length &&
+            relatedLeasesFrom
+              .map(restructureLease)
+              .map(renderLeaseWithPlotSearchesAndApplications)}
         </div>
-      </div>;
+      </div>
+    );
   }
-
 }
 
-export default connect(state => {
+export default connect((state) => {
   return {
     currentLease: getCurrentLease(state),
-    leaseAttributes: getLeaseAttributes(state)
+    leaseAttributes: getLeaseAttributes(state),
   };
 })(LeaseHistory);

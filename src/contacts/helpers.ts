@@ -9,9 +9,13 @@ import { removeSessionStorageItem } from "@/util/storage";
  * @param {Object} contact
  * @returns {string}
  */
-export const getContactFullName = (contact: Record<string, any> | null | undefined): string => {
-  if (!contact || !contact.type) return '';
-  return contact.type === ContactTypes.PERSON ? `${contact.last_name ? `${contact.last_name} ` : ''} ${contact.first_name || ''}`.trim() : contact.name;
+export const getContactFullName = (
+  contact: Record<string, any> | null | undefined,
+): string => {
+  if (!contact || !contact.type) return "";
+  return contact.type === ContactTypes.PERSON
+    ? `${contact.last_name ? `${contact.last_name} ` : ""} ${contact.first_name || ""}`.trim()
+    : contact.name;
 };
 
 /**
@@ -19,7 +23,9 @@ export const getContactFullName = (contact: Record<string, any> | null | undefin
  * @param {string} businessId
  * @returns {boolean}
  */
-export const getContactBusinessIdFieldError = (businessId: string | null | undefined): boolean => {
+export const getContactBusinessIdFieldError = (
+  businessId: string | null | undefined,
+): boolean => {
   return businessId && businessId.length === 9 ? false : true;
 };
 
@@ -28,7 +34,9 @@ export const getContactBusinessIdFieldError = (businessId: string | null | undef
  * @param {Object} contact
  * @returns {boolean}
  */
-export const getContactBusinessIdError = (contact: Record<string, any>): boolean => {
+export const getContactBusinessIdError = (
+  contact: Record<string, any>,
+): boolean => {
   return contact.business_id && contact.business_id.length === 9 ? false : true;
 };
 
@@ -37,11 +45,13 @@ export const getContactBusinessIdError = (contact: Record<string, any>): boolean
  * @param {Object} contact
  * @returns {Object}
  */
-export const getContentContact = (contact: Record<string, any>): Record<string, any> => {
+export const getContentContact = (
+  contact: Record<string, any>,
+): Record<string, any> => {
   return {
     id: contact.id,
     value: contact.id,
-    label: `${getContactFullName(contact)}${contact.care_of ? ` c/o ${contact.care_of}` : ''}`,
+    label: `${getContactFullName(contact)}${contact.care_of ? ` c/o ${contact.care_of}` : ""}`,
     type: contact.type,
     first_name: contact.first_name,
     last_name: contact.last_name,
@@ -62,7 +72,7 @@ export const getContentContact = (contact: Record<string, any>): Record<string, 
     partner_code: contact.partner_code,
     is_lessor: contact.is_lessor,
     note: contact.note,
-    service_unit: contact.service_unit
+    service_unit: contact.service_unit,
   };
 };
 
@@ -71,29 +81,35 @@ export const getContentContact = (contact: Record<string, any>): Record<string, 
  * @param {Object[]} contacts
  * @returns {Object[]}
  */
-export const getContactOptions = (contacts: Array<Record<string, any>>): Array<Record<string, any>> => contacts && contacts.length ? contacts.map(contact => ({
-  value: contact.id,
-  label: `${getContactFullName(contact)}${contact.care_of ? ` c/o ${contact.care_of}` : ''}`
-})) : [];
+export const getContactOptions = (
+  contacts: Array<Record<string, any>>,
+): Array<Record<string, any>> =>
+  contacts && contacts.length
+    ? contacts.map((contact) => ({
+        value: contact.id,
+        label: `${getContactFullName(contact)}${contact.care_of ? ` c/o ${contact.care_of}` : ""}`,
+      }))
+    : [];
 
 /**
  * Map contact search filters for API
  * @param {Object} query
  * @returns {Object}
  */
-export const mapContactSearchFilters = (query: Record<string, any>): Record<string, any> => {
-  const searchQuery = { ...query
-  };
+export const mapContactSearchFilters = (
+  query: Record<string, any>,
+): Record<string, any> => {
+  const searchQuery = { ...query };
 
   if (searchQuery.sort_key) {
-    if (searchQuery.sort_key === 'names') {
-      searchQuery.ordering = ['names', 'first_name'];
+    if (searchQuery.sort_key === "names") {
+      searchQuery.ordering = ["names", "first_name"];
     } else {
       searchQuery.ordering = [searchQuery.sort_key];
     }
 
     if (searchQuery.sort_order === TableSortOrder.DESCENDING) {
-      searchQuery.ordering = searchQuery.ordering.map(key => `-${key}`);
+      searchQuery.ordering = searchQuery.ordering.map((key) => `-${key}`);
     }
 
     delete searchQuery.sort_key;
@@ -118,5 +134,5 @@ export const isContactFormDirty = (state: any): boolean => {
  */
 export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.CONTACT);
-  removeSessionStorageItem('contactId');
+  removeSessionStorageItem("contactId");
 };

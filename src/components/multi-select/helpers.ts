@@ -13,27 +13,33 @@ type MapOfStrings = Record<string, string>;
  *
  * @return A filtered and sorted array of Options.
  */
-export const filterOptions = (options: Array<Record<string, any>>, filter?: string, substitutions?: MapOfStrings): Array<Record<string, any>> => {
+export const filterOptions = (
+  options: Array<Record<string, any>>,
+  filter?: string,
+  substitutions?: MapOfStrings,
+): Array<Record<string, any>> => {
   // If the filter is blank, return the full list of Options.
   if (!filter) {
     return options;
   }
 
   const cleanFilter = cleanUpText(filter, substitutions);
-  return options // Filter out undefined or null Options.
-  .filter(({
-    label,
-    value
-  }) => label != null && value != null) // Create a {score, Option} pair for each Option based on its label's
-  // similarity to the filter text.
-  .map(option => ({
-    option: option,
-    score: typeaheadSimilarity(cleanUpText(option.label, substitutions), cleanFilter)
-  })) // Only include matches of the entire substring, with a slight
-  // affordance for transposition or extra characters.
-  .filter(pair => pair.score >= cleanFilter.length - 2) // Sort 'em by order of their score.
-  .sort((a, b) => b.score - a.score) // …and grab the original Options back from their pairs.
-  .map(pair => pair.option);
+  return (
+    options // Filter out undefined or null Options.
+      .filter(({ label, value }) => label != null && value != null) // Create a {score, Option} pair for each Option based on its label's
+      // similarity to the filter text.
+      .map((option) => ({
+        option: option,
+        score: typeaheadSimilarity(
+          cleanUpText(option.label, substitutions),
+          cleanFilter,
+        ),
+      })) // Only include matches of the entire substring, with a slight
+      // affordance for transposition or extra characters.
+      .filter((pair) => pair.score >= cleanFilter.length - 2) // Sort 'em by order of their score.
+      .sort((a, b) => b.score - a.score) // …and grab the original Options back from their pairs.
+      .map((pair) => pair.option)
+  );
 };
 
 /**
@@ -82,7 +88,10 @@ export const typeaheadSimilarity = (a: string, b: string): number => {
   // Populate the rest of the table with a dynamic programming algorithm.
   for (let x = 1; x <= aLength; ++x) {
     for (let y = 1; y <= bLength; ++y) {
-      table[x][y] = a[x - 1] === b[y - 1] ? 1 + table[x - 1][y - 1] : Math.max(table[x][y - 1], table[x - 1][y]);
+      table[x][y] =
+        a[x - 1] === b[y - 1]
+          ? 1 + table[x - 1][y - 1]
+          : Math.max(table[x][y - 1], table[x - 1][y]);
     }
   }
 
@@ -102,14 +111,17 @@ export const typeaheadSimilarity = (a: string, b: string): number => {
  *
  * @return The sanitized text.
  */
-export const cleanUpText = (input?: string, substitutions?: MapOfStrings): string => {
+export const cleanUpText = (
+  input?: string,
+  substitutions?: MapOfStrings,
+): string => {
   if (!input) {
-    return '';
+    return "";
   }
 
   // Uppercase and remove all non-alphanumeric, non-accented characters.
   // Also remove underscores.
-  input = input.toUpperCase().replace(/((?=[^\u00E0-\u00FC])\W)|_/g, '');
+  input = input.toUpperCase().replace(/((?=[^\u00E0-\u00FC])\W)|_/g, "");
 
   if (!substitutions) {
     return input;
@@ -120,7 +132,7 @@ export const cleanUpText = (input?: string, substitutions?: MapOfStrings): strin
   // Replace all strings in `safeSubstitutions` with their standardized
   // counterparts.
   return Object.keys(safeSubstitutions).reduce((output, substitution) => {
-    const unsubbed = new RegExp(substitution, 'g');
+    const unsubbed = new RegExp(substitution, "g");
     return output.replace(unsubbed, safeSubstitutions[substitution]);
   }, input);
 };

@@ -29,8 +29,22 @@ import VisualisationTypeWrapper from "@/components/table/VisualisationTypeWrappe
 import { createPlotSearch, fetchPlotSearchList } from "@/plotSearch/actions";
 import { getIsFetching, getPlotSearchList } from "@/plotSearch/selectors";
 import { getRouteById, Routes } from "@/root/routes";
-import { formatDate, getLabelOfOption, setPageTitle, getFieldOptions, getSearchQuery, getApiResponseCount, getApiResponseMaxPage, getUrlParams, isMethodAllowed } from "@/util/helpers";
-import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER, DEFAULT_PLOT_SEARCH_STATES } from "@/plotSearch/constants";
+import {
+  formatDate,
+  getLabelOfOption,
+  setPageTitle,
+  getFieldOptions,
+  getSearchQuery,
+  getApiResponseCount,
+  getApiResponseMaxPage,
+  getUrlParams,
+  isMethodAllowed,
+} from "@/util/helpers";
+import {
+  DEFAULT_SORT_KEY,
+  DEFAULT_SORT_ORDER,
+  DEFAULT_PLOT_SEARCH_STATES,
+} from "@/plotSearch/constants";
 import { getContentPlotSearchListResults } from "@/plotSearch/helpers";
 import type { PlotSearch, PlotSearchList } from "@/plotSearch/types";
 import CreatePlotSearchModal from "@/plotSearch/components/CreatePlotSearchModal";
@@ -38,18 +52,21 @@ import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import { withPlotSearchAttributes } from "@/components/attributes/PlotSearchAttributes";
 import type { Attributes, Methods as MethodsType } from "types";
 const VisualizationTypes = {
-  MAP: 'map',
-  TABLE: 'table'
+  MAP: "map",
+  TABLE: "table",
 };
-const visualizationTypeOptions = [{
-  value: VisualizationTypes.TABLE,
-  label: 'Taulukko',
-  icon: <TableIcon className='icon-medium' />
-}, {
-  value: VisualizationTypes.MAP,
-  label: 'Kartta',
-  icon: <MapIcon className='icon-medium' />
-}];
+const visualizationTypeOptions = [
+  {
+    value: VisualizationTypes.TABLE,
+    label: "Taulukko",
+    icon: <TableIcon className="icon-medium" />,
+  },
+  {
+    value: VisualizationTypes.MAP,
+    label: "Kartta",
+    icon: <MapIcon className="icon-medium" />,
+  },
+];
 type OwnProps = {};
 type Props = OwnProps & {
   history: Record<string, any>;
@@ -92,104 +109,100 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     isSearchInitialized: false,
     maxPage: 0,
     selectedStates: [],
-    isModalOpen: false
+    isModalOpen: false,
   };
   static contextTypes = {
-    router: PropTypes.object
+    router: PropTypes.object,
   };
 
   componentDidMount() {
-    const {
-      receiveTopNavigationSettings
-    } = this.props;
-    setPageTitle('Tonttihaut');
+    const { receiveTopNavigationSettings } = this.props;
+    setPageTitle("Tonttihaut");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.PLOT_SEARCH),
-      pageTitle: 'Tonttihaut',
-      showSearch: false
+      pageTitle: "Tonttihaut",
+      showSearch: false,
     });
     this.search();
     this.setSearchFormValues();
-    window.addEventListener('popstate', this.handlePopState);
+    window.addEventListener("popstate", this.handlePopState);
     this._isMounted = true;
   }
 
   handleVisualizationTypeChange = () => {};
   handlePlotSearchStatesChange = () => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
     delete searchQuery.page;
     this.handleSearchChange(searchQuery, true);
   };
   getColumns = () => {
-    const {
-      plotSearchAttributes
-    } = this.props;
+    const { plotSearchAttributes } = this.props;
     const columns = [];
-    const typeOptions = getFieldOptions(plotSearchAttributes, 'type');
-    const subtypeOptions = getFieldOptions(plotSearchAttributes, 'subtype');
-    const stageOptions = getFieldOptions(plotSearchAttributes, 'stage');
+    const typeOptions = getFieldOptions(plotSearchAttributes, "type");
+    const subtypeOptions = getFieldOptions(plotSearchAttributes, "subtype");
+    const stageOptions = getFieldOptions(plotSearchAttributes, "stage");
     columns.push({
-      key: 'name',
-      text: 'Haku',
-      sortable: false
+      key: "name",
+      text: "Haku",
+      sortable: false,
     });
     columns.push({
-      key: 'type',
-      text: 'Hakutyyppi',
+      key: "type",
+      text: "Hakutyyppi",
       sortable: false,
-      renderer: val => getLabelOfOption(typeOptions, val)
+      renderer: (val) => getLabelOfOption(typeOptions, val),
     });
     columns.push({
-      key: 'subtype',
-      text: 'Haun alatyyppi',
+      key: "subtype",
+      text: "Haun alatyyppi",
       sortable: false,
-      renderer: val => getLabelOfOption(subtypeOptions, val)
+      renderer: (val) => getLabelOfOption(subtypeOptions, val),
     });
     columns.push({
-      key: 'stage',
-      text: 'Haun vaihe',
+      key: "stage",
+      text: "Haun vaihe",
       sortable: false,
-      renderer: val => getLabelOfOption(stageOptions, val)
+      renderer: (val) => getLabelOfOption(stageOptions, val),
     });
     columns.push({
-      key: 'begin_at',
-      text: 'Alkupvm',
+      key: "begin_at",
+      text: "Alkupvm",
       sortable: false,
-      renderer: val => formatDate(val)
+      renderer: (val) => formatDate(val),
     });
     columns.push({
-      key: 'end_at',
-      text: 'Loppupvm',
+      key: "end_at",
+      text: "Loppupvm",
       sortable: false,
-      renderer: val => formatDate(val)
+      renderer: (val) => formatDate(val),
     });
     columns.push({
-      key: 'latest_decicion',
-      text: 'Viimeisin päätös',
+      key: "latest_decicion",
+      text: "Viimeisin päätös",
       sortable: false,
-      renderer: id => id ? <ExternalLink href={'/'} text={id} /> // getReferenceNumberLink(id)
-      : null
+      renderer: (id) =>
+        id ? (
+          <ExternalLink href={"/"} text={id} /> // getReferenceNumberLink(id)
+        ) : null,
     });
     columns.push({
-      key: 'id',
-      text: 'Kohteen tunnus',
+      key: "id",
+      text: "Kohteen tunnus",
       sortable: false,
-      renderer: id => id ? <ExternalLink href={'/'} text={id} /> // getReferenceNumberLink(id)
-      : null
+      renderer: (id) =>
+        id ? (
+          <ExternalLink href={"/"} text={id} /> // getReferenceNumberLink(id)
+        ) : null,
     });
     return columns;
   };
   search = () => {
     const {
       fetchPlotSearchList,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
@@ -202,25 +215,21 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     delete searchQuery.page;
     fetchPlotSearchList(searchQuery);
   };
-  handleRowClick = id => {
+  handleRowClick = (id) => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     return history.push({
       pathname: `${getRouteById(Routes.PLOT_SEARCH)}/${id}`,
-      search: search
+      search: search,
     });
   };
   handleSortingChange = () => {};
   handlePageClick = (page: number) => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
 
@@ -231,71 +240,62 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     }
 
     this.setState({
-      activePage: page
+      activePage: page,
     });
     return history.push({
       pathname: getRouteById(Routes.PLOT_SEARCH),
-      search: getSearchQuery(query)
+      search: getSearchQuery(query),
     });
   };
   updateTableData = () => {
-    const {
-      plotSearchListData
-    } = this.props;
+    const { plotSearchListData } = this.props;
     this.setState({
       count: getApiResponseCount(plotSearchListData),
       properties: getContentPlotSearchListResults(plotSearchListData),
-      maxPage: getApiResponseMaxPage(plotSearchListData, LIST_TABLE_PAGE_SIZE)
+      maxPage: getApiResponseMaxPage(plotSearchListData, LIST_TABLE_PAGE_SIZE),
     });
   };
   handleCreatePlotSearch = (plot_search: PlotSearch) => {
-    const {
-      createPlotSearch
-    } = this.props;
+    const { createPlotSearch } = this.props;
     createPlotSearch(plot_search);
   };
   openModalhandleCreatePlotSearch = () => {
-    const {
-      initialize
-    } = this.props;
+    const { initialize } = this.props;
     this.setState({
-      isModalOpen: true
+      isModalOpen: true,
     });
     initialize(FormNames.PLOT_SEARCH_CREATE, {});
   };
   hideCreatePlotSearchModal = () => {
     this.setState({
-      isModalOpen: false
+      isModalOpen: false,
     });
   };
-  handleSearchChange = (query: Record<string, any>, resetActivePage: boolean = true) => {
-    const {
-      history
-    } = this.props;
+  handleSearchChange = (
+    query: Record<string, any>,
+    resetActivePage: boolean = true,
+  ) => {
+    const { history } = this.props;
 
     if (resetActivePage) {
       this.setState({
-        activePage: 1
+        activePage: 1,
       });
       delete query.page;
     }
 
     return history.push({
       pathname: getRouteById(Routes.PLOT_SEARCH),
-      search: getSearchQuery(query)
+      search: getSearchQuery(query),
     });
   };
 
   componentDidUpdate(prevProps) {
     const {
-      location: {
-        search: currentSearch
-      }
+      location: { search: currentSearch },
     } = this.props;
     const {
-      location: {
-        search: prevSearch
-      }
+      location: { search: prevSearch },
     } = prevProps;
     const searchQuery = getUrlParams(currentSearch);
 
@@ -315,7 +315,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('popstate', this.handlePopState);
+    window.removeEventListener("popstate", this.handlePopState);
     this._isMounted = false;
   }
 
@@ -324,23 +324,20 @@ class PlotSearchListPage extends PureComponent<Props, State> {
   };
   setSearchFormValues = () => {
     const {
-      location: {
-        search
-      },
-      initialize
+      location: { search },
+      initialize,
     } = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     const setSearchFormReady = () => {
       this.setState({
-        isSearchInitialized: true
+        isSearchInitialized: true,
       });
     };
 
     const initializeSearchForm = async () => {
-      const initialValues = { ...searchQuery
-      };
+      const initialValues = { ...searchQuery };
       delete initialValues.page;
       delete initialValues.state;
       delete initialValues.sort_key;
@@ -348,89 +345,167 @@ class PlotSearchListPage extends PureComponent<Props, State> {
       await initialize(FormNames.PLOT_SEARCH_SEARCH, initialValues);
     };
 
-    this.setState({
-      activePage: page,
-      isSearchInitialized: false
-    }, async () => {
-      await initializeSearchForm();
+    this.setState(
+      {
+        activePage: page,
+        isSearchInitialized: false,
+      },
+      async () => {
+        await initializeSearchForm();
 
-      if (this._isMounted) {
-        setSearchFormReady();
-      }
-    });
+        if (this._isMounted) {
+          setSearchFormReady();
+        }
+      },
+    );
   };
 
   render() {
-    const {
-      plotSearchMethods
-    } = this.props;
+    const { plotSearchMethods } = this.props;
     const {
       visualizationType,
       plotSearchStates,
       sortKey,
       sortOrder,
-      isModalOpen
+      isModalOpen,
     } = this.state;
     const columns = this.getColumns();
-    const {
-      isFetching,
-      isFetchingPlotSearchAttributes,
-      plotSearchAttributes
-    } = this.props;
+    const { isFetching, isFetchingPlotSearchAttributes, plotSearchAttributes } =
+      this.props;
     const {
       activePage,
       isSearchInitialized,
       properties,
       maxPage,
-      selectedStates
+      selectedStates,
     } = this.state;
-    const plotSearchStateFilterOptions = getFieldOptions(plotSearchAttributes, 'state', false);
-    const filteredProperties = selectedStates.length ? properties.filter(contract => selectedStates.indexOf(contract.state) !== -1) : properties;
+    const plotSearchStateFilterOptions = getFieldOptions(
+      plotSearchAttributes,
+      "state",
+      false,
+    );
+    const filteredProperties = selectedStates.length
+      ? properties.filter(
+          (contract) => selectedStates.indexOf(contract.state) !== -1,
+        )
+      : properties;
     const count = filteredProperties.length;
-    if (isFetchingPlotSearchAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+    if (isFetchingPlotSearchAttributes)
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     if (!plotSearchMethods) return null;
-    if (!isMethodAllowed(plotSearchMethods, Methods.GET)) return <PageContainer><AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} /></PageContainer>;
-    return <PageContainer>
+    if (!isMethodAllowed(plotSearchMethods, Methods.GET))
+      return (
+        <PageContainer>
+          <AuthorizationError text={PermissionMissingTexts.PLOT_SEARCH} />
+        </PageContainer>
+      );
+    return (
+      <PageContainer>
         <Authorization allow={isMethodAllowed(plotSearchMethods, Methods.POST)}>
-          <CreatePlotSearchModal isOpen={isModalOpen} onClose={this.hideCreatePlotSearchModal} onSubmit={this.handleCreatePlotSearch} />
+          <CreatePlotSearchModal
+            isOpen={isModalOpen}
+            onClose={this.hideCreatePlotSearchModal}
+            onSubmit={this.handleCreatePlotSearch}
+          />
         </Authorization>
         <Row>
           <Column small={12} large={4}>
-            <Authorization allow={isMethodAllowed(plotSearchMethods, Methods.POST)}>
-              <AddButtonSecondary className='no-top-margin' label='Luo tonttihaku' onClick={this.openModalhandleCreatePlotSearch} />
+            <Authorization
+              allow={isMethodAllowed(plotSearchMethods, Methods.POST)}
+            >
+              <AddButtonSecondary
+                className="no-top-margin"
+                label="Luo tonttihaku"
+                onClick={this.openModalhandleCreatePlotSearch}
+              />
             </Authorization>
           </Column>
           <Column small={12} large={8}>
-            <Search isSearchInitialized={isSearchInitialized} onSearch={this.handleSearchChange} states={selectedStates} handleSubmit={() => {}} />
+            <Search
+              isSearchInitialized={isSearchInitialized}
+              onSearch={this.handleSearchChange}
+              states={selectedStates}
+              handleSubmit={() => {}}
+            />
           </Column>
         </Row>
 
-        <TableFilterWrapper filterComponent={<TableFilters amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`} filterOptions={plotSearchStateFilterOptions} filterValue={plotSearchStates} onFilterChange={this.handlePlotSearchStatesChange} />} visualizationComponent={<VisualisationTypeWrapper>
-              <IconRadioButtons legend={'Kartta/taulukko'} onChange={this.handleVisualizationTypeChange} options={visualizationTypeOptions} radioName='visualization-type-radio' value={visualizationType} />
-            </VisualisationTypeWrapper>} />
+        <TableFilterWrapper
+          filterComponent={
+            <TableFilters
+              amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
+              filterOptions={plotSearchStateFilterOptions}
+              filterValue={plotSearchStates}
+              onFilterChange={this.handlePlotSearchStatesChange}
+            />
+          }
+          visualizationComponent={
+            <VisualisationTypeWrapper>
+              <IconRadioButtons
+                legend={"Kartta/taulukko"}
+                onChange={this.handleVisualizationTypeChange}
+                options={visualizationTypeOptions}
+                radioName="visualization-type-radio"
+                value={visualizationType}
+              />
+            </VisualisationTypeWrapper>
+          }
+        />
 
         <TableWrapper>
-          {isFetching && <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>}
+          {isFetching && (
+            <LoaderWrapper className="relative-overlay-wrapper">
+              <Loader isLoading={true} />
+            </LoaderWrapper>
+          )}
 
-          {visualizationType === 'table' && <Fragment>
-              <SortableTable columns={columns} data={filteredProperties} listTable onRowClick={this.handleRowClick} onSortingChange={this.handleSortingChange} serverSideSorting showCollapseArrowColumn sortable sortKey={sortKey} sortOrder={sortOrder} />
-              <Pagination activePage={activePage} maxPage={maxPage} onPageClick={page => this.handlePageClick(page)} />
-            </Fragment>}
+          {visualizationType === "table" && (
+            <Fragment>
+              <SortableTable
+                columns={columns}
+                data={filteredProperties}
+                listTable
+                onRowClick={this.handleRowClick}
+                onSortingChange={this.handleSortingChange}
+                serverSideSorting
+                showCollapseArrowColumn
+                sortable
+                sortKey={sortKey}
+                sortOrder={sortOrder}
+              />
+              <Pagination
+                activePage={activePage}
+                maxPage={maxPage}
+                onPageClick={(page) => this.handlePageClick(page)}
+              />
+            </Fragment>
+          )}
         </TableWrapper>
-      </PageContainer>;
+      </PageContainer>
+    );
   }
-
 }
 
-export default (flowRight(withRouter, withPlotSearchAttributes, connect(state => {
-  return {
-    usersPermissions: getUsersPermissions(state),
-    isFetching: getIsFetching(state),
-    plotSearchListData: getPlotSearchList(state)
-  };
-}, {
-  receiveTopNavigationSettings,
-  createPlotSearch,
-  initialize,
-  fetchPlotSearchList
-}))(PlotSearchListPage) as React.ComponentType<OwnProps>);
+export default flowRight(
+  withRouter,
+  withPlotSearchAttributes,
+  connect(
+    (state) => {
+      return {
+        usersPermissions: getUsersPermissions(state),
+        isFetching: getIsFetching(state),
+        plotSearchListData: getPlotSearchList(state),
+      };
+    },
+    {
+      receiveTopNavigationSettings,
+      createPlotSearch,
+      initialize,
+      fetchPlotSearchList,
+    },
+  ),
+)(PlotSearchListPage) as React.ComponentType<OwnProps>;

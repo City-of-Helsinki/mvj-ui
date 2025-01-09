@@ -29,49 +29,88 @@ const ContractItem = ({
   stateOptions,
   contractTypeOptions,
   decisionOptions,
-  currentLandUseContract
+  currentLandUseContract,
 }: Props) => {
   const handleCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.LAND_USE_CONTRACT_CONTRACTS]: {
-          [contract.id]: val
-        }
-      }
+          [contract.id]: val,
+        },
+      },
     });
   };
 
-  return <Collapse defaultOpen={collapseState !== undefined ? collapseState : true} headerTitle={`${getLabelOfOption(contractTypeOptions, contract.type) || '-'} ${contract.contract_number || '-'}`} onToggle={handleCollapseToggle}>
+  return (
+    <Collapse
+      defaultOpen={collapseState !== undefined ? collapseState : true}
+      headerTitle={`${getLabelOfOption(contractTypeOptions, contract.type) || "-"} ${contract.contract_number || "-"}`}
+      onToggle={handleCollapseToggle}
+    >
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='Sopimuksen tyyppi' text={getLabelOfOption(contractTypeOptions, contract.type) || '-'} />
+          <FormTitleAndText
+            title="Sopimuksen tyyppi"
+            text={getLabelOfOption(contractTypeOptions, contract.type) || "-"}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='Sopimuksen vaihe' text={getLabelOfOption(stateOptions, contract.state) || '-'} />
+          <FormTitleAndText
+            title="Sopimuksen vaihe"
+            text={getLabelOfOption(stateOptions, contract.state) || "-"}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='Allekirjoituspvm' text={formatDate(contract.signing_date) || '-'} />
+          <FormTitleAndText
+            title="Allekirjoituspvm"
+            text={formatDate(contract.signing_date) || "-"}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='ED sopimusnumero' text={contract.contract_number || '-'} />
+          <FormTitleAndText
+            title="ED sopimusnumero"
+            text={contract.contract_number || "-"}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='Aluejärjestelyt' text={contract.area_arrengements ? 'Kyllä' : 'Ei'} />
+          <FormTitleAndText
+            title="Aluejärjestelyt"
+            text={contract.area_arrengements ? "Kyllä" : "Ei"}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText title='Päätös' text={getLabelOfOption(decisionOptions, contract.decision) || '-'} />
+          <FormTitleAndText
+            title="Päätös"
+            text={getLabelOfOption(decisionOptions, contract.decision) || "-"}
+          />
         </Column>
       </Row>
-      <Changes attributes={attributes} changes={contract.contract_changes} decisionId={contract.id} currentLandUseContract={currentLandUseContract} />
-      <Warrants attributes={attributes} collaterals={contract.collaterals} decisionId={contract.id} />
-    </Collapse>;
+      <Changes
+        attributes={attributes}
+        changes={contract.contract_changes}
+        decisionId={contract.id}
+        currentLandUseContract={currentLandUseContract}
+      />
+      <Warrants
+        attributes={attributes}
+        collaterals={contract.collaterals}
+        decisionId={contract.id}
+      />
+    </Collapse>
+  );
 };
 
-export default connect((state, props) => {
-  const id = props.contract.id;
-  return {
-    collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_CONTRACTS}.${id}`)
-  };
-}, {
-  receiveCollapseStates
-})(ContractItem);
+export default connect(
+  (state, props) => {
+    const id = props.contract.id;
+    return {
+      collapseState: getCollapseStateByKey(
+        state,
+        `${ViewModes.READONLY}.${FormNames.LAND_USE_CONTRACT_CONTRACTS}.${id}`,
+      ),
+    };
+  },
+  {
+    receiveCollapseStates,
+  },
+)(ContractItem);

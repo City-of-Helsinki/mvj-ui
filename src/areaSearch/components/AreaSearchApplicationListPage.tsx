@@ -8,7 +8,12 @@ import { formValueSelector, initialize, reduxForm } from "redux-form";
 import { withRouter } from "react-router";
 import debounce from "lodash/debounce";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
-import { FieldTypes, FormNames, Methods, PermissionMissingTexts } from "@/enums";
+import {
+  FieldTypes,
+  FormNames,
+  Methods,
+  PermissionMissingTexts,
+} from "@/enums";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
@@ -25,14 +30,42 @@ import IconRadioButtons from "@/components/button/IconRadioButtons";
 import TableIcon from "@/components/icons/TableIcon";
 import MapIcon from "@/components/icons/MapIcon";
 import { getRouteById, Routes } from "@/root/routes";
-import { formatDate, getLabelOfOption, setPageTitle, getFieldOptions, getSearchQuery, getApiResponseCount, getApiResponseMaxPage, getUrlParams, isMethodAllowed } from "@/util/helpers";
+import {
+  formatDate,
+  getLabelOfOption,
+  setPageTitle,
+  getFieldOptions,
+  getSearchQuery,
+  getApiResponseCount,
+  getApiResponseMaxPage,
+  getUrlParams,
+  isMethodAllowed,
+} from "@/util/helpers";
 import { withAreaSearchAttributes } from "@/components/attributes/AreaSearchAttributes";
-import { getAreaSearchList, getAreaSearchListByBBox, getIsEditingAreaSearch, getIsFetchingAreaSearchList, getIsFetchingAreaSearchListByBBox, getLastAreaSearchEditError } from "@/areaSearch/selectors";
-import { DEFAULT_AREA_SEARCH_STATES, DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER } from "@/areaSearch/constants";
-import { editAreaSearch, fetchAreaSearchList, fetchAreaSearchListByBBox } from "@/areaSearch/actions";
+import {
+  getAreaSearchList,
+  getAreaSearchListByBBox,
+  getIsEditingAreaSearch,
+  getIsFetchingAreaSearchList,
+  getIsFetchingAreaSearchListByBBox,
+  getLastAreaSearchEditError,
+} from "@/areaSearch/selectors";
+import {
+  DEFAULT_AREA_SEARCH_STATES,
+  DEFAULT_SORT_KEY,
+  DEFAULT_SORT_ORDER,
+} from "@/areaSearch/constants";
+import {
+  editAreaSearch,
+  fetchAreaSearchList,
+  fetchAreaSearchListByBBox,
+} from "@/areaSearch/actions";
 import { getUserFullName } from "@/users/helpers";
 import { areaSearchSearchFilters } from "@/areaSearch/helpers";
-import { BOUNDING_BOX_FOR_SEARCH_QUERY, MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES } from "@/areaSearch/constants";
+import {
+  BOUNDING_BOX_FOR_SEARCH_QUERY,
+  MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES,
+} from "@/areaSearch/constants";
 import AreaSearchListMap from "@/areaSearch/components/map/AreaSearchListMap";
 import VisualisationTypeWrapper from "@/components/table/VisualisationTypeWrapper";
 import { ButtonColors } from "@/components/enums";
@@ -48,18 +81,21 @@ import AreaSearchExportModal from "@/areaSearch/components/AreaSearchExportModal
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import type { UserServiceUnit } from "@/usersPermissions/types";
 const VisualizationTypes = {
-  MAP: 'map',
-  TABLE: 'table'
+  MAP: "map",
+  TABLE: "table",
 };
-const visualizationTypeOptions = [{
-  value: VisualizationTypes.TABLE,
-  label: 'Taulukko',
-  icon: <TableIcon className='icon-medium' />
-}, {
-  value: VisualizationTypes.MAP,
-  label: 'Kartta',
-  icon: <MapIcon className='icon-medium' />
-}];
+const visualizationTypeOptions = [
+  {
+    value: VisualizationTypes.TABLE,
+    label: "Taulukko",
+    icon: <TableIcon className="icon-medium" />,
+  },
+  {
+    value: VisualizationTypes.MAP,
+    label: "Kartta",
+    icon: <MapIcon className="icon-medium" />,
+  },
+];
 type OwnProps = {};
 type Props = OwnProps & {
   history: Record<string, any>;
@@ -116,30 +152,28 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     isEditModalOpen: false,
     isExportModalOpen: false,
     editModalTargetAreaSearch: null,
-    userActiveServiceUnit: undefined
+    userActiveServiceUnit: undefined,
   };
   static contextTypes = {
-    router: PropTypes.object
+    router: PropTypes.object,
   };
 
   componentDidMount() {
     const {
       receiveTopNavigationSettings,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
-    setPageTitle('Aluehaun hakemukset');
+    setPageTitle("Aluehaun hakemukset");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.AREA_SEARCH),
-      pageTitle: 'Aluehaun hakemukset',
-      showSearch: false
+      pageTitle: "Aluehaun hakemukset",
+      showSearch: false,
     });
 
     if (searchQuery.visualization === VisualizationTypes.MAP) {
       this.setState({
-        visualizationType: VisualizationTypes.MAP
+        visualizationType: VisualizationTypes.MAP,
       });
       this.searchByBBox();
     } else {
@@ -147,181 +181,209 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     }
 
     this.setSearchFormValues();
-    window.addEventListener('popstate', this.handlePopState);
+    window.addEventListener("popstate", this.handlePopState);
     this._isMounted = true;
   }
 
   handleVisualizationTypeChange = (value: string) => {
-    this.setState({
-      visualizationType: value
-    }, () => {
-      const {
-        history,
-        location: {
-          search
+    this.setState(
+      {
+        visualizationType: value,
+      },
+      () => {
+        const {
+          history,
+          location: { search },
+        } = this.props;
+        const searchQuery = getUrlParams(search);
+
+        if (value === VisualizationTypes.MAP) {
+          searchQuery.visualization = VisualizationTypes.MAP;
+        } else {
+          delete searchQuery.visualization;
+          delete searchQuery.in_bbox;
+          delete searchQuery.zoom;
         }
-      } = this.props;
-      const searchQuery = getUrlParams(search);
 
-      if (value === VisualizationTypes.MAP) {
-        searchQuery.visualization = VisualizationTypes.MAP;
-      } else {
-        delete searchQuery.visualization;
-        delete searchQuery.in_bbox;
-        delete searchQuery.zoom;
-      }
-
-      return history.push({
-        pathname: getRouteById(Routes.AREA_SEARCH),
-        search: getSearchQuery(searchQuery)
-      });
-    });
+        return history.push({
+          pathname: getRouteById(Routes.AREA_SEARCH),
+          search: getSearchQuery(searchQuery),
+        });
+      },
+    );
   };
   handleAreaSearchStatesChange = (values: Array<string>) => {
     const {
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
     delete searchQuery.page;
     searchQuery.state = values;
     this.setState({
-      selectedStates: values
+      selectedStates: values,
     });
     this.handleSearchChange(searchQuery, true);
   };
   getColumns = () => {
-    const {
-      areaSearchListAttributes,
-      selectedSearches
-    } = this.props;
+    const { areaSearchListAttributes, selectedSearches } = this.props;
     const columns = [];
-    const intendedUseOptions = getFieldOptions(areaSearchListAttributes, 'intended_use');
-    const stateOptions = getFieldOptions(areaSearchListAttributes, 'state');
+    const intendedUseOptions = getFieldOptions(
+      areaSearchListAttributes,
+      "intended_use",
+    );
+    const stateOptions = getFieldOptions(areaSearchListAttributes, "state");
     columns.push({
-      key: 'checkbox',
-      text: 'Tulosta',
+      key: "checkbox",
+      text: "Tulosta",
       sortable: false,
-      renderer: (_, item) => <div onMouseDown={e => {
-        e.stopPropagation();
-      }}>
-        <FormField name={`selectedSearches.${item.id}`} fieldAttributes={{
-          type: FieldTypes.CHECKBOX,
-          label: 'Valitse hakemus ' + item.identifier,
-          read_only: false
-        }} autoBlur disableDirty invisibleLabel overrideValues={{
-          options: [{
-            value: true,
-            label: ''
-          }]
-        }} onBlur={(_, value) => this.updateAllSearchesSelected({ ...selectedSearches,
-          [item.id]: value
-        })} />
-      </div>
+      renderer: (_, item) => (
+        <div
+          onMouseDown={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <FormField
+            name={`selectedSearches.${item.id}`}
+            fieldAttributes={{
+              type: FieldTypes.CHECKBOX,
+              label: "Valitse hakemus " + item.identifier,
+              read_only: false,
+            }}
+            autoBlur
+            disableDirty
+            invisibleLabel
+            overrideValues={{
+              options: [
+                {
+                  value: true,
+                  label: "",
+                },
+              ],
+            }}
+            onBlur={(_, value) =>
+              this.updateAllSearchesSelected({
+                ...selectedSearches,
+                [item.id]: value,
+              })
+            }
+          />
+        </div>
+      ),
     });
     columns.push({
-      key: 'identifier',
-      text: 'Hakemus'
+      key: "identifier",
+      text: "Hakemus",
     });
     columns.push({
-      key: 'applicants',
-      text: 'Hakija',
-      sortable: false
+      key: "applicants",
+      text: "Hakija",
+      sortable: false,
     });
     columns.push({
-      key: 'received_date',
-      text: 'Saapunut',
-      renderer: val => formatDate(val)
+      key: "received_date",
+      text: "Saapunut",
+      renderer: (val) => formatDate(val),
     });
     columns.push({
-      key: 'intended_use',
-      text: 'Käyttötarkoitus',
-      renderer: val => getLabelOfOption(intendedUseOptions, val)
+      key: "intended_use",
+      text: "Käyttötarkoitus",
+      renderer: (val) => getLabelOfOption(intendedUseOptions, val),
     });
     columns.push({
-      key: 'address',
-      text: 'Osoite'
+      key: "address",
+      text: "Osoite",
     });
     columns.push({
-      key: 'district',
-      text: 'Kaupunginosa'
+      key: "district",
+      text: "Kaupunginosa",
     });
     columns.push({
-      key: 'start_date',
-      text: 'Alkupvm',
-      renderer: val => formatDate(val)
+      key: "start_date",
+      text: "Alkupvm",
+      renderer: (val) => formatDate(val),
     });
     columns.push({
-      key: 'end_date',
-      text: 'Loppupvm',
-      renderer: val => formatDate(val)
+      key: "end_date",
+      text: "Loppupvm",
+      renderer: (val) => formatDate(val),
     });
     columns.push({
-      key: 'state',
-      text: 'Tila',
-      renderer: val => getLabelOfOption(stateOptions, val)
+      key: "state",
+      text: "Tila",
+      renderer: (val) => getLabelOfOption(stateOptions, val),
     });
     columns.push({
-      key: 'lessor',
-      text: 'Vuokranantaja',
-      renderer: (val, row) => <span onMouseUp={e => e.stopPropagation()}>
-        <Button className={ButtonColors.LINK} onClick={() => this.openAreaSearchEditModal(row.id)} text={val || 'Avoin'} />
-      </span>
+      key: "lessor",
+      text: "Vuokranantaja",
+      renderer: (val, row) => (
+        <span onMouseUp={(e) => e.stopPropagation()}>
+          <Button
+            className={ButtonColors.LINK}
+            onClick={() => this.openAreaSearchEditModal(row.id)}
+            text={val || "Avoin"}
+          />
+        </span>
+      ),
     });
     columns.push({
-      key: 'preparer',
-      text: 'Käsittelijä',
-      renderer: (val, row) => <span onMouseUp={e => e.stopPropagation()}>
-        <Button className={ButtonColors.LINK} onClick={() => this.openAreaSearchEditModal(row.id)} text={getUserFullName(val) || 'Avoin'} />
-      </span>
+      key: "preparer",
+      text: "Käsittelijä",
+      renderer: (val, row) => (
+        <span onMouseUp={(e) => e.stopPropagation()}>
+          <Button
+            className={ButtonColors.LINK}
+            onClick={() => this.openAreaSearchEditModal(row.id)}
+            text={getUserFullName(val) || "Avoin"}
+          />
+        </span>
+      ),
     });
     return columns;
   };
   openAreaSearchEditModal = (id: number) => {
     this.setState(() => ({
       isEditModalOpen: true,
-      editModalTargetAreaSearch: id
+      editModalTargetAreaSearch: id,
     }));
   };
   closeAreaSearchEditModal = () => {
     this.setState(() => ({
       isEditModalOpen: false,
-      editModalTargetAreaSearch: null
+      editModalTargetAreaSearch: null,
     }));
   };
   openExportModal = () => {
     this.setState(() => ({
-      isExportModalOpen: true
+      isExportModalOpen: true,
     }));
   };
   closeExportModal = () => {
     this.setState(() => ({
-      isExportModalOpen: false
+      isExportModalOpen: false,
     }));
   };
   submitAreaSearchEditModal = (data: Record<string, any>) => {
-    const {
-      editAreaSearch
-    } = this.props;
+    const { editAreaSearch } = this.props;
     editAreaSearch({
       id: data.id,
       preparer: data.preparer?.id || null,
       lessor: data.lessor,
       area_search_status: {
-        status_notes: data.status_notes ? [{
-          note: data.status_notes
-        }] : undefined
-      }
+        status_notes: data.status_notes
+          ? [
+              {
+                note: data.status_notes,
+              },
+            ]
+          : undefined,
+      },
     });
   };
   search = () => {
     const {
       fetchAreaSearchList,
-      location: {
-        search
-      },
-      userActiveServiceUnit
+      location: { search },
+      userActiveServiceUnit,
     } = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
@@ -340,17 +402,18 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   searchByBBox = () => {
     const {
       fetchAreaSearchListByBBox,
-      location: {
-        search
-      },
-      userActiveServiceUnit
+      location: { search },
+      userActiveServiceUnit,
     } = this.props;
     const searchQuery = getUrlParams(search);
     const leaseStates = this.getSearchStates(searchQuery);
 
     if (searchQuery && searchQuery.search && searchQuery.search.length > 6) {
       searchQuery.in_bbox = BOUNDING_BOX_FOR_SEARCH_QUERY;
-    } else if (!searchQuery.zoom || searchQuery.zoom < MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES) {
+    } else if (
+      !searchQuery.zoom ||
+      searchQuery.zoom < MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES
+    ) {
       return;
     }
 
@@ -370,46 +433,37 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     delete searchQuery.sort_order;
     fetchAreaSearchListByBBox(areaSearchSearchFilters(searchQuery));
   };
-  handleRowClick = id => {
+  handleRowClick = (id) => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     return history.push({
       pathname: `${getRouteById(Routes.AREA_SEARCH)}/${id}`,
-      search: search
+      search: search,
     });
   };
-  handleSortingChange = ({
-    sortKey,
-    sortOrder
-  }) => {
+  handleSortingChange = ({ sortKey, sortOrder }) => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
     searchQuery.sort_key = sortKey;
     searchQuery.sort_order = sortOrder;
     this.setState({
       sortKey,
-      sortOrder
+      sortOrder,
     });
     return history.push({
       pathname: getRouteById(Routes.AREA_SEARCH),
-      search: getSearchQuery(searchQuery)
+      search: getSearchQuery(searchQuery),
     });
   };
   handlePageClick = (page: number) => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const query = getUrlParams(search);
 
@@ -420,37 +474,35 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     }
 
     this.setState({
-      activePage: page
+      activePage: page,
     });
     return history.push({
       pathname: getRouteById(Routes.AREA_SEARCH),
-      search: getSearchQuery(query)
+      search: getSearchQuery(query),
     });
   };
   updateTableData = () => {
-    const {
-      areaSearches,
-      change
-    } = this.props;
+    const { areaSearches, change } = this.props;
     this.setState({
       count: getApiResponseCount(areaSearches),
-      maxPage: getApiResponseMaxPage(areaSearches, LIST_TABLE_PAGE_SIZE)
+      maxPage: getApiResponseMaxPage(areaSearches, LIST_TABLE_PAGE_SIZE),
     });
-    change('selectedSearches', {});
-    change('allSelected', false);
+    change("selectedSearches", {});
+    change("allSelected", false);
   };
-  handleSearchChange = (query: Record<string, any>, resetActivePage: boolean = true) => {
+  handleSearchChange = (
+    query: Record<string, any>,
+    resetActivePage: boolean = true,
+  ) => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const urlQuery = getUrlParams(search);
 
     if (resetActivePage) {
       this.setState({
-        activePage: 1
+        activePage: 1,
       });
       delete query.page;
     }
@@ -469,28 +521,22 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
 
     return history.push({
       pathname: getRouteById(Routes.AREA_SEARCH),
-      search: getSearchQuery(query)
+      search: getSearchQuery(query),
     });
   };
 
   componentDidUpdate(prevProps) {
     const {
-      location: {
-        search: currentSearch
-      },
+      location: { search: currentSearch },
       isEditingAreaSearch,
       lastEditError,
-      userActiveServiceUnit
+      userActiveServiceUnit,
     } = this.props;
     const {
-      location: {
-        search: prevSearch
-      },
-      userActiveServiceUnit: prevUserActiveServiceUnit
+      location: { search: prevSearch },
+      userActiveServiceUnit: prevUserActiveServiceUnit,
     } = prevProps;
-    const {
-      visualizationType
-    } = this.state;
+    const { visualizationType } = this.state;
     const searchQuery = getUrlParams(currentSearch);
 
     const handleSearch = () => {
@@ -503,13 +549,19 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
         // No search has been done yet
         handleSearch();
         this._hasFetchedAreaSearches = true;
-      } else if (userActiveServiceUnit !== prevUserActiveServiceUnit && !currentSearch.includes('service_unit')) {
+      } else if (
+        userActiveServiceUnit !== prevUserActiveServiceUnit &&
+        !currentSearch.includes("service_unit")
+      ) {
         // Search again after changing user active service unit only if not explicitly setting the service unit filter
         handleSearch();
       }
     }
 
-    if (currentSearch !== prevSearch || !isEditingAreaSearch && !lastEditError && prevProps.isEditingAreaSearch) {
+    if (
+      currentSearch !== prevSearch ||
+      (!isEditingAreaSearch && !lastEditError && prevProps.isEditingAreaSearch)
+    ) {
       this.closeAreaSearchEditModal();
 
       switch (visualizationType) {
@@ -536,7 +588,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('popstate', this.handlePopState);
+    window.removeEventListener("popstate", this.handlePopState);
     this._isMounted = false;
     this._hasFetchedAreaSearches = false;
   }
@@ -547,16 +599,14 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   handleMapViewportChanged = debounce((mapOptions: Record<string, any>) => {
     const {
       history,
-      location: {
-        search
-      }
+      location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
-    searchQuery.in_bbox = mapOptions.bBox.split(',');
+    searchQuery.in_bbox = mapOptions.bBox.split(",");
     searchQuery.zoom = mapOptions.zoom;
     return history.push({
       pathname: getRouteById(Routes.AREA_SEARCH),
-      search: getSearchQuery(searchQuery)
+      search: getSearchQuery(searchQuery),
     });
   }, 1000);
   getSearchStates = (query: Record<string, any>) => {
@@ -572,11 +622,9 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   };
   setSearchFormValues = () => {
     const {
-      location: {
-        search
-      },
+      location: { search },
       initializeForm,
-      userActiveServiceUnit
+      userActiveServiceUnit,
     } = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
@@ -584,13 +632,12 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
 
     const setSearchFormReady = () => {
       this.setState({
-        isSearchInitialized: true
+        isSearchInitialized: true,
       });
     };
 
     const initializeSearchForm = async () => {
-      const initialValues = { ...searchQuery
-      };
+      const initialValues = { ...searchQuery };
       delete initialValues.page;
       delete initialValues.state;
       delete initialValues.sort_key;
@@ -606,43 +653,46 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       await initializeForm(FormNames.AREA_SEARCH_SEARCH, initialValues);
     };
 
-    this.setState({
-      activePage: page,
-      isSearchInitialized: false,
-      selectedStates: states
-    }, async () => {
-      await initializeSearchForm();
+    this.setState(
+      {
+        activePage: page,
+        isSearchInitialized: false,
+        selectedStates: states,
+      },
+      async () => {
+        await initializeSearchForm();
 
-      if (this._isMounted) {
-        setSearchFormReady();
-      }
-    });
+        if (this._isMounted) {
+          setSearchFormReady();
+        }
+      },
+    );
   };
   openCreateAreaSearch = () => {
-    const {
-      history
-    } = this.props;
+    const { history } = this.props;
     history.push({
-      pathname: `${getRouteById(Routes.AREA_SEARCH)}/uusi`
+      pathname: `${getRouteById(Routes.AREA_SEARCH)}/uusi`,
     });
   };
-  selectAllSearches = (event: React.FocusEvent<HTMLInputElement>, value: boolean) => {
-    const {
-      change,
-      areaSearches
-    } = this.props;
-    change('selectedSearches', areaSearches?.results.reduce((acc, result) => {
-      acc[result.id] = value;
-      return acc;
-    }, {}));
+  selectAllSearches = (
+    event: React.FocusEvent<HTMLInputElement>,
+    value: boolean,
+  ) => {
+    const { change, areaSearches } = this.props;
+    change(
+      "selectedSearches",
+      areaSearches?.results.reduce((acc, result) => {
+        acc[result.id] = value;
+        return acc;
+      }, {}),
+    );
   };
   updateAllSearchesSelected = (selectedSearches: Record<string, any>) => {
-    const {
-      change,
-      areaSearches
-    } = this.props;
-    const isAllSelected = areaSearches?.results.every(search => selectedSearches[search.id] === true);
-    change('allSelected', isAllSelected);
+    const { change, areaSearches } = this.props;
+    const isAllSelected = areaSearches?.results.every(
+      (search) => selectedSearches[search.id] === true,
+    );
+    change("allSelected", isAllSelected);
   };
 
   render() {
@@ -654,10 +704,8 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       isFetching,
       isFetchingByBBox,
       isFetchingAreaSearchListAttributes,
-      location: {
-        search
-      },
-      selectedSearches = {}
+      location: { search },
+      selectedSearches = {},
     } = this.props;
     const {
       sortKey,
@@ -669,16 +717,25 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       visualizationType,
       isEditModalOpen,
       isExportModalOpen,
-      editModalTargetAreaSearch
+      editModalTargetAreaSearch,
     } = this.state;
     const searchQuery = getUrlParams(search);
     const columns = this.getColumns();
-    const stateOptions = getFieldOptions(areaSearchListAttributes, 'state', false);
+    const stateOptions = getFieldOptions(
+      areaSearchListAttributes,
+      "state",
+      false,
+    );
 
-    if (isFetchingAreaSearchListAttributes || visualizationType === VisualizationTypes.TABLE && !areaSearches) {
-      return <PageContainer>
-        <Loader isLoading={true} />
-      </PageContainer>;
+    if (
+      isFetchingAreaSearchListAttributes ||
+      (visualizationType === VisualizationTypes.TABLE && !areaSearches)
+    ) {
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
     }
 
     if (!areaSearchListMethods) {
@@ -686,103 +743,205 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     }
 
     if (!isMethodAllowed(areaSearchListMethods, Methods.GET)) {
-      return <PageContainer>
-        <AuthorizationError text={PermissionMissingTexts.AREA_SEARCH} />
-      </PageContainer>;
+      return (
+        <PageContainer>
+          <AuthorizationError text={PermissionMissingTexts.AREA_SEARCH} />
+        </PageContainer>
+      );
     }
 
-    let amountText = '';
+    let amountText = "";
 
     switch (visualizationType) {
       case VisualizationTypes.MAP:
-        if (searchQuery.zoom && searchQuery.zoom >= MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES) {
-          amountText = isFetchingByBBox || areaSearchesByBBox?.count === undefined ? 'Ladataan...' : `Löytyi ${areaSearchesByBBox.count} kpl`;
+        if (
+          searchQuery.zoom &&
+          searchQuery.zoom >= MAX_ZOOM_LEVEL_TO_FETCH_AREA_SEARCHES
+        ) {
+          amountText =
+            isFetchingByBBox || areaSearchesByBBox?.count === undefined
+              ? "Ladataan..."
+              : `Löytyi ${areaSearchesByBBox.count} kpl`;
         }
 
         break;
 
       case VisualizationTypes.TABLE:
       default:
-        amountText = isFetching || areaSearches?.count === undefined ? 'Ladataan...' : `Löytyi ${areaSearches.count} kpl`;
+        amountText =
+          isFetching || areaSearches?.count === undefined
+            ? "Ladataan..."
+            : `Löytyi ${areaSearches.count} kpl`;
     }
 
-    return <PageContainer className="AreaSearchApplicationListPage">
+    return (
+      <PageContainer className="AreaSearchApplicationListPage">
         <Row>
           <Column small={12} medium={4} large={4}>
-            <Authorization allow={isMethodAllowed(areaSearchListMethods, Methods.POST)}>
-              <AddButtonSecondary className='no-top-margin' label='Luo aluehakemus' onClick={this.openCreateAreaSearch} />
+            <Authorization
+              allow={isMethodAllowed(areaSearchListMethods, Methods.POST)}
+            >
+              <AddButtonSecondary
+                className="no-top-margin"
+                label="Luo aluehakemus"
+                onClick={this.openCreateAreaSearch}
+              />
             </Authorization>
           </Column>
           <Column small={12} medium={8} large={8}>
-            <Search isSearchInitialized={isSearchInitialized} onSearch={this.handleSearchChange} states={selectedStates} handleSubmit={() => {}} />
+            <Search
+              isSearchInitialized={isSearchInitialized}
+              onSearch={this.handleSearchChange}
+              states={selectedStates}
+              handleSubmit={() => {}}
+            />
           </Column>
         </Row>
 
-        {<TableFilterWrapper filterComponent={<TableFilters amountText={amountText} filterOptions={stateOptions} filterValue={selectedStates} onFilterChange={this.handleAreaSearchStatesChange} />} visualizationComponent={<VisualisationTypeWrapper>
-              {<IconRadioButtons legend={'Kartta/taulukko'} onChange={this.handleVisualizationTypeChange} options={visualizationTypeOptions} radioName='visualization-type-radio' value={visualizationType} />}
-            </VisualisationTypeWrapper>} />}
+        {
+          <TableFilterWrapper
+            filterComponent={
+              <TableFilters
+                amountText={amountText}
+                filterOptions={stateOptions}
+                filterValue={selectedStates}
+                onFilterChange={this.handleAreaSearchStatesChange}
+              />
+            }
+            visualizationComponent={
+              <VisualisationTypeWrapper>
+                {
+                  <IconRadioButtons
+                    legend={"Kartta/taulukko"}
+                    onChange={this.handleVisualizationTypeChange}
+                    options={visualizationTypeOptions}
+                    radioName="visualization-type-radio"
+                    value={visualizationType}
+                  />
+                }
+              </VisualisationTypeWrapper>
+            }
+          />
+        }
         <TableWrapper>
-          {isFetching && <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={true} /></LoaderWrapper>}
-          {visualizationType === 'table' && <Fragment>
-              <SortableTable columns={columns} data={areaSearches?.results || []} listTable onRowClick={this.handleRowClick} onSortingChange={this.handleSortingChange} serverSideSorting showCollapseArrowColumn sortable sortKey={sortKey} sortOrder={sortOrder} footer={({
-            columnCount
-          }: {
-            columnCount: number;
-          }) => <tr>
-                  <td />
-                  <td colSpan={columnCount - 1}>
-                    <FormField name={`allSelected`} fieldAttributes={{
-                type: FieldTypes.CHECKBOX,
-                label: '',
-                read_only: false
-              }} autoBlur disableDirty invisibleLabel overrideValues={{
-                options: [{
-                  value: true,
-                  label: 'Valitse kaikki suodatuksen mukaan'
-                }]
-              }} onBlur={this.selectAllSearches} onChange={this.selectAllSearches} />
-                  </td>
-                </tr>} />
+          {isFetching && (
+            <LoaderWrapper className="relative-overlay-wrapper">
+              <Loader isLoading={true} />
+            </LoaderWrapper>
+          )}
+          {visualizationType === "table" && (
+            <Fragment>
+              <SortableTable
+                columns={columns}
+                data={areaSearches?.results || []}
+                listTable
+                onRowClick={this.handleRowClick}
+                onSortingChange={this.handleSortingChange}
+                serverSideSorting
+                showCollapseArrowColumn
+                sortable
+                sortKey={sortKey}
+                sortOrder={sortOrder}
+                footer={({ columnCount }: { columnCount: number }) => (
+                  <tr>
+                    <td />
+                    <td colSpan={columnCount - 1}>
+                      <FormField
+                        name={`allSelected`}
+                        fieldAttributes={{
+                          type: FieldTypes.CHECKBOX,
+                          label: "",
+                          read_only: false,
+                        }}
+                        autoBlur
+                        disableDirty
+                        invisibleLabel
+                        overrideValues={{
+                          options: [
+                            {
+                              value: true,
+                              label: "Valitse kaikki suodatuksen mukaan",
+                            },
+                          ],
+                        }}
+                        onBlur={this.selectAllSearches}
+                        onChange={this.selectAllSearches}
+                      />
+                    </td>
+                  </tr>
+                )}
+              />
 
-              <Pagination activePage={activePage} maxPage={maxPage} onPageClick={page => this.handlePageClick(page)} />
-            </Fragment>}
-          {visualizationType === 'map' && <AreaSearchListMap allowToEdit={false} isLoading={isFetchingByBBox} onViewportChanged={this.handleMapViewportChanged} />}
+              <Pagination
+                activePage={activePage}
+                maxPage={maxPage}
+                onPageClick={(page) => this.handlePageClick(page)}
+              />
+            </Fragment>
+          )}
+          {visualizationType === "map" && (
+            <AreaSearchListMap
+              allowToEdit={false}
+              isLoading={isFetchingByBBox}
+              onViewportChanged={this.handleMapViewportChanged}
+            />
+          )}
         </TableWrapper>
-        <Button onClick={this.openExportModal} text="Tulosta" disabled={selectedSearches.length === 0} />
-        <EditAreaSearchPreparerModal isOpen={isEditModalOpen} onClose={this.closeAreaSearchEditModal} onSubmit={this.submitAreaSearchEditModal} areaSearchId={editModalTargetAreaSearch} />
-        <AreaSearchExportModal isOpen={isExportModalOpen} onClose={this.closeExportModal} />
-      </PageContainer>;
+        <Button
+          onClick={this.openExportModal}
+          text="Tulosta"
+          disabled={selectedSearches.length === 0}
+        />
+        <EditAreaSearchPreparerModal
+          isOpen={isEditModalOpen}
+          onClose={this.closeAreaSearchEditModal}
+          onSubmit={this.submitAreaSearchEditModal}
+          areaSearchId={editModalTargetAreaSearch}
+        />
+        <AreaSearchExportModal
+          isOpen={isExportModalOpen}
+          onClose={this.closeExportModal}
+        />
+      </PageContainer>
+    );
   }
-
 }
 
 const FORM_NAME = FormNames.AREA_SEARCH_EXPORT;
 const selector = formValueSelector(FORM_NAME);
-export default (flowRight(withRouter, withAreaSearchAttributes, connect(state => {
-  return {
-    usersPermissions: getUsersPermissions(state),
-    isFetching: getIsFetchingAreaSearchList(state),
-    isFetchingByBBox: getIsFetchingAreaSearchListByBBox(state),
-    areaSearches: getAreaSearchList(state),
-    areaSearchesByBBox: getAreaSearchListByBBox(state),
-    isEditingAreaSearch: getIsEditingAreaSearch(state),
-    lastEditError: getLastAreaSearchEditError(state),
-    selectedSearches: selector(state, 'selectedSearches'),
-    userActiveServiceUnit: getUserActiveServiceUnit(state)
-  };
-}, {
-  receiveTopNavigationSettings,
-  // initialize bound to the row selection form is set by reduxForm
-  initializeForm: initialize,
-  fetchAreaSearchList,
-  fetchAreaSearchListByBBox,
-  editAreaSearch
-}), reduxForm({
-  form: FORM_NAME,
-  initialValues: {
-    mode: null,
-    selectedSearches: {},
-    includeInformationChecks: false,
-    includeAttachments: false
-  }
-}))(AreaSearchApplicationListPage) as React.ComponentType<OwnProps>);
+export default flowRight(
+  withRouter,
+  withAreaSearchAttributes,
+  connect(
+    (state) => {
+      return {
+        usersPermissions: getUsersPermissions(state),
+        isFetching: getIsFetchingAreaSearchList(state),
+        isFetchingByBBox: getIsFetchingAreaSearchListByBBox(state),
+        areaSearches: getAreaSearchList(state),
+        areaSearchesByBBox: getAreaSearchListByBBox(state),
+        isEditingAreaSearch: getIsEditingAreaSearch(state),
+        lastEditError: getLastAreaSearchEditError(state),
+        selectedSearches: selector(state, "selectedSearches"),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
+      };
+    },
+    {
+      receiveTopNavigationSettings,
+      // initialize bound to the row selection form is set by reduxForm
+      initializeForm: initialize,
+      fetchAreaSearchList,
+      fetchAreaSearchListByBBox,
+      editAreaSearch,
+    },
+  ),
+  reduxForm({
+    form: FORM_NAME,
+    initialValues: {
+      mode: null,
+      selectedSearches: {},
+      includeInformationChecks: false,
+      includeAttachments: false,
+    },
+  }),
+)(AreaSearchApplicationListPage) as React.ComponentType<OwnProps>;

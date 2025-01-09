@@ -9,7 +9,11 @@ import FormWrapperLeft from "@/components/form/FormWrapperLeft";
 import FormWrapperRight from "@/components/form/FormWrapperRight";
 import { ContactFieldPaths, ContactFieldTitles } from "@/contacts/enums";
 import { getUiDataContactKey } from "@/uiData/helpers";
-import { getFieldOptions, getLabelOfOption, isFieldAllowedToRead } from "@/util/helpers";
+import {
+  getFieldOptions,
+  getLabelOfOption,
+  isFieldAllowedToRead,
+} from "@/util/helpers";
 import { getAttributes } from "@/contacts/selectors";
 import { ContactTypes } from "@/contacts/enums";
 import type { Attributes } from "types";
@@ -19,132 +23,207 @@ type Props = {
   contact: Record<string, any> | null | undefined;
 };
 
-const ContactTemplate = ({
-  attributes,
-  contact
-}: Props) => {
+const ContactTemplate = ({ attributes, contact }: Props) => {
   const typeOptions = getFieldOptions(attributes, ContactFieldPaths.TYPE);
   const countryOptions = getFieldOptions(attributes, ContactFieldPaths.COUNTRY);
-  const languageOptions = getFieldOptions(attributes, ContactFieldPaths.LANGUAGE);
+  const languageOptions = getFieldOptions(
+    attributes,
+    ContactFieldPaths.LANGUAGE,
+  );
   if (!contact) return null;
-  return <FormWrapper>
+  return (
+    <FormWrapper>
       <FormWrapperLeft>
         <Row>
           <Column small={12} medium={6} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.TYPE)}>
+            <Authorization
+              allow={isFieldAllowedToRead(attributes, ContactFieldPaths.TYPE)}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.TYPE)}>
-                {ContactFieldTitles.TYPE}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(typeOptions, contact.type) || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.TYPE)}
+                >
+                  {ContactFieldTitles.TYPE}
+                </FormTextTitle>
+                <FormText>
+                  {getLabelOfOption(typeOptions, contact.type) || "-"}
+                </FormText>
               </>
             </Authorization>
           </Column>
-          {contact.type === ContactTypes.PERSON && <Column small={12} medium={6} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.LAST_NAME)}>
+          {contact.type === ContactTypes.PERSON && (
+            <Column small={12} medium={6} large={4}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  ContactFieldPaths.LAST_NAME,
+                )}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.LAST_NAME)}>
-                  {ContactFieldTitles.LAST_NAME}
-                </FormTextTitle>
-                <FormText>{contact.last_name || '-'}</FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.LAST_NAME)}
+                  >
+                    {ContactFieldTitles.LAST_NAME}
+                  </FormTextTitle>
+                  <FormText>{contact.last_name || "-"}</FormText>
                 </>
               </Authorization>
-            </Column>}
-          {contact.type === ContactTypes.PERSON && <Column small={12} medium={6} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.FIRST_NAME)}>
+            </Column>
+          )}
+          {contact.type === ContactTypes.PERSON && (
+            <Column small={12} medium={6} large={4}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  ContactFieldPaths.FIRST_NAME,
+                )}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.FIRST_NAME)}>
-                  {ContactFieldTitles.FIRST_NAME}
-                </FormTextTitle>
-                <FormText>{contact.first_name || '-'}</FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataContactKey(
+                      ContactFieldPaths.FIRST_NAME,
+                    )}
+                  >
+                    {ContactFieldTitles.FIRST_NAME}
+                  </FormTextTitle>
+                  <FormText>{contact.first_name || "-"}</FormText>
                 </>
               </Authorization>
-            </Column>}
-          {contact.type && contact.type !== ContactTypes.PERSON && <Column small={12} medium={6} large={8}>
-              <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NAME)}>
+            </Column>
+          )}
+          {contact.type && contact.type !== ContactTypes.PERSON && (
+            <Column small={12} medium={6} large={8}>
+              <Authorization
+                allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NAME)}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.NAME)}>
-                  {ContactFieldTitles.NAME}
-                </FormTextTitle>
-                <FormText>{contact.name || '-'}</FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataContactKey(ContactFieldPaths.NAME)}
+                  >
+                    {ContactFieldTitles.NAME}
+                  </FormTextTitle>
+                  <FormText>{contact.name || "-"}</FormText>
                 </>
               </Authorization>
-            </Column>}
+            </Column>
+          )}
         </Row>
         <Row>
           <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CARE_OF)}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                ContactFieldPaths.CARE_OF,
+              )}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.CARE_OF)}>
-                {ContactFieldTitles.CARE_OF}
-              </FormTextTitle>
-              <FormText>{contact.care_of || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.CARE_OF)}
+                >
+                  {ContactFieldTitles.CARE_OF}
+                </FormTextTitle>
+                <FormText>{contact.care_of || "-"}</FormText>
               </>
             </Authorization>
           </Column>
         </Row>
         <Row>
           <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ADDRESS)}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                ContactFieldPaths.ADDRESS,
+              )}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.ADDRESS)}>
-                {ContactFieldTitles.ADDRESS}
-              </FormTextTitle>
-              <FormText>{contact.address || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.ADDRESS)}
+                >
+                  {ContactFieldTitles.ADDRESS}
+                </FormTextTitle>
+                <FormText>{contact.address || "-"}</FormText>
               </>
             </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={4} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.POSTAL_CODE)}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                ContactFieldPaths.POSTAL_CODE,
+              )}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.POSTAL_CODE)}>
-                {ContactFieldTitles.POSTAL_CODE}
-              </FormTextTitle>
-              <FormText>{contact.postal_code || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.POSTAL_CODE)}
+                >
+                  {ContactFieldTitles.POSTAL_CODE}
+                </FormTextTitle>
+                <FormText>{contact.postal_code || "-"}</FormText>
               </>
             </Authorization>
           </Column>
           <Column small={12} medium={4} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CITY)}>
+            <Authorization
+              allow={isFieldAllowedToRead(attributes, ContactFieldPaths.CITY)}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.CITY)}>
-                {ContactFieldTitles.CITY}
-              </FormTextTitle>
-              <FormText>{contact.city || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.CITY)}
+                >
+                  {ContactFieldTitles.CITY}
+                </FormTextTitle>
+                <FormText>{contact.city || "-"}</FormText>
               </>
             </Authorization>
           </Column>
           <Column small={12} medium={4} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.COUNTRY)}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                ContactFieldPaths.COUNTRY,
+              )}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.COUNTRY)}>
-                {ContactFieldTitles.COUNTRY}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(countryOptions, contact.country) || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.COUNTRY)}
+                >
+                  {ContactFieldTitles.COUNTRY}
+                </FormTextTitle>
+                <FormText>
+                  {getLabelOfOption(countryOptions, contact.country) || "-"}
+                </FormText>
               </>
             </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.PHONE)}>
+            <Authorization
+              allow={isFieldAllowedToRead(attributes, ContactFieldPaths.PHONE)}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.PHONE)}>
-                {ContactFieldTitles.PHONE}
-              </FormTextTitle>
-              <FormText>{contact.phone || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.PHONE)}
+                >
+                  {ContactFieldTitles.PHONE}
+                </FormTextTitle>
+                <FormText>{contact.phone || "-"}</FormText>
               </>
             </Authorization>
           </Column>
           <Column small={12} medium={6} large={8}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.EMAIL)}>
+            <Authorization
+              allow={isFieldAllowedToRead(attributes, ContactFieldPaths.EMAIL)}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.EMAIL)}>
-                {ContactFieldTitles.EMAIL}
-              </FormTextTitle>
-              <FormText>{contact.email || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.EMAIL)}
+                >
+                  {ContactFieldTitles.EMAIL}
+                </FormTextTitle>
+                <FormText>{contact.email || "-"}</FormText>
               </>
             </Authorization>
           </Column>
@@ -152,137 +231,254 @@ const ContactTemplate = ({
       </FormWrapperLeft>
       <FormWrapperRight>
         <Row>
-          {contact.type === ContactTypes.PERSON && <Column small={12} medium={6} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER)}>
+          {contact.type === ContactTypes.PERSON && (
+            <Column small={12} medium={6} large={4}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER,
+                )}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER)}>
-                  {ContactFieldTitles.NATIONAL_IDENTIFICATION_NUMBER}
-                </FormTextTitle>
-                <FormText>{contact.national_identification_number || '-'}</FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataContactKey(
+                      ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER,
+                    )}
+                  >
+                    {ContactFieldTitles.NATIONAL_IDENTIFICATION_NUMBER}
+                  </FormTextTitle>
+                  <FormText>
+                    {contact.national_identification_number || "-"}
+                  </FormText>
                 </>
               </Authorization>
-            </Column>}
-          {contact.type && contact.type !== ContactTypes.PERSON && <Column small={12} medium={6} large={4}>
-              <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.BUSINESS_ID)}>
+            </Column>
+          )}
+          {contact.type && contact.type !== ContactTypes.PERSON && (
+            <Column small={12} medium={6} large={4}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  ContactFieldPaths.BUSINESS_ID,
+                )}
+              >
                 <>
-                <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.BUSINESS_ID)}>
-                  {ContactFieldTitles.BUSINESS_ID}
-                </FormTextTitle>
-                <FormText>{contact.business_id || '-'}</FormText>
+                  <FormTextTitle
+                    uiDataKey={getUiDataContactKey(
+                      ContactFieldPaths.BUSINESS_ID,
+                    )}
+                  >
+                    {ContactFieldTitles.BUSINESS_ID}
+                  </FormTextTitle>
+                  <FormText>{contact.business_id || "-"}</FormText>
                 </>
               </Authorization>
-            </Column>}
+            </Column>
+          )}
           <Column small={12} medium={6} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.LANGUAGE)}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                ContactFieldPaths.LANGUAGE,
+              )}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.LANGUAGE)}>
-                {ContactFieldTitles.LANGUAGE}
-              </FormTextTitle>
-              <FormText>{getLabelOfOption(languageOptions, contact.language) || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.LANGUAGE)}
+                >
+                  {ContactFieldTitles.LANGUAGE}
+                </FormTextTitle>
+                <FormText>
+                  {getLabelOfOption(languageOptions, contact.language) || "-"}
+                </FormText>
               </>
             </Authorization>
           </Column>
           <Column small={12} medium={6} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.SAP_CUSTOMER_NUMBER)}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                ContactFieldPaths.SAP_CUSTOMER_NUMBER,
+              )}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.SAP_CUSTOMER_NUMBER)}>
-                {ContactFieldTitles.SAP_CUSTOMER_NUMBER}
-              </FormTextTitle>
-              <FormText>{contact.sap_customer_number || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(
+                    ContactFieldPaths.SAP_CUSTOMER_NUMBER,
+                  )}
+                >
+                  {ContactFieldTitles.SAP_CUSTOMER_NUMBER}
+                </FormTextTitle>
+                <FormText>{contact.sap_customer_number || "-"}</FormText>
               </>
             </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.PARTNER_CODE)}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                ContactFieldPaths.PARTNER_CODE,
+              )}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.PARTNER_CODE)}>
-                {ContactFieldTitles.PARTNER_CODE}
-              </FormTextTitle>
-              <FormText>{contact.partner_code || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(
+                    ContactFieldPaths.PARTNER_CODE,
+                  )}
+                >
+                  {ContactFieldTitles.PARTNER_CODE}
+                </FormTextTitle>
+                <FormText>{contact.partner_code || "-"}</FormText>
               </>
             </Authorization>
           </Column>
           <Column small={12} medium={6} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ELECTRONIC_BILLING_ADDRESS)}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                ContactFieldPaths.ELECTRONIC_BILLING_ADDRESS,
+              )}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.ELECTRONIC_BILLING_ADDRESS)}>
-                {ContactFieldTitles.ELECTRONIC_BILLING_ADDRESS}
-              </FormTextTitle>
-              <FormText>{contact.electronic_billing_address || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(
+                    ContactFieldPaths.ELECTRONIC_BILLING_ADDRESS,
+                  )}
+                >
+                  {ContactFieldTitles.ELECTRONIC_BILLING_ADDRESS}
+                </FormTextTitle>
+                <FormText>{contact.electronic_billing_address || "-"}</FormText>
               </>
             </Authorization>
           </Column>
           <Column small={12} medium={6} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ID)}>
+            <Authorization
+              allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ID)}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.ID)}>
-                {ContactFieldTitles.ID}
-              </FormTextTitle>
-              <FormText>{contact.id || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.ID)}
+                >
+                  {ContactFieldTitles.ID}
+                </FormTextTitle>
+                <FormText>{contact.id || "-"}</FormText>
               </>
             </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.IS_LESSOR)}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                ContactFieldPaths.IS_LESSOR,
+              )}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.IS_LESSOR)}>
-                {ContactFieldTitles.IS_LESSOR}
-              </FormTextTitle>
-              <FormText>{contact.is_lessor ? 'Kyllä' : 'Ei'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.IS_LESSOR)}
+                >
+                  {ContactFieldTitles.IS_LESSOR}
+                </FormTextTitle>
+                <FormText>{contact.is_lessor ? "Kyllä" : "Ei"}</FormText>
               </>
             </Authorization>
           </Column>
           <Column small={12} medium={6} large={4}>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.SERVICE_UNIT)}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                ContactFieldPaths.SERVICE_UNIT,
+              )}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.SERVICE_UNIT)}>
-                {ContactFieldTitles.SERVICE_UNIT}
-              </FormTextTitle>
-              <FormText>{contact.service_unit && contact.service_unit.name ? contact.service_unit.name : '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(
+                    ContactFieldPaths.SERVICE_UNIT,
+                  )}
+                >
+                  {ContactFieldTitles.SERVICE_UNIT}
+                </FormTextTitle>
+                <FormText>
+                  {contact.service_unit && contact.service_unit.name
+                    ? contact.service_unit.name
+                    : "-"}
+                </FormText>
               </>
             </Authorization>
           </Column>
-          {contact.type === ContactTypes.PERSON && <Column small={12} medium={6} large={4}>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.ADDRESS_PROTECTION)}>
+          {contact.type === ContactTypes.PERSON && (
+            <Column small={12} medium={6} large={4}>
+              <FormTextTitle
+                uiDataKey={getUiDataContactKey(
+                  ContactFieldPaths.ADDRESS_PROTECTION,
+                )}
+              >
                 {ContactFieldTitles.ADDRESS_PROTECTION}
               </FormTextTitle>
-              <FormText>{contact.address_protection ? <span><i /><span>Turvakielto</span></span> : 'Ei turvakieltoa'}</FormText>
-            </Column>}
+              <FormText>
+                {contact.address_protection ? (
+                  <span>
+                    <i />
+                    <span>Turvakielto</span>
+                  </span>
+                ) : (
+                  "Ei turvakieltoa"
+                )}
+              </FormText>
+            </Column>
+          )}
         </Row>
         <Row>
           <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NOTE)}>
+            <Authorization
+              allow={isFieldAllowedToRead(attributes, ContactFieldPaths.NOTE)}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.NOTE)}>
-                {ContactFieldTitles.NOTE}
-              </FormTextTitle>
-              <FormText>{contact.note || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.NOTE)}
+                >
+                  {ContactFieldTitles.NOTE}
+                </FormTextTitle>
+                <FormText>{contact.note || "-"}</FormText>
               </>
             </Authorization>
           </Column>
         </Row>
         <Row>
           <Column>
-            <Authorization allow={isFieldAllowedToRead(attributes, ContactFieldPaths.ACTIVE_LEASES)}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                ContactFieldPaths.ACTIVE_LEASES,
+              )}
+            >
               <>
-              <FormTextTitle uiDataKey={getUiDataContactKey(ContactFieldPaths.ACTIVE_LEASES)}>
-                {ContactFieldTitles.ACTIVE_LEASES}
-              </FormTextTitle>
-              <FormText>{(contact.contacts_active_leases || []).map((val: ContactsActiveLease) => val.lease_identifier).join(', ') || '-'}</FormText>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(
+                    ContactFieldPaths.ACTIVE_LEASES,
+                  )}
+                >
+                  {ContactFieldTitles.ACTIVE_LEASES}
+                </FormTextTitle>
+                <FormText>
+                  {(contact.contacts_active_leases || [])
+                    .map((val: ContactsActiveLease) => val.lease_identifier)
+                    .join(", ") || "-"}
+                </FormText>
               </>
             </Authorization>
           </Column>
         </Row>
       </FormWrapperRight>
-    </FormWrapper>;
+    </FormWrapper>
+  );
 };
 
-export default connect(state => {
+export default connect((state) => {
   return {
-    attributes: getAttributes(state)
+    attributes: getAttributes(state),
   };
 })(ContactTemplate);

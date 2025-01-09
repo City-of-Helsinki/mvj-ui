@@ -14,7 +14,7 @@ const FieldTypeHidden = ({
   disabled,
   input,
   isDirty,
-  setRefForField
+  setRefForField,
 }: Props): JSX.Element => {
   const handleSetRefForField = (element: any) => {
     if (setRefForField) {
@@ -22,11 +22,24 @@ const FieldTypeHidden = ({
     }
   };
 
-  return <input className={classNames('form-field__input', {
-    'has-error': displayError
-  }, {
-    'is-dirty': isDirty
-  })} ref={handleSetRefForField} id={input.name} disabled={disabled} type='hidden' {...input} />;
+  return (
+    <input
+      className={classNames(
+        "form-field__input",
+        {
+          "has-error": displayError,
+        },
+        {
+          "is-dirty": isDirty,
+        },
+      )}
+      ref={handleSetRefForField}
+      id={input.name}
+      disabled={disabled}
+      type="hidden"
+      {...input}
+    />
+  );
 };
 
 export default FieldTypeHidden;

@@ -73,7 +73,7 @@
 
   &__right-wrapper {
     display: flex;
-    
+
     .username-wrapper {
       line-height: 1;
       margin-left: 20px;
@@ -97,7 +97,6 @@
           margin-left: rem-calc(5px);
           background-color: #0078c0;
         }
-
       }
       .logout-link {
         color: $blue;
@@ -151,7 +150,6 @@
         min-width: 200px;
         label {
           display: inline;
-
         }
       }
 

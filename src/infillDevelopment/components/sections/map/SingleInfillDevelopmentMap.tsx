@@ -12,15 +12,26 @@ import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import { fetchAreaNoteList } from "@/areaNote/actions";
 import { fetchLeaseById } from "@/leases/actions";
 import { MAP_COLORS } from "@/util/constants";
-import { LeaseAreasFieldPaths, LeasePlanUnitsFieldPaths, LeasePlotsFieldPaths } from "@/leases/enums";
+import {
+  LeaseAreasFieldPaths,
+  LeasePlanUnitsFieldPaths,
+  LeasePlotsFieldPaths,
+} from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
-import { getContentLeaseIdentifier, getLeaseCoordinates } from "@/leases/helpers";
+import {
+  getContentLeaseIdentifier,
+  getLeaseCoordinates,
+} from "@/leases/helpers";
 import { getContentInfillDevelopmentLeaseGeoJson } from "@/infillDevelopment/helpers";
 import { getFieldOptions, getUrlParams, hasPermissions } from "@/util/helpers";
 import { getBoundsFromCoordinates, getCenterFromCoordinates } from "@/util/map";
 import { getAreaNoteList } from "@/areaNote/selectors";
 import { getCurrentInfillDevelopment } from "@/infillDevelopment/selectors";
-import { getAllLeases, getAttributes as getLeaseAttributes, getIsFetchingAllLeases } from "@/leases/selectors";
+import {
+  getAllLeases,
+  getAttributes as getLeaseAttributes,
+  getIsFetchingAllLeases,
+} from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { AreaNoteList } from "@/areaNote/types";
@@ -70,7 +81,7 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
     planUnitStateOptions: [],
     planUnitTypeOptions: [],
     plotDivisionStateOptions: [],
-    plotTypeOptions: []
+    plotTypeOptions: [],
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -78,27 +89,46 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
 
     if (props.currentInfillDevelopment !== state.currentInfillDevelopment) {
       newState.currentInfillDevelopment = props.currentInfillDevelopment;
-      newState.infillDevelopmentLeases = get(props.currentInfillDevelopment, 'infill_development_compensation_leases', []);
+      newState.infillDevelopmentLeases = get(
+        props.currentInfillDevelopment,
+        "infill_development_compensation_leases",
+        [],
+      );
     }
 
     if (props.leaseAttributes !== state.leaseAttributes) {
       newState.leaseAttributes = props.leaseAttributes;
-      newState.areaLocationOptions = getFieldOptions(props.leaseAttributes, LeaseAreasFieldPaths.TYPE);
-      newState.plotTypeOptions = getFieldOptions(props.leaseAttributes, LeasePlotsFieldPaths.TYPE);
-      newState.plotDivisionStateOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE);
-      newState.planUnitTypeOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE);
-      newState.planUnitStateOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE);
-      newState.planUnitIntendedUseOptions = getFieldOptions(props.leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE);
+      newState.areaLocationOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeaseAreasFieldPaths.TYPE,
+      );
+      newState.plotTypeOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeasePlotsFieldPaths.TYPE,
+      );
+      newState.plotDivisionStateOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE,
+      );
+      newState.planUnitTypeOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE,
+      );
+      newState.planUnitStateOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE,
+      );
+      newState.planUnitIntendedUseOptions = getFieldOptions(
+        props.leaseAttributes,
+        LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE,
+      );
     }
 
     return newState;
   }
 
   componentDidMount() {
-    const {
-      fetchAreaNoteList,
-      usersPermissions
-    } = this.props;
+    const { fetchAreaNoteList, usersPermissions } = this.props;
 
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
       fetchAreaNoteList({});
@@ -108,22 +138,20 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    if (prevProps.allLeases !== this.props.allLeases || prevProps.areaNotes !== this.props.areaNotes || prevState.infillDevelopmentLeases !== this.state.infillDevelopmentLeases) {
+    if (
+      prevProps.allLeases !== this.props.allLeases ||
+      prevProps.areaNotes !== this.props.areaNotes ||
+      prevState.infillDevelopmentLeases !== this.state.infillDevelopmentLeases
+    ) {
       this.fetchLeasesOrUpdateLayers();
     }
   }
 
   fetchLeasesOrUpdateLayers = () => {
-    const {
-      infillDevelopmentLeases
-    } = this.state;
-    const {
-      allLeases,
-      fetchLeaseById,
-      isFetchingAllLeases
-    } = this.props;
+    const { infillDevelopmentLeases } = this.state;
+    const { allLeases, fetchLeaseById, isFetchingAllLeases } = this.props;
     let allFetched = true;
-    infillDevelopmentLeases.forEach(lease => {
+    infillDevelopmentLeases.forEach((lease) => {
       const leaseId = lease.lease.id;
       const leaseData = allLeases[leaseId];
 
@@ -140,41 +168,39 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
       this.setMapCenterAndBounds();
       this.setInfillDevelopmentLayers();
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
     } else {
       this.setState({
-        isLoading: true
+        isLoading: true,
       });
     }
   };
   setMapCenterAndBounds = () => {
     const coordinates = [];
-    const {
-      allLeases
-    } = this.props;
-    const {
-      infillDevelopmentLeases
-    } = this.state;
-    infillDevelopmentLeases.forEach(lease => {
+    const { allLeases } = this.props;
+    const { infillDevelopmentLeases } = this.state;
+    infillDevelopmentLeases.forEach((lease) => {
       const leaseId = lease.lease.id;
       const leaseData = allLeases[leaseId];
       coordinates.push(...getLeaseCoordinates(leaseData));
     });
     this.setState({
       // @ts-ignore: expected array but getBoundsFromCoordinates returns Record
-      bounds: coordinates.length ? getBoundsFromCoordinates(coordinates) : undefined,
-      center: coordinates.length ? getCenterFromCoordinates(coordinates) : undefined
+      bounds: coordinates.length
+        ? getBoundsFromCoordinates(coordinates)
+        : undefined,
+      center: coordinates.length
+        ? getCenterFromCoordinates(coordinates)
+        : undefined,
     });
   };
   setInfillDevelopmentLayers = () => {
     const {
       allLeases,
       areaNotes,
-      location: {
-        search
-      },
-      usersPermissions
+      location: { search },
+      usersPermissions,
     } = this.props;
     const query = getUrlParams(search);
     const {
@@ -185,7 +211,7 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
       planUnitStateOptions,
       planUnitTypeOptions,
       plotDivisionStateOptions,
-      plotTypeOptions
+      plotTypeOptions,
     } = this.state;
     const layers = infillDevelopmentLeases.map((lease, index) => {
       const leaseId = lease.lease.id;
@@ -193,49 +219,82 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
       const identifier = getContentLeaseIdentifier(leaseData);
       return {
         checked: true,
-        component: <InfillDevelopmentLeaseLayer areaLocationOptions={areaLocationOptions} areaTypeOptions={areaTypeOptions} color={MAP_COLORS[index % MAP_COLORS.length]} geoJSONData={getContentInfillDevelopmentLeaseGeoJson(leaseData)} highlighted={Boolean(query.lease && Number(query.lease) === leaseId)} leaseIdentifier={identifier} planUnitIntendedUseOptions={planUnitIntendedUseOptions} planUnitStateOptions={planUnitStateOptions} planUnitTypeOptions={planUnitTypeOptions} plotDivisionStateOptions={plotDivisionStateOptions} plotTypeOptions={plotTypeOptions} />,
-        name: identifier
+        component: (
+          <InfillDevelopmentLeaseLayer
+            areaLocationOptions={areaLocationOptions}
+            areaTypeOptions={areaTypeOptions}
+            color={MAP_COLORS[index % MAP_COLORS.length]}
+            geoJSONData={getContentInfillDevelopmentLeaseGeoJson(leaseData)}
+            highlighted={Boolean(
+              query.lease && Number(query.lease) === leaseId,
+            )}
+            leaseIdentifier={identifier}
+            planUnitIntendedUseOptions={planUnitIntendedUseOptions}
+            planUnitStateOptions={planUnitStateOptions}
+            planUnitTypeOptions={planUnitTypeOptions}
+            plotDivisionStateOptions={plotDivisionStateOptions}
+            plotTypeOptions={plotTypeOptions}
+          />
+        ),
+        name: identifier,
       };
     });
     {
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) && !isEmpty(areaNotes) && layers.push({
-        checked: false,
-        component: <AreaNotesLayer key='area_notes' allowToEdit={false} areaNotes={areaNotes} />,
-        name: 'Muistettavat ehdot'
-      });
+      hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) &&
+        !isEmpty(areaNotes) &&
+        layers.push({
+          checked: false,
+          component: (
+            <AreaNotesLayer
+              key="area_notes"
+              allowToEdit={false}
+              areaNotes={areaNotes}
+            />
+          ),
+          name: "Muistettavat ehdot",
+        });
     }
     this.setState({
-      layers: layers
+      layers: layers,
     });
   };
 
   render() {
-    const {
-      bounds,
-      center,
-      isLoading,
-      layers
-    } = this.state;
-    return <Fragment>
-        {isLoading && <LoaderWrapper className='relative-overlay-wrapper'>
+    const { bounds, center, isLoading, layers } = this.state;
+    return (
+      <Fragment>
+        {isLoading && (
+          <LoaderWrapper className="relative-overlay-wrapper">
             <Loader isLoading={isLoading} />
-          </LoaderWrapper>}
-        <AreaNotesEditMap allowToEdit={false} bounds={bounds} center={center} overlayLayers={layers} />
-      </Fragment>;
+          </LoaderWrapper>
+        )}
+        <AreaNotesEditMap
+          allowToEdit={false}
+          bounds={bounds}
+          center={center}
+          overlayLayers={layers}
+        />
+      </Fragment>
+    );
   }
-
 }
 
-export default flowRight(withRouter, connect(state => {
-  return {
-    allLeases: getAllLeases(state),
-    areaNotes: getAreaNoteList(state),
-    currentInfillDevelopment: getCurrentInfillDevelopment(state),
-    isFetchingAllLeases: getIsFetchingAllLeases(state),
-    leaseAttributes: getLeaseAttributes(state),
-    usersPermissions: getUsersPermissions(state)
-  };
-}, {
-  fetchAreaNoteList,
-  fetchLeaseById
-}))(SingleInfillDevelopmentMap) as React.ComponentType<any>;
+export default flowRight(
+  withRouter,
+  connect(
+    (state) => {
+      return {
+        allLeases: getAllLeases(state),
+        areaNotes: getAreaNoteList(state),
+        currentInfillDevelopment: getCurrentInfillDevelopment(state),
+        isFetchingAllLeases: getIsFetchingAllLeases(state),
+        leaseAttributes: getLeaseAttributes(state),
+        usersPermissions: getUsersPermissions(state),
+      };
+    },
+    {
+      fetchAreaNoteList,
+      fetchLeaseById,
+    },
+  ),
+)(SingleInfillDevelopmentMap) as React.ComponentType<any>;

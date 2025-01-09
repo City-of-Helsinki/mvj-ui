@@ -35,49 +35,65 @@ class CreatePlotSearchForm extends Component<Props> {
     }
   };
   handleCreate = () => {
-    const {
-      onSubmit,
-      name
-    } = this.props;
+    const { onSubmit, name } = this.props;
     onSubmit({
-      name: name
+      name: name,
     });
   };
 
   render() {
-    const {
-      attributes,
-      onClose,
-      valid
-    } = this.props;
-    return <form>
+    const { attributes, onClose, valid } = this.props;
+    return (
+      <form>
         <Row>
           <Column small={4}>
-            <FormField setRefForField={this.setRefForFirstField} fieldAttributes={get(attributes, 'name')} name='name' overrideValues={{
-            label: PlotSearchFieldTitles.NAME
-          }} />
+            <FormField
+              setRefForField={this.setRefForFirstField}
+              fieldAttributes={get(attributes, "name")}
+              name="name"
+              overrideValues={{
+                label: PlotSearchFieldTitles.NAME,
+              }}
+            />
           </Column>
         </Row>
         <ModalButtonWrapper>
-          <Button className={ButtonColors.SECONDARY} onClick={onClose} text='Peruuta' />
-          <Button className={ButtonColors.SUCCESS} disabled={!valid} onClick={this.handleCreate} text='Luo tonttihaku' />
+          <Button
+            className={ButtonColors.SECONDARY}
+            onClick={onClose}
+            text="Peruuta"
+          />
+          <Button
+            className={ButtonColors.SUCCESS}
+            disabled={!valid}
+            onClick={this.handleCreate}
+            text="Luo tonttihaku"
+          />
         </ModalButtonWrapper>
-      </form>;
+      </form>
+    );
   }
-
 }
 
 const formName = FormNames.PLOT_SEARCH_CREATE;
 const selector = formValueSelector(formName);
-export default (flowRight(connect(state => {
-  return {
-    attributes: getAttributes(state),
-    name: selector(state, 'name')
-  };
-}, {
-  change
-}, null, {
-  forwardRef: true
-}), reduxForm({
-  form: formName
-}))(CreatePlotSearchForm) as React.ComponentType<OwnProps>);
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        attributes: getAttributes(state),
+        name: selector(state, "name"),
+      };
+    },
+    {
+      change,
+    },
+    null,
+    {
+      forwardRef: true,
+    },
+  ),
+  reduxForm({
+    form: formName,
+  }),
+)(CreatePlotSearchForm) as React.ComponentType<OwnProps>;

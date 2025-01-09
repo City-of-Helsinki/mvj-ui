@@ -5,7 +5,7 @@ import { TableSortOrder } from "@/enums";
  * @readonly
  * @const {string}
  */
-export const DEFAULT_SORT_KEY = 'decision_date';
+export const DEFAULT_SORT_KEY = "decision_date";
 
 /**
  * Default sort order of leasehold transfer list page
