@@ -273,7 +273,7 @@ class SideMenu extends Component<Props, State> {
                     </Link>
                   </li>
 
-                  {!import.meta.env.PROD && (
+                  {!import.meta.env.PROD && ( // TODO: Remove this when taking Tonttihaku in use
                     <SubMenu
                       header="Tonttihaut ja kilpailut"
                       isOpen={subMenuKey === "plot"}
@@ -301,23 +301,22 @@ class SideMenu extends Component<Props, State> {
                       onHeaderClick={this.handleHeaderClick}
                     />
                   )}
-                  {!import.meta.env.PROD && (
-                    <Authorization
-                      allow={hasPermissions(
-                        usersPermissions,
-                        UsersPermissions.VIEW_AREASEARCH,
-                      )}
-                    >
-                      <li>
-                        <Link
-                          onClick={handleClick}
-                          to={getRouteById(Routes.AREA_SEARCH)}
-                        >
-                          Aluehaut
-                        </Link>
-                      </li>
-                    </Authorization>
-                  )}
+
+                  <Authorization
+                    allow={hasPermissions(
+                      usersPermissions,
+                      UsersPermissions.VIEW_AREASEARCH,
+                    )}
+                  >
+                    <li>
+                      <Link
+                        onClick={handleClick}
+                        to={getRouteById(Routes.AREA_SEARCH)}
+                      >
+                        Aluehaut
+                      </Link>
+                    </li>
+                  </Authorization>
 
                   <Authorization
                     allow={
