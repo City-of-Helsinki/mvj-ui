@@ -70,13 +70,15 @@ const FileDownloadButton = ({
               },
             );
           } else {
+            const errorMessage = errors?.error ? errors.error : "";
             displayUIMessage(
               {
-                title: "",
-                body: "Tiedoston lataaminen epäonnistui",
+                title: "Tiedoston lataaminen epäonnistui",
+                body: errorMessage,
               },
               {
                 type: "error",
+                timeOut: 10000,
               },
             );
           }

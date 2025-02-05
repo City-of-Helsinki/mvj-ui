@@ -55,13 +55,16 @@ class FileDownloadLink extends PureComponent<Props, State> {
             break;
 
           default:
+            const errors = await response.json();
+            const errorMessage = errors?.error ? errors.error : "";
             displayUIMessage(
               {
-                title: "",
-                body: "Tiedoston lataaminen epäonnistui",
+                title: "Tiedoston lataaminen epäonnistui",
+                body: errorMessage,
               },
               {
                 type: "error",
+                timeOut: 10000,
               },
             );
             break;
