@@ -15,3 +15,6 @@ report.*.json
 
 docker-compose.override.yml
 docker-compose.dev.yml
+
+.vscode/launch.json
+.vscode/settings.json
