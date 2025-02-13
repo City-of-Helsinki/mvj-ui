@@ -72,6 +72,41 @@ type Props = {
   totalDiscountedInitialYearRent: number;
 };
 
+/**
+ * There are many values in this component that are calculated with complex logic.
+ * Values like these should not be calculated in components, but rather in the API,
+ * and then fetched into the redux state to be used as readily calculated values.
+ * 
+ * The calculation logic of rents and subventions should be concentrated to the API code 
+ * so that there could be a single source of truth for the calculation of these values.
+ * 
+ * Values like these are:
+ * - currentAmountPerArea
+ * - basicAnnualRent
+ * - initialYearRent
+ * - discountedInitialYearRent
+ * - reLeaseDiscountPercent
+ * - reLeaseDiscountAmount
+ * - totalSubventionAmount
+ * - discountPercentage
+ * - temporarySubventionDiscountPercentage
+ * - subventionDiscountedInitial
+ * - zonePrice
+ * - rent 
+ *   (terminology of "rent" here is also misleading, 
+ *    because it is not a rent object but amount)
+ * - temporaryRent
+ * - temporaryRentIndexed
+ * - rentExtra
+ * - rentExtraIndexed
+ * - fieldsRent
+ * - basicAnnualFieldRentIndexed
+ * - mastAreaRent
+ * - rackAndHeightPrice
+ * - mastTotal
+ * - mastTotalIndexed
+ */
+
 const BasisOfRent = ({
   areaUnitOptions,
   basisOfRent,
