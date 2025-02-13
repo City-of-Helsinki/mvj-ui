@@ -80,7 +80,8 @@ type Props = {
  * The calculation logic of rents and subventions should be concentrated to the API code 
  * so that there could be a single source of truth for the calculation of these values.
  * 
- * Values like these are:
+ * Values that should be returned in an API response 
+ * instead of being calculated here are:
  * - currentAmountPerArea
  * - basicAnnualRent
  * - initialYearRent
