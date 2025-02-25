@@ -39,6 +39,8 @@ import { PermissionMissingTexts } from "@/enums";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import { withLeaseInvoicingConfirmationReportAttributes } from "@/components/attributes/LeaseInvoicingConfirmationReportAttributes";
 import type { ReportOptions } from "@/leaseStatisticReport/types";
+import { Link } from "hds-react";
+import { getRouteById } from "@/root/routes";
 type Props = {
   isFetchingLeaseInvoicingConfirmationReportAttributes: boolean;
   leaseInvoicingConfirmationReportAttributes: Attributes;
@@ -93,6 +95,17 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
         renderer: (value) => {
           let isBold = false;
           let outputValue = value || "-";
+
+          if (field.key == "lease_ids") {
+            outputValue = (
+              <Link
+                href={`${getRouteById("leases")}/${value.id}`}
+                openInNewTab
+              >
+                {value.identifier}
+              </Link>
+            );
+          }
 
           if (field.choices && value) {
             outputValue = getDisplayName(field.choices, value);
