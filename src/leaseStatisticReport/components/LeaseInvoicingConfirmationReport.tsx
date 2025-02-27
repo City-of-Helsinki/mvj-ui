@@ -54,9 +54,26 @@ type Props = {
   payload: Record<string, any>;
   reports: Reports;
 };
+
 type State = {
   leaseInvoicingConfirmationReport: Array<Record<string, any>>;
   leaseInvoicingConfirmationReportData: LeaseInvoicingConfirmationReportsType;
+};
+
+const renderLeaseIdentifier = (id: number, identifier: string) => {
+  return id && identifier ? (
+    <Link
+      href={`${getRouteById("leases")}/${id}`}
+      openInNewTab
+      style={{ margin: "unset", border: "unset" }}
+    >
+      {identifier}
+    </Link>
+  ) : !id && identifier ? (
+    identifier
+  ) : (
+    "-"
+  );
 };
 
 class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
@@ -92,19 +109,13 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
       columns.push({
         key: field.key,
         text: field.label,
-        renderer: (value) => {
+        renderer: (value: any) => {
           let isBold = false;
           let outputValue = value || "-";
 
-          if (field.key == "lease_ids") {
-            outputValue = (
-              <Link
-                href={`${getRouteById("leases")}/${value.id}`}
-                openInNewTab
-              >
-                {value.identifier}
-              </Link>
-            );
+          if (field.key == "lease_identifier") {
+            const { id, identifier } = value;
+            outputValue = renderLeaseIdentifier(id, identifier);
           }
 
           if (field.choices && value) {
