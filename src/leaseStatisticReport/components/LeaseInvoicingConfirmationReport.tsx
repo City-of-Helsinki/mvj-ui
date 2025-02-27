@@ -61,19 +61,12 @@ type State = {
 };
 
 const renderLeaseIdentifier = (id: number, identifier: string) => {
-  return id && identifier ? (
-    <Link
-      href={`${getRouteById("leases")}/${id}`}
-      openInNewTab
-      style={{ margin: "unset", border: "unset" }}
-    >
-      {identifier}
-    </Link>
-  ) : !id && identifier ? (
-    identifier
-  ) : (
-    "-"
-  );
+  if (id && identifier) {
+    return <Link href={`${getRouteById("leases")}/${id}`}>{identifier}</Link>;
+  } else if (!id && identifier) {
+    return identifier;
+  }
+  return "-";
 };
 
 class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
