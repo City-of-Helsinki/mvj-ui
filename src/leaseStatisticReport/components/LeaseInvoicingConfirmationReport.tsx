@@ -62,7 +62,7 @@ type State = {
 
 const renderLeaseIdentifier = (id: number, identifier: string) => {
   if (id && identifier) {
-    return <Link href={`${getRouteById("leases")}/${id}`}>{identifier}</Link>;
+    return <Link href={`${getRouteById("leases")}/${id}`} openInNewTab style={{border: 'unset', margin: 'unset'}}>{identifier}</Link>;
   } else if (!id && identifier) {
     return identifier;
   }
