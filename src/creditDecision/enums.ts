@@ -61,3 +61,18 @@ export const CreditDecisionText = {
   REQUEST_TITLE: "Luottopäätöskysely",
   SEARCH_TITLE: "Luottopäätöksen hakeminen",
 };
+
+export enum SanctionsCheckType {
+  COMPANY = "company",
+  PERSON = "person",
+}
+
+export const SanctionsCheckText = {
+  REQUEST_COST_INFO_BUSINESS:
+    "Jokainen pakotelistahaku yritykselle maksaa noin x€",
+  REQUEST_COST_INFO_PERSON:
+    "Jokainen pakotelistahaku henkilölle maksaa noin x€",
+  REQUEST_FAILED: "Pakotelistahaussa tapahtui virhe",
+  REQUEST_TITLE: "Pakotelistahaku",
+  SEARCH_TITLE: "Pakotelistahaku",
+};

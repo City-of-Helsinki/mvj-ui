@@ -10,9 +10,10 @@ import Divider from "@/components/content/Divider";
 import Loader from "@/components/loader/Loader";
 import PageContainer from "@/components/content/PageContainer";
 import SearchForm from "@/creditDecision/components/SearchForm";
+import { SanctionsCheckForm } from "@/creditDecision/components/SanctionsCheckForm";
 import CreditDecisionTemplate from "@/creditDecision/components/CreditDecisionTemplate";
 import { ContactTypes } from "@/contacts/enums";
-import { CreditDecisionText } from "@/creditDecision/enums";
+import { CreditDecisionText, SanctionsCheckText } from "@/creditDecision/enums";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { FormNames, PermissionMissingTexts } from "@/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
@@ -168,6 +169,12 @@ class CreditDecisionSearchPage extends PureComponent<Props, State> {
               )}
             </Fragment>
           )}
+        </ContentContainer>
+        <Divider />
+        <ContentContainer>
+          <h2>{SanctionsCheckText.SEARCH_TITLE}</h2>
+          <Divider />
+          <SanctionsCheckForm />
         </ContentContainer>
       </PageContainer>
     );
