@@ -92,6 +92,7 @@ export const UsersPermissions = {
   DELETE_USAGEDISTRIBUTION: "delete_usagedistribution",
   EDIT_GLOBAL_UI_DATA: "edit_global_ui_data",
   SEND_CREDITDECISION_INQUIRY: "send_creditdecision_inquiry",
+  SEND_SANCTIONS_INQUIRY: "send_sanctions_inquiry",
   VIEW_ANSWER: "view_answer",
   VIEW_AREANOTE: "view_areanote",
   VIEW_AREASEARCH: "view_areasearch",

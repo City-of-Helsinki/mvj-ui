@@ -5,7 +5,7 @@ import { apiTokenKeyName } from "@/auth/constants";
 // Helper functions to select state
 export const getApiToken: Selector<ApiToken, void> = (
   state: Record<string, any>,
-): AuthState => {
+): string => {
   return state.auth.apiToken[apiTokenKeyName];
 };
 export const getLoggedInUser: Selector<Record<string, any>, void> = (

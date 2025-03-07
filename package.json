@@ -71,6 +71,7 @@
     "@eslint/js": "^9.9.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@testing-library/react-hooks": "^8.0.1",
+    "@types/file-saver": "^2.0.7",
     "@types/history": "^5.0.0",
     "@types/leaflet": "^1.5.23",
     "@types/leaflet-draw": "^1.0.11",
