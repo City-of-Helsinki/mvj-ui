@@ -63,7 +63,6 @@ const SanctionsCheckTemplate = ({ sanctionsType }: Props) => {
             value={businessId}
             onChange={(e) => {
               setBusinessId(e.target.value);
-              // validateCompany({ businessId: e.target.value });
             }}
             invalid={!!formErrors["businessId"]}
             errorText={formErrors["businessId"]}
