@@ -34,7 +34,7 @@ const FileDownloadButton = ({
   const fetchFile = async () => {
     setIsLoading(true);
     const controller = new AbortController();
-    const abortTimeoutMs = timeoutMs || 30000;
+    const abortTimeoutMs = timeoutMs || 90000; // 90s
     const abortTimeoutS = abortTimeoutMs / 1000;
     const timeoutId = setTimeout(() => controller.abort(), abortTimeoutMs);
 
