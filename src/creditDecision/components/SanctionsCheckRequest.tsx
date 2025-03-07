@@ -96,8 +96,8 @@ const SanctionsCheckRequest: React.FC<Props> = ({
       </div>
       <FileDownloadButtonHDS
         url={getFileUrl(sanctionsType)}
-        label="Lataa pakotelista PDF"
-        loadingText="Haetaan pakotelistaa"
+        label="Lataa tulos-PDF"
+        loadingText="Haetaan pakotelistalta"
         disabled={hasErrors || isFormEmpty()}
       />
     </div>

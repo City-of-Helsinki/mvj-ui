@@ -69,9 +69,9 @@ export enum SanctionsCheckType {
 
 export const SanctionsCheckText = {
   REQUEST_COST_INFO_BUSINESS:
-    "Jokainen pakotelistahaku yritykselle maksaa noin x€",
+    "Jokainen pakotelistahaku yritykselle maksaa noin 0.66€ + ALV",
   REQUEST_COST_INFO_PERSON:
-    "Jokainen pakotelistahaku henkilölle maksaa noin x€",
+    "Jokainen pakotelistahaku henkilölle maksaa noin 0.66€ + ALV",
   REQUEST_FAILED: "Pakotelistahaussa tapahtui virhe",
   REQUEST_TITLE: "Pakotelistahaku",
   SEARCH_TITLE: "Pakotelistahaku",

@@ -11,8 +11,8 @@ export const SanctionsCheckForm = () => {
 
   return (
     <div>
-      <Fieldset heading="Pakotelistahaku">
-        <SelectionGroup label="Pakotelistahaun tyyppi">
+      <Fieldset heading="Kohde">
+        <SelectionGroup direction="horizontal">
           <RadioButton
             id="sanctions-radio-company"
             name="v-radio"

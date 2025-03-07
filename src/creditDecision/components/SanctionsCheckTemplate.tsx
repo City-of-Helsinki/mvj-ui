@@ -54,6 +54,7 @@ const SanctionsCheckTemplate = ({ sanctionsType }: Props) => {
           id="company-sanctions"
           heading="Yritys"
           style={{ maxWidth: "640px" }}
+          border
         >
           <TextInput
             id="textinput-sanctions-company"
@@ -83,6 +84,7 @@ const SanctionsCheckTemplate = ({ sanctionsType }: Props) => {
           id="person-sanctions"
           heading="Henkilö"
           style={{ maxWidth: "640px" }}
+          border
         >
           <TextInput
             id="textinput-sanctions-firstname"
