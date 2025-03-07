@@ -64,6 +64,7 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    sourcemap: true,
   },
   test: {
     globals: true,
