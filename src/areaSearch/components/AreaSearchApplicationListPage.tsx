@@ -366,7 +366,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     const { editAreaSearch } = this.props;
     editAreaSearch({
       id: data.id,
-      preparer: data.preparer?.id || null,
+      preparer: data.preparer?.value || null,
       lessor: data.lessor,
       area_search_status: {
         status_notes: data.status_notes
