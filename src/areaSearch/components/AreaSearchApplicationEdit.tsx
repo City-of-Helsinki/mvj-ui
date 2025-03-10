@@ -5,7 +5,7 @@ import flowRight from "lodash/flowRight";
 import orderBy from "lodash/orderBy";
 import get from "lodash/get";
 import { Column, Row } from "react-foundation";
-import { reduxForm } from "redux-form";
+import { reduxForm, change, getFormValues } from "redux-form";
 import { getAttributes, getCurrentAreaSearch } from "@/areaSearch/selectors";
 import ApplicationAnswersSection from "@/application/components/ApplicationAnswersSection";
 import {
@@ -67,10 +67,12 @@ type Props = {
   isFetchingFormAttributes: boolean;
   isPerformingFileOperation: boolean;
   formAttributes: Attributes;
+  formValues: Record<string, any> | null | undefined;
   areaSearchAttributes: Attributes;
   initialize: (...args: Array<any>) => any;
   uploadAttachment: (...args: Array<any>) => any;
   setAreaSearchAttachments: (...args: Array<any>) => any;
+  change: (...args: Array<any>) => any;
 };
 type State = {
   // The Leaflet element doesn't initialize correctly if it's invisible in a collapsed section element,
@@ -132,6 +134,14 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
           setAreaSearchAttachments([...currentFiles, newFile]);
         },
       });
+    }
+  };
+
+  handleLessorChange = (newLessor: string) => {
+    const { change, formValues } = this.props;
+    const lessorWasChanged = formValues?.lessor !== newLessor;
+    if (lessorWasChanged) {
+      change("preparer", null);
     }
   };
 
@@ -219,6 +229,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                       overrideValues={{
                         label: AreaSearchFieldTitles.LESSOR,
                       }}
+                      onChange={this.handleLessorChange}
                     />
                   </Column>
                   <Column small={6} medium={6} large={3}>
@@ -386,6 +397,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                       overrideValues={{
                         label: AreaSearchFieldTitles.LESSOR,
                       }}
+                      onChange={this.handleLessorChange}
                     />
                   </Column>
                   <Column small={6} medium={4} large={3}>
@@ -463,12 +475,14 @@ export default flowRight(
       areaSearch: getCurrentAreaSearch(state),
       areaSearchAttributes: getAttributes(state),
       formAttributes: getFormAttributes(state),
+      formValues: getFormValues(FormNames.AREA_SEARCH)(state),
       isFetchingFormAttributes: getIsFetchingFormAttributes(state),
       isPerformingFileOperation: getIsPerformingFileOperation(state),
     }),
     {
       uploadAttachment,
       setAreaSearchAttachments,
+      change,
     },
   ),
   reduxForm({

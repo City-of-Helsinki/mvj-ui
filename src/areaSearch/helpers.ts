@@ -124,7 +124,7 @@ export const prepareAreaSearchForSubmission = (
     id: data.id,
     state: data.state,
     lessor: data.lessor,
-    preparer: data.preparer?.id,
+    preparer: data.preparer?.value || null,
     area_search_status: {
       decline_reason: data.decline_reason,
       status_notes: data.status_notes
