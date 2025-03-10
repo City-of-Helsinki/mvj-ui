@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { flowRight } from "lodash/util";
-import { getFormValues, reduxForm } from "redux-form";
+import { getFormValues, reduxForm, change } from "redux-form";
 import { connect } from "react-redux";
 import { Column, Row } from "react-foundation";
 import get from "lodash/get";
@@ -26,6 +26,7 @@ type Props = OwnProps & {
   areaSearchAttributes: Attributes;
   initialize: (...args: Array<any>) => any;
   formValues: Record<string, any> | null | undefined;
+  change: (...args: Array<any>) => any;
 };
 
 class EditAreaSearchPreparerForm extends Component<Props> {
@@ -51,6 +52,14 @@ class EditAreaSearchPreparerForm extends Component<Props> {
     }
   };
 
+  handleLessorChange = (newLessor: string) => {
+    const { change, formValues } = this.props;
+    const lessorWasChanged = formValues?.lessor !== newLessor;
+    if (lessorWasChanged) {
+      change("preparer", null);
+    }
+  };
+
   render(): JSX.Element {
     const {
       areaSearchAttributes,
@@ -70,6 +79,7 @@ class EditAreaSearchPreparerForm extends Component<Props> {
                 label: AreaSearchFieldTitles.LESSOR,
               }}
               setRefForField={this.setRefForFirstField}
+              onChange={this.handleLessorChange}
             />
           </Column>
           <Column small={6} medium={4} large={4}>
@@ -131,6 +141,7 @@ export default flowRight(
     }),
     {
       editAreaSearch,
+      change,
     },
     null,
     {
