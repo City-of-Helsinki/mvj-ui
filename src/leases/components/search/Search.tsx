@@ -826,6 +826,37 @@ class Search extends PureComponent<Props, State> {
                     />
                   </SearchInputColumn>
                 </SearchRow>
+
+                <SearchRow>
+                  {/* Empty row to align Omat Vuokraukset with Geometria Puuttuu */}
+                  &nbsp;
+                </SearchRow>
+
+                <SearchRow>
+                  <SearchLabelColumn>
+                    <SearchLabel>Omat vuokraukset</SearchLabel>
+                  </SearchLabelColumn>
+                  <SearchInputColumn>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: "Omat vuokraukset",
+                        type: FieldTypes.CHECKBOX,
+                        read_only: false,
+                      }}
+                      invisibleLabel
+                      name="preparers_own_leases"
+                      overrideValues={{
+                        options: [
+                          {
+                            value: true,
+                          },
+                        ],
+                      }}
+                    />
+                  </SearchInputColumn>
+                </SearchRow>
               </Column>
             </Row>
           </Fragment>
