@@ -530,7 +530,7 @@ class Search extends PureComponent<Props, State> {
                 </SearchRow>
                 <SearchRow>
                   <SearchLabelColumn>
-                    <SearchLabel></SearchLabel>
+                    <SearchLabel>Geometria puuttuu</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
                     <FormField
@@ -547,7 +547,6 @@ class Search extends PureComponent<Props, State> {
                         options: [
                           {
                             value: true,
-                            label: "Geometria puuttuu",
                           },
                         ],
                       }}
