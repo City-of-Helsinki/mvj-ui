@@ -1,5 +1,6 @@
 import type { Action, ApiResponse, Attributes, Methods } from "@/types";
 import type { ServiceUnit } from "@/serviceUnits/types";
+import type { PeriodicRentAdjustmentPriceIndex } from "@/periodicRentAdjustmentPriceIndex/types";
 
 export type LeaseState = {
   attributes: Attributes;
@@ -93,10 +94,15 @@ export type IntendedUse = {
   name: string;
   service_unit: ServiceUnit["id"];
 };
-
 export type PeriodicRentAdjustmentType =
   | "TASOTARKISTUS_20_20"
   | "TASOTARKISTUS_20_10";
+export type PeriodicRentAdjustment = {
+  id: number;
+  adjustment_type: PeriodicRentAdjustmentType;
+  price_index: PeriodicRentAdjustmentPriceIndex;
+  starting_point_figure: number;
+};
 
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;

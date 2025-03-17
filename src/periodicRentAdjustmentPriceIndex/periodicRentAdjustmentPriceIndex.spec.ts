@@ -1,24 +1,24 @@
 import { describe, expect, it } from "vitest";
 import {
-  receiveOldDwellingsInHousingCompaniesPriceIndex,
-  fetchOldDwellingsInHousingCompaniesPriceIndex,
+  receivePeriodicRentAdjustmentPriceIndex,
+  fetchPeriodicRentAdjustmentPriceIndex,
   notFound,
 } from "./actions";
-import oldDwellingsInHousingCompaniesPriceIndexReducer from "./reducer";
+import periodicRentAdjustmentPriceIndexReducer from "./reducer";
 import type {
-  OldDwellingsInHousingCompaniesPriceIndex,
-  OldDwellingsInHousingCompaniesPriceIndexState,
+  PeriodicRentAdjustmentPriceIndex,
+  PeriodicRentAdjustmentPriceIndexState,
 } from "./types";
-const defaultState: OldDwellingsInHousingCompaniesPriceIndexState = {
+const defaultState: PeriodicRentAdjustmentPriceIndexState = {
   isFetching: false,
   latest: null,
 };
 
-describe("oldDwellingsInHousingCompaniesPriceIndex", () => {
+describe("periodicRentAdjustmentPriceIndex", () => {
   describe("Reducer", () => {
-    describe("oldDwellingsInHousingCompaniesPriceIndexReducer", () => {
-      it("should update oldDwellingsInHousingCompaniesPriceIndex", () => {
-        const dummy: OldDwellingsInHousingCompaniesPriceIndex = {
+    describe("periodicRentAdjustmentPriceIndexReducer", () => {
+      it("should update periodicRentAdjustmentPriceIndex", () => {
+        const dummy: PeriodicRentAdjustmentPriceIndex = {
           point_figures: [
             {
               value: 97.4,
@@ -57,30 +57,27 @@ describe("oldDwellingsInHousingCompaniesPriceIndex", () => {
         };
 
         const newState = { ...defaultState, latest: dummy };
-        const state = oldDwellingsInHousingCompaniesPriceIndexReducer(
+        const state = periodicRentAdjustmentPriceIndexReducer(
           {},
-          receiveOldDwellingsInHousingCompaniesPriceIndex(dummy),
+          receivePeriodicRentAdjustmentPriceIndex(dummy),
         );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to true when fetching vats", () => {
         const newState = { ...defaultState, isFetching: true };
-        const state = oldDwellingsInHousingCompaniesPriceIndexReducer(
+        const state = periodicRentAdjustmentPriceIndexReducer(
           {},
-          fetchOldDwellingsInHousingCompaniesPriceIndex(),
+          fetchPeriodicRentAdjustmentPriceIndex(),
         );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to false by notFound", () => {
         const newState = { ...defaultState };
-        let state = oldDwellingsInHousingCompaniesPriceIndexReducer(
+        let state = periodicRentAdjustmentPriceIndexReducer(
           {},
-          fetchOldDwellingsInHousingCompaniesPriceIndex(),
+          fetchPeriodicRentAdjustmentPriceIndex(),
         );
-        state = oldDwellingsInHousingCompaniesPriceIndexReducer(
-          state,
-          notFound(),
-        );
+        state = periodicRentAdjustmentPriceIndexReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });
     });

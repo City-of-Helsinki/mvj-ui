@@ -8,18 +8,18 @@ import { flowRight } from "lodash";
 import { connect } from "react-redux";
 import type { PeriodicRentAdjustmentType } from "@/leases/types";
 import type {
-  OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps,
+  PeriodicRentAdjustmentPriceIndex as PeriodicRentAdjustmentPriceIndexProps,
   IndexPointFigureYearly as IndexPointFigureYearlyProps,
-} from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
+} from "@/periodicRentAdjustmentPriceIndex/types";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import { withWindowResize } from "@/components/resize/WindowResizeHandler";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import {
   LeaseFieldTitles,
-  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths,
-  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles,
-  LeaseRentsFieldPaths,
+  LeaseRentPeriodicRentAdjustmentPriceIndexFieldPaths,
+  LeaseRentPeriodicRentAdjustmentFieldTitles,
+  LeaseRentPeriodicRentAdjustmentFieldPaths,
   periodicRentAdjustmentTypes,
 } from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
@@ -27,14 +27,15 @@ import { formatDate } from "@/util/helpers";
 import { getReviewDays } from "@/leases/helpers";
 
 type Props = {
-  oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
-  periodicRentAdjustmentType: PeriodicRentAdjustmentType;
+  priceIndex: PeriodicRentAdjustmentPriceIndexProps;
+  adjustmentType: PeriodicRentAdjustmentType;
   leaseStartDate: string;
 };
 
-const getLastYearsIndexPointNumber = (
+const getLastYearsIndexPointFigureText = (
   pointFigures: IndexPointFigureYearlyProps[],
 ): string => {
+  // TODO not absolute previous year, but year previous to lease start date.
   const lastYear = new Date().getFullYear() - 1;
   const lastYearIndex =
     pointFigures?.find(
@@ -42,20 +43,18 @@ const getLastYearsIndexPointNumber = (
     ) || null;
   return lastYearIndex
     ? `${lastYearIndex.year} * ${lastYearIndex.value}`
-    : "Indeksipisteluvut puuttuvat";
+    : "Viime vuoden indeksipisteluku puuttuu";
 };
 
-class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> {
+class PeriodicRentAdjustmentPriceIndexView extends PureComponent<Props> {
   render() {
-    const {
-      oldDwellingsInHousingCompaniesPriceIndex,
-      periodicRentAdjustmentType,
-      leaseStartDate,
-    } = this.props;
+    const { priceIndex, adjustmentType, leaseStartDate } = this.props;
     const {
       point_figures: pointFigures,
       source_table_label: sourceTableLabel,
-    } = oldDwellingsInHousingCompaniesPriceIndex || {};
+    } = priceIndex || {};
+    // TODO get point figure value and starting year from point_figures,
+    //      and save it wherever needed in order to send them to API when saving.
     return (
       <Fragment>
         <BoxItemContainer>
@@ -63,21 +62,17 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
             <Column>
               <FormTextTitle
                 uiDataKey={getUiDataLeaseKey(
-                  LeaseRentsFieldPaths.PERIODIC_RENT_ADJUSTMENT_TYPE,
+                  LeaseRentPeriodicRentAdjustmentFieldPaths.ADJUSTMENT_TYPE,
                 )}
               >
-                {
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE
-                }
+                {LeaseRentPeriodicRentAdjustmentFieldTitles.ADJUSTMENT_TYPE}
               </FormTextTitle>
-              <FormText>
-                {periodicRentAdjustmentTypes[periodicRentAdjustmentType]}
-              </FormText>
+              <FormText>{periodicRentAdjustmentTypes[adjustmentType]}</FormText>
             </Column>
             <Column>
               <FormTextTitle
                 uiDataKey={getUiDataLeaseKey(
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.START_DATE,
+                  LeaseRentPeriodicRentAdjustmentFieldPaths.START_DATE,
                 )}
               >
                 {LeaseFieldTitles.START_DATE}
@@ -87,43 +82,42 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
             <Column>
               <FormTextTitle
                 uiDataKey={getUiDataLeaseKey(
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.POINT_FIGURES,
+                  LeaseRentPeriodicRentAdjustmentPriceIndexFieldPaths.POINT_FIGURES,
                 )}
               >
                 {
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.POINT_FIGURES
+                  LeaseRentPeriodicRentAdjustmentFieldTitles.STARTING_POINT_FIGURE
                 }
               </FormTextTitle>
-              <FormText>{getLastYearsIndexPointNumber(pointFigures)}</FormText>
+              <FormText>
+                {getLastYearsIndexPointFigureText(pointFigures)}
+              </FormText>
               <FormText>{sourceTableLabel}</FormText>
             </Column>
             <Column>
               <FormTextTitle
                 uiDataKey={getUiDataLeaseKey(
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.REVIEW_DAYS,
+                  LeaseRentPeriodicRentAdjustmentFieldPaths.REVIEW_DAYS,
                 )}
               >
-                {
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS
-                }
+                {LeaseRentPeriodicRentAdjustmentFieldTitles.REVIEW_DAYS}
               </FormTextTitle>
               <>
-                {leaseStartDate
-                  ? getReviewDays(
-                      leaseStartDate,
-                      periodicRentAdjustmentType,
-                    ).map((date: string, index: number) => {
-                      return (
-                        <FormText
-                          key={
-                            LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS +
-                            `[${index}]`
-                          }
-                        >
-                          {date}
-                        </FormText>
-                      );
-                    })
+                {leaseStartDate && adjustmentType
+                  ? getReviewDays(leaseStartDate, adjustmentType).map(
+                      (date: string, index: number) => {
+                        return (
+                          <FormText
+                            key={
+                              LeaseRentPeriodicRentAdjustmentFieldTitles.REVIEW_DAYS +
+                              `[${index}]`
+                            }
+                          >
+                            {date}
+                          </FormText>
+                        );
+                      },
+                    )
                   : ""}
               </>
             </Column>
@@ -142,4 +136,4 @@ export default flowRight(
       leaseStartDate: getCurrentLeaseStartDate(state),
     };
   }),
-)(OldDwellingsInHousingCompaniesPriceIndexView);
+)(PeriodicRentAdjustmentPriceIndexView);

@@ -144,13 +144,13 @@ import type {
 } from "@/usersPermissions/types";
 import type { VatList } from "@/vat/types";
 import {
-  getOldDwellingsInHousingCompaniesPriceIndex,
-  getIsFetching as getIsFetchingOldDwellingsInHousingCompaniesPriceIndex,
-} from "@/oldDwellingsInHousingCompaniesPriceIndex/selectors";
+  getPeriodicRentAdjustmentPriceIndex,
+  getIsFetching as getIsFetchingPeriodicRentAdjustmentPriceIndex,
+} from "@/periodicRentAdjustmentPriceIndex/selectors";
 import { getIsFetchingReceivableTypes } from "@/leaseCreateCharge/selectors";
 import { fetchReceivableTypes } from "@/leaseCreateCharge/actions";
-import { fetchOldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/actions";
-import { OldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
+import { fetchPeriodicRentAdjustmentPriceIndex } from "@/periodicRentAdjustmentPriceIndex/actions";
+import { PeriodicRentAdjustmentPriceIndex } from "@/periodicRentAdjustmentPriceIndex/types";
 
 type Props = {
   areasFormValues: Record<string, any>;
@@ -170,7 +170,7 @@ type Props = {
   fetchInvoicesByLease: (...args: Array<any>) => any;
   fetchLeaseTypes: (...args: Array<any>) => any;
   fetchSingleLease: (...args: Array<any>) => any;
-  fetchOldDwellingsInHousingCompaniesPriceIndex: (...args: Array<any>) => any;
+  fetchPeriodicRentAdjustmentPriceIndex: (...args: Array<any>) => any;
   fetchReceivableTypes: (...args: Array<any>) => any;
   fetchVats: (...args: Array<any>) => any;
   hideEditMode: (...args: Array<any>) => any;
@@ -182,7 +182,7 @@ type Props = {
   isFetching: boolean;
   isFetchingLeasePageAttributes: boolean;
   isFetchingReceivableTypes: boolean;
-  isFetchingOldDwellingsInHousingCompaniesPriceIndex: boolean;
+  isFetchingPeriodicRentAdjustmentPriceIndex: boolean;
   // get via withLeasePageAttributes HOC
   isFormValidFlags: Record<string, any>;
   isConstructabilityFormDirty: boolean;
@@ -211,7 +211,7 @@ type Props = {
   match: {
     params: Record<string, any>;
   };
-  oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndex | null;
+  periodicRentAdjustmentPriceIndex: PeriodicRentAdjustmentPriceIndex | null;
   patchLease: (...args: Array<any>) => any;
   receiveSingleLease: (...args: Array<any>) => any;
   receiveFormValidFlags: (...args: Array<any>) => any;
@@ -254,10 +254,10 @@ class LeasePage extends Component<Props, State> {
     const {
       hideEditMode,
       location: { search },
-      fetchOldDwellingsInHousingCompaniesPriceIndex,
-      isFetchingOldDwellingsInHousingCompaniesPriceIndex,
+      fetchPeriodicRentAdjustmentPriceIndex,
+      isFetchingPeriodicRentAdjustmentPriceIndex,
       receiveTopNavigationSettings,
-      oldDwellingsInHousingCompaniesPriceIndex,
+      periodicRentAdjustmentPriceIndex,
     } = this.props;
     const query = getUrlParams(search);
     this.setPageTitle();
@@ -277,10 +277,10 @@ class LeasePage extends Component<Props, State> {
     this.fetchLeaseRelatedData();
 
     if (
-      !isFetchingOldDwellingsInHousingCompaniesPriceIndex &&
-      !oldDwellingsInHousingCompaniesPriceIndex
+      !isFetchingPeriodicRentAdjustmentPriceIndex &&
+      !periodicRentAdjustmentPriceIndex
     ) {
-      fetchOldDwellingsInHousingCompaniesPriceIndex();
+      fetchPeriodicRentAdjustmentPriceIndex();
     }
 
     hideEditMode();
@@ -1457,8 +1457,8 @@ export default flowRight(
           state,
           FormNames.LEASE_DECISIONS,
         ),
-        isFetchingOldDwellingsInHousingCompaniesPriceIndex:
-          getIsFetchingOldDwellingsInHousingCompaniesPriceIndex(state),
+        isFetchingPeriodicRentAdjustmentPriceIndex:
+          getIsFetchingPeriodicRentAdjustmentPriceIndex(state),
         isFetchingReceivableTypes: getIsFetchingReceivableTypes(state),
         isInspectionsFormDirty: isDirty(FormNames.LEASE_INSPECTIONS)(state),
         isInspectionsFormValid: getIsFormValidById(
@@ -1478,8 +1478,8 @@ export default flowRight(
         isSaveClicked: getIsSaveClicked(state),
         leaseTypeList: getLeaseTypeList(state),
         loggedUser: getLoggedInUser(state),
-        oldDwellingsInHousingCompaniesPriceIndex:
-          getOldDwellingsInHousingCompaniesPriceIndex(state),
+        periodicRentAdjustmentPriceIndex:
+          getPeriodicRentAdjustmentPriceIndex(state),
         rentsFormValues: getFormValues(FormNames.LEASE_RENTS)(state),
         summaryFormValues: getFormValues(FormNames.LEASE_SUMMARY)(state),
         tenantsFormValues: getFormValues(FormNames.LEASE_TENANTS)(state),
@@ -1496,7 +1496,7 @@ export default flowRight(
       fetchCommentsByLease,
       fetchInvoicesByLease,
       fetchLeaseTypes,
-      fetchOldDwellingsInHousingCompaniesPriceIndex,
+      fetchPeriodicRentAdjustmentPriceIndex,
       fetchSingleLease,
       fetchReceivableTypes,
       fetchVats,

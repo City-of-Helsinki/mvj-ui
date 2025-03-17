@@ -28,6 +28,7 @@ import {
   LeasePayableRentsFieldTitles,
   LeaseEqualizedRentsFieldPaths,
   LeaseEqualizedRentsFieldTitles,
+  LeaseRentPeriodicRentAdjustmentFieldPaths,
   RentTypes,
 } from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
@@ -46,14 +47,14 @@ import {
 } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { ServiceUnit } from "@/serviceUnits/types";
-import OldDwellingsInHousingCompaniesPriceIndexView from "./OldDwellingsInHousingCompaniesPriceIndex";
+import PeriodicRentAdjustmentPriceIndexView from "./PeriodicRentAdjustment";
 import { isATypedLease } from "@/leases/helpers";
 
 const formName = FormNames.LEASE_RENTS;
 type Props = {
   contractRentsCollapseState: boolean;
   equalizedRentsCollapseState: boolean;
-  oldDwellingsInHousingCompaniesPriceIndexCollapseState: boolean;
+  periodicRentAdjustmentCollapseState: boolean;
   fixedInitialYearRentsCollapseState: boolean;
   indexAdjustedRentsCollapseState: boolean;
   leaseAttributes: Attributes;
@@ -70,7 +71,7 @@ type Props = {
 const RentItem = ({
   contractRentsCollapseState,
   equalizedRentsCollapseState,
-  oldDwellingsInHousingCompaniesPriceIndexCollapseState,
+  periodicRentAdjustmentCollapseState,
   fixedInitialYearRentsCollapseState,
   indexAdjustedRentsCollapseState,
   leaseAttributes,
@@ -126,12 +127,17 @@ const RentItem = ({
   const active = isActive(rent),
     archived = isArchived(rent),
     rentType = get(rent, "type"),
-    oldDwellingsInHousingCompaniesPriceIndex = get(
-      rent,
-      "old_dwellings_in_housing_companies_price_index",
+    periodicRentAdjustment = get(rent, "periodic_rent_adjustment", {}),
+    periodicRentAdjustmentPriceIndex = get(
+      periodicRentAdjustment,
+      "price_index",
       {},
     ),
-    periodicRentAdjustmentType = get(rent, "periodic_rent_adjustment_type"),
+    periodicRentAdjustmentType = get(
+      periodicRentAdjustment,
+      "adjustment_type",
+      "",
+    ),
     fixedInitialYearRents = get(rent, "fixed_initial_year_rents", []),
     contractRents = get(rent, "contract_rents", []),
     indexAdjustedRents = get(rent, "index_adjusted_rents", []),
@@ -189,29 +195,25 @@ const RentItem = ({
       <Authorization
         allow={isFieldAllowedToRead(
           leaseAttributes,
-          LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX,
+          LeaseRentPeriodicRentAdjustmentFieldPaths.PRICE_INDEX,
         )}
       >
-        {oldDwellingsInHousingCompaniesPriceIndex &&
-          isATypedLease(leaseTypeIdentifier) && (
-            <Collapse
-              className="collapse__secondary"
-              defaultOpen={
-                oldDwellingsInHousingCompaniesPriceIndexCollapseState !==
-                undefined
-                  ? oldDwellingsInHousingCompaniesPriceIndexCollapseState
-                  : true
-              }
-              headerTitle="Tasotarkistus"
-            >
-              <OldDwellingsInHousingCompaniesPriceIndexView
-                oldDwellingsInHousingCompaniesPriceIndex={
-                  oldDwellingsInHousingCompaniesPriceIndex
-                }
-                periodicRentAdjustmentType={periodicRentAdjustmentType}
-              />
-            </Collapse>
-          )}
+        {periodicRentAdjustment && isATypedLease(leaseTypeIdentifier) && (
+          <Collapse
+            className="collapse__secondary"
+            defaultOpen={
+              periodicRentAdjustmentCollapseState !== undefined
+                ? periodicRentAdjustmentCollapseState
+                : true
+            }
+            headerTitle="Tasotarkistus"
+          >
+            <PeriodicRentAdjustmentPriceIndexView
+              priceIndex={periodicRentAdjustmentPriceIndex}
+              adjustmentType={periodicRentAdjustmentType}
+            />
+          </Collapse>
+        )}
       </Authorization>
 
       <Authorization
@@ -392,11 +394,10 @@ export default connect(
         state,
         `${ViewModes.READONLY}.${formName}.${id}.equalized_rents`,
       ),
-      oldDwellingsInHousingCompaniesPriceIndexCollapseState:
-        getCollapseStateByKey(
-          state,
-          `${ViewModes.READONLY}.${formName}.${id}.old_dwellings_in_housing_companies_price_index`,
-        ),
+      periodicRentAdjustmentCollapseState: getCollapseStateByKey(
+        state,
+        `${ViewModes.READONLY}.${formName}.${id}.periodic_rent_adjustment`,
+      ),
       fixedInitialYearRentsCollapseState: getCollapseStateByKey(
         state,
         `${ViewModes.READONLY}.${formName}.${id}.fixed_initial_year_rents`,

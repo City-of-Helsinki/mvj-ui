@@ -30,7 +30,7 @@ import leaseholdTransferSaga from "@/leaseholdTransfer/saga";
 import leaseStatisticReportSaga from "@/leaseStatisticReport/saga";
 import leaseTypeSaga from "@/leaseType/saga";
 import lessorSaga from "@/lessor/saga";
-import oldDwellingsInHousingCompaniesPriceIndexSaga from "@/oldDwellingsInHousingCompaniesPriceIndex/saga";
+import periodicRentAdjustmentPriceIndexSaga from "@/periodicRentAdjustmentPriceIndex/saga";
 import penaltyInterestSaga from "@/penaltyInterest/saga";
 import previewInvoicesSaga from "@/previewInvoices/saga";
 import relatedLeaseSaga from "@/relatedLease/saga";
@@ -81,7 +81,7 @@ export default () =>
       fork(leaseStatisticReportSaga),
       fork(leaseTypeSaga),
       fork(lessorSaga),
-      fork(oldDwellingsInHousingCompaniesPriceIndexSaga),
+      fork(periodicRentAdjustmentPriceIndexSaga),
       fork(penaltyInterestSaga),
       fork(previewInvoicesSaga),
       fork(relatedLeaseSaga),

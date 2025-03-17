@@ -35,7 +35,6 @@ import {
   RentDueDateTypes,
   RentTypes,
   LeaseRentsFieldTitles,
-  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles,
 } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
@@ -59,9 +58,9 @@ import {
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-import OldDwellingsInHousingCompaniesPriceIndexEdit from "./OldDwellingsInHousingCompaniesPriceIndexEdit";
-import { OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
-import { getOldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/selectors";
+import PeriodicRentAdjustmentEdit from "./PeriodicRentAdjustmentEdit";
+import { PeriodicRentAdjustmentPriceIndex as PeriodicRentAdjustmentPriceIndexProps } from "@/periodicRentAdjustmentPriceIndex/types";
+import { getPeriodicRentAdjustmentPriceIndex } from "@/periodicRentAdjustmentPriceIndex/selectors";
 import { isATypedLease } from "@/leases/helpers";
 
 type Props = {
@@ -73,12 +72,12 @@ type Props = {
   equalizedRentsCollapseState: boolean;
   errors: Record<string, any> | null | undefined;
   field: string;
-  oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps | null;
-  rentOldDwellingsInHousingCompaniesPriceIndex:
-    | OldDwellingsInHousingCompaniesPriceIndexProps
+  periodicRentAdjustmentPriceIndex: PeriodicRentAdjustmentPriceIndexProps | null;
+  rentPeriodicRentAdjustmentPriceIndex:
+    | PeriodicRentAdjustmentPriceIndexProps
     | null
     | undefined;
-  oldDwellingsInHousingCompaniesPriceIndexCollapseState: boolean;
+  periodicRentAdjustmentCollapseState: boolean;
   fixedInitialYearRents: Array<Record<string, any>>;
   fixedInitialYearRentsCollapseState: boolean;
   index: number;
@@ -236,14 +235,12 @@ class RentItemEdit extends PureComponent<Props, State> {
       change(formName, `${field}.due_dates`, [{}]);
     }
   };
-  addOldDwellingsInHousingCompaniesPriceIndex = () => {
-    const { change, field, oldDwellingsInHousingCompaniesPriceIndex } =
-      this.props;
-
+  addPeriodicRentAdjustmentPriceIndex = () => {
+    const { change, field, periodicRentAdjustmentPriceIndex } = this.props;
     change(
       formName,
-      `${field}.old_dwellings_in_housing_companies_price_index`,
-      oldDwellingsInHousingCompaniesPriceIndex,
+      `${field}.periodic_rent_adjustment.price_index`,
+      periodicRentAdjustmentPriceIndex,
     );
   };
   handleCollapseToggle = (key: string, val: boolean) => {
@@ -262,13 +259,8 @@ class RentItemEdit extends PureComponent<Props, State> {
   handleRentCollapseToggle = (val: boolean) => {
     this.handleCollapseToggle("rent", val);
   };
-  handleOldDwellingsInHousingCompaniesPriceIndexCollapseState = (
-    val: boolean,
-  ) => {
-    this.handleCollapseToggle(
-      "old_dwellings_in_housing_companies_price_index",
-      val,
-    );
+  handlePeriodicRentAdjustmentCollapseToggle = (val: boolean) => {
+    this.handleCollapseToggle("periodic_rent_adjustment", val);
   };
   handleFixedInitialYearRentsCollapseToggle = (val: boolean) => {
     this.handleCollapseToggle("fixed_initial_year_rents", val);
@@ -300,8 +292,8 @@ class RentItemEdit extends PureComponent<Props, State> {
       equalizedRentsCollapseState,
       field,
       fixedInitialYearRents,
-      rentOldDwellingsInHousingCompaniesPriceIndex,
-      oldDwellingsInHousingCompaniesPriceIndexCollapseState,
+      rentPeriodicRentAdjustmentPriceIndex,
+      periodicRentAdjustmentCollapseState,
       fixedInitialYearRentsCollapseState,
       indexAdjustedRentsCollapseState,
       isSaveClicked,
@@ -332,9 +324,15 @@ class RentItemEdit extends PureComponent<Props, State> {
       rentTypeIsIndex2022 = rentType === RentTypes.INDEX2022,
       rentTypeIsManual = rentType === RentTypes.MANUAL,
       rentTypeIsFixed = rentType === RentTypes.FIXED;
-    const periodicRentAdjustmentType = get(
+    const periodicRentAdjustment = get(
       savedRent,
-      "periodic_rent_adjustment_type",
+      "periodic_rent_adjustment",
+      {},
+    );
+    const periodicRentAdjustmentType = get(
+      periodicRentAdjustment,
+      "adjustment_type",
+      "",
     );
     return (
       <Collapse
@@ -398,29 +396,26 @@ class RentItemEdit extends PureComponent<Props, State> {
         <Authorization
           allow={isFieldAllowedToRead(
             leaseAttributes,
-            LeaseRentsFieldPaths.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX,
+            LeaseRentsFieldPaths.PERIODIC_RENT_ADJUSTMENT,
           )}
         >
           {isATypedLease(leaseTypeIdentifier) && (
             <Collapse
               className="collapse__secondary"
               defaultOpen={
-                oldDwellingsInHousingCompaniesPriceIndexCollapseState !==
-                undefined
-                  ? oldDwellingsInHousingCompaniesPriceIndexCollapseState
+                periodicRentAdjustmentCollapseState !== undefined
+                  ? periodicRentAdjustmentCollapseState
                   : true
               }
               hasErrors={/*TODO: Error handling*/ false}
-              headerTitle={`${LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX}`}
-              onToggle={this.handleFixedInitialYearRentsCollapseToggle}
+              headerTitle={`${LeaseRentsFieldTitles.PERIODIC_RENT_ADJUSTMENT}`}
+              onToggle={this.handlePeriodicRentAdjustmentCollapseToggle}
             >
-              <OldDwellingsInHousingCompaniesPriceIndexEdit
-                oldDwellingsInHousingCompaniesPriceIndex={
-                  rentOldDwellingsInHousingCompaniesPriceIndex
-                }
-                periodicRentAdjustmentType={periodicRentAdjustmentType}
-                addOldDwellingsInHousingCompaniesPriceIndex={
-                  this.addOldDwellingsInHousingCompaniesPriceIndex
+              <PeriodicRentAdjustmentEdit
+                priceIndex={rentPeriodicRentAdjustmentPriceIndex}
+                adjustmentType={periodicRentAdjustmentType}
+                addPeriodicRentAdjustmentPriceIndex={
+                  this.addPeriodicRentAdjustmentPriceIndex
                 }
                 field={field}
               />
@@ -633,11 +628,11 @@ export default connect(
       isSaveClicked: getIsSaveClicked(state),
       leaseAttributes: getLeaseAttributes(state),
       leaseTypeIdentifier: getCurrentLeaseTypeIdentifier(state),
-      oldDwellingsInHousingCompaniesPriceIndex:
-        getOldDwellingsInHousingCompaniesPriceIndex(state),
-      rentOldDwellingsInHousingCompaniesPriceIndex: selector(
+      periodicRentAdjustmentPriceIndex:
+        getPeriodicRentAdjustmentPriceIndex(state),
+      rentPeriodicRentAdjustmentPriceIndex: selector(
         state,
-        `${props.field}.old_dwellings_in_housing_companies_price_index`,
+        `${props.field}.periodic_rent_adjustment.price_index`,
       ),
       rentAdjustments: selector(state, `${props.field}.rent_adjustments`),
       rentId: id,
@@ -650,11 +645,10 @@ export default connect(
         state,
         `${ViewModes.READONLY}.${formName}.${id}.equalized_rents`,
       );
-      newProps.oldDwellingsInHousingCompaniesPriceIndexCollapseState =
-        getCollapseStateByKey(
-          state,
-          `${ViewModes.EDIT}.${formName}.${id}.old_dwellings_in_housing_companies_price_index`,
-        );
+      newProps.periodicRentAdjustmentCollapseState = getCollapseStateByKey(
+        state,
+        `${ViewModes.EDIT}.${formName}.${id}.periodic_rent_adjustment`,
+      );
       newProps.fixedInitialYearRentsCollapseState = getCollapseStateByKey(
         state,
         `${ViewModes.EDIT}.${formName}.${id}.fixed_initial_year_rents`,

@@ -25,7 +25,7 @@ import {
   RentTypes,
   SubventionTypes,
   TenantContactType,
-  oldDwellingsInHousingCompaniesPriceIndexTypeOptions,
+  periodicRentAdjustmentTypeOptions,
 } from "./enums";
 import { CalculatorTypes } from "@/leases/enums";
 import { LeaseAreaAttachmentTypes } from "@/leaseAreaAttachment/enums";
@@ -2340,9 +2340,7 @@ export const getContentRents = (lease: Lease): Array<Record<string, any>> =>
         override_receivable_type:
           get(rent, "override_receivable_type.id") ||
           rent.override_receivable_type,
-        old_dwellings_in_housing_companies_price_index:
-          rent.old_dwellings_in_housing_companies_price_index,
-        periodic_rent_adjustment_type: rent.periodic_rent_adjustment_type,
+        periodic_rent_adjustment: get(rent, "periodic_rent_adjustment", null),
       };
     })
     .sort(sortByStartAndEndDateDesc);
@@ -3543,6 +3541,27 @@ export const getBasisOfRentById = (
   return basisOfRents.find((rent) => rent.id === id);
 };
 
+export const getPayloadPeriodicRentAdjustment = (
+  rent: Record<string, any>,
+): Record<string, any> | null => {
+  const adjustment = get(rent, "periodic_rent_adjustment", null);
+  if (!rent.periodic_rent_adjustment) return null;
+
+  const adjustmentId = get(adjustment, "id", null);
+  const startYear = get(adjustment, "starting_point_figure_year");
+  const startingPointFigure = get(adjustment, "starting_point_figure_value");
+
+  const priceIndexId = get(adjustment, "price_index.id", null);
+  const adjustmentType = get(adjustment, "adjustment_type.value", null);
+  return {
+    id: adjustmentId,
+    adjustment_type: adjustmentType,
+    price_index: priceIndexId,
+    starting_point_figure_year: startYear,
+    starting_point_figure_value: startingPointFigure,
+  };
+};
+
 /**
  * Add rents form values to payload
  * @param {Object} payload
@@ -3613,9 +3632,7 @@ export const addRentsFormValuesToPayload = (
       start_date: rent.start_date,
       end_date: rent.end_date,
       note: rent.note,
-      old_dwellings_in_housing_companies_price_index:
-        rent.old_dwellings_in_housing_companies_price_index?.id,
-      periodic_rent_adjustment_type: rent.periodic_rent_adjustment_type,
+      periodic_rent_adjustment: getPayloadPeriodicRentAdjustment(rent),
     };
 
     // Patch amount only if rent type is one time
@@ -3918,26 +3935,21 @@ export const sortRelatedHistoryItems = (
 };
 
 /**
- * Get check days for old_dwellings_in_housing_companies_price_index of the given start date.
- * @param {string} startDate
- * @param {PeriodicRentAdjustmentType} priceIndexType
- * @returns {Array<string>}
+ * Get check days for price index of periodic rent adjustment for the given start date.
  */
 export const getReviewDays = (
   startDate: string,
-  priceIndexType: PeriodicRentAdjustmentType,
+  adjustmentType: PeriodicRentAdjustmentType,
 ): Array<string> => {
   const checkDays = [];
   let increments: Array<number>;
 
   if (
-    priceIndexType ===
-    oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TASOTARKISTUS_20_10
+    adjustmentType === periodicRentAdjustmentTypeOptions.TASOTARKISTUS_20_10
   ) {
     increments = [20, 10, 10, 10, 10, 10];
   } else if (
-    priceIndexType ===
-    oldDwellingsInHousingCompaniesPriceIndexTypeOptions.TASOTARKISTUS_20_20
+    adjustmentType === periodicRentAdjustmentTypeOptions.TASOTARKISTUS_20_20
   ) {
     increments = [20, 20, 20];
   } else {
@@ -3960,9 +3972,7 @@ export const getReviewDays = (
 
 /**
  * Check if the lease is an A-typed lease.
- * old_dwellings_in_housing_companies_price_index is only available for A-typed leases.
- * @param {Lease} lease
- * @returns {string}
+ * Periodic rent adjustment is only available for A-typed leases.
  */
 export const isATypedLease = (leaseTypeIdentifier: string): boolean => {
   const identifier = leaseTypeIdentifier || "";

@@ -7,8 +7,8 @@ import {
   RECEIVE_ACTION_STRING,
 } from "./constants";
 import {
-  OldDwellingsInHousingCompaniesPriceIndex,
-  ReceiveOldDwellingsInHousingCompaniesPriceIndexAction,
+  PeriodicRentAdjustmentPriceIndex,
+  ReceivePeriodicRentAdjustmentPriceIndexAction,
 } from "./types";
 
 const isFetchingReducer: Reducer<boolean> = handleActions(
@@ -19,18 +19,17 @@ const isFetchingReducer: Reducer<boolean> = handleActions(
   },
   false,
 );
-const latestReducer: Reducer<OldDwellingsInHousingCompaniesPriceIndex> =
-  handleActions(
-    {
-      [RECEIVE_ACTION_STRING]: (
-        state: OldDwellingsInHousingCompaniesPriceIndex,
-        { payload }: ReceiveOldDwellingsInHousingCompaniesPriceIndexAction,
-      ) => {
-        return payload;
-      },
+const latestReducer: Reducer<PeriodicRentAdjustmentPriceIndex> = handleActions(
+  {
+    [RECEIVE_ACTION_STRING]: (
+      state: PeriodicRentAdjustmentPriceIndex,
+      { payload }: ReceivePeriodicRentAdjustmentPriceIndexAction,
+    ) => {
+      return payload;
     },
-    null,
-  );
+  },
+  null,
+);
 export default combineReducers<Record<string, any>, any>({
   isFetching: isFetchingReducer,
   latest: latestReducer,

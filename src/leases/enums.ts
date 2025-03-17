@@ -940,10 +940,7 @@ export const LeaseRentsFieldPaths = {
   YEARLY_DUE_DATES: "rents.child.children.yearly_due_dates",
   Y_VALUE_START: "rents.child.children.y_value_start",
   OVERRIDE_RECEIVABLE_TYPE: "rents.child.children.override_receivable_type",
-  OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX:
-    "rents.child.children.old_dwellings_in_housing_companies_price_index",
-  PERIODIC_RENT_ADJUSTMENT_TYPE:
-    "rents.child.children.periodic_rent_adjustment_type",
+  PERIODIC_RENT_ADJUSTMENT: "rents.child.children.periodic_rent_adjustment",
 };
 
 /**
@@ -974,6 +971,7 @@ export const LeaseRentsFieldTitles = {
   Y_VALUE_START: "Y-luku alkaen",
   YEARLY_DUE_DATES: "Eräpäivät (pv.kk)",
   OVERRIDE_RECEIVABLE_TYPE: "Automaattinen saamislaji",
+  PERIODIC_RENT_ADJUSTMENT: "Tasotarkistus",
 };
 
 /**
@@ -999,32 +997,41 @@ export const LeaseRentDueDatesFieldTitles = {
 };
 
 /**
- * Lease rent old dwellings in housing companies price index field paths enumerable.
- *
- * @type {{}}
+ * Enumerable for field paths for price index of the periodic rent adjustment in a rent of a lease.
  */
-export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths = {
-  PERIODIC_RENT_ADJUSTMENT_TYPE:
-    "rents.child.children.periodic_rent_adjustment_type",
+export const LeaseRentPeriodicRentAdjustmentPriceIndexFieldPaths = {
   POINT_FIGURES:
-    "rents.child.children.old_dwellings_in_housing_companies_price_index.point_figures",
-  // The following two are for the UI data purposes only
-  START_DATE:
-    "rents.child.children.old_dwellings_in_housing_companies_price_index.start_date",
-  REVIEW_DAYS:
-    "rents.child.children.old_dwellings_in_housing_companies_price_index.review_days",
+    "rents.child.children.periodic_rent_adjustment.children.price_index.children.point_figures",
 };
 
 /**
- * Lease rent old dwellings in housing companies price index field titles enumerable.
- *
- * @type {{}}
+ * Enumerable for field paths for periodic rent adjustment in a rent of a lease.
  */
-export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles = {
-  OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX: "Tasotarkistus",
-  TYPE: "Tyyppi",
-  POINT_FIGURES: "Indeksipisteluku",
+export const LeaseRentPeriodicRentAdjustmentFieldPaths = {
+  ADJUSTMENT_TYPE:
+    "rents.child.children.periodic_rent_adjustment.children.adjustment_type",
+  PRICE_INDEX:
+    "rents.child.children.periodic_rent_adjustment.children.price_index",
+  STARTING_POINT_FIGURE_VALUE:
+    "rents.child.children.periodic_rent_adjustment.children.starting_point_figure_value",
+  STARTING_POINT_FIGURE_YEAR:
+    "rents.child.children.periodic_rent_adjustment.children.starting_point_figure_year",
+  // The following two are for the UI data purposes only
+  START_DATE:
+    "rents.child.children.periodic_rent_adjustment.children.start_date",
+  REVIEW_DAYS:
+    "rents.child.children.periodic_rent_adjustment.children.review_days",
+};
+
+/**
+ * Enumerable for field titles for periodic rent adjustment field titles in a rent of a lease.
+ */
+export const LeaseRentPeriodicRentAdjustmentFieldTitles = {
+  PERIODIC_RENT_ADJUSTMENT: "Tasotarkistus",
+  ADJUSTMENT_TYPE: "Tyyppi",
+  STARTING_POINT_FIGURE: "Indeksipisteluku",
   REVIEW_DAYS: "Tarkistuspäivät",
+  START_DATE: "Alkupvm",
 };
 
 /**
@@ -1763,7 +1770,7 @@ export const periodicRentAdjustmentTypes = {
   TASOTARKISTUS_20_10: "Tasotarkistus 20v/10v",
 };
 
-export const oldDwellingsInHousingCompaniesPriceIndexTypeOptions = {
+export const periodicRentAdjustmentTypeOptions = {
   TASOTARKISTUS_20_20: "TASOTARKISTUS_20_20",
   TASOTARKISTUS_20_10: "TASOTARKISTUS_20_10",
 };
