@@ -32,17 +32,25 @@ type Props = {
   leaseStartDate: string;
 };
 
-const getLastYearsIndexPointNumber = (
+/**
+ * Get index point figure one year before lease start year.
+ */
+const getIndexPointFigure = (
   pointFigures: IndexPointFigureYearlyProps[],
-): string => {
-  const lastYear = new Date().getFullYear() - 1;
-  const lastYearIndex =
+  leaseStartYear: number,
+): IndexPointFigureYearlyProps | null => {
+  return (
     pointFigures?.find(
-      (x: IndexPointFigureYearlyProps) => x.year == lastYear,
-    ) || null;
-  return lastYearIndex
-    ? `${lastYearIndex.year} * ${lastYearIndex.value}`
-    : "Indeksipisteluvut puuttuvat";
+      (x: IndexPointFigureYearlyProps) => x.year == leaseStartYear - 1,
+    ) || null
+  );
+};
+
+const getIndexPointFigureText = (
+  pointFigure: IndexPointFigureYearlyProps,
+): string => {
+  if (!pointFigure) return "Indeksipisteluku puuttuu";
+  return `${pointFigure.year} * ${pointFigure.value}`;
 };
 
 class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> {
@@ -56,6 +64,8 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
       point_figures: pointFigures,
       source_table_label: sourceTableLabel,
     } = oldDwellingsInHousingCompaniesPriceIndex || {};
+    const leaseStartYear = new Date(leaseStartDate).getFullYear();
+    const pointFigure = getIndexPointFigure(pointFigures, leaseStartYear);
     return (
       <Fragment>
         <BoxItemContainer>
@@ -94,7 +104,7 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
                   LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.POINT_FIGURES
                 }
               </FormTextTitle>
-              <FormText>{getLastYearsIndexPointNumber(pointFigures)}</FormText>
+              <FormText>{getIndexPointFigureText(pointFigure)}</FormText>
               <FormText>{sourceTableLabel}</FormText>
             </Column>
             <Column>
