@@ -132,6 +132,14 @@ const RentItem = ({
       {},
     ),
     periodicRentAdjustmentType = get(rent, "periodic_rent_adjustment_type"),
+    startPriceIndexPointFigureValue = get(
+      rent,
+      "start_price_index_point_figure_value",
+    ),
+    startPriceIndexPointFigureYear = get(
+      rent,
+      "start_price_index_point_figure_year",
+    ),
     fixedInitialYearRents = get(rent, "fixed_initial_year_rents", []),
     contractRents = get(rent, "contract_rents", []),
     indexAdjustedRents = get(rent, "index_adjusted_rents", []),
@@ -209,6 +217,10 @@ const RentItem = ({
                   oldDwellingsInHousingCompaniesPriceIndex
                 }
                 periodicRentAdjustmentType={periodicRentAdjustmentType}
+                startPriceIndexPointFigureValue={
+                  startPriceIndexPointFigureValue
+                }
+                startPriceIndexPointFigureYear={startPriceIndexPointFigureYear}
               />
             </Collapse>
           )}

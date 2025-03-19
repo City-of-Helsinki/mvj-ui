@@ -336,6 +336,14 @@ class RentItemEdit extends PureComponent<Props, State> {
       savedRent,
       "periodic_rent_adjustment_type",
     );
+    const startPriceIndexPointFigureValue = get(
+      savedRent,
+      "start_price_index_point_figure_value",
+    );
+    const startPriceIndexPointFigureYear = get(
+      savedRent,
+      "start_price_index_point_figure_year",
+    );
     return (
       <Collapse
         archived={archived}
@@ -421,6 +429,10 @@ class RentItemEdit extends PureComponent<Props, State> {
                 addOldDwellingsInHousingCompaniesPriceIndex={
                   this.addOldDwellingsInHousingCompaniesPriceIndex
                 }
+                startPriceIndexPointFigureValue={
+                  startPriceIndexPointFigureValue
+                }
+                startPriceIndexPointFigureYear={startPriceIndexPointFigureYear}
                 field={field}
               />
             </Collapse>
