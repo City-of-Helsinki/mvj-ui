@@ -65,6 +65,7 @@ import type { CommentList } from "@/comments/types";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
 import type { RootState } from "@/root/types";
 import type { LeaseList, DueDate } from "@/leases/types";
+import type { IndexPointFigureYearly } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
 
 /**
  * Test is lease empty
@@ -2343,6 +2344,10 @@ export const getContentRents = (lease: Lease): Array<Record<string, any>> =>
         old_dwellings_in_housing_companies_price_index:
           rent.old_dwellings_in_housing_companies_price_index,
         periodic_rent_adjustment_type: rent.periodic_rent_adjustment_type,
+        start_price_index_point_figure_value:
+          rent.start_price_index_point_figure_value,
+        start_price_index_point_figure_year:
+          rent.start_price_index_point_figure_year,
       };
     })
     .sort(sortByStartAndEndDateDesc);
@@ -3967,4 +3972,47 @@ export const getReviewDays = (
 export const isATypedLease = (leaseTypeIdentifier: string): boolean => {
   const identifier = leaseTypeIdentifier || "";
   return identifier[0] === "A";
+};
+
+/**
+ * Get text for Periodic Rent Adjustment's price index's point figure's year and value from:
+ * - rent if they have been saved there before, or
+ * - lease's start date.
+ */
+export const getPointFigureFormText = (
+  pointFigures: IndexPointFigureYearly[],
+  leaseStartDate: string,
+  yearFromRent: number | undefined,
+  valueFromRent: number | undefined,
+): string => {
+  if (yearFromRent && valueFromRent)
+    return `${yearFromRent} * ${valueFromRent}`;
+
+  const { year: yearFromLease, value: valueFromLease } =
+    getPointFigureYearAndValueFromLease(pointFigures, leaseStartDate);
+  if (yearFromLease && valueFromLease)
+    return `${yearFromLease} * ${valueFromLease}`;
+
+  return "Indeksipisteluku puuttuu";
+};
+
+/**
+ * Get year and value for Periodic Rent Adjustment's price index's point figure
+ * based on lease start year.
+ *
+ * Periodic Rent Adjustment uses the point figure value of year previous from
+ * lease's start date, e.g. 2023 if lease starts in 2024.
+ */
+const getPointFigureYearAndValueFromLease = (
+  pointFigures: IndexPointFigureYearly[],
+  leaseStartDate: string,
+): { value?: number; year?: number } => {
+  const leaseStartYear = new Date(leaseStartDate).getFullYear();
+  const figure =
+    pointFigures?.find(
+      (point_figure: IndexPointFigureYearly) =>
+        point_figure.year == leaseStartYear - 1,
+    ) || null;
+  if (!figure) return {};
+  return { value: figure.value, year: figure.year };
 };

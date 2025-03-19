@@ -24,33 +24,14 @@ import {
 } from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDate } from "@/util/helpers";
-import { getReviewDays } from "@/leases/helpers";
+import { getReviewDays, getPointFigureFormText } from "@/leases/helpers";
 
 type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
   periodicRentAdjustmentType: PeriodicRentAdjustmentType;
   leaseStartDate: string;
-};
-
-/**
- * Get index point figure one year before lease start year.
- */
-const getIndexPointFigure = (
-  pointFigures: IndexPointFigureYearlyProps[],
-  leaseStartYear: number,
-): IndexPointFigureYearlyProps | null => {
-  return (
-    pointFigures?.find(
-      (x: IndexPointFigureYearlyProps) => x.year == leaseStartYear - 1,
-    ) || null
-  );
-};
-
-const getIndexPointFigureText = (
-  pointFigure: IndexPointFigureYearlyProps,
-): string => {
-  if (!pointFigure) return "Indeksipisteluku puuttuu";
-  return `${pointFigure.year} * ${pointFigure.value}`;
+  startPriceIndexPointFigureValue: number | undefined;
+  startPriceIndexPointFigureYear: number | undefined;
 };
 
 class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> {
@@ -59,13 +40,13 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
       oldDwellingsInHousingCompaniesPriceIndex,
       periodicRentAdjustmentType,
       leaseStartDate,
+      startPriceIndexPointFigureValue,
+      startPriceIndexPointFigureYear,
     } = this.props;
     const {
       point_figures: pointFigures,
       source_table_label: sourceTableLabel,
     } = oldDwellingsInHousingCompaniesPriceIndex || {};
-    const leaseStartYear = new Date(leaseStartDate).getFullYear();
-    const pointFigure = getIndexPointFigure(pointFigures, leaseStartYear);
     return (
       <Fragment>
         <BoxItemContainer>
@@ -104,7 +85,14 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
                   LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.POINT_FIGURES
                 }
               </FormTextTitle>
-              <FormText>{getIndexPointFigureText(pointFigure)}</FormText>
+              <FormText>
+                {getPointFigureFormText(
+                  pointFigures,
+                  leaseStartDate,
+                  startPriceIndexPointFigureYear,
+                  startPriceIndexPointFigureValue,
+                )}
+              </FormText>
               <FormText>{sourceTableLabel}</FormText>
             </Column>
             <Column>
