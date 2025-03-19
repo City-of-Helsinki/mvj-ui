@@ -1004,8 +1004,6 @@ export const LeaseRentDueDatesFieldTitles = {
  * @type {{}}
  */
 export const LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths = {
-  PERIODIC_RENT_ADJUSTMENT_TYPE:
-    "rents.child.children.periodic_rent_adjustment_type",
   POINT_FIGURES:
     "rents.child.children.old_dwellings_in_housing_companies_price_index.point_figures",
   // The following two are for the UI data purposes only

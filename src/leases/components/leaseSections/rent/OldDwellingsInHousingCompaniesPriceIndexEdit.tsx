@@ -85,7 +85,7 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
                 }}
                 enableUiDataEdit
                 uiDataKey={getUiDataLeaseKey(
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.PERIODIC_RENT_ADJUSTMENT_TYPE,
+                  LeaseRentsFieldPaths.PERIODIC_RENT_ADJUSTMENT_TYPE,
                 )}
               />
             </Column>
