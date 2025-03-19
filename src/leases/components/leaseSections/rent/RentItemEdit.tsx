@@ -412,7 +412,6 @@ class RentItemEdit extends PureComponent<Props, State> {
               }
               hasErrors={/*TODO: Error handling*/ false}
               headerTitle={`${LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.OLD_DWELLINGS_IN_HOUSING_COMPANIES_PRICE_INDEX}`}
-              onToggle={this.handleFixedInitialYearRentsCollapseToggle}
             >
               <OldDwellingsInHousingCompaniesPriceIndexEdit
                 oldDwellingsInHousingCompaniesPriceIndex={
