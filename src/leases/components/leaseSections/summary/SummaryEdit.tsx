@@ -37,6 +37,7 @@ import {
   hasPermissions,
   isFieldAllowedToRead,
   isFieldAllowedToEdit,
+  formatDate,
 } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import {
@@ -812,6 +813,51 @@ class SummaryEdit extends PureComponent<Props, State> {
                           {LeaseFieldTitles.INTERNAL_ORDER}
                         </FormTextTitle>
                         <FormText>{summary.internal_order || "-"}</FormText>
+                      </>
+                    )}
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      attributes,
+                      LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+                    )}
+                  >
+                    {isFieldAllowedToEdit(
+                      attributes,
+                      LeaseFieldPaths.APPLICATION_METADATA,
+                    ) ? (
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={getFieldAttributes(
+                          attributes,
+                          LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+                        )}
+                        name="application_metadata.application_received_at"
+                        overrideValues={{
+                          label: LeaseFieldTitles.APPLICATION_RECEIVED_AT,
+                        }}
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(
+                          LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+                        )}
+                      />
+                    ) : (
+                      <>
+                        <FormTextTitle
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+                          )}
+                        >
+                          {LeaseFieldTitles.APPLICATION_RECEIVED_AT}
+                        </FormTextTitle>
+                        <FormText>
+                          {formatDate(
+                            summary.application_metadata
+                              ?.application_received_at,
+                          ) || "-"}
+                        </FormText>
                       </>
                     )}
                   </Authorization>

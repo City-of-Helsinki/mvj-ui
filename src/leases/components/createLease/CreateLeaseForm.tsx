@@ -279,6 +279,32 @@ class CreateLeaseForm extends Component<Props> {
             </Column>
           </Row>
         )}
+        <Row>
+          <Column small={4}>
+            <Authorization
+              allow={isFieldAllowedToEdit(
+                leaseAttributes,
+                LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+              )}
+            >
+              <FormField
+                fieldAttributes={getFieldAttributes(
+                  leaseAttributes,
+                  LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+                )}
+                name="application_received_at"
+                overrideValues={{
+                  fieldType: FieldTypes.DATE,
+                  label: LeaseFieldTitles.APPLICATION_RECEIVED_AT,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+                )}
+              />
+            </Authorization>
+          </Column>
+        </Row>
         {allowToChangeRelateTo && (
           <Row>
             <Column small={4}>
@@ -340,6 +366,7 @@ export default flowRight(
         reference_number: selector(state, "reference_number"),
         state: selector(state, "state"),
         type: selector(state, "type"),
+        application_received_at: selector(state, "application_received_at"),
         isFetchingDistricts: getIsFetchingDistricts(state),
         userActiveServiceUnit: getUserActiveServiceUnit(state),
       };

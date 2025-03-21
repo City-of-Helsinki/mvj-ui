@@ -790,7 +790,7 @@ class Summary extends PureComponent<Props, State> {
                 </Column>
               </Row>
               <Row>
-                <Column small={12} medium={6} large={8}>
+                <Column small={12} medium={6} large={4}>
                   <Authorization
                     allow={isFieldAllowedToRead(
                       attributes,
@@ -806,6 +806,29 @@ class Summary extends PureComponent<Props, State> {
                         {LeaseFieldTitles.INTERNAL_ORDER}
                       </FormTextTitle>
                       <ShowMore text={summary.internal_order || "-"} />
+                    </>
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      attributes,
+                      LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+                    )}
+                  >
+                    <>
+                      <FormTextTitle
+                        uiDataKey={getUiDataLeaseKey(
+                          LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+                        )}
+                      >
+                        {LeaseFieldTitles.APPLICATION_RECEIVED_AT}
+                      </FormTextTitle>
+                      <FormText>
+                        {formatDate(
+                          summary.application_metadata?.application_received_at,
+                        ) || "-"}
+                      </FormText>
                     </>
                   </Authorization>
                 </Column>

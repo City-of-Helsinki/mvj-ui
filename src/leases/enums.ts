@@ -334,6 +334,9 @@ export const TenantContactType = {
  */
 export const LeaseFieldPaths = {
   ADDRESS: "lease_areas.child.children.addresses",
+  APPLICATION_METADATA: "application_metadata",
+  APPLICATION_RECEIVED_AT:
+    "application_metadata.children.application_received_at",
   AREA_IDENTIFIER: "lease_areas.child.children.identifier",
   ARRANGEMENT_DECISION: "arrangement_decision",
   AUDIT_LOG: "audit_log",
@@ -389,6 +392,7 @@ export const LeaseFieldPaths = {
  */
 export const LeaseFieldTitles = {
   ADDRESS: "Osoite",
+  APPLICATION_RECEIVED_AT: "Hakemuksen saapumispäivä",
   AREA_IDENTIFIER: "Kohteen tunnus",
   ARRANGEMENT_DECISION: "Järjestelypäätös",
   AUDIT_LOG: "Muutoshistoria",

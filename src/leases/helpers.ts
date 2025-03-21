@@ -408,6 +408,7 @@ export const getContentLeaseMatchingBasisOfRents = (
  */
 export const getContentLeaseSummary = (lease: Lease): Record<string, any> => {
   return {
+    application_metadata: get(lease, "application_metadata", {}),
     area_notes: get(lease, "area_notes", []),
     // Set arrangement decision to true if there is any contract where is_readjustment_decision == true
     arrangement_decision: get(lease, "contracts", []).find(
@@ -2765,6 +2766,9 @@ export const getPayloadCreateLease = (lease: Lease): Record<string, any> => {
     district: lease.district,
     reference_number: lease.reference_number,
     note: lease.note,
+    application_metadata: {
+      application_received_at: lease.application_received_at,
+    },
     relate_to: relateTo,
     relation_type: relateTo ? RelationTypes.TRANSFER : undefined,
     service_unit: lease.service_unit,
@@ -2783,6 +2787,7 @@ export const addSummaryFormValuesToPayload = (
 ): Record<string, any> => {
   return {
     ...payload,
+    application_metadata: formValues.application_metadata,
     building_selling_price: convertStrToDecimalNumber(
       formValues.building_selling_price,
     ),
