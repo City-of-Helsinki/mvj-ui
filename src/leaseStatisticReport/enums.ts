@@ -142,3 +142,13 @@ export const LeaseStatisticReportFormatOptions = {
   MONEY: "money",
   PERCENTAGE: "percentage",
 };
+
+/**
+ * Lease statistics report field label enumerable
+ * @readonly
+ * @enum {string}
+ */
+export const LeaseStatisticReportFieldLabels = {
+  LEASE_IDENTIFIER: "lease_identifier",
+  SUBVENTION_EUROS_PER_YEAR: "subvention_euros_per_year",
+};

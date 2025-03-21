@@ -19,7 +19,7 @@ import {
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from "@/util/helpers";
-import { LeaseStatisticReportFormatOptions } from "@/leaseStatisticReport/enums";
+import { LeaseStatisticReportFieldLabels, LeaseStatisticReportFormatOptions } from "@/leaseStatisticReport/enums";
 import {
   getDisplayName,
   getFormattedValue,
@@ -113,16 +113,21 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
         renderer: (value: any) => {
           let isBold = false;
           let outputValue = value || "-";
-
-          if (field.key == "lease_identifier") {
+          let decimals: number | null | undefined;
+          
+          if (field.key == LeaseStatisticReportFieldLabels.LEASE_IDENTIFIER) {
             const { id, identifier } = value;
             outputValue = renderLeaseIdentifier(id, identifier);
           }
-
+          
+          if (field.key === LeaseStatisticReportFieldLabels.SUBVENTION_EUROS_PER_YEAR) {
+            decimals = 3;
+          }
+          
           if (field.choices && value) {
             outputValue = getDisplayName(field.choices, value);
           } else if (field.format && value) {
-            outputValue = getFormattedValue(field.format, value);
+            outputValue = getFormattedValue(field.format, value, decimals);
             isBold =
               field.format === LeaseStatisticReportFormatOptions.BOLD ||
               field.format === LeaseStatisticReportFormatOptions.BOLD_MONEY;

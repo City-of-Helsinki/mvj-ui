@@ -86,11 +86,13 @@ export const getDisplayName = (
  * Get formatted value
  * @param {string} formatType
  * @param {string} value
+ * @param {number} decimals
  * @return {string}
  */
 export const getFormattedValue = (
   formatType: string,
   value: string,
+  decimals: number | null | undefined = 2,
 ): string => {
   switch (formatType) {
     case LeaseStatisticReportFormatOptions.DATE:
@@ -98,13 +100,13 @@ export const getFormattedValue = (
 
     case LeaseStatisticReportFormatOptions.MONEY:
     case LeaseStatisticReportFormatOptions.BOLD_MONEY:
-      return `${formatNumber(value)} €`;
+      return `${formatNumber(value, decimals)} €`;
 
     case LeaseStatisticReportFormatOptions.PERCENTAGE:
-      return `${formatNumber(value)} %`;
+      return `${formatNumber(value, decimals)} %`;
 
     case LeaseStatisticReportFormatOptions.AREA:
-      return `${formatNumber(value)} m²`;
+      return `${formatNumber(value, decimals)} m²`;
 
     default:
       return value;
