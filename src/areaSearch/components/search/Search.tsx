@@ -134,6 +134,7 @@ class Search extends Component<Props, State> {
     onSearch({
       ...searchParams,
       preparer: searchParams.preparer?.id || undefined,
+      district: searchParams.district?.value || undefined,
       state: states.length ? states : undefined,
     });
   };
@@ -299,7 +300,7 @@ class Search extends Component<Props, State> {
                       autoBlur
                       disableDirty
                       fieldAttributes={{
-                        type: FieldTypes.STRING,
+                        type: FieldTypes.AREASEARCH_DISTRICT,
                         read_only: false,
                       }}
                       invisibleLabel

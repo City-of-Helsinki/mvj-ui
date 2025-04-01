@@ -6,6 +6,7 @@ import get from "lodash/get";
 import ErrorBlock from "./ErrorBlock";
 import ExternalLink from "@/components/links/ExternalLink";
 import FieldTypeAddress from "@/components/form/FieldTypeAddress";
+import FieldTypeAreaSearchDistrictSelect from "@/components/form/FieldTypeAreaSearchDistrictSelect";
 import FieldTypeBasic from "@/components/form/FieldTypeBasic";
 import FieldTypeBoolean from "@/components/form/FieldTypeBoolean";
 import FieldTypeCheckbox from "@/components/form/FieldTypeCheckbox";
@@ -44,8 +45,10 @@ import { getRouteById, Routes } from "@/root/routes";
 import { genericValidator } from "@/components/form/validations";
 import { getHoursAndMinutes } from "@/util/date";
 import type { UserServiceUnit } from "@/usersPermissions/types";
+
 const FieldTypes = {
   [FieldTypeOptions.ADDRESS]: FieldTypeAddress,
+  [FieldTypeOptions.AREASEARCH_DISTRICT]: FieldTypeAreaSearchDistrictSelect,
   [FieldTypeOptions.BOOLEAN]: FieldTypeBoolean,
   [FieldTypeOptions.CHOICE]: FieldTypeSelect,
   [FieldTypeOptions.CHECKBOX]: FieldTypeCheckbox,

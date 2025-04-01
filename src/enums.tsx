@@ -433,6 +433,7 @@ export const ConfirmationModalTexts = {
  */
 export const FieldTypes = {
   ADDRESS: "address",
+  AREASEARCH_DISTRICT: "areasearch-district",
   BOOLEAN: "boolean",
   CHOICE: "choice",
   CHECKBOX: "checkbox",
