@@ -60,6 +60,7 @@ export type UploadedAreaSearchAttachmentMeta = {
   field: number;
   created_at: string;
   user?: User;
+  is_user_helsinki_ad?: boolean;
 };
 export type FetchListAttributesAction = Action<string, void>;
 export type ReceiveListAttributesAction = Action<string, Attributes>;

@@ -1,9 +1,9 @@
-import { $Shape } from "utility-types";
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import orderBy from "lodash/orderBy";
 import { Column, Row } from "react-foundation";
+import { Table } from "hds-react";
 import { getAttributes, getCurrentAreaSearch } from "@/areaSearch/selectors";
 import ApplicationAnswersSection from "@/application/components/ApplicationAnswersSection";
 import {
@@ -43,6 +43,7 @@ import {
 } from "@/application/selectors";
 import { APPLICANT_SECTION_IDENTIFIER } from "@/application/constants";
 import type { Form } from "@/application/types";
+import { UploadedAreaSearchAttachmentMeta } from "@/areaSearch/types";
 type OwnProps = {};
 type Props = OwnProps & {
   areaSearch: Record<string, any> | null;
@@ -57,6 +58,53 @@ type State = {
   // circumvent this by forcing it to rerender with a key whenever that section is opened; during
   // the opening transition, the initialization works properly.
   selectedAreaSectionRefreshKey: number;
+};
+
+export const renderAttachments = (
+  areaSearchAttachments: Array<UploadedAreaSearchAttachmentMeta>,
+) => {
+  const getUploaderType = (file: UploadedAreaSearchAttachmentMeta) => {
+    if (file.is_user_helsinki_ad === true) return "Käsittelijä";
+    if (file.is_user_helsinki_ad === false) return "Hakija";
+    return "Ei tiedossa";
+  };
+
+  const cols = [
+    { key: "id", headerName: undefined },
+    { key: "attachmentId", headerName: "Liite nro" },
+    { key: "fileName", headerName: "Tiedostonnimi" },
+    { key: "uploaderType", headerName: "Tiedoston lähettäjä" },
+  ];
+  const rows = areaSearchAttachments.map((file, index) => {
+    return {
+      id: file.id,
+      attachmentId: index + 1,
+      fileName: (
+        <FileDownloadLink
+          fileUrl={getAreaSearchApplicationAttachmentDownloadLink(file.id)}
+          label={file.name}
+          className="AreaSearchApplication__attachment-link"
+        />
+      ),
+      uploaderType: getUploaderType(file),
+    };
+  });
+  if (areaSearchAttachments.length === 0) {
+    return <p>Hakemuksella ei ole liitteitä.</p>;
+  }
+
+  return (
+    <div style={{ maxWidth: "640px" }}>
+      <Table
+        cols={cols}
+        rows={rows}
+        variant="light"
+        dense
+        indexKey="id"
+        renderIndexCol={false}
+      />
+    </div>
+  );
 };
 
 class AreaSearchApplication extends Component<Props, State> {
@@ -256,24 +304,7 @@ class AreaSearchApplication extends Component<Props, State> {
                   />
                 ))}
               <Collapse headerTitle="Liitteet" defaultOpen>
-                {areaSearch.area_search_attachments.map((file, index) => {
-                  return (
-                    <Row key={file.id}>
-                      <Column small={3}>Liite {index + 1}</Column>
-                      <Column small={9}>
-                        <FileDownloadLink
-                          fileUrl={getAreaSearchApplicationAttachmentDownloadLink(
-                            file.id,
-                          )}
-                          label={file.name}
-                        />
-                      </Column>
-                    </Row>
-                  );
-                })}
-                {areaSearch.area_search_attachments.length === 0 && (
-                  <p>Hakemuksella ei ole liitteitä.</p>
-                )}
+                {renderAttachments(areaSearch.area_search_attachments || [])}
               </Collapse>
 
               <Collapse headerTitle="Hakemuksen käsittely" defaultOpen>
