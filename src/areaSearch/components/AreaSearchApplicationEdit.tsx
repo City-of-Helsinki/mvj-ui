@@ -1,4 +1,3 @@
-import { $Shape } from "utility-types";
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
@@ -19,10 +18,7 @@ import {
 } from "@/util/helpers";
 import type { Attributes } from "types";
 import { reshapeSavedApplicationObject } from "@/plotApplications/helpers";
-import {
-  transformApplicantSectionTitle,
-  getAreaSearchApplicationAttachmentDownloadLink,
-} from "@/application/helpers";
+import { transformApplicantSectionTitle } from "@/application/helpers";
 import Title from "@/components/content/Title";
 import Divider from "@/components/content/Divider";
 import Collapse from "@/components/collapse/Collapse";
@@ -30,13 +26,12 @@ import Loader from "@/components/loader/Loader";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import FormText from "@/components/form/FormText";
 import { AreaSearchFieldTitles } from "@/areaSearch/enums";
-import { getUserFullName } from "@/users/helpers";
 import SubTitle from "@/components/content/SubTitle";
-import FileDownloadLink from "@/components/file/FileDownloadLink";
 import { getAreaFromGeoJSON } from "@/util/map";
 import SingleAreaSearchMap from "@/areaSearch/components/map/SingleAreaSearchMap";
 import AreaSearchApplicationPropertyIdentifiers from "@/areaSearch/components/AreaSearchApplicationPropertyIdentifiers";
 import AreaSearchApplicantInfoCheckEdit from "@/areaSearch/components/AreaSearchApplicantInfoCheckEdit";
+import { renderAttachments } from "@/areaSearch/components/AreaSearchApplication";
 import { FieldTypes, FormNames } from "@/enums";
 import {
   getInitialAreaSearchEditForm,
@@ -61,7 +56,7 @@ import {
   uploadAttachment,
   setAreaSearchAttachments,
 } from "@/areaSearch/actions";
-import RemoveButton from "@/components/form/RemoveButton";
+
 type Props = {
   areaSearch: AreaSearch | null;
   isFetchingFormAttributes: boolean;
@@ -337,24 +332,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                   />
                 ))}
               <Collapse headerTitle="Liitteet" defaultOpen>
-                {areaSearch.area_search_attachments.map((file, index) => {
-                  return (
-                    <Row key={file.name}>
-                      <Column small={3}>Liite {index + 1}</Column>
-                      <Column small={8}>
-                        <FileDownloadLink
-                          fileUrl={getAreaSearchApplicationAttachmentDownloadLink(
-                            file.id,
-                          )}
-                          label={file.name}
-                        />
-                      </Column>
-                    </Row>
-                  );
-                })}
-                {areaSearch.area_search_attachments.length === 0 && (
-                  <p>Hakemuksella ei ole liitteitä.</p>
-                )}
+                {renderAttachments(areaSearch.area_search_attachments || [])}
                 <AddFileButton
                   label="Lisää tiedosto"
                   onChange={this.handleFileAdded}
