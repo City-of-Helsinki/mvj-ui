@@ -137,7 +137,10 @@ class AreaSearchApplication extends Component<Props, State> {
         formAttributes,
         [],
       );
-      area = getAreaFromGeoJSON(areaSearch.geometry);
+      if (areaSearch.geometry) {
+        area = getAreaFromGeoJSON(areaSearch.geometry);
+      }
+
       selectedAreaTitle =
         [areaSearch.address, areaSearch.district]
           .filter((part) => !!part)
@@ -235,11 +238,13 @@ class AreaSearchApplication extends Component<Props, State> {
                 }}
                 defaultOpen
               >
-                <SingleAreaSearchMap
-                  geometry={areaSearch.geometry}
-                  key={selectedAreaSectionRefreshKey}
-                  minimap
-                />
+                {areaSearch.geometry ? (
+                  <SingleAreaSearchMap
+                    geometry={areaSearch.geometry}
+                    key={selectedAreaSectionRefreshKey}
+                    minimap
+                  />
+                ) : null}
                 <Row>
                   <Column small={6} medium={3} large={2}>
                     <FormTextTitle>{AreaSearchFieldTitles.AREA}</FormTextTitle>
