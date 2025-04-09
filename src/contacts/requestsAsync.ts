@@ -16,14 +16,22 @@ export const fetchContacts = async (query?: Record<string, any>) => {
       return [];
   }
 };
-export const contactExists = async (
-  identifier: string,
-): Promise<boolean | Array<any>> => {
+export const contactExists = async ({
+  identifier,
+  serviceUnitId,
+}: {
+  identifier: string;
+  serviceUnitId?: number;
+}): Promise<boolean | Array<any>> => {
   const {
     response: { status },
     bodyAsJson,
   } = await callApiAsync<ContactExistsResponse>(
-    new Request(createUrl(`contact_exists/?identifier=${identifier}`)),
+    new Request(
+      createUrl(
+        `contact_exists/?identifier=${identifier}&service_unit=${serviceUnitId}`,
+      ),
+    ),
   );
 
   switch (status) {

@@ -95,7 +95,7 @@ export const ConfirmationModalTexts = {
     BUTTON: "Luo asiakas",
     LABEL: (
       <span>
-        Tunnuksella on jo olemassa asiakas.
+        Tunnuksella on jo olemassa asiakas palvelukokonaisuudessa.
         <br />
         Haluatko luoda asiakkaan?
       </span>
