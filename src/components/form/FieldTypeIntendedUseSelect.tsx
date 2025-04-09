@@ -27,7 +27,7 @@ const FieldTypeIntendedUseSelect = ({
     async (inputValue: string, callback: (...args: Array<any>) => any) => {
       const intendedUses = await fetchIntendedUses({
         search: inputValue,
-        limit: 20,
+        limit: 500,
         service_unit: serviceUnit?.id || "",
         is_active: "true",
       });
