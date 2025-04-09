@@ -335,7 +335,9 @@ class TenantsEdit extends PureComponent<Props, State> {
               : null;
 
             if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
-              const exists = await contactExists(contactIdentifier);
+              const exists = await contactExists({
+                identifier: contactIdentifier,
+              });
 
               if (exists) {
                 dispatch({

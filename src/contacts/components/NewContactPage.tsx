@@ -37,7 +37,7 @@ import { withContactAttributes } from "@/components/attributes/ContactAttributes
 import { withUiDataList } from "@/components/uiData/UiDataListHOC";
 import type { Methods as MethodsType } from "types";
 import type { RootState } from "@/root/types";
-import type { Contact } from "@/types";
+import type { Contact } from "@/contacts/types";
 type Props = {
   contactFormValues: Contact;
   contactMethods: MethodsType;
@@ -148,7 +148,10 @@ class NewContactPage extends Component<Props> {
               : null;
 
             if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
-              const exists = await contactExists(contactIdentifier);
+              const exists = await contactExists({
+                identifier: contactIdentifier,
+                serviceUnitId: contactFormValues?.service_unit,
+              });
 
               if (exists) {
                 dispatch({
