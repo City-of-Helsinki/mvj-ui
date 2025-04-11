@@ -58,12 +58,13 @@ import {
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { withContactAttributes } from "@/components/attributes/ContactAttributes";
 import type { Attributes, Methods as MethodsType } from "types";
-import type { ContactModalSettings } from "@/contacts/types";
+import type { Contact, ContactModalSettings } from "@/contacts/types";
 import type { Lease } from "@/leases/types";
 import type {
   UsersPermissions as UsersPermissionsType,
   UserServiceUnit,
 } from "@/usersPermissions/types";
+
 type WarningsProps = {
   meta: Record<string, any>;
 };
@@ -197,7 +198,7 @@ const renderTenants = ({
 
 type Props = {
   change: (...args: Array<any>) => any;
-  contactFormValues: Record<string, any>;
+  contactFormValues: Contact;
   contactMethods: MethodsType;
   contactModalSettings: ContactModalSettings;
   createContact: (...args: Array<any>) => any;
@@ -222,8 +223,8 @@ type State = {
 };
 
 class TenantsEdit extends PureComponent<Props, State> {
-  state = {
-    currentLease: {},
+  state: State = {
+    currentLease: null,
     savedTenants: [],
     savedTenantsArchived: [],
   };
@@ -337,6 +338,7 @@ class TenantsEdit extends PureComponent<Props, State> {
             if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
               const exists = await contactExists({
                 identifier: contactIdentifier,
+                serviceUnitId: currentLease.service_unit?.id,
               });
 
               if (exists) {

@@ -29,7 +29,7 @@ export const contactExists = async ({
   } = await callApiAsync<ContactExistsResponse>(
     new Request(
       createUrl(
-        `contact_exists/?identifier=${identifier}&service_unit=${serviceUnitId}`,
+        `contact_exists/?identifier=${identifier}&service_unit=${serviceUnitId || ""}`,
       ),
     ),
   );
