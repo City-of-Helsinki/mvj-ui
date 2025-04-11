@@ -1,5 +1,8 @@
-import type { Action, ApiResponse, Attributes, Methods } from "@/types";
+import { Classification, LeaseState } from "@/leases/enums";
+import type { Action, ApiResponse, Attributes, Methods, User } from "@/types";
 import type { ServiceUnit } from "@/serviceUnits/types";
+import type { AreaSearch } from "@/areaSearch/types";
+import type { PlotSearch } from "@/plotSearch/types";
 
 export type LeaseState = {
   attributes: Attributes;
@@ -22,9 +25,74 @@ export type LeaseState = {
   leasesForContractNumbers: LeaseList;
   isFetchingLeasesForContractNumbers: boolean;
 };
-export type Lease = Record<string, any>;
+export type Lease = {
+  id: number;
+  application_metadata: Record<string, any>;
+  area_notes: Array<Record<string, any>>;
+  area_searches: Array<AreaSearch>;
+  basis_of_rents: Array<Record<string, any>>;
+  building_selling_price: number | null;
+  classification: (typeof Classification)[keyof typeof Classification];
+  collection_court_decisions: Array<Record<string, any>>;
+  collection_letters: Array<Record<string, any>>;
+  collection_notes: Array<Record<string, any>>;
+  contracts: Array<Record<string, any>>;
+  conveyance_number: number | null;
+  created_at: string;
+  decisions: Array<Record<string, any>>;
+  deleted: string | null;
+  deleted_by_cascade: boolean;
+  district: Array<Record<string, any>>;
+  email_logs: Array<Record<string, any>>;
+  end_date: string | null;
+  financing: number | null;
+  hitas: number | null;
+  identifier: Record<string, any>;
+  infill_development_compensations: Array<Record<string, any>>;
+  inspections: Array<Record<string, any>>;
+  intended_use: IntendedUse;
+  intended_use_note: string | null;
+  internal_order: string | null;
+  invoice_notes: Array<Record<string, any>>;
+  is_invoicing_enabled: boolean;
+  is_rent_info_complete: boolean;
+  is_subject_to_vat: boolean;
+  lease_areas: Array<LeaseArea>;
+  lessor: Record<string, any>;
+  management: Record<string, any> | null;
+  matching_basis_of_rents: Array<Record<string, any>>;
+  modified_at: string | null;
+  municipality: Record<string, any>;
+  note: string | null;
+  notice_note: string | null;
+  notice_period: number | null;
+  plot_searches: Array<PlotSearch>;
+  preparer: User | null;
+  real_estate_developer: string | null;
+  reference_number: string | null;
+  regulated: boolean | null;
+  regulation: Record<string, any> | null;
+  related_leases: Array<RelatedLeases>;
+  related_plot_applications: Array<Record<string, any>>;
+  rents: Array<Record<string, any>>;
+  reservation_procedure: Record<string, any> | null;
+  service_unit: ServiceUnit;
+  special_project: Record<string, any> | null;
+  start_date: string | null;
+  state: (typeof LeaseState)[keyof typeof LeaseState];
+  statistical_use: Record<string, any> | null;
+  supportive_housing: Record<string, any> | null;
+  target_statuses: Array<Record<string, any>>;
+  tenants: Array<Record<string, any>>;
+  transferable: boolean | null;
+  type: Record<string, any>;
+};
 export type LeaseList = ApiResponse;
 export type LeaseId = number;
+export type RelatedLeases = {
+  related_from: Array<Record<string, any>>;
+  related_to: Array<Record<string, any> & { to_lease: Lease }>;
+};
 // Lease area object as expected from API response
 export type LeaseArea = {
   id: number;
@@ -90,7 +158,11 @@ export type SendEmailPayload = {
 };
 export type IntendedUse = {
   id: number;
+  is_active: boolean;
   name: string;
+  name_en: string | null;
+  name_fi: string | null;
+  name_sv: string | null;
   service_unit: ServiceUnit["id"];
 };
 

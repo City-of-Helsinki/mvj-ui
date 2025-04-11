@@ -102,14 +102,15 @@ export const SendEmailTypes = {
  */
 export const LeaseState = {
   LEASE: "lease",
+  SHORT_TERM_LEASE: "short_term_lease",
+  LONG_TERM_LEASE: "long_term_lease",
   RESERVATION: "reservation",
   RESERVE: "reserve",
-  FREE: "free",
   PERMISSION: "permission",
+  TENURE: "tenure",
   RYA: "rya",
-  APPLICATION: "application",
-  TRANSFERRED: "transferred",
-};
+  POWER_OF_ATTORNEY: "power_of_attorney",
+} as const;
 
 /**
  * Classification enumerable.
@@ -120,7 +121,7 @@ export const Classification = {
   PUBLIC: "public",
   CONFIDENTIAL: "confidential",
   OFFICIAL: "official",
-};
+} as const;
 
 /**
  * CreditInvoiceOptions enumerable.
