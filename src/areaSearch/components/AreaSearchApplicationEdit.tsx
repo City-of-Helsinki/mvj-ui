@@ -60,6 +60,7 @@ import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import CreateLeaseModal from '@/leases/components/createLease/CreateLeaseModal';
 import { createLease, fetchAttributes as fetchLeaseAttributes } from "@/leases/actions";
 import { getAttributes as getLeaseAttributes, getIsFetchingAttributes as getIsFetchingLeaseAttributes } from "@/leases/selectors";
+import { ButtonLabels } from "@/components/enums";
 
 type Props = {
   areaSearch: AreaSearch | null;
@@ -218,9 +219,9 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
             onSubmit={createLease}
         />
         <div className="AreaSearchApplication__header">
-          <Title>Hakemus</Title>
+          <Title className="AreaSearchApplication__header__title">Hakemus</Title>
           <AddButtonSecondary
-            label="Luo vuokraustunnus"
+            label={ButtonLabels.CREATE_LEASE}
             onClick={this.showCreateLeaseModal}
           />
         </div>

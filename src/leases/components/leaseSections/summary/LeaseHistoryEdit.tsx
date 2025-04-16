@@ -22,7 +22,7 @@ import {
   deleteRelatedPlotApplication,
 } from "@/relatedLease/actions";
 import { ConfirmationModalTexts, FormNames, Methods } from "@/enums";
-import { ButtonColors } from "@/components/enums";
+import { ButtonColors, ButtonLabels } from "@/components/enums";
 import {
   LeaseFieldPaths,
   LeaseFieldTitles,
@@ -414,7 +414,7 @@ class LeaseHistoryEdit extends Component<Props, State> {
               >
                 <AddButtonSecondary
                   className="no-top-margin"
-                  label="Luo vuokraustunnus"
+                  label={ButtonLabels.CREATE_LEASE_IDENTIFIER}
                   onClick={this.showCreateLeaseModal}
                 />
               </Authorization>

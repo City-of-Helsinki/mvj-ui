@@ -2,6 +2,7 @@ import { $Shape } from "utility-types";
 import React, { Component } from "react";
 import CreateLeaseForm from "./CreateLeaseForm";
 import Modal from "@/components/modal/Modal";
+import { ButtonLabels } from "@/components/enums";
 type Props = {
   allowToChangeRelateTo?: boolean;
   isOpen: boolean;
@@ -28,7 +29,7 @@ class CreateLease extends Component<Props> {
   render(): JSX.Element {
     const { allowToChangeRelateTo, isOpen, onClose, onSubmit } = this.props;
     return (
-      <Modal isOpen={isOpen} onClose={onClose} title="Luo vuokraustunnus">
+      <Modal isOpen={isOpen} onClose={onClose} title={ButtonLabels.CREATE_LEASE_IDENTIFIER}>
         <CreateLeaseForm
           ref={this.setRefForForm}
           allowToChangeRelateTo={allowToChangeRelateTo}
