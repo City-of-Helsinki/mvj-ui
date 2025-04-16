@@ -1,4 +1,8 @@
 .AreaSearchApplication {
+  &__header {
+    display: flex;
+    align-items: center;
+  }
   .AreaSearchApplication__description {
     white-space: pre-wrap;
   }
