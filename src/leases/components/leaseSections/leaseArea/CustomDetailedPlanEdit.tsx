@@ -12,7 +12,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import FormText from "@/components/form/FormText";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import RemoveButton from "@/components/form/RemoveButton";
 import { ButtonColors } from "@/components/enums";
 import { ConfirmationModalTexts } from "@/enums";
@@ -121,7 +121,7 @@ const renderUsageDistributions = ({
                                 LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -147,7 +147,7 @@ const renderUsageDistributions = ({
                                 LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -174,7 +174,7 @@ const renderUsageDistributions = ({
                                 LeaseAreaUsageDistributionFieldPaths.NOTE,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -305,7 +305,7 @@ const renderInfoLinks = ({
                                 LeaseAreaCustomDetailedPlanInfoLinksFieldPaths.DESCRIPTION,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -331,7 +331,7 @@ const renderInfoLinks = ({
                                 LeaseAreaCustomDetailedPlanInfoLinksFieldPaths.URL,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -357,7 +357,7 @@ const renderInfoLinks = ({
                                 LeaseAreaCustomDetailedPlanInfoLinksFieldPaths.LANGUAGE,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -449,7 +449,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   LeaseAreaCustomDetailedPlanFieldPaths.IDENTIFIER,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -474,7 +474,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   LeaseAreaCustomDetailedPlanFieldPaths.INTENDED_USE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -499,7 +499,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   LeaseAreaCustomDetailedPlanFieldPaths.ADDRESS,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -526,7 +526,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   LeaseAreaCustomDetailedPlanFieldPaths.AREA,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -552,7 +552,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   LeaseAreaCustomDetailedPlanFieldPaths.STATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -577,7 +577,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   LeaseAreaCustomDetailedPlanFieldPaths.TYPE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -604,7 +604,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -629,7 +629,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -655,7 +655,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -681,7 +681,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   LeaseAreaCustomDetailedPlanFieldPaths.RENT_BUILD_PERMISSION,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -708,7 +708,7 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
                   LeaseAreaCustomDetailedPlanFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,

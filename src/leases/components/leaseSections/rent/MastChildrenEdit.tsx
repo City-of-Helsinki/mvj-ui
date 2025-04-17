@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import {
   isFieldAllowedToRead,
@@ -93,7 +93,7 @@ const MastChildrenEdit = ({
               LeaseBasisOfRentsFieldPaths.AREA,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,

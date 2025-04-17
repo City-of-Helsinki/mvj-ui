@@ -3,7 +3,7 @@ import React, { createElement, Fragment, PureComponent } from "react";
 import { Field } from "redux-form";
 import classNames from "classnames";
 import get from "lodash/get";
-import ErrorBlock from "./ErrorBlock";
+import ErrorBlock from "@/components/form/ErrorBlock";
 import ExternalLink from "@/components/links/ExternalLink";
 import FieldTypeAddress from "@/components/form/FieldTypeAddress";
 import FieldTypeAreaSearchDistrictSelect from "@/components/form/FieldTypeAreaSearchDistrictSelect";
@@ -368,7 +368,7 @@ type State = {
   value: string | null | undefined;
 };
 
-class FormField extends PureComponent<Props, State> {
+class FormFieldLegacy extends PureComponent<Props, State> {
   state: State = {
     allowEdit: false,
     allowRead: true,
@@ -523,4 +523,4 @@ class FormField extends PureComponent<Props, State> {
   }
 }
 
-export default FormField;
+export default FormFieldLegacy;

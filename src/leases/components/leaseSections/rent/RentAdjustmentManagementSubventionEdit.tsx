@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import RemoveButton from "@/components/form/RemoveButton";
 import {
   RentAdjustmentManagementSubventionsFieldPaths,
@@ -46,7 +46,7 @@ const RentAdjustmentManagementSubventionEdit = ({
             RentAdjustmentManagementSubventionsFieldPaths.MANAGEMENT,
           )}
         >
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               leaseAttributes,
@@ -71,7 +71,7 @@ const RentAdjustmentManagementSubventionEdit = ({
             RentAdjustmentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT,
           )}
         >
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               leaseAttributes,

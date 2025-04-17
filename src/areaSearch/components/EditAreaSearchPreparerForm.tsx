@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { Column, Row } from "react-foundation";
 import get from "lodash/get";
 import { editAreaSearch } from "@/areaSearch/actions";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { getAttributes } from "@/areaSearch/selectors";
 import { AreaSearchFieldTitles } from "@/areaSearch/enums";
 import { FieldTypes, FormNames } from "@/enums";
@@ -72,7 +72,7 @@ class EditAreaSearchPreparerForm extends Component<Props> {
       <form>
         <Row>
           <Column small={6} medium={4} large={4}>
-            <FormField
+            <FormFieldLegacy
               name="lessor"
               fieldAttributes={get(areaSearchAttributes, "lessor")}
               overrideValues={{
@@ -83,7 +83,7 @@ class EditAreaSearchPreparerForm extends Component<Props> {
             />
           </Column>
           <Column small={6} medium={4} large={4}>
-            <FormField
+            <FormFieldLegacy
               name="preparer"
               fieldAttributes={get(areaSearchAttributes, "preparer")}
               overrideValues={{
@@ -96,7 +96,7 @@ class EditAreaSearchPreparerForm extends Component<Props> {
         </Row>
         <Row>
           <Column small={12} medium={12} large={12}>
-            <FormField
+            <FormFieldLegacy
               name="status_notes"
               fieldAttributes={get(
                 areaSearchAttributes,

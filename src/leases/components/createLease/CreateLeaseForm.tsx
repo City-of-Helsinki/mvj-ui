@@ -10,7 +10,7 @@ import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
@@ -124,7 +124,7 @@ class CreateLeaseForm extends Component<Props> {
                 LeaseFieldPaths.STATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
                   LeaseFieldPaths.STATE,
@@ -169,7 +169,7 @@ class CreateLeaseForm extends Component<Props> {
                 LeaseFieldPaths.TYPE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
                   LeaseFieldPaths.TYPE,
@@ -190,7 +190,7 @@ class CreateLeaseForm extends Component<Props> {
                 LeaseFieldPaths.MUNICIPALITY,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
                   LeaseFieldPaths.MUNICIPALITY,
@@ -211,7 +211,7 @@ class CreateLeaseForm extends Component<Props> {
                 LeaseFieldPaths.DISTRICT,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
                   LeaseFieldPaths.DISTRICT,
@@ -238,7 +238,7 @@ class CreateLeaseForm extends Component<Props> {
                   LeaseFieldPaths.REFERENCE_NUMBER,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
                     LeaseFieldPaths.REFERENCE_NUMBER,
@@ -262,7 +262,7 @@ class CreateLeaseForm extends Component<Props> {
                   LeaseFieldPaths.NOTE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
                     LeaseFieldPaths.NOTE,
@@ -287,7 +287,7 @@ class CreateLeaseForm extends Component<Props> {
                 LeaseFieldPaths.APPLICATION_RECEIVED_AT,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
                   LeaseFieldPaths.APPLICATION_RECEIVED_AT,
@@ -314,7 +314,7 @@ class CreateLeaseForm extends Component<Props> {
                   LeaseFieldPaths.RELATE_TO,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
                     LeaseFieldPaths.RELATE_TO,

@@ -8,7 +8,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import Button from "@/components/button/Button";
 import CloseButton from "@/components/button/CloseButton";
 import RemoveButton from "@/components/form/RemoveButton";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import WhiteBox from "@/components/content/WhiteBox";
 import { receiveIsCreateClicked } from "@/landUseInvoices/actions";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
@@ -70,7 +70,7 @@ const InvoiceRows = ({
                   return (
                     <Row key={index}>
                       <Column small={6} medium={4} large={2}>
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isCreateClicked}
                           fieldAttributes={getFieldAttributes(
                             invoiceAttributes,
@@ -83,7 +83,7 @@ const InvoiceRows = ({
                         />
                       </Column>
                       <Column small={6} medium={4} large={2}>
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isCreateClicked}
                           fieldAttributes={getFieldAttributes(
                             invoiceAttributes,
@@ -94,7 +94,7 @@ const InvoiceRows = ({
                         />
                       </Column>
                       <Column small={6} medium={4} large={2}>
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isCreateClicked}
                           fieldAttributes={getFieldAttributes(
                             invoiceAttributes,
@@ -105,7 +105,7 @@ const InvoiceRows = ({
                         />
                       </Column>
                       <Column small={6} medium={4} large={2}>
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isCreateClicked}
                           fieldAttributes={getFieldAttributes(
                             invoiceAttributes,
@@ -119,7 +119,7 @@ const InvoiceRows = ({
                         />
                       </Column>
                       <Column small={6} medium={4} large={2}>
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isCreateClicked}
                           fieldAttributes={getFieldAttributes(
                             invoiceAttributes,
@@ -129,7 +129,7 @@ const InvoiceRows = ({
                         />
                       </Column>
                       <Column small={6} medium={4} large={2}>
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isCreateClicked}
                           fieldAttributes={getFieldAttributes(
                             invoiceAttributes,
@@ -208,7 +208,7 @@ const NewInvoiceForm = ({
               <Authorization
                 allow={isFieldAllowedToEdit(invoiceAttributes, "recipient")}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isCreateClicked}
                   fieldAttributes={getFieldAttributes(
                     invoiceAttributes,
@@ -225,7 +225,7 @@ const NewInvoiceForm = ({
               </Authorization>
             </Column>
             <Column small={6} medium={4} large={1}>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isCreateClicked}
                 fieldAttributes={getFieldAttributes(
                   invoiceAttributes,
@@ -237,7 +237,7 @@ const NewInvoiceForm = ({
             </Column>
 
             <Column small={6} medium={4} large={1}>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isCreateClicked}
                 fieldAttributes={getFieldAttributes(
                   invoiceAttributes,
@@ -247,7 +247,7 @@ const NewInvoiceForm = ({
               />
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isCreateClicked}
                 fieldAttributes={getFieldAttributes(
                   invoiceAttributes,
@@ -257,14 +257,14 @@ const NewInvoiceForm = ({
               />
             </Column>
             <Column small={6} medium={4} large={1}>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isCreateClicked}
                 fieldAttributes={getFieldAttributes(invoiceAttributes, "type")}
                 name="type"
               />
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isCreateClicked}
                 fieldAttributes={getFieldAttributes(
                   invoiceAttributes,

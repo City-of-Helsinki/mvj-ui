@@ -13,7 +13,7 @@ import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import Collapse from "@/components/collapse/Collapse";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
 import { receiveCollapseStates } from "@/landUseContract/actions";
@@ -134,7 +134,7 @@ const renderDecisionConditions = ({
                     return (
                       <Row key={index}>
                         <Column large={2}>
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               attributes,
@@ -148,7 +148,7 @@ const renderDecisionConditions = ({
                           />
                         </Column>
                         <Column large={2}>
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               attributes,
@@ -162,7 +162,7 @@ const renderDecisionConditions = ({
                           />
                         </Column>
                         <Column large={2}>
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               attributes,
@@ -178,7 +178,7 @@ const renderDecisionConditions = ({
                         <Column large={6}>
                           <FieldAndRemoveButtonWrapper
                             field={
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -215,7 +215,7 @@ const renderDecisionConditions = ({
                           </ActionButtonWrapper>
                           <Row>
                             <Column small={6} medium={4}>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -228,7 +228,7 @@ const renderDecisionConditions = ({
                               />
                             </Column>
                             <Column small={6} medium={4}>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -241,7 +241,7 @@ const renderDecisionConditions = ({
                               />
                             </Column>
                             <Column small={12} medium={4}>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -254,7 +254,7 @@ const renderDecisionConditions = ({
                               />
                             </Column>
                             <Column small={12} medium={12}>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -388,7 +388,7 @@ const DecisionItemEdit = ({
       <BoxContentWrapper>
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -401,7 +401,7 @@ const DecisionItemEdit = ({
             />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -414,7 +414,7 @@ const DecisionItemEdit = ({
             />
           </Column>
           <Column small={6} medium={4} large={1}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -428,7 +428,7 @@ const DecisionItemEdit = ({
             />
           </Column>
           <Column small={6} medium={8} large={3}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -441,7 +441,7 @@ const DecisionItemEdit = ({
             />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -456,7 +456,7 @@ const DecisionItemEdit = ({
             />
           </Column>
           <Column small={12}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
