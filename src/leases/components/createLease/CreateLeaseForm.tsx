@@ -22,7 +22,7 @@ import { filterOptionsByLabel } from "@/components/form/filter";
 import { getDistrictOptions } from "@/district/helpers";
 import { getPayloadCreateLease } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import { getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
+import { formatDate, getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
 import {
   getDistrictsByMunicipality,
   getIsFetching as getIsFetchingDistricts,
@@ -33,6 +33,8 @@ import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { DistrictList } from "@/district/types";
 import type { UserServiceUnit } from "@/usersPermissions/types";
+import { getCurrentAreaSearch } from "@/areaSearch/selectors";
+import { AreaSearch } from "@/areaSearch/types";
 type OwnProps = {
   onClose: (...args: Array<any>) => any;
   onSubmit: (...args: Array<any>) => any;
@@ -42,6 +44,7 @@ type OwnProps = {
   ref?: Function;
 };
 type Props = OwnProps & {
+  areaSearch: AreaSearch | null;
   change: (...args: Array<any>) => any;
   districts: DistrictList;
   fetchDistrictsByMunicipality: (...args: Array<any>) => any;
@@ -80,10 +83,14 @@ class CreateLeaseForm extends Component<Props> {
   }
 
   componentDidUpdate() {
-    const { change, formValues, userActiveServiceUnit } = this.props;
+    const { areaSearch, change, formValues, userActiveServiceUnit } = this.props;
 
     if (userActiveServiceUnit && formValues && !formValues.service_unit) {
       change("service_unit", userActiveServiceUnit.id);
+    }
+    if (areaSearch && areaSearch.received_date) {
+      const applicationReceivedAt = formatDate(new Date(areaSearch.received_date), "yyyy-MM-dd");
+      change("application_received_at", applicationReceivedAt);
     }
   }
 
@@ -357,6 +364,7 @@ export default flowRight(
     (state) => {
       const municipality = selector(state, "municipality");
       return {
+        areaSearch: getCurrentAreaSearch(state),
         formValues: getFormValues(formName)(state),
         district: selector(state, "district"),
         districts: getDistrictsByMunicipality(state, municipality),
