@@ -73,7 +73,7 @@ import Button from "@/components/button/Button";
 import EditAreaSearchPreparerModal from "@/areaSearch/components/EditAreaSearchPreparerModal";
 import Authorization from "@/components/authorization/Authorization";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { ApiResponse } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
@@ -242,7 +242,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
             e.stopPropagation();
           }}
         >
-          <FormField
+          <FormFieldLegacy
             name={`selectedSearches.${item.id}`}
             fieldAttributes={{
               type: FieldTypes.CHECKBOX,
@@ -846,7 +846,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
                   <tr>
                     <td />
                     <td colSpan={columnCount - 1}>
-                      <FormField
+                      <FormFieldLegacy
                         name={`allSelected`}
                         fieldAttributes={{
                           type: FieldTypes.CHECKBOX,

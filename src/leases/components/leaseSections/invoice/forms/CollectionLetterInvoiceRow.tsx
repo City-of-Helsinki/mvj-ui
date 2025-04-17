@@ -5,7 +5,7 @@ import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
@@ -94,7 +94,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
     return (
       <Row>
         <Column small={4}>
-          <FormField
+          <FormFieldLegacy
             disableDirty={disableDirty}
             fieldAttributes={{
               type: "choice",
@@ -129,7 +129,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
           </FormText>
         </Column>
         <Column small={2}>
-          <FormField
+          <FormFieldLegacy
             disableDirty={disableDirty}
             fieldAttributes={{
               type: "decimal",

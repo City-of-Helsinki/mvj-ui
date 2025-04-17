@@ -11,7 +11,7 @@ import CollectionLetterInvoiceRow from "./CollectionLetterInvoiceRow";
 import CollectionLetterTotalRow from "./CollectionLetterTotalRow";
 import Divider from "@/components/content/Divider";
 import FileDownloadButton from "@/components/file/FileDownloadButton";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import SubTitle from "@/components/content/SubTitle";
 import { FieldTypes, FormNames } from "@/enums";
@@ -235,7 +235,7 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
                     CreateCollectionLetterFieldPaths.TENANTS,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableDirty
                     fieldAttributes={getFieldAttributes(
                       createCollectionLetterAttributes,
@@ -261,7 +261,7 @@ class CreateCollectionLetterForm extends PureComponent<Props, State> {
                     CreateCollectionLetterFieldPaths.TEMPLATE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableDirty
                     fieldAttributes={getFieldAttributes(
                       createCollectionLetterAttributes,

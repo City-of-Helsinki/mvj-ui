@@ -10,7 +10,7 @@ import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import Button from "@/components/button/Button";
 import { ButtonColors } from "@/components/enums";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FieldTypes, FormNames } from "@/enums";
 import { withLeaseStatisticReportAttributes } from "@/components/attributes/LeaseStatisticReportAttributes";
 import Authorization from "@/components/authorization/Authorization";
@@ -137,7 +137,7 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
                     LeaseStatisticReportPaths.START_DATE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     fieldAttributes={getFieldAttributes(
                       leaseStatisticReportAttributes,
                       LeaseStatisticReportPaths.START_DATE,
@@ -164,7 +164,7 @@ class LeaseStatisticReportForm extends PureComponent<Props, State> {
                 Object.entries(fields).map(([key, value], index) => {
                   return (
                     <Column large={3} medium={4} small={6} key={index}>
-                      <FormField
+                      <FormFieldLegacy
                         fieldAttributes={value}
                         overrideValues={{
                           fieldType: formatType(value),

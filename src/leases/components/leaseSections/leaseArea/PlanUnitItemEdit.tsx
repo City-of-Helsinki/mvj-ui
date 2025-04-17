@@ -10,7 +10,7 @@ import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import RemoveButton from "@/components/form/RemoveButton";
 import { FormNames } from "@/enums";
 import {
@@ -182,7 +182,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.IDENTIFIER,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -206,7 +206,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.IS_MASTER,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -248,7 +248,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.AREA,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -274,7 +274,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.SECTION_AREA,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -304,7 +304,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.DETAILED_PLAN_IDENTIFIER,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -328,7 +328,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -355,7 +355,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -382,7 +382,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.PLOT_DIVISION_IDENTIFIER,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -406,7 +406,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -430,7 +430,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.PLOT_DIVISION_EFFECTIVE_DATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -457,7 +457,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -481,7 +481,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -505,7 +505,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
                   LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,

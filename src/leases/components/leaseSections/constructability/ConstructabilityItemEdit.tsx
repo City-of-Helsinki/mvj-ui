@@ -13,7 +13,7 @@ import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle
 import Comments from "./Comments";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -293,7 +293,7 @@ const renderComments = connect((state, props) => {
                             LeaseConstructabilityDescriptionsFieldPaths.TEXT,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               attributes,
@@ -315,7 +315,7 @@ const renderComments = connect((state, props) => {
                             LeaseConstructabilityDescriptionsFieldPaths.IS_STATIC,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               attributes,
@@ -339,7 +339,7 @@ const renderComments = connect((state, props) => {
                                 LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -619,7 +619,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.PRECONSTRUCTION_STATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -643,7 +643,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -668,7 +668,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.PRECONSTRUCTION_INSPECTION_MOMENT,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -740,7 +740,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.DEMOLITION_STATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -811,7 +811,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.POLLUTED_LAND_STATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -835,7 +835,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -860,7 +860,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_DATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -885,7 +885,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.POLLUTED_LAND_PLANNER,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -910,7 +910,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.POLLUTED_LAND_PROJECTWISE_NUMBER,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1147,7 +1147,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1171,7 +1171,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1196,7 +1196,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNING_DATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1221,7 +1221,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNER,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1458,7 +1458,7 @@ const ConstructabilityItemEdit = ({
                 LeaseAreasFieldPaths.OTHER_STATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,

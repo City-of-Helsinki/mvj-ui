@@ -7,7 +7,7 @@ import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -204,7 +204,7 @@ class ContractRentEdit extends PureComponent<Props> {
                     LeaseRentContractRentsFieldPaths.AMOUNT,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -229,7 +229,7 @@ class ContractRentEdit extends PureComponent<Props> {
                     LeaseRentContractRentsFieldPaths.PERIOD,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -257,7 +257,7 @@ class ContractRentEdit extends PureComponent<Props> {
           LeaseRentContractRentsFieldPaths.INTENDED_USE,
         )}
       >
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={getFieldAttributes(
             leaseAttributes,
@@ -322,7 +322,7 @@ class ContractRentEdit extends PureComponent<Props> {
                     LeaseRentContractRentsFieldPaths.BASE_AMOUNT,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -344,7 +344,7 @@ class ContractRentEdit extends PureComponent<Props> {
                     LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -372,7 +372,7 @@ class ContractRentEdit extends PureComponent<Props> {
           LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT,
         )}
       >
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={getFieldAttributes(
             leaseAttributes,
@@ -400,7 +400,7 @@ class ContractRentEdit extends PureComponent<Props> {
           LeaseRentContractRentsFieldPaths.START_DATE,
         )}
       >
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={getFieldAttributes(
             leaseAttributes,
@@ -424,7 +424,7 @@ class ContractRentEdit extends PureComponent<Props> {
           LeaseRentContractRentsFieldPaths.END_DATE,
         )}
       >
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={getFieldAttributes(
             leaseAttributes,
@@ -448,7 +448,7 @@ class ContractRentEdit extends PureComponent<Props> {
           LeaseRentContractRentsFieldPaths.INDEX,
         )}
       >
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={{
             ...getFieldAttributes(

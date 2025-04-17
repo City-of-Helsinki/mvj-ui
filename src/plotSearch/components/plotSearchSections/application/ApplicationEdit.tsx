@@ -17,7 +17,7 @@ import {
 } from "@/plotSearch/enums";
 import Title from "@/components/content/Title";
 import { FormNames, ViewModes } from "@/enums";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { receiveCollapseStates } from "@/plotSearch/actions";
 import {
   getAttributes,
@@ -155,7 +155,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
         label: templateForm.title,
       })) || [];
     const formTemplateSelect = (
-      <FormField
+      <FormFieldLegacy
         disableTouched={isSaveClicked}
         fieldAttributes={{
           type: "field",
@@ -213,7 +213,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
                         <>
                           {currentPlotSearch.form !== null ? (
                             <>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={{
                                   required: false,
@@ -283,7 +283,7 @@ class ApplicationEdit extends PureComponent<Props, State> {
                     >
                       <WhiteBox className="application__white-stripes">
                         <TitleH3>
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={get(
                               formAttributes,

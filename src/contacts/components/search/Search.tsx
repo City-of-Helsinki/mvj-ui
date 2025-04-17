@@ -6,7 +6,7 @@ import debounce from "lodash/debounce";
 import flowRight from "lodash/flowRight";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import SearchClearLink from "@/components/search/SearchClearLink";
 import SearchContainer from "@/components/search/SearchContainer";
 import { FieldTypes, FormNames } from "@/enums";
@@ -115,7 +115,7 @@ class Search extends PureComponent<Props> {
         <Row>
           <Column large={12}>
             <div className="inline-search-fields">
-              <FormField
+              <FormFieldLegacy
                 autoBlur
                 disableDirty
                 fieldAttributes={{
@@ -129,7 +129,7 @@ class Search extends PureComponent<Props> {
                 }}
                 className="contact-search-dropdown"
               />
-              <FormField
+              <FormFieldLegacy
                 disableDirty
                 fieldAttributes={{
                   label: "Hae hakusanalla",

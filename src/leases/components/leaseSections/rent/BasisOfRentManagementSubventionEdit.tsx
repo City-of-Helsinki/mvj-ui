@@ -4,7 +4,7 @@ import { change, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import RemoveButton from "@/components/form/RemoveButton";
 import {
@@ -119,7 +119,7 @@ class BasisOfRentManagementSubventionEdit extends PureComponent<Props, State> {
               BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -142,7 +142,7 @@ class BasisOfRentManagementSubventionEdit extends PureComponent<Props, State> {
               BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               onChange={this.onChangeCurrentSubventionPercent}
               fieldAttributes={getFieldAttributes(
@@ -167,7 +167,7 @@ class BasisOfRentManagementSubventionEdit extends PureComponent<Props, State> {
               BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               onChange={this.onChangeCurrentSubventionAmount}
               fieldAttributes={{

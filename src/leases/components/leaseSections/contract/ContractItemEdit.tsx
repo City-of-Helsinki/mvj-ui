@@ -15,7 +15,7 @@ import Collapse from "@/components/collapse/Collapse";
 import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle";
 import CollateralEdit from "./CollateralEdit";
 import DecisionLink from "@/components/links/DecisionLink";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import KtjLink from "@/components/ktj/KtjLink";
@@ -172,7 +172,7 @@ const renderContractChanges = ({
                                   LeaseContractChangesFieldPaths.SIGNING_DATE,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -197,7 +197,7 @@ const renderContractChanges = ({
                                   LeaseContractChangesFieldPaths.SIGN_BY_DATE,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -222,7 +222,7 @@ const renderContractChanges = ({
                                   LeaseContractChangesFieldPaths.FIRST_CALL_SENT,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -247,7 +247,7 @@ const renderContractChanges = ({
                                   LeaseContractChangesFieldPaths.SECOND_CALL_SENT,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -272,7 +272,7 @@ const renderContractChanges = ({
                                   LeaseContractChangesFieldPaths.THIRD_CALL_SENT,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -299,7 +299,7 @@ const renderContractChanges = ({
                                   LeaseContractChangesFieldPaths.DECISION,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -328,7 +328,7 @@ const renderContractChanges = ({
                                   LeaseContractChangesFieldPaths.DESCRIPTION,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -673,7 +673,7 @@ class ContractItemEdit extends Component<Props> {
                   LeaseContractsFieldPaths.TYPE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -719,7 +719,7 @@ class ContractItemEdit extends Component<Props> {
                       />
                     </WarningContainer>
                   )}
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -745,7 +745,7 @@ class ContractItemEdit extends Component<Props> {
                   LeaseContractsFieldPaths.SIGNING_DATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -771,7 +771,7 @@ class ContractItemEdit extends Component<Props> {
                   LeaseContractsFieldPaths.SIGN_BY_DATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -795,7 +795,7 @@ class ContractItemEdit extends Component<Props> {
                   LeaseContractsFieldPaths.FIRST_CALL_SENT,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -819,7 +819,7 @@ class ContractItemEdit extends Component<Props> {
                   LeaseContractsFieldPaths.SECOND_CALL_SENT,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -843,7 +843,7 @@ class ContractItemEdit extends Component<Props> {
                   LeaseContractsFieldPaths.THIRD_CALL_SENT,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -871,7 +871,7 @@ class ContractItemEdit extends Component<Props> {
                         LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION,
                       )}
                     >
-                      <FormField
+                      <FormFieldLegacy
                         disableTouched={isSaveClicked}
                         fieldAttributes={getFieldAttributes(
                           attributes,
@@ -898,7 +898,7 @@ class ContractItemEdit extends Component<Props> {
                   LeaseContractsFieldPaths.INSTITUTION_IDENTIFIER,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -922,7 +922,7 @@ class ContractItemEdit extends Component<Props> {
                   LeaseContractsFieldPaths.DECISION,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -1005,7 +1005,7 @@ class ContractItemEdit extends Component<Props> {
                   LeaseContractsFieldPaths.SIGNING_NOTE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,

@@ -6,7 +6,7 @@ import get from "lodash/get";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -125,7 +125,7 @@ const renderDueDates = ({
                             LeaseRentDueDatesFieldPaths.DAY,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               leaseAttributes,
@@ -149,7 +149,7 @@ const renderDueDates = ({
                                 LeaseRentDueDatesFieldPaths.MONTH,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 className="with-dot"
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
@@ -219,7 +219,7 @@ const BasicInfoEmpty = ({
     >
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               leaseAttributes,
@@ -274,7 +274,7 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.TYPE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -296,7 +296,7 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.START_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -318,7 +318,7 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.END_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -340,7 +340,7 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.CYCLE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -364,7 +364,7 @@ const BasicInfoIndexOrManual = ({
                 LeaseRentsFieldPaths.INDEX_TYPE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
@@ -388,7 +388,7 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.DUE_DATES_TYPE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -424,7 +424,7 @@ const BasicInfoIndexOrManual = ({
                 LeaseRentsFieldPaths.DUE_DATES_PER_YEAR,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
@@ -483,7 +483,7 @@ const BasicInfoIndexOrManual = ({
                   LeaseRentsFieldPaths.MANUAL_RATIO,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -509,7 +509,7 @@ const BasicInfoIndexOrManual = ({
                   LeaseRentsFieldPaths.MANUAL_RATIO_PREVIOUS,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -539,7 +539,7 @@ const BasicInfoIndexOrManual = ({
             )}
           >
             <Column small={12} medium={6} large={4}>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
@@ -565,7 +565,7 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.NOTE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -607,7 +607,7 @@ const BasicInfoOneTime = ({
               LeaseRentsFieldPaths.TYPE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -629,7 +629,7 @@ const BasicInfoOneTime = ({
               LeaseRentsFieldPaths.START_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -651,7 +651,7 @@ const BasicInfoOneTime = ({
               LeaseRentsFieldPaths.END_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -673,7 +673,7 @@ const BasicInfoOneTime = ({
               LeaseRentsFieldPaths.AMOUNT,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -695,7 +695,7 @@ const BasicInfoOneTime = ({
       >
         <Row>
           <Column>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -748,7 +748,7 @@ const BasicInfoFixed = ({
               LeaseRentsFieldPaths.TYPE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -770,7 +770,7 @@ const BasicInfoFixed = ({
               LeaseRentsFieldPaths.START_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -792,7 +792,7 @@ const BasicInfoFixed = ({
               LeaseRentsFieldPaths.END_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -814,7 +814,7 @@ const BasicInfoFixed = ({
               LeaseRentsFieldPaths.DUE_DATES_TYPE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -850,7 +850,7 @@ const BasicInfoFixed = ({
                 LeaseRentsFieldPaths.DUE_DATES_PER_YEAR,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
@@ -907,7 +907,7 @@ const BasicInfoFixed = ({
             )}
           >
             <Column small={12} medium={6} large={4}>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
@@ -933,7 +933,7 @@ const BasicInfoFixed = ({
               LeaseRentsFieldPaths.NOTE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -972,7 +972,7 @@ const BasicInfoFree = ({
               LeaseRentsFieldPaths.TYPE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -994,7 +994,7 @@ const BasicInfoFree = ({
               LeaseRentsFieldPaths.START_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -1016,7 +1016,7 @@ const BasicInfoFree = ({
               LeaseRentsFieldPaths.END_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
@@ -1038,7 +1038,7 @@ const BasicInfoFree = ({
       >
         <Row>
           <Column>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,

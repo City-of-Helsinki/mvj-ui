@@ -9,7 +9,7 @@ import AddFileButton from "@/components/form/AddFileButton";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Divider from "@/components/content/Divider";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import GreenBox from "@/components/content/GreenBox";
@@ -230,7 +230,7 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Rahakorvaus</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -247,7 +247,7 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Maakorvaus</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -264,7 +264,7 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Muu</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -283,7 +283,7 @@ class CompensationsEdit extends Component<Props> {
                     </FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -329,7 +329,7 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Katu (9901)</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -341,7 +341,7 @@ class CompensationsEdit extends Component<Props> {
                     />
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -358,7 +358,7 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Puisto (9903)</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -370,7 +370,7 @@ class CompensationsEdit extends Component<Props> {
                     />
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -387,7 +387,7 @@ class CompensationsEdit extends Component<Props> {
                     <FormText>Muut</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -399,7 +399,7 @@ class CompensationsEdit extends Component<Props> {
                     />
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,

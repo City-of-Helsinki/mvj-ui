@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import Button from "@/components/button/Button";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import Modal from "@/components/modal/Modal";
 import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import { FieldTypes, FormNames } from "@/enums";
@@ -59,7 +59,7 @@ class CreateInvoiceNoteModal extends PureComponent<Props> {
         <Modal isOpen={isOpen} onClose={onClose} title="Luo laskujen tiedote">
           <Row>
             <Column small={4}>
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={getFieldAttributes(
                   invoiceNoteAttributes,
                   InvoiceNoteFieldPaths.LEASE,
@@ -74,7 +74,7 @@ class CreateInvoiceNoteModal extends PureComponent<Props> {
               />
             </Column>
             <Column small={4}>
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={getFieldAttributes(
                   invoiceNoteAttributes,
                   InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE,
@@ -87,7 +87,7 @@ class CreateInvoiceNoteModal extends PureComponent<Props> {
               />
             </Column>
             <Column small={4}>
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={getFieldAttributes(
                   invoiceNoteAttributes,
                   InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE,
@@ -102,7 +102,7 @@ class CreateInvoiceNoteModal extends PureComponent<Props> {
           </Row>
           <Row>
             <Column small={12}>
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={getFieldAttributes(
                   invoiceNoteAttributes,
                   InvoiceNoteFieldPaths.NOTES,

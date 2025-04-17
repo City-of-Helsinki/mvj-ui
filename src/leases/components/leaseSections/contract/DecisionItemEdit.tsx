@@ -8,7 +8,7 @@ import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import Collapse from "@/components/collapse/Collapse";
 import DecisionConditionsEdit from "./DecisionConditionsEdit";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { receiveCollapseStates } from "@/leases/actions";
 import { FieldTypes, FormNames, ViewModes } from "@/enums";
 import {
@@ -200,7 +200,7 @@ const DecisionItemEdit = ({
                 LeaseDecisionsFieldPaths.DECISION_MAKER,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -224,7 +224,7 @@ const DecisionItemEdit = ({
                 LeaseDecisionsFieldPaths.DECISION_DATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -248,7 +248,7 @@ const DecisionItemEdit = ({
                 LeaseDecisionsFieldPaths.SECTION,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -275,7 +275,7 @@ const DecisionItemEdit = ({
                 LeaseDecisionsFieldPaths.TYPE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -297,7 +297,7 @@ const DecisionItemEdit = ({
                 LeaseDecisionsFieldPaths.REFERENCE_NUMBER,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -325,7 +325,7 @@ const DecisionItemEdit = ({
                 LeaseDecisionsFieldPaths.DESCRIPTION,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,

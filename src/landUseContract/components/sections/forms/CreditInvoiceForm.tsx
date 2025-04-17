@@ -7,7 +7,7 @@ import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import Button from "@/components/button/Button";
 import CloseButton from "@/components/button/CloseButton";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import WhiteBox from "@/components/content/WhiteBox";
 import { receiveIsCreditClicked } from "@/invoices/actions";
 import {
@@ -118,7 +118,7 @@ const CreditInvoiceForm = ({
 
           <Row>
             <Column small={6} medium={4} large={2}>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isCreditClicked}
                 fieldAttributes={{
                   type: "choice",
@@ -146,7 +146,7 @@ const CreditInvoiceForm = ({
                     InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isCreditClicked}
                     fieldAttributes={{
                       ...getFieldAttributes(
@@ -171,7 +171,7 @@ const CreditInvoiceForm = ({
             )}
             {type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT && (
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isCreditClicked}
                   fieldAttributes={{
                     type: "decimal",
@@ -200,7 +200,7 @@ const CreditInvoiceForm = ({
                   InvoiceFieldPaths.NOTES,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isCreditClicked}
                   fieldAttributes={getFieldAttributes(
                     invoiceAttributes,

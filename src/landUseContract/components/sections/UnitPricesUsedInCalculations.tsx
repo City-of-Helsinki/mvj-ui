@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { formValueSelector, change } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import RemoveButton from "@/components/form/RemoveButton";
 import type { Attributes } from "types";
 import { getUsedPrice, getSum } from "@/landUseContract/helpers";
@@ -60,7 +60,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
     return (
       <Row>
         <Column large={2}>
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={get(
               attributes,
@@ -71,7 +71,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
           />
         </Column>
         <Column large={2}>
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={get(
               attributes,
@@ -82,7 +82,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
           />
         </Column>
         <Column large={1}>
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={get(
               attributes,
@@ -93,7 +93,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
           />
         </Column>
         <Column large={1}>
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={get(
               attributes,
@@ -104,7 +104,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
           />
         </Column>
         <Column large={1}>
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={get(
               attributes,
@@ -115,7 +115,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
           />
         </Column>
         <Column large={1}>
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={get(
               attributes,
@@ -126,7 +126,7 @@ class UnitPricesUsedInCalculation extends Component<Props> {
           />
         </Column>
         <Column large={1}>
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={get(
               attributes,

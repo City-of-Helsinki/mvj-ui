@@ -8,7 +8,7 @@ import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import RemoveButton from "@/components/form/RemoveButton";
 import SubTitle from "@/components/content/SubTitle";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
@@ -102,7 +102,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.LITIGANT,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -123,7 +123,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -143,7 +143,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.AMOUNT,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -164,7 +164,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.COMPENSATION_AMOUNT,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -185,7 +185,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.INCREASE_PERCENTAGE,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -206,7 +206,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.SIGN_DATE,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -226,7 +226,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.PLAN_LAWFULNESS_DATE,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -247,7 +247,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.DESCRIPTION,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,

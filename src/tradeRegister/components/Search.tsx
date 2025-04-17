@@ -4,7 +4,7 @@ import { getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import Button from "@/components/button/Button";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import SearchInputColumn from "@/components/search/SearchInputColumn";
 import SearchLabel from "@/components/search/SearchLabel";
 import SearchLabelColumn from "@/components/search/SearchLabelColumn";
@@ -45,7 +45,7 @@ const Search = ({
               <SearchLabel>Y-tunnus</SearchLabel>
             </SearchLabelColumn>
             <SearchInputColumn>
-              <FormField
+              <FormFieldLegacy
                 autoBlur
                 disableDirty
                 fieldAttributes={{

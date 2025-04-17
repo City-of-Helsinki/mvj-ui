@@ -20,7 +20,7 @@ import {
 } from "@/areaSearch/selectors";
 import type { Attributes } from "types";
 import Authorization from "@/components/authorization/Authorization";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import AreaSearchMap from "@/areaSearch/components/map/AreaSearchMap";
 import FormFieldLabel from "@/components/form/FormFieldLabel";
 import {
@@ -106,7 +106,7 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
         <Row>
           <Authorization allow={true}>
             <Column small={4} medium={3} large={3}>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, "intended_use")}
                 name="intended_use"
@@ -118,7 +118,7 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
           </Authorization>
           <Authorization allow={true}>
             <Column small={4} medium={3} large={3}>
-              <FormField
+              <FormFieldLegacy
                 disableDirty
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, "start_date")}
@@ -135,7 +135,7 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
           </Authorization>
           <Authorization allow={true}>
             <Column small={4} medium={3} large={3}>
-              <FormField
+              <FormFieldLegacy
                 disableDirty
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, "end_date")}
@@ -153,7 +153,7 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
         <Row>
           <Authorization allow={true}>
             <Column small={12}>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, "description_intended_use")}
                 name="description_intended_use"
@@ -175,7 +175,7 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
               }}
               hasError={geometryHasError}
             />
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={{
                 type: FieldTypes.HIDDEN,
@@ -190,7 +190,7 @@ class AreaSearchApplicationCreateSpecs extends Component<Props> {
         <Row>
           <Authorization allow={true}>
             <Column small={12}>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, "description_area")}
                 name="description_area"

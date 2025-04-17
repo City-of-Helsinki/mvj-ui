@@ -32,7 +32,7 @@ import WhiteBox from "@/components/content/WhiteBox";
 import SubTitle from "@/components/content/SubTitle";
 import Title from "@/components/content/Title";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import {
   receiveCollapseStates,
   receiveIsSaveClicked,
@@ -459,7 +459,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
               <Row>
                 <Authorization allow={isFieldAllowedToRead(attributes, "name")}>
                   <Column small={12} medium={12} large={5}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, "name")}
                       name="name"
@@ -475,7 +475,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   allow={isFieldAllowedToRead(attributes, "preparers")}
                 >
                   <Column small={12} medium={6} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, "preparers")}
                       name="preparers"
@@ -494,7 +494,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   allow={isFieldAllowedToRead(attributes, "search_class")}
                 >
                   <Column small={12} medium={6} large={3}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -513,7 +513,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                 </Authorization>
                 <Authorization allow={isFieldAllowedToRead(attributes, "type")}>
                   <Column small={12} medium={6} large={3}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -534,7 +534,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   allow={isFieldAllowedToRead(attributes, "subtype")}
                 >
                   <Column small={12} medium={6} large={3}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -556,7 +556,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   allow={isFieldAllowedToRead(attributes, "begin_at")}
                 >
                   <Column small={6} medium={6} large={2}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, "begin_at")}
                       name="begin_at"
@@ -574,7 +574,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   allow={isFieldAllowedToRead(attributes, "end_at")}
                 >
                   <Column small={6} medium={6} large={2}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, "end_at")}
                       name="end_at"
@@ -592,7 +592,7 @@ class BasicInfoEdit extends PureComponent<Props, State> {
                   allow={isFieldAllowedToRead(attributes, "stage")}
                 >
                   <Column small={12} medium={6} large={2}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={stageAttributes}
                       name="stage"

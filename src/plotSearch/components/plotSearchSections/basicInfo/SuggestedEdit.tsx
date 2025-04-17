@@ -4,7 +4,7 @@ import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import RemoveButton from "@/components/form/RemoveButton";
 import { getFieldOptions } from "@/util/helpers";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
@@ -40,7 +40,7 @@ const SuggestedEdit = ({
   return (
     <Row>
       <Column large={7}>
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={get(
             attributes,
@@ -55,7 +55,7 @@ const SuggestedEdit = ({
         />
       </Column>
       <Column large={1.5}>
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={get(
             attributes,
@@ -67,7 +67,7 @@ const SuggestedEdit = ({
       </Column>
       {"/"}
       <Column large={1.5}>
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={get(
             attributes,

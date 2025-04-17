@@ -28,7 +28,7 @@ import {
   fetchReservationIdentifierUnitLists,
   fetchSinglePlotSearch,
 } from "@/plotSearch/actions";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import ErrorBlock from "@/components/form/ErrorBlock";
@@ -266,7 +266,7 @@ class ReservationIdentifiersModal extends Component<Props, State> {
                   renderer: (_, row) => (
                     <>
                       {!row.disabled && (
-                        <FormField
+                        <FormFieldLegacy
                           name={`rowsToCreate[${row.index}].selected`}
                           fieldAttributes={{
                             type: FieldTypes.CHECKBOX,

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Column, Row } from "react-foundation";
 import AddButton from "@/components/form/AddButton";
 import RemoveButton from "@/components/form/RemoveButton";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import AddFileButton from "@/components/form/AddFileButton";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import FormText from "@/components/form/FormText";
@@ -373,7 +373,7 @@ const ApplicationFormSubsectionFields = connect(
             label: choice.has_text_input ? (
               <>
                 {choice.text}{" "}
-                <FormField
+                <FormFieldLegacy
                   name={`${fieldName}.extraValue`}
                   fieldAttributes={{
                     type: "textbox",
@@ -407,7 +407,7 @@ const ApplicationFormSubsectionFields = connect(
               label: choice.text,
               value: choice.value,
               field: choice.has_text_input ? (
-                <FormField
+                <FormFieldLegacy
                   name={`${fieldName}.extraValue`}
                   fieldAttributes={{
                     type: "textbox",
@@ -450,7 +450,7 @@ const ApplicationFormSubsectionFields = connect(
 
     return (
       <Column {...columnWidths} className="ApplicationFormField__container">
-        <FormField
+        <FormFieldLegacy
           name={`${fieldName}.value`}
           fieldAttributes={{
             read_only: false,
