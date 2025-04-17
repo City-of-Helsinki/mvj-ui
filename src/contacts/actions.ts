@@ -41,7 +41,7 @@ export const attributesNotFound = (): ContactAttributesNotFoundAction =>
   createAction("mvj/contacts/ATTRIBUTES_NOT_FOUND")();
 export const createContact = (contact: Contact): CreateContactAction =>
   createAction("mvj/contacts/CREATE")(contact);
-export const editContact = (contact: Contact): EditContactAction =>
+export const editContact = (contact: Partial<Contact>): EditContactAction =>
   createAction("mvj/contacts/EDIT")(contact);
 export const createContactOnModal = (
   contact: Contact,
@@ -61,7 +61,7 @@ export const fetchSingleContact = (
 ): FetchSingleContactAction =>
   createAction("mvj/contacts/FETCH_SINGLE")(contactId);
 export const receiveSingleContact = (
-  contact: Contact,
+  contact: Partial<Contact>,
 ): ReceiveSingleContactAction =>
   createAction("mvj/contacts/RECEIVE_SINGLE")(contact);
 export const initializeContactForm = (

@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { getFormValues, isDirty } from "redux-form";
-import { withRouter } from "react-router";
-import flowRight from "lodash/flowRight";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Form } from "react-final-form";
+import { useHistory, useLocation } from "react-router-dom";
+import { useContactAttributes } from "@/components/attributes/ContactAttributes";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContactForm from "./forms/ContactForm";
@@ -23,7 +23,6 @@ import {
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import {
   ConfirmationModalTexts,
-  FormNames,
   Methods,
   PermissionMissingTexts,
 } from "@/enums";
@@ -32,203 +31,207 @@ import { ContactTypes } from "@/contacts/enums";
 import { isEmptyValue, isMethodAllowed, setPageTitle } from "@/util/helpers";
 import { contactExists } from "@/contacts/requestsAsync";
 import { getRouteById, Routes } from "@/root/routes";
-import { getIsContactFormValid, getIsSaveClicked } from "@/contacts/selectors";
-import { withContactAttributes } from "@/components/attributes/ContactAttributes";
-import { withUiDataList } from "@/components/uiData/UiDataListHOC";
-import type { Methods as MethodsType } from "types";
-import type { RootState } from "@/root/types";
+import {
+  getInitialContactFormValues,
+  getIsFetchingAttributes,
+  getIsSaveClicked,
+} from "@/contacts/selectors";
+import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
+import { useUiDataList } from "@/components/uiData/UiDataListHook";
+
+import type { FormApi } from "final-form";
 import type { Contact } from "@/contacts/types";
-type Props = {
-  contactFormValues: Contact;
-  contactMethods: MethodsType;
-  // get via withContactAttributes HOC
-  createContact: (...args: Array<any>) => any;
-  hideEditMode: (...args: Array<any>) => any;
-  history: Record<string, any>;
-  isContactFormDirty: boolean;
-  isContactFormValid: boolean;
-  isFetchingContactAttributes: boolean;
-  // get via withContactAttributes HOC
-  isSaveClicked: boolean;
-  location: Record<string, any>;
-  receiveIsSaveClicked: (...args: Array<any>) => any;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-  showEditMode: (...args: Array<any>) => any;
-};
 
-class NewContactPage extends Component<Props> {
-  componentDidMount() {
-    const { receiveIsSaveClicked, receiveTopNavigationSettings, showEditMode } =
-      this.props;
+const NewContactPage: React.FC = () => {
+  // Fetch ui data and attributes if needed
+  useUiDataList();
+  const { contactMethods } = useContactAttributes();
+  const formApiRef = useRef<FormApi<Contact, Partial<Contact>> | null>(null);
+  const dispatch = useDispatch();
+  const initialContactFormValues = useSelector(getInitialContactFormValues);
+  const isFetchingContactAttributes = useSelector(getIsFetchingAttributes);
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const history = useHistory();
+  const location = useLocation();
+  const [formState, setFormState] = useState<{
+    valid: boolean;
+    dirty: boolean;
+  }>({
+    valid: false,
+    dirty: false,
+  });
+
+  useEffect(() => {
     setPageTitle("Uusi asiakas");
-    receiveIsSaveClicked(false);
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.CONTACTS),
-      pageTitle: "Asiakkaat",
-      showSearch: false,
+    dispatch(receiveIsSaveClicked(false));
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.CONTACTS),
+        pageTitle: "Asiakkaat",
+        showSearch: false,
+      }),
+    );
+    dispatch(showEditMode());
+    window.addEventListener("beforeunload", handleLeavePage);
+
+    return () => {
+      dispatch(hideEditMode());
+      window.removeEventListener("beforeunload", handleLeavePage);
+    };
+  }, [dispatch]);
+
+  const handleFormStateChange = useCallback((state) => {
+    setFormState({
+      valid: state.valid,
+      dirty: state.dirty,
     });
-    showEditMode();
-    window.addEventListener("beforeunload", this.handleLeavePage);
-  }
+  }, []);
 
-  componentWillUnmount() {
-    const { hideEditMode } = this.props;
-    hideEditMode();
-    window.removeEventListener("beforeunload", this.handleLeavePage);
-  }
-
-  handleLeavePage = (e) => {
-    const { isContactFormDirty } = this.props;
-
-    if (isContactFormDirty) {
-      const confirmationMessage = "";
-      e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-
-      return confirmationMessage; // Gecko, WebKit, Chrome <34
+  /**
+   * Handles the browser's native "leave page" modal when the user attempts to navigate away
+   * from the page with unsaved changes in the form.
+   */
+  const handleLeavePage = useCallback((e: BeforeUnloadEvent) => {
+    if (formApiRef.current && formApiRef.current.getState().dirty) {
+      e.preventDefault();
+      // Legacy support for older browsers
+      e.returnValue = true;
     }
-  };
-  handleBack = () => {
-    const {
-      history,
-      location: { search },
-    } = this.props;
+  }, []);
+
+  const handleBack = () => {
     return history.push({
       pathname: `${getRouteById(Routes.CONTACTS)}`,
-      search: search,
+      search: location.search,
     });
   };
-  cancelChanges = () => {
-    const { history } = this.props;
+
+  const cancelChanges = () => {
     return history.push({
       pathname: getRouteById(Routes.CONTACTS),
     });
   };
-  createContact = () => {
-    const { contactFormValues, createContact } = this.props;
-    createContact(contactFormValues);
+
+  const handleSubmit = async (values: Contact) => {
+    dispatch(createContact(values));
+    // On successful contact creation, navigate to contacts list
+    history.push({
+      pathname: getRouteById(Routes.CONTACTS),
+    });
   };
 
-  render() {
-    const {
-      contactMethods,
-      isContactFormValid,
-      isFetchingContactAttributes,
-      isSaveClicked,
-    } = this.props;
-    if (isFetchingContactAttributes)
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    if (!contactMethods) return null;
-    if (!isMethodAllowed(contactMethods, Methods.POST))
-      return (
-        <PageContainer>
-          <AuthorizationError text={PermissionMissingTexts.GENERAL} />
-        </PageContainer>
-      );
-    return (
-      <AppConsumer>
-        {({ dispatch }) => {
-          const handleCreate = async () => {
-            const {
-              contactFormValues,
-              isContactFormValid,
-              receiveIsSaveClicked,
-            } = this.props;
-            const { business_id, national_identification_number, type } =
-              contactFormValues;
-            receiveIsSaveClicked(true);
-            if (!isContactFormValid) return;
-            const contactIdentifier = type
-              ? type === ContactTypes.PERSON
-                ? national_identification_number
-                : business_id
-              : null;
+  const handleSave = async (contextDispatch) => {
+    if (!formApiRef.current) {
+      return;
+    }
+    const { valid, values } = formApiRef.current.getState();
 
-            if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
-              const exists = await contactExists({
-                identifier: contactIdentifier,
-                serviceUnitId: contactFormValues?.service_unit,
-              });
+    if (!valid) return;
+    const { business_id, national_identification_number, type } = values;
+    const contactIdentifier = type
+      ? type === ContactTypes.PERSON
+        ? national_identification_number
+        : business_id
+      : null;
 
-              if (exists) {
-                dispatch({
-                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                  confirmationFunction: () => {
-                    this.createContact();
-                  },
-                  confirmationModalButtonClassName: ButtonColors.SUCCESS,
-                  confirmationModalButtonText:
-                    ConfirmationModalTexts.CREATE_CONTACT.BUTTON,
-                  confirmationModalLabel:
-                    ConfirmationModalTexts.CREATE_CONTACT.LABEL,
-                  confirmationModalTitle:
-                    ConfirmationModalTexts.CREATE_CONTACT.TITLE,
-                });
-              } else {
-                this.createContact();
-              }
-            } else {
-              this.createContact();
+    if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
+      const serviceUnitId = values?.service_unit as unknown as number;
+      const exists = await contactExists({
+        identifier: contactIdentifier,
+        serviceUnitId: serviceUnitId,
+      });
+
+      if (exists) {
+        contextDispatch({
+          type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+          confirmationFunction: () => {
+            dispatch(receiveIsSaveClicked(true));
+            if (formApiRef.current) {
+              formApiRef.current.submit();
             }
-          };
-
-          return (
-            <FullWidthContainer>
-              <PageNavigationWrapper>
-                <ControlButtonBar
-                  buttonComponent={
-                    <ControlButtons
-                      allowEdit={isMethodAllowed(contactMethods, Methods.POST)}
-                      isCopyDisabled={true}
-                      isEditMode={true}
-                      isSaveDisabled={isSaveClicked && !isContactFormValid}
-                      onCancel={this.cancelChanges}
-                      onSave={handleCreate}
-                      showCommentButton={false}
-                      showCopyButton={true}
-                    />
-                  }
-                  infoComponent={<h1>Uusi asiakas</h1>}
-                  onBack={this.handleBack}
-                />
-              </PageNavigationWrapper>
-
-              <PageContainer className="with-small-control-bar">
-                <ContentContainer>
-                  <GreenBox className="no-margin">
-                    <ContactForm isFocusedOnMount />
-                  </GreenBox>
-                </ContentContainer>
-              </PageContainer>
-            </FullWidthContainer>
-          );
-        }}
-      </AppConsumer>
-    );
-  }
-}
-
-const mapStateToProps = (state: RootState) => {
-  return {
-    contactFormValues: getFormValues(FormNames.CONTACT)(state),
-    isContactFormDirty: isDirty(FormNames.CONTACT)(state),
-    isContactFormValid: getIsContactFormValid(state),
-    isSaveClicked: getIsSaveClicked(state),
+          },
+          confirmationModalButtonClassName: ButtonColors.SUCCESS,
+          confirmationModalButtonText:
+            ConfirmationModalTexts.CREATE_CONTACT.BUTTON,
+          confirmationModalLabel: ConfirmationModalTexts.CREATE_CONTACT.LABEL,
+          confirmationModalTitle: ConfirmationModalTexts.CREATE_CONTACT.TITLE,
+        });
+      } else {
+        // No duplicate, trigger form submission
+        dispatch(receiveIsSaveClicked(true));
+        formApiRef.current.submit();
+      }
+    } else {
+      // No identifier to check, trigger form submission
+      dispatch(receiveIsSaveClicked(true));
+      formApiRef.current.submit();
+    }
   };
+
+  if (isFetchingContactAttributes)
+    return (
+      <PageContainer>
+        <Loader isLoading={true} />
+      </PageContainer>
+    );
+
+  if (!contactMethods) return null;
+
+  if (!isMethodAllowed(contactMethods, Methods.POST))
+    return (
+      <PageContainer>
+        <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+      </PageContainer>
+    );
+
+  return (
+    <AppConsumer>
+      {({ dispatch: contextDispatch }) => (
+        <FullWidthContainer>
+          <PageNavigationWrapper>
+            <ControlButtonBar
+              buttonComponent={
+                <ControlButtons
+                  allowEdit={isMethodAllowed(contactMethods, Methods.POST)}
+                  isCopyDisabled={true}
+                  isEditMode={true}
+                  isSaveDisabled={isSaveClicked && !formState.valid}
+                  onCancel={cancelChanges}
+                  onSave={async () => await handleSave(contextDispatch)}
+                  showCommentButton={false}
+                  showCopyButton={true}
+                />
+              }
+              infoComponent={<h1>Uusi asiakas</h1>}
+              onBack={handleBack}
+            />
+          </PageNavigationWrapper>
+
+          <PageContainer className="with-small-control-bar">
+            <ContentContainer>
+              <GreenBox className="no-margin">
+                <Form
+                  onSubmit={handleSubmit}
+                  initialValues={{
+                    ...initialContactFormValues,
+                    service_unit:
+                      initialContactFormValues?.service_unit ||
+                      userActiveServiceUnit?.id,
+                  }}
+                >
+                  {({ form }) => {
+                    formApiRef.current = form;
+                    return <ContactForm formApi={form} />;
+                  }}
+                </Form>
+              </GreenBox>
+            </ContentContainer>
+          </PageContainer>
+        </FullWidthContainer>
+      )}
+    </AppConsumer>
+  );
 };
 
-export default flowRight(
-  withContactAttributes,
-  withUiDataList,
-  withRouter,
-  connect(mapStateToProps, {
-    createContact,
-    hideEditMode,
-    receiveIsSaveClicked,
-    receiveTopNavigationSettings,
-    showEditMode,
-  }),
-)(NewContactPage);
+export default NewContactPage;
