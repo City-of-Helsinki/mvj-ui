@@ -219,7 +219,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
             onSubmit={createLease}
         />
         <div className="AreaSearchApplication__header">
-          <Title className="AreaSearchApplication__header__title">Hakemus</Title>
+          <Title>Hakemus</Title>
           <AddButtonSecondary
             label={ButtonLabels.CREATE_LEASE}
             onClick={this.showCreateLeaseModal}
