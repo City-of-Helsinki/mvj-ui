@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import RemoveButton from "@/components/form/RemoveButton";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
@@ -28,7 +28,7 @@ const ConditionItemEdit = ({
   return (
     <Row>
       <Column small={6} medium={4} large={2}>
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={get(
             attributes,
@@ -39,7 +39,7 @@ const ConditionItemEdit = ({
         />
       </Column>
       <Column small={6} medium={4} large={2}>
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={get(
             attributes,
@@ -50,7 +50,7 @@ const ConditionItemEdit = ({
         />
       </Column>
       <Column small={6} medium={4} large={2}>
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={get(
             attributes,
@@ -61,7 +61,7 @@ const ConditionItemEdit = ({
         />
       </Column>
       <Column small={3} medium={2} large={1}>
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={get(
             attributes,
@@ -72,7 +72,7 @@ const ConditionItemEdit = ({
         />
       </Column>
       <Column small={3} medium={2} large={1}>
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={get(
             attributes,
@@ -83,7 +83,7 @@ const ConditionItemEdit = ({
         />
       </Column>
       <Column small={3} medium={2} large={2}>
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={get(
             attributes,
@@ -94,7 +94,7 @@ const ConditionItemEdit = ({
         />
       </Column>
       <Column small={3} medium={2} large={1}>
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={get(
             attributes,

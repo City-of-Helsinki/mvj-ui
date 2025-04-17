@@ -6,7 +6,7 @@ import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import { getDistrictsByMunicipality } from "@/district/selectors";
 import Button from "@/components/button/Button";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import { fetchDistrictsByMunicipality } from "@/district/actions";
 import { FormNames } from "@/enums";
@@ -73,7 +73,7 @@ class CreateLandUseContractForm extends Component<Props> {
       <form>
         <Row>
           <Column small={4}>
-            <FormField
+            <FormFieldLegacy
               setRefForField={this.setRefForFirstField}
               fieldAttributes={get(attributes, "municipality")}
               name="municipality"
@@ -84,7 +84,7 @@ class CreateLandUseContractForm extends Component<Props> {
             />
           </Column>
           <Column small={4}>
-            <FormField
+            <FormFieldLegacy
               fieldAttributes={get(attributes, "district")}
               name="district"
               overrideValues={{
@@ -94,13 +94,16 @@ class CreateLandUseContractForm extends Component<Props> {
             />
           </Column>
           <Column small={4}>
-            <FormField
+            <FormFieldLegacy
               fieldAttributes={get(attributes, "status")}
               name="status"
             />
           </Column>
           <Column small={4}>
-            <FormField fieldAttributes={get(attributes, "type")} name="type" />
+            <FormFieldLegacy
+              fieldAttributes={get(attributes, "type")}
+              name="type"
+            />
           </Column>
         </Row>
         <ModalButtonWrapper>

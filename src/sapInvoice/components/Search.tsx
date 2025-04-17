@@ -5,7 +5,7 @@ import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import SearchContainer from "@/components/search/SearchContainer";
 import { FieldTypes, FormNames } from "@/enums";
 import { fetchServiceUnits } from "@/serviceUnits/actions";
@@ -99,7 +99,7 @@ class Search extends PureComponent<Props> {
       <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
           <Column large={12}>
-            <FormField
+            <FormFieldLegacy
               autoBlur
               disableDirty
               fieldAttributes={{

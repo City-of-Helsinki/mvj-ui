@@ -13,7 +13,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import Collapse from "@/components/collapse/Collapse";
 import ExternalLink from "@/components/links/ExternalLink";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import ListItem from "@/components/content/ListItem";
@@ -258,7 +258,7 @@ const renderDecisions = ({
                             InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -280,7 +280,7 @@ const renderDecisions = ({
                             InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_DATE,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -302,7 +302,7 @@ const renderDecisions = ({
                             InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -325,7 +325,7 @@ const renderDecisions = ({
                             InfillDevelopmentCompensationLeaseDecisionsFieldPaths.REFERENCE_NUMBER,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -524,7 +524,7 @@ const renderIntendedUses = ({
                             InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -546,7 +546,7 @@ const renderIntendedUses = ({
                             InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -569,7 +569,7 @@ const renderIntendedUses = ({
                             InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -812,7 +812,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   InfillDevelopmentCompensationLeasesFieldPaths.LEASE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -989,7 +989,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -1018,7 +1018,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -1075,7 +1075,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -1104,7 +1104,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -1133,7 +1133,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -1164,7 +1164,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   InfillDevelopmentCompensationLeasesFieldPaths.YEAR,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -1188,7 +1188,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -1213,7 +1213,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
                   InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -1414,7 +1414,7 @@ class LeaseItemEdit extends PureComponent<Props, State> {
           >
             <Row>
               <Column>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,

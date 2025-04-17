@@ -7,7 +7,7 @@ import get from "lodash/get";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import GreenBox from "@/components/content/GreenBox";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -74,7 +74,7 @@ const renderInvoices = ({
                   return (
                     <Row key={index}>
                       <Column small={3} large={2}>
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(
                             attributes,
@@ -86,7 +86,7 @@ const renderInvoices = ({
                         />
                       </Column>
                       <Column small={3} large={2}>
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(
                             attributes,
@@ -97,7 +97,7 @@ const renderInvoices = ({
                         />
                       </Column>
                       <Column small={3} large={2}>
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(
                             attributes,
@@ -110,7 +110,7 @@ const renderInvoices = ({
                       <Column small={3} large={2}>
                         <FieldAndRemoveButtonWrapper
                           field={
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={get(
                                 attributes,

@@ -4,7 +4,7 @@ import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import GreenBox from "@/components/content/GreenBox";
 import LeaseItemsEdit from "./LeaseItemsEdit";
 import SubTitle from "@/components/content/SubTitle";
@@ -77,7 +77,7 @@ class InfillDevelopmentForm extends Component<Props> {
                   InfillDevelopmentCompensationFieldPaths.NAME,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -102,7 +102,7 @@ class InfillDevelopmentForm extends Component<Props> {
                   InfillDevelopmentCompensationFieldPaths.DETAILED_PLAN_IDENTIFIER,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -127,7 +127,7 @@ class InfillDevelopmentForm extends Component<Props> {
                   InfillDevelopmentCompensationFieldPaths.REFERENCE_NUMBER,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -154,7 +154,7 @@ class InfillDevelopmentForm extends Component<Props> {
                   InfillDevelopmentCompensationFieldPaths.STATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -180,7 +180,7 @@ class InfillDevelopmentForm extends Component<Props> {
                   InfillDevelopmentCompensationFieldPaths.USER,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -205,7 +205,7 @@ class InfillDevelopmentForm extends Component<Props> {
                   InfillDevelopmentCompensationFieldPaths.LEASE_CONTRACT_CHANGE_DATE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,
@@ -230,7 +230,7 @@ class InfillDevelopmentForm extends Component<Props> {
                   InfillDevelopmentCompensationFieldPaths.NOTE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     infillDevelopmentAttributes,

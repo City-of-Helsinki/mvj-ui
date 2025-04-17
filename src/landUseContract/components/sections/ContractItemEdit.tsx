@@ -13,7 +13,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import Collapse from "@/components/collapse/Collapse";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { receiveCollapseStates } from "@/landUseContract/actions";
 import RemoveButton from "@/components/form/RemoveButton";
 import { FormNames, ViewModes, ConfirmationModalTexts } from "@/enums";
@@ -114,7 +114,7 @@ const renderContractChanges = ({
 
                           <Row>
                             <Column small={6} medium={4} large={2}>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -124,7 +124,7 @@ const renderContractChanges = ({
                               />
                             </Column>
                             <Column small={6} medium={4} large={2}>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -134,7 +134,7 @@ const renderContractChanges = ({
                               />
                             </Column>
                             <Column small={6} medium={4} large={2}>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -144,7 +144,7 @@ const renderContractChanges = ({
                               />
                             </Column>
                             <Column small={6} medium={4} large={2}>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -154,7 +154,7 @@ const renderContractChanges = ({
                               />
                             </Column>
                             <Column small={6} medium={4} large={2}>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -166,7 +166,7 @@ const renderContractChanges = ({
                           </Row>
                           <Row>
                             <Column small={6} medium={4} large={2}>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -181,7 +181,7 @@ const renderContractChanges = ({
                               />
                             </Column>
                             <Column small={6} medium={8} large={10}>
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -279,7 +279,7 @@ const renderWarrants = ({
                         </ActionButtonWrapper>
                         <Row>
                           <Column small={6} medium={4} large={2}>
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -292,7 +292,7 @@ const renderWarrants = ({
                             />
                           </Column>
                           <Column small={6} medium={4} large={2}>
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -305,7 +305,7 @@ const renderWarrants = ({
                             />
                           </Column>
                           <Column small={12} medium={4} large={2}>
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -318,7 +318,7 @@ const renderWarrants = ({
                             />
                           </Column>
                           <Column small={12} medium={4} large={2}>
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -331,7 +331,7 @@ const renderWarrants = ({
                             />
                           </Column>
                           <Column small={12} medium={4} large={2}>
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -344,7 +344,7 @@ const renderWarrants = ({
                             />
                           </Column>
                           <Column small={12} medium={4} large={2}>
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -358,7 +358,7 @@ const renderWarrants = ({
                             />
                           </Column>
                           <Column small={12} medium={4} large={2}>
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -371,7 +371,7 @@ const renderWarrants = ({
                             />
                           </Column>
                           <Column small={12} medium={8} large={10}>
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -516,7 +516,7 @@ const ContractItemEdit = ({
       <BoxContentWrapper>
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, "contracts.child.children.type")}
               name={`${field}.type`}
@@ -526,7 +526,7 @@ const ContractItemEdit = ({
             />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={get(
                 attributes,
@@ -539,7 +539,7 @@ const ContractItemEdit = ({
             />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={get(
                 attributes,
@@ -552,7 +552,7 @@ const ContractItemEdit = ({
             />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={get(
                 attributes,
@@ -565,7 +565,7 @@ const ContractItemEdit = ({
             />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={get(
                 attributes,
@@ -578,7 +578,7 @@ const ContractItemEdit = ({
             />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={get(
                 attributes,

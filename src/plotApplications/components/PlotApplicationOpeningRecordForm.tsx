@@ -4,7 +4,7 @@ import { Column, Row } from "react-foundation";
 import { get } from "lodash/object";
 import { flowRight } from "lodash/util";
 import { connect } from "react-redux";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import type { RootState } from "@/root/types";
 import { getAttributes } from "@/application/selectors";
 import type { Attributes } from "types";
@@ -64,7 +64,7 @@ class PlotApplicationOpeningRecordForm extends Component<InnerProps> {
             )}
           >
             <Column small={12} medium={6} large={4}>
-              <FormField
+              <FormFieldLegacy
                 name="opening_record.plot_search_time_stamp"
                 fieldAttributes={{
                   type: FieldTypes.TIME,
@@ -83,7 +83,7 @@ class PlotApplicationOpeningRecordForm extends Component<InnerProps> {
             )}
           >
             <Column small={6} medium={3} large={2}>
-              <FormField
+              <FormFieldLegacy
                 name="opening_record.time_stamp"
                 fieldAttributes={{
                   type: FieldTypes.TIME,
@@ -101,7 +101,7 @@ class PlotApplicationOpeningRecordForm extends Component<InnerProps> {
             )}
           >
             <Column small={6} medium={3} large={2}>
-              <FormField
+              <FormFieldLegacy
                 name="opening_record.created_by"
                 fieldAttributes={get(
                   attributes,
@@ -121,7 +121,7 @@ class PlotApplicationOpeningRecordForm extends Component<InnerProps> {
             )}
           >
             <Column small={12} medium={12} large={4}>
-              <FormField
+              <FormFieldLegacy
                 name="opening_record.openers"
                 fieldAttributes={get(
                   attributes,
@@ -146,7 +146,7 @@ class PlotApplicationOpeningRecordForm extends Component<InnerProps> {
             )}
           >
             <Column small={12}>
-              <FormField
+              <FormFieldLegacy
                 name="opening_record.note"
                 fieldAttributes={get(
                   attributes,

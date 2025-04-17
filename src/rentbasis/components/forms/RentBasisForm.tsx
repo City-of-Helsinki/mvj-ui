@@ -7,7 +7,7 @@ import flowRight from "lodash/flowRight";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -122,7 +122,7 @@ const renderPropertyIdentifiers = ({
                               RentBasisPropertyIdentifiersFieldPaths.IDENTIFIER,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 rentBasisAttributes,
@@ -341,7 +341,7 @@ const renderDecisions = ({
                           RentBasisDecisionsFieldPaths.DECISION_MAKER,
                         )}
                       >
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isSaveClicked}
                           fieldAttributes={getFieldAttributes(
                             rentBasisAttributes,
@@ -362,7 +362,7 @@ const renderDecisions = ({
                           RentBasisDecisionsFieldPaths.DECISION_DATE,
                         )}
                       >
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isSaveClicked}
                           fieldAttributes={getFieldAttributes(
                             rentBasisAttributes,
@@ -383,7 +383,7 @@ const renderDecisions = ({
                           RentBasisDecisionsFieldPaths.SECTION,
                         )}
                       >
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isSaveClicked}
                           fieldAttributes={getFieldAttributes(
                             rentBasisAttributes,
@@ -407,7 +407,7 @@ const renderDecisions = ({
                               RentBasisDecisionsFieldPaths.REFERENCE_NUMBER,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 rentBasisAttributes,
@@ -601,7 +601,7 @@ const renderRentRates = ({
                             RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               rentBasisAttributes,
@@ -623,7 +623,7 @@ const renderRentRates = ({
                             RentBasisRentRatesFieldPaths.AMOUNT,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               rentBasisAttributes,
@@ -647,7 +647,7 @@ const renderRentRates = ({
                                 RentBasisRentRatesFieldPaths.AREA_UNIT,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   rentBasisAttributes,
@@ -794,7 +794,7 @@ class RentBasisForm extends PureComponent<Props, State> {
                 RentBasisFieldPaths.PLOT_TYPE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   rentBasisAttributes,
@@ -817,7 +817,7 @@ class RentBasisForm extends PureComponent<Props, State> {
                 RentBasisFieldPaths.START_DATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   rentBasisAttributes,
@@ -841,7 +841,7 @@ class RentBasisForm extends PureComponent<Props, State> {
                 RentBasisFieldPaths.END_DATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   rentBasisAttributes,
@@ -881,7 +881,7 @@ class RentBasisForm extends PureComponent<Props, State> {
                 RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 className="align-top"
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
@@ -906,7 +906,7 @@ class RentBasisForm extends PureComponent<Props, State> {
                 RentBasisFieldPaths.MANAGEMENT,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 className="align-top"
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
@@ -931,7 +931,7 @@ class RentBasisForm extends PureComponent<Props, State> {
                 RentBasisFieldPaths.FINANCING,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 className="align-top"
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
@@ -956,7 +956,7 @@ class RentBasisForm extends PureComponent<Props, State> {
                 RentBasisFieldPaths.LEASE_RIGHTS_END_DATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   rentBasisAttributes,
@@ -980,7 +980,7 @@ class RentBasisForm extends PureComponent<Props, State> {
                 RentBasisFieldPaths.INDEX,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   rentBasisAttributes,
@@ -1045,7 +1045,7 @@ class RentBasisForm extends PureComponent<Props, State> {
         >
           <Row>
             <Column>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   rentBasisAttributes,

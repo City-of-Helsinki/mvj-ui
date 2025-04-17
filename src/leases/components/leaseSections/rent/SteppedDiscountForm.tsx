@@ -4,7 +4,7 @@ import { reduxForm } from "redux-form";
 import flowRight from "lodash/flowRight";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FormNames } from "@/enums";
 import {
   LeaseRentAdjustmentsFieldPaths,
@@ -31,7 +31,7 @@ const SteppedDiscountForm = ({ decisionOptions, leaseAttributes }: Props) => {
               LeaseRentAdjustmentsFieldPaths.INTENDED_USE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentAdjustmentsFieldPaths.INTENDED_USE,
@@ -54,7 +54,7 @@ const SteppedDiscountForm = ({ decisionOptions, leaseAttributes }: Props) => {
               LeaseRentAdjustmentsFieldPaths.START_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               fieldAttributes={{
                 ...getFieldAttributes(
                   leaseAttributes,
@@ -83,7 +83,7 @@ const SteppedDiscountForm = ({ decisionOptions, leaseAttributes }: Props) => {
         >
           <>
             <Column small={6} medium={4} large={4}>
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={{
                   max_digits: 10,
                   read_only: false,
@@ -97,7 +97,7 @@ const SteppedDiscountForm = ({ decisionOptions, leaseAttributes }: Props) => {
               />
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={{
                   max_digits: 3,
                   read_only: false,
@@ -111,7 +111,7 @@ const SteppedDiscountForm = ({ decisionOptions, leaseAttributes }: Props) => {
               />
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={{
                   max_digits: 10,
                   read_only: false,
@@ -135,7 +135,7 @@ const SteppedDiscountForm = ({ decisionOptions, leaseAttributes }: Props) => {
               LeaseRentAdjustmentsFieldPaths.DECISION,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentAdjustmentsFieldPaths.DECISION,
@@ -161,7 +161,7 @@ const SteppedDiscountForm = ({ decisionOptions, leaseAttributes }: Props) => {
               LeaseRentAdjustmentsFieldPaths.NOTE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentAdjustmentsFieldPaths.NOTE,

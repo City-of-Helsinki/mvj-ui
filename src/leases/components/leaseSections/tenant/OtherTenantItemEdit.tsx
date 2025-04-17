@@ -12,7 +12,7 @@ import Collapse from "@/components/collapse/Collapse";
 import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle";
 import ContactTemplate from "@/contacts/components/templates/ContactTemplate";
 import EditButton from "@/components/form/EditButton";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormWrapper from "@/components/form/FormWrapper";
 import FormWrapperLeft from "@/components/form/FormWrapperLeft";
 import FormWrapperRight from "@/components/form/FormWrapperRight";
@@ -209,7 +209,7 @@ const OtherTenantItemEdit = ({
                         LeaseTenantContactSetFieldPaths.CONTACT,
                       )}
                     >
-                      <FormField
+                      <FormFieldLegacy
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(
                           attributes,
@@ -254,7 +254,7 @@ const OtherTenantItemEdit = ({
                     LeaseTenantContactSetFieldPaths.START_DATE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(
                       attributes,
@@ -278,7 +278,7 @@ const OtherTenantItemEdit = ({
                     LeaseTenantContactSetFieldPaths.END_DATE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(
                       attributes,

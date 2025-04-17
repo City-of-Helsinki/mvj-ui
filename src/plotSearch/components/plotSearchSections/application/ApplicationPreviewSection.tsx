@@ -9,7 +9,7 @@ import { FormNames } from "@/enums";
 import SubTitle from "@/components/content/SubTitle";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormHintText from "@/components/form/FormHintText";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Collapse from "@/components/collapse/Collapse";
@@ -96,7 +96,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
     switch (matchingType) {
       case "checkbox":
         fieldSpecificComponents = (
-          <FormField
+          <FormFieldLegacy
             name={fakeFieldId}
             fieldAttributes={{
               type: "checkbox",
@@ -109,7 +109,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
                 label: choice.has_text_input ? (
                   <>
                     {choice.text}{" "}
-                    <FormField
+                    <FormFieldLegacy
                       name={`${fakeFieldId}_input`}
                       fieldAttributes={{
                         type: "string",
@@ -134,7 +134,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
 
       case "textarea":
         fieldSpecificComponents = (
-          <FormField
+          <FormFieldLegacy
             name={fakeFieldId}
             fieldAttributes={{
               type: "textarea",
@@ -151,7 +151,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
       case "radiobuttoninline":
         fieldSpecificComponents = (
           <>
-            <FormField
+            <FormFieldLegacy
               name={fakeFieldId}
               fieldAttributes={{
                 type: "radio-with-field",
@@ -164,7 +164,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
                   label: choice.text,
                   value: choice.value,
                   field: choice.has_text_input ? (
-                    <FormField
+                    <FormFieldLegacy
                       name={`${fakeFieldId}_input`}
                       fieldAttributes={{
                         type: "string",
@@ -191,7 +191,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
 
       case "dropdown":
         fieldSpecificComponents = (
-          <FormField
+          <FormFieldLegacy
             name={fakeFieldId}
             fieldAttributes={{
               type: "choice",
@@ -220,7 +220,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
 
       case "fractional":
         fieldSpecificComponents = (
-          <FormField
+          <FormFieldLegacy
             name={fakeFieldId}
             fieldAttributes={{
               type: "fractional",
@@ -240,7 +240,7 @@ class ApplicationPreviewSection extends PureComponent<Props> {
 
       case "textbox":
         fieldSpecificComponents = (
-          <FormField
+          <FormFieldLegacy
             name={fakeFieldId}
             fieldAttributes={{
               type: "string",
