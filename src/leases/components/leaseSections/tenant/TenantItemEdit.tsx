@@ -14,7 +14,7 @@ import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle
 import ContactTemplate from "@/contacts/components/templates/ContactTemplate";
 import EditButton from "@/components/form/EditButton";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import FormWrapper from "@/components/form/FormWrapper";
@@ -176,7 +176,7 @@ const renderRentShares = ({
                             LeaseTenantRentSharesFieldPaths.INTENDED_USE,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               attributes,
@@ -206,7 +206,7 @@ const renderRentShares = ({
                                     LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR,
                                   )}
                                 >
-                                  <FormField
+                                  <FormFieldLegacy
                                     disableTouched={isSaveClicked}
                                     fieldAttributes={getFieldAttributes(
                                       attributes,
@@ -232,7 +232,7 @@ const renderRentShares = ({
                                     LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR,
                                   )}
                                 >
-                                  <FormField
+                                  <FormFieldLegacy
                                     disableTouched={isSaveClicked}
                                     fieldAttributes={getFieldAttributes(
                                       attributes,
@@ -551,7 +551,7 @@ const TenantItemEdit = ({
                     LeaseTenantContactSetFieldPaths.CONTACT,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -592,7 +592,7 @@ const TenantItemEdit = ({
                     LeaseTenantsFieldPaths.REFERENCE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -670,7 +670,7 @@ const TenantItemEdit = ({
                               LeaseTenantsFieldPaths.SHARE_NUMERATOR,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -691,7 +691,7 @@ const TenantItemEdit = ({
                               LeaseTenantsFieldPaths.SHARE_DENOMINATOR,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               className="with-slash"
                               fieldAttributes={getFieldAttributes(
@@ -719,7 +719,7 @@ const TenantItemEdit = ({
                     LeaseTenantContactSetFieldPaths.START_DATE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -743,7 +743,7 @@ const TenantItemEdit = ({
                     LeaseTenantContactSetFieldPaths.END_DATE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       attributes,

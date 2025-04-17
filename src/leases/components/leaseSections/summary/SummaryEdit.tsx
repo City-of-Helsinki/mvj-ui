@@ -9,7 +9,7 @@ import Authorization from "@/components/authorization/Authorization";
 import Collapse from "@/components/collapse/Collapse";
 import Divider from "@/components/content/Divider";
 import ExternalLink from "@/components/links/ExternalLink";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import ListItem from "@/components/content/ListItem";
@@ -203,7 +203,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.STATE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -225,7 +225,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.START_DATE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -247,7 +247,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.END_DATE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -271,7 +271,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.LESSOR,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -295,7 +295,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.PREPARER,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -319,7 +319,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.CLASSIFICATION,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -368,7 +368,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.INTENDED_USE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -394,7 +394,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.INTENDED_USE_NOTE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -420,7 +420,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.FINANCING,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -442,7 +442,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.MANAGEMENT,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -464,7 +464,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.TRANSFERABLE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -488,7 +488,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.HITAS,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -510,7 +510,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.RESERVATION_PROCEDURE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -608,7 +608,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.NOTICE_PERIOD,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -632,7 +632,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.NOTICE_NOTE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -656,7 +656,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.REFERENCE_NUMBER,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -685,7 +685,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.NOTE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -729,7 +729,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.IS_SUBJECT_TO_VAT,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -783,7 +783,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       attributes,
                       LeaseFieldPaths.INTERNAL_ORDER,
                     ) ? (
-                      <FormField
+                      <FormFieldLegacy
                         disableTouched={isSaveClicked}
                         fieldAttributes={getFieldAttributes(
                           attributes,
@@ -828,7 +828,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       attributes,
                       LeaseFieldPaths.APPLICATION_METADATA,
                     ) ? (
-                      <FormField
+                      <FormFieldLegacy
                         disableTouched={isSaveClicked}
                         fieldAttributes={getFieldAttributes(
                           attributes,
@@ -888,7 +888,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.SPECIAL_PROJECT,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -912,7 +912,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.SUPPORTIVE_HOUSING,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -936,7 +936,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.STATISTICAL_USE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -963,7 +963,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.REAL_ESTATE_DEVELOPER,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -987,7 +987,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.CONVEYANCE_NUMBER,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -1011,7 +1011,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.BUILDING_SELLING_PRICE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -1038,7 +1038,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.REGULATED,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -1060,7 +1060,7 @@ class SummaryEdit extends PureComponent<Props, State> {
                       LeaseFieldPaths.REGULATION,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,

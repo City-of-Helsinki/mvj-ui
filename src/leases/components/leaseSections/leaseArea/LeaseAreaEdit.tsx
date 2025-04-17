@@ -15,7 +15,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import Collapse from "@/components/collapse/Collapse";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import PlanUnitItemEdit from "./PlanUnitItemEdit";
@@ -315,7 +315,7 @@ const Address = ({
             LeaseAreaAddressesFieldPaths.ADDRESS,
           )}
         >
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               attributes,
@@ -338,7 +338,7 @@ const Address = ({
             LeaseAreaAddressesFieldPaths.POSTAL_CODE,
           )}
         >
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               attributes,
@@ -359,7 +359,7 @@ const Address = ({
             LeaseAreaAddressesFieldPaths.CITY,
           )}
         >
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               attributes,
@@ -382,7 +382,7 @@ const Address = ({
                 LeaseAreaAddressesFieldPaths.IS_PRIMARY,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -684,7 +684,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   LeaseAreasFieldPaths.IDENTIFIER,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -706,7 +706,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   LeaseAreasFieldPaths.TYPE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -728,7 +728,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   LeaseAreasFieldPaths.AREA,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -754,7 +754,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   LeaseAreasFieldPaths.LOCATION,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,

@@ -7,7 +7,7 @@ import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import RemoveButton from "@/components/form/RemoveButton";
 import { FormNames } from "@/enums";
 import {
@@ -43,7 +43,7 @@ const CollateralEmpty = ({ attributes, field, isSaveClicked }: EmptyProps) => {
               LeaseContractCollateralsFieldPaths.TYPE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -86,7 +86,7 @@ const CollateralFinancialGuarantee = ({
               LeaseContractCollateralsFieldPaths.TYPE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -110,7 +110,7 @@ const CollateralFinancialGuarantee = ({
               LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -138,7 +138,7 @@ const CollateralFinancialGuarantee = ({
               LeaseContractCollateralsFieldPaths.PAID_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -162,7 +162,7 @@ const CollateralFinancialGuarantee = ({
               LeaseContractCollateralsFieldPaths.RETURNED_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -188,7 +188,7 @@ const CollateralFinancialGuarantee = ({
               LeaseContractCollateralsFieldPaths.NOTE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -231,7 +231,7 @@ const CollateralMortgageDocument = ({
               LeaseContractCollateralsFieldPaths.TYPE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -255,7 +255,7 @@ const CollateralMortgageDocument = ({
               LeaseContractCollateralsFieldPaths.NUMBER,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -280,7 +280,7 @@ const CollateralMortgageDocument = ({
               LeaseContractCollateralsFieldPaths.DEED_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -304,7 +304,7 @@ const CollateralMortgageDocument = ({
               LeaseContractCollateralsFieldPaths.START_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -328,7 +328,7 @@ const CollateralMortgageDocument = ({
               LeaseContractCollateralsFieldPaths.END_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -352,7 +352,7 @@ const CollateralMortgageDocument = ({
               LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -382,7 +382,7 @@ const CollateralMortgageDocument = ({
               LeaseContractCollateralsFieldPaths.NOTE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -421,7 +421,7 @@ const CollateralOther = ({ attributes, field, isSaveClicked }: OtherProps) => {
               LeaseContractCollateralsFieldPaths.TYPE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -445,7 +445,7 @@ const CollateralOther = ({ attributes, field, isSaveClicked }: OtherProps) => {
               LeaseContractCollateralsFieldPaths.OTHER_TYPE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -469,7 +469,7 @@ const CollateralOther = ({ attributes, field, isSaveClicked }: OtherProps) => {
               LeaseContractCollateralsFieldPaths.NUMBER,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -493,7 +493,7 @@ const CollateralOther = ({ attributes, field, isSaveClicked }: OtherProps) => {
               LeaseContractCollateralsFieldPaths.START_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -517,7 +517,7 @@ const CollateralOther = ({ attributes, field, isSaveClicked }: OtherProps) => {
               LeaseContractCollateralsFieldPaths.END_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -541,7 +541,7 @@ const CollateralOther = ({ attributes, field, isSaveClicked }: OtherProps) => {
               LeaseContractCollateralsFieldPaths.TOTAL_AMOUNT,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -571,7 +571,7 @@ const CollateralOther = ({ attributes, field, isSaveClicked }: OtherProps) => {
               LeaseContractCollateralsFieldPaths.RETURNED_DATE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,
@@ -595,7 +595,7 @@ const CollateralOther = ({ attributes, field, isSaveClicked }: OtherProps) => {
               LeaseContractCollateralsFieldPaths.NOTE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 attributes,

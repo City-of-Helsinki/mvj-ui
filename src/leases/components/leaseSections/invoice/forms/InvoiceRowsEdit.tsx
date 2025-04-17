@@ -8,7 +8,7 @@ import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import RemoveButton from "@/components/form/RemoveButton";
 import SubTitle from "@/components/content/SubTitle";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
@@ -110,7 +110,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.TENANT,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -132,7 +132,7 @@ const InvoiceRowsEdit = ({
                               )}
                             >
                               {receivableTypes ? (
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isEditClicked}
                                   fieldAttributes={
                                     receivableType === 2
@@ -166,7 +166,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.AMOUNT,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -187,7 +187,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.BILLING_PERIOD_START_DATE,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -208,7 +208,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.BILLING_PERIOD_END_DATE,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -229,7 +229,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.DESCRIPTION,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,

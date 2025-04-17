@@ -8,7 +8,7 @@ import AddFileButton from "@/components/form/AddFileButton";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -114,7 +114,7 @@ const InspectionItemEdit = ({
                     LeaseInspectionsFieldPaths.INSPECTOR,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -138,7 +138,7 @@ const InspectionItemEdit = ({
                     LeaseInspectionsFieldPaths.SUPERVISION_DATE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -162,7 +162,7 @@ const InspectionItemEdit = ({
                     LeaseInspectionsFieldPaths.SUPERVISED_DATE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -186,7 +186,7 @@ const InspectionItemEdit = ({
                     LeaseInspectionsFieldPaths.DESCRIPTION,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,

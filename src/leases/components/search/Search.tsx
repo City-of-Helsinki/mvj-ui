@@ -12,7 +12,7 @@ import debounce from "lodash/debounce";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import isEqual from "lodash/isEqual";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import SearchChangeTypeLink from "@/components/search/SearchChangeTypeLink";
 import SearchClearLink from "@/components/search/SearchClearLink";
 import SearchContainer from "@/components/search/SearchContainer";
@@ -253,7 +253,7 @@ class Search extends PureComponent<Props, State> {
       <SearchContainer onSubmit={handleSubmit(this.handleSubmit)}>
         <Row>
           <Column small={12}>
-            <FormField
+            <FormFieldLegacy
               autoBlur
               disableDirty
               fieldAttributes={{
@@ -276,7 +276,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Nimi</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -293,7 +293,7 @@ class Search extends PureComponent<Props, State> {
                 <SearchRow>
                   <SearchLabelColumn></SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disabled={radioButtonsDisabled}
                       disableDirty
@@ -313,7 +313,7 @@ class Search extends PureComponent<Props, State> {
                         ],
                       }}
                     />
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disabled={radioButtonsDisabled}
                       disableDirty
@@ -333,7 +333,7 @@ class Search extends PureComponent<Props, State> {
                         ],
                       }}
                     />
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disabled={radioButtonsDisabled}
                       disableDirty
@@ -361,7 +361,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Rooli</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -384,7 +384,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Y-tunnus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -403,7 +403,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Henkilötunnus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -422,7 +422,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Vuokranantaja</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -446,7 +446,7 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           autoBlur
                           disableDirty
                           fieldAttributes={{
@@ -462,7 +462,7 @@ class Search extends PureComponent<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           autoBlur
                           disableDirty
                           fieldAttributes={{
@@ -478,7 +478,7 @@ class Search extends PureComponent<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           autoBlur
                           disableDirty
                           fieldAttributes={{
@@ -494,7 +494,7 @@ class Search extends PureComponent<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           autoBlur
                           disableDirty
                           fieldAttributes={{
@@ -515,7 +515,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Kiinteistötunnus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -533,7 +533,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Geometria puuttuu</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -564,7 +564,7 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           disableDirty
                           fieldAttributes={{
                             label: "Vuokrauksen alkupvm alkaen",
@@ -576,7 +576,7 @@ class Search extends PureComponent<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           className="with-dash"
                           disableDirty
                           fieldAttributes={{
@@ -599,7 +599,7 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           disableDirty
                           fieldAttributes={{
                             label: "Vuokrauksen loppupvm alkaen",
@@ -611,7 +611,7 @@ class Search extends PureComponent<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           className="with-dash"
                           disableDirty
                           fieldAttributes={{
@@ -632,7 +632,7 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           autoBlur
                           disableDirty
                           fieldAttributes={{
@@ -653,7 +653,7 @@ class Search extends PureComponent<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           autoBlur
                           disableDirty
                           fieldAttributes={{
@@ -682,7 +682,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Vuokrakohteen osoite</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -701,7 +701,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Sopimusnro</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -722,7 +722,7 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={12}>
-                        <FormField
+                        <FormFieldLegacy
                           autoBlur
                           disableDirty
                           fieldAttributes={{
@@ -738,7 +738,7 @@ class Search extends PureComponent<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           disableDirty
                           fieldAttributes={{
                             label: "Päätöspvm",
@@ -750,7 +750,7 @@ class Search extends PureComponent<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           disableDirty
                           fieldAttributes={{
                             label: "Pykälä",
@@ -771,7 +771,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Diaarinro</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -790,7 +790,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Laskunro</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -809,7 +809,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Vuokrauksen käyttötarkoitus</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
@@ -836,7 +836,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Omat vuokraukset</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{

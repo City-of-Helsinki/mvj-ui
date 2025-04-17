@@ -9,7 +9,7 @@ import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -189,7 +189,7 @@ const FixedInitialYearRentsEdit = ({
                               LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,
@@ -211,7 +211,7 @@ const FixedInitialYearRentsEdit = ({
                               LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,
@@ -234,7 +234,7 @@ const FixedInitialYearRentsEdit = ({
                               LeaseRentFixedInitialYearRentsFieldPaths.START_DATE,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,
@@ -256,7 +256,7 @@ const FixedInitialYearRentsEdit = ({
                               LeaseRentFixedInitialYearRentsFieldPaths.END_DATE,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,
@@ -312,7 +312,7 @@ const FixedInitialYearRentsEdit = ({
                                   LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     leaseAttributes,
@@ -337,7 +337,7 @@ const FixedInitialYearRentsEdit = ({
                                   LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     leaseAttributes,
@@ -363,7 +363,7 @@ const FixedInitialYearRentsEdit = ({
                                   LeaseRentFixedInitialYearRentsFieldPaths.START_DATE,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     leaseAttributes,
@@ -388,7 +388,7 @@ const FixedInitialYearRentsEdit = ({
                                   LeaseRentFixedInitialYearRentsFieldPaths.END_DATE,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     leaseAttributes,

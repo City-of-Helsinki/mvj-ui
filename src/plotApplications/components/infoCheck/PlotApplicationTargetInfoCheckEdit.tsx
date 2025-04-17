@@ -4,7 +4,7 @@ import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
 import get from "lodash/get";
 import { FieldArray, getFormValues, reduxForm } from "redux-form";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import {
   formatDate,
   getFieldAttributes,
@@ -106,7 +106,7 @@ class PlotApplicationTargetInfoCheckManagements extends PureComponent<TargetSubF
                 return (
                   <Row role="row" key={index}>
                     <Column role="cell" small={4} medium={4} large={2}>
-                      <FormField
+                      <FormFieldLegacy
                         fieldAttributes={get(
                           attributes,
                           PlotApplicationTargetInfoCheckFieldPaths.PROPOSED_MANAGEMENT_TYPE,
@@ -122,7 +122,7 @@ class PlotApplicationTargetInfoCheckManagements extends PureComponent<TargetSubF
                       />
                     </Column>
                     <Column role="cell" small={4} medium={4} large={2}>
-                      <FormField
+                      <FormFieldLegacy
                         fieldAttributes={get(
                           attributes,
                           PlotApplicationTargetInfoCheckFieldPaths.PROPOSED_MANAGEMENT_FINANCING,
@@ -138,7 +138,7 @@ class PlotApplicationTargetInfoCheckManagements extends PureComponent<TargetSubF
                       />
                     </Column>
                     <Column role="cell" small={3} medium={3} large={2}>
-                      <FormField
+                      <FormFieldLegacy
                         fieldAttributes={get(
                           attributes,
                           PlotApplicationTargetInfoCheckFieldPaths.PROPOSED_MANAGEMENT_HITAS,
@@ -228,7 +228,7 @@ class PlotApplicationTargetInfoCheckConditions extends PureComponent<TargetSubFi
                 return (
                   <Row role="row" key={index}>
                     <Column role="cell" small={11} medium={11} large={11}>
-                      <FormField
+                      <FormFieldLegacy
                         fieldAttributes={get(
                           attributes,
                           PlotApplicationTargetInfoCheckFieldPaths.RESERVATION_CONDITIONS,
@@ -544,7 +544,7 @@ class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
                 )}
               >
                 <Column small={6} medium={4} large={2}>
-                  <FormField
+                  <FormFieldLegacy
                     name="reserved"
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -570,7 +570,7 @@ class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
                   </FormFieldLabel>
                   <Row>
                     <Column large={6}>
-                      <FormField
+                      <FormFieldLegacy
                         name="share_of_rental_indicator"
                         fieldAttributes={getFieldAttributes(
                           attributes,
@@ -586,7 +586,7 @@ class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
                       />
                     </Column>
                     <Column large={6}>
-                      <FormField
+                      <FormFieldLegacy
                         name="share_of_rental_denominator"
                         fieldAttributes={getFieldAttributes(
                           attributes,
@@ -612,7 +612,7 @@ class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
                 )}
               >
                 <Column small={6} medium={4} large={2}>
-                  <FormField
+                  <FormFieldLegacy
                     name="counsel_date"
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -635,7 +635,7 @@ class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
                 )}
               >
                 <Column small={6} medium={4} large={3}>
-                  <FormField
+                  <FormFieldLegacy
                     name="decline_reason"
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -657,7 +657,7 @@ class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
                 )}
               >
                 <Column small={6} medium={4} large={3}>
-                  <FormField
+                  <FormFieldLegacy
                     name="added_target_to_applicant"
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -719,7 +719,7 @@ class PlotApplicationTargetInfoCheck extends PureComponent<Props> {
                 )}
               >
                 <Column small={12} medium={12} large={12}>
-                  <FormField
+                  <FormFieldLegacy
                     name="arguments"
                     fieldAttributes={getFieldAttributes(
                       attributes,

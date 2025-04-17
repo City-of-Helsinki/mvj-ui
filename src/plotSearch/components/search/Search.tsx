@@ -10,7 +10,7 @@ import isEmpty from "lodash/isEmpty";
 import type { ContextRouter } from "react-router";
 import { getFieldOptions, getUrlParams } from "@/util/helpers";
 import { getAttributes, getPlotSearchSubTypes } from "@/plotSearch/selectors";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import SearchChangeTypeLink from "@/components/search/SearchChangeTypeLink";
 import SearchClearLink from "@/components/search/SearchClearLink";
 import SearchContainer from "@/components/search/SearchContainer";
@@ -165,7 +165,7 @@ class Search extends Component<Props, State> {
       <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
           <Column large={12}>
-            <FormField
+            <FormFieldLegacy
               disableDirty
               fieldAttributes={{
                 label: "Hae hakusanalla",
@@ -187,7 +187,7 @@ class Search extends Component<Props, State> {
                     <SearchLabel>Hakutyyppi</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       disableDirty
                       fieldAttributes={{
                         type: FieldTypes.CHOICE,
@@ -210,7 +210,7 @@ class Search extends Component<Props, State> {
                     <SearchLabel>Haun alatyyppi</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       disableDirty
                       fieldAttributes={{
                         type: FieldTypes.CHOICE,
@@ -237,7 +237,7 @@ class Search extends Component<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           disableDirty
                           fieldAttributes={{
                             type: FieldTypes.DATE,
@@ -248,7 +248,7 @@ class Search extends Component<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           className="with-dash"
                           disableDirty
                           fieldAttributes={{
@@ -272,7 +272,7 @@ class Search extends Component<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           disableDirty
                           fieldAttributes={{
                             type: FieldTypes.DATE,
@@ -283,7 +283,7 @@ class Search extends Component<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           className="with-dash"
                           disableDirty
                           fieldAttributes={{

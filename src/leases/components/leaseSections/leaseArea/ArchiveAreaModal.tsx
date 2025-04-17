@@ -5,7 +5,7 @@ import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import Modal from "@/components/modal/Modal";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
@@ -71,7 +71,7 @@ class ArchiveAreaModal extends Component<Props> {
                   LeaseAreasFieldPaths.ARCHIVED_DECISION,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   setRefForField={this.setRefForFirstField}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -98,7 +98,7 @@ class ArchiveAreaModal extends Component<Props> {
                   LeaseAreasFieldPaths.ARCHIVED_NOTE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={getFieldAttributes(
                     attributes,
                     LeaseAreasFieldPaths.ARCHIVED_NOTE,

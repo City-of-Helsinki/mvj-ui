@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Column, Row } from "react-foundation";
 import get from "lodash/get";
 import { change, FieldArray, formValueSelector } from "redux-form";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import InfoIcon from "@/components/icons/InfoIcon";
 import Tooltip from "@/components/tooltip/Tooltip";
 import { FieldTypes, FormNames } from "@/enums";
@@ -208,7 +208,7 @@ const EditPlotApplicationSectionFieldChoice = ({
               <Column small={10}>
                 <Row>
                   <Column small={4}>
-                    <FormField
+                    <FormFieldLegacy
                       fieldAttributes={get(
                         attributes,
                         "sections.child.children.fields.child.children.choices.child.children.text",
@@ -221,7 +221,7 @@ const EditPlotApplicationSectionFieldChoice = ({
                     />
                   </Column>
                   <Column small={4}>
-                    <FormField
+                    <FormFieldLegacy
                       fieldAttributes={get(
                         attributes,
                         "sections.child.children.fields.child.children.choices.child.children.text_en",
@@ -234,7 +234,7 @@ const EditPlotApplicationSectionFieldChoice = ({
                     />
                   </Column>
                   <Column small={4}>
-                    <FormField
+                    <FormFieldLegacy
                       fieldAttributes={get(
                         attributes,
                         "sections.child.children.fields.child.children.choices.child.children.text_sv",
@@ -282,7 +282,7 @@ const EditPlotApplicationSectionFieldChoice = ({
               <Column small={10}>
                 <Row>
                   <Column small={6}>
-                    <FormField
+                    <FormFieldLegacy
                       fieldAttributes={get(
                         attributes,
                         "sections.child.children.fields.child.children.choices.child.children.value",
@@ -298,7 +298,7 @@ const EditPlotApplicationSectionFieldChoice = ({
                     />
                   </Column>
                   <Column small={6}>
-                    <FormField
+                    <FormFieldLegacy
                       fieldAttributes={get(
                         attributes,
                         "sections.child.children.fields.child.children.choices.child.children.has_text_input",
@@ -514,7 +514,7 @@ const EditPlotApplicationSectionFieldForm = ({
     <Fragment>
       <Row className="section-field">
         <Column small={8}>
-          <FormField
+          <FormFieldLegacy
             fieldAttributes={get(
               attributes,
               "sections.child.children.fields.child.children.enabled",
@@ -526,7 +526,7 @@ const EditPlotApplicationSectionFieldForm = ({
             invisibleLabel
             disabled={disabled}
           />
-          <FormField
+          <FormFieldLegacy
             fieldAttributes={get(
               attributes,
               "sections.child.children.fields.child.children.label",
@@ -556,7 +556,7 @@ const EditPlotApplicationSectionFieldForm = ({
           )}
         </Column>
         <Column small={3}>
-          <FormField
+          <FormFieldLegacy
             fieldAttributes={get(
               attributes,
               "sections.child.children.fields.child.children.required",
@@ -617,7 +617,7 @@ const EditPlotApplicationSectionFieldForm = ({
           <Column small={12}>
             <Row>
               <Column small={4}>
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={get(
                     attributes,
                     "sections.child.children.fields.child.children.label",
@@ -636,7 +636,7 @@ const EditPlotApplicationSectionFieldForm = ({
                 />
               </Column>
               <Column small={4}>
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={get(
                     attributes,
                     "sections.child.children.fields.child.children.label_en",
@@ -649,7 +649,7 @@ const EditPlotApplicationSectionFieldForm = ({
                 />
               </Column>
               <Column small={4}>
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={get(
                     attributes,
                     "sections.child.children.fields.child.children.label_sv",
@@ -664,7 +664,7 @@ const EditPlotApplicationSectionFieldForm = ({
             </Row>
             <Row>
               <Column small={4}>
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={get(
                     attributes,
                     "sections.child.children.fields.child.children.type",
@@ -679,7 +679,7 @@ const EditPlotApplicationSectionFieldForm = ({
                 />
               </Column>
               <Column small={4}>
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={get(
                     attributes,
                     "sections.child.children.fields.child.children.identifier",
@@ -694,7 +694,7 @@ const EditPlotApplicationSectionFieldForm = ({
                     label: "Sisäinen tunnus",
                   }}
                 />
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={{
                     type: FieldTypes.CHECKBOX,
                     required: false,
@@ -722,7 +722,7 @@ const EditPlotApplicationSectionFieldForm = ({
             </Row>
             <Row>
               <Column small={4}>
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={get(
                     attributes,
                     "sections.child.children.fields.child.children.hint_text",
@@ -735,7 +735,7 @@ const EditPlotApplicationSectionFieldForm = ({
                 />
               </Column>
               <Column small={4}>
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={get(
                     attributes,
                     "sections.child.children.fields.child.children.hint_text_en",
@@ -748,7 +748,7 @@ const EditPlotApplicationSectionFieldForm = ({
                 />
               </Column>
               <Column small={4}>
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={get(
                     attributes,
                     "sections.child.children.fields.child.children.hint_text_sv",
@@ -784,7 +784,7 @@ const EditPlotApplicationSectionFieldForm = ({
                       : 4
                   }
                 >
-                  <FormField
+                  <FormFieldLegacy
                     fieldAttributes={{
                       ...get(
                         attributes,
@@ -812,7 +812,7 @@ const EditPlotApplicationSectionFieldForm = ({
                 FieldTypeFeatures.LIST_SELECTION_DEFAULT_VALUE,
               ) && (
                 <Column small={4}>
-                  <FormField
+                  <FormFieldLegacy
                     fieldAttributes={{
                       ...get(
                         attributes,
@@ -844,7 +844,7 @@ const EditPlotApplicationSectionFieldForm = ({
                 </Row>
                 <Row>
                   <Column small={4}>
-                    <FormField
+                    <FormFieldLegacy
                       fieldAttributes={{
                         type: FieldTypes.CHECKBOX,
                         required: false,

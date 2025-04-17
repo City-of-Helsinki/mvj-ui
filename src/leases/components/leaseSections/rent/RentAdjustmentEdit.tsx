@@ -12,7 +12,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
 import DecisionLink from "@/components/links/DecisionLink";
 import Divider from "@/components/content/Divider";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import GreenBox from "@/components/content/GreenBox";
@@ -453,7 +453,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                   LeaseRentAdjustmentsFieldPaths.TYPE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -477,7 +477,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                   LeaseRentAdjustmentsFieldPaths.INTENDED_USE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -503,7 +503,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                       LeaseRentAdjustmentsFieldPaths.START_DATE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         leaseAttributes,
@@ -528,7 +528,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                     )}
                   >
                     {amountType !== RentAdjustmentAmountTypes.AMOUNT_TOTAL && (
-                      <FormField
+                      <FormFieldLegacy
                         disableTouched={isSaveClicked}
                         fieldAttributes={getFieldAttributes(
                           leaseAttributes,
@@ -601,7 +601,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                               LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disabled={
                                 type === RentAdjustmentTypes.DISCOUNT &&
                                 showSubventions
@@ -627,7 +627,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                               LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,
@@ -656,7 +656,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                 )}
               >
                 {amountType === RentAdjustmentAmountTypes.AMOUNT_TOTAL && (
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -685,7 +685,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                   LeaseRentAdjustmentsFieldPaths.DECISION,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -713,7 +713,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                   LeaseRentAdjustmentsFieldPaths.NOTE,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -784,7 +784,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                             LeaseRentAdjustmentsFieldPaths.SUBVENTION_TYPE,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={{
                               ...getFieldAttributes(
@@ -842,7 +842,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                               LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,
@@ -868,7 +868,7 @@ class RentAdjustmentsEdit extends PureComponent<Props> {
                               LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,

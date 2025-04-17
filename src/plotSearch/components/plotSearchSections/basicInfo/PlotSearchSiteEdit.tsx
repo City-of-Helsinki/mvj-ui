@@ -14,7 +14,7 @@ import AddButtonThird from "@/components/form/AddButtonThird";
 import { ButtonColors } from "@/components/enums";
 import { ConfirmationModalTexts } from "@/enums";
 import Collapse from "@/components/collapse/Collapse";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FormNames, ViewModes } from "@/enums";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
@@ -197,7 +197,7 @@ const renderInfoLinks = ({
                   return (
                     <Row role="row" key={index}>
                       <Column role="cell" small={4} medium={4} large={4}>
-                        <FormField
+                        <FormFieldLegacy
                           fieldAttributes={get(
                             attributes,
                             "plot_search_targets.child.children.info_links.child.children.description",
@@ -212,7 +212,7 @@ const renderInfoLinks = ({
                         />
                       </Column>
                       <Column role="cell" small={5} medium={5} large={5}>
-                        <FormField
+                        <FormFieldLegacy
                           fieldAttributes={get(
                             attributes,
                             "plot_search_targets.child.children.info_links.child.children.url",
@@ -227,7 +227,7 @@ const renderInfoLinks = ({
                         />
                       </Column>
                       <Column role="cell" small={2} medium={2} large={2}>
-                        <FormField
+                        <FormFieldLegacy
                           fieldAttributes={get(
                             attributes,
                             "plot_search_targets.child.children.info_links.child.children.language",
@@ -695,7 +695,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                     display: "none",
                   }}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(
                       attributes,
@@ -703,7 +703,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                     )}
                     name={`${field}.plan_unit_id`}
                   />
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(
                       attributes,
@@ -717,7 +717,7 @@ class PlotSearchSiteEdit extends Component<Props, State> {
                     <FormTextTitle>
                       {PlotSearchFieldTitles.TARGET_TYPE}
                     </FormTextTitle>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       invisibleLabel={true}
                       fieldAttributes={get(

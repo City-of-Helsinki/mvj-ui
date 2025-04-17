@@ -14,7 +14,7 @@ import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import Button from "@/components/button/Button";
 import CloseButton from "@/components/button/CloseButton";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
 import SubTitle from "@/components/content/SubTitle";
@@ -205,7 +205,7 @@ const InvoiceRows = ({
                           }
                         >
                           {receivableTypes ? (
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isCreateClicked}
                               fieldAttributes={
                                 useLeaseCreateChargeEndpoint
@@ -249,7 +249,7 @@ const InvoiceRows = ({
                                 )
                           }
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isCreateClicked}
                             fieldAttributes={
                               useLeaseCreateChargeEndpoint
@@ -392,7 +392,7 @@ const NewInvoiceForm = ({
                   InvoiceFieldPaths.RECIPIENT,
                 )}
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isCreateClicked}
                   fieldAttributes={getFieldAttributes(
                     invoiceAttributes,
@@ -425,7 +425,7 @@ const NewInvoiceForm = ({
                       )
                 }
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isCreateClicked}
                   fieldAttributes={
                     useLeaseCreateChargeEndpoint
@@ -473,7 +473,7 @@ const NewInvoiceForm = ({
                   >
                     {InvoiceFieldTitles.BILLING_PERIOD_START_DATE}
                   </FormTextTitle>
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isCreateClicked}
                     fieldAttributes={
                       useLeaseCreateChargeEndpoint
@@ -519,7 +519,7 @@ const NewInvoiceForm = ({
                   >
                     {InvoiceFieldTitles.BILLING_PERIOD_END_DATE}
                   </FormTextTitle>
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isCreateClicked}
                     fieldAttributes={
                       useLeaseCreateChargeEndpoint
@@ -557,7 +557,7 @@ const NewInvoiceForm = ({
                       )
                 }
               >
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isCreateClicked}
                   fieldAttributes={
                     tenant === RecipientOptions.ALL

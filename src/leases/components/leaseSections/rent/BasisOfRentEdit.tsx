@@ -15,7 +15,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
 import CopyToClipboardButton from "@/components/form/CopyToClipboardButton";
 import Divider from "@/components/content/Divider";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -1102,7 +1102,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
               {LeaseBasisOfRentsFieldTitles.UNIT_PRICE}
             </FormTextTitle>
           )}
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             onChange={this.onChangeCurrentAmountPerArea}
             fieldAttributes={{
@@ -1134,7 +1134,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
           LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
         )}
       >
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={
             savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -1217,7 +1217,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
           LeaseBasisOfRentsFieldPaths.INDEX,
         )}
       >
-        <FormField
+        <FormFieldLegacy
           disableTouched={isSaveClicked}
           fieldAttributes={{
             ...getFieldAttributes(
@@ -1328,7 +1328,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
               )}
             >
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -1356,7 +1356,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     LeaseBasisOfRentsFieldPaths.INTENDED_USE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={
                       savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -1441,7 +1441,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             LeaseBasisOfRentsFieldPaths.AREA,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={
                               savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -1473,7 +1473,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             LeaseBasisOfRentsFieldPaths.AREA_UNIT,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={
                               savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -1550,7 +1550,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                 LeaseBasisOfRentsFieldPaths.AREA,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   leaseAttributes,
@@ -1590,7 +1590,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                 LeaseBasisOfRentsFieldPaths.AREA,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={
                                   savedBasisOfRent &&
@@ -1679,7 +1679,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                   )}
                                 >
                                   {
-                                    <FormField
+                                    <FormFieldLegacy
                                       disableTouched={isSaveClicked}
                                       fieldAttributes={getFieldAttributes(
                                         leaseAttributes,
@@ -1721,7 +1721,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                     LeaseBasisOfRentsFieldPaths.AREA,
                                   )}
                                 >
-                                  <FormField
+                                  <FormFieldLegacy
                                     disableTouched={isSaveClicked}
                                     fieldAttributes={getFieldAttributes(
                                       leaseAttributes,
@@ -1823,7 +1823,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                 LeaseBasisOfRentsFieldPaths.AREA,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={
                                   savedBasisOfRent &&
@@ -1983,7 +1983,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                 LeaseBasisOfRentsFieldPaths.INDEX,
                               )}
                             >
-                              <FormField
+                              <FormFieldLegacy
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={
                                   savedBasisOfRent &&
@@ -2128,7 +2128,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             onChange={this.onChangeAmountPerArea}
                             disableTouched={isSaveClicked}
                             fieldAttributes={
@@ -2163,7 +2163,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             LeaseBasisOfRentsFieldPaths.AREA_UNIT,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             className="with-slash"
                             disableTouched={isSaveClicked}
                             fieldAttributes={
@@ -2243,7 +2243,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         LeaseBasisOfRentsFieldPaths.AREA_UNIT,
                       )}
                     >
-                      <FormField
+                      <FormFieldLegacy
                         className="with-slash"
                         disableTouched={isSaveClicked}
                         fieldAttributes={
@@ -2300,7 +2300,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                       LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={
                         savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -2366,7 +2366,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                       LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
                     )}
                   >
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={
                         savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -2412,7 +2412,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={{
                       label: "Lopullinen alennusprosentti",
@@ -2741,7 +2741,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             LeaseBasisOfRentsFieldPaths.INDEX,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             disableTouched={isSaveClicked}
                             fieldAttributes={
                               savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -2840,7 +2840,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                       </Authorization>
                     }
                   >
-                    <FormField
+                    <FormFieldLegacy
                       className="with-top-padding"
                       disableTouched={isSaveClicked}
                       fieldAttributes={
@@ -2895,7 +2895,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                     </Authorization>
                   }
                 >
-                  <FormField
+                  <FormFieldLegacy
                     className="with-top-padding"
                     disableTouched={isSaveClicked}
                     fieldAttributes={{
@@ -2975,7 +2975,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                               LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isSaveClicked}
                               fieldAttributes={{
                                 ...getFieldAttributes(
@@ -3042,7 +3042,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                   LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     leaseAttributes,
@@ -3069,7 +3069,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                   LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
                                 )}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     leaseAttributes,

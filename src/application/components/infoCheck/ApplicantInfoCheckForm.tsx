@@ -6,7 +6,7 @@ import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
 import { FieldTypes, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import Button from "@/components/button/Button";
 import {
@@ -63,7 +63,7 @@ class ApplicantInfoCheckForm extends Component<Props> {
       <form>
         <Row>
           <Column small={4}>
-            <FormField
+            <FormFieldLegacy
               setRefForField={this.setRefForFirstField}
               fieldAttributes={get(
                 attributes,
@@ -77,7 +77,7 @@ class ApplicantInfoCheckForm extends Component<Props> {
             />
           </Column>
           <Column small={4}>
-            <FormField
+            <FormFieldLegacy
               fieldAttributes={get(
                 attributes,
                 ApplicantInfoCheckFieldPaths.STATE,
@@ -90,7 +90,7 @@ class ApplicantInfoCheckForm extends Component<Props> {
           </Column>
           {showMarkAll === true && (
             <Column small={4}>
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={get(
                   attributes,
                   ApplicantInfoCheckFieldPaths.MARK_ALL,
@@ -106,7 +106,7 @@ class ApplicantInfoCheckForm extends Component<Props> {
         </Row>
         <Row>
           <Column small={12}>
-            <FormField
+            <FormFieldLegacy
               fieldAttributes={get(
                 attributes,
                 ApplicantInfoCheckFieldPaths.COMMENT,

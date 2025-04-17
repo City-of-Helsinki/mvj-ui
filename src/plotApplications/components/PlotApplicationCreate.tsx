@@ -11,7 +11,7 @@ import Collapse from "@/components/collapse/Collapse";
 import Divider from "@/components/content/Divider";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import Title from "@/components/content/Title";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import {
   receiveCollapseStates,
   receiveIsSaveClicked,
@@ -247,7 +247,7 @@ class PlotApplicationCreate extends PureComponent<Props, State> {
               <Row>
                 <Authorization allow={true}>
                   <Column small={12} medium={6} large={4}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={{
                         ...get(attributes, "form"),
@@ -264,7 +264,7 @@ class PlotApplicationCreate extends PureComponent<Props, State> {
                 </Authorization>
                 <Authorization allow={true}>
                   <Column small={6} medium={4} large={2}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, "id")}
                       name="id"
@@ -279,7 +279,7 @@ class PlotApplicationCreate extends PureComponent<Props, State> {
               <>
                 <Row>
                   <Column small={12}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={{
                         ...get(attributes, "targets"),

@@ -5,7 +5,7 @@ import { Row, Column } from "react-foundation";
 import debounce from "lodash/debounce";
 import flowRight from "lodash/flowRight";
 import isEqual from "lodash/isEqual";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import SearchClearLink from "@/components/search/SearchClearLink";
 import SearchContainer from "@/components/search/SearchContainer";
 import { FieldTypes, FormNames } from "@/enums";
@@ -58,7 +58,7 @@ class Search extends Component<Props> {
       <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
           <Column large={12}>
-            <FormField
+            <FormFieldLegacy
               disableDirty
               fieldAttributes={{
                 label: "Hae hakusanalla",

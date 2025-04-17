@@ -12,7 +12,7 @@ import get from "lodash/get";
 import classNames from "classnames";
 import { FieldArray } from "redux-form";
 import Button from "@/components/button/Button";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import { ConfirmationModalTexts, FieldTypes, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
@@ -397,7 +397,7 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
       headerTitle={subsection.title || "-"}
       headerExtras={
         <div className="edit-plot-application-section-form__subsection-header-options">
-          <FormField
+          <FormFieldLegacy
             fieldAttributes={get(attributes, "sections.child.children.visible")}
             name={`${sectionPath}.visible`}
             overrideValues={{
@@ -406,7 +406,7 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
             className="edit-plot-application-section-form__subsection-header-visible-field"
           />
           {subsection.show_duplication_check ? (
-            <FormField
+            <FormFieldLegacy
               fieldAttributes={get(
                 attributes,
                 "sections.child.children.add_new_allowed",
@@ -451,7 +451,7 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
     >
       <Row className="section-editor">
         <Column small={sectionValuesColumnWidth}>
-          <FormField
+          <FormFieldLegacy
             fieldAttributes={get(attributes, "sections.child.children.title")}
             name={`${sectionPath}.title`}
             overrideValues={{
@@ -463,7 +463,7 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
           />
         </Column>
         <Column small={sectionValuesColumnWidth}>
-          <FormField
+          <FormFieldLegacy
             fieldAttributes={get(
               attributes,
               "sections.child.children.title_en",
@@ -475,7 +475,7 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
           />
         </Column>
         <Column small={sectionValuesColumnWidth}>
-          <FormField
+          <FormFieldLegacy
             fieldAttributes={get(
               attributes,
               "sections.child.children.title_sv",
@@ -487,7 +487,7 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
           />
         </Column>
         <Column small={sectionValuesColumnWidth}>
-          <FormField
+          <FormFieldLegacy
             fieldAttributes={get(
               attributes,
               "sections.child.children.identifier",
@@ -498,7 +498,7 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
             }}
             disabled={autoIdentifier || isProtected}
           />
-          <FormField
+          <FormFieldLegacy
             fieldAttributes={{
               type: FieldTypes.CHECKBOX,
               required: false,
@@ -529,7 +529,7 @@ const EditPlotApplicationSectionFormSubsectionSecondLevelWrapper = ({
         </Column>
         {isApplicantSecondLevelSubsection && (
           <Column small={4}>
-            <FormField
+            <FormFieldLegacy
               fieldAttributes={get(
                 attributes,
                 "sections.child.children.applicant_type",
@@ -746,7 +746,7 @@ class EditPlotApplicationSectionForm extends Component<Props> {
             <SubTitle>{parentFormSection.title}</SubTitle>
             <Row>
               <Column small={6}>
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={get(
                     attributes,
                     "sections.child.children.visible",
@@ -758,7 +758,7 @@ class EditPlotApplicationSectionForm extends Component<Props> {
                 />
               </Column>
               <Column small={6}>
-                <FormField
+                <FormFieldLegacy
                   fieldAttributes={get(
                     attributes,
                     "sections.child.children.add_new_allowed",

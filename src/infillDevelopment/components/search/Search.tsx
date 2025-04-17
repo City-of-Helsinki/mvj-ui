@@ -7,7 +7,7 @@ import debounce from "lodash/debounce";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import isEqual from "lodash/isEqual";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import SearchChangeTypeLink from "@/components/search/SearchChangeTypeLink";
 import SearchClearLink from "@/components/search/SearchClearLink";
 import SearchContainer from "@/components/search/SearchContainer";
@@ -143,7 +143,7 @@ class Search extends PureComponent<Props, State> {
       <SearchContainer onSubmit={handleSubmit(this.search)}>
         <Row>
           <Column large={12}>
-            <FormField
+            <FormFieldLegacy
               disableDirty
               fieldAttributes={{
                 label: "Hae hakusanalla",
@@ -167,7 +167,7 @@ class Search extends PureComponent<Props, State> {
                   <SearchInputColumn>
                     <Row>
                       <Column small={12}>
-                        <FormField
+                        <FormFieldLegacy
                           autoBlur
                           disableDirty
                           fieldAttributes={{
@@ -183,7 +183,7 @@ class Search extends PureComponent<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           disableDirty
                           fieldAttributes={{
                             label: "Päätöspvm",
@@ -195,7 +195,7 @@ class Search extends PureComponent<Props, State> {
                         />
                       </Column>
                       <Column small={6}>
-                        <FormField
+                        <FormFieldLegacy
                           disableDirty
                           fieldAttributes={{
                             label: "Pykälä",
@@ -217,7 +217,7 @@ class Search extends PureComponent<Props, State> {
                     <SearchLabel>Diaarinro</SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <FormField
+                    <FormFieldLegacy
                       autoBlur
                       disableDirty
                       fieldAttributes={{
