@@ -1,11 +1,24 @@
 import React from "react";
-import ContactForm from "./forms/ContactForm";
-import GreenBox from "@/components/content/GreenBox";
+import { useDispatch, useSelector } from "react-redux";
 
-const ContactEdit = () => {
+import ContactForm from "@/contacts/components/forms/ContactForm";
+import GreenBox from "@/components/content/GreenBox";
+import { editContact } from "@/contacts/actions";
+import { getCurrentContact } from "@/contacts/selectors";
+
+import type { Contact } from "@/contacts/types";
+
+const ContactEdit: React.FC = () => {
+  const dispatch = useDispatch();
+  const contact = useSelector(getCurrentContact);
+
+  const handleSubmit = async (values: Contact) => {
+    dispatch(editContact(values));
+  };
+
   return (
     <GreenBox className="no-margin">
-      <ContactForm />
+      <ContactForm initialValues={contact} onSubmit={handleSubmit} />
     </GreenBox>
   );
 };
