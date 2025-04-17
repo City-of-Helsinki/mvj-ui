@@ -7,7 +7,7 @@ import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import Button from "@/components/button/Button";
 import { ButtonColors } from "@/components/enums";
 import FileDownloadButton from "@/components/file/FileDownloadButton";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FieldTypes, FormNames } from "@/enums";
 import type { RootState } from "@/root/types";
 import createUrl from "@/api/createUrl";
@@ -93,7 +93,7 @@ class AreaSearchExportModal extends Component<Props> {
         title="Tulosta tiedostoon"
         className="AreaSearchExportModal"
       >
-        <FormField
+        <FormFieldLegacy
           name="mode"
           fieldAttributes={{
             type: FieldTypes.CHOICE,
@@ -116,7 +116,7 @@ class AreaSearchExportModal extends Component<Props> {
         <span className="AreaSearchExportModal__guide-text">{guideText}</span>
         {selectedMode === ExportModes.APPLICATIONS_PDF && (
           <>
-            <FormField
+            <FormFieldLegacy
               name="includeInformationChecks"
               fieldAttributes={{
                 type: FieldTypes.CHECKBOX,
@@ -135,7 +135,7 @@ class AreaSearchExportModal extends Component<Props> {
               disableDirty
               invisibleLabel
             />
-            <FormField
+            <FormFieldLegacy
               name="includeAttachments"
               fieldAttributes={{
                 type: FieldTypes.CHECKBOX,

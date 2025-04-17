@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { getFormValues, formValueSelector, reduxForm } from "redux-form";
 import flowRight from "lodash/flowRight";
 import Button from "@/components/button/Button";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import GreenBox from "@/components/content/GreenBox";
 import SearchInputColumn from "@/components/search/SearchInputColumn";
 import SearchLabel from "@/components/search/SearchLabel";
@@ -48,7 +48,7 @@ const SearchForm = ({
             <SearchLabel>{SearchLabels.CONTACT_TYPE}</SearchLabel>
           </SearchLabelColumn>
           <SearchInputColumn>
-            <FormField
+            <FormFieldLegacy
               autoBlur
               disableDirty
               fieldAttributes={{
@@ -93,7 +93,7 @@ const SearchForm = ({
                 </SearchLabel>
               </SearchLabelColumn>
               <SearchInputColumn>
-                <FormField
+                <FormFieldLegacy
                   autoBlur
                   disableDirty
                   fieldAttributes={{

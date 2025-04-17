@@ -14,7 +14,7 @@ import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import Button from "@/components/button/Button";
 import { ButtonColors } from "@/components/enums";
 import { FormNames } from "@/enums";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FieldTypes } from "@/enums";
 import FormFieldLabel from "@/components/form/FormFieldLabel";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
@@ -156,7 +156,7 @@ class DirectReservationLinkModal extends Component<Props> {
         </Row>
         <Row>
           <Column small={6} large={3}>
-            <FormField
+            <FormFieldLegacy
               disableDirty
               fieldAttributes={{
                 type: FieldTypes.CHOICE,
@@ -183,7 +183,7 @@ class DirectReservationLinkModal extends Component<Props> {
         </Row>
         <Row>
           <Column small={6} large={3}>
-            <FormField
+            <FormFieldLegacy
               disableDirty
               fieldAttributes={{
                 type: FieldTypes.STRING,
@@ -194,7 +194,7 @@ class DirectReservationLinkModal extends Component<Props> {
             />
           </Column>
           <Column small={6} large={3}>
-            <FormField
+            <FormFieldLegacy
               disableDirty
               fieldAttributes={{
                 type: FieldTypes.STRING,
@@ -205,7 +205,7 @@ class DirectReservationLinkModal extends Component<Props> {
             />
           </Column>
           <Column small={6} large={3}>
-            <FormField
+            <FormFieldLegacy
               disableDirty
               fieldAttributes={{
                 type: FieldTypes.STRING,
@@ -217,7 +217,7 @@ class DirectReservationLinkModal extends Component<Props> {
             />
           </Column>
           <Column small={6} large={3}>
-            <FormField
+            <FormFieldLegacy
               disableDirty
               fieldAttributes={{
                 type: FieldTypes.STRING,
@@ -230,7 +230,7 @@ class DirectReservationLinkModal extends Component<Props> {
         </Row>
         <Row>
           <Column large={12}>
-            <FormField
+            <FormFieldLegacy
               disableDirty
               fieldAttributes={{
                 type: FieldTypes.TEXTAREA,
@@ -243,7 +243,7 @@ class DirectReservationLinkModal extends Component<Props> {
         </Row>
         <Row>
           <Column large={12}>
-            <FormField
+            <FormFieldLegacy
               disableDirty
               fieldAttributes={{
                 type: FieldTypes.CHECKBOX,

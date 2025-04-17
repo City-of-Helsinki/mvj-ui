@@ -11,7 +11,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import Collapse from "@/components/collapse/Collapse";
 import ContactTemplate from "@/contacts/components/templates/ContactTemplate";
 import EditButton from "@/components/form/EditButton";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormWrapper from "@/components/form/FormWrapper";
 import FormWrapperLeft from "@/components/form/FormWrapperLeft";
 import FormWrapperRight from "@/components/form/FormWrapperRight";
@@ -199,7 +199,7 @@ const LitigantItemEdit = ({
               <Column>
                 <Row>
                   <Column small={9} medium={8} large={8}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(
                         attributes,
@@ -227,7 +227,7 @@ const LitigantItemEdit = ({
           <FormWrapperRight>
             <Row>
               <Column small={6} medium={3} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(
                     attributes,
@@ -240,7 +240,7 @@ const LitigantItemEdit = ({
                 />
               </Column>
               <Column small={6} medium={3} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(
                     attributes,
@@ -258,7 +258,7 @@ const LitigantItemEdit = ({
           <FormWrapperLeft>
             <Row>
               <Column>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(
                     attributes,

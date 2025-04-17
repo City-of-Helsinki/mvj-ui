@@ -23,7 +23,7 @@ import {
 } from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDate, getFieldAttributes } from "@/util/helpers";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { Attributes } from "@/types";
 import { getReviewDays, getPointFigureFormText } from "@/leases/helpers";
 import AddButton from "@/components/form/AddButton";
@@ -63,7 +63,7 @@ class OldDwellingsInHousingCompaniesPriceIndexEdit extends PureComponent<Props> 
         <BoxItemContainer>
           <Row>
             <Column>
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,

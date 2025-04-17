@@ -10,7 +10,7 @@ import Collapse from "@/components/collapse/Collapse";
 import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle";
 import ContactTemplate from "@/contacts/components/templates/ContactTemplate";
 import EditButton from "@/components/form/EditButton";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormWrapper from "@/components/form/FormWrapper";
 import FormWrapperLeft from "@/components/form/FormWrapperLeft";
 import FormWrapperRight from "@/components/form/FormWrapperRight";
@@ -153,7 +153,7 @@ const LitigantBillingPersonEdit = ({
               <Column small={12} medium={12} large={8}>
                 <Row>
                   <Column small={9} medium={8} large={8}>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -181,7 +181,7 @@ const LitigantBillingPersonEdit = ({
           <FormWrapperRight>
             <Row>
               <Column small={6} medium={3} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -194,7 +194,7 @@ const LitigantBillingPersonEdit = ({
                 />
               </Column>
               <Column small={6} medium={3} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,

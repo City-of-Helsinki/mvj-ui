@@ -297,8 +297,8 @@ class ContactPage extends Component<Props, State> {
       history,
       location: { search },
     } = this.props;
-    contact.id = undefined;
-    initializeContactForm(contact);
+    const contactCopy = { ...contact, id: undefined };
+    initializeContactForm(contactCopy);
     hideEditMode();
     clearUnsavedChanges();
     return history.push({
@@ -348,7 +348,7 @@ class ContactPage extends Component<Props, State> {
     const {
       contactFormValues,
       editContact,
-      isContactFormValid,
+      isContactFormValid, // TODO: Change how to get valid from final-form? Or continue redux?
       receiveIsSaveClicked,
     } = this.props;
     receiveIsSaveClicked(true);

@@ -4,7 +4,7 @@ import { change, Field, formValueSelector, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import ErrorField from "@/components/form/ErrorField";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FieldTypes, FormNames } from "@/enums";
 import { RentCalculatorTypes } from "@/components/enums";
 import { validateRentCalculatorForm } from "@/components/formValidations";
@@ -112,7 +112,7 @@ class RentCalculatorForm extends Component<Props, State> {
           minWidth: "115px",
         },
         field: (
-          <FormField
+          <FormFieldLegacy
             fieldAttributes={{
               label: "Vuosi",
               type: "string",
@@ -150,7 +150,7 @@ class RentCalculatorForm extends Component<Props, State> {
         field: (
           <Row>
             <Column small={6}>
-              <FormField
+              <FormFieldLegacy
                 fieldAttributes={{
                   label: "Alkupvm",
                   type: "date",
@@ -163,7 +163,7 @@ class RentCalculatorForm extends Component<Props, State> {
               />
             </Column>
             <Column small={6}>
-              <FormField
+              <FormFieldLegacy
                 className="with-dash"
                 fieldAttributes={{
                   label: "Loppupvm",
@@ -202,7 +202,7 @@ class RentCalculatorForm extends Component<Props, State> {
           minWidth: "115px",
         },
         field: (
-          <FormField
+          <FormFieldLegacy
             fieldAttributes={{
               label: "Laskutuskausi",
               type: "choice",
@@ -245,7 +245,7 @@ class RentCalculatorForm extends Component<Props, State> {
       <div onSubmit={this.handleSubmit}>
         <Row>
           <Column>
-            <FormField
+            <FormFieldLegacy
               className="no-margin"
               fieldAttributes={{
                 label: "Laskelman tyyppi",

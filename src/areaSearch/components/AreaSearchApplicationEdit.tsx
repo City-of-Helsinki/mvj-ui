@@ -37,7 +37,7 @@ import {
   getInitialAreaSearchEditForm,
   transformApplicantInfoCheckTitle,
 } from "@/areaSearch/helpers";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import TitleH3 from "@/components/content/TitleH3";
 import AreaSearchStatusNoteHistory from "@/areaSearch/components/AreaSearchStatusNoteHistory";
 import {
@@ -211,7 +211,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                     </FormText>
                   </Column>
                   <Column small={4} medium={4} large={2}>
-                    <FormField
+                    <FormFieldLegacy
                       name="state"
                       fieldAttributes={get(areaSearchAttributes, "state")}
                       overrideValues={{
@@ -220,7 +220,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                     />
                   </Column>
                   <Column small={4} medium={4} large={3}>
-                    <FormField
+                    <FormFieldLegacy
                       name="lessor"
                       fieldAttributes={get(areaSearchAttributes, "lessor")}
                       overrideValues={{
@@ -230,7 +230,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                     />
                   </Column>
                   <Column small={6} medium={6} large={3}>
-                    <FormField
+                    <FormFieldLegacy
                       name="preparer"
                       fieldAttributes={get(areaSearchAttributes, "preparer")}
                       overrideValues={{
@@ -240,7 +240,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                     />
                   </Column>
                   <Column small={6} medium={6} large={2}>
-                    <FormField
+                    <FormFieldLegacy
                       name="decline_reason"
                       fieldAttributes={get(
                         areaSearchAttributes,
@@ -364,7 +364,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                 <TitleH3>Käsittelytiedot</TitleH3>
                 <Row>
                   <Column small={6} medium={4} large={3}>
-                    <FormField
+                    <FormFieldLegacy
                       name="state"
                       fieldAttributes={get(areaSearchAttributes, "state")}
                       overrideValues={{
@@ -373,7 +373,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                     />
                   </Column>
                   <Column small={6} medium={4} large={3}>
-                    <FormField
+                    <FormFieldLegacy
                       name="lessor"
                       fieldAttributes={get(areaSearchAttributes, "lessor")}
                       overrideValues={{
@@ -383,7 +383,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                     />
                   </Column>
                   <Column small={6} medium={4} large={3}>
-                    <FormField
+                    <FormFieldLegacy
                       name="preparer"
                       fieldAttributes={get(areaSearchAttributes, "preparer")}
                       overrideValues={{
@@ -395,7 +395,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                 </Row>
                 <Row>
                   <Column small={6} medium={4} large={3}>
-                    <FormField
+                    <FormFieldLegacy
                       name="decline_reason"
                       fieldAttributes={get(
                         areaSearchAttributes,
@@ -409,7 +409,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                 </Row>
                 <Row>
                   <Column small={12} medium={12} large={12}>
-                    <FormField
+                    <FormFieldLegacy
                       name="preparer_note"
                       fieldAttributes={get(
                         areaSearchAttributes,
@@ -424,7 +424,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                 </Row>
                 <Row>
                   <Column small={12} medium={12} large={12}>
-                    <FormField
+                    <FormFieldLegacy
                       name="status_notes"
                       fieldAttributes={get(
                         areaSearchAttributes,

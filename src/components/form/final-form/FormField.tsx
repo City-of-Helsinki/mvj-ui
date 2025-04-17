@@ -1,9 +1,10 @@
 import { $Shape } from "utility-types";
 import React, { createElement, Fragment, PureComponent } from "react";
-import { Field } from "redux-form";
+import { Field } from "react-final-form";
+import { FieldState } from "final-form";
 import classNames from "classnames";
 import get from "lodash/get";
-import ErrorBlock from "./ErrorBlock";
+import ErrorBlock from "@/components/form/ErrorBlock";
 import ExternalLink from "@/components/links/ExternalLink";
 import FieldTypeAddress from "@/components/form/FieldTypeAddress";
 import FieldTypeAreaSearchDistrictSelect from "@/components/form/FieldTypeAreaSearchDistrictSelect";
@@ -421,13 +422,11 @@ class FormField extends PureComponent<Props, State> {
 
   handleGenericNormalize: (arg0: any) => any = (value) => {
     const { fieldAttributes } = this.props;
-    // eslint-disable-next-line no-unused-vars
     const { fieldAttributes: _, ...rest } = this.state;
     return genericNormalizer(value, { ...fieldAttributes, ...rest });
   };
   handleGenericValidate: (arg0: any) => any = (value) => {
     const { fieldAttributes } = this.props;
-    // eslint-disable-next-line no-unused-vars
     const { fieldAttributes: _, ...rest } = this.state;
     return genericValidator(value, { ...fieldAttributes, ...rest });
   };
@@ -477,12 +476,19 @@ class FormField extends PureComponent<Props, State> {
       this.state;
     return (
       <Field
-        allowEdit={allowEdit}
+        name={name}
+        validate={
+          allowEdit
+            ? (value, allValues) => {
+                const error = this.handleGenericValidate(value);
+                return error || this.handleValidate(value);
+              }
+            : undefined
+        }
         allowRead={allowRead}
         autoBlur={autoBlur}
         autoComplete={autoComplete}
         className={className}
-        component={FormFieldInput}
         disabled={disabled}
         disableDirty={disableDirty}
         disableTouched={disableTouched}
@@ -496,7 +502,6 @@ class FormField extends PureComponent<Props, State> {
         language={language}
         minDate={minDate}
         maxDate={maxDate}
-        name={name}
         normalize={this.handleGenericNormalize}
         onBlur={onBlur}
         onChange={onChange}
@@ -510,15 +515,50 @@ class FormField extends PureComponent<Props, State> {
         serviceUnit={serviceUnit}
         setRefForField={setRefForField}
         tooltipStyle={tooltipStyle}
-        validate={
-          allowEdit ? [this.handleGenericValidate, this.handleValidate] : []
-        }
         valueSelectedCallback={valueSelectedCallback}
         uiDataKey={uiDataKey}
         unit={unit}
         value={value}
         {...overrideValues}
-      />
+      >
+        {(fieldRenderProps) => (
+          <FormFieldInput
+            {...fieldRenderProps}
+            allowEdit={this.state.allowEdit}
+            allowRead={this.state.allowRead}
+            autoBlur={this.props.autoBlur}
+            autoComplete={this.props.autoComplete}
+            className={this.props.className}
+            disabled={this.props.disabled}
+            disableDirty={this.props.disableDirty}
+            disableTouched={this.props.disableTouched}
+            enableUiDataEdit={this.props.enableUiDataEdit}
+            ErrorComponent={this.props.ErrorComponent}
+            fieldType={this.state.fieldType}
+            filterOption={this.props.filterOption}
+            invisibleLabel={this.props.invisibleLabel}
+            isLoading={this.props.isLoading}
+            label={this.state.label}
+            language={this.props.language}
+            minDate={this.props.minDate}
+            maxDate={this.props.maxDate}
+            multiSelect={this.props.isMulti}
+            optionLabel={this.props.optionLabel}
+            options={this.state.options}
+            placeholder={this.props.placeholder}
+            readOnlyValueRenderer={this.props.readOnlyValueRenderer}
+            relativeTo={this.props.relativeTo}
+            required={this.state.required}
+            rows={this.props.rows}
+            serviceUnit={this.props.serviceUnit}
+            setRefForField={this.props.setRefForField}
+            tooltipStyle={this.props.tooltipStyle}
+            uiDataKey={this.props.uiDataKey}
+            unit={this.props.unit}
+            valueSelectedCallback={this.props.valueSelectedCallback}
+          />
+        )}
+      </Field>
     );
   }
 }

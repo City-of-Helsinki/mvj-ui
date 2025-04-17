@@ -4,7 +4,7 @@ import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import RemoveButton from "@/components/form/RemoveButton";
 import {
@@ -71,7 +71,7 @@ const BasisOfRentTemporarySubventionEdit = ({
             BasisOfRentTemporarySubventionsFieldPaths.DESCRIPTION,
           )}
         >
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               leaseAttributes,
@@ -93,7 +93,7 @@ const BasisOfRentTemporarySubventionEdit = ({
             BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT,
           )}
         >
-          <FormField
+          <FormFieldLegacy
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               leaseAttributes,
