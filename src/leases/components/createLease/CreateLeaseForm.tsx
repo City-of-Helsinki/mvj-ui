@@ -33,18 +33,19 @@ import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { DistrictList } from "@/district/types";
 import type { UserServiceUnit } from "@/usersPermissions/types";
-import { getCurrentAreaSearch } from "@/areaSearch/selectors";
 import { AreaSearch } from "@/areaSearch/types";
+
 type OwnProps = {
   onClose: (...args: Array<any>) => any;
   onSubmit: (...args: Array<any>) => any;
   allowToChangeRelateTo?: boolean;
   allowToChangeReferenceNumberAndNote?: boolean;
+  areaSearch: AreaSearch | null;
   confirmButtonLabel?: string;
   ref?: Function;
 };
+
 type Props = OwnProps & {
-  areaSearch: AreaSearch | null;
   change: (...args: Array<any>) => any;
   districts: DistrictList;
   fetchDistrictsByMunicipality: (...args: Array<any>) => any;
@@ -62,10 +63,25 @@ class CreateLeaseForm extends Component<Props> {
   firstField: any;
 
   componentDidMount() {
-    const { municipality, fetchDistrictsByMunicipality } = this.props;
+    const { areaSearch, change, municipality, fetchDistrictsByMunicipality } = this.props;
 
     if (municipality) {
       fetchDistrictsByMunicipality(parseInt(municipality));
+    }
+    if (areaSearch) {
+      change("application_received_at", formatDate(areaSearch?.received_date, "yyyy-MM-dd") || null);
+      change("start_date", formatDate(areaSearch?.start_date, "yyyy-MM-dd") || null);
+      change("end_date", formatDate(areaSearch?.end_date, "yyyy-MM-dd") || null);
+    }
+  }
+
+  componentWillUnmount() {
+    const { areaSearch } = this.props;
+    if (areaSearch) {
+      const { change } = this.props;
+      change("application_received_at", null);
+      change("start_date", null);
+      change("end_date", null);
     }
   }
 
@@ -87,10 +103,6 @@ class CreateLeaseForm extends Component<Props> {
 
     if (userActiveServiceUnit && formValues && !formValues.service_unit) {
       change("service_unit", userActiveServiceUnit.id);
-    }
-    if (areaSearch && areaSearch.received_date) {
-      const applicationReceivedAt = formatDate(new Date(areaSearch.received_date), "yyyy-MM-dd");
-      change("application_received_at", applicationReceivedAt);
     }
   }
 
@@ -364,7 +376,6 @@ export default flowRight(
     (state) => {
       const municipality = selector(state, "municipality");
       return {
-        areaSearch: getCurrentAreaSearch(state),
         formValues: getFormValues(formName)(state),
         district: selector(state, "district"),
         districts: getDistrictsByMunicipality(state, municipality),

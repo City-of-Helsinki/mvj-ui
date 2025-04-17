@@ -3,8 +3,11 @@ import React, { Component } from "react";
 import CreateLeaseForm from "./CreateLeaseForm";
 import Modal from "@/components/modal/Modal";
 import { ButtonLabels } from "@/components/enums";
+import { AreaSearch } from "@/areaSearch/types";
+
 type Props = {
   allowToChangeRelateTo?: boolean;
+  areaSearch: AreaSearch | null;
   isOpen: boolean;
   onClose: (...args: Array<any>) => any;
   onSubmit: (...args: Array<any>) => any;
@@ -27,13 +30,14 @@ class CreateLease extends Component<Props> {
   };
 
   render(): JSX.Element {
-    const { allowToChangeRelateTo, isOpen, onClose, onSubmit } = this.props;
+    const { allowToChangeRelateTo, areaSearch, isOpen, onClose, onSubmit } = this.props;
     return (
       <Modal isOpen={isOpen} onClose={onClose} title={ButtonLabels.CREATE_LEASE_IDENTIFIER}>
         <CreateLeaseForm
           ref={this.setRefForForm}
           allowToChangeRelateTo={allowToChangeRelateTo}
           allowToChangeReferenceNumberAndNote
+          areaSearch={areaSearch}
           onClose={onClose}
           onSubmit={onSubmit}
         />

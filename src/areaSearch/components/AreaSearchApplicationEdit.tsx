@@ -217,6 +217,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
             isOpen={isModalOpen}
             onClose={this.hideCreateLeaseModal}
             onSubmit={createLease}
+            areaSearch={areaSearch}
         />
         <div className="AreaSearchApplication__header">
           <Title>Hakemus</Title>
