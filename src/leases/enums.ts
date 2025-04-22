@@ -47,6 +47,27 @@ export const ContractRentPeriods = {
 };
 
 /**
+ * Create lease form field name enumerable.
+ *
+ * @type {{}}
+ */
+export const CreateLeaseFormFieldNames = {
+  STATE: "state",
+  SERVICE_UNIT: "service_unit",
+  TYPE: "type",
+  MUNICIPALITY: "municipality",
+  DISTRICT: "district",
+  REFERENCE_NUMBER: "reference_number",
+  NOTE: "note",
+  APPLICATION_RECEIVED_AT: "application_received_at",
+  RELATE_TO: "relate_to",
+  // Invisible, and only for leases created from 
+  // an area search application (which uses the related_plot_application entity)
+  START_DATE: "start_date",
+  END_DATE: "end_date",
+};
+
+/**
  * Decision type kinds enumerable.
  *
  * @type {{}}

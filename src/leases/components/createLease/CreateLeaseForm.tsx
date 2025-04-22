@@ -17,7 +17,7 @@ import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import { fetchDistrictsByMunicipality } from "@/district/actions";
 import { FieldTypes, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
-import { LeaseFieldPaths, LeaseFieldTitles } from "@/leases/enums";
+import { LeaseFieldPaths, LeaseFieldTitles, CreateLeaseFormFieldNames } from "@/leases/enums";
 import { filterOptionsByLabel } from "@/components/form/filter";
 import { getDistrictOptions } from "@/district/helpers";
 import { getPayloadCreateLease } from "@/leases/helpers";
@@ -69,9 +69,9 @@ class CreateLeaseForm extends Component<Props> {
       fetchDistrictsByMunicipality(parseInt(municipality));
     }
     if (areaSearch) {
-      change("application_received_at", formatDate(areaSearch?.received_date, "yyyy-MM-dd") || null);
-      change("start_date", formatDate(areaSearch?.start_date, "yyyy-MM-dd") || null);
-      change("end_date", formatDate(areaSearch?.end_date, "yyyy-MM-dd") || null);
+      change(CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT, formatDate(areaSearch?.received_date, "yyyy-MM-dd") || null);
+      change(CreateLeaseFormFieldNames.START_DATE, formatDate(areaSearch?.start_date, "yyyy-MM-dd") || null);
+      change(CreateLeaseFormFieldNames.END_DATE, formatDate(areaSearch?.end_date, "yyyy-MM-dd") || null);
     }
   }
 
@@ -79,9 +79,9 @@ class CreateLeaseForm extends Component<Props> {
     const { areaSearch } = this.props;
     if (areaSearch) {
       const { change } = this.props;
-      change("application_received_at", null);
-      change("start_date", null);
-      change("end_date", null);
+      change(CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT, null);
+      change(CreateLeaseFormFieldNames.START_DATE, null);
+      change(CreateLeaseFormFieldNames.END_DATE, null);
     }
   }
 
@@ -91,9 +91,9 @@ class CreateLeaseForm extends Component<Props> {
 
       if (nextProps.municipality) {
         fetchDistrictsByMunicipality(nextProps.municipality);
-        change("district", "");
+        change(CreateLeaseFormFieldNames.DISTRICT, "");
       } else {
-        change("district", "");
+        change(CreateLeaseFormFieldNames.DISTRICT, "");
       }
     }
   }
@@ -102,7 +102,7 @@ class CreateLeaseForm extends Component<Props> {
     const { areaSearch, change, formValues, userActiveServiceUnit } = this.props;
 
     if (userActiveServiceUnit && formValues && !formValues.service_unit) {
-      change("service_unit", userActiveServiceUnit.id);
+      change(CreateLeaseFormFieldNames.SERVICE_UNIT, userActiveServiceUnit.id);
     }
   }
 
@@ -115,7 +115,7 @@ class CreateLeaseForm extends Component<Props> {
     }
   };
   handleCreate = () => {
-    const { formValues, onSubmit } = this.props;
+    const { areaSearch, formValues, onSubmit } = this.props;
     onSubmit(getPayloadCreateLease(formValues));
   };
 
@@ -148,7 +148,7 @@ class CreateLeaseForm extends Component<Props> {
                   leaseAttributes,
                   LeaseFieldPaths.STATE,
                 )}
-                name="state"
+                name={CreateLeaseFormFieldNames.STATE}
                 setRefForField={this.setRefForFirstField}
                 overrideValues={{
                   label: LeaseFieldTitles.STATE,
@@ -193,7 +193,7 @@ class CreateLeaseForm extends Component<Props> {
                   leaseAttributes,
                   LeaseFieldPaths.TYPE,
                 )}
-                name="type"
+                name={CreateLeaseFormFieldNames.TYPE}
                 overrideValues={{
                   label: LeaseFieldTitles.TYPE,
                 }}
@@ -214,7 +214,7 @@ class CreateLeaseForm extends Component<Props> {
                   leaseAttributes,
                   LeaseFieldPaths.MUNICIPALITY,
                 )}
-                name="municipality"
+                name={CreateLeaseFormFieldNames.MUNICIPALITY}
                 overrideValues={{
                   label: LeaseFieldTitles.MUNICIPALITY,
                 }}
@@ -236,7 +236,7 @@ class CreateLeaseForm extends Component<Props> {
                   LeaseFieldPaths.DISTRICT,
                 )}
                 filterOption={filterOptionsByLabel}
-                name="district"
+                name={CreateLeaseFormFieldNames.DISTRICT}
                 overrideValues={{
                   label: LeaseFieldTitles.DISTRICT,
                   options: districtOptions,
@@ -262,7 +262,7 @@ class CreateLeaseForm extends Component<Props> {
                     leaseAttributes,
                     LeaseFieldPaths.REFERENCE_NUMBER,
                   )}
-                  name="reference_number"
+                  name={CreateLeaseFormFieldNames.REFERENCE_NUMBER}
                   validate={referenceNumber}
                   overrideValues={{
                     label: LeaseFieldTitles.REFERENCE_NUMBER,
@@ -286,7 +286,7 @@ class CreateLeaseForm extends Component<Props> {
                     leaseAttributes,
                     LeaseFieldPaths.NOTE,
                   )}
-                  name="note"
+                  name={CreateLeaseFormFieldNames.NOTE}
                   overrideValues={{
                     label: LeaseFieldTitles.NOTE,
                     fieldType: FieldTypes.TEXTAREA,
@@ -311,7 +311,7 @@ class CreateLeaseForm extends Component<Props> {
                   leaseAttributes,
                   LeaseFieldPaths.APPLICATION_RECEIVED_AT,
                 )}
-                name="application_received_at"
+                name={CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT}
                 overrideValues={{
                   fieldType: FieldTypes.DATE,
                   label: LeaseFieldTitles.APPLICATION_RECEIVED_AT,
@@ -338,7 +338,7 @@ class CreateLeaseForm extends Component<Props> {
                     leaseAttributes,
                     LeaseFieldPaths.RELATE_TO,
                   )}
-                  name="relate_to"
+                  name={CreateLeaseFormFieldNames.RELATE_TO}
                   overrideValues={{
                     fieldType: FieldTypes.LEASE,
                     label: LeaseFieldTitles.RELATE_TO,
