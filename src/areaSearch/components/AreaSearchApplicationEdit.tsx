@@ -56,18 +56,27 @@ import {
   uploadAttachment,
   setAreaSearchAttachments,
 } from "@/areaSearch/actions";
+import AddButtonSecondary from "@/components/form/AddButtonSecondary";
+import CreateLeaseModal from '@/leases/components/createLease/CreateLeaseModal';
+import { createLease, fetchAttributes as fetchLeaseAttributes } from "@/leases/actions";
+import { getAttributes as getLeaseAttributes, getIsFetchingAttributes as getIsFetchingLeaseAttributes } from "@/leases/selectors";
+import { ButtonLabels } from "@/components/enums";
 
 type Props = {
   areaSearch: AreaSearch | null;
-  isFetchingFormAttributes: boolean;
-  isPerformingFileOperation: boolean;
+  areaSearchAttributes: Attributes;
+  change: (...args: Array<any>) => any;
+  createLease: (...args: Array<any>) => any;
+  initialize: (...args: Array<any>) => any;
+  fetchLeaseAttributes: (...args: Array<any>) => any;
   formAttributes: Attributes;
   formValues: Record<string, any> | null | undefined;
-  areaSearchAttributes: Attributes;
-  initialize: (...args: Array<any>) => any;
-  uploadAttachment: (...args: Array<any>) => any;
+  isFetchingFormAttributes: boolean;
+  isFetchingLeaseAttributes: boolean;
+  isPerformingFileOperation: boolean;
+  leaseAttributes: Attributes;
   setAreaSearchAttachments: (...args: Array<any>) => any;
-  change: (...args: Array<any>) => any;
+  uploadAttachment: (...args: Array<any>) => any;
 };
 type State = {
   // The Leaflet element doesn't initialize correctly if it's invisible in a collapsed section element,
@@ -76,14 +85,20 @@ type State = {
   // circumvent this by forcing it to rerender with a key whenever that section is opened; during
   // the opening transition, the initialization works properly.
   selectedAreaSectionRefreshKey: number;
+  isModalOpen: boolean;
 };
 
 class AreaSearchApplicationEdit extends Component<Props, State> {
   state: any = {
     selectedAreaSectionRefreshKey: 0,
+    isModalOpen: false,
   };
 
   componentDidMount() {
+    const { leaseAttributes, fetchLeaseAttributes, isFetchingLeaseAttributes } = this.props;
+    if (!isFetchingLeaseAttributes && !leaseAttributes) {
+      fetchLeaseAttributes();
+    }
     this.initializeForm();
   }
 
@@ -140,15 +155,28 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
     }
   };
 
+  showCreateLeaseModal = () => {
+    this.setState({
+      isModalOpen: true,
+    });
+  };
+
+  hideCreateLeaseModal = () => {
+    this.setState({
+      isModalOpen: false,
+    });
+  };
+
   render(): JSX.Element {
     const {
       areaSearch,
+      createLease,
       isFetchingFormAttributes,
       isPerformingFileOperation,
       formAttributes,
       areaSearchAttributes,
     } = this.props;
-    const { selectedAreaSectionRefreshKey } = this.state;
+    const { selectedAreaSectionRefreshKey, isModalOpen } = this.state;
     const fieldTypes = getFieldAttributes(
       formAttributes,
       "sections.child.children.fields.child.children.type.choices",
@@ -185,7 +213,19 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
     );
     return (
       <div className="AreaSearchApplication">
-        <Title>Hakemus</Title>
+        <CreateLeaseModal
+            isOpen={isModalOpen}
+            onClose={this.hideCreateLeaseModal}
+            onSubmit={createLease}
+            areaSearch={areaSearch}
+        />
+        <div className="AreaSearchApplication__header">
+          <Title>Hakemus</Title>
+          <AddButtonSecondary
+            label={ButtonLabels.CREATE_LEASE}
+            onClick={this.showCreateLeaseModal}
+          />
+        </div>
         <Divider />
         {!(
           form &&
@@ -459,9 +499,13 @@ export default flowRight(
       formAttributes: getFormAttributes(state),
       formValues: getFormValues(FormNames.AREA_SEARCH)(state),
       isFetchingFormAttributes: getIsFetchingFormAttributes(state),
+      isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),
       isPerformingFileOperation: getIsPerformingFileOperation(state),
+      leaseAttributes: getLeaseAttributes(state),
     }),
     {
+      createLease,
+      fetchLeaseAttributes,
       uploadAttachment,
       setAreaSearchAttachments,
       change,

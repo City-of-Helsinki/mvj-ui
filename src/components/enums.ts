@@ -12,6 +12,16 @@ export const ButtonColors = {
 };
 
 /**
+ * Button label enumerable.
+ * @readonly
+ * @enum {string}
+ */
+export const ButtonLabels = {
+  CREATE_LEASE_IDENTIFIER: "Luo vuokraustunnus",
+  CREATE_LEASE: "Luo vuokraus",
+};
+
+/**
  * Rent calculator type enumerable.
  * @readonly
  * @enum {string}

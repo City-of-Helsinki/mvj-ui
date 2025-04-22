@@ -2762,6 +2762,8 @@ export const getPayloadCreateLease = (lease: Lease): Record<string, any> => {
   return {
     state: lease.state,
     type: lease.type,
+    start_date: lease?.start_date || null,
+    end_date: lease?.end_date || null,
     municipality: lease.municipality,
     district: lease.district,
     reference_number: lease.reference_number,

@@ -99,6 +99,7 @@ import type {
   UsersPermissions as UsersPermissionsType,
   UserServiceUnit,
 } from "@/usersPermissions/types";
+import { ButtonLabels } from "@/components/enums";
 
 const VisualizationTypes = {
   MAP: "map",
@@ -785,7 +786,7 @@ class LeaseListPage extends PureComponent<Props, State> {
             <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
               <AddButtonSecondary
                 className="no-top-margin"
-                label="Luo vuokraustunnus"
+                label={ButtonLabels.CREATE_LEASE_IDENTIFIER}
                 onClick={this.showCreateLeaseModal}
               />
             </Authorization>
