@@ -2773,6 +2773,7 @@ export const getPayloadCreateLease = (lease: Lease): Record<string, any> => {
     },
     relate_to: relateTo,
     relation_type: relateTo ? RelationTypes.TRANSFER : undefined,
+    related_plot_application: lease.related_plot_application,
     service_unit: lease.service_unit,
   };
 };

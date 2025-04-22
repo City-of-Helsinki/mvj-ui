@@ -61,10 +61,9 @@ export const CreateLeaseFormFieldNames = {
   NOTE: "note",
   APPLICATION_RECEIVED_AT: "application_received_at",
   RELATE_TO: "relate_to",
-  // Invisible, and only for leases created from 
-  // an area search application (which uses the related_plot_application entity)
   START_DATE: "start_date",
   END_DATE: "end_date",
+  RELATED_PLOT_APPLICATION: "related_plot_application",
 };
 
 /**

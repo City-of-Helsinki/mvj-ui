@@ -17,7 +17,7 @@ import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import { fetchDistrictsByMunicipality } from "@/district/actions";
 import { FieldTypes, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
-import { LeaseFieldPaths, LeaseFieldTitles, CreateLeaseFormFieldNames } from "@/leases/enums";
+import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryContentTypes, CreateLeaseFormFieldNames } from "@/leases/enums";
 import { filterOptionsByLabel } from "@/components/form/filter";
 import { getDistrictOptions } from "@/district/helpers";
 import { getPayloadCreateLease } from "@/leases/helpers";
@@ -72,6 +72,10 @@ class CreateLeaseForm extends Component<Props> {
       change(CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT, formatDate(areaSearch?.received_date, "yyyy-MM-dd") || null);
       change(CreateLeaseFormFieldNames.START_DATE, formatDate(areaSearch?.start_date, "yyyy-MM-dd") || null);
       change(CreateLeaseFormFieldNames.END_DATE, formatDate(areaSearch?.end_date, "yyyy-MM-dd") || null);
+      change(CreateLeaseFormFieldNames.RELATED_PLOT_APPLICATION, {
+        object_id: areaSearch.id,
+        content_type_model: LeaseHistoryContentTypes.AREA_SEARCH,
+      });
     }
   }
 
@@ -82,6 +86,7 @@ class CreateLeaseForm extends Component<Props> {
       change(CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT, null);
       change(CreateLeaseFormFieldNames.START_DATE, null);
       change(CreateLeaseFormFieldNames.END_DATE, null);
+      change(CreateLeaseFormFieldNames.RELATED_PLOT_APPLICATION, null);
     }
   }
 
