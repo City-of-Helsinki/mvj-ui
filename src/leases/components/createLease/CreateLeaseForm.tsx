@@ -34,6 +34,7 @@ import type { Attributes } from "types";
 import type { DistrictList } from "@/district/types";
 import type { UserServiceUnit } from "@/usersPermissions/types";
 import { AreaSearch } from "@/areaSearch/types";
+import { CreateLeaseFormValues } from "@/leases/types";
 
 type OwnProps = {
   onClose: (...args: Array<any>) => any;
@@ -42,14 +43,14 @@ type OwnProps = {
   allowToChangeReferenceNumberAndNote?: boolean;
   areaSearch: AreaSearch | null;
   confirmButtonLabel?: string;
-  ref?: Function;
+  ref?: (...args: Array<any>) => any;
 };
 
 type Props = OwnProps & {
   change: (...args: Array<any>) => any;
   districts: DistrictList;
   fetchDistrictsByMunicipality: (...args: Array<any>) => any;
-  formValues: Record<string, any>;
+  formValues: CreateLeaseFormValues;
   leaseAttributes: Attributes;
   municipality: string;
   setRefForFirstField?: (...args: Array<any>) => any;
