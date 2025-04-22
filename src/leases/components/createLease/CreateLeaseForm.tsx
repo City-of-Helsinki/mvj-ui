@@ -105,7 +105,7 @@ class CreateLeaseForm extends Component<Props> {
   }
 
   componentDidUpdate() {
-    const { areaSearch, change, formValues, userActiveServiceUnit } = this.props;
+    const { change, formValues, userActiveServiceUnit } = this.props;
 
     if (userActiveServiceUnit && formValues && !formValues.service_unit) {
       change(CreateLeaseFormFieldNames.SERVICE_UNIT, userActiveServiceUnit.id);
@@ -121,7 +121,7 @@ class CreateLeaseForm extends Component<Props> {
     }
   };
   handleCreate = () => {
-    const { areaSearch, formValues, onSubmit } = this.props;
+    const { formValues, onSubmit } = this.props;
     onSubmit(getPayloadCreateLease(formValues));
   };
 
