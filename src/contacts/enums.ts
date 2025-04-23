@@ -9,7 +9,7 @@ export const ContactTypes = {
   UNIT: "unit",
   ASSOCIATION: "association",
   OTHER: "other",
-};
+} as const;
 
 /**
  * Contact field paths enumerable.

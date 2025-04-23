@@ -1,4 +1,5 @@
 import type { Action, Attributes, Methods } from "@/types";
+import { ContactTypes } from "@/contacts/enums";
 export type ContactState = {
   attributes: Attributes;
   contactModalSettings: ContactModalSettings;
@@ -17,7 +18,26 @@ export type ContactState = {
 export type ContactExistsResponse = {
   exists: boolean;
 };
-export type Contact = Record<string, any>;
+export type Contact = {
+  service_unit: number;
+  type: (typeof ContactTypes)[keyof typeof ContactTypes];
+  business_id?: string;
+  language?: string;
+  sap_customer_number?: string;
+  partner_code?: string;
+  electronic_billing_address?: string;
+  note?: string;
+  national_identification_number?: string;
+  name?: string;
+  care_of?: string;
+  address?: string;
+  postal_code?: string;
+  city?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
+  is_lessor?: boolean;
+};
 export type ContactId = number;
 export type ContactList = any;
 export type ContactModalSettings = Record<string, any> | null;

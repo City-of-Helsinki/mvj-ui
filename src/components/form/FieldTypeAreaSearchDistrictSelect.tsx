@@ -2,9 +2,7 @@ import React from "react";
 import debounce from "lodash/debounce";
 import AsyncSelect from "@/components/form/AsyncSelect";
 import { addEmptyOption, sortStringByKeyAsc } from "@/util/helpers";
-import { getContentIntendedUse } from "@/leases/helpers";
-import { fetchIntendedUses } from "@/leases/requestsAsync";
-import type { ServiceUnit } from "@/serviceUnits/types";
+import { fetchAreaSearchDistricts } from "@/areaSearch/requestsAsync";
 type Props = {
   disabled?: boolean;
   displayError: boolean;
@@ -12,40 +10,47 @@ type Props = {
   isDirty: boolean;
   onChange: (...args: Array<any>) => any;
   placeholder?: string;
-  serviceUnit: ServiceUnit;
 };
-const FieldTypeIntendedUseSelect = ({
+
+const getContentAreaSearchDistrict = (
+  district: string | null | undefined,
+): { value: string; label: string } | null => {
+  if (!district) return null;
+  return {
+    value: district,
+    label: district,
+  };
+};
+
+const FieldTypeAreaSearchDistrictSelect = ({
   disabled,
   displayError,
   input,
   isDirty,
   onChange,
   placeholder,
-  serviceUnit,
 }: Props): JSX.Element => {
-  const getIntendedUses = debounce(
+  const getAreaSearchDistricts = debounce(
     async (inputValue: string, callback: (...args: Array<any>) => any) => {
-      const intendedUses = await fetchIntendedUses({
-        search: inputValue,
-        limit: 500,
-        service_unit: serviceUnit?.id || "",
-        is_active: "true",
+      const districts = await fetchAreaSearchDistricts({
+        district: inputValue,
       });
       callback(
         addEmptyOption(
-          intendedUses
-            .map((intendedUse) => getContentIntendedUse(intendedUse))
+          districts
+            .map(({ district }) => getContentAreaSearchDistrict(district))
             .sort((a, b) => sortStringByKeyAsc(a, b, "label")),
         ),
       );
     },
     500,
   );
+
   return (
     <AsyncSelect
       disabled={disabled}
       displayError={displayError}
-      getOptions={getIntendedUses}
+      getOptions={getAreaSearchDistricts}
       input={input}
       isDirty={isDirty}
       onChange={onChange}
@@ -54,4 +59,4 @@ const FieldTypeIntendedUseSelect = ({
   );
 };
 
-export default FieldTypeIntendedUseSelect;
+export default FieldTypeAreaSearchDistrictSelect;

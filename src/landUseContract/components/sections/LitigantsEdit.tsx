@@ -35,6 +35,8 @@ import { getCurrentLandUseContract } from "@/landUseContract/selectors";
 import { withContactAttributes } from "@/components/attributes/ContactAttributes";
 import type { ContactModalSettings } from "@/contacts/types";
 import type { LandUseContract } from "@/landUseContract/types";
+import type { Contact } from "@/contacts/types";
+
 type LitigantsProps = {
   archived: boolean;
   fields: any;
@@ -116,7 +118,7 @@ const renderLitigants = ({
 type Props = {
   change: (...args: Array<any>) => any;
   contactModalSettings: ContactModalSettings;
-  contactFormValues: Record<string, any>;
+  contactFormValues: Contact;
   createContact: (...args: Array<any>) => any;
   currentLandUseContract: LandUseContract;
   editContact: (...args: Array<any>) => any;
@@ -246,7 +248,10 @@ class TenantsEdit extends PureComponent<Props, State> {
               : null;
 
             if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
-              const exists = await contactExists(contactIdentifier);
+              const exists = await contactExists({
+                identifier: contactIdentifier,
+                serviceUnitId: contactFormValues?.service_unit,
+              });
 
               if (exists) {
                 dispatch({

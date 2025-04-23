@@ -17,12 +17,12 @@ import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import { fetchDistrictsByMunicipality } from "@/district/actions";
 import { FieldTypes, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
-import { LeaseFieldPaths, LeaseFieldTitles } from "@/leases/enums";
+import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryContentTypes, CreateLeaseFormFieldNames } from "@/leases/enums";
 import { filterOptionsByLabel } from "@/components/form/filter";
 import { getDistrictOptions } from "@/district/helpers";
 import { getPayloadCreateLease } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import { getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
+import { formatDate, getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
 import {
   getDistrictsByMunicipality,
   getIsFetching as getIsFetchingDistricts,
@@ -33,19 +33,24 @@ import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { DistrictList } from "@/district/types";
 import type { UserServiceUnit } from "@/usersPermissions/types";
+import { AreaSearch } from "@/areaSearch/types";
+import { CreateLeaseFormValues } from "@/leases/types";
+
 type OwnProps = {
   onClose: (...args: Array<any>) => any;
   onSubmit: (...args: Array<any>) => any;
   allowToChangeRelateTo?: boolean;
   allowToChangeReferenceNumberAndNote?: boolean;
+  areaSearch: AreaSearch | null;
   confirmButtonLabel?: string;
-  ref?: Function;
+  ref?: (...args: Array<any>) => any;
 };
+
 type Props = OwnProps & {
   change: (...args: Array<any>) => any;
   districts: DistrictList;
   fetchDistrictsByMunicipality: (...args: Array<any>) => any;
-  formValues: Record<string, any>;
+  formValues: CreateLeaseFormValues;
   leaseAttributes: Attributes;
   municipality: string;
   setRefForFirstField?: (...args: Array<any>) => any;
@@ -59,10 +64,30 @@ class CreateLeaseForm extends Component<Props> {
   firstField: any;
 
   componentDidMount() {
-    const { municipality, fetchDistrictsByMunicipality } = this.props;
+    const { areaSearch, change, municipality, fetchDistrictsByMunicipality } = this.props;
 
     if (municipality) {
       fetchDistrictsByMunicipality(parseInt(municipality));
+    }
+    if (areaSearch) {
+      change(CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT, formatDate(areaSearch?.received_date, "yyyy-MM-dd") || null);
+      change(CreateLeaseFormFieldNames.START_DATE, formatDate(areaSearch?.start_date, "yyyy-MM-dd") || null);
+      change(CreateLeaseFormFieldNames.END_DATE, formatDate(areaSearch?.end_date, "yyyy-MM-dd") || null);
+      change(CreateLeaseFormFieldNames.RELATED_PLOT_APPLICATION, {
+        object_id: areaSearch.id,
+        content_type_model: LeaseHistoryContentTypes.AREA_SEARCH,
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const { areaSearch } = this.props;
+    if (areaSearch) {
+      const { change } = this.props;
+      change(CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT, null);
+      change(CreateLeaseFormFieldNames.START_DATE, null);
+      change(CreateLeaseFormFieldNames.END_DATE, null);
+      change(CreateLeaseFormFieldNames.RELATED_PLOT_APPLICATION, null);
     }
   }
 
@@ -72,9 +97,9 @@ class CreateLeaseForm extends Component<Props> {
 
       if (nextProps.municipality) {
         fetchDistrictsByMunicipality(nextProps.municipality);
-        change("district", "");
+        change(CreateLeaseFormFieldNames.DISTRICT, "");
       } else {
-        change("district", "");
+        change(CreateLeaseFormFieldNames.DISTRICT, "");
       }
     }
   }
@@ -83,7 +108,7 @@ class CreateLeaseForm extends Component<Props> {
     const { change, formValues, userActiveServiceUnit } = this.props;
 
     if (userActiveServiceUnit && formValues && !formValues.service_unit) {
-      change("service_unit", userActiveServiceUnit.id);
+      change(CreateLeaseFormFieldNames.SERVICE_UNIT, userActiveServiceUnit.id);
     }
   }
 
@@ -129,7 +154,7 @@ class CreateLeaseForm extends Component<Props> {
                   leaseAttributes,
                   LeaseFieldPaths.STATE,
                 )}
-                name="state"
+                name={CreateLeaseFormFieldNames.STATE}
                 setRefForField={this.setRefForFirstField}
                 overrideValues={{
                   label: LeaseFieldTitles.STATE,
@@ -174,7 +199,7 @@ class CreateLeaseForm extends Component<Props> {
                   leaseAttributes,
                   LeaseFieldPaths.TYPE,
                 )}
-                name="type"
+                name={CreateLeaseFormFieldNames.TYPE}
                 overrideValues={{
                   label: LeaseFieldTitles.TYPE,
                 }}
@@ -195,7 +220,7 @@ class CreateLeaseForm extends Component<Props> {
                   leaseAttributes,
                   LeaseFieldPaths.MUNICIPALITY,
                 )}
-                name="municipality"
+                name={CreateLeaseFormFieldNames.MUNICIPALITY}
                 overrideValues={{
                   label: LeaseFieldTitles.MUNICIPALITY,
                 }}
@@ -217,7 +242,7 @@ class CreateLeaseForm extends Component<Props> {
                   LeaseFieldPaths.DISTRICT,
                 )}
                 filterOption={filterOptionsByLabel}
-                name="district"
+                name={CreateLeaseFormFieldNames.DISTRICT}
                 overrideValues={{
                   label: LeaseFieldTitles.DISTRICT,
                   options: districtOptions,
@@ -243,7 +268,7 @@ class CreateLeaseForm extends Component<Props> {
                     leaseAttributes,
                     LeaseFieldPaths.REFERENCE_NUMBER,
                   )}
-                  name="reference_number"
+                  name={CreateLeaseFormFieldNames.REFERENCE_NUMBER}
                   validate={referenceNumber}
                   overrideValues={{
                     label: LeaseFieldTitles.REFERENCE_NUMBER,
@@ -267,7 +292,7 @@ class CreateLeaseForm extends Component<Props> {
                     leaseAttributes,
                     LeaseFieldPaths.NOTE,
                   )}
-                  name="note"
+                  name={CreateLeaseFormFieldNames.NOTE}
                   overrideValues={{
                     label: LeaseFieldTitles.NOTE,
                     fieldType: FieldTypes.TEXTAREA,
@@ -292,7 +317,7 @@ class CreateLeaseForm extends Component<Props> {
                   leaseAttributes,
                   LeaseFieldPaths.APPLICATION_RECEIVED_AT,
                 )}
-                name="application_received_at"
+                name={CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT}
                 overrideValues={{
                   fieldType: FieldTypes.DATE,
                   label: LeaseFieldTitles.APPLICATION_RECEIVED_AT,
@@ -319,7 +344,7 @@ class CreateLeaseForm extends Component<Props> {
                     leaseAttributes,
                     LeaseFieldPaths.RELATE_TO,
                   )}
-                  name="relate_to"
+                  name={CreateLeaseFormFieldNames.RELATE_TO}
                   overrideValues={{
                     fieldType: FieldTypes.LEASE,
                     label: LeaseFieldTitles.RELATE_TO,
