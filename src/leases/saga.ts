@@ -53,6 +53,8 @@ import {
 } from "./requests";
 import { getCurrentLease } from "./selectors";
 import { createRelatedPlotApplication } from "@/relatedLease/actions";
+import { editAreaSearch } from "@/areaSearch/actions";
+import { AreaSearchState } from "@/plotSearch/enums";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -243,10 +245,7 @@ function* fetchLeaseByIdSaga({
   }
 }
 
-function* createLeaseSaga({
-  payload,
-  type: any,
-}): Generator<any, any, any> {
+function* createLeaseSaga({ payload, type: any }): Generator<any, any, any> {
   try {
     const { related_plot_application, ...lease } = payload;
     const {
@@ -262,13 +261,28 @@ function* createLeaseSaga({
       relatedPlotApplicationPayload = {
         ...related_plot_application,
         lease: bodyAsJson.id,
-      }
+      };
     }
 
     switch (statusCode) {
       case 201:
         if (relatedPlotApplicationPayload) {
-          yield put(createRelatedPlotApplication(relatedPlotApplicationPayload));
+          yield put(
+            createRelatedPlotApplication(relatedPlotApplicationPayload),
+          );
+          yield put(
+            editAreaSearch({
+              id: relatedPlotApplicationPayload.object_id,
+              state: AreaSearchState.SETTLED,
+              area_search_status: {
+                status_notes: [
+                  {
+                    note: "Päätetty",
+                  },
+                ],
+              },
+            }),
+          );
         }
         yield put(push(`${getRouteById(Routes.LEASES)}/${bodyAsJson.id}`));
         yield put(receiveIsSaveClicked(false));
