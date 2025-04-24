@@ -196,6 +196,12 @@ class AreaSearchApplication extends Component<Props, State> {
                       {getLabelOfOption(stateOptions, areaSearch.state)}
                     </FormText>
                   </Column>
+                  <Column small={4} medium={4} large={2}>
+                    <FormTextTitle>{AreaSearchFieldTitles.SETTLED_DATE}</FormTextTitle>
+                    <FormText>
+                      {formatDate(areaSearch?.settled_date, "dd.MM.yyyy H.mm")}
+                    </FormText>
+                  </Column>
                   <Column small={4} medium={4} large={3}>
                     <FormTextTitle>
                       {AreaSearchFieldTitles.LESSOR}

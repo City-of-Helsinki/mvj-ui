@@ -8,6 +8,7 @@ export const AreaSearchFieldTitles = {
   LESSOR: "Vuokranantaja",
   STATE: "Tila",
   RECEIVED_DATE: "Saapumisajankohta",
+  SETTLED_DATE: "Päätetty pvm",
   PREPARER: "Käsittelijä",
   RENT_PERIOD: "Vuokra-aika",
   DESCRIPTION_INTENDED_USE: "Käyttötarkoitus",

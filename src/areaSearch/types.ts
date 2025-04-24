@@ -48,6 +48,7 @@ export type AreaSearch = {
   plot: Array<string>;
   preparer?: User;
   received_date?: string;
+  settled_date?: string;
   service_unit?: number;
   start_date: string;
   state: string;
