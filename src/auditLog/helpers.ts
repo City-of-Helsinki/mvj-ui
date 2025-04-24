@@ -29,6 +29,7 @@ import {
   LeaseTenantsFieldPaths,
   LeaseTenantContactSetFieldPaths,
 } from "@/leases/enums";
+import { AreaSearchFieldPaths } from "@/areaSearch/enums";
 import { getFieldAttributes } from "@/util/helpers";
 import type { Attributes } from "types";
 
@@ -151,6 +152,11 @@ export const getAuditLogContentLabel = (
   switch (contentType) {
     case "areasearch":
       fieldAttributes = getFieldAttributes(areaSearchAttributes, key);
+      break;
+
+    case "areasearchstatus":
+      fieldKey = `${AreaSearchFieldPaths.AREA_SEARCH_STATUS}.children.${key}`;
+      fieldAttributes = getFieldAttributes(areaSearchAttributes, fieldKey);
       break;
 
     case "comment":

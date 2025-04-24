@@ -2,6 +2,7 @@ export const AreaSearchFieldPaths = {
   INTENDED_USE: "intended_use",
   LESSOR: "lessor",
   AUDIT_LOG: "audit_log",
+  AREA_SEARCH_STATUS: "area_search_status",
 };
 export const AreaSearchFieldTitles = {
   INTENDED_USE: "Käyttötarkoitus",
