@@ -61,6 +61,8 @@ import CreateLeaseModal from '@/leases/components/createLease/CreateLeaseModal';
 import { createLease, fetchAttributes as fetchLeaseAttributes } from "@/leases/actions";
 import { getAttributes as getLeaseAttributes, getIsFetchingAttributes as getIsFetchingLeaseAttributes } from "@/leases/selectors";
 import { ButtonLabels } from "@/components/enums";
+import { Link } from "hds-react";
+import { getRouteById } from "@/root/routes";
 
 type Props = {
   areaSearch: AreaSearch | null;
@@ -169,7 +171,10 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
 
   render(): JSX.Element {
     const {
-      areaSearch,
+      areaSearch: {
+        lease,
+        ...areaSearch
+      },
       createLease,
       isFetchingFormAttributes,
       isPerformingFileOperation,
@@ -177,6 +182,8 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
       areaSearchAttributes,
     } = this.props;
     const { selectedAreaSectionRefreshKey, isModalOpen } = this.state;
+    const leaseIdentifier = lease?.identifier?.identifier || null;
+    const leaseId = lease?.id || null;
     const fieldTypes = getFieldAttributes(
       formAttributes,
       "sections.child.children.fields.child.children.type.choices",
@@ -242,7 +249,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
             <>
               <Collapse headerTitle="Hakemuksen käsittelytiedot" defaultOpen>
                 <Row>
-                  <Column small={4} medium={4} large={2}>
+                  <Column small={4} medium={4} large={3}>
                     <FormTextTitle>
                       {AreaSearchFieldTitles.RECEIVED_DATE}
                     </FormTextTitle>
@@ -250,7 +257,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                       {formatDate(areaSearch.received_date, "dd.MM.yyyy H.mm")}
                     </FormText>
                   </Column>
-                  <Column small={4} medium={4} large={2}>
+                  <Column small={4} medium={4} large={3}>
                     <FormField
                       name="state"
                       fieldAttributes={get(areaSearchAttributes, "state")}
@@ -259,10 +266,26 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                       }}
                     />
                   </Column>
-                  <Column small={4} medium={4} large={2}>
+                  <Column small={4} medium={4} large={3}>
                     <FormTextTitle>{AreaSearchFieldTitles.SETTLED_DATE}</FormTextTitle>
                     <FormText>
-                      {formatDate(areaSearch.settled_date, "dd.MM.yyyy H.mm")}
+                      {areaSearch?.settled_date ? (
+                        formatDate(areaSearch.settled_date, "dd.MM.yyyy H.mm")
+                      ) : "-"}
+                    </FormText>
+                  </Column>
+                  <Column small={4} medium={4} large={3}>
+                    <FormTextTitle>{AreaSearchFieldTitles.LEASE}</FormTextTitle>
+                    <FormText>
+                      {leaseId && leaseIdentifier ? (
+                        <Link
+                          href={`${getRouteById("leases")}/${leaseId}`}
+                          openInNewTab
+                          style={{ border: "unset", margin: "unset" }}
+                        >
+                          {leaseIdentifier}
+                        </Link>
+                      ) : "-"}
                     </FormText>
                   </Column>
                   <Column small={4} medium={4} large={3}>
@@ -285,7 +308,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                       }}
                     />
                   </Column>
-                  <Column small={6} medium={6} large={2}>
+                  <Column small={6} medium={6} large={3}>
                     <FormField
                       name="decline_reason"
                       fieldAttributes={get(

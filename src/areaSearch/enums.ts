@@ -19,4 +19,5 @@ export const AreaSearchFieldTitles = {
   PREPARER_NOTE: "Käsittelytietojen huomautus",
   STATUS_NOTES: "Käsittelijän muistiinpanot",
   AUDIT_LOG: "Muutoshistoria",
+  LEASE: "Vuokraus",
 };
