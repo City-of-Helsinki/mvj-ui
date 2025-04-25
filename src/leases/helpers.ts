@@ -2774,7 +2774,7 @@ export const getPayloadCreateLease = (formValues: CreateLeaseFormValues): Record
     },
     relate_to: relateTo,
     relation_type: relateTo ? RelationTypes.TRANSFER : undefined,
-    related_plot_application: formValues.related_plot_application,
+    area_search_id: formValues.area_search_id,
     service_unit: formValues.service_unit,
   };
 };

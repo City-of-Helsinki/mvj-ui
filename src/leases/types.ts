@@ -156,7 +156,7 @@ export type CreateLeaseRelateTo = {
 export type CreateLeaseFormValues = Lease & {
   relate_to: CreateLeaseRelateTo;
   application_received_at: string;
-  related_plot_application: RelatedPlotApplicationFormValues;
+  area_search_id: number | null;
 }
 export type ReceivableType = {
   id: number;

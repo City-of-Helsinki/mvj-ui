@@ -52,8 +52,7 @@ import {
   setRentInfoUncomplete,
 } from "./requests";
 import { getCurrentLease } from "./selectors";
-import { createRelatedPlotApplication } from "@/relatedLease/actions";
-import { editAreaSearch } from "@/areaSearch/actions";
+import { editSingleAreaSearchRequest } from "@/areaSearch/requests";
 import { AreaSearchState } from "@/plotSearch/enums";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -247,33 +246,21 @@ function* fetchLeaseByIdSaga({
 
 function* createLeaseSaga({ payload, type: any }): Generator<any, any, any> {
   try {
-    const { related_plot_application, ...lease } = payload;
+    const { area_search_id, ...lease } = payload;
     const {
       response: { status: statusCode },
       bodyAsJson,
     } = yield call(createLease, lease);
 
-    // If the lease was created from an area search,
-    // we need to create a related plot application
-    // to create a link between the area search and the lease
-    let relatedPlotApplicationPayload;
-    if (related_plot_application) {
-      relatedPlotApplicationPayload = {
-        ...related_plot_application,
-        lease: bodyAsJson.id,
-      };
-    }
-
     switch (statusCode) {
       case 201:
-        if (relatedPlotApplicationPayload) {
-          yield put(
-            createRelatedPlotApplication(relatedPlotApplicationPayload),
-          );
-          yield put(
-            editAreaSearch({
-              id: relatedPlotApplicationPayload.object_id,
+        if (area_search_id) {
+          yield call(
+            editSingleAreaSearchRequest,
+            area_search_id,
+            {
               state: AreaSearchState.SETTLED,
+              lease: bodyAsJson,
               area_search_status: {
                 status_notes: [
                   {
@@ -281,8 +268,7 @@ function* createLeaseSaga({ payload, type: any }): Generator<any, any, any> {
                   },
                 ],
               },
-            }),
-          );
+            });
         }
         yield put(push(`${getRouteById(Routes.LEASES)}/${bodyAsJson.id}`));
         yield put(receiveIsSaveClicked(false));

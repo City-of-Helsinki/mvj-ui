@@ -73,10 +73,7 @@ class CreateLeaseForm extends Component<Props> {
       change(CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT, formatDate(areaSearch?.received_date, "yyyy-MM-dd") || null);
       change(CreateLeaseFormFieldNames.START_DATE, formatDate(areaSearch?.start_date, "yyyy-MM-dd") || null);
       change(CreateLeaseFormFieldNames.END_DATE, formatDate(areaSearch?.end_date, "yyyy-MM-dd") || null);
-      change(CreateLeaseFormFieldNames.RELATED_PLOT_APPLICATION, {
-        object_id: areaSearch.id,
-        content_type_model: LeaseHistoryContentTypes.AREA_SEARCH,
-      });
+      change(CreateLeaseFormFieldNames.AREA_SEARCH_ID, areaSearch.id);
     }
   }
 
@@ -87,7 +84,7 @@ class CreateLeaseForm extends Component<Props> {
       change(CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT, null);
       change(CreateLeaseFormFieldNames.START_DATE, null);
       change(CreateLeaseFormFieldNames.END_DATE, null);
-      change(CreateLeaseFormFieldNames.RELATED_PLOT_APPLICATION, null);
+      change(CreateLeaseFormFieldNames.AREA_SEARCH_ID, null);
     }
   }
 
