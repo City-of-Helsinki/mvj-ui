@@ -43,7 +43,10 @@ import {
 } from "@/application/selectors";
 import { APPLICANT_SECTION_IDENTIFIER } from "@/application/constants";
 import type { Form } from "@/application/types";
-import { AreaSearch, UploadedAreaSearchAttachmentMeta } from "@/areaSearch/types";
+import {
+  AreaSearch,
+  UploadedAreaSearchAttachmentMeta,
+} from "@/areaSearch/types";
 import { getRouteById } from "@/root/routes";
 type OwnProps = {};
 type Props = OwnProps & {
@@ -115,10 +118,7 @@ class AreaSearchApplication extends Component<Props, State> {
 
   render(): JSX.Element {
     const {
-      areaSearch: {
-        lease,
-        ...areaSearch
-      },
+      areaSearch: { lease, ...areaSearch },
       isFetchingFormAttributes,
       formAttributes,
       areaSearchAttributes,
@@ -202,28 +202,32 @@ class AreaSearchApplication extends Component<Props, State> {
                       {getLabelOfOption(stateOptions, areaSearch.state)}
                     </FormText>
                   </Column>
-                    <Column small={4} medium={4} large={3}>
-                      <FormTextTitle>{AreaSearchFieldTitles.SETTLED_DATE}</FormTextTitle>
-                      <FormText>
-                        {areaSearch?.settled_date ? (
-                          formatDate(areaSearch.settled_date, "dd.MM.yyyy H.mm")
-                        ) : "-"}
-                      </FormText>
-                    </Column>
-                    <Column small={4} medium={4} large={3}>
-                      <FormTextTitle>{AreaSearchFieldTitles.LEASE}</FormTextTitle>
-                      <FormText>
-                        {leaseId && leaseIdentifier ? (
-                          <Link
-                            href={`${getRouteById("leases")}/${leaseId}`}
-                            openInNewTab
-                            style={{ border: "unset", margin: "unset" }}
-                          >
-                            {leaseIdentifier}
-                          </Link>
-                        ) : "-"}
-                      </FormText>
-                    </Column>
+                  <Column small={4} medium={4} large={3}>
+                    <FormTextTitle>
+                      {AreaSearchFieldTitles.SETTLED_DATE}
+                    </FormTextTitle>
+                    <FormText>
+                      {areaSearch?.settled_date
+                        ? formatDate(areaSearch.settled_date, "dd.MM.yyyy H.mm")
+                        : "-"}
+                    </FormText>
+                  </Column>
+                  <Column small={4} medium={4} large={3}>
+                    <FormTextTitle>{AreaSearchFieldTitles.LEASE}</FormTextTitle>
+                    <FormText>
+                      {leaseId && leaseIdentifier ? (
+                        <Link
+                          href={`${getRouteById("leases")}/${leaseId}`}
+                          openInNewTab
+                          style={{ border: "unset", margin: "unset" }}
+                        >
+                          {leaseIdentifier}
+                        </Link>
+                      ) : (
+                        "-"
+                      )}
+                    </FormText>
+                  </Column>
                   <Column small={4} medium={4} large={3}>
                     <FormTextTitle>
                       {AreaSearchFieldTitles.LESSOR}

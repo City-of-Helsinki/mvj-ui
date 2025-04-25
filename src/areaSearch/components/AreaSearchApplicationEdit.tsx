@@ -57,9 +57,15 @@ import {
   setAreaSearchAttachments,
 } from "@/areaSearch/actions";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
-import CreateLeaseModal from '@/leases/components/createLease/CreateLeaseModal';
-import { createLease, fetchAttributes as fetchLeaseAttributes } from "@/leases/actions";
-import { getAttributes as getLeaseAttributes, getIsFetchingAttributes as getIsFetchingLeaseAttributes } from "@/leases/selectors";
+import CreateLeaseModal from "@/leases/components/createLease/CreateLeaseModal";
+import {
+  createLease,
+  fetchAttributes as fetchLeaseAttributes,
+} from "@/leases/actions";
+import {
+  getAttributes as getLeaseAttributes,
+  getIsFetchingAttributes as getIsFetchingLeaseAttributes,
+} from "@/leases/selectors";
 import { ButtonLabels } from "@/components/enums";
 import { Link } from "hds-react";
 import { getRouteById } from "@/root/routes";
@@ -97,7 +103,8 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
   };
 
   componentDidMount() {
-    const { leaseAttributes, fetchLeaseAttributes, isFetchingLeaseAttributes } = this.props;
+    const { leaseAttributes, fetchLeaseAttributes, isFetchingLeaseAttributes } =
+      this.props;
     if (!isFetchingLeaseAttributes && !leaseAttributes) {
       fetchLeaseAttributes();
     }
@@ -171,10 +178,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
 
   render(): JSX.Element {
     const {
-      areaSearch: {
-        lease,
-        ...areaSearch
-      },
+      areaSearch: { lease, ...areaSearch },
       createLease,
       isFetchingFormAttributes,
       isPerformingFileOperation,
@@ -221,10 +225,10 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
     return (
       <div className="AreaSearchApplication">
         <CreateLeaseModal
-            isOpen={isModalOpen}
-            onClose={this.hideCreateLeaseModal}
-            onSubmit={createLease}
-            areaSearch={areaSearch}
+          isOpen={isModalOpen}
+          onClose={this.hideCreateLeaseModal}
+          onSubmit={createLease}
+          areaSearch={areaSearch}
         />
         <div className="AreaSearchApplication__header">
           <Title>Hakemus</Title>
@@ -267,11 +271,13 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                     />
                   </Column>
                   <Column small={4} medium={4} large={3}>
-                    <FormTextTitle>{AreaSearchFieldTitles.SETTLED_DATE}</FormTextTitle>
+                    <FormTextTitle>
+                      {AreaSearchFieldTitles.SETTLED_DATE}
+                    </FormTextTitle>
                     <FormText>
-                      {areaSearch?.settled_date ? (
-                        formatDate(areaSearch.settled_date, "dd.MM.yyyy H.mm")
-                      ) : "-"}
+                      {areaSearch?.settled_date
+                        ? formatDate(areaSearch.settled_date, "dd.MM.yyyy H.mm")
+                        : "-"}
                     </FormText>
                   </Column>
                   <Column small={4} medium={4} large={3}>
@@ -285,7 +291,9 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                         >
                           {leaseIdentifier}
                         </Link>
-                      ) : "-"}
+                      ) : (
+                        "-"
+                      )}
                     </FormText>
                   </Column>
                   <Column small={4} medium={4} large={3}>
