@@ -137,7 +137,7 @@ const NewContactPage: React.FC<Props> = ({ contactMethods }) => {
       : null;
 
     if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
-      const serviceUnitId = values?.service_unit as unknown as number;
+      const serviceUnitId = values?.service_unit?.id || null;
       const exists = await contactExists({
         identifier: contactIdentifier,
         serviceUnitId: serviceUnitId,
@@ -210,9 +210,10 @@ const NewContactPage: React.FC<Props> = ({ contactMethods }) => {
                 <ContactForm
                   initialValues={{
                     ...initialContactFormValues,
-                    service_unit:
-                      initialContactFormValues?.service_unit ||
-                      userActiveServiceUnit?.id,
+                    // If initial values are set it is editing, otherwise creating a new contact
+                    service_unit: initialContactFormValues?.service_unit?.id
+                      ? initialContactFormValues.service_unit
+                      : userActiveServiceUnit,
                   }}
                   isFocusedOnMount
                   onFormStateChange={handleFormStateChange}
