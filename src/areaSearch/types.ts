@@ -1,5 +1,6 @@
 import type { Action, ApiResponse, Attributes, Methods, User } from "types";
 import type { UploadedFileMeta } from "@/application/types";
+import { Lease } from "@/leases/types";
 export type AreaSearchState = {
   attributes: Attributes;
   methods: Methods;
@@ -48,9 +49,11 @@ export type AreaSearch = {
   plot: Array<string>;
   preparer?: User;
   received_date?: string;
+  settled_date?: string;
   service_unit?: number;
   start_date: string;
   state: string;
+  lease?: Lease | null;
 };
 export type AreaSearchId = number;
 export type UploadedAreaSearchAttachmentMeta = {

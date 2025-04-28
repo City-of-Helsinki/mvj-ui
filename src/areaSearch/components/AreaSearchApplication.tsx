@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import orderBy from "lodash/orderBy";
 import { Column, Row } from "react-foundation";
-import { Table } from "hds-react";
+import { Link, Table } from "hds-react";
 import { getAttributes, getCurrentAreaSearch } from "@/areaSearch/selectors";
 import ApplicationAnswersSection from "@/application/components/ApplicationAnswersSection";
 import {
@@ -43,10 +43,14 @@ import {
 } from "@/application/selectors";
 import { APPLICANT_SECTION_IDENTIFIER } from "@/application/constants";
 import type { Form } from "@/application/types";
-import { UploadedAreaSearchAttachmentMeta } from "@/areaSearch/types";
+import {
+  AreaSearch,
+  UploadedAreaSearchAttachmentMeta,
+} from "@/areaSearch/types";
+import { getRouteById } from "@/root/routes";
 type OwnProps = {};
 type Props = OwnProps & {
-  areaSearch: Record<string, any> | null;
+  areaSearch: AreaSearch | null;
   isFetchingFormAttributes: boolean;
   formAttributes: Attributes;
   areaSearchAttributes: Attributes;
@@ -114,12 +118,14 @@ class AreaSearchApplication extends Component<Props, State> {
 
   render(): JSX.Element {
     const {
-      areaSearch,
+      areaSearch: { lease, ...areaSearch },
       isFetchingFormAttributes,
       formAttributes,
       areaSearchAttributes,
     } = this.props;
     const { selectedAreaSectionRefreshKey } = this.state;
+    const leaseIdentifier = lease?.identifier?.identifier || null;
+    const leaseId = lease?.id || null;
     const fieldTypes = getFieldAttributes(
       formAttributes,
       "sections.child.children.fields.child.children.type.choices",
@@ -182,7 +188,7 @@ class AreaSearchApplication extends Component<Props, State> {
             <>
               <Collapse headerTitle="Hakemuksen käsittelytiedot" defaultOpen>
                 <Row>
-                  <Column small={4} medium={4} large={2}>
+                  <Column small={4} medium={4} large={3}>
                     <FormTextTitle>
                       {AreaSearchFieldTitles.RECEIVED_DATE}
                     </FormTextTitle>
@@ -190,10 +196,36 @@ class AreaSearchApplication extends Component<Props, State> {
                       {formatDate(areaSearch.received_date, "dd.MM.yyyy H.mm")}
                     </FormText>
                   </Column>
-                  <Column small={4} medium={4} large={2}>
+                  <Column small={4} medium={4} large={3}>
                     <FormTextTitle>{AreaSearchFieldTitles.STATE}</FormTextTitle>
                     <FormText>
                       {getLabelOfOption(stateOptions, areaSearch.state)}
+                    </FormText>
+                  </Column>
+                  <Column small={4} medium={4} large={3}>
+                    <FormTextTitle>
+                      {AreaSearchFieldTitles.SETTLED_DATE}
+                    </FormTextTitle>
+                    <FormText>
+                      {areaSearch?.settled_date
+                        ? formatDate(areaSearch.settled_date, "dd.MM.yyyy H.mm")
+                        : "-"}
+                    </FormText>
+                  </Column>
+                  <Column small={4} medium={4} large={3}>
+                    <FormTextTitle>{AreaSearchFieldTitles.LEASE}</FormTextTitle>
+                    <FormText>
+                      {leaseId && leaseIdentifier ? (
+                        <Link
+                          href={`${getRouteById("leases")}/${leaseId}`}
+                          openInNewTab
+                          style={{ border: "unset", margin: "unset" }}
+                        >
+                          {leaseIdentifier}
+                        </Link>
+                      ) : (
+                        "-"
+                      )}
                     </FormText>
                   </Column>
                   <Column small={4} medium={4} large={3}>
@@ -213,7 +245,7 @@ class AreaSearchApplication extends Component<Props, State> {
                       {getUserFullName(areaSearch.preparer) || "-"}
                     </FormText>
                   </Column>
-                  <Column small={6} medium={6} large={2}>
+                  <Column small={6} medium={6} large={3}>
                     <FormTextTitle>
                       {AreaSearchFieldTitles.DECLINE_REASON}
                     </FormTextTitle>

@@ -63,7 +63,7 @@ export const CreateLeaseFormFieldNames = {
   RELATE_TO: "relate_to",
   START_DATE: "start_date",
   END_DATE: "end_date",
-  RELATED_PLOT_APPLICATION: "related_plot_application",
+  AREA_SEARCH_ID: "area_search_id",
 };
 
 /**
