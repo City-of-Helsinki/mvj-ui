@@ -150,7 +150,7 @@ class NewContactPage extends Component<Props> {
             if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
               const exists = await contactExists({
                 identifier: contactIdentifier,
-                serviceUnitId: contactFormValues?.service_unit,
+                serviceUnitId: contactFormValues?.service_unit?.id || null,
               });
 
               if (exists) {
