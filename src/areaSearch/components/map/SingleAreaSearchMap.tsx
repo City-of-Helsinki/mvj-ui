@@ -59,6 +59,11 @@ class SingleAreaSearchMap extends Component<Props> {
 
   render(): JSX.Element {
     const { geometry, minimap = false } = this.props;
+
+    if (!geometry) {
+      return <p>{"Ei geometriaa."}</p>;
+    }
+
     const center = this.getMapCenter();
     const bounds = this.getMapBounds();
     return (
