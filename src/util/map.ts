@@ -204,6 +204,10 @@ export const getCenterFromCoordinates = (
 export const getAreaFromGeoJSON = (geometry: Record<string, any>): number => {
   let area = 0;
 
+  if (!geometry || !geometry.type) {
+    return area;
+  }
+
   switch (geometry.type) {
     case "GeometryCollection":
       geometry.geometries.forEach((geometry) => {
