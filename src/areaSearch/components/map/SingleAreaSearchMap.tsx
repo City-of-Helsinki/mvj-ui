@@ -61,7 +61,7 @@ class SingleAreaSearchMap extends Component<Props> {
     const { geometry, minimap = false } = this.props;
 
     if (!geometry) {
-      return <>{"Ei geometriaa."}</>;
+      return <p>{"Ei geometriaa."}</p>;
     }
 
     const center = this.getMapCenter();
