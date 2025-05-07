@@ -19,3 +19,12 @@ export const BOUNDING_BOX_FOR_SEARCH_QUERY = [
   "25.388881322490807",
   "60.31481365757164",
 ];
+
+/**
+ * Default value for an area search application form field
+ * in case of no value being defined in the field.
+ * @const {string[]}
+ */
+export const EMPTY_DEFAULT_FIELD = {
+  value: null,
+};

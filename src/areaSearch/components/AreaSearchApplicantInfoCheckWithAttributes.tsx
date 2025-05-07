@@ -2,23 +2,25 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { getFieldOptions } from "@/util/helpers";
 import type { Attributes } from "types";
-import ApplicantInfoCheck from "@/application/components/infoCheck/ApplicantInfoCheck";
+import AreaSearchApplicantInfoCheck from "@/areaSearch/components/infoCheck/AreaSearchApplicantInfoCheck";
 import { getApplicantInfoCheckAttributes } from "@/application/selectors";
 import { getApplicantInfoCheckItems } from "@/application/helpers";
+
 type OwnProps = {
   infoCheckData: Array<Record<string, any>>;
 };
+
 type Props = OwnProps & {
   infoCheckAttributes: Attributes;
 };
 
-class AreaSearchApplicantInfoCheck extends PureComponent<Props> {
+class AreaSearchApplicantInfoCheckWithAttributes extends PureComponent<Props> {
   render(): JSX.Element {
     const { infoCheckAttributes, infoCheckData } = this.props;
     const infoCheckStateOptions = getFieldOptions(infoCheckAttributes, "state");
     const infoChecks = getApplicantInfoCheckItems(infoCheckData);
     return (
-      <ApplicantInfoCheck
+      <AreaSearchApplicantInfoCheck
         infoChecks={infoChecks}
         infoCheckStateOptions={infoCheckStateOptions}
       />
@@ -28,4 +30,4 @@ class AreaSearchApplicantInfoCheck extends PureComponent<Props> {
 
 export default connect((state) => ({
   infoCheckAttributes: getApplicantInfoCheckAttributes(state),
-}))(AreaSearchApplicantInfoCheck) as React.ComponentType<OwnProps>;
+}))(AreaSearchApplicantInfoCheckWithAttributes) as React.ComponentType<OwnProps>;

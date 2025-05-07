@@ -1,18 +1,19 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { change } from "redux-form";
-import PlotApplicationInfoCheckCollapse from "@/plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
 import {
   getApplicantInfoCheckSubmissionErrors,
   getApplicationApplicantInfoCheckData,
 } from "@/areaSearch/selectors";
-import ApplicantInfoCheckEdit from "@/application/components/infoCheck/ApplicantInfoCheckEdit";
+import AreaSearchApplicantInfoCheckEdit from "@/areaSearch/components/infoCheck/AreaSearchApplicantInfoCheckEdit";
 import { getApplicantInfoCheckFormName } from "@/application/helpers";
+
 type OwnProps = {
   section: Record<string, any>;
   identifier: string;
   answer: Record<string, any>;
 };
+
 type Props = OwnProps & {
   infoCheckIds: Array<number>;
   change: typeof change;
@@ -25,11 +26,11 @@ type Props = OwnProps & {
   }>;
 };
 
-class PlotApplicationApplicantInfoCheck extends PureComponent<Props> {
+class AreaSearchApplicantInfoCheckWithAttributesEdit extends PureComponent<Props> {
   render(): JSX.Element {
     const { infoCheckIds, answer, submissionErrors } = this.props;
     return (
-      <ApplicantInfoCheckEdit
+      <AreaSearchApplicantInfoCheckEdit
         answer={answer}
         infoCheckIds={infoCheckIds}
         submissionErrors={submissionErrors}
@@ -57,4 +58,6 @@ export default connect(
   {
     change,
   },
-)(PlotApplicationApplicantInfoCheck) as React.ComponentType<OwnProps>;
+)(
+  AreaSearchApplicantInfoCheckWithAttributesEdit,
+) as React.ComponentType<OwnProps>;

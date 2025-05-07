@@ -1,6 +1,6 @@
 import type { Action, Attributes, Methods } from "@/types";
 import { ContactTypes } from "@/contacts/enums";
-import { ServiceUnit } from "@/serviceUnits/types";
+import type { ServiceUnit } from "@/serviceUnits/types";
 export type ContactState = {
   attributes: Attributes;
   contactModalSettings: ContactModalSettings;
@@ -38,6 +38,7 @@ export type Contact = {
   phone?: string;
   email?: string;
   is_lessor?: boolean;
+  address_protection?: boolean;
 };
 export type ContactId = number;
 export type ContactList = any;

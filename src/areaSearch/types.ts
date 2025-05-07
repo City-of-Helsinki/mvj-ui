@@ -1,6 +1,8 @@
 import type { Action, ApiResponse, Attributes, Methods, User } from "types";
-import type { UploadedFileMeta } from "@/application/types";
-import { Lease } from "@/leases/types";
+import type { FormSection, SavedApplicationFormSection } from "@/application/types";
+import type { Lease } from "@/leases/types";
+import type { Contact } from "@/contacts/types";
+
 export type AreaSearchState = {
   attributes: Attributes;
   methods: Methods;
@@ -65,6 +67,13 @@ export type UploadedAreaSearchAttachmentMeta = {
   user?: User;
   is_user_helsinki_ad?: boolean;
 };
+export type HandleShowContactModal = (
+  contactType: Contact["type"],
+  sectionIdentifier: FormSection["identifier"],
+  answerSection: SavedApplicationFormSection,
+) => void;
+
+// ACTION TYPES
 export type FetchListAttributesAction = Action<string, void>;
 export type ReceiveListAttributesAction = Action<string, Attributes>;
 export type ReceiveListMethodsAction = Action<string, Methods>;
