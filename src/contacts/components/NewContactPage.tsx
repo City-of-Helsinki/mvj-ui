@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Form } from "react-final-form";
 import { useHistory, useLocation } from "react-router-dom";
-import { compose } from "redux";
-import { withContactAttributes } from "@/components/attributes/ContactAttributes";
+import { useContactAttributes } from "@/components/attributes/ContactAttributes";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContactForm from "./forms/ContactForm";
@@ -36,17 +36,16 @@ import {
   getIsFetchingAttributes,
   getIsSaveClicked,
 } from "@/contacts/selectors";
-import { withUiDataList } from "@/components/uiData/UiDataListHOC";
-import type { Methods as MethodsType } from "types";
-import type { Contact } from "@/contacts/types";
-import { FormApi } from "final-form";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
+import { useUiDataList } from "@/components/uiData/UiDataListHook";
 
-type Props = {
-  contactMethods: MethodsType;
-};
+import type { FormApi } from "final-form";
+import type { Contact } from "@/contacts/types";
 
-const NewContactPage: React.FC<Props> = ({ contactMethods }) => {
+const NewContactPage: React.FC = () => {
+  // Fetch ui data and attributes if needed
+  useUiDataList();
+  const { contactMethods } = useContactAttributes();
   const formApiRef = useRef<FormApi<Contact, Partial<Contact>> | null>(null);
   const dispatch = useDispatch();
   const initialContactFormValues = useSelector(getInitialContactFormValues);
@@ -147,7 +146,10 @@ const NewContactPage: React.FC<Props> = ({ contactMethods }) => {
         contextDispatch({
           type: ActionTypes.SHOW_CONFIRMATION_MODAL,
           confirmationFunction: () => {
-            return dispatch(receiveIsSaveClicked(true));
+            dispatch(receiveIsSaveClicked(true));
+            if (formApiRef.current) {
+              formApiRef.current.submit();
+            }
           },
           confirmationModalButtonClassName: ButtonColors.SUCCESS,
           confirmationModalButtonText:
@@ -158,10 +160,12 @@ const NewContactPage: React.FC<Props> = ({ contactMethods }) => {
       } else {
         // No duplicate, trigger form submission
         dispatch(receiveIsSaveClicked(true));
+        formApiRef.current.submit();
       }
     } else {
       // No identifier to check, trigger form submission
       dispatch(receiveIsSaveClicked(true));
+      formApiRef.current.submit();
     }
   };
 
@@ -207,19 +211,21 @@ const NewContactPage: React.FC<Props> = ({ contactMethods }) => {
           <PageContainer className="with-small-control-bar">
             <ContentContainer>
               <GreenBox className="no-margin">
-                <ContactForm
+                <Form
+                  onSubmit={handleSubmit}
                   initialValues={{
                     ...initialContactFormValues,
-                    // If initial values are set it is editing, otherwise creating a new contact
+                    // If initial values are set it is copying, otherwise creating a new contact
                     service_unit: initialContactFormValues?.service_unit?.id
                       ? initialContactFormValues.service_unit
                       : userActiveServiceUnit,
                   }}
-                  isFocusedOnMount
-                  onFormStateChange={handleFormStateChange}
-                  onSubmit={handleSubmit}
-                  formRef={formApiRef}
-                />
+                >
+                  {({ form }) => {
+                    formApiRef.current = form;
+                    return <ContactForm formApi={form} />;
+                  }}
+                </Form>
               </GreenBox>
             </ContentContainer>
           </PageContainer>
@@ -229,4 +235,4 @@ const NewContactPage: React.FC<Props> = ({ contactMethods }) => {
   );
 };
 
-export default compose(withContactAttributes, withUiDataList)(NewContactPage);
+export default NewContactPage;

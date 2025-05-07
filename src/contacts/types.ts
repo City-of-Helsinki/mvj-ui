@@ -73,3 +73,4 @@ export type ContactsActiveLease = {
 export type ContactRow = {
   contacts_active_leases?: Array<ContactsActiveLease>;
 };
+export type SetTabDirtyFunction = (tabId: number, isDirty: boolean) => void;

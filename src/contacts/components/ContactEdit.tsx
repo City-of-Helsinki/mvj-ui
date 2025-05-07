@@ -1,24 +1,37 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { FormSpy } from "react-final-form";
 
 import ContactForm from "@/contacts/components/forms/ContactForm";
 import GreenBox from "@/components/content/GreenBox";
-import { editContact } from "@/contacts/actions";
 import { getCurrentContact } from "@/contacts/selectors";
 
+import type { FormApi } from "final-form";
 import type { Contact } from "@/contacts/types";
+import type { SetTabDirtyFunction } from "@/contacts/types";
 
-const ContactEdit: React.FC = () => {
-  const dispatch = useDispatch();
+const ContactEdit: React.FC<{
+  form: FormApi<Contact>;
+  tabId: number;
+  setTabDirty: SetTabDirtyFunction;
+}> = ({ form, tabId, setTabDirty }) => {
   const contact = useSelector(getCurrentContact);
-
-  const handleSubmit = async (values: Contact) => {
-    dispatch(editContact(values));
-  };
+  const formValues = form ? form.getState().values : null;
+  const initialValues = formValues || contact;
 
   return (
     <GreenBox className="no-margin">
-      <ContactForm initialValues={contact} onSubmit={handleSubmit} />
+      <FormSpy subscription={{ dirty: true }}>
+        {({ dirty }) => {
+          // Update tab dirty state whenever form dirty state changes
+          React.useEffect(() => {
+            setTabDirty(tabId, dirty);
+          }, [dirty, tabId, setTabDirty]);
+
+          return null;
+        }}
+      </FormSpy>
+      <ContactForm initialValues={initialValues} formApi={form} />
     </GreenBox>
   );
 };

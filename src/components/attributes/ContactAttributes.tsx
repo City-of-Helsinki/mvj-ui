@@ -1,5 +1,5 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
+import React, { PureComponent, useEffect } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
 import flowRight from "lodash/flowRight";
 import { fetchAttributes as fetchContactAttributes } from "@/contacts/actions";
 import {
@@ -8,6 +8,33 @@ import {
   getMethods as getContactMethods,
 } from "@/contacts/selectors";
 import type { Attributes, Methods } from "types";
+
+export function useContactAttributes() {
+  const dispatch = useDispatch();
+
+  const contactAttributes = useSelector(getContactAttributes);
+  const contactMethods = useSelector(getContactMethods);
+  const isFetchingContactAttributes = useSelector(
+    getIsFetchingContactAttributes,
+  );
+
+  useEffect(() => {
+    if (!isFetchingContactAttributes && !contactMethods && !contactAttributes) {
+      dispatch(fetchContactAttributes());
+    }
+  }, [
+    contactAttributes,
+    contactMethods,
+    isFetchingContactAttributes,
+    dispatch,
+  ]);
+
+  return {
+    contactAttributes,
+    contactMethods,
+    isFetchingContactAttributes,
+  };
+}
 
 function ContactAttributes(WrappedComponent: any) {
   type Props = {
@@ -55,4 +82,5 @@ const withContactAttributes = flowRight(
   ),
   ContactAttributes,
 );
+
 export { withContactAttributes };

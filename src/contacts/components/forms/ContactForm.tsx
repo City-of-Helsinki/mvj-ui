@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import { Form, FormSpy } from "react-final-form";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
 import FormField from "@/components/form/final-form/FormField";
@@ -32,23 +31,16 @@ import type { FormApi } from "final-form";
 import type { Contact, ContactsActiveLease } from "@/contacts/types";
 
 type Props = {
-  formRef?: React.MutableRefObject<FormApi<Contact, Partial<Contact>> | null>;
   initialValues?: Partial<Contact>;
   isFocusedOnMount?: boolean;
-  onFormStateChange?: (formState: { valid: boolean; dirty: boolean }) => void;
-  onSubmit: (values: Contact) => Promise<void>;
+  formApi?: FormApi<Contact, Partial<Contact>>;
 };
 
 const ContactForm: React.FC<Props> = ({
-  formRef,
   initialValues,
   isFocusedOnMount = false,
-  onFormStateChange,
-  onSubmit = async () => {
-    // Default to no-op
-  },
+  formApi,
 }) => {
-  const internalFormRef = useRef<FormApi<Contact, Partial<Contact>>>(null);
   // First input to focus reference
   const firstInputRef = useRef(null);
 
@@ -56,60 +48,35 @@ const ContactForm: React.FC<Props> = ({
   const isSaveClicked = useSelector(getIsSaveClicked);
   const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
 
+  const formValues = formApi?.getState().values || initialValues || {};
+
   useEffect(() => {
     if (isFocusedOnMount && firstInputRef.current) {
       firstInputRef.current.focus();
     }
   }, [isFocusedOnMount]);
 
-  // Effect to handle form submission when isSaveClicked changes
-  useEffect(() => {
-    const activeForm = formRef?.current || internalFormRef.current;
-    if (isSaveClicked && activeForm) {
-      activeForm.submit();
-    }
-  }, [isSaveClicked, formRef]);
-
   const setRefForFirstField = (element: HTMLElement | null) => {
     firstInputRef.current = element;
   };
 
   const handleAddressChange = (details: Record<string, any>) => {
-    // Get the currently active form reference (either props or internal)
-    const activeForm = formRef?.current || internalFormRef.current;
-    if (!activeForm) return;
+    if (!formApi) return;
 
     if (!isEmptyValue(details.postalCode)) {
-      activeForm.change("postal_code", details.postalCode);
+      formApi.change("postal_code", details.postalCode);
     }
 
     if (!isEmptyValue(details.city)) {
-      activeForm.change("city", details.city);
+      formApi.change("city", details.city);
     }
 
     if (!isEmptyValue(details.country)) {
-      activeForm.change("country", details.country.toUpperCase());
+      formApi.change("country", details.country.toUpperCase());
     }
   };
 
   if (isEmpty(attributes) || isEmpty(userActiveServiceUnit)) return null;
-
-  const renderFormStateTracker = () => {
-    if (!onFormStateChange) return null;
-
-    return (
-      <FormSpy subscription={{ valid: true, dirty: true }}>
-        {({ valid, dirty }) => {
-          // Report form state changes to parent
-          useEffect(() => {
-            onFormStateChange({ valid, dirty });
-          }, [valid]);
-
-          return null; // FormSpy doesn't render anything
-        }}
-      </FormSpy>
-    );
-  };
 
   const renderFormFields = (values: any) => {
     const type = values?.type;
@@ -692,33 +659,7 @@ const ContactForm: React.FC<Props> = ({
     );
   };
 
-  return (
-    <Form
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      render={({ handleSubmit, form, valid, dirty }) => {
-        // Store form reference
-        if (form !== (formRef?.current || internalFormRef.current)) {
-          if (formRef) {
-            formRef.current = form;
-          } else {
-            internalFormRef.current = form;
-          }
-        }
-
-        return (
-          <form onSubmit={handleSubmit}>
-            {renderFormStateTracker()}
-            <FormSpy subscription={{ values: true }}>
-              {({ values }) => {
-                return renderFormFields(values);
-              }}
-            </FormSpy>
-          </form>
-        );
-      }}
-    />
-  );
+  return renderFormFields(formValues);
 };
 
 export default React.memo(ContactForm);
