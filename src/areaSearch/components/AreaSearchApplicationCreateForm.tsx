@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { flowRight } from "lodash/util";
 import { getFormValues, reduxForm } from "redux-form";
-import ApplicationSubsection from "@/application/components/ApplicationSubsection";
+import AreaSearchApplicationSubsection from "@/areaSearch/components/AreaSearchApplicationSubsection";
 import { getInitialApplicationForm } from "@/application/helpers";
 import { getFieldTypeMapping } from "@/application/selectors";
 import { FormNames } from "@/enums";
@@ -60,7 +60,7 @@ class AreaSearchApplicationCreateForm extends Component<Props> {
     return (
       <div>
         {formData.sections.map((section) => (
-          <ApplicationSubsection
+          <AreaSearchApplicationSubsection
             path={["form.sections"]}
             section={section}
             headerTag="h2"

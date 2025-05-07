@@ -8,7 +8,21 @@ import { store } from "@/index";
 import { getCurrentAreaSearch } from "@/areaSearch/selectors";
 import { prepareApplicationForSubmission } from "@/application/helpers";
 import type { LeafletFeature, LeafletGeoJson } from "types";
-import type { SavedApplicationFormSection } from "@/application/types";
+import type {
+  FormSection,
+  SavedApplicationFormSection,
+} from "@/application/types";
+import type { Contact } from "@/contacts/types";
+import {
+  ApplicantInfoSectionIdentifiers,
+  ApplicantTypeSectionToContactTypeEnum,
+  MapFormAnswerFieldsToContactFields,
+  MapLanguageNameToCodeEnum,
+} from "@/areaSearch/enums";
+import { EMPTY_DEFAULT_FIELD } from "@/areaSearch/constants";
+import type { HandleShowContactModal } from "@/areaSearch/types";
+import { ContactTypes } from "@/contacts/enums";
+
 export const areaSearchSearchFilters = (
   query: Record<string, any>,
 ): Record<string, any> => {
@@ -192,4 +206,160 @@ export const prepareAreaSearchDataForSubmission = (): Record<
       area_search: currentAreaSearch.id,
     },
   };
+};
+
+const getAddressProtection = (
+  addressProtection: string | undefined | null,
+): boolean | null => {
+  if (!addressProtection) {
+    return false;
+  }
+  switch (addressProtection.toLowerCase()) {
+    case "kyllä":
+      return true;
+    case "ei":
+      return false;
+    default:
+      return false;
+  }
+};
+
+const getContactType = (
+  sectionIdentifier: FormSection["identifier"],
+  contactType: Contact["type"],
+): Contact["type"] => {
+  const { BILL_RECIPIENT, CONTACT_PERSON } = ApplicantInfoSectionIdentifiers;
+
+  // includes method is used to match the contact person section identifier
+  // because a typical contact person section identifier: "yhteyshenkilo-1"
+  // doesn't match the CONTACT_PERSON string exactly
+  if (sectionIdentifier.includes(CONTACT_PERSON)) {
+    return ContactTypes.PERSON;
+  }
+
+  if (sectionIdentifier === BILL_RECIPIENT) {
+    return ContactTypes.BUSINESS;
+  }
+
+  return contactType;
+};
+
+export const getContactFromAnswerFields = (
+  contactType: Contact["type"],
+  sectionIdentifier: FormSection["identifier"],
+  answerSection: SavedApplicationFormSection,
+): Partial<Contact> => {
+  if (!answerSection || !answerSection?.fields) {
+    return null;
+  }
+  const contact: Partial<Contact> = {};
+  const answerFields = answerSection.fields;
+
+  for (const key in MapFormAnswerFieldsToContactFields) {
+    const value = get(
+      answerFields,
+      MapFormAnswerFieldsToContactFields[key],
+      EMPTY_DEFAULT_FIELD,
+    )?.value;
+
+    const { address_protection, language, postal_code } =
+      MapFormAnswerFieldsToContactFields;
+
+    switch (MapFormAnswerFieldsToContactFields[key]) {
+      case address_protection: {
+        contact.address_protection = getAddressProtection(value);
+        break;
+      }
+      case language: {
+        contact.language = value ? MapLanguageNameToCodeEnum[value] : null;
+        break;
+      }
+      case postal_code: {
+        contact.postal_code = value ? String(value) : null;
+        break;
+      }
+      default: {
+        contact[key] = value;
+        break;
+      }
+    }
+  }
+  contact.type = getContactType(sectionIdentifier, contactType);
+  contact.is_lessor = false;
+  return contact;
+};
+
+/**
+ * Determine if the create contact button should be visible
+ * based on the section type and the answer section.
+ * @param handleShowContactModal
+ * @param section
+ * @param answerSection
+ * @returns
+ */
+export const getIsCreateContactButtonVisible = (
+  handleShowContactModal: HandleShowContactModal | undefined,
+  section: FormSection,
+  answerSection: SavedApplicationFormSection,
+): boolean => {
+  const sectionIsContactPerson = section.identifier.includes(
+    ApplicantInfoSectionIdentifiers.CONTACT_PERSON,
+  );
+
+  const sectionIsBillRecipient =
+    section.identifier === ApplicantInfoSectionIdentifiers.BILL_RECIPIENT;
+
+  const otherThanApplicantActive =
+    answerSection.fields["eri-kuin-hakija"]?.value === true;
+
+  const sectionIsMainApplicantInfoSection =
+    section.identifier === ApplicantInfoSectionIdentifiers.PERSON_INFO ||
+    section.identifier === ApplicantInfoSectionIdentifiers.COMPANY_INFO;
+
+  const isEligibleSection =
+    sectionIsMainApplicantInfoSection ||
+    ((sectionIsContactPerson || sectionIsBillRecipient) &&
+      otherThanApplicantActive);
+
+  return !!handleShowContactModal && isEligibleSection;
+};
+
+/**
+ * Section is hidden if it is a contact person ("yhteyshenkilo-NUMBER")
+ * or bill recipient ("laskunsaaja") and it is not
+ * marked as other than applicant ("eri-kuin-hakija").
+ * @param section
+ * @param answerSection
+ * @returns
+ */
+export const getIsConditionallyHiddenSection = (
+  section: FormSection,
+  answerSection:
+    | SavedApplicationFormSection
+    | Array<SavedApplicationFormSection>,
+): boolean => {
+  if (isArray(answerSection)) {
+    return false;
+  }
+
+  const sectionIsContactPerson = (section.identifier || "").includes(
+    ApplicantInfoSectionIdentifiers.CONTACT_PERSON,
+  );
+
+  const sectionIsBillRecipient =
+    section.identifier === ApplicantInfoSectionIdentifiers.BILL_RECIPIENT;
+
+  const otherThanApplicantActive =
+    answerSection.fields["eri-kuin-hakija"]?.value === true;
+
+  return (
+    (sectionIsContactPerson || sectionIsBillRecipient) &&
+    !otherThanApplicantActive
+  );
+};
+
+export const getContactTypeString = (
+  sectionIdentifier: string,
+): Contact["type"] | null => {
+  return ApplicantTypeSectionToContactTypeEnum[sectionIdentifier] || null;
 };

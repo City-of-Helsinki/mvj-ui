@@ -65,7 +65,7 @@ export const receiveSingleContact = (
 ): ReceiveSingleContactAction =>
   createAction("mvj/contacts/RECEIVE_SINGLE")(contact);
 export const initializeContactForm = (
-  contact: Contact,
+  contact: Partial<Contact>,
 ): InitializeContactFormValuesAction =>
   createAction("mvj/contacts/INITIALIZE_FORM")(contact);
 export const receiveIsSaveClicked = (

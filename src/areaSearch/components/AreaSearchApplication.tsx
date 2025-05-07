@@ -5,7 +5,7 @@ import orderBy from "lodash/orderBy";
 import { Column, Row } from "react-foundation";
 import { Link, Table } from "hds-react";
 import { getAttributes, getCurrentAreaSearch } from "@/areaSearch/selectors";
-import ApplicationAnswersSection from "@/application/components/ApplicationAnswersSection";
+import AreaSearchApplicationAnswersSection from "@/areaSearch/components/AreaSearchApplicationAnswersSection";
 import {
   formatDate,
   formatDateRange,
@@ -33,7 +33,7 @@ import FileDownloadLink from "@/components/file/FileDownloadLink";
 import { getAreaFromGeoJSON } from "@/util/map";
 import SingleAreaSearchMap from "@/areaSearch/components/map/SingleAreaSearchMap";
 import AreaSearchApplicationPropertyIdentifiers from "@/areaSearch/components/AreaSearchApplicationPropertyIdentifiers";
-import AreaSearchApplicantInfoCheck from "@/areaSearch/components/AreaSearchApplicantInfoCheck";
+import AreaSearchApplicantInfoCheckWithAttributes from "@/areaSearch/components/AreaSearchApplicantInfoCheckWithAttributes";
 import { transformApplicantInfoCheckTitle } from "@/areaSearch/helpers";
 import TitleH3 from "@/components/content/TitleH3";
 import AreaSearchStatusNoteHistory from "@/areaSearch/components/AreaSearchStatusNoteHistory";
@@ -331,9 +331,9 @@ class AreaSearchApplication extends Component<Props, State> {
               {orderBy(form.sections, "sort_order")
                 .filter((section) => section.visible)
                 .map((section) => (
-                  <ApplicationAnswersSection
+                  <AreaSearchApplicationAnswersSection
                     section={section}
-                    answer={answer.sections[section.identifier]}
+                    answerSection={answer.sections[section.identifier]}
                     fieldTypes={fieldTypes}
                     key={section.identifier}
                     topLevel
@@ -352,7 +352,7 @@ class AreaSearchApplication extends Component<Props, State> {
                       <SubTitle>
                         {transformApplicantInfoCheckTitle(applicant)}
                       </SubTitle>
-                      <AreaSearchApplicantInfoCheck
+                      <AreaSearchApplicantInfoCheckWithAttributes
                         infoCheckData={areaSearch.answer.information_checks.filter(
                           (check) =>
                             check.entry ===
