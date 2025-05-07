@@ -443,9 +443,9 @@ const FormField: React.FC<Props> = ({
       {...derivedValues}
       validate={
         allowEdit
-          ? (value, allValues) => {
-              const error = handleGenericValidate(value);
-              return error || handleValidate(value);
+          ? (value) => {
+              const customError = handleValidate(value);
+              return customError || handleGenericValidate(value);
             }
           : undefined
       }
