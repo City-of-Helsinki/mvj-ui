@@ -7,6 +7,8 @@ import type {
   SavedApplicationFormSection,
   SectionExtraComponentProps,
 } from "@/application/types";
+import AddButtonThird from "@/components/form/AddButtonThird";
+
 type Props = {
   section: FormSection;
   answer: SavedApplicationFormSection | Array<SavedApplicationFormSection>;
@@ -30,6 +32,19 @@ const ApplicationAnswersSection = ({
     return null;
   }
 
+  const handleShowContactModal = () => {
+    // const contact = getContactFromAnswerFields(answer);
+    // initializeContactForm({ ...contact });
+    // receiveContactModalSettings({
+    //   field: `${field}.tenant.contact`,
+    //   contactId: null,
+    //   isNew: false,
+    // });
+    // receiveIsSaveClicked(false);
+    // showContactModal();
+  }
+
+  const showCreateContactButton = true;
   const title = section.title || "(tuntematon osio)";
   const Wrapper = topLevel
     ? ({ children }) => (
@@ -39,7 +54,17 @@ const ApplicationAnswersSection = ({
       )
     : ({ children }) => (
         <div>
-          <SubTitle>{title}</SubTitle>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <SubTitle>
+              {title}
+            </SubTitle>
+            {showCreateContactButton && (
+              <AddButtonThird
+                label="Luo asiakas"
+                onClick={handleShowContactModal}
+              />
+            )}
+          </div>
           {children}
         </div>
       );
