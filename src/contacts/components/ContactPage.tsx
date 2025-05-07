@@ -92,7 +92,6 @@ const ContactPageView: React.FC<{
   const { contactMethods } = useContactAttributes();
 
   const isSaving = useSelector(getIsSaving);
-  const contactFormValues = form ? form.getState().values : {};
   const isContactFormValid = form?.getState()?.valid;
   const isEditMode = useSelector(getIsEditMode);
   const isFetching = useSelector(getIsFetching);
@@ -106,6 +105,8 @@ const ContactPageView: React.FC<{
   );
   const [dirtyTabs, setDirtyTabs] = useState<Set<number>>(new Set());
   const tabDirtyStateRef = useRef(new Map<number, boolean>());
+  const prevContactRef = useRef<Contact | null>(null);
+  const prevEditModeRef = useRef<boolean | null>(null);
 
   const setTabDirty = useCallback<SetTabDirtyFunction>((tabId, isDirty) => {
     // Update the map with this tab's dirty state
@@ -147,13 +148,13 @@ const ContactPageView: React.FC<{
     console.log("Auto-saving unsaved changes...");
     const isFormDirty = form?.getState()?.dirty;
     if (isFormDirty) {
-      setSessionStorageItem(FormNames.CONTACT, contactFormValues);
+      setSessionStorageItem(FormNames.CONTACT, form.getState().values);
       setSessionStorageItem("contactId", contactId);
     } else {
       removeSessionStorageItem(FormNames.CONTACT);
       removeSessionStorageItem("contactId");
     }
-  }, [form, contactFormValues, contactId]);
+  }, [form, contactId]);
 
   const startAutoSaveTimer = useCallback(() => {
     const timer = setInterval(() => saveUnsavedChanges(), 5000);
@@ -224,21 +225,31 @@ const ContactPageView: React.FC<{
   }, [form, isEditMode, handleLeavePage]);
 
   useEffect(() => {
-    if (!isEmpty(contact)) {
-      setContactPageTitle();
-      const storedContactId = getSessionStorageItem("contactId");
-      if (Number(contactId) === storedContactId) {
-        setIsRestoreModalOpen(true);
-      }
+    const prevContact = prevContactRef.current;
+    setContactPageTitle();
+    const storedContactId = getSessionStorageItem("contactId");
+    const hasUnsavedChanges =
+      storedContactId && Number(contactId) === Number(storedContactId);
+    if (
+      !isEmpty(contact) &&
+      hasUnsavedChanges &&
+      (prevContact === null || isEmpty(prevContact))
+    ) {
+      setIsRestoreModalOpen(true);
     }
-  }, [contact]);
+    prevContactRef.current = contact;
+  }, [contact, contactId, setContactPageTitle]);
 
   useEffect(() => {
-    if (!isEditMode) {
+    const wasEditMode = prevEditModeRef.current;
+
+    // Update ref with current value for next render
+    prevEditModeRef.current = isEditMode;
+    if (wasEditMode === true && !isEditMode) {
       stopAutoSaveTimer();
       clearUnsavedChanges();
     }
-  }, [isEditMode]);
+  }, [isEditMode, stopAutoSaveTimer]);
 
   useEffect(() => {
     scrollToTopPage();
