@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams, useLocation } from "react-router";
-import { Form } from "react-final-form";
+import { Form, FormSpy } from "react-final-form";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -83,10 +83,8 @@ import type { UsersPermissions as UsersPermissionsType } from "@/usersPermission
 const ContactPageView: React.FC<{
   form: FormApi<Contact>;
   handleSubmit: () => void;
-  isFormDirty: boolean;
-  isFormValid: boolean;
   contact: Contact;
-}> = ({ form, handleSubmit, isFormDirty, isFormValid, contact }) => {
+}> = ({ form, handleSubmit, contact }) => {
   const history = useHistory();
   const params = useParams();
   const location = useLocation();
@@ -95,7 +93,7 @@ const ContactPageView: React.FC<{
 
   const isSaving = useSelector(getIsSaving);
   const contactFormValues = form ? form.getState().values : {};
-  const isContactFormValid = isFormValid;
+  const isContactFormValid = form?.getState()?.valid;
   const isEditMode = useSelector(getIsEditMode);
   const isFetching = useSelector(getIsFetching);
   const isSaveClicked = useSelector(getIsSaveClicked);
@@ -126,7 +124,6 @@ const ContactPageView: React.FC<{
 
   const isTabDirty = useCallback(
     (tabId: number) => {
-      console.log(tabDirtyStateRef.current);
       return tabDirtyStateRef.current.get(tabId) || false;
     },
     [dirtyTabs],
@@ -134,18 +131,10 @@ const ContactPageView: React.FC<{
 
   const contactId = params.contactId;
 
-  const isContactFormDirty = isFormDirty;
-
   const setContactPageTitle = useCallback(() => {
     const nameInfo = getContactFullName(contact);
     setPageTitle(`${nameInfo ? `${nameInfo} | ` : ""}Asiakas`);
   }, [contact]);
-
-  const startAutoSaveTimer = useCallback(() => {
-    const timer = setInterval(() => saveUnsavedChanges(), 5000);
-    setTimerAutoSave(timer);
-    return timer;
-  }, [contactFormValues, isContactFormDirty, contactId]);
 
   const stopAutoSaveTimer = useCallback(() => {
     if (timerAutoSave) {
@@ -156,24 +145,31 @@ const ContactPageView: React.FC<{
 
   const saveUnsavedChanges = useCallback(() => {
     console.log("Auto-saving unsaved changes...");
-    if (isContactFormDirty) {
+    const isFormDirty = form?.getState()?.dirty;
+    if (isFormDirty) {
       setSessionStorageItem(FormNames.CONTACT, contactFormValues);
       setSessionStorageItem("contactId", contactId);
     } else {
       removeSessionStorageItem(FormNames.CONTACT);
       removeSessionStorageItem("contactId");
     }
-  }, [contactFormValues, contactId]);
+  }, [form, contactFormValues, contactId]);
+
+  const startAutoSaveTimer = useCallback(() => {
+    const timer = setInterval(() => saveUnsavedChanges(), 5000);
+    setTimerAutoSave(timer);
+    return timer;
+  }, [saveUnsavedChanges]);
 
   const handleLeavePage = useCallback(
     (e) => {
-      if (isContactFormDirty && isEditMode) {
-        const confirmationMessage = "";
-        e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-        return confirmationMessage; // Gecko, WebKit, Chrome <34
+      if (form?.getState()?.dirty && isEditMode) {
+        e.preventDefault();
+        // Legacy support for older browsers
+        e.returnValue = true;
       }
     },
-    [isContactFormDirty, isEditMode],
+    [form, isEditMode],
   );
 
   const handlePopState = useCallback(() => {
@@ -201,7 +197,6 @@ const ContactPageView: React.FC<{
     }
 
     dispatch(hideEditMode());
-    window.addEventListener("beforeunload", handleLeavePage);
     window.addEventListener("popstate", handlePopState);
 
     return () => {
@@ -214,10 +209,19 @@ const ContactPageView: React.FC<{
       stopAutoSaveTimer();
       dispatch(receiveSingleContact({}));
       dispatch(hideEditMode());
-      window.removeEventListener("beforeunload", handleLeavePage);
       window.removeEventListener("popstate", handlePopState);
     };
   }, []);
+
+  useEffect(() => {
+    if (form?.getState()?.dirty && isEditMode) {
+      window.addEventListener("beforeunload", handleLeavePage);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleLeavePage);
+      };
+    }
+  }, [form, isEditMode, handleLeavePage]);
 
   useEffect(() => {
     if (!isEmpty(contact)) {
@@ -346,25 +350,32 @@ const ContactPageView: React.FC<{
       <PageNavigationWrapper>
         <ControlButtonBar
           buttonComponent={
-            <ControlButtons
-              allowCopy={
-                isMethodAllowed(contactMethods, Methods.POST) &&
-                isServiceUnitSameAsActiveServiceUnit()
-              }
-              allowEdit={
-                isMethodAllowed(contactMethods, Methods.PATCH) &&
-                isServiceUnitSameAsActiveServiceUnit()
-              }
-              isCopyDisabled={false}
-              isEditMode={isEditMode}
-              isSaveDisabled={isSaveClicked && !isContactFormValid}
-              onCancel={cancelChanges}
-              onCopy={copyContact}
-              onEdit={showEditModeHandler}
-              onSave={saveChanges}
-              showCommentButton={false}
-              showCopyButton={true}
-            />
+            <FormSpy subscription={{ valid: true }}>
+              {/* Save button needs valid state */}
+              {({ valid }) => {
+                return (
+                  <ControlButtons
+                    allowCopy={
+                      isMethodAllowed(contactMethods, Methods.POST) &&
+                      isServiceUnitSameAsActiveServiceUnit()
+                    }
+                    allowEdit={
+                      isMethodAllowed(contactMethods, Methods.PATCH) &&
+                      isServiceUnitSameAsActiveServiceUnit()
+                    }
+                    isCopyDisabled={false}
+                    isEditMode={isEditMode}
+                    isSaveDisabled={isSaveClicked || !valid}
+                    onCancel={cancelChanges}
+                    onCopy={copyContact}
+                    onEdit={showEditModeHandler}
+                    onSave={saveChanges}
+                    showCommentButton={false}
+                    showCopyButton={true}
+                  />
+                );
+              }}
+            </FormSpy>
           }
           infoComponent={<h1>{nameInfo}</h1>}
           onBack={handleBack}
@@ -598,13 +609,11 @@ const ContactPage: React.FC = () => {
       initialValues={contact}
       keepDirtyOnReinitialize={true}
     >
-      {({ form, handleSubmit, valid, dirty }) => (
+      {({ form, handleSubmit }) => (
         <ContactPageView
           contact={contact}
           form={form}
           handleSubmit={handleSubmit}
-          isFormDirty={dirty}
-          isFormValid={valid}
         />
       )}
     </Form>

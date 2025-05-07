@@ -413,6 +413,12 @@ const ContactForm: React.FC<Props> = ({
                     uiDataKey={getUiDataContactKey(
                       ContactFieldPaths.BUSINESS_ID,
                     )}
+                    validate={(value) => {
+                      const error = getContactBusinessIdFieldError(value);
+                      return error
+                        ? "Y-tunnuksen pituuden on oltava 9 merkkiä"
+                        : undefined;
+                    }}
                   />
                 </Authorization>
               </Column>
