@@ -47,7 +47,6 @@ import { contactExists } from "@/contacts/requestsAsync";
 import {
   getMethods as getContactMethods,
   getContactModalSettings,
-  getIsContactFormValid,
   getIsContactModalOpen,
   getIsFetching as getIsFetchingContact,
 } from "@/contacts/selectors";
@@ -55,7 +54,10 @@ import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
 } from "@/leases/selectors";
-import { getUsersPermissions } from "@/usersPermissions/selectors";
+import {
+  getUserActiveServiceUnit,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
 import { withContactAttributes } from "@/components/attributes/ContactAttributes";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { Contact, ContactModalSettings } from "@/contacts/types";
@@ -206,7 +208,6 @@ type Props = {
   editContact: (...args: Array<any>) => any;
   handleSubmit: (...args: Array<any>) => any;
   hideContactModal: (...args: Array<any>) => any;
-  isContactFormValid: boolean;
   isContactModalOpen: boolean;
   isFetchingContact: boolean;
   leaseAttributes: Attributes;
@@ -215,6 +216,7 @@ type Props = {
   receiveIsSaveClicked: (...args: Array<any>) => any;
   usersPermissions: UsersPermissionsType;
   valid: boolean;
+  userActiveServiceUnit: UserServiceUnit;
 };
 type State = {
   currentLease: Lease;
@@ -283,18 +285,13 @@ class TenantsEdit extends PureComponent<Props, State> {
     hideContactModal();
     receiveContactModalSettings(null);
   };
-  createOrEditContact = () => {
-    const {
-      contactFormValues,
-      contactModalSettings,
-      createContact,
-      editContact,
-    } = this.props;
+  createOrEditContact = (values: Partial<Contact>) => {
+    const { contactModalSettings, createContact, editContact } = this.props;
 
     if (contactModalSettings && contactModalSettings.isNew) {
-      createContact(contactFormValues);
+      createContact(values);
     } else if (contactModalSettings && !contactModalSettings.isNew) {
-      editContact(contactFormValues);
+      editContact(values);
     }
   };
 
@@ -307,25 +304,24 @@ class TenantsEdit extends PureComponent<Props, State> {
       isFetchingContact,
       leaseAttributes,
       usersPermissions,
+      userActiveServiceUnit,
     } = this.props;
     const { savedTenants, savedTenantsArchived, currentLease } = this.state;
     return (
       <AppConsumer>
         {({ dispatch }) => {
-          const handleCreateOrEdit = async () => {
-            const {
-              contactFormValues,
-              contactModalSettings,
-              isContactFormValid,
-              receiveIsSaveClicked,
-            } = this.props;
+          const handleCreateOrEdit = async (
+            values: Partial<Contact>,
+            isValid: boolean,
+          ) => {
+            const { contactModalSettings, receiveIsSaveClicked } = this.props;
             const { business_id, national_identification_number, type } =
-              contactFormValues;
+              values;
             receiveIsSaveClicked(true);
-            if (!isContactFormValid) return;
+            if (!isValid) return;
 
             if (!contactModalSettings || !contactModalSettings.isNew) {
-              this.createOrEditContact();
+              this.createOrEditContact(values);
               return;
             }
 
@@ -345,7 +341,7 @@ class TenantsEdit extends PureComponent<Props, State> {
                 dispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
-                    this.createOrEditContact();
+                    this.createOrEditContact(values);
                   },
                   confirmationModalButtonClassName: ButtonColors.SUCCESS,
                   confirmationModalButtonText:
@@ -356,10 +352,10 @@ class TenantsEdit extends PureComponent<Props, State> {
                     ConfirmationModalTexts.CREATE_CONTACT.TITLE,
                 });
               } else {
-                this.createOrEditContact();
+                this.createOrEditContact(values);
               }
             } else {
-              this.createOrEditContact();
+              this.createOrEditContact(values);
             }
           };
 
@@ -392,6 +388,7 @@ class TenantsEdit extends PureComponent<Props, State> {
                       ? "Uusi asiakas"
                       : "Muokkaa asiakasta"
                   }
+                  serviceUnit={userActiveServiceUnit}
                 />
               </Authorization>
 
@@ -448,11 +445,11 @@ export default flowRight(
         contactModalSettings: getContactModalSettings(state),
         contactFormValues: getFormValues(FormNames.CONTACT)(state),
         currentLease: getCurrentLease(state),
-        isContactFormValid: getIsContactFormValid(state),
         isContactModalOpen: getIsContactModalOpen(state),
         isFetchingContact: getIsFetchingContact(state),
         leaseAttributes: getLeaseAttributes(state),
         usersPermissions: getUsersPermissions(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
       };
     },
     {
