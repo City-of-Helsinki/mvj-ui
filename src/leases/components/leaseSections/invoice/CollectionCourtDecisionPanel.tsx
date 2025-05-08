@@ -6,7 +6,7 @@ import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import FileInput from "@/components/file/FileInput";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import ButtonWrapper from "@/components/content/ButtonWrapper";
@@ -118,7 +118,7 @@ class CollectionCourtDecisionPanel extends PureComponent<Props, State> {
                 CollectionCourtDecisionFieldPaths.DECISION_DATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableDirty
                 fieldAttributes={getFieldAttributes(
                   collectionCourtDecisionAttributes,
@@ -139,7 +139,7 @@ class CollectionCourtDecisionPanel extends PureComponent<Props, State> {
                 CollectionCourtDecisionFieldPaths.NOTE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableDirty
                 fieldAttributes={getFieldAttributes(
                   collectionCourtDecisionAttributes,

@@ -12,7 +12,7 @@ import AddButtonThird from "@/components/form/AddButtonThird";
 import Collapse from "@/components/collapse/Collapse";
 import Divider from "@/components/content/Divider";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
 import FormTextTitle from "@/components/form/FormTextTitle";
@@ -252,7 +252,7 @@ const renderAreas = ({
                                   display: "none",
                                 }}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={get(
                                     attributes,
@@ -267,7 +267,7 @@ const renderAreas = ({
                                   display: "none",
                                 }}
                               >
-                                <FormField
+                                <FormFieldLegacy
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={get(
                                     attributes,
@@ -411,7 +411,7 @@ class BasicInformationEdit extends Component<Props> {
               allow={isFieldAllowedToRead(attributes, "definition")}
             >
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "definition")}
                   name="definition"
@@ -423,7 +423,7 @@ class BasicInformationEdit extends Component<Props> {
             <Authorization allow={isFieldAllowedToRead(attributes, "preparer")}>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle title="Valmistelijat" />
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "preparer")}
                   invisibleLabel
@@ -435,7 +435,7 @@ class BasicInformationEdit extends Component<Props> {
                   enableUiDataEdit
                   uiDataKey={getUiDataLandUseContractKey("preparer")}
                 />
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "preparer")}
                   invisibleLabel
@@ -449,7 +449,7 @@ class BasicInformationEdit extends Component<Props> {
             </Authorization>
             <Authorization allow={isFieldAllowedToRead(attributes, "type")}>
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "type")}
                   name="type"
@@ -463,7 +463,7 @@ class BasicInformationEdit extends Component<Props> {
             </Authorization>
             <Authorization allow={isFieldAllowedToRead(attributes, "status")}>
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "status")}
                   name="status"
@@ -482,7 +482,7 @@ class BasicInformationEdit extends Component<Props> {
               )}
             >
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "estimated_completion_year")}
                   name="estimated_completion_year"
@@ -503,7 +503,7 @@ class BasicInformationEdit extends Component<Props> {
               )}
             >
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(
                     attributes,
@@ -702,7 +702,7 @@ class BasicInformationEdit extends Component<Props> {
               allow={isFieldAllowedToRead(attributes, "plan_reference_number")}
             >
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "plan_reference_number")}
                   name="plan_reference_number"
@@ -722,7 +722,7 @@ class BasicInformationEdit extends Component<Props> {
               allow={isFieldAllowedToRead(attributes, "plan_number")}
             >
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "plan_number")}
                   name="plan_number"
@@ -736,7 +736,7 @@ class BasicInformationEdit extends Component<Props> {
             </Authorization>
             <Authorization allow={isFieldAllowedToRead(attributes, "state")}>
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "state")}
                   name="state"
@@ -752,7 +752,7 @@ class BasicInformationEdit extends Component<Props> {
               allow={isFieldAllowedToRead(attributes, "plan_acceptor")}
             >
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "plan_acceptor")}
                   name="plan_acceptor"
@@ -768,7 +768,7 @@ class BasicInformationEdit extends Component<Props> {
               allow={isFieldAllowedToRead(attributes, "plan_lawfulness_date")}
             >
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "plan_lawfulness_date")}
                   name="plan_lawfulness_date"
@@ -786,7 +786,7 @@ class BasicInformationEdit extends Component<Props> {
               allow={isFieldAllowedToRead(attributes, "project_area")}
             >
               <Column small={6} medium={4} large={2}>
-                <FormField
+                <FormFieldLegacy
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, "project_area")}
                   name="project_area"

@@ -8,7 +8,7 @@ import Authorization from "@/components/authorization/Authorization";
 import Collapse from "@/components/collapse/Collapse";
 import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle";
 import Divider from "@/components/content/Divider";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import LeaseArea from "./LeaseArea";
@@ -241,7 +241,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
                 LeaseAreasFieldPaths.ARCHIVED_DECISION,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -266,7 +266,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
                 LeaseAreasFieldPaths.ARCHIVED_NOTE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,

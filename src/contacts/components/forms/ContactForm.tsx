@@ -1,18 +1,15 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import { change, formValueSelector, reduxForm } from "redux-form";
-import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
-import FormField from "@/components/form/FormField";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import FormWrapper from "@/components/form/FormWrapper";
 import FormWrapperLeft from "@/components/form/FormWrapperLeft";
 import FormWrapperRight from "@/components/form/FormWrapperRight";
-import { receiveContactFormValid } from "@/contacts/actions";
-import { FieldTypes, FormNames } from "@/enums";
+import { FieldTypes } from "@/enums";
 import WarningContainer from "@/components/content/WarningContainer";
 import WarningField from "@/components/form/WarningField";
 import { getContactBusinessIdFieldError } from "@/contacts/helpers";
@@ -27,95 +24,66 @@ import {
   isEmptyValue,
   isFieldAllowedToRead,
 } from "@/util/helpers";
-import {
-  getAttributes,
-  getInitialContactFormValues,
-  getIsContactFormValid,
-  getIsSaveClicked,
-} from "@/contacts/selectors";
+import { getAttributes, getIsSaveClicked } from "@/contacts/selectors";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
-import type { Attributes } from "types";
-import type { RootState } from "@/root/types";
-import type { UserServiceUnit } from "@/usersPermissions/types";
-import { ContactsActiveLease } from "@/contacts/types";
+
+import type { FormApi } from "final-form";
+import type { Contact, ContactsActiveLease } from "@/contacts/types";
+
 type Props = {
-  attributes: Attributes;
-  change: (...args: Array<any>) => any;
-  initialValues: Record<string, any>;
-  isContactFormValid: boolean;
+  initialValues?: Partial<Contact>;
   isFocusedOnMount?: boolean;
-  isSaveClicked: boolean;
-  receiveContactFormValid: (...args: Array<any>) => any;
-  type: string | null | undefined;
-  businessId: string | null | undefined;
-  userActiveServiceUnit: UserServiceUnit;
-  valid: boolean;
+  formApi?: FormApi<Contact, Partial<Contact>>;
 };
 
-class ContactForm extends Component<Props> {
-  firstField: any;
+const ContactForm: React.FC<Props> = ({
+  initialValues,
+  isFocusedOnMount = false,
+  formApi,
+}) => {
+  // First input to focus reference
+  const firstInputRef = useRef(null);
 
-  componentDidMount() {
-    const { isFocusedOnMount, receiveContactFormValid, valid } = this.props;
-    receiveContactFormValid(valid);
+  const attributes = useSelector(getAttributes);
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
 
-    if (isFocusedOnMount) {
-      if (this.firstField) {
-        this.firstField.focus();
-      }
+  const formValues = formApi?.getState().values || initialValues || {};
+
+  useEffect(() => {
+    if (isFocusedOnMount && firstInputRef.current) {
+      firstInputRef.current.focus();
     }
-  }
+  }, [isFocusedOnMount]);
 
-  setRefForFirstField = (element: any) => {
-    this.firstField = element;
+  const setRefForFirstField = (element: HTMLElement | null) => {
+    firstInputRef.current = element;
   };
 
-  componentDidUpdate() {
-    const {
-      change,
-      initialValues,
-      userActiveServiceUnit,
-      isContactFormValid,
-      receiveContactFormValid,
-      valid,
-    } = this.props;
-
-    if (isContactFormValid !== valid) {
-      receiveContactFormValid(valid);
-    }
-
-    if (!initialValues.service_unit && userActiveServiceUnit) {
-      change("service_unit", userActiveServiceUnit.id);
-    }
-  }
-
-  handleAddressChange = (details: Record<string, any>) => {
-    const { change } = this.props;
+  const handleAddressChange = (details: Record<string, any>) => {
+    if (!formApi) return;
 
     if (!isEmptyValue(details.postalCode)) {
-      change("postal_code", details.postalCode);
+      formApi.change("postal_code", details.postalCode);
     }
 
     if (!isEmptyValue(details.city)) {
-      change("city", details.city);
+      formApi.change("city", details.city);
     }
 
     if (!isEmptyValue(details.country)) {
-      change("country", details.country.toUpperCase());
+      formApi.change("country", details.country.toUpperCase());
     }
   };
 
-  render() {
-    const {
-      attributes,
-      isSaveClicked,
-      type,
-      businessId,
-      initialValues,
-      userActiveServiceUnit,
-    } = this.props;
+  if (isEmpty(attributes) || isEmpty(userActiveServiceUnit)) return null;
+
+  const renderFormFields = (values: any) => {
+    const type = values?.type;
+    const businessId = values?.business_id;
+    const initialValues = values;
     const businessIdError = getContactBusinessIdFieldError(businessId);
-    if (isEmpty(attributes) || isEmpty(userActiveServiceUnit)) return null;
+
     return (
       <form>
         <FormWrapper>
@@ -135,7 +103,7 @@ class ContactForm extends Component<Props> {
                       ContactFieldPaths.TYPE,
                     )}
                     name="type"
-                    setRefForField={this.setRefForFirstField}
+                    setRefForField={setRefForFirstField}
                     overrideValues={{
                       label: ContactFieldTitles.TYPE,
                     }}
@@ -260,7 +228,7 @@ class ContactForm extends Component<Props> {
                       ContactFieldPaths.ADDRESS,
                     )}
                     name="address"
-                    valueSelectedCallback={this.handleAddressChange}
+                    valueSelectedCallback={handleAddressChange}
                     overrideValues={{
                       fieldType: FieldTypes.ADDRESS,
                       label: ContactFieldTitles.ADDRESS,
@@ -457,6 +425,12 @@ class ContactForm extends Component<Props> {
                       uiDataKey={getUiDataContactKey(
                         ContactFieldPaths.BUSINESS_ID,
                       )}
+                      validate={(value) => {
+                        const error = getContactBusinessIdFieldError(value);
+                        return error
+                          ? "Y-tunnuksen pituuden on oltava 9 merkkiä"
+                          : undefined;
+                      }}
                     />
                   </Authorization>
                 </Column>
@@ -618,9 +592,7 @@ class ContactForm extends Component<Props> {
                     <FormText>
                       {initialValues.service_unit
                         ? initialValues.service_unit.name || "-"
-                        : (userActiveServiceUnit &&
-                            userActiveServiceUnit.name) ||
-                          "-"}
+                        : userActiveServiceUnit?.name || "-"}
                     </FormText>
                   </>
                 </Authorization>
@@ -706,32 +678,9 @@ class ContactForm extends Component<Props> {
         </FormWrapper>
       </form>
     );
-  }
-}
-
-const formName = FormNames.CONTACT;
-const selector = formValueSelector(formName);
-
-const mapStateToProps = (state: RootState) => {
-  return {
-    attributes: getAttributes(state),
-    isContactFormValid: getIsContactFormValid(state),
-    initialValues: getInitialContactFormValues(state),
-    isSaveClicked: getIsSaveClicked(state),
-    type: selector(state, "type"),
-    businessId: selector(state, "business_id"),
-    userActiveServiceUnit: getUserActiveServiceUnit(state),
   };
+
+  return renderFormFields(formValues);
 };
 
-export default flowRight(
-  connect(mapStateToProps, {
-    change,
-    receiveContactFormValid,
-  }),
-  reduxForm({
-    destroyOnUnmount: false,
-    enableReinitialize: true,
-    form: formName,
-  }),
-)(ContactForm) as React.ComponentType<any>;
+export default React.memo(ContactForm);

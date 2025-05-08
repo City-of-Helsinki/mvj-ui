@@ -1,9 +1,10 @@
 import { $Shape } from "utility-types";
-import React, { createElement, Fragment, PureComponent } from "react";
-import { Field } from "redux-form";
+import React, { createElement, useMemo } from "react";
+import { Field } from "react-final-form";
+import { FieldState } from "final-form";
 import classNames from "classnames";
 import get from "lodash/get";
-import ErrorBlock from "./ErrorBlock";
+import ErrorBlock from "@/components/form/ErrorBlock";
 import ExternalLink from "@/components/links/ExternalLink";
 import FieldTypeAddress from "@/components/form/FieldTypeAddress";
 import FieldTypeAreaSearchDistrictSelect from "@/components/form/FieldTypeAreaSearchDistrictSelect";
@@ -300,7 +301,7 @@ const FormFieldInput = ({
       ? input.value.map((single) => getText(fieldType, single)).join(", ")
       : getText(fieldType, input.value);
     return (
-      <Fragment>
+      <>
         {!invisibleLabel && (
           <FormTextTitle
             enableUiDataEdit={enableUiDataEdit}
@@ -316,7 +317,7 @@ const FormFieldInput = ({
         ) : (
           <FormText>{text || "-"}</FormText>
         )}
-      </Fragment>
+      </>
     );
   }
 
@@ -349,7 +350,7 @@ type Props = {
   readOnlyValueRenderer?: (...args: Array<any>) => any;
   relativeTo?: any;
   rows?: number;
-  serviceUnit: UserServiceUnit;
+  serviceUnit?: UserServiceUnit;
   setRefForField?: (...args: Array<any>) => any;
   tooltipStyle?: Record<string, any>;
   validate?: (...args: Array<any>) => any;
@@ -357,170 +358,173 @@ type Props = {
   uiDataKey?: string | null | undefined;
   unit?: string;
 };
-type State = {
-  allowEdit: boolean;
-  allowRead: boolean;
-  fieldAttributes: Record<string, any> | null | undefined;
-  fieldType: string | null | undefined;
-  label: string | null | undefined;
-  options: Array<Record<string, any>>;
-  required: boolean;
-  value: string | null | undefined;
-};
 
-class FormField extends PureComponent<Props, State> {
-  state: State = {
-    allowEdit: false,
-    allowRead: true,
-    fieldAttributes: null,
-    fieldType: null,
-    label: null,
-    options: [],
-    required: false,
-    value: null,
-  };
-  static defaultProps: $Shape<Props> = {
-    autoBlur: false,
-    disabled: false,
-    disableDirty: false,
-    disableTouched: false,
-    enableUiDataEdit: false,
-    fieldAttributes: null,
-    invisibleLabel: false,
-    isLoading: false,
-    onChange: () => {},
-  };
-
-  static getDerivedStateFromProps(
-    props: Props,
-    state: State,
-  ): $Shape<State> | null {
-    const overrideableBoolean = (fieldName) => {
-      return get(props.overrideValues, fieldName) !== undefined
-        ? !!get(props.overrideValues, fieldName)
-        : !!get(props.fieldAttributes, fieldName);
+const FormField: React.FC<Props> = ({
+  autoBlur = false,
+  autoComplete,
+  className,
+  disabled = false,
+  disableDirty = false,
+  disableTouched = false,
+  enableUiDataEdit = false,
+  ErrorComponent = ErrorBlock,
+  fieldAttributes,
+  filterOption,
+  invisibleLabel = false,
+  isLoading = false,
+  isMulti,
+  language,
+  minDate,
+  maxDate,
+  name,
+  onBlur,
+  onChange = () => {},
+  optionLabel,
+  overrideValues,
+  placeholder,
+  readOnlyValueRenderer,
+  relativeTo,
+  rows,
+  serviceUnit,
+  setRefForField,
+  tooltipStyle,
+  validate,
+  valueSelectedCallback,
+  uiDataKey,
+  unit,
+}) => {
+  // Equivalent to getDerivedStateFromProps
+  const derivedValues = useMemo(() => {
+    const overrideableBoolean = (fieldName: string) => {
+      return get(overrideValues, fieldName) !== undefined
+        ? !!get(overrideValues, fieldName)
+        : !!get(fieldAttributes, fieldName);
     };
 
-    if (props.fieldAttributes !== state.fieldAttributes) {
-      return {
-        allowEdit: get(props.fieldAttributes, "read_only") === false,
-        allowRead: !!props.fieldAttributes,
-        fieldAttributes: props.fieldAttributes,
-        fieldType: get(props.fieldAttributes, "type"),
-        label:
-          get(props.overrideValues, "label") ||
-          get(props.fieldAttributes, "label"),
-        value: get(props.overrideValues, "value"),
-        options: getFieldAttributeOptions(props.fieldAttributes),
-        required: overrideableBoolean("required"),
-      };
-    }
+    return {
+      allowEdit: get(fieldAttributes, "read_only") === false,
+      allowRead: !!fieldAttributes,
+      fieldType: get(fieldAttributes, "type"),
+      label: get(overrideValues, "label") || get(fieldAttributes, "label"),
+      value: get(overrideValues, "value"),
+      options: getFieldAttributeOptions(fieldAttributes),
+      required: overrideableBoolean("required"),
+    };
+  }, [fieldAttributes, overrideValues]);
 
-    return null;
-  }
+  // Handler functions
+  const handleGenericNormalize = useMemo(() => {
+    return (value: any) => {
+      const fieldProps = { ...fieldAttributes, ...derivedValues };
+      return genericNormalizer(value, fieldProps);
+    };
+  }, [fieldAttributes, derivedValues]);
 
-  handleGenericNormalize: (arg0: any) => any = (value) => {
-    const { fieldAttributes } = this.props;
-    // eslint-disable-next-line no-unused-vars
-    const { fieldAttributes: _, ...rest } = this.state;
-    return genericNormalizer(value, { ...fieldAttributes, ...rest });
-  };
-  handleGenericValidate: (arg0: any) => any = (value) => {
-    const { fieldAttributes } = this.props;
-    // eslint-disable-next-line no-unused-vars
-    const { fieldAttributes: _, ...rest } = this.state;
-    return genericValidator(value, { ...fieldAttributes, ...rest });
-  };
-  handleValidate: (value: any) => string | null | undefined = (value) => {
-    const { validate } = this.props;
+  const handleGenericValidate = useMemo(() => {
+    return (value: any) => {
+      const fieldProps = { ...fieldAttributes, ...derivedValues };
+      return genericValidator(value, fieldProps);
+    };
+  }, [fieldAttributes, derivedValues]);
 
+  const handleValidate = (value: any) => {
     if (!validate) {
       return undefined;
     }
-
     return validate(value);
   };
 
-  render(): JSX.Element {
-    const {
-      autoBlur,
-      autoComplete,
-      className,
-      disabled,
-      disableDirty,
-      disableTouched,
-      enableUiDataEdit,
-      ErrorComponent = ErrorBlock,
-      filterOption,
-      invisibleLabel,
-      isLoading,
-      language,
-      minDate,
-      maxDate,
-      name,
-      onBlur,
-      onChange,
-      optionLabel,
-      overrideValues,
-      placeholder,
-      readOnlyValueRenderer,
-      relativeTo,
-      rows,
-      serviceUnit,
-      setRefForField,
-      tooltipStyle,
-      valueSelectedCallback,
-      uiDataKey,
-      unit,
-    } = this.props;
-    const { allowEdit, allowRead, fieldType, label, options, required, value } =
-      this.state;
-    return (
-      <Field
-        allowEdit={allowEdit}
-        allowRead={allowRead}
-        autoBlur={autoBlur}
-        autoComplete={autoComplete}
-        className={className}
-        component={FormFieldInput}
-        disabled={disabled}
-        disableDirty={disableDirty}
-        disableTouched={disableTouched}
-        enableUiDataEdit={enableUiDataEdit}
-        ErrorComponent={ErrorComponent}
-        fieldType={fieldType}
-        filterOption={filterOption}
-        invisibleLabel={invisibleLabel}
-        isLoading={isLoading}
-        label={label}
-        language={language}
-        minDate={minDate}
-        maxDate={maxDate}
-        name={name}
-        normalize={this.handleGenericNormalize}
-        onBlur={onBlur}
-        onChange={onChange}
-        optionLabel={optionLabel}
-        options={options}
-        placeholder={placeholder}
-        readOnlyValueRenderer={readOnlyValueRenderer}
-        relativeTo={relativeTo}
-        required={required}
-        rows={rows}
-        serviceUnit={serviceUnit}
-        setRefForField={setRefForField}
-        tooltipStyle={tooltipStyle}
-        validate={
-          allowEdit ? [this.handleGenericValidate, this.handleValidate] : []
-        }
-        valueSelectedCallback={valueSelectedCallback}
-        uiDataKey={uiDataKey}
-        unit={unit}
-        value={value}
-        {...overrideValues}
-      />
-    );
-  }
-}
+  const { allowEdit, allowRead, fieldType, label, options, required, value } =
+    derivedValues;
+
+  return (
+    <Field
+      name={name}
+      {...derivedValues}
+      validate={
+        allowEdit
+          ? (value) => {
+              const customError = handleValidate(value);
+              return customError || handleGenericValidate(value);
+            }
+          : undefined
+      }
+      allowRead={allowRead}
+      autoBlur={autoBlur}
+      autoComplete={autoComplete}
+      className={className}
+      disabled={disabled}
+      disableDirty={disableDirty}
+      disableTouched={disableTouched}
+      enableUiDataEdit={enableUiDataEdit}
+      ErrorComponent={ErrorComponent}
+      fieldType={fieldType}
+      filterOption={filterOption}
+      invisibleLabel={invisibleLabel}
+      isLoading={isLoading}
+      label={label}
+      language={language}
+      minDate={minDate}
+      maxDate={maxDate}
+      normalize={handleGenericNormalize}
+      onBlur={onBlur}
+      onChange={onChange}
+      optionLabel={optionLabel}
+      options={options}
+      placeholder={placeholder}
+      readOnlyValueRenderer={readOnlyValueRenderer}
+      relativeTo={relativeTo}
+      required={required}
+      rows={rows}
+      serviceUnit={serviceUnit}
+      setRefForField={setRefForField}
+      tooltipStyle={tooltipStyle}
+      valueSelectedCallback={valueSelectedCallback}
+      uiDataKey={uiDataKey}
+      unit={unit}
+      value={value}
+      {...overrideValues}
+    >
+      {(fieldRenderProps) => (
+        <FormFieldInput
+          {...fieldRenderProps}
+          {...derivedValues}
+          allowEdit={allowEdit}
+          allowRead={allowRead}
+          autoBlur={autoBlur}
+          autoComplete={autoComplete}
+          className={className}
+          disabled={disabled}
+          disableDirty={disableDirty}
+          disableTouched={disableTouched}
+          enableUiDataEdit={enableUiDataEdit}
+          ErrorComponent={ErrorComponent}
+          fieldType={fieldType}
+          filterOption={filterOption}
+          invisibleLabel={invisibleLabel}
+          isLoading={isLoading}
+          label={label}
+          language={language}
+          minDate={minDate}
+          maxDate={maxDate}
+          multiSelect={isMulti}
+          optionLabel={optionLabel}
+          options={options}
+          placeholder={placeholder}
+          readOnlyValueRenderer={readOnlyValueRenderer}
+          relativeTo={relativeTo}
+          required={required}
+          rows={rows}
+          serviceUnit={serviceUnit}
+          setRefForField={setRefForField}
+          tooltipStyle={tooltipStyle}
+          uiDataKey={uiDataKey}
+          unit={unit}
+          valueSelectedCallback={valueSelectedCallback}
+        />
+      )}
+    </Field>
+  );
+};
 
 export default FormField;

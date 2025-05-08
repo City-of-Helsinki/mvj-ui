@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { flowRight } from "lodash/util";
 import type { RootState } from "@/root/types";
 import { Column, Row } from "react-foundation";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import {
   PlotApplicationOpeningRecordLabels,
   PlotApplicationOpeningRecordPaths,
@@ -66,7 +66,7 @@ class PlotSearchApplicationsOpeningSection extends Component<InnerProps> {
             )}
           >
             <Column small={6} medium={3} large={2}>
-              <FormField
+              <FormFieldLegacy
                 name="opening_record.created_by"
                 fieldAttributes={get(
                   applicationAttributes,
@@ -86,7 +86,7 @@ class PlotSearchApplicationsOpeningSection extends Component<InnerProps> {
             )}
           >
             <Column small={12} medium={12} large={4}>
-              <FormField
+              <FormFieldLegacy
                 name="opening_record.openers"
                 fieldAttributes={get(
                   applicationAttributes,
@@ -111,7 +111,7 @@ class PlotSearchApplicationsOpeningSection extends Component<InnerProps> {
             )}
           >
             <Column small={12}>
-              <FormField
+              <FormFieldLegacy
                 name="opening_record.note"
                 fieldAttributes={get(
                   applicationAttributes,

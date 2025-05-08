@@ -5,7 +5,7 @@ import flowRight from "lodash/flowRight";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FieldTypes, FormNames } from "@/enums";
 import RemoveButton from "@/components/form/RemoveButton";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
@@ -47,7 +47,7 @@ class AddressItemEdit extends Component<Props> {
           )}
         >
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={get(
                 attributes,
@@ -69,7 +69,7 @@ class AddressItemEdit extends Component<Props> {
           )}
         >
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={get(
                 attributes,
@@ -87,7 +87,7 @@ class AddressItemEdit extends Component<Props> {
           )}
         >
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, "addresses.child.children.city")}
               name={`${field}.city`}
@@ -102,7 +102,7 @@ class AddressItemEdit extends Component<Props> {
           )}
         >
           <Column small={6} medium={4} large={2}>
-            <FormField
+            <FormFieldLegacy
               disableTouched={isSaveClicked}
               fieldAttributes={get(
                 attributes,

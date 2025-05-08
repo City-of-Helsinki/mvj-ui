@@ -1,5 +1,6 @@
 import type { Action, Attributes, Methods } from "@/types";
 import { ContactTypes } from "@/contacts/enums";
+import { ServiceUnit } from "@/serviceUnits/types";
 export type ContactState = {
   attributes: Attributes;
   contactModalSettings: ContactModalSettings;
@@ -19,7 +20,7 @@ export type ContactExistsResponse = {
   exists: boolean;
 };
 export type Contact = {
-  service_unit: number;
+  service_unit: ServiceUnit;
   type: (typeof ContactTypes)[keyof typeof ContactTypes];
   business_id?: string;
   language?: string;
@@ -72,3 +73,4 @@ export type ContactsActiveLease = {
 export type ContactRow = {
   contacts_active_leases?: Array<ContactsActiveLease>;
 };
+export type SetTabDirtyFunction = (tabId: number, isDirty: boolean) => void;
