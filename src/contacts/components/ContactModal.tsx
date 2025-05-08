@@ -13,12 +13,13 @@ import { useSelector } from "react-redux";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import { ServiceUnit } from "@/serviceUnits/types";
 import { getInitialContactFormValues } from "../selectors";
+import { Contact } from "@/contacts/types";
 
 type Props = {
   isOpen: boolean;
   onCancel: (...args: Array<any>) => any;
   onClose: (...args: Array<any>) => any;
-  onSave: (...args: Array<any>) => any;
+  onSave: (values: Partial<Contact>, isValid: boolean) => any;
   onSaveAndAdd: (...args: Array<any>) => any;
   showSave: boolean;
   showSaveAndAdd: boolean;
