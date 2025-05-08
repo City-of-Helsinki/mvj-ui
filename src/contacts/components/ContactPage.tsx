@@ -91,6 +91,17 @@ const ContactPageView: React.FC<{
   const dispatch = useDispatch();
   const { contactMethods } = useContactAttributes();
 
+  const [activeTab, setActiveTab] = useState(0);
+  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
+  const [timerAutoSave, setTimerAutoSave] = useState<NodeJS.Timeout | null>(
+    null,
+  );
+  const [dirtyTabs, setDirtyTabs] = useState<Set<number>>(new Set());
+
+  const tabDirtyStateRef = useRef(new Map<number, boolean>());
+  const prevContactRef = useRef<Contact | null>(null);
+  const prevEditModeRef = useRef<boolean | null>(null);
+
   const isSaving = useSelector(getIsSaving);
   const isContactFormValid = form?.getState()?.valid;
   const isEditMode = useSelector(getIsEditMode);
@@ -98,15 +109,8 @@ const ContactPageView: React.FC<{
   const isSaveClicked = useSelector(getIsSaveClicked);
   const usersPermissions = useSelector(getUsersPermissions);
   const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
-  const [activeTab, setActiveTab] = useState(0);
-  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
-  const [timerAutoSave, setTimerAutoSave] = useState<NodeJS.Timeout | null>(
-    null,
-  );
-  const [dirtyTabs, setDirtyTabs] = useState<Set<number>>(new Set());
-  const tabDirtyStateRef = useRef(new Map<number, boolean>());
-  const prevContactRef = useRef<Contact | null>(null);
-  const prevEditModeRef = useRef<boolean | null>(null);
+
+  const contactId = params.contactId;
 
   const setTabDirty = useCallback<SetTabDirtyFunction>((tabId, isDirty) => {
     // Update the map with this tab's dirty state
@@ -129,8 +133,6 @@ const ContactPageView: React.FC<{
     },
     [dirtyTabs],
   );
-
-  const contactId = params.contactId;
 
   const setContactPageTitle = useCallback(() => {
     const nameInfo = getContactFullName(contact);
@@ -450,7 +452,6 @@ const ContactPageView: React.FC<{
         <ContactPageContent
           form={form}
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
           setTabDirty={setTabDirty}
           isEditMode={isEditMode}
           contact={contact}
@@ -467,7 +468,6 @@ const ContactPageContent: React.FC<{
   form: FormApi<Contact>;
   setTabDirty: SetTabDirtyFunction;
   activeTab: number;
-  setActiveTab: React.Dispatch<React.SetStateAction<number>>;
   isEditMode: boolean;
   contact: Contact;
   contactId: string;
@@ -477,7 +477,6 @@ const ContactPageContent: React.FC<{
   form,
   setTabDirty,
   activeTab,
-  setActiveTab,
   isEditMode,
   contact,
   contactId,
