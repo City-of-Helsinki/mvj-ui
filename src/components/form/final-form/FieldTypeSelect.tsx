@@ -1,133 +1,121 @@
-import React, { PureComponent } from "react";
+import React, { useState, useRef } from "react";
 import Select from "react-select";
 import classNames from "classnames";
 import DropdownIndicator from "@/components/inputs/DropdownIndicator";
 import LoadingIndicator from "@/components/inputs/SelectLoadingIndicator";
-type Props = {
-  autoBlur: boolean;
-  disabled: boolean;
-  displayError: boolean;
-  filterOption?: (...args: Array<any>) => any;
-  input: Record<string, any>;
-  isDirty: boolean;
-  isLoading?: boolean;
-  options: Array<any> | null | undefined;
-  placeholder: string;
-  setRefForField: (...args: Array<any>) => any;
-};
-type State = {
-  inputValue: string;
+
+import { FieldComponentProps } from "@/components/form/final-form/FormField";
+
+type SelectOption = {
+  value: string | number | boolean;
+  label: string;
+  [key: string]: any;
 };
 
-class FieldTypeSelect extends PureComponent<Props, State> {
-  select: any;
-  state: State = {
-    inputValue: "",
-  };
-  handleBlur: () => void = () => {
-    const {
-      input: { onBlur, value },
-    } = this.props;
+const FieldTypeSelect = (props: FieldComponentProps): JSX.Element => {
+  const {
+    autoBlur,
+    disabled,
+    displayError,
+    filterOption,
+    input,
+    input: { name, onBlur, onChange, value },
+    isDirty,
+    isLoading,
+    options,
+    placeholder,
+    setRefForField,
+  } = props;
+
+  const [inputSearchValue, setInputSearchValue] = useState("");
+  const selectRef = useRef<any>(null);
+
+  const handleBlur = () => {
     onBlur(value);
   };
-  handleChange: (val?: any) => void = (val: any) => {
-    const {
-      autoBlur,
-      input: { onBlur, onChange },
-    } = this.props;
 
-    if (val) {
-      const { value } = val;
-
+  const handleChange = (selectedOption: SelectOption | null, o) => {
+    if (selectedOption) {
+      const selectedValue = selectedOption.value;
+      onChange(selectedValue);
       if (autoBlur) {
-        onBlur(value);
-      } else {
-        onChange(value);
+        const target = selectRef.current.select.controlRef as HTMLInputElement;
+        const syntheticEvent = {
+          target: target,
+          relatedTarget: null,
+        } as React.FocusEvent<typeof target>;
+        onBlur(syntheticEvent);
       }
     }
   };
-  handleInputChange: (arg0: string, arg1: Record<string, any>) => void = (
-    value,
-    meta,
-  ) => {
-    const { action } = meta;
 
+  const handleInputChange = (value: string, meta: Record<string, any>) => {
+    const { action } = meta;
     switch (action) {
       case "input-change":
-        this.setState({
-          inputValue: value,
-        });
+        setInputSearchValue(value);
         break;
     }
   };
-  handleMenuOpen: () => void = () => {
-    const { inputValue } = this.state;
 
-    if (this.select.state.inputValue !== inputValue) {
-      this.select.select.onInputChange(inputValue, {
+  const handleMenuOpen = () => {
+    if (
+      selectRef.current &&
+      selectRef.current.state.inputValue !== inputSearchValue
+    ) {
+      selectRef.current.select.onInputChange(inputSearchValue, {
         action: "input-change",
       });
     }
   };
-  setRef: (arg0: any) => void = (element) => {
-    const { setRefForField } = this.props;
-    this.select = element;
+
+  const setRef = (element: any) => {
+    selectRef.current = element;
 
     if (setRefForField && element) {
       setRefForField(element.select);
     }
   };
 
-  render(): JSX.Element {
-    const {
-      disabled,
-      displayError,
-      filterOption,
-      input: { name, value },
-      isDirty,
-      isLoading,
-      options,
-      placeholder,
-    } = this.props;
-    return (
-      <div
-        className={classNames(
-          "form-field__select",
-          {
-            "has-error": displayError,
-          },
-          {
-            "is-dirty": isDirty,
-          },
-        )}
-      >
-        <Select
-          ref={this.setRef}
-          className="select-input"
-          classNamePrefix="select-input"
-          components={{
-            DropdownIndicator,
-            IndicatorSeparator: null,
-            LoadingIndicator,
-          }}
-          isDisabled={disabled}
-          filterOption={filterOption}
-          id={name}
-          isLoading={isLoading}
-          onBlur={this.handleBlur}
-          onChange={this.handleChange}
-          noOptionsMessage={() => "Ei tuloksia"}
-          onInputChange={this.handleInputChange}
-          onMenuOpen={this.handleMenuOpen}
-          options={options}
-          placeholder={placeholder || "Valitse..."}
-          value={
-            (options && options.find((option) => option.value == value)) || ""
-          }
-        />
-      </div>
-    );
-  }
-}
+  const selectedOption =
+    (options && options.find((option) => option.value == value)) || "";
+
+  return (
+    <div
+      className={classNames(
+        "form-field__select",
+        {
+          "has-error": displayError,
+        },
+        {
+          "is-dirty": isDirty,
+        },
+      )}
+    >
+      <Select
+        ref={setRef}
+        className="select-input"
+        classNamePrefix="select-input"
+        components={{
+          DropdownIndicator,
+          IndicatorSeparator: null,
+          LoadingIndicator,
+        }}
+        isDisabled={disabled}
+        filterOption={filterOption}
+        id={name}
+        isLoading={isLoading}
+        onBlur={handleBlur}
+        onChange={handleChange}
+        noOptionsMessage={() => "Ei tuloksia"}
+        onInputChange={handleInputChange}
+        onMenuOpen={handleMenuOpen}
+        options={options}
+        placeholder={placeholder || "Valitse..."}
+        value={selectedOption}
+      />
+    </div>
+  );
+};
 
 export default FieldTypeSelect;
