@@ -1,14 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-type Props = {
-  autoBlur: boolean;
-  disabled: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  label: string;
-  options: Array<Record<string, any>>;
-};
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
 
 const FieldTypeRadioWithField = ({
   autoBlur = false,
@@ -18,7 +10,7 @@ const FieldTypeRadioWithField = ({
   isDirty,
   label,
   options,
-}: Props): JSX.Element => {
+}: FieldComponentProps): JSX.Element => {
   const handleChange = (e: any) => {
     if (autoBlur) {
       onBlur(e.target.value);

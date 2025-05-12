@@ -456,7 +456,7 @@ export const FieldTypes = {
   TIME: "time",
   HIDDEN: "hidden",
   FRACTIONAL: "fractional",
-};
+} as const;
 
 /**
  * Lease form names enumerable.

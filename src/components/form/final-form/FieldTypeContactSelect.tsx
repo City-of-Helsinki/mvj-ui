@@ -4,14 +4,11 @@ import AsyncSelect from "@/components/form/AsyncSelect";
 import { getContentContact } from "@/contacts/helpers";
 import { addEmptyOption, sortStringByKeyAsc } from "@/util/helpers";
 import { fetchContacts } from "@/contacts/requestsAsync";
+
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
 import type { UserServiceUnit } from "@/usersPermissions/types";
+
 type Props = {
-  disabled?: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  onChange: (...args: Array<any>) => any;
-  placeholder?: string;
   serviceUnit: UserServiceUnit;
 };
 
@@ -23,7 +20,7 @@ const FieldTypeContactSelect = ({
   onChange,
   placeholder,
   serviceUnit,
-}: Props): JSX.Element => {
+}: FieldComponentProps & Props): JSX.Element => {
   const getContacts = debounce(
     async (inputValue: string, callback: (...args: Array<any>) => any) => {
       const contacts = await fetchContacts({

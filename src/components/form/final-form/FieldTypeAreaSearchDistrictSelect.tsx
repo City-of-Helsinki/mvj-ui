@@ -4,7 +4,7 @@ import AsyncSelect from "@/components/form/AsyncSelect";
 import { addEmptyOption, sortStringByKeyAsc } from "@/util/helpers";
 import { fetchAreaSearchDistricts } from "@/areaSearch/requestsAsync";
 
-import { FieldComponentProps } from "@/components/form/final-form/FormField";
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
 
 const getContentAreaSearchDistrict = (
   district: string | null | undefined,

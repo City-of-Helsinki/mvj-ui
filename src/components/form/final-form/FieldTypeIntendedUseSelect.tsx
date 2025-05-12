@@ -4,16 +4,8 @@ import AsyncSelect from "@/components/form/AsyncSelect";
 import { addEmptyOption, sortStringByKeyAsc } from "@/util/helpers";
 import { getContentIntendedUse } from "@/leases/helpers";
 import { fetchIntendedUses } from "@/leases/requestsAsync";
-import type { ServiceUnit } from "@/serviceUnits/types";
-type Props = {
-  disabled?: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  onChange: (...args: Array<any>) => any;
-  placeholder?: string;
-  serviceUnit: ServiceUnit;
-};
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
+
 const FieldTypeIntendedUseSelect = ({
   disabled,
   displayError,
@@ -22,7 +14,7 @@ const FieldTypeIntendedUseSelect = ({
   onChange,
   placeholder,
   serviceUnit,
-}: Props): JSX.Element => {
+}: FieldComponentProps): JSX.Element => {
   const getIntendedUses = debounce(
     async (inputValue: string, callback: (...args: Array<any>) => any) => {
       const intendedUses = await fetchIntendedUses({

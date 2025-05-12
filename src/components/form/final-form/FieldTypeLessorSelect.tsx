@@ -4,16 +4,7 @@ import AsyncSelect from "@/components/form/AsyncSelect";
 import { getContentLessor } from "@/lessor/helpers";
 import { addEmptyOption, sortStringByKeyAsc } from "@/util/helpers";
 import { fetchContacts } from "@/contacts/requestsAsync";
-import type { UserServiceUnit } from "@/usersPermissions/types";
-type Props = {
-  disabled?: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  onChange: (...args: Array<any>) => any;
-  placeholder?: string;
-  serviceUnit: UserServiceUnit;
-};
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
 
 const FieldTypeLessorSelect = ({
   disabled,
@@ -23,7 +14,7 @@ const FieldTypeLessorSelect = ({
   onChange,
   placeholder,
   serviceUnit,
-}: Props): JSX.Element => {
+}: FieldComponentProps): JSX.Element => {
   const getLessors = debounce(
     async (inputValue: string, callback: (...args: Array<any>) => any) => {
       const lessors = await fetchContacts({

@@ -1,13 +1,7 @@
 import React, { useRef } from "react";
 import classNames from "classnames";
-type Props = {
-  disabled: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  placeholder?: string;
-  setRefForField?: (...args: Array<any>) => any;
-};
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
+
 const NUMERATOR = 0;
 const DENOMINATOR = 1;
 const SPLITTER = " / ";
@@ -19,7 +13,7 @@ const FieldTypeFractional = ({
   isDirty = false,
   setRefForField,
   input,
-}: Props): JSX.Element => {
+}: FieldComponentProps): JSX.Element => {
   const firstFieldRef = useRef<null | HTMLInputElement>(null);
   const secondFieldRef = useRef<null | HTMLInputElement>(null);
 

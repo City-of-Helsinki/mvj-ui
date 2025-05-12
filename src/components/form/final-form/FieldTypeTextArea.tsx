@@ -1,18 +1,7 @@
 import React from "react";
 import classNames from "classnames";
-type Props = {
-  autoBlur: boolean;
-  autoComplete?: string;
-  className: string;
-  disabled: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  placeholder: string;
-  rows?: number;
-  setRefForField: (...args: Array<any>) => any;
-  type?: any;
-};
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
+import { Field } from "redux-form";
 
 const FieldTypeTextArea = ({
   autoBlur,
@@ -26,7 +15,7 @@ const FieldTypeTextArea = ({
   rows = 3,
   setRefForField,
   type = "text",
-}: Props): JSX.Element => {
+}: FieldComponentProps): JSX.Element => {
   const handleChange = (e: any) => {
     if (autoBlur) {
       onBlur(e.target.value);

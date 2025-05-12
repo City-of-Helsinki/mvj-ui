@@ -2,15 +2,9 @@ import React from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import fi from "date-fns/locale/fi";
 import classNames from "classnames";
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
+
 registerLocale("fi", fi);
-type Props = {
-  disabled: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  placeholder?: string;
-  setRefForField?: (...args: Array<any>) => any;
-};
 
 const FieldTypeTime = ({
   disabled = false,
@@ -19,7 +13,7 @@ const FieldTypeTime = ({
   isDirty = false,
   placeholder,
   setRefForField,
-}: Props): JSX.Element => {
+}: FieldComponentProps): JSX.Element => {
   const handleSetReference = (element: any) => {
     if (setRefForField) {
       setRefForField(element);

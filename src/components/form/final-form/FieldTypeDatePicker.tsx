@@ -4,17 +4,10 @@ import parse from "date-fns/parse";
 import fi from "date-fns/locale/fi";
 import classNames from "classnames";
 import { isValidDate } from "@/util/date";
+
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
+
 registerLocale("fi", fi);
-type Props = {
-  disabled: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  minDate?: Date;
-  maxDate?: Date;
-  placeholder?: string;
-  setRefForField?: (...args: Array<any>) => any;
-};
 
 const FieldTypeDatePicker = ({
   disabled = false,
@@ -25,7 +18,7 @@ const FieldTypeDatePicker = ({
   maxDate,
   placeholder,
   setRefForField,
-}: Props): JSX.Element => {
+}: FieldComponentProps): JSX.Element => {
   const handleSetReference = (element: any) => {
     if (setRefForField) {
       setRefForField(element);

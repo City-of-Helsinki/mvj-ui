@@ -1,62 +1,58 @@
-import React, { PureComponent } from "react";
+import React, { useRef } from "react";
 import classNames from "classnames";
-type Props = {
-  disabled: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  label: string;
-};
-type State = {
-  defaultValue: string | null | undefined;
-};
 
-class FieldTypeCheckboxDateTime extends PureComponent<Props, State> {
-  state: State = {
-    defaultValue: this.props.input.value,
-  };
-  handleChange: () => void = () => {
-    const {
-      input: { onBlur, value },
-    } = this.props;
-    const { defaultValue } = this.state;
-    onBlur(
-      value ? null : defaultValue ? defaultValue : new Date().toISOString(),
-    );
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
+
+const FieldTypeCheckboxDateTime = ({
+  disabled = false,
+  displayError = false,
+  input: { name, onChange, onBlur, value },
+  isDirty = false,
+  label,
+}: FieldComponentProps): JSX.Element => {
+  const initialValueRef = useRef<string | null>(value);
+
+  const getValue = () => {
+    // This logic handles the checkbox so that when it is toggled,
+    // it doesn't lose the initial value (if it had one).
+    // The component is keeping track of a datetime of when this was first checked.
+    const isChecked = !!value;
+    const hasInitialValue = !!initialValueRef.current;
+    if (!isChecked) return null;
+    if (hasInitialValue) return initialValueRef.current;
+    return new Date().toISOString();
   };
 
-  render(): JSX.Element {
-    const {
-      disabled = false,
-      displayError = false,
-      input: { name, value },
-      isDirty = false,
-      label,
-    } = this.props;
-    return (
-      <label
-        className={classNames(
-          "form-field__checkbox-date-time",
-          {
-            "has-error": displayError,
-          },
-          {
-            "is-dirty": isDirty,
-          },
-        )}
-      >
-        <input
-          type="checkbox"
-          checked={value}
-          disabled={disabled}
-          name={name}
-          onChange={this.handleChange}
-          value={value}
-        />
-        <span>{label}</span>
-      </label>
-    );
-  }
-}
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = getValue();
+
+    onChange(newValue);
+    onBlur();
+  };
+
+  return (
+    <label
+      className={classNames(
+        "form-field__checkbox-date-time",
+        {
+          "has-error": displayError,
+        },
+        {
+          "is-dirty": isDirty,
+        },
+      )}
+    >
+      <input
+        type="checkbox"
+        checked={!!value}
+        disabled={disabled}
+        name={name}
+        onChange={handleChange}
+        value={value as any}
+      />
+      <span>{label}</span>
+    </label>
+  );
+};
 
 export default FieldTypeCheckboxDateTime;

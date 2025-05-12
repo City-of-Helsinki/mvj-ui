@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import { FieldComponentProps } from "@/components/form/final-form/FormField";
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
 
 const FieldTypeBoolean = ({
   autoBlur = false,
@@ -25,10 +25,7 @@ const FieldTypeBoolean = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value === "true");
     if (autoBlur) {
-      onBlur({
-        target: e.target,
-        relatedTarget: null,
-      } as React.FocusEvent<typeof e.target>);
+      onBlur();
     }
   };
 
