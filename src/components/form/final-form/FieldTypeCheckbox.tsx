@@ -1,39 +1,34 @@
 import React from "react";
 import classNames from "classnames";
-type Props = {
-  disabled: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  label: string;
-  options: Array<Record<string, any>>;
-};
+
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
 
 const FieldTypeCheckbox = ({
   disabled = false,
   displayError = false,
-  input: { name, onBlur, value },
+  input: { name, onBlur, onChange, value },
   isDirty = false,
   label,
   options,
-}: Props): JSX.Element => {
+}: FieldComponentProps): JSX.Element => {
   const hasMultipleValues = options && options.length > 1;
 
   const handleChange = (event: any, optionValue) => {
+    let newValue: Array<boolean> | boolean;
     if (hasMultipleValues) {
-      const newValue = [...value];
+      newValue = [...value];
 
       if (event.target.checked) {
         newValue.push(optionValue);
       } else {
         newValue.splice(newValue.indexOf(optionValue), 1);
       }
-
-      return onBlur(newValue);
+    } else {
+      newValue = !!value && value !== "false" ? false : true;
     }
 
-    // noinspection RedundantConditionalExpressionJS
-    return onBlur(!!value && value !== "false" ? false : true);
+    onChange(newValue);
+    onBlur();
   };
 
   return (

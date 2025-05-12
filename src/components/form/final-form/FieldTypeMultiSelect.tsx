@@ -1,16 +1,10 @@
 import React from "react";
 import classNames from "classnames";
 import MultiSelect from "@/components/multi-select/MultiSelect";
-type Props = {
-  disabled: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  isLoading: boolean;
-  options: Array<any> | null | undefined;
-};
+import type { Option } from "@/components/multi-select/SelectItem";
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
 
-const FieldTypeMultiSelect = ({
+const FieldTypeMultiSelect = <TOptions extends Option>({
   disabled,
   displayError,
   input,
@@ -18,8 +12,11 @@ const FieldTypeMultiSelect = ({
   isDirty,
   isLoading = false,
   options,
-}: Props): JSX.Element => {
-  const handleBlur = (selected: Array<string>) => onBlur(selected);
+}: FieldComponentProps<TOptions>): JSX.Element => {
+  const handleBlur = (selected: Array<Option>) => {
+    onChange(selected);
+    onBlur();
+  };
 
   return (
     <div

@@ -1,13 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-type Props = {
-  disabled: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  setRefForField: (...args: Array<any>) => any;
-  value: string;
-};
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
 
 const FieldTypeHidden = ({
   displayError,
@@ -15,7 +8,7 @@ const FieldTypeHidden = ({
   input,
   isDirty,
   setRefForField,
-}: Props): JSX.Element => {
+}: FieldComponentProps): JSX.Element => {
   const handleSetRefForField = (element: any) => {
     if (setRefForField) {
       setRefForField(element);

@@ -1,22 +1,7 @@
 import React from "react";
 import classNames from "classnames";
-type Props = {
-  autoBlur?: boolean;
-  autoComplete?: string;
-  className?: string;
-  disabled?: boolean;
-  displayError?: boolean;
-  input?: {
-    onBlur: (value: any) => void;
-    onChange: (value: any) => void;
-    name: string;
-    [key: string]: any;
-  };
-  isDirty: boolean;
-  placeholder: string;
-  setRefForField?: (...args: Array<any>) => any;
-  type?: string;
-};
+
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
 
 const FieldTypeBasic = ({
   autoBlur,
@@ -28,12 +13,11 @@ const FieldTypeBasic = ({
   placeholder,
   setRefForField,
   type = "text",
-}: Props): JSX.Element => {
-  const handleChange = (e: any) => {
+}: FieldComponentProps): JSX.Element => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
     if (autoBlur) {
-      onBlur(e.target.value);
-    } else {
-      onChange(e.target.value);
+      onBlur();
     }
   };
 

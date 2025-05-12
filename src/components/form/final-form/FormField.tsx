@@ -1,7 +1,6 @@
-import { $Shape } from "utility-types";
 import React, { createElement, useMemo } from "react";
 import { Field } from "react-final-form";
-import { FieldState } from "final-form";
+import type { FieldRenderProps } from "react-final-form";
 import classNames from "classnames";
 import get from "lodash/get";
 import ErrorBlock from "@/components/form/ErrorBlock";
@@ -47,7 +46,50 @@ import { genericValidator } from "@/components/form/validations";
 import { getHoursAndMinutes } from "@/util/date";
 import type { UserServiceUnit } from "@/usersPermissions/types";
 
-const FieldTypes = {
+type InputProps<TOptions = Record<string, any>> = {
+  allowEdit: boolean;
+  allowRead: boolean;
+  autoBlur: boolean;
+  autoComplete?: string;
+  className?: string;
+  disabled: boolean;
+  disableDirty: boolean;
+  disableTouched: boolean;
+  displayError?: boolean;
+  enableUiDataEdit?: boolean;
+  ErrorComponent: ((...args: Array<any>) => any) | any;
+  fieldType: FieldTypeOptions | TypeOptions;
+  filterOption?: (...args: Array<any>) => any;
+  invisibleLabel: boolean;
+  isDirty?: boolean;
+  isLoading: boolean;
+  label: string | null | undefined;
+  language?: string;
+  minDate?: Date;
+  maxDate?: Date;
+  multiSelect?: boolean;
+  optionLabel?: string;
+  options: Array<TOptions> | null | undefined;
+  placeholder?: string;
+  readOnlyValueRenderer?: any;
+  relativeTo?: any;
+  required: boolean;
+  rows?: number;
+  serviceUnit: UserServiceUnit;
+  setRefForField?: (...args: Array<any>) => any;
+  tooltipStyle?: Record<string, any>;
+  uiDataKey: string | null | undefined;
+  unit?: string;
+  type?: TypeOptions | null;
+  valueSelectedCallback?: (...args: Array<any>) => any;
+};
+export type FieldComponentProps<TOptions = Record<string, any>> =
+  FieldRenderProps<any, any> & Partial<InputProps<TOptions>>;
+type FieldKey = keyof typeof FieldTypeOptions;
+type FieldValue = (typeof FieldTypeOptions)[FieldKey];
+type FieldComponent = React.ComponentType<FieldComponentProps>;
+
+const FieldTypes: Record<FieldValue, FieldComponent> = {
   [FieldTypeOptions.ADDRESS]: FieldTypeAddress,
   [FieldTypeOptions.AREASEARCH_DISTRICT]: FieldTypeAreaSearchDistrictSelect,
   [FieldTypeOptions.BOOLEAN]: FieldTypeBoolean,
@@ -72,58 +114,28 @@ const FieldTypes = {
   [FieldTypeOptions.TIME]: FieldTypeTime,
   [FieldTypeOptions.FRACTIONAL]: FieldTypeFractional,
   [FieldTypeOptions.HIDDEN]: FieldTypeHidden,
-};
+} as const;
 const Types = {
   [FieldTypeOptions.DECIMAL]: "text",
   [FieldTypeOptions.INTEGER]: "text",
   [FieldTypeOptions.REFERENCE_NUMBER]: "text",
   [FieldTypeOptions.STRING]: "text",
   [FieldTypeOptions.TEXTAREA]: "text",
-};
+} as const;
 
-const resolveFieldType = (type: string): React.ComponentType<any> =>
-  Object.prototype.hasOwnProperty.call(FieldTypes, type)
-    ? FieldTypes[type]
-    : FieldTypeBasic;
-const resolveType = (type: string): string | null | undefined =>
-  Object.prototype.hasOwnProperty.call(Types, type) ? Types[type] : null;
+type ObjectValues<T> = T[keyof T];
+type FieldTypeComponent = ObjectValues<typeof FieldTypes>;
+type FieldTypeOptions =
+  (typeof FieldTypeOptions)[keyof typeof FieldTypeOptions];
+type TypeOptions = (typeof Types)[keyof typeof Types];
 
-type InputProps = {
-  allowEdit: boolean;
-  allowRead: boolean;
-  autoBlur: boolean;
-  autoComplete?: string;
-  className?: string;
-  disabled: boolean;
-  disableDirty: boolean;
-  disableTouched: boolean;
-  enableUiDataEdit?: boolean;
-  ErrorComponent: ((...args: Array<any>) => any) | any;
-  fieldType: string;
-  filterOption?: (...args: Array<any>) => any;
-  input: Record<string, any>;
-  invisibleLabel: boolean;
-  isLoading: boolean;
-  label: string | null | undefined;
-  language?: string;
-  meta: Record<string, any>;
-  minDate?: Date;
-  maxDate?: Date;
-  multiSelect?: boolean;
-  optionLabel?: string;
-  options: Array<Record<string, any>> | null | undefined;
-  placeholder?: string;
-  readOnlyValueRenderer?: any;
-  relativeTo?: any;
-  required: boolean;
-  rows?: number;
-  serviceUnit: UserServiceUnit;
-  setRefForField?: (...args: Array<any>) => any;
-  tooltipStyle?: Record<string, any>;
-  uiDataKey: string | null | undefined;
-  unit?: string;
-  valueSelectedCallback?: (...args: Array<any>) => any;
-};
+const resolveFieldType = (
+  type: FieldTypeOptions | string,
+): FieldTypeComponent | typeof FieldTypeBasic =>
+  type in FieldTypes ? FieldTypes[type] : FieldTypeBasic;
+
+const resolveType = (type: TypeOptions | string): TypeOptions | null =>
+  type in Types ? Types[type] : null;
 
 const FormFieldInput = ({
   allowEdit,
@@ -160,7 +172,7 @@ const FormFieldInput = ({
   valueSelectedCallback,
   uiDataKey,
   unit,
-}: InputProps) => {
+}: FieldComponentProps) => {
   const getText = (type: string, value: any) => {
     switch (type) {
       case FieldTypeOptions.BOOLEAN:
@@ -267,18 +279,19 @@ const FormFieldInput = ({
           })}
         >
           {createElement(fieldComponent, {
-            autoBlur,
+            autoBlur: autoBlur,
             autoComplete,
             displayError,
             disabled,
             filterOption,
             input,
-            isDirty,
+            isDirty: isDirty,
             isLoading,
             label,
             language,
             minDate,
             maxDate,
+            meta,
             multiSelect,
             optionLabel,
             placeholder,

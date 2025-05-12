@@ -4,7 +4,7 @@ import classNames from "classnames";
 import DropdownIndicator from "@/components/inputs/DropdownIndicator";
 import LoadingIndicator from "@/components/inputs/SelectLoadingIndicator";
 
-import { FieldComponentProps } from "@/components/form/final-form/FormField";
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
 
 type SelectOption = {
   value: string | number | boolean;
@@ -34,17 +34,12 @@ const FieldTypeSelect = (props: FieldComponentProps): JSX.Element => {
     onBlur(value);
   };
 
-  const handleChange = (selectedOption: SelectOption | null, o) => {
+  const handleChange = (selectedOption: SelectOption | null) => {
     if (selectedOption) {
       const selectedValue = selectedOption.value;
       onChange(selectedValue);
       if (autoBlur) {
-        const target = selectRef.current.select.controlRef as HTMLInputElement;
-        const syntheticEvent = {
-          target: target,
-          relatedTarget: null,
-        } as React.FocusEvent<typeof target>;
-        onBlur(syntheticEvent);
+        onBlur();
       }
     }
   };

@@ -4,18 +4,7 @@ import AsyncSelect from "@/components/form/AsyncSelect";
 import { getContentUser } from "@/users/helpers";
 import { addEmptyOption, sortStringByKeyAsc } from "@/util/helpers";
 import { fetchSingleUser, fetchUsers } from "@/users/requestsAsync";
-import type { UserServiceUnit } from "@/usersPermissions/types";
-type Props = {
-  disabled?: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  onChange: (...args: Array<any>) => any;
-  placeholder?: string;
-  multiSelect?: boolean;
-  valueSelectedCallback: (...args: Array<any>) => any;
-  serviceUnit: UserServiceUnit;
-};
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
 
 const FieldTypeUserSelect = ({
   disabled,
@@ -26,7 +15,7 @@ const FieldTypeUserSelect = ({
   placeholder,
   multiSelect,
   serviceUnit,
-}: Props): JSX.Element => {
+}: FieldComponentProps): JSX.Element => {
   // If a plain ID value has already been set when the component mounts,
   // retrieve the corresponding single user object and set the state up accordingly
   // so that we can show the user's name in the closed dropdown properly.
