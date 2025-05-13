@@ -9,6 +9,11 @@ import { getCurrentAreaSearch } from "@/areaSearch/selectors";
 import { prepareApplicationForSubmission } from "@/application/helpers";
 import type { LeafletFeature, LeafletGeoJson } from "types";
 import type { SavedApplicationFormSection } from "@/application/types";
+import { Contact } from "@/contacts/types";
+import {
+  AnswerToContactFields,
+  MapLanguageNameToCodeEnum,
+} from "@/application/enums";
 export const areaSearchSearchFilters = (
   query: Record<string, any>,
 ): Record<string, any> => {
@@ -192,4 +197,71 @@ export const prepareAreaSearchDataForSubmission = (): Record<
       area_search: currentAreaSearch.id,
     },
   };
+};
+
+const getAddressProtection = (
+  addressProtection: string | undefined | null,
+): boolean | null => {
+  switch (addressProtection) {
+    case "kyllä":
+      return true;
+    case "ei":
+      return false;
+    default:
+      return false;
+  }
+};
+
+export const getContactFromAnswerFields = (
+  contactType: Contact["type"],
+  answer: Record<string, any>,
+): Partial<Contact> => {
+  if (!answer || !answer?.fields) {
+    return null;
+  }
+  const contact: Partial<Contact> = {};
+  const answerFields = answer.fields;
+  Object.keys(AnswerToContactFields).forEach((key) => {
+    switch (AnswerToContactFields[key]) {
+      case AnswerToContactFields.language: {
+        const languageString = get(
+          answerFields,
+          AnswerToContactFields[key],
+          {},
+        )?.value;
+        contact.language = languageString
+          ? MapLanguageNameToCodeEnum[languageString]
+          : null;
+        break;
+      }
+
+      case AnswerToContactFields.address_protection: {
+        contact.address_protection = getAddressProtection(
+          get(answerFields, AnswerToContactFields[key], {})?.value,
+        );
+        break;
+      }
+
+      case AnswerToContactFields.postal_code: {
+        const postalCode = get(
+          answerFields,
+          AnswerToContactFields[key],
+          null,
+        )?.value;
+        contact.postal_code = postalCode ? String(postalCode) : null;
+        break;
+      }
+
+      default: {
+        contact[key] = get(
+          answerFields,
+          AnswerToContactFields[key],
+          null,
+        )?.value;
+        break;
+      }
+    }
+  });
+  contact.type = contactType;
+  return contact;
 };

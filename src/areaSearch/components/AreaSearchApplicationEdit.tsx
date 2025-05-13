@@ -15,6 +15,7 @@ import {
   getFieldOptions,
   getLabelOfOption,
   displayUIMessage,
+  isEmptyValue,
 } from "@/util/helpers";
 import type { Attributes } from "types";
 import { reshapeSavedApplicationObject } from "@/plotApplications/helpers";
@@ -32,8 +33,9 @@ import SingleAreaSearchMap from "@/areaSearch/components/map/SingleAreaSearchMap
 import AreaSearchApplicationPropertyIdentifiers from "@/areaSearch/components/AreaSearchApplicationPropertyIdentifiers";
 import AreaSearchApplicantInfoCheckEdit from "@/areaSearch/components/AreaSearchApplicantInfoCheckEdit";
 import { renderAttachments } from "@/areaSearch/components/AreaSearchApplication";
-import { FieldTypes, FormNames } from "@/enums";
+import { ConfirmationModalTexts, FieldTypes, FormNames } from "@/enums";
 import {
+  getContactFromAnswerFields,
   getInitialAreaSearchEditForm,
   transformApplicantInfoCheckTitle,
 } from "@/areaSearch/helpers";
@@ -66,25 +68,54 @@ import {
   getAttributes as getLeaseAttributes,
   getIsFetchingAttributes as getIsFetchingLeaseAttributes,
 } from "@/leases/selectors";
-import { ButtonLabels } from "@/components/enums";
+import { ButtonColors, ButtonLabels } from "@/components/enums";
 import { Link } from "hds-react";
 import { getRouteById } from "@/root/routes";
+import {
+  createContactOnModal as createContact,
+  editContactOnModal as editContact,
+  hideContactModal,
+  initializeContactForm,
+  receiveContactModalSettings,
+  receiveIsSaveClicked,
+  showContactModal,
+} from "@/contacts/actions";
+import ContactModal from "@/contacts/components/ContactModal";
+import { getContactModalSettings, getIsContactFormValid, getIsContactModalOpen } from "@/contacts/selectors";
+import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { Contact, ContactModalSettings } from "@/contacts/types";
+import { contactExists } from "@/contacts/requestsAsync";
+import { ContactTypes } from "@/contacts/enums";
+import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
+import { ServiceUnit } from "@/serviceUnits/types";
 
 type Props = {
   areaSearch: AreaSearch | null;
   areaSearchAttributes: Attributes;
   change: (...args: Array<any>) => any;
+  contactFormValues: Partial<Contact> | null | undefined;
+  contactModalSettings: ContactModalSettings;
+  createContact: (...args: Array<any>) => any;
   createLease: (...args: Array<any>) => any;
   initialize: (...args: Array<any>) => any;
   fetchLeaseAttributes: (...args: Array<any>) => any;
+  editContact: (...args: Array<any>) => any;
   formAttributes: Attributes;
   formValues: Record<string, any> | null | undefined;
+  isContactModalOpen: boolean;
+  isContactFormValid: boolean;
   isFetchingFormAttributes: boolean;
   isFetchingLeaseAttributes: boolean;
   isPerformingFileOperation: boolean;
   leaseAttributes: Attributes;
   setAreaSearchAttachments: (...args: Array<any>) => any;
+  showContactModal: (...args: Array<any>) => any;
+  initializeContactForm: (...args: Array<any>) => any;
+  receiveContactModalSettings: (...args: Array<any>) => any;
+  receiveIsSaveClicked: (...args: Array<any>) => any;
   uploadAttachment: (...args: Array<any>) => any;
+  hideContactModal: (...args: Array<any>) => any;
+  userActiveServiceUnit: ServiceUnit | null | undefined;
 };
 type State = {
   // The Leaflet element doesn't initialize correctly if it's invisible in a collapsed section element,
@@ -176,14 +207,40 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
     });
   };
 
+  handleCancel = () => {
+    const { hideContactModal, receiveContactModalSettings } = this.props;
+    hideContactModal();
+    receiveContactModalSettings(null);
+  };
+
+  handleClose = () => {
+    const { hideContactModal, receiveContactModalSettings } = this.props;
+    hideContactModal();
+    receiveContactModalSettings(null);
+  };
+
+  handleCreateContact = () => {
+    const {
+      contactFormValues,
+      createContact,
+    } = this.props;
+
+    createContact(contactFormValues);
+  };
+
   render(): JSX.Element {
     const {
       areaSearch: { lease, ...areaSearch },
       createLease,
+      isContactModalOpen,
       isFetchingFormAttributes,
       isPerformingFileOperation,
       formAttributes,
       areaSearchAttributes,
+      initializeContactForm,
+      receiveContactModalSettings,
+      receiveIsSaveClicked,
+      showContactModal,
     } = this.props;
     const { selectedAreaSectionRefreshKey, isModalOpen } = this.state;
     const leaseIdentifier = lease?.identifier?.identifier || null;
@@ -222,6 +279,19 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
     const applicantSection = form?.sections.find(
       (section) => section.identifier === APPLICANT_SECTION_IDENTIFIER,
     );
+
+    const handleShowContactModal = (contactType: Contact["type"], answer: any) => {
+      const contact = getContactFromAnswerFields(contactType, answer);
+      initializeContactForm(contact);
+      receiveContactModalSettings({
+        field: null,
+        contactId: null,
+        isNew: true,
+      });
+      receiveIsSaveClicked(false);
+      showContactModal();
+    };
+    
     return (
       <div className="AreaSearchApplication">
         <CreateLeaseModal
@@ -230,6 +300,75 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
           onSubmit={createLease}
           areaSearch={areaSearch}
         />
+        <AppConsumer>
+          {({ dispatch }) => {
+            const {
+              contactFormValues,
+              contactModalSettings,
+              isContactFormValid,
+              receiveIsSaveClicked,
+              userActiveServiceUnit,
+            } = this.props;
+            const handleCreateOrEdit = async () => {
+              const { business_id, national_identification_number, type } =
+                contactFormValues;
+              receiveIsSaveClicked(true);
+              if (!isContactFormValid) return;
+
+              if (!contactModalSettings || !contactModalSettings.isNew) {
+                this.handleCreateContact();
+                return;
+              }
+
+              const contactIdentifier = type
+                ? type === ContactTypes.PERSON
+                  ? national_identification_number
+                  : business_id
+                : null;
+
+              if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
+                const exists = await contactExists({
+                  identifier: contactIdentifier,
+                  serviceUnitId: userActiveServiceUnit?.id,
+                });
+
+                if (exists) {
+                  dispatch({
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
+                      this.handleCreateContact();
+                    },
+                    confirmationModalButtonClassName: ButtonColors.SUCCESS,
+                    confirmationModalButtonText:
+                      ConfirmationModalTexts.CREATE_CONTACT.BUTTON,
+                    confirmationModalLabel:
+                      ConfirmationModalTexts.CREATE_CONTACT.LABEL,
+                    confirmationModalTitle:
+                      ConfirmationModalTexts.CREATE_CONTACT.TITLE,
+                  });
+                } else {
+                  this.handleCreateContact();
+                }
+              } else {
+                this.handleCreateContact();
+              }
+            };
+            return (
+              <ContactModal
+                isOpen={isContactModalOpen}
+                onCancel={this.handleCancel}
+                onClose={this.handleClose}
+                onSave={handleCreateOrEdit}
+                onSaveAndAdd={handleCreateOrEdit}
+                showSave={contactModalSettings && !contactModalSettings.isNew}
+                showSaveAndAdd={
+                  contactModalSettings && contactModalSettings.isNew
+                }
+                title="Uusi asiakas"
+              />
+            );
+          }}
+        </AppConsumer>
         <div className="AreaSearchApplication__header">
           <Title>Hakemus</Title>
           <AddButtonSecondary
@@ -410,6 +549,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                     key={section.identifier}
                     topLevel
                     sectionTitleTransformers={[transformApplicantSectionTitle]}
+                    handleShowContactModal={handleShowContactModal}
                   />
                 ))}
               <Collapse headerTitle="Liitteet" defaultOpen>
@@ -533,18 +673,31 @@ export default flowRight(
     (state) => ({
       areaSearch: getCurrentAreaSearch(state),
       areaSearchAttributes: getAttributes(state),
+      contactFormValues: getFormValues(FormNames.CONTACT)(state),
+      contactModalSettings: getContactModalSettings(state),
       formAttributes: getFormAttributes(state),
       formValues: getFormValues(FormNames.AREA_SEARCH)(state),
+      isContactFormValid: getIsContactFormValid(state),
+      isContactModalOpen: getIsContactModalOpen(state),
       isFetchingFormAttributes: getIsFetchingFormAttributes(state),
       isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),
       isPerformingFileOperation: getIsPerformingFileOperation(state),
       leaseAttributes: getLeaseAttributes(state),
+      userActiveServiceUnit: getUserActiveServiceUnit(state),
+      
     }),
     {
+      createContact,
+      editContact,
       createLease,
       fetchLeaseAttributes,
       uploadAttachment,
       setAreaSearchAttachments,
+      initializeContactForm,
+      receiveContactModalSettings,
+      receiveIsSaveClicked,
+      showContactModal,
+      hideContactModal,
       change,
     },
   ),

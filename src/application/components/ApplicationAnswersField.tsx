@@ -11,6 +11,7 @@ import type {
   SectionExtraComponentProps,
   UploadedFileMeta,
 } from "@/application/types";
+import { Contact } from "@/contacts/types";
 type Props = {
   section: FormSection;
   answer: SavedApplicationFormSection;
@@ -28,6 +29,10 @@ type Props = {
       arg2: SavedApplicationFormSection,
     ) => string
   >;
+  handleShowContactModal?: (
+    contactType: Contact["type"],
+    answer: any,
+  ) => void;
 };
 
 const ApplicationAnswersField = ({
@@ -38,6 +43,7 @@ const ApplicationAnswersField = ({
   identifier,
   sectionExtraComponent: SectionExtraComponent,
   sectionTitleTransformers,
+  handleShowContactModal,
 }: Props): JSX.Element => {
   return (
     <>
@@ -139,6 +145,7 @@ const ApplicationAnswersField = ({
             fieldTypes={fieldTypes}
             sectionExtraComponent={SectionExtraComponent}
             sectionTitleTransformers={sectionTitleTransformers}
+            handleShowContactModal={handleShowContactModal}
           />
         ))}
       {SectionExtraComponent ? (
