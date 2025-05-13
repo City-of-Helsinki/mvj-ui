@@ -180,7 +180,6 @@ class AddressSearchInput extends Component<Props, State> {
           break;
 
         case KeyCodes.TAB:
-          e.preventDefault();
           this.closeMenu();
           break;
       }
