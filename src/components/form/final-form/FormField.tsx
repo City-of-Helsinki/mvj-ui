@@ -137,42 +137,31 @@ const resolveFieldType = (
 const resolveType = (type: TypeOptions | string): TypeOptions | null =>
   type in Types ? Types[type] : null;
 
-const FormFieldInput = ({
-  allowEdit,
-  allowRead,
-  autoBlur,
-  autoComplete = "nope",
-  className,
-  disabled,
-  disableDirty,
-  disableTouched,
-  enableUiDataEdit,
-  ErrorComponent,
-  fieldType,
-  filterOption,
-  input,
-  invisibleLabel,
-  isLoading,
-  label,
-  language,
-  meta,
-  minDate,
-  maxDate,
-  multiSelect,
-  optionLabel,
-  options,
-  placeholder,
-  readOnlyValueRenderer,
-  relativeTo,
-  required,
-  rows,
-  serviceUnit,
-  setRefForField,
-  tooltipStyle,
-  valueSelectedCallback,
-  uiDataKey,
-  unit,
-}: FieldComponentProps) => {
+const FormFieldInput = (props: FieldComponentProps) => {
+  const {
+    allowEdit,
+    allowRead,
+    autoComplete = "nope",
+    className,
+    disableDirty,
+    disableTouched,
+    enableUiDataEdit,
+    ErrorComponent,
+    fieldType,
+    input,
+    invisibleLabel,
+    label,
+    meta,
+    multiSelect,
+    options,
+    readOnlyValueRenderer,
+    relativeTo,
+    required,
+    tooltipStyle,
+    uiDataKey,
+    unit,
+  } = props;
+
   const getText = (type: string, value: any) => {
     switch (type) {
       case FieldTypeOptions.BOOLEAN:
@@ -279,28 +268,13 @@ const FormFieldInput = ({
           })}
         >
           {createElement(fieldComponent, {
-            autoBlur: autoBlur,
-            autoComplete,
+            ...props,
             displayError,
-            disabled,
-            filterOption,
-            input,
-            isDirty: isDirty,
-            isLoading,
-            label,
-            language,
-            minDate,
-            maxDate,
-            meta,
-            multiSelect,
-            optionLabel,
-            placeholder,
-            options,
-            rows,
-            serviceUnit,
-            setRefForField,
+            isDirty,
             type,
-            valueSelectedCallback,
+            input,
+            meta,
+            autoComplete,
           })}
           {unit && <span className="form-field__unit">{unit}</span>}
         </div>
@@ -372,41 +346,10 @@ type Props = {
   unit?: string;
 };
 
-const FormField: React.FC<Props> = ({
-  autoBlur = false,
-  autoComplete,
-  className,
-  disabled = false,
-  disableDirty = false,
-  disableTouched = false,
-  enableUiDataEdit = false,
-  ErrorComponent = ErrorBlock,
-  fieldAttributes,
-  filterOption,
-  invisibleLabel = false,
-  isLoading = false,
-  isMulti,
-  language,
-  minDate,
-  maxDate,
-  name,
-  onBlur,
-  onChange = () => {},
-  optionLabel,
-  overrideValues,
-  placeholder,
-  readOnlyValueRenderer,
-  relativeTo,
-  rows,
-  serviceUnit,
-  setRefForField,
-  tooltipStyle,
-  validate,
-  valueSelectedCallback,
-  uiDataKey,
-  unit,
-}) => {
-  // Equivalent to getDerivedStateFromProps
+const FormField: React.FC<Props> = (props) => {
+  const { fieldAttributes, name, overrideValues, validate, isMulti } = props;
+  const errorComponent = props.ErrorComponent || ErrorBlock;
+
   const derivedValues = useMemo(() => {
     const overrideableBoolean = (fieldName: string) => {
       return get(overrideValues, fieldName) !== undefined
@@ -425,7 +368,6 @@ const FormField: React.FC<Props> = ({
     };
   }, [fieldAttributes, overrideValues]);
 
-  // Handler functions
   const handleGenericNormalize = useMemo(() => {
     return (value: any) => {
       const fieldProps = { ...fieldAttributes, ...derivedValues };
@@ -447,95 +389,45 @@ const FormField: React.FC<Props> = ({
     return validate(value);
   };
 
-  const { allowEdit, allowRead, fieldType, label, options, required, value } =
-    derivedValues;
+  const { allowEdit } = derivedValues;
+
+  const fieldComponentProps = {
+    name,
+    normalize: handleGenericNormalize,
+    validate: allowEdit
+      ? (value: any) => {
+          const customError = handleValidate(value);
+          return customError || handleGenericValidate(value);
+        }
+      : undefined,
+  };
+
+  const specialProps = {
+    multiSelect: isMulti,
+    ErrorComponent: errorComponent,
+  };
+
+  const formFieldInputProps = {
+    ...props,
+    ...derivedValues,
+    ...specialProps,
+    ...overrideValues,
+  };
 
   return (
-    <Field
-      name={name}
-      {...derivedValues}
-      validate={
-        allowEdit
-          ? (value) => {
-              const customError = handleValidate(value);
-              return customError || handleGenericValidate(value);
-            }
-          : undefined
-      }
-      allowRead={allowRead}
-      autoBlur={autoBlur}
-      autoComplete={autoComplete}
-      className={className}
-      disabled={disabled}
-      disableDirty={disableDirty}
-      disableTouched={disableTouched}
-      enableUiDataEdit={enableUiDataEdit}
-      ErrorComponent={ErrorComponent}
-      fieldType={fieldType}
-      filterOption={filterOption}
-      invisibleLabel={invisibleLabel}
-      isLoading={isLoading}
-      label={label}
-      language={language}
-      minDate={minDate}
-      maxDate={maxDate}
-      normalize={handleGenericNormalize}
-      onBlur={onBlur}
-      onChange={onChange}
-      optionLabel={optionLabel}
-      options={options}
-      placeholder={placeholder}
-      readOnlyValueRenderer={readOnlyValueRenderer}
-      relativeTo={relativeTo}
-      required={required}
-      rows={rows}
-      serviceUnit={serviceUnit}
-      setRefForField={setRefForField}
-      tooltipStyle={tooltipStyle}
-      valueSelectedCallback={valueSelectedCallback}
-      uiDataKey={uiDataKey}
-      unit={unit}
-      value={value}
-      {...overrideValues}
-    >
-      {(fieldRenderProps) => (
-        <FormFieldInput
-          {...fieldRenderProps}
-          {...derivedValues}
-          allowEdit={allowEdit}
-          allowRead={allowRead}
-          autoBlur={autoBlur}
-          autoComplete={autoComplete}
-          className={className}
-          disabled={disabled}
-          disableDirty={disableDirty}
-          disableTouched={disableTouched}
-          enableUiDataEdit={enableUiDataEdit}
-          ErrorComponent={ErrorComponent}
-          fieldType={fieldType}
-          filterOption={filterOption}
-          invisibleLabel={invisibleLabel}
-          isLoading={isLoading}
-          label={label}
-          language={language}
-          minDate={minDate}
-          maxDate={maxDate}
-          multiSelect={isMulti}
-          optionLabel={optionLabel}
-          options={options}
-          placeholder={placeholder}
-          readOnlyValueRenderer={readOnlyValueRenderer}
-          relativeTo={relativeTo}
-          required={required}
-          rows={rows}
-          serviceUnit={serviceUnit}
-          setRefForField={setRefForField}
-          tooltipStyle={tooltipStyle}
-          uiDataKey={uiDataKey}
-          unit={unit}
-          valueSelectedCallback={valueSelectedCallback}
-        />
-      )}
+    <Field {...fieldComponentProps} {...formFieldInputProps}>
+      {(fieldRenderProps) => {
+        const { input, meta, ...otherFieldProps } = fieldRenderProps;
+
+        return (
+          <FormFieldInput
+            {...formFieldInputProps}
+            {...otherFieldProps}
+            input={input}
+            meta={meta}
+          />
+        );
+      }}
     </Field>
   );
 };
