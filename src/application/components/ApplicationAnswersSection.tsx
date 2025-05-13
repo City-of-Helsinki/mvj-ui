@@ -41,7 +41,7 @@ const ApplicationAnswersSection = ({
 
   const contactType = getContactTypeString(section?.identifier);
 
-  const showCreateContactButton = true
+  const showCreateContactButton = !!handleShowContactModal
   
   const title = section.title || "(tuntematon osio)";
   const Wrapper = topLevel
