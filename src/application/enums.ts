@@ -1,3 +1,5 @@
+import { ContactTypes } from "@/contacts/enums";
+
 export const ApplicantInfoCheckTypes = {
   TRADE_REGISTER: "trade_register",
   CREDITWORTHINESS: "creditworthiness",
@@ -42,3 +44,34 @@ export const TargetIdentifierTypes = {
   PLAN_UNIT: "plan_unit",
   CUSTOM_DETAILED_PLAN: "custom_detailed_plan",
 };
+
+export const ApplicantTypeSectionToContactTypeEnum = {
+  'yrityksen-tiedot': ContactTypes.BUSINESS,
+  'henkilon-tiedot': ContactTypes.PERSON,
+}
+
+/**
+ * Answer to contact fields enumerable.
+ * @readonly
+ * @enum {string}
+ */
+export const AnswerToContactFields = {
+  first_name: "etunimi",
+  last_name: "Sukunimi",
+  name: "nimi",
+  business_id: "y-tunnus",
+  address: "katuosoite",
+  postal_code: "postinumero",
+  city: "postitoimipaikka",
+  email: "sahkoposti",
+  phone: "puhelinnumero",
+  language: "kieli",
+  national_identification_number: "henkilotunnus",
+  address_protection: "turvakielto",
+}
+
+export const MapLanguageNameToCodeEnum = {
+  suomi: "fi",
+  ruotsi: "sv",
+  englanti: "en",
+}
