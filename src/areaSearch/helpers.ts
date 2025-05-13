@@ -263,5 +263,6 @@ export const getContactFromAnswerFields = (
     }
   });
   contact.type = contactType;
+  contact.is_lessor = false;
   return contact;
 };
