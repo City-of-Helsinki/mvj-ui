@@ -38,6 +38,7 @@ export type Contact = {
   phone?: string;
   email?: string;
   is_lessor?: boolean;
+  address_protection?: boolean;
 };
 export type ContactId = number;
 export type ContactList = any;
