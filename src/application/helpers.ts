@@ -4,6 +4,7 @@ import { FormNames } from "@/enums";
 import {
   ApplicantInfoCheckExternalTypes,
   ApplicantInfoCheckTypes,
+  ApplicantTypeSectionToContactTypeEnum,
   ApplicantTypes,
   TargetIdentifierTypes,
 } from "@/application/enums";
@@ -29,6 +30,7 @@ import type {
   SavedApplicationFormSection,
   UploadedFileMeta,
 } from "@/application/types";
+import type { Contact } from "@/contacts/types";
 export const transformTargetSectionTitle =
   (plotSearch: PlotSearch): ((...args: Array<any>) => any) =>
   (
@@ -557,4 +559,10 @@ export const getFieldChoicesSorted = (
     );
   }
   return choices;
+};
+
+export const getContactTypeString = (
+  sectionIdentifier: string,
+): Contact["type"] | null => {
+  return ApplicantTypeSectionToContactTypeEnum[sectionIdentifier] || null;
 };

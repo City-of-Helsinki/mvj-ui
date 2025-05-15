@@ -7,6 +7,10 @@ import type {
   SavedApplicationFormSection,
   SectionExtraComponentProps,
 } from "@/application/types";
+import AddButtonThird from "@/components/form/AddButtonThird";
+import { getContactTypeString } from "@/application/helpers";
+import type { Contact } from "@/contacts/types";
+
 type Props = {
   section: FormSection;
   answer: SavedApplicationFormSection | Array<SavedApplicationFormSection>;
@@ -16,6 +20,10 @@ type Props = {
   sectionTitleTransformers?: Array<any>;
   plotSearch?: any;
   editMode?: boolean;
+  handleShowContactModal?: (
+    contactType: Contact["type"],
+    answer: SavedApplicationFormSection,
+  ) => void;
 };
 
 const ApplicationAnswersSection = ({
@@ -25,11 +33,16 @@ const ApplicationAnswersSection = ({
   fieldTypes,
   sectionExtraComponent,
   sectionTitleTransformers,
+  handleShowContactModal,
 }: Props): JSX.Element => {
   if (!answer) {
     return null;
   }
 
+  const contactType = getContactTypeString(section?.identifier);
+
+  const showCreateContactButton = !!handleShowContactModal
+  
   const title = section.title || "(tuntematon osio)";
   const Wrapper = topLevel
     ? ({ children }) => (
@@ -39,7 +52,15 @@ const ApplicationAnswersSection = ({
       )
     : ({ children }) => (
         <div>
-          <SubTitle>{title}</SubTitle>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <SubTitle>{title}</SubTitle>
+            {showCreateContactButton && (
+              <AddButtonThird
+                label="Luo asiakas"
+                onClick={() => handleShowContactModal(contactType, answer)}
+              />
+            )}
+          </div>
           {children}
         </div>
       );
@@ -66,6 +87,8 @@ const ApplicationAnswersSection = ({
                 identifier={`${section.identifier}[${i}]`}
                 sectionExtraComponent={sectionExtraComponent}
                 sectionTitleTransformers={sectionTitleTransformers}
+                handleShowContactModal={handleShowContactModal}
+
               />
             </Collapse>
           );
@@ -79,6 +102,7 @@ const ApplicationAnswersSection = ({
           identifier={section.identifier}
           sectionExtraComponent={sectionExtraComponent}
           sectionTitleTransformers={sectionTitleTransformers}
+          handleShowContactModal={handleShowContactModal}
         />
       )}
     </Wrapper>

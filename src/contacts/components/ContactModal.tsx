@@ -11,9 +11,9 @@ import { useContactAttributes } from "@/components/attributes/ContactAttributes"
 import type { FormApi } from "final-form";
 import { useSelector } from "react-redux";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
-import { ServiceUnit } from "@/serviceUnits/types";
+import type { ServiceUnit } from "@/serviceUnits/types";
 import { getInitialContactFormValues } from "../selectors";
-import { Contact } from "@/contacts/types";
+import type { Contact } from "@/contacts/types";
 
 type Props = {
   isOpen: boolean;

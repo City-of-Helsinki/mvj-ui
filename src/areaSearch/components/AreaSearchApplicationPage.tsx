@@ -87,6 +87,7 @@ import type { Attributes, Methods as MethodsType } from "types";
 import type { InfoCheckBatchEditData } from "@/areaSearch/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import SingleAreaSearchMap from "@/areaSearch/components/map/SingleAreaSearchMap";
+import { withContactAttributes } from "@/components/attributes/ContactAttributes";
 type OwnProps = {};
 type Props = ContextRouter &
   OwnProps & {
@@ -524,6 +525,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
 export default flowRight(
   withRouter,
   withAreaSearchAttributes,
+  withContactAttributes,
   connect(
     (state) => {
       return {
