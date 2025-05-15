@@ -81,7 +81,10 @@ import {
   showContactModal,
 } from "@/contacts/actions";
 import ContactModal from "@/contacts/components/ContactModal";
-import { getContactModalSettings, getIsContactFormValid, getIsContactModalOpen } from "@/contacts/selectors";
+import {
+  getContactModalSettings,
+  getIsContactModalOpen,
+} from "@/contacts/selectors";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import { Contact, ContactModalSettings } from "@/contacts/types";
 import { contactExists } from "@/contacts/requestsAsync";
@@ -93,7 +96,6 @@ type Props = {
   areaSearch: AreaSearch | null;
   areaSearchAttributes: Attributes;
   change: (...args: Array<any>) => any;
-  contactFormValues: Partial<Contact> | null | undefined;
   contactModalSettings: ContactModalSettings;
   createContact: (...args: Array<any>) => any;
   createLease: (...args: Array<any>) => any;
@@ -103,7 +105,6 @@ type Props = {
   formAttributes: Attributes;
   formValues: Record<string, any> | null | undefined;
   isContactModalOpen: boolean;
-  isContactFormValid: boolean;
   isFetchingFormAttributes: boolean;
   isFetchingLeaseAttributes: boolean;
   isPerformingFileOperation: boolean;
@@ -219,13 +220,10 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
     receiveContactModalSettings(null);
   };
 
-  handleCreateContact = () => {
-    const {
-      contactFormValues,
-      createContact,
-    } = this.props;
+  handleCreateContact = (values: any) => {
+    const { createContact } = this.props;
 
-    createContact(contactFormValues);
+    createContact(values);
   };
 
   render(): JSX.Element {
@@ -280,7 +278,10 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
       (section) => section.identifier === APPLICANT_SECTION_IDENTIFIER,
     );
 
-    const handleShowContactModal = (contactType: Contact["type"], answer: any) => {
+    const handleShowContactModal = (
+      contactType: Contact["type"],
+      answer: any,
+    ) => {
       const contact = getContactFromAnswerFields(contactType, answer);
       initializeContactForm(contact);
       receiveContactModalSettings({
@@ -291,7 +292,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
       receiveIsSaveClicked(false);
       showContactModal();
     };
-    
+
     return (
       <div className="AreaSearchApplication">
         <CreateLeaseModal
@@ -303,22 +304,17 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
         <AppConsumer>
           {({ dispatch }) => {
             const {
-              contactFormValues,
               contactModalSettings,
-              isContactFormValid,
               receiveIsSaveClicked,
               userActiveServiceUnit,
             } = this.props;
-            const handleCreateOrEdit = async () => {
-              const { business_id, national_identification_number, type } =
-                contactFormValues;
-              receiveIsSaveClicked(true);
-              if (!isContactFormValid) return;
 
-              if (!contactModalSettings || !contactModalSettings.isNew) {
-                this.handleCreateContact();
-                return;
-              }
+            const handleOnSave = async (values: any, isValid: boolean) => {
+              const { business_id, national_identification_number, type } =
+                values;
+              receiveIsSaveClicked(true);
+
+              if (!isValid) return;
 
               const contactIdentifier = type
                 ? type === ContactTypes.PERSON
@@ -336,7 +332,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                   dispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
-                      this.handleCreateContact();
+                      this.handleCreateContact(values);
                     },
                     confirmationModalButtonClassName: ButtonColors.SUCCESS,
                     confirmationModalButtonText:
@@ -347,10 +343,10 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                       ConfirmationModalTexts.CREATE_CONTACT.TITLE,
                   });
                 } else {
-                  this.handleCreateContact();
+                  this.handleCreateContact(values);
                 }
               } else {
-                this.handleCreateContact();
+                this.handleCreateContact(values);
               }
             };
             return (
@@ -358,12 +354,11 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                 isOpen={isContactModalOpen}
                 onCancel={this.handleCancel}
                 onClose={this.handleClose}
-                onSave={handleCreateOrEdit}
-                onSaveAndAdd={handleCreateOrEdit}
-                showSave={contactModalSettings && !contactModalSettings.isNew}
-                showSaveAndAdd={
-                  contactModalSettings && contactModalSettings.isNew
-                }
+                onSave={handleOnSave}
+                onSaveAndAdd={handleOnSave}
+                showSave={false}
+                showSaveAndAdd={!!contactModalSettings}
+                serviceUnit={userActiveServiceUnit}
                 title="Uusi asiakas"
               />
             );
@@ -673,18 +668,15 @@ export default flowRight(
     (state) => ({
       areaSearch: getCurrentAreaSearch(state),
       areaSearchAttributes: getAttributes(state),
-      contactFormValues: getFormValues(FormNames.CONTACT)(state),
       contactModalSettings: getContactModalSettings(state),
       formAttributes: getFormAttributes(state),
       formValues: getFormValues(FormNames.AREA_SEARCH)(state),
-      isContactFormValid: getIsContactFormValid(state),
       isContactModalOpen: getIsContactModalOpen(state),
       isFetchingFormAttributes: getIsFetchingFormAttributes(state),
       isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),
       isPerformingFileOperation: getIsPerformingFileOperation(state),
       leaseAttributes: getLeaseAttributes(state),
       userActiveServiceUnit: getUserActiveServiceUnit(state),
-      
     }),
     {
       createContact,
