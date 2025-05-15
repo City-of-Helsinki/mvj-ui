@@ -52,6 +52,8 @@ import {
   setRentInfoUncomplete,
 } from "./requests";
 import { getCurrentLease } from "./selectors";
+import { editSingleAreaSearchRequest } from "@/areaSearch/requests";
+import { AreaSearchState } from "@/plotSearch/enums";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -242,11 +244,9 @@ function* fetchLeaseByIdSaga({
   }
 }
 
-function* createLeaseSaga({
-  payload: lease,
-  type: any,
-}): Generator<any, any, any> {
+function* createLeaseSaga({ payload, type: any }): Generator<any, any, any> {
   try {
+    const { area_search_id, ...lease } = payload;
     const {
       response: { status: statusCode },
       bodyAsJson,
@@ -254,6 +254,22 @@ function* createLeaseSaga({
 
     switch (statusCode) {
       case 201:
+        if (area_search_id) {
+          yield call(
+            editSingleAreaSearchRequest,
+            area_search_id,
+            {
+              state: AreaSearchState.SETTLED,
+              lease: bodyAsJson,
+              area_search_status: {
+                status_notes: [
+                  {
+                    note: "Päätetty",
+                  },
+                ],
+              },
+            });
+        }
         yield put(push(`${getRouteById(Routes.LEASES)}/${bodyAsJson.id}`));
         yield put(receiveIsSaveClicked(false));
         yield put(hideEditMode());

@@ -4,7 +4,7 @@ import { formValueSelector, reduxForm } from "redux-form";
 import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { receiveIsSaveClicked } from "@/comments/actions";
 import { FieldTypes, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
@@ -49,7 +49,7 @@ const NewCommentForm = ({
       <Authorization
         allow={isFieldAllowedToEdit(commentAttributes, CommentFieldPaths.TOPIC)}
       >
-        <FormField
+        <FormFieldLegacy
           disableDirty
           disableTouched={isSaveClicked}
           fieldAttributes={getFieldAttributes(
@@ -67,7 +67,7 @@ const NewCommentForm = ({
       <Authorization
         allow={isFieldAllowedToEdit(commentAttributes, CommentFieldPaths.TEXT)}
       >
-        <FormField
+        <FormFieldLegacy
           disableDirty
           disableTouched={isSaveClicked}
           fieldAttributes={getFieldAttributes(

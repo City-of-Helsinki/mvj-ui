@@ -4,7 +4,7 @@ import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import {
@@ -43,7 +43,7 @@ const NewCollectionNote = ({
               CollectionNoteFieldPaths.NOTE,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableDirty
               fieldAttributes={{
                 ...getFieldAttributes(

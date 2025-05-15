@@ -1,10 +1,12 @@
 import type { Action } from "@/types";
+import type { ServiceUnit } from "@/serviceUnits/types";
+
 export type UserGroups = Array<string>;
 export type UsersPermissions = Array<Record<string, any>>;
-export type UserServiceUnit = Record<string, any>;
+export type UserServiceUnit = ServiceUnit;
 export type UserServiceUnits = Array<Record<string, any>>;
 export type UsersPermissionsState = {
-  activeServiceUnit: UserServiceUnit;
+  activeServiceUnit: ServiceUnit;
   groups: UserGroups;
   isFetching: boolean;
   permissions: UsersPermissions;

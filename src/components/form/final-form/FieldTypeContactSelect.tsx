@@ -1,20 +1,18 @@
 import React from "react";
 import debounce from "lodash/debounce";
 import AsyncSelect from "@/components/form/AsyncSelect";
+import { getContentContact } from "@/contacts/helpers";
 import { addEmptyOption, sortStringByKeyAsc } from "@/util/helpers";
-import { getContentIntendedUse } from "@/leases/helpers";
-import { fetchIntendedUses } from "@/leases/requestsAsync";
-import type { ServiceUnit } from "@/serviceUnits/types";
+import { fetchContacts } from "@/contacts/requestsAsync";
+
+import type { FieldComponentProps } from "@/components/form/final-form/FormField";
+import type { UserServiceUnit } from "@/usersPermissions/types";
+
 type Props = {
-  disabled?: boolean;
-  displayError: boolean;
-  input: Record<string, any>;
-  isDirty: boolean;
-  onChange: (...args: Array<any>) => any;
-  placeholder?: string;
-  serviceUnit: ServiceUnit;
+  serviceUnit: UserServiceUnit;
 };
-const FieldTypeIntendedUseSelect = ({
+
+const FieldTypeContactSelect = ({
   disabled,
   displayError,
   input,
@@ -22,19 +20,18 @@ const FieldTypeIntendedUseSelect = ({
   onChange,
   placeholder,
   serviceUnit,
-}: Props): JSX.Element => {
-  const getIntendedUses = debounce(
+}: FieldComponentProps & Props): JSX.Element => {
+  const getContacts = debounce(
     async (inputValue: string, callback: (...args: Array<any>) => any) => {
-      const intendedUses = await fetchIntendedUses({
+      const contacts = await fetchContacts({
         search: inputValue,
         limit: 20,
         service_unit: serviceUnit?.id || "",
-        is_active: "true",
       });
       callback(
         addEmptyOption(
-          intendedUses
-            .map((intendedUse) => getContentIntendedUse(intendedUse))
+          contacts
+            .map((lessor) => getContentContact(lessor))
             .sort((a, b) => sortStringByKeyAsc(a, b, "label")),
         ),
       );
@@ -45,7 +42,7 @@ const FieldTypeIntendedUseSelect = ({
     <AsyncSelect
       disabled={disabled}
       displayError={displayError}
-      getOptions={getIntendedUses}
+      getOptions={getContacts}
       input={input}
       isDirty={isDirty}
       onChange={onChange}
@@ -54,4 +51,4 @@ const FieldTypeIntendedUseSelect = ({
   );
 };
 
-export default FieldTypeIntendedUseSelect;
+export default FieldTypeContactSelect;

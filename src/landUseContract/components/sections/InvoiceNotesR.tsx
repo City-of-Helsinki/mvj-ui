@@ -9,7 +9,7 @@ import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import ButtonWrapper from "@/components/content/ButtonWrapper";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import ListItem from "@/components/content/ListItem";
@@ -223,7 +223,7 @@ const InvoiceNotesEdit = ({
                         InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE,
                       )}
                     >
-                      <FormField
+                      <FormFieldLegacy
                         fieldAttributes={getFieldAttributes(
                           invoiceNoteAttributes,
                           InvoiceNoteFieldPaths.BILLING_PERIOD_START_DATE,
@@ -244,7 +244,7 @@ const InvoiceNotesEdit = ({
                         InvoiceNoteFieldPaths.BILLING_PERIOD_END_DATE,
                       )}
                     >
-                      <FormField
+                      <FormFieldLegacy
                         disableTouched
                         fieldAttributes={getFieldAttributes(
                           invoiceNoteAttributes,
@@ -267,7 +267,7 @@ const InvoiceNotesEdit = ({
                             InvoiceNoteFieldPaths.NOTES,
                           )}
                         >
-                          <FormField
+                          <FormFieldLegacy
                             fieldAttributes={getFieldAttributes(
                               invoiceNoteAttributes,
                               InvoiceNoteFieldPaths.NOTES,

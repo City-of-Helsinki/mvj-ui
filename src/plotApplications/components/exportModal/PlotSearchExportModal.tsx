@@ -6,7 +6,7 @@ import Modal from "@/components/modal/Modal";
 import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import Button from "@/components/button/Button";
 import { ButtonColors } from "@/components/enums";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FieldTypes } from "@/enums";
 import FileDownloadButton from "@/components/file/FileDownloadButton";
 import createUrl from "@/api/createUrl";
@@ -225,7 +225,7 @@ class PlotSearchExportModal extends Component<Props> {
         title="Tulosta tiedostoon"
         className="PlotSearchExportModal"
       >
-        <FormField
+        <FormFieldLegacy
           name="mode"
           fieldAttributes={{
             type: FieldTypes.CHOICE,

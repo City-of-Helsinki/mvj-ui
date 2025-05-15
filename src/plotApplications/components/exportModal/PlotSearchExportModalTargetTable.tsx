@@ -1,7 +1,7 @@
 import React from "react";
 import { groupBy } from "lodash/collection";
 import SortableTable from "@/components/table/SortableTable";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FieldTypes } from "@/enums";
 import type { Column } from "@/components/table/SortableTable";
 type Props = {
@@ -20,7 +20,7 @@ const PlotSearchExportModalTargetTableCheckbox = ({
   onItemChange,
 }: CheckboxProps): JSX.Element => {
   return (
-    <FormField
+    <FormFieldLegacy
       name={`items.${item.application_identifier}`}
       fieldAttributes={{
         type: FieldTypes.CHECKBOX,

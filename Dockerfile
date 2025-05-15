@@ -1,84 +1,66 @@
 # ===============================================
-FROM node:18-slim AS appbase
+FROM registry.access.redhat.com/ubi9/nodejs-22 AS appbase
 # ===============================================
 
-RUN groupadd -g 1001 appuser \
-  && useradd --create-home --no-log-init -u 1001 -g 1001 appuser
-
-RUN mkdir /app
-RUN chown -R appuser:appuser /app
-
 WORKDIR /app
+# Copy package and lock files
+COPY package.json yarn.lock ./
 
-# Offical image has npm log verbosity as info. More info - https://github.com/nodejs/docker-node#verbosity
-ENV NPM_CONFIG_LOGLEVEL warn
+# Install yarn
+USER root
+RUN chown -R default:root /app
+RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
+RUN dnf install -y yarn
 
-# set node environment, either development or production
-# use development to install devDependencies
-ARG NODE_ENV=development
-ENV NODE_ENV $NODE_ENV
-
-# Global npm deps in a non-root user directory
-ENV NPM_CONFIG_PREFIX=/app/.npm-global
-ENV PATH=$PATH:/app/.npm-global/bin
-
-# Yarn
-ENV YARN_VERSION 1.22.19
+# Set Yarn version
+ENV YARN_VERSION=1.22.22
 RUN yarn policies set-version $YARN_VERSION
 
 # Use non-root user
-USER appuser
+USER default
+# Set node environment, either development or production
+# use development to install devDependencies
+ARG NODE_ENV=development
+ENV NODE_ENV=$NODE_ENV
 
-# Copy package.json and package-lock.json/yarn.lock files
-COPY package.json yarn.lock ./
-
-# Install npm depepndencies
-ENV PATH /app/node_modules/.bin:$PATH
-
-USER root
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends build-essential python3
-
-USER appuser
-RUN yarn config set network-timeout 300000
-RUN yarn && yarn cache clean --force
-
-USER root
-RUN apt-get remove -y build-essential
-RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
-RUN rm -rf /var/lib/apt/lists/*
-RUN rm -rf /var/cache/apt/archives
+# Install exact versions of dependencies and clean cache
+RUN yarn --frozen-lockfile && yarn cache clean --force
 
 # =============================
-FROM appbase as development
+FROM appbase AS development
 # =============================
 
 # Set NODE_ENV to development in the development container
 ARG NODE_ENV=development
-ENV NODE_ENV $NODE_ENV
+ENV NODE_ENV=$NODE_ENV
 
 # copy in our source code last, as it changes the most
-COPY --chown=appuser:appuser . .
+COPY --chown=default:root . /app
 
 # Bake package.json start command into the image
-CMD ["react-scripts", "start"]
+CMD ["yarn", "start"]
 
 # ===================================
-FROM appbase as staticbuilder
+FROM appbase AS staticbuilder
 # ===================================
 
 # Set NODE_ENV to production in the staticbuilder container
 ARG NODE_ENV=production
-ENV NODE_ENV $NODE_ENV
+ENV NODE_ENV=$NODE_ENV
+# Print Node.js version
+RUN node --version
 
 COPY . /app
-RUN yarn compile
+RUN yarn build
 
 # =============================
-FROM registry.access.redhat.com/ubi8/nginx-120 as production
+FROM registry.access.redhat.com/ubi9/nginx-120 AS production
 # =============================
 
 USER root
+
+# Remove default NGINX files
+RUN rm -rf /usr/share/nginx/html/*
 
 RUN chgrp -R 0 /usr/share/nginx/html && \
     chmod -R g=u /usr/share/nginx/html
@@ -87,7 +69,7 @@ RUN chgrp -R 0 /usr/share/nginx/html && \
 COPY --from=staticbuilder /app/dist /usr/share/nginx/html
 
 # Copy nginx config
-COPY .prod/nginx.conf  /etc/nginx/
+COPY .prod/nginx.conf /etc/nginx/
 
 EXPOSE 8080
 

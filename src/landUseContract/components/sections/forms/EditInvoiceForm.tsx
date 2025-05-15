@@ -8,7 +8,7 @@ import AddButtonThird from "@/components/form/AddButtonThird";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import Authorization from "@/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import InvoiceRowsEdit from "./InvoiceRowsEdit";
@@ -147,7 +147,7 @@ const renderPayments = ({
                           InvoicePaymentsFieldPaths.PAID_AMOUNT,
                         )}
                       >
-                        <FormField
+                        <FormFieldLegacy
                           disableTouched={isEditClicked}
                           fieldAttributes={getFieldAttributes(
                             attributes,
@@ -171,7 +171,7 @@ const renderPayments = ({
                               InvoicePaymentsFieldPaths.PAID_DATE,
                             )}
                           >
-                            <FormField
+                            <FormFieldLegacy
                               disableTouched={isEditClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -408,7 +408,7 @@ const EditInvoiceForm = ({
                 InvoiceFieldPaths.DUE_DATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isEditClicked}
                 fieldAttributes={getFieldAttributes(
                   invoiceAttributes,
@@ -540,7 +540,7 @@ const EditInvoiceForm = ({
                     InvoiceFieldPaths.BILLING_PERIOD_START_DATE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isEditClicked}
                     fieldAttributes={getFieldAttributes(
                       invoiceAttributes,
@@ -577,7 +577,7 @@ const EditInvoiceForm = ({
                     InvoiceFieldPaths.BILLING_PERIOD_END_DATE,
                   )}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isEditClicked}
                     fieldAttributes={getFieldAttributes(
                       invoiceAttributes,
@@ -615,7 +615,7 @@ const EditInvoiceForm = ({
                 InvoiceFieldPaths.POSTPONE_DATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isEditClicked}
                 fieldAttributes={getFieldAttributes(
                   invoiceAttributes,
@@ -1000,7 +1000,7 @@ const EditInvoiceForm = ({
               InvoiceFieldPaths.NOTES,
             )}
           >
-            <FormField
+            <FormFieldLegacy
               disableTouched={isEditClicked}
               fieldAttributes={getFieldAttributes(
                 invoiceAttributes,

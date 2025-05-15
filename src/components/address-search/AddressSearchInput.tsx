@@ -73,7 +73,7 @@ class AddressSearchInput extends Component<Props, State> {
     isLoading: false,
     menuOpen: false,
     selectedAddress: null,
-    value: "",
+    value: this.props.selected || "",
   };
   static defaultProps = {
     language: "fi",
@@ -180,7 +180,6 @@ class AddressSearchInput extends Component<Props, State> {
           break;
 
         case KeyCodes.TAB:
-          e.preventDefault();
           this.closeMenu();
           break;
       }

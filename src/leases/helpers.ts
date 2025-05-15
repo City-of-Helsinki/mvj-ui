@@ -60,6 +60,7 @@ import type {
   LeaseAreaAddress,
   IntendedUse,
   PeriodicRentAdjustmentType,
+  CreateLeaseFormValues,
 } from "./types";
 import type { CommentList } from "@/comments/types";
 import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
@@ -2750,28 +2751,31 @@ export const getLeaseCoordinates = (
 
 /**
  * Get payload for lease POST request
- * @param {Object} lease
+ * @param {Object} formValues
  * @returns {Object}
  */
-export const getPayloadCreateLease = (lease: Lease): Record<string, any> => {
-  const relateTo = !isEmpty(lease.relate_to)
-    ? !isEmptyValue(lease.relate_to.value)
-      ? lease.relate_to.value
+export const getPayloadCreateLease = (formValues: CreateLeaseFormValues): Record<string, any> => {
+  const relateTo = !isEmpty(formValues.relate_to)
+    ? !isEmptyValue(formValues.relate_to.value)
+      ? formValues.relate_to.value
       : undefined
     : undefined;
   return {
-    state: lease.state,
-    type: lease.type,
-    municipality: lease.municipality,
-    district: lease.district,
-    reference_number: lease.reference_number,
-    note: lease.note,
+    state: formValues.state,
+    type: formValues.type,
+    start_date: formValues?.start_date || null,
+    end_date: formValues?.end_date || null,
+    municipality: formValues.municipality,
+    district: formValues.district,
+    reference_number: formValues.reference_number,
+    note: formValues.note,
     application_metadata: {
-      application_received_at: lease.application_received_at,
+      application_received_at: formValues.application_received_at,
     },
     relate_to: relateTo,
     relation_type: relateTo ? RelationTypes.TRANSFER : undefined,
-    service_unit: lease.service_unit,
+    area_search_id: formValues.area_search_id,
+    service_unit: formValues.service_unit,
   };
 };
 

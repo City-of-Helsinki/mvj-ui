@@ -5,7 +5,7 @@ import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import Button from "@/components/button/Button";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import { FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
@@ -47,7 +47,7 @@ class CreatePlotSearchForm extends Component<Props> {
       <form>
         <Row>
           <Column small={4}>
-            <FormField
+            <FormFieldLegacy
               setRefForField={this.setRefForFirstField}
               fieldAttributes={get(attributes, "name")}
               name="name"

@@ -112,3 +112,11 @@ export const PlotSearchStageTypes = {
   DECISION: "decision",
   SETTLED: "settled",
 };
+export const AreaSearchState = {
+  RECEIVED: "received",
+  PENDING_INFORMATION: "pending_information",
+  IN_ACTION: "in_action",
+  SETTLED: "settled",
+  REVOKED: "revoked",
+  DECLINED: "declined",
+};

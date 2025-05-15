@@ -3,7 +3,7 @@ import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import Collapse from "@/components/collapse/Collapse";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
@@ -101,7 +101,7 @@ class PlotSearchSiteEditCustomDetailedPlan extends Component<Props, State> {
                     display: "none",
                   }}
                 >
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(
                       attributes,
@@ -109,7 +109,7 @@ class PlotSearchSiteEditCustomDetailedPlan extends Component<Props, State> {
                     )}
                     name={`${field}.plan_unit_id`}
                   />
-                  <FormField
+                  <FormFieldLegacy
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(
                       attributes,
@@ -123,7 +123,7 @@ class PlotSearchSiteEditCustomDetailedPlan extends Component<Props, State> {
                     <FormTextTitle>
                       {PlotSearchFieldTitles.TARGET_TYPE}
                     </FormTextTitle>
-                    <FormField
+                    <FormFieldLegacy
                       disableTouched={isSaveClicked}
                       invisibleLabel={true}
                       fieldAttributes={get(

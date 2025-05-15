@@ -3,29 +3,30 @@ import React, { createElement, Fragment, PureComponent } from "react";
 import { Field } from "redux-form";
 import classNames from "classnames";
 import get from "lodash/get";
-import ErrorBlock from "./ErrorBlock";
+import ErrorBlock from "@/components/form/ErrorBlock";
 import ExternalLink from "@/components/links/ExternalLink";
-import FieldTypeAddress from "@/components/form/FieldTypeAddress";
-import FieldTypeBasic from "@/components/form/FieldTypeBasic";
-import FieldTypeBoolean from "@/components/form/FieldTypeBoolean";
-import FieldTypeCheckbox from "@/components/form/FieldTypeCheckbox";
-import FieldTypeCheckboxDateTime from "@/components/form/FieldTypeCheckboxDateTime";
-import FieldTypeContactSelect from "@/components/form/FieldTypeContactSelect";
-import FieldTypeDatePicker from "@/components/form/FieldTypeDatePicker";
-import FieldTypeDecimal from "@/components/form/FieldTypeDecimal";
-import FieldTypeIntendedUseSelect from "@/components/form/FieldTypeIntendedUseSelect";
-import FieldTypeLeaseSelect from "@/components/form/FieldTypeLeaseSelect";
-import FieldTypeLessorSelect from "@/components/form/FieldTypeLessorSelect";
-import FieldTypeMultiSelect from "@/components/form/FieldTypeMultiSelect";
-import FieldTypeRadioWithField from "@/components/form/FieldTypeRadioWithField";
-import FieldTypeSearch from "@/components/form/FieldTypeSearch";
-import FieldTypeSelect from "@/components/form/FieldTypeSelect";
-import FieldTypeTextArea from "@/components/form/FieldTypeTextArea";
-import FieldTypeUserSelect from "@/components/form/FieldTypeUserSelect";
+import FieldTypeAddress from "@/components/form/FieldTypeAddressLegacy";
+import FieldTypeAreaSearchDistrictSelect from "@/components/form/FieldTypeAreaSearchDistrictSelectLegacy";
+import FieldTypeBasic from "@/components/form/FieldTypeBasicLegacy";
+import FieldTypeBoolean from "@/components/form/FieldTypeBooleanLegacy";
+import FieldTypeCheckbox from "@/components/form/FieldTypeCheckboxLegacy";
+import FieldTypeCheckboxDateTime from "@/components/form/FieldTypeCheckboxDateTimeLegacy";
+import FieldTypeContactSelect from "@/components/form/FieldTypeContactSelectLegacy";
+import FieldTypeDatePicker from "@/components/form/FieldTypeDatePickerLegacy";
+import FieldTypeDecimal from "@/components/form/FieldTypeDecimalLegacy";
+import FieldTypeIntendedUseSelect from "@/components/form/FieldTypeIntendedUseSelectLegacy";
+import FieldTypeLeaseSelect from "@/components/form/FieldTypeLeaseSelectLegacy";
+import FieldTypeLessorSelect from "@/components/form/FieldTypeLessorSelectLegacy";
+import FieldTypeMultiSelect from "@/components/form/FieldTypeMultiSelectLegacy";
+import FieldTypeRadioWithField from "@/components/form/FieldTypeRadioWithFieldLegacy";
+import FieldTypeSearch from "@/components/form/FieldTypeSearchLegacy";
+import FieldTypeSelect from "@/components/form/FieldTypeSelectLegacy";
+import FieldTypeTextArea from "@/components/form/FieldTypeTextAreaLegacy";
+import FieldTypeUserSelect from "@/components/form/FieldTypeUserSelectLegacy";
 import FormFieldLabel from "@/components/form/FormFieldLabel";
-import FieldTypeTime from "@/components/form/FieldTypeTime";
-import FieldTypeHidden from "@/components/form/FieldTypeHidden";
-import FieldTypeFractional from "@/components/form/FieldTypeFractional";
+import FieldTypeTime from "@/components/form/FieldTypeTimeLegacy";
+import FieldTypeHidden from "@/components/form/FieldTypeHiddenLegacy";
+import FieldTypeFractional from "@/components/form/FieldTypeFractionalLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import { FieldTypes as FieldTypeOptions } from "@/enums";
@@ -44,8 +45,10 @@ import { getRouteById, Routes } from "@/root/routes";
 import { genericValidator } from "@/components/form/validations";
 import { getHoursAndMinutes } from "@/util/date";
 import type { UserServiceUnit } from "@/usersPermissions/types";
+
 const FieldTypes = {
   [FieldTypeOptions.ADDRESS]: FieldTypeAddress,
+  [FieldTypeOptions.AREASEARCH_DISTRICT]: FieldTypeAreaSearchDistrictSelect,
   [FieldTypeOptions.BOOLEAN]: FieldTypeBoolean,
   [FieldTypeOptions.CHOICE]: FieldTypeSelect,
   [FieldTypeOptions.CHECKBOX]: FieldTypeCheckbox,
@@ -121,7 +124,7 @@ type InputProps = {
   valueSelectedCallback?: (...args: Array<any>) => any;
 };
 
-const FormFieldInput = ({
+const FormFieldInputLegacy = ({
   allowEdit,
   allowRead,
   autoBlur,
@@ -365,7 +368,7 @@ type State = {
   value: string | null | undefined;
 };
 
-class FormField extends PureComponent<Props, State> {
+class FormFieldLegacy extends PureComponent<Props, State> {
   state: State = {
     allowEdit: false,
     allowRead: true,
@@ -479,7 +482,7 @@ class FormField extends PureComponent<Props, State> {
         autoBlur={autoBlur}
         autoComplete={autoComplete}
         className={className}
-        component={FormFieldInput}
+        component={FormFieldInputLegacy}
         disabled={disabled}
         disableDirty={disableDirty}
         disableTouched={disableTouched}
@@ -520,4 +523,4 @@ class FormField extends PureComponent<Props, State> {
   }
 }
 
-export default FormField;
+export default FormFieldLegacy;

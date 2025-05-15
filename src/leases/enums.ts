@@ -47,6 +47,26 @@ export const ContractRentPeriods = {
 };
 
 /**
+ * Create lease form field name enumerable.
+ *
+ * @type {{}}
+ */
+export const CreateLeaseFormFieldNames = {
+  STATE: "state",
+  SERVICE_UNIT: "service_unit",
+  TYPE: "type",
+  MUNICIPALITY: "municipality",
+  DISTRICT: "district",
+  REFERENCE_NUMBER: "reference_number",
+  NOTE: "note",
+  APPLICATION_RECEIVED_AT: "application_received_at",
+  RELATE_TO: "relate_to",
+  START_DATE: "start_date",
+  END_DATE: "end_date",
+  AREA_SEARCH_ID: "area_search_id",
+};
+
+/**
  * Decision type kinds enumerable.
  *
  * @type {{}}
@@ -102,14 +122,15 @@ export const SendEmailTypes = {
  */
 export const LeaseState = {
   LEASE: "lease",
+  SHORT_TERM_LEASE: "short_term_lease",
+  LONG_TERM_LEASE: "long_term_lease",
   RESERVATION: "reservation",
   RESERVE: "reserve",
-  FREE: "free",
   PERMISSION: "permission",
+  TENURE: "tenure",
   RYA: "rya",
-  APPLICATION: "application",
-  TRANSFERRED: "transferred",
-};
+  POWER_OF_ATTORNEY: "power_of_attorney",
+} as const;
 
 /**
  * Classification enumerable.
@@ -120,7 +141,7 @@ export const Classification = {
   PUBLIC: "public",
   CONFIDENTIAL: "confidential",
   OFFICIAL: "official",
-};
+} as const;
 
 /**
  * CreditInvoiceOptions enumerable.

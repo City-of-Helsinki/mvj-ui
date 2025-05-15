@@ -1,8 +1,19 @@
 .AreaSearchApplication {
+  &__header {
+    display: flex;
+    align-items: center;
+
+    .content__title {
+      margin-right: 0.5rem;
+    }
+  }
   .AreaSearchApplication__description {
     white-space: pre-wrap;
   }
   span.form__text-title {
     white-space: normal;
+  }
+  .AreaSearchApplication__attachment-link {
+    display: table-cell;
   }
 }

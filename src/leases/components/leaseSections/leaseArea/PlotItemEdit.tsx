@@ -10,7 +10,7 @@ import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
-import FormField from "@/components/form/FormField";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import KtjLink from "@/components/ktj/KtjLink";
 import RemoveButton from "@/components/form/RemoveButton";
 import SubTitle from "@/components/content/SubTitle";
@@ -95,7 +95,7 @@ const PlotItemsEdit = ({
                 LeasePlotsFieldPaths.IDENTIFIER,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -117,7 +117,7 @@ const PlotItemsEdit = ({
                 LeasePlotsFieldPaths.TYPE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -154,7 +154,7 @@ const PlotItemsEdit = ({
                 LeasePlotsFieldPaths.AREA,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -180,7 +180,7 @@ const PlotItemsEdit = ({
                 LeasePlotsFieldPaths.SECTION_AREA,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -206,7 +206,7 @@ const PlotItemsEdit = ({
                 LeasePlotsFieldPaths.REGISTRATION_DATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -230,7 +230,7 @@ const PlotItemsEdit = ({
                 LeasePlotsFieldPaths.REPEAL_DATE,
               )}
             >
-              <FormField
+              <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,

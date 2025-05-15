@@ -33,8 +33,12 @@ import {
 } from "@/contacts/selectors";
 import { getCurrentLandUseContract } from "@/landUseContract/selectors";
 import { withContactAttributes } from "@/components/attributes/ContactAttributes";
+import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import type { ContactModalSettings } from "@/contacts/types";
 import type { LandUseContract } from "@/landUseContract/types";
+import type { Contact } from "@/contacts/types";
+import type { UserServiceUnit } from "@/usersPermissions/types";
+
 type LitigantsProps = {
   archived: boolean;
   fields: any;
@@ -116,7 +120,7 @@ const renderLitigants = ({
 type Props = {
   change: (...args: Array<any>) => any;
   contactModalSettings: ContactModalSettings;
-  contactFormValues: Record<string, any>;
+  contactFormValues: Contact;
   createContact: (...args: Array<any>) => any;
   currentLandUseContract: LandUseContract;
   editContact: (...args: Array<any>) => any;
@@ -129,6 +133,7 @@ type Props = {
   receiveFormValidFlags: (...args: Array<any>) => any;
   receiveIsSaveClicked: (...args: Array<any>) => any;
   valid: boolean;
+  userActiveServiceUnit: UserServiceUnit;
 };
 type State = {
   litigants: Array<Record<string, any>>;
@@ -211,6 +216,7 @@ class TenantsEdit extends PureComponent<Props, State> {
       isContactModalOpen,
       isFetchingContact,
       isFetchingContactAttributes,
+      userActiveServiceUnit,
     } = this.props;
     const { litigants } = this.state;
     if (isFetchingContactAttributes)
@@ -246,7 +252,10 @@ class TenantsEdit extends PureComponent<Props, State> {
               : null;
 
             if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
-              const exists = await contactExists(contactIdentifier);
+              const exists = await contactExists({
+                identifier: contactIdentifier,
+                serviceUnitId: contactFormValues?.service_unit?.id,
+              });
 
               if (exists) {
                 dispatch({
@@ -293,6 +302,7 @@ class TenantsEdit extends PureComponent<Props, State> {
                     ? "Uusi asiakas"
                     : "Muokkaa asiakasta"
                 }
+                serviceUnit={userActiveServiceUnit}
               />
 
               <form>
@@ -329,6 +339,7 @@ export default flowRight(
         isContactFormValid: getIsContactFormValid(state),
         isContactModalOpen: getIsContactModalOpen(state),
         isFetchingContact: getIsFetchingContact(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
       };
     },
     {
