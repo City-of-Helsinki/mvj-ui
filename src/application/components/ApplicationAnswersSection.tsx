@@ -8,7 +8,7 @@ import type {
   SectionExtraComponentProps,
 } from "@/application/types";
 import AddButtonThird from "@/components/form/AddButtonThird";
-import { getContactTypeString } from "../helpers";
+import { getContactTypeString } from "@/application/helpers";
 import type { Contact } from "@/contacts/types";
 
 type Props = {
