@@ -48,7 +48,7 @@ import {
   getIsPerformingFileOperation,
 } from "@/application/selectors";
 import { APPLICANT_SECTION_IDENTIFIER } from "@/application/constants";
-import type { Form } from "@/application/types";
+import type { Form, SavedApplicationFormSection } from "@/application/types";
 import type {
   AreaSearch,
   UploadedAreaSearchAttachmentMeta,
@@ -280,7 +280,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
 
     const handleShowContactModal = (
       contactType: Contact["type"],
-      answer: any,
+      answer: SavedApplicationFormSection,
     ) => {
       const contact = getContactFromAnswerFields(contactType, answer);
       initializeContactForm(contact);

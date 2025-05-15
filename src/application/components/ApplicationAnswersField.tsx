@@ -32,7 +32,7 @@ type Props = {
   >;
   handleShowContactModal?: (
     contactType: Contact["type"],
-    answer: any,
+    answer: SavedApplicationFormSection,
   ) => void;
 };
 

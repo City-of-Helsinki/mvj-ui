@@ -22,7 +22,7 @@ type Props = {
   editMode?: boolean;
   handleShowContactModal?: (
     contactType: Contact["type"],
-    answer: any,
+    answer: SavedApplicationFormSection,
   ) => void;
 };
 

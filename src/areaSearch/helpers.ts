@@ -214,7 +214,7 @@ const getAddressProtection = (
 
 export const getContactFromAnswerFields = (
   contactType: Contact["type"],
-  answer: Record<string, any>,
+  answer: SavedApplicationFormSection,
 ): Partial<Contact> => {
   if (!answer || !answer?.fields) {
     return null;
@@ -227,7 +227,7 @@ export const getContactFromAnswerFields = (
         const languageString = get(
           answerFields,
           AnswerToContactFields[key],
-          {},
+          { value: null, extra_value: null },
         )?.value;
         contact.language = languageString
           ? MapLanguageNameToCodeEnum[languageString]
@@ -237,7 +237,7 @@ export const getContactFromAnswerFields = (
 
       case AnswerToContactFields.address_protection: {
         contact.address_protection = getAddressProtection(
-          get(answerFields, AnswerToContactFields[key], {})?.value,
+          get(answerFields, AnswerToContactFields[key], { value: null, extra_value: null })?.value,
         );
         break;
       }
