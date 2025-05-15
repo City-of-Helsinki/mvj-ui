@@ -11,7 +11,8 @@ import type {
   SectionExtraComponentProps,
   UploadedFileMeta,
 } from "@/application/types";
-import { Contact } from "@/contacts/types";
+import type { Contact } from "@/contacts/types";
+
 type Props = {
   section: FormSection;
   answer: SavedApplicationFormSection;

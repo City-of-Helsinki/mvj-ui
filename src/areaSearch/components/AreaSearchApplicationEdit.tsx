@@ -86,11 +86,11 @@ import {
   getIsContactModalOpen,
 } from "@/contacts/selectors";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
-import { Contact, ContactModalSettings } from "@/contacts/types";
+import type { Contact, ContactModalSettings } from "@/contacts/types";
 import { contactExists } from "@/contacts/requestsAsync";
 import { ContactTypes } from "@/contacts/enums";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
-import { ServiceUnit } from "@/serviceUnits/types";
+import type { ServiceUnit } from "@/serviceUnits/types";
 
 type Props = {
   areaSearch: AreaSearch | null;

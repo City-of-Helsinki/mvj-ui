@@ -30,7 +30,7 @@ import type {
   SavedApplicationFormSection,
   UploadedFileMeta,
 } from "@/application/types";
-import { Contact } from "@/contacts/types";
+import type { Contact } from "@/contacts/types";
 export const transformTargetSectionTitle =
   (plotSearch: PlotSearch): ((...args: Array<any>) => any) =>
   (

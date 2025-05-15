@@ -9,7 +9,7 @@ import type {
 } from "@/application/types";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import { getContactTypeString } from "../helpers";
-import { Contact } from "@/contacts/types";
+import type { Contact } from "@/contacts/types";
 
 type Props = {
   section: FormSection;

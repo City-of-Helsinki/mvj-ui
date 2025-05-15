@@ -1,6 +1,6 @@
 import type { Action, Attributes, Methods } from "@/types";
 import { ContactTypes } from "@/contacts/enums";
-import { ServiceUnit } from "@/serviceUnits/types";
+import type { ServiceUnit } from "@/serviceUnits/types";
 export type ContactState = {
   attributes: Attributes;
   contactModalSettings: ContactModalSettings;

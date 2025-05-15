@@ -9,7 +9,7 @@ import { getCurrentAreaSearch } from "@/areaSearch/selectors";
 import { prepareApplicationForSubmission } from "@/application/helpers";
 import type { LeafletFeature, LeafletGeoJson } from "types";
 import type { SavedApplicationFormSection } from "@/application/types";
-import { Contact } from "@/contacts/types";
+import type { Contact } from "@/contacts/types";
 import {
   AnswerToContactFields,
   MapLanguageNameToCodeEnum,
