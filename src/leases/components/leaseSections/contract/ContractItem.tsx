@@ -95,6 +95,9 @@ const ContractItem = ({
     attributes,
     LeaseContractCollateralsFieldPaths.TYPE,
   );
+  const executorName = contract.executor?.last_name && contract.executor?.first_name ? 
+    `${contract.executor.last_name} ${contract.executor.first_name}` :
+    "-";
   return (
     <Collapse
       defaultOpen={
@@ -405,6 +408,23 @@ const ContractItem = ({
               ) : (
                 <FormText>-</FormText>
               )}
+            </>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              attributes,
+              LeaseContractsFieldPaths.EXECUTOR,
+            )}
+          >
+            <>
+              <FormTextTitle>
+                {LeaseContractsFieldTitles.EXECUTOR}
+              </FormTextTitle>
+                <FormText>
+                  {executorName}
+                </FormText>
             </>
           </Authorization>
         </Column>

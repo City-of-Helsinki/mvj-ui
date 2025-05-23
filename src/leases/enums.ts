@@ -1543,6 +1543,7 @@ export const LeaseContractsFieldPaths = {
   SIGNING_NOTE: "contracts.child.children.signing_note",
   THIRD_CALL_SENT: "contracts.child.children.third_call_sent",
   TYPE: "contracts.child.children.type",
+  EXECUTOR: "contracts.child.children.executor",
 };
 
 /**
@@ -1565,6 +1566,7 @@ export const LeaseContractsFieldTitles = {
   SIGNING_NOTE: "Huomautus",
   THIRD_CALL_SENT: "3. kutsu lähetetty",
   TYPE: "Sopimuksen tyyppi",
+  EXECUTOR: "Toimeenpanija",
 };
 
 /**

@@ -851,6 +851,7 @@ export const getContentContract = (
     institution_identifier: contract.institution_identifier,
     contract_changes: getContentContractChanges(contract),
     collaterals: getContentContractCollaterals(contract),
+    executor: contract.executor,
   };
 };
 
