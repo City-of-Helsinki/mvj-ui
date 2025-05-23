@@ -262,12 +262,16 @@ export const getContactFromAnswerFields = (
       EMPTY_DEFAULT_FIELD,
     )?.value;
 
-    const { address_protection, language, postal_code } =
+    const { address_protection, country, language, postal_code } =
       MapFormAnswerFieldsToContactFields;
 
     switch (MapFormAnswerFieldsToContactFields[key]) {
       case address_protection: {
         contact.address_protection = getAddressProtection(value);
+        break;
+      }
+      case country: {
+        contact.country = value?.toLowerCase() === "suomi" ? "FI" : null;
         break;
       }
       case language: {
