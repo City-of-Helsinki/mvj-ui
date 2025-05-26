@@ -49,6 +49,7 @@ export const MapFormAnswerFieldsToContactFields = {
   first_name: "etunimi",
   last_name: "Sukunimi",
   name: "nimi",
+  c_o: "c_o",
   business_id: "y-tunnus",
   address: "katuosoite",
   postal_code: "postinumero",
