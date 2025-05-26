@@ -262,7 +262,7 @@ export const getContactFromAnswerFields = (
       EMPTY_DEFAULT_FIELD,
     )?.value;
 
-    const { address_protection, country, language, postal_code } =
+    const { address_protection, c_o, country, language, postal_code } =
       MapFormAnswerFieldsToContactFields;
 
     switch (MapFormAnswerFieldsToContactFields[key]) {
@@ -272,6 +272,10 @@ export const getContactFromAnswerFields = (
       }
       case country: {
         contact.country = value?.toLowerCase() === "suomi" ? "FI" : null;
+        break;
+      }
+      case c_o: {
+        contact.care_of = value ? String(value) : null;
         break;
       }
       case language: {
