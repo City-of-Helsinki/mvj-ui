@@ -800,6 +800,7 @@ export const getContentContractChanges = (
       third_call_sent: change.third_call_sent,
       description: change.description,
       decision: get(change, "decision.id") || change.decision,
+      executor: getContentUser(change.executor),
     };
   });
 
@@ -3015,6 +3016,7 @@ const getPayloadContractChanges = (
       third_call_sent: change.third_call_sent,
       description: change.description,
       decision: change.decision,
+      executor: change.executor?.value,
     };
   });
 };

@@ -290,6 +290,32 @@ const renderContractChanges = ({
                                 />
                               </Authorization>
                             </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization
+                                allow={isFieldAllowedToRead(
+                                  attributes,
+                                  LeaseContractChangesFieldPaths.THIRD_CALL_SENT,
+                                )}
+                              >
+                                <FormFieldLegacy
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(
+                                    attributes,
+                                    LeaseContractChangesFieldPaths.EXECUTOR,
+                                  )}
+                                  name={`${change}.executor`}
+                                  overrideValues={{
+                                    fieldType: FieldTypes.USER,
+                                    label:
+                                      LeaseContractChangesFieldTitles.EXECUTOR,
+                                  }}
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(
+                                    LeaseContractChangesFieldPaths.EXECUTOR,
+                                  )}
+                                />
+                              </Authorization>
+                            </Column>
                           </Row>
                           <Row>
                             <Column small={6} medium={4} large={2}>
