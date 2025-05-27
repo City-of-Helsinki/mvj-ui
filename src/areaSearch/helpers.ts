@@ -262,7 +262,7 @@ export const getContactFromAnswerFields = (
       EMPTY_DEFAULT_FIELD,
     )?.value;
 
-    const { address_protection, c_o, country, language, postal_code } =
+    const { address_protection, c_o, country, language, name, postal_code } =
       MapFormAnswerFieldsToContactFields;
 
     switch (MapFormAnswerFieldsToContactFields[key]) {
@@ -280,6 +280,19 @@ export const getContactFromAnswerFields = (
       }
       case language: {
         contact.language = value ? MapLanguageNameToCodeEnum[value] : null;
+        break;
+      }
+      case name: {
+        const business_name = get(
+          answerFields,
+          'yrityksen-nimi',
+          EMPTY_DEFAULT_FIELD,
+        )?.value;
+        if (business_name) {
+          contact.name = String(business_name);
+          break;
+        }
+        contact.name = value ? String(value) : null;
         break;
       }
       case postal_code: {
