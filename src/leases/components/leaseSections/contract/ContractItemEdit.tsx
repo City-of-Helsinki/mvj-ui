@@ -1040,7 +1040,6 @@ class ContractItemEdit extends Component<Props> {
                     fieldType: FieldTypes.USER,
                     label: LeaseContractsFieldTitles.EXECUTOR,
                   }}
-                  serviceUnit={currentLease.service_unit}
                   enableUiDataEdit
                   uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.EXECUTOR,)}
                 />
