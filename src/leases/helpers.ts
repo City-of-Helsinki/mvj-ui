@@ -851,7 +851,7 @@ export const getContentContract = (
     institution_identifier: contract.institution_identifier,
     contract_changes: getContentContractChanges(contract),
     collaterals: getContentContractCollaterals(contract),
-    executor: contract.executor,
+    executor: getContentUser(contract.executor),
   };
 };
 
@@ -3096,6 +3096,7 @@ export const addContractsFormValuesToPayload = (
       institution_identifier: contract.institution_identifier,
       contract_changes: getPayloadContractChanges(contract),
       collaterals: getPayloadCollaterals(contract),
+      executor: contract.executor.value,
     };
   });
   return payload;

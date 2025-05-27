@@ -24,7 +24,7 @@ import {
   receiveCollapseStates,
   fetchLeasesForContractNumber,
 } from "@/leases/actions";
-import { ConfirmationModalTexts, FormNames, ViewModes } from "@/enums";
+import { ConfirmationModalTexts, FieldTypes, FormNames, ViewModes } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import {
   LeaseContractChangesFieldPaths,
@@ -994,6 +994,30 @@ class ContractItemEdit extends Component<Props> {
                     <FormText>-</FormText>
                   )}
                 </>
+              </Authorization>
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  attributes,
+                  LeaseContractsFieldPaths.EXECUTOR,
+                )}
+              >
+                <FormFieldLegacy
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    attributes,
+                    LeaseContractsFieldPaths.EXECUTOR,
+                  )}
+                  name={`${field}.executor`}
+                  overrideValues={{
+                    fieldType: FieldTypes.USER,
+                    label: LeaseContractsFieldTitles.EXECUTOR,
+                  }}
+                  serviceUnit={currentLease.service_unit}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseContractsFieldPaths.EXECUTOR,)}
+                />
               </Authorization>
             </Column>
           </Row>
