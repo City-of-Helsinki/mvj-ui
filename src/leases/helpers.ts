@@ -3098,7 +3098,7 @@ export const addContractsFormValuesToPayload = (
       institution_identifier: contract.institution_identifier,
       contract_changes: getPayloadContractChanges(contract),
       collaterals: getPayloadCollaterals(contract),
-      executor: contract.executor.value,
+      executor: contract.executor?.value,
     };
   });
   return payload;
