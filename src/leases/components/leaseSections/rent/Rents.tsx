@@ -62,14 +62,14 @@ const Rents = ({ currentLease, leaseAttributes, usersPermissions }: Props) => {
       <Authorization
         allow={isFieldAllowedToRead(
           leaseAttributes,
-          LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE,
+          LeaseRentsFieldPaths.RENT_INFO_COMPLETED_AT,
         )}
       >
         <WarningContainer
           alignCenter
-          success={currentLease.is_rent_info_complete}
+          success={!!currentLease.rent_info_completed_at}
         >
-          {currentLease.is_rent_info_complete ? (
+          {currentLease.rent_info_completed_at ? (
             <SuccessField
               meta={{
                 warning: "Tiedot kunnossa",
@@ -92,7 +92,7 @@ const Rents = ({ currentLease, leaseAttributes, usersPermissions }: Props) => {
           style={{
             marginTop: isFieldAllowedToRead(
               leaseAttributes,
-              LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE,
+              LeaseRentsFieldPaths.RENT_INFO_COMPLETED_AT,
             )
               ? 0
               : null,

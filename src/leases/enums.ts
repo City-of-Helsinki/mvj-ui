@@ -954,7 +954,7 @@ export const LeaseRentsFieldPaths = {
   EQUALIZATION_START_DATE: "rents.child.children.equalization_start_date",
   INDEX_ROUNDING: "rents.child.children.index_rounding",
   INDEX_TYPE: "rents.child.children.index_type",
-  IS_RENT_INFO_COMPLETE: "is_rent_info_complete",
+  RENT_INFO_COMPLETED_AT: "rent_info_completed_at",
   MANUAL_RATIO: "rents.child.children.manual_ratio",
   MANUAL_RATIO_PREVIOUS: "rents.child.children.manual_ratio_previous",
   NOTE: "rents.child.children.note",
@@ -988,7 +988,7 @@ export const LeaseRentsFieldTitles = {
   EQUALIZATION_START_DATE: "Tasaus alkupvm",
   INDEX_ROUNDING: "Pyöristys",
   INDEX_TYPE: "Indeksin tunnusnumero",
-  IS_RENT_INFO_COMPLETE: "Vuokratiedot kunnossa?",
+  RENT_INFO_COMPLETED_AT: "Vuokratiedot kunnossa?",
   MANUAL_RATIO: "Käsinlaskentakerroin",
   MANUAL_RATIO_PREVIOUS: "Käsinlaskentakerroin (edellinen)",
   NOTE: "Huomautus",
@@ -1713,7 +1713,7 @@ export const LeaseInvoicingFieldPaths = {
   DEBT_COLLECTION: "debt_collection",
   INVOICES: "invoices",
   INVOICING: "invoicing",
-  IS_INVOICING_ENABLED: "is_invoicing_enabled",
+  INVOICING_ENABLED_AT: "invoicing_enabled_at",
   PREVIEW_INVOICES: "preview_invoices",
 };
 

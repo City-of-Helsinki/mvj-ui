@@ -54,8 +54,8 @@ export type Lease = {
   intended_use_note: string | null;
   internal_order: string | null;
   invoice_notes: Array<Record<string, any>>;
-  is_invoicing_enabled: boolean;
-  is_rent_info_complete: boolean;
+  invoicing_enabled_at: string | null;
+  rent_info_completed_at: string | null;
   is_subject_to_vat: boolean;
   lease_areas: Array<LeaseArea>;
   lessor: Record<string, any>;
@@ -97,7 +97,7 @@ export type RelatedPlotApplicationFormValues = {
   object_id: number;
   content_type_model: string;
   // lease id not included, because it will be received after submission
-}
+};
 // Lease area object as expected from API response
 export type LeaseArea = {
   id: number;
@@ -152,12 +152,12 @@ export type FetchSingleLeaseAfterEditPayload = {
 export type CreateLeaseRelateTo = {
   value: number;
   label: string;
-}
+};
 export type CreateLeaseFormValues = Lease & {
   relate_to: CreateLeaseRelateTo;
   application_received_at: string;
   area_search_id: number | null;
-}
+};
 export type ReceivableType = {
   id: number;
   name: string;

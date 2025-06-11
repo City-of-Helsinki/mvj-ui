@@ -217,7 +217,7 @@ function* startInvoicingSaga({
   yield put(
     receiveSingleLandUseContract({
       ...currentLandUseContract,
-      is_invoicing_enabled: true,
+      invoicing_enabled_at: new Date().toISOString(),
     }),
   );
   displayUIMessage({
@@ -235,7 +235,7 @@ function* stopInvoicingSaga({
   yield put(
     receiveSingleLandUseContract({
       ...currentLandUseContract,
-      is_invoicing_enabled: false,
+      invoicing_enabled_at: null,
     }),
   );
   displayUIMessage({

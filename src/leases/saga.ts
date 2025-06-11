@@ -255,20 +255,17 @@ function* createLeaseSaga({ payload, type: any }): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         if (area_search_id) {
-          yield call(
-            editSingleAreaSearchRequest,
-            area_search_id,
-            {
-              state: AreaSearchState.SETTLED,
-              lease: bodyAsJson,
-              area_search_status: {
-                status_notes: [
-                  {
-                    note: "Päätetty",
-                  },
-                ],
-              },
-            });
+          yield call(editSingleAreaSearchRequest, area_search_id, {
+            state: AreaSearchState.SETTLED,
+            lease: bodyAsJson,
+            area_search_status: {
+              status_notes: [
+                {
+                  note: "Päätetty",
+                },
+              ],
+            },
+          });
         }
         yield put(push(`${getRouteById(Routes.LEASES)}/${bodyAsJson.id}`));
         yield put(receiveIsSaveClicked(false));
@@ -547,7 +544,10 @@ function* startInvoicingSaga({
       case 200:
         const currentLease = yield select(getCurrentLease);
         yield put(
-          receiveSingleLease({ ...currentLease, is_invoicing_enabled: true }),
+          receiveSingleLease({
+            ...currentLease,
+            invoicing_enabled_at: bodyAsJson.invoicing_enabled_at,
+          }),
         );
         // Update invoice and invoice set lists after starting invoicing
         yield put(fetchInvoicesByLease(leaseId));
@@ -584,7 +584,10 @@ function* stopInvoicingSaga({
       case 200:
         const currentLease = yield select(getCurrentLease);
         yield put(
-          receiveSingleLease({ ...currentLease, is_invoicing_enabled: false }),
+          receiveSingleLease({
+            ...currentLease,
+            invoicing_enabled_at: bodyAsJson.invoicing_enabled_at,
+          }),
         );
         displayUIMessage({
           title: "",
@@ -618,7 +621,10 @@ function* setRentInfoCompleteSaga({
       case 200:
         const currentLease = yield select(getCurrentLease);
         yield put(
-          receiveSingleLease({ ...currentLease, is_rent_info_complete: true }),
+          receiveSingleLease({
+            ...currentLease,
+            rent_info_completed_at: bodyAsJson.rent_info_completed_at,
+          }),
         );
         displayUIMessage({
           title: "",
@@ -652,7 +658,10 @@ function* setRentInfoUncompleteSaga({
       case 200:
         const currentLease = yield select(getCurrentLease);
         yield put(
-          receiveSingleLease({ ...currentLease, is_rent_info_complete: false }),
+          receiveSingleLease({
+            ...currentLease,
+            rent_info_completed_at: null,
+          }),
         );
         displayUIMessage({
           title: "",
