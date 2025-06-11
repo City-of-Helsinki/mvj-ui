@@ -73,7 +73,7 @@ const RentWarnings = ({
           style={{
             marginTop: isFieldAllowedToRead(
               leaseAttributes,
-              LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE,
+              LeaseRentsFieldPaths.RENT_INFO_COMPLETED_AT,
             )
               ? 0
               : null,
@@ -342,7 +342,7 @@ class RentsEdit extends PureComponent<Props, State> {
                   <Authorization
                     allow={isFieldAllowedToRead(
                       leaseAttributes,
-                      LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE,
+                      LeaseRentsFieldPaths.RENT_INFO_COMPLETED_AT,
                     )}
                   >
                     <WarningContainer
@@ -351,7 +351,7 @@ class RentsEdit extends PureComponent<Props, State> {
                         <Authorization
                           allow={hasPermissions(
                             usersPermissions,
-                            UsersPermissions.CHANGE_LEASE_IS_RENT_INFO_COMPLETE,
+                            UsersPermissions.CHANGE_LEASE_RENT_INFO_COMPLETED_AT,
                           )}
                         >
                           {isRentInfoComplete ? (
@@ -500,7 +500,7 @@ export default flowRight(
         editedArchivedBasisOfRents: selector(state, "basis_of_rents_archived"),
         errors: getErrorsByFormName(state, formName),
         isRentInfoComplete: currentLease
-          ? currentLease.is_rent_info_complete
+          ? currentLease.rent_info_completed_at
           : null,
         isSaveClicked: getIsSaveClicked(state),
         leaseAttributes: getLeaseAttributes(state),

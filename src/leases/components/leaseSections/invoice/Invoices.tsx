@@ -280,7 +280,7 @@ class Invoices extends PureComponent<Props, State> {
                   <Authorization
                     allow={hasPermissions(
                       usersPermissions,
-                      UsersPermissions.CHANGE_LEASE_IS_INVOICING_ENABLED,
+                      UsersPermissions.CHANGE_LEASE_INVOICING_ENABLED_AT,
                     )}
                   >
                     {isInvoicingEnabled ? (
@@ -291,7 +291,7 @@ class Invoices extends PureComponent<Props, State> {
                       />
                     ) : (
                       <Button
-                        disabled={!currentLease.is_rent_info_complete}
+                        disabled={!currentLease.rent_info_completed_at}
                         className={ButtonColors.NEUTRAL}
                         onClick={handleStartInvoicing}
                         text="Käynnistä laskutus"
@@ -305,22 +305,22 @@ class Invoices extends PureComponent<Props, State> {
                   allow={
                     isFieldAllowedToRead(
                       leaseAttributes,
-                      LeaseInvoicingFieldPaths.IS_INVOICING_ENABLED,
+                      LeaseInvoicingFieldPaths.INVOICING_ENABLED_AT,
                     ) &&
                     isFieldAllowedToRead(
                       leaseAttributes,
-                      LeaseRentsFieldPaths.IS_RENT_INFO_COMPLETE,
+                      LeaseRentsFieldPaths.RENT_INFO_COMPLETED_AT,
                     )
                   }
                 >
-                  {isInvoicingEnabled && currentLease.is_rent_info_complete ? (
+                  {isInvoicingEnabled && currentLease.rent_info_completed_at ? (
                     <SuccessField
                       meta={{
                         warning: LeaseInvoicingFieldTitles.INVOICING_ENABLED,
                       }}
                       showWarning={true}
                     />
-                  ) : currentLease.is_rent_info_complete ? (
+                  ) : currentLease.rent_info_completed_at ? (
                     <WarningField
                       meta={{
                         warning: LeaseInvoicingFieldTitles.INVOICING_DISABLED,
@@ -485,7 +485,7 @@ export default flowRight(
         ),
         invoiceToCredit: getInvoiceToCredit(state),
         isInvoicingEnabled: currentLease
-          ? currentLease.is_invoicing_enabled
+          ? !!currentLease.invoicing_enabled_at
           : null,
         leaseAttributes: getLeaseAttributes(state),
         previewInvoicesCollapseState: getCollapseStateByKey(

@@ -134,7 +134,7 @@ export default flowRight(
       return {
         currentLandUseContract: currentLandUseContract,
         isInvoicingEnabled: currentLandUseContract
-          ? currentLandUseContract.is_invoicing_enabled
+          ? !!currentLandUseContract.invoicing_enabled_at
           : null,
         usersPermissions: getUsersPermissions(state),
         invoiceToCredit: getInvoiceToCredit(state),

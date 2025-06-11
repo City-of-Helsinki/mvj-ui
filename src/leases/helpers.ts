@@ -2754,7 +2754,9 @@ export const getLeaseCoordinates = (
  * @param {Object} formValues
  * @returns {Object}
  */
-export const getPayloadCreateLease = (formValues: CreateLeaseFormValues): Record<string, any> => {
+export const getPayloadCreateLease = (
+  formValues: CreateLeaseFormValues,
+): Record<string, any> => {
   const relateTo = !isEmpty(formValues.relate_to)
     ? !isEmptyValue(formValues.relate_to.value)
       ? formValues.relate_to.value
@@ -3569,7 +3571,7 @@ export const addRentsFormValuesToPayload = (
   formValues: Record<string, any>,
   currentLease: Lease,
 ): Record<string, any> => {
-  payload.is_rent_info_complete = formValues.is_rent_info_complete
+  payload.rent_info_completed_at = formValues.rent_info_completed_at
     ? true
     : false;
   const basisOfRents = [

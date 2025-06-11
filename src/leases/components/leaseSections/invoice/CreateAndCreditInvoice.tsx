@@ -296,7 +296,7 @@ export default flowRight(
         isCreateInvoicePanelOpen: getIsCreateInvoicePanelOpen(state),
         isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
         isInvoicingEnabled: currentLease
-          ? currentLease.is_invoicing_enabled
+          ? !!currentLease.invoicing_enabled_at
           : null,
         usersPermissions: getUsersPermissions(state),
       };

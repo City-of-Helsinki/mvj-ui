@@ -284,7 +284,7 @@ export default flowRight(
         isCreateInvoicePanelOpen: getIsCreateInvoicePanelOpen(state),
         isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
         isInvoicingEnabled: currentLandUseContract
-          ? currentLandUseContract.is_invoicing_enabled
+          ? !!currentLandUseContract.invoicing_enabled_at
           : null,
         usersPermissions: getUsersPermissions(state),
         invoices: getInvoicesByLandUseContractId(

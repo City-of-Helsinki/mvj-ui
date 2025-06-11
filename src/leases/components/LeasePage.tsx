@@ -551,7 +551,7 @@ class LeasePage extends Component<Props, State> {
       basis_of_rents_archived: getContentBasisOfRents(lease).filter(
         (item) => item.archived_at,
       ),
-      is_rent_info_complete: lease.is_rent_info_complete,
+      rent_info_completed_at: lease.rent_info_completed_at,
       rents: rents.filter((rent) => !isArchived(rent)),
       rentsArchived: rents.filter((rent) => isArchived(rent)),
     });

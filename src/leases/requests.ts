@@ -106,7 +106,7 @@ export const setRentInfoComplete = (
   leaseId: LeaseId,
 ): Generator<any, any, any> => {
   const body = JSON.stringify({
-    rent_info_complete: true,
+    rent_info_complete: true, // NOTE: This API uses different keyword and value type than `rent_info_completed_at`
   });
   return callApi(
     new Request(
@@ -122,7 +122,7 @@ export const setRentInfoUncomplete = (
   leaseId: LeaseId,
 ): Generator<any, any, any> => {
   const body = JSON.stringify({
-    rent_info_complete: false,
+    rent_info_complete: false, // NOTE: This API uses different keyword and value type than `rent_info_completed_at`
   });
   return callApi(
     new Request(
