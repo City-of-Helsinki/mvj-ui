@@ -95,6 +95,10 @@ const ContractItem = ({
     attributes,
     LeaseContractCollateralsFieldPaths.TYPE,
   );
+  const executorName =
+    contract.executor?.last_name && contract.executor?.first_name
+      ? `${contract.executor.last_name} ${contract.executor.first_name}`
+      : "-";
   return (
     <Collapse
       defaultOpen={
@@ -408,6 +412,21 @@ const ContractItem = ({
             </>
           </Authorization>
         </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              attributes,
+              LeaseContractsFieldPaths.EXECUTOR,
+            )}
+          >
+            <>
+              <FormTextTitle>
+                {LeaseContractsFieldTitles.EXECUTOR}
+              </FormTextTitle>
+              <FormText>{executorName}</FormText>
+            </>
+          </Authorization>
+        </Column>
       </Row>
 
       <Authorization
@@ -435,6 +454,10 @@ const ContractItem = ({
             <BoxItemContainer>
               {contract.contract_changes.map((change) => {
                 const decision = getDecisionById(currentLease, change.decision);
+                const contractChangeExecutorName =
+                  change.executor?.last_name && change.executor?.first_name
+                    ? `${change.executor.last_name} ${change.executor.first_name}`
+                    : "-";
                 return (
                   <BoxItem
                     key={change.id}
@@ -543,6 +566,25 @@ const ContractItem = ({
                             <FormText>
                               {formatDate(change.third_call_sent) || "–"}
                             </FormText>
+                          </>
+                        </Authorization>
+                      </Column>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            attributes,
+                            LeaseContractChangesFieldPaths.EXECUTOR,
+                          )}
+                        >
+                          <>
+                            <FormTextTitle
+                              uiDataKey={getUiDataLeaseKey(
+                                LeaseContractChangesFieldPaths.EXECUTOR,
+                              )}
+                            >
+                              {LeaseContractChangesFieldTitles.EXECUTOR}
+                            </FormTextTitle>
+                            <FormText>{contractChangeExecutorName}</FormText>
                           </>
                         </Authorization>
                       </Column>

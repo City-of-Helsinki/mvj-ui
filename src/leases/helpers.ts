@@ -800,6 +800,7 @@ export const getContentContractChanges = (
       third_call_sent: change.third_call_sent,
       description: change.description,
       decision: get(change, "decision.id") || change.decision,
+      executor: getContentUser(change.executor),
     };
   });
 
@@ -851,6 +852,7 @@ export const getContentContract = (
     institution_identifier: contract.institution_identifier,
     contract_changes: getContentContractChanges(contract),
     collaterals: getContentContractCollaterals(contract),
+    executor: getContentUser(contract.executor),
   };
 };
 
@@ -3014,6 +3016,7 @@ const getPayloadContractChanges = (
       third_call_sent: change.third_call_sent,
       description: change.description,
       decision: change.decision,
+      executor: change.executor?.value,
     };
   });
 };
@@ -3095,6 +3098,7 @@ export const addContractsFormValuesToPayload = (
       institution_identifier: contract.institution_identifier,
       contract_changes: getPayloadContractChanges(contract),
       collaterals: getPayloadCollaterals(contract),
+      executor: contract.executor?.value,
     };
   });
   return payload;
