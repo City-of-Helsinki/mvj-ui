@@ -1,4 +1,5 @@
 import { createAction } from "redux-actions";
+import { receiveError } from "@/api/actions";
 import type {
   UserGroups,
   UsersPermissions,
@@ -11,6 +12,8 @@ import type {
   SetUserActiveServiceUnitAction,
   NotFoundAction,
 } from "./types";
+import type { ReceiveErrorAction } from "@/api/types";
+
 export const fetchUsersPermissions = (): FetchUsersPermissionsAction =>
   createAction("mvj/usersPermissions/FETCH_ALL")();
 export const receiveUserGroups = (
@@ -27,9 +30,18 @@ export const receiveUserServiceUnits = (
   createAction("mvj/usersPermissions/RECEIVE_SERVICE_UNITS")(serviceUnits);
 export const setUserActiveServiceUnit = (
   activeServiceUnit: UserServiceUnit,
-): SetUserActiveServiceUnitAction =>
-  createAction("mvj/usersPermissions/SET_ACTIVE_SERVICE_UNIT")(
+): SetUserActiveServiceUnitAction | ReceiveErrorAction => {
+  if (!activeServiceUnit) {
+    return receiveError(
+      new Error(
+        `Käyttäjälle ei ole asetettu palvelukokonaisuuksia. Kokeile päivittää sivu, ja ota yhteyttä tukeen, jotta puuttuvat käyttäjäryhmät voidaan asettaa.
+        User has no service units assigned. Try to refresh the page and contact support to configure correct user groups.`,
+      ),
+    );
+  }
+  return createAction("mvj/usersPermissions/SET_ACTIVE_SERVICE_UNIT")(
     activeServiceUnit,
   );
+};
 export const notFound = (): NotFoundAction =>
   createAction("mvj/usersPermissions/NOT_FOUND")();
