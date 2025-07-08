@@ -60,6 +60,7 @@ type State = {
   displaySideMenu: boolean;
   loggedIn: boolean;
   displayUserGroups: boolean;
+  isLoggingIn: boolean;
 };
 
 const App: React.FC<Props> = (props) => {
@@ -67,11 +68,13 @@ const App: React.FC<Props> = (props) => {
     useState<State["displaySideMenu"]>(false);
   const [displayUserGroups, setDisplayUserGroups] =
     useState<State["displayUserGroups"]>(false);
-  const { loggedIn, authenticatedUser, login, logout, isRenewing } = useAuth();
+  const [isLoggingIn, setIsLoggingIn] = useState<State["isLoggingIn"]>(false);
+  const { loggedIn, authenticatedUser, login, logout } = useAuth();
 
   const handleLogin = () => {
     const { pathname, search } = props.location;
     const redirectPath = `${pathname}${search}`;
+    setIsLoggingIn(true);
     login(redirectPath);
   };
 
@@ -126,11 +129,8 @@ const App: React.FC<Props> = (props) => {
           handleDismiss={handleDismissErrorModal}
         />
 
-        <LoginPage
-          buttonDisabled={Boolean(isRenewing())}
-          onLoginClick={handleLogin}
-        />
-        <Loader isLoading={Boolean(isRenewing())} />
+        <LoginPage buttonDisabled={isLoggingIn} onLoginClick={handleLogin} />
+        <Loader isLoading={!loggedIn && isLoggingIn} />
 
         {location.pathname === getRouteById(Routes.CALLBACK) && children}
       </div>

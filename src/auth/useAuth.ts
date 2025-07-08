@@ -20,11 +20,7 @@ import {
 
 const useAuth = () => {
   const [loggedIn, setLoggedIn] = useState(false);
-  const {
-    login: oidcLogin,
-    logout: oidcLogout,
-    isRenewing: oidcIsRenewing,
-  } = useOidcClient();
+  const { login: oidcLogin, logout: oidcLogout } = useOidcClient();
   const authenticatedUser = useAuthenticatedUser();
   const dispatch = useDispatch();
   const [apiTokensClientSignal, apiTokensClientSignalReset, apiTokensClient] =
@@ -89,16 +85,11 @@ const useAuth = () => {
     oidcLogout();
   }, [oidcLogout, dispatch]);
 
-  const isRenewing = () => {
-    return oidcIsRenewing() || apiTokensClient.isRenewing();
-  };
-
   return {
     loggedIn,
     authenticatedUser,
     login,
     logout,
-    isRenewing,
     setLoggedInIfApiTokenExists,
   };
 };
