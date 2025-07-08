@@ -537,7 +537,6 @@ export const FormNames = {
   AREA_SEARCH_CREATE_FORM: "area-search-create-form",
   AREA_SEARCH_PREPARER: "area-search-preparer",
   AREA_SEARCH_EXPORT: "area-search-export",
-  USER_SERVICE_UNIT_SELECT: "user-service-unit-select",
   SAP_INVOICE_SEARCH: "sap-invoice-search",
 };
 
