@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
-import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
+import MapComponent from "@/components/map/Map";
 import AreasLayer from "./AreasLayer";
 import Divider from "@/components/content/Divider";
 import PlanUnitsLayer from "./PlanUnitsLayer";
@@ -45,6 +45,7 @@ import type { Attributes, LeafletGeoJson } from "types";
 import type { Lease } from "@/leases/types";
 import type { AreaNoteList } from "@/areaNote/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+
 type Props = {
   areaNotes: AreaNoteList;
   currentLease: Lease;
@@ -324,11 +325,11 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         </Title>
         <Divider />
 
-        <AreaNotesEditMap
-          allowToEdit={false}
+        <MapComponent
           bounds={bounds}
           center={center}
           overlayLayers={overlayLayers}
+          hasError={false}
         />
       </Fragment>
     );
