@@ -77,7 +77,9 @@ import {
 import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import {
+  addLeaseAreaDraftFormValuesToPayload,
   clearUnsavedChanges,
+  getContentLeaseAreaDraft,
   getContentLeaseIdentifier,
 } from "@/leases/helpers";
 import {
@@ -133,7 +135,11 @@ import {
 import { withLeasePageAttributes } from "@/components/attributes/LeasePageAttributes";
 import { withUiDataList } from "@/components/uiData/UiDataListHOC";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
-import type { Attributes, Methods as MethodsType } from "types";
+import type {
+  Attributes,
+  LeafletFeatureGeometry,
+  Methods as MethodsType,
+} from "types";
 import type { CommentList } from "@/comments/types";
 import type { InvoiceList } from "@/invoices/types";
 import type { Lease } from "@/leases/types";
@@ -166,6 +172,7 @@ type Props = {
   decisionsFormValues: Record<string, any>;
   deleteLease: (...args: Array<any>) => any;
   destroy: (...args: Array<any>) => any;
+  leaseAreaDraftFormValues: LeafletFeatureGeometry | null | undefined;
   fetchCommentsByLease: (...args: Array<any>) => any;
   fetchInvoicesByLease: (...args: Array<any>) => any;
   fetchLeaseTypes: (...args: Array<any>) => any;
@@ -178,6 +185,7 @@ type Props = {
   initialize: (...args: Array<any>) => any;
   inspectionsFormValues: Record<string, any>;
   invoices: InvoiceList;
+  isLeaseAreaDraftFormDirty: boolean;
   isEditMode: boolean;
   isFetching: boolean;
   isFetchingLeasePageAttributes: boolean;
@@ -522,6 +530,7 @@ class LeasePage extends Component<Props, State> {
     destroy(FormNames.LEASE_RENTS);
     destroy(FormNames.LEASE_SUMMARY);
     destroy(FormNames.LEASE_TENANTS);
+    destroy(FormNames.LEASE_AREA_DRAFT);
   };
   initializeForms = (lease: Lease) => {
     const { initialize } = this.props,
@@ -559,6 +568,9 @@ class LeasePage extends Component<Props, State> {
     initialize(FormNames.LEASE_TENANTS, {
       tenants: tenants.filter((tenant) => !isArchived(tenant.tenant)),
       tenantsArchived: tenants.filter((tenant) => isArchived(tenant.tenant)),
+    });
+    initialize(FormNames.LEASE_AREA_DRAFT, {
+      lease_area_draft: getContentLeaseAreaDraft(lease),
     });
   };
   cancelRestoreUnsavedChanges = () => {
@@ -658,11 +670,13 @@ class LeasePage extends Component<Props, State> {
       contractsFormValues,
       decisionsFormValues,
       inspectionsFormValues,
+      leaseAreaDraftFormValues,
       isConstructabilityFormDirty,
       isContractsFormDirty,
       isDecisionsFormDirty,
       isInspectionsFormDirty,
       isLeaseAreasFormDirty,
+      isLeaseAreaDraftFormDirty,
       isRentsFormDirty,
       isSummaryFormDirty,
       isTenantsFormDirty,
@@ -714,6 +728,13 @@ class LeasePage extends Component<Props, State> {
       removeSessionStorageItem(FormNames.LEASE_AREAS);
     }
 
+    if (isLeaseAreaDraftFormDirty) {
+      setSessionStorageItem(FormNames.LEASE_AREA_DRAFT, leaseAreaDraftFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.LEASE_AREA_DRAFT);
+    }
+
     if (isRentsFormDirty) {
       setSessionStorageItem(FormNames.LEASE_RENTS, rentsFormValues);
       isDirty = true;
@@ -759,6 +780,7 @@ class LeasePage extends Component<Props, State> {
         contractsFormValues,
         currentLease,
         decisionsFormValues,
+        leaseAreaDraftFormValues,
         inspectionsFormValues,
         patchLease,
         rentsFormValues,
@@ -769,6 +791,7 @@ class LeasePage extends Component<Props, State> {
         isDecisionsFormDirty,
         isInspectionsFormDirty,
         isLeaseAreasFormDirty,
+        isLeaseAreaDraftFormDirty,
         isRentsFormDirty,
         isSummaryFormDirty,
         isTenantsFormDirty,
@@ -790,6 +813,13 @@ class LeasePage extends Component<Props, State> {
 
       if (isDecisionsFormDirty) {
         payload = addDecisionsFormValuesToPayload(payload, decisionsFormValues);
+      }
+
+      if (isLeaseAreaDraftFormDirty) {
+        payload = addLeaseAreaDraftFormValuesToPayload(
+          payload,
+          leaseAreaDraftFormValues,
+        );
       }
 
       if (isInspectionsFormDirty) {
@@ -889,6 +919,7 @@ class LeasePage extends Component<Props, State> {
       isConstructabilityFormDirty,
       isContractsFormDirty,
       isDecisionsFormDirty,
+      isLeaseAreaDraftFormDirty,
       isInspectionsFormDirty,
       isLeaseAreasFormDirty,
       isRentsFormDirty,
@@ -899,6 +930,7 @@ class LeasePage extends Component<Props, State> {
       isConstructabilityFormDirty ||
       isContractsFormDirty ||
       isDecisionsFormDirty ||
+      isLeaseAreaDraftFormDirty ||
       isInspectionsFormDirty ||
       isLeaseAreasFormDirty ||
       isRentsFormDirty ||
@@ -939,6 +971,7 @@ class LeasePage extends Component<Props, State> {
       isInspectionsFormValid,
       isLeaseAreasFormDirty,
       isLeaseAreasFormValid,
+      isLeaseAreaDraftFormDirty,
       isRentsFormDirty,
       isRentsFormValid,
       isSummaryFormDirty,
@@ -1109,6 +1142,7 @@ class LeasePage extends Component<Props, State> {
               {
                 label: "Kartta",
                 allow: isMethodAllowed(leaseMethods, Methods.GET),
+                isDirty: isLeaseAreaDraftFormDirty,
               },
               {
                 label: "Muutoshistoria",
@@ -1474,8 +1508,10 @@ export default flowRight(
         isSummaryFormValid: getIsFormValidById(state, FormNames.LEASE_SUMMARY),
         isTenantsFormDirty: isDirty(FormNames.LEASE_TENANTS)(state),
         isTenantsFormValid: getIsFormValidById(state, FormNames.LEASE_TENANTS),
+        isLeaseAreaDraftFormDirty: isDirty(FormNames.LEASE_AREA_DRAFT)(state),
         isFetching: getIsFetching(state),
         isSaveClicked: getIsSaveClicked(state),
+        leaseAreaDraftFormValues: getFormValues(FormNames.LEASE_AREA_DRAFT)(state),
         leaseTypeList: getLeaseTypeList(state),
         loggedUser: getLoggedInUser(state),
         oldDwellingsInHousingCompaniesPriceIndex:
