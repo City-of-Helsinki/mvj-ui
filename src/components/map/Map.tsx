@@ -9,8 +9,7 @@ import throttle from "lodash/throttle";
 import classNames from "classnames";
 import MapContainer from "@/areaNote/components/MapContainer";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/util/constants";
-import L from "leaflet";
-// import { convertFeatureCollectionToFeature } from "@/areaNote/helpers";
+import { convertFeatureCollectionToFeature } from "@/areaNote/helpers";
 
 const SHAPE_COLOR = "#9c27b0";
 const SHAPE_FILL_OPACITY = 0.5;
@@ -18,49 +17,52 @@ const SHAPE_ERROR_COLOR = "#bd2719";
 
 type Props = {
   change?: (...args: Array<any>) => any;
+  initialValues: {
+    geometry: Record<string, any> | null | undefined};
   center: Array<number>;
   bounds: Record<string, any> | null | undefined;
   overlayLayers?: Array<Record<string, any>>;
-  initialValues?: Record<string, any> | null | undefined;
   hasError: boolean;
 };
 type State = {
   isValid: boolean;
 };
 
-const geoJSON = {
-  type: "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      geometry: {
-        type: "MultiPolygon",
-        coordinates: [
-          [
+export const geoJSON = {
+  geometry: {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: {
+          type: "MultiPolygon",
+          coordinates: [
             [
-              [60.25911821674784, 25.22271210778808],
-              [60.25901821674784, 25.22361210758808],
-              [60.25901351579114, 25.22316156950953],
-              [60.25881071608995, 25.22381711377226],
-              [60.25871781036856, 25.22411510235728],
-              [60.25901361274479, 25.22451906216664],
-              [60.2591768140618, 25.224316160063175],
-              [60.25931681938204, 25.22310183305657],
-              [60.25911821674784, 25.22371107758808],
+              [
+                [60.25911821674784, 25.22271210778808],
+                [60.25901821674784, 25.22361210758808],
+                [60.25901351579114, 25.22316156950953],
+                [60.25881071608995, 25.22381711377226],
+                [60.25871781036856, 25.22411510235728],
+                [60.25901361274479, 25.22451906216664],
+                [60.2591768140618, 25.224316160063175],
+                [60.25931681938204, 25.22310183305657],
+                [60.25911821674784, 25.22371107758808],
+              ],
             ],
           ],
-        ],
+        },
+        properties: {
+          id: 24561,
+          feature_type: "area",
+          area: 1660,
+          identifier: "Luonnos",
+          location: "surface",
+          type: "real_property",
+        },
       },
-      properties: {
-        id: 24561,
-        feature_type: "area",
-        area: 1660,
-        identifier: "Luonnos",
-        location: "surface",
-        type: "real_property",
-      },
-    },
-  ],
+    ],
+  },
 };
 
 class MapComponent extends Component<Props, State> {
@@ -90,7 +92,7 @@ class MapComponent extends Component<Props, State> {
     this.updateAllFeatures();
   };
   handleAction: () => void = () => {
-    // const { change } = this.props;
+    const { change } = this.props;
     const features = [];
     this.featureGroup?.leafletElement.eachLayer((layer) =>
       features.push(layer.toGeoJSON()),
@@ -98,10 +100,10 @@ class MapComponent extends Component<Props, State> {
     this.setState({
       isValid: features.length > 0,
     });
-    // change(convertFeatureCollectionToFeature(features).geometry);
+    change(convertFeatureCollectionToFeature(features).geometry);
   };
   handleCreated: (arg0: Record<string, any>) => void = (e) => {
-    // const { change } = this.props;
+    const { change } = this.props;
     const { layer } = e;
     layer.showMeasurements();
     const features = [];
@@ -112,7 +114,14 @@ class MapComponent extends Component<Props, State> {
     this.setState({
       isValid: features.length > 0,
     });
-    // change(convertFeatureCollectionToFeature(features).geometry);
+    change(convertFeatureCollectionToFeature(features).geometry);
+  };
+  initializeMap: () => void = () => {
+    const { initialValues } = this.props;
+    const featureGroup = this.featureGroup?.leafletElement;
+    const features = initialValues?.geometry?.features || [];
+    console.log("features", features);
+    console.log("featureGroup", featureGroup);
   };
 
   render(): JSX.Element {
@@ -131,7 +140,7 @@ class MapComponent extends Component<Props, State> {
             overlayLayers={overlayLayers}
           >
             <FeatureGroup ref={this.setFeatureGroupRef}>
-              <EditControl
+              {this.featureGroup && <EditControl
                 position="topright"
                 onCreated={this.handleCreated}
                 onDeleted={this.handleAction}
@@ -140,6 +149,7 @@ class MapComponent extends Component<Props, State> {
                 onEditVertex={this.handleNonCommittedChange}
                 onEditStop={this.handleNonCommittedChange}
                 onDeleteStop={this.handleNonCommittedChange}
+                onMounted={this.initializeMap}
                 draw={{
                   circlemarker: false,
                   circle: false,
@@ -164,7 +174,7 @@ class MapComponent extends Component<Props, State> {
                     },
                   },
                 }}
-              />
+              />}
             </FeatureGroup>
           </MapContainer>
         </div>

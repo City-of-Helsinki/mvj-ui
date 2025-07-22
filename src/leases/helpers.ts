@@ -63,7 +63,7 @@ import type {
   CreateLeaseFormValues,
 } from "./types";
 import type { CommentList } from "@/comments/types";
-import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
+import type { Attributes, LeafletFeature, LeafletFeatureGeometry, LeafletGeoJson } from "types";
 import type { RootState } from "@/root/types";
 import type { LeaseList, DueDate } from "@/leases/types";
 import type { IndexPointFigureYearly } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
@@ -2620,6 +2620,36 @@ export const getContentAreasGeoJson = (lease: Lease): LeafletGeoJson => {
 };
 
 /**
+ * Get content draft lease areas geojson data
+ * @param {Object} lease
+ * @returns {Object}
+ */
+export const getContentDraftAreasGeoJson = (lease: Lease): LeafletGeoJson => {
+  // Check if there are any non-draft areas
+  // TODO: Which area types should be considered non-draft?
+  const hasNonDraftAreas = get(lease, "lease_areas", []).some(
+    (area) => !area.archived_at && area.type !== "draft",
+  );
+
+  if (hasNonDraftAreas) {
+    // If there are non-draft areas, return an empty FeatureCollection
+    return {
+      type: "FeatureCollection",
+      features: [],
+    };
+  }
+  
+  const draft_areas = get(lease, "lease_areas", []).filter(
+    (area) => !area.archived_at && area.type === "draft",
+  );
+  const features = getContentLeaseAreasFeatures(draft_areas);
+  return {
+    type: "FeatureCollection",
+    features: features,
+  };
+};
+
+/**
  * Get content lease plots features for geojson data
  * @param {Object[]} plots
  * @returns {Object[]}
@@ -3256,6 +3286,17 @@ export const addConstructabilityFormValuesToPayload = (
     });
   }
 
+  return payload;
+};
+
+export const addDraftLeaseAreaFormValuesToPayload = (
+  payload: Record<string, any>,
+  formValues: LeafletFeatureGeometry | null,
+): Record<string, any> => {
+  const draftLeaseArea = get(formValues, "geometry", null);
+  if (draftLeaseArea) {
+    payload.draft_lease_area = draftLeaseArea;
+  }
   return payload;
 };
 

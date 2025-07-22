@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
-import MapComponent from "@/components/map/Map";
+import MapComponent, { geoJSON } from "@/components/map/Map";
 import AreasLayer from "./AreasLayer";
 import Divider from "@/components/content/Divider";
 import PlanUnitsLayer from "./PlanUnitsLayer";
@@ -41,15 +41,21 @@ import {
   getIsEditMode,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes, LeafletGeoJson } from "types";
+import type { Attributes, LeafletFeatureGeometry, LeafletGeoJson } from "types";
 import type { Lease } from "@/leases/types";
 import type { AreaNoteList } from "@/areaNote/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import { change, reduxForm } from "redux-form";
+import { FormNames } from "@/enums";
 
 type Props = {
   areaNotes: AreaNoteList;
+  change: (...args: Array<any>) => any;
   currentLease: Lease;
   fetchAreaNoteList: (...args: Array<any>) => any;
+  initialValues: {
+    geometry: Record<string, any> | null | undefined;
+  };
   isEditMode: boolean;
   leaseAttributes: Attributes;
   location: Record<string, any>;
@@ -74,6 +80,8 @@ type State = {
   plotTypeOptions: Array<Record<string, any>>;
 };
 
+const formName = FormNames.DRAFT_LEASE_AREA;
+
 class SingleLeaseMap extends PureComponent<Props, State> {
   state = {
     areasGeoJson: {
@@ -82,6 +90,10 @@ class SingleLeaseMap extends PureComponent<Props, State> {
     },
     areaLocationOptions: [],
     areaTypeOptions: [],
+    draftAreasGeoJson: {
+      features: [],
+      type: "FeatureCollection",
+    },
     bounds: null,
     center: null,
     currentLease: {},
@@ -312,7 +324,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
   };
 
   render() {
-    const { isEditMode } = this.props;
+    const { isEditMode, change, initialValues } = this.props;
     const { bounds, center } = this.state;
     const overlayLayers = this.getOverlayLayers();
     return (
@@ -326,6 +338,11 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         <Divider />
 
         <MapComponent
+          change={(features: LeafletFeatureGeometry) => {
+            console.log("MapComponent change", features);
+            change("geometry", features);
+          }}
+          initialValues={initialValues}
           bounds={bounds}
           center={center}
           overlayLayers={overlayLayers}
@@ -352,4 +369,11 @@ export default flowRight(
       fetchAreaNoteList,
     },
   ),
+  reduxForm({
+    form: formName,
+    destroyOnUnmount: false,
+    change,
+    // TODO: Use getContentDraftAreasGeoJson when available
+    initialValues: geoJSON,
+  }),
 )(SingleLeaseMap) as React.ComponentType<any>;
