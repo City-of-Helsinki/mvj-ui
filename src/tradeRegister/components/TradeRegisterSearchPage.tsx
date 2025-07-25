@@ -1,6 +1,5 @@
-import React, { PureComponent } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { connect } from "react-redux";
-import { initialize } from "redux-form";
 import { Row, Column } from "react-foundation";
 import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
@@ -13,7 +12,7 @@ import PageContainer from "@/components/content/PageContainer";
 import Search from "@/tradeRegister/components/Search";
 import TradeRegisterTemplate from "@/tradeRegister/components/TradeRegisterTemplate";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
-import { FormNames, PermissionMissingTexts } from "@/enums";
+import { PermissionMissingTexts } from "@/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import {
   hasPermissions,
@@ -27,30 +26,28 @@ import {
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+
 type Props = {
   history: Record<string, any>;
-  initialize: (...args: Array<any>) => any;
   isFetchingUsersPermissions: boolean;
   location: Record<string, any>;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   usersPermissions: UsersPermissionsType;
 };
-type State = {
-  businessId: string;
-};
 
-class TradeRegisterSearchPage extends PureComponent<Props, State> {
-  state = {
-    businessId: "",
-  };
+const TradeRegisterSearchPage: React.FC<Props> = ({
+  history,
+  isFetchingUsersPermissions,
+  location,
+  receiveTopNavigationSettings,
+  usersPermissions,
+}) => {
+  const [businessId, setBusinessId] = useState<string>("");
+  const [searchFormInitialValues, setSearchFormInitialValues] = useState<Record<string, any>>({});
 
-  componentDidMount() {
-    const {
-      initialize,
-      location: { search },
-      receiveTopNavigationSettings,
-    } = this.props;
-    const query = getUrlParams(search);
+  // On mount
+  useEffect(() => {
+    const query = getUrlParams(location.search);
     setPageTitle("Kaupparekisterihaku");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.TRADE_REGISTER),
@@ -59,88 +56,65 @@ class TradeRegisterSearchPage extends PureComponent<Props, State> {
     });
 
     if (query.business_id) {
-      this.setState({
-        businessId: query.business_id,
-      });
+      setBusinessId(query.business_id);
+      setSearchFormInitialValues({ business_id: query.business_id });
+    } else {
+      setSearchFormInitialValues({});
     }
+  }, []);
 
-    initialize(FormNames.TRADE_REGISTER_SEARCH, query);
-  }
+  // On location.search change
+  useEffect(() => {
+    const query = getUrlParams(location.search);
+    setBusinessId(query.business_id || "");
+    setSearchFormInitialValues({ business_id: query.business_id || "" });
+  }, [location.search]);
 
-  componentDidUpdate(prevProps) {
-    const {
-      location: { search: currentSearch },
-      initialize,
-    } = this.props;
-    const {
-      location: { search: prevSearch },
-    } = prevProps;
-    const searchQuery = getUrlParams(currentSearch);
+  const handleSearchChange = useCallback((query) => {
+    setBusinessId(query.business_id);
+    setSearchFormInitialValues({ business_id: query.business_id });
+    history.push({
+      pathname: getRouteById(Routes.TRADE_REGISTER),
+      search: getSearchQuery(query),
+    });
+  }, [history]);
 
-    if (currentSearch !== prevSearch) {
-      this.setState(
-        {
-          businessId: searchQuery.business_id || "",
-        },
-        () => {
-          initialize(FormNames.TRADE_REGISTER_SEARCH, {
-            business_id: searchQuery.business_id || "",
-          });
-        },
-      );
-    }
-  }
-
-  handleSearchChange = (query) => {
-    const { history } = this.props;
-    this.setState(
-      {
-        businessId: query.business_id,
-      },
-      history.push({
-        pathname: getRouteById(Routes.TRADE_REGISTER),
-        search: getSearchQuery(query),
-      }),
-    );
-  };
-
-  render() {
-    const { isFetchingUsersPermissions, usersPermissions } = this.props;
-    const { businessId } = this.state;
-    if (isFetchingUsersPermissions)
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    if (isEmpty(usersPermissions)) return null;
-    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE))
-      return (
-        <PageContainer>
-          <AuthorizationError text={PermissionMissingTexts.TRADE_REGISTER} />
-        </PageContainer>
-      );
+  if (isFetchingUsersPermissions)
     return (
       <PageContainer>
-        <Row>
-          <Column small={12} medium={6} large={8}></Column>
-          <Column small={12} medium={6} large={4}>
-            <Search onSearch={this.handleSearchChange} />
-          </Column>
-        </Row>
-
-        {businessId && (
-          <ContentContainer>
-            <h2>{businessId}</h2>
-            <Divider />
-
-            <TradeRegisterTemplate businessId={businessId} />
-          </ContentContainer>
-        )}
+        <Loader isLoading={true} />
       </PageContainer>
     );
-  }
-}
+  if (isEmpty(usersPermissions)) return null;
+  if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE))
+    return (
+      <PageContainer>
+        <AuthorizationError text={PermissionMissingTexts.TRADE_REGISTER} />
+      </PageContainer>
+    );
+  return (
+    <PageContainer>
+      <Row>
+        <Column small={12} medium={6} large={8}></Column>
+        <Column small={12} medium={6} large={4}>
+          <Search
+            onSearch={handleSearchChange}
+            initialValues={searchFormInitialValues}
+          />
+        </Column>
+      </Row>
+
+      {businessId && (
+        <ContentContainer>
+          <h2>{businessId}</h2>
+          <Divider />
+
+          <TradeRegisterTemplate businessId={businessId} />
+        </ContentContainer>
+      )}
+    </PageContainer>
+  );
+};
 
 export default flowRight(
   withRouter,
@@ -152,7 +126,6 @@ export default flowRight(
       };
     },
     {
-      initialize,
       receiveTopNavigationSettings,
     },
   ),
