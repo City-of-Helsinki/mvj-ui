@@ -4,7 +4,7 @@ type Props = {
   className?: string;
   disabled?: boolean;
   innerRef?: (...args: Array<any>) => any;
-  onClick: (...args: Array<any>) => any;
+  onClick?: (...args: Array<any>) => any; // must be optional for submit buttons
   style?: Record<string, any>;
   text: string;
   title?: string;
