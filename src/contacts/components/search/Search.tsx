@@ -1,91 +1,96 @@
-import React, { PureComponent } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { connect } from "react-redux";
-import { getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import debounce from "lodash/debounce";
 import flowRight from "lodash/flowRight";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import { Form, FormSpy } from "react-final-form";
+import FormField from "@/components/form/final-form/FormField";
 import SearchClearLink from "@/components/search/SearchClearLink";
 import SearchContainer from "@/components/search/SearchContainer";
-import { FieldTypes, FormNames } from "@/enums";
+import { FieldTypes } from "@/enums";
 import { fetchServiceUnits } from "@/serviceUnits/actions";
 import {
   getServiceUnits,
   getIsFetching as getIsFetchingServiceUnits,
 } from "@/serviceUnits/selectors";
-import type { ServiceUnits } from "@/serviceUnits/types";
+import type { ServiceUnit, ServiceUnits } from "@/serviceUnits/types";
+import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
+
 type Props = {
   formValues: Record<string, any>;
   fetchServiceUnits: (...args: Array<any>) => any;
-  handleSubmit: (...args: Array<any>) => any;
-  initialize: (...args: Array<any>) => any;
   isFetchingServiceUnits: boolean;
   isSearchInitialized: boolean;
   onSearch: (...args: Array<any>) => any;
   serviceUnits: ServiceUnits;
   sortKey: string | null | undefined;
   sortOrder: string | null | undefined;
-  initialValues: Array<any>;
+  userActiveServiceUnit: ServiceUnit;
 };
 
-class Search extends PureComponent<Props> {
-  _isMounted: boolean;
+const Search: React.FC<Props> = ({
+  formValues,
+  fetchServiceUnits,
+  isFetchingServiceUnits,
+  isSearchInitialized,
+  onSearch,
+  serviceUnits,
+  sortKey,
+  sortOrder,
+  userActiveServiceUnit,
+}) => {
+  const isMounted = useRef(true);
+  const prevFormValues = useRef(formValues);
 
-  componentDidMount() {
-    const { fetchServiceUnits, isFetchingServiceUnits, serviceUnits } =
-      this.props;
-
+  useEffect(() => {
     if (!isFetchingServiceUnits && isEmpty(serviceUnits)) {
       fetchServiceUnits();
     }
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, [fetchServiceUnits, isFetchingServiceUnits, serviceUnits]);
 
-    this._isMounted = true;
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  componentDidUpdate(prevProps: Record<string, any>) {
-    const { isSearchInitialized } = this.props;
-
-    if (
-      isSearchInitialized &&
-      !isEqual(prevProps.formValues, this.props.formValues)
-    ) {
-      this.onSearchChange();
-    }
-  }
-
-  onSearchChange = debounce(() => {
-    if (!this._isMounted) return;
-    this.search();
-  }, 1000);
-  search = () => {
-    const { formValues, onSearch, sortKey, sortOrder } = this.props;
-    const newValues = { ...formValues };
-
+  const search = useCallback((values: Record<string, any>) => {
+    const newValues = { ...values };
     if (sortKey) {
       newValues.sort_key = sortKey;
       newValues.sort_order = sortOrder;
     }
-
     onSearch(newValues, true);
-  };
-  handleClear = () => {
-    const { onSearch, sortKey, sortOrder } = this.props;
-    const query: any = {};
+  }, [onSearch, sortKey, sortOrder]);
 
+  // debounce search
+  const debouncedSearch = useCallback(debounce((values: Record<string, any>) => {
+    if (!isMounted.current) return;
+    search(values);
+  }, 1000), [search]);
+
+  // Track form values for search triggering
+  const handleFormChange = useCallback((values: Record<string, any>) => {
+    if (
+      isSearchInitialized &&
+      !isEqual(prevFormValues.current, values)
+    ) {
+      debouncedSearch(values);
+    }
+    prevFormValues.current = values;
+  }, [isSearchInitialized, debouncedSearch]);
+
+  const handleClear = useCallback((form: any) => {
+    const query: any = {};
     if (sortKey || sortOrder) {
       query.sort_key = sortKey;
       query.sort_order = sortOrder;
     }
-
+    form.reset();
     onSearch(query, true);
-  };
-  getServiceUnitOptions = (): Array<Record<string, any>> => {
+  }, [onSearch, sortKey, sortOrder]);
+
+  const getServiceUnitOptions = useCallback((): Array<Record<string, any>> => {
     const options = [
       {
         id: "",
@@ -93,82 +98,88 @@ class Search extends PureComponent<Props> {
         label: "",
       },
     ];
-    this.props.serviceUnits.map((serviceUnit) => {
+    serviceUnits.map((serviceUnit) => {
       options.push({
-        id: serviceUnit.id,
-        value: serviceUnit.id,
+        id: serviceUnit.id.toString(),
+        value: serviceUnit.id.toString(),
         label: serviceUnit.name,
       });
     });
     return options;
-  };
+  }, [serviceUnits]);
 
-  render() {
-    const { handleSubmit, serviceUnits } = this.props;
-
-    if (!serviceUnits.length) {
-      return null;
-    }
-
-    return (
-      <SearchContainer onSubmit={handleSubmit(this.search)}>
-        <Row>
-          <Column large={12}>
-            <div className="inline-search-fields">
-              <FormFieldLegacy
-                autoBlur
-                disableDirty
-                fieldAttributes={{
-                  label: "Palvelukokonaisuus",
-                  type: FieldTypes.CHOICE,
-                  read_only: false,
-                }}
-                name="service_unit"
-                overrideValues={{
-                  options: this.getServiceUnitOptions(),
-                }}
-                className="contact-search-dropdown"
-              />
-              <FormFieldLegacy
-                disableDirty
-                fieldAttributes={{
-                  label: "Hae hakusanalla",
-                  type: FieldTypes.SEARCH,
-                  read_only: false,
-                }}
-                invisibleLabel
-                name="search"
-              />
-            </div>
-          </Column>
-        </Row>
-        <Row>
-          <Column small={12}>
-            <SearchClearLink onClick={this.handleClear}>
-              Tyhjennä haku
-            </SearchClearLink>
-          </Column>
-        </Row>
-      </SearchContainer>
-    );
+  if (!serviceUnits.length) {
+    return null;
   }
-}
 
-const formName = FormNames.CONTACT_SEARCH;
+  return (
+    <Form
+      onSubmit={search}
+      initialValues={{ service_unit: userActiveServiceUnit?.id }} // <-- use initialValues from props
+      subscription={{}}
+      render={({ handleSubmit, form }) => (
+        <SearchContainer onSubmit={handleSubmit}>
+          <Row>
+            <Column large={12}>
+              <div className="inline-search-fields">
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: "Palvelukokonaisuus",
+                    type: FieldTypes.CHOICE,
+                    read_only: false,
+                  }}
+                  name="service_unit"
+                  overrideValues={{
+                    options: getServiceUnitOptions(),
+                  }}
+                  className="contact-search-dropdown"
+                />
+                <FormField
+                  disableDirty
+                  fieldAttributes={{
+                    label: "Hae hakusanalla",
+                    type: FieldTypes.SEARCH,
+                    read_only: false,
+                  }}
+                  invisibleLabel
+                  name="search"
+                />
+              </div>
+            </Column>
+          </Row>
+          <Row>
+            <Column small={12}>
+              <SearchClearLink onClick={() => handleClear(form)}>
+                Tyhjennä haku
+              </SearchClearLink>
+            </Column>
+          </Row>
+          <input type="submit" style={{ display: "none" }} />
+          <FormSpy
+            subscription={{ values: true }}
+            onChange={({ values }) => handleFormChange(values)}
+          />
+        </SearchContainer>
+      )}
+    />
+  );
+};
+
 export default flowRight(
   connect(
     (state) => {
       return {
-        formValues: getFormValues(formName)(state),
+        formValues: {}, // Not needed with final-form, but kept for compatibility
         isFetchingServiceUnits: getIsFetchingServiceUnits(state),
         serviceUnits: getServiceUnits(state),
+        userActiveServiceUnit: getUserActiveServiceUnit(state),
+
       };
     },
     {
       fetchServiceUnits,
     },
   ),
-  reduxForm({
-    form: formName,
-  }),
 )(Search) as React.ComponentType<any>;
