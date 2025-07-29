@@ -19,7 +19,7 @@ import { fetchContacts, initializeContactForm } from "@/contacts/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER } from "@/contacts/constants";
-import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
+import { Methods, PermissionMissingTexts } from "@/enums";
 import { ContactFieldPaths, ContactFieldTitles } from "@/contacts/enums";
 import {
   getContactFullName,
@@ -184,8 +184,6 @@ class ContactListPage extends Component<Props, State> {
   setSearchFormValues = () => {
     const {
       location: { search },
-      initialize,
-      userActiveServiceUnit,
     } = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
@@ -194,19 +192,6 @@ class ContactListPage extends Component<Props, State> {
       this.setState({
         isSearchInitialized: true,
       });
-    };
-
-    const initializeSearchForm = async () => {
-      const initialValues = { ...searchQuery };
-
-      if (initialValues.service_unit === undefined && userActiveServiceUnit) {
-        initialValues.service_unit = userActiveServiceUnit.id;
-      }
-
-      delete initialValues.page;
-      delete initialValues.sort_key;
-      delete initialValues.sort_order;
-      await initialize(FormNames.CONTACT_SEARCH, initialValues);
     };
 
     this.setState(
@@ -219,8 +204,6 @@ class ContactListPage extends Component<Props, State> {
           : DEFAULT_SORT_ORDER,
       },
       async () => {
-        await initializeSearchForm();
-
         if (this._isMounted) {
           setSearchFormReady();
         }
@@ -258,7 +241,6 @@ class ContactListPage extends Component<Props, State> {
     const {
       fetchContacts,
       location: { search },
-      userActiveServiceUnit,
     } = this.props;
     const searchQuery = getUrlParams(search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
@@ -272,8 +254,8 @@ class ContactListPage extends Component<Props, State> {
     searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
     searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
 
-    if (searchQuery.service_unit === undefined && userActiveServiceUnit) {
-      searchQuery.service_unit = userActiveServiceUnit.id;
+    if (searchQuery.service_unit === undefined) {
+      searchQuery.service_unit = "";
     }
 
     fetchContacts(mapContactSearchFilters(searchQuery));
