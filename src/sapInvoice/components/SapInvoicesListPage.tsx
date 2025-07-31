@@ -1,10 +1,8 @@
-import React, { PureComponent } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { connect } from "react-redux";
-import { initialize } from "redux-form";
 import { withRouter } from "react-router";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ExternalLinkIcon from "@/components/icons/ExternalLinkIcon";
 import Loader from "@/components/loader/Loader";
@@ -19,7 +17,7 @@ import { fetchSapInvoices } from "@/sapInvoice/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER } from "@/sapInvoice/constants";
-import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
+import { Methods, PermissionMissingTexts } from "@/enums";
 import { InvoiceFieldPaths, InvoiceRowsFieldPaths } from "@/invoices/enums";
 import { getContactFullName } from "@/contacts/helpers";
 import { formatReceivableTypesString } from "@/invoices/helpers";
@@ -133,176 +131,106 @@ const getColumns = (invoiceAttributes: Attributes) => {
 type Props = {
   fetchSapInvoices: (...args: Array<any>) => any;
   history: Record<string, any>;
-  initialize: (...args: Array<any>) => any;
   invoiceAttributes: Attributes;
-  // Via withSapInvoicesAttributes HOC
   invoiceMethods: MethodsType;
-  // Via withSapInvoicesAttributes HOC
   isFetching: boolean;
   isFetchingInvoiceAttributes: boolean;
-  // Via withSapInvoicesAttributes HOC
   location: Record<string, any>;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   sapInvoiceList: SapInvoiceList;
   userActiveServiceUnit: UserServiceUnit;
 };
-type State = {
-  activePage: number;
-  columns: Array<Record<string, any>>;
-  count: number;
-  invoiceAttributes: Attributes;
-  isSearchInitialized: boolean;
-  maxPage: number;
-  sapInvoiceList: SapInvoiceList;
-  sapInvoices: Array<Record<string, any>>;
-  sortKey: string;
-  sortOrder: string;
-};
 
-class SapInvoicesListPage extends PureComponent<Props, State> {
-  _isMounted: boolean;
-  _hasFetchedInvoices: boolean;
-  state = {
-    activePage: 1,
-    columns: [],
-    count: 0,
-    isSearchInitialized: false,
-    invoiceAttributes: null,
-    maxPage: 0,
-    sapInvoiceList: null,
-    sapInvoices: [],
-    sortKey: DEFAULT_SORT_KEY,
-    sortOrder: DEFAULT_SORT_ORDER,
-  };
+const SapInvoicesListPage: React.FC<Props> = ({
+  fetchSapInvoices,
+  history,
+  invoiceAttributes,
+  invoiceMethods,
+  isFetching,
+  isFetchingInvoiceAttributes,
+  location,
+  receiveTopNavigationSettings,
+  sapInvoiceList,
+  userActiveServiceUnit,
+}) => {
+  const [activePage, setActivePage] = useState(1);
+  const [columns, setColumns] = useState<Array<Record<string, any>>>([]);
+  const [count, setCount] = useState(0);
+  const [maxPage, setMaxPage] = useState(0);
+  const [sapInvoices, setSapInvoices] = useState<Array<Record<string, any>>>([]);
+  const [isSearchInitialized, setIsSearchInitialized] = useState(false);
+  const [searchFormInitialValues, setSearchFormInitialValues] = useState<Record<string, any>>({});
+  const [sortKey, setSortKey] = useState(DEFAULT_SORT_KEY);
+  const [sortOrder, setSortOrder] = useState(DEFAULT_SORT_ORDER);
 
-  componentDidMount() {
-    const { receiveTopNavigationSettings } = this.props;
+  // Track if initial search has been performed
+  const [hasFetchedInvoices, setHasFetchedInvoices] = useState(false);
+
+  useEffect(() => {
     setPageTitle("SAP laskut");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.SAP_INVOICES),
       pageTitle: "SAP laskut",
       showSearch: false,
     });
-    this._isMounted = true;
-  }
+  }, []);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
-
-    if (props.invoiceAttributes !== state.invoiceAttributes) {
-      newState.invoiceAttributes = props.invoiceAttributes;
-      newState.columns = getColumns(props.invoiceAttributes);
+  useEffect(() => {
+    if (invoiceAttributes) {
+      setColumns(getColumns(invoiceAttributes));
     }
+  }, [invoiceAttributes]);
 
-    if (props.sapInvoiceList !== state.sapInvoiceList) {
-      newState.sapInvoiceList = props.sapInvoiceList;
-      newState.count = getApiResponseCount(props.sapInvoiceList);
-      newState.sapInvoices = getSapInvoices(props.sapInvoiceList);
-      newState.maxPage = getApiResponseMaxPage(
-        props.sapInvoiceList,
-        LIST_TABLE_PAGE_SIZE,
-      );
+  useEffect(() => {
+    if (sapInvoiceList) {
+      setCount(getApiResponseCount(sapInvoiceList));
+      setSapInvoices(getSapInvoices(sapInvoiceList));
+      setMaxPage(getApiResponseMaxPage(sapInvoiceList, LIST_TABLE_PAGE_SIZE));
     }
+  }, [sapInvoiceList]);
 
-    return !isEmpty(newState) ? newState : null;
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      location: { search: currentSearch },
-      userActiveServiceUnit,
-    } = this.props;
-    const {
-      location: { search: prevSearch },
-      userActiveServiceUnit: prevUserActiveServiceUnit,
-    } = prevProps;
+  useEffect(() => {
+    const currentSearch = location.search;
+    const searchQuery = getUrlParams(currentSearch);
 
     const handleSearch = () => {
-      this.setSearchValues();
-      this.search();
+      setSearchFormValues();
+      search();
     };
 
     if (userActiveServiceUnit) {
-      if (!this._hasFetchedInvoices) {
-        // No search has been done yet
+      if (!hasFetchedInvoices) {
         handleSearch();
-        this._hasFetchedInvoices = true;
-      } else if (
-        userActiveServiceUnit !== prevUserActiveServiceUnit &&
-        !currentSearch.includes("service_unit")
-      ) {
-        // Search again after changing user active service unit only if not explicitly setting the service unit filter
+        setHasFetchedInvoices(true);
+      } else if (!currentSearch.includes("service_unit")) {
         handleSearch();
       }
     }
 
-    if (currentSearch !== prevSearch) {
-      handleSearch();
+    // Always search when search string changes
+    handleSearch();
+  }, [location.search, userActiveServiceUnit]);
+
+  const setSearchFormValues = useCallback(() => {
+    const searchQuery = getUrlParams(location.search);
+
+    const initialValues = { ...searchQuery };
+    if (initialValues.service_unit === undefined && userActiveServiceUnit) {
+      initialValues.service_unit = userActiveServiceUnit.id;
     }
-  }
+    delete initialValues.page;
+    delete initialValues.sort_key;
+    delete initialValues.sort_order;
 
-  componentWillUnmount() {
-    window.removeEventListener("popstate", this.handlePopState);
-    this._isMounted = false;
-    this._hasFetchedInvoices = false;
-  }
+    setActivePage(searchQuery.page ? Number(searchQuery.page) : 1);
+    setIsSearchInitialized(true);
+    setSearchFormInitialValues(initialValues);
+    setSortKey(searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY);
+    setSortOrder(searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER);
+  }, [location.search, userActiveServiceUnit]);
 
-  handlePopState = () => {
-    this.setSearchValues();
-  };
-  setSearchValues = () => {
-    const {
-      location: { search },
-      initialize,
-      userActiveServiceUnit,
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
-
-    const setSearchFormReady = () => {
-      this.setState({
-        isSearchInitialized: true,
-      });
-    };
-
-    const initializeSearchForm = async () => {
-      const initialValues = { ...searchQuery };
-
-      if (initialValues.service_unit === undefined && userActiveServiceUnit) {
-        initialValues.service_unit = userActiveServiceUnit.id;
-      }
-
-      delete initialValues.page;
-      delete initialValues.sort_key;
-      delete initialValues.sort_order;
-      initialize(FormNames.SAP_INVOICE_SEARCH, initialValues);
-    };
-
-    this.setState(
-      {
-        isSearchInitialized: false,
-        activePage: page,
-        sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
-        sortOrder: searchQuery.sort_order
-          ? searchQuery.sort_order
-          : DEFAULT_SORT_ORDER,
-      },
-      async () => {
-        await initializeSearchForm();
-
-        if (this._isMounted) {
-          setSearchFormReady();
-        }
-      },
-    );
-  };
-  search = () => {
-    const {
-      fetchSapInvoices,
-      location: { search },
-      userActiveServiceUnit,
-    } = this.props;
-    const searchQuery = getUrlParams(search);
+  const search = useCallback(() => {
+    const searchQuery = getUrlParams(location.search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     if (page > 1) {
@@ -319,40 +247,33 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
     }
 
     fetchSapInvoices(mapSapInvoiceSearchFilters(searchQuery));
-  };
-  handleRowClick = (id, row) => {
+  }, [fetchSapInvoices, location.search, userActiveServiceUnit]);
+
+  const handleRowClick = useCallback((id, row) => {
     window.open(
       `${getRouteById(Routes.LEASES)}/${row.lease.id}?tab=6&opened_invoice=${id}`,
       "_blank",
     );
-  };
-  handleSearchChange = (query: any) => {
-    const { history } = this.props;
-    return history.push({
+  }, []);
+
+  const handleSearchChange = useCallback((query: any) => {
+    history.push({
       pathname: getRouteById(Routes.SAP_INVOICES),
       search: getSearchQuery(query),
     });
-  };
-  handleSortingChange = ({ sortKey, sortOrder }) => {
-    const {
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
+  }, [history]);
+
+  const handleSortingChange = useCallback(({ sortKey, sortOrder }) => {
+    const searchQuery = getUrlParams(location.search);
     searchQuery.sort_key = sortKey;
     searchQuery.sort_order = sortOrder;
-    this.setState(
-      {
-        sortKey,
-        sortOrder,
-      },
-      this.handleSearchChange(searchQuery),
-    );
-  };
-  handlePageClick = (page: number) => {
-    const {
-      location: { search },
-    } = this.props;
-    const query = getUrlParams(search);
+    setSortKey(sortKey);
+    setSortOrder(sortOrder);
+    handleSearchChange(searchQuery);
+  }, [location.search, handleSearchChange]);
+
+  const handlePageClick = useCallback((page: number) => {
+    const query = getUrlParams(location.search);
 
     if (page > 1) {
       query.page = page;
@@ -360,94 +281,75 @@ class SapInvoicesListPage extends PureComponent<Props, State> {
       delete query.page;
     }
 
-    this.setState(
-      {
-        activePage: page,
-      },
-      this.handleSearchChange(query),
-    );
-  };
+    setActivePage(page);
+    handleSearchChange(query);
+  }, [location.search, handleSearchChange]);
 
-  render() {
-    const {
-      invoiceMethods,
-      isFetching,
-      isFetchingInvoiceAttributes,
-      userActiveServiceUnit,
-    } = this.props;
-    const {
-      activePage,
-      count,
-      columns,
-      isSearchInitialized,
-      maxPage,
-      sapInvoices,
-      sortKey,
-      sortOrder,
-    } = this.state;
-    if (isFetchingInvoiceAttributes)
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    if (!invoiceMethods) return null;
-    if (!isMethodAllowed(invoiceMethods, Methods.GET))
-      return (
-        <PageContainer>
-          <AuthorizationError text={PermissionMissingTexts.INVOICE} />
-        </PageContainer>
-      );
+  if (isFetchingInvoiceAttributes)
     return (
       <PageContainer>
-        <Row>
-          <Column small={12} large={8} />
-          <Column small={12} large={4}>
-            {userActiveServiceUnit && (
-              <Search
-                isSearchInitialized={isSearchInitialized}
-                onSearch={this.handleSearchChange}
-              />
-            )}
-          </Column>
-        </Row>
-        <Row>
-          <Column small={12} medium={6}></Column>
-          <Column small={12} medium={6}>
-            <TableFilters
-              amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
-              filterOptions={[]}
-              filterValue={[]}
-            />
-          </Column>
-        </Row>
-        <TableWrapper>
-          {isFetching && (
-            <LoaderWrapper className="relative-overlay-wrapper">
-              <Loader isLoading={isFetching} />
-            </LoaderWrapper>
-          )}
-          <SortableTable
-            columns={columns}
-            data={sapInvoices}
-            listTable
-            onRowClick={this.handleRowClick}
-            onSortingChange={this.handleSortingChange}
-            serverSideSorting
-            sortable
-            sortKey={sortKey}
-            sortOrder={sortOrder}
-          />
-          <Pagination
-            activePage={activePage}
-            maxPage={maxPage}
-            onPageClick={this.handlePageClick}
-          />
-        </TableWrapper>
+        <Loader isLoading={true} />
       </PageContainer>
     );
-  }
-}
+  if (!invoiceMethods) return null;
+  if (!isMethodAllowed(invoiceMethods, Methods.GET))
+    return (
+      <PageContainer>
+        <AuthorizationError text={PermissionMissingTexts.INVOICE} />
+      </PageContainer>
+    );
+  return (
+    <PageContainer>
+      <Row>
+        <Column small={12} large={8} />
+        <Column small={12} large={4}>
+          {userActiveServiceUnit && (
+            <Search
+              isSearchInitialized={isSearchInitialized}
+              onSearch={handleSearchChange}
+              sortKey={sortKey}
+              sortOrder={sortOrder}
+              initialValues={searchFormInitialValues || {}}
+            />
+          )}
+        </Column>
+      </Row>
+      <Row>
+        <Column small={12} medium={6}></Column>
+        <Column small={12} medium={6}>
+          <TableFilters
+            amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
+            filterOptions={[]}
+            filterValue={[]}
+          />
+        </Column>
+      </Row>
+      <TableWrapper>
+        {isFetching && (
+          <LoaderWrapper className="relative-overlay-wrapper">
+            <Loader isLoading={isFetching} />
+          </LoaderWrapper>
+        )}
+        <SortableTable
+          columns={columns}
+          data={sapInvoices}
+          listTable
+          onRowClick={handleRowClick}
+          onSortingChange={handleSortingChange}
+          serverSideSorting
+          sortable
+          sortKey={sortKey}
+          sortOrder={sortOrder}
+        />
+        <Pagination
+          activePage={activePage}
+          maxPage={maxPage}
+          onPageClick={handlePageClick}
+        />
+      </TableWrapper>
+    </PageContainer>
+  );
+};
 
 export default flowRight(
   withSapInvoicesAttributes,
@@ -462,7 +364,6 @@ export default flowRight(
     },
     {
       fetchSapInvoices,
-      initialize,
       receiveTopNavigationSettings,
     },
   ),
