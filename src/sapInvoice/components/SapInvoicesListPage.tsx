@@ -191,7 +191,6 @@ const SapInvoicesListPage: React.FC<Props> = ({
 
   useEffect(() => {
     const currentSearch = location.search;
-    const searchQuery = getUrlParams(currentSearch);
 
     const handleSearch = () => {
       setSearchFormValues();
