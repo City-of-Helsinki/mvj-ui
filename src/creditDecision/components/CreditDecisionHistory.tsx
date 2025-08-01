@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { Fragment, useEffect } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
@@ -21,6 +21,7 @@ import {
   getHistoryByContactId,
   getIsFetchingHistoryByContactId,
 } from "@/creditDecision/selectors";
+
 type Props = {
   businessId?: string;
   contactId?: string;
@@ -30,33 +31,17 @@ type Props = {
   fetchHistoryByContactId: (...args: Array<any>) => any;
 };
 
-class CreditDecisionHistory extends PureComponent<Props> {
-  componentDidMount() {
-    this.fetchHistoryDataIfNeeded();
-  }
+const CreditDecisionHistory: React.FC<Props> = ({
+  businessId,
+  contactId,
+  history,
+  isFetchingHistory,
+  fetchHistoryByBusinessId,
+  fetchHistoryByContactId,
+}) => {
 
-  componentDidUpdate(prevProps: Props) {
-    const { businessId, contactId } = this.props;
-
-    if (contactId && contactId !== prevProps.contactId) {
-      this.fetchHistoryDataIfNeeded();
-    }
-
-    if (businessId && businessId !== prevProps.businessId) {
-      this.fetchHistoryDataIfNeeded();
-    }
-  }
-
-  fetchHistoryDataIfNeeded = () => {
-    const {
-      businessId,
-      contactId,
-      history,
-      fetchHistoryByContactId,
-      fetchHistoryByBusinessId,
-    } = this.props;
+  useEffect(() => {
     if (!contactId && !businessId) return;
-
     if (history === undefined) {
       if (contactId) {
         fetchHistoryByContactId(contactId);
@@ -64,78 +49,76 @@ class CreditDecisionHistory extends PureComponent<Props> {
         fetchHistoryByBusinessId(businessId);
       }
     }
-  };
+  }, [businessId, contactId, history]);
 
-  render() {
-    const { history, isFetchingHistory } = this.props;
-    if (history === undefined && !isFetchingHistory) return null;
-    return (
-      <GreenBox className="with-top-margin">
-        <h3>{CreditDecisionText.REQUEST_HISTORY_TITLE}</h3>
-        {isFetchingHistory && (
-          <WhiteBox>
-            <LoaderWrapper>
-              <Loader isLoading={isFetchingHistory} />
-            </LoaderWrapper>
-          </WhiteBox>
-        )}
-        {!isFetchingHistory && (
-          <Fragment>
-            {history.length === 0 && (
-              <WhiteBox className="with-bottom-padding">
-                <div className="icon-and-text">
-                  <InfoIcon className="icon-small icons__success" />{" "}
-                  {CreditDecisionText.NO_REQUEST_HISTORY}
-                </div>
-              </WhiteBox>
-            )}
-            {!isEmpty(history) && (
-              <WhiteBox className="with-bottom-padding">
-                <table className="history-table">
-                  <thead>
-                    <tr>
-                      <th>{CreditDecisionText.CREDIT_DECISION}</th>
-                      <th>{CreditDecisionText.REASONS}</th>
-                      <th>{CreditDecisionText.CREDIT_DECISION_TIMESTAMP}</th>
-                      <th className="text-right">
-                        {CreditDecisionText.CLAIMANT}
-                      </th>
+  if (history === undefined && !isFetchingHistory) return null;
+  
+  return (
+    <GreenBox className="with-top-margin">
+      <h3>{CreditDecisionText.REQUEST_HISTORY_TITLE}</h3>
+      {isFetchingHistory && (
+        <WhiteBox>
+          <LoaderWrapper>
+            <Loader isLoading={isFetchingHistory} />
+          </LoaderWrapper>
+        </WhiteBox>
+      )}
+      {!isFetchingHistory && (
+        <Fragment>
+          {history.length === 0 && (
+            <WhiteBox className="with-bottom-padding">
+              <div className="icon-and-text">
+                <InfoIcon className="icon-small icons__success" />{" "}
+                {CreditDecisionText.NO_REQUEST_HISTORY}
+              </div>
+            </WhiteBox>
+          )}
+          {!isEmpty(history) && (
+            <WhiteBox className="with-bottom-padding">
+              <table className="history-table">
+                <thead>
+                  <tr>
+                    <th>{CreditDecisionText.CREDIT_DECISION}</th>
+                    <th>{CreditDecisionText.REASONS}</th>
+                    <th>{CreditDecisionText.CREDIT_DECISION_TIMESTAMP}</th>
+                    <th className="text-right">
+                      {CreditDecisionText.CLAIMANT}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {history.map((row) => (
+                    <tr key={row.id}>
+                      <td>
+                        <StatusText status={row.status} />
+                      </td>
+                      <td>
+                        {row.reasons.length !== 0
+                          ? row.reasons.map((reason, index) => (
+                              <div key={index}>
+                                {reason.reason} ({reason.reason_code})
+                              </div>
+                            ))
+                          : "-"}
+                      </td>
+                      <td>
+                        {formatDate(row.created_at)}{" "}
+                        {getHoursAndMinutes(row.created_at)}
+                      </td>
+                      <td className="text-right">
+                        {row.claimant.first_name} {row.claimant.last_name}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {history.map((row) => (
-                      <tr key={row.id}>
-                        <td>
-                          <StatusText status={row.status} />
-                        </td>
-                        <td>
-                          {row.reasons.length !== 0
-                            ? row.reasons.map((reason, index) => (
-                                <div key={index}>
-                                  {reason.reason} ({reason.reason_code})
-                                </div>
-                              ))
-                            : "-"}
-                        </td>
-                        <td>
-                          {formatDate(row.created_at)}{" "}
-                          {getHoursAndMinutes(row.created_at)}
-                        </td>
-                        <td className="text-right">
-                          {row.claimant.first_name} {row.claimant.last_name}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </WhiteBox>
-            )}
-          </Fragment>
-        )}
-      </GreenBox>
-    );
-  }
-}
+                  ))}
+                </tbody>
+              </table>
+            </WhiteBox>
+          )}
+        </Fragment>
+      )}
+    </GreenBox>
+  );
+};
 
 export default flowRight(
   connect(
