@@ -559,19 +559,14 @@ const ContactForm: React.FC<Props> = ({
                     ContactFieldPaths.IS_LESSOR,
                   )}
                 >
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={getFieldAttributes(
-                      attributes,
-                      ContactFieldPaths.IS_LESSOR,
-                    )}
-                    name="is_lessor"
-                    overrideValues={{
-                      label: ContactFieldTitles.IS_LESSOR,
-                    }}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataContactKey(ContactFieldPaths.IS_LESSOR)}
-                  />
+              <>
+                <FormTextTitle
+                  uiDataKey={getUiDataContactKey(ContactFieldPaths.IS_LESSOR)}
+                >
+                  {ContactFieldTitles.IS_LESSOR}
+                </FormTextTitle>
+                <FormText>{initialValues.is_lessor ? "Kyllä" : "Ei"}</FormText>
+              </>
                 </Authorization>
               </Column>
               <Column small={12} medium={6} large={4}>
