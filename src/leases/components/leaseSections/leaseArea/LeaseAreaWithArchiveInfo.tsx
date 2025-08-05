@@ -27,16 +27,14 @@ import {
 } from "@/util/helpers";
 import { getAttributes, getCollapseStateByKey } from "@/leases/selectors";
 import type { Attributes } from "types";
+
 type Props = {
   area: Record<string, any>;
   areaCollapseState: boolean;
   attributes: Attributes;
   decisionOptions: Array<Record<string, any>>;
-  planUnitsContractCollapseState: boolean;
-  planUnitsCurrentCollapseState: boolean;
-  plotsContractCollapseState: boolean;
-  plotsCurrentCollapseState: boolean;
   receiveCollapseStates: (...args: Array<any>) => any;
+  isLeaseAreaDraft?: boolean;
 };
 
 const LeaseAreaWithArchiveInfo = ({
@@ -45,6 +43,7 @@ const LeaseAreaWithArchiveInfo = ({
   attributes,
   decisionOptions,
   receiveCollapseStates,
+  isLeaseAreaDraft = false,
 }: Props) => {
   const handleAreaCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
@@ -134,7 +133,7 @@ const LeaseAreaWithArchiveInfo = ({
       }
       onToggle={handleAreaCollapseToggle}
     >
-      <LeaseArea area={area} />
+      <LeaseArea area={area} isLeaseAreaDraft={isLeaseAreaDraft} />
 
       {!!archived && <Divider className="lease-area-divider" />}
       {!!archived && (

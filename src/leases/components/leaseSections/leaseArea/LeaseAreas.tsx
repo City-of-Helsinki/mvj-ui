@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
-import LeaseAreaWithArchiceInfo from "./LeaseAreaWithArchiceInfo";
+import LeaseAreaWithArchiveInfo from "./LeaseAreaWithArchiveInfo";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
 import { LeaseAreasFieldPaths } from "@/leases/enums";
@@ -49,7 +49,7 @@ const LeaseAreas = ({ attributes, currentLease }: Props) => {
       {activeAreas &&
         !!activeAreas.length &&
         activeAreas.map((area, index) => (
-          <LeaseAreaWithArchiceInfo
+          <LeaseAreaWithArchiveInfo
             key={index}
             area={area}
             decisionOptions={decisionOptions}
@@ -69,7 +69,7 @@ const LeaseAreas = ({ attributes, currentLease }: Props) => {
       {archivedAreas &&
         !!archivedAreas.length &&
         archivedAreas.map((area, index) => (
-          <LeaseAreaWithArchiceInfo
+          <LeaseAreaWithArchiveInfo
             key={index}
             area={area}
             decisionOptions={decisionOptions}
