@@ -2752,20 +2752,31 @@ export const getContentPlanUnitsGeoJson = (
 };
 
 /**
- * Get coordinates of lease
+ * Get coordinates of lease.
+ * If lease has no areas, it returns coordinates of lease area draft.
+ * If lease has no areas and no lease area draft, it returns empty array.
  * @param {Object} lease
  * @returns {Object[]}
  */
 export const getLeaseCoordinates = (
   lease: Lease,
 ): Array<Record<string, any>> => {
+  const coordinates = [];
   const areas = get(lease, "lease_areas", []).filter(
     (area) => !area.archived_at,
   );
-  let coordinates = [];
+
   areas.forEach((area) => {
     coordinates.push(...getCoordinatesOfGeometry(area.geometry));
   });
+  
+  if (!coordinates.length) {
+    const lease_area_draft = getContentLeaseAreaDraft(lease);
+    if (lease_area_draft && lease_area_draft.geometry) {
+      coordinates.push(...getCoordinatesOfGeometry(lease_area_draft.geometry));
+    }
+  };
+
   return coordinates;
 };
 
