@@ -556,6 +556,7 @@ export const LeaseAreasFieldTitles = {
   DEMOLITION: "Purku",
   DEMOLITION_STATE: "Selvitysaste",
   GEOMETRY: "Karttalinkki",
+  GEOMETRY_DRAFT: "Luonnostele kartta",
   IDENTIFIER: "Kohteen tunnus",
   LOCATION: "Sijainti",
   OTHER: "Muut",
@@ -656,6 +657,41 @@ export const LeaseAreaCustomDetailedPlanFieldPaths = {
     "lease_areas.child.children.custom_detailed_plan.children.usage_distributions",
   INFO_LINKS:
     "lease_areas.child.children.custom_detailed_plan.children.info_links",
+};
+
+/**
+ * Lease area draft field paths enumerable.
+ *
+ * @type {{}}
+ */
+
+export const LeaseAreaDraftFieldPaths = {
+
+  ADDRESS_INFO: "lease_area_draft.children.address_info",
+  IDENTIFIER: "lease_area_draft.children.identifier",
+  AREA: "lease_area_draft.children.area",
+  GEOMETRY: "lease_area_draft.children.geometry",
+  LOCATION: "lease_area_draft.children.location",
+  ADDRESS: "lease_area_draft.children.address",
+  POSTAL_CODE: "lease_area_draft.children.postal_code",
+  CITY: "lease_area_draft.children.city",
+};
+
+
+/**
+ * Lease area draft field titles enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseAreaDraftFieldTitles = {
+  IDENTIFIER: "Kohteen tunnus",
+  AREA: "Pinta-ala",
+  GEOMETRY: "Geometria",
+  LOCATION: "Sijainti",
+  ADDRESS_INFO: "Osoitetiedot",
+  ADDRESS: "Osoite",
+  POSTAL_CODE: "Postinumero",
+  CITY: "Paikkakunta",
 };
 
 /**
