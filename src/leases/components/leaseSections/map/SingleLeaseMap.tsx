@@ -326,9 +326,10 @@ class SingleLeaseMap extends PureComponent<Props, State> {
 
   render() {
     const { isEditMode, change, leaseAreaDraftFromForm, leaseAreaDraftFromState } = this.props;
-    const { bounds, center } = this.state;
+    const { bounds, center, areasGeoJson } = this.state;
     const overlayLayers = this.getOverlayLayers();
-    const initialValues = isEditMode ? leaseAreaDraftFromForm : leaseAreaDraftFromState || {};
+    const initialValues = isEditMode ? leaseAreaDraftFromForm : leaseAreaDraftFromState || null;
+    const showLeaseAreaDraft = isEmpty(areasGeoJson?.features);
     return (
       <Fragment>
         <Title
@@ -342,7 +343,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
           change={(features: LeafletFeatureGeometry) => {
             change("lease_area_draft.geometry", features);
           }}
-          initialValues={initialValues}
+          initialValues={showLeaseAreaDraft ? initialValues : null}
           isAllowedToEdit={isFieldAllowedToEdit(
             this.state.leaseAttributes,
             LeaseAreasFieldPaths.GEOMETRY,
