@@ -30,7 +30,7 @@ type State = {
   isValid: boolean;
 };
 
-class MapComponent extends Component<Props, State> {
+class MapInput extends Component<Props, State> {
   featureGroup: Record<string, any> | null | undefined;
   state: State = {
     isValid: false,
@@ -171,4 +171,4 @@ class MapComponent extends Component<Props, State> {
   }
 }
 
-export default MapComponent;
+export default MapInput;

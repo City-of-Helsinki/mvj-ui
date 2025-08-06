@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
-import MapComponent from "@/components/map/Map";
+import MapInput from "@/components/map/MapInput";
 import AreasLayer from "./AreasLayer";
 import Divider from "@/components/content/Divider";
 import PlanUnitsLayer from "./PlanUnitsLayer";
@@ -337,7 +337,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
           {LeaseFieldTitles.MAP}
         </Title>
         <Divider />
-        <MapComponent
+        <MapInput
           change={(features: LeafletFeatureGeometry) => {
             change("lease_area_draft.geometry", features);
           }}
