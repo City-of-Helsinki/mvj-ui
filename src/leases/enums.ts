@@ -666,8 +666,6 @@ export const LeaseAreaCustomDetailedPlanFieldPaths = {
  */
 
 export const LeaseAreaDraftFieldPaths = {
-
-  ADDRESS_INFO: "lease_area_draft.children.address_info",
   IDENTIFIER: "lease_area_draft.children.identifier",
   AREA: "lease_area_draft.children.area",
   GEOMETRY: "lease_area_draft.children.geometry",
@@ -688,7 +686,6 @@ export const LeaseAreaDraftFieldTitles = {
   AREA: "Pinta-ala",
   GEOMETRY: "Geometria",
   LOCATION: "Sijainti",
-  ADDRESS_INFO: "Osoitetiedot",
   ADDRESS: "Osoite",
   POSTAL_CODE: "Postinumero",
   CITY: "Paikkakunta",

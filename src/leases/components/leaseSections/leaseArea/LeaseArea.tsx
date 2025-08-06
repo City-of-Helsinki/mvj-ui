@@ -225,11 +225,6 @@ const LeaseArea = ({
       </Row>
       {isLeaseAreaDraft ? (
         <>
-          <SubTitle
-            uiDataKey={getUiDataLeaseKey(LeaseAreaDraftFieldPaths.ADDRESS_INFO)}
-          >
-            {LeaseAreaDraftFieldTitles.ADDRESS}
-          </SubTitle>
           <Row>
             <Column small={6} medium={4} large={2}>
               <Authorization
