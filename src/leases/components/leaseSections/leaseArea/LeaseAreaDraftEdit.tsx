@@ -108,20 +108,6 @@ const LeaseAreaDraftEdit = ({ attributes, identifier }) => {
             />
           </Authorization>
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              attributes,
-              LeaseAreaDraftFieldPaths.GEOMETRY,
-            )}
-          >
-            <Link to={mapLinkUrl}>
-              {isFieldAllowedToEdit(attributes, LeaseAreasFieldPaths.GEOMETRY)
-                ? LeaseAreasFieldTitles.GEOMETRY_DRAFT
-                : LeaseAreasFieldTitles.GEOMETRY}
-            </Link>
-          </Authorization>
-        </Column>
       </Row>
       <Row>
         <Column small={6} medium={4} large={2}>
