@@ -219,11 +219,7 @@ const LeaseArea = ({
             )}
           >
             {!archived && !isEmpty(area.geometry) && (
-              <Link to={mapLinkUrl}>
-                {isLeaseAreaDraft
-                  ? LeaseAreasFieldTitles.GEOMETRY_DRAFT
-                  : LeaseAreasFieldTitles.GEOMETRY}
-              </Link>
+              <Link to={mapLinkUrl}>{LeaseAreasFieldTitles.GEOMETRY}</Link>
             )}
           </Authorization>
         </Column>
