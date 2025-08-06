@@ -128,7 +128,7 @@ const LeaseAreaWithArchiveInfo = ({
             LeaseAreasFieldPaths.IDENTIFIER,
           )}
         >
-          {area.identifier || "-"}
+          <>{area.identifier || "-"}{isLeaseAreaDraft && " (luonnos)"}</>
         </Authorization>
       }
       onToggle={handleAreaCollapseToggle}
