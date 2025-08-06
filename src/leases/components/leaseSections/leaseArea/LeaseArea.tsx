@@ -153,22 +153,27 @@ const LeaseArea = ({
             </>
           </Authorization>
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <Authorization
-            allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.TYPE)}
-          >
-            <>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.TYPE)}
-              >
-                {LeaseAreasFieldTitles.TYPE}
-              </FormTextTitle>
-              <FormText>
-                {getLabelOfOption(typeOptions, area.type) || "-"}
-              </FormText>
-            </>
-          </Authorization>
-        </Column>
+        {!isLeaseAreaDraft && (
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreasFieldPaths.TYPE,
+              )}
+            >
+              <>
+                <FormTextTitle
+                  uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.TYPE)}
+                >
+                  {LeaseAreasFieldTitles.TYPE}
+                </FormTextTitle>
+                <FormText>
+                  {getLabelOfOption(typeOptions, area.type) || "-"}
+                </FormText>
+              </>
+            </Authorization>
+          </Column>
+        )}
         <Column small={6} medium={4} large={2}>
           <Authorization
             allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}
