@@ -32,6 +32,7 @@ import {
   getFieldOptions,
   getUrlParams,
   hasPermissions,
+  isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from "@/util/helpers";
 import { getBoundsFromCoordinates, getCenterFromCoordinates } from "@/util/map";
@@ -342,6 +343,10 @@ class SingleLeaseMap extends PureComponent<Props, State> {
             change("lease_area_draft.geometry", features);
           }}
           initialValues={initialValues}
+          isAllowedToEdit={isFieldAllowedToEdit(
+            this.state.leaseAttributes,
+            LeaseAreasFieldPaths.GEOMETRY,
+          )}
           isEditMode={isEditMode}
           bounds={bounds}
           center={center}
