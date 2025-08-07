@@ -61,9 +61,15 @@ import type {
   IntendedUse,
   PeriodicRentAdjustmentType,
   CreateLeaseFormValues,
+  LeaseAreaDraft,
 } from "./types";
 import type { CommentList } from "@/comments/types";
-import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
+import type {
+  Attributes,
+  LeafletFeature,
+  LeafletFeatureGeometry,
+  LeafletGeoJson,
+} from "types";
 import type { RootState } from "@/root/types";
 import type { LeaseList, DueDate } from "@/leases/types";
 import type { IndexPointFigureYearly } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
@@ -2620,6 +2626,18 @@ export const getContentAreasGeoJson = (lease: Lease): LeafletGeoJson => {
 };
 
 /**
+ * Get content lease area draft
+ * @param {Object} lease
+ * @returns {Object}
+ */
+export const getContentLeaseAreaDraft = (
+  lease: Lease,
+): LeaseAreaDraft | null => {
+  const leaseAreaDraft = get(lease, "lease_area_draft", null);
+  return leaseAreaDraft;
+};
+
+/**
  * Get content lease plots features for geojson data
  * @param {Object[]} plots
  * @returns {Object[]}
@@ -2734,20 +2752,31 @@ export const getContentPlanUnitsGeoJson = (
 };
 
 /**
- * Get coordinates of lease
+ * Get coordinates of lease.
+ * If lease has no areas, it returns coordinates of lease area draft.
+ * If lease has no areas and no lease area draft, it returns empty array.
  * @param {Object} lease
  * @returns {Object[]}
  */
 export const getLeaseCoordinates = (
   lease: Lease,
 ): Array<Record<string, any>> => {
+  const coordinates = [];
   const areas = get(lease, "lease_areas", []).filter(
     (area) => !area.archived_at,
   );
-  let coordinates = [];
+
   areas.forEach((area) => {
     coordinates.push(...getCoordinatesOfGeometry(area.geometry));
   });
+  
+  if (!coordinates.length) {
+    const lease_area_draft = getContentLeaseAreaDraft(lease);
+    if (lease_area_draft && lease_area_draft.geometry) {
+      coordinates.push(...getCoordinatesOfGeometry(lease_area_draft.geometry));
+    }
+  };
+
   return coordinates;
 };
 
@@ -3255,6 +3284,30 @@ export const addConstructabilityFormValuesToPayload = (
       );
     });
   }
+
+  return payload;
+};
+
+export const addLeaseAreaDraftFormValuesToPayload = (
+  payload: Record<string, any>,
+  formValues: LeafletFeatureGeometry | null,
+): Record<string, any> => {
+  const leaseAreaDraft = get(formValues, "lease_area_draft", null);
+  if (!leaseAreaDraft) {
+    return payload;
+  }
+  const { identifier, geometry, area, location, address, postal_code, city } =
+    leaseAreaDraft;
+
+  payload.lease_area_draft = {
+    geometry: geometry,
+    identifier: identifier || "XYZ-XYZ-XYZ",
+    area: area || 1000,
+    location: location || "surface",
+    address: address || "",
+    postal_code: postal_code || "",
+    city: city || "",
+  };
 
   return payload;
 };

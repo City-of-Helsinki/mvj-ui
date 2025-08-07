@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
-import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
+import MapInput from "@/components/map/MapInput";
 import AreasLayer from "./AreasLayer";
 import Divider from "@/components/content/Divider";
 import PlanUnitsLayer from "./PlanUnitsLayer";
@@ -22,6 +22,7 @@ import {
 import { UsersPermissions } from "@/usersPermissions/enums";
 import {
   getContentAreasGeoJson,
+  getContentLeaseAreaDraft,
   getContentPlanUnitsGeoJson,
   getContentPlotsGeoJson,
   getLeaseCoordinates,
@@ -31,6 +32,7 @@ import {
   getFieldOptions,
   getUrlParams,
   hasPermissions,
+  isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from "@/util/helpers";
 import { getBoundsFromCoordinates, getCenterFromCoordinates } from "@/util/map";
@@ -41,18 +43,28 @@ import {
   getIsEditMode,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes, LeafletGeoJson } from "types";
+import type { Attributes, LeafletFeatureGeometry, LeafletGeoJson } from "types";
 import type { Lease } from "@/leases/types";
 import type { AreaNoteList } from "@/areaNote/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import {
+  change,
+  formValueSelector,
+  reduxForm,
+} from "redux-form";
+import { FormNames } from "@/enums";
+
 type Props = {
   areaNotes: AreaNoteList;
+  change: (...args: Array<any>) => any;
   currentLease: Lease;
   fetchAreaNoteList: (...args: Array<any>) => any;
   isEditMode: boolean;
   leaseAttributes: Attributes;
   location: Record<string, any>;
   usersPermissions: UsersPermissionsType;
+  leaseAreaDraftFromForm: Record<string, any> | null | undefined;
+  leaseAreaDraftFromState: Record<string, any> | null | undefined;
 };
 type State = {
   areasGeoJson: LeafletGeoJson;
@@ -292,28 +304,32 @@ class SingleLeaseMap extends PureComponent<Props, State> {
       });
     }
 
-    {
+    if (
       hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) &&
-        !isEmpty(areaNotes) &&
-        layers.push({
-          checked: false,
-          component: (
-            <AreaNotesLayer
-              key="area_notes"
-              allowToEdit={false}
-              areaNotes={areaNotes}
-            />
-          ),
-          name: "Muistettavat ehdot",
-        });
+      !isEmpty(areaNotes)
+    ) {
+      layers.push({
+        checked: false,
+        component: (
+          <AreaNotesLayer
+            key="area_notes"
+            allowToEdit={false}
+            areaNotes={areaNotes}
+          />
+        ),
+        name: "Muistettavat ehdot",
+      });
     }
+
     return layers;
   };
 
   render() {
-    const { isEditMode } = this.props;
-    const { bounds, center } = this.state;
+    const { isEditMode, change, leaseAreaDraftFromForm, leaseAreaDraftFromState } = this.props;
+    const { bounds, center, areasGeoJson } = this.state;
     const overlayLayers = this.getOverlayLayers();
+    const initialValues = isEditMode ? leaseAreaDraftFromForm : leaseAreaDraftFromState || null;
+    const showLeaseAreaDraft = isEmpty(areasGeoJson?.features);
     return (
       <Fragment>
         <Title
@@ -323,32 +339,50 @@ class SingleLeaseMap extends PureComponent<Props, State> {
           {LeaseFieldTitles.MAP}
         </Title>
         <Divider />
-
-        <AreaNotesEditMap
-          allowToEdit={false}
+        <MapInput
+          change={(features: LeafletFeatureGeometry) => {
+            change("lease_area_draft.geometry", features);
+          }}
+          initialValues={showLeaseAreaDraft ? initialValues : null}
+          isAllowedToEdit={isFieldAllowedToEdit(
+            this.state.leaseAttributes,
+            LeaseAreasFieldPaths.GEOMETRY,
+          )}
+          isEditMode={isEditMode}
           bounds={bounds}
           center={center}
           overlayLayers={overlayLayers}
+          hasError={false}
         />
       </Fragment>
     );
   }
 }
 
+const formName = FormNames.LEASE_AREA_DRAFT;
+const selector = formValueSelector(formName);
 export default flowRight(
   withRouter,
   connect(
     (state) => {
+      const currentLease = getCurrentLease(state);
       return {
         areaNotes: getAreaNoteList(state),
-        currentLease: getCurrentLease(state),
+        currentLease: currentLease,
         isEditMode: getIsEditMode(state),
         leaseAttributes: getLeaseAttributes(state),
         usersPermissions: getUsersPermissions(state),
+        leaseAreaDraftFromForm: selector(state, "lease_area_draft"),
+        leaseAreaDraftFromState: getContentLeaseAreaDraft(currentLease),
       };
     },
     {
       fetchAreaNoteList,
     },
   ),
+  reduxForm({
+    form: formName,
+    destroyOnUnmount: false,
+    change,
+  }),
 )(SingleLeaseMap) as React.ComponentType<any>;

@@ -3,12 +3,13 @@ import { connect } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
-import LeaseAreaWithArchiceInfo from "./LeaseAreaWithArchiceInfo";
+import LeaseAreaWithArchiveInfo from "./LeaseAreaWithArchiveInfo";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
 import { LeaseAreasFieldPaths } from "@/leases/enums";
 import {
   calculateAreasSum,
+  getContentLeaseAreaDraft,
   getContentLeaseAreas,
   getDecisionOptions,
 } from "@/leases/helpers";
@@ -24,10 +25,16 @@ type Props = {
 
 const LeaseAreas = ({ attributes, currentLease }: Props) => {
   const areas = getContentLeaseAreas(currentLease);
+  const leaseAreaDraft = getContentLeaseAreaDraft(currentLease);
   const activeAreas = areas.filter((area) => !area.archived_at);
   const archivedAreas = areas.filter((area) => area.archived_at);
   const areasSum = calculateAreasSum(activeAreas);
   const decisionOptions = getDecisionOptions(currentLease);
+
+  // Data state variables
+  const noAreaData =
+    !activeAreas.length && !archivedAreas.length && !leaseAreaDraft;
+  const hasActiveAreas = !!activeAreas && !!activeAreas.length;
   return (
     <div>
       <Title uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LEASE_AREAS)}>
@@ -42,14 +49,19 @@ const LeaseAreas = ({ attributes, currentLease }: Props) => {
       </Authorization>
       <Divider />
 
-      {!activeAreas ||
-        (!activeAreas.length && (
-          <FormText className="no-margin">Ei vuokra-alueita</FormText>
-        ))}
-      {activeAreas &&
-        !!activeAreas.length &&
+      {noAreaData && (
+        <FormText className="no-margin">Ei vuokra-alueita</FormText>
+      )}
+      {!!leaseAreaDraft && !hasActiveAreas && (
+        <LeaseAreaWithArchiveInfo
+          area={leaseAreaDraft}
+          decisionOptions={decisionOptions}
+          isLeaseAreaDraft
+        />
+      )}
+      {hasActiveAreas &&
         activeAreas.map((area, index) => (
-          <LeaseAreaWithArchiceInfo
+          <LeaseAreaWithArchiveInfo
             key={index}
             area={area}
             decisionOptions={decisionOptions}
@@ -69,7 +81,7 @@ const LeaseAreas = ({ attributes, currentLease }: Props) => {
       {archivedAreas &&
         !!archivedAreas.length &&
         archivedAreas.map((area, index) => (
-          <LeaseAreaWithArchiceInfo
+          <LeaseAreaWithArchiveInfo
             key={index}
             area={area}
             decisionOptions={decisionOptions}
