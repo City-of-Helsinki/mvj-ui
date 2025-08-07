@@ -29,21 +29,22 @@ type Props = {
 };
 type State = {
   isValid: boolean;
+  featureGroup: Record<string, any> | null | undefined;
 };
 
 class MapInput extends Component<Props, State> {
-  featureGroup: Record<string, any> | null | undefined;
   state: State = {
+    featureGroup: null,
     isValid: false,
   };
   setFeatureGroupRef: (el: Record<string, any> | null | undefined) => void = (
     el,
   ) => {
-    this.featureGroup = el;
+    this.setState({ featureGroup: el });
   };
   updateAllFeatures: () => void = throttle(
     () => {
-      this.featureGroup?.leafletElement?.eachLayer((layer) => {
+      this.state.featureGroup?.leafletElement?.eachLayer((layer) => {
         layer.showMeasurements();
         layer.updateMeasurements();
       });
@@ -60,7 +61,7 @@ class MapInput extends Component<Props, State> {
   handleAction: () => void = () => {
     const { change } = this.props;
     const features = [];
-    this.featureGroup?.leafletElement.eachLayer((layer) =>
+    this.state.featureGroup?.leafletElement.eachLayer((layer) =>
       features.push(layer.toGeoJSON()),
     );
     this.setState({
@@ -73,7 +74,7 @@ class MapInput extends Component<Props, State> {
     const { layer } = e;
     layer.showMeasurements();
     const features = [];
-    this.featureGroup?.leafletElement.eachLayer((layer) => {
+    this.state.featureGroup?.leafletElement.eachLayer((layer) => {
       layer.bindPopup("Alueluonnos");
       features.push(layer.toGeoJSON());
     });
@@ -84,7 +85,7 @@ class MapInput extends Component<Props, State> {
   };
   initializeMap: () => void = () => {
     const { initialValues } = this.props;
-    const featureGroup = this.featureGroup?.leafletElement;
+    const featureGroup = this.state.featureGroup?.leafletElement;
     const coordinates = initialValues?.geometry?.coordinates || [];
     if (featureGroup && coordinates.length > 0) {
       coordinates.map((selectedArea) => {
@@ -106,6 +107,7 @@ class MapInput extends Component<Props, State> {
       isEditMode,
       initialValues,
     } = this.props;
+    const { featureGroup } = this.state;
     return (
       <div
         className={classNames("AreaSearchMap", {
@@ -120,7 +122,7 @@ class MapInput extends Component<Props, State> {
             overlayLayers={overlayLayers}
           >
             <FeatureGroup ref={this.setFeatureGroupRef}>
-              {this.featureGroup && isEditMode && isAllowedToEdit ? (
+              {featureGroup && isEditMode && isAllowedToEdit ? (
                 <EditControl
                   position="topright"
                   onCreated={this.handleCreated}
