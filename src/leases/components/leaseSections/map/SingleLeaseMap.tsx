@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
-import MapComponent from "@/components/map/Map";
+import MapInput from "@/components/map/MapInput";
 import AreasLayer from "./AreasLayer";
 import Divider from "@/components/content/Divider";
 import PlanUnitsLayer from "./PlanUnitsLayer";
@@ -32,6 +32,7 @@ import {
   getFieldOptions,
   getUrlParams,
   hasPermissions,
+  isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from "@/util/helpers";
 import { getBoundsFromCoordinates, getCenterFromCoordinates } from "@/util/map";
@@ -325,9 +326,10 @@ class SingleLeaseMap extends PureComponent<Props, State> {
 
   render() {
     const { isEditMode, change, leaseAreaDraftFromForm, leaseAreaDraftFromState } = this.props;
-    const { bounds, center } = this.state;
+    const { bounds, center, areasGeoJson } = this.state;
     const overlayLayers = this.getOverlayLayers();
-    const initialValues = isEditMode ? leaseAreaDraftFromForm : leaseAreaDraftFromState || {};
+    const initialValues = isEditMode ? leaseAreaDraftFromForm : leaseAreaDraftFromState || null;
+    const showLeaseAreaDraft = isEmpty(areasGeoJson?.features);
     return (
       <Fragment>
         <Title
@@ -337,11 +339,15 @@ class SingleLeaseMap extends PureComponent<Props, State> {
           {LeaseFieldTitles.MAP}
         </Title>
         <Divider />
-        <MapComponent
+        <MapInput
           change={(features: LeafletFeatureGeometry) => {
             change("lease_area_draft.geometry", features);
           }}
-          initialValues={initialValues}
+          initialValues={showLeaseAreaDraft ? initialValues : null}
+          isAllowedToEdit={isFieldAllowedToEdit(
+            this.state.leaseAttributes,
+            LeaseAreasFieldPaths.GEOMETRY,
+          )}
           isEditMode={isEditMode}
           bounds={bounds}
           center={center}

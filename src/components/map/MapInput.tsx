@@ -20,6 +20,7 @@ const SHAPE_ERROR_COLOR = "#bd2719";
 type Props = {
   change?: (...args: Array<any>) => any;
   initialValues: Record<string, any> | null | undefined;
+  isAllowedToEdit: boolean;
   isEditMode: boolean;
   center: Array<number>;
   bounds: Record<string, any> | null | undefined;
@@ -30,7 +31,7 @@ type State = {
   isValid: boolean;
 };
 
-class MapComponent extends Component<Props, State> {
+class MapInput extends Component<Props, State> {
   featureGroup: Record<string, any> | null | undefined;
   state: State = {
     isValid: false,
@@ -92,7 +93,7 @@ class MapComponent extends Component<Props, State> {
           .addTo(featureGroup);
       });
     }
-    // this.updateAllFeatures();
+    this.updateAllFeatures();
   };
 
   render(): JSX.Element {
@@ -101,6 +102,7 @@ class MapComponent extends Component<Props, State> {
       overlayLayers,
       center,
       bounds,
+      isAllowedToEdit = false,
       isEditMode,
       initialValues,
     } = this.props;
@@ -118,7 +120,7 @@ class MapComponent extends Component<Props, State> {
             overlayLayers={overlayLayers}
           >
             <FeatureGroup ref={this.setFeatureGroupRef}>
-              {this.featureGroup && isEditMode ? (
+              {this.featureGroup && isEditMode && isAllowedToEdit ? (
                 <EditControl
                   position="topright"
                   onCreated={this.handleCreated}
@@ -171,4 +173,4 @@ class MapComponent extends Component<Props, State> {
   }
 }
 
-export default MapComponent;
+export default MapInput;

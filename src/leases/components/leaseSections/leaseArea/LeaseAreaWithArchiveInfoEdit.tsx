@@ -44,24 +44,29 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type Props = {
+
+type Props = OwnProps & {
   archivedAt: string | null | undefined;
-  areaCollapseState: boolean;
+  areaCollapseState: boolean | undefined;
   areaId: number;
   attributes: Attributes;
   currentLease: Lease;
-  decisionOptions: Array<Record<string, any>>;
   editedArea: Record<string, any>;
   errors: Record<string, any> | null | undefined;
+  isSaveClicked: boolean;
+  usersPermissions: UsersPermissionsType;
+  receiveCollapseStates: (...args: Array<any>) => any;
+};
+
+type OwnProps = {
+  decisionOptions: Array<Record<string, any>>;
   field: string;
   index: number;
   isActive: boolean;
-  isSaveClicked: boolean;
   onArchive: (...args: Array<any>) => any;
   onRemove: (...args: Array<any>) => any;
   onUnarchive: (...args: Array<any>) => any;
   receiveCollapseStates: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
 };
 
 const LeaseAreaWithArchiveInfoEdit = ({
