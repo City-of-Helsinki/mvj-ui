@@ -38,6 +38,7 @@ import {
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
   LeaseAreaCustomDetailedPlanFieldPaths,
+  LeaseAreaDraftFieldPaths,
 } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
@@ -776,9 +777,11 @@ class LeaseAreaEdit extends PureComponent<Props> {
                   LeaseAreasFieldPaths.GEOMETRY,
                 )}
               >
-                {!isEmpty(geometry) && (
+                {!isEmpty(geometry) ? (
                   <Link to={mapLinkUrl}>{LeaseAreasFieldTitles.GEOMETRY}</Link>
-                )}
+                ) : isFieldAllowedToEdit(attributes, LeaseAreaDraftFieldPaths.GEOMETRY) ? (
+                  <Link to={mapLinkUrl}>{LeaseAreasFieldTitles.GEOMETRY_DRAFT}</Link>
+                ) : null}
               </Authorization>
             </Column>
           </Row>
