@@ -25,6 +25,11 @@ export type LeafletFeatureGeometry = {
   coordinates: Array<Coordinate>;
   type: string;
 };
+export type LeaseAreaDraftGeometryItem = {
+  id: number;
+  identifier: string;
+  draft_geometry: LeafletFeatureGeometry;
+};
 export type LeafletFeature = {
   geometry: LeafletFeatureGeometry;
   properties: Record<string, any>;
