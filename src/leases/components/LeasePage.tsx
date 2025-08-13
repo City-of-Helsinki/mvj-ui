@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
@@ -233,56 +233,112 @@ type Props = {
   usersPermissions: UsersPermissionsType;
   vats: VatList;
 };
-type State = {
-  activeTab: number;
-  allowToDeleteEmptyLease: boolean;
-  comments: CommentList;
-  currentLease: Lease;
-  isCommentPanelOpen: boolean;
-  isRestoreModalOpen: boolean;
-  loggedUser: Record<string, any>;
-};
 
-class LeasePage extends Component<Props, State> {
-  state = {
-    activeTab: 0,
-    allowToDeleteEmptyLease: false,
-    comments: [],
-    currentLease: {},
-    isCommentPanelOpen: false,
-    isRestoreModalOpen: false,
-    loggedUser: Object,
-  };
-  timerAutoSave: any;
-  static contextTypes = {
+const LeasePage: React.FC<Props> = (props) => {
+  const {
+    areasFormValues,
+    change,
+    clearFormValidFlags,
+    clearPreviewInvoices,
+    comments,
+    commentMethods,
+    // get via withLeasePageAttributes HOC
+    contractsFormValues,
+    constructabilityFormValues,
+    currentLease,
+    decisionsFormValues,
+    deleteLease,
+    destroy,
+    leaseAreaDraftFormValues,
+    fetchCommentsByLease,
+    fetchInvoicesByLease,
+    fetchLeaseTypes,
+    fetchSingleLease,
+    fetchOldDwellingsInHousingCompaniesPriceIndex,
+    fetchReceivableTypes,
+    fetchVats,
+    hideEditMode,
+    history,
+    initialize,
+    inspectionsFormValues,
+    invoices,
+    isLeaseAreaDraftFormDirty,
+    isEditMode,
+    isFetching,
+    isFetchingLeasePageAttributes,
+    isFetchingReceivableTypes,
+    isFetchingOldDwellingsInHousingCompaniesPriceIndex,
+    // get via withLeasePageAttributes HOC
+    isFormValidFlags,
+    isConstructabilityFormDirty,
+    isConstructabilityFormValid,
+    isContractsFormDirty,
+    isContractsFormValid,
+    isDecisionsFormDirty,
+    isDecisionsFormValid,
+    isInspectionsFormDirty,
+    isInspectionsFormValid,
+    isLeaseAreasFormDirty,
+    isLeaseAreasFormValid,
+    isRentsFormDirty,
+    isRentsFormValid,
+    isSaving,
+    isSummaryFormDirty,
+    isSummaryFormValid,
+    isTenantsFormDirty,
+    isTenantsFormValid,
+    isSaveClicked,
+    leaseAttributes,
+    leaseMethods,
+    leaseTypeList,
+    location: { search, pathname },
+    loggedUser,
+    match: {
+      params: { leaseId },
+    },
+    oldDwellingsInHousingCompaniesPriceIndex,
+    patchLease,
+    receiveSingleLease,
+    receiveFormValidFlags,
+    receiveIsSaveClicked,
+    receiveTopNavigationSettings,
+    rentsFormValues,
+    showEditMode,
+    summaryFormValues,
+    tenantsFormValues,
+    userActiveServiceUnit,
+    usersPermissions,
+    vats,
+  } = props;
+
+  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
+  const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(false);
+
+  const contextTypes = {
     router: PropTypes.object,
   };
 
-  componentDidMount() {
-    const {
-      hideEditMode,
-      location: { search },
-      fetchOldDwellingsInHousingCompaniesPriceIndex,
-      isFetchingOldDwellingsInHousingCompaniesPriceIndex,
-      receiveTopNavigationSettings,
-      oldDwellingsInHousingCompaniesPriceIndex,
-    } = this.props;
+  const timerAutoSave = useRef<NodeJS.Timeout>();
+
+  const activeTab = useMemo(() => {
     const query = getUrlParams(search);
-    this.setPageTitle();
+    return query.tab ? Number(query.tab) : 0;
+  }, [search]);
+  const allowToDeleteEmptyLease = useMemo(
+    () => isUserAllowedToDeleteEmptyLease(currentLease, comments, loggedUser),
+    [currentLease, comments, loggedUser],
+  );
+  const pageTitle = useMemo(() => {
+    const identifier = getContentLeaseIdentifier(currentLease);
+    return `${identifier ? `${identifier} | ` : ""}Vuokraus`;
+  }, [currentLease]);
+
+  useEffect(() => {
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.LEASES),
       pageTitle: "Vuokraukset",
       showSearch: true,
     });
-
-    if (query.tab) {
-      this.setState({
-        activeTab: query.tab,
-      });
-    }
-
-    this.fetchCurrentLeaseData();
-    this.fetchLeaseRelatedData();
 
     if (
       !isFetchingOldDwellingsInHousingCompaniesPriceIndex &&
@@ -292,140 +348,52 @@ class LeasePage extends Component<Props, State> {
     }
 
     hideEditMode();
-    window.addEventListener("beforeunload", this.handleLeavePage);
-    window.addEventListener("popstate", this.handlePopState);
-  }
+    window.addEventListener("beforeunload", handleLeavePage);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+    return () => {
+      if (pathname !== `${getRouteById(Routes.LEASES)}/${leaseId}`) {
+        clearUnsavedChanges();
+      }
 
-    if (
-      props.comments !== state.comments ||
-      props.currentLease !== state.currentLease ||
-      props.loggedUser !== state.loggedUser
-    ) {
-      newState.currentLease = props.currentLease;
-      newState.loggedUser = props.loggedUser;
-      newState.comments = props.comments;
-      newState.allowToDeleteEmptyLease = isUserAllowedToDeleteEmptyLease(
-        props.currentLease,
-        props.comments,
-        props.loggedUser,
-      );
-    }
+      stopAutoSaveTimer();
+      clearPreviewInvoices();
+      // Clear current lease
+      receiveSingleLease({});
+      destroy(FormNames.INVOICE_SIMULATOR);
+      destroy(FormNames.RENT_CALCULATOR);
+      hideEditMode();
+      window.removeEventListener("beforeunload", handleLeavePage);
+    };
+  }, []);
 
-    return !isEmpty(newState) ? newState : null;
-  }
+  useEffect(() => {
+    setPageTitle(pageTitle);
+  }, [pageTitle]);
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    const {
-      currentLease,
-      isEditMode,
-      location: { search },
-      match: {
-        params: { leaseId },
-      },
-      usersPermissions,
-      fetchReceivableTypes,
-    } = this.props;
-    const { activeTab } = this.state;
-    const query = getUrlParams(search);
-    const tab = query.tab ? Number(query.tab) : 0;
+  useEffect(() => {
+    fetchCurrentLeaseData();
+    fetchLeaseRelatedData();
+  }, [leaseId, usersPermissions]);
 
-    // Fetch new current lease and related data if leaseId changes
-    if (leaseId !== prevProps.match.params.leaseId) {
-      this.fetchCurrentLeaseData();
-      this.fetchLeaseRelatedData();
-    }
+  useEffect(() => {
+    scrollToTopPage();
+  }, [activeTab]);
 
-    if (tab != activeTab) {
-      this.setState({
-        activeTab: tab,
-      });
-    }
-
-    if (prevState.activeTab !== activeTab) {
-      scrollToTopPage();
-    }
-
-    if (isEmpty(prevProps.currentLease) && !isEmpty(currentLease)) {
+  useEffect(() => {
+    if (!isEmpty(currentLease)) {
       const storedLeaseId = getSessionStorageItem("leaseId");
-
       if (Number(leaseId) === storedLeaseId) {
-        this.setState({
-          isRestoreModalOpen: true,
-        });
+        setIsRestoreModalOpen(true);
       }
     }
+    fetchReceivableTypes();
+  }, [currentLease, leaseId]);
 
-    if (usersPermissions !== prevProps.usersPermissions) {
-      this.fetchLeaseRelatedData();
-    }
-
-    // Stop autosave timer and clear form data from session storage after saving/cancelling changes
-    if (prevProps.isEditMode && !isEditMode) {
-      this.stopAutoSaveTimer();
-      clearUnsavedChanges();
-    }
-
-    if (prevProps.currentLease !== currentLease) {
-      this.setPageTitle();
-      fetchReceivableTypes();
-    }
-  }
-
-  componentWillUnmount() {
-    const {
-      clearPreviewInvoices,
-      destroy,
-      hideEditMode,
-      location: { pathname },
-      match: {
-        params: { leaseId },
-      },
-      receiveSingleLease,
-    } = this.props;
-
-    if (pathname !== `${getRouteById(Routes.LEASES)}/${leaseId}`) {
-      clearUnsavedChanges();
-    }
-
-    this.stopAutoSaveTimer();
-    clearPreviewInvoices();
-    // Clear current lease
-    receiveSingleLease({});
-    destroy(FormNames.INVOICE_SIMULATOR);
-    destroy(FormNames.RENT_CALCULATOR);
-    hideEditMode();
-    window.removeEventListener("beforeunload", this.handleLeavePage);
-    window.removeEventListener("popstate", this.handlePopState);
-  }
-
-  fetchCurrentLeaseData = () => {
-    const {
-      fetchSingleLease,
-      match: {
-        params: { leaseId },
-      },
-    } = this.props;
+  const fetchCurrentLeaseData = () => {
     fetchSingleLease(leaseId);
   };
-  fetchLeaseRelatedData = () => {
-    const {
-      comments,
-      fetchCommentsByLease,
-      fetchInvoicesByLease,
-      fetchLeaseTypes,
-      fetchVats,
-      invoices,
-      leaseTypeList,
-      match: {
-        params: { leaseId },
-      },
-      usersPermissions,
-      vats,
-    } = this.props;
 
+  const fetchLeaseRelatedData = () => {
     if (
       hasPermissions(usersPermissions, UsersPermissions.VIEW_COMMENT) &&
       !comments
@@ -455,73 +423,39 @@ class LeasePage extends Component<Props, State> {
     }
   };
 
-  handlePopState = () => {
-    const {
-      location: { search },
-    } = this.props;
-    const query = getUrlParams(search);
-    const tab = query.tab ? Number(query.tab) : 0;
-    // Set correct active tab on back/forward button press
-    this.setState({
-      activeTab: tab,
-    });
+  const startAutoSaveTimer = () => {
+    if (timerAutoSave.current) {
+      clearInterval(timerAutoSave.current);
+    }
+    timerAutoSave.current = setInterval(() => saveUnsavedChanges(), 5000);
   };
-  setPageTitle = () => {
-    const { currentLease } = this.props;
-    const identifier = getContentLeaseIdentifier(currentLease);
-    setPageTitle(`${identifier ? `${identifier} | ` : ""}Vuokraus`);
-  };
-  startAutoSaveTimer = () => {
-    this.timerAutoSave = setInterval(() => this.saveUnsavedChanges(), 5000);
-  };
-  stopAutoSaveTimer = () => {
-    clearInterval(this.timerAutoSave);
-  };
-  handleLeavePage = (e) => {
-    const { isEditMode } = this.props;
 
-    if (this.isAnyFormDirty() && isEditMode) {
+  const stopAutoSaveTimer = () => {
+    if (timerAutoSave.current) {
+      clearInterval(timerAutoSave.current);
+      timerAutoSave.current = undefined;
+    }
+  };
+
+  const handleLeavePage = (e) => {
+    if (isAnyFormDirty() && isEditMode) {
       const confirmationMessage = "";
       e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
 
       return confirmationMessage; // Gecko, WebKit, Chrome <34
     }
   };
-  showModal = (modalName: string) => {
-    const modalVisibilityKey = `is${modalName}ModalOpen`;
-    // @ts-ignore: missing properties from State
-    this.setState({
-      [modalVisibilityKey]: true,
-    });
-  };
-  hideModal = (modalName: string) => {
-    const modalVisibilityKey = `is${modalName}ModalOpen`;
-    // @ts-ignore: missing properties from State
-    this.setState({
-      [modalVisibilityKey]: false,
-    });
-  };
-  openEditMode = () => {
-    const {
-      clearFormValidFlags,
-      currentLease,
-      receiveIsSaveClicked,
-      showEditMode,
-    } = this.props;
+
+  const openEditMode = () => {
     receiveIsSaveClicked(false);
     clearFormValidFlags();
-    this.destroyAllForms();
-    this.initializeForms(currentLease);
+    destroyAllForms();
+    initializeForms(currentLease);
     showEditMode();
-    this.startAutoSaveTimer();
+    startAutoSaveTimer();
   };
-  hideEditMode = () => {
-    const { hideEditMode } = this.props;
-    hideEditMode();
-    this.stopAutoSaveTimer();
-  };
-  destroyAllForms = () => {
-    const { destroy } = this.props;
+
+  const destroyAllForms = () => {
     destroy(FormNames.LEASE_CONSTRUCTABILITY);
     destroy(FormNames.LEASE_CONTRACTS);
     destroy(FormNames.LEASE_DECISIONS);
@@ -532,9 +466,9 @@ class LeasePage extends Component<Props, State> {
     destroy(FormNames.LEASE_TENANTS);
     destroy(FormNames.LEASE_AREA_DRAFT);
   };
-  initializeForms = (lease: Lease) => {
-    const { initialize } = this.props,
-      areas = getContentLeaseAreas(lease),
+
+  const initializeForms = (lease: Lease) => {
+    const areas = getContentLeaseAreas(lease),
       rents = getContentRents(lease),
       tenants = getContentTenants(lease);
     initialize(FormNames.LEASE_CONSTRUCTABILITY, {
@@ -573,20 +507,21 @@ class LeasePage extends Component<Props, State> {
       lease_area_draft: getContentLeaseAreaDraft(lease),
     });
   };
-  cancelRestoreUnsavedChanges = () => {
+
+  const cancelRestoreUnsavedChanges = () => {
     clearUnsavedChanges();
-    this.hideModal("Restore");
+    setIsRestoreModalOpen(false);
   };
-  restoreUnsavedChanges = () => {
-    const { clearFormValidFlags, currentLease, showEditMode } = this.props;
-    this.destroyAllForms();
+
+  const restoreUnsavedChanges = () => {
+    destroyAllForms();
     clearFormValidFlags();
     showEditMode();
-    this.initializeForms(currentLease);
+    initializeForms(currentLease);
     const storedAreasFormValues = getSessionStorageItem(FormNames.LEASE_AREAS);
 
     if (storedAreasFormValues) {
-      this.bulkChange(FormNames.LEASE_AREAS, storedAreasFormValues);
+      bulkChange(FormNames.LEASE_AREAS, storedAreasFormValues);
     }
 
     const storedConstructabilityFormValues = getSessionStorageItem(
@@ -594,7 +529,7 @@ class LeasePage extends Component<Props, State> {
     );
 
     if (storedConstructabilityFormValues) {
-      this.bulkChange(
+      bulkChange(
         FormNames.LEASE_CONSTRUCTABILITY,
         storedConstructabilityFormValues,
       );
@@ -605,7 +540,7 @@ class LeasePage extends Component<Props, State> {
     );
 
     if (storedContractsFormValues) {
-      this.bulkChange(FormNames.LEASE_CONTRACTS, storedContractsFormValues);
+      bulkChange(FormNames.LEASE_CONTRACTS, storedContractsFormValues);
     }
 
     const storedDecisionsFormValues = getSessionStorageItem(
@@ -613,7 +548,7 @@ class LeasePage extends Component<Props, State> {
     );
 
     if (storedDecisionsFormValues) {
-      this.bulkChange(FormNames.LEASE_DECISIONS, storedDecisionsFormValues);
+      bulkChange(FormNames.LEASE_DECISIONS, storedDecisionsFormValues);
     }
 
     const storedInspectionsFormValues = getSessionStorageItem(
@@ -621,13 +556,13 @@ class LeasePage extends Component<Props, State> {
     );
 
     if (storedInspectionsFormValues) {
-      this.bulkChange(FormNames.LEASE_INSPECTIONS, storedInspectionsFormValues);
+      bulkChange(FormNames.LEASE_INSPECTIONS, storedInspectionsFormValues);
     }
 
     const storedRentsFormValues = getSessionStorageItem(FormNames.LEASE_RENTS);
 
     if (storedRentsFormValues) {
-      this.bulkChange(FormNames.LEASE_RENTS, storedRentsFormValues);
+      bulkChange(FormNames.LEASE_RENTS, storedRentsFormValues);
     }
 
     const storedSummaryFormValues = getSessionStorageItem(
@@ -635,7 +570,7 @@ class LeasePage extends Component<Props, State> {
     );
 
     if (storedSummaryFormValues) {
-      this.bulkChange(FormNames.LEASE_SUMMARY, storedSummaryFormValues);
+      bulkChange(FormNames.LEASE_SUMMARY, storedSummaryFormValues);
     }
 
     const storedTenantsFormValues = getSessionStorageItem(
@@ -643,51 +578,27 @@ class LeasePage extends Component<Props, State> {
     );
 
     if (storedTenantsFormValues) {
-      this.bulkChange(FormNames.LEASE_TENANTS, storedTenantsFormValues);
+      bulkChange(FormNames.LEASE_TENANTS, storedTenantsFormValues);
     }
 
     const storedFormValidity = getSessionStorageItem("leaseValidity");
 
     if (storedFormValidity) {
-      const { receiveFormValidFlags } = this.props;
       receiveFormValidFlags(storedFormValidity);
     }
 
-    this.startAutoSaveTimer();
-    this.hideModal("Restore");
+    startAutoSaveTimer();
+    setIsRestoreModalOpen(false);
   };
-  bulkChange = (formName: string, obj: Record<string, any>) => {
-    const { change } = this.props;
+
+  const bulkChange = (formName: string, obj: Record<string, any>) => {
     const fields = Object.keys(obj);
     fields.forEach((field) => {
       change(formName, field, obj[field]);
     });
   };
-  saveUnsavedChanges = () => {
-    const {
-      areasFormValues,
-      constructabilityFormValues,
-      contractsFormValues,
-      decisionsFormValues,
-      inspectionsFormValues,
-      leaseAreaDraftFormValues,
-      isConstructabilityFormDirty,
-      isContractsFormDirty,
-      isDecisionsFormDirty,
-      isInspectionsFormDirty,
-      isLeaseAreasFormDirty,
-      isLeaseAreaDraftFormDirty,
-      isRentsFormDirty,
-      isSummaryFormDirty,
-      isTenantsFormDirty,
-      isFormValidFlags,
-      match: {
-        params: { leaseId },
-      },
-      rentsFormValues,
-      summaryFormValues,
-      tenantsFormValues,
-    } = this.props;
+
+  const saveUnsavedChanges = () => {
     let isDirty = false;
 
     if (isConstructabilityFormDirty) {
@@ -729,7 +640,10 @@ class LeasePage extends Component<Props, State> {
     }
 
     if (isLeaseAreaDraftFormDirty) {
-      setSessionStorageItem(FormNames.LEASE_AREA_DRAFT, leaseAreaDraftFormValues);
+      setSessionStorageItem(
+        FormNames.LEASE_AREA_DRAFT,
+        leaseAreaDraftFormValues,
+      );
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.LEASE_AREA_DRAFT);
@@ -764,38 +678,17 @@ class LeasePage extends Component<Props, State> {
       removeSessionStorageItem("leaseValidity");
     }
   };
-  cancelChanges = () => {
-    const { hideEditMode } = this.props;
+  const cancelChanges = () => {
     hideEditMode();
+    stopAutoSaveTimer();
+    clearUnsavedChanges();
   };
-  saveChanges = () => {
-    const { receiveIsSaveClicked } = this.props;
-    const areFormsValid = this.validateForms();
+
+  const saveChanges = () => {
+    const areFormsValid = validateForms();
     receiveIsSaveClicked(true);
 
     if (areFormsValid) {
-      const {
-        areasFormValues,
-        constructabilityFormValues,
-        contractsFormValues,
-        currentLease,
-        decisionsFormValues,
-        leaseAreaDraftFormValues,
-        inspectionsFormValues,
-        patchLease,
-        rentsFormValues,
-        summaryFormValues,
-        tenantsFormValues,
-        isConstructabilityFormDirty,
-        isContractsFormDirty,
-        isDecisionsFormDirty,
-        isInspectionsFormDirty,
-        isLeaseAreasFormDirty,
-        isLeaseAreaDraftFormDirty,
-        isRentsFormDirty,
-        isSummaryFormDirty,
-        isTenantsFormDirty,
-      } = this.props;
       let payload: Record<string, any> = {
         id: currentLease.id,
       };
@@ -850,19 +743,10 @@ class LeasePage extends Component<Props, State> {
       }
 
       patchLease(payload);
+      cancelChanges();
     }
   };
-  validateForms = () => {
-    const {
-      isConstructabilityFormValid,
-      isContractsFormValid,
-      isDecisionsFormValid,
-      isInspectionsFormValid,
-      isLeaseAreasFormValid,
-      isRentsFormValid,
-      isSummaryFormValid,
-      isTenantsFormValid,
-    } = this.props;
+  const validateForms = () => {
     return (
       isConstructabilityFormValid &&
       isContractsFormValid &&
@@ -874,11 +758,7 @@ class LeasePage extends Component<Props, State> {
       isTenantsFormValid
     );
   };
-  handleBack = () => {
-    const {
-      history,
-      location: { search },
-    } = this.props;
+  const handleBack = () => {
     const query = getUrlParams(search);
     // Remove page specific url parameters when moving to lease list page
     delete query.tab;
@@ -891,41 +771,18 @@ class LeasePage extends Component<Props, State> {
       search: getSearchQuery(query),
     });
   };
-  handleTabClick = (tabId) => {
-    const {
-      history,
-      location,
-      location: { search },
-    } = this.props;
+
+  const handleTabClick = (tabId: string) => {
     const query = getUrlParams(search);
-    this.setState(
-      {
-        activeTab: tabId,
-      },
-      () => {
-        query.tab = tabId;
-        return history.push({ ...location, search: getSearchQuery(query) });
-      },
-    );
+    query.tab = tabId;
+    return history.push({ ...location, search: getSearchQuery(query) });
   };
-  toggleCommentPanel = () => {
-    const { isCommentPanelOpen } = this.state;
-    this.setState({
-      isCommentPanelOpen: !isCommentPanelOpen,
-    });
+
+  const toggleCommentPanel = () => {
+    setIsCommentPanelOpen(!isCommentPanelOpen);
   };
-  isAnyFormDirty = () => {
-    const {
-      isConstructabilityFormDirty,
-      isContractsFormDirty,
-      isDecisionsFormDirty,
-      isLeaseAreaDraftFormDirty,
-      isInspectionsFormDirty,
-      isLeaseAreasFormDirty,
-      isRentsFormDirty,
-      isSummaryFormDirty,
-      isTenantsFormDirty,
-    } = this.props;
+
+  const isAnyFormDirty = () => {
     return (
       isConstructabilityFormDirty ||
       isContractsFormDirty ||
@@ -938,519 +795,442 @@ class LeasePage extends Component<Props, State> {
       isTenantsFormDirty
     );
   };
-  handleDelete = () => {
-    const {
-      deleteLease,
-      match: { params },
-    } = this.props;
-    deleteLease(params.leaseId);
+  const handleDelete = () => {
+    deleteLease(leaseId);
   };
 
-  render() {
-    const {
-      activeTab,
-      allowToDeleteEmptyLease,
-      isCommentPanelOpen,
-      isRestoreModalOpen,
-    } = this.state;
-    const {
-      commentMethods,
-      comments,
-      currentLease,
-      isConstructabilityFormDirty,
-      isConstructabilityFormValid,
-      isContractsFormDirty,
-      isContractsFormValid,
-      isDecisionsFormDirty,
-      isDecisionsFormValid,
-      isEditMode,
-      isFetching,
-      isFetchingLeasePageAttributes,
-      isFetchingReceivableTypes,
-      isInspectionsFormDirty,
-      isInspectionsFormValid,
-      isLeaseAreasFormDirty,
-      isLeaseAreasFormValid,
-      isLeaseAreaDraftFormDirty,
-      isRentsFormDirty,
-      isRentsFormValid,
-      isSummaryFormDirty,
-      isSummaryFormValid,
-      isTenantsFormDirty,
-      isTenantsFormValid,
-      isSaveClicked,
-      isSaving,
-      leaseAttributes,
-      leaseMethods,
-      match: {
-        params: { leaseId },
-      },
-      userActiveServiceUnit,
-      usersPermissions,
-    } = this.props;
-    const areFormsValid = this.validateForms();
+  const areFormsValid = validateForms();
 
-    const isServiceUnitSameAsActiveServiceUnit = () => {
-      return userActiveServiceUnit?.id === currentLease?.service_unit?.id;
-    };
+  const isServiceUnitSameAsActiveServiceUnit = () => {
+    return userActiveServiceUnit?.id === currentLease?.service_unit?.id;
+  };
 
-    if (
-      isFetching ||
-      isFetchingLeasePageAttributes ||
-      isFetchingReceivableTypes
-    )
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    if (!leaseMethods) return null;
-    if (!isMethodAllowed(leaseMethods, Methods.GET))
-      return (
-        <PageContainer>
-          <AuthorizationError text={PermissionMissingTexts.LEASE} />
-        </PageContainer>
-      );
-    if (isEmpty(currentLease)) return null;
+  if (isFetching || isFetchingLeasePageAttributes || isFetchingReceivableTypes)
     return (
-      <FullWidthContainer>
-        <PageNavigationWrapper>
-          <ControlButtonBar
-            buttonComponent={
-              <ControlButtons
-                allowComments={isMethodAllowed(commentMethods, Methods.GET)}
-                allowDelete={
-                  isMethodAllowed(leaseMethods, Methods.DELETE) &&
-                  (allowToDeleteEmptyLease ||
-                    hasPermissions(
-                      usersPermissions,
-                      UsersPermissions.DELETE_NONEMPTY_LEASE,
-                    )) &&
-                  isServiceUnitSameAsActiveServiceUnit()
-                }
-                allowEdit={
-                  isMethodAllowed(leaseMethods, Methods.PATCH) &&
-                  isServiceUnitSameAsActiveServiceUnit()
-                }
-                commentAmount={comments ? comments.length : 0}
-                deleteModalTexts={{
-                  buttonClassName: ButtonColors.ALERT,
-                  buttonText: ConfirmationModalTexts.DELETE_LEASE.BUTTON,
-                  label: ConfirmationModalTexts.DELETE_LEASE.LABEL,
-                  title: ConfirmationModalTexts.DELETE_LEASE.TITLE,
-                }}
-                isCancelDisabled={activeTab == 6}
-                isEditDisabled={activeTab == 6}
-                isEditMode={isEditMode}
-                isSaveDisabled={
-                  activeTab == 6 || (isSaveClicked && !areFormsValid)
-                }
-                onCancel={this.cancelChanges}
-                onComment={this.toggleCommentPanel}
-                onDelete={this.handleDelete}
-                onEdit={this.openEditMode}
-                onSave={this.saveChanges}
-              />
-            }
-            infoComponent={<LeaseInfo />}
-            onBack={this.handleBack}
-          />
-
-          <Tabs
-            active={activeTab}
-            isEditMode={isEditMode}
-            tabs={[
-              {
-                label: "Yhteenveto",
-                allow: true,
-                isDirty: isSummaryFormDirty,
-                hasError: isSaveClicked && !isSummaryFormValid,
-              },
-              {
-                label: "Vuokra-alue",
-                allow: isFieldAllowedToRead(
-                  leaseAttributes,
-                  LeaseAreasFieldPaths.LEASE_AREAS,
-                ),
-                isDirty: isLeaseAreasFormDirty,
-                hasError: isSaveClicked && !isLeaseAreasFormValid,
-              },
-              {
-                label: "Vuokralaiset",
-                allow: isFieldAllowedToRead(
-                  leaseAttributes,
-                  LeaseTenantsFieldPaths.TENANTS,
-                ),
-                isDirty: isTenantsFormDirty,
-                hasError: isSaveClicked && !isTenantsFormValid,
-              },
-              {
-                label: "Vuokrat",
-                allow:
-                  isFieldAllowedToRead(
-                    leaseAttributes,
-                    LeaseRentsFieldPaths.RENTS,
-                  ) ||
-                  isFieldAllowedToRead(
-                    leaseAttributes,
-                    LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
-                  ),
-                isDirty: isRentsFormDirty,
-                hasError: isSaveClicked && !isRentsFormValid,
-              },
-              {
-                label: "Päätökset ja sopimukset",
-                allow:
-                  isFieldAllowedToRead(
-                    leaseAttributes,
-                    LeaseDecisionsFieldPaths.DECISIONS,
-                  ) ||
-                  isFieldAllowedToRead(
-                    leaseAttributes,
-                    LeaseContractsFieldPaths.CONTRACTS,
-                  ) ||
-                  isFieldAllowedToRead(
-                    leaseAttributes,
-                    LeaseInspectionsFieldPaths.INSPECTIONS,
-                  ),
-                isDirty:
-                  isContractsFormDirty ||
-                  isDecisionsFormDirty ||
-                  isInspectionsFormDirty,
-                hasError:
-                  isSaveClicked &&
-                  (!isContractsFormValid ||
-                    !isDecisionsFormValid ||
-                    !isInspectionsFormValid),
-              },
-              {
-                label: "Rakentamiskelpoisuus",
-                allow: isFieldAllowedToRead(
-                  leaseAttributes,
-                  LeaseAreasFieldPaths.LEASE_AREAS,
-                ),
-                isDirty: isConstructabilityFormDirty,
-                hasError: isSaveClicked && !isConstructabilityFormValid,
-              },
-              {
-                label: "Laskutus",
-                allow: hasPermissions(
-                  usersPermissions,
-                  UsersPermissions.VIEW_INVOICE,
-                ),
-              },
-              {
-                label: "Kartta",
-                allow: isMethodAllowed(leaseMethods, Methods.GET),
-                isDirty: isLeaseAreaDraftFormDirty,
-              },
-              {
-                label: "Muutoshistoria",
-                allow: isMethodAllowed(leaseMethods, Methods.GET),
-              },
-            ]}
-            onTabClick={this.handleTabClick}
-          />
-        </PageNavigationWrapper>
-
-        <PageContainer className="with-control-bar-and-tabs" hasTabs>
-          {isSaving && (
-            <LoaderWrapper className="overlay-wrapper">
-              <Loader isLoading={isSaving} />
-            </LoaderWrapper>
-          )}
-
-          <Authorization allow={isMethodAllowed(leaseMethods, Methods.PATCH)}>
-            <ConfirmationModal
-              confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON}
-              isOpen={isRestoreModalOpen}
-              label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL}
-              onCancel={this.cancelRestoreUnsavedChanges}
-              onClose={this.cancelRestoreUnsavedChanges}
-              onSave={this.restoreUnsavedChanges}
-              title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE}
-            />
-          </Authorization>
-
-          <CommentPanel
-            isOpen={isCommentPanelOpen}
-            onClose={this.toggleCommentPanel}
-          />
-
-          <TabContent active={activeTab}>
-            <TabPane>
-              <ContentContainer>
-                {isEditMode ? (
-                  <Authorization
-                    allow={isMethodAllowed(leaseMethods, Methods.PATCH)}
-                    errorComponent={
-                      <AuthorizationError
-                        text={PermissionMissingTexts.GENERAL}
-                      />
-                    }
-                  >
-                    <SummaryEdit />
-                  </Authorization>
-                ) : (
-                  <Summary />
-                )}
-              </ContentContainer>
-            </TabPane>
-
-            <TabPane className="lease-page__tab-content">
-              <ContentContainer>
-                {isEditMode ? (
-                  <Authorization
-                    allow={
-                      isMethodAllowed(leaseMethods, Methods.PATCH) &&
-                      isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseAreasFieldPaths.LEASE_AREAS,
-                      )
-                    }
-                    errorComponent={
-                      <AuthorizationError
-                        text={PermissionMissingTexts.GENERAL}
-                      />
-                    }
-                  >
-                    <LeaseAreasEdit />
-                  </Authorization>
-                ) : (
-                  <Authorization
-                    allow={isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseAreasFieldPaths.LEASE_AREAS,
-                    )}
-                    errorComponent={
-                      <AuthorizationError
-                        text={PermissionMissingTexts.GENERAL}
-                      />
-                    }
-                  >
-                    <LeaseAreas />
-                  </Authorization>
-                )}
-              </ContentContainer>
-            </TabPane>
-
-            <TabPane className="lease-page__tab-content">
-              <ContentContainer>
-                {isEditMode ? (
-                  <Authorization
-                    allow={
-                      isMethodAllowed(leaseMethods, Methods.PATCH) &&
-                      isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseTenantsFieldPaths.TENANTS,
-                      )
-                    }
-                    errorComponent={
-                      <AuthorizationError
-                        text={PermissionMissingTexts.GENERAL}
-                      />
-                    }
-                  >
-                    <TenantsEdit />
-                  </Authorization>
-                ) : (
-                  <Authorization
-                    allow={isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseTenantsFieldPaths.TENANTS,
-                    )}
-                    errorComponent={
-                      <AuthorizationError
-                        text={PermissionMissingTexts.GENERAL}
-                      />
-                    }
-                  >
-                    <Tenants />
-                  </Authorization>
-                )}
-              </ContentContainer>
-            </TabPane>
-
-            <TabPane className="lease-page__tab-content">
-              <ContentContainer>
-                {isEditMode ? (
-                  <Authorization
-                    allow={
-                      isMethodAllowed(leaseMethods, Methods.PATCH) &&
-                      (isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
-                      ) ||
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseRentsFieldPaths.RENTS,
-                        ))
-                    }
-                    errorComponent={
-                      <AuthorizationError
-                        text={PermissionMissingTexts.GENERAL}
-                      />
-                    }
-                  >
-                    <RentsEdit />
-                  </Authorization>
-                ) : (
-                  <Authorization
-                    allow={
-                      isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
-                      ) ||
-                      isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseRentsFieldPaths.RENTS,
-                      )
-                    }
-                    errorComponent={
-                      <AuthorizationError
-                        text={PermissionMissingTexts.GENERAL}
-                      />
-                    }
-                  >
-                    <Rents />
-                  </Authorization>
-                )}
-              </ContentContainer>
-            </TabPane>
-
-            <TabPane className="lease-page__tab-content">
-              <ContentContainer>
-                {isEditMode ? (
-                  <Authorization
-                    allow={
-                      (isMethodAllowed(leaseMethods, Methods.PATCH) &&
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseDecisionsFieldPaths.DECISIONS,
-                        )) ||
-                      isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseContractsFieldPaths.CONTRACTS,
-                      ) ||
-                      isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseInspectionsFieldPaths.INSPECTIONS,
-                      )
-                    }
-                    errorComponent={
-                      <AuthorizationError
-                        text={PermissionMissingTexts.GENERAL}
-                      />
-                    }
-                  >
-                    <DecisionsMainEdit />
-                  </Authorization>
-                ) : (
-                  <Authorization
-                    allow={
-                      isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseDecisionsFieldPaths.DECISIONS,
-                      ) ||
-                      isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseContractsFieldPaths.CONTRACTS,
-                      ) ||
-                      isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseInspectionsFieldPaths.INSPECTIONS,
-                      )
-                    }
-                    errorComponent={
-                      <AuthorizationError
-                        text={PermissionMissingTexts.GENERAL}
-                      />
-                    }
-                  >
-                    <DecisionsMain />
-                  </Authorization>
-                )}
-              </ContentContainer>
-            </TabPane>
-
-            <TabPane className="lease-page__tab-content">
-              <ContentContainer>
-                {isEditMode ? (
-                  <Authorization
-                    allow={
-                      isMethodAllowed(leaseMethods, Methods.PATCH) &&
-                      isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseAreasFieldPaths.LEASE_AREAS,
-                      )
-                    }
-                    errorComponent={
-                      <AuthorizationError
-                        text={PermissionMissingTexts.GENERAL}
-                      />
-                    }
-                  >
-                    <ConstructabilityEdit />
-                  </Authorization>
-                ) : (
-                  <Authorization
-                    allow={isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseAreasFieldPaths.LEASE_AREAS,
-                    )}
-                    errorComponent={
-                      <AuthorizationError
-                        text={PermissionMissingTexts.GENERAL}
-                      />
-                    }
-                  >
-                    <Constructability />
-                  </Authorization>
-                )}
-              </ContentContainer>
-            </TabPane>
-
-            <TabPane className="lease-page__tab-content">
-              <ContentContainer>
-                <Authorization
-                  allow={hasPermissions(
+      <PageContainer>
+        <Loader isLoading={true} />
+      </PageContainer>
+    );
+  if (!leaseMethods) return null;
+  if (!isMethodAllowed(leaseMethods, Methods.GET))
+    return (
+      <PageContainer>
+        <AuthorizationError text={PermissionMissingTexts.LEASE} />
+      </PageContainer>
+    );
+  if (isEmpty(currentLease)) return null;
+  return (
+    <FullWidthContainer>
+      <PageNavigationWrapper>
+        <ControlButtonBar
+          buttonComponent={
+            <ControlButtons
+              allowComments={isMethodAllowed(commentMethods, Methods.GET)}
+              allowDelete={
+                isMethodAllowed(leaseMethods, Methods.DELETE) &&
+                (allowToDeleteEmptyLease ||
+                  hasPermissions(
                     usersPermissions,
-                    UsersPermissions.VIEW_INVOICE,
+                    UsersPermissions.DELETE_NONEMPTY_LEASE,
+                  )) &&
+                isServiceUnitSameAsActiveServiceUnit()
+              }
+              allowEdit={
+                isMethodAllowed(leaseMethods, Methods.PATCH) &&
+                isServiceUnitSameAsActiveServiceUnit()
+              }
+              commentAmount={comments ? comments.length : 0}
+              deleteModalTexts={{
+                buttonClassName: ButtonColors.ALERT,
+                buttonText: ConfirmationModalTexts.DELETE_LEASE.BUTTON,
+                label: ConfirmationModalTexts.DELETE_LEASE.LABEL,
+                title: ConfirmationModalTexts.DELETE_LEASE.TITLE,
+              }}
+              isCancelDisabled={activeTab == 6}
+              isEditDisabled={activeTab == 6}
+              isEditMode={isEditMode}
+              isSaveDisabled={
+                activeTab == 6 || (isSaveClicked && !areFormsValid)
+              }
+              onCancel={cancelChanges}
+              onComment={toggleCommentPanel}
+              onDelete={handleDelete}
+              onEdit={openEditMode}
+              onSave={saveChanges}
+            />
+          }
+          infoComponent={<LeaseInfo />}
+          onBack={handleBack}
+        />
+
+        <Tabs
+          active={activeTab}
+          isEditMode={isEditMode}
+          tabs={[
+            {
+              label: "Yhteenveto",
+              allow: true,
+              isDirty: isSummaryFormDirty,
+              hasError: isSaveClicked && !isSummaryFormValid,
+            },
+            {
+              label: "Vuokra-alue",
+              allow: isFieldAllowedToRead(
+                leaseAttributes,
+                LeaseAreasFieldPaths.LEASE_AREAS,
+              ),
+              isDirty: isLeaseAreasFormDirty,
+              hasError: isSaveClicked && !isLeaseAreasFormValid,
+            },
+            {
+              label: "Vuokralaiset",
+              allow: isFieldAllowedToRead(
+                leaseAttributes,
+                LeaseTenantsFieldPaths.TENANTS,
+              ),
+              isDirty: isTenantsFormDirty,
+              hasError: isSaveClicked && !isTenantsFormValid,
+            },
+            {
+              label: "Vuokrat",
+              allow:
+                isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseRentsFieldPaths.RENTS,
+                ) ||
+                isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
+                ),
+              isDirty: isRentsFormDirty,
+              hasError: isSaveClicked && !isRentsFormValid,
+            },
+            {
+              label: "Päätökset ja sopimukset",
+              allow:
+                isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseDecisionsFieldPaths.DECISIONS,
+                ) ||
+                isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseContractsFieldPaths.CONTRACTS,
+                ) ||
+                isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseInspectionsFieldPaths.INSPECTIONS,
+                ),
+              isDirty:
+                isContractsFormDirty ||
+                isDecisionsFormDirty ||
+                isInspectionsFormDirty,
+              hasError:
+                isSaveClicked &&
+                (!isContractsFormValid ||
+                  !isDecisionsFormValid ||
+                  !isInspectionsFormValid),
+            },
+            {
+              label: "Rakentamiskelpoisuus",
+              allow: isFieldAllowedToRead(
+                leaseAttributes,
+                LeaseAreasFieldPaths.LEASE_AREAS,
+              ),
+              isDirty: isConstructabilityFormDirty,
+              hasError: isSaveClicked && !isConstructabilityFormValid,
+            },
+            {
+              label: "Laskutus",
+              allow: hasPermissions(
+                usersPermissions,
+                UsersPermissions.VIEW_INVOICE,
+              ),
+            },
+            {
+              label: "Kartta",
+              allow: isMethodAllowed(leaseMethods, Methods.GET),
+              isDirty: isLeaseAreaDraftFormDirty,
+            },
+            {
+              label: "Muutoshistoria",
+              allow: isMethodAllowed(leaseMethods, Methods.GET),
+            },
+          ]}
+          onTabClick={handleTabClick}
+        />
+      </PageNavigationWrapper>
+
+      <PageContainer className="with-control-bar-and-tabs" hasTabs>
+        {isSaving && (
+          <LoaderWrapper className="overlay-wrapper">
+            <Loader isLoading={isSaving} />
+          </LoaderWrapper>
+        )}
+
+        <Authorization allow={isMethodAllowed(leaseMethods, Methods.PATCH)}>
+          <ConfirmationModal
+            confirmButtonLabel={ConfirmationModalTexts.RESTORE_CHANGES.BUTTON}
+            isOpen={isRestoreModalOpen}
+            label={ConfirmationModalTexts.RESTORE_CHANGES.LABEL}
+            onCancel={cancelRestoreUnsavedChanges}
+            onClose={cancelRestoreUnsavedChanges}
+            onSave={restoreUnsavedChanges}
+            title={ConfirmationModalTexts.RESTORE_CHANGES.TITLE}
+          />
+        </Authorization>
+
+        <CommentPanel
+          isOpen={isCommentPanelOpen}
+          onClose={toggleCommentPanel}
+        />
+
+        <TabContent active={activeTab}>
+          <TabPane>
+            <ContentContainer>
+              {isEditMode ? (
+                <Authorization
+                  allow={isMethodAllowed(leaseMethods, Methods.PATCH)}
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
+                >
+                  <SummaryEdit />
+                </Authorization>
+              ) : (
+                <Summary />
+              )}
+            </ContentContainer>
+          </TabPane>
+
+          <TabPane className="lease-page__tab-content">
+            <ContentContainer>
+              {isEditMode ? (
+                <Authorization
+                  allow={
+                    isMethodAllowed(leaseMethods, Methods.PATCH) &&
+                    isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseAreasFieldPaths.LEASE_AREAS,
+                    )
+                  }
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
+                >
+                  <LeaseAreasEdit />
+                </Authorization>
+              ) : (
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseAreasFieldPaths.LEASE_AREAS,
                   )}
                   errorComponent={
                     <AuthorizationError text={PermissionMissingTexts.GENERAL} />
                   }
                 >
-                  <Invoices />
+                  <LeaseAreas />
                 </Authorization>
-              </ContentContainer>
-            </TabPane>
+              )}
+            </ContentContainer>
+          </TabPane>
 
-            <TabPane>
-              <ContentContainer>
+          <TabPane className="lease-page__tab-content">
+            <ContentContainer>
+              {isEditMode ? (
                 <Authorization
-                  allow={isMethodAllowed(leaseMethods, Methods.GET)}
+                  allow={
+                    isMethodAllowed(leaseMethods, Methods.PATCH) &&
+                    isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseTenantsFieldPaths.TENANTS,
+                    )
+                  }
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
                 >
-                  <SingleLeaseMap />
+                  <TenantsEdit />
                 </Authorization>
-              </ContentContainer>
-            </TabPane>
+              ) : (
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseTenantsFieldPaths.TENANTS,
+                  )}
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
+                >
+                  <Tenants />
+                </Authorization>
+              )}
+            </ContentContainer>
+          </TabPane>
 
-            <TabPane>
-              <ContentContainer>
+          <TabPane className="lease-page__tab-content">
+            <ContentContainer>
+              {isEditMode ? (
                 <Authorization
-                  allow={isMethodAllowed(leaseMethods, Methods.GET)}
+                  allow={
+                    isMethodAllowed(leaseMethods, Methods.PATCH) &&
+                    (isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
+                    ) ||
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseRentsFieldPaths.RENTS,
+                      ))
+                  }
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
                 >
-                  <LeaseAuditLog leaseId={leaseId} />
+                  <RentsEdit />
                 </Authorization>
-              </ContentContainer>
-            </TabPane>
-          </TabContent>
-        </PageContainer>
-      </FullWidthContainer>
-    );
-  }
-}
+              ) : (
+                <Authorization
+                  allow={
+                    isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
+                    ) ||
+                    isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseRentsFieldPaths.RENTS,
+                    )
+                  }
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
+                >
+                  <Rents />
+                </Authorization>
+              )}
+            </ContentContainer>
+          </TabPane>
+
+          <TabPane className="lease-page__tab-content">
+            <ContentContainer>
+              {isEditMode ? (
+                <Authorization
+                  allow={
+                    (isMethodAllowed(leaseMethods, Methods.PATCH) &&
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseDecisionsFieldPaths.DECISIONS,
+                      )) ||
+                    isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseContractsFieldPaths.CONTRACTS,
+                    ) ||
+                    isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseInspectionsFieldPaths.INSPECTIONS,
+                    )
+                  }
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
+                >
+                  <DecisionsMainEdit />
+                </Authorization>
+              ) : (
+                <Authorization
+                  allow={
+                    isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseDecisionsFieldPaths.DECISIONS,
+                    ) ||
+                    isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseContractsFieldPaths.CONTRACTS,
+                    ) ||
+                    isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseInspectionsFieldPaths.INSPECTIONS,
+                    )
+                  }
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
+                >
+                  <DecisionsMain />
+                </Authorization>
+              )}
+            </ContentContainer>
+          </TabPane>
+
+          <TabPane className="lease-page__tab-content">
+            <ContentContainer>
+              {isEditMode ? (
+                <Authorization
+                  allow={
+                    isMethodAllowed(leaseMethods, Methods.PATCH) &&
+                    isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseAreasFieldPaths.LEASE_AREAS,
+                    )
+                  }
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
+                >
+                  <ConstructabilityEdit />
+                </Authorization>
+              ) : (
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseAreasFieldPaths.LEASE_AREAS,
+                  )}
+                  errorComponent={
+                    <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                  }
+                >
+                  <Constructability />
+                </Authorization>
+              )}
+            </ContentContainer>
+          </TabPane>
+
+          <TabPane className="lease-page__tab-content">
+            <ContentContainer>
+              <Authorization
+                allow={hasPermissions(
+                  usersPermissions,
+                  UsersPermissions.VIEW_INVOICE,
+                )}
+                errorComponent={
+                  <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+                }
+              >
+                <Invoices />
+              </Authorization>
+            </ContentContainer>
+          </TabPane>
+
+          <TabPane>
+            <ContentContainer>
+              <Authorization allow={isMethodAllowed(leaseMethods, Methods.GET)}>
+                <SingleLeaseMap />
+              </Authorization>
+            </ContentContainer>
+          </TabPane>
+
+          <TabPane>
+            <ContentContainer>
+              <Authorization allow={isMethodAllowed(leaseMethods, Methods.GET)}>
+                <LeaseAuditLog leaseId={leaseId} />
+              </Authorization>
+            </ContentContainer>
+          </TabPane>
+        </TabContent>
+      </PageContainer>
+    </FullWidthContainer>
+  );
+};
 
 export default flowRight(
   withLeasePageAttributes,
@@ -1511,7 +1291,9 @@ export default flowRight(
         isLeaseAreaDraftFormDirty: isDirty(FormNames.LEASE_AREA_DRAFT)(state),
         isFetching: getIsFetching(state),
         isSaveClicked: getIsSaveClicked(state),
-        leaseAreaDraftFormValues: getFormValues(FormNames.LEASE_AREA_DRAFT)(state),
+        leaseAreaDraftFormValues: getFormValues(FormNames.LEASE_AREA_DRAFT)(
+          state,
+        ),
         leaseTypeList: getLeaseTypeList(state),
         loggedUser: getLoggedInUser(state),
         oldDwellingsInHousingCompaniesPriceIndex:
