@@ -22,7 +22,7 @@ type Props = {
   change?: (...args: Array<any>) => any;
   initialValues: Array<LeaseAreaDraftGeometryItem>;
   isAllowedToEdit: boolean;
-  isEditMode: boolean;
+  isEditMode?: boolean;
   center: Array<number>;
   bounds: Record<string, any> | null | undefined;
   overlayLayers?: Array<Record<string, any>>;

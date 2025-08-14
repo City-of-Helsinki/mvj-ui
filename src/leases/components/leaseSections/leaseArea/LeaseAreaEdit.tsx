@@ -779,8 +779,6 @@ class LeaseAreaEdit extends PureComponent<Props> {
               >
                 {!isEmpty(geometry) ? (
                   <Link to={mapLinkUrl}>{LeaseAreasFieldTitles.GEOMETRY}</Link>
-                ) : isFieldAllowedToEdit(attributes, LeaseAreaDraftFieldPaths.GEOMETRY) ? (
-                  <Link to={mapLinkUrl}>{LeaseAreasFieldTitles.GEOMETRY_DRAFT}</Link>
                 ) : null}
               </Authorization>
             </Column>
