@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
@@ -157,6 +157,7 @@ import { getIsFetchingReceivableTypes } from "@/leaseCreateCharge/selectors";
 import { fetchReceivableTypes } from "@/leaseCreateCharge/actions";
 import { fetchOldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/actions";
 import { OldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
+import { createForm } from "final-form";
 
 type Props = {
   areasFormValues: Record<string, any>;
@@ -206,8 +207,6 @@ type Props = {
   isRentsFormDirty: boolean;
   isRentsFormValid: boolean;
   isSaving: boolean;
-  isSummaryFormDirty: boolean;
-  isSummaryFormValid: boolean;
   isTenantsFormDirty: boolean;
   isTenantsFormValid: boolean;
   isSaveClicked: boolean;
@@ -227,7 +226,6 @@ type Props = {
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   rentsFormValues: Record<string, any>;
   showEditMode: (...args: Array<any>) => any;
-  summaryFormValues: Record<string, any>;
   tenantsFormValues: Record<string, any>;
   userActiveServiceUnit: UserServiceUnit;
   usersPermissions: UsersPermissionsType;
@@ -283,8 +281,6 @@ const LeasePage: React.FC<Props> = (props) => {
     isRentsFormDirty,
     isRentsFormValid,
     isSaving,
-    isSummaryFormDirty,
-    isSummaryFormValid,
     isTenantsFormDirty,
     isTenantsFormValid,
     isSaveClicked,
@@ -304,7 +300,6 @@ const LeasePage: React.FC<Props> = (props) => {
     receiveTopNavigationSettings,
     rentsFormValues,
     showEditMode,
-    summaryFormValues,
     tenantsFormValues,
     userActiveServiceUnit,
     usersPermissions,
@@ -313,6 +308,10 @@ const LeasePage: React.FC<Props> = (props) => {
 
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(false);
+  const [summaryFormState, setSummaryFormState] = useState({
+    dirty: false,
+    valid: true,
+  });
 
   const contextTypes = {
     router: PropTypes.object,
@@ -346,6 +345,16 @@ const LeasePage: React.FC<Props> = (props) => {
     hideEditMode();
     window.addEventListener("beforeunload", handleLeavePage);
 
+    const unsubscribeSummaryForm = summaryFormRef.current.subscribe(
+      (formState) => {
+        setSummaryFormState({
+          dirty: formState.dirty,
+          valid: formState.valid,
+        });
+      },
+      { dirty: true, valid: true },
+    );
+
     return () => {
       if (pathname !== `${getRouteById(Routes.LEASES)}/${leaseId}`) {
         clearUnsavedChanges();
@@ -359,6 +368,8 @@ const LeasePage: React.FC<Props> = (props) => {
       destroy(FormNames.RENT_CALCULATOR);
       hideEditMode();
       window.removeEventListener("beforeunload", handleLeavePage);
+
+      unsubscribeSummaryForm();
     };
   }, []);
 
@@ -475,6 +486,12 @@ const LeasePage: React.FC<Props> = (props) => {
     destroy(FormNames.LEASE_AREA_DRAFT);
   };
 
+  const summaryFormRef = useRef(
+    createForm({
+      onSubmit: () => {},
+    }),
+  );
+
   const initializeForms = (lease: Lease) => {
     const areas = getContentLeaseAreas(lease),
       rents = getContentRents(lease),
@@ -506,7 +523,7 @@ const LeasePage: React.FC<Props> = (props) => {
       rents: rents.filter((rent) => !isArchived(rent)),
       rentsArchived: rents.filter((rent) => isArchived(rent)),
     });
-    initialize(FormNames.LEASE_SUMMARY, getContentLeaseSummary(lease));
+    summaryFormRef.current.initialize(getContentLeaseSummary(lease));
     initialize(FormNames.LEASE_TENANTS, {
       tenants: tenants.filter((tenant) => !isArchived(tenant.tenant)),
       tenantsArchived: tenants.filter((tenant) => isArchived(tenant.tenant)),
@@ -664,8 +681,11 @@ const LeasePage: React.FC<Props> = (props) => {
       removeSessionStorageItem(FormNames.LEASE_RENTS);
     }
 
-    if (isSummaryFormDirty) {
-      setSessionStorageItem(FormNames.LEASE_SUMMARY, summaryFormValues);
+    if (summaryFormState.dirty) {
+      setSessionStorageItem(
+        FormNames.LEASE_SUMMARY,
+        summaryFormRef.current.getState().values,
+      );
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.LEASE_SUMMARY);
@@ -742,8 +762,11 @@ const LeasePage: React.FC<Props> = (props) => {
         );
       }
 
-      if (isSummaryFormDirty) {
-        payload = addSummaryFormValuesToPayload(payload, summaryFormValues);
+      if (summaryFormState.dirty) {
+        payload = addSummaryFormValuesToPayload(
+          payload,
+          summaryFormRef.current.getState().values,
+        );
       }
 
       if (isTenantsFormDirty) {
@@ -762,7 +785,7 @@ const LeasePage: React.FC<Props> = (props) => {
       isInspectionsFormValid &&
       isLeaseAreasFormValid &&
       isRentsFormValid &&
-      isSummaryFormValid &&
+      summaryFormState.valid &&
       isTenantsFormValid
     );
   };
@@ -799,7 +822,7 @@ const LeasePage: React.FC<Props> = (props) => {
       isInspectionsFormDirty ||
       isLeaseAreasFormDirty ||
       isRentsFormDirty ||
-      isSummaryFormDirty ||
+      summaryFormState.dirty ||
       isTenantsFormDirty
     );
   };
@@ -878,8 +901,8 @@ const LeasePage: React.FC<Props> = (props) => {
             {
               label: "Yhteenveto",
               allow: true,
-              isDirty: isSummaryFormDirty,
-              hasError: isSaveClicked && !isSummaryFormValid,
+              isDirty: summaryFormState.dirty,
+              hasError: isSaveClicked && !summaryFormState.valid,
             },
             {
               label: "Vuokra-alue",
@@ -1002,7 +1025,7 @@ const LeasePage: React.FC<Props> = (props) => {
                     <AuthorizationError text={PermissionMissingTexts.GENERAL} />
                   }
                 >
-                  <SummaryEdit />
+                  <SummaryEdit formApi={summaryFormRef.current} />
                 </Authorization>
               ) : (
                 <Summary />
@@ -1292,8 +1315,6 @@ export default flowRight(
         isRentsFormDirty: isDirty(FormNames.LEASE_RENTS)(state),
         isRentsFormValid: getIsFormValidById(state, FormNames.LEASE_RENTS),
         isSaving: getIsSaving(state),
-        isSummaryFormDirty: isDirty(FormNames.LEASE_SUMMARY)(state),
-        isSummaryFormValid: getIsFormValidById(state, FormNames.LEASE_SUMMARY),
         isTenantsFormDirty: isDirty(FormNames.LEASE_TENANTS)(state),
         isTenantsFormValid: getIsFormValidById(state, FormNames.LEASE_TENANTS),
         isLeaseAreaDraftFormDirty: isDirty(FormNames.LEASE_AREA_DRAFT)(state),
@@ -1307,7 +1328,6 @@ export default flowRight(
         oldDwellingsInHousingCompaniesPriceIndex:
           getOldDwellingsInHousingCompaniesPriceIndex(state),
         rentsFormValues: getFormValues(FormNames.LEASE_RENTS)(state),
-        summaryFormValues: getFormValues(FormNames.LEASE_SUMMARY)(state),
         tenantsFormValues: getFormValues(FormNames.LEASE_TENANTS)(state),
         userActiveServiceUnit: getUserActiveServiceUnit(state),
         vats: getVats(state),
