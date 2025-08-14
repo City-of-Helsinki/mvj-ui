@@ -24,7 +24,6 @@ const SearchForm: React.FC<Props> = ({ onSearch, initialValues }) => {
       <Form
         onSubmit={onSearch}
         initialValues={initialValues}
-        subscription={{}}
         render={({ handleSubmit, values }) => (
           <form onSubmit={handleSubmit}>
             <SearchRow
@@ -53,7 +52,6 @@ const SearchForm: React.FC<Props> = ({ onSearch, initialValues }) => {
                         read_only: false,
                       }}
                       invisibleLabel
-                      name="contact_type"
                       overrideValues={{
                         options: [
                           {
@@ -71,7 +69,7 @@ const SearchForm: React.FC<Props> = ({ onSearch, initialValues }) => {
                 </Field>
               </SearchInputColumn>
             </SearchRow>
-            {values.contact_type && (
+            {values?.contact_type && (
               <Fragment>
                 <SearchRow
                   style={{
@@ -106,7 +104,6 @@ const SearchForm: React.FC<Props> = ({ onSearch, initialValues }) => {
                             read_only: false,
                           }}
                           invisibleLabel
-                          name="keyword"
                         />
                       )}
                     </Field>
@@ -130,4 +127,4 @@ const SearchForm: React.FC<Props> = ({ onSearch, initialValues }) => {
   );
 };
 
-export default flowRight(SearchForm) as React.ComponentType<any>;
+export default SearchForm as React.ComponentType<any>;
