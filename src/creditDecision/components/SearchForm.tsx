@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import flowRight from "lodash/flowRight";
 import { Form, Field } from "react-final-form";
 import Button from "@/components/button/Button";
 import FormField from "@/components/form/final-form/FormField";
