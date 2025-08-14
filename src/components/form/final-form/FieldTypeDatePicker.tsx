@@ -39,7 +39,11 @@ const FieldTypeDatePicker = ({
     });
 
   const handleSelect = (val: any) => {
-    onChange(val);
+    if (val instanceof Date && isValidDate(val)) {
+      onChange(val.toISOString().split("T")[0]); // "YYYY-MM-DD"
+    } else {
+      onChange(val);
+    }
   };
 
   const handleChange = (e: any) => {
