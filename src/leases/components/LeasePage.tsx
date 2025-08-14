@@ -168,7 +168,7 @@ type Props = {
   // get via withLeasePageAttributes HOC
   contractsFormValues: Record<string, any>;
   constructabilityFormValues: Record<string, any>;
-  currentLease: Record<string, any>;
+  currentLease: Lease;
   decisionsFormValues: Record<string, any>;
   deleteLease: (...args: Array<any>) => any;
   destroy: (...args: Array<any>) => any;
@@ -328,10 +328,6 @@ const LeasePage: React.FC<Props> = (props) => {
     () => isUserAllowedToDeleteEmptyLease(currentLease, comments, loggedUser),
     [currentLease, comments, loggedUser],
   );
-  const pageTitle = useMemo(() => {
-    const identifier = getContentLeaseIdentifier(currentLease);
-    return `${identifier ? `${identifier} | ` : ""}Vuokraus`;
-  }, [currentLease]);
 
   useEffect(() => {
     receiveTopNavigationSettings({
@@ -367,8 +363,8 @@ const LeasePage: React.FC<Props> = (props) => {
   }, []);
 
   useEffect(() => {
-    setPageTitle(pageTitle);
-  }, [pageTitle]);
+    scrollToTopPage();
+  }, [activeTab]);
 
   useEffect(() => {
     fetchCurrentLeaseData();
@@ -376,8 +372,15 @@ const LeasePage: React.FC<Props> = (props) => {
   }, [leaseId, usersPermissions]);
 
   useEffect(() => {
-    scrollToTopPage();
-  }, [activeTab]);
+    if (!isEmpty(currentLease)) {
+      const pageTitle = getLeasePageTitle(currentLease);
+      setPageTitle(pageTitle);
+
+      if (currentLease?.service_unit) {
+        fetchReceivableTypes();
+      }
+    }
+  }, [currentLease]);
 
   useEffect(() => {
     if (!isEmpty(currentLease)) {
@@ -386,7 +389,6 @@ const LeasePage: React.FC<Props> = (props) => {
         setIsRestoreModalOpen(true);
       }
     }
-    fetchReceivableTypes();
   }, [currentLease, leaseId]);
 
   const fetchCurrentLeaseData = () => {
@@ -421,6 +423,12 @@ const LeasePage: React.FC<Props> = (props) => {
     ) {
       fetchVats();
     }
+  };
+
+  const getLeasePageTitle = (lease: Lease) => {
+    const identifier = getContentLeaseIdentifier(lease);
+    const pageTitle = `${identifier ? `${identifier} | ` : ""}Vuokraus`;
+    return pageTitle;
   };
 
   const startAutoSaveTimer = () => {
