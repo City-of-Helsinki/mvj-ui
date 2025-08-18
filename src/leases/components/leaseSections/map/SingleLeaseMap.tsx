@@ -58,8 +58,8 @@ type Props = {
   leaseAttributes: Attributes;
   location: Record<string, any>;
   usersPermissions: UsersPermissionsType;
-  leaseAreaDraftGeometryFromForm: Array<LeaseAreaDraftItem>;
-  leaseAreaDraftGeometryFromState: Array<LeafletFeatureGeometry>;
+  leaseAreaDraftGeometryItemsFromForm: Array<LeaseAreaDraftItem>;
+  leaseAreaDraftGeometryItemsFromState: Array<LeafletFeatureGeometry>;
 };
 type State = {
   areasGeoJson: LeafletGeoJson;
@@ -329,14 +329,14 @@ class SingleLeaseMap extends PureComponent<Props, State> {
     const {
       isEditMode,
       change,
-      leaseAreaDraftGeometryItems,
-      leaseAreaDraftFromState,
+      leaseAreaDraftGeometryItemsFromForm,
+      leaseAreaDraftGeometryItemsFromState,
     } = this.props;
     const { bounds, center } = this.state;
     const overlayLayers = this.getOverlayLayers();
     const initialValues = isEditMode
-      ? leaseAreaDraftGeometryItems
-      : leaseAreaDraftFromState || [];
+      ? leaseAreaDraftGeometryItemsFromForm
+      : leaseAreaDraftGeometryItemsFromState || [];
     const areaId = this.getAreaId();
     const isAllowedToEdit = areaId && isFieldAllowedToEdit(
       this.state.leaseAttributes,
@@ -353,7 +353,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
         <Divider />
         <MapInput
           change={(features: LeafletFeatureGeometry) => {
-            const index = leaseAreaDraftGeometryItems.findIndex(
+            const index = leaseAreaDraftGeometryItemsFromForm.findIndex(
               (area) => area.id === areaId,
             );
             if (index !== -1) {
@@ -362,7 +362,6 @@ class SingleLeaseMap extends PureComponent<Props, State> {
           }}
           initialValues={initialValues}
           isAllowedToEdit={isAllowedToEdit}
-          isEditMode={isEditMode}
           bounds={bounds}
           center={center}
           overlayLayers={overlayLayers}
@@ -386,7 +385,7 @@ export default flowRight(
         isEditMode: getIsEditMode(state),
         leaseAttributes: getLeaseAttributes(state),
         usersPermissions: getUsersPermissions(state),
-        leaseAreaDraftGeometryItems:
+        leaseAreaDraftGeometryItemsFromForm:
           selector(state, "lease_areas_active")?.map((area: LeaseArea) => {
             return {
               id: area.id,
@@ -394,7 +393,7 @@ export default flowRight(
               draft_geometry: area.draft_geometry || null,
             };
           }) || [],
-        leaseAreaDraftFromState: currentLease?.lease_areas?.map((area) => {
+        leaseAreaDraftGeometryItemsFromState: currentLease?.lease_areas?.map((area) => {
           return {
             id: area.id,
             identifier: area.identifier,
