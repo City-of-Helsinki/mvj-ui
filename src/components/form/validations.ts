@@ -8,127 +8,131 @@ const decimalPlaces = (n) => {
   return result === null ? 0 : result[1].length;
 };
 
+/**
+ * Ensures that if errorText is provided, it is a string. Otherwise, return a default error message.
+ *
+ * @param errorText - The error value from the form library (string from redux-form or object from final-form)
+ * @param defaultErrorMessage - Fallback message to use when errorText is not provided or a string
+ * @returns A string error message suitable for display
+ */
+const formatError = (
+  errorText: string | unknown,
+  defaultErrorMessage: string,
+): string => {
+  return errorText && typeof errorText === "string"
+    ? errorText
+    : defaultErrorMessage;
+};
+
 export const required = (
   value: any,
-  error?: string,
-): string | null | undefined => {
-  let val = value;
+  errorText?: string,
+): string | undefined => {
+  const defaultError = formatError(errorText, "Pakollinen kenttä");
 
   if (value instanceof Date) {
     return !isNaN(value.valueOf())
       ? undefined
-      : error
-        ? error
-        : "Virheellinen arvo";
+      : formatError(errorText, "Virheellinen arvo");
   }
 
   if (isArray(value)) {
-    return value.length ? undefined : error ? error : "Pakollinen kenttä";
+    return value.length ? undefined : defaultError;
   }
 
-  if (value === Object(value)) {
-    val = value.value;
-  }
+  const actualValue = value?.value !== undefined ? value.value : value;
 
-  return !!val || val === 0 ? undefined : error ? error : "Pakollinen kenttä";
+  return !!actualValue || actualValue === 0 ? undefined : defaultError;
 };
+
 export const integer = (
   value: any,
-  error?: string,
+  errorText?: string,
 ): string | null | undefined =>
   isEmptyValue(value) || Number.isInteger(Number(value))
     ? undefined
-    : error
-      ? error
-      : "Arvon tulee olla kokonaisluku";
+    : formatError(errorText, "Arvon tulee olla kokonaisluku");
+
 export const isDate = (
   value: any,
-  error?: string,
+  errorText?: string,
 ): string | null | undefined =>
   isEmptyValue(value) || isValidDate(new Date(value))
     ? undefined
-    : error
-      ? error
-      : "Arvon tulee olla päivämäärä";
+    : formatError(errorText, "Arvon tulee olla päivämäärä");
+
 export const decimalNumber = (
   value: any,
-  error?: string,
+  errorText?: string,
 ): string | null | undefined =>
   isEmptyValue(value) ||
   !isNaN(value.toString().replace(",", ".").replace(/\s+/g, ""))
     ? undefined
-    : error
-      ? error
-      : "Arvon tulee olla numero";
+    : formatError(errorText, "Arvon tulee olla numero");
+
 export const min = (
   value: any,
   min: number,
-  error?: string,
+  errorText?: string,
 ): string | null | undefined =>
   isEmptyValue(value) || Number(value) >= min
     ? undefined
-    : error
-      ? error
-      : `Minimiarvo on ${min}`;
+    : formatError(errorText, `Minimiarvo on ${min}`);
+
 export const max = (
   value: any,
   max: number,
-  error?: string,
+  errorText?: string,
 ): string | null | undefined =>
   isEmptyValue(value) || Number(value) <= max
     ? undefined
-    : error
-      ? error
-      : `Maksimiarvo on ${max}`;
+    : formatError(errorText, `Maksimiarvo on ${max}`);
+
 export const maxLength = (
   value: any,
   max: number,
-  error?: string,
-): string | null | undefined =>
-  !value || value.length <= max
+  errorText?: string,
+): string | undefined =>
+  isEmptyValue(value) || value.length <= max
     ? undefined
-    : error
-      ? error
-      : `Maksimipituus on ${max}`;
+    : formatError(errorText, `Maksimipituus on ${max}`);
+
 export const digitsMaxLength = (
   value: any,
   max: number,
-  error?: string,
+  errorText?: string,
 ): string | null | undefined =>
   isEmptyValue(value) || parseInt(value).toString().length <= max
     ? undefined
-    : error
-      ? error
-      : `Kokonaislukuosan maksimipituus on ${max}`;
+    : formatError(errorText, `Kokonaislukuosan maksimipituus on ${max}`);
+
 export const decimalsMaxLength = (
   value: any,
   max: number,
-  error?: string,
+  errorText?: string,
 ): string | null | undefined =>
   isEmptyValue(value) ||
   decimalPlaces(value.toString().replace(",", ".")) <= max
     ? undefined
-    : error
-      ? error
-      : `Desimaaliosan maksimipituus on ${max}`;
+    : formatError(errorText, `Desimaaliosan maksimipituus on ${max}`);
+
 export const dateGreaterOrEqual = (
   date: string | null | undefined,
   otherDate: string | null | undefined,
-  error?: string,
+  errorText?: string,
 ): string | null | undefined => {
   if (isEmptyValue(date) || isEmptyValue(otherDate)) {
     return undefined;
   }
 
-  return date && otherDate && isBefore(new Date(date), new Date(otherDate))
-    ? error
-      ? error
-      : "Loppupvm ei voi olla ennen alkupvm:ää"
-    : undefined;
+  return date && otherDate && !isBefore(new Date(date), new Date(otherDate))
+    ? undefined
+    : formatError(errorText, "Loppupvm ei voi olla ennen alkupvm:ää");
 };
+
 export const internalOrder = (
   value: any,
-  error?: string,
+  errorText?: string,
 ): string | null | undefined => {
   if (isEmptyValue(value)) {
     return undefined;
@@ -136,26 +140,31 @@ export const internalOrder = (
 
   return value.length <= 12
     ? undefined
-    : error
-      ? error
-      : "Sisäisen tilauksen numero on korkeintaan 12-merkkinen numerosarja.";
+    : formatError(
+        errorText,
+        "Sisäisen tilauksen numero on korkeintaan 12-merkkinen numerosarja.",
+      );
 };
+
 export const referenceNumber = (
   value: any,
-  error?: string,
-): string | null | undefined => {
+  errorText?: string,
+): string | undefined => {
   if (isEmptyValue(value)) {
     return undefined;
   }
-
   const regex = RegExp("^[Hh][Ee][Ll] [0-9]{4}-[0-9]{6}$");
-  return regex.test(value)
+
+  const isValid = regex.test(value);
+  return isValid
     ? undefined
-    : error
-      ? error
-      : "Arvon tulee olla muotoa HEL 0000-000000";
+    : formatError(errorText, "Arvon tulee olla muotoa HEL 0000-000000");
 };
-export const year = (value: any, error?: string): string | null | undefined => {
+
+export const year = (
+  value: any,
+  errorText?: string,
+): string | null | undefined => {
   if (isEmptyValue(value)) {
     return undefined;
   }
@@ -164,11 +173,12 @@ export const year = (value: any, error?: string): string | null | undefined => {
   const year = value.toString();
 
   if (!numbers.test(year) || year.length !== 4) {
-    return error ? error : "Vuoden tulee olla 4 numeron mittainen";
+    return errorText ? errorText : "Vuoden tulee olla 4 numeron mittainen";
   }
 
   return undefined;
 };
+
 export const genericValidator = (
   value: any,
   options: Record<string, any>,
@@ -177,77 +187,77 @@ export const genericValidator = (
     return undefined;
   }
 
-  let error = "";
+  let errorText = "";
 
   if (options.required) {
-    error = required(value);
+    errorText = required(value);
 
-    if (error) {
-      return error;
+    if (errorText) {
+      return errorText;
     }
   }
 
   if (options.type === "date") {
-    error = isDate(value);
+    errorText = isDate(value);
 
-    if (error) {
-      return error;
+    if (errorText) {
+      return errorText;
     }
   }
 
   if (options.type === "decimal") {
-    error = decimalNumber(value);
+    errorText = decimalNumber(value);
 
-    if (error) {
-      return error;
+    if (errorText) {
+      return errorText;
     }
 
     if (options.max_digits) {
-      error = digitsMaxLength(value, options.max_digits);
+      errorText = digitsMaxLength(value, options.max_digits);
 
-      if (error) {
-        return error;
+      if (errorText) {
+        return errorText;
       }
     }
 
     if (options.decimal_places) {
-      error = decimalsMaxLength(value, options.decimal_places);
+      errorText = decimalsMaxLength(value, options.decimal_places);
 
-      if (error) {
-        return error;
+      if (errorText) {
+        return errorText;
       }
     }
   }
 
   if (options.type === "integer") {
-    error = integer(value);
+    errorText = integer(value);
 
-    if (error) {
-      return error;
+    if (errorText) {
+      return errorText;
     }
   }
 
   if (options.type === "string" && options.max_length) {
-    error = maxLength(value, options.max_length);
+    errorText = maxLength(value, options.max_length);
 
-    if (error) {
-      return error;
+    if (errorText) {
+      return errorText;
     }
   }
 
   if (options.min_value !== undefined && options.min_value !== null) {
-    error = min(value, options.min_value);
+    errorText = min(value, options.min_value);
 
-    if (error) {
-      return error;
+    if (errorText) {
+      return errorText;
     }
   }
 
   if (options.max_value !== undefined && options.max_value !== null) {
-    error = max(value, options.max_value);
+    errorText = max(value, options.max_value);
 
-    if (error) {
-      return error;
+    if (errorText) {
+      return errorText;
     }
   }
 
