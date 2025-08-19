@@ -122,7 +122,7 @@ class LeaseAuditLog extends PureComponent<Props, State> {
 }
 
 export default connect(
-  (state, props: Props) => {
+  (state, props: Pick<Props, "leaseId">) => {
     return {
       auditLogList: getAuditLogByLease(state, props.leaseId),
       isEditMode: getIsEditMode(state),
