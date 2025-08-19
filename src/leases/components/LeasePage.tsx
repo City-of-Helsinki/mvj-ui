@@ -2,12 +2,14 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
-  change,
+  change as reduxFormChange,
   destroy,
   getFormValues,
   initialize,
   isDirty,
 } from "redux-form";
+import { createForm } from "final-form";
+import type { FormApi } from "final-form";
 import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
@@ -157,12 +159,11 @@ import { getIsFetchingReceivableTypes } from "@/leaseCreateCharge/selectors";
 import { fetchReceivableTypes } from "@/leaseCreateCharge/actions";
 import { fetchOldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/actions";
 import { OldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
-import { createForm } from "final-form";
 import { validateSummaryForm } from "../formValidators";
 
 type Props = {
   areasFormValues: Record<string, any>;
-  change: (...args: Array<any>) => any;
+  reduxFormChange: typeof reduxFormChange;
   clearFormValidFlags: (...args: Array<any>) => any;
   clearPreviewInvoices: (...args: Array<any>) => any;
   comments: CommentList;
@@ -236,12 +237,11 @@ type Props = {
 const LeasePage: React.FC<Props> = (props) => {
   const {
     areasFormValues,
-    change,
+    reduxFormChange,
     clearFormValidFlags,
     clearPreviewInvoices,
     comments,
     commentMethods,
-    // get via withLeasePageAttributes HOC
     contractsFormValues,
     constructabilityFormValues,
     currentLease,
@@ -267,7 +267,6 @@ const LeasePage: React.FC<Props> = (props) => {
     isFetchingLeasePageAttributes,
     isFetchingReceivableTypes,
     isFetchingOldDwellingsInHousingCompaniesPriceIndex,
-    // get via withLeasePageAttributes HOC
     isFormValidFlags,
     isConstructabilityFormDirty,
     isConstructabilityFormValid,
@@ -548,7 +547,7 @@ const LeasePage: React.FC<Props> = (props) => {
     const storedAreasFormValues = getSessionStorageItem(FormNames.LEASE_AREAS);
 
     if (storedAreasFormValues) {
-      bulkChange(FormNames.LEASE_AREAS, storedAreasFormValues);
+      bulkChangeReduxForm(FormNames.LEASE_AREAS, storedAreasFormValues);
     }
 
     const storedConstructabilityFormValues = getSessionStorageItem(
@@ -556,7 +555,7 @@ const LeasePage: React.FC<Props> = (props) => {
     );
 
     if (storedConstructabilityFormValues) {
-      bulkChange(
+      bulkChangeReduxForm(
         FormNames.LEASE_CONSTRUCTABILITY,
         storedConstructabilityFormValues,
       );
@@ -567,7 +566,7 @@ const LeasePage: React.FC<Props> = (props) => {
     );
 
     if (storedContractsFormValues) {
-      bulkChange(FormNames.LEASE_CONTRACTS, storedContractsFormValues);
+      bulkChangeReduxForm(FormNames.LEASE_CONTRACTS, storedContractsFormValues);
     }
 
     const storedDecisionsFormValues = getSessionStorageItem(
@@ -575,7 +574,7 @@ const LeasePage: React.FC<Props> = (props) => {
     );
 
     if (storedDecisionsFormValues) {
-      bulkChange(FormNames.LEASE_DECISIONS, storedDecisionsFormValues);
+      bulkChangeReduxForm(FormNames.LEASE_DECISIONS, storedDecisionsFormValues);
     }
 
     const storedInspectionsFormValues = getSessionStorageItem(
@@ -583,13 +582,16 @@ const LeasePage: React.FC<Props> = (props) => {
     );
 
     if (storedInspectionsFormValues) {
-      bulkChange(FormNames.LEASE_INSPECTIONS, storedInspectionsFormValues);
+      bulkChangeReduxForm(
+        FormNames.LEASE_INSPECTIONS,
+        storedInspectionsFormValues,
+      );
     }
 
     const storedRentsFormValues = getSessionStorageItem(FormNames.LEASE_RENTS);
 
     if (storedRentsFormValues) {
-      bulkChange(FormNames.LEASE_RENTS, storedRentsFormValues);
+      bulkChangeReduxForm(FormNames.LEASE_RENTS, storedRentsFormValues);
     }
 
     const storedSummaryFormValues = getSessionStorageItem(
@@ -597,7 +599,7 @@ const LeasePage: React.FC<Props> = (props) => {
     );
 
     if (storedSummaryFormValues) {
-      bulkChange(FormNames.LEASE_SUMMARY, storedSummaryFormValues);
+      bulkChange(summaryFormRef.current, storedSummaryFormValues);
     }
 
     const storedTenantsFormValues = getSessionStorageItem(
@@ -605,7 +607,7 @@ const LeasePage: React.FC<Props> = (props) => {
     );
 
     if (storedTenantsFormValues) {
-      bulkChange(FormNames.LEASE_TENANTS, storedTenantsFormValues);
+      bulkChangeReduxForm(FormNames.LEASE_TENANTS, storedTenantsFormValues);
     }
 
     const storedFormValidity = getSessionStorageItem("leaseValidity");
@@ -618,10 +620,24 @@ const LeasePage: React.FC<Props> = (props) => {
     setIsRestoreModalOpen(false);
   };
 
-  const bulkChange = (formName: string, obj: Record<string, any>) => {
+  const bulkChangeReduxForm = (formName: string, obj: Record<string, any>) => {
     const fields = Object.keys(obj);
     fields.forEach((field) => {
-      change(formName, field, obj[field]);
+      reduxFormChange(formName, field, obj[field]);
+    });
+  };
+
+  const bulkChange = (form: FormApi, obj: Record<string, any>) => {
+    const currentValues = form.getState().values;
+    const fields = Object.keys(obj);
+    form.batch(() => {
+      fields.forEach((field) => {
+        const currentValue = currentValues[field];
+        const newValue = obj[field];
+        if (JSON.stringify(currentValue) !== JSON.stringify(newValue)) {
+          form.change(field, newValue);
+        }
+      });
     });
   };
 
@@ -682,8 +698,7 @@ const LeasePage: React.FC<Props> = (props) => {
     } else {
       removeSessionStorageItem(FormNames.LEASE_RENTS);
     }
-
-    if (summaryFormState.dirty) {
+    if (summaryFormRef.current.getState().dirty) {
       setSessionStorageItem(
         FormNames.LEASE_SUMMARY,
         summaryFormRef.current.getState().values,
@@ -1336,7 +1351,7 @@ export default flowRight(
       };
     },
     {
-      change,
+      reduxFormChange,
       clearFormValidFlags,
       clearPreviewInvoices,
       deleteLease,
