@@ -368,9 +368,10 @@ const FormField: React.FC<Props> = (props) => {
     };
   }, [fieldAttributes, overrideValues]);
 
-  const handleGenericNormalize = useMemo(() => {
+  const handleGenericParse = useMemo(() => {
     return (value: any) => {
       const fieldProps = { ...fieldAttributes, ...derivedValues };
+      // Redux-form normalizer don't exist in final-form, run normalizers in parse.
       return genericNormalizer(value, fieldProps);
     };
   }, [fieldAttributes, derivedValues]);
@@ -393,11 +394,12 @@ const FormField: React.FC<Props> = (props) => {
 
   const fieldComponentProps = {
     name,
-    normalize: handleGenericNormalize,
+    parse: handleGenericParse,
     validate: allowEdit
       ? (value: any) => {
-          const customError = handleValidate(value);
-          return customError || handleGenericValidate(value);
+          const genericError = handleGenericValidate(value);
+          if (genericError) return genericError;
+          return handleValidate(value);
         }
       : undefined,
   };
@@ -415,7 +417,13 @@ const FormField: React.FC<Props> = (props) => {
   };
 
   return (
-    <Field {...fieldComponentProps} {...formFieldInputProps}>
+    <Field
+      {...formFieldInputProps}
+      parse={fieldComponentProps.parse}
+      validate={fieldComponentProps.validate}
+      name={fieldComponentProps.name}
+      type={resolveType(derivedValues.fieldType)}
+    >
       {(fieldRenderProps) => {
         const { input, meta, ...otherFieldProps } = fieldRenderProps;
 
