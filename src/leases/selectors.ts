@@ -78,10 +78,10 @@ export const getErrorsByFormName: Selector<
 
   return null;
 };
-export const getCollapseStateByKey: Selector<
-  Record<string, any> | null | undefined,
-  string
-> = (state: RootState, key: string): Record<string, any> | null | undefined => {
+export const getCollapseStateByKey: Selector<boolean | undefined, string> = (
+  state: RootState,
+  key: string,
+): boolean | undefined => {
   return get(state.lease.collapseStates, key);
 };
 export const getLeasesForContractNumbers: Selector<LeaseList, void> = (

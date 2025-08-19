@@ -158,6 +158,7 @@ import { fetchReceivableTypes } from "@/leaseCreateCharge/actions";
 import { fetchOldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/actions";
 import { OldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
 import { createForm } from "final-form";
+import { validateSummaryForm } from "../formValidators";
 
 type Props = {
   areasFormValues: Record<string, any>;
@@ -352,7 +353,7 @@ const LeasePage: React.FC<Props> = (props) => {
           valid: formState.valid,
         });
       },
-      { dirty: true, valid: true },
+      { dirty: true, errors: true, valid: true },
     );
 
     return () => {
@@ -489,6 +490,7 @@ const LeasePage: React.FC<Props> = (props) => {
   const summaryFormRef = useRef(
     createForm({
       onSubmit: () => {},
+      validate: validateSummaryForm,
     }),
   );
 
