@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Row, Column } from "react-foundation";
 import { useDispatch, useSelector } from "react-redux";
-import { initialize } from "redux-form";
 import { ActionTypes } from "@/app/AppContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
@@ -134,7 +133,6 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
     );
   };
   const showCreateLeaseModal = () => {
-    dispatch(initialize(FormNames.LEASE_CREATE_MODAL, {}));
     dispatch(showCreateModal());
   };
   const hideCreateLeaseModal = () => {
