@@ -48,6 +48,7 @@ import type {
   StopInvoicingAction,
   FetchLeasesForContractNumberAction,
   ReceiveLeasesForContractNumbersAction,
+  CreateLease,
 } from "./types";
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction("mvj/leases/FETCH_ATTRIBUTES")();
@@ -80,7 +81,7 @@ export const fetchLeaseById = (id: LeaseId): FetchLeaseByIdAction =>
   createAction("mvj/leases/FETCH_BY_ID")(id);
 export const receiveLeaseById = (lease: Lease): ReceiveLeaseByIdAction =>
   createAction("mvj/leases/RECEIVE_BY_ID")(lease);
-export const createLease = (lease: Lease): CreateLeaseAction =>
+export const createLease = (lease: CreateLease): CreateLeaseAction =>
   createAction("mvj/leases/CREATE")(lease);
 export const createLeaseAndUpdateCurrentLease = (
   lease: Lease,

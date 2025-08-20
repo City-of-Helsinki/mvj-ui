@@ -1,4 +1,5 @@
 import { Classification, LeaseState } from "@/leases/enums";
+import { RelationTypes } from "@/leases/enums";
 import type { Action, ApiResponse, Attributes, Methods, User } from "@/types";
 import type { ServiceUnit } from "@/serviceUnits/types";
 import type { AreaSearch } from "@/areaSearch/types";
@@ -88,6 +89,10 @@ export type Lease = {
   transferable: boolean | null;
   type: Record<string, any>;
 };
+export type CreateLease = Partial<Lease> & {
+  relate_to?: Lease["id"];
+  relation_type?: (typeof RelationTypes)[keyof typeof RelationTypes];
+};
 export type LeaseList = ApiResponse;
 export type LeaseId = number;
 export type RelatedLeases = {
@@ -145,11 +150,11 @@ export type LeaseAreaAddress = {
 // Lease area draft object as expected from API response
 /**
  * Vuokra-alueen pakolliset kentät:
- * 
- * Kohteen tunnus luodaan jo päätöstä valmistellessa, 
+ *
+ * Kohteen tunnus luodaan jo päätöstä valmistellessa,
  *    saattaa kuitenkin muuttua ennen lopullista sopimusta
  * Sijainti (Yläpuolella default)
- * osoite (Aluehaun komponentti hakee pinta-alan 
+ * osoite (Aluehaun komponentti hakee pinta-alan
  *    ja osoitteen automaattisesti)
  * pinta-ala
  */
@@ -266,4 +271,11 @@ export type DueDate = {
   id: number;
   day: number;
   month: number;
+};
+
+export type RelatedLeaseWrapper = {
+  id: number;
+  lease: Lease;
+  head?: number;
+  to_lease?: number;
 };

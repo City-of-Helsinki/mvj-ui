@@ -62,6 +62,7 @@ import type {
   PeriodicRentAdjustmentType,
   CreateLeaseFormValues,
   LeaseAreaDraft,
+  RelatedLeaseWrapper,
 } from "./types";
 import type { CommentList } from "@/comments/types";
 import type {
@@ -475,9 +476,9 @@ export const getContentLeaseSummary = (lease: Lease): Record<string, any> => {
  * @returns {Object}
  */
 export const getContentRelatedLease = (
-  content: Record<string, any>,
+  content: RelatedLeaseWrapper,
   path: string = "from_lease",
-): Record<string, any> => get(content, path, {});
+): Lease => get(content, path, {} as Lease);
 
 /**
  * Get content related leases from list sorted by start and end date
@@ -492,7 +493,7 @@ export const getContentRelatedLease = (
  */
 export const getContentRelatedLeasesFrom = (
   lease: Lease,
-): Array<Record<string, any>> =>
+): Array<RelatedLeaseWrapper> =>
   get(lease, "related_leases.related_from", []).map((leaseHistoryItem) => {
     return {
       head: lease.id,
@@ -507,7 +508,9 @@ export const getContentRelatedLeasesFrom = (
  * @param {Object[]} leases
  * @returns {Object[]}
  */
-export const sortRelatedLeasesFrom = (leases: Array<Lease>): Array<Lease> => {
+export const sortRelatedLeasesFrom = (
+  leases: Array<RelatedLeaseWrapper>,
+): Array<RelatedLeaseWrapper> => {
   let current;
   let leaseHistoryItemsFromSorted = [];
   leases.forEach((lease) => {
@@ -533,9 +536,7 @@ export const sortRelatedLeasesFrom = (leases: Array<Lease>): Array<Lease> => {
  * @param {Object} lease
  * @returns {Object[]}
  */
-export const getContentRelatedLeasesTo = (
-  lease: Lease,
-): Array<Record<string, any>> =>
+export const getContentRelatedLeasesTo = (lease: Lease) =>
   get(lease, "related_leases.related_to", [])
     .map((leaseHistoryItem) => {
       return {
@@ -2770,14 +2771,14 @@ export const getLeaseCoordinates = (
   areas.forEach((area) => {
     coordinates.push(...getCoordinatesOfGeometry(area.geometry));
   });
-  
+
   if (!coordinates.length) {
     areas.forEach((area) => {
       if (area.draft_geometry?.coordinates?.length) {
         coordinates.push(...getCoordinatesOfGeometry(area.draft_geometry));
       }
     });
-  };
+  }
 
   return coordinates;
 };
@@ -3958,10 +3959,8 @@ export const getLeasesWithContractNumber = (
 
 /**
  * Destructures a nested lease object in a related lease.
- * @param {Object} lease
- * @returns {Object}
  */
-export const restructureLease = (lease: Lease): Record<string, any> => {
+export const restructureLease = (lease: RelatedLeaseWrapper) => {
   let destructuredLease = lease.lease;
   return {
     related_lease_id: lease.id,
