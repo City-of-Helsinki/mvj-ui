@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
-import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
+import { useSelector } from "react-redux";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
 import Loader from "@/components/loader/Loader";
@@ -17,14 +16,11 @@ import { getContentTenants, getTenantShareWarnings } from "@/leases/helpers";
 import { isArchived } from "@/util/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getCurrentLease } from "@/leases/selectors";
-import { withContactAttributes } from "@/components/attributes/ContactAttributes";
-import type { Lease } from "@/leases/types";
-type Props = {
-  currentLease: Lease;
-  isFetchingContactAttributes: boolean;
-};
+import { useContactAttributes } from "@/components/attributes/ContactAttributes";
 
-const Tenants = ({ currentLease, isFetchingContactAttributes }: Props) => {
+const Tenants: React.FC = () => {
+  const { isFetchingContactAttributes } = useContactAttributes();
+  const currentLease = useSelector(getCurrentLease);
   const tenantsAll = getContentTenants(currentLease);
   const tenants = tenantsAll.filter((tenant) => !isArchived(tenant.tenant));
   const tenantsArchived = tenantsAll.filter((tenant) =>
@@ -80,11 +76,4 @@ const Tenants = ({ currentLease, isFetchingContactAttributes }: Props) => {
   );
 };
 
-export default flowRight(
-  withContactAttributes,
-  connect((state) => {
-    return {
-      currentLease: getCurrentLease(state),
-    };
-  }),
-)(Tenants) as React.ComponentType<any>;
+export default Tenants;
