@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
   change as reduxFormChange,
@@ -313,8 +312,46 @@ const LeasePage: React.FC<Props> = (props) => {
     valid: true,
   });
 
-  const contextTypes = {
-    router: PropTypes.object,
+  // Preventing stale values for `setInterval` and `saveUnsavedChanges`
+  const currentValuesRef = useRef({
+    isTenantsFormDirty,
+    tenantsFormValues,
+    isConstructabilityFormDirty,
+    constructabilityFormValues,
+    isContractsFormDirty,
+    contractsFormValues,
+    isDecisionsFormDirty,
+    decisionsFormValues,
+    isInspectionsFormDirty,
+    inspectionsFormValues,
+    isLeaseAreasFormDirty,
+    areasFormValues,
+    isLeaseAreaDraftFormDirty,
+    leaseAreaDraftFormValues,
+    isRentsFormDirty,
+    rentsFormValues,
+    leaseId,
+    isFormValidFlags,
+  });
+  currentValuesRef.current = {
+    isTenantsFormDirty,
+    tenantsFormValues,
+    isConstructabilityFormDirty,
+    constructabilityFormValues,
+    isContractsFormDirty,
+    contractsFormValues,
+    isDecisionsFormDirty,
+    decisionsFormValues,
+    isInspectionsFormDirty,
+    inspectionsFormValues,
+    isLeaseAreasFormDirty,
+    areasFormValues,
+    isLeaseAreaDraftFormDirty,
+    leaseAreaDraftFormValues,
+    isRentsFormDirty,
+    rentsFormValues,
+    leaseId,
+    isFormValidFlags,
   };
 
   const timerAutoSave = useRef<NodeJS.Timeout>();
@@ -642,6 +679,28 @@ const LeasePage: React.FC<Props> = (props) => {
   };
 
   const saveUnsavedChanges = () => {
+    // Get values from ref to avoid stale values due to setInterval
+    const {
+      isTenantsFormDirty,
+      tenantsFormValues,
+      isConstructabilityFormDirty,
+      constructabilityFormValues,
+      isContractsFormDirty,
+      contractsFormValues,
+      isDecisionsFormDirty,
+      decisionsFormValues,
+      isInspectionsFormDirty,
+      inspectionsFormValues,
+      isLeaseAreasFormDirty,
+      areasFormValues,
+      isLeaseAreaDraftFormDirty,
+      leaseAreaDraftFormValues,
+      isRentsFormDirty,
+      rentsFormValues,
+      leaseId,
+      isFormValidFlags,
+    } = currentValuesRef.current;
+
     let isDirty = false;
 
     if (isConstructabilityFormDirty) {
@@ -1286,7 +1345,6 @@ export default flowRight(
   withRouter,
   connect(
     (state, props: Props) => {
-      const currentLease = getCurrentLease(state);
       return {
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
         comments: getCommentsByLease(state, props.match.params.leaseId),
@@ -1294,7 +1352,7 @@ export default flowRight(
           FormNames.LEASE_CONSTRUCTABILITY,
         )(state),
         contractsFormValues: getFormValues(FormNames.LEASE_CONTRACTS)(state),
-        currentLease: currentLease,
+        currentLease: getCurrentLease(state),
         decisionsFormValues: getFormValues(FormNames.LEASE_DECISIONS)(state),
         inspectionsFormValues: getFormValues(FormNames.LEASE_INSPECTIONS)(
           state,
