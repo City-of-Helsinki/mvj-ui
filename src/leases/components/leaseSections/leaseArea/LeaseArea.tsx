@@ -26,8 +26,6 @@ import {
   LeaseAreaCustomDetailedPlanFieldPaths,
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
-  LeaseAreaDraftFieldPaths,
-  LeaseAreaDraftFieldTitles,
 } from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import {
@@ -58,7 +56,6 @@ type Props = {
   plotsCurrentCollapseState: boolean;
   customDetailedPlanCollapseState: boolean;
   receiveCollapseStates: (...args: Array<any>) => any;
-  isLeaseAreaDraft?: boolean;
 };
 
 const LeaseArea = ({
@@ -72,7 +69,6 @@ const LeaseArea = ({
   plotsCurrentCollapseState,
   customDetailedPlanCollapseState,
   receiveCollapseStates,
-  isLeaseAreaDraft = false,
 }: Props) => {
   const handleCollapseToggle = (key: string, val: boolean) => {
     const mode: string = isEditMode ? ViewModes.EDIT : ViewModes.READONLY;
@@ -113,9 +109,6 @@ const LeaseArea = ({
     delete searchQuery.plan_unit;
     delete searchQuery.plot;
     searchQuery.tab = 7;
-    if (isLeaseAreaDraft) {
-      return `${pathname}${getSearchQuery(searchQuery)}`;
-    }
     searchQuery.lease_area = area ? area.id : undefined;
     return `${pathname}${getSearchQuery(searchQuery)}`;
   };
@@ -129,10 +122,6 @@ const LeaseArea = ({
   const mapLinkUrl = getMapLinkUrl();
   const archived = Boolean(area.archived_at);
 
-  // lease_area_draft address data
-  const address = get(area, "address", null);
-  const postal_code = get(area, "postal_code", null);
-  const city = get(area, "city", null);
   return (
     <Fragment>
       <Row>
@@ -153,7 +142,6 @@ const LeaseArea = ({
             </>
           </Authorization>
         </Column>
-        {!isLeaseAreaDraft && (
           <Column small={6} medium={4} large={2}>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -173,7 +161,6 @@ const LeaseArea = ({
               </>
             </Authorization>
           </Column>
-        )}
         <Column small={6} medium={4} large={2}>
           <Authorization
             allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}
@@ -224,67 +211,6 @@ const LeaseArea = ({
           </Authorization>
         </Column>
       </Row>
-      {isLeaseAreaDraft ? (
-        <>
-          <Row>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
-                  attributes,
-                  LeaseAreaDraftFieldPaths.ADDRESS,
-                )}
-              >
-                <>
-                  <FormTextTitle
-                    uiDataKey={getUiDataLeaseKey(
-                      LeaseAreaDraftFieldPaths.ADDRESS,
-                    )}
-                  >
-                    {LeaseAreaDraftFieldTitles.ADDRESS}
-                  </FormTextTitle>
-                  <FormText>{address || "-"}</FormText>
-                </>
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
-                  attributes,
-                  LeaseAreaDraftFieldPaths.POSTAL_CODE,
-                )}
-              >
-                <>
-                  <FormTextTitle
-                    uiDataKey={getUiDataLeaseKey(
-                      LeaseAreaDraftFieldPaths.POSTAL_CODE,
-                    )}
-                  >
-                    {LeaseAreaDraftFieldTitles.POSTAL_CODE}
-                  </FormTextTitle>
-                  <FormText>{postal_code || "-"}</FormText>
-                </>
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
-                  attributes,
-                  LeaseAreaDraftFieldPaths.CITY,
-                )}
-              >
-                <>
-                  <FormTextTitle
-                    uiDataKey={getUiDataLeaseKey(LeaseAreaDraftFieldPaths.CITY)}
-                  >
-                    {LeaseAreaDraftFieldTitles.CITY}
-                  </FormTextTitle>
-                  <FormText>{city || "-"}</FormText>
-                </>
-              </Authorization>
-            </Column>
-          </Row>
-        </>
-      ) : (
         <Authorization
           allow={isFieldAllowedToRead(
             attributes,
@@ -423,10 +349,7 @@ const LeaseArea = ({
             )}
           </>
         </Authorization>
-      )}
 
-      {!isLeaseAreaDraft && (
-        <>
           <Authorization
             allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.PLOTS)}
           >
@@ -637,8 +560,6 @@ const LeaseArea = ({
               </Column>
             </Row>
           </Authorization>
-        </>
-      )}
     </Fragment>
   );
 };

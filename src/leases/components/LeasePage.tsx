@@ -79,9 +79,7 @@ import {
 import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import {
-  addLeaseAreaDraftFormValuesToPayload,
   clearUnsavedChanges,
-  getContentLeaseAreaDraft,
   getContentLeaseIdentifier,
 } from "@/leases/helpers";
 import {
@@ -175,7 +173,6 @@ type Props = {
   decisionsFormValues: Record<string, any>;
   deleteLease: (...args: Array<any>) => any;
   destroy: (...args: Array<any>) => any;
-  leaseAreaDraftFormValues: LeafletFeatureGeometry | null | undefined;
   fetchCommentsByLease: (...args: Array<any>) => any;
   fetchInvoicesByLease: (...args: Array<any>) => any;
   fetchLeaseTypes: (...args: Array<any>) => any;
@@ -188,7 +185,6 @@ type Props = {
   initialize: (...args: Array<any>) => any;
   inspectionsFormValues: Record<string, any>;
   invoices: InvoiceList;
-  isLeaseAreaDraftFormDirty: boolean;
   isEditMode: boolean;
   isFetching: boolean;
   isFetchingLeasePageAttributes: boolean;
@@ -246,7 +242,6 @@ const LeasePage: React.FC<Props> = (props) => {
     decisionsFormValues,
     deleteLease,
     destroy,
-    leaseAreaDraftFormValues,
     fetchCommentsByLease,
     fetchInvoicesByLease,
     fetchLeaseTypes,
@@ -259,7 +254,6 @@ const LeasePage: React.FC<Props> = (props) => {
     initialize,
     inspectionsFormValues,
     invoices,
-    isLeaseAreaDraftFormDirty,
     isEditMode,
     isFetching,
     isFetchingLeasePageAttributes,
@@ -324,8 +318,6 @@ const LeasePage: React.FC<Props> = (props) => {
     inspectionsFormValues,
     isLeaseAreasFormDirty,
     areasFormValues,
-    isLeaseAreaDraftFormDirty,
-    leaseAreaDraftFormValues,
     isRentsFormDirty,
     rentsFormValues,
     leaseId,
@@ -342,8 +334,6 @@ const LeasePage: React.FC<Props> = (props) => {
     inspectionsFormValues,
     isLeaseAreasFormDirty,
     areasFormValues,
-    isLeaseAreaDraftFormDirty,
-    leaseAreaDraftFormValues,
     isRentsFormDirty,
     rentsFormValues,
     leaseId,
@@ -526,7 +516,6 @@ const LeasePage: React.FC<Props> = (props) => {
     destroy(FormNames.LEASE_RENTS);
     destroy(FormNames.LEASE_SUMMARY);
     destroy(FormNames.LEASE_TENANTS);
-    destroy(FormNames.LEASE_AREA_DRAFT);
   };
 
   const summaryFormRef = useRef(
@@ -578,9 +567,6 @@ const LeasePage: React.FC<Props> = (props) => {
     leaseTenantFormRef.current.initialize({
       tenants: tenants.filter((tenant) => !isArchived(tenant.tenant)),
       tenantsArchived: tenants.filter((tenant) => isArchived(tenant.tenant)),
-    });
-    initialize(FormNames.LEASE_AREA_DRAFT, {
-      lease_area_draft: getContentLeaseAreaDraft(lease),
     });
   };
 
@@ -704,8 +690,6 @@ const LeasePage: React.FC<Props> = (props) => {
       inspectionsFormValues,
       isLeaseAreasFormDirty,
       areasFormValues,
-      isLeaseAreaDraftFormDirty,
-      leaseAreaDraftFormValues,
       isRentsFormDirty,
       rentsFormValues,
       leaseId,
@@ -750,16 +734,6 @@ const LeasePage: React.FC<Props> = (props) => {
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.LEASE_AREAS);
-    }
-
-    if (isLeaseAreaDraftFormDirty) {
-      setSessionStorageItem(
-        FormNames.LEASE_AREA_DRAFT,
-        leaseAreaDraftFormValues,
-      );
-      isDirty = true;
-    } else {
-      removeSessionStorageItem(FormNames.LEASE_AREA_DRAFT);
     }
 
     if (isRentsFormDirty) {
@@ -824,13 +798,6 @@ const LeasePage: React.FC<Props> = (props) => {
 
       if (isDecisionsFormDirty) {
         payload = addDecisionsFormValuesToPayload(payload, decisionsFormValues);
-      }
-
-      if (isLeaseAreaDraftFormDirty) {
-        payload = addLeaseAreaDraftFormValuesToPayload(
-          payload,
-          leaseAreaDraftFormValues,
-        );
       }
 
       if (isInspectionsFormDirty) {
@@ -911,7 +878,6 @@ const LeasePage: React.FC<Props> = (props) => {
       isConstructabilityFormDirty ||
       isContractsFormDirty ||
       isDecisionsFormDirty ||
-      isLeaseAreaDraftFormDirty ||
       isInspectionsFormDirty ||
       isLeaseAreasFormDirty ||
       isRentsFormDirty ||
@@ -1073,7 +1039,6 @@ const LeasePage: React.FC<Props> = (props) => {
             {
               label: "Kartta",
               allow: isMethodAllowed(leaseMethods, Methods.GET),
-              isDirty: isLeaseAreaDraftFormDirty,
             },
             {
               label: "Muutoshistoria",
@@ -1407,12 +1372,10 @@ export default flowRight(
         isRentsFormDirty: isDirty(FormNames.LEASE_RENTS)(state),
         isRentsFormValid: getIsFormValidById(state, FormNames.LEASE_RENTS),
         isSaving: getIsSaving(state),
-        isLeaseAreaDraftFormDirty: isDirty(FormNames.LEASE_AREA_DRAFT)(state),
+        isTenantsFormDirty: isDirty(FormNames.LEASE_TENANTS)(state),
+        isTenantsFormValid: getIsFormValidById(state, FormNames.LEASE_TENANTS),
         isFetching: getIsFetching(state),
         isSaveClicked: getIsSaveClicked(state),
-        leaseAreaDraftFormValues: getFormValues(FormNames.LEASE_AREA_DRAFT)(
-          state,
-        ),
         leaseTypeList: getLeaseTypeList(state),
         loggedUser: getLoggedInUser(state),
         oldDwellingsInHousingCompaniesPriceIndex:

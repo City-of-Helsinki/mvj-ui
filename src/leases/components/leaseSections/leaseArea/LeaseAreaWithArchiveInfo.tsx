@@ -34,7 +34,6 @@ type Props = {
   attributes: Attributes;
   decisionOptions: Array<Record<string, any>>;
   receiveCollapseStates: (...args: Array<any>) => any;
-  isLeaseAreaDraft?: boolean;
 };
 
 const LeaseAreaWithArchiveInfo = ({
@@ -43,7 +42,6 @@ const LeaseAreaWithArchiveInfo = ({
   attributes,
   decisionOptions,
   receiveCollapseStates,
-  isLeaseAreaDraft = false,
 }: Props) => {
   const handleAreaCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
@@ -128,12 +126,12 @@ const LeaseAreaWithArchiveInfo = ({
             LeaseAreasFieldPaths.IDENTIFIER,
           )}
         >
-          <>{area.identifier || "-"}{isLeaseAreaDraft && " (luonnos)"}</>
+          {area.identifier || "-"}
         </Authorization>
       }
       onToggle={handleAreaCollapseToggle}
     >
-      <LeaseArea area={area} isLeaseAreaDraft={isLeaseAreaDraft} />
+      <LeaseArea area={area} />
 
       {!!archived && <Divider className="lease-area-divider" />}
       {!!archived && (

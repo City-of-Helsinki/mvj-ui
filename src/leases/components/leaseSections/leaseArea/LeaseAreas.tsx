@@ -9,7 +9,6 @@ import WarningContainer from "@/components/content/WarningContainer";
 import { LeaseAreasFieldPaths } from "@/leases/enums";
 import {
   calculateAreasSum,
-  getContentLeaseAreaDraft,
   getContentLeaseAreas,
   getDecisionOptions,
 } from "@/leases/helpers";
@@ -25,15 +24,13 @@ type Props = {
 
 const LeaseAreas = ({ attributes, currentLease }: Props) => {
   const areas = getContentLeaseAreas(currentLease);
-  const leaseAreaDraft = getContentLeaseAreaDraft(currentLease);
   const activeAreas = areas.filter((area) => !area.archived_at);
   const archivedAreas = areas.filter((area) => area.archived_at);
   const areasSum = calculateAreasSum(activeAreas);
   const decisionOptions = getDecisionOptions(currentLease);
 
   // Data state variables
-  const noAreaData =
-    !activeAreas.length && !archivedAreas.length && !leaseAreaDraft;
+  const noAreaData = !activeAreas.length && !archivedAreas.length;
   const hasActiveAreas = !!activeAreas && !!activeAreas.length;
   return (
     <div>
@@ -51,13 +48,6 @@ const LeaseAreas = ({ attributes, currentLease }: Props) => {
 
       {noAreaData && (
         <FormText className="no-margin">Ei vuokra-alueita</FormText>
-      )}
-      {!!leaseAreaDraft && !hasActiveAreas && (
-        <LeaseAreaWithArchiveInfo
-          area={leaseAreaDraft}
-          decisionOptions={decisionOptions}
-          isLeaseAreaDraft
-        />
       )}
       {hasActiveAreas &&
         activeAreas.map((area, index) => (
