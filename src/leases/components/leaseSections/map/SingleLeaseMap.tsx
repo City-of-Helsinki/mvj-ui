@@ -42,14 +42,19 @@ import {
   getIsEditMode,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes, LeafletFeatureGeometry, LeafletGeoJson, LeaseAreaDraftItem } from "types";
-import type { Lease, LeaseArea, LeaseAreaDraft } from "@/leases/types";
+import type { Attributes, LeafletFeatureGeometry, LeafletGeoJson, LeaseAreaDraftGeometryItem } from "types";
+import type { Lease, LeaseArea } from "@/leases/types";
 import type { AreaNoteList } from "@/areaNote/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import { change, formValueSelector, reduxForm } from "redux-form";
 import { FormNames } from "@/enums";
 
-type Props = {
+type Props = OwnProps & {
+  leaseAreaDraftGeometryItemsFromForm: Array<LeaseAreaDraftGeometryItem>;
+  leaseAreaDraftGeometryItemsFromState: Array<LeaseAreaDraftGeometryItem>;
+};
+
+type OwnProps = {
   areaNotes: AreaNoteList;
   change: (...args: Array<any>) => any;
   currentLease: Lease;
@@ -58,9 +63,8 @@ type Props = {
   leaseAttributes: Attributes;
   location: Record<string, any>;
   usersPermissions: UsersPermissionsType;
-  leaseAreaDraftGeometryItemsFromForm: Array<LeaseAreaDraftItem>;
-  leaseAreaDraftGeometryItemsFromState: Array<LeafletFeatureGeometry>;
-};
+}
+
 type State = {
   areasGeoJson: LeafletGeoJson;
   areaLocationOptions: Array<Record<string, any>>;
@@ -411,4 +415,4 @@ export default flowRight(
     destroyOnUnmount: false,
     change,
   }),
-)(SingleLeaseMap) as React.ComponentType<any>;
+)(SingleLeaseMap) as React.ComponentType<OwnProps>;
