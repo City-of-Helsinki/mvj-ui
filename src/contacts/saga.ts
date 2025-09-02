@@ -195,8 +195,12 @@ function* createContactOnModalSaga({
 
     switch (statusCode) {
       case 201:
-        contactModalSettings.contact = bodyAsJson;
-        yield put(receiveContactModalSettings(contactModalSettings));
+        yield put(
+          receiveContactModalSettings({
+            ...contactModalSettings,
+            contact: bodyAsJson,
+          }),
+        );
         yield put(receiveSingleContact(bodyAsJson));
         yield put(hideContactModal());
         displayUIMessage({
@@ -235,8 +239,12 @@ function* editContactOnModalSaga({
 
     switch (statusCode) {
       case 200:
-        contactModalSettings.contact = bodyAsJson;
-        yield put(receiveContactModalSettings(contactModalSettings));
+        yield put(
+          receiveContactModalSettings({
+            ...contactModalSettings,
+            contact: bodyAsJson,
+          }),
+        );
         yield put(receiveSingleContact(bodyAsJson));
         yield put(hideContactModal());
         displayUIMessage({
