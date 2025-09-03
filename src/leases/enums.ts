@@ -346,7 +346,7 @@ export const TenantContactType = {
   TENANT: "tenant",
   BILLING: "billing",
   CONTACT: "contact",
-};
+} as const;
 
 /**
  * Lease field paths enumerable.
@@ -675,7 +675,6 @@ export const LeaseAreaDraftFieldPaths = {
   POSTAL_CODE: "lease_area_draft.children.postal_code",
   CITY: "lease_area_draft.children.city",
 };
-
 
 /**
  * Lease area draft field titles enumerable.
@@ -1666,8 +1665,7 @@ export const LeaseContractChangesFieldPaths = {
     "contracts.child.children.contract_changes.child.children.signing_date",
   THIRD_CALL_SENT:
     "contracts.child.children.contract_changes.child.children.third_call_sent",
-  EXECUTOR:
-    "contracts.child.children.contract_changes.child.children.executor",
+  EXECUTOR: "contracts.child.children.contract_changes.child.children.executor",
 };
 
 /**

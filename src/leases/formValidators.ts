@@ -61,7 +61,7 @@ const getTenantsErrors = (
   tenants: Array<Record<string, any>>,
 ): Array<Record<string, any>> => {
   const errorArray = [];
-  tenants.forEach((tenant, tenantIndex) => {
+  (tenants || []).forEach((tenant, tenantIndex) => {
     const tenantErrors: any = {};
     const tenantError = getTenantError(get(tenant, "tenant", {}));
 

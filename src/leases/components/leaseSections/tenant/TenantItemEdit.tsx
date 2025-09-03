@@ -1,6 +1,6 @@
 import React, { Fragment, ReactElement } from "react";
-import { connect } from "react-redux";
-import { FieldArray, formValueSelector } from "redux-form";
+import { useDispatch, useSelector } from "react-redux";
+import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
@@ -14,7 +14,7 @@ import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle
 import ContactTemplate from "@/contacts/components/templates/ContactTemplate";
 import EditButton from "@/components/form/EditButton";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import FormWrapper from "@/components/form/FormWrapper";
@@ -74,6 +74,8 @@ import type {
   UsersPermissions as UsersPermissionsType,
   UserServiceUnit,
 } from "@/usersPermissions/types";
+import type { Contact } from "@/contacts/types";
+
 type RentSharesProps = {
   archived: boolean;
   attributes: Attributes;
@@ -176,7 +178,7 @@ const renderRentShares = ({
                             LeaseTenantRentSharesFieldPaths.INTENDED_USE,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               attributes,
@@ -206,7 +208,7 @@ const renderRentShares = ({
                                     LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR,
                                   )}
                                 >
-                                  <FormFieldLegacy
+                                  <FormField
                                     disableTouched={isSaveClicked}
                                     fieldAttributes={getFieldAttributes(
                                       attributes,
@@ -232,7 +234,7 @@ const renderRentShares = ({
                                     LeaseTenantRentSharesFieldPaths.SHARE_NUMERATOR,
                                   )}
                                 >
-                                  <FormFieldLegacy
+                                  <FormField
                                     disableTouched={isSaveClicked}
                                     fieldAttributes={getFieldAttributes(
                                       attributes,
@@ -300,12 +302,13 @@ const renderRentShares = ({
 };
 
 type OtherTenantsProps = {
-  contactType: "billing" | "contact";
+  contactType: (typeof TenantContactType)["BILLING" | "CONTACT"];
   fields: any;
   serviceUnit: UserServiceUnit;
   showAddButton: boolean;
-  tenant: Record<string, any>;
+  tenant: Record<string, any | { contact?: Contact }>;
   usersPermissions: UsersPermissionsType;
+  fieldName: string;
 };
 
 const renderOtherTenants = ({
@@ -315,6 +318,7 @@ const renderOtherTenants = ({
   showAddButton,
   tenant,
   usersPermissions,
+  fieldName,
 }: OtherTenantsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({});
@@ -344,9 +348,11 @@ const renderOtherTenants = ({
                   });
                 };
 
+                const contact = tenant?.[fieldName]?.[index]?.contact;
                 return (
                   <OtherTenantItemEdit
                     key={index}
+                    contact={contact}
                     contactType={contactType}
                     field={field}
                     onRemove={handleRemove}
@@ -385,85 +391,81 @@ const renderOtherTenants = ({
 };
 
 type Props = {
-  attributes: Attributes;
-  collapseState: boolean;
-  contact: Record<string, any> | null | undefined;
-  contactMethods: MethodsType;
-  errors: Record<string, any> | null | undefined;
   field: string;
-  initializeContactForm: (...args: Array<any>) => any;
-  isSaveClicked: boolean;
   onRemove: (...args: Array<any>) => any;
-  receiveCollapseStates: (...args: Array<any>) => any;
-  receiveContactModalSettings: (...args: Array<any>) => any;
-  receiveIsSaveClicked: (...args: Array<any>) => any;
   serviceUnit: UserServiceUnit;
-  shareDenominator: string | null | undefined;
-  shareNumerator: string | null | undefined;
-  showContactModal: (...args: Array<any>) => any;
-  tenantId: number;
   tenants: Array<Record<string, any>>;
-  usersPermissions: UsersPermissionsType;
+  tenantId?: number;
+  contact?: Contact;
+  shareNumerator?: string | number;
+  shareDenominator?: string | number;
 };
 
-const TenantItemEdit = ({
-  attributes,
-  collapseState,
-  contact,
-  contactMethods,
-  errors,
+const TenantItemEdit: React.FC<Props> = ({
   field,
-  initializeContactForm,
-  isSaveClicked,
   onRemove,
-  receiveCollapseStates,
-  receiveContactModalSettings,
-  receiveIsSaveClicked,
   serviceUnit,
-  shareDenominator,
-  shareNumerator,
-  showContactModal,
-  tenantId,
   tenants,
-  usersPermissions,
-}: Props) => {
+  tenantId,
+  contact,
+  shareNumerator,
+  shareDenominator,
+}) => {
+  const dispatch = useDispatch();
+  const attributes = useSelector(getAttributes);
+  const collapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${formName}.tenants.${tenantId}`,
+    ),
+  );
+  const contactMethods = useSelector(getContactMethods);
+  const errors = useSelector((state) => getErrorsByFormName(state, formName));
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const usersPermissions = useSelector(getUsersPermissions);
   const getTenantById = (id: number) => {
     return id ? tenants.find((tenant) => tenant.id === id) : {};
   };
 
   const handleAddClick = () => {
-    initializeContactForm({});
-    receiveContactModalSettings({
-      field: `${field}.tenant.contact`,
-      contactId: null,
-      isNew: true,
-    });
-    receiveIsSaveClicked(false);
-    showContactModal();
+    dispatch(initializeContactForm({}));
+    dispatch(
+      receiveContactModalSettings({
+        field: `${field}.tenant.contact`,
+        contactId: null,
+        isNew: true,
+      }),
+    );
+    dispatch(receiveIsSaveClicked(false));
+    dispatch(showContactModal());
   };
 
   const handleEditClick = () => {
-    initializeContactForm({ ...contact });
-    receiveContactModalSettings({
-      field: `${field}.tenant.contact`,
-      contactId: null,
-      isNew: false,
-    });
-    receiveIsSaveClicked(false);
-    showContactModal();
+    dispatch(initializeContactForm({ ...contact }));
+    dispatch(
+      receiveContactModalSettings({
+        field: `${field}.tenant.contact`,
+        contactId: null,
+        isNew: false,
+      }),
+    );
+    dispatch(receiveIsSaveClicked(false));
+    dispatch(showContactModal());
   };
 
   const handleCollapseToggle = (val: boolean) => {
     if (!tenantId) return;
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [formName]: {
-          tenants: {
-            [tenantId]: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.EDIT]: {
+          [formName]: {
+            tenants: {
+              [tenantId]: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const savedTenant = getTenantById(tenantId);
@@ -530,7 +532,9 @@ const TenantItemEdit = ({
             LeaseTenantContactSetFieldPaths.CONTACT,
           )}
         >
-          {getContactFullName(get(savedTenant, "tenant.contact")) || "-"}
+          <span>
+            {getContactFullName(get(savedTenant, "tenant.contact")) || "-"}
+          </span>
         </Authorization>
       }
       onRemove={
@@ -551,7 +555,7 @@ const TenantItemEdit = ({
                     LeaseTenantContactSetFieldPaths.CONTACT,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -592,7 +596,7 @@ const TenantItemEdit = ({
                     LeaseTenantsFieldPaths.REFERENCE,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -670,7 +674,7 @@ const TenantItemEdit = ({
                               LeaseTenantsFieldPaths.SHARE_NUMERATOR,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -691,7 +695,7 @@ const TenantItemEdit = ({
                               LeaseTenantsFieldPaths.SHARE_DENOMINATOR,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               className="with-slash"
                               fieldAttributes={getFieldAttributes(
@@ -719,7 +723,7 @@ const TenantItemEdit = ({
                     LeaseTenantContactSetFieldPaths.START_DATE,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -743,7 +747,7 @@ const TenantItemEdit = ({
                     LeaseTenantContactSetFieldPaths.END_DATE,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       attributes,
@@ -770,14 +774,17 @@ const TenantItemEdit = ({
                     LeaseTenantRentSharesFieldPaths.RENT_SHARES,
                   )}
                 >
-                  <FieldArray
-                    component={renderRentShares}
-                    archived={archived}
-                    attributes={attributes}
-                    isSaveClicked={isSaveClicked}
-                    name={`${field}.rent_shares`}
-                    usersPermissions={usersPermissions}
-                  />
+                  <FieldArray name={`${field}.rent_shares`}>
+                    {(fieldArrayProps) =>
+                      renderRentShares({
+                        ...fieldArrayProps,
+                        archived: archived,
+                        attributes,
+                        isSaveClicked: isSaveClicked,
+                        usersPermissions: usersPermissions,
+                      })
+                    }
+                  </FieldArray>
                 </Authorization>
               </Column>
             </Row>
@@ -807,26 +814,33 @@ const TenantItemEdit = ({
             </SubTitle>
           )}
           <ContactTemplate contact={contact} />
+          <FieldArray name={`${field}.billing_persons`}>
+            {(fieldArrayProps) =>
+              renderOtherTenants({
+                ...fieldArrayProps,
+                contactType: TenantContactType.BILLING,
+                serviceUnit: serviceUnit,
+                showAddButton: !archived,
+                tenant: savedTenant,
+                usersPermissions: usersPermissions,
+                fieldName: "billing_persons",
+              })
+            }
+          </FieldArray>
 
-          <FieldArray
-            component={renderOtherTenants}
-            contactType={TenantContactType.BILLING}
-            name={`${field}.billing_persons`}
-            serviceUnit={serviceUnit}
-            showAddButton={!archived}
-            tenant={savedTenant}
-            usersPermissions={usersPermissions}
-          />
-
-          <FieldArray
-            component={renderOtherTenants}
-            contactType={TenantContactType.CONTACT}
-            name={`${field}.contact_persons`}
-            serviceUnit={serviceUnit}
-            showAddButton={!archived}
-            tenant={savedTenant}
-            usersPermissions={usersPermissions}
-          />
+          <FieldArray name={`${field}.contact_persons`}>
+            {(fieldArrayProps) =>
+              renderOtherTenants({
+                ...fieldArrayProps,
+                contactType: TenantContactType.CONTACT,
+                serviceUnit: serviceUnit,
+                showAddButton: !archived,
+                tenant: savedTenant,
+                usersPermissions: usersPermissions,
+                fieldName: "contact_persons",
+              })
+            }
+          </FieldArray>
         </>
       </Authorization>
     </Collapse>
@@ -834,31 +848,4 @@ const TenantItemEdit = ({
 };
 
 const formName = FormNames.LEASE_TENANTS;
-const selector = formValueSelector(formName);
-export default connect(
-  (state, props) => {
-    const id = selector(state, `${props.field}.id`);
-    return {
-      attributes: getAttributes(state),
-      collapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.EDIT}.${formName}.tenants.${id}`,
-      ),
-      contact: selector(state, `${props.field}.tenant.contact`),
-      contactMethods: getContactMethods(state),
-      errors: getErrorsByFormName(state, formName),
-      isSaveClicked: getIsSaveClicked(state),
-      shareDenominator: selector(state, `${props.field}.share_denominator`),
-      shareNumerator: selector(state, `${props.field}.share_numerator`),
-      tenantId: id,
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    initializeContactForm,
-    receiveContactModalSettings,
-    receiveCollapseStates,
-    receiveIsSaveClicked,
-    showContactModal,
-  },
-)(TenantItemEdit);
+export default TenantItemEdit;
