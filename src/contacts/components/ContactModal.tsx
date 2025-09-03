@@ -56,56 +56,58 @@ const ContactModal = ({
         onClose={onClose}
         title={title || "Uusi asiakas"}
       >
-        <Form
-          onSubmit={handleSubmit}
-          initialValues={{
-            ...initialContactFormValues,
-            // If initial values are set it is copying, otherwise creating a new contact
-            service_unit: initialContactFormValues?.service_unit?.id
-              ? initialContactFormValues.service_unit
-              : // Allows passing a service unit as a prop in cases when users active service unit could be incorrect
-                serviceUnit || userActiveServiceUnit,
-          }}
-          keepDirtyOnReinitialize={true}
-        >
-          {({ handleSubmit, form, submitting, pristine, valid }) => (
-            <div>
-              <GreenBox className="no-margin">
-                {isOpen && <ContactForm formApi={form} isFocusedOnMount />}
-              </GreenBox>
+        {isOpen && (
+          <Form
+            onSubmit={handleSubmit}
+            initialValues={{
+              ...initialContactFormValues,
+              // If initial values are set it is copying, otherwise creating a new contact
+              service_unit: initialContactFormValues?.service_unit?.id
+                ? initialContactFormValues.service_unit
+                : // Allows passing a service unit as a prop in cases when users active service unit could be incorrect
+                  serviceUnit || userActiveServiceUnit,
+            }}
+            keepDirtyOnReinitialize={true}
+          >
+            {({ handleSubmit, form, submitting, pristine, valid }) => (
+              <div>
+                <GreenBox className="no-margin">
+                  {isOpen && <ContactForm formApi={form} isFocusedOnMount />}
+                </GreenBox>
 
-              <div className="button-wrapper">
-                <Button
-                  className={ButtonColors.SECONDARY}
-                  onClick={onCancel}
-                  text="Peruuta"
-                />
-                {showSave && (
+                <div className="button-wrapper">
                   <Button
-                    className={ButtonColors.SUCCESS}
-                    disabled={
-                      !isMethodAllowed(contactMethods, Methods.PATCH) ||
-                      (submitting && !valid)
-                    }
-                    onClick={handleSubmit}
-                    text="Tallenna"
+                    className={ButtonColors.SECONDARY}
+                    onClick={onCancel}
+                    text="Peruuta"
                   />
-                )}
-                {showSaveAndAdd && (
-                  <Button
-                    className={ButtonColors.SUCCESS}
-                    disabled={
-                      !isMethodAllowed(contactMethods, Methods.POST) ||
-                      (submitting && !valid)
-                    }
-                    onClick={handleSubmit}
-                    text="Tallenna ja Lisää"
-                  />
-                )}
+                  {showSave && (
+                    <Button
+                      className={ButtonColors.SUCCESS}
+                      disabled={
+                        !isMethodAllowed(contactMethods, Methods.PATCH) ||
+                        (submitting && !valid)
+                      }
+                      onClick={handleSubmit}
+                      text="Tallenna"
+                    />
+                  )}
+                  {showSaveAndAdd && (
+                    <Button
+                      className={ButtonColors.SUCCESS}
+                      disabled={
+                        !isMethodAllowed(contactMethods, Methods.POST) ||
+                        (submitting && !valid)
+                      }
+                      onClick={handleSubmit}
+                      text="Tallenna ja Lisää"
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-        </Form>
+            )}
+          </Form>
+        )}
       </Modal>
     </div>
   );
