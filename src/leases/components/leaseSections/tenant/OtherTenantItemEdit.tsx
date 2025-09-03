@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
-import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import classNames from "classnames";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
@@ -12,7 +11,7 @@ import Collapse from "@/components/collapse/Collapse";
 import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle";
 import ContactTemplate from "@/contacts/components/templates/ContactTemplate";
 import EditButton from "@/components/form/EditButton";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormWrapper from "@/components/form/FormWrapper";
 import FormWrapperLeft from "@/components/form/FormWrapperLeft";
 import FormWrapperRight from "@/components/form/FormWrapperRight";
@@ -48,53 +47,40 @@ import {
   getIsSaveClicked,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes, Methods as MethodsType } from "types";
-import type {
-  UsersPermissions as UsersPermissionsType,
-  UserServiceUnit,
-} from "@/usersPermissions/types";
+import type { UserServiceUnit } from "@/usersPermissions/types";
+import type { Contact } from "@/contacts/types";
+
 type Props = {
-  attributes: Attributes;
-  collapseState: boolean;
-  contactMethods: MethodsType;
-  contact: Record<string, any> | null | undefined;
-  contactType: "billing" | "contact";
-  errors: Record<string, any> | null | undefined;
+  contact: Contact;
+  contactType: (typeof TenantContactType)["BILLING" | "CONTACT"];
   field: string;
-  index: number;
-  initializeContactForm: (...args: Array<any>) => any;
-  isSaveClicked: boolean;
   onRemove: (...args: Array<any>) => any;
-  receiveCollapseStates: (...args: Array<any>) => any;
-  receiveContactModalSettings: (...args: Array<any>) => any;
-  receiveIsSaveClicked: (...args: Array<any>) => any;
   serviceUnit: UserServiceUnit;
-  showContactModal: (...args: Array<any>) => any;
   tenant: Record<string, any>;
-  tenantId: number;
-  usersPermissions: UsersPermissionsType;
 };
 
 const OtherTenantItemEdit = ({
-  attributes,
-  collapseState,
   contact,
-  contactMethods,
   contactType,
-  errors,
   field,
-  initializeContactForm,
-  isSaveClicked,
   onRemove,
-  receiveCollapseStates,
-  receiveContactModalSettings,
-  receiveIsSaveClicked,
   serviceUnit,
-  showContactModal,
   tenant,
-  tenantId,
-  usersPermissions,
 }: Props) => {
+  const dispatch = useDispatch();
+  const attributes = useSelector(getAttributes);
+  const collapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${formName}.others.${tenant.id}`,
+    ),
+  );
+  const contactMethods = useSelector(getContactMethods);
+  const errors = useSelector((state) => getErrorsByFormName(state, formName));
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const usersPermissions = useSelector(getUsersPermissions);
+  const tenantId = tenant?.id;
+
   const getOtherTenantById = (id: number) => {
     const tenantContactSet =
       contactType === TenantContactType.BILLING
@@ -104,38 +90,44 @@ const OtherTenantItemEdit = ({
   };
 
   const handleAddClick = () => {
-    initializeContactForm({});
-    receiveContactModalSettings({
-      field: `${field}.contact`,
-      contactId: null,
-      isNew: true,
-    });
-    receiveIsSaveClicked(false);
-    showContactModal();
+    dispatch(initializeContactForm({}));
+    dispatch(
+      receiveContactModalSettings({
+        field: `${field}.contact`,
+        contactId: null,
+        isNew: true,
+      }),
+    );
+    dispatch(receiveIsSaveClicked(false));
+    dispatch(showContactModal());
   };
 
   const handleEditClick = () => {
-    initializeContactForm({ ...contact });
-    receiveContactModalSettings({
-      field: `${field}.contact`,
-      contactId: null,
-      isNew: false,
-    });
-    receiveIsSaveClicked(false);
-    showContactModal();
+    dispatch(initializeContactForm({ ...contact }));
+    dispatch(
+      receiveContactModalSettings({
+        field: `${field}.contact`,
+        contactId: null,
+        isNew: false,
+      }),
+    );
+    dispatch(receiveIsSaveClicked(false));
+    dispatch(showContactModal());
   };
 
   const handleCollapseToggle = (val: boolean) => {
     if (!tenantId) return;
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [formName]: {
-          others: {
-            [tenantId]: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.EDIT]: {
+          [formName]: {
+            others: {
+              [tenantId]: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const savedTenant = getOtherTenantById(tenantId),
@@ -184,9 +176,11 @@ const OtherTenantItemEdit = ({
             LeaseTenantContactSetFieldPaths.TYPE,
           )}
         >
-          {contactType === TenantContactType.BILLING
-            ? "Laskunsaaja"
-            : "Yhteyshenkilö"}
+          <span>
+            {contactType === TenantContactType.BILLING
+              ? "Laskunsaaja"
+              : "Yhteyshenkilö"}
+          </span>
         </Authorization>
       }
       onRemove={
@@ -209,7 +203,7 @@ const OtherTenantItemEdit = ({
                         LeaseTenantContactSetFieldPaths.CONTACT,
                       )}
                     >
-                      <FormFieldLegacy
+                      <FormField
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(
                           attributes,
@@ -254,7 +248,7 @@ const OtherTenantItemEdit = ({
                     LeaseTenantContactSetFieldPaths.START_DATE,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(
                       attributes,
@@ -278,7 +272,7 @@ const OtherTenantItemEdit = ({
                     LeaseTenantContactSetFieldPaths.END_DATE,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(
                       attributes,
@@ -329,29 +323,4 @@ const OtherTenantItemEdit = ({
 };
 
 const formName = FormNames.LEASE_TENANTS;
-const selector = formValueSelector(formName);
-export default connect(
-  (state, props) => {
-    const id = selector(state, `${props.field}.id`);
-    return {
-      attributes: getAttributes(state),
-      collapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.EDIT}.${formName}.others.${id}`,
-      ),
-      contact: selector(state, `${props.field}.contact`),
-      contactMethods: getContactMethods(state),
-      errors: getErrorsByFormName(state, formName),
-      isSaveClicked: getIsSaveClicked(state),
-      tenantId: id,
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    initializeContactForm,
-    receiveCollapseStates,
-    receiveContactModalSettings,
-    receiveIsSaveClicked,
-    showContactModal,
-  },
-)(OtherTenantItemEdit);
+export default OtherTenantItemEdit;

@@ -1,7 +1,8 @@
 import React, { Fragment, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Field, FieldArray, reduxForm } from "redux-form";
-import type { InjectedFormProps } from "redux-form";
+import { Form } from "react-final-form";
+import type { FormApi } from "final-form";
+import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
 import { ActionTypes } from "@/app/AppContext";
 import Authorization from "@/components/authorization/Authorization";
@@ -22,7 +23,6 @@ import {
   receiveContactModalSettings,
   receiveIsSaveClicked,
 } from "@/contacts/actions";
-import { receiveFormValidFlags } from "@/leases/actions";
 import { ContactTypes } from "@/contacts/enums";
 import { ButtonColors } from "@/components/enums";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
@@ -32,7 +32,7 @@ import {
 } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { Methods } from "@/enums";
-import { validateTenantForm, warnTenantForm } from "@/leases/formValidators";
+import { warnTenantForm } from "@/leases/formValidators";
 import {
   hasPermissions,
   isArchived,
@@ -97,6 +97,7 @@ type TenantsProps = {
   serviceUnit: UserServiceUnit;
   tenants: Array<Record<string, any>>;
   usersPermissions: UsersPermissionsType;
+  formValues: Record<string, any>;
 };
 
 const renderTenants = ({
@@ -107,6 +108,7 @@ const renderTenants = ({
   serviceUnit,
   tenants,
   usersPermissions,
+  formValues,
 }: TenantsProps) => {
   const dispatch = useDispatch();
   const handleAdd = () => {
@@ -155,6 +157,8 @@ const renderTenants = ({
                 ConfirmationModalTexts.DELETE_TENANT.TITLE,
             });
           };
+          const fieldName = archived ? "tenantsArchived" : "tenants";
+          const tenantData = formValues?.[fieldName]?.[index] || {};
 
           return (
             <TenantItemEdit
@@ -163,6 +167,10 @@ const renderTenants = ({
               onRemove={handleRemove}
               tenants={tenants}
               serviceUnit={serviceUnit}
+              tenantId={tenantData.id}
+              contact={tenantData.tenant?.contact}
+              shareNumerator={tenantData.share_numerator}
+              shareDenominator={tenantData.share_denominator}
             />
           );
         })}
@@ -185,11 +193,16 @@ const renderTenants = ({
   );
 };
 
-const TenantsEdit: React.FC<InjectedFormProps> = (props) => {
-  const { change, handleSubmit, valid } = props;
+type Props = {
+  formApi: FormApi;
+};
+
+const TenantsEdit: React.FC<Props> = ({ formApi }) => {
+  const { change } = formApi;
   const dispatch = useDispatch();
 
-  const { contactMethods } = useContactAttributes();
+  const { contactMethods, isFetchingContactAttributes } =
+    useContactAttributes();
   const contactModalSettings = useSelector(getContactModalSettings);
   const currentLease = useSelector(getCurrentLease);
   const isContactModalOpen = useSelector(getIsContactModalOpen);
@@ -218,14 +231,6 @@ const TenantsEdit: React.FC<InjectedFormProps> = (props) => {
       ),
     };
   }, [currentLease]);
-
-  useEffect(() => {
-    dispatch(
-      receiveFormValidFlags({
-        [formName]: valid,
-      }),
-    );
-  }, [valid, dispatch]);
 
   useEffect(() => {
     if (contactModalSettings?.contact) {
@@ -326,46 +331,55 @@ const TenantsEdit: React.FC<InjectedFormProps> = (props) => {
           serviceUnit={userActiveServiceUnit}
         />
       </Authorization>
-
-      <form onSubmit={handleSubmit}>
-        <Title
-          enableUiDataEdit
-          uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.TENANTS)}
-        >
-          {LeaseTenantsFieldTitles.TENANTS}
-        </Title>
-        <Field
-          name="tenantWarnings"
-          component={TenantWarnings}
-          showWarning={true}
-        />
-        <Divider />
-        <FieldArray
-          component={renderTenants}
-          leaseAttributes={leaseAttributes}
-          name="tenants"
-          serviceUnit={currentLease.service_unit}
-          tenants={savedTenants}
-          usersPermissions={usersPermissions}
-        />
-        <FieldArray
-          component={renderTenants}
-          leaseAttributes={leaseAttributes}
-          name="tenantsArchived"
-          archived
-          serviceUnit={currentLease.service_unit}
-          tenants={savedTenantsArchived}
-          usersPermissions={usersPermissions}
-        />
-      </form>
+      <Form form={formApi} onSubmit={formApi.submit}>
+        {({ handleSubmit, values }) => (
+          <form onSubmit={handleSubmit}>
+            <Title
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.TENANTS)}
+            >
+              {LeaseTenantsFieldTitles.TENANTS}
+            </Title>
+            <TenantWarnings
+              meta={{
+                warning: warnTenantForm(values || {})?.tenantWarnings || [],
+              }}
+            />
+            <Divider />
+            <FieldArray name="tenants">
+              {(fieldArrayProps) =>
+                renderTenants({
+                  ...fieldArrayProps,
+                  archived: false,
+                  isFetchingContactAttributes,
+                  leaseAttributes,
+                  serviceUnit: currentLease.service_unit,
+                  tenants: savedTenants,
+                  usersPermissions,
+                  formValues: values,
+                })
+              }
+            </FieldArray>
+            <FieldArray name="tenantsArchived">
+              {(fieldArrayProps) =>
+                renderTenants({
+                  ...fieldArrayProps,
+                  archived: true,
+                  isFetchingContactAttributes,
+                  leaseAttributes,
+                  serviceUnit: currentLease.service_unit,
+                  tenants: savedTenantsArchived,
+                  usersPermissions,
+                  formValues: values,
+                })
+              }
+            </FieldArray>
+          </form>
+        )}
+      </Form>
     </Fragment>
   );
 };
 
-const formName = FormNames.LEASE_TENANTS;
-export default reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-  validate: validateTenantForm,
-  warn: warnTenantForm,
-})(TenantsEdit);
+const formName = FormNames.LEASE_TENANTS; // The name of the form for redux-form, might be useful for some remaining logic for this form name
+export default TenantsEdit;
