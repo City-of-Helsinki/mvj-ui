@@ -59,7 +59,6 @@ export type Lease = {
   rent_info_completed_at: string | null;
   is_subject_to_vat: boolean;
   lease_areas: Array<LeaseArea>;
-  lease_area_draft: LeaseAreaDraft | null;
   lessor: Record<string, any>;
   management: Record<string, any> | null;
   matching_basis_of_rents: Array<Record<string, any>>;
@@ -146,35 +145,6 @@ export type LeaseAreaAddress = {
   city: string | null;
   is_primary: boolean;
 };
-
-// Lease area draft object as expected from API response
-/**
- * Vuokra-alueen pakolliset kentät:
- *
- * Kohteen tunnus luodaan jo päätöstä valmistellessa,
- *    saattaa kuitenkin muuttua ennen lopullista sopimusta
- * Sijainti (Yläpuolella default)
- * osoite (Aluehaun komponentti hakee pinta-alan
- *    ja osoitteen automaattisesti)
- * pinta-ala
- */
-
-type LeaseAreaDraftGeometry = {
-  type: "Polygon" | "MultiPolygon";
-  coordinates: Array<Array<Array<Array<number>>>>;
-};
-
-export type LeaseAreaDraft = {
-  id: number;
-  identifier: string;
-  area: number;
-  geometry: LeaseAreaDraftGeometry | null;
-  location: string;
-  address: string | null;
-  postal_code: string | null;
-  city: string | null;
-};
-
 export type CreateChargePayload = {
   leaseId: LeaseId;
   data: Record<string, any>;

@@ -38,7 +38,6 @@ import {
   LeasePlanUnitsFieldPaths,
   LeasePlotsFieldPaths,
   LeaseAreaCustomDetailedPlanFieldPaths,
-  LeaseAreaDraftFieldPaths,
 } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";

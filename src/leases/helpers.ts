@@ -61,14 +61,12 @@ import type {
   IntendedUse,
   PeriodicRentAdjustmentType,
   CreateLeaseFormValues,
-  LeaseAreaDraft,
   RelatedLeaseWrapper,
 } from "./types";
 import type { CommentList } from "@/comments/types";
 import type {
   Attributes,
   LeafletFeature,
-  LeafletFeatureGeometry,
   LeafletGeoJson,
 } from "types";
 import type { RootState } from "@/root/types";
@@ -2628,18 +2626,6 @@ export const getContentAreasGeoJson = (lease: Lease): LeafletGeoJson => {
 };
 
 /**
- * Get content lease area draft
- * @param {Object} lease
- * @returns {Object}
- */
-export const getContentLeaseAreaDraft = (
-  lease: Lease,
-): LeaseAreaDraft | null => {
-  const leaseAreaDraft = get(lease, "lease_area_draft", null);
-  return leaseAreaDraft;
-};
-
-/**
  * Get content lease plots features for geojson data
  * @param {Object[]} plots
  * @returns {Object[]}
@@ -3288,30 +3274,6 @@ export const addConstructabilityFormValuesToPayload = (
       );
     });
   }
-
-  return payload;
-};
-
-export const addLeaseAreaDraftFormValuesToPayload = (
-  payload: Record<string, any>,
-  formValues: LeafletFeatureGeometry | null,
-): Record<string, any> => {
-  const leaseAreaDraft = get(formValues, "lease_area_draft", null);
-  if (!leaseAreaDraft) {
-    return payload;
-  }
-  const { identifier, geometry, area, location, address, postal_code, city } =
-    leaseAreaDraft;
-
-  payload.lease_area_draft = {
-    geometry: geometry,
-    identifier: identifier || "XYZ-XYZ-XYZ",
-    area: area || 1000,
-    location: location || "surface",
-    address: address || "",
-    postal_code: postal_code || "",
-    city: city || "",
-  };
 
   return payload;
 };

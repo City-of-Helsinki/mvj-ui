@@ -661,37 +661,6 @@ export const LeaseAreaCustomDetailedPlanFieldPaths = {
 };
 
 /**
- * Lease area draft field paths enumerable.
- *
- * @type {{}}
- */
-
-export const LeaseAreaDraftFieldPaths = {
-  IDENTIFIER: "lease_area_draft.children.identifier",
-  AREA: "lease_area_draft.children.area",
-  GEOMETRY: "lease_area_draft.children.geometry",
-  LOCATION: "lease_area_draft.children.location",
-  ADDRESS: "lease_area_draft.children.address",
-  POSTAL_CODE: "lease_area_draft.children.postal_code",
-  CITY: "lease_area_draft.children.city",
-};
-
-/**
- * Lease area draft field titles enumerable.
- *
- * @type {{}}
- */
-export const LeaseAreaDraftFieldTitles = {
-  IDENTIFIER: "Kohteen tunnus",
-  AREA: "Pinta-ala",
-  GEOMETRY: "Geometria",
-  LOCATION: "Sijainti",
-  ADDRESS: "Osoite",
-  POSTAL_CODE: "Postinumero",
-  CITY: "Paikkakunta",
-};
-
-/**
  * Lease area usage distribution field paths enumerable
  *
  * @type {{}}

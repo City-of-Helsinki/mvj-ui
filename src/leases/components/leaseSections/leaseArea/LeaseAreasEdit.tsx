@@ -43,9 +43,8 @@ import {
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { store } from "@/index";
 import type { Attributes } from "types";
-import type { Lease, LeaseAreaDraft } from "@/leases/types";
+import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-import LeaseAreaDraftEdit from "./LeaseAreaDraftEdit";
 
 type AreaItemProps = {
   decisionOptions: Array<Record<string, any>>;
@@ -155,7 +154,6 @@ type Props = {
   editedActiveAreas: Array<Record<string, any>>;
   editedArchivedAreas: Array<Record<string, any>>;
   initialize: (...args: Array<any>) => any;
-  leaseAreaDraft: LeaseAreaDraft | null | undefined;
   leaseAttributes: Attributes;
   receiveFormValidFlags: (...args: Array<any>) => any;
   usersPermissions: UsersPermissionsType;
@@ -295,8 +293,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
 
   render() {
     const { areasSum, decisionOptions, showArchiveAreaModal } = this.state;
-    const { leaseAttributes, usersPermissions, leaseAreaDraft, editedActiveAreas } = this.props;
-    const hasOnlyLeaseAreaDraft = !!leaseAreaDraft && !editedActiveAreas.length;
+    const { leaseAttributes, usersPermissions } = this.props;
     return (
       <AppConsumer>
         {({ dispatch }) => {
@@ -391,8 +388,6 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
               </WarningContainer>
               <Divider />
 
-              {hasOnlyLeaseAreaDraft && <LeaseAreaDraftEdit />}
-
               <FieldArray
                 ref={this.setActiveAreasRef}
                 component={renderLeaseAreas}
@@ -425,7 +420,6 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
 
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
-const leaseAreaDraftFormName = FormNames.LEASE_AREA_DRAFT;
 export default flowRight(
   reduxForm({
     form: formName,
@@ -437,7 +431,6 @@ export default flowRight(
         currentLease: getCurrentLease(state),
         editedActiveAreas: selector(state, "lease_areas_active"),
         editedArchivedAreas: selector(state, "lease_areas_archived"),
-        leaseAreaDraft: getFormValues(leaseAreaDraftFormName)(state),
         leaseAttributes: getLeaseAttributes(state),
         usersPermissions: getUsersPermissions(state),
       };
