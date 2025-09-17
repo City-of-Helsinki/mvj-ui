@@ -21,6 +21,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-    - run: yarn
+    - run: yarn --frozen-lockfile
     - run: yarn coverage
     - run: yarn build
