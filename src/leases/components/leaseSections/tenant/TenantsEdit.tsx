@@ -4,7 +4,7 @@ import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
-import { ActionTypes } from "@/app/AppContext";
+import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import Authorization from "@/components/authorization/Authorization";
 import AddButton from "@/components/form/AddButton";
 import ContactModal from "@/contacts/components/ContactModal";
@@ -110,7 +110,6 @@ const renderTenants = ({
   usersPermissions,
   formValues,
 }: TenantsProps) => {
-  const dispatch = useDispatch();
   const handleAdd = () => {
     fields.push({});
   };
@@ -123,73 +122,83 @@ const renderTenants = ({
     );
 
   return (
-    <Fragment>
-      {archived && fields && !!fields.length && (
-        <h3
-          style={{
-            marginTop: 10,
-            marginBottom: 5,
-          }}
-        >
-          Arkisto
-        </h3>
-      )}
-      {!isFieldAllowedToEdit(leaseAttributes, LeaseTenantsFieldPaths.TENANTS) &&
-        !archived &&
-        (!fields || !fields.length) && (
-          <FormText className="no-margin">Ei vuokralaisia</FormText>
-        )}
-      {fields &&
-        !!fields.length &&
-        fields.map((tenant, index) => {
-          const handleRemove = () => {
-            dispatch({
-              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-              confirmationFunction: () => {
-                fields.remove(index);
-              },
-              confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText:
-                ConfirmationModalTexts.DELETE_TENANT.BUTTON,
-              confirmationModalLabel:
-                ConfirmationModalTexts.DELETE_TENANT.LABEL,
-              confirmationModalTitle:
-                ConfirmationModalTexts.DELETE_TENANT.TITLE,
-            });
-          };
-          const fieldName = archived ? "tenantsArchived" : "tenants";
-          const tenantData = formValues?.[fieldName]?.[index] || {};
+    <AppConsumer>
+      {({ dispatch: appDispatch }) => (
+        <Fragment>
+          {archived && fields && !!fields.length && (
+            <h3
+              style={{
+                marginTop: 10,
+                marginBottom: 5,
+              }}
+            >
+              Arkisto
+            </h3>
+          )}
+          {!isFieldAllowedToEdit(
+            leaseAttributes,
+            LeaseTenantsFieldPaths.TENANTS,
+          ) &&
+            !archived &&
+            (!fields || !fields.length) && (
+              <FormText className="no-margin">Ei vuokralaisia</FormText>
+            )}
+          {fields &&
+            !!fields.length &&
+            fields.map((tenant, index) => {
+              const handleRemove = () => {
+                appDispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    fields.remove(index);
+                  },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
+                  confirmationModalButtonText:
+                    ConfirmationModalTexts.DELETE_TENANT.BUTTON,
+                  confirmationModalLabel:
+                    ConfirmationModalTexts.DELETE_TENANT.LABEL,
+                  confirmationModalTitle:
+                    ConfirmationModalTexts.DELETE_TENANT.TITLE,
+                });
+              };
+              const fieldName = archived ? "tenantsArchived" : "tenants";
+              const tenantData = formValues?.[fieldName]?.[index] || {};
 
-          return (
-            <TenantItemEdit
-              key={index}
-              field={tenant}
-              onRemove={handleRemove}
-              tenants={tenants}
-              serviceUnit={serviceUnit}
-              tenantId={tenantData.id}
-              contact={tenantData.tenant?.contact}
-              shareNumerator={tenantData.share_numerator}
-              shareDenominator={tenantData.share_denominator}
-            />
-          );
-        })}
-      {!archived && (
-        <Authorization
-          allow={hasPermissions(usersPermissions, UsersPermissions.ADD_TENANT)}
-        >
-          <Row>
-            <Column>
-              <AddButton
-                className="no-margin"
-                label="Lisää vuokralainen"
-                onClick={handleAdd}
-              />
-            </Column>
-          </Row>
-        </Authorization>
+              return (
+                <TenantItemEdit
+                  key={index}
+                  field={tenant}
+                  onRemove={handleRemove}
+                  tenants={tenants}
+                  serviceUnit={serviceUnit}
+                  tenantId={tenantData.id}
+                  contact={tenantData.tenant?.contact}
+                  shareNumerator={tenantData.share_numerator}
+                  shareDenominator={tenantData.share_denominator}
+                />
+              );
+            })}
+          {!archived && (
+            <Authorization
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.ADD_TENANT,
+              )}
+            >
+              <Row>
+                <Column>
+                  <AddButton
+                    className="no-margin"
+                    label="Lisää vuokralainen"
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
+          )}
+        </Fragment>
       )}
-    </Fragment>
+    </AppConsumer>
   );
 };
 
