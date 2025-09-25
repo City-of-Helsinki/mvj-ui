@@ -273,34 +273,32 @@ class SideMenu extends Component<Props, State> {
                     </Link>
                   </li>
 
-                  {!import.meta.env.PROD && ( // TODO: Remove this when taking Tonttihaku in use
-                    <SubMenu
-                      header="Tonttihaut ja kilpailut"
-                      isOpen={subMenuKey === "plot"}
-                      items={[
-                        {
-                          allow: hasPermissions(
-                            usersPermissions,
-                            UsersPermissions.VIEW_PLOTSEARCH,
-                          ),
-                          onClick: handleClick,
-                          text: "Tonttihaut",
-                          to: getRouteById(Routes.PLOT_SEARCH),
-                        },
-                        {
-                          allow: hasPermissions(
-                            usersPermissions,
-                            UsersPermissions.VIEW_ANSWER,
-                          ),
-                          onClick: handleClick,
-                          text: "Tonttihakemukset",
-                          to: getRouteById(Routes.PLOT_APPLICATIONS),
-                        },
-                      ]}
-                      menuKey="plot"
-                      onHeaderClick={this.handleHeaderClick}
-                    />
-                  )}
+                  <SubMenu
+                    header="Tonttihaut ja kilpailut"
+                    isOpen={subMenuKey === "plot"}
+                    items={[
+                      {
+                        allow: hasPermissions(
+                          usersPermissions,
+                          UsersPermissions.VIEW_PLOTSEARCH,
+                        ),
+                        onClick: handleClick,
+                        text: "Tonttihaut",
+                        to: getRouteById(Routes.PLOT_SEARCH),
+                      },
+                      {
+                        allow: hasPermissions(
+                          usersPermissions,
+                          UsersPermissions.VIEW_ANSWER,
+                        ),
+                        onClick: handleClick,
+                        text: "Tonttihakemukset",
+                        to: getRouteById(Routes.PLOT_APPLICATIONS),
+                      },
+                    ]}
+                    menuKey="plot"
+                    onHeaderClick={this.handleHeaderClick}
+                  />
 
                   <Authorization
                     allow={hasPermissions(
