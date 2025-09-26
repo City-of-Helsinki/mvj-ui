@@ -19,20 +19,16 @@ City of Helsinki Land lease UI
 - [Eslint](http://eslint.org/) Linting utility
 - [Prettier](https://prettier.io/) Formatting utility
 
-## Usage with Docker
 
-Start the docker container with:
+## Usage with devcontainer
 
-```bash
-docker-compose up
-```
+Open your editor, and then `Reopen in Container` (vscode).
 
-The project is now live at [http://localhost:3000](http://localhost:3000)
-
-You can log into the container to execute some commands like so:
+Run vite dev server and expose port:
 
 ```bash
-docker exec -it mvj-ui bash
+yarn --frozen-lockfile
+yarn start --host
 ```
 
 ## Usage w/o Docker
@@ -44,7 +40,7 @@ Make sure you have [Yarn](https://yarnpkg.com/en/docs/install) installed globall
 #### 2. Install dependencies
 
 ```bash
-yarn
+yarn --frozen-lockfile
 ```
 
 #### 3. Add .env file
