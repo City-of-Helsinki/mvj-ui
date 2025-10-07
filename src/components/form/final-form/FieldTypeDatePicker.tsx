@@ -39,17 +39,12 @@ const FieldTypeDatePicker = ({
     });
 
   const handleSelect = (val: any) => {
-    if (val instanceof Date && isValidDate(val)) {
-      onChange(val.toISOString().split("T")[0]); // "YYYY-MM-DD"
-    } else {
-      onChange(val);
-    }
+    onChange(val);
   };
 
   const handleChange = (e: any) => {
     const value = e.target.value;
     let parsedDate = getParsedDate(value);
-
     if (isValidDate(parsedDate)) {
       onChange(parsedDate);
     } else if (isShortDateStr(value)) {
