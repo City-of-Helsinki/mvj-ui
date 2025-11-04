@@ -133,6 +133,12 @@ class AttachDecisionModal extends PureComponent<Props, State> {
       >
         <FormText>Valitse vuokratunnukset</FormText>
         <DualListBox
+          icons={{
+            moveLeft: "<",
+            moveAllLeft: "<<",
+            moveRight: ">",
+            moveAllRight: ">>",
+          }}
           availableRef={(ref) => (this.dualListBox = ref)}
           canFilter
           filter={filter}
