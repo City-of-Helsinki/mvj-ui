@@ -61,7 +61,7 @@ export const copyDecisionToLeases = (
 ): Generator<any, any, any> => {
   return callApi(
     new Request(
-      createUrl(`/decision_copy_to_leases/?${standardStringifyQuery(params)}`),
+      createUrl(`decision_copy_to_leases/?${standardStringifyQuery(params)}`),
       {
         method: "POST",
       },
