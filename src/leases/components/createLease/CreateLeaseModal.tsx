@@ -37,14 +37,16 @@ const CreateLease: React.FC<Props> = ({
       onClose={onClose}
       title={ButtonLabels.CREATE_LEASE_IDENTIFIER}
     >
-      <CreateLeaseForm
-        setRefForFirstField={setRefForFirstField}
-        allowToChangeRelateTo={allowToChangeRelateTo}
-        allowToChangeReferenceNumberAndNote
-        areaSearch={areaSearch}
-        onClose={onClose}
-        onSubmit={onSubmit}
-      />
+      {isOpen && (
+        <CreateLeaseForm
+          setRefForFirstField={setRefForFirstField}
+          allowToChangeRelateTo={allowToChangeRelateTo}
+          allowToChangeReferenceNumberAndNote
+          areaSearch={areaSearch}
+          onClose={onClose}
+          onSubmit={onSubmit}
+        />
+      )}
     </Modal>
   );
 };

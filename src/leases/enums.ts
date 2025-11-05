@@ -64,7 +64,7 @@ export const CreateLeaseFormFieldNames = {
   START_DATE: "start_date",
   END_DATE: "end_date",
   AREA_SEARCH_ID: "area_search_id",
-};
+} as const;
 
 /**
  * Decision type kinds enumerable.
