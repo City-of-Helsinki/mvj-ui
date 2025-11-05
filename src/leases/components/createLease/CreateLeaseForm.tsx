@@ -1,13 +1,13 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   change,
   formValueSelector,
   getFormValues,
   reduxForm,
+  type InjectedFormProps,
 } from "redux-form";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
@@ -17,12 +17,20 @@ import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import { fetchDistrictsByMunicipality } from "@/district/actions";
 import { FieldTypes, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
-import { LeaseFieldPaths, LeaseFieldTitles, LeaseHistoryContentTypes, CreateLeaseFormFieldNames } from "@/leases/enums";
+import {
+  LeaseFieldPaths,
+  LeaseFieldTitles,
+  CreateLeaseFormFieldNames,
+} from "@/leases/enums";
 import { filterOptionsByLabel } from "@/components/form/filter";
 import { getDistrictOptions } from "@/district/helpers";
 import { getPayloadCreateLease } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import { formatDate, getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
+import {
+  formatDate,
+  getFieldAttributes,
+  isFieldAllowedToEdit,
+} from "@/util/helpers";
 import {
   getDistrictsByMunicipality,
   getIsFetching as getIsFetchingDistricts,
@@ -30,379 +38,361 @@ import {
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { referenceNumber } from "@/components/form/validations";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
-import type { Attributes } from "types";
-import type { DistrictList } from "@/district/types";
-import type { UserServiceUnit } from "@/usersPermissions/types";
 import { AreaSearch } from "@/areaSearch/types";
 import { CreateLeaseFormValues } from "@/leases/types";
 
 type OwnProps = {
-  onClose: (...args: Array<any>) => any;
-  onSubmit: (...args: Array<any>) => any;
   allowToChangeRelateTo?: boolean;
   allowToChangeReferenceNumberAndNote?: boolean;
-  areaSearch: AreaSearch | null;
+  areaSearch?: AreaSearch | null;
   confirmButtonLabel?: string;
-  ref?: (...args: Array<any>) => any;
+  onClose: (...args: Array<any>) => any;
+  onSubmit: (...args: Array<any>) => any;
+  setRefForFirstField?: (element: any) => void;
 };
+type Props = OwnProps & InjectedFormProps<CreateLeaseFormValues, OwnProps>;
 
-type Props = OwnProps & {
-  change: (...args: Array<any>) => any;
-  districts: DistrictList;
-  fetchDistrictsByMunicipality: (...args: Array<any>) => any;
-  formValues: CreateLeaseFormValues;
-  leaseAttributes: Attributes;
-  municipality: string;
-  setRefForFirstField?: (...args: Array<any>) => any;
-  userActiveServiceUnit: UserServiceUnit;
-  valid: boolean;
-  district: number | string;
-  isFetchingDistricts: boolean;
-};
+const formName = FormNames.LEASE_CREATE_MODAL;
+const formFieldSelector = formValueSelector(formName);
 
-class CreateLeaseForm extends Component<Props> {
-  firstField: any;
+const CreateLeaseForm: React.FC<Props> = ({
+  allowToChangeRelateTo,
+  allowToChangeReferenceNumberAndNote,
+  areaSearch,
+  confirmButtonLabel,
+  valid,
+  onClose,
+  onSubmit,
+  setRefForFirstField,
+}) => {
+  const dispatch = useDispatch();
 
-  componentDidMount() {
-    const { areaSearch, change, municipality, fetchDistrictsByMunicipality } = this.props;
+  const leaseAttributes = useSelector(getLeaseAttributes);
+  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const isFetchingDistricts = useSelector(getIsFetchingDistricts);
 
+  // Form-specific state from Redux store
+  const formValues = useSelector(
+    getFormValues(formName),
+  ) as CreateLeaseFormValues;
+
+  const municipality = useSelector((state) =>
+    formFieldSelector(state, "municipality"),
+  );
+  const districts = useSelector((state) =>
+    getDistrictsByMunicipality(state, municipality),
+  );
+  // Trigger re-renders when form field values change
+  useSelector((state) => formFieldSelector(state, "district"));
+  useSelector((state) => formFieldSelector(state, "note"));
+  useSelector((state) => formFieldSelector(state, "reference_number"));
+  useSelector((state) => formFieldSelector(state, "state"));
+  useSelector((state) => formFieldSelector(state, "type"));
+  useSelector((state) => formFieldSelector(state, "application_received_at"));
+
+  useEffect(() => {
     if (municipality) {
-      fetchDistrictsByMunicipality(parseInt(municipality));
+      dispatch(fetchDistrictsByMunicipality(parseInt(municipality)));
     }
+    // When municipality changes, reset district value
+    dispatch(change(formName, CreateLeaseFormFieldNames.DISTRICT, ""));
+  }, [municipality, fetchDistrictsByMunicipality, dispatch]);
+
+  useEffect(() => {
     if (areaSearch) {
-      change(CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT, formatDate(areaSearch?.received_date, "yyyy-MM-dd") || null);
-      change(CreateLeaseFormFieldNames.START_DATE, formatDate(areaSearch?.start_date, "yyyy-MM-dd") || null);
-      change(CreateLeaseFormFieldNames.END_DATE, formatDate(areaSearch?.end_date, "yyyy-MM-dd") || null);
-      change(CreateLeaseFormFieldNames.AREA_SEARCH_ID, areaSearch.id);
+      dispatch(
+        change(
+          formName,
+          CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT,
+          formatDate(areaSearch?.received_date, "yyyy-MM-dd") || null,
+        ),
+      );
+      dispatch(
+        change(
+          formName,
+          CreateLeaseFormFieldNames.START_DATE,
+          formatDate(areaSearch?.start_date, "yyyy-MM-dd") || null,
+        ),
+      );
+      dispatch(
+        change(
+          formName,
+          CreateLeaseFormFieldNames.END_DATE,
+          formatDate(areaSearch?.end_date, "yyyy-MM-dd") || null,
+        ),
+      );
+      dispatch(
+        change(
+          formName,
+          CreateLeaseFormFieldNames.AREA_SEARCH_ID,
+          areaSearch.id,
+        ),
+      );
     }
-  }
 
-  componentWillUnmount() {
-    const { areaSearch } = this.props;
-    if (areaSearch) {
-      const { change } = this.props;
-      change(CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT, null);
-      change(CreateLeaseFormFieldNames.START_DATE, null);
-      change(CreateLeaseFormFieldNames.END_DATE, null);
-      change(CreateLeaseFormFieldNames.AREA_SEARCH_ID, null);
-    }
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (this.props.municipality !== nextProps.municipality) {
-      const { change, fetchDistrictsByMunicipality } = this.props;
-
-      if (nextProps.municipality) {
-        fetchDistrictsByMunicipality(nextProps.municipality);
-        change(CreateLeaseFormFieldNames.DISTRICT, "");
-      } else {
-        change(CreateLeaseFormFieldNames.DISTRICT, "");
+    return () => {
+      if (areaSearch) {
+        dispatch(
+          change(
+            formName,
+            CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT,
+            null,
+          ),
+        );
+        dispatch(change(formName, CreateLeaseFormFieldNames.START_DATE, null));
+        dispatch(change(formName, CreateLeaseFormFieldNames.END_DATE, null));
+        dispatch(
+          change(formName, CreateLeaseFormFieldNames.AREA_SEARCH_ID, null),
+        );
       }
-    }
-  }
+    };
+  }, [areaSearch, dispatch]);
 
-  componentDidUpdate() {
-    const { change, formValues, userActiveServiceUnit } = this.props;
-
+  useEffect(() => {
     if (userActiveServiceUnit && formValues && !formValues.service_unit) {
-      change(CreateLeaseFormFieldNames.SERVICE_UNIT, userActiveServiceUnit.id);
+      dispatch(
+        change(
+          formName,
+          CreateLeaseFormFieldNames.SERVICE_UNIT,
+          userActiveServiceUnit.id,
+        ),
+      );
     }
-  }
+  }, [userActiveServiceUnit, formValues, dispatch]);
 
-  setRefForFirstField = (element: any) => {
-    this.firstField = element;
-  };
-  setFocus = () => {
-    if (this.firstField) {
-      this.firstField.focus();
-    }
-  };
-  handleCreate = () => {
-    const { formValues, onSubmit } = this.props;
+  const handleCreate = () => {
     onSubmit(getPayloadCreateLease(formValues));
   };
 
-  render() {
-    const {
-      allowToChangeRelateTo,
-      allowToChangeReferenceNumberAndNote,
-      districts,
-      isFetchingDistricts,
-      leaseAttributes,
-      onClose,
-      userActiveServiceUnit,
-      valid,
-      confirmButtonLabel,
-    } = this.props;
-    const districtOptions = getDistrictOptions(districts);
-    if (!userActiveServiceUnit) return null;
-    return (
-      <div>
-        <Row>
-          <Column small={4}>
-            <Authorization
-              allow={isFieldAllowedToEdit(
+  const districtOptions = getDistrictOptions(districts);
+
+  if (!userActiveServiceUnit) return null;
+
+  return (
+    <div>
+      <Row>
+        <Column small={4}>
+          <Authorization
+            allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.STATE)}
+          >
+            <FormFieldLegacy
+              fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseFieldPaths.STATE,
               )}
-            >
-              <FormFieldLegacy
-                fieldAttributes={getFieldAttributes(
-                  leaseAttributes,
-                  LeaseFieldPaths.STATE,
-                )}
-                name={CreateLeaseFormFieldNames.STATE}
-                setRefForField={this.setRefForFirstField}
-                overrideValues={{
-                  label: LeaseFieldTitles.STATE,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.STATE)}
-              />
-            </Authorization>
-          </Column>
-          <Column small={4}>
-            <Authorization
-              allow={isFieldAllowedToEdit(
-                leaseAttributes,
-                LeaseFieldPaths.SERVICE_UNIT,
-              )}
-            >
-              <>
-                <FormTextTitle
-                  uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SERVICE_UNIT)}
-                >
-                  {LeaseFieldTitles.SERVICE_UNIT}
-                </FormTextTitle>
-                <FormText>
-                  {userActiveServiceUnit.name
-                    ? userActiveServiceUnit.name
-                    : "-"}
-                </FormText>
-              </>
-            </Authorization>
-          </Column>
-        </Row>
-        <Row>
-          <Column small={4}>
-            <Authorization
-              allow={isFieldAllowedToEdit(
+              name={CreateLeaseFormFieldNames.STATE}
+              setRefForField={setRefForFirstField}
+              overrideValues={{
+                label: LeaseFieldTitles.STATE,
+              }}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.STATE)}
+            />
+          </Authorization>
+        </Column>
+        <Column small={4}>
+          <Authorization
+            allow={isFieldAllowedToEdit(
+              leaseAttributes,
+              LeaseFieldPaths.SERVICE_UNIT,
+            )}
+          >
+            <>
+              <FormTextTitle
+                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.SERVICE_UNIT)}
+              >
+                {LeaseFieldTitles.SERVICE_UNIT}
+              </FormTextTitle>
+              <FormText>
+                {userActiveServiceUnit.name ? userActiveServiceUnit.name : "-"}
+              </FormText>
+            </>
+          </Authorization>
+        </Column>
+      </Row>
+      <Row>
+        <Column small={4}>
+          <Authorization
+            allow={isFieldAllowedToEdit(leaseAttributes, LeaseFieldPaths.TYPE)}
+          >
+            <FormFieldLegacy
+              fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseFieldPaths.TYPE,
               )}
-            >
-              <FormFieldLegacy
-                fieldAttributes={getFieldAttributes(
-                  leaseAttributes,
-                  LeaseFieldPaths.TYPE,
-                )}
-                name={CreateLeaseFormFieldNames.TYPE}
-                overrideValues={{
-                  label: LeaseFieldTitles.TYPE,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.TYPE)}
-              />
-            </Authorization>
-          </Column>
-          <Column small={4}>
-            <Authorization
-              allow={isFieldAllowedToEdit(
+              name={CreateLeaseFormFieldNames.TYPE}
+              overrideValues={{
+                label: LeaseFieldTitles.TYPE,
+              }}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.TYPE)}
+            />
+          </Authorization>
+        </Column>
+        <Column small={4}>
+          <Authorization
+            allow={isFieldAllowedToEdit(
+              leaseAttributes,
+              LeaseFieldPaths.MUNICIPALITY,
+            )}
+          >
+            <FormFieldLegacy
+              fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseFieldPaths.MUNICIPALITY,
               )}
-            >
-              <FormFieldLegacy
-                fieldAttributes={getFieldAttributes(
-                  leaseAttributes,
-                  LeaseFieldPaths.MUNICIPALITY,
-                )}
-                name={CreateLeaseFormFieldNames.MUNICIPALITY}
-                overrideValues={{
-                  label: LeaseFieldTitles.MUNICIPALITY,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MUNICIPALITY)}
-              />
-            </Authorization>
-          </Column>
-          <Column small={4}>
-            <Authorization
-              allow={isFieldAllowedToEdit(
+              name={CreateLeaseFormFieldNames.MUNICIPALITY}
+              overrideValues={{
+                label: LeaseFieldTitles.MUNICIPALITY,
+              }}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.MUNICIPALITY)}
+            />
+          </Authorization>
+        </Column>
+        <Column small={4}>
+          <Authorization
+            allow={isFieldAllowedToEdit(
+              leaseAttributes,
+              LeaseFieldPaths.DISTRICT,
+            )}
+          >
+            <FormFieldLegacy
+              fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseFieldPaths.DISTRICT,
               )}
-            >
-              <FormFieldLegacy
-                fieldAttributes={getFieldAttributes(
-                  leaseAttributes,
-                  LeaseFieldPaths.DISTRICT,
-                )}
-                filterOption={filterOptionsByLabel}
-                name={CreateLeaseFormFieldNames.DISTRICT}
-                overrideValues={{
-                  label: LeaseFieldTitles.DISTRICT,
-                  options: districtOptions,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.DISTRICT)}
-                isLoading={isFetchingDistricts}
-              />
-            </Authorization>
-          </Column>
-        </Row>
-        {allowToChangeReferenceNumberAndNote && (
-          <Row>
-            <Column small={4}>
-              <Authorization
-                allow={isFieldAllowedToEdit(
-                  leaseAttributes,
-                  LeaseFieldPaths.REFERENCE_NUMBER,
-                )}
-              >
-                <FormFieldLegacy
-                  fieldAttributes={getFieldAttributes(
-                    leaseAttributes,
-                    LeaseFieldPaths.REFERENCE_NUMBER,
-                  )}
-                  name={CreateLeaseFormFieldNames.REFERENCE_NUMBER}
-                  validate={referenceNumber}
-                  overrideValues={{
-                    label: LeaseFieldTitles.REFERENCE_NUMBER,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseFieldPaths.REFERENCE_NUMBER,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            <Column small={8}>
-              <Authorization
-                allow={isFieldAllowedToEdit(
-                  leaseAttributes,
-                  LeaseFieldPaths.NOTE,
-                )}
-              >
-                <FormFieldLegacy
-                  fieldAttributes={getFieldAttributes(
-                    leaseAttributes,
-                    LeaseFieldPaths.NOTE,
-                  )}
-                  name={CreateLeaseFormFieldNames.NOTE}
-                  overrideValues={{
-                    label: LeaseFieldTitles.NOTE,
-                    fieldType: FieldTypes.TEXTAREA,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.NOTE)}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-        )}
+              filterOption={filterOptionsByLabel}
+              name={CreateLeaseFormFieldNames.DISTRICT}
+              overrideValues={{
+                label: LeaseFieldTitles.DISTRICT,
+                options: districtOptions,
+              }}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.DISTRICT)}
+              isLoading={isFetchingDistricts}
+            />
+          </Authorization>
+        </Column>
+      </Row>
+      {allowToChangeReferenceNumberAndNote && (
         <Row>
           <Column small={4}>
             <Authorization
               allow={isFieldAllowedToEdit(
                 leaseAttributes,
-                LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+                LeaseFieldPaths.REFERENCE_NUMBER,
               )}
             >
               <FormFieldLegacy
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
-                  LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+                  LeaseFieldPaths.REFERENCE_NUMBER,
                 )}
-                name={CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT}
+                name={CreateLeaseFormFieldNames.REFERENCE_NUMBER}
+                validate={referenceNumber}
                 overrideValues={{
-                  fieldType: FieldTypes.DATE,
-                  label: LeaseFieldTitles.APPLICATION_RECEIVED_AT,
+                  label: LeaseFieldTitles.REFERENCE_NUMBER,
                 }}
                 enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.REFERENCE_NUMBER)}
+              />
+            </Authorization>
+          </Column>
+          <Column small={8}>
+            <Authorization
+              allow={isFieldAllowedToEdit(
+                leaseAttributes,
+                LeaseFieldPaths.NOTE,
+              )}
+            >
+              <FormFieldLegacy
+                fieldAttributes={getFieldAttributes(
+                  leaseAttributes,
+                  LeaseFieldPaths.NOTE,
                 )}
+                name={CreateLeaseFormFieldNames.NOTE}
+                overrideValues={{
+                  label: LeaseFieldTitles.NOTE,
+                  fieldType: FieldTypes.TEXTAREA,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.NOTE)}
               />
             </Authorization>
           </Column>
         </Row>
-        {allowToChangeRelateTo && (
-          <Row>
-            <Column small={4}>
-              <Authorization
-                allow={isFieldAllowedToEdit(
+      )}
+      <Row>
+        <Column small={4}>
+          <Authorization
+            allow={isFieldAllowedToEdit(
+              leaseAttributes,
+              LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+            )}
+          >
+            <FormFieldLegacy
+              fieldAttributes={getFieldAttributes(
+                leaseAttributes,
+                LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+              )}
+              name={CreateLeaseFormFieldNames.APPLICATION_RECEIVED_AT}
+              overrideValues={{
+                fieldType: FieldTypes.DATE,
+                label: LeaseFieldTitles.APPLICATION_RECEIVED_AT,
+              }}
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(
+                LeaseFieldPaths.APPLICATION_RECEIVED_AT,
+              )}
+            />
+          </Authorization>
+        </Column>
+      </Row>
+      {allowToChangeRelateTo && (
+        <Row>
+          <Column small={4}>
+            <Authorization
+              allow={isFieldAllowedToEdit(
+                leaseAttributes,
+                LeaseFieldPaths.RELATE_TO,
+              )}
+            >
+              <FormFieldLegacy
+                fieldAttributes={getFieldAttributes(
                   leaseAttributes,
                   LeaseFieldPaths.RELATE_TO,
                 )}
-              >
-                <FormFieldLegacy
-                  fieldAttributes={getFieldAttributes(
-                    leaseAttributes,
-                    LeaseFieldPaths.RELATE_TO,
-                  )}
-                  name={CreateLeaseFormFieldNames.RELATE_TO}
-                  overrideValues={{
-                    fieldType: FieldTypes.LEASE,
-                    label: LeaseFieldTitles.RELATE_TO,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RELATE_TO)}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-        )}
+                name={CreateLeaseFormFieldNames.RELATE_TO}
+                overrideValues={{
+                  fieldType: FieldTypes.LEASE,
+                  label: LeaseFieldTitles.RELATE_TO,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.RELATE_TO)}
+              />
+            </Authorization>
+          </Column>
+        </Row>
+      )}
 
-        <ModalButtonWrapper>
-          <Button
-            className={ButtonColors.SECONDARY}
-            onClick={onClose}
-            text="Peruuta"
-          />
-          <Button
-            className={ButtonColors.SUCCESS}
-            disabled={!valid || isFetchingDistricts}
-            onClick={this.handleCreate}
-            text={confirmButtonLabel || "Luo tunnus"}
-          />
-        </ModalButtonWrapper>
-      </div>
-    );
-  }
-}
+      <ModalButtonWrapper>
+        <Button
+          className={ButtonColors.SECONDARY}
+          onClick={onClose}
+          text="Peruuta"
+        />
+        <Button
+          className={ButtonColors.SUCCESS}
+          disabled={!valid || isFetchingDistricts}
+          onClick={handleCreate}
+          text={confirmButtonLabel || "Luo tunnus"}
+        />
+      </ModalButtonWrapper>
+    </div>
+  );
+};
 
-const formName = FormNames.LEASE_CREATE_MODAL;
-const selector = formValueSelector(formName);
-export default flowRight(
-  connect(
-    (state) => {
-      const municipality = selector(state, "municipality");
-      return {
-        formValues: getFormValues(formName)(state),
-        district: selector(state, "district"),
-        districts: getDistrictsByMunicipality(state, municipality),
-        leaseAttributes: getLeaseAttributes(state),
-        municipality: municipality,
-        note: selector(state, "note"),
-        reference_number: selector(state, "reference_number"),
-        state: selector(state, "state"),
-        type: selector(state, "type"),
-        application_received_at: selector(state, "application_received_at"),
-        isFetchingDistricts: getIsFetchingDistricts(state),
-        userActiveServiceUnit: getUserActiveServiceUnit(state),
-      };
-    },
-    {
-      change,
-      fetchDistrictsByMunicipality,
-    },
-    null,
-    {
-      forwardRef: true,
-    },
-  ),
-  reduxForm({
-    form: formName,
-  }),
-)(CreateLeaseForm) as React.ComponentType<OwnProps>;
+export default reduxForm<CreateLeaseFormValues, OwnProps>({
+  form: formName,
+})(CreateLeaseForm);
