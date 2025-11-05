@@ -21,6 +21,10 @@ const FieldTypeBasic = ({
     }
   };
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    onBlur(e);
+  };
+
   const handleSetRefForField = (element: any) => {
     if (setRefForField) {
       setRefForField(element);
@@ -46,6 +50,7 @@ const FieldTypeBasic = ({
       type={type}
       {...inputRest}
       onChange={handleChange}
+      onBlur={handleBlur}
     />
   );
 };
