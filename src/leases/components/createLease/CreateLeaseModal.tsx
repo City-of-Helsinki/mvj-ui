@@ -1,5 +1,4 @@
-import { $Shape } from "utility-types";
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import CreateLeaseForm from "./CreateLeaseForm";
 import Modal from "@/components/modal/Modal";
 import { ButtonLabels } from "@/components/enums";
@@ -7,43 +6,47 @@ import { AreaSearch } from "@/areaSearch/types";
 
 type Props = {
   allowToChangeRelateTo?: boolean;
-  areaSearch: AreaSearch | null;
+  areaSearch?: AreaSearch | null;
   isOpen: boolean;
   onClose: (...args: Array<any>) => any;
   onSubmit: (...args: Array<any>) => any;
 };
 
-class CreateLease extends Component<Props> {
-  form: any;
-  static defaultProps: $Shape<Props> = {
-    allowToChangeRelateTo: true,
-  };
+const CreateLease: React.FC<Props> = ({
+  allowToChangeRelateTo,
+  areaSearch,
+  isOpen,
+  onClose,
+  onSubmit,
+}) => {
+  const firstFieldRef = React.useRef<any>(null);
 
-  componentDidUpdate(prevProps: Props) {
-    if (!prevProps.isOpen && this.props.isOpen) {
-      this.form.wrappedInstance.setFocus();
+  useEffect(() => {
+    if (isOpen && firstFieldRef.current) {
+      firstFieldRef.current.focus();
     }
-  }
+  }, [isOpen]);
 
-  setRefForForm: (arg0: any) => void = (element) => {
-    this.form = element;
+  const setRefForFirstField = (element: any) => {
+    firstFieldRef.current = element;
   };
 
-  render(): JSX.Element {
-    const { allowToChangeRelateTo, areaSearch, isOpen, onClose, onSubmit } = this.props;
-    return (
-      <Modal isOpen={isOpen} onClose={onClose} title={ButtonLabels.CREATE_LEASE_IDENTIFIER}>
-        <CreateLeaseForm
-          ref={this.setRefForForm}
-          allowToChangeRelateTo={allowToChangeRelateTo}
-          allowToChangeReferenceNumberAndNote
-          areaSearch={areaSearch}
-          onClose={onClose}
-          onSubmit={onSubmit}
-        />
-      </Modal>
-    );
-  }
-}
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={ButtonLabels.CREATE_LEASE_IDENTIFIER}
+    >
+      <CreateLeaseForm
+        setRefForFirstField={setRefForFirstField}
+        allowToChangeRelateTo={allowToChangeRelateTo}
+        allowToChangeReferenceNumberAndNote
+        areaSearch={areaSearch}
+        onClose={onClose}
+        onSubmit={onSubmit}
+      />
+    </Modal>
+  );
+};
 
 export default CreateLease;
