@@ -179,6 +179,7 @@ const CreateLeaseForm: React.FC<Props> = ({
                     name={CreateLeaseFormFieldNames.TYPE}
                     overrideValues={{
                       label: LeaseFieldTitles.TYPE,
+                      fieldType: FieldTypes.LEASE_TYPE,
                     }}
                     enableUiDataEdit
                     uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.TYPE)}

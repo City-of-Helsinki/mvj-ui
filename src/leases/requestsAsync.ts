@@ -16,6 +16,21 @@ export const fetchLeases = async (query?: Record<string, any>) => {
       return [];
   }
 };
+export const fetchLeaseTypes = async (query?: Record<string, any>) => {
+  const {
+    response: { status },
+    bodyAsJson,
+  } = await callApiAsync(new Request(createUrl("lease_type/", query)));
+
+  switch (status) {
+    case 200:
+      return bodyAsJson.results;
+
+    default:
+      console.error("Failed to fetch lease types");
+      return [];
+  }
+};
 export const fetchAreaSearches = async (query?: Record<string, any>) => {
   const {
     response: { status },
