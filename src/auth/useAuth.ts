@@ -23,7 +23,7 @@ const useAuth = () => {
   const { login: oidcLogin, logout: oidcLogout } = useOidcClient();
   const authenticatedUser = useAuthenticatedUser();
   const dispatch = useDispatch();
-  const [apiTokensClientSignal, apiTokensClientSignalReset, apiTokensClient] =
+  const [apiTokensClientSignal, apiTokensClientSignalReset] =
     useApiTokensClientTracking();
   const { getStoredApiTokens } = useApiTokens();
 
@@ -44,21 +44,25 @@ const useAuth = () => {
       dispatch(clearUser());
       setLoggedIn(false);
     }
-  }, [authenticatedUser, dispatch, setLoggedInIfApiTokenExists]);
+  }, [authenticatedUser, setLoggedInIfApiTokenExists, dispatch]);
 
   useEffect(() => {
-    if (isApiTokensUpdatedSignal(apiTokensClientSignal)) {
-      setLoggedInIfApiTokenExists();
-    }
+    // Signal call order
+    // 1.
     if (isApiTokensRemovedSignal(apiTokensClientSignal)) {
-      dispatch(clearApiToken());
+      // Placeholder for future use
     }
+    // 2.
     if (isApiTokensRenewalStartedSignal(apiTokensClientSignal)) {
       // Placeholder for future use
     }
+    // 3.
+    if (isApiTokensUpdatedSignal(apiTokensClientSignal)) {
+      setLoggedInIfApiTokenExists();
+    }
 
     return apiTokensClientSignalReset;
-  }, [apiTokensClientSignal, dispatch]);
+  }, [apiTokensClientSignal, setLoggedInIfApiTokenExists, dispatch]);
 
   const determineRedirectPath = (redirectPath: string): string => {
     if (!redirectPath || redirectPath.startsWith("/callback")) {
