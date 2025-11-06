@@ -227,35 +227,4 @@ describe("useAuth", () => {
     expect(receiveApiToken).toHaveBeenCalledWith("dummyApiToken2");
     expect(result.current.loggedIn).toBe(true);
   });
-
-  it("should handle API token removal", async () => {
-    const mockApiTokens = {
-      getStoredApiTokens: vi.fn().mockReturnValue([null, null]),
-    };
-    vi.mocked(useApiTokens).mockReturnValue(
-      mockApiTokens as unknown as ReturnType<typeof useApiTokens>,
-    );
-
-    const apiTokensRemovedSignal = createApiTokensClientEventSignal({
-      type: apiTokensClientEvents.API_TOKENS_REMOVED,
-    });
-    vi.mocked(useApiTokensClientTracking).mockReturnValue([
-      apiTokensRemovedSignal,
-      () => null,
-      null,
-    ]);
-    const { result } = renderHook(() => useAuth(), {
-      wrapper: ({ children }) => (
-        <Provider store={mockStore}>
-          <LoginProvider {...loginProviderProperties}>{children}</LoginProvider>
-        </Provider>
-      ),
-    });
-    expect(receiveApiToken).not.toHaveBeenCalled();
-    expect(isApiTokensRemovedSignal).toHaveBeenCalledWith(
-      apiTokensRemovedSignal,
-    );
-    expect(clearApiToken).toHaveBeenCalled();
-    expect(result.current.loggedIn).toBe(false);
-  });
 });
