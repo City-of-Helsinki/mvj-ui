@@ -16,6 +16,7 @@ import FieldTypeDatePicker from "@/components/form/final-form/FieldTypeDatePicke
 import FieldTypeDecimal from "@/components/form/final-form/FieldTypeDecimal";
 import FieldTypeIntendedUseSelect from "@/components/form/final-form/FieldTypeIntendedUseSelect";
 import FieldTypeLeaseSelect from "@/components/form/final-form/FieldTypeLeaseSelect";
+import FieldTypeLeaseTypeSelect from "@/components/form/final-form/FieldTypeLeaseTypeSelect";
 import FieldTypeLessorSelect from "@/components/form/final-form/FieldTypeLessorSelect";
 import FieldTypeMultiSelect from "@/components/form/final-form/FieldTypeMultiSelect";
 import FieldTypeRadioWithField from "@/components/form/final-form/FieldTypeRadioWithField";
@@ -103,6 +104,7 @@ const FieldTypes: Record<FieldValue, FieldComponent> = {
   [FieldTypeOptions.INTEGER]: FieldTypeBasic,
   [FieldTypeOptions.INTENDED_USE]: FieldTypeIntendedUseSelect,
   [FieldTypeOptions.LEASE]: FieldTypeLeaseSelect,
+  [FieldTypeOptions.LEASE_TYPE]: FieldTypeLeaseTypeSelect,
   [FieldTypeOptions.LESSOR]: FieldTypeLessorSelect,
   [FieldTypeOptions.MULTISELECT]: FieldTypeMultiSelect,
   [FieldTypeOptions.RADIO_WITH_FIELD]: FieldTypeRadioWithField,

@@ -445,6 +445,7 @@ export const FieldTypes = {
   INTEGER: "integer",
   INTENDED_USE: "intended_use",
   LEASE: "lease",
+  LEASE_TYPE: "lease-type",
   LESSOR: "lessor",
   MULTISELECT: "multiselect",
   RADIO_WITH_FIELD: "radio-with-field",
