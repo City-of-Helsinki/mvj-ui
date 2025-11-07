@@ -1,4 +1,7 @@
 @use "sass:list";
+@use "sass:color";
+@use "foundation-sites/scss/foundation" as *;
+@use "./variables";
 
 @mixin mvj-container() {
   @include grid-row();
@@ -15,7 +18,7 @@
 
 @mixin focus() {
   &:focus {
-    outline-color: $blue;
+    outline-color: variables.$blue;
     outline-style: dotted;
     outline-offset: 2px;
     outline-width: 2px;
@@ -25,13 +28,13 @@
 @mixin focusInput() {
   &:focus {
     transition: none !important;
-    outline: 2px dotted $blue;
+    outline: 2px dotted variables.$blue;
     outline-offset: 0px;
-    border: 1px solid $medium-gray;
+    border: 1px solid variables.$medium-gray;
   }
 }
 
-@mixin placeholder($color: $light-gray) {
+@mixin placeholder($color: variables.$light-gray) {
   ::-webkit-input-placeholder {
     color: $color;
     font-weight: 300;

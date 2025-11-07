@@ -1,10 +1,11 @@
 @use "sass:color";
+@use "../../styles/variables";
 
 .AreaSearchApplicantInfoCheck {
   &,
   span,
   a {
-    font-size: $font-small;
+    font-size: variables.$font-small;
   }
 
   .row {
@@ -16,13 +17,16 @@
   &,
   span,
   a {
-    font-size: $font-small;
+    font-size: variables.$font-small;
     color: black;
   }
 
   .AreaSearchApplicantInfoCheckEditItem--dirty {
     .column:nth-child(2) > * {
-      background-color: color.adjust($is-dirty-color, $lightness: -5%);
+      background-color: color.adjust(
+        variables.$is-dirty-color,
+        $lightness: -5%
+      );
     }
   }
 }

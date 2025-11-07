@@ -1,3 +1,6 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
 .select-input {
   margin-bottom: 0;
 
@@ -9,17 +12,17 @@
 
       &--is-focused {
         &:not(.select-input__control--menu-is-open) {
-          box-shadow: 0 0 0 1px $medium-gray;
-          outline: 2px dotted $blue !important;
+          box-shadow: 0 0 0 1px variables.$medium-gray;
+          outline: 2px dotted variables.$blue !important;
           outline-offset: 0px;
-          border-color: $medium-gray;
+          border-color: variables.$medium-gray;
         }
       }
 
       &--menu-is-open {
         outline: none !important;
-        border: 1px solid $blue !important;
-        box-shadow: 0px 0px 0px 1px $blue;
+        border: 1px solid variables.$blue !important;
+        box-shadow: 0px 0px 0px 1px variables.$blue;
       }
     }
 
@@ -27,7 +30,7 @@
       padding: rem-calc(0 3px);
       overflow: visible;
       font-size: rem-calc(14px);
-      color: $black;
+      color: variables.$black;
 
       &--is-multi {
         padding-right: rem-calc(36px);
@@ -101,7 +104,7 @@
       width: auto;
       min-width: calc(100% + 2px);
       z-index: 1020;
-      border: 2px solid $blue;
+      border: 2px solid variables.$blue;
       border-radius: 0;
       border-top-width: 1px;
     }
@@ -129,12 +132,12 @@
       }
 
       &--is-focused {
-        background: $light-blue;
+        background: variables.$light-blue;
       }
 
       &--is-selected {
-        background: $light-blue;
-        color: $black;
+        background: variables.$light-blue;
+        color: variables.$black;
       }
     }
   }

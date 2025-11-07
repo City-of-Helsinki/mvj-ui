@@ -1,3 +1,7 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .content {
   &__full-width-container {
     width: 100%;
@@ -11,7 +15,7 @@
   }
 
   &__divider {
-    border-top: 1px dashed $blue;
+    border-top: 1px dashed variables.$blue;
     margin: rem-calc(15px 0);
     height: 1px;
     width: 100%;
@@ -22,7 +26,7 @@
     }
 
     &.lease-area-divider {
-      border-color: $black;
+      border-color: variables.$black;
       margin-top: rem-calc(5px);
     }
   }
@@ -31,7 +35,7 @@
     display: inline-block;
     width: 100%;
     padding: rem-calc(10px 10px 0);
-    background-color: $medium-gray;
+    background-color: variables.$medium-gray;
     position: relative;
   }
 
@@ -39,7 +43,7 @@
     display: inline-block;
     width: 100%;
     padding: rem-calc(10px 10px 0);
-    background-color: $light-gray;
+    background-color: variables.$light-gray;
     position: relative;
 
     &.full-height {
@@ -66,23 +70,23 @@
         vertical-align: text-top;
 
         &:hover {
-          fill: $blue;
+          fill: variables.$blue;
         }
       }
     }
 
     h2 {
-      font-size: $font-large;
-      font-weight: $semibold;
-      color: $blue;
+      font-size: variables.$font-large;
+      font-weight: variables.$semibold;
+      color: variables.$blue;
       text-transform: uppercase;
       margin: 0;
     }
 
     h3 {
-      font-size: $font-regular !important;
-      font-weight: $semibold;
-      color: $black;
+      font-size: variables.$font-regular !important;
+      font-weight: variables.$semibold;
+      color: variables.$black;
       margin: 0 0 rem-calc(10px) !important;
       text-transform: uppercase;
     }
@@ -92,7 +96,7 @@
     font-size: rem-calc(14px);
     line-height: rem-calc(16px);
     font-weight: normal;
-    color: $black;
+    color: variables.$black;
     max-width: 100%;
     margin-bottom: 0;
   }
@@ -102,11 +106,11 @@
   }
 
   &__title {
-    font-family: $font-family-source;
+    font-family: variables.$font-family-source;
     font-size: rem-calc(20px);
     line-height: rem-calc(22px);
-    font-weight: $semibold;
-    color: $black;
+    font-weight: variables.$semibold;
+    color: variables.$black;
     text-transform: uppercase;
     margin: 0;
     display: block;
@@ -132,11 +136,11 @@
   }
 
   &__title-h3 {
-    font-family: $font-family-source;
+    font-family: variables.$font-family-source;
     font-size: rem-calc(20px);
     line-height: rem-calc(22px);
-    font-weight: $semibold;
-    color: $black;
+    font-weight: variables.$semibold;
+    color: variables.$black;
     margin: 0;
 
     .tooltip__component {
@@ -160,10 +164,10 @@
   }
 
   &__sub-title {
-    font-size: $font-regular;
+    font-size: variables.$font-regular;
     line-height: normal;
     font-weight: 600;
-    color: $black;
+    color: variables.$black;
     margin: 0 0 rem-calc(5px);
     display: block;
 
@@ -196,7 +200,7 @@
 
   &__white-box {
     padding: rem-calc(10px 10px 0);
-    background-color: $white;
+    background-color: variables.$white;
     margin-bottom: rem-calc(10px);
 
     &.no-margin {
@@ -229,15 +233,15 @@
     }
 
     &_wrapper {
-      font-weight: $semibold;
+      font-weight: variables.$semibold;
       font-size: rem-calc(16px);
       line-height: rem-calc(20px);
       margin-bottom: 0;
-      color: $black;
+      color: variables.$black;
 
       .form-field__warning-field,
       .form-field__success-field {
-        font-weight: $semibold;
+        font-weight: variables.$semibold;
         font-size: rem-calc(16px);
         line-height: rem-calc(20px);
         margin-bottom: 0;
@@ -272,7 +276,7 @@
   }
 
   &__page-container {
-    font-family: $font-family-source;
+    font-family: variables.$font-family-source;
     min-height: calc(100vh - 60px);
     display: block;
     width: 100%;
@@ -308,39 +312,39 @@
     }
 
     h1 {
-      font-family: $font-family-source;
+      font-family: variables.$font-family-source;
       font-size: rem-calc(22px);
       line-height: rem-calc(24px);
-      font-weight: $semibold;
-      color: $black;
+      font-weight: variables.$semibold;
+      color: variables.$black;
       margin: 0;
     }
 
     h2 {
-      font-family: $font-family-source;
+      font-family: variables.$font-family-source;
       font-size: rem-calc(20px);
       line-height: rem-calc(22px);
-      font-weight: $semibold;
-      color: $black;
+      font-weight: variables.$semibold;
+      color: variables.$black;
       text-transform: uppercase;
       margin: 0;
     }
 
     h3 {
-      font-family: $font-family-source;
+      font-family: variables.$font-family-source;
       font-size: rem-calc(20px);
       line-height: rem-calc(22px);
-      font-weight: $semibold;
-      color: $black;
+      font-weight: variables.$semibold;
+      color: variables.$black;
       margin: 0;
     }
 
     h4 {
-      font-family: $font-family-source;
+      font-family: variables.$font-family-source;
       font-size: rem-calc(16px);
       line-height: rem-calc(18px);
-      font-weight: $semibold;
-      color: $black;
+      font-weight: variables.$semibold;
+      color: variables.$black;
       text-transform: uppercase;
       margin: 0;
     }
@@ -350,7 +354,7 @@
       font-size: rem-calc(14px);
       line-height: rem-calc(16px);
       font-weight: normal;
-      color: $blue;
+      color: variables.$blue;
       margin-bottom: rem-calc(10px);
       vertical-align: top;
 
@@ -359,11 +363,11 @@
         margin-bottom: 0 !important;
       }
 
-      @include focus();
+      @include mixins.focus();
 
       &:hover {
         text-decoration: underline;
-        color: $blue-hover;
+        color: variables.$blue-hover;
       }
     }
   }
@@ -385,9 +389,9 @@
 
 .content-container {
   position: relative;
-  font-family: $font-family-source;
+  font-family: variables.$font-family-source;
   width: 100%;
-  background-color: $white;
+  background-color: variables.$white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.07);
   padding: rem-calc(15px);
 
@@ -395,7 +399,7 @@
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
     font-weight: normal;
-    color: $dark-gray;
+    color: variables.$dark-gray;
     margin-bottom: rem-calc(2px);
     text-transform: none;
   }
@@ -411,7 +415,7 @@
   .content-item {
     border: none;
     display: block;
-    border-top: 1px dashed $blue;
+    border-top: 1px dashed variables.$blue;
     padding: rem-calc(20px) 0 0;
     margin: rem-calc(20px) 0 0;
     position: relative;
@@ -428,13 +432,13 @@
     width: 100%;
 
     .box-item {
-      border-bottom: 1px dashed $black;
+      border-bottom: 1px dashed variables.$black;
       padding: 0;
       margin-bottom: rem-calc(10px);
       position: relative;
 
       &:first-child {
-        border-top: 1px dashed $black;
+        border-top: 1px dashed variables.$black;
         padding-top: rem-calc(10px);
       }
 

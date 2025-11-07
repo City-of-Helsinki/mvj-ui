@@ -1,3 +1,7 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .control-buttons {
   display: flex;
   float: right;
@@ -10,7 +14,7 @@
     position: relative;
     line-height: rem-calc(30px);
 
-    @include focus();
+    @include mixins.focus();
 
     &:hover {
       outline: none;
@@ -20,8 +24,8 @@
       vertical-align: middle;
 
       &:hover {
-        fill: $blue;
-        stroke: $blue;
+        fill: variables.$blue;
+        stroke: variables.$blue;
       }
     }
 
@@ -30,11 +34,11 @@
       font-size: rem-calc(13px);
       line-height: 1;
       padding: rem-calc(3px);
-      color: $white;
+      color: variables.$white;
       font-weight: 600;
       text-align: center;
       border-radius: 50%;
-      background-color: $black;
+      background-color: variables.$black;
       top: rem-calc(-4px);
       right: rem-calc(-10px);
       min-width: rem-calc(19px);
@@ -49,7 +53,7 @@
 }
 
 .control-button-bar {
-  background-color: $light-gray;
+  background-color: variables.$light-gray;
   width: 100%;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
 
@@ -60,7 +64,7 @@
     position: relative;
     width: 100%;
     margin: 0 auto;
-    max-width: $content-max-width;
+    max-width: variables.$content-max-width;
     padding: rem-calc(10px 20px);
   }
 
@@ -81,11 +85,11 @@
     align-self: center;
 
     h1 {
-      font-family: $font-family-source;
+      font-family: variables.$font-family-source;
       font-size: rem-calc(22px);
-      font-weight: $semibold;
+      font-weight: variables.$semibold;
       line-height: rem-calc(24px);
-      color: $black;
+      color: variables.$black;
       margin: 0;
     }
   }

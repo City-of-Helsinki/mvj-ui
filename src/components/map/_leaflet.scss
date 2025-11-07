@@ -1,3 +1,6 @@
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 /* required styles */
 
 .leaflet-pane,
@@ -150,7 +153,7 @@
   clear: both;
 
   a {
-    color: $black;
+    color: variables.$black;
   }
 }
 .leaflet-right .leaflet-control {
@@ -177,7 +180,7 @@
 .leaflet-fade-anim .leaflet-popup {
   opacity: 0;
 
-  @include transition(0.2s, opacity, linear);
+  @include mixins.transition(0.2s, opacity, linear);
 }
 .leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
   opacity: 1;
@@ -495,7 +498,7 @@
 
   a {
     font-size: 13px;
-    color: $blue;
+    color: variables.$blue;
     margin: 0;
     vertical-align: text-top;
   }
@@ -666,7 +669,7 @@
   border-right-color: #fff;
 }
 .leaflet-draw-actions a {
-  background-color: $dark-gray;
+  background-color: variables.$dark-gray;
   color: white;
 }
 
@@ -891,7 +894,7 @@
   border-radius: 4px;
 
   &.active {
-    border: 2px solid $blue;
+    border: 2px solid variables.$blue;
   }
 }
 

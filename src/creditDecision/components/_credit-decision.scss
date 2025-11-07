@@ -1,6 +1,8 @@
+@use "../../styles/variables";
+
 .history-table {
   margin-bottom: 0;
-  font-size: $font-small;
+  font-size: variables.$font-small;
 
   thead,
   tbody,
@@ -9,13 +11,13 @@
   }
 
   thead {
-    color: $dark-gray;
+    color: variables.$dark-gray;
   }
 
   thead,
   tr {
     background: transparent !important;
-    border-bottom: 1px solid $medium-gray !important;
+    border-bottom: 1px solid variables.$medium-gray !important;
   }
 }
 
@@ -65,12 +67,12 @@
 }
 
 .credit-decision-success-icon #Artboard {
-  fill: $dark-green;
+  fill: variables.$dark-green;
 }
 
 .credit-decision-cancel-icon {
-  fill: $red;
-  stroke: $red;
+  fill: variables.$red;
+  stroke: variables.$red;
 }
 
 .credit-decision-consideration-icon {

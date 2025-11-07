@@ -1,3 +1,7 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .pagination {
   display: flex;
   padding: 0 1px;
@@ -15,13 +19,13 @@
       height: rem-calc(35px);
       min-width: rem-calc(35px);
       text-align: center;
-      color: $black;
+      color: variables.$black;
       text-decoration: none !important;
-      background-color: $white;
-      border: 1px solid $medium-gray;
+      background-color: variables.$white;
+      border: 1px solid variables.$medium-gray;
       border-right: none;
 
-      @include focus();
+      @include mixins.focus();
 
       &:focus {
         outline-offset: -2px !important;
@@ -29,7 +33,7 @@
 
       &:hover {
         outline: none !important;
-        color: $black;
+        color: variables.$black;
       }
     }
 
@@ -38,7 +42,7 @@
       cursor: unset;
 
       a {
-        background-color: $light-gray;
+        background-color: variables.$light-gray;
         pointer-events: none;
         cursor: auto;
       }
@@ -47,16 +51,16 @@
     &.active {
       a {
         z-index: 1;
-        color: $black;
+        color: variables.$black;
         pointer-events: none;
-        background-color: $blue;
-        color: $white;
+        background-color: variables.$blue;
+        color: variables.$white;
       }
     }
 
     &:last-child {
       a {
-        border-right: 1px solid $medium-gray;
+        border-right: 1px solid variables.$medium-gray;
       }
     }
   }
@@ -92,7 +96,7 @@
     svg {
       height: 14px;
       width: 14px;
-      @include transform(rotateY(180deg));
+      @include mixins.transform(rotateY(180deg));
     }
   }
 }
@@ -129,22 +133,22 @@
       margin: 0;
 
       thead {
-        border-bottom: 1px solid $medium-gray;
+        border-bottom: 1px solid variables.$medium-gray;
       }
 
       thead td,
       thead th {
-        background-color: $white;
+        background-color: variables.$white;
         font-size: rem-calc(13px);
-        font-weight: $semibold;
+        font-weight: variables.$semibold;
         white-space: nowrap;
         text-align: left;
-        color: $black;
+        color: variables.$black;
         padding: 0;
         border: none;
 
         .sortable-table-sort-icon {
-          fill: $black;
+          fill: variables.$black;
           margin-left: 5px;
           height: 14px;
           width: 14px;
@@ -156,7 +160,7 @@
           display: flex;
           align-items: center;
 
-          @include focus();
+          @include mixins.focus();
 
           &:focus {
             outline-offset: -2px;
@@ -171,12 +175,12 @@
         }
         td,
         th {
-          background-color: $white;
-          border-bottom: 1px solid $light-gray;
+          background-color: variables.$white;
+          border-bottom: 1px solid variables.$light-gray;
           padding: rem-calc(5px 8px);
           font-size: rem-calc(14px);
           text-align: left;
-          color: $black;
+          color: variables.$black;
           vertical-align: top;
 
           &.collapse-arrow-column {
@@ -202,22 +206,22 @@
 
             &:hover {
               .sortable-table-row-collapse-icon {
-                fill: $blue;
-                stroke: $blue;
+                fill: variables.$blue;
+                stroke: variables.$blue;
               }
             }
           }
         }
 
         th {
-          font-weight: $semibold;
+          font-weight: variables.$semibold;
         }
 
         &.collapsed {
           td {
             a.sortable-table-row-collapse-link {
               .sortable-table-row-collapse-icon {
-                @include transform(rotate(90deg));
+                @include mixins.transform(rotate(90deg));
               }
             }
           }
@@ -225,7 +229,7 @@
 
         &.no-data-row {
           td {
-            background-color: $lightest-gray;
+            background-color: variables.$lightest-gray;
             text-align: center;
           }
         }
@@ -242,7 +246,7 @@
         tbody tr {
           &.group-row {
             td {
-              border-top: 2px solid $medium-gray;
+              border-top: 2px solid variables.$medium-gray;
             }
             &:first-child {
               td {
@@ -253,7 +257,7 @@
 
           &.group-item-row {
             td {
-              background-color: $light-gray;
+              background-color: variables.$light-gray;
             }
           }
         }
@@ -262,7 +266,7 @@
       &.clickable-row {
         tbody {
           tr:not(.no-data-row) {
-            @include focus();
+            @include mixins.focus();
 
             &:focus {
               outline-offset: -2px;
@@ -273,7 +277,7 @@
 
               > td {
                 cursor: pointer;
-                background-color: $light-blue;
+                background-color: variables.$light-blue;
 
                 &.disabled {
                   cursor: default;
@@ -282,7 +286,7 @@
             }
 
             &.selected > td {
-              background-color: $light-blue !important;
+              background-color: variables.$light-blue !important;
             }
           }
         }
@@ -291,12 +295,12 @@
       &.list-table {
         thead td,
         thead th {
-          background-color: $blue;
+          background-color: variables.$blue;
           font-size: rem-calc(14px);
-          color: $white;
+          color: variables.$white;
 
           .sortable-table-sort-icon {
-            fill: $white;
+            fill: variables.$white;
           }
         }
       }
@@ -308,7 +312,7 @@
 
     &.fixed-table-container {
       position: relative;
-      border: 1px solid $blue;
+      border: 1px solid variables.$blue;
       margin-bottom: rem-calc(10px);
 
       .scroll-head-wrapper {
@@ -329,7 +333,7 @@
         thead th {
           font-size: rem-calc(13px);
 
-          @include focus();
+          @include mixins.focus();
 
           &:focus {
             outline-offset: -2px;
@@ -340,7 +344,7 @@
       .scroll-body-wrapper {
         max-height: rem-calc(170px);
         overflow: auto;
-        background-color: $white;
+        background-color: variables.$white;
       }
 
       .scroll-body-table {
@@ -377,7 +381,7 @@
     &_header {
       display: table-row;
 
-      @include focus();
+      @include mixins.focus();
 
       &:focus {
         outline-style: dotted;
@@ -495,13 +499,13 @@
       width: 100%;
       margin-bottom: 0;
       z-index: 1;
-      background-color: $white;
+      background-color: variables.$white;
 
-      @include transition(0.5s, max-width, ease-in-out);
+      @include mixins.transition(0.5s, max-width, ease-in-out);
     }
 
     &_panel-wrapper {
-      background-color: $white;
+      background-color: variables.$white;
       margin-bottom: rem-calc(10px);
       position: absolute;
       width: 607.5px;
@@ -512,13 +516,13 @@
       z-index: 2;
       border: none;
       overflow: visible;
-      border-left: rem-calc(10px) solid $blue;
+      border-left: rem-calc(10px) solid variables.$blue;
 
-      @include transition(0.5s, right, ease-in-out);
+      @include mixins.transition(0.5s, right, ease-in-out);
 
       &--is-open {
         right: 0;
-        @include transition(0.5s, right, ease-in-out);
+        @include mixins.transition(0.5s, right, ease-in-out);
       }
     }
   }
@@ -533,18 +537,18 @@
 
   &__table-panel-container {
     padding: rem-calc(15px);
-    background-color: $white;
+    background-color: variables.$white;
     height: 100%;
 
     &_header {
       position: relative;
 
       h3 {
-        font-family: $font-family-source;
-        font-size: $font-large;
-        font-weight: $semibold;
+        font-family: variables.$font-family-source;
+        font-size: variables.$font-large;
+        font-weight: variables.$semibold;
         margin: 0 0 rem-calc(20px) !important;
-        color: $black;
+        color: variables.$black;
       }
     }
 

@@ -1,3 +1,7 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../styles/variables";
+@use "../styles/mixins";
+
 .app {
   margin-top: rem-calc(60px);
   width: 100%;
@@ -38,32 +42,32 @@
     position: relative;
     width: 100%;
     margin: 0 auto;
-    max-width: $content-max-width;
+    max-width: variables.$content-max-width;
   }
 
   input:-ms-input-placeholder {
-    color: $medium-dark-gray;
+    color: variables.$medium-dark-gray;
     opacity: 1;
   }
 
   input::placeholder {
-    color: $medium-dark-gray;
+    color: variables.$medium-dark-gray;
     opacity: 1;
   }
 
   textarea:-ms-input-placeholder {
-    color: $medium-dark-gray;
+    color: variables.$medium-dark-gray;
     opacity: 1;
   }
 
   textarea::placeholder {
-    color: $medium-dark-gray;
+    color: variables.$medium-dark-gray;
     opacity: 1;
   }
 
   a,
   button {
-    @include focus();
+    @include mixins.focus();
 
     &:hover {
       outline: none;
@@ -73,7 +77,7 @@
   input[type="text"],
   select,
   textarea {
-    @include focusInput();
+    @include mixins.focusInput();
 
     &:hover {
       outline: none;
@@ -108,32 +112,32 @@
     position: relative;
     width: 100%;
     margin: 0 auto;
-    max-width: $content-max-width;
+    max-width: variables.$content-max-width;
   }
 
   input:-ms-input-placeholder {
-    color: $medium-dark-gray;
+    color: variables.$medium-dark-gray;
     opacity: 1;
   }
 
   input::placeholder {
-    color: $medium-dark-gray;
+    color: variables.$medium-dark-gray;
     opacity: 1;
   }
 
   textarea:-ms-input-placeholder {
-    color: $medium-dark-gray;
+    color: variables.$medium-dark-gray;
     opacity: 1;
   }
 
   textarea::placeholder {
-    color: $medium-dark-gray;
+    color: variables.$medium-dark-gray;
     opacity: 1;
   }
 
   a,
   button {
-    @include focus();
+    @include mixins.focus();
 
     &:hover {
       outline: none;
@@ -143,7 +147,7 @@
   input[type="text"],
   select,
   textarea {
-    @include focusInput();
+    @include mixins.focusInput();
 
     &:hover {
       outline: none;

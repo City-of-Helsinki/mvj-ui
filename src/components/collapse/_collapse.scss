@@ -1,7 +1,11 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .collapse {
   align-items: baseline;
   padding: 0;
-  background-color: $light-gray;
+  background-color: variables.$light-gray;
   margin-bottom: rem-calc(15px);
   display: block;
 
@@ -18,10 +22,10 @@
         position: absolute;
         left: 0;
         top: 50%;
-        @include transform(translateY(-50%));
+        @include mixins.transform(translateY(-50%));
       }
 
-      @include focus();
+      @include mixins.focus();
     }
 
     .header-info-wrapper {
@@ -47,7 +51,7 @@
       right: 0;
       align-items: center;
       top: 50%;
-      @include transform(translate(0, -50%));
+      @include mixins.transform(translate(0, -50%));
       display: flex;
 
       .form__archive-button {
@@ -81,7 +85,7 @@
       margin: 0;
 
       span {
-        color: $dark-gray;
+        color: variables.$dark-gray;
         display: inline-block;
         padding-right: rem-calc(7.5px);
       }
@@ -92,11 +96,11 @@
       white-space: normal;
       overflow: hidden;
       text-overflow: ellipsis;
-      font-family: $font-family-source;
+      font-family: variables.$font-family-source;
       font-size: rem-calc(20px);
       line-height: rem-calc(20px);
-      font-weight: $semibold;
-      color: $black;
+      font-weight: variables.$semibold;
+      color: variables.$black;
       margin: 0;
 
       .tooltip__component {
@@ -124,8 +128,8 @@
       line-height: rem-calc(20px);
       display: flex;
       align-items: center;
-      color: $dark-gray;
-      font-size: $font-small;
+      color: variables.$dark-gray;
+      font-size: variables.$font-small;
 
       i {
         height: rem-calc(20px);
@@ -140,7 +144,7 @@
       }
 
       &--neutral {
-        color: $dark-gray;
+        color: variables.$dark-gray;
 
         i {
           background-image: url(/assets/icons/icon_minus.svg);
@@ -148,7 +152,7 @@
       }
 
       &--alert {
-        color: $red;
+        color: variables.$red;
 
         i {
           background-image: url(/assets/icons/icon-alert.svg);
@@ -156,7 +160,7 @@
       }
 
       &--success {
-        color: $blue;
+        color: variables.$blue;
 
         i {
           background-image: url(/assets/icons/icon_checked.svg);
@@ -164,7 +168,7 @@
       }
 
       &--enquiry-sent {
-        color: $yellow-enquiry-sent;
+        color: variables.$yellow-enquiry-sent;
 
         i {
           background-image: url(/assets/icons/icon_question.svg);
@@ -195,7 +199,7 @@
   &.open {
     > .collapse__header {
       .arrow-icon {
-        @include transform(translateY(-50%) rotate(90deg));
+        @include mixins.transform(translateY(-50%) rotate(90deg));
       }
     }
 
@@ -207,30 +211,30 @@
   }
 
   &.is-archived {
-    background-color: $light-gray-secondary;
+    background-color: variables.$light-gray-secondary;
   }
 
   &.is-collapsing,
   &.is-expanding {
     > .collapse__content {
-      @include transition(0.4s, max-height, ease);
+      @include mixins.transition(0.4s, max-height, ease);
       overflow: hidden;
       display: inherit;
     }
 
     > .collapse__header {
       .arrow-icon {
-        @include transition(0.4s, transform, ease-in-out);
+        @include mixins.transition(0.4s, transform, ease-in-out);
       }
     }
   }
 
   &.greenCollapse {
-    background-color: $light-gray !important;
+    background-color: variables.$light-gray !important;
   }
 
   &.collapse__secondary {
-    background-color: $white;
+    background-color: variables.$white;
     margin: rem-calc(5px) 0 rem-calc(15px);
     padding: 0;
 
@@ -245,7 +249,7 @@
       }
 
       .arrow-icon {
-        @include transform(translateY(-50%) rotate(0));
+        @include mixins.transform(translateY(-50%) rotate(0));
       }
     }
 
@@ -264,13 +268,13 @@
 
       > .collapse__header {
         .arrow-icon {
-          @include transform(translateY(-50%) rotate(90deg));
+          @include mixins.transform(translateY(-50%) rotate(90deg));
         }
       }
     }
 
     &.is-archived {
-      background-color: $lightest-gray;
+      background-color: variables.$lightest-gray;
     }
 
     &.is-collapsing,
@@ -283,7 +287,7 @@
     .collapse__third {
       > .collapse__header {
         .arrow-icon {
-          @include transform(translateY(-50%) rotate(0) !important);
+          @include mixins.transform(translateY(-50%) rotate(0) !important);
         }
       }
 
@@ -294,7 +298,9 @@
       &.open {
         > .collapse__header {
           .arrow-icon {
-            @include transform(translateY(-50%) rotate(90deg) !important);
+            @include mixins.transform(
+              translateY(-50%) rotate(90deg) !important
+            );
           }
         }
       }
@@ -315,7 +321,7 @@
 }
 
 .alert {
-  color: $red;
+  color: variables.$red;
   i {
     height: rem-calc(20px);
     width: rem-calc(20px);

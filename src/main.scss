@@ -1,94 +1,95 @@
-@import "./styles/fonts";
-@import "./styles/variables";
-@import "foundation-sites/scss/foundation";
-@include foundation-everything(true);
-@include foundation-flex-grid;
+@use "./styles/fonts";
+@use "./styles/variables";
+@use "./foundation-setup" as *;
 
-@import "node_modules/react-leaflet-fullscreen/dist/styles";
-@import "styles/mixins";
+@use "node_modules/react-leaflet-fullscreen/dist/styles" as *;
+@use "styles/mixins";
 
 // Vendor
-@import "node_modules/react-redux-toastr/src/styles/index";
-@import "node_modules/react-datepicker/dist/react-datepicker";
-@import "node_modules/leaflet-draw/dist/leaflet.draw";
-@import "node_modules/react-dual-listbox/src/scss/react-dual-listbox.scss";
-@import "node_modules/font-awesome/css/font-awesome";
+@use "node_modules/react-redux-toastr/src/styles/index";
+@use "node_modules/react-datepicker/dist/react-datepicker";
+@use "node_modules/leaflet-draw/dist/leaflet.draw" as *;
+@use "node_modules/react-dual-listbox/src/scss/react-dual-listbox.scss";
+@use "node_modules/font-awesome/css/font-awesome";
 
 // Components
-@import "components/authorization/authorization";
-@import "components/address-search/address-search-input";
-@import "components/button/button";
-@import "components/button/close-button";
-@import "components/button/icon-radio-buttons";
-@import "components/collapse/collapse";
-@import "components/content/content";
-@import "components/controlButtons/control-buttons";
-@import "components/file/file";
-@import "components/form/form";
-@import "components/icons/icons";
-@import "components/inputs/inputs";
-@import "components/inputs/dual-list-box-input";
-@import "components/inputs/search-input";
-@import "components/inputs/select-input";
-@import "components/inputs/text-area-input";
-@import "components/inputs/text-input";
-@import "components/invoice-simulator/invoice-simulator";
-@import "components/links/links";
-@import "components/loader/loader";
-@import "components/map/leaflet";
-@import "components/map/map";
-@import "components/modal/modal";
-@import "components/modal/confirmation-modal";
-@import "components/multi-select/multi-select";
-@import "components/rent-calculator/rent-calculator";
-@import "components/search/search";
-@import "components/showMore/show-more";
-@import "components/sideMenu/side-menu";
-@import "components/table/table";
-@import "components/tabs/tabs";
-@import "components/tooltip/tooltip";
-@import "components/toastr/toastr";
-@import "components/topNavigation/top-navigation";
+@use "components/authorization/authorization";
+@use "components/address-search/address-search-input";
+@use "components/button/button";
+@use "components/button/close-button";
+@use "components/button/icon-radio-buttons";
+@use "components/collapse/collapse";
+@use "components/content/content";
+@use "components/controlButtons/control-buttons";
+@use "components/file/file";
+@use "components/form/form";
+@use "components/icons/icons";
+@use "components/inputs/inputs";
+@use "components/inputs/dual-list-box-input";
+@use "components/inputs/search-input";
+@use "components/inputs/select-input";
+@use "components/inputs/text-area-input";
+@use "components/inputs/text-input";
+@use "components/invoice-simulator/invoice-simulator";
+@use "components/links/links";
+@use "components/loader/loader";
+@use "components/map/leaflet";
+@use "components/map/map";
+@use "components/modal/modal";
+@use "components/modal/confirmation-modal";
+@use "components/multi-select/multi-select";
+@use "components/rent-calculator/rent-calculator";
+@use "components/search/search" as *;
+@use "components/showMore/show-more";
+@use "components/sideMenu/side-menu";
+@use "components/table/table";
+@use "components/tabs/tabs";
+@use "components/tooltip/tooltip";
+@use "components/toastr/toastr";
+@use "components/topNavigation/top-navigation";
 
 // App
-@import "api/api";
-@import "app/app";
-@import "areaNote/components/area-note-map";
-@import "auth/components/login-page";
-@import "contacts/components/search/search";
-@import "creditDecision/components/credit-decision";
-@import "errorPage/error-page";
-@import "leases/components/createLease/create-lease";
-@import "leases/components/leaseSections/comments/comment-panel";
-@import "leases/components/leaseSections/constructability/constructability";
-@import "leases/components/leaseSections/invoice/invoice";
-@import "leases/components/leaseSections/invoice/invoice-panel";
-@import "leases/components/leaseSections/leaseInfo/lease-info";
-@import "leases/components/leaseSections/rent/rent";
-@import "leases/components/leaseSections/summary/summary";
-@import "leases/components/leaseSections/tenant/tenant-edit";
-@import "rentbasis/components/rent-basis-page";
-@import "plotSearch/components/plotSearchSections/application/application";
-@import "plotSearch/components/plotSearchSections/basicInfo/basic-info";
-@import "plotSearch/components/reservationIdentifiers/reservation-identifiers-modal";
-@import "plotSearch/components/directReservationLinkModal/direct-reservation-link-modal";
-@import "plotApplications/components/plotApplication";
-@import "plotApplications/components/plotApplicationEdit";
-@import "plotApplications/components/infoCheck/plotApplicationInfoCheckCollapse";
-@import "plotApplications/components/exportModal/PlotSearchExportModal";
-@import "areaSearch/components/area-search-applicant-info-check";
-@import "areaSearch/components/area-search-application";
-@import "areaSearch/components/area-search-application-answers-section";
-@import "areaSearch/components/area-search-application-create";
-@import "areaSearch/components/area-search-application-list-page";
-@import "areaSearch/components/area-search-export-modal";
-@import "areaSearch/components/area-search-status-note-history";
-@import "areaSearch/components/edit-area-search-preparer-modal";
-@import "areaSearch/components/map/area-search-map";
-@import "areaSearch/components/map/single-area-search-map";
-@import "application/components/applicant-info-check";
+@use "api/api";
+@use "app/app";
+@use "areaNote/components/area-note-map";
+@use "auth/components/login-page";
+@use "contacts/components/search/search";
+@use "creditDecision/components/credit-decision";
+@use "errorPage/error-page";
+@use "leases/components/createLease/create-lease";
+@use "leases/components/leaseSections/comments/comment-panel";
+@use "leases/components/leaseSections/constructability/constructability";
+@use "leases/components/leaseSections/invoice/invoice";
+@use "leases/components/leaseSections/invoice/invoice-panel";
+@use "leases/components/leaseSections/leaseInfo/lease-info";
+@use "leases/components/leaseSections/rent/rent";
+@use "leases/components/leaseSections/summary/summary";
+@use "leases/components/leaseSections/tenant/tenant-edit";
+@use "rentbasis/components/rent-basis-page";
+@use "plotSearch/components/plotSearchSections/application/application";
+@use "plotSearch/components/plotSearchSections/basicInfo/basic-info";
+@use "plotSearch/components/reservationIdentifiers/reservation-identifiers-modal";
+@use "plotSearch/components/directReservationLinkModal/direct-reservation-link-modal";
+@use "plotApplications/components/plotApplication";
+@use "plotApplications/components/plotApplicationEdit";
+@use "plotApplications/components/infoCheck/plotApplicationInfoCheckCollapse";
+@use "plotApplications/components/exportModal/PlotSearchExportModal";
+@use "areaSearch/components/area-search-applicant-info-check";
+@use "areaSearch/components/area-search-application";
+@use "areaSearch/components/area-search-application-answers-section";
+@use "areaSearch/components/area-search-application-create";
+@use "areaSearch/components/area-search-application-list-page";
+@use "areaSearch/components/area-search-export-modal";
+@use "areaSearch/components/area-search-status-note-history";
+@use "areaSearch/components/edit-area-search-preparer-modal";
+@use "areaSearch/components/map/area-search-map";
+@use "areaSearch/components/map/single-area-search-map";
+@use "application/components/applicant-info-check";
 
-@import "foundation/styles";
+@use "foundation/styles" as *;
+
+// @include foundation-everything(true);
+// @include foundation-flex-grid;
 
 html {
   -webkit-font-smoothing: antialiased;
@@ -99,7 +100,7 @@ html {
 body {
   overflow-y: auto;
   height: calc(100% - 60px);
-  background-color: $body-background;
+  background-color: variables.$body-background;
 }
 
 abbr {
@@ -115,9 +116,9 @@ abbr[title] {
 #root {
   display: block;
   height: 100%;
-  font-family: $font-family-source;
-  background-color: $body-background;
-  color: $black;
+  font-family: variables.$font-family-source;
+  background-color: variables.$body-background;
+  color: variables.$black;
 }
 
 // Safari-specific fix for hiding contact information autofill buttons

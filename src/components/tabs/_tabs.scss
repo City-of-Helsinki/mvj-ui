@@ -1,12 +1,16 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .tabs {
-  background-color: $light-gray;
+  background-color: variables.$light-gray;
   width: 100%;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
 
   &__wrapper {
     width: 100%;
     margin: 0 auto;
-    max-width: $content-max-width;
+    max-width: variables.$content-max-width;
     padding: rem-calc(0 20px);
   }
 
@@ -15,16 +19,16 @@
 
     > li {
       float: none;
-      color: $black;
-      background: $light-gray;
+      color: variables.$black;
+      background: variables.$light-gray;
       display: inline-block;
       vertical-align: top;
       height: rem-calc(40px);
 
       > a {
-        @include transition(none);
+        @include mixins.transition(none);
 
-        color: $black !important;
+        color: variables.$black !important;
         text-decoration: none !important;
         font-size: rem-calc(14px);
         font-weight: 600;
@@ -33,29 +37,29 @@
         height: 40px;
         align-items: center;
         position: relative;
-        border: 2px solid $light-gray;
+        border: 2px solid variables.$light-gray;
 
         &:focus {
-          border-color: $blue !important;
+          border-color: variables.$blue !important;
           outline: none;
           border-style: dotted;
         }
 
         &:hover {
-          background-color: $light-gray-secondary;
-          border-color: $light-gray-secondary !important;
+          background-color: variables.$light-gray-secondary;
+          border-color: variables.$light-gray-secondary !important;
         }
       }
     }
     > li.is-active {
-      background: $white !important;
+      background: variables.$white !important;
 
       > a {
-        border-color: $white;
+        border-color: variables.$white;
 
         &:hover {
-          background: $white;
-          border-color: $white !important;
+          background: variables.$white;
+          border-color: variables.$white !important;
         }
       }
     }

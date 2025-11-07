@@ -1,8 +1,10 @@
+@use "../../styles/variables";
+
 .authorization {
   &__error {
     p {
       margin: 0;
-      color: $red;
+      color: variables.$red;
     }
   }
 }

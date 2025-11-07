@@ -1,3 +1,7 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .icon-radio-buttons {
   display: inline-block;
 
@@ -18,7 +22,7 @@
     background: none;
     cursor: pointer;
 
-    @include focus();
+    @include mixins.focus();
 
     &:hover {
       outline: none;
@@ -39,11 +43,11 @@
   }
 
   .option-label {
-    color: $blue;
+    color: variables.$blue;
     text-transform: uppercase;
     background-color: transparent;
     cursor: pointer;
-    font-weight: $semibold;
+    font-weight: variables.$semibold;
     display: inline-block;
     text-align: center;
     border-radius: 0;
@@ -51,16 +55,16 @@
   }
 
   .icons {
-    fill: $blue !important;
+    fill: variables.$blue !important;
   }
 
   .radio:checked + .option-label {
-    color: $black;
+    color: variables.$black;
     background: transparent;
     border: none;
   }
 
   .radio:checked ~ .icons {
-    fill: $black !important;
+    fill: variables.$black !important;
   }
 }

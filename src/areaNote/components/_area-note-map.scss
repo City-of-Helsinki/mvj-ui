@@ -1,3 +1,7 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .area-note-map {
   &__save-condition-panel {
     position: absolute;
@@ -11,10 +15,10 @@
     box-shadow: -2px 0 5px 0 rgba(0, 0, 0, 0.07);
     padding: rem-calc(15px);
 
-    @include transition(0.3s, all, ease-in-out);
+    @include mixins.transition(0.3s, all, ease-in-out);
 
     h2 {
-      color: $white;
+      color: variables.$white;
       margin-bottom: rem-calc(15px);
     }
 
@@ -50,10 +54,10 @@
     bottom: 0;
     left: 0;
     right: 0;
-    color: $white;
+    color: variables.$white;
     font-size: rem-calc(20px);
     z-index: 500;
-    font-family: $font-family-source;
+    font-family: variables.$font-family-source;
     text-align: center;
     padding: rem-calc(20px);
     background-color: rgba(0, 0, 0, 0.35);

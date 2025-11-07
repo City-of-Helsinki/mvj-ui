@@ -1,5 +1,9 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../../../styles/variables";
+@use "../../../../styles/mixins";
+
 .invoice-panel {
-  background-color: $white;
+  background-color: variables.$white;
   position: absolute;
   width: 607.5px;
   max-width: 100%;
@@ -9,18 +13,18 @@
   z-index: 2;
   border: none;
   overflow: visible;
-  border-left: rem-calc(15px) solid $green;
+  border-left: rem-calc(15px) solid variables.$green;
 
-  @include transition(0.5s, right, ease-in-out);
+  @include mixins.transition(0.5s, right, ease-in-out);
 
   &.is-open {
     right: 0;
-    @include transition(0.5s, right, ease-in-out);
+    @include mixins.transition(0.5s, right, ease-in-out);
   }
 
   &__container {
     padding: rem-calc(15px);
-    background-color: $white;
+    background-color: variables.$white;
     height: 100%;
   }
 
@@ -28,11 +32,11 @@
     position: relative;
 
     h1 {
-      font-family: $font-family-source;
-      font-size: $font-large;
-      font-weight: $semibold;
+      font-family: variables.$font-family-source;
+      font-size: variables.$font-large;
+      font-weight: variables.$semibold;
       margin: 0 0 rem-calc(20px) !important;
-      color: $black;
+      color: variables.$black;
     }
   }
 
@@ -46,7 +50,7 @@
   }
 
   &__error-text {
-    color: $red;
+    color: variables.$red;
   }
 
   &__footer {

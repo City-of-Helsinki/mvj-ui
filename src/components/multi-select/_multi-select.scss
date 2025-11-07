@@ -1,6 +1,10 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .multi-select {
   &__none-selected {
-    color: $medium-dark-gray;
+    color: variables.$medium-dark-gray;
   }
 
   &__panel {
@@ -14,7 +18,7 @@
 
     &-content {
       border-radius: 0;
-      background-color: $white;
+      background-color: variables.$white;
       box-sizing: border-box;
       margin-top: -1px;
       max-height: 300px;
@@ -23,8 +27,8 @@
       min-width: 100%;
       z-index: 1;
       overflow-y: auto;
-      box-shadow: 0 1px 0 1px $blue;
-      border: 1px solid $blue;
+      box-shadow: 0 1px 0 1px variables.$blue;
+      border: 1px solid variables.$blue;
       border-bottom: none;
       border-radius: 0;
       width: auto;
@@ -33,10 +37,10 @@
 
     &-heading {
       box-sizing: border-box;
-      background-color: $white;
+      background-color: variables.$white;
       border-radius: 0;
-      border: 1px solid $medium-gray;
-      color: $black;
+      border: 1px solid variables.$medium-gray;
+      color: variables.$black;
       cursor: default;
       display: table;
       border-spacing: 0;
@@ -50,12 +54,12 @@
 
       &.is-expanded {
         outline: none;
-        border: 1px solid $blue;
-        box-shadow: 0 0 0 1px $blue;
+        border: 1px solid variables.$blue;
+        box-shadow: 0 0 0 1px variables.$blue;
       }
 
       &.is-focused {
-        outline: 2px dotted $blue;
+        outline: 2px dotted variables.$blue;
         outline-offset: 0px;
       }
 
@@ -65,7 +69,7 @@
         left: 0;
         right: 0;
         top: 0;
-        color: $black;
+        color: variables.$black;
         line-height: rem-calc(18px);
         padding: rem-calc(0 20px 0 5px);
         position: absolute;
@@ -92,8 +96,8 @@
         height: 14px;
         box-sizing: border-box;
         border-radius: 50%;
-        border: 2px solid $medium-dark-gray;
-        border-right-color: $black;
+        border: 2px solid variables.$medium-dark-gray;
+        border-right-color: variables.$black;
         display: inline-block;
         position: relative;
         vertical-align: middle;
@@ -145,14 +149,14 @@
 
   &__select-item {
     box-sizing: border-box;
-    background-color: $white;
-    color: $black;
+    background-color: variables.$white;
+    color: variables.$black;
     cursor: pointer;
     display: block;
     padding: rem-calc(3px 5px);
 
     &.is-focused {
-      background-color: $light-blue;
+      background-color: variables.$light-blue;
       outline: 0;
     }
 
@@ -181,18 +185,18 @@
 
 @-webkit-keyframes loaderSpinner {
   0% {
-    @include rotate(0deg);
+    @include mixins.rotate(0deg);
   }
   100% {
-    @include rotate(360deg);
+    @include mixins.rotate(360deg);
   }
 }
 
 @keyframes loaderSpinner {
   0% {
-    @include rotate(0deg);
+    @include mixins.rotate(0deg);
   }
   100% {
-    @include rotate(360deg);
+    @include mixins.rotate(360deg);
   }
 }

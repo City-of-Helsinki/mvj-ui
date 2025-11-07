@@ -1,4 +1,7 @@
 @use "sass:color";
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
 
 .loader {
   font-size: 10px;
@@ -8,12 +11,12 @@
   left: 50%;
   margin: -20px 0 0 -20px;
   text-indent: -9999em;
-  border-top: 5px solid color.adjust($blue, $lightness: 50%);
-  border-right: 5px solid color.adjust($blue, $lightness: 50%);
-  border-bottom: 5px solid color.adjust($blue, $lightness: 50%);
-  border-left: 5px solid $blue;
+  border-top: 5px solid color.adjust(variables.$blue, $lightness: 50%);
+  border-right: 5px solid color.adjust(variables.$blue, $lightness: 50%);
+  border-bottom: 5px solid color.adjust(variables.$blue, $lightness: 50%);
+  border-left: 5px solid variables.$blue;
 
-  @include transform(translateZ(0));
+  @include mixins.transform(translateZ(0));
   animation: loaderSpinner 0.7s infinite linear;
   -webkit-animation: loaderSpinner 0.7s infinite linear;
 
@@ -29,8 +32,8 @@
     height: 14px;
     box-sizing: border-box;
     border-radius: 50%;
-    border: 2px solid $medium-dark-gray;
-    border-right-color: $black;
+    border: 2px solid variables.$medium-dark-gray;
+    border-right-color: variables.$black;
     display: inline-block;
     position: relative;
     vertical-align: middle;
@@ -121,18 +124,18 @@
 
 @-webkit-keyframes loaderSpinner {
   0% {
-    @include rotate(0deg);
+    @include mixins.rotate(0deg);
   }
   100% {
-    @include rotate(360deg);
+    @include mixins.rotate(360deg);
   }
 }
 
 @keyframes loaderSpinner {
   0% {
-    @include rotate(0deg);
+    @include mixins.rotate(0deg);
   }
   100% {
-    @include rotate(360deg);
+    @include mixins.rotate(360deg);
   }
 }

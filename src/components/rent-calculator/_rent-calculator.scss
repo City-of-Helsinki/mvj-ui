@@ -1,3 +1,6 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
 .rent-calculator {
   &__button-wrapper {
     padding-top: rem-calc(5px);
@@ -16,9 +19,9 @@
     display: block;
     font-size: rem-calc(16px);
     line-height: rem-calc(18px);
-    font-weight: $semibold;
+    font-weight: variables.$semibold;
     text-transform: uppercase;
-    color: $black;
+    color: variables.$black;
     margin-bottom: rem-calc(5px);
   }
 
@@ -27,7 +30,7 @@
     width: 100%;
     text-align: top;
     padding: rem-calc(10px 10px 0);
-    background-color: $light-green;
+    background-color: variables.$light-green;
     margin-top: rem-calc(5px);
     margin-bottom: rem-calc(10px);
   }
@@ -40,9 +43,9 @@
     display: block;
     font-size: rem-calc(16px);
     line-height: rem-calc(18px);
-    font-weight: $semibold;
+    font-weight: variables.$semibold;
     text-transform: uppercase;
-    color: $black;
+    color: variables.$black;
     margin-bottom: rem-calc(10px);
   }
 

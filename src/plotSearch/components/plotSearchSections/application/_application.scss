@@ -1,3 +1,6 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../../../styles/variables";
+
 .application {
   &__white-stripes {
     background: repeating-linear-gradient(
@@ -58,14 +61,14 @@
 }
 
 .edit-plot-application-section-form__section {
-  border-bottom: 1px solid $gray-separator;
+  border-bottom: 1px solid variables.$gray-separator;
 
   .section-field {
     padding: 0.75rem 0;
     margin-right: rem-calc(-10px);
     margin-left: rem-calc(-10px);
-    background-color: $light-gray;
-    border-bottom: 1px solid $gray-separator;
+    background-color: variables.$light-gray;
+    border-bottom: 1px solid variables.$gray-separator;
 
     > * {
       display: flex;
@@ -93,7 +96,7 @@
     padding: 0.75rem 0;
     margin-right: rem-calc(-10px);
     margin-left: rem-calc(-10px);
-    border-bottom: 1px solid $gray-separator;
+    border-bottom: 1px solid variables.$gray-separator;
 
     > * {
       .row .form-field {
@@ -107,14 +110,14 @@
     }
   }
   .section-editor {
-    background-color: $light-gray;
+    background-color: variables.$light-gray;
   }
   .section-field-editor {
-    background-color: $white;
+    background-color: variables.$white;
   }
 
   .collapse__header {
-    background-color: $light-gray;
+    background-color: variables.$light-gray;
   }
 
   .collapse.collapse__secondary
@@ -176,7 +179,7 @@
       }
 
       .form__text-title {
-        font-size: $font-small;
+        font-size: variables.$font-small;
       }
     }
 
@@ -195,7 +198,7 @@
     margin-bottom: rem-calc(8px);
 
     &__third > .collapse__header .collapse__header_title {
-      font-size: $font-regular;
+      font-size: variables.$font-regular;
     }
 
     &.collapse__third:last-of-type {
@@ -255,20 +258,20 @@
 
     .icons,
     .icons__trash #Artboard {
-      fill: $black;
+      fill: variables.$black;
     }
 
     &:hover {
       .icons,
       .icons__trash #Artboard {
-        fill: $blue;
+        fill: variables.$blue;
       }
     }
 
     &:disabled {
       .icons,
       .icons__trash #Artboard {
-        fill: $medium-gray !important;
+        fill: variables.$medium-gray !important;
       }
     }
   }

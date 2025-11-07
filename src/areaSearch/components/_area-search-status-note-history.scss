@@ -1,18 +1,21 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
 .collapse.AreaSearchStatusNoteHistory {
   > .collapse__header {
     .collapse__header_title {
-      font-size: $font-small;
-      color: $blue;
+      font-size: variables.$font-small;
+      color: variables.$blue;
     }
 
     .icons {
-      stroke: $blue;
-      fill: $blue;
+      stroke: variables.$blue;
+      fill: variables.$blue;
     }
   }
 
   .AreaSearchStatusNoteHistory__item {
-    font-size: $font-small;
+    font-size: variables.$font-small;
     padding: rem-calc(16px) 0;
 
     &:first-child {
@@ -25,7 +28,7 @@
     }
 
     + .AreaSearchStatusNoteHistory__item {
-      border-top: 1px solid $gray-separator;
+      border-top: 1px solid variables.$gray-separator;
     }
   }
 }

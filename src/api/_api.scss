@@ -1,3 +1,5 @@
+@use "../styles/variables";
+
 .api-error-modal {
   padding: 30px;
 
@@ -6,7 +8,7 @@
   }
 
   &__message {
-    background: $light-gray;
+    background: variables.$light-gray;
     margin-bottom: 20px;
     padding: 20px;
   }
