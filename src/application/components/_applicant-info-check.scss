@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .ApplicantInfoCheck {
   &,
   span,
@@ -20,7 +22,7 @@
 
   .ApplicantInfoCheckEditItem--dirty {
     .column:nth-child(2) > * {
-      background-color: darken($is-dirty-color, 5%);
+      background-color: color.adjust($is-dirty-color, $lightness: -5%);
     }
   }
 }

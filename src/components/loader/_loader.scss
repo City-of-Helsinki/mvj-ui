@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .loader {
   font-size: 10px;
   position: absolute;
@@ -6,9 +8,9 @@
   left: 50%;
   margin: -20px 0 0 -20px;
   text-indent: -9999em;
-  border-top: 5px solid lighten($blue, 50%);
-  border-right: 5px solid lighten($blue, 50%);
-  border-bottom: 5px solid lighten($blue, 50%);
+  border-top: 5px solid color.adjust($blue, $lightness: 50%);
+  border-right: 5px solid color.adjust($blue, $lightness: 50%);
+  border-bottom: 5px solid color.adjust($blue, $lightness: 50%);
   border-left: 5px solid $blue;
 
   @include transform(translateZ(0));

@@ -1,3 +1,5 @@
+@use "sass:list";
+
 @mixin mvj-container() {
   @include grid-row();
   padding: 0 1rem;
@@ -6,7 +8,7 @@
 @mixin lightButton($background: #f7fcff) {
   @include button(true);
   background: $background;
-  border-color: darken($background, 5%);
+  border-color: color.adjust($background, $lightness: -5%);
   color: $primary-color;
   text-transform: uppercase;
 }
@@ -52,9 +54,9 @@
 ) {
   $transition: none;
 
-  @if length($property) > 1 {
+  @if list.length($property) > 1 {
     @each $transition_list in $property {
-      @for $i from 1 through length($transition_list) {
+      @for $i from 1 through list.length($transition_list) {
         @if $i == 1 {
           $_property: nth($transition_list, $i);
         }
