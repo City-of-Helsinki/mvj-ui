@@ -2,15 +2,15 @@
 @use "./styles/variables";
 @use "./foundation-setup" as *;
 
-@use "node_modules/react-leaflet-fullscreen/dist/styles" as *;
+@use "react-leaflet-fullscreen/dist/styles" as *;
 @use "styles/mixins";
 
 // Vendor
-@use "node_modules/react-redux-toastr/src/styles/index";
-@use "node_modules/react-datepicker/dist/react-datepicker";
-@use "node_modules/leaflet-draw/dist/leaflet.draw" as *;
-@use "node_modules/react-dual-listbox/src/scss/react-dual-listbox.scss";
-@use "node_modules/font-awesome/css/font-awesome";
+@use "react-redux-toastr/src/styles/index";
+@use "react-datepicker/dist/react-datepicker";
+@use "leaflet-draw/dist/leaflet.draw" as *;
+@use "react-dual-listbox/src/scss/react-dual-listbox.scss";
+@use "font-awesome/css/font-awesome";
 
 // Components
 @use "components/authorization/authorization";
