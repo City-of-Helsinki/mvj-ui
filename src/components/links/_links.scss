@@ -1,3 +1,6 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
 .links {
   &__external-link {
     span {
@@ -5,7 +8,7 @@
     }
 
     .icons__external-link {
-      fill: $blue;
+      fill: variables.$blue;
       height: rem-calc(10px);
       width: rem-calc(13px);
       vertical-align: middle;
@@ -14,10 +17,10 @@
 
     &:hover {
       text-decoration: underline;
-      color: $blue-hover;
+      color: variables.$blue-hover;
 
       .icons__external-link {
-        fill: $blue-hover;
+        fill: variables.$blue-hover;
       }
     }
   }

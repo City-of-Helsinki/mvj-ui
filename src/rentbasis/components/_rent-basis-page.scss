@@ -1,3 +1,6 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
 .rent-basis-page {
   width: 100%;
   padding: rem-calc(20px);
@@ -16,7 +19,7 @@
     &_label {
       font-size: rem-calc(14px);
       line-height: rem-calc(16px);
-      color: $dark-gray;
+      color: variables.$dark-gray;
       margin: 0;
     }
 

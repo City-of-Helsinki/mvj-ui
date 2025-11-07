@@ -1,3 +1,6 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
 .address-search-input {
   position: relative;
 
@@ -11,9 +14,9 @@
 
   &__dropdown {
     position: absolute;
-    background-color: $white;
-    box-shadow: 0 1px 0 1px $blue;
-    border: 1px solid $blue;
+    background-color: variables.$white;
+    box-shadow: 0 1px 0 1px variables.$blue;
+    border: 1px solid variables.$blue;
     border-top: none;
     border-bottom: none;
     z-index: 1020;
@@ -35,21 +38,21 @@
     .no-result-item {
       padding: 0 rem-calc(5px);
       font-size: rem-calc(14px);
-      background-color: $lightest-gray;
+      background-color: variables.$lightest-gray;
     }
 
     .list-item {
       padding: 0 rem-calc(5px);
       font-size: rem-calc(14px);
-      color: $black;
+      color: variables.$black;
       cursor: pointer;
 
       &.is-focused {
-        background-color: $light-blue !important;
+        background-color: variables.$light-blue !important;
       }
 
       &:hover {
-        background-color: $light-blue !important;
+        background-color: variables.$light-blue !important;
       }
     }
   }
@@ -57,8 +60,8 @@
   &.open {
     input {
       outline: none !important;
-      border: 1px solid $blue;
-      box-shadow: 0px 0px 0px 1px $blue;
+      border: 1px solid variables.$blue;
+      box-shadow: 0px 0px 0px 1px variables.$blue;
     }
   }
 }

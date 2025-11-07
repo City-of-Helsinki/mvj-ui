@@ -1,9 +1,12 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
 .mvj-button {
-  font-size: $font-small;
-  font-family: $font-family-source;
+  font-size: variables.$font-small;
+  font-family: variables.$font-family-source;
   font-weight: 600;
-  color: $white;
-  background: $blue;
+  color: variables.$white;
+  background: variables.$blue;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
   height: rem-calc(30px);
   padding: 0 1rem;
@@ -13,57 +16,57 @@
   white-space: nowrap;
 
   &:hover {
-    background-color: $blue-hover;
+    background-color: variables.$blue-hover;
   }
 
   &:disabled {
-    background-color: $medium-dark-gray !important;
-    color: $white !important;
+    background-color: variables.$medium-dark-gray !important;
+    color: variables.$white !important;
     opacity: 1;
     cursor: not-allowed;
   }
 
   &.success {
-    background-color: $blue;
-    color: $white;
+    background-color: variables.$blue;
+    color: variables.$white;
 
     &:hover {
-      background-color: $blue-hover;
+      background-color: variables.$blue-hover;
     }
   }
 
   &.alert {
-    background-color: $red;
-    color: $white;
+    background-color: variables.$red;
+    color: variables.$white;
 
     &:hover {
-      background-color: $red-hover;
+      background-color: variables.$red-hover;
     }
   }
 
   &.neutral {
-    background-color: $white;
-    color: $blue;
-    border: 1px solid $blue;
+    background-color: variables.$white;
+    color: variables.$blue;
+    border: 1px solid variables.$blue;
 
     &:hover {
-      background-color: $light-blue;
+      background-color: variables.$light-blue;
     }
   }
 
   &.secondary {
-    background-color: $white;
-    color: $black;
-    border: 1px solid $medium-dark-gray;
+    background-color: variables.$white;
+    color: variables.$black;
+    border: 1px solid variables.$medium-dark-gray;
 
     &:hover {
-      background-color: $lightest-gray;
+      background-color: variables.$lightest-gray;
     }
   }
 
   &.link {
     background-color: transparent;
-    color: $blue;
+    color: variables.$blue;
     border: none;
     box-shadow: none;
     text-transform: none;
@@ -73,7 +76,7 @@
 
     &:hover {
       text-decoration: underline;
-      color: $blue-hover;
+      color: variables.$blue-hover;
     }
   }
 
@@ -105,8 +108,8 @@
 
   &:hover {
     .icons {
-      fill: $blue !important;
-      stroke: $blue !important;
+      fill: variables.$blue !important;
+      stroke: variables.$blue !important;
     }
   }
 
@@ -114,7 +117,7 @@
     cursor: not-allowed;
 
     .icons {
-      fill: $blue !important;
+      fill: variables.$blue !important;
     }
   }
 
@@ -126,25 +129,25 @@
 }
 
 .sendup-button {
-  color: $blue;
+  color: variables.$blue;
   font-size: rem-calc(14px);
-  font-weight: $semibold;
-  font-family: $body-font-family;
+  font-weight: variables.$semibold;
+  font-family: variables.$body-font-family;
   cursor: pointer;
 
   .icons__sendup {
     vertical-align: bottom;
     margin-left: rem-calc(5px);
-    fill: $blue;
-    stroke: $blue;
+    fill: variables.$blue;
+    stroke: variables.$blue;
   }
 
   &:hover {
-    color: $blue-hover;
+    color: variables.$blue-hover;
 
     .icons__sendup {
-      fill: $blue-hover;
-      stroke: $blue-hover;
+      fill: variables.$blue-hover;
+      stroke: variables.$blue-hover;
     }
   }
 }

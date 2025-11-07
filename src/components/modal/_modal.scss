@@ -1,7 +1,11 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .modal {
   &__wrapper {
     z-index: 1080;
-    background-color: $white;
+    background-color: variables.$white;
     width: rem-calc(800px);
     max-width: 100%;
     max-height: 95%;
@@ -12,7 +16,7 @@
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
     overflow: visible;
 
-    @include transition(0.5s, top, ease);
+    @include mixins.transition(0.5s, top, ease);
   }
 
   &__scrollable {
@@ -23,11 +27,11 @@
     padding: rem-calc(20px) rem-calc(20px) 0;
 
     h1.title {
-      font-family: $font-family-source;
+      font-family: variables.$font-family-source;
       font-size: rem-calc(22px);
       line-height: rem-calc(24px);
-      font-weight: $semibold;
-      color: $black;
+      font-weight: variables.$semibold;
+      color: variables.$black;
       margin: 0;
     }
 
@@ -52,7 +56,7 @@
     opacity: 0;
     visibility: hidden;
 
-    @include transition(0.5s, all, ease);
+    @include mixins.transition(0.5s, all, ease);
   }
 
   &.modal-open {
@@ -74,7 +78,7 @@
 
   &.modal-large {
     .modal__wrapper {
-      width: rem-calc($content-max-width);
+      width: rem-calc(variables.$content-max-width);
     }
   }
 

@@ -1,3 +1,7 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .form-wrapper {
   display: flex;
   flex-flow: row wrap;
@@ -30,7 +34,7 @@
 .form-field {
   line-height: 1;
   margin-bottom: rem-calc(10px);
-  font-family: $font-family-source;
+  font-family: variables.$font-family-source;
   align-self: flex-end;
   width: 100%;
 
@@ -41,15 +45,15 @@
   &__fractional {
     display: inline-flex;
     input {
-      font-family: $font-family-source;
+      font-family: variables.$font-family-source;
       padding: 0 rem-calc(5px);
       height: rem-calc(20px);
       font-size: rem-calc(14px);
       line-height: normal;
-      color: $black;
+      color: variables.$black;
       width: 45%;
       margin-bottom: 0;
-      border: 1px solid $medium-gray;
+      border: 1px solid variables.$medium-gray;
       box-shadow: none;
     }
     &-divider {
@@ -64,7 +68,7 @@
     max-width: 100%;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
-    color: $dark-gray;
+    color: variables.$dark-gray;
     white-space: nowrap;
     position: relative;
 
@@ -88,15 +92,15 @@
     }
 
     .required {
-      color: $red;
+      color: variables.$red;
       font-size: 18px;
-      font-weight: $semibold;
+      font-weight: variables.$semibold;
       position: absolute;
     }
   }
 
   &__error-block {
-    color: $red;
+    color: variables.$red;
     display: block;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
@@ -104,7 +108,7 @@
   }
 
   &__error-field {
-    color: $red;
+    color: variables.$red;
     display: block;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
@@ -112,7 +116,7 @@
   }
 
   &__success-field {
-    color: $blue;
+    color: variables.$blue;
     display: block;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
@@ -120,7 +124,7 @@
   }
 
   &__warning-field {
-    color: $red;
+    color: variables.$red;
     display: block;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
@@ -135,7 +139,7 @@
     }
 
     .option-label {
-      color: $neutral-color;
+      color: variables.$neutral-color;
       display: inline-block;
       font-size: rem-calc(14px);
       line-height: rem-calc(20px);
@@ -154,14 +158,14 @@
     &.is-dirty {
       .option-label {
         span {
-          background-color: $is-dirty-color;
+          background-color: variables.$is-dirty-color;
         }
       }
     }
   }
 
   &__checkbox-date-time {
-    color: $black !important;
+    color: variables.$black !important;
     font-size: rem-calc(14px) !important;
     line-height: rem-calc(20px) !important;
 
@@ -171,7 +175,7 @@
 
     &.is-dirty {
       span {
-        background-color: $is-dirty-color;
+        background-color: variables.$is-dirty-color;
       }
     }
   }
@@ -179,44 +183,44 @@
   &__address {
     &.is-dirty {
       input {
-        background-color: $is-dirty-color;
+        background-color: variables.$is-dirty-color;
       }
     }
 
     &.has-error {
       input {
-        border: 1px solid $red !important;
+        border: 1px solid variables.$red !important;
 
         &:focus {
-          box-shadow: 0 0 0 1px $red;
+          box-shadow: 0 0 0 1px variables.$red;
         }
       }
     }
   }
 
   &__input {
-    font-family: $font-family-source;
+    font-family: variables.$font-family-source;
     padding: 0 rem-calc(5px);
     height: rem-calc(20px);
     font-size: rem-calc(14px);
     line-height: normal;
-    color: $black;
+    color: variables.$black;
     width: 100%;
     margin-bottom: 0;
-    border: 1px solid $medium-gray;
+    border: 1px solid variables.$medium-gray;
     box-shadow: none;
 
-    @include focusInput();
+    @include mixins.focusInput();
 
     &.is-dirty {
-      background-color: $is-dirty-color;
+      background-color: variables.$is-dirty-color;
     }
 
     &.has-error {
-      border: 1px solid $red !important;
+      border: 1px solid variables.$red !important;
 
       &:focus {
-        box-shadow: 0 0 0 1px $red;
+        box-shadow: 0 0 0 1px variables.$red;
       }
     }
   }
@@ -236,7 +240,7 @@
     }
 
     &_option-label {
-      color: $black !important;
+      color: variables.$black !important;
       display: inline-block;
       font-size: rem-calc(14px) !important;
       line-height: rem-calc(20px) !important;
@@ -245,7 +249,7 @@
 
     &_option-text {
       margin-right: rem-calc(10px);
-      color: $neutral-color;
+      color: variables.$neutral-color;
     }
 
     &_option-field {
@@ -260,7 +264,7 @@
     &.is-dirty {
       .form-field__radio-with-field_option-label {
         span.form-field__radio-with-field_option-text {
-          background-color: $is-dirty-color;
+          background-color: variables.$is-dirty-color;
         }
       }
     }
@@ -270,7 +274,7 @@
     position: relative;
 
     input {
-      border: 1px solid $medium-dark-gray;
+      border: 1px solid variables.$medium-dark-gray;
       width: 100%;
       margin: 0;
       height: rem-calc(30px);
@@ -281,7 +285,7 @@
         line-height: normal;
       }
 
-      @include focusInput();
+      @include mixins.focusInput();
     }
 
     &_icon {
@@ -298,25 +302,25 @@
 
   &__textarea {
     padding: 0.25rem 0.5rem;
-    color: $black;
-    border: 1px solid $medium-gray;
+    color: variables.$black;
+    border: 1px solid variables.$medium-gray;
     width: 100%;
-    font-size: $font-small;
+    font-size: variables.$font-small;
     box-shadow: none;
     margin-bottom: 0;
     min-height: rem-calc(65px);
 
-    @include focusInput();
+    @include mixins.focusInput();
 
     &.is-dirty {
-      background-color: $is-dirty-color;
+      background-color: variables.$is-dirty-color;
     }
 
     &.has-error {
-      border-color: $red !important;
+      border-color: variables.$red !important;
 
       &:focus {
-        box-shadow: 0 0 0 1px $red;
+        box-shadow: 0 0 0 1px variables.$red;
       }
     }
   }
@@ -347,25 +351,25 @@
       height: rem-calc(20px);
       font-size: rem-calc(14px);
       line-height: normal;
-      color: $black;
+      color: variables.$black;
       width: 100%;
       margin-bottom: 0;
 
-      @include focusInput();
+      @include mixins.focusInput();
     }
 
     &.is-dirty {
       input {
-        background-color: $is-dirty-color;
+        background-color: variables.$is-dirty-color;
       }
     }
 
     &.has-error {
       input {
-        border: 1px solid $red;
+        border: 1px solid variables.$red;
 
         &:focus {
-          box-shadow: 0 0 0 1px $red;
+          box-shadow: 0 0 0 1px variables.$red;
         }
       }
     }
@@ -374,23 +378,23 @@
   &__multiselect {
     &.has-error {
       .multi-select__dropdown-content {
-        border: 1px solid $red;
-        box-shadow: 0 1px 0 1px $red;
+        border: 1px solid variables.$red;
+        box-shadow: 0 1px 0 1px variables.$red;
       }
 
       .multi-select__dropdown-heading {
-        border: 1px solid $red;
+        border: 1px solid variables.$red;
 
         &.is-expanded {
           outline: none !important;
-          border: 1px solid $red;
-          box-shadow: 0 0 0 1px $red;
+          border: 1px solid variables.$red;
+          box-shadow: 0 0 0 1px variables.$red;
         }
 
         &.is-focused {
           outline: none !important;
-          border: 1px solid $red;
-          box-shadow: 0 0 0 1px $red;
+          border: 1px solid variables.$red;
+          box-shadow: 0 0 0 1px variables.$red;
         }
       }
     }
@@ -400,20 +404,20 @@
     width: 100%;
     &.is-dirty {
       .select-input__control {
-        background-color: $is-dirty-color !important;
+        background-color: variables.$is-dirty-color !important;
       }
     }
 
     &.has-error {
       .select-input {
         .select-input__control {
-          border-color: $red !important;
-          box-shadow: 0px 0px 0px 1px $red !important;
+          border-color: variables.$red !important;
+          box-shadow: 0px 0px 0px 1px variables.$red !important;
           outline: none !important;
         }
 
         .select-input__menu {
-          border-color: $red;
+          border-color: variables.$red;
         }
       }
     }
@@ -520,7 +524,7 @@
     font-size: rem-calc(14px);
     line-height: rem-calc(16px);
     font-weight: normal;
-    color: $black;
+    color: variables.$black;
     margin-bottom: rem-calc(10px);
     max-width: 100%;
 
@@ -528,7 +532,7 @@
       font-size: rem-calc(14px);
       line-height: rem-calc(16px);
       font-weight: normal;
-      color: $black;
+      color: variables.$black;
     }
 
     &.align-right {
@@ -544,15 +548,15 @@
     }
 
     &.alert {
-      color: $red;
+      color: variables.$red;
     }
 
     &.success {
-      color: $blue;
+      color: variables.$blue;
     }
 
     &.semibold {
-      font-weight: $semibold;
+      font-weight: variables.$semibold;
     }
   }
 
@@ -562,15 +566,15 @@
     width: 100%;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
-    color: $dark-gray;
+    color: variables.$dark-gray;
     white-space: nowrap;
     position: relative;
     margin-bottom: 0;
 
     .required {
-      color: $red;
+      color: variables.$red;
       font-size: 18px;
-      font-weight: $semibold;
+      font-weight: variables.$semibold;
       position: absolute;
     }
 
@@ -593,7 +597,7 @@
     font-size: rem-calc(13px);
     line-height: rem-calc(16px);
     font-weight: normal;
-    color: $neutral-color;
+    color: variables.$neutral-color;
     margin-bottom: rem-calc(10px);
     max-width: 100%;
 
@@ -603,11 +607,11 @@
   }
 
   &__add-button {
-    font-family: $font-family-source;
+    font-family: variables.$font-family-source;
     font-size: rem-calc(16px) !important;
     line-height: rem-calc(20px) !important;
-    font-weight: $semibold !important;
-    color: $blue;
+    font-weight: variables.$semibold !important;
+    color: variables.$blue;
     margin: 0;
     cursor: pointer;
     display: block;
@@ -616,17 +620,17 @@
 
     .icons {
       margin-right: rem-calc(5px);
-      fill: $blue;
+      fill: variables.$blue;
       height: rem-calc(20px) !important;
       width: rem-calc(20px) !important;
     }
 
     &:hover {
       text-decoration: underline;
-      color: $blue-hover;
+      color: variables.$blue-hover;
 
       .icons {
-        fill: $blue-hover;
+        fill: variables.$blue-hover;
       }
     }
 
@@ -646,12 +650,12 @@
     }
 
     &:disabled {
-      color: $dark-gray;
+      color: variables.$dark-gray;
       text-decoration: none;
       cursor: not-allowed;
 
       .icons {
-        fill: $dark-gray;
+        fill: variables.$dark-gray;
       }
     }
 
@@ -669,15 +673,15 @@
     vertical-align: text-top;
 
     &__label {
-      font-family: $font-family-source;
+      font-family: variables.$font-family-source;
       font-size: rem-calc(14px) !important;
       line-height: rem-calc(20px) !important;
-      font-weight: $semibold !important;
-      color: $blue !important;
+      font-weight: variables.$semibold !important;
+      color: variables.$blue !important;
       margin: 0 !important;
       cursor: pointer;
 
-      @include focus();
+      @include mixins.focus();
 
       .icons {
         vertical-align: middle;
@@ -685,15 +689,15 @@
         height: rem-calc(15px);
         width: rem-calc(15px);
         margin-right: rem-calc(5px);
-        fill: $blue;
+        fill: variables.$blue;
       }
 
       &:hover {
         text-decoration: underline;
-        color: $blue-hover !important;
+        color: variables.$blue-hover !important;
 
         .icons {
-          fill: $blue-hover;
+          fill: variables.$blue-hover;
         }
       }
     }
@@ -710,12 +714,12 @@
     top: 0;
 
     .icons {
-      fill: $black !important;
+      fill: variables.$black !important;
     }
 
     &:hover {
       .icons {
-        fill: $blue !important;
+        fill: variables.$blue !important;
       }
     }
   }
@@ -728,14 +732,14 @@
 
     .icons {
       #Artboard {
-        fill: $black !important;
+        fill: variables.$black !important;
       }
     }
 
     &:hover {
       .icons {
         #Artboard {
-          fill: $blue !important;
+          fill: variables.$blue !important;
         }
       }
     }
@@ -749,14 +753,14 @@
 
     .icons {
       #Artboard {
-        fill: $black !important;
+        fill: variables.$black !important;
       }
     }
 
     &:hover {
       .icons {
         #Artboard {
-          fill: $blue !important;
+          fill: variables.$blue !important;
         }
       }
     }
@@ -769,12 +773,12 @@
     top: 0;
 
     .icons {
-      fill: $black !important;
+      fill: variables.$black !important;
     }
 
     &:hover {
       .icons {
-        fill: $blue !important;
+        fill: variables.$blue !important;
       }
     }
 
@@ -797,13 +801,13 @@
     height: rem-calc(20px);
 
     #Artboard {
-      fill: $black !important;
+      fill: variables.$black !important;
     }
 
     &:hover {
       .icons {
         #Artboard {
-          fill: $blue !important;
+          fill: variables.$blue !important;
         }
       }
     }
@@ -839,12 +843,12 @@
     top: 0;
 
     .icons {
-      fill: $black !important;
+      fill: variables.$black !important;
     }
 
     &:hover {
       .icons {
-        fill: $blue !important;
+        fill: variables.$blue !important;
       }
     }
   }

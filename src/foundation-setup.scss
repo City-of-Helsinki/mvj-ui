@@ -1,0 +1,6 @@
+// Purpose of this is to allow running the setup right after @use
+// in `main.scss` the setup would need to be run after all other @use's
+@use "foundation-sites/scss/foundation" as *;
+
+@include foundation-everything(true);
+@include foundation-flex-grid;

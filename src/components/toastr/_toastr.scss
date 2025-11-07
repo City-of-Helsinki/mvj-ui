@@ -1,12 +1,15 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
 .toastr {
   &__icons {
     width: rem-calc(32px);
     height: rem-calc(32px);
-    fill: $white;
-    stroke: $white;
+    fill: variables.$white;
+    stroke: variables.$white;
 
     #Artboard {
-      fill: $white;
+      fill: variables.$white;
     }
   }
 }
@@ -14,15 +17,15 @@
 .redux-toastr {
   .toastr {
     border-radius: 0;
-    font-family: $font-family-helsinki-grotesk;
-    font-weight: $semibold;
+    font-family: variables.$font-family-helsinki-grotesk;
+    font-weight: variables.$semibold;
 
     &.rrt-error {
-      background-color: $red;
+      background-color: variables.$red;
     }
 
     &.rrt-success {
-      background-color: $blue;
+      background-color: variables.$blue;
     }
 
     .rrt-left-container {

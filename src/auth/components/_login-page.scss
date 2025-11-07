@@ -1,10 +1,14 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .login-page {
   display: block;
   margin: auto;
   margin-top: 2rem;
   width: 600px;
   max-width: calc(100% - 1rem);
-  background-color: $light-blue;
+  background-color: variables.$light-blue;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
 
   &__content {
@@ -22,14 +26,14 @@
     }
 
     h3 {
-      font-size: $font-xlarge;
-      font-weight: $semibold;
+      font-size: variables.$font-xlarge;
+      font-weight: variables.$semibold;
     }
 
     button {
       background-color: transparent;
-      color: $black;
-      border: 2px solid $black;
+      color: variables.$black;
+      border: 2px solid variables.$black;
       padding: 0.5rem 1rem;
       cursor: pointer;
     }
@@ -39,12 +43,12 @@
     height: rem-calc(14px);
     background: url(../assets/images/basic-wave-koro.svg);
     background-size: 96px 14px;
-    @include rotate(180deg);
+    @include mixins.rotate(180deg);
   }
 
   .login-footer {
     height: rem-calc(40px);
     width: 100%;
-    background-color: $blue;
+    background-color: variables.$blue;
   }
 }

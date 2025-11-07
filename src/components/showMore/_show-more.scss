@@ -1,3 +1,6 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
 .show-more {
   display: flex;
   flex-direction: column;
@@ -19,12 +22,12 @@
 
   &__read-more {
     font-size: rem-calc(13px);
-    color: $blue;
+    color: variables.$blue;
     margin-top: 0;
     display: inline-block;
 
     &:hover {
-      color: $blue;
+      color: variables.$blue;
     }
   }
 }

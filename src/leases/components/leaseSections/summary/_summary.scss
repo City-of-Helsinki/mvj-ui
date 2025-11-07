@@ -1,3 +1,7 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../../../styles/variables";
+@use "../../../../styles/mixins";
+
 .summary {
   &__content-wrapper {
     @include breakpoint(small only) {
@@ -6,7 +10,7 @@
   }
 
   &__related-leases {
-    background-color: $light-gray;
+    background-color: variables.$light-gray;
     height: 100%;
     padding: rem-calc(15px);
 
@@ -30,7 +34,7 @@
       }
 
       .left-border-overlay {
-        border-left: 3px solid $green;
+        border-left: 3px solid variables.$green;
         position: absolute;
         left: -1px;
       }
@@ -48,7 +52,7 @@
           width: rem-calc(15px);
           left: rem-calc(10px);
 
-          @include transform(rotate(-90deg));
+          @include mixins.transform(rotate(-90deg));
         }
       }
 
@@ -61,7 +65,7 @@
 
         .connection-line {
           position: absolute;
-          border-top: 1px dashed $blue;
+          border-top: 1px dashed variables.$blue;
           width: 20px;
           top: 17.5px;
           left: -26px;
@@ -77,7 +81,7 @@
             left: rem-calc(-10px);
 
             .icons {
-              @include transform(rotate(0deg));
+              @include mixins.transform(rotate(0deg));
             }
           }
         }
@@ -94,13 +98,13 @@
         .identifier {
           font-size: rem-calc(18px);
           line-height: rem-calc(20px);
-          font-weight: $semibold;
+          font-weight: variables.$semibold;
 
           a {
             font-size: rem-calc(18px);
             line-height: rem-calc(20px);
             margin-bottom: 0;
-            font-weight: $semibold;
+            font-weight: variables.$semibold;
 
             .icons__external-link {
               height: rem-calc(13px);
@@ -110,7 +114,7 @@
         }
 
         .type {
-          font-weight: $semibold;
+          font-weight: variables.$semibold;
         }
       }
 
@@ -121,17 +125,17 @@
       }
 
       &.active {
-        background-color: $white;
+        background-color: variables.$white;
 
         .left-border-overlay {
-          border-color: $white !important;
+          border-color: variables.$white !important;
         }
 
         .related-leases-item {
           &_badge {
             top: rem-calc(10px);
             left: rem-calc(-8px);
-            background-color: $black;
+            background-color: variables.$black;
           }
         }
       }
@@ -146,7 +150,7 @@
         top: 0;
         bottom: 0;
         left: 9px;
-        border-left: 1px dashed $blue;
+        border-left: 1px dashed variables.$blue;
       }
 
       .related-leases-item:nth-of-type(2) {
@@ -181,19 +185,19 @@
     max-width: 100%;
 
     &--neutral {
-      color: $neutral-color !important;
+      color: variables.$neutral-color !important;
     }
 
     &--alert {
-      color: $red !important;
+      color: variables.$red !important;
     }
 
     &--success {
-      color: $blue !important;
+      color: variables.$blue !important;
     }
 
     &--enquiry-sent {
-      color: $yellow-enquiry-sent !important;
+      color: variables.$yellow-enquiry-sent !important;
     }
   }
 }

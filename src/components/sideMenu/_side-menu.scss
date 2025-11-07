@@ -1,6 +1,10 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+@use "../../styles/mixins";
+
 .side-menu {
   z-index: 1050;
-  background-color: $white;
+  background-color: variables.$white;
   width: 268px;
   height: 100vh;
   position: fixed;
@@ -9,37 +13,37 @@
   box-shadow: 2px 0 3px 0 rgba(0, 0, 0, 0.09);
 
   &.is-closing {
-    @include transition(0.5s, all, ease-in-out);
+    @include mixins.transition(0.5s, all, ease-in-out);
   }
 
   &.is-opening {
-    @include transition(0.5s, all, ease-in-out);
+    @include mixins.transition(0.5s, all, ease-in-out);
   }
 
   ul {
     list-style-type: none;
     margin: 0;
-    color: $white;
-    font-weight: $semibold;
+    color: variables.$white;
+    font-weight: variables.$semibold;
     line-height: 2;
 
     li a {
       padding: 0 rem-calc(20px);
-      color: $black;
+      color: variables.$black;
       cursor: pointer;
       display: inline-block;
       width: 100%;
 
       &:focus {
-        outline-color: $blue;
+        outline-color: variables.$blue;
         outline-offset: -2px;
         outline-width: 2px;
         outline-style: dotted;
       }
 
       &:hover {
-        color: $black;
-        background-color: $light-blue;
+        color: variables.$black;
+        background-color: variables.$light-blue;
         outline: none;
       }
     }
@@ -57,7 +61,7 @@
       }
 
       .icons {
-        @include transform(rotate(180deg));
+        @include mixins.transform(rotate(180deg));
       }
     }
 
@@ -65,7 +69,7 @@
       position: absolute;
       left: 100%;
       top: 0;
-      background-color: $white;
+      background-color: variables.$white;
       box-shadow: 2px 0 3px 0 rgba(0, 0, 0, 0.09);
       display: none;
 
@@ -75,7 +79,7 @@
     }
 
     &--is-open {
-      background-color: $white;
+      background-color: variables.$white;
 
       .side-menu__submenu_items {
         display: block;

@@ -1,3 +1,6 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
 .search {
   &__row {
     display: flex;
@@ -16,7 +19,7 @@
     margin: 0;
     display: block;
     font-size: rem-calc(14px);
-    color: $dark-gray;
+    color: variables.$dark-gray;
   }
 
   &__subtitle-label-column {
@@ -29,11 +32,11 @@
   }
 
   &__change-type-link {
-    font-weight: $semibold !important;
+    font-weight: variables.$semibold !important;
   }
 
   &__clear-link {
-    font-weight: $semibold !important;
+    font-weight: variables.$semibold !important;
     float: right;
   }
 }

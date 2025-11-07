@@ -1,41 +1,44 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
 .icons {
-  fill: $black;
-  stroke: $black;
+  fill: variables.$black;
+  stroke: variables.$black;
   vertical-align: sub;
   height: rem-calc(25px);
   width: rem-calc(25px);
   overflow: visible !important;
 
   &.icons__add {
-    fill: $blue;
-    stroke: $blue;
+    fill: variables.$blue;
+    stroke: variables.$blue;
   }
 
   &__error {
-    fill: $red;
+    fill: variables.$red;
   }
 
   &__success {
     #Artboard {
-      fill: $blue;
+      fill: variables.$blue;
     }
   }
 
   &.icons__trash {
     #Artboard {
-      fill: $blue;
+      fill: variables.$blue;
     }
   }
 
   &.icons__copy-to-clipboard {
     #Artboard {
-      fill: $blue;
+      fill: variables.$blue;
     }
   }
 
   &.icons__attach {
     #Artboard {
-      fill: $black;
+      fill: variables.$black;
     }
   }
 
@@ -66,7 +69,7 @@
   }
 
   &.icon-green {
-    fill: $blue;
-    stroke: $blue;
+    fill: variables.$blue;
+    stroke: variables.$blue;
   }
 }
