@@ -67,6 +67,7 @@ const SanctionsCheckTemplate = ({ sanctionsType }: Props) => {
             invalid={!!formErrors["businessId"]}
             errorText={formErrors["businessId"]}
             required
+            enterKeyHint={"next"}
           />
           <SanctionsCheckRequest
             sanctionsType={sanctionsType}
@@ -93,6 +94,7 @@ const SanctionsCheckTemplate = ({ sanctionsType }: Props) => {
             onChange={(e) => setFirstName(e.target.value)}
             invalid={!!formErrors["firstName"]}
             errorText={formErrors["firstName"]}
+            enterKeyHint={"next"}
           />
           <TextInput
             id="textinput-sanctions-lastname"
@@ -103,6 +105,7 @@ const SanctionsCheckTemplate = ({ sanctionsType }: Props) => {
             invalid={!!formErrors["lastName"]}
             errorText={formErrors["lastName"]}
             required
+            enterKeyHint={"next"}
           />
           <SanctionsCheckRequest
             sanctionsType={sanctionsType}

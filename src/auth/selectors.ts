@@ -1,5 +1,5 @@
 import type { Selector } from "@/types";
-import type { ApiToken, AuthState } from "./types";
+import type { ApiToken } from "./types";
 import type { User } from "hds-react";
 import { apiTokenKeyName } from "@/auth/constants";
 // Helper functions to select state

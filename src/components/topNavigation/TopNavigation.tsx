@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import classNames from "classnames";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
-import { IconMenuDots } from "hds-react";
+import { IconMenuDots, IconSize } from "hds-react";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import MainMenuIcon from "@/components/icons/MainMenuIcon";
 import SearchInput from "@/components/inputs/SearchInput";
@@ -14,7 +14,6 @@ import { getSearchQuery, getUrlParams } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 
 import type {
-  UserGroups,
   UserServiceUnit,
   UserServiceUnits,
 } from "@/usersPermissions/types";
@@ -238,7 +237,7 @@ class TopNavigation extends Component<Props, State> {
                       className={"user-group-button"}
                       onClick={toggleDisplayUserGroups}
                     >
-                      <IconMenuDots color="white" size="xs" />
+                      <IconMenuDots color="white" size={IconSize.ExtraSmall} />
                     </button>{" "}
                   </p>
                   <button className="logout-link" onClick={handleLogout}>

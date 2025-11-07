@@ -66,7 +66,7 @@ const SanctionsCheckRequest: React.FC<Props> = ({
 
   const getWarningLabel = () => {
     return (
-      <StatusLabel type="alert" iconLeft={<IconAlertCircle />}>
+      <StatusLabel type="alert" iconStart={<IconAlertCircle />}>
         {getWarningText()}
       </StatusLabel>
     );

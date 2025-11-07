@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { LoginCallbackHandler } from "hds-react";
+import { LoginCallbackHandler, isHandlingLoginCallbackError } from "hds-react";
 import type { OidcClientError, User } from "hds-react";
 import { getRedirectUrlFromSessionStorage } from "@/util/storage";
 import { getRouteById, Routes } from "@/root/routes";
@@ -19,10 +19,7 @@ const CallbackPage = (props: Props) => {
   const onError = (error: OidcClientError) => {
     // "HANDLING_LOGIN_CALLBACK cannot be handled by a callback" is a known error in HDS
     // https://hds.hel.fi/components/login/api/#logincallbackhandler
-    if (
-      error.message ===
-      "Current state (HANDLING_LOGIN_CALLBACK) cannot be handled by a callback"
-    ) {
+    if (isHandlingLoginCallbackError(error)) {
       return;
     }
     console.error("Login Callback Error:", error);

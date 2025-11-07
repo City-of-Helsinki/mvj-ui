@@ -140,7 +140,7 @@ const FileDownloadButton = ({
     <Button
       disabled={disabled}
       onClick={handleClick}
-      iconLeft={<IconDownload />}
+      iconStart={<IconDownload />}
       {...(isLoading && { isLoading })}
       {...(loadingText && { loadingText })}
     >
