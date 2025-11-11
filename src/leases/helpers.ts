@@ -64,11 +64,7 @@ import type {
   RelatedLeaseWrapper,
 } from "./types";
 import type { CommentList } from "@/comments/types";
-import type {
-  Attributes,
-  LeafletFeature,
-  LeafletGeoJson,
-} from "types";
+import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
 import type { RootState } from "@/root/types";
 import type { LeaseList, DueDate } from "@/leases/types";
 import type { IndexPointFigureYearly } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
@@ -2784,7 +2780,7 @@ export const getPayloadCreateLease = (
     : undefined;
   return {
     state: formValues.state,
-    type: formValues.type,
+    type: formValues.type?.id,
     start_date: formValues?.start_date || null,
     end_date: formValues?.end_date || null,
     municipality: formValues.municipality,
