@@ -27,7 +27,7 @@
     "final-form-arrays": "^4.0.0",
     "font-awesome": "^4.7.0",
     "foundation-sites": "^6.9.0",
-    "hds-react": "4.8.0",
+    "hds-react": "^4.8.1",
     "history": "^4.9.0",
     "leaflet": "^1.5.1",
     "leaflet-draw": "^1.0.4",

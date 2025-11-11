@@ -4461,15 +4461,15 @@ hasown@^2.0.1, hasown@^2.0.2:
   dependencies:
     function-bind "^1.1.2"
 
-hds-core@4.8.0:
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/hds-core/-/hds-core-4.8.0.tgz#1e814d16bf55ac646020caf6b4f5a578d2885b8b"
-  integrity sha512-Bdbo0SiUwLC4D1pgZtr1puORZR2h5Y6TstGE7QJ2xHWbZFn/UwTL4q2u4fGY6JH117y4hbzsJ1SWlLaSJlTMfA==
+hds-core@4.8.1:
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/hds-core/-/hds-core-4.8.1.tgz#58b977c1dcd36171ab309604fefbe76679aa8931"
+  integrity sha512-7szkf/T6oWaaT4FIdl5KMrln+gScUjsccCQJaRxAHyZlxK7y1UUKSX9g9/vyj/euvrRTNb/Y8Dn7zJPmoCxaug==
 
-hds-react@4.8.0:
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/hds-react/-/hds-react-4.8.0.tgz#8b159561634e37eecbbc6e636cfb2fc9c6b812ff"
-  integrity sha512-zYFlOCpKYMF+jOQz39Fl4iwTaRi6yVh1OKh605OnFcfdv3jzYPF7MBgoO9Joiv6mJeVFkrheX02fzcQZgyG/fQ==
+hds-react@^4.8.1:
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/hds-react/-/hds-react-4.8.1.tgz#c71694c8ce3fd64a5076d519b896cf53f4affc8f"
+  integrity sha512-Er7ZLMsdsmY/GEPPMvz5k5c1dxXfoydcQaoUHZdiSX2cpocTr6j59WLs/4KpGweFwkTUI/G2AVyym6ye3OsLdQ==
   dependencies:
     "@apollo/client" "^3.10.1"
     "@babel/runtime" "^7.26.10"
