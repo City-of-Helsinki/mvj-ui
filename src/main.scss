@@ -7,7 +7,7 @@
 
 // Vendor
 @use "react-redux-toastr/src/styles/index";
-@use "react-datepicker/dist/react-datepicker";
+@use "react-datepicker/src/stylesheets/datepicker.scss";
 @use "leaflet-draw/dist/leaflet.draw" as *;
 @use "react-dual-listbox/src/scss/react-dual-listbox.scss";
 @use "font-awesome/css/font-awesome";

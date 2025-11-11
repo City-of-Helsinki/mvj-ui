@@ -1,5 +1,8 @@
 import React from "react";
-import DatePicker, { registerLocale } from "react-datepicker";
+import DatePicker, {
+  type DatePickerProps,
+  registerLocale,
+} from "react-datepicker";
 import parse from "date-fns/parse";
 import fi from "date-fns/locale/fi";
 import classNames from "classnames";
@@ -48,11 +51,10 @@ const FieldTypeDatePicker = ({
   const handleSelect = (val: any) => {
     onChange(val);
   };
-
-  const handleChange = (e: any) => {
-    const value = e.target.value;
+  const handleChangeRaw: DatePickerProps["onChangeRaw"] = (e) => {
+    const value = (e?.target as HTMLInputElement)?.value;
+    if (!value) return;
     let parsedDate = getParsedDate(value);
-
     if (isValidDate(parsedDate)) {
       onChange(parsedDate);
     } else if (isShortDateStr(value)) {
@@ -86,7 +88,7 @@ const FieldTypeDatePicker = ({
         dateFormat="dd.MM.yyyy"
         showYearDropdown
         dropdownMode="select"
-        onChangeRaw={handleChange}
+        onChangeRaw={handleChangeRaw}
         onSelect={handleSelect}
         placeholderText={placeholder}
         minDate={minDate}
