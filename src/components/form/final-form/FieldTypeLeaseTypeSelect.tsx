@@ -27,7 +27,7 @@ const FieldTypeLeaseTypeSelect = ({
               return {
                 id: leaseType.id,
                 value: leaseType.id,
-                label: leaseType.name,
+                label: `${leaseType.identifier} ${leaseType.name}`,
                 name: leaseType.name,
               };
             })
