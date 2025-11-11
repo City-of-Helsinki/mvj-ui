@@ -13,7 +13,7 @@ type Props = {
 };
 
 const CreateLease: React.FC<Props> = ({
-  allowToChangeRelateTo,
+  allowToChangeRelateTo = true,
   areaSearch,
   isOpen,
   onClose,
