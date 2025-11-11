@@ -16,6 +16,7 @@ type FilterProps = {
   available: string;
   selected: string;
 };
+
 type Props = {
   isOpen: boolean;
   onCancel: (...args: Array<any>) => any;
@@ -30,8 +31,10 @@ const SendEmailModal: React.FC<Props> = ({
   onSend,
 }) => {
   const [dualListBox, setDualListBox] = useState<any>(null);
-  const [filterAvailable, setFilterAvailable] = useState<string>("");
-  const [filterSelected, setFilterSelected] = useState<string>("");
+  const [filterAvailable, setFilterAvailable] =
+    useState<FilterProps["available"]>("");
+  const [filterSelected, setFilterSelected] =
+    useState<FilterProps["selected"]>("");
   const [selectedUsers, setSelectedUsers] = useState<Array<SelectListOption>>(
     [],
   );
@@ -78,7 +81,7 @@ const SendEmailModal: React.FC<Props> = ({
     }
   }, [isOpen, dualListBox, getUserList]);
 
-  const handleUserListChange = (selected: Array<Record<string, any>>) => {
+  const handleUserListChange = (selected: Array<SelectListOption>) => {
     setSelectedUsers(selected);
   };
 
@@ -114,15 +117,18 @@ const SendEmailModal: React.FC<Props> = ({
       <FormText>Valitse sähköpostin vastaanottajat</FormText>
       <DualListBox
         icons={{
-          moveLeft: "<",
-          moveAllLeft: "<<",
-          moveRight: ">",
-          moveAllRight: ">>",
+          moveToAvailable: "<",
+          moveAllToAvailable: "<<",
+          moveToSelected: ">",
+          moveAllToSelected: ">>",
         }}
         availableRef={(ref) => setDualListBox(ref)}
         canFilter
         filter={{ available: filterAvailable, selected: filterSelected }}
-        filterPlaceholder="Hae vastaanottajia..."
+        lang={{
+          availableFilterPlaceholder: "Hae vastaanottajia...",
+          selectedFilterPlaceholder: "Hae valittuja vastaanottajia...",
+        }}
         onChange={handleUserListChange}
         onFilterChange={handleFilterChange}
         options={userOptions}

@@ -5294,7 +5294,7 @@ lodash.merge@^4.6.2:
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
-lodash@^4.17.13, lodash@^4.17.15, lodash@^4.17.21, lodash@^4.17.5:
+lodash@^4.17.13, lodash@^4.17.15, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -5451,11 +5451,6 @@ ms@^2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
-
-nanoid@^2.0.0:
-  version "2.1.11"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-2.1.11.tgz#ec24b8a758d591561531b4176a01e3ab4f0f0280"
-  integrity sha512-s/snB+WGm6uwi0WjsZdaVcuf3KJXlfGl2LcxgwkEwJF0D/BWzVWAZW/XY4bFaiR7s0Jk3FPvlnepg1H1b1UwlA==
 
 nanoid@^3.3.11:
   version "3.3.11"
@@ -5870,14 +5865,13 @@ react-dom@17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
-react-dual-listbox@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/react-dual-listbox/-/react-dual-listbox-2.0.0.tgz#e680b62af6b9148f67ed159cc91ec901de6b999a"
-  integrity sha512-GHczGX5BVBURILlfqAoBvx6Hn3EKvp2ubp5HvUljtBTXDNz3MCoG0Wf0Vd2UKtyo4I/yKhuVW+H4dixgwDObSQ==
+react-dual-listbox@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/react-dual-listbox/-/react-dual-listbox-6.0.3.tgz#9a63250ca67a8f04d7607299e1dd109b9f5f3c01"
+  integrity sha512-8rVkwrRz4GobkarRmisKHCBWUN3EuVQruQmtvgocNg/HQ3Poc8zBUefDqC1PxDh3gKXQygFjG41zL1IIOEolgQ==
   dependencies:
     classnames "^2.2.5"
-    lodash "^4.17.5"
-    nanoid "^2.0.0"
+    lodash "^4.17.21"
     prop-types "^15.5.8"
 
 react-error-boundary@^3.1.0:

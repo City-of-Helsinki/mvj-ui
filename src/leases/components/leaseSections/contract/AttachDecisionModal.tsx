@@ -10,10 +10,12 @@ import { fetchLeases } from "@/leases/requestsAsync";
 import { ButtonColors } from "@/components/enums";
 import { getContentLeaseOption } from "@/leases/helpers";
 import { sortStringByKeyAsc } from "@/util/helpers";
+
 type FilterProps = {
   available: string;
   selected: string;
 };
+
 type Props = {
   currentLeaseId: number;
   isOpen: boolean;
@@ -21,6 +23,7 @@ type Props = {
   onClose: (...args: Array<any>) => any;
   onSubmit: (...args: Array<any>) => any;
 };
+
 type State = {
   copyConditions: boolean;
   filter: FilterProps;
@@ -83,30 +86,35 @@ class AttachDecisionModal extends PureComponent<Props, State> {
       leaseOptions: uniqueLeases,
     });
   };
+
   getLeaseListDebounced = debounce((search: string) => {
     this.getLeaseList(search);
   }, 500);
+
   handleLeaseListChange = (selected: Array<Record<string, any>>) => {
     this.setState({
       selectedLeases: selected,
     });
   };
+
   handleFilterChange = (filter: FilterProps) => {
-    const { filter: selectedFilter } = this.state;
+    const { filter: previousFilter } = this.state;
     this.setState({
       filter,
     });
-
-    if (filter.available !== selectedFilter.available) {
-      // Fetch users when available filter changes.
-      this.getLeaseListDebounced(filter.available);
+    const previousAvailableFilter = previousFilter.available || "";
+    if (filter.available !== previousAvailableFilter) {
+      // Fetch leases when available filter changes
+      this.getLeaseListDebounced(filter.available || "");
     }
   };
+
   handleCheckboxChange = (value: any) => {
     this.setState({
       copyConditions: value,
     });
   };
+
   handleSubmit = () => {
     const { onSubmit } = this.props;
     const { copyConditions, selectedLeases } = this.state;
@@ -134,15 +142,18 @@ class AttachDecisionModal extends PureComponent<Props, State> {
         <FormText>Valitse vuokratunnukset</FormText>
         <DualListBox
           icons={{
-            moveLeft: "<",
-            moveAllLeft: "<<",
-            moveRight: ">",
-            moveAllRight: ">>",
+            moveToAvailable: "<",
+            moveAllToAvailable: "<<",
+            moveToSelected: ">",
+            moveAllToSelected: ">>",
           }}
           availableRef={(ref) => (this.dualListBox = ref)}
           canFilter
           filter={filter}
-          filterPlaceholder="Hae vuokratunnuksia..."
+          lang={{
+            availableFilterPlaceholder: "Hae vuokratunnuksia...",
+            selectedFilterPlaceholder: "Hae valittuja vuokratunnuksia...",
+          }}
           onChange={this.handleLeaseListChange}
           onFilterChange={this.handleFilterChange}
           options={leaseOptions}
