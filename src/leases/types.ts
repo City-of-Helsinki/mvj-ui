@@ -160,7 +160,7 @@ export type CreateLeaseRelateTo = {
   label: string;
 };
 export type CreateLeasePayload = Partial<
-  Pick<Lease, "state" | "reference_number" | "application_metadata">
+  Pick<Lease, "type" | "state" | "reference_number" | "application_metadata">
 > & {
   municipality?: string;
   district?: string;
@@ -168,6 +168,9 @@ export type CreateLeasePayload = Partial<
 };
 
 export type CreateLeaseFormValues = CreateLeasePayload & {
+  start_date?: Lease["start_date"];
+  end_date?: Lease["end_date"];
+  note?: Lease["note"];
   relate_to: CreateLeaseRelateTo;
   application_received_at: string;
   area_search_id: number | null;
