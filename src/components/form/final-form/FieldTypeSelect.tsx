@@ -58,7 +58,7 @@ const FieldTypeSelect = (props: FieldComponentProps): JSX.Element => {
       selectRef.current &&
       selectRef.current.state.inputValue !== inputSearchValue
     ) {
-      selectRef.current.select.onInputChange(inputSearchValue, {
+      selectRef.current.onInputChange(inputSearchValue, {
         action: "input-change",
       });
     }

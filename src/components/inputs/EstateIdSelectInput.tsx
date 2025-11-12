@@ -57,7 +57,8 @@ const EstateIdSelectInput = ({
       input={input}
       isDirty={false}
       placeholder={placeholder}
-      initialValues={initialValues?.estate_id}
+      // Might be broken, why show just one id as default options?
+      defaultOptions={initialValues ? [initialValues?.estate_id] : []}
     />
   );
 };
