@@ -1,6 +1,5 @@
 import React, { cloneElement, PureComponent } from "react";
 import classNames from "classnames";
-import scrollToComponent from "react-scroll-to-component";
 import ReactResizeDetector from "react-resize-detector";
 const TABLE_MIN_HEIGHT = 521;
 const PANEL_WIDTH = 607.5;
@@ -25,7 +24,7 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
     tableWidth: null,
   };
   container: any;
-  panelWrapper: any;
+  panelWrapper: HTMLDivElement | null = null;
   setPanelRef = (el: any) => {
     this.panel = el;
   };
@@ -79,11 +78,16 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
   };
   scrollToPanel = () => {
     setTimeout(() => {
-      scrollToComponent(this.panelWrapper, {
-        offset: -190,
-        align: "top",
-        duration: 450,
-      });
+      if (this.panelWrapper) {
+        const panelWrapperBoundingRect =
+          this.panelWrapper.getBoundingClientRect();
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        window.scrollTo({
+          top: panelWrapperBoundingRect.top + scrollTop - 190,
+          behavior: "smooth",
+        });
+      }
     }, 50);
   };
   transitionEnds = () => {
