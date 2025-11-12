@@ -55,7 +55,6 @@
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-router-redux": "^4.0.8",
-    "react-scroll-to-component": "^1.0.2",
     "react-select": "^3.0.4",
     "redux": "^4.0.4",
     "redux-actions": "^2.6.5",

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import scrollToComponent from "react-scroll-to-component";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import AddButton from "@/components/form/AddButton";
@@ -73,11 +72,15 @@ class CreateAndCreditInvoiceR extends Component<Props> {
     receiveIsCreateClicked(false);
     receiveIsCreateInvoicePanelOpen(true);
     setTimeout(() => {
-      scrollToComponent(this.createPanel, {
-        offset: -200,
-        align: "top",
-        duration: 450,
-      });
+      if (this.createPanel) {
+        const rect = this.createPanel.getBoundingClientRect();
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        window.scrollTo({
+          top: rect.top + scrollTop - 200,
+          behavior: "smooth",
+        });
+      }
       this.setFocusOnCreatePanel();
     }, 50);
   };
@@ -108,11 +111,15 @@ class CreateAndCreditInvoiceR extends Component<Props> {
     receiveIsCreditClicked(false);
     receiveIsCreditInvoicePanelOpen(true);
     setTimeout(() => {
-      scrollToComponent(this.creditPanel, {
-        offset: -200,
-        align: "top",
-        duration: 450,
-      });
+      if (this.creditPanel) {
+        const rect = this.creditPanel.getBoundingClientRect();
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        window.scrollTo({
+          top: rect.top + scrollTop - 200,
+          behavior: "smooth",
+        });
+      }
       this.setFocusOnCreditPanel();
     }, 50);
   };
