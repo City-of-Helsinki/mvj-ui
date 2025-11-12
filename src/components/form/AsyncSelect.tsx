@@ -12,7 +12,6 @@ type Props = {
   isDirty: boolean;
   placeholder?: string;
   setRef?: (...args: Array<any>) => any;
-  initialValues?: Record<string, any>;
   cacheOptions?: any;
   multiSelect?: boolean;
   onChange?: (...args: Array<any>) => any;
@@ -20,6 +19,8 @@ type Props = {
 };
 type State = {
   inputValue: string;
+  isLoading: boolean;
+  options: Array<Record<string, any>>;
   menuOpened: boolean;
 };
 
@@ -43,6 +44,8 @@ class AsyncSelect extends Component<Props, State> {
   state: State = {
     inputValue: "",
     menuOpened: false,
+    isLoading: false,
+    options: [],
   };
   handleBlur: () => void = () => {
     const {
@@ -77,19 +80,16 @@ class AsyncSelect extends Component<Props, State> {
   };
   handleMenuOpen: () => void = () => {
     const { inputValue, menuOpened } = this.state;
-
     if (!menuOpened) {
       this.setState(
         {
           menuOpened: true,
+          isLoading: true,
         },
         () => {
-          this.select.setState({
-            isLoading: true,
-          });
           this.loadOptions("", (options) => {
-            this.select.setState({
-              defaultOptions: options,
+            this.setState({
+              options: options,
               isLoading: false,
             });
           });
@@ -97,9 +97,7 @@ class AsyncSelect extends Component<Props, State> {
       );
     } else {
       if (this.select.state.inputValue !== inputValue) {
-        this.select.select.onInputChange(inputValue, {
-          action: "input-change",
-        });
+        this.handleInputChange(inputValue, { action: "input-change" });
       }
     }
   };
@@ -123,12 +121,11 @@ class AsyncSelect extends Component<Props, State> {
       displayError,
       input: { name, value },
       isDirty,
-      isLoading,
       placeholder,
-      initialValues,
       cacheOptions = true,
       multiSelect,
     } = this.props;
+    const { isLoading, options } = this.state;
     return (
       <div
         className={classNames(
@@ -151,11 +148,11 @@ class AsyncSelect extends Component<Props, State> {
             IndicatorSeparator: null,
             LoadingIndicator,
           }}
-          defaultOptions
+          defaultOptions={options}
           id={name}
           isDisabled={disabled}
           isLoading={isLoading}
-          isMulti={multiSelect}
+          isMulti={multiSelect === undefined ? false : multiSelect}
           loadingMessage={() => "Ladataan..."}
           loadOptions={this.loadOptions}
           noOptionsMessage={() => "Ei tuloksia"}
@@ -163,10 +160,8 @@ class AsyncSelect extends Component<Props, State> {
           onChange={this.handleChange}
           onInputChange={this.handleInputChange}
           onMenuOpen={this.handleMenuOpen}
-          options={[]}
           placeholder={placeholder || "Valitse..."}
-          value={value}
-          defaultInputValue={initialValues ? initialValues : ""}
+          defaultValue={value}
         />
       </div>
     );

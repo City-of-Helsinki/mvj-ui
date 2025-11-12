@@ -7,7 +7,7 @@ import { Row, Column } from "react-foundation";
 import debounce from "lodash/debounce";
 import isArray from "lodash/isArray";
 import isEmpty from "lodash/isEmpty";
-import FieldTypeSelect from "@/components/form/FieldTypeSelectLegacy";
+import FieldTypeSelect from "@/components/form/final-form/FieldTypeSelect";
 import SearchInputColumn from "@/components/search/SearchInputColumn";
 import SearchLabel from "@/components/search/SearchLabel";
 import SearchLabelColumn from "@/components/search/SearchLabelColumn";

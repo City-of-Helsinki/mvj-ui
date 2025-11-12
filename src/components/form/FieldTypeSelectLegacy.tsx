@@ -19,7 +19,7 @@ type State = {
   inputValue: string;
 };
 
-class FieldTypeSelect extends PureComponent<Props, State> {
+class FieldTypeSelectLegacy extends PureComponent<Props, State> {
   select: any;
   state: State = {
     inputValue: "",
@@ -64,7 +64,7 @@ class FieldTypeSelect extends PureComponent<Props, State> {
     const { inputValue } = this.state;
 
     if (this.select.state.inputValue !== inputValue) {
-      this.select.select.onInputChange(inputValue, {
+      this.select.onInputChange(inputValue, {
         action: "input-change",
       });
     }
@@ -130,4 +130,4 @@ class FieldTypeSelect extends PureComponent<Props, State> {
   }
 }
 
-export default FieldTypeSelect;
+export default FieldTypeSelectLegacy;

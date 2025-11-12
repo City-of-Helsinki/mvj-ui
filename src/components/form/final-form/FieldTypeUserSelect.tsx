@@ -82,7 +82,6 @@ const FieldTypeUserSelect = ({
       placeholder={placeholder}
       multiSelect={multiSelect}
       defaultOptions={initialUser ? [initialUser] : []}
-      initialValues={initialUser}
     />
   );
 };
