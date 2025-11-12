@@ -2,7 +2,7 @@ import React, { Component } from "react";
 type Props = {
   style?: Record<string, any>;
   innerRef?: any;
-  children: JSX.Element;
+  children: React.ReactNode;
 };
 
 class TooltipWrapper extends Component<Props> {

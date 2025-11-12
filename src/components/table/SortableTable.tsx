@@ -120,26 +120,33 @@ const sortData = (
 
   const groupedData = groupData(data, column),
     groupKey = get(column, "grouping.key");
-  let sortedData = [...groupedData];
+  const sortedData = [...groupedData];
 
   switch (sortOrder) {
     case TableSortOrder.ASCENDING:
-      column.descSortFunction && typeof column.ascSortFunction == "function"
-        ? sortedData.sort((a, b) => column.ascSortFunction(a, b, sortKey))
-        : sortedData.sort((a, b) => sortStringByKeyAsc(a, b, sortKey));
+      if (
+        column.descSortFunction &&
+        typeof column.ascSortFunction == "function"
+      ) {
+        sortedData.sort((a, b) => column.ascSortFunction(a, b, sortKey));
+      } else {
+        sortedData.sort((a, b) => sortStringByKeyAsc(a, b, sortKey));
+      }
 
       // Sort also groued data
       if (groupKey) {
         sortedData.forEach((item) => {
           if (item.isTableGroup) {
-            (column.ascSortFunction && typeof column.ascSortFunction) ==
-            "function"
-              ? item.tableRows.sort((a, b) =>
-                  column.ascSortFunction(a, b, sortKey),
-                )
-              : item.tableRows.sort((a, b) =>
-                  sortStringByKeyAsc(a, b, sortKey),
-                );
+            if (
+              column.ascSortFunction &&
+              typeof column.ascSortFunction == "function"
+            ) {
+              item.tableRows.sort((a, b) =>
+                column.ascSortFunction(a, b, sortKey),
+              );
+            } else {
+              item.tableRows.sort((a, b) => sortStringByKeyAsc(a, b, sortKey));
+            }
           }
         });
       }
@@ -147,22 +154,29 @@ const sortData = (
       break;
 
     case TableSortOrder.DESCENDING:
-      column.descSortFunction && typeof column.descSortFunction == "function"
-        ? sortedData.sort((a, b) => column.descSortFunction(a, b, sortKey))
-        : sortedData.sort((a, b) => sortStringByKeyDesc(a, b, sortKey));
+      if (
+        column.descSortFunction &&
+        typeof column.descSortFunction == "function"
+      ) {
+        sortedData.sort((a, b) => column.descSortFunction(a, b, sortKey));
+      } else {
+        sortedData.sort((a, b) => sortStringByKeyDesc(a, b, sortKey));
+      }
 
       // Sort also groued data
       if (groupKey) {
         sortedData.forEach((item) => {
           if (item.isTableGroup) {
-            (column.descSortFunction && typeof column.descSortFunction) ==
-            "function"
-              ? item.tableRows.sort((a, b) =>
-                  column.descSortFunction(a, b, sortKey),
-                )
-              : item.tableRows.sort((a, b) =>
-                  sortStringByKeyDesc(a, b, sortKey),
-                );
+            if (
+              column.descSortFunction &&
+              typeof column.descSortFunction == "function"
+            ) {
+              item.tableRows.sort((a, b) =>
+                column.descSortFunction(a, b, sortKey),
+              );
+            } else {
+              item.tableRows.sort((a, b) => sortStringByKeyDesc(a, b, sortKey));
+            }
           }
         });
       }
@@ -307,7 +321,7 @@ class SortableTable extends Component<Props, State> {
 
     const ths = Array.from(this.thead.querySelectorAll("th"));
     const scrollHeaderColumnStyles = ths.map((th) => {
-      // @ts-ignore
+      // @ts-expect-error ts(2339)
       const rect = th.getBoundingClientRect();
       return {
         width: rect.width || null,

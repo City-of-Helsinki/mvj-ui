@@ -52,14 +52,16 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
   }
 
   setHidden = (isPanelOpen: boolean) => {
-    let wrapper = document.querySelector(
+    const wrapper = document.querySelector(
       ".table__table-and-panel-wrapper",
     ) as HTMLElement;
-    wrapper
-      ? isPanelOpen
-        ? (wrapper.style.overflow = "visible")
-        : (wrapper.style.overflow = "hidden")
-      : null;
+    if (wrapper) {
+      if (isPanelOpen) {
+        wrapper.style.overflow = "visible";
+      } else {
+        wrapper.style.overflow = "hidden";
+      }
+    }
   };
   setContainerRef = (el: any) => {
     this.container = el;

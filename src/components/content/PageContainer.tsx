@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import classNames from "classnames";
 import ReactResizeDetector from "react-resize-detector";
 type Props = {
-  children?: any;
+  children?: React.ReactNode;
   className?: string;
   hasTabs?: boolean;
 };
