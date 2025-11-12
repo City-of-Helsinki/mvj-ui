@@ -144,6 +144,16 @@ export const Classification = {
 } as const;
 
 /**
+ * In Finnish: Rakentamiskelpoisuuden selvitysaste
+ */
+export const ConstructabilityState = {
+  UNVERIFIED: "unverified",
+  REQUIRES_MEASURES: "requires_measures",
+  ENQUIRY_SENT: "enquiry_sent",
+  COMPLETE: "complete",
+};
+
+/**
  * CreditInvoiceOptions enumerable.
  *
  * @type {{FULL: string, RECEIVABLE_TYPE: string, RECEIVABLE_TYPE_AMOUNT: string,}}
