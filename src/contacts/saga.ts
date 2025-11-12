@@ -1,5 +1,5 @@
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import { SubmissionError } from "redux-form";
 import {
   hideContactModal,

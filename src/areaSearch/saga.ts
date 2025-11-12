@@ -39,7 +39,7 @@ import {
 import { editApplicantInfoCheckItemRequest } from "@/plotApplications/requests";
 import { receiveUpdatedApplicantInfoCheckItem } from "@/application/actions";
 import { displayUIMessage } from "@/util/helpers";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import { getRouteById, Routes } from "@/root/routes";
 import { createApplicationRequest } from "@/application/requests";
 import type {

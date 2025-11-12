@@ -7,7 +7,7 @@ import {
   takeEvery,
   takeLatest,
 } from "redux-saga/effects";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import { SubmissionError } from "redux-form";
 import { getRouteById, Routes } from "@/root/routes";
 import {
@@ -843,7 +843,7 @@ export default function* (): Generator<any, any, any> {
       yield takeLatest("mvj/leases/SEND_EMAIL", sendEmailSaga);
       yield takeLatest("mvj/leases/START_INVOICING", startInvoicingSaga);
       yield takeLatest("mvj/leases/STOP_INVOICING", stopInvoicingSaga);
-      yield takeLatest(
+      (yield takeLatest(
         "mvj/leases/SET_RENT_INFO_COMPLETE",
         setRentInfoCompleteSaga,
       ),
@@ -851,7 +851,7 @@ export default function* (): Generator<any, any, any> {
           "mvj/leases/SET_RENT_INFO_UNCOMPLETE",
           setRentInfoUncompleteSaga,
         ),
-        yield takeLatest("mvj/leases/CREATE_CHARGE", createChargeSaga);
+        yield takeLatest("mvj/leases/CREATE_CHARGE", createChargeSaga));
       yield takeLatest(
         "mvj/leases/COPY_AREAS_TO_CONTRACT",
         copyAreasToContractSaga,

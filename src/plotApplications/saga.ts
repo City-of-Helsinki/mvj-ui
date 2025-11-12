@@ -8,7 +8,7 @@ import {
   takeLatest,
 } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import { displayUIMessage } from "@/util/helpers";
 import {
   applicationRelatedFormNotFound,
