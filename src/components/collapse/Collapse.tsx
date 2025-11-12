@@ -1,6 +1,5 @@
 import { $Shape } from "utility-types";
 import React, { PureComponent } from "react";
-import ReactDOM from "react-dom";
 import classNames from "classnames";
 import { Row, Column } from "react-foundation";
 import ReactResizeDetector from "react-resize-detector";
@@ -42,7 +41,7 @@ type State = {
 class Collapse extends PureComponent<Props, State> {
   component: any;
   content: any;
-  tooltip: any;
+  tooltip: HTMLDivElement | null = null;
   static defaultProps: $Shape<Props> = {
     defaultOpen: false,
     hasErrors: false,
@@ -119,13 +118,10 @@ class Collapse extends PureComponent<Props, State> {
     const { onToggle, isOpen: externalIsOpen } = this.props;
     const { isOpen } = this.state;
     const target = e.currentTarget;
-    const tooltipEl = ReactDOM.findDOMNode(this.tooltip);
+    const tooltipEl = this.tooltip;
     const isExternallyControlled = externalIsOpen !== undefined;
 
-    if (
-      !tooltipEl ||
-      (tooltipEl && target !== tooltipEl && !tooltipEl.contains(target))
-    ) {
+    if (!tooltipEl || !tooltipEl.contains(target)) {
       if (!isExternallyControlled) {
         this.handleToggleStateChange(!isOpen);
       }
@@ -214,7 +210,9 @@ class Collapse extends PureComponent<Props, State> {
                     <CollapseHeaderTitle
                       enableUiDataEdit={enableUiDataEdit}
                       uiDataKey={uiDataKey}
-                      tooltipRef={(ref) => (this.tooltip = ref)}
+                      tooltipRef={(el) => {
+                        this.tooltip = el;
+                      }}
                       tooltipStyle={tooltipStyle}
                     >
                       {headerTitle}

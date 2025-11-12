@@ -1,6 +1,5 @@
 import { $Shape } from "utility-types";
 import React, { PureComponent } from "react";
-import ReactDOM from "react-dom";
 import classNames from "classnames";
 import UIDataTooltip from "@/components/tooltip/UIDataTooltip";
 type Props = {
@@ -17,6 +16,7 @@ type State = {
 
 class CollapseHeaderTitle extends PureComponent<Props, State> {
   timer: any;
+  tooltipEl: HTMLDivElement | null = null;
   state: State = {
     showAddButton: false,
   };
@@ -44,7 +44,7 @@ class CollapseHeaderTitle extends PureComponent<Props, State> {
     event,
   ) => {
     const target = event.currentTarget;
-    const el = ReactDOM.findDOMNode(this);
+    const el = this.tooltipEl;
 
     if (el && (target === el || el.contains(target))) {
       this.stopTimer();
@@ -88,7 +88,12 @@ class CollapseHeaderTitle extends PureComponent<Props, State> {
         <span>{children}</span>
         {(!!uiDataKey || enableUiDataEdit) && (
           <UIDataTooltip
-            innerRef={tooltipRef}
+            innerRef={(el) => {
+              this.tooltipEl = el;
+              if (tooltipRef) {
+                tooltipRef(el);
+              }
+            }}
             enableUiDataEdit={enableUiDataEdit}
             onTooltipClose={this.handleTooltipClose}
             style={tooltipStyle}
