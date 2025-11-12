@@ -1,5 +1,9 @@
-import { Classification, LeaseState } from "@/leases/enums";
-import { RelationTypes } from "@/leases/enums";
+import {
+  Classification,
+  LeaseState,
+  RelationTypes,
+  ConstructabilityState,
+} from "@/leases/enums";
 import type { Action, ApiResponse, Attributes, Methods, User } from "@/types";
 import type { ServiceUnit } from "@/serviceUnits/types";
 import type { AreaSearch } from "@/areaSearch/types";
@@ -116,21 +120,31 @@ export type LeaseArea = {
   location: string;
   plots: Array<Record<string, any>>; // TODO type for Plot
   plan_units: Array<Record<string, any>>; // TODO type for PlanUnit
-  preconstruction_state: string | null; // TODO enum type for ConstructabilityState
+  preconstruction_state:
+    | (typeof ConstructabilityState)[keyof typeof ConstructabilityState]
+    | null;
   preconstruction_estimated_construction_readiness_moment: string | null;
   preconstruction_inspection_moment: string | null;
-  demolition_state: string | null; // ConstructabilityState
-  polluted_land_state: string | null; // ConstructabilityState
+  demolition_state:
+    | (typeof ConstructabilityState)[keyof typeof ConstructabilityState]
+    | null;
+  polluted_land_state:
+    | (typeof ConstructabilityState)[keyof typeof ConstructabilityState]
+    | null;
   polluted_land_rent_condition_state: string | null; // TODO enum type for PollutedLandRentConditionState
   polluted_land_rent_condition_date: string | null;
   polluted_land_planner: Record<string, any> | null; // TODO type for User as in backend
   polluted_land_projectwise_number: string | null;
-  constructability_report_state: string | null; // ConstructabilityState
+  constructability_report_state:
+    | (typeof ConstructabilityState)[keyof typeof ConstructabilityState]
+    | null;
   constructability_report_investigation_state: string | null; // TODO enum type for ConstructabilityReportInvestigationState
   constructability_report_signing_date: string | null;
   constructability_report_signer: string | null;
   constructability_descriptions: Array<Record<string, any>>; // TODO type for ConstructabilityDescription
-  other_state: string | null; // ConstructabilityState
+  other_state:
+    | (typeof ConstructabilityState)[keyof typeof ConstructabilityState]
+    | null;
   archived_decision: Record<string, any>; // TODO type for Decision
   archived_at: string | null;
   archived_note: string | null;
