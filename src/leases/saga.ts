@@ -843,15 +843,15 @@ export default function* (): Generator<any, any, any> {
       yield takeLatest("mvj/leases/SEND_EMAIL", sendEmailSaga);
       yield takeLatest("mvj/leases/START_INVOICING", startInvoicingSaga);
       yield takeLatest("mvj/leases/STOP_INVOICING", stopInvoicingSaga);
-      (yield takeLatest(
+      yield takeLatest(
         "mvj/leases/SET_RENT_INFO_COMPLETE",
         setRentInfoCompleteSaga,
-      ),
-        yield takeLatest(
-          "mvj/leases/SET_RENT_INFO_UNCOMPLETE",
-          setRentInfoUncompleteSaga,
-        ),
-        yield takeLatest("mvj/leases/CREATE_CHARGE", createChargeSaga));
+      );
+      yield takeLatest(
+        "mvj/leases/SET_RENT_INFO_UNCOMPLETE",
+        setRentInfoUncompleteSaga,
+      );
+      yield takeLatest("mvj/leases/CREATE_CHARGE", createChargeSaga);
       yield takeLatest(
         "mvj/leases/COPY_AREAS_TO_CONTRACT",
         copyAreasToContractSaga,
