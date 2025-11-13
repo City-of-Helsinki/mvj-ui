@@ -1,4 +1,5 @@
 import { addEmptyOption } from "@/util/helpers";
+import type { SelectListOption } from "@/types";
 
 /**
  * Get district options
@@ -7,7 +8,7 @@ import { addEmptyOption } from "@/util/helpers";
  */
 export const getDistrictOptions = (
   districts: Array<Record<string, any>>,
-): Array<Record<string, any>> => {
+): Array<SelectListOption> => {
   const items = districts || [];
   return addEmptyOption(
     items.map((choice) => {

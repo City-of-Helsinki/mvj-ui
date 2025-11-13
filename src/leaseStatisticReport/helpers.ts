@@ -2,7 +2,7 @@ import get from "lodash/get";
 import format from "date-fns/format";
 import { formatDate, formatNumber } from "@/util/helpers";
 import { LeaseStatisticReportFormatOptions } from "@/leaseStatisticReport/enums";
-import type { Reports } from "@/types";
+import type { Reports, SelectListOption } from "@/types";
 import { FieldTypes } from "@/enums";
 import type { ReportOptions, ReportOutputField } from "./types";
 
@@ -13,7 +13,7 @@ import type { ReportOptions, ReportOutputField } from "./types";
  */
 export const getReportTypeOptions = (
   reports: Reports,
-): Array<Record<string, any>> => {
+): Array<SelectListOption> => {
   if (reports)
     return Object.entries(reports).map(([key, value]) => {
       return {

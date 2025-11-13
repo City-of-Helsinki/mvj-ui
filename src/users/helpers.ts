@@ -1,5 +1,6 @@
 import { sortStringByKeyAsc } from "@/util/helpers";
 import type { UserList } from "./types";
+import type { SelectListOption } from "@/types";
 
 /**
  * Get user full name as string
@@ -36,7 +37,7 @@ export const getContentUser = (
  * @param {Object[]} users
  * @returns {Object[]}
  */
-export const getUserOptions = (users: UserList): Array<Record<string, any>> => {
+export const getUserOptions = (users: UserList): Array<SelectListOption> => {
   return users
     .map((user) => {
       return {

@@ -1,4 +1,13 @@
 import type { RootState } from "@/root/types";
+
+/**
+ * A generic type for options used in Select lists.
+ */
+export type SelectListOption = {
+  label: string;
+  value: string | number;
+};
+
 export type Action<Type extends string, Payload> = {
   type: Type;
   payload: Payload;

@@ -3,6 +3,7 @@ import { FormNames, TableSortOrder } from "@/enums";
 import { ContactTypes } from "./enums";
 import { getIsEditMode } from "@/contacts/selectors";
 import { removeSessionStorageItem } from "@/util/storage";
+import { SelectListOption } from "@/types";
 
 /**
  * Get full name of contact
@@ -83,7 +84,7 @@ export const getContentContact = (
  */
 export const getContactOptions = (
   contacts: Array<Record<string, any>>,
-): Array<Record<string, any>> =>
+): Array<SelectListOption> =>
   contacts && contacts.length
     ? contacts.map((contact) => ({
         value: contact.id,

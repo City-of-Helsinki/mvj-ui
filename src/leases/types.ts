@@ -4,7 +4,14 @@ import {
   RelationTypes,
   ConstructabilityState,
 } from "@/leases/enums";
-import type { Action, ApiResponse, Attributes, Methods, User } from "@/types";
+import type {
+  Action,
+  ApiResponse,
+  Attributes,
+  Methods,
+  SelectListOption,
+  User,
+} from "@/types";
 import type { ServiceUnit } from "@/serviceUnits/types";
 import type { AreaSearch } from "@/areaSearch/types";
 import type { PlotSearch } from "@/plotSearch/types";
@@ -169,10 +176,6 @@ export type FetchSingleLeaseAfterEditPayload = {
     Record<string, any> | ((...args: Array<any>) => any)
   >;
 };
-export type CreateLeaseRelateTo = {
-  value: number;
-  label: string;
-};
 export type CreateLeasePayload = Partial<
   Pick<Lease, "type" | "state" | "reference_number" | "application_metadata">
 > & {
@@ -185,7 +188,7 @@ export type CreateLeaseFormValues = CreateLeasePayload & {
   start_date?: Lease["start_date"];
   end_date?: Lease["end_date"];
   note?: Lease["note"];
-  relate_to: CreateLeaseRelateTo;
+  relate_to: SelectListOption;
   application_received_at: string;
   area_search_id: number | null;
 };
