@@ -1,6 +1,6 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Column } from "react-foundation";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import FormText from "@/components/form/FormText";
@@ -22,50 +22,33 @@ import { getCurrentLease } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type Props = {
-  currentLease: Lease;
-  loggedUser: Record<string, any>;
-  sendEmail: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
-};
-type State = {
-  currentLease: Lease;
-  emailLogs: Array<Record<string, any>>;
-  isOpen: boolean;
-};
 
-class SendEmail extends PureComponent<Props, State> {
-  state = {
-    currentLease: {},
-    emailLogs: [],
-    isOpen: false,
+const SendEmail: React.FC = () => {
+  const currentLease: Lease = useSelector(getCurrentLease);
+  const loggedUser: Record<string, any> = useSelector(getLoggedInUser);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
+  const [emailLogs, setEmailLogs] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setEmailLogs(getContentEmailLogs(currentLease));
+  }, [currentLease]);
+
+  const handleShowModal = () => {
+    setIsOpen(true);
   };
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
-
-    if (props.currentLease !== state.currentLease) {
-      newState.currentLease = props.currentLease;
-      newState.emailLogs = getContentEmailLogs(props.currentLease);
-    }
-
-    return newState;
-  }
-
-  handleShowModal = () => {
-    this.setState({
-      isOpen: true,
-    });
+  const handleHideModal = () => {
+    setIsOpen(false);
   };
-  handleHideModal = () => {
-    this.setState({
-      isOpen: false,
-    });
-  };
-  handleSend = (values: Record<string, any>) => {
-    const { currentLease, loggedUser, sendEmail } = this.props;
+
+  const handleSend = (values: Record<string, any>) => {
     const payload = {
-      ...values,
+      recipients: values.recipients,
       text: getContentConstructabilityEmail(
         currentLease,
         loggedUser,
@@ -74,122 +57,104 @@ class SendEmail extends PureComponent<Props, State> {
       type: SendEmailTypes.CONSTRUCTABILITY,
       lease: currentLease.id,
     };
-    sendEmail(payload);
-    this.setState({
-      isOpen: false,
-    });
+    dispatch(sendEmail(payload));
+    setIsOpen(false);
   };
-  getRecipientString = (recipients: Array<Record<string, any>>) =>
+
+  const getRecipientString = (recipients: Array<Record<string, any>>) =>
     recipients.map((recipient) => getUserFullName(recipient)).join(", ");
 
-  render() {
-    const { usersPermissions } = this.props;
-    const { emailLogs, isOpen } = this.state;
-    return (
-      <Fragment>
-        <Authorization
-          allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE)}
-        >
-          <SendEmailModal
-            isOpen={isOpen}
-            onCancel={this.handleHideModal}
-            onClose={this.handleHideModal}
-            onSend={this.handleSend}
-          />
-        </Authorization>
+  return (
+    <>
+      <Authorization
+        allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASE)}
+      >
+        <SendEmailModal
+          isOpen={isOpen}
+          onCancel={handleHideModal}
+          onClose={handleHideModal}
+          onSend={handleSend}
+        />
+      </Authorization>
 
-        <Row>
-          <Column small={12} medium={4} large={3}>
-            <Authorization
-              allow={hasPermissions(
+      <Row>
+        <Column small={12} medium={4} large={3}>
+          <Authorization
+            allow={hasPermissions(
+              usersPermissions,
+              UsersPermissions.VIEW_LEASE,
+            )}
+          >
+            <Button
+              className={`${ButtonColors.NEUTRAL} no-margin`}
+              onClick={handleShowModal}
+              style={{
+                marginBottom: 15,
+              }}
+              text="Lähetä sähköposti"
+            />
+          </Authorization>
+        </Column>
+        <Column small={12} medium={8} large={9}>
+          <Authorization
+            allow={
+              hasPermissions(
                 usersPermissions,
-                UsersPermissions.VIEW_LEASE,
+                UsersPermissions.VIEW_LEASE_LEASE_AREAS,
+              ) ||
+              hasPermissions(
+                usersPermissions,
+                UsersPermissions.CHANGE_LEASE_LEASE_AREAS,
+              )
+            }
+          >
+            <>
+              {!emailLogs.length && (
+                <FormText>Ei lähetettyjä sähköposteja</FormText>
               )}
-            >
-              <Button
-                className={`${ButtonColors.NEUTRAL} no-margin`}
-                onClick={this.handleShowModal}
-                style={{
-                  marginBottom: 15,
-                }}
-                text="Lähetä sähköposti"
-              />
-            </Authorization>
-          </Column>
-          <Column small={12} medium={8} large={9}>
-            <Authorization
-              allow={
-                hasPermissions(
-                  usersPermissions,
-                  UsersPermissions.VIEW_LEASE_LEASE_AREAS,
-                ) ||
-                hasPermissions(
-                  usersPermissions,
-                  UsersPermissions.CHANGE_LEASE_LEASE_AREAS,
-                )
-              }
-            >
-              <>
-                {!emailLogs.length && (
-                  <FormText>Ei lähetettyjä sähköposteja</FormText>
-                )}
-                {!!emailLogs.length && (
-                  <div className="constructability__send-email_sent-emails">
-                    <Row>
-                      <Column small={4} medium={3} large={2}>
-                        <FormTextTitle title="Lähetetty" />
-                      </Column>
-                      <Column small={4} medium={3} large={2}>
-                        <FormTextTitle title="Lähettäjä" />
-                      </Column>
-                      <Column small={4} medium={6} large={8}>
-                        <FormTextTitle title="Vastaanottajat" />
-                      </Column>
-                    </Row>
-                    {emailLogs.map((email, index) => {
-                      return (
-                        <Row key={index}>
-                          <Column small={4} medium={3} large={2}>
-                            <ListItem>
-                              {formatDate(
-                                email.created_at,
-                                "dd.MM.yyyy HH:mm",
-                              ) || "-"}
-                            </ListItem>
-                          </Column>
-                          <Column small={4} medium={3} large={2}>
-                            <ListItem>
-                              {getUserFullName(email.user) || "-"}
-                            </ListItem>
-                          </Column>
-                          <Column small={4} medium={6} large={8}>
-                            <ListItem>
-                              {this.getRecipientString(email.recipients) || "-"}
-                            </ListItem>
-                          </Column>
-                        </Row>
-                      );
-                    })}
-                  </div>
-                )}
-              </>
-            </Authorization>
-          </Column>
-        </Row>
-      </Fragment>
-    );
-  }
-}
+              {!!emailLogs.length && (
+                <div className="constructability__send-email_sent-emails">
+                  <Row>
+                    <Column small={4} medium={3} large={2}>
+                      <FormTextTitle title="Lähetetty" />
+                    </Column>
+                    <Column small={4} medium={3} large={2}>
+                      <FormTextTitle title="Lähettäjä" />
+                    </Column>
+                    <Column small={4} medium={6} large={8}>
+                      <FormTextTitle title="Vastaanottajat" />
+                    </Column>
+                  </Row>
+                  {emailLogs.map((email, index) => {
+                    return (
+                      <Row key={index}>
+                        <Column small={4} medium={3} large={2}>
+                          <ListItem>
+                            {formatDate(email.created_at, "dd.MM.yyyy HH:mm") ||
+                              "-"}
+                          </ListItem>
+                        </Column>
+                        <Column small={4} medium={3} large={2}>
+                          <ListItem>
+                            {getUserFullName(email.user) || "-"}
+                          </ListItem>
+                        </Column>
+                        <Column small={4} medium={6} large={8}>
+                          <ListItem>
+                            {getRecipientString(email.recipients) || "-"}
+                          </ListItem>
+                        </Column>
+                      </Row>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          </Authorization>
+        </Column>
+      </Row>
+    </>
+  );
+};
 
-export default connect(
-  (state) => {
-    return {
-      currentLease: getCurrentLease(state),
-      loggedUser: getLoggedInUser(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    sendEmail,
-  },
-)(SendEmail);
+export default SendEmail;

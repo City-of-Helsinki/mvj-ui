@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import Comment from "./Comment";
 import FormText from "@/components/form/FormText";
@@ -8,6 +8,7 @@ import {
   LeaseConstructabilityDescriptionsFieldTitles,
 } from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
+
 type Props = {
   commentClassName?: string;
   comments: Array<Record<string, any>>;
@@ -15,13 +16,13 @@ type Props = {
   showTitle?: boolean;
 };
 
-const Comments = ({
+const Comments: React.FC<Props> = ({
   commentClassName,
   comments,
   showNoDataText = true,
   showTitle = true,
 }: Props) => (
-  <Fragment>
+  <>
     {showTitle && (
       <SubTitle
         uiDataKey={getUiDataLeaseKey(
@@ -46,7 +47,7 @@ const Comments = ({
         </FormText>
       )
     )}
-  </Fragment>
+  </>
 );
 
 export default Comments;

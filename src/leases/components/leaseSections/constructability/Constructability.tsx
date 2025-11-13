@@ -1,5 +1,5 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import ConstructabilityItem from "./ConstructabilityItem";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
@@ -12,117 +12,86 @@ import { getFieldOptions } from "@/util/helpers";
 import { getAttributes, getCurrentLease } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
-type Props = {
-  attributes: Attributes;
-  currentLease: Lease;
-};
-type State = {
-  areas: Array<Record<string, any>>;
-  attributes: Attributes;
-  constructabilityReportInvestigationStateOptions: Array<Record<string, any>>;
-  constructabilityStateOptions: Array<Record<string, any>>;
-  currentLease: Lease;
-  locationOptions: Array<Record<string, any>>;
-  pollutedLandRentConditionStateOptions: Array<Record<string, any>>;
-  typeOptions: Array<Record<string, any>>;
-};
 
-class Constructability extends PureComponent<Props, State> {
-  state = {
-    areas: [],
-    attributes: null,
-    constructabilityReportInvestigationStateOptions: [],
-    constructabilityStateOptions: [],
-    currentLease: {},
-    locationOptions: [],
-    pollutedLandRentConditionStateOptions: [],
-    typeOptions: [],
-  };
+const Constructability: React.FC = () => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const currentLease: Lease = useSelector(getCurrentLease);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const [areas, setAreas] = useState([]);
+  const [locationOptions, setLocationOptions] = useState([]);
+  const [typeOptions, setTypeOptions] = useState([]);
+  const [constructabilityStateOptions, setConstructabilityStateOptions] =
+    useState([]);
+  const [
+    constructabilityReportInvestigationStateOptions,
+    setConstructabilityReportInvestigationStateOptions,
+  ] = useState([]);
+  const [
+    pollutedLandRentConditionStateOptions,
+    setPollutedLandRentConditionStateOptions,
+  ] = useState([]);
 
-    if (props.attributes !== state.attributes) {
-      newState.currentLease = props.currentLease;
-      newState.constructabilityReporInvestigationtStateOptions =
-        getFieldOptions(
-          props.attributes,
-          LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE,
-        );
-      newState.constructabilityStateOptions = getFieldOptions(
-        props.attributes,
-        LeaseAreasFieldPaths.PRECONSTRUCTION_STATE,
-      );
-      newState.locationOptions = getFieldOptions(
-        props.attributes,
-        LeaseAreasFieldPaths.LOCATION,
-      );
-      newState.pollutedLandRentConditionStateOptions = getFieldOptions(
-        props.attributes,
-        LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE,
-      );
-      newState.typeOptions = getFieldOptions(
-        props.attributes,
-        LeaseAreasFieldPaths.TYPE,
-      );
-    }
+  // State to update when lease changes
+  useEffect(() => {
+    setAreas(getContentConstructabilityAreas(currentLease));
+  }, [currentLease]);
 
-    if (props.currentLease !== state.currentLease) {
-      newState.currentLease = props.currentLease;
-      newState.areas = getContentConstructabilityAreas(props.currentLease);
-    }
-
-    return newState;
-  }
-
-  render() {
-    const {
-      areas,
-      constructabilityReportInvestigationStateOptions,
-      constructabilityStateOptions,
-      locationOptions,
-      pollutedLandRentConditionStateOptions,
-      typeOptions,
-    } = this.state;
-    return (
-      <Fragment>
-        <Title
-          uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY)}
-        >
-          {LeaseAreasFieldTitles.CONSTRUCTABILITY}
-        </Title>
-        <Divider />
-        <SendEmail />
-
-        {!areas ||
-          (!areas.length && (
-            <FormText className="no-margin">Ei vuokra-alueita</FormText>
-          ))}
-        {areas &&
-          !!areas.length &&
-          areas.map((area) => (
-            <ConstructabilityItem
-              key={area.id}
-              area={area}
-              constructabilityReportInvestigationStateOptions={
-                constructabilityReportInvestigationStateOptions
-              }
-              constructabilityStateOptions={constructabilityStateOptions}
-              locationOptions={locationOptions}
-              pollutedLandRentConditionStateOptions={
-                pollutedLandRentConditionStateOptions
-              }
-              typeOptions={typeOptions}
-            />
-          ))}
-      </Fragment>
+  // State to update when lease attributes change
+  useEffect(() => {
+    setConstructabilityReportInvestigationStateOptions(
+      getFieldOptions(
+        attributes,
+        LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE,
+      ),
     );
-  }
-}
+    setConstructabilityStateOptions(
+      getFieldOptions(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE),
+    );
+    setLocationOptions(
+      getFieldOptions(attributes, LeaseAreasFieldPaths.LOCATION),
+    );
+    setPollutedLandRentConditionStateOptions(
+      getFieldOptions(
+        attributes,
+        LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE,
+      ),
+    );
+    setTypeOptions(getFieldOptions(attributes, LeaseAreasFieldPaths.TYPE));
+  }, [attributes]);
 
-export default connect((state) => {
-  return {
-    attributes: getAttributes(state),
-    currentLease: getCurrentLease(state),
-  };
-})(Constructability);
+  return (
+    <>
+      <Title
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY)}
+      >
+        {LeaseAreasFieldTitles.CONSTRUCTABILITY}
+      </Title>
+      <Divider />
+      <SendEmail />
+
+      {!areas ||
+        (!areas.length && (
+          <FormText className="no-margin">Ei vuokra-alueita</FormText>
+        ))}
+      {areas &&
+        !!areas.length &&
+        areas.map((area) => (
+          <ConstructabilityItem
+            key={area.id}
+            area={area}
+            constructabilityReportInvestigationStateOptions={
+              constructabilityReportInvestigationStateOptions
+            }
+            constructabilityStateOptions={constructabilityStateOptions}
+            locationOptions={locationOptions}
+            pollutedLandRentConditionStateOptions={
+              pollutedLandRentConditionStateOptions
+            }
+            typeOptions={typeOptions}
+          />
+        ))}
+    </>
+  );
+};
+
+export default Constructability;
