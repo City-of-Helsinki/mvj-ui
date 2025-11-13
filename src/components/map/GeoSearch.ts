@@ -1,11 +1,17 @@
-import { MapControl, withLeaflet } from "react-leaflet";
+import { useEffect } from "react";
+import { useLeaflet } from "react-leaflet";
 import { GeoSearchControl } from "leaflet-geosearch";
+import type { Map } from "leaflet";
 import HelsinkiProvider from "./HelsinkiProvider";
-type LeafletElement = typeof GeoSearchControl;
 
-class GeoSearch extends MapControl<LeafletElement> {
-  createLeafletElement() {
-    return GeoSearchControl({
+const GeoSearch = (): null => {
+  const leaflet = useLeaflet();
+  const map: Map = leaflet.map;
+
+  useEffect(() => {
+    if (!map) return;
+
+    const geoSearchControl = GeoSearchControl({
       position: "topright",
       style: "bar",
       showMarker: false,
@@ -18,7 +24,15 @@ class GeoSearch extends MapControl<LeafletElement> {
       searchLabel: "Hae osoitteella",
       zoomLevel: 9,
     });
-  }
-}
 
-export default withLeaflet(GeoSearch);
+    map.addControl(geoSearchControl);
+
+    return () => {
+      map.removeControl(geoSearchControl);
+    };
+  }, [map]);
+
+  return null;
+};
+
+export default GeoSearch;
