@@ -1,4 +1,4 @@
-import { Provider } from "leaflet-geosearch";
+import { JsonProvider } from "leaflet-geosearch";
 import { SERVICE_MAP_URL } from "@/util/constants";
 import type {
   AddressResult,
@@ -7,7 +7,7 @@ import type {
   SearchArgument,
   SearchResult,
 } from "./types";
-export default class HelsinkiProvider extends Provider<
+export default class HelsinkiProvider extends JsonProvider<
   ServiceMapResponse,
   AddressResult
 > {
@@ -27,7 +27,9 @@ export default class HelsinkiProvider extends Provider<
       .join("&");
   }
 
-  async search({ query }: SearchArgument): Promise<Array<AddressResult>> {
+  async search({
+    query,
+  }: SearchArgument): Promise<Array<SearchResult<AddressResult>>> {
     const url = this.endpoint({
       query,
     });

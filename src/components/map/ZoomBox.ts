@@ -1,8 +1,10 @@
+import { useEffect } from "react";
+import { useLeaflet } from "react-leaflet";
 import { Control } from "leaflet";
 import "leaflet-zoombox";
-import { MapControl, withLeaflet } from "react-leaflet";
+import type { Map } from "leaflet";
 import type { ControlPosition } from "./types";
-type LeafletElement = Control.Zoom;
+
 type Props = {
   position?: ControlPosition;
   addToZoomControl?: boolean;
@@ -12,10 +14,22 @@ type Props = {
   title?: string;
 };
 
-class ZoomBox extends MapControl<LeafletElement, Props> {
-  createLeafletElement(props: Props): LeafletElement {
-    return new Control.ZoomBox(props);
-  }
-}
+const ZoomBox = (props: Props) => {
+  const leaflet = useLeaflet();
+  const map: Map = leaflet.map;
 
-export default withLeaflet(ZoomBox);
+  useEffect(() => {
+    if (!map) return;
+
+    const zoomBoxControl = new Control.ZoomBox(props);
+    map.addControl(zoomBoxControl);
+
+    return () => {
+      map.removeControl(zoomBoxControl);
+    };
+  }, [map, props]);
+
+  return null;
+};
+
+export default ZoomBox;
