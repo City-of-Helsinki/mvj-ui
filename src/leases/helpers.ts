@@ -2539,7 +2539,7 @@ export const getContentDebtCollectionDecisions = (
  * @returns {Object[]}
  */
 export const getContentLeasesFeatures = (
-  leases: Array<Record<string, any>>,
+  leases: Array<Lease>,
 ): Array<LeafletFeature> => {
   return leases.map((lease) => {
     const coordinates = [];
@@ -2575,7 +2575,7 @@ export const getContentLeasesFeatures = (
  * @returns {Object}
  */
 export const getContentLeasesGeoJson = (
-  leases: Array<Record<string, any>>,
+  leases: Array<Lease>,
 ): LeafletGeoJson => {
   const features = getContentLeasesFeatures(leases);
   return {
@@ -3997,8 +3997,6 @@ export const getReviewDays = (
 /**
  * Check if the lease is an A-typed lease.
  * old_dwellings_in_housing_companies_price_index is only available for A-typed leases.
- * @param {Lease} lease
- * @returns {string}
  */
 export const isATypedLease = (leaseTypeIdentifier: string): boolean => {
   const identifier = leaseTypeIdentifier || "";
