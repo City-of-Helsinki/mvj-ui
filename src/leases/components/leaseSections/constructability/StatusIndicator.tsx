@@ -1,7 +1,8 @@
-import React, { Fragment } from "react";
+import React from "react";
 import classnames from "classnames";
 import { ConstructabilityStatus } from "@/leases/enums";
 import { getLabelOfOption } from "@/util/helpers";
+
 type StatusIndicatorProps = {
   researchState: string;
   stateOptions: Array<Record<string, any>>;
@@ -11,7 +12,7 @@ const StatusIndicator = ({
   researchState,
   stateOptions,
 }: StatusIndicatorProps) => (
-  <Fragment>
+  <>
     <div
       className={classnames(
         {
@@ -41,7 +42,7 @@ const StatusIndicator = ({
         )}
       </span>
     </div>
-  </Fragment>
+  </>
 );
 
 export default StatusIndicator;

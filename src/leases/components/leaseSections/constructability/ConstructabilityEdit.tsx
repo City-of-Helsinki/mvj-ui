@@ -1,7 +1,6 @@
-import React, { Fragment, PureComponent, ReactElement } from "react";
-import { connect } from "react-redux";
+import React, { useState, ReactElement, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
-import flowRight from "lodash/flowRight";
 import ConstructabilityItemEdit from "./ConstructabilityItemEdit";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
@@ -21,29 +20,36 @@ import {
 } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
+import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import { getUsersPermissions } from "@/usersPermissions/selectors";
+
 type AreaProps = {
   attributes: Attributes;
   constructabilityStateOptions: Array<Record<string, any>>;
+  currentLease: Lease;
   errors: Record<string, any> | null | undefined;
   fields: any;
   isSaveClicked: boolean;
   locationOptions: Array<Record<string, any>>;
   savedAreas: Array<Record<string, any>>;
   typeOptions: Array<Record<string, any>>;
+  usersPermissions: UsersPermissionsType;
 };
 
 const renderAreas = ({
   attributes,
   constructabilityStateOptions,
+  currentLease,
   errors,
   fields,
   isSaveClicked,
   locationOptions,
   savedAreas,
   typeOptions,
+  usersPermissions,
 }: AreaProps): ReactElement => {
   return (
-    <Fragment>
+    <>
       {!fields ||
         (!fields.length && (
           <FormText className="no-margin">Ei vuokra-alueita</FormText>
@@ -56,137 +62,95 @@ const renderAreas = ({
           return (
             <ConstructabilityItemEdit
               key={index}
+              field={area}
               attributes={attributes}
               constructabilityStateOptions={constructabilityStateOptions}
+              currentLease={currentLease}
               errors={errors}
-              field={area}
               isSaveClicked={isSaveClicked}
               locationOptions={locationOptions}
               savedArea={savedAreas[index]}
               typeOptions={typeOptions}
+              usersPermissions={usersPermissions}
             />
           );
         })}
-    </Fragment>
+    </>
   );
 };
 
 type Props = {
-  attributes: Attributes;
-  currentLease: Lease;
-  errors: Record<string, any> | null | undefined;
   handleSubmit: (...args: Array<any>) => any;
-  isSaveClicked: boolean;
-  receiveFormValidFlags: (...args: Array<any>) => any;
   valid: boolean;
 };
-type State = {
-  attributes: Attributes;
-  constructabilityStateOptions: Array<Record<string, any>>;
-  currentLease: Lease;
-  locationOptions: Array<Record<string, any>>;
-  typeOptions: Array<Record<string, any>>;
-  savedAreas: Array<Record<string, any>>;
+
+const ConstructabilityEdit: React.FC<Props> = ({ valid, handleSubmit }) => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const currentLease: Lease = useSelector(getCurrentLease);
+  const errors = useSelector((state) => getErrorsByFormName(state, formName));
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const usersPermissions = useSelector(getUsersPermissions);
+
+  const [constructabilityStateOptions, setConstructabilityStateOptions] =
+    useState([]);
+  const [locationOptions, setLocationOptions] = useState([]);
+  const [typeOptions, setTypeOptions] = useState([]);
+  const [savedAreas, setSavedAreas] = useState([]);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(
+      receiveFormValidFlags({
+        [formName]: valid,
+      }),
+    );
+  }, [valid, dispatch]);
+
+  useEffect(() => {
+    setSavedAreas(getContentConstructabilityAreas(currentLease));
+  }, [currentLease]);
+
+  useEffect(() => {
+    setConstructabilityStateOptions(
+      getFieldOptions(attributes, LeaseAreasFieldPaths.PRECONSTRUCTION_STATE),
+    );
+    setLocationOptions(
+      getFieldOptions(attributes, LeaseAreasFieldPaths.LOCATION),
+    );
+    setTypeOptions(getFieldOptions(attributes, LeaseAreasFieldPaths.TYPE));
+  }, [attributes]);
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <Title
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY)}
+      >
+        {LeaseAreasFieldTitles.CONSTRUCTABILITY}
+      </Title>
+      <Divider />
+      <SendEmail />
+
+      <FieldArray
+        name="lease_areas"
+        component={renderAreas}
+        attributes={attributes}
+        constructabilityStateOptions={constructabilityStateOptions}
+        currentLease={currentLease}
+        errors={errors}
+        isSaveClicked={isSaveClicked}
+        locationOptions={locationOptions}
+        savedAreas={savedAreas}
+        typeOptions={typeOptions}
+        usersPermissions={usersPermissions}
+      />
+    </form>
+  );
 };
 
-class ConstructabilityEdit extends PureComponent<Props, State> {
-  state = {
-    attributes: null,
-    constructabilityStateOptions: [],
-    currentLease: {},
-    locationOptions: [],
-    typeOptions: [],
-    savedAreas: [],
-  };
-
-  componentDidUpdate(prevProps) {
-    const { receiveFormValidFlags } = this.props;
-
-    if (prevProps.valid !== this.props.valid) {
-      receiveFormValidFlags({
-        [formName]: this.props.valid,
-      });
-    }
-  }
-
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
-
-    if (props.attributes !== state.attributes) {
-      newState.attributes = props.attributes;
-      newState.constructabilityStateOptions = getFieldOptions(
-        props.attributes,
-        LeaseAreasFieldPaths.PRECONSTRUCTION_STATE,
-      );
-      newState.locationOptions = getFieldOptions(
-        props.attributes,
-        LeaseAreasFieldPaths.LOCATION,
-      );
-      newState.typeOptions = getFieldOptions(
-        props.attributes,
-        LeaseAreasFieldPaths.TYPE,
-      );
-    }
-
-    if (props.currentLease !== state.currentLease) {
-      newState.currentLease = props.currentLease;
-      newState.savedAreas = getContentConstructabilityAreas(props.currentLease);
-    }
-
-    return newState;
-  }
-
-  render() {
-    const { errors, handleSubmit, isSaveClicked } = this.props;
-    const {
-      constructabilityStateOptions,
-      locationOptions,
-      savedAreas,
-      typeOptions,
-    } = this.state;
-    return (
-      <form onSubmit={handleSubmit}>
-        <Title
-          enableUiDataEdit
-          uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.CONSTRUCTABILITY)}
-        >
-          {LeaseAreasFieldTitles.CONSTRUCTABILITY}
-        </Title>
-        <Divider />
-        <SendEmail />
-
-        <FieldArray
-          component={renderAreas}
-          constructabilityStateOptions={constructabilityStateOptions}
-          errors={errors}
-          isSaveClicked={isSaveClicked}
-          locationOptions={locationOptions}
-          name="lease_areas"
-          savedAreas={savedAreas}
-          typeOptions={typeOptions}
-        />
-      </form>
-    );
-  }
-}
-
 const formName = FormNames.LEASE_CONSTRUCTABILITY;
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        attributes: getAttributes(state),
-        currentLease: getCurrentLease(state),
-        errors: getErrorsByFormName(state, formName),
-        isSaveClicked: getIsSaveClicked(state),
-      };
-    },
-    {
-      receiveFormValidFlags,
-    },
-  ),
-  reduxForm({
-    form: formName,
-    destroyOnUnmount: false,
-  }),
-)(ConstructabilityEdit) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+  destroyOnUnmount: false,
+})(ConstructabilityEdit) as React.ComponentType<any>;

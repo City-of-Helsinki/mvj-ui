@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";
 import Collapse from "@/components/collapse/Collapse";
 import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle";
@@ -20,6 +19,7 @@ import {
   LeaseAreasFieldPaths,
   LeaseAreasFieldTitles,
   LeaseConstructabilityDescriptionsFieldPaths,
+  ConstructabilityState,
 } from "@/leases/enums";
 import { getFullAddress } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
@@ -33,50 +33,78 @@ import {
 import { getUserFullName } from "@/users/helpers";
 import { getAttributes, getCollapseStateByKey } from "@/leases/selectors";
 import type { Attributes } from "types";
+
 const formName = FormNames.LEASE_CONSTRUCTABILITY;
+
 type Props = {
   area: Record<string, any>;
-  areaCollapseState: boolean;
-  attributes: Attributes;
-  constructabilityReportCollapseState: boolean;
   constructabilityReportInvestigationStateOptions: Array<Record<string, any>>;
-  constructabilityStateOptions: Array<Record<string, any>>;
-  demolitionCollapseState: boolean;
+  constructabilityStateOptions: Array<typeof ConstructabilityState>;
   locationOptions: Array<Record<string, any>>;
-  otherCollapseState: boolean;
-  pollutedLandCollapseState: boolean;
   pollutedLandRentConditionStateOptions: Array<Record<string, any>>;
-  preconstructionCollapseState: boolean;
-  receiveCollapseStates: (...args: Array<any>) => any;
   typeOptions: Array<Record<string, any>>;
 };
 
-const ConstructabilityItem = ({
+const ConstructabilityItem: React.FC<Props> = ({
   area,
-  areaCollapseState,
-  attributes,
-  constructabilityReportCollapseState,
   constructabilityReportInvestigationStateOptions,
   constructabilityStateOptions,
-  demolitionCollapseState,
   locationOptions,
-  otherCollapseState,
-  pollutedLandCollapseState,
   pollutedLandRentConditionStateOptions,
-  preconstructionCollapseState,
-  receiveCollapseStates,
   typeOptions,
 }: Props) => {
+  const areaCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${area.id}.area`,
+    ),
+  );
+  const preconstructionCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${area.id}.preconstruction`,
+    ),
+  );
+  const demolitionCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${area.id}.demolition`,
+    ),
+  );
+  const pollutedLandCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${area.id}.polluted_land`,
+    ),
+  );
+  const constructabilityReportCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${area.id}.constructability_report`,
+    ),
+  );
+  const otherCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${area.id}.other`,
+    ),
+  );
+
+  const attributes: Attributes = useSelector(getAttributes);
+  const dispatch = useDispatch();
+
   const handleCollapseToggle = (key: string, val: boolean) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [formName]: {
-          [area.id]: {
-            [key]: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.READONLY]: {
+          [formName]: {
+            [area.id]: {
+              [key]: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const handleAreaCollapseToggle = (val: boolean) => {
@@ -111,7 +139,7 @@ const ConstructabilityItem = ({
       key={area.id}
       defaultOpen={areaCollapseState !== undefined ? areaCollapseState : true}
       headerSubtitles={
-        <Fragment>
+        <>
           <Column>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -153,7 +181,7 @@ const ConstructabilityItem = ({
               </CollapseHeaderSubtitle>
             </Authorization>
           </Column>
-        </Fragment>
+        </>
       }
       headerTitle={
         <Authorization
@@ -498,7 +526,7 @@ const ConstructabilityItem = ({
               <FormText>Ei Matti raportteja</FormText>
             )}
             {!!pollutedLandMattiAttachments.length && (
-              <Fragment>
+              <>
                 <Row>
                   <Column small={3} large={4}>
                     <Authorization
@@ -579,7 +607,7 @@ const ConstructabilityItem = ({
                     </Row>
                   );
                 })}
-              </Fragment>
+              </>
             )}
           </>
         </Authorization>
@@ -738,7 +766,7 @@ const ConstructabilityItem = ({
               <FormText>Ei geoteknisen palvelun tiedostoja</FormText>
             )}
             {!!constructabilityReportGeotechnicalAttachments.length && (
-              <Fragment>
+              <>
                 <Row>
                   <Column small={3} large={4}>
                     <Authorization
@@ -820,7 +848,7 @@ const ConstructabilityItem = ({
                     );
                   },
                 )}
-              </Fragment>
+              </>
             )}
           </>
         </Authorization>
@@ -899,38 +927,4 @@ const ConstructabilityItem = ({
   );
 };
 
-export default connect(
-  (state, props: Props) => {
-    const id = get(props, "area.id");
-    return {
-      areaCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.area`,
-      ),
-      attributes: getAttributes(state),
-      constructabilityReportCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.constructability_report`,
-      ),
-      demolitionCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.demolition`,
-      ),
-      otherCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.other`,
-      ),
-      pollutedLandCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.polluted_land`,
-      ),
-      preconstructionCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.preconstruction`,
-      ),
-    };
-  },
-  {
-    receiveCollapseStates,
-  },
-)(ConstructabilityItem);
+export default ConstructabilityItem;

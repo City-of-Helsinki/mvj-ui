@@ -1,8 +1,7 @@
-import React, { Fragment, ReactElement } from "react";
-import { connect } from "react-redux";
+import React, { ReactElement } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { FieldArray, formValueSelector } from "redux-form";
-import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
@@ -41,7 +40,7 @@ import {
   LeaseConstructabilityDescriptionsFieldTitles,
 } from "@/leases/enums";
 import { LeaseAreaAttachmentTypes } from "@/leaseAreaAttachment/enums";
-import { UsersPermissions } from "@/usersPermissions/enums";
+import { UsersPermissions as UsersPermissionsEnum } from "@/usersPermissions/enums";
 import { getFullAddress } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getUserFullName } from "@/users/helpers";
@@ -56,12 +55,7 @@ import {
   isFieldAllowedToRead,
   isFieldRequired,
 } from "@/util/helpers";
-import {
-  getAttributes,
-  getCollapseStateByKey,
-  getCurrentLease,
-} from "@/leases/selectors";
-import { getUsersPermissions } from "@/usersPermissions/selectors";
+import { getCollapseStateByKey } from "@/leases/selectors";
 import { referenceNumber } from "@/components/form/validations";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
@@ -72,8 +66,8 @@ const getPreconstructionErrors = (
   area: string,
 ) => {
   return {
-    ...get(errors, `${area}.preconstruction_state`, {}),
-    ...get(errors, `${area}.descriptionsPreconstruction`, {}),
+    ...(errors?.[area]?.preconstruction_state ?? {}),
+    ...(errors?.[area]?.descriptionsPreconstruction ?? {}),
   };
 };
 
@@ -82,8 +76,8 @@ const getDemolitionErrors = (
   area: string,
 ) => {
   return {
-    ...get(errors, `${area}.demolition_state`, {}),
-    ...get(errors, `${area}.descriptionsDemolition`, {}),
+    ...(errors?.[area]?.demolition_state ?? {}),
+    ...(errors?.[area]?.descriptionsDemolition ?? {}),
   };
 };
 
@@ -92,12 +86,12 @@ const getPollutedLandErrors = (
   area: string,
 ) => {
   return {
-    ...get(errors, `${area}.polluted_land_state`, {}),
-    ...get(errors, `${area}.polluted_land_rent_condition_state`, {}),
-    ...get(errors, `${area}.polluted_land_rent_condition_date`, {}),
-    ...get(errors, `${area}.polluted_land_planner`, {}),
-    ...get(errors, `${area}.polluted_land_projectwise_number`, {}),
-    ...get(errors, `${area}.descriptionsPollutedLand`, {}),
+    ...(errors?.[area]?.polluted_land_state ?? {}),
+    ...(errors?.[area]?.polluted_land_rent_condition_state ?? {}),
+    ...(errors?.[area]?.polluted_land_rent_condition_date ?? {}),
+    ...(errors?.[area]?.polluted_land_planner ?? {}),
+    ...(errors?.[area]?.polluted_land_projectwise_number ?? {}),
+    ...(errors?.[area]?.descriptionsPollutedLand ?? {}),
   };
 };
 
@@ -106,12 +100,12 @@ const getConstructabilityReportErrors = (
   area: string,
 ) => {
   return {
-    ...get(errors, `${area}.constructability_report_state`),
-    ...get(errors, `${area}.constructability_report_investigation_state`, {}),
-    ...get(errors, `${area}.constructability_report_signing_date`, {}),
-    ...get(errors, `${area}.constructability_report_signer`, {}),
-    ...get(errors, `${area}.constructability_report_geotechnical_number`, {}),
-    ...get(errors, `${area}.descriptionsReport`, {}),
+    ...(errors?.[area]?.constructability_report_state ?? {}),
+    ...(errors?.[area]?.constructability_report_investigation_state ?? {}),
+    ...(errors?.[area]?.constructability_report_signing_date ?? {}),
+    ...(errors?.[area]?.constructability_report_signer ?? {}),
+    ...(errors?.[area]?.constructability_report_geotechnical_number ?? {}),
+    ...(errors?.[area]?.descriptionsReport ?? {}),
   };
 };
 
@@ -120,29 +114,29 @@ const getOtherErrors = (
   area: string,
 ) => {
   return {
-    ...get(errors, `${area}.other_state`),
-    ...get(errors, `${area}.descriptionsOther`),
+    ...(errors?.[area]?.other_state ?? {}),
+    ...(errors?.[area]?.descriptionsOther ?? {}),
   };
 };
 
+const formName = FormNames.LEASE_CONSTRUCTABILITY;
+const selector = formValueSelector(formName);
+
 type CommentProps = {
   attributes: Attributes;
-  comments: Array<Record<string, any>>;
   fields: any;
   isSaveClicked: boolean;
   usersPermissions: UsersPermissionsType;
 };
-const renderComments = connect((state, props) => {
-  return {
-    comments: selector(state, props.fields.name),
-  };
-})(({
+
+const renderComments = ({
   attributes,
-  comments,
   fields,
   isSaveClicked,
   usersPermissions,
 }: CommentProps): ReactElement => {
+  const comments = useSelector((state) => selector(state, fields.name));
+
   const handleAdd = () => {
     fields.push({
       is_static: false,
@@ -152,11 +146,11 @@ const renderComments = connect((state, props) => {
   if (
     !hasPermissions(
       usersPermissions,
-      UsersPermissions.ADD_CONSTRUCTABILITYDESCRIPTION,
+      UsersPermissionsEnum.ADD_CONSTRUCTABILITYDESCRIPTION,
     ) &&
     !hasPermissions(
       usersPermissions,
-      UsersPermissions.DELETE_CONSTRUCTABILITYDESCRIPTION,
+      UsersPermissionsEnum.DELETE_CONSTRUCTABILITYDESCRIPTION,
     ) &&
     !isFieldAllowedToEdit(
       attributes,
@@ -174,7 +168,7 @@ const renderComments = connect((state, props) => {
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             <SubTitle
               enableUiDataEdit
               uiDataKey={getUiDataLeaseKey(
@@ -187,7 +181,7 @@ const renderComments = connect((state, props) => {
             </SubTitle>
             {!hasPermissions(
               usersPermissions,
-              UsersPermissions.ADD_CONSTRUCTABILITYDESCRIPTION,
+              UsersPermissionsEnum.ADD_CONSTRUCTABILITYDESCRIPTION,
             ) &&
               (!fields || !fields.length) && (
                 <FormText>
@@ -196,7 +190,7 @@ const renderComments = connect((state, props) => {
               )}
 
             {fields && !!fields.length && (
-              <Fragment>
+              <>
                 <Row>
                   <Column small={6} medium={6} large={8}>
                     <Authorization
@@ -360,7 +354,7 @@ const renderComments = connect((state, props) => {
                             <Authorization
                               allow={hasPermissions(
                                 usersPermissions,
-                                UsersPermissions.DELETE_CONSTRUCTABILITYDESCRIPTION,
+                                UsersPermissionsEnum.DELETE_CONSTRUCTABILITYDESCRIPTION,
                               )}
                             >
                               <RemoveButton
@@ -375,13 +369,13 @@ const renderComments = connect((state, props) => {
                     </Row>
                   );
                 })}
-              </Fragment>
+              </>
             )}
 
             <Authorization
               allow={hasPermissions(
                 usersPermissions,
-                UsersPermissions.ADD_CONSTRUCTABILITYDESCRIPTION,
+                UsersPermissionsEnum.ADD_CONSTRUCTABILITYDESCRIPTION,
               )}
             >
               <Row>
@@ -390,70 +384,92 @@ const renderComments = connect((state, props) => {
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
   );
-});
+};
+
 type Props = {
-  areaCollapseState: boolean;
-  areaId: number;
   attributes: Attributes;
-  constructabilityReportCollapseState: boolean;
   constructabilityStateOptions: Array<Record<string, any>>;
-  createLeaseAreaAttachment: (...args: Array<any>) => any;
   currentLease: Lease;
-  deleteLeaseAreaAttachment: (...args: Array<any>) => any;
-  demolitionCollapseState: boolean;
   errors: Record<string, any> | null | undefined;
   field: string;
   isSaveClicked: boolean;
   locationOptions: Array<Record<string, any>>;
-  otherCollapseState: boolean;
-  pollutedLandCollapseState: boolean;
-  pollutedLandConditionStateOptions: Array<Record<string, any>>;
-  preconstructionCollapseState: boolean;
-  receiveCollapseStates: (...args: Array<any>) => any;
   savedArea: Record<string, any>;
-  stateOptions: Array<Record<string, any>>;
   typeOptions: Array<Record<string, any>>;
   usersPermissions: UsersPermissionsType;
 };
 
-const ConstructabilityItemEdit = ({
-  areaCollapseState,
-  areaId,
+const ConstructabilityItemEdit: React.FC<Props> = ({
   attributes,
-  constructabilityReportCollapseState,
   constructabilityStateOptions,
-  createLeaseAreaAttachment,
   currentLease,
-  deleteLeaseAreaAttachment,
-  demolitionCollapseState,
   errors,
   field,
   isSaveClicked,
   locationOptions,
-  otherCollapseState,
-  pollutedLandCollapseState,
-  preconstructionCollapseState,
-  receiveCollapseStates,
   savedArea,
   typeOptions,
   usersPermissions,
 }: Props) => {
+  const areaId = useSelector((state) => selector(state, `${field}.id`));
+
+  const areaCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${formName}.${areaId}.area`,
+    ),
+  );
+  const constructabilityReportCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${formName}.${areaId}.constructability_report`,
+    ),
+  );
+  const demolitionCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${formName}.${areaId}.demolition`,
+    ),
+  );
+  const otherCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${formName}.${areaId}.other`,
+    ),
+  );
+  const pollutedLandCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${formName}.${areaId}.polluted_land`,
+    ),
+  );
+  const preconstructionCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${formName}.${areaId}.preconstruction`,
+    ),
+  );
+
+  const dispatch = useDispatch();
+
   const handleCollapseToggle = (key: string, val: boolean) => {
     if (!areaId) return;
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [formName]: {
-          [areaId]: {
-            [key]: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.EDIT]: {
+          [formName]: {
+            [areaId]: {
+              [key]: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const handleAreaCollapseToggle = (val: boolean) => {
@@ -481,35 +497,41 @@ const ConstructabilityItemEdit = ({
   };
 
   const handleAddMattiReport = (e: any) => {
-    createLeaseAreaAttachment({
-      lease: currentLease.id,
-      data: {
-        lease_area: areaId,
-        type: LeaseAreaAttachmentTypes.MATTI_REPORT,
-      },
-      file: e.target.files[0],
-    });
+    dispatch(
+      createLeaseAreaAttachment({
+        lease: currentLease.id,
+        data: {
+          lease_area: areaId,
+          type: LeaseAreaAttachmentTypes.MATTI_REPORT,
+        },
+        file: e.target.files[0],
+      }),
+    );
   };
 
   const handleAddGeotechnicalAttachment = (e: any) => {
-    createLeaseAreaAttachment({
-      lease: currentLease.id,
-      data: {
-        lease_area: areaId,
-        type: LeaseAreaAttachmentTypes.GEOTECHNICAL,
-      },
-      file: e.target.files[0],
-    });
+    dispatch(
+      createLeaseAreaAttachment({
+        lease: currentLease.id,
+        data: {
+          lease_area: areaId,
+          type: LeaseAreaAttachmentTypes.GEOTECHNICAL,
+        },
+        file: e.target.files[0],
+      }),
+    );
   };
 
   const handleDeleteLeaseAreaAttachment = (fileId: number) => {
-    deleteLeaseAreaAttachment({
-      id: fileId,
-      lease: currentLease.id,
-    });
+    dispatch(
+      deleteLeaseAreaAttachment({
+        id: fileId,
+        lease: currentLease.id,
+      }),
+    );
   };
 
-  const areaErrors = get(errors, field);
+  const areaErrors = errors?.[field] ?? {};
   const preconstructionErrors = getPreconstructionErrors(errors, field);
   const demolitionErrors = getDemolitionErrors(errors, field);
   const pollutedLandErrors = getPollutedLandErrors(errors, field);
@@ -526,7 +548,7 @@ const ConstructabilityItemEdit = ({
       defaultOpen={areaCollapseState !== undefined ? areaCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(areaErrors)}
       headerSubtitles={
-        <Fragment>
+        <>
           <Column>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -568,7 +590,7 @@ const ConstructabilityItemEdit = ({
               </CollapseHeaderSubtitle>
             </Authorization>
           </Column>
-        </Fragment>
+        </>
       }
       headerTitle={
         <Authorization
@@ -696,9 +718,9 @@ const ConstructabilityItemEdit = ({
         >
           <FieldArray
             attributes={attributes}
-            name={`${field}.descriptionsPreconstruction`}
             component={renderComments}
             isSaveClicked={isSaveClicked}
+            name={`${field}.descriptionsPreconstruction`}
             usersPermissions={usersPermissions}
           />
         </Authorization>
@@ -938,7 +960,7 @@ const ConstructabilityItemEdit = ({
           <AppConsumer>
             {({ dispatch }) => {
               return (
-                <Fragment>
+                <>
                   <SubTitle
                     enableUiDataEdit
                     uiDataKey={getUiDataLeaseKey(
@@ -949,13 +971,13 @@ const ConstructabilityItemEdit = ({
                   </SubTitle>
                   {!hasPermissions(
                     usersPermissions,
-                    UsersPermissions.ADD_LEASEAREAATTACHMENT,
+                    UsersPermissionsEnum.ADD_LEASEAREAATTACHMENT,
                   ) &&
                     !pollutedLandMattiAttachments.length && (
                       <FormText>Ei Matti raportteja</FormText>
                     )}
                   {!!pollutedLandMattiAttachments.length && (
-                    <Fragment>
+                    <>
                       <Row>
                         <Column small={3} large={4}>
                           <Authorization
@@ -1056,7 +1078,7 @@ const ConstructabilityItemEdit = ({
                               <Authorization
                                 allow={hasPermissions(
                                   usersPermissions,
-                                  UsersPermissions.DELETE_LEASEAREAATTACHMENT,
+                                  UsersPermissionsEnum.DELETE_LEASEAREAATTACHMENT,
                                 )}
                               >
                                 <RemoveButton
@@ -1072,13 +1094,13 @@ const ConstructabilityItemEdit = ({
                           </Row>
                         );
                       })}
-                    </Fragment>
+                    </>
                   )}
 
                   <Authorization
                     allow={hasPermissions(
                       usersPermissions,
-                      UsersPermissions.ADD_LEASEAREAATTACHMENT,
+                      UsersPermissionsEnum.ADD_LEASEAREAATTACHMENT,
                     )}
                   >
                     <AddFileButton
@@ -1087,7 +1109,7 @@ const ConstructabilityItemEdit = ({
                       onChange={handleAddMattiReport}
                     />
                   </Authorization>
-                </Fragment>
+                </>
               );
             }}
           </AppConsumer>
@@ -1249,7 +1271,7 @@ const ConstructabilityItemEdit = ({
           <AppConsumer>
             {({ dispatch }) => {
               return (
-                <Fragment>
+                <>
                   <SubTitle
                     enableUiDataEdit
                     uiDataKey={getUiDataLeaseKey(
@@ -1262,13 +1284,13 @@ const ConstructabilityItemEdit = ({
                   </SubTitle>
                   {!hasPermissions(
                     usersPermissions,
-                    UsersPermissions.ADD_LEASEAREAATTACHMENT,
+                    UsersPermissionsEnum.ADD_LEASEAREAATTACHMENT,
                   ) &&
                     !constructabilityReportGeotechnicalAttachments.length && (
                       <FormText>Ei geoteknisen palvelun tiedostoja</FormText>
                     )}
                   {!!constructabilityReportGeotechnicalAttachments.length && (
-                    <Fragment>
+                    <>
                       <Row>
                         <Column small={3} large={4}>
                           <Authorization
@@ -1370,7 +1392,7 @@ const ConstructabilityItemEdit = ({
                                 <Authorization
                                   allow={hasPermissions(
                                     usersPermissions,
-                                    UsersPermissions.DELETE_LEASEAREAATTACHMENT,
+                                    UsersPermissionsEnum.DELETE_LEASEAREAATTACHMENT,
                                   )}
                                 >
                                   <RemoveButton
@@ -1387,13 +1409,13 @@ const ConstructabilityItemEdit = ({
                           );
                         },
                       )}
-                    </Fragment>
+                    </>
                   )}
 
                   <Authorization
                     allow={hasPermissions(
                       usersPermissions,
-                      UsersPermissions.ADD_LEASEAREAATTACHMENT,
+                      UsersPermissionsEnum.ADD_LEASEAREAATTACHMENT,
                     )}
                   >
                     <AddFileButton
@@ -1402,7 +1424,7 @@ const ConstructabilityItemEdit = ({
                       onChange={handleAddGeotechnicalAttachment}
                     />
                   </Authorization>
-                </Fragment>
+                </>
               );
             }}
           </AppConsumer>
@@ -1494,45 +1516,4 @@ const ConstructabilityItemEdit = ({
   );
 };
 
-const formName = FormNames.LEASE_CONSTRUCTABILITY;
-const selector = formValueSelector(formName);
-export default connect(
-  (state, props) => {
-    const id = selector(state, `${props.field}.id`);
-    return {
-      areaCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.EDIT}.${formName}.${id}.area`,
-      ),
-      areaId: id,
-      attributes: getAttributes(state),
-      constructabilityReportCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.EDIT}.${formName}.${id}.constructability_report`,
-      ),
-      currentLease: getCurrentLease(state),
-      demolitionCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.EDIT}.${formName}.${id}.demolition`,
-      ),
-      otherCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.EDIT}.${formName}.${id}.other`,
-      ),
-      pollutedLandCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.EDIT}.${formName}.${id}.polluted_land`,
-      ),
-      preconstructionCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.EDIT}.${formName}.${id}.preconstruction`,
-      ),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    createLeaseAreaAttachment,
-    deleteLeaseAreaAttachment,
-    receiveCollapseStates,
-  },
-)(ConstructabilityItemEdit);
+export default ConstructabilityItemEdit;
