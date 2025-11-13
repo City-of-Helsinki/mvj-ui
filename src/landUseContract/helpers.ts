@@ -18,6 +18,7 @@ import { removeSessionStorageItem } from "@/util/storage";
 import { getContactFullName, getContentContact } from "@/contacts/helpers";
 import type { LandUseContract } from "./types";
 import type { RootState } from "@/root/types";
+import { SelectListOption } from "@/types";
 
 /**
  * Get land use contract identifier
@@ -297,7 +298,7 @@ const getContentContract = (
     id: {type: "integer", required: false, read_only: false, label: "Id"}
     institution_identifier: {type: "string", required: false, read_only: false, label: "Laitostunnus", max_length: 255}
     is_readjustment_decision: {type: "boolean", required: false, read_only: true, label: "Järjestelypäätös"}
-    
+
     */
     ktj_link: contract.ktj_link,
     second_call_sent: contract.second_call_sent,
@@ -314,7 +315,7 @@ const getContentContract = (
  */
 export const getDecisionOptions = (
   contract: LandUseContract,
-): Array<Record<string, any>> => {
+): Array<SelectListOption> => {
   const decisions = getContentDecisions(contract);
   const decisionOptions = decisions.map((item) => {
     return {
@@ -681,7 +682,7 @@ export const getSum = (area: string, usedPrice: number): number => {
  */
 export const getRecipientOptionsFromLitigants = (
   litigants: Array<Record<string, any>>,
-): Array<Record<string, any>> => {
+): Array<SelectListOption> => {
   if (litigants)
     return litigants
       .map((litigant) =>

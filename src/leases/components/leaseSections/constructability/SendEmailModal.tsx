@@ -10,6 +10,7 @@ import { fetchUsers } from "@/users/requestsAsync";
 import { ButtonColors } from "@/components/enums";
 import { getUserOptions } from "@/users/helpers";
 import { sortStringByKeyAsc } from "@/util/helpers";
+import type { SelectListOption } from "@/types";
 
 type FilterProps = {
   available: string;
@@ -31,13 +32,11 @@ const SendEmailModal: React.FC<Props> = ({
   const [dualListBox, setDualListBox] = useState<any>(null);
   const [filterAvailable, setFilterAvailable] = useState<string>("");
   const [filterSelected, setFilterSelected] = useState<string>("");
-  const [selectedUsers, setSelectedUsers] = useState<
-    Array<Record<string, any>>
-  >([]);
-  const [text, setText] = useState<string>("");
-  const [userOptions, setUserOptions] = useState<Array<Record<string, any>>>(
+  const [selectedUsers, setSelectedUsers] = useState<Array<SelectListOption>>(
     [],
   );
+  const [text, setText] = useState<string>("");
+  const [userOptions, setUserOptions] = useState<Array<SelectListOption>>([]);
 
   const getUserList = async (search: string) => {
     const users = await fetchUsers({

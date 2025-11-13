@@ -11,7 +11,12 @@ import { toastr } from "react-redux-toastr";
 import ToastrIcons from "@/components/toastr/ToastrIcons";
 import { PAIKKATIETOPALVELU_URL } from "@/util/constants";
 import { Breakpoints } from "@/foundation/enums";
-import type { ApiResponse, Attributes, Methods } from "@/types";
+import type {
+  ApiResponse,
+  Attributes,
+  Methods,
+  SelectListOption,
+} from "@/types";
 import type { UsersPermissions } from "@/usersPermissions/types";
 
 /**
@@ -610,8 +615,8 @@ export const copyElementContentsToClipboard = (el: any): boolean => {
  * @returns {Object[]}
  */
 export const addEmptyOption = (
-  options: Array<Record<string, any>>,
-): Array<Record<string, any>> => [
+  options: Array<SelectListOption>,
+): Array<SelectListOption> => [
   {
     value: "",
     label: "",
@@ -687,7 +692,7 @@ export const getFieldAttributeOptions = (
   addEmpty: boolean = true,
   optionRenderer?: ((...args: Array<any>) => any) | null | undefined,
   sortFn?: (...args: Array<any>) => any,
-): Array<Record<string, any>> => {
+): Array<SelectListOption> => {
   const options = get(fieldAttributes, `choices`, []).map((item) => ({
     value: item.value,
     label: optionRenderer ? optionRenderer(item) : item.display_name,
@@ -716,7 +721,7 @@ export const getFieldOptions = (
   addEmpty: boolean = true,
   optionRenderer?: ((...args: Array<any>) => any) | null | undefined,
   sortFn?: (...args: Array<any>) => any,
-): Array<Record<string, any>> => {
+): Array<SelectListOption> => {
   return getFieldAttributeOptions(
     getFieldAttributes(attributes, path),
     addEmpty,

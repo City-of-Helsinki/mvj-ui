@@ -64,7 +64,12 @@ import type {
   RelatedLeaseWrapper,
 } from "./types";
 import type { CommentList } from "@/comments/types";
-import type { Attributes, LeafletFeature, LeafletGeoJson } from "types";
+import type {
+  Attributes,
+  LeafletFeature,
+  LeafletGeoJson,
+  SelectListOption,
+} from "types";
 import type { RootState } from "@/root/types";
 import type { LeaseList, DueDate } from "@/leases/types";
 import type { IndexPointFigureYearly } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
@@ -756,9 +761,7 @@ export const getContentDecisions = (lease: Lease): Array<Record<string, any>> =>
  * @param {Object} lease
  * @return {Object[]};
  */
-export const getDecisionOptions = (
-  lease: Lease,
-): Array<Record<string, any>> => {
+export const getDecisionOptions = (lease: Lease): Array<SelectListOption> => {
   const decisions = getContentDecisions(lease);
   const decisionOptions = decisions.map((item) => {
     return {
@@ -2470,7 +2473,7 @@ export const getInvoiceRecipientOptions = (
   lease: Lease,
   addAll: boolean,
   addTenants: boolean,
-): Array<Record<string, any>> => {
+): Array<SelectListOption> => {
   const items = getContentTenants(lease);
   const recipients = [];
 
@@ -2505,7 +2508,7 @@ export const getInvoiceRecipientOptions = (
  */
 export const getInvoiceTenantOptions = (
   lease: Lease,
-): Array<Record<string, any>> => {
+): Array<SelectListOption> => {
   const items: any = getContentTenants(lease);
   return items.map((item) => {
     return {
