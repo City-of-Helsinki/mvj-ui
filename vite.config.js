@@ -6,9 +6,31 @@ import path from 'path';
 import postcssUrl from 'postcss-url';
 import babel from '@rollup/plugin-babel';
 
+function patchReactLeafletDrawImports() {
+  return {
+    name: 'patch-react-leaflet-draw-imports',
+    enforce: 'pre',
+    transform(code, id) {
+      // Patch files in react-leaflet-draw@0.19.0 that import leaflet-draw incorrectly
+      if (
+        id.includes('node_modules/react-leaflet-draw/') &&
+        code.includes("import Draw from 'leaflet-draw';")
+      ) {
+        // leaflet-draw does not have a default export, change the import statement
+        return code.replace(
+          /import Draw from ['"]leaflet-draw['"];?/g,
+          "import * as Draw from 'leaflet-draw';"
+        );
+      }
+      return code;
+    },
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    patchReactLeafletDrawImports(), // Remove this when updating `react-leaflet-draw`
     viteStaticCopy({
       targets: [
         { // copy leaflet-draw images to dist
