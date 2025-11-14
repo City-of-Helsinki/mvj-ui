@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import debounce from "lodash/debounce";
 import Button from "@/components/button/Button";
 import DualListBox from "react-dual-listbox";
@@ -41,6 +41,8 @@ const SendEmailModal: React.FC<Props> = ({
   const [text, setText] = useState<string>("");
   const [userOptions, setUserOptions] = useState<Array<SelectListOption>>([]);
 
+  const prevIsOpen = useRef<boolean>(false);
+
   const getUserList = async (search: string) => {
     const users = await fetchUsers({
       search,
@@ -60,16 +62,17 @@ const SendEmailModal: React.FC<Props> = ({
       debounce((search: string) => {
         getUserList(search);
       }, 500),
-    [],
+    [selectedUsers],
   );
 
   useEffect(() => {
-    if (isOpen) {
+    // Only when modal is opened and previously was closed
+    if (!prevIsOpen.current && isOpen) {
       if (dualListBox) {
         // Set focus on first field
         dualListBox.focus();
       }
-      // Clear inputs
+      // Clear inputs when modal is (re-)opened
       setFilterAvailable("");
       setFilterSelected("");
       setSelectedUsers([]);
@@ -79,6 +82,7 @@ const SendEmailModal: React.FC<Props> = ({
       // Get default user list
       getUserList("");
     }
+    prevIsOpen.current = isOpen;
   }, [isOpen, dualListBox, getUserList]);
 
   const handleUserListChange = (selected: Array<SelectListOption>) => {
