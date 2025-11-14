@@ -105,6 +105,6 @@
     "vitest": "^4.0.8"
   },
   "resolutions": {
-    "@types/react": "^16"
+    "classnames": "2.5.1"
   }
 }
