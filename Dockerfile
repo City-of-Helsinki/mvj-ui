@@ -18,22 +18,15 @@ RUN yarn policies set-version $YARN_VERSION
 
 # Use non-root user
 USER default
-# Set node environment, either development or production
-# use development to install devDependencies
-ARG NODE_ENV=development
-ENV NODE_ENV=$NODE_ENV
 
-# Install exact versions of dependencies and clean cache
-RUN yarn --frozen-lockfile && yarn cache clean --force
-
+# Install exact versions of dependencies and clean cache.
+# Use non-prod flag to install devDependencies
+RUN yarn --frozen-lockfile --production=false && yarn cache clean --force
 
 # ===================================
 FROM appbase AS staticbuilder
 # ===================================
 
-# Set NODE_ENV to production in the staticbuilder container
-ARG NODE_ENV=production
-ENV NODE_ENV=$NODE_ENV
 # Print Node.js version
 RUN node --version
 
