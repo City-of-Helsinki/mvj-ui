@@ -54,10 +54,18 @@ export default defineConfig({
       ],
     }),
   ],
+  build: {
+    target: 'baseline-widely-available',
+    rollupOptions: {
+      output: {
+        format: 'es',
+      },
+    },
+  },
   css: {
     preprocessorOptions: {
       scss: {
-        api: "modern-compiler",
+        api: 'modern-compiler',
         quietDeps: true
       }
     },
