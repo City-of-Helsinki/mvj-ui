@@ -26,19 +26,6 @@ ENV NODE_ENV=$NODE_ENV
 # Install exact versions of dependencies and clean cache
 RUN yarn --frozen-lockfile && yarn cache clean --force
 
-# =============================
-FROM appbase AS development
-# =============================
-
-# Set NODE_ENV to development in the development container
-ARG NODE_ENV=development
-ENV NODE_ENV=$NODE_ENV
-
-# copy in our source code last, as it changes the most
-COPY --chown=default:root . /app
-
-# Bake package.json start command into the image
-CMD ["yarn", "start"]
 
 # ===================================
 FROM appbase AS staticbuilder
