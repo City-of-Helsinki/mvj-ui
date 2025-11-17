@@ -37,7 +37,8 @@ ENV NODE_ENV=$NODE_ENV
 # Print Node.js version
 RUN node --version
 
-COPY . /app
+COPY --chown=default:root . /app
+
 RUN yarn build
 
 # =============================
