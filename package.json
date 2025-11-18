@@ -57,8 +57,7 @@
     "redux-actions": "^2.6.5",
     "redux-form": "^8.2.5",
     "redux-saga": "^1.0.5",
-    "utility-types": "^3.11.0",
-    "whatwg-fetch": "^3.6.20"
+    "utility-types": "^3.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
