@@ -46,6 +46,8 @@ RUN rm -rf /usr/share/nginx/html/*
 RUN chgrp -R 0 /usr/share/nginx/html && \
     chmod -R g=u /usr/share/nginx/html
 
+USER default
+
 # Copy static build
 COPY --from=staticbuilder /app/dist /usr/share/nginx/html
 
