@@ -1,4 +1,3 @@
-import { $Shape } from "utility-types";
 import React, { PureComponent, KeyboardEventHandler } from "react";
 import classNames from "classnames";
 import get from "lodash/get";

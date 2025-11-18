@@ -1,4 +1,3 @@
-import { $Shape } from "utility-types";
 import React, { createElement, Fragment, PureComponent } from "react";
 import { Field } from "redux-form";
 import classNames from "classnames";
@@ -379,7 +378,7 @@ class FormFieldLegacy extends PureComponent<Props, State> {
     required: false,
     value: null,
   };
-  static defaultProps: $Shape<Props> = {
+  static defaultProps: Partial<Props> = {
     autoBlur: false,
     disabled: false,
     disableDirty: false,
@@ -394,7 +393,7 @@ class FormFieldLegacy extends PureComponent<Props, State> {
   static getDerivedStateFromProps(
     props: Props,
     state: State,
-  ): $Shape<State> | null {
+  ): Partial<State> | null {
     const overrideableBoolean = (fieldName) => {
       return get(props.overrideValues, fieldName) !== undefined
         ? !!get(props.overrideValues, fieldName)

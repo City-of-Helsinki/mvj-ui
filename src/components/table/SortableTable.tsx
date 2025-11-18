@@ -1,4 +1,3 @@
-import { $Shape } from "utility-types";
 import React, { Component } from "react";
 import classNames from "classnames";
 import ReactResizeDetector from "react-resize-detector";
@@ -205,7 +204,7 @@ class SortableTable extends Component<Props, State> {
     sortOrder: this.props.defaultSortOrder || TableSortOrder.DESCENDING,
     theadStyle: {},
   };
-  static defaultProps: $Shape<Props> = {
+  static defaultProps: Partial<Props> = {
     fixedHeader: false,
     noDataText: "Ei tuloksia",
     sortable: false,
@@ -229,7 +228,7 @@ class SortableTable extends Component<Props, State> {
   static getDerivedStateFromProps(
     props: Props,
     state: State,
-  ): $Shape<State> | null {
+  ): Partial<State> | null {
     const newState: any = {};
 
     if (props.data !== state.data || props.columns !== state.columns) {
