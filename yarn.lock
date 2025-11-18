@@ -5661,6 +5661,14 @@ printj@~1.1.0:
   resolved "https://registry.yarnpkg.com/printj/-/printj-1.1.2.tgz#d90deb2975a8b9f600fb3a1c94e3f4c53c78a222"
   integrity sha512-zA2SmoLaxZyArQTOPj5LXecR+RagfPSU5Kw1qP+jkWeNlrq+eJZyY2oS68SU1Z/7/myXM4lo9716laOFAVStCQ==
 
+proj4@2.20.1:
+  version "2.20.1"
+  resolved "https://registry.yarnpkg.com/proj4/-/proj4-2.20.1.tgz#961cf9542529407577a7c5044f1cda386e7d3a17"
+  integrity sha512-Vtxkmn8UUkHptuUE9HORQq+nQrbZyJgLEBipNmbAd2+h25mTFhk/MLyS8Jn2axqYtom+KjywFcVDZPO0YeatiA==
+  dependencies:
+    mgrs "1.0.0"
+    wkt-parser "^1.5.1"
+
 proj4@^2.19.0:
   version "2.19.10"
   resolved "https://registry.yarnpkg.com/proj4/-/proj4-2.19.10.tgz#ca2a51627d4dfa20f68f3babed3380f8ef626262"
@@ -5669,7 +5677,7 @@ proj4@^2.19.0:
     mgrs "1.0.0"
     wkt-parser "^1.5.1"
 
-proj4@^2.3.14, proj4@^2.5.0:
+proj4@^2.3.14:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/proj4/-/proj4-2.6.2.tgz#4665d7cbc30fd356375007c2fed53b07dbda1d67"
   integrity sha512-Pn0+HZtXb4JzuN8RR0VM7yyseegiYHbXkF+2FOdGpzRojcZ1BTjWxOh7qfp2vH0EyLu8pvcrhLxidwzgyUy/Gw==
