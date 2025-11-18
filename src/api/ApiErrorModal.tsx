@@ -1,4 +1,3 @@
-/* eslint-disable */
 import flowRight from "lodash/flowRight";
 import React from "react";
 import { Button } from "react-foundation";

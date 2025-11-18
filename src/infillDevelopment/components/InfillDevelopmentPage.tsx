@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { change, destroy, getFormValues, isDirty } from "redux-form";
@@ -131,9 +130,6 @@ class InfillDevelopmentPage extends Component<Props, State> {
     formatedInfillDevelopment: {},
     currentInfillDevelopment: {},
     isRestoreModalOpen: false,
-  };
-  static contextTypes = {
-    router: PropTypes.object,
   };
   timerAutoSave: any;
 

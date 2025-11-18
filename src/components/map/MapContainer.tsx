@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import L from "leaflet";
 import {
   LayersControl,
@@ -51,9 +50,6 @@ type Props = {
 
 class MapContainer extends Component<Props> {
   map: any;
-  static contextTypes: Record<string, any> = {
-    router: PropTypes.object,
-  };
   setMapRef: (arg0: any) => void = (el) => {
     this.map = el;
     this.props.onMapRefAvailable?.(el);

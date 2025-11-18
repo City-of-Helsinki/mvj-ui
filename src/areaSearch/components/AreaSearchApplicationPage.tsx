@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
@@ -138,9 +137,6 @@ class AreaSearchApplicationPage extends Component<Props, State> {
     activeTab: 0,
     isRestoreModalOpen: false,
     applicantInfoCheckFormNames: [],
-  };
-  static contextTypes = {
-    router: PropTypes.object,
   };
   timerAutoSave: any;
 

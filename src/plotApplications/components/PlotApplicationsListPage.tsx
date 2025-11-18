@@ -1,5 +1,4 @@
 import React, { Fragment, PureComponent } from "react";
-import PropTypes from "prop-types";
 import flowRight from "lodash/flowRight";
 import debounce from "lodash/debounce";
 import { connect } from "react-redux";
@@ -117,9 +116,6 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     maxPage: 0,
     activePage: 1,
     openingRecordPopupTarget: null,
-  };
-  static contextTypes = {
-    router: PropTypes.object,
   };
 
   componentDidMount() {

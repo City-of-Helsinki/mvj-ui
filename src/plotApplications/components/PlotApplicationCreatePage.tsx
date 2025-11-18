@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
@@ -106,9 +105,6 @@ class PlotApplicationsPage extends Component<Props, State> {
   state = {
     activeTab: 0,
     isRestoreModalOpen: false,
-  };
-  static contextTypes = {
-    router: PropTypes.object,
   };
   timerAutoSave: any;
 
