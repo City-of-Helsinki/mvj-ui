@@ -1,4 +1,3 @@
-import { $Shape } from "utility-types";
 import React, { PureComponent } from "react";
 import classNames from "classnames";
 import UIDataTooltip from "@/components/tooltip/UIDataTooltip";
@@ -20,7 +19,7 @@ class CollapseHeaderTitle extends PureComponent<Props, State> {
   state: State = {
     showAddButton: false,
   };
-  static defaultProps: $Shape<Props> = {
+  static defaultProps: Partial<Props> = {
     enableUiDataEdit: false,
   };
 

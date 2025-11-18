@@ -1,4 +1,3 @@
-import { $Shape } from "utility-types";
 import React, { PureComponent } from "react";
 import classNames from "classnames";
 import { Row, Column } from "react-foundation";
@@ -42,7 +41,7 @@ class Collapse extends PureComponent<Props, State> {
   component: any;
   content: any;
   tooltip: HTMLDivElement | null = null;
-  static defaultProps: $Shape<Props> = {
+  static defaultProps: Partial<Props> = {
     defaultOpen: false,
     hasErrors: false,
     showTitleOnOpen: false,

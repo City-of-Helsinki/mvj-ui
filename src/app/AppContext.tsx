@@ -1,6 +1,7 @@
-import { $Shape } from "utility-types";
 import React from "react";
-const Context: React.Context<$Shape<AppContextState>> = React.createContext({});
+const Context: React.Context<Partial<AppContextState>> = React.createContext(
+  {},
+);
 export const ActionTypes = {
   HIDE_CONFIRMATION_MODAL: "HIDE_CONFIRMATION_MODAL",
   SHOW_CONFIRMATION_MODAL: "SHOW_CONFIRMATION_MODAL",

@@ -1,4 +1,3 @@
-import { $Shape } from "utility-types";
 import React, { PureComponent } from "react";
 import ReactDOM from "react-dom";
 import classNames from "classnames";
@@ -22,7 +21,7 @@ class FormFieldLabel extends PureComponent<Props, State> {
   state: State = {
     showAddButton: false,
   };
-  static defaultProps: $Shape<Props> = {
+  static defaultProps: Partial<Props> = {
     enableUiDataEdit: false,
     required: false,
   };
