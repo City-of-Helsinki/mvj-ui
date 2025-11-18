@@ -33,7 +33,6 @@
     "leaflet-measure-path": "^1.4.2",
     "leaflet-zoombox": "0.5.2",
     "lodash": "^4.17.21",
-    "normalize.css": "^8.0.1",
     "proj4": "^2.5.0",
     "proj4leaflet": "^1.0.2",
     "prop-types": "15.8.1",
