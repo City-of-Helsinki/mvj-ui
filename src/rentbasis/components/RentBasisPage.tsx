@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { change, getFormValues, isDirty } from "redux-form";
@@ -123,9 +122,6 @@ class RentBasisPage extends Component<Props, State> {
     activeTab: 0,
     isCancelModalOpen: false,
     isRestoreModalOpen: false,
-  };
-  static contextTypes = {
-    router: PropTypes.object,
   };
   timerAutoSave: any;
 

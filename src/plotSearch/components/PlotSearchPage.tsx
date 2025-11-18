@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
@@ -166,9 +165,6 @@ class PlotSearchPage extends Component<Props, State> {
     isExportModalOpen: false,
     isReservationIdentifiersModalOpen: false,
     isDirectReservationLinkModalOpen: false,
-  };
-  static contextTypes = {
-    router: PropTypes.object,
   };
   timerAutoSave: any;
 

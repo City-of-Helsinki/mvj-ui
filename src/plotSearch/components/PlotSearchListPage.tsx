@@ -1,5 +1,4 @@
 import React, { Fragment, PureComponent } from "react";
-import PropTypes from "prop-types";
 import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
@@ -110,9 +109,6 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     maxPage: 0,
     selectedStates: [],
     isModalOpen: false,
-  };
-  static contextTypes = {
-    router: PropTypes.object,
   };
 
   componentDidMount() {

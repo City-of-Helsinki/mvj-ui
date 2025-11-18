@@ -1,5 +1,4 @@
 import React, { Fragment, PureComponent } from "react";
-import PropTypes from "prop-types";
 import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
 import { initialize } from "redux-form";
@@ -168,9 +167,6 @@ class LeaseListPage extends PureComponent<Props, State> {
     visualizationType: VisualizationTypes.TABLE,
     serviceUnitOptions: [],
     selectedServiceUnitOptionValue: "",
-  };
-  static contextTypes = {
-    router: PropTypes.object,
   };
 
   componentDidMount() {

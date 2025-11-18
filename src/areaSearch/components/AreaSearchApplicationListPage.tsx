@@ -1,5 +1,4 @@
 import React, { Fragment, PureComponent } from "react";
-import PropTypes from "prop-types";
 import flowRight from "lodash/flowRight";
 import isArray from "lodash/isArray";
 import { connect } from "react-redux";
@@ -153,9 +152,6 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     isExportModalOpen: false,
     editModalTargetAreaSearch: null,
     userActiveServiceUnit: undefined,
-  };
-  static contextTypes = {
-    router: PropTypes.object,
   };
 
   componentDidMount() {

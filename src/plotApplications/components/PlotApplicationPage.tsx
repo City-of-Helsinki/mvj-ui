@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { groupBy } from "lodash/collection";
@@ -144,9 +143,6 @@ class PlotApplicationPage extends Component<Props, State> {
     isRestoreModalOpen: false,
     applicantInfoCheckFormNames: [],
     targetInfoCheckFormNames: [],
-  };
-  static contextTypes = {
-    router: PropTypes.object,
   };
   timerAutoSave: any;
 

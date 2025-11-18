@@ -1,208 +1,191 @@
-// @ts-nocheck: missing static type checking
 // TODO: Replace reveal with HDS Dialog: https://hds.hel.fi/components/dialog/code/
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import hoistsStatics from "hoist-non-react-statics";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import hoistNonReactStatics from "hoist-non-react-statics";
 import {
-  GeneralPropTypes,
   createClassName,
   generalClassNames,
-  removeProps,
-  objectKeys,
   getComponentDisplayName,
 } from "./utils";
-import { revealContextShape } from "./shapes";
 
-/**
- * Reveal component.
- * http://foundation.zurb.com/sites/docs/reveal.html
- */
-export const Reveal = (props) => {
+type RevealState = {
+  isOpen?: boolean;
+  data?: Record<string, any>;
+};
+type RevealContextValue = {
+  registerReveal: (name: string, state: RevealState) => void;
+  openReveal: (name: string, data?: any) => void;
+  closeReveal: (name: string, data?: any) => void;
+  getRevealState: (name: string) => RevealState;
+};
+
+const RevealCtx = createContext<RevealContextValue | null>(null);
+
+const RevealProvider: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
+  const [reveals, setReveals] = useState<Record<string, RevealState>>({});
+
+  const updateRevealState = useCallback((name: string, state: RevealState) => {
+    setReveals((prev) => ({ ...prev, [name]: state }));
+  }, []);
+
+  const registerReveal = useCallback(
+    (name: string, state: RevealState) => {
+      updateRevealState(name, { ...state, data: state.data ?? {} });
+    },
+    [updateRevealState],
+  );
+
+  const openReveal = useCallback(
+    (name: string, data?: any) => {
+      updateRevealState(name, { data, isOpen: true });
+    },
+    [updateRevealState],
+  );
+
+  const closeReveal = useCallback(
+    (name: string, data?: any) => {
+      updateRevealState(name, { data, isOpen: false });
+    },
+    [updateRevealState],
+  );
+
+  const getRevealState = useCallback(
+    (name: string) => {
+      return reveals[name] || { isOpen: false, data: {} };
+    },
+    [reveals],
+  );
+
+  const value = {
+    registerReveal,
+    openReveal,
+    closeReveal,
+    getRevealState,
+  };
+
+  return <RevealCtx.Provider value={value}>{children}</RevealCtx.Provider>;
+};
+
+export const Reveal: React.FC<any> = (props) => {
   const className = createClassName(
     props.noDefaultClassName ? null : "reveal",
     props.size,
     generalClassNames(props),
   );
-  const passProps = removeProps(props, objectKeys(Reveal.propTypes));
+
+  const passProps = { ...props };
+  delete passProps.size;
+  delete passProps.noDefaultClassName;
+  delete passProps.showFor;
+  delete passProps.showOnlyFor;
+  delete passProps.hideFor;
+  delete passProps.hideOnlyFor;
+  delete passProps.isHidden;
+  delete passProps.isInvisible;
+  delete passProps.showForLandscape;
+  delete passProps.showForPortrait;
+  delete passProps.showForSr;
+  delete passProps.showOnFocus;
+  delete passProps.isClearfix;
+  delete passProps.float;
+
   return <div {...passProps} className={className} />;
 };
-Reveal.propTypes = {
-  size: PropTypes.string,
-  ...GeneralPropTypes,
-};
 
 /**
- * Reveal decorator.
- * http://foundation.zurb.com/sites/docs/reveal.html
+ * reveal HOC
  */
 export const reveal =
-  ({ name }) =>
-  (WrappedComponent) => {
-    class RevealOverlay extends Component {
-      static propTypes = {
-        className: PropTypes.string,
-        isOpen: PropTypes.bool.isRequired,
-        size: PropTypes.string,
-      };
-      static defaultProps = {
-        isOpen: false,
-      };
-      static contextTypes = {
-        revealContext: revealContextShape.isRequired,
-      };
+  ({ name }: { name: string }) =>
+  (WrappedComponent: React.ComponentType<any>) => {
+    const RevealOverlay: React.FC<any> = (props) => {
+      const ctx = useContext(RevealCtx);
+      const prevIsOpenRef = useRef<boolean>(!!props.isOpen);
 
-      constructor(props) {
-        super(props);
-        this.registerWithContext = this.registerWithContext.bind(this);
-      }
+      useEffect(() => {
+        ctx?.registerReveal(name, { isOpen: !!props.isOpen });
+      }, []);
 
-      UNSAFE_componentWillMount() {
-        this.registerWithContext();
-      }
-
-      UNSAFE_componentWillReceiveProps(nextProps) {
-        const {
-          revealContext: { openReveal },
-        } = this.context;
-
-        if (nextProps.isOpen && !this.props.isOpen) {
-          openReveal(name);
+      useEffect(() => {
+        if (props.isOpen && !prevIsOpenRef.current) {
+          ctx?.openReveal(name);
         }
-      }
+        prevIsOpenRef.current = !!props.isOpen;
+      }, [props.isOpen, ctx]);
 
-      registerWithContext() {
-        const { isOpen } = this.props;
-        const {
-          revealContext: { registerReveal },
-        } = this.context;
-        registerReveal(name, {
-          isOpen,
-        });
-      }
+      const revealState = ctx?.getRevealState(name) || {
+        isOpen: false,
+        data: {},
+      };
+      const style = {
+        display: revealState.isOpen ? "block" : "none",
+        zIndex: "1500",
+      };
 
-      render() {
-        // TODO: Support no-overlay, that would require us to calculate the reveal position.
-        // TODO: Support all possible JavaScript functionality.
-        const { className, size } = this.props;
-        const {
-          revealContext: { getRevealState, closeReveal },
-        } = this.context;
-        const revealState = getRevealState(name);
-        const style = {
-          display: revealState.isOpen ? "block" : "none",
-          zIndex: "1500",
-        };
-        return (
-          <div className={className || "reveal-overlay"} style={style}>
-            <Reveal size={size} style={style}>
-              <WrappedComponent
-                {...this.props}
-                revealData={revealState.data}
-                closeReveal={() => closeReveal(name)}
-              />
-            </Reveal>
-          </div>
-        );
-      }
-    }
+      return (
+        <div className={props.className || "reveal-overlay"} style={style}>
+          <Reveal size={props.size} style={style}>
+            <WrappedComponent
+              {...props}
+              revealData={revealState.data}
+              closeReveal={() => ctx?.closeReveal(name)}
+            />
+          </Reveal>
+        </div>
+      );
+    };
 
     RevealOverlay.displayName = `RevealOverlay(${getComponentDisplayName(WrappedComponent)})`;
-    RevealOverlay.WrappedComponent = WrappedComponent;
-    return hoistsStatics(RevealOverlay, WrappedComponent);
+    (RevealOverlay as any).WrappedComponent = WrappedComponent;
+    return hoistNonReactStatics(RevealOverlay, WrappedComponent);
   };
 
 /**
- * Reveal open decorator.
+ * revealOpen HOC
  */
 export const revealOpen =
-  ({ name }) =>
-  (WrappedComponent) => {
-    const RevealOpen = (props, context) => {
-      const { openReveal } = context.revealContext;
-      return (
-        <WrappedComponent
-          {...props}
-          openReveal={(data) => openReveal(name, data)}
-        />
-      );
+  ({ name }: { name: string }) =>
+  (WrappedComponent: React.ComponentType<any>) => {
+    const RevealOpen: React.FC<any> = (props) => {
+      const ctx = useContext(RevealCtx);
+      const open = (data?: any) => ctx?.openReveal(name, data);
+      return <WrappedComponent {...props} openReveal={open} />;
     };
 
-    RevealOpen.contextTypes = {
-      revealContext: revealContextShape.isRequired,
-    };
     RevealOpen.displayName = `RevealOpen(${getComponentDisplayName(WrappedComponent)})`;
-    RevealOpen.WrappedComponent = WrappedComponent;
-    return hoistsStatics(RevealOpen, WrappedComponent);
+    (RevealOpen as any).WrappedComponent = WrappedComponent;
+    return hoistNonReactStatics(RevealOpen, WrappedComponent);
   };
 
 /**
- * Reveal context decorator.
+ * revealContext HOC
  */
-export const revealContext = () => (WrappedComponent) => {
-  class RevealContext extends Component {
-    static childContextTypes = {
-      revealContext: revealContextShape,
+export const revealContext =
+  () => (WrappedComponent: React.ComponentType<any>) => {
+    const InnerWrapped = (innerProps: any) => {
+      const ctx = useContext(RevealCtx);
+      return (
+        <WrappedComponent {...innerProps} closeReveal={ctx?.closeReveal} />
+      );
     };
 
-    constructor(props) {
-      super(props);
-      this.registerReveal = this.registerReveal.bind(this);
-      this.openReveal = this.openReveal.bind(this);
-      this.closeReveal = this.closeReveal.bind(this);
-      this.getRevealState = this.getRevealState.bind(this);
-      this.updateRevealState = this.updateRevealState.bind(this);
-      this.state = {
-        reveals: {},
-      };
-    }
-
-    getChildContext() {
-      return {
-        revealContext: {
-          registerReveal: this.registerReveal,
-          openReveal: this.openReveal,
-          closeReveal: this.closeReveal,
-          getRevealState: this.getRevealState,
-        },
-      };
-    }
-
-    registerReveal(name, state) {
-      this.updateRevealState(name, { ...state, data: {} });
-    }
-
-    openReveal(name, data) {
-      this.updateRevealState(name, {
-        data,
-        isOpen: true,
-      });
-    }
-
-    closeReveal(name, data) {
-      this.updateRevealState(name, {
-        data,
-        isOpen: false,
-      });
-    }
-
-    updateRevealState(name, state) {
-      this.setState({
-        reveals: { ...this.state.reveals, [name]: state },
-      });
-    }
-
-    getRevealState(name) {
-      return this.state.reveals[name] || {};
-    }
-
-    render() {
+    const WithRevealContext: React.ComponentType<any> = (props) => {
       return (
-        <WrappedComponent {...this.props} closeReveal={this.closeReveal} />
+        <RevealProvider>
+          <InnerWrapped {...props} />
+        </RevealProvider>
       );
-    }
-  }
+    };
 
-  RevealContext.displayName = `RevealContext(${getComponentDisplayName(WrappedComponent)})`;
-  RevealContext.WrappedComponent = WrappedComponent;
-  return hoistsStatics(RevealContext, WrappedComponent);
-};
+    WithRevealContext.displayName = `RevealContext(${getComponentDisplayName(WrappedComponent)})`;
+    (WithRevealContext as any).WrappedComponent = WrappedComponent;
+    return hoistNonReactStatics(WithRevealContext, WrappedComponent);
+  };

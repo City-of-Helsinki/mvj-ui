@@ -1,10 +1,8 @@
 import React from "react";
-import {
-  createClassName,
-  generalClassNames,
-  GeneralPropTypes,
-} from "@/foundation/utils";
+import { createClassName, generalClassNames } from "@/foundation/utils";
 import TrashIcon from "@/components/icons/TrashIcon";
+import type { GeneralProps } from "@/foundation/utils";
+
 type Props = {
   className?: string;
   disabled?: boolean;
@@ -12,7 +10,7 @@ type Props = {
   style?: Record<string, any>;
   title?: string;
   type?: "button" | "submit" | "reset";
-};
+} & GeneralProps;
 
 const RemoveButton = (props: Props): JSX.Element => {
   const { className, disabled, onClick, style, title, type = "button" } = props;
