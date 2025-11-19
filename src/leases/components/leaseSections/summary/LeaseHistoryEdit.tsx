@@ -52,6 +52,7 @@ import {
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { restructureLease, sortRelatedHistoryItems } from "@/leases/helpers";
 import type { UserServiceUnit } from "@/usersPermissions/types";
+import { Lease } from "@/leases/types";
 
 type Props = {
   serviceUnit: UserServiceUnit;
@@ -172,7 +173,7 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
     if (lease.plot_searches?.length) {
       lease.plot_searches.forEach((plotSearch) => {
         historyItems.push({
-          key: `plot-search-${plotSearch.name}-${Math.random().toString()}`,
+          key: `plot-search_lease${lease.id}-plotsearch${plotSearch.id}`,
           id: plotSearch.id,
           itemTitle: plotSearch.name,
           startDate: plotSearch.begin_at,
@@ -187,7 +188,7 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
     if (lease.target_statuses?.length) {
       lease.target_statuses.forEach((plotApplication) => {
         historyItems.push({
-          key: `plot-application-${plotApplication.application_identifier}-${Math.random().toString()}`,
+          key: `plot-application_lease${lease.id}-plotapplication${plotApplication.id}`,
           id: plotApplication.id,
           itemTitle: plotApplication.application_identifier,
           receivedAt: plotApplication.received_at,
@@ -199,7 +200,7 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
     if (lease.area_searches?.length) {
       lease.area_searches.forEach((areaSearch) => {
         historyItems.push({
-          key: `area-search-${areaSearch.identifier}-${Math.random().toString()}`,
+          key: `area-search_lease${lease.id}-areasearch${areaSearch.id}`,
           id: areaSearch.id,
           itemTitle: areaSearch.identifier,
           receivedAt: areaSearch.received_date,
@@ -217,7 +218,7 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
         ) {
           const { content_object } = relatedPlotApplication;
           historyItems.push({
-            key: `related-plot-application-plotsearch-${content_object.id}-${Math.random().toString()}`,
+            key: `related-plot-application-plotsearch_lease${lease.id}-contentobject${content_object.id}`,
             id: content_object.id,
             deleteId: relatedPlotApplication.id,
             itemTitle: content_object.name,
@@ -236,7 +237,7 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
         ) {
           const { content_object } = relatedPlotApplication;
           historyItems.push({
-            key: `related-plot-application-targetstatus-${content_object.id}-${Math.random().toString()}`,
+            key: `related-plot-application-targetstatus-${lease.id}-${content_object.id}`,
             id: content_object.id,
             deleteId: relatedPlotApplication.id,
             itemTitle: content_object.application_identifier,
@@ -250,7 +251,7 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
         ) {
           const { content_object } = relatedPlotApplication;
           historyItems.push({
-            key: `related-plot-application-areasearch-${content_object.id}-${Math.random().toString()}`,
+            key: `related-plot-application-areasearch-${lease.id}-${content_object.id}`,
             id: content_object.id,
             deleteId: relatedPlotApplication.id,
             itemTitle: content_object.identifier,
@@ -263,8 +264,17 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
       });
     }
 
-    let leaseProps: any = {
-      key: `lease-${lease.id}-${Math.random().toString()}`,
+    let leaseProps: {
+      key: string;
+      id: Lease["id"];
+      deleteId: number;
+      lease: Partial<Lease>;
+      startDate: Lease["start_date"];
+      endDate: Lease["end_date"];
+      onDelete: typeof handleRelatedLeaseDelete;
+      active?: boolean;
+    } = {
+      key: `lease-${lease.id}`,
       id: lease.id,
       deleteId: lease.related_lease_id,
       lease: lease,
@@ -281,7 +291,13 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
     historyItems.push(leaseProps);
     historyItems.sort(sortRelatedHistoryItems);
     return historyItems.map((item) => {
-      return <LeaseHistoryItem {...item} stateOptions={stateOptions} />;
+      return (
+        <LeaseHistoryItem
+          {...item}
+          key={item.key}
+          stateOptions={stateOptions}
+        />
+      );
     });
   };
 
