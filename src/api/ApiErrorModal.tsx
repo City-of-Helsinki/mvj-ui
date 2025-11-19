@@ -4,7 +4,31 @@ import { Button } from "react-foundation";
 import { reveal } from "@/foundation/reveal";
 import { Sizes } from "@/foundation/enums";
 
-const ApiErrorModal = ({ data, handleDismiss, isOpen }) => (
+interface TraceItem {
+  file?: string;
+  line?: number;
+  class?: string;
+  function?: string;
+  code?: string;
+}
+
+interface ApiErrorData {
+  exception?: string;
+  message?: string;
+  source?: string;
+  errors?: Record<string, any>; // Validation errors as object, e.g., { field: ["error"] }
+  trace?: TraceItem[];
+}
+
+const ApiErrorModal = ({
+  data,
+  handleDismiss,
+  isOpen,
+}: {
+  data: ApiErrorData;
+  handleDismiss: Function;
+  isOpen: boolean;
+}) => (
   <div className="api-error-modal">
     {data ? <ApiErrorContent data={data} /> : null}
     <Button
@@ -18,7 +42,7 @@ const ApiErrorModal = ({ data, handleDismiss, isOpen }) => (
   </div>
 );
 
-const ApiErrorList = ({ errors }) => {
+const ApiErrorList = ({ errors }: ApiErrorData) => {
   const listObjectErrors = (obj: Record<string, any>) => {
     return (
       <ul>
@@ -50,7 +74,7 @@ const ApiErrorList = ({ errors }) => {
   );
 };
 
-const ApiErrorStackTrace = ({ trace }) => (
+const ApiErrorStackTrace = ({ trace }: ApiErrorData) => (
   <div className="api-error-modal__trace">
     <h5 className="api-error-modal__trace-heading">Trace</h5>
     <ol className="api-error-modal__trace-nav">
@@ -71,7 +95,7 @@ const ApiErrorStackTrace = ({ trace }) => (
   </div>
 );
 
-const ApiErrorContent = ({ data }) => {
+const ApiErrorContent = ({ data }: { data: ApiErrorData }) => {
   return (
     <div className="api-error-modal__content">
       <h2 className="api-error-modal__title">

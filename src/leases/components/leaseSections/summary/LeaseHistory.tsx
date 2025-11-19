@@ -27,7 +27,7 @@ type Props = {
   leaseAttributes: Attributes;
 };
 type State = {
-  currentLease: Lease;
+  currentLease: Partial<Lease>;
   leaseAttributes: Attributes;
   relatedLeasesFrom: Array<Record<string, any>>;
   relatedLeasesTo: Array<Record<string, any>>;
@@ -75,7 +75,7 @@ class LeaseHistory extends PureComponent<Props, State> {
       if (lease.plot_searches?.length) {
         lease.plot_searches.forEach((plotSearch) => {
           historyItems.push({
-            key: `plot-search-${plotSearch.name}-${Math.random().toString()}`,
+            key: `plot-search_lease${lease.id}-plotsearch${plotSearch.id}`,
             id: plotSearch.id,
             itemTitle: plotSearch.name,
             startDate: plotSearch.begin_at,
@@ -90,7 +90,7 @@ class LeaseHistory extends PureComponent<Props, State> {
       if (lease.target_statuses?.length) {
         lease.target_statuses.forEach((plotApplication) => {
           historyItems.push({
-            key: `plot-application-${plotApplication.application_identifier}-${Math.random().toString()}`,
+            key: `plot-application_lease${lease.id}-plotapplication${plotApplication.id}`,
             id: plotApplication.id,
             itemTitle: plotApplication.application_identifier,
             receivedAt: plotApplication.received_at,
@@ -102,7 +102,7 @@ class LeaseHistory extends PureComponent<Props, State> {
       if (lease.area_searches?.length) {
         lease.area_searches.forEach((areaSearch) => {
           historyItems.push({
-            key: `area-search-${areaSearch.identifier}-${Math.random().toString()}`,
+            key: `area-search_lease${lease.id}-areasearch${areaSearch.id}`,
             id: areaSearch.id,
             itemTitle: areaSearch.identifier,
             receivedAt: areaSearch.received_date,
@@ -120,7 +120,7 @@ class LeaseHistory extends PureComponent<Props, State> {
           ) {
             const { content_object } = relatedPlotApplication;
             historyItems.push({
-              key: `related-plot-application-plotsearch-${content_object.id}-${Math.random().toString()}`,
+              key: `related-plot-application-plotsearch_lease${lease.id}-contentobject${content_object.id}`,
               id: content_object.id,
               itemTitle: content_object.name,
               startDate: content_object.begin_at,
@@ -137,7 +137,7 @@ class LeaseHistory extends PureComponent<Props, State> {
           ) {
             const { content_object } = relatedPlotApplication;
             historyItems.push({
-              key: `related-plot-application-targetstatus-${content_object.id}-${Math.random().toString()}`,
+              key: `related-plot-application-targetstatus-${lease.id}-${content_object.id}`,
               id: content_object.id,
               itemTitle: content_object.application_identifier,
               receivedAt: content_object.received_at,
@@ -149,7 +149,7 @@ class LeaseHistory extends PureComponent<Props, State> {
           ) {
             const { content_object } = relatedPlotApplication;
             historyItems.push({
-              key: `related-plot-application-areasearch-${content_object.id}-${Math.random().toString()}`,
+              key: `related-plot-application-areasearch-${lease.id}-${content_object.id}`,
               id: content_object.id,
               itemTitle: content_object.identifier,
               applicantName: `${content_object.applicant_names.join(" ")}`,
@@ -160,8 +160,15 @@ class LeaseHistory extends PureComponent<Props, State> {
         });
       }
 
-      let leaseProps: any = {
-        key: `lease-${lease.id}-${Math.random().toString()}`,
+      let leaseProps: {
+        key: string;
+        id: Lease["id"];
+        lease: Partial<Lease>;
+        startDate: Lease["start_date"];
+        endDate: Lease["end_date"];
+        active?: boolean;
+      } = {
+        key: `lease-${lease.id}`,
         id: lease.id,
         lease: lease,
         startDate: lease.start_date,
@@ -177,7 +184,11 @@ class LeaseHistory extends PureComponent<Props, State> {
       historyItems.sort(sortRelatedHistoryItems);
       return historyItems.map((item) => {
         return (
-          <LeaseHistoryItem {...item} stateOptions={this.state.stateOptions} />
+          <LeaseHistoryItem
+            {...item}
+            key={item.key}
+            stateOptions={this.state.stateOptions}
+          />
         );
       });
     };

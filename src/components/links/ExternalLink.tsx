@@ -23,6 +23,7 @@ const ExternalLink = ({
       }
       className={classNames("links__external-link", className)}
       target={openInNewTab ? "_blank" : "_self"}
+      rel={"noreferrer"}
       href={isRelativePath ? href : `http://${href || ""}`}
     >
       <span>{text}</span>
