@@ -135,11 +135,7 @@ import {
 import { withLeasePageAttributes } from "@/components/attributes/LeasePageAttributes";
 import { withUiDataList } from "@/components/uiData/UiDataListHOC";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
-import type {
-  Attributes,
-  LeafletFeatureGeometry,
-  Methods as MethodsType,
-} from "types";
+import type { Attributes, Methods as MethodsType } from "types";
 import type { CommentList } from "@/comments/types";
 import type { InvoiceList } from "@/invoices/types";
 import type { Lease } from "@/leases/types";
