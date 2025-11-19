@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-import ReactDOM from "react-dom";
 import classNames from "classnames";
 import UIDataTooltip from "@/components/tooltip/UIDataTooltip";
 type Props = {
@@ -17,6 +16,7 @@ type State = {
 };
 
 class FormFieldLabel extends PureComponent<Props, State> {
+  rootRef: React.RefObject<HTMLLabelElement> = React.createRef();
   timer: any;
   state: State = {
     showAddButton: false,
@@ -25,6 +25,11 @@ class FormFieldLabel extends PureComponent<Props, State> {
     enableUiDataEdit: false,
     required: false,
   };
+
+  constructor(props: Props) {
+    super(props);
+    this.rootRef = React.createRef();
+  }
 
   componentWillUnmount() {
     this.stopTimer();
@@ -44,7 +49,7 @@ class FormFieldLabel extends PureComponent<Props, State> {
   };
   handleMouseLeave: (arg0: any) => void = (event) => {
     const target = event.currentTarget,
-      el = ReactDOM.findDOMNode(this);
+      el = this.rootRef.current;
 
     if (el && (target === el || el.contains(target))) {
       this.stopTimer();
@@ -80,6 +85,7 @@ class FormFieldLabel extends PureComponent<Props, State> {
     const { showAddButton } = this.state;
     return (
       <label
+        ref={this.rootRef}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
         className={classNames("form-field__label", className, {

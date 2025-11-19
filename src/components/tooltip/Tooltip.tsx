@@ -1,8 +1,7 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import classNames from "classnames";
 import CloseButton from "@/components/button/CloseButton";
 import type { TooltipPosition } from "@/components/tooltip/types";
-import ReactDOM from "react-dom";
 type Props = {
   isOpen: boolean;
   className?: string | Record<string, any>;
@@ -15,9 +14,15 @@ type State = {
 };
 
 class Tooltip extends Component<Props, State> {
+  tooltipRef: React.RefObject<HTMLDivElement>;
   state: State = {
     position: "bottom-left",
   };
+
+  constructor(props: Props) {
+    super(props);
+    this.tooltipRef = React.createRef<HTMLDivElement>();
+  }
 
   componentDidMount() {
     window.addEventListener("click", this.onDocumentClick);
@@ -40,7 +45,7 @@ class Tooltip extends Component<Props, State> {
   onDocumentClick: (arg0: Event) => void = (event) => {
     const { isOpen } = this.props;
     const target = event.target;
-    const el = ReactDOM.findDOMNode(this);
+    const el = this.tooltipRef.current;
 
     if (isOpen) {
       event.stopPropagation();
@@ -68,11 +73,10 @@ class Tooltip extends Component<Props, State> {
   calculatePosition: () => TooltipPosition = () => {
     const { relativeTo } = this.props;
     let { innerHeight: height, innerWidth: width } = window;
-    const el = ReactDOM.findDOMNode(this)?.parentNode;
+    const el = this.tooltipRef.current?.parentNode;
 
     if (el) {
-      // @ts-ignore: x and y are defined for DOMRect, but not recognised by Typescript.
-      let { x, y } = el.getBoundingClientRect();
+      let { x, y } = (el as Element).getBoundingClientRect();
 
       if (relativeTo) {
         const {
@@ -112,9 +116,10 @@ class Tooltip extends Component<Props, State> {
     const { isOpen, className, children } = this.props;
     const { position } = this.state;
     return (
-      <Fragment>
+      <>
         {isOpen && (
           <div
+            ref={this.tooltipRef}
             className={classNames(
               "tooltip__text-container",
               `tooltip__text-container--position-${position}`,
@@ -127,7 +132,7 @@ class Tooltip extends Component<Props, State> {
             </div>
           </div>
         )}
-      </Fragment>
+      </>
     );
   }
 }

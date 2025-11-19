@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
 import classnames from "classnames";
@@ -37,7 +36,7 @@ type State = {
 class SideMenu extends Component<Props, State> {
   _isMounted: boolean;
   component: any;
-  firstLink: any;
+  firstLink: HTMLElement | null = null;
   state = {
     isClosing: false,
     isOpen: false,
@@ -63,7 +62,7 @@ class SideMenu extends Component<Props, State> {
 
   componentDidUpdate(prevProps: Props) {
     if (!prevProps.isOpen && this.props.isOpen) {
-      const linkNode: any = ReactDOM.findDOMNode(this.firstLink);
+      const linkNode = this.firstLink;
 
       if (linkNode) {
         linkNode.focus();
@@ -91,7 +90,7 @@ class SideMenu extends Component<Props, State> {
   setComponentRef = (element: any) => {
     this.component = element;
   };
-  setLinkRef = (element: any) => {
+  setLinkRef = (element: HTMLElement | null) => {
     this.firstLink = element;
   };
   getSideMenuWidth = () => {
@@ -175,13 +174,14 @@ class SideMenu extends Component<Props, State> {
                     )}
                   >
                     <li>
-                      <Link
-                        ref={this.setLinkRef}
-                        onClick={handleClick}
-                        to={getRouteById(Routes.LEASES)}
-                      >
-                        Vuokraukset
-                      </Link>
+                      <span ref={this.setLinkRef} tabIndex={0}>
+                        <Link
+                          onClick={handleClick}
+                          to={getRouteById(Routes.LEASES)}
+                        >
+                          Vuokraukset
+                        </Link>
+                      </span>
                     </li>
                   </Authorization>
 
