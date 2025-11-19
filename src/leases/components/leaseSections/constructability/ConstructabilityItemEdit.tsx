@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import { FieldArray, formValueSelector } from "redux-form";
+import { FieldArray } from "react-final-form-arrays";
 import isEmpty from "lodash/isEmpty";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
@@ -12,7 +12,7 @@ import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle
 import Comments from "./Comments";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -120,7 +120,6 @@ const getOtherErrors = (
 };
 
 const formName = FormNames.LEASE_CONSTRUCTABILITY;
-const selector = formValueSelector(formName);
 
 type CommentProps = {
   attributes: Attributes;
@@ -135,7 +134,7 @@ const renderComments = ({
   isSaveClicked,
   usersPermissions,
 }: CommentProps): ReactElement => {
-  const comments = useSelector((state) => selector(state, fields.name));
+  const comments = useSelector((state) => state[fields.name]);
 
   const handleAdd = () => {
     fields.push({
@@ -287,7 +286,7 @@ const renderComments = ({
                             LeaseConstructabilityDescriptionsFieldPaths.TEXT,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               attributes,
@@ -309,7 +308,7 @@ const renderComments = ({
                             LeaseConstructabilityDescriptionsFieldPaths.IS_STATIC,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               attributes,
@@ -333,7 +332,7 @@ const renderComments = ({
                                 LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -416,54 +415,52 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
   typeOptions,
   usersPermissions,
 }: Props) => {
-  const areaId = useSelector((state) => selector(state, `${field}.id`));
-
   const areaCollapseState = useSelector((state) =>
     getCollapseStateByKey(
       state,
-      `${ViewModes.EDIT}.${formName}.${areaId}.area`,
+      `${ViewModes.EDIT}.${formName}.${savedArea.id}.area`,
     ),
   );
   const constructabilityReportCollapseState = useSelector((state) =>
     getCollapseStateByKey(
       state,
-      `${ViewModes.EDIT}.${formName}.${areaId}.constructability_report`,
+      `${ViewModes.EDIT}.${formName}.${savedArea.id}.constructability_report`,
     ),
   );
   const demolitionCollapseState = useSelector((state) =>
     getCollapseStateByKey(
       state,
-      `${ViewModes.EDIT}.${formName}.${areaId}.demolition`,
+      `${ViewModes.EDIT}.${formName}.${savedArea.id}.demolition`,
     ),
   );
   const otherCollapseState = useSelector((state) =>
     getCollapseStateByKey(
       state,
-      `${ViewModes.EDIT}.${formName}.${areaId}.other`,
+      `${ViewModes.EDIT}.${formName}.${savedArea.id}.other`,
     ),
   );
   const pollutedLandCollapseState = useSelector((state) =>
     getCollapseStateByKey(
       state,
-      `${ViewModes.EDIT}.${formName}.${areaId}.polluted_land`,
+      `${ViewModes.EDIT}.${formName}.${savedArea.id}.polluted_land`,
     ),
   );
   const preconstructionCollapseState = useSelector((state) =>
     getCollapseStateByKey(
       state,
-      `${ViewModes.EDIT}.${formName}.${areaId}.preconstruction`,
+      `${ViewModes.EDIT}.${formName}.${savedArea.id}.preconstruction`,
     ),
   );
 
   const dispatch = useDispatch();
 
   const handleCollapseToggle = (key: string, val: boolean) => {
-    if (!areaId) return;
+    if (!savedArea.id) return;
     dispatch(
       receiveCollapseStates({
         [ViewModes.EDIT]: {
           [formName]: {
-            [areaId]: {
+            [savedArea.id]: {
               [key]: val,
             },
           },
@@ -501,7 +498,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
       createLeaseAreaAttachment({
         lease: currentLease.id,
         data: {
-          lease_area: areaId,
+          lease_area: savedArea.id,
           type: LeaseAreaAttachmentTypes.MATTI_REPORT,
         },
         file: e.target.files[0],
@@ -514,7 +511,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
       createLeaseAreaAttachment({
         lease: currentLease.id,
         data: {
-          lease_area: areaId,
+          lease_area: savedArea.id,
           type: LeaseAreaAttachmentTypes.GEOTECHNICAL,
         },
         file: e.target.files[0],
@@ -641,7 +638,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.PRECONSTRUCTION_STATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -665,7 +662,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -690,7 +687,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.PRECONSTRUCTION_INSPECTION_MOMENT,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -716,13 +713,16 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
             LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS,
           )}
         >
-          <FieldArray
-            attributes={attributes}
-            component={renderComments}
-            isSaveClicked={isSaveClicked}
-            name={`${field}.descriptionsPreconstruction`}
-            usersPermissions={usersPermissions}
-          />
+          <FieldArray name={`${field}.descriptionsPreconstruction`}>
+            {(fieldArrayProps) =>
+              renderComments({
+                ...fieldArrayProps,
+                attributes: attributes,
+                isSaveClicked: isSaveClicked,
+                usersPermissions: usersPermissions,
+              })
+            }
+          </FieldArray>
         </Authorization>
       </Collapse>
 
@@ -762,7 +762,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.DEMOLITION_STATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -787,13 +787,16 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
             LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS,
           )}
         >
-          <FieldArray
-            attributes={attributes}
-            component={renderComments}
-            isSaveClicked={isSaveClicked}
-            name={`${field}.descriptionsDemolition`}
-            usersPermissions={usersPermissions}
-          />
+          <FieldArray name={`${field}.descriptionsDemolition`}>
+            {(fieldArrayProps) =>
+              renderComments({
+                ...fieldArrayProps,
+                attributes: attributes,
+                isSaveClicked: isSaveClicked,
+                usersPermissions: usersPermissions,
+              })
+            }
+          </FieldArray>
         </Authorization>
       </Collapse>
 
@@ -833,7 +836,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.POLLUTED_LAND_STATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -857,7 +860,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_STATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -882,7 +885,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.POLLUTED_LAND_RENT_CONDITION_DATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -907,7 +910,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.POLLUTED_LAND_PLANNER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -932,7 +935,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.POLLUTED_LAND_PROJECTWISE_NUMBER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1105,7 +1108,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                   >
                     <AddFileButton
                       label="Lisää tiedosto"
-                      name={`add_polluted_land_matti_report_button_${areaId}`}
+                      name={`add_polluted_land_matti_report_button_${savedArea.id}`}
                       onChange={handleAddMattiReport}
                     />
                   </Authorization>
@@ -1121,13 +1124,16 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
             LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS,
           )}
         >
-          <FieldArray
-            attributes={attributes}
-            component={renderComments}
-            isSaveClicked={isSaveClicked}
-            name={`${field}.descriptionsPollutedLand`}
-            usersPermissions={usersPermissions}
-          />
+          <FieldArray name={`${field}.descriptionsPollutedLand`}>
+            {(fieldArrayProps) =>
+              renderComments({
+                ...fieldArrayProps,
+                attributes: attributes,
+                isSaveClicked: isSaveClicked,
+                usersPermissions: usersPermissions,
+              })
+            }
+          </FieldArray>
         </Authorization>
       </Collapse>
 
@@ -1169,7 +1175,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_STATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1193,7 +1199,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_INVESTIGATION_STATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1218,7 +1224,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNING_DATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1243,7 +1249,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.CONSTRUCTABILITY_REPORT_SIGNER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1420,7 +1426,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                   >
                     <AddFileButton
                       label="Lisää tiedosto"
-                      name={`add_constructability_report_geotechnical_attachment_button_${areaId}`}
+                      name={`add_constructability_report_geotechnical_attachment_button_${savedArea.id}`}
                       onChange={handleAddGeotechnicalAttachment}
                     />
                   </Authorization>
@@ -1436,13 +1442,16 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
             LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS,
           )}
         >
-          <FieldArray
-            attributes={attributes}
-            component={renderComments}
-            isSaveClicked={isSaveClicked}
-            name={`${field}.descriptionsReport`}
-            usersPermissions={usersPermissions}
-          />
+          <FieldArray name={`${field}.descriptionsReport`}>
+            {(fieldArrayProps) =>
+              renderComments({
+                ...fieldArrayProps,
+                attributes: attributes,
+                isSaveClicked: isSaveClicked,
+                usersPermissions: usersPermissions,
+              })
+            }
+          </FieldArray>
         </Authorization>
       </Collapse>
 
@@ -1480,7 +1489,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 LeaseAreasFieldPaths.OTHER_STATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1503,13 +1512,16 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
             LeaseConstructabilityDescriptionsFieldPaths.CONSTRUCTABILITY_DESCRIPTIONS,
           )}
         >
-          <FieldArray
-            attributes={attributes}
-            component={renderComments}
-            isSaveClicked={isSaveClicked}
-            name={`${field}.descriptionsOther`}
-            usersPermissions={usersPermissions}
-          />
+          <FieldArray name={`${field}.descriptionsOther`}>
+            {(fieldArrayProps) =>
+              renderComments({
+                ...fieldArrayProps,
+                attributes: attributes,
+                isSaveClicked: isSaveClicked,
+                usersPermissions: usersPermissions,
+              })
+            }
+          </FieldArray>
         </Authorization>
       </Collapse>
     </Collapse>

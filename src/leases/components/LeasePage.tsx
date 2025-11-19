@@ -188,8 +188,6 @@ type Props = {
   isFetchingOldDwellingsInHousingCompaniesPriceIndex: boolean;
   // get via withLeasePageAttributes HOC
   isFormValidFlags: Record<string, any>;
-  isConstructabilityFormDirty: boolean;
-  isConstructabilityFormValid: boolean;
   isContractsFormDirty: boolean;
   isContractsFormValid: boolean;
   isDecisionsFormDirty: boolean;
@@ -256,8 +254,6 @@ const LeasePage: React.FC<Props> = (props) => {
     isFetchingReceivableTypes,
     isFetchingOldDwellingsInHousingCompaniesPriceIndex,
     isFormValidFlags,
-    isConstructabilityFormDirty,
-    isConstructabilityFormValid,
     isContractsFormDirty,
     isContractsFormValid,
     isDecisionsFormDirty,
@@ -301,11 +297,13 @@ const LeasePage: React.FC<Props> = (props) => {
     dirty: false,
     valid: true,
   });
+  const [constructabilityFormState, setConstructabilityFormState] = useState({
+    dirty: false,
+    valid: true,
+  });
 
   // Preventing stale values for `setInterval` and `saveUnsavedChanges`
   const currentValuesRef = useRef({
-    isConstructabilityFormDirty,
-    constructabilityFormValues,
     isContractsFormDirty,
     contractsFormValues,
     isDecisionsFormDirty,
@@ -320,8 +318,6 @@ const LeasePage: React.FC<Props> = (props) => {
     isFormValidFlags,
   });
   currentValuesRef.current = {
-    isConstructabilityFormDirty,
-    constructabilityFormValues,
     isContractsFormDirty,
     contractsFormValues,
     isDecisionsFormDirty,
@@ -382,6 +378,16 @@ const LeasePage: React.FC<Props> = (props) => {
       },
       { dirty: true, valid: true },
     );
+    const unsubscribeLeaseConstructabilityForm =
+      leaseConstructabilityFormRef.current.subscribe(
+        (formState) => {
+          setConstructabilityFormState({
+            dirty: formState.dirty,
+            valid: formState.valid,
+          });
+        },
+        { dirty: true, valid: true },
+      );
 
     return () => {
       if (pathname !== `${getRouteById(Routes.LEASES)}/${leaseId}`) {
@@ -399,6 +405,7 @@ const LeasePage: React.FC<Props> = (props) => {
 
       unsubscribeSummaryForm();
       unsubscribeLeaseTenantForm();
+      unsubscribeLeaseConstructabilityForm();
     };
   }, []);
 
@@ -527,12 +534,18 @@ const LeasePage: React.FC<Props> = (props) => {
       mutators: { ...arrayMutators },
     }),
   );
+  const leaseConstructabilityFormRef = useRef(
+    createForm({
+      onSubmit: () => {},
+      mutators: { ...arrayMutators },
+    }),
+  );
 
   const initializeForms = (lease: Lease) => {
     const areas = getContentLeaseAreas(lease),
       rents = getContentRents(lease),
       tenants = getContentTenants(lease);
-    initialize(FormNames.LEASE_CONSTRUCTABILITY, {
+    leaseConstructabilityFormRef.current.initialize({
       lease_areas: getContentConstructabilityAreas(lease),
     });
     initialize(FormNames.LEASE_CONTRACTS, {
@@ -587,8 +600,8 @@ const LeasePage: React.FC<Props> = (props) => {
     );
 
     if (storedConstructabilityFormValues) {
-      bulkChangeReduxForm(
-        FormNames.LEASE_CONSTRUCTABILITY,
+      bulkChange(
+        leaseConstructabilityFormRef.current,
         storedConstructabilityFormValues,
       );
     }
@@ -676,8 +689,6 @@ const LeasePage: React.FC<Props> = (props) => {
   const saveUnsavedChanges = () => {
     // Get values from ref to avoid stale values due to setInterval
     const {
-      isConstructabilityFormDirty,
-      constructabilityFormValues,
       isContractsFormDirty,
       contractsFormValues,
       isDecisionsFormDirty,
@@ -694,10 +705,10 @@ const LeasePage: React.FC<Props> = (props) => {
 
     let isDirty = false;
 
-    if (isConstructabilityFormDirty) {
+    if (leaseConstructabilityFormRef.current.getState().dirty) {
       setSessionStorageItem(
         FormNames.LEASE_CONSTRUCTABILITY,
-        constructabilityFormValues,
+        leaseConstructabilityFormRef.current.getState().values,
       );
       isDirty = true;
     } else {
@@ -781,10 +792,10 @@ const LeasePage: React.FC<Props> = (props) => {
         id: currentLease.id,
       };
 
-      if (isConstructabilityFormDirty) {
+      if (leaseConstructabilityFormRef.current.getState().dirty) {
         payload = addConstructabilityFormValuesToPayload(
           payload,
-          constructabilityFormValues,
+          leaseConstructabilityFormRef.current.getState().values,
         );
       }
 
@@ -835,7 +846,7 @@ const LeasePage: React.FC<Props> = (props) => {
   };
   const validateForms = () => {
     return (
-      isConstructabilityFormValid &&
+      constructabilityFormState.valid &&
       isContractsFormValid &&
       isDecisionsFormValid &&
       isInspectionsFormValid &&
@@ -871,7 +882,7 @@ const LeasePage: React.FC<Props> = (props) => {
 
   const isAnyFormDirty = () => {
     return (
-      isConstructabilityFormDirty ||
+      constructabilityFormState.dirty ||
       isContractsFormDirty ||
       isDecisionsFormDirty ||
       isInspectionsFormDirty ||
@@ -1022,8 +1033,8 @@ const LeasePage: React.FC<Props> = (props) => {
                 leaseAttributes,
                 LeaseAreasFieldPaths.LEASE_AREAS,
               ),
-              isDirty: isConstructabilityFormDirty,
-              hasError: isSaveClicked && !isConstructabilityFormValid,
+              isDirty: constructabilityFormState.dirty,
+              hasError: isSaveClicked && !constructabilityFormState.valid,
             },
             {
               label: "Laskutus",
@@ -1262,7 +1273,9 @@ const LeasePage: React.FC<Props> = (props) => {
                     <AuthorizationError text={PermissionMissingTexts.GENERAL} />
                   }
                 >
-                  <ConstructabilityEdit />
+                  <ConstructabilityEdit
+                    formApi={leaseConstructabilityFormRef.current}
+                  />
                 </Authorization>
               ) : (
                 <Authorization
@@ -1338,13 +1351,6 @@ export default flowRight(
         invoices: getInvoicesByLease(state, props.match.params.leaseId),
         isEditMode: getIsEditMode(state),
         isFormValidFlags: getIsFormValidFlags(state),
-        isConstructabilityFormDirty: isDirty(FormNames.LEASE_CONSTRUCTABILITY)(
-          state,
-        ),
-        isConstructabilityFormValid: getIsFormValidById(
-          state,
-          FormNames.LEASE_CONSTRUCTABILITY,
-        ),
         isContractsFormDirty: isDirty(FormNames.LEASE_CONTRACTS)(state),
         isContractsFormValid: getIsFormValidById(
           state,
