@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-import ReactDOM from "react-dom";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 import BackIcon from "@/components/icons/BackIcon";
@@ -14,6 +13,13 @@ type Props = {
 };
 
 class SubMenu extends PureComponent<Props> {
+  rootRef: React.RefObject<HTMLLIElement>;
+
+  constructor(props: Props) {
+    super(props);
+    this.rootRef = React.createRef();
+  }
+
   componentDidMount() {
     window.addEventListener("click", this.onDocumentClick);
     window.addEventListener("keydown", this.onDocumentKeyDown);
@@ -27,7 +33,7 @@ class SubMenu extends PureComponent<Props> {
   onDocumentClick: (arg0: MouseEvent) => void = (event) => {
     const { isOpen, onHeaderClick } = this.props;
     const target = event.target;
-    const el = ReactDOM.findDOMNode(this);
+    const el = this.rootRef.current;
 
     if (
       isOpen &&
@@ -62,6 +68,7 @@ class SubMenu extends PureComponent<Props> {
     const { header, isOpen, items } = this.props;
     return (
       <li
+        ref={this.rootRef}
         className={classNames("side-menu__submenu", {
           "side-menu__submenu--is-open": isOpen,
         })}

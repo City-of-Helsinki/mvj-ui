@@ -1,5 +1,4 @@
 import React, { PureComponent } from "react";
-import ReactDOM from "react-dom";
 import classNames from "classnames";
 import UIDataTooltip from "@/components/tooltip/UIDataTooltip";
 type Props = {
@@ -14,6 +13,7 @@ type State = {
 };
 
 class SubTitle extends PureComponent<Props, State> {
+  rootRef: React.RefObject<HTMLSpanElement>;
   timer: any;
   state: State = {
     showAddButton: false,
@@ -21,6 +21,11 @@ class SubTitle extends PureComponent<Props, State> {
   static defaultProps: Partial<Props> = {
     enableUiDataEdit: false,
   };
+
+  constructor(props: Props) {
+    super(props);
+    this.rootRef = React.createRef();
+  }
 
   componentWillUnmount() {
     this.stopTimer();
@@ -42,7 +47,7 @@ class SubTitle extends PureComponent<Props, State> {
     event,
   ) => {
     const target = event.currentTarget;
-    const el = ReactDOM.findDOMNode(this);
+    const el = this.rootRef.current;
 
     if (el && (target === el || el.contains(target))) {
       this.stopTimer();
@@ -70,6 +75,7 @@ class SubTitle extends PureComponent<Props, State> {
     const { showAddButton } = this.state;
     return (
       <span
+        ref={this.rootRef}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
         className={classNames("content__sub-title", {

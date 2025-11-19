@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import classNames from "classnames";
 import capitalize from "lodash/capitalize";
 import debounce from "lodash/debounce";
@@ -63,6 +62,7 @@ type State = {
 };
 
 class AddressSearchInput extends Component<Props, State> {
+  rootRef: React.RefObject<HTMLDivElement>;
   input: any;
   menuList: any;
   state = {
@@ -78,6 +78,12 @@ class AddressSearchInput extends Component<Props, State> {
   static defaultProps = {
     language: "fi",
   };
+
+  constructor(props: Props) {
+    super(props);
+    this.rootRef = React.createRef();
+  }
+
   setInputRef = (el: any) => {
     this.input = el;
   };
@@ -130,7 +136,7 @@ class AddressSearchInput extends Component<Props, State> {
   onDocumentClick = (event: any) => {
     const { menuOpen } = this.state;
     const target = event.target,
-      el = ReactDOM.findDOMNode(this);
+      el = this.rootRef.current;
 
     if (menuOpen && el && target !== el && !el.contains(target)) {
       this.closeMenu();
@@ -371,6 +377,7 @@ class AddressSearchInput extends Component<Props, State> {
     } = this.state;
     return (
       <div
+        ref={this.rootRef}
         className={classNames("address-search-input", {
           open: menuOpen,
         })}
