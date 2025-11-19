@@ -1372,8 +1372,6 @@ export default flowRight(
         isRentsFormDirty: isDirty(FormNames.LEASE_RENTS)(state),
         isRentsFormValid: getIsFormValidById(state, FormNames.LEASE_RENTS),
         isSaving: getIsSaving(state),
-        isTenantsFormDirty: isDirty(FormNames.LEASE_TENANTS)(state),
-        isTenantsFormValid: getIsFormValidById(state, FormNames.LEASE_TENANTS),
         isFetching: getIsFetching(state),
         isSaveClicked: getIsSaveClicked(state),
         leaseTypeList: getLeaseTypeList(state),
