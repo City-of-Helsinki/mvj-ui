@@ -134,8 +134,6 @@ const renderComments = ({
   isSaveClicked,
   usersPermissions,
 }: CommentProps): ReactElement => {
-  const comments = useSelector((state) => state[fields.name]);
-
   const handleAdd = () => {
     fields.push({
       is_static: false,
@@ -160,7 +158,7 @@ const renderComments = ({
       LeaseConstructabilityDescriptionsFieldPaths.AHJO_REFERENCE_NUMBER,
     )
   ) {
-    return <Comments comments={comments} />;
+    return <Comments comments={fields.value} />;
   }
 
   return (
