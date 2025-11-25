@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { FormSpy } from "react-final-form";
 
@@ -19,18 +19,18 @@ const ContactEdit: React.FC<{
   const formValues = form ? form.getState().values : null;
   const initialValues = formValues || contact;
 
+  useEffect(() => {
+    const unsubscribe = form.subscribe(
+      ({ dirty }) => {
+        setTabDirty(tabId, dirty);
+      },
+      { dirty: true, pristine: true },
+    );
+    return unsubscribe;
+  }, [form, setTabDirty, tabId]);
+
   return (
     <GreenBox className="no-margin">
-      <FormSpy subscription={{ dirty: true }}>
-        {({ dirty }) => {
-          // Update tab dirty state whenever form dirty state changes
-          React.useEffect(() => {
-            setTabDirty(tabId, dirty);
-          }, [dirty, tabId, setTabDirty]);
-
-          return null;
-        }}
-      </FormSpy>
       <ContactForm initialValues={initialValues} formApi={form} />
     </GreenBox>
   );

@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import debounce from "lodash/debounce";
 import Button from "@/components/button/Button";
 import DualListBox from "react-dual-listbox";
@@ -43,26 +49,29 @@ const SendEmailModal: React.FC<Props> = ({
 
   const prevIsOpen = useRef<boolean>(false);
 
-  const getUserList = async (search: string) => {
-    const users = await fetchUsers({
-      search,
-    });
-    // Both selected and available arrays on DualListBox use options for filtering. So add selectedUsers to search results and remove duplicates
-    const uniqueUsers = [...getUserOptions(users), ...selectedUsers]
-      .filter(
-        (a, index, array) =>
-          array.findIndex((b) => a.value === b.value) === index,
-      )
-      .sort((a, b) => sortStringByKeyAsc(a, b, "label"));
-    setUserOptions(uniqueUsers);
-  };
+  const getUserList = useCallback(
+    async (search: string) => {
+      const users = await fetchUsers({
+        search,
+      });
+      // Both selected and available arrays on DualListBox use options for filtering. So add selectedUsers to search results and remove duplicates
+      const uniqueUsers = [...getUserOptions(users), ...selectedUsers]
+        .filter(
+          (a, index, array) =>
+            array.findIndex((b) => a.value === b.value) === index,
+        )
+        .sort((a, b) => sortStringByKeyAsc(a, b, "label"));
+      setUserOptions(uniqueUsers);
+    },
+    [selectedUsers],
+  );
 
   const getUserListDebounced = useMemo(
     () =>
       debounce((search: string) => {
         getUserList(search);
       }, 500),
-    [selectedUsers],
+    [getUserList],
   );
 
   useEffect(() => {

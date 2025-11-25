@@ -127,12 +127,9 @@ const ContactPageView: React.FC<{
     });
   }, []);
 
-  const isTabDirty = useCallback(
-    (tabId: number) => {
-      return tabDirtyStateRef.current.get(tabId) || false;
-    },
-    [dirtyTabs],
-  );
+  const isTabDirty = useCallback((tabId: number) => {
+    return tabDirtyStateRef.current.get(tabId) || false;
+  }, []);
 
   const setContactPageTitle = useCallback(() => {
     const nameInfo = getContactFullName(contact);
@@ -214,6 +211,7 @@ const ContactPageView: React.FC<{
       dispatch(hideEditMode());
       window.removeEventListener("popstate", handlePopState);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -297,7 +295,7 @@ const ContactPageView: React.FC<{
       pathname: getRouteById(Routes.CONTACT_NEW),
       search: location.search,
     });
-  }, [form, contact, dispatch, history, location.search]);
+  }, [contact, dispatch, history, location.search]);
 
   const handleBack = useCallback(() => {
     const query = getUrlParams(location.search);
@@ -320,12 +318,12 @@ const ContactPageView: React.FC<{
 
   const cancelChanges = useCallback(() => {
     dispatch(hideEditMode());
-  }, [hideEditMode]);
+  }, [dispatch]);
 
   const saveChanges = useCallback(() => {
     dispatch(receiveIsSaveClicked(true));
     handleSubmit();
-  }, [receiveIsSaveClicked]);
+  }, [handleSubmit, dispatch]);
 
   const showEditModeHandler = useCallback(() => {
     dispatch(receiveIsSaveClicked(false));

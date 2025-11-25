@@ -214,7 +214,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
 
   useEffect(() => {
     dispatch(hideContactModal());
-  }, []);
+  }, [dispatch]);
 
   const { savedTenants, savedTenantsArchived } = useMemo(() => {
     if (!currentLease) {

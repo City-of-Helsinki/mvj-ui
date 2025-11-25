@@ -334,6 +334,16 @@ const LeasePage: React.FC<Props> = (props) => {
 
   const timerAutoSave = useRef<NodeJS.Timeout>();
 
+  const requestedForLeaseRef = useRef<{
+    [leaseId: string]: {
+      comments?: boolean;
+      invoices?: boolean;
+      leaseTypes?: boolean;
+      vats?: boolean;
+    };
+  }>({});
+  const prevUsersPermissionsRef = useRef<UsersPermissionsType | null>(null);
+
   const activeTab = useMemo(() => {
     const query = getUrlParams(search);
     return query.tab ? Number(query.tab) : 0;
@@ -407,6 +417,7 @@ const LeasePage: React.FC<Props> = (props) => {
       unsubscribeLeaseTenantForm();
       unsubscribeLeaseConstructabilityForm();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -414,9 +425,81 @@ const LeasePage: React.FC<Props> = (props) => {
   }, [activeTab]);
 
   useEffect(() => {
-    fetchCurrentLeaseData();
-    fetchLeaseRelatedData();
-  }, [leaseId, usersPermissions]);
+    const key = String(leaseId);
+    // Reset per-lease tracking so returning to a previously visited lease will re-run
+    if (requestedForLeaseRef.current[key]) {
+      delete requestedForLeaseRef.current[key];
+    }
+    prevUsersPermissionsRef.current = null;
+
+    requestedForLeaseRef.current[key] = requestedForLeaseRef.current[key] || {};
+    fetchSingleLease(leaseId);
+  }, [fetchSingleLease, leaseId]);
+
+  useEffect(() => {
+    // Fetch related lease data
+    const key = String(leaseId);
+    requestedForLeaseRef.current[key] = requestedForLeaseRef.current[key] || {};
+    let requested = requestedForLeaseRef.current[key];
+
+    // If usersPermissions changed, allow re-checking resources (some permissions may have been added)
+    if (
+      prevUsersPermissionsRef.current &&
+      prevUsersPermissionsRef.current !== usersPermissions
+    ) {
+      requestedForLeaseRef.current[key] = {}; // reset for this leaseId
+      requested = requestedForLeaseRef.current[key];
+    }
+
+    if (
+      hasPermissions(usersPermissions, UsersPermissions.VIEW_COMMENT) &&
+      (comments === undefined || comments === null) &&
+      !requested.comments
+    ) {
+      requested.comments = true;
+
+      fetchCommentsByLease(leaseId);
+    }
+
+    if (
+      hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) &&
+      (invoices === undefined || invoices === null) &&
+      !requested.invoices
+    ) {
+      fetchInvoicesByLease(leaseId);
+    }
+
+    if (
+      hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASETYPE) &&
+      isEmpty(leaseTypeList) &&
+      !requested.leaseTypes
+    ) {
+      requested.leaseTypes = true;
+      fetchLeaseTypes();
+    }
+
+    if (
+      hasPermissions(usersPermissions, UsersPermissions.VIEW_VAT) &&
+      isEmpty(vats) &&
+      !requested.vats
+    ) {
+      requested.vats = true;
+      fetchVats();
+    }
+
+    prevUsersPermissionsRef.current = usersPermissions;
+  }, [
+    fetchCommentsByLease,
+    fetchInvoicesByLease,
+    fetchLeaseTypes,
+    fetchVats,
+    leaseId,
+    usersPermissions,
+    comments,
+    invoices,
+    leaseTypeList,
+    vats,
+  ]);
 
   useEffect(() => {
     if (!isEmpty(currentLease)) {
@@ -427,7 +510,7 @@ const LeasePage: React.FC<Props> = (props) => {
         fetchReceivableTypes();
       }
     }
-  }, [currentLease]);
+  }, [currentLease, fetchReceivableTypes]);
 
   useEffect(() => {
     if (!isEmpty(currentLease)) {
@@ -437,40 +520,6 @@ const LeasePage: React.FC<Props> = (props) => {
       }
     }
   }, [currentLease, leaseId]);
-
-  const fetchCurrentLeaseData = () => {
-    fetchSingleLease(leaseId);
-  };
-
-  const fetchLeaseRelatedData = () => {
-    if (
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_COMMENT) &&
-      !comments
-    ) {
-      fetchCommentsByLease(leaseId);
-    }
-
-    if (
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) &&
-      !invoices
-    ) {
-      fetchInvoicesByLease(leaseId);
-    }
-
-    if (
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_LEASETYPE) &&
-      isEmpty(leaseTypeList)
-    ) {
-      fetchLeaseTypes();
-    }
-
-    if (
-      hasPermissions(usersPermissions, UsersPermissions.VIEW_VAT) &&
-      isEmpty(vats)
-    ) {
-      fetchVats();
-    }
-  };
 
   const getLeasePageTitle = (lease: Lease) => {
     const identifier = getContentLeaseIdentifier(lease);

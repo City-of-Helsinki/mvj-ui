@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Fieldset, TextInput } from "hds-react";
 import SanctionsCheckRequest from "@/creditDecision/components/SanctionsCheckRequest";
@@ -38,13 +38,15 @@ const SanctionsCheckTemplate = ({ sanctionsType }: Props) => {
     e.preventDefault();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (sanctionsType === SanctionsCheckType.COMPANY) {
       validateCompany({ businessId });
     }
     if (sanctionsType === SanctionsCheckType.PERSON) {
       validatePerson({ lastName });
     }
+    // By not including sanctionsType in the dependencies avoids running validation when sanctionsType changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastName, businessId]);
 
   if (sanctionsType === SanctionsCheckType.COMPANY) {

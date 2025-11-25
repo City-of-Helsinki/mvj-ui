@@ -62,6 +62,18 @@ const NewContactPage: React.FC = () => {
     dirty: false,
   });
 
+  /**
+   * Handles the browser's native "leave page" modal when the user attempts to navigate away
+   * from the page with unsaved changes in the form.
+   */
+  const handleLeavePage = useCallback((e: BeforeUnloadEvent) => {
+    if (formApiRef.current && formApiRef.current.getState().dirty) {
+      e.preventDefault();
+      // Legacy support for older browsers
+      e.returnValue = true;
+    }
+  }, []);
+
   useEffect(() => {
     setPageTitle("Uusi asiakas");
     dispatch(receiveIsSaveClicked(false));
@@ -79,26 +91,7 @@ const NewContactPage: React.FC = () => {
       dispatch(hideEditMode());
       window.removeEventListener("beforeunload", handleLeavePage);
     };
-  }, [dispatch]);
-
-  const handleFormStateChange = useCallback((state) => {
-    setFormState({
-      valid: state.valid,
-      dirty: state.dirty,
-    });
-  }, []);
-
-  /**
-   * Handles the browser's native "leave page" modal when the user attempts to navigate away
-   * from the page with unsaved changes in the form.
-   */
-  const handleLeavePage = useCallback((e: BeforeUnloadEvent) => {
-    if (formApiRef.current && formApiRef.current.getState().dirty) {
-      e.preventDefault();
-      // Legacy support for older browsers
-      e.returnValue = true;
-    }
-  }, []);
+  }, [handleLeavePage, dispatch]);
 
   const handleBack = () => {
     return history.push({

@@ -55,7 +55,7 @@ const FieldTypeUserSelect = ({
         }
       });
     }
-  }, []);
+  }, [input]);
 
   const handleChange = (newValue) => {
     singleUserLoadCancelled.current = true;

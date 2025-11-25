@@ -43,7 +43,9 @@ const TradeRegisterSearchPage: React.FC<Props> = ({
   usersPermissions,
 }) => {
   const [businessId, setBusinessId] = useState<string>("");
-  const [searchFormInitialValues, setSearchFormInitialValues] = useState<Record<string, any>>({});
+  const [searchFormInitialValues, setSearchFormInitialValues] = useState<
+    Record<string, any>
+  >({});
 
   // On mount
   useEffect(() => {
@@ -61,6 +63,7 @@ const TradeRegisterSearchPage: React.FC<Props> = ({
     } else {
       setSearchFormInitialValues({});
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // On location.search change
@@ -70,14 +73,17 @@ const TradeRegisterSearchPage: React.FC<Props> = ({
     setSearchFormInitialValues({ business_id: query.business_id || "" });
   }, [location.search]);
 
-  const handleSearchChange = useCallback((query) => {
-    setBusinessId(query.business_id);
-    setSearchFormInitialValues({ business_id: query.business_id });
-    history.push({
-      pathname: getRouteById(Routes.TRADE_REGISTER),
-      search: getSearchQuery(query),
-    });
-  }, [history]);
+  const handleSearchChange = useCallback(
+    (query) => {
+      setBusinessId(query.business_id);
+      setSearchFormInitialValues({ business_id: query.business_id });
+      history.push({
+        pathname: getRouteById(Routes.TRADE_REGISTER),
+        search: getSearchQuery(query),
+      });
+    },
+    [history],
+  );
 
   if (isFetchingUsersPermissions)
     return (

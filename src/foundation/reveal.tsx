@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -64,12 +65,15 @@ const RevealProvider: React.FC<{ children?: React.ReactNode }> = ({
     [reveals],
   );
 
-  const value = {
-    registerReveal,
-    openReveal,
-    closeReveal,
-    getRevealState,
-  };
+  const value = useMemo(
+    () => ({
+      registerReveal,
+      openReveal,
+      closeReveal,
+      getRevealState,
+    }),
+    [registerReveal, openReveal, closeReveal, getRevealState],
+  );
 
   return <RevealCtx.Provider value={value}>{children}</RevealCtx.Provider>;
 };
@@ -108,18 +112,20 @@ export const reveal =
   (WrappedComponent: React.ComponentType<any>) => {
     const RevealOverlay: React.FC<any> = (props) => {
       const ctx = useContext(RevealCtx);
+      const ctxRef = useRef(ctx);
+      ctxRef.current = ctx;
       const prevIsOpenRef = useRef<boolean>(!!props.isOpen);
 
       useEffect(() => {
-        ctx?.registerReveal(name, { isOpen: !!props.isOpen });
-      }, []);
+        ctxRef.current?.registerReveal(name, { isOpen: !!props.isOpen });
+      }, [props.isOpen]);
 
       useEffect(() => {
         if (props.isOpen && !prevIsOpenRef.current) {
-          ctx?.openReveal(name);
+          ctxRef.current?.openReveal(name);
         }
         prevIsOpenRef.current = !!props.isOpen;
-      }, [props.isOpen, ctx]);
+      }, [props.isOpen]);
 
       const revealState = ctx?.getRevealState(name) || {
         isOpen: false,
