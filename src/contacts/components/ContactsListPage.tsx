@@ -119,7 +119,7 @@ class ContactListPage extends Component<Props, State> {
   }
 
   componentDidMount() {
-    const { receiveTopNavigationSettings } = this.props;
+    const { receiveTopNavigationSettings, userActiveServiceUnit } = this.props;
     setPageTitle("Asiakkaat");
     receiveTopNavigationSettings({
       linkUrl: getRouteById(Routes.CONTACTS),
@@ -128,6 +128,11 @@ class ContactListPage extends Component<Props, State> {
     });
     window.addEventListener("popstate", this.handlePopState);
     this._isMounted = true;
+    if (userActiveServiceUnit) {
+      this.setSearchFormValues();
+      this.search();
+      this._hasFetchedContacts = true;
+    }
   }
 
   componentDidUpdate(prevProps) {
