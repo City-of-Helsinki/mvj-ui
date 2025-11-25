@@ -7,8 +7,6 @@ import configureStore, { history } from "@/root/configureStore";
 import routes from "@/root/routes";
 import { loginProviderProperties } from "@/auth/constants";
 
-import "./polyfills";
-
 export const store = configureStore();
 
 const container = document.getElementById("root");
