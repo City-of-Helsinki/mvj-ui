@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import { LoginProvider } from "hds-react";
@@ -12,12 +12,12 @@ import "./polyfills";
 export const store = configureStore();
 
 const container = document.getElementById("root");
+const root = createRoot(container);
 
-ReactDOM.render(
+root.render(
   <Provider store={store}>
     <LoginProvider {...loginProviderProperties}>
       <ConnectedRouter history={history}>{routes}</ConnectedRouter>
     </LoginProvider>
   </Provider>,
-  container,
 );
