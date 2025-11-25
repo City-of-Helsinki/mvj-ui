@@ -1,7 +1,15 @@
 import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
-import { change, FieldArray, formValueSelector, clearFields } from "redux-form";
+import {
+  change,
+  FieldArray,
+  formValueSelector,
+  clearFields,
+  initialize,
+  getFormValues,
+} from "redux-form";
 import { Row, Column } from "react-foundation";
+import set from "lodash/set";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -481,16 +489,18 @@ type Props = {
   basisOfRent: Record<string, any>;
   calculatorType: string | null | undefined;
   calculatorTypeOptions: Array<Record<string, any>>;
-  change: (...args: Array<any>) => any;
+  change: typeof change;
   children: Record<string, any> | null | undefined;
-  clearFields: (...args: Array<any>) => any;
+  clearFields: typeof clearFields;
   currentLease: Lease;
   discountPercentage: string | null | undefined;
   field: string;
   formName: string;
+  formValues: typeof getFormValues;
   id: number | null | undefined;
   index: number;
   indexOptions: Array<Record<string, any>>;
+  initialize: typeof initialize;
   intendedUse: number;
   intendedUseOptions: Array<Record<string, any>>;
   isSaveClicked: boolean;
@@ -536,8 +546,15 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         : false,
   };
   initialFormValues = () => {
-    const { basisOfRent, change, field, indexOptions, calculatorType } =
-      this.props;
+    const {
+      basisOfRent,
+      field,
+      formName,
+      formValues,
+      indexOptions,
+      calculatorType,
+      initialize,
+    } = this.props;
 
     if (
       calculatorType &&
@@ -549,11 +566,16 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         basisOfRent,
         indexValue,
       );
-      change(
-        this.props.formName,
+      const newInitialValues = {
+        ...formValues,
+      };
+      set(
+        newInitialValues,
         `${field}.current_amount_per_area`,
         currentAmountPerArea,
       );
+      // re-initialize the form in order to avoid dirty states on field(s) that change
+      initialize(formName, newInitialValues);
     }
 
     this.changeDiscounts();
@@ -3232,6 +3254,7 @@ export default connect(
   (state, props: Props) => {
     const formName = props.formName;
     const selector = formValueSelector(formName);
+    const formValues = getFormValues(formName)(state) || {};
     return {
       amountPerArea: selector(state, `${props.field}.amount_per_area`),
       currentAmountPerArea: selector(
@@ -3275,10 +3298,12 @@ export default connect(
         `${props.field}.temporary_subventions`,
       ),
       usersPermissions: getUsersPermissions(state),
+      formValues,
     };
   },
   {
     change,
     clearFields,
+    initialize,
   },
 )(BasisOfRentEdit);
