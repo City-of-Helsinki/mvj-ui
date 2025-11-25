@@ -128,7 +128,7 @@ type CommentProps = {
   usersPermissions: UsersPermissionsType;
 };
 
-const renderComments = ({
+const RenderComments: React.FC<CommentProps> = ({
   attributes,
   fields,
   isSaveClicked,
@@ -712,14 +712,14 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
           )}
         >
           <FieldArray name={`${field}.descriptionsPreconstruction`}>
-            {(fieldArrayProps) =>
-              renderComments({
-                ...fieldArrayProps,
-                attributes: attributes,
-                isSaveClicked: isSaveClicked,
-                usersPermissions: usersPermissions,
-              })
-            }
+            {(fieldArrayProps) => (
+              <RenderComments
+                {...fieldArrayProps}
+                attributes={attributes}
+                isSaveClicked={isSaveClicked}
+                usersPermissions={usersPermissions}
+              />
+            )}
           </FieldArray>
         </Authorization>
       </Collapse>
@@ -786,14 +786,14 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
           )}
         >
           <FieldArray name={`${field}.descriptionsDemolition`}>
-            {(fieldArrayProps) =>
-              renderComments({
-                ...fieldArrayProps,
-                attributes: attributes,
-                isSaveClicked: isSaveClicked,
-                usersPermissions: usersPermissions,
-              })
-            }
+            {(fieldArrayProps) => (
+              <RenderComments
+                {...fieldArrayProps}
+                attributes={attributes}
+                isSaveClicked={isSaveClicked}
+                usersPermissions={usersPermissions}
+              />
+            )}
           </FieldArray>
         </Authorization>
       </Collapse>
@@ -1123,14 +1123,14 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
           )}
         >
           <FieldArray name={`${field}.descriptionsPollutedLand`}>
-            {(fieldArrayProps) =>
-              renderComments({
-                ...fieldArrayProps,
-                attributes: attributes,
-                isSaveClicked: isSaveClicked,
-                usersPermissions: usersPermissions,
-              })
-            }
+            {(fieldArrayProps) => (
+              <RenderComments
+                {...fieldArrayProps}
+                attributes={attributes}
+                isSaveClicked={isSaveClicked}
+                usersPermissions={usersPermissions}
+              />
+            )}
           </FieldArray>
         </Authorization>
       </Collapse>
@@ -1441,14 +1441,14 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
           )}
         >
           <FieldArray name={`${field}.descriptionsReport`}>
-            {(fieldArrayProps) =>
-              renderComments({
-                ...fieldArrayProps,
-                attributes: attributes,
-                isSaveClicked: isSaveClicked,
-                usersPermissions: usersPermissions,
-              })
-            }
+            {(fieldArrayProps) => (
+              <RenderComments
+                {...fieldArrayProps}
+                attributes={attributes}
+                isSaveClicked={isSaveClicked}
+                usersPermissions={usersPermissions}
+              />
+            )}
           </FieldArray>
         </Authorization>
       </Collapse>
@@ -1511,14 +1511,14 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
           )}
         >
           <FieldArray name={`${field}.descriptionsOther`}>
-            {(fieldArrayProps) =>
-              renderComments({
-                ...fieldArrayProps,
-                attributes: attributes,
-                isSaveClicked: isSaveClicked,
-                usersPermissions: usersPermissions,
-              })
-            }
+            {(fieldArrayProps) => (
+              <RenderComments
+                {...fieldArrayProps}
+                attributes={attributes}
+                isSaveClicked={isSaveClicked}
+                usersPermissions={usersPermissions}
+              />
+            )}
           </FieldArray>
         </Authorization>
       </Collapse>

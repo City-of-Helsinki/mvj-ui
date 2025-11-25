@@ -46,7 +46,9 @@ const CreditDecisionSearchPage: React.FC<Props> = ({
 }) => {
   const [contactType, setContactType] = useState<string>("");
   const [keyword, setKeyword] = useState<string>("");
-  const [searchFormInitialValues, setSearchFormInitialValues] = useState<Record<string, any>>({});
+  const [searchFormInitialValues, setSearchFormInitialValues] = useState<
+    Record<string, any>
+  >({});
 
   useEffect(() => {
     const query = getUrlParams(location.search);
@@ -63,7 +65,7 @@ const CreditDecisionSearchPage: React.FC<Props> = ({
       contact_type: query.contact_type || "",
       keyword: query.keyword || "",
     });
-  }, []);
+  }, [location.search, receiveTopNavigationSettings]);
 
   useEffect(() => {
     const query = getUrlParams(location.search);
@@ -75,18 +77,21 @@ const CreditDecisionSearchPage: React.FC<Props> = ({
     });
   }, [location.search]);
 
-  const handleSearchChange = useCallback((query) => {
-    setContactType(query.contact_type);
-    setKeyword(query.keyword);
-    setSearchFormInitialValues({
-      contact_type: query.contact_type,
-      keyword: query.keyword,
-    });
-    history.push({
-      pathname: getRouteById(Routes.CREDIT_DECISION),
-      search: getSearchQuery(query),
-    });
-  }, [history]);
+  const handleSearchChange = useCallback(
+    (query) => {
+      setContactType(query.contact_type);
+      setKeyword(query.keyword);
+      setSearchFormInitialValues({
+        contact_type: query.contact_type,
+        keyword: query.keyword,
+      });
+      history.push({
+        pathname: getRouteById(Routes.CREDIT_DECISION),
+        search: getSearchQuery(query),
+      });
+    },
+    [history],
+  );
 
   if (isFetchingUsersPermissions)
     return (

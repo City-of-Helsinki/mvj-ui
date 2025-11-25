@@ -157,9 +157,13 @@ const SapInvoicesListPage: React.FC<Props> = ({
   const [columns, setColumns] = useState<Array<Record<string, any>>>([]);
   const [count, setCount] = useState(0);
   const [maxPage, setMaxPage] = useState(0);
-  const [sapInvoices, setSapInvoices] = useState<Array<Record<string, any>>>([]);
+  const [sapInvoices, setSapInvoices] = useState<Array<Record<string, any>>>(
+    [],
+  );
   const [isSearchInitialized, setIsSearchInitialized] = useState(false);
-  const [searchFormInitialValues, setSearchFormInitialValues] = useState<Record<string, any>>({});
+  const [searchFormInitialValues, setSearchFormInitialValues] = useState<
+    Record<string, any>
+  >({});
   const [sortKey, setSortKey] = useState(DEFAULT_SORT_KEY);
   const [sortOrder, setSortOrder] = useState(DEFAULT_SORT_ORDER);
 
@@ -173,6 +177,7 @@ const SapInvoicesListPage: React.FC<Props> = ({
       pageTitle: "SAP laskut",
       showSearch: false,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -189,27 +194,6 @@ const SapInvoicesListPage: React.FC<Props> = ({
     }
   }, [sapInvoiceList]);
 
-  useEffect(() => {
-    const currentSearch = location.search;
-
-    const handleSearch = () => {
-      setSearchFormValues();
-      search();
-    };
-
-    if (userActiveServiceUnit) {
-      if (!hasFetchedInvoices) {
-        handleSearch();
-        setHasFetchedInvoices(true);
-      } else if (!currentSearch.includes("service_unit")) {
-        handleSearch();
-      }
-    }
-
-    // Always search when search string changes
-    handleSearch();
-  }, [location.search, userActiveServiceUnit]);
-
   const setSearchFormValues = useCallback(() => {
     const searchQuery = getUrlParams(location.search);
 
@@ -225,7 +209,9 @@ const SapInvoicesListPage: React.FC<Props> = ({
     setIsSearchInitialized(true);
     setSearchFormInitialValues(initialValues);
     setSortKey(searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY);
-    setSortOrder(searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER);
+    setSortOrder(
+      searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
+    );
   }, [location.search, userActiveServiceUnit]);
 
   const search = useCallback(() => {
@@ -248,6 +234,33 @@ const SapInvoicesListPage: React.FC<Props> = ({
     fetchSapInvoices(mapSapInvoiceSearchFilters(searchQuery));
   }, [fetchSapInvoices, location.search, userActiveServiceUnit]);
 
+  useEffect(() => {
+    const currentSearch = location.search;
+
+    const handleSearch = () => {
+      setSearchFormValues();
+      search();
+    };
+
+    if (userActiveServiceUnit) {
+      if (!hasFetchedInvoices) {
+        handleSearch();
+        setHasFetchedInvoices(true);
+      } else if (!currentSearch.includes("service_unit")) {
+        handleSearch();
+      }
+    }
+
+    // Always search when search string changes
+    handleSearch();
+  }, [
+    hasFetchedInvoices,
+    location.search,
+    search,
+    setSearchFormValues,
+    userActiveServiceUnit,
+  ]);
+
   const handleRowClick = useCallback((id, row) => {
     window.open(
       `${getRouteById(Routes.LEASES)}/${row.lease.id}?tab=6&opened_invoice=${id}`,
@@ -255,34 +268,43 @@ const SapInvoicesListPage: React.FC<Props> = ({
     );
   }, []);
 
-  const handleSearchChange = useCallback((query: any) => {
-    history.push({
-      pathname: getRouteById(Routes.SAP_INVOICES),
-      search: getSearchQuery(query),
-    });
-  }, [history]);
+  const handleSearchChange = useCallback(
+    (query: any) => {
+      history.push({
+        pathname: getRouteById(Routes.SAP_INVOICES),
+        search: getSearchQuery(query),
+      });
+    },
+    [history],
+  );
 
-  const handleSortingChange = useCallback(({ sortKey, sortOrder }) => {
-    const searchQuery = getUrlParams(location.search);
-    searchQuery.sort_key = sortKey;
-    searchQuery.sort_order = sortOrder;
-    setSortKey(sortKey);
-    setSortOrder(sortOrder);
-    handleSearchChange(searchQuery);
-  }, [location.search, handleSearchChange]);
+  const handleSortingChange = useCallback(
+    ({ sortKey, sortOrder }) => {
+      const searchQuery = getUrlParams(location.search);
+      searchQuery.sort_key = sortKey;
+      searchQuery.sort_order = sortOrder;
+      setSortKey(sortKey);
+      setSortOrder(sortOrder);
+      handleSearchChange(searchQuery);
+    },
+    [location.search, handleSearchChange],
+  );
 
-  const handlePageClick = useCallback((page: number) => {
-    const query = getUrlParams(location.search);
+  const handlePageClick = useCallback(
+    (page: number) => {
+      const query = getUrlParams(location.search);
 
-    if (page > 1) {
-      query.page = page;
-    } else {
-      delete query.page;
-    }
+      if (page > 1) {
+        query.page = page;
+      } else {
+        delete query.page;
+      }
 
-    setActivePage(page);
-    handleSearchChange(query);
-  }, [location.search, handleSearchChange]);
+      setActivePage(page);
+      handleSearchChange(query);
+    },
+    [location.search, handleSearchChange],
+  );
 
   if (isFetchingInvoiceAttributes)
     return (

@@ -32,7 +32,7 @@ const FieldTypeDecimal = ({
     if (value !== innerValue) {
       setInnerValue(formatDecimalNumber(value));
     }
-  }, [value]);
+  }, [value, innerValue]);
 
   const handleBlur = (e: React.SyntheticEvent<HTMLInputElement>) => {
     onBlur();

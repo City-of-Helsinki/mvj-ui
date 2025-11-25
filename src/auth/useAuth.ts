@@ -62,7 +62,12 @@ const useAuth = () => {
     }
 
     return apiTokensClientSignalReset;
-  }, [apiTokensClientSignal, setLoggedInIfApiTokenExists, dispatch]);
+  }, [
+    apiTokensClientSignal,
+    apiTokensClientSignalReset,
+    setLoggedInIfApiTokenExists,
+    dispatch,
+  ]);
 
   const determineRedirectPath = (redirectPath: string): string => {
     if (!redirectPath || redirectPath.startsWith("/callback")) {

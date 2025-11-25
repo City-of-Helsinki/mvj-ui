@@ -39,7 +39,6 @@ const CreditDecisionHistory: React.FC<Props> = ({
   fetchHistoryByBusinessId,
   fetchHistoryByContactId,
 }) => {
-
   useEffect(() => {
     if (!contactId && !businessId) return;
     if (history === undefined) {
@@ -49,10 +48,16 @@ const CreditDecisionHistory: React.FC<Props> = ({
         fetchHistoryByBusinessId(businessId);
       }
     }
-  }, [businessId, contactId, history]);
+  }, [
+    businessId,
+    contactId,
+    history,
+    fetchHistoryByBusinessId,
+    fetchHistoryByContactId,
+  ]);
 
   if (history === undefined && !isFetchingHistory) return null;
-  
+
   return (
     <GreenBox className="with-top-margin">
       <h3>{CreditDecisionText.REQUEST_HISTORY_TITLE}</h3>

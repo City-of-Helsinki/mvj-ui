@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useMemo } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import debounce from "lodash/debounce";
@@ -54,41 +54,51 @@ const Search: React.FC<Props> = ({
     };
   }, [fetchServiceUnits, isFetchingServiceUnits, serviceUnits]);
 
-  const search = useCallback((values: Record<string, any>) => {
-    const newValues = { ...values };
-    if (sortKey) {
-      newValues.sort_key = sortKey;
-      newValues.sort_order = sortOrder;
-    }
-    onSearch(newValues, true);
-  }, [onSearch, sortKey, sortOrder]);
+  const search = useCallback(
+    (values: Record<string, any>) => {
+      const newValues = { ...values };
+      if (sortKey) {
+        newValues.sort_key = sortKey;
+        newValues.sort_order = sortOrder;
+      }
+      onSearch(newValues, true);
+    },
+    [onSearch, sortKey, sortOrder],
+  );
 
   // debounce search
-  const debouncedSearch = useCallback(debounce((values: Record<string, any>) => {
-    if (!isMounted.current) return;
-    search(values);
-  }, 1000), [search]);
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((values: Record<string, any>) => {
+        if (!isMounted.current) return;
+        search(values);
+      }, 1000),
+    [search],
+  );
 
   // Track form values for search triggering
-  const handleFormChange = useCallback((values: Record<string, any>) => {
-    if (
-      isSearchInitialized &&
-      !isEqual(prevFormValues.current, values)
-    ) {
-      debouncedSearch(values);
-    }
-    prevFormValues.current = values;
-  }, [isSearchInitialized, debouncedSearch]);
+  const handleFormChange = useCallback(
+    (values: Record<string, any>) => {
+      if (isSearchInitialized && !isEqual(prevFormValues.current, values)) {
+        debouncedSearch(values);
+      }
+      prevFormValues.current = values;
+    },
+    [isSearchInitialized, debouncedSearch],
+  );
 
-  const handleClear = useCallback((form: any) => {
-    const query: any = {};
-    if (sortKey || sortOrder) {
-      query.sort_key = sortKey;
-      query.sort_order = sortOrder;
-    }
-    form.reset();
-    onSearch(query, true);
-  }, [onSearch, sortKey, sortOrder]);
+  const handleClear = useCallback(
+    (form: any) => {
+      const query: any = {};
+      if (sortKey || sortOrder) {
+        query.sort_key = sortKey;
+        query.sort_order = sortOrder;
+      }
+      form.reset();
+      onSearch(query, true);
+    },
+    [onSearch, sortKey, sortOrder],
+  );
 
   const getServiceUnitOptions = useCallback((): Array<Record<string, any>> => {
     const options = [
@@ -175,7 +185,6 @@ export default flowRight(
         isFetchingServiceUnits: getIsFetchingServiceUnits(state),
         serviceUnits: getServiceUnits(state),
         userActiveServiceUnit: getUserActiveServiceUnit(state),
-
       };
     },
     {
