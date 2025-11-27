@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
@@ -25,7 +25,7 @@ import {
 } from "@/contacts/actions";
 import { ContactTypes } from "@/contacts/enums";
 import { ButtonColors } from "@/components/enums";
-import { ConfirmationModalTexts, FormNames } from "@/enums";
+import { ConfirmationModalTexts } from "@/enums";
 import {
   LeaseTenantsFieldPaths,
   LeaseTenantsFieldTitles,
@@ -71,7 +71,7 @@ type WarningsProps = {
 
 const TenantWarnings = ({ meta: { warning } }: WarningsProps) => {
   return (
-    <Fragment>
+    <>
       {warning && !!warning.length && (
         <WarningContainer>
           {warning.map((item, index) => (
@@ -85,7 +85,7 @@ const TenantWarnings = ({ meta: { warning } }: WarningsProps) => {
           ))}
         </WarningContainer>
       )}
-    </Fragment>
+    </>
   );
 };
 
@@ -98,6 +98,7 @@ type TenantsProps = {
   tenants: Array<Record<string, any>>;
   usersPermissions: UsersPermissionsType;
   formValues: Record<string, any>;
+  appDispatch: (action: Record<string, any>) => void;
 };
 
 const renderTenants = ({
@@ -109,6 +110,7 @@ const renderTenants = ({
   tenants,
   usersPermissions,
   formValues,
+  appDispatch,
 }: TenantsProps) => {
   const handleAdd = () => {
     fields.push({});
@@ -122,83 +124,73 @@ const renderTenants = ({
     );
 
   return (
-    <AppConsumer>
-      {({ dispatch: appDispatch }) => (
-        <Fragment>
-          {archived && fields && !!fields.length && (
-            <h3
-              style={{
-                marginTop: 10,
-                marginBottom: 5,
-              }}
-            >
-              Arkisto
-            </h3>
-          )}
-          {!isFieldAllowedToEdit(
-            leaseAttributes,
-            LeaseTenantsFieldPaths.TENANTS,
-          ) &&
-            !archived &&
-            (!fields || !fields.length) && (
-              <FormText className="no-margin">Ei vuokralaisia</FormText>
-            )}
-          {fields &&
-            !!fields.length &&
-            fields.map((tenant, index) => {
-              const handleRemove = () => {
-                appDispatch({
-                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                  confirmationFunction: () => {
-                    fields.remove(index);
-                  },
-                  confirmationModalButtonClassName: ButtonColors.ALERT,
-                  confirmationModalButtonText:
-                    ConfirmationModalTexts.DELETE_TENANT.BUTTON,
-                  confirmationModalLabel:
-                    ConfirmationModalTexts.DELETE_TENANT.LABEL,
-                  confirmationModalTitle:
-                    ConfirmationModalTexts.DELETE_TENANT.TITLE,
-                });
-              };
-              const fieldName = archived ? "tenantsArchived" : "tenants";
-              const tenantData = formValues?.[fieldName]?.[index] || {};
-
-              return (
-                <TenantItemEdit
-                  key={index}
-                  field={tenant}
-                  onRemove={handleRemove}
-                  tenants={tenants}
-                  serviceUnit={serviceUnit}
-                  tenantId={tenantData.id}
-                  contact={tenantData.tenant?.contact}
-                  shareNumerator={tenantData.share_numerator}
-                  shareDenominator={tenantData.share_denominator}
-                />
-              );
-            })}
-          {!archived && (
-            <Authorization
-              allow={hasPermissions(
-                usersPermissions,
-                UsersPermissions.ADD_TENANT,
-              )}
-            >
-              <Row>
-                <Column>
-                  <AddButton
-                    className="no-margin"
-                    label="Lisää vuokralainen"
-                    onClick={handleAdd}
-                  />
-                </Column>
-              </Row>
-            </Authorization>
-          )}
-        </Fragment>
+    <>
+      {archived && fields && !!fields.length && (
+        <h3
+          style={{
+            marginTop: 10,
+            marginBottom: 5,
+          }}
+        >
+          Arkisto
+        </h3>
       )}
-    </AppConsumer>
+      {!isFieldAllowedToEdit(leaseAttributes, LeaseTenantsFieldPaths.TENANTS) &&
+        !archived &&
+        (!fields || !fields.length) && (
+          <FormText className="no-margin">Ei vuokralaisia</FormText>
+        )}
+      {fields &&
+        !!fields.length &&
+        fields.map((tenant, index) => {
+          const handleRemove = () => {
+            appDispatch({
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
+                fields.remove(index);
+              },
+              confirmationModalButtonClassName: ButtonColors.ALERT,
+              confirmationModalButtonText:
+                ConfirmationModalTexts.DELETE_TENANT.BUTTON,
+              confirmationModalLabel:
+                ConfirmationModalTexts.DELETE_TENANT.LABEL,
+              confirmationModalTitle:
+                ConfirmationModalTexts.DELETE_TENANT.TITLE,
+            });
+          };
+          const fieldName = archived ? "tenantsArchived" : "tenants";
+          const tenantData = formValues?.[fieldName]?.[index] || {};
+
+          return (
+            <TenantItemEdit
+              key={index}
+              field={tenant}
+              onRemove={handleRemove}
+              tenants={tenants}
+              serviceUnit={serviceUnit}
+              tenantId={tenantData.id}
+              contact={tenantData.tenant?.contact}
+              shareNumerator={tenantData.share_numerator}
+              shareDenominator={tenantData.share_denominator}
+            />
+          );
+        })}
+      {!archived && (
+        <Authorization
+          allow={hasPermissions(usersPermissions, UsersPermissions.ADD_TENANT)}
+        >
+          <Row>
+            <Column>
+              <AddButton
+                className="no-margin"
+                label="Lisää vuokralainen"
+                onClick={handleAdd}
+              />
+            </Column>
+          </Row>
+        </Authorization>
+      )}
+    </>
   );
 };
 
@@ -268,127 +260,144 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
     }
   };
 
-  const handleCreateOrEdit = async (values: Contact, isValid: boolean) => {
-    const { business_id, national_identification_number, type } = values;
-    dispatch(receiveIsSaveClicked(true));
-    if (!isValid) return;
-
-    if (!contactModalSettings || !contactModalSettings.isNew) {
-      createOrEditContact(values);
-      return;
-    }
-
-    const contactIdentifier = type
-      ? type === ContactTypes.PERSON
-        ? national_identification_number
-        : business_id
-      : null;
-
-    if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
-      const exists = await contactExists({
-        identifier: contactIdentifier,
-        serviceUnitId: currentLease.service_unit?.id,
-      });
-
-      if (exists) {
-        dispatch({
-          type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-          confirmationFunction: () => {
-            createOrEditContact(values);
-          },
-          confirmationModalButtonClassName: ButtonColors.SUCCESS,
-          confirmationModalButtonText:
-            ConfirmationModalTexts.CREATE_CONTACT.BUTTON,
-          confirmationModalLabel: ConfirmationModalTexts.CREATE_CONTACT.LABEL,
-          confirmationModalTitle: ConfirmationModalTexts.CREATE_CONTACT.TITLE,
-        });
-      } else {
-        createOrEditContact(values);
-      }
-    } else {
-      createOrEditContact(values);
-    }
-  };
-
   return (
-    <Fragment>
-      {isFetchingContact && (
-        <LoaderWrapper className="overlay-wrapper">
-          <Loader isLoading={isFetchingContact} />
-        </LoaderWrapper>
-      )}
+    <AppConsumer>
+      {({ dispatch: appDispatch }) => {
+        const handleCreateOrEdit = async (
+          values: Contact,
+          isValid: boolean,
+        ) => {
+          const { business_id, national_identification_number, type } = values;
+          dispatch(receiveIsSaveClicked(true));
+          if (!isValid) return;
 
-      <Authorization
-        allow={
-          isMethodAllowed(contactMethods, Methods.POST) ||
-          isMethodAllowed(contactMethods, Methods.PATCH)
-        }
-      >
-        <ContactModal
-          isOpen={isContactModalOpen}
-          onCancel={handleCancel}
-          onClose={handleClose}
-          onSave={handleCreateOrEdit}
-          onSaveAndAdd={handleCreateOrEdit}
-          showSave={contactModalSettings && !contactModalSettings.isNew}
-          showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
-          title={
-            contactModalSettings && contactModalSettings.isNew
-              ? "Uusi asiakas"
-              : "Muokkaa asiakasta"
+          if (!contactModalSettings || !contactModalSettings.isNew) {
+            createOrEditContact(values);
+            return;
           }
-          serviceUnit={userActiveServiceUnit}
-        />
-      </Authorization>
-      <Form form={formApi} onSubmit={formApi.submit}>
-        {({ handleSubmit, values }) => (
-          <form onSubmit={handleSubmit}>
-            <Title
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(LeaseTenantsFieldPaths.TENANTS)}
+
+          const contactIdentifier = type
+            ? type === ContactTypes.PERSON
+              ? national_identification_number
+              : business_id
+            : null;
+
+          if (contactIdentifier && !isEmptyValue(contactIdentifier)) {
+            const exists = await contactExists({
+              identifier: contactIdentifier,
+              serviceUnitId: currentLease.service_unit?.id,
+            });
+
+            if (exists) {
+              appDispatch({
+                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                confirmationFunction: () => {
+                  createOrEditContact(values);
+                },
+                confirmationModalButtonClassName: ButtonColors.SUCCESS,
+                confirmationModalButtonText:
+                  ConfirmationModalTexts.CREATE_CONTACT.BUTTON,
+                confirmationModalLabel:
+                  ConfirmationModalTexts.CREATE_CONTACT.LABEL,
+                confirmationModalTitle:
+                  ConfirmationModalTexts.CREATE_CONTACT.TITLE,
+              });
+            } else {
+              createOrEditContact(values);
+            }
+          } else {
+            createOrEditContact(values);
+          }
+        };
+
+        return (
+          <>
+            {isFetchingContact && (
+              <LoaderWrapper className="overlay-wrapper">
+                <Loader isLoading={isFetchingContact} />
+              </LoaderWrapper>
+            )}
+
+            <Authorization
+              allow={
+                isMethodAllowed(contactMethods, Methods.POST) ||
+                isMethodAllowed(contactMethods, Methods.PATCH)
+              }
             >
-              {LeaseTenantsFieldTitles.TENANTS}
-            </Title>
-            <TenantWarnings
-              meta={{
-                warning: warnTenantForm(values || {})?.tenantWarnings || [],
-              }}
-            />
-            <Divider />
-            <FieldArray name="tenants">
-              {(fieldArrayProps) =>
-                renderTenants({
-                  ...fieldArrayProps,
-                  archived: false,
-                  isFetchingContactAttributes,
-                  leaseAttributes,
-                  serviceUnit: currentLease.service_unit,
-                  tenants: savedTenants,
-                  usersPermissions,
-                  formValues: values,
-                })
-              }
-            </FieldArray>
-            <FieldArray name="tenantsArchived">
-              {(fieldArrayProps) =>
-                renderTenants({
-                  ...fieldArrayProps,
-                  archived: true,
-                  isFetchingContactAttributes,
-                  leaseAttributes,
-                  serviceUnit: currentLease.service_unit,
-                  tenants: savedTenantsArchived,
-                  usersPermissions,
-                  formValues: values,
-                })
-              }
-            </FieldArray>
-          </form>
-        )}
-      </Form>
-    </Fragment>
+              <ContactModal
+                isOpen={isContactModalOpen}
+                onCancel={handleCancel}
+                onClose={handleClose}
+                onSave={handleCreateOrEdit}
+                onSaveAndAdd={handleCreateOrEdit}
+                showSave={contactModalSettings && !contactModalSettings.isNew}
+                showSaveAndAdd={
+                  contactModalSettings && contactModalSettings.isNew
+                }
+                title={
+                  contactModalSettings && contactModalSettings.isNew
+                    ? "Uusi asiakas"
+                    : "Muokkaa asiakasta"
+                }
+                serviceUnit={userActiveServiceUnit}
+              />
+            </Authorization>
+            <Form form={formApi} onSubmit={formApi.submit}>
+              {({ handleSubmit, values }) => (
+                <form onSubmit={handleSubmit}>
+                  <Title
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseTenantsFieldPaths.TENANTS,
+                    )}
+                  >
+                    {LeaseTenantsFieldTitles.TENANTS}
+                  </Title>
+                  <TenantWarnings
+                    meta={{
+                      warning:
+                        warnTenantForm(values || {})?.tenantWarnings || [],
+                    }}
+                  />
+                  <Divider />
+                  <FieldArray name="tenants">
+                    {(fieldArrayProps) =>
+                      renderTenants({
+                        ...fieldArrayProps,
+                        archived: false,
+                        isFetchingContactAttributes,
+                        leaseAttributes,
+                        serviceUnit: currentLease.service_unit,
+                        tenants: savedTenants,
+                        usersPermissions,
+                        formValues: values,
+                        appDispatch,
+                      })
+                    }
+                  </FieldArray>
+                  <FieldArray name="tenantsArchived">
+                    {(fieldArrayProps) =>
+                      renderTenants({
+                        ...fieldArrayProps,
+                        archived: true,
+                        isFetchingContactAttributes,
+                        leaseAttributes,
+                        serviceUnit: currentLease.service_unit,
+                        tenants: savedTenantsArchived,
+                        usersPermissions,
+                        formValues: values,
+                        appDispatch,
+                      })
+                    }
+                  </FieldArray>
+                </form>
+              )}
+            </Form>
+          </>
+        );
+      }}
+    </AppConsumer>
   );
 };
 
-const formName = FormNames.LEASE_TENANTS; // The name of the form for redux-form, might be useful for some remaining logic for this form name
 export default TenantsEdit;
