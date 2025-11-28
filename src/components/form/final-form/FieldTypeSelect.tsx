@@ -68,7 +68,7 @@ const FieldTypeSelect = (props: FieldComponentProps): JSX.Element => {
     selectRef.current = element;
 
     if (setRefForField && element) {
-      setRefForField(element.select);
+      setRefForField(element);
     }
   };
 

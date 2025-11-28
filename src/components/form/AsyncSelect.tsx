@@ -161,7 +161,7 @@ class AsyncSelect extends Component<Props, State> {
           onInputChange={this.handleInputChange}
           onMenuOpen={this.handleMenuOpen}
           placeholder={placeholder || "Valitse..."}
-          defaultValue={value}
+          value={value}
         />
       </div>
     );

@@ -51,10 +51,10 @@
       overflow: hidden;
     }
 
-    &__input {
+    &__input-container {
       vertical-align: top;
 
-      input {
+      & input.select-input__input {
         height: rem-calc(14px);
         padding: rem-calc(2px) !important;
         margin-bottom: 0;

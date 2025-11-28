@@ -74,7 +74,7 @@ class FieldTypeSelectLegacy extends PureComponent<Props, State> {
     this.select = element;
 
     if (setRefForField && element) {
-      setRefForField(element.select);
+      setRefForField(element);
     }
   };
 
