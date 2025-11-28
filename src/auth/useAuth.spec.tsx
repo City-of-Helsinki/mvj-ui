@@ -1,11 +1,10 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { renderHook, act, cleanup } from "@testing-library/react-hooks";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { renderHook, act, cleanup, waitFor } from "@testing-library/react";
 import React from "react";
 import { Provider } from "react-redux";
 import {
   useAuthenticatedUser,
   isApiTokensUpdatedSignal,
-  isApiTokensRemovedSignal,
   LoginProvider,
   LoginProviderProps,
   useApiTokens,
@@ -23,8 +22,9 @@ import {
   clearUser,
 } from "./actions";
 import useAuth from "./useAuth";
-import { setRedirectUrlToSessionStorage } from "../util/storage";
-import configureStore from "../root/configureStore";
+import { setRedirectUrlToSessionStorage } from "@/util/storage";
+import configureStore from "@/root/configureStore";
+import * as selectors from "@/auth/selectors";
 
 vi.mock("@/index", () => {
   return {
@@ -45,17 +45,6 @@ vi.mock("@/util/storage", async (importOriginal) => {
     setRedirectUrlToSessionStorage: vi.fn(
       actual.setRedirectUrlToSessionStorage,
     ),
-  };
-});
-
-vi.mock("react-redux", async (importOriginal) => {
-  const actual: ModuleNamespace = await importOriginal();
-  return {
-    ...actual,
-    Provider: ({ children }) => children,
-    useDispatch: () => vi.fn(() => actual.useDispatch),
-    connect: vi.fn().mockReturnValue(vi.fn()),
-    default: vi.fn().mockReturnValue(vi.fn()),
   };
 });
 
@@ -107,13 +96,38 @@ describe("useAuth", () => {
     sessionPollerSettings: { pollIntervalInMs: 300000 }, // 300000ms = 5min
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockStore = configureStore();
-    vi.clearAllMocks();
-    await cleanup();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    cleanup();
   });
 
   it("should initialize with loggedIn as false", () => {
+    vi.mocked(useApiTokens).mockReturnValue({
+      getStoredApiTokens: vi.fn().mockReturnValue([null, null]),
+    } as any);
+    const { result } = renderHook(() => useAuth(), {
+      wrapper: ({ children }) => (
+        <Provider store={mockStore}>
+          <LoginProvider {...loginProviderProperties}>{children}</LoginProvider>
+        </Provider>
+      ),
+    });
+    expect(result.current.loggedIn).toBe(false);
+  });
+
+  it("should clear user and apitoken", () => {
+    vi.spyOn(selectors, "getLoggedInUser").mockReturnValue(() => ({
+      name: "John Doe",
+    }));
+    vi.spyOn(selectors, "getApiToken").mockReturnValue("dummyApiToken");
+    vi.mocked(useAuthenticatedUser).mockReturnValue(null);
+    vi.mocked(useApiTokens).mockReturnValue({
+      getStoredApiTokens: vi.fn().mockReturnValue([null, null]),
+    } as any);
     const { result } = renderHook(() => useAuth(), {
       wrapper: ({ children }) => (
         <Provider store={mockStore}>
@@ -123,7 +137,9 @@ describe("useAuth", () => {
     });
     expect(clearUser).toHaveBeenCalled();
     expect(clearApiToken).toHaveBeenCalled();
-    expect(result.current.loggedIn).toBe(false);
+    waitFor(() => {
+      expect(result.current.loggedIn).toBe(false);
+    });
   });
 
   it("should trigger log in", () => {
@@ -148,7 +164,13 @@ describe("useAuth", () => {
     vi.mocked(useAuthenticatedUser).mockReturnValue(
       mockAuthenticatedUser as unknown as User,
     );
-    const { result } = renderHook(() => useAuth(), {
+    const mockApiTokens = {
+      getStoredApiTokens: vi.fn().mockReturnValue([null, null]),
+    };
+    vi.mocked(useApiTokens).mockReturnValue(
+      mockApiTokens as unknown as ReturnType<typeof useApiTokens>,
+    );
+    renderHook(() => useAuth(), {
       wrapper: ({ children }) => (
         <Provider store={mockStore}>
           <LoginProvider {...loginProviderProperties}>{children}</LoginProvider>
@@ -180,7 +202,9 @@ describe("useAuth", () => {
 
     expect(userFound).toBeCalledWith(mockAuthenticatedUser);
     expect(receiveApiToken).toBeCalledWith("dummyApiToken");
-    expect(result.current.loggedIn).toBe(true);
+    waitFor(() => {
+      expect(result.current.loggedIn).toBe(true);
+    });
   });
 
   it("should log out the user", () => {
@@ -192,7 +216,9 @@ describe("useAuth", () => {
       ),
     });
 
-    result.current.logout();
+    act(() => {
+      result.current.logout();
+    });
     expect(clearApiToken).toHaveBeenCalled();
     expect(clearUser).toHaveBeenCalled();
     expect(result.current.loggedIn).toBe(false);
@@ -225,6 +251,8 @@ describe("useAuth", () => {
       apiTokensUpdatedSignal,
     );
     expect(receiveApiToken).toHaveBeenCalledWith("dummyApiToken2");
-    expect(result.current.loggedIn).toBe(true);
+    waitFor(() => {
+      expect(result.current.loggedIn).toBe(true);
+    });
   });
 });
