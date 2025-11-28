@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import classNames from "classnames";
-import { withRouter } from "react-router";
+import { withRouter, type RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
 import { IconMenuDots, IconSize } from "hds-react";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -36,7 +36,7 @@ type State = {
   search: string;
 };
 
-class TopNavigation extends Component<Props, State> {
+class TopNavigation extends Component<Props & RouteComponentProps, State> {
   state = {
     search: "",
   };
@@ -210,7 +210,7 @@ class TopNavigation extends Component<Props, State> {
                   </div>
                 )}
 
-                {!!userServiceUnits.length && userActiveServiceUnit && (
+                {!!userServiceUnits?.length && userActiveServiceUnit && (
                   <div className="user-service-unit">
                     {userServiceUnits.length > 1 ? (
                       <UserServiceUnitSelectInput

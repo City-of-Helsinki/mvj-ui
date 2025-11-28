@@ -1,11 +1,14 @@
 import React from "react";
-import { withRouter } from "react-router";
+import { withRouter, type RouteComponentProps } from "react-router";
 type Props = {
   buttonDisabled: boolean;
   onLoginClick: (...args: Array<any>) => any;
 };
 
-const LoginPage = ({ buttonDisabled, onLoginClick }: Props) => {
+const LoginPage: React.FC<Props & RouteComponentProps> = ({
+  buttonDisabled,
+  onLoginClick,
+}) => {
   return (
     <div className="login-page">
       <div className="login-page__content">
