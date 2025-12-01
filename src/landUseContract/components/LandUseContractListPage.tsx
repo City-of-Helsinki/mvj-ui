@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Row, Column } from "react-foundation";
-import { withRouter } from "react-router";
+import { withRouterLegacy, WithRouterProps } from "@/root/withRouterLegacy";
 import { connect } from "react-redux";
 import { initialize } from "redux-form";
 import flowRight from "lodash/flowRight";
@@ -49,13 +49,11 @@ import type {
 type Props = {
   createLandUseContract: (...args: Array<any>) => any;
   fetchLandUseContractList: (...args: Array<any>) => any;
-  history: Record<string, any>;
   initialize: (...args: Array<any>) => any;
   isFetching: boolean;
   isFetchingLandUseContractAttributes: boolean;
   landUseContractAttributes: Attributes;
   landUseContractListData: LandUseContractList;
-  location: Record<string, any>;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   landUseContractMethods: MethodType;
 };
@@ -69,7 +67,10 @@ type State = {
   selectedStates: Array<string>;
 };
 
-class LandUseContractListPage extends Component<Props, State> {
+class LandUseContractListPage extends Component<
+  Props & WithRouterProps,
+  State
+> {
   _isMounted: boolean;
   state = {
     activePage: 1,
@@ -192,7 +193,7 @@ class LandUseContractListPage extends Component<Props, State> {
     query: Record<string, any>,
     resetActivePage: boolean = true,
   ) => {
-    const { history } = this.props;
+    const { navigate } = this.props;
 
     if (resetActivePage) {
       this.setState({
@@ -201,7 +202,7 @@ class LandUseContractListPage extends Component<Props, State> {
       delete query.page;
     }
 
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
       search: getSearchQuery(query),
     });
@@ -224,17 +225,17 @@ class LandUseContractListPage extends Component<Props, State> {
   };
   handleRowClick = (id) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.LAND_USE_CONTRACTS)}/${id}`,
       search: search,
     });
   };
   handlePageClick = (page: number) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -248,7 +249,7 @@ class LandUseContractListPage extends Component<Props, State> {
     this.setState({
       activePage: page,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
       search: getSearchQuery(query),
     });
@@ -412,7 +413,7 @@ class LandUseContractListPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   withLandUseContractAttributes,
   connect(
     (state) => {
@@ -428,4 +429,4 @@ export default flowRight(
       receiveTopNavigationSettings,
     },
   ),
-)(LandUseContractListPage);
+)(LandUseContractListPage) as React.ComponentType;

@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
@@ -40,15 +39,14 @@ type OwnProps = {
 };
 type Props = OwnProps & {
   attributes: Attributes;
-  location: Record<string, any>;
 };
 
-const PlanUnitItem = ({
+const PlanUnitItem: React.FC<Props> = ({
   areaArchived,
   attributes,
-  location,
   planUnit,
-}: Props) => {
+}) => {
+  const location = useLocation();
   const getMapLinkUrl = () => {
     const { pathname, search } = location;
     const searchQuery = getUrlParams(search);
@@ -481,7 +479,6 @@ const PlanUnitItem = ({
 };
 
 export default flowRight(
-  withRouter,
   connect((state) => {
     return {
       attributes: getAttributes(state),

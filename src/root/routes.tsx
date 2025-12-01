@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, Route, Switch } from "react-router";
+import { Navigate, Route, Routes as RouterRoutes } from "react-router-dom";
 import ErrorPage from "@/errorPage/ErrorPage";
 import App from "@/app/App";
 import AreaNoteListPage from "@/areaNote/components/AreaNoteListPage";
@@ -100,169 +100,128 @@ export const getRouteById = (id: string): string => {
 };
 export default (
   <App>
-    <Switch>
-      <Redirect exact from="/" to={getRouteById(Routes.LEASES)} />
+    <RouterRoutes>
+      <Route path="/" element={<Navigate to={getRouteById(Routes.LEASES)} />} />
+      <Route path={getRouteById(Routes.LEASES)} element={<LeaseListPage />} />
       <Route
-        exact
-        path={getRouteById(Routes.LEASES)}
-        component={LeaseListPage}
-      />
-      <Route
-        exact
         path={`${getRouteById(Routes.LEASES)}/:leaseId`}
-        component={LeasePage}
+        element={<LeasePage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.CONTACTS)}
-        component={ContactListPage}
+        element={<ContactListPage />}
       />
       <Route
-        exact
         path={`${getRouteById(Routes.CONTACTS)}/:contactId`}
-        component={ContactPage}
+        element={<ContactPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.CONTACT_NEW)}
-        component={NewContactPage}
+        element={<NewContactPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.INVOICE_NOTES)}
-        component={InvoiceNoteListPage}
+        element={<InvoiceNoteListPage />}
       />
       <Route
-        exact
         path={`${getRouteById(Routes.INDEX)}`}
-        component={IndexListPage}
+        element={<IndexListPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.LAND_USE_CONTRACTS)}
-        component={LandUseContractListPage}
+        element={<LandUseContractListPage />}
       />
       <Route
-        exact
         path={`${getRouteById(Routes.LAND_USE_CONTRACTS)}/:landUseContractId`}
-        component={LandUseContractPage}
+        element={<LandUseContractPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.AREA_NOTES)}
-        component={AreaNoteListPage}
+        element={<AreaNoteListPage />}
       />
       <Route
-        exact
         path={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}`}
-        component={InfillDevelopmentListPage}
+        element={<InfillDevelopmentListPage />}
       />
       <Route
-        exact
         path={`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/:infillDevelopmentId`}
-        component={InfillDevelopmentPage}
+        element={<InfillDevelopmentPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.INFILL_DEVELOPMENT_NEW)}
-        component={NewInfillDevelopmentPage}
+        element={<NewInfillDevelopmentPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.TRADE_REGISTER)}
-        component={TradeRegisterSearchPage}
+        element={<TradeRegisterSearchPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.SAP_INVOICES)}
-        component={SapInvoicesListPage}
+        element={<SapInvoicesListPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.LEASE_STATISTIC_REPORT)}
-        component={LeaseStatisticReport}
+        element={<LeaseStatisticReport />}
       />
       <Route
-        exact
         path={getRouteById(Routes.LEASEHOLD_TRANSFER)}
-        component={LeaseholdTransferListPage}
+        element={<LeaseholdTransferListPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.RENT_BASIS)}
-        component={RentBasisListPage}
+        element={<RentBasisListPage />}
       />
       <Route
-        exact
         path={`${getRouteById(Routes.RENT_BASIS)}/:rentBasisId`}
-        component={RentBasisPage}
+        element={<RentBasisPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.RENT_BASIS_NEW)}
-        component={NewRentBasisPage}
+        element={<NewRentBasisPage />}
       />
+      <Route path={getRouteById(Routes.BATCH_RUN)} element={<BatchRunPage />} />
       <Route
-        exact
-        path={getRouteById(Routes.BATCH_RUN)}
-        component={BatchRunPage}
-      />
-      <Route
-        exact
         path={getRouteById(Routes.BASIS_OF_RENT_CALCULATOR)}
-        component={BasisOfRentCalculatorPage}
+        element={<BasisOfRentCalculatorPage />}
       />
+      <Route path={getRouteById(Routes.CALLBACK)} element={<CallbackPage />} />
       <Route
-        exact
-        path={getRouteById(Routes.CALLBACK)}
-        component={CallbackPage}
-      />
-      <Route
-        exact
         path={getRouteById(Routes.PLOT_SEARCH)}
-        component={PlotSearchListPage}
+        element={<PlotSearchListPage />}
       />
       <Route
-        exact
         path={`${getRouteById(Routes.PLOT_SEARCH)}/:plotSearchId`}
-        component={PlotSearchPage}
+        element={<PlotSearchPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.PLOT_APPLICATIONS)}
-        component={PlotApplicationsListPage}
+        element={<PlotApplicationsListPage />}
       />
       <Route
-        exact
         path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/uusi`}
-        component={PlotApplicationCreatePage}
+        element={<PlotApplicationCreatePage />}
       />
       <Route
-        exact
         path={`${getRouteById(Routes.PLOT_APPLICATIONS)}/:plotApplicationId`}
-        component={PlotApplicationsPage}
+        element={<PlotApplicationsPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.AREA_SEARCH)}
-        component={AreaSearchApplicationListPage}
+        element={<AreaSearchApplicationListPage />}
       />
       <Route
-        exact
         path={`${getRouteById(Routes.AREA_SEARCH)}/uusi`}
-        component={AreaSearchApplicationCreatePage}
+        element={<AreaSearchApplicationCreatePage />}
       />
       <Route
-        exact
         path={`${getRouteById(Routes.AREA_SEARCH)}/:areaSearchId`}
-        component={AreaSearchApplicationPage}
+        element={<AreaSearchApplicationPage />}
       />
       <Route
-        exact
         path={getRouteById(Routes.CREDIT_DECISION)}
-        component={CreditDecisionSearchPage}
+        element={<CreditDecisionSearchPage />}
       />
-      <Route component={ErrorPage} />
-    </Switch>
+      <Route element={<ErrorPage />} />
+    </RouterRoutes>
   </App>
 ) as JSX.Element;

@@ -2,7 +2,10 @@ import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { change, FieldArray, formValueSelector } from "redux-form";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { Link } from "react-router-dom";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
@@ -599,7 +602,6 @@ type Props = OwnProps & {
   errors: Record<string, any> | null | undefined;
   geometry: Record<string, any> | null | undefined;
   isSaveClicked: boolean;
-  location: Record<string, any>;
   planUnitsContractCollapseState: boolean;
   planUnitsCurrentCollapseState: boolean;
   plotsContractCollapseState: boolean;
@@ -610,7 +612,7 @@ type Props = OwnProps & {
   custom_detailed_plan: Record<string, any>;
 };
 
-class LeaseAreaEdit extends PureComponent<Props> {
+class LeaseAreaEdit extends PureComponent<Props & WithRouterProps> {
   handleCollapseToggle = (key: string, val: boolean) => {
     const { areaId, receiveCollapseStates } = this.props;
 
@@ -651,7 +653,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
     const searchQuery = getUrlParams(search);
     delete searchQuery.plan_unit;
     delete searchQuery.plot;
-    (searchQuery.lease_area = areaId), (searchQuery.tab = 7);
+    ((searchQuery.lease_area = areaId), (searchQuery.tab = 7));
     return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
@@ -973,7 +975,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect(
     (state, props) => {
       const id = selector(state, `${props.field}.id`);

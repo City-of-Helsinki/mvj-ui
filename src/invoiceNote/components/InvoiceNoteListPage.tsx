@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { initialize } from "redux-form";
-import { withRouter } from "react-router";
+import { withRouterLegacy, WithRouterProps } from "@/root/withRouterLegacy";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
@@ -121,7 +121,6 @@ type Props = {
   createInvoiceNoteAndFetchList: (...args: Array<any>) => any;
   fetchInvoiceNoteList: (...args: Array<any>) => any;
   hideCreateInvoiceNoteModal: (...args: Array<any>) => any;
-  history: Record<string, any>;
   initialize: (...args: Array<any>) => any;
   invoiceNoteAttributes: Attributes;
   invoiceNoteList: InvoiceNoteList;
@@ -129,7 +128,6 @@ type Props = {
   isCreateModalOpen: boolean;
   isFetching: boolean;
   isFetchingInvoiceNoteAttributes: boolean;
-  location: Record<string, any>;
   receiveInvoiceNoteList: (...args: Array<any>) => any;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   showCreateInvoiceNoteModal: (...args: Array<any>) => any;
@@ -146,7 +144,10 @@ type State = {
   maxPage: number;
 };
 
-class InvoiceNoteListPage extends PureComponent<Props, State> {
+class InvoiceNoteListPage extends PureComponent<
+  Props & WithRouterProps,
+  State
+> {
   _isMounted: boolean;
   _hasFetchedInvoiceNotes: boolean;
   state = {
@@ -296,15 +297,15 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
     fetchInvoiceNoteList(searchQuery);
   };
   handleSearchChange = (query: any) => {
-    const { history } = this.props;
-    return history.push({
+    const { navigate } = this.props;
+    return navigate({
       pathname: getRouteById(Routes.INVOICE_NOTES),
       search: getSearchQuery(query),
     });
   };
   handlePageClick = (page: number) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -318,7 +319,7 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
     this.setState({
       activePage: page,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.INVOICE_NOTES),
       search: getSearchQuery(query),
     });
@@ -441,7 +442,7 @@ class InvoiceNoteListPage extends PureComponent<Props, State> {
 
 export default flowRight(
   withInvoiceNoteAttributes,
-  withRouter,
+  withRouterLegacy,
   connect(
     (state) => {
       return {

@@ -1,5 +1,8 @@
 import React, { PureComponent } from "react";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
@@ -47,7 +50,6 @@ type Props = {
   isFetchingJobRuns: boolean;
   jobRunAttributes: Attributes;
   jobRunsData: JobRunsType;
-  location: Record<string, any>;
   usersPermissions: UsersPermissionsType;
 };
 type State = {
@@ -60,7 +62,7 @@ type State = {
   openedRow: Record<string, any> | null | undefined;
 };
 
-class JobRuns extends PureComponent<Props, State> {
+class JobRuns extends PureComponent<Props & WithRouterProps, State> {
   state = {
     activePage: 1,
     count: 0,
@@ -234,7 +236,7 @@ class JobRuns extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   withBatchrunJobRunTabAttributes,
   connect(
     (state) => {

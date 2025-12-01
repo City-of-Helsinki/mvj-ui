@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import { Row, Column } from "react-foundation";
 import { connect } from "react-redux";
 import { initialize } from "redux-form";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import isArray from "lodash/isArray";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -56,7 +59,6 @@ import type { Attributes, Methods as MethodsType } from "types";
 import type { InfillDevelopmentList } from "@/infillDevelopment/types";
 type Props = {
   fetchInfillDevelopments: (...args: Array<any>) => any;
-  history: Record<string, any>;
   infillDevelopmentAttributes: Attributes;
   // get via withInfillDevelopmentListPageAttributes HOC
   infillDevelopmentMethods: MethodsType;
@@ -65,8 +67,6 @@ type Props = {
   initialize: (...args: Array<any>) => any;
   isFetching: boolean;
   isFetchingInfillDevelopmentAttributes: boolean;
-  // get via withInfillDevelopmentListPageAttributes HOC
-  location: Record<string, any>;
   receiveFormInitialValues: (...args: Array<any>) => any;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
 };
@@ -84,7 +84,10 @@ type State = {
   stateOptions: Array<Record<string, any>>;
 };
 
-class InfillDevelopmentListPage extends Component<Props, State> {
+class InfillDevelopmentListPage extends Component<
+  Props & WithRouterProps,
+  State
+> {
   _isMounted: boolean;
   state = {
     activePage: 1,
@@ -220,12 +223,12 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   };
   handleCreateButtonClick = () => {
     const {
-      history,
+      navigate,
       location: { search },
       receiveFormInitialValues,
     } = this.props;
     receiveFormInitialValues({});
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENT_NEW),
       search: search,
     });
@@ -235,7 +238,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     resetActivePage: boolean = false,
     resetFilters: boolean = false,
   ) => {
-    const { history } = this.props;
+    const { navigate } = this.props;
 
     if (resetActivePage) {
       this.setState({
@@ -249,7 +252,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
       });
     }
 
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
       search: getSearchQuery(query),
     });
@@ -274,17 +277,17 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   };
   handleRowClick = (id) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${id}`,
       search: search,
     });
   };
   handlePageClick = (page: number) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -298,7 +301,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     this.setState({
       activePage: page,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
       search: getSearchQuery(query),
     });
@@ -482,7 +485,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
 export default flowRight(
   withInfillDevelopmentListPageAttributes,
-  withRouter,
+  withRouterLegacy,
   connect(
     (state) => {
       return {

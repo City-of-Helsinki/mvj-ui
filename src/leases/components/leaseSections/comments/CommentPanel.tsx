@@ -1,7 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { initialize, isDirty } from "redux-form";
-import { withRouter } from "react-router";
 import classNames from "classnames";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
@@ -348,7 +347,6 @@ class CommentPanel extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);

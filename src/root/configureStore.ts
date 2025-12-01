@@ -1,10 +1,7 @@
 import { applyMiddleware, compose, createStore } from "redux";
-import { createBrowserHistory } from "history";
-import { routerMiddleware as createRouterMiddleware } from "connected-react-router";
 import createRootReducer from "./createRootReducer";
 import createSagaMiddleware from "redux-saga";
 import createRootSaga from "./createRootSaga";
-export const history = createBrowserHistory();
 
 // needed so Typescript doesn't complain about the window object not having the __REDUX_DEVTOOLS_EXTENSION__ property
 declare global {
@@ -14,15 +11,14 @@ declare global {
 }
 
 export default () => {
-  const rootReducer = createRootReducer(history);
+  const rootReducer = createRootReducer();
   const rootSaga = createRootSaga();
-  const routerMiddleware = createRouterMiddleware(history);
   const sagaMiddleware = createSagaMiddleware();
   const enhancer = compose(
-    applyMiddleware(sagaMiddleware, routerMiddleware),
+    applyMiddleware(sagaMiddleware),
     window.__REDUX_DEVTOOLS_EXTENSION__
       ? window.__REDUX_DEVTOOLS_EXTENSION__()
-      : (f) => f,
+      : (f: Function) => f,
   );
   const store = createStore(rootReducer, enhancer);
   sagaMiddleware.run(rootSaga);

@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState, useCallback } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -30,20 +30,18 @@ import {
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 
 type Props = {
-  history: Record<string, any>;
   isFetchingUsersPermissions: boolean;
-  location: Record<string, any>;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   usersPermissions: UsersPermissionsType;
 };
 
 const CreditDecisionSearchPage: React.FC<Props> = ({
-  history,
   isFetchingUsersPermissions,
-  location,
   receiveTopNavigationSettings,
   usersPermissions,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [contactType, setContactType] = useState<string>("");
   const [keyword, setKeyword] = useState<string>("");
   const [searchFormInitialValues, setSearchFormInitialValues] = useState<
@@ -85,12 +83,12 @@ const CreditDecisionSearchPage: React.FC<Props> = ({
         contact_type: query.contact_type,
         keyword: query.keyword,
       });
-      history.push({
+      navigate({
         pathname: getRouteById(Routes.CREDIT_DECISION),
         search: getSearchQuery(query),
       });
     },
-    [history],
+    [navigate],
   );
 
   if (isFetchingUsersPermissions)
@@ -157,7 +155,6 @@ const CreditDecisionSearchPage: React.FC<Props> = ({
 };
 
 export default flowRight(
-  withRouter,
   connect(
     (state) => {
       return {
@@ -169,4 +166,4 @@ export default flowRight(
       receiveTopNavigationSettings,
     },
   ),
-)(CreditDecisionSearchPage);
+)(CreditDecisionSearchPage) as React.FC;

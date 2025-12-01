@@ -1,6 +1,5 @@
-import React, { Fragment, PureComponent, type ReactElement } from "react";
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
 import { Field, FieldArray, formValueSelector, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
@@ -62,12 +61,12 @@ type WarningsProps = {
   meta: Record<string, any>;
 };
 
-const RentWarnings = ({
+const RentWarnings: React.FC<WarningsProps> = ({
   leaseAttributes,
   meta: { warning },
-}: WarningsProps): ReactElement => {
+}) => {
   return (
-    <Fragment>
+    <>
       {warning && !!warning.length && (
         <WarningContainer
           style={{
@@ -90,7 +89,7 @@ const RentWarnings = ({
           ))}
         </WarningContainer>
       )}
-    </Fragment>
+    </>
   );
 };
 
@@ -101,12 +100,12 @@ type RentsProps = {
   usersPermissions: UsersPermissionsType;
 };
 
-const renderRents = ({
+const renderRents: React.FC<RentsProps> = ({
   archived,
   fields,
   rents,
   usersPermissions,
-}: RentsProps): ReactElement => {
+}) => {
   const handleAdd = () => {
     fields.push({
       contract_rents: [{}],
@@ -117,7 +116,7 @@ const renderRents = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_RENT) &&
               !archived &&
               (!fields || !fields.length) && (
@@ -178,7 +177,7 @@ const renderRents = ({
                 </Row>
               </Authorization>
             )}
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -193,7 +192,6 @@ type Props = {
   isRentInfoComplete: boolean;
   isSaveClicked: boolean;
   leaseAttributes: Attributes;
-  params: Record<string, any>;
   receiveFormValidFlags: (...args: Array<any>) => any;
   setRentInfoComplete: (...args: Array<any>) => any;
   setRentInfoUncomplete: (...args: Array<any>) => any;
@@ -490,7 +488,6 @@ class RentsEdit extends PureComponent<Props, State> {
 const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
 export default flowRight(
-  withRouter,
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
@@ -519,4 +516,4 @@ export default flowRight(
     validate: validateRentForm,
     warn: warnRentForm,
   }),
-)(RentsEdit) as React.ComponentType<any>;
+)(RentsEdit) as React.ComponentType;

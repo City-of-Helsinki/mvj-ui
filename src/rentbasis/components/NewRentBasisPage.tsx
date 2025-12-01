@@ -1,5 +1,8 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { connect } from "react-redux";
 import { getFormValues, isDirty } from "redux-form";
 import flowRight from "lodash/flowRight";
@@ -38,21 +41,18 @@ type Props = {
   createRentBasis: (...args: Array<any>) => any;
   editedRentBasis: Record<string, any>;
   hideEditMode: (...args: Array<any>) => any;
-  history: Record<string, any>;
   isFetchingRentBasisAttributes: boolean;
   isFormDirty: boolean;
   isFormValid: boolean;
   isSaveClicked: boolean;
   isSaving: boolean;
-  location: Record<string, any>;
   receiveIsSaveClicked: (...args: Array<any>) => any;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   rentBasisMethods: MethodsType;
-  router: Record<string, any>;
   showEditMode: (...args: Array<any>) => any;
 };
 
-class NewRentBasisPage extends Component<Props> {
+class NewRentBasisPage extends Component<Props & WithRouterProps> {
   componentDidMount() {
     const { receiveIsSaveClicked, receiveTopNavigationSettings, showEditMode } =
       this.props;
@@ -85,17 +85,17 @@ class NewRentBasisPage extends Component<Props> {
   };
   handleBack = () => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.RENT_BASIS)}`,
       search: search,
     });
   };
   cancelChanges = () => {
-    const { history } = this.props;
-    return history.push({
+    const { navigate } = this.props;
+    return navigate({
       pathname: getRouteById(Routes.RENT_BASIS),
     });
   };
@@ -186,7 +186,7 @@ const mapStateToProps = (state: RootState) => {
 export default flowRight(
   withRentBasisAttributes,
   withUiDataList,
-  withRouter,
+  withRouterLegacy,
   connect(mapStateToProps, {
     createRentBasis,
     hideEditMode,

@@ -1,7 +1,5 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
-import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";
@@ -106,21 +104,18 @@ class LeaseStatisticReportPage extends PureComponent<Props, State> {
   }
 }
 
-export default flowRight(
-  withRouter,
-  connect(
-    (state) => {
-      return {
-        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-        usersPermissions: getUsersPermissions(state),
-        reportData: getReportData(state),
-        isFetchingReportData: getIsFetchingReportData(state),
-        payload: getPayload(state),
-        reports: getReports(state),
-      };
-    },
-    {
-      receiveTopNavigationSettings,
-    },
-  ),
-)(LeaseStatisticReportPage);
+export default connect(
+  (state) => {
+    return {
+      isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+      usersPermissions: getUsersPermissions(state),
+      reportData: getReportData(state),
+      isFetchingReportData: getIsFetchingReportData(state),
+      payload: getPayload(state),
+      reports: getReports(state),
+    };
+  },
+  {
+    receiveTopNavigationSettings,
+  },
+)(LeaseStatisticReportPage) as React.ComponentType;

@@ -1,26 +1,26 @@
 import React from "react";
-import { withRouter } from "react-router";
+import { useLocation } from "react-router";
 import { GeoJSON } from "react-leaflet";
-import flowRight from "lodash/flowRight";
 import { LeaseFieldTitles } from "@/leases/enums";
 import { formatDate, getLabelOfOption } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import type { LeafletGeoJson } from "types";
+
 type Props = {
   color: string;
   defaultPlot?: number;
   leasesGeoJson: LeafletGeoJson;
-  location: Record<string, any>;
   stateOptions: Array<Record<string, any>>;
 };
 
-const LeaseListLayer = ({
+const LeaseListLayer: React.FC<Props> = ({
   color,
   defaultPlot,
   leasesGeoJson,
-  location: { search },
   stateOptions,
-}: Props) => {
+}) => {
+  const location = useLocation();
+  const { search } = location;
   const onMouseOver = (e) => {
     const layer = e.target;
     layer.setStyle({
@@ -77,4 +77,4 @@ const LeaseListLayer = ({
   );
 };
 
-export default flowRight(withRouter)(LeaseListLayer);
+export default LeaseListLayer;

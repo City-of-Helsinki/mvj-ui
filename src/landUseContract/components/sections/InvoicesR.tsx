@@ -1,6 +1,9 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import { AppConsumer } from "@/app/AppContext";
@@ -30,9 +33,6 @@ type Props = {
   invoicesCollapseState: boolean;
   invoiceToCredit: string | null | undefined;
   isInvoicingEnabled: boolean;
-  match: {
-    params: Record<string, any>;
-  };
   receiveCollapseStates: (...args: Array<any>) => any;
   usersPermissions: UsersPermissionsType;
   receiveInvoiceToCredit: (...args: Array<any>) => any;
@@ -41,7 +41,7 @@ type State = {
   currentLandUseContract: LandUseContract;
 };
 
-class InvoicesR extends PureComponent<Props, State> {
+class InvoicesR extends PureComponent<Props & WithRouterProps, State> {
   state = {
     currentLandUseContract: {},
   };
@@ -127,7 +127,7 @@ class InvoicesR extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect(
     (state) => {
       const currentLandUseContract = getCurrentLandUseContract(state);

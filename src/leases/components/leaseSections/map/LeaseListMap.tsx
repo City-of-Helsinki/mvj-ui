@@ -1,6 +1,9 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
@@ -51,7 +54,6 @@ type Props = {
   isLoading: boolean;
   leaseAttributes: Attributes;
   leasesData: LeaseList;
-  location: Record<string, any>;
   onViewportChanged: (...args: Array<any>) => any;
   usersPermissions: UsersPermissionsType;
 };
@@ -65,7 +67,7 @@ type State = {
   zoom: number;
 };
 
-class LeaseListMap extends PureComponent<Props, State> {
+class LeaseListMap extends PureComponent<Props & WithRouterProps, State> {
   state = {
     bounds: getMapBounds(),
     center: getMapCenter(),
@@ -176,7 +178,7 @@ class LeaseListMap extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect((state) => {
     return {
       areaNotes: getAreaNoteList(state),

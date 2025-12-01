@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { change, getFormValues, isDirty } from "redux-form";
 import isEmpty from "lodash/isEmpty";
 import flowRight from "lodash/flowRight";
@@ -85,7 +88,6 @@ type Props = {
   editRentBasis: (...args: Array<any>) => any;
   fetchSingleRentBasis: (...args: Array<any>) => any;
   hideEditMode: (...args: Array<any>) => any;
-  history: Record<string, any>;
   initializeRentBasis: (...args: Array<any>) => any;
   isEditMode: boolean;
   isFetching: boolean;
@@ -96,10 +98,6 @@ type Props = {
   isFormValid: boolean;
   isSaveClicked: boolean;
   isSaving: boolean;
-  location: Record<string, any>;
-  match: {
-    params: Record<string, any>;
-  };
   receiveIsSaveClicked: (...args: Array<any>) => any;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   rentBasisAttributes: Attributes;
@@ -107,7 +105,6 @@ type Props = {
   rentBasisMethods: MethodsType;
   // Get via withRentBasisAttributes HOC
   rentBasisData: RentBasis;
-  router: Record<string, any>;
   showEditMode: (...args: Array<any>) => any;
   usersPermissions: UsersPermissions;
 };
@@ -117,7 +114,7 @@ type State = {
   isRestoreModalOpen: boolean;
 };
 
-class RentBasisPage extends Component<Props, State> {
+class RentBasisPage extends Component<Props & WithRouterProps, State> {
   state = {
     activeTab: 0,
     isCancelModalOpen: false,
@@ -130,9 +127,7 @@ class RentBasisPage extends Component<Props, State> {
       fetchSingleRentBasis,
       hideEditMode,
       location: { search },
-      match: {
-        params: { rentBasisId },
-      },
+      params: { rentBasisId },
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
@@ -159,9 +154,7 @@ class RentBasisPage extends Component<Props, State> {
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     const {
-      match: {
-        params: { rentBasisId },
-      },
+      params: { rentBasisId },
     } = this.props;
 
     if (
@@ -186,9 +179,7 @@ class RentBasisPage extends Component<Props, State> {
     const {
       hideEditMode,
       location: { pathname },
-      match: {
-        params: { rentBasisId },
-      },
+      params: { rentBasisId },
     } = this.props;
     hideEditMode();
 
@@ -232,9 +223,7 @@ class RentBasisPage extends Component<Props, State> {
     const {
       editedRentBasis,
       isFormDirty,
-      match: {
-        params: { rentBasisId },
-      },
+      params: { rentBasisId },
     } = this.props;
 
     if (isFormDirty) {
@@ -277,14 +266,14 @@ class RentBasisPage extends Component<Props, State> {
   };
   copyRentBasis = () => {
     const {
-      history,
+      navigate,
       initializeRentBasis,
       location: { search },
       rentBasisData,
     } = this.props;
     const rentBasis = getCopyOfRentBasis(rentBasisData);
     initializeRentBasis(rentBasis);
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.RENT_BASIS_NEW),
       search: search,
     });
@@ -304,13 +293,13 @@ class RentBasisPage extends Component<Props, State> {
   };
   handleBack = () => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
     // Remove page specific url parameters when moving to lease list page
     delete query.tab;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.RENT_BASIS)}`,
       search: getSearchQuery(query),
     });
@@ -337,7 +326,7 @@ class RentBasisPage extends Component<Props, State> {
   };
   handleTabClick = (tabId) => {
     const {
-      history,
+      navigate,
       location,
       location: { search },
     } = this.props;
@@ -348,7 +337,7 @@ class RentBasisPage extends Component<Props, State> {
       },
       () => {
         query.tab = tabId;
-        return history.push({ ...location, search: getSearchQuery(query) });
+        return navigate({ ...location, search: getSearchQuery(query) });
       },
     );
   };
@@ -532,7 +521,7 @@ const mapStateToProps = (state: RootState) => {
 export default flowRight(
   withRentBasisAttributes,
   withUiDataList,
-  withRouter,
+  withRouterLegacy,
   connect(mapStateToProps, {
     change,
     editRentBasis,

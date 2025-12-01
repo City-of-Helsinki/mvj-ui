@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { initialize } from "redux-form";
 import flowRight from "lodash/flowRight";
 import { Row, Column } from "react-foundation";
@@ -54,14 +57,11 @@ type Props = {
   contactList: ContactList;
   contactMethods: MethodsType;
   fetchContacts: (...args: Array<any>) => any;
-  history: Record<string, any>;
   initializeContactForm: (...args: Array<any>) => any;
   initialize: (...args: Array<any>) => any;
   isFetching: boolean;
   isFetchingContactAttributes: boolean;
-  location: Record<string, any>;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
-  router: Record<string, any>;
   userActiveServiceUnit: UserServiceUnit;
 };
 type State = {
@@ -77,7 +77,7 @@ type State = {
   typeOptions: Array<Record<string, any>>;
 };
 
-class ContactListPage extends Component<Props, State> {
+class ContactListPage extends Component<Props & WithRouterProps, State> {
   _isMounted: boolean;
   _hasFetchedContacts: boolean;
   state = {
@@ -218,17 +218,17 @@ class ContactListPage extends Component<Props, State> {
   handleCreateButtonClick = () => {
     const { initializeContactForm } = this.props;
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     initializeContactForm({});
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.CONTACT_NEW),
       search: search,
     });
   };
   handleSearchChange = (query: any, resetActivePage: boolean = false) => {
-    const { history } = this.props;
+    const { navigate } = this.props;
 
     if (resetActivePage) {
       this.setState({
@@ -236,7 +236,7 @@ class ContactListPage extends Component<Props, State> {
       });
     }
 
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.CONTACTS),
       search: getSearchQuery(query),
     });
@@ -267,17 +267,17 @@ class ContactListPage extends Component<Props, State> {
   };
   handleRowClick = (id) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.CONTACTS)}/${id}`,
       search: search,
     });
   };
   handlePageClick = (page: number) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -291,7 +291,7 @@ class ContactListPage extends Component<Props, State> {
     this.setState({
       activePage: page,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.CONTACTS),
       search: getSearchQuery(query),
     });
@@ -470,7 +470,7 @@ class ContactListPage extends Component<Props, State> {
 
 export default flowRight(
   withContactAttributes,
-  withRouter,
+  withRouterLegacy,
   connect(
     (state: RootState) => {
       return {

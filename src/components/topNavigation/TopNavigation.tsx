@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import classNames from "classnames";
-import { withRouter, type RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
 import { IconMenuDots, IconSize } from "hds-react";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import MainMenuIcon from "@/components/icons/MainMenuIcon";
 import SearchInput from "@/components/inputs/SearchInput";
@@ -19,10 +22,8 @@ import type {
 } from "@/usersPermissions/types";
 
 type Props = {
-  history: Record<string, any>;
   isMenuOpen: boolean;
   linkUrl: string;
-  location: Record<string, any>;
   onLogout: (...args: Array<any>) => any;
   pageTitle: string;
   showSearch: boolean;
@@ -36,7 +37,7 @@ type State = {
   search: string;
 };
 
-class TopNavigation extends Component<Props & RouteComponentProps, State> {
+class TopNavigation extends Component<Props & WithRouterProps, State> {
   state = {
     search: "",
   };
@@ -45,7 +46,7 @@ class TopNavigation extends Component<Props & RouteComponentProps, State> {
     this.setInitialSearchValue();
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: Props & WithRouterProps) {
     const {
       location: { pathname },
     } = this.props;
@@ -70,14 +71,14 @@ class TopNavigation extends Component<Props & RouteComponentProps, State> {
     });
   };
   moveSearchPage = () => {
-    const { history } = this.props;
+    const { navigate } = this.props;
     const { search } = this.state;
 
     if (search) {
       const query = {
         search: search,
       };
-      return history.push({
+      return navigate({
         pathname: getRouteById(Routes.LEASES),
         search: getSearchQuery(query),
       });
@@ -109,9 +110,9 @@ class TopNavigation extends Component<Props & RouteComponentProps, State> {
               dispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
-                  const { history } = this.props;
+                  const { navigate } = this.props;
                   const relativeUrl = target.href.replace(location.origin, "");
-                  history.push(relativeUrl);
+                  navigate(relativeUrl);
                 },
                 confirmationModalButtonClassName: ButtonColors.ALERT,
                 confirmationModalButtonText:
@@ -253,4 +254,4 @@ class TopNavigation extends Component<Props & RouteComponentProps, State> {
   }
 }
 
-export default withRouter(TopNavigation);
+export default withRouterLegacy(TopNavigation);

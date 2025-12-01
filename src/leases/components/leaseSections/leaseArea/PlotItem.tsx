@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
@@ -32,17 +31,17 @@ import type { Attributes } from "types";
 type Props = {
   areaArchived: boolean;
   attributes: Attributes;
-  location: Record<string, any>;
   plot: Record<string, any>;
 };
 
-const PlotItem = ({ areaArchived, attributes, location, plot }: Props) => {
+const PlotItem: React.FC<Props> = ({ areaArchived, attributes, plot }) => {
+  const location = useLocation();
   const getMapLinkUrl = () => {
     const { pathname, search } = location;
     const searchQuery = getUrlParams(search);
     delete searchQuery.lease_area;
     delete searchQuery.plan_unit;
-    (searchQuery.plot = plot.id), (searchQuery.tab = 7);
+    ((searchQuery.plot = plot.id), (searchQuery.tab = 7));
     return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
@@ -244,7 +243,6 @@ const PlotItem = ({ areaArchived, attributes, location, plot }: Props) => {
 };
 
 export default flowRight(
-  withRouter,
   connect((state) => {
     return {
       attributes: getAttributes(state),

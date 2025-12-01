@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { initialize } from "redux-form";
 import { Row, Column } from "react-foundation";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -47,13 +50,10 @@ import type { Attributes, Methods as MethodsType } from "types";
 import type { RentBasisList } from "@/rentbasis/types";
 type Props = {
   fetchRentBasisList: (...args: Array<any>) => any;
-  history: Record<string, any>;
   initialize: (...args: Array<any>) => any;
   initializeRentBasis: (...args: Array<any>) => any;
   isFetching: boolean;
   isFetchingRentBasisAttributes: boolean;
-  // get via withRentBasisAttributes HOC
-  location: Record<string, any>;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   rentBasisAttributes: Attributes;
   // get via withRentBasisAttributes HOC
@@ -68,7 +68,7 @@ type State = {
   sortOrder: string;
 };
 
-class RentBasisListPage extends Component<Props, State> {
+class RentBasisListPage extends Component<Props & WithRouterProps, State> {
   _isMounted: boolean;
   state = {
     activePage: 1,
@@ -160,7 +160,7 @@ class RentBasisListPage extends Component<Props, State> {
     );
   };
   handleSearchChange = (query, resetActivePage: boolean = false) => {
-    const { history } = this.props;
+    const { navigate } = this.props;
 
     if (resetActivePage) {
       this.setState({
@@ -168,7 +168,7 @@ class RentBasisListPage extends Component<Props, State> {
       });
     }
 
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.RENT_BASIS),
       search: getSearchQuery(query),
     });
@@ -193,7 +193,7 @@ class RentBasisListPage extends Component<Props, State> {
   };
   handleCreateButtonClick = () => {
     const {
-      history,
+      navigate,
       initializeRentBasis,
       location: { search },
     } = this.props;
@@ -202,24 +202,24 @@ class RentBasisListPage extends Component<Props, State> {
       property_identifiers: [{}],
       rent_rates: [{}],
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.RENT_BASIS_NEW),
       search: search,
     });
   };
   handleRowClick = (id) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.RENT_BASIS)}/${id}`,
       search: search,
     });
   };
   handlePageClick = (page: number) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -233,7 +233,7 @@ class RentBasisListPage extends Component<Props, State> {
     this.setState({
       activePage: page,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.RENT_BASIS),
       search: getSearchQuery(query),
     });
@@ -417,7 +417,7 @@ class RentBasisListPage extends Component<Props, State> {
 
 export default flowRight(
   withRentBasisAttributes,
-  withRouter,
+  withRouterLegacy,
   connect(
     (state) => {
       return {
