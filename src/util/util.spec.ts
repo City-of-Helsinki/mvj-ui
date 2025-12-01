@@ -601,6 +601,7 @@ describe("utils", () => {
     });
     it("should return an empty array when there are no items", () => {
       expect(getSplittedDateRangesWithItems(undefined)).to.deep.equal([]);
+      expect(getSplittedDateRangesWithItems([])).to.deep.equal([]);
     });
   });
   describe("helpers.js", () => {
