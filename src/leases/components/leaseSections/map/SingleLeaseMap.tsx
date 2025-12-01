@@ -1,6 +1,9 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
@@ -42,7 +45,12 @@ import {
   getIsEditMode,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes, LeafletFeatureGeometry, LeafletGeoJson, LeaseAreaDraftGeometryItem } from "types";
+import type {
+  Attributes,
+  LeafletFeatureGeometry,
+  LeafletGeoJson,
+  LeaseAreaDraftGeometryItem,
+} from "types";
 import type { Lease, LeaseArea } from "@/leases/types";
 import type { AreaNoteList } from "@/areaNote/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
@@ -61,9 +69,8 @@ type OwnProps = {
   fetchAreaNoteList: (...args: Array<any>) => any;
   isEditMode: boolean;
   leaseAttributes: Attributes;
-  location: Record<string, any>;
   usersPermissions: UsersPermissionsType;
-}
+};
 
 type State = {
   areasGeoJson: LeafletGeoJson;
@@ -84,7 +91,7 @@ type State = {
   plotTypeOptions: Array<Record<string, any>>;
 };
 
-class SingleLeaseMap extends PureComponent<Props, State> {
+class SingleLeaseMap extends PureComponent<Props & WithRouterProps, State> {
   state = {
     areasGeoJson: {
       features: [],
@@ -342,10 +349,12 @@ class SingleLeaseMap extends PureComponent<Props, State> {
       ? leaseAreaDraftGeometryItemsFromForm
       : leaseAreaDraftGeometryItemsFromState || [];
     const areaId = this.getAreaId();
-    const isAllowedToEdit = areaId && isFieldAllowedToEdit(
-      this.state.leaseAttributes,
-      LeaseAreasFieldPaths.DRAFT_GEOMETRY,
-    );
+    const isAllowedToEdit =
+      areaId &&
+      isFieldAllowedToEdit(
+        this.state.leaseAttributes,
+        LeaseAreasFieldPaths.DRAFT_GEOMETRY,
+      );
     return (
       <Fragment>
         <Title
@@ -379,7 +388,7 @@ class SingleLeaseMap extends PureComponent<Props, State> {
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
@@ -397,13 +406,14 @@ export default flowRight(
               draft_geometry: area.draft_geometry || null,
             };
           }) || [],
-        leaseAreaDraftGeometryItemsFromState: currentLease?.lease_areas?.map((area) => {
-          return {
-            id: area.id,
-            identifier: area.identifier,
-            draft_geometry: area.draft_geometry || null,
-          };
-        }) || [],
+        leaseAreaDraftGeometryItemsFromState:
+          currentLease?.lease_areas?.map((area) => {
+            return {
+              id: area.id,
+              identifier: area.identifier,
+              draft_geometry: area.draft_geometry || null,
+            };
+          }) || [],
       };
     },
     {

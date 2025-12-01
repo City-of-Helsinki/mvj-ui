@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 import { reducer as formReducer } from "redux-form";
 import { reducer as toastrReducer } from "react-redux-toastr";
-import { connectRouter } from "connected-react-router";
 import apiReducer from "@/api/reducer";
 import areaNoteReducer from "@/areaNote/reducer";
 import areaSearchReducer from "@/areaSearch/reducer";
@@ -51,7 +50,7 @@ import usersPermissionsReducer from "@/usersPermissions/reducer";
 import vatReducer from "@/vat/reducer";
 import type { Reducer } from "@/types";
 import type { RootState } from "@/root/types";
-export default (history: Record<string, any>): Reducer<RootState> =>
+export default (): Reducer<RootState> =>
   combineReducers<Record<string, any>, any>({
     api: apiReducer,
     areaNote: areaNoteReducer,
@@ -94,7 +93,6 @@ export default (history: Record<string, any>): Reducer<RootState> =>
     previewInvoices: previewInvoicesReducer,
     rentBasis: rentBasisReducer,
     rentForPeriod: rentForPeriodReducer,
-    router: connectRouter(history),
     serviceUnits: serviceUnitsReducer,
     sapInvoice: sapInvoiceReducer,
     toastr: toastrReducer,

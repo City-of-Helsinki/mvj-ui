@@ -2,7 +2,6 @@ import classNames from "classnames";
 import flowRight from "lodash/flowRight";
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
 import { initialize } from "redux-form";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import FormText from "@/components/form/FormText";
@@ -562,7 +561,6 @@ class InvoiceTableAndPanelR extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
   connect(
     (state) => {
       const currentLandUseContract = getCurrentLandUseContract(state);

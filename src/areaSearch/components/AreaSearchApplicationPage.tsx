@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import { groupBy } from "lodash/collection";
@@ -12,7 +15,6 @@ import {
   isValid,
   change,
 } from "redux-form";
-import type { ContextRouter } from "react-router";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import FullWidthContainer from "@/components/content/FullWidthContainer";
 import PageContainer from "@/components/content/PageContainer";
@@ -88,7 +90,7 @@ import type { UsersPermissions as UsersPermissionsType } from "@/usersPermission
 import SingleAreaSearchMap from "@/areaSearch/components/map/SingleAreaSearchMap";
 import { withContactAttributes } from "@/components/attributes/ContactAttributes";
 type OwnProps = {};
-type Props = ContextRouter &
+type Props = WithRouterProps &
   OwnProps & {
     clearFormValidFlags: (...args: Array<any>) => any;
     currentAreaSearch: Record<string, any> | null | undefined;
@@ -145,9 +147,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
       clearFormValidFlags,
       receiveTopNavigationSettings,
       fetchSingleAreaSearch,
-      match: {
-        params: { areaSearchId },
-      },
+      params: { areaSearchId },
       location: { search },
       receiveIsSaveClicked,
       fetchFormAttributes,
@@ -237,9 +237,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
     const {
       hideEditMode,
       fetchSingleAreaSearch,
-      match: {
-        params: { areaSearchId },
-      },
+      params: { areaSearchId },
     } = this.props;
     // Reload all data in case we tried and managed to save some but not all info check data.
     // These could be patched to the current plot application directly upon receiving success too,
@@ -251,20 +249,20 @@ class AreaSearchApplicationPage extends Component<Props, State> {
   };
   handleBack = () => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
     // Remove page specific url parameters when moving to application list page
     delete query.tab;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.AREA_SEARCH)}`,
       search: getSearchQuery(query),
     });
   };
   handleTabClick = (tabId) => {
     const {
-      history,
+      navigate,
       location,
       location: { search },
     } = this.props;
@@ -275,7 +273,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
       },
       () => {
         query.tab = tabId;
-        return history.push({ ...location, search: getSearchQuery(query) });
+        return navigate({ ...location, search: getSearchQuery(query) });
       },
     );
   };
@@ -284,9 +282,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
     const {
       location: { search },
       currentAreaSearch,
-      match: {
-        params: { areaSearchId },
-      },
+      params: { areaSearchId },
       isFetching,
       isEditMode,
       fetchSingleAreaSearch,
@@ -313,7 +309,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
       this.stopAutoSaveTimer();
     }
 
-    if (areaSearchId && areaSearchId !== prevProps.match.params?.areaSearchId) {
+    if (areaSearchId && areaSearchId !== prevProps.params?.areaSearchId) {
       fetchSingleAreaSearch(areaSearchId);
     }
   }
@@ -324,9 +320,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
       batchEditAreaSearchInfoChecks,
       getValuesForForm,
       isFormDirty,
-      match: {
-        params: { areaSearchId },
-      },
+      params: { areaSearchId },
     } = this.props;
     const { applicantInfoCheckFormNames } = this.state;
     receiveIsSaveClicked(true);
@@ -519,7 +513,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   withAreaSearchAttributes,
   withContactAttributes,
   connect(

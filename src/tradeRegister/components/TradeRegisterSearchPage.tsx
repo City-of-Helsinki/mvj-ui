@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { connect } from "react-redux";
+import { useLocation, useNavigate } from "react-router";
 import { Row, Column } from "react-foundation";
-import { withRouter } from "react-router";
-import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";
@@ -28,20 +27,18 @@ import {
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 
 type Props = {
-  history: Record<string, any>;
   isFetchingUsersPermissions: boolean;
-  location: Record<string, any>;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   usersPermissions: UsersPermissionsType;
 };
 
 const TradeRegisterSearchPage: React.FC<Props> = ({
-  history,
   isFetchingUsersPermissions,
-  location,
   receiveTopNavigationSettings,
   usersPermissions,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [businessId, setBusinessId] = useState<string>("");
   const [searchFormInitialValues, setSearchFormInitialValues] = useState<
     Record<string, any>
@@ -77,12 +74,12 @@ const TradeRegisterSearchPage: React.FC<Props> = ({
     (query) => {
       setBusinessId(query.business_id);
       setSearchFormInitialValues({ business_id: query.business_id });
-      history.push({
+      navigate({
         pathname: getRouteById(Routes.TRADE_REGISTER),
         search: getSearchQuery(query),
       });
     },
-    [history],
+    [navigate],
   );
 
   if (isFetchingUsersPermissions)
@@ -122,17 +119,14 @@ const TradeRegisterSearchPage: React.FC<Props> = ({
   );
 };
 
-export default flowRight(
-  withRouter,
-  connect(
-    (state) => {
-      return {
-        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      receiveTopNavigationSettings,
-    },
-  ),
-)(TradeRegisterSearchPage);
+export default connect(
+  (state) => {
+    return {
+      isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
+      usersPermissions: getUsersPermissions(state),
+    };
+  },
+  {
+    receiveTopNavigationSettings,
+  },
+)(TradeRegisterSearchPage) as React.FC<Props>;

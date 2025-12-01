@@ -3,7 +3,10 @@ import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { initialize } from "redux-form";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
@@ -66,10 +69,7 @@ const visualizationTypeOptions = [
     icon: <MapIcon className="icon-medium" />,
   },
 ];
-type OwnProps = {};
-type Props = OwnProps & {
-  history: Record<string, any>;
-  location: Record<string, any>;
+type Props = {
   createPlotSearch: (...args: Array<any>) => any;
   usersPermissions: UsersPermissionsType;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
@@ -95,7 +95,7 @@ type State = {
   isModalOpen: boolean;
 };
 
-class PlotSearchListPage extends PureComponent<Props, State> {
+class PlotSearchListPage extends PureComponent<Props & WithRouterProps, State> {
   _isMounted: boolean;
   state = {
     properties: [],
@@ -213,10 +213,10 @@ class PlotSearchListPage extends PureComponent<Props, State> {
   };
   handleRowClick = (id) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.PLOT_SEARCH)}/${id}`,
       search: search,
     });
@@ -224,7 +224,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
   handleSortingChange = () => {};
   handlePageClick = (page: number) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -238,7 +238,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     this.setState({
       activePage: page,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.PLOT_SEARCH),
       search: getSearchQuery(query),
     });
@@ -271,7 +271,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
     query: Record<string, any>,
     resetActivePage: boolean = true,
   ) => {
-    const { history } = this.props;
+    const { navigate } = this.props;
 
     if (resetActivePage) {
       this.setState({
@@ -280,7 +280,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
       delete query.page;
     }
 
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.PLOT_SEARCH),
       search: getSearchQuery(query),
     });
@@ -487,7 +487,7 @@ class PlotSearchListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   withPlotSearchAttributes,
   connect(
     (state) => {
@@ -504,4 +504,4 @@ export default flowRight(
       fetchPlotSearchList,
     },
   ),
-)(PlotSearchListPage) as React.ComponentType<OwnProps>;
+)(PlotSearchListPage) as React.ComponentType;

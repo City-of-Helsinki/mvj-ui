@@ -1,7 +1,10 @@
 import React, { PureComponent } from "react";
 import { Row, Column } from "react-foundation";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { initialize } from "redux-form";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
@@ -44,13 +47,11 @@ type Props = {
   areaNotes: AreaNoteList;
   fetchAreaNoteList: (...args: Array<any>) => any;
   hideEditMode: (...args: Array<any>) => any;
-  history: Record<string, any>;
   initialize: (...args: Array<any>) => any;
   initializeAreaNote: (...args: Array<any>) => any;
   isEditMode: boolean;
   isFetching: boolean;
   isFetchingCommonAttributes: boolean;
-  location: Record<string, any>;
   plansUnderground: Array<Record<string, any>> | null | undefined;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   showEditMode: (...args: Array<any>) => any;
@@ -89,7 +90,7 @@ const getOverlayLayers = (
   return layers;
 };
 
-class AreaNoteListPage extends PureComponent<Props, State> {
+class AreaNoteListPage extends PureComponent<Props & WithRouterProps, State> {
   _isMounted: boolean;
   state = {
     areaNoteMethods: null,
@@ -114,7 +115,10 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     this._isMounted = true;
   }
 
-  static getDerivedStateFromProps(props: Props, state: State) {
+  static getDerivedStateFromProps(
+    props: Props & WithRouterProps,
+    state: State,
+  ) {
     const newState: any = {};
 
     if (
@@ -217,8 +221,8 @@ class AreaNoteListPage extends PureComponent<Props, State> {
     this.props.showEditMode();
   };
   handleSearchChange = (query) => {
-    const { history } = this.props;
-    return history.push({
+    const { navigate } = this.props;
+    return navigate({
       pathname: getRouteById(Routes.AREA_NOTES),
       search: getSearchQuery(query),
     });
@@ -303,7 +307,7 @@ class AreaNoteListPage extends PureComponent<Props, State> {
 
 export default flowRight(
   withAreaNoteAttributes,
-  withRouter,
+  withRouterLegacy,
   connect(
     (state) => {
       return {

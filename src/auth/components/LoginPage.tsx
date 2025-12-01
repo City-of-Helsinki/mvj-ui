@@ -1,14 +1,10 @@
 import React from "react";
-import { withRouter, type RouteComponentProps } from "react-router";
 type Props = {
   buttonDisabled: boolean;
   onLoginClick: (...args: Array<any>) => any;
 };
 
-const LoginPage: React.FC<Props & RouteComponentProps> = ({
-  buttonDisabled,
-  onLoginClick,
-}) => {
+const LoginPage: React.FC<Props> = ({ buttonDisabled, onLoginClick }) => {
   return (
     <div className="login-page">
       <div className="login-page__content">
@@ -29,4 +25,4 @@ const LoginPage: React.FC<Props & RouteComponentProps> = ({
   );
 };
 
-export default withRouter(LoginPage);
+export default LoginPage;

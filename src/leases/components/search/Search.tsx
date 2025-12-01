@@ -1,5 +1,8 @@
-import React, { Fragment, PureComponent } from "react";
-import { withRouter } from "react-router";
+import React, { PureComponent } from "react";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { connect } from "react-redux";
 import {
   clearFields,
@@ -51,11 +54,9 @@ type Props = {
   isSearchInitialized: boolean;
   leaseAttributes: Attributes;
   lessors: LessorList;
-  location: Record<string, any>;
   municipality: string;
   onClear: (...args: Array<any>) => any;
   onSearch: (...args: Array<any>) => any;
-  router: Record<string, any>;
 };
 type State = {
   decisionMakerOptions: Array<Record<string, any>>;
@@ -70,7 +71,7 @@ type State = {
   serviceUnitOptions: Array<Record<string, any>>;
 };
 
-class Search extends PureComponent<Props, State> {
+class Search extends PureComponent<Props & WithRouterProps, State> {
   _isMounted: boolean;
   state = {
     decisionMakerOptions: [],
@@ -267,7 +268,7 @@ class Search extends PureComponent<Props, State> {
           </Column>
         </Row>
         {!isBasicSearch && (
-          <Fragment>
+          <>
             <Row>
               {/* First column */}
               <Column small={12} large={6}>
@@ -858,7 +859,7 @@ class Search extends PureComponent<Props, State> {
                 </SearchRow>
               </Column>
             </Row>
-          </Fragment>
+          </>
         )}
 
         <Row>
@@ -881,7 +882,7 @@ class Search extends PureComponent<Props, State> {
 const formName = FormNames.LEASE_SEARCH;
 const selector = formValueSelector(formName);
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect(
     (state) => {
       const municipality = selector(state, "municipality");
@@ -902,4 +903,4 @@ export default flowRight(
   reduxForm({
     form: formName,
   }),
-)(Search) as React.ComponentType<any>;
+)(Search) as React.ComponentType;

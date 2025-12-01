@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import { withRouterLegacy, WithRouterProps } from "@/root/withRouterLegacy";
 import { getFormValues, isDirty } from "redux-form";
 import flowRight from "lodash/flowRight";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -39,7 +39,6 @@ type Props = {
   createInfillDevelopment: (...args: Array<any>) => any;
   formValues: Record<string, any>;
   hideEditMode: (...args: Array<any>) => any;
-  history: Record<string, any>;
   infillDevelopmentMethods: MethodsType;
   // get via withInfillDevelopmentPageAttributes HOC
   isFetchingInfillDevelopmentPageAttributes: boolean;
@@ -48,13 +47,12 @@ type Props = {
   isFormValid: boolean;
   isSaveClicked: boolean;
   isSaving: boolean;
-  location: Record<string, any>;
   receiveIsSaveClicked: (...args: Array<any>) => any;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   showEditMode: (...args: Array<any>) => any;
 };
 
-class NewInfillDevelopmentPage extends Component<Props> {
+class NewInfillDevelopmentPage extends Component<Props & WithRouterProps> {
   componentDidMount() {
     const {
       clearFormValidFlags,
@@ -92,17 +90,17 @@ class NewInfillDevelopmentPage extends Component<Props> {
   };
   handleBack = () => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}`,
       search: search,
     });
   };
   cancelChanges = () => {
-    const { history } = this.props;
-    return history.push({
+    const { navigate } = this.props;
+    return navigate({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
     });
   };
@@ -194,7 +192,7 @@ const mapStateToProps = (state: RootState) => {
 export default flowRight(
   withInfillDevelopmentPageAttributes,
   withUiDataList,
-  withRouter,
+  withRouterLegacy,
   connect(mapStateToProps, {
     clearFormValidFlags,
     createInfillDevelopment,
