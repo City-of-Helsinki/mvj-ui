@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams, useLocation } from "react-router";
+import { useNavigate, useParams, useLocation } from "react-router";
 import { Form, FormSpy } from "react-final-form";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
@@ -85,7 +85,7 @@ const ContactPageView: React.FC<{
   handleSubmit: () => void;
   contact: Contact;
 }> = ({ form, handleSubmit, contact }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const params = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -291,29 +291,29 @@ const ContactPageView: React.FC<{
     dispatch(initializeContactForm(contactCopy));
     dispatch(hideEditMode());
     clearUnsavedChanges();
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.CONTACT_NEW),
       search: location.search,
     });
-  }, [contact, dispatch, history, location.search]);
+  }, [contact, dispatch, navigate, location.search]);
 
   const handleBack = useCallback(() => {
     const query = getUrlParams(location.search);
     delete query.tab;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.CONTACTS)}`,
       search: getSearchQuery(query),
     });
-  }, [history, location.search]);
+  }, [navigate, location.search]);
 
   const handleTabClick = useCallback(
     (tabId) => {
       const query = getUrlParams(location.search);
       setActiveTab(tabId);
       query.tab = tabId;
-      return history.push({ ...location, search: getSearchQuery(query) });
+      return navigate({ ...location, search: getSearchQuery(query) });
     },
-    [history, location],
+    [navigate, location],
   );
 
   const cancelChanges = useCallback(() => {

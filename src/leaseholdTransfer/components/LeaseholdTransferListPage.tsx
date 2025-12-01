@@ -1,6 +1,9 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { initialize } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
@@ -62,14 +65,12 @@ import type { LeaseholdTransferList } from "@/leaseholdTransfer/types";
 type Props = {
   deleteLeaseholdTransferAndUpdateList: (...args: Array<any>) => any;
   fetchLeaseholdTransferList: (...args: Array<any>) => any;
-  history: Record<string, any>;
   initialize: (...args: Array<any>) => any;
   isFetching: boolean;
   isFetchingLeaseholdTransferAttributes: boolean;
   leaseholdTransferAttributes: Attributes;
   leaseholdTransferList: LeaseholdTransferList;
   leaseholdTransferMethods: MethodsType;
-  location: Record<string, any>;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
 };
 type State = {
@@ -83,7 +84,10 @@ type State = {
   sortOrder: string;
 };
 
-class LeaseholdTransferListPage extends PureComponent<Props, State> {
+class LeaseholdTransferListPage extends PureComponent<
+  Props & WithRouterProps,
+  State
+> {
   _isMounted: boolean;
   state = {
     activePage: 1,
@@ -217,7 +221,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
     fetchLeaseholdTransferList(searchQuery);
   };
   handleSearchChange = (query: any, resetActivePage: boolean = false) => {
-    const { history } = this.props;
+    const { navigate } = this.props;
 
     if (resetActivePage) {
       this.setState({
@@ -225,7 +229,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
       });
     }
 
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.LEASEHOLD_TRANSFER),
       search: getSearchQuery(query),
     });
@@ -245,7 +249,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
   };
   handlePageClick = (page: number) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -259,7 +263,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
     this.setState({
       activePage: page,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.LEASEHOLD_TRANSFER),
       search: getSearchQuery(query),
     });
@@ -474,7 +478,7 @@ class LeaseholdTransferListPage extends PureComponent<Props, State> {
 
 export default flowRight(
   withLeaseholdTransferAttributes,
-  withRouter,
+  withRouterLegacy,
   connect(
     (state) => {
       return {

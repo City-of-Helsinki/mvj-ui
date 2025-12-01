@@ -1,5 +1,8 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { connect } from "react-redux";
 import { change, destroy, getFormValues, isDirty } from "redux-form";
 import flowRight from "lodash/flowRight";
@@ -91,7 +94,6 @@ type Props = {
   editInfillDevelopment: (...args: Array<any>) => any;
   fetchSingleInfillDevelopment: (...args: Array<any>) => any;
   hideEditMode: (...args: Array<any>) => any;
-  history: Record<string, any>;
   infillDevelopmentAttributes: Attributes;
   // get via withInfillDevelopmentPageAttributes HOC
   infillDevelopmentFormValues: Record<string, any>;
@@ -106,10 +108,6 @@ type Props = {
   isInfillDevelopmentFormDirty: boolean;
   isSaveClicked: boolean;
   isSaving: boolean;
-  location: Record<string, any>;
-  match: {
-    params: Record<string, any>;
-  };
   receiveFormInitialValues: (...args: Array<any>) => any;
   receiveSingleInfillDevelopment: (...args: Array<any>) => any;
   receiveIsSaveClicked: (...args: Array<any>) => any;
@@ -124,7 +122,7 @@ type State = {
   isRestoreModalOpen: boolean;
 };
 
-class InfillDevelopmentPage extends Component<Props, State> {
+class InfillDevelopmentPage extends Component<Props & WithRouterProps, State> {
   state: State = {
     activeTab: 0,
     formatedInfillDevelopment: {},
@@ -138,9 +136,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
       fetchSingleInfillDevelopment,
       hideEditMode,
       location: { search },
-      match: {
-        params: { infillDevelopmentId },
-      },
+      params: { infillDevelopmentId },
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
@@ -182,9 +178,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const {
       currentInfillDevelopment,
       isEditMode,
-      match: {
-        params: { infillDevelopmentId },
-      },
+      params: { infillDevelopmentId },
     } = this.props;
     const { activeTab } = this.state;
 
@@ -221,9 +215,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
   componentWillUnmount() {
     const {
       hideEditMode,
-      match: {
-        params: { infillDevelopmentId },
-      },
+      params: { infillDevelopmentId },
       location: { pathname },
       receiveSingleInfillDevelopment,
     } = this.props;
@@ -280,9 +272,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const {
       infillDevelopmentFormValues,
       isInfillDevelopmentFormDirty,
-      match: {
-        params: { infillDevelopmentId },
-      },
+      params: { infillDevelopmentId },
     } = this.props;
 
     if (isInfillDevelopmentFormDirty) {
@@ -337,7 +327,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const {
       currentInfillDevelopment,
       hideEditMode,
-      history,
+      navigate,
       location: { search },
       receiveFormInitialValues,
     } = this.props;
@@ -346,20 +336,20 @@ class InfillDevelopmentPage extends Component<Props, State> {
     receiveFormInitialValues(getCopyOfInfillDevelopment(infillDevelopment));
     hideEditMode();
     clearUnsavedChanges();
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENT_NEW),
       search: search,
     });
   };
   handleBack = () => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
     delete query.lease;
     delete query.tab;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}`,
       search: getSearchQuery(query),
     });
@@ -408,7 +398,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
   };
   handleTabClick = (tabId) => {
     const {
-      history,
+      navigate,
       location,
       location: { search },
     } = this.props;
@@ -419,7 +409,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
       },
       () => {
         query.tab = tabId;
-        return history.push({ ...location, search: getSearchQuery(query) });
+        return navigate({ ...location, search: getSearchQuery(query) });
       },
     );
   };
@@ -639,5 +629,5 @@ export default flowRight(
       showEditMode,
     },
   ),
-  withRouter,
+  withRouterLegacy,
 )(InfillDevelopmentPage);

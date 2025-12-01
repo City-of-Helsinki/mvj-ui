@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import {
   change,
   destroy,
@@ -115,7 +118,6 @@ type Props = {
   editLandUseContract: (...args: Array<any>) => any;
   fetchSingleLandUseContract: (...args: Array<any>) => any;
   hideEditMode: (...args: Array<any>) => any;
-  history: Record<string, any>;
   initialize: (...args: Array<any>) => any;
   invoices: InvoiceList;
   invoicesFormValues: Record<string, any>;
@@ -142,15 +144,10 @@ type Props = {
   isSaveClicked: boolean;
   landUseContractAttributes: Attributes;
   litigantsFormValues: Record<string, any>;
-  location: Record<string, any>;
-  match: {
-    params: Record<string, any>;
-  };
   receiveFormValidFlags: (...args: Array<any>) => any;
   receiveIsSaveClicked: (...args: Array<any>) => any;
   receiveSingleLandUseContract: (...args: Array<any>) => any;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
-  router: Record<string, any>;
   showEditMode: (...args: Array<any>) => any;
   usersPermissions: UsersPermissions;
   fetchInvoicesByLandUseContract: (...args: Array<any>) => any;
@@ -164,7 +161,7 @@ type State = {
   isRestoreModalOpen: boolean;
 };
 
-class LandUseContractPage extends Component<Props, State> {
+class LandUseContractPage extends Component<Props & WithRouterProps, State> {
   state = {
     activeTab: 0,
     isRestoreModalOpen: false,
@@ -177,9 +174,7 @@ class LandUseContractPage extends Component<Props, State> {
       fetchSingleLandUseContract,
       hideEditMode,
       location: { search },
-      match: {
-        params: { landUseContractId },
-      },
+      params: { landUseContractId },
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
       fetchLandUseInvoiceAttributes,
@@ -218,9 +213,7 @@ class LandUseContractPage extends Component<Props, State> {
     const {
       currentLandUseContract,
       isEditMode,
-      match: {
-        params: { landUseContractId },
-      },
+      params: { landUseContractId },
     } = this.props;
     const { activeTab } = this.state;
 
@@ -257,9 +250,7 @@ class LandUseContractPage extends Component<Props, State> {
     const {
       invoices,
       fetchInvoicesByLandUseContract,
-      match: {
-        params: { landUseContractId },
-      },
+      params: { landUseContractId },
     } = this.props;
 
     // TODO hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) &&
@@ -272,9 +263,7 @@ class LandUseContractPage extends Component<Props, State> {
     const {
       hideEditMode,
       location: { pathname },
-      match: {
-        params: { landUseContractId },
-      },
+      params: { landUseContractId },
       receiveSingleLandUseContract,
     } = this.props;
 
@@ -343,9 +332,7 @@ class LandUseContractPage extends Component<Props, State> {
       litigantsFormValues,
       isConditionsFormDirty,
       conditionsFormValues,
-      match: {
-        params: { landUseContractId },
-      },
+      params: { landUseContractId },
     } = this.props;
     let isDirty = false;
 
@@ -537,7 +524,7 @@ class LandUseContractPage extends Component<Props, State> {
   };
   handleTabClick = (tabId: number) => {
     const {
-      history,
+      navigate,
       location,
       location: { search },
     } = this.props;
@@ -548,19 +535,19 @@ class LandUseContractPage extends Component<Props, State> {
       },
       () => {
         query.tab = tabId;
-        return history.push({ ...location, search: getSearchQuery(query) });
+        return navigate({ ...location, search: getSearchQuery(query) });
       },
     );
   };
   handleBack = () => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
     // Remove page specific url parameters when moving to lease list page
     delete query.tab;
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.LAND_USE_CONTRACTS),
       search: getSearchQuery(query),
     });
@@ -741,10 +728,7 @@ class LandUseContractPage extends Component<Props, State> {
     });
   };
   handleDelete = () => {
-    const {
-      deleteLandUseContract,
-      match: { params },
-    } = this.props;
+    const { deleteLandUseContract, params } = this.props;
     deleteLandUseContract(params.landUseContractId);
   };
   destroyAllForms = () => {
@@ -963,11 +947,11 @@ class LandUseContractPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   withLandUseContractAttributes,
   withUiDataList,
   connect(
-    (state, props: Props) => {
+    (state, props: Props & WithRouterProps) => {
       return {
         basicInformationFormValues: getFormValues(
           FormNames.LAND_USE_CONTRACT_BASIC_INFORMATION,
@@ -1038,7 +1022,7 @@ export default flowRight(
         usersPermissions: getUsersPermissions(state),
         invoices: getInvoicesByLandUseContractId(
           state,
-          props.match.params.landUseContractId,
+          Number(props.params.landUseContractId),
         ),
         isFetchingLandUseInvoiceAttributes:
           getIsFetchingLandUseInvoiceAttributes(state),
@@ -1073,4 +1057,4 @@ export default flowRight(
       deleteLandUseContract,
     },
   ),
-)(LandUseContractPage);
+)(LandUseContractPage) as React.ComponentType;

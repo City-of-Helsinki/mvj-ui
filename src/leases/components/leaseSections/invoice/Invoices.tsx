@@ -1,6 +1,9 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -84,9 +87,6 @@ type Props = {
   // Get via withLeaseInvoiceTabAttributes HOC
   isInvoicingEnabled: boolean;
   leaseAttributes: Attributes;
-  match: {
-    params: Record<string, any>;
-  };
   previewInvoicesCollapseState: boolean;
   receiveCollapseStates: (...args: Array<any>) => any;
   receiveIsCreateInvoicePanelOpen: (...args: Array<any>) => any;
@@ -101,7 +101,7 @@ type State = {
   invoiceNotes: Array<Record<string, any>>;
 };
 
-class Invoices extends PureComponent<Props, State> {
+class Invoices extends PureComponent<Props & WithRouterProps, State> {
   state = {
     currentLease: {},
     invoiceNotes: [],
@@ -117,9 +117,7 @@ class Invoices extends PureComponent<Props, State> {
       fetchCollectionNotesByLease,
       fetchInvoiceSetsByLease,
       invoiceSets,
-      match: {
-        params: { leaseId },
-      },
+      params: { leaseId },
       receiveInvoiceToCredit,
       receiveIsCreateInvoicePanelOpen,
       receiveIsCreditInvoicePanelOpen,
@@ -461,7 +459,7 @@ class Invoices extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   withLeaseInvoiceTabAttributes,
   connect(
     (state) => {

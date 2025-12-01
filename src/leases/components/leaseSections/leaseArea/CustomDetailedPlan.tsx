@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
@@ -461,7 +460,6 @@ const CustomDetailedPlan = ({ attributes, customDetailedPlan }: Props) => {
 };
 
 export default flowRight(
-  withRouter,
   connect((state) => {
     return {
       attributes: getAttributes(state),

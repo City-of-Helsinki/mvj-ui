@@ -1,8 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import { withRouter } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
@@ -49,7 +48,6 @@ type Props = {
   area: Record<string, any>;
   attributes: Attributes;
   isEditMode: boolean;
-  location: Record<string, any>;
   planUnitsContractCollapseState: boolean;
   planUnitsCurrentCollapseState: boolean;
   plotsContractCollapseState: boolean;
@@ -62,7 +60,6 @@ const LeaseArea = ({
   area,
   attributes,
   isEditMode,
-  location,
   planUnitsContractCollapseState,
   planUnitsCurrentCollapseState,
   plotsContractCollapseState,
@@ -70,6 +67,8 @@ const LeaseArea = ({
   customDetailedPlanCollapseState,
   receiveCollapseStates,
 }: Props) => {
+  const location = useLocation();
+
   const handleCollapseToggle = (key: string, val: boolean) => {
     const mode: string = isEditMode ? ViewModes.EDIT : ViewModes.READONLY;
     receiveCollapseStates({
@@ -545,7 +544,6 @@ const LeaseArea = ({
 
 const formName = FormNames.LEASE_AREAS;
 export default flowRight(
-  withRouter,
   connect(
     (state, props) => {
       const id = get(props, "area.id");
@@ -579,4 +577,4 @@ export default flowRight(
       receiveCollapseStates,
     },
   ),
-)(LeaseArea) as React.ComponentType<any>;
+)(LeaseArea) as React.ComponentType;

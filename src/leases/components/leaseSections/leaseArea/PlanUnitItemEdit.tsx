@@ -1,7 +1,10 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { Link } from "react-router-dom";
 import { formValueSelector, change, reduxForm } from "redux-form";
 import flowRight from "lodash/flowRight";
@@ -36,7 +39,6 @@ type Props = {
   geometry: Record<string, any> | null | undefined;
   id: number;
   isSaveClicked: boolean;
-  location: Record<string, any>;
   onRemove: (...args: Array<any>) => any;
   usersPermissions: UsersPermissionsType;
   change: (...args: Array<any>) => any;
@@ -70,7 +72,7 @@ type State = {
   is_master: boolean;
 };
 
-class PlanUnitItemEdit extends PureComponent<Props, State> {
+class PlanUnitItemEdit extends PureComponent<Props & WithRouterProps, State> {
   state = {
     identifier: this.props.identifier,
     area: this.props.area,
@@ -94,7 +96,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
     const searchQuery = getUrlParams(search);
     delete searchQuery.lease_area;
     delete searchQuery.plot;
-    (searchQuery.plan_unit = id), (searchQuery.tab = 7);
+    ((searchQuery.plan_unit = id), (searchQuery.tab = 7));
     return `${pathname}${getSearchQuery(searchQuery)}`;
   };
   mapLinkUrl = () => this.getMapLinkUrl();
@@ -532,7 +534,7 @@ class PlanUnitItemEdit extends PureComponent<Props, State> {
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect((state, props) => {
     return {
       attributes: getAttributes(state),
