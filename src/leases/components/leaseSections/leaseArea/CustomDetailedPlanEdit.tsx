@@ -1,6 +1,5 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
 import { FieldArray, reduxForm, change } from "redux-form";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
@@ -787,7 +786,6 @@ class CustomDetailedPlanEdit extends PureComponent<Props> {
 
 const formName = FormNames.LEASE_AREAS;
 export default flowRight(
-  withRouter,
   connect((state) => {
     return {
       attributes: getAttributes(state),

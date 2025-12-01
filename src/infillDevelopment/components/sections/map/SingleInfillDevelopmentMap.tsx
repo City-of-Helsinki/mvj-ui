@@ -1,6 +1,9 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
@@ -46,7 +49,6 @@ type Props = {
   fetchLeaseById: (...args: Array<any>) => any;
   isFetchingAllLeases: Array<boolean>;
   leaseAttributes: Attributes;
-  location: Record<string, any>;
   usersPermissions: UsersPermissionsType;
 };
 type State = {
@@ -66,7 +68,10 @@ type State = {
   plotTypeOptions: Array<Record<string, any>>;
 };
 
-class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
+class SingleInfillDevelopmentMap extends PureComponent<
+  Props & WithRouterProps,
+  State
+> {
   state = {
     areaLocationOptions: [],
     areaTypeOptions: [],
@@ -280,7 +285,7 @@ class SingleInfillDevelopmentMap extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect(
     (state) => {
       return {

@@ -2,8 +2,10 @@ import React, { Fragment, PureComponent } from "react";
 import flowRight from "lodash/flowRight";
 import debounce from "lodash/debounce";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
-import type { ContextRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { Row, Column } from "react-foundation";
 import { initialize } from "redux-form";
 import Search from "@/plotApplications/components/search/Search";
@@ -76,8 +78,8 @@ const visualizationTypeOptions = [
     icon: <MapIcon className="icon-medium" />,
   },
 ];
-type OwnProps = ContextRouter;
-type Props = OwnProps & {
+
+type Props = {
   plotApplicationsMethods: MethodsType;
   plotApplicationsAttributes: Attributes;
   isFetching: boolean;
@@ -104,7 +106,10 @@ type State = {
   openingRecordPopupTarget: Record<string, any> | null | undefined;
 };
 
-class PlotApplicationsListPage extends PureComponent<Props, State> {
+class PlotApplicationsListPage extends PureComponent<
+  Props & WithRouterProps,
+  State
+> {
   _isMounted: boolean;
   state = {
     applications: [],
@@ -274,8 +279,8 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     fetchPlotApplicationsList(searchQuery);
   };
   openCreatePlotApplication = () => {
-    const { history } = this.props;
-    history.push({
+    const { navigate } = this.props;
+    navigate({
       pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/uusi`,
     });
   };
@@ -349,7 +354,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
   };
   handlePageClick = (page: number) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -363,14 +368,14 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     this.setState({
       activePage: page,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.PLOT_APPLICATIONS),
       search: getSearchQuery(query),
     });
   };
   handleRowClick = (id: number, row: Record<string, any>) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const requiresOpening =
@@ -381,7 +386,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
         openingRecordPopupTarget: row,
       }));
     } else {
-      return history.push({
+      return navigate({
         pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`,
         search: search,
       });
@@ -391,7 +396,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
     query: Record<string, any>,
     resetActivePage: boolean = true,
   ) => {
-    const { history } = this.props;
+    const { navigate } = this.props;
 
     if (resetActivePage) {
       this.setState({
@@ -400,7 +405,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       delete query.page;
     }
 
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.PLOT_APPLICATIONS),
       search: getSearchQuery(query),
     });
@@ -412,7 +417,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
       },
       () => {
         const {
-          history,
+          navigate,
           location: { search },
         } = this.props;
         const searchQuery = getUrlParams(search);
@@ -423,7 +428,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
           delete searchQuery.visualization;
         }
 
-        return history.push({
+        return navigate({
           pathname: getRouteById(Routes.PLOT_APPLICATIONS),
           search: getSearchQuery(searchQuery),
         });
@@ -432,13 +437,13 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
   };
   handleMapViewportChanged = debounce((mapOptions: Record<string, any>) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
     searchQuery.in_bbox = mapOptions.bBox.split(",");
     searchQuery.zoom = mapOptions.zoom;
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.PLOT_APPLICATIONS),
       search: getSearchQuery(searchQuery),
     });
@@ -594,7 +599,7 @@ class PlotApplicationsListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   withPlotApplicationsAttributes,
   connect(
     (state) => {
@@ -614,4 +619,4 @@ export default flowRight(
       initialize,
     },
   ),
-)(PlotApplicationsListPage) as React.ComponentType<OwnProps>;
+)(PlotApplicationsListPage) as React.ComponentType;

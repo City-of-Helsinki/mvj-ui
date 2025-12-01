@@ -1,6 +1,9 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
@@ -42,7 +45,6 @@ type OwnProps = {
 type Props = OwnProps & {
   areaNotes: AreaNoteList;
   searchData: ApiResponse;
-  location: Record<string, any>;
   usersPermissions: UsersPermissionsType;
 };
 type State = {
@@ -54,7 +56,7 @@ type State = {
   zoom: number;
 };
 
-class AreaSearchListMap extends PureComponent<Props, State> {
+class AreaSearchListMap extends PureComponent<Props & WithRouterProps, State> {
   state = {
     bounds: getMapBounds(),
     center: getMapCenter(),
@@ -144,7 +146,7 @@ class AreaSearchListMap extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect((state) => {
     return {
       searchData: getAreaSearchListByBBox(state),

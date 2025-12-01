@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router";
 import {
   change as reduxFormChange,
   destroy,
@@ -10,7 +11,6 @@ import {
 import { createForm } from "final-form";
 import type { FormApi } from "final-form";
 import arrayMutators from "final-form-arrays";
-import { withRouter } from "react-router";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
@@ -160,7 +160,6 @@ type Props = {
   reduxFormChange: typeof reduxFormChange;
   clearFormValidFlags: (...args: Array<any>) => any;
   clearPreviewInvoices: (...args: Array<any>) => any;
-  comments: CommentList;
   commentMethods: MethodsType;
   // get via withLeasePageAttributes HOC
   contractsFormValues: Record<string, any>;
@@ -177,10 +176,8 @@ type Props = {
   fetchReceivableTypes: (...args: Array<any>) => any;
   fetchVats: (...args: Array<any>) => any;
   hideEditMode: (...args: Array<any>) => any;
-  history: Record<string, any>;
   initialize: (...args: Array<any>) => any;
   inspectionsFormValues: Record<string, any>;
-  invoices: InvoiceList;
   isEditMode: boolean;
   isFetching: boolean;
   isFetchingLeasePageAttributes: boolean;
@@ -203,11 +200,7 @@ type Props = {
   leaseAttributes: Attributes;
   leaseMethods: MethodsType;
   leaseTypeList: LeaseTypeList;
-  location: Record<string, any>;
   loggedUser: Record<string, any>;
-  match: {
-    params: Record<string, any>;
-  };
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndex | null;
   patchLease: (...args: Array<any>) => any;
   receiveSingleLease: (...args: Array<any>) => any;
@@ -228,7 +221,6 @@ const LeasePage: React.FC<Props> = (props) => {
     reduxFormChange,
     clearFormValidFlags,
     clearPreviewInvoices,
-    comments,
     commentMethods,
     contractsFormValues,
     constructabilityFormValues,
@@ -244,10 +236,8 @@ const LeasePage: React.FC<Props> = (props) => {
     fetchReceivableTypes,
     fetchVats,
     hideEditMode,
-    history,
     initialize,
     inspectionsFormValues,
-    invoices,
     isEditMode,
     isFetching,
     isFetchingLeasePageAttributes,
@@ -269,11 +259,7 @@ const LeasePage: React.FC<Props> = (props) => {
     leaseAttributes,
     leaseMethods,
     leaseTypeList,
-    location: { search, pathname },
     loggedUser,
-    match: {
-      params: { leaseId },
-    },
     oldDwellingsInHousingCompaniesPriceIndex,
     patchLease,
     receiveSingleLease,
@@ -287,6 +273,11 @@ const LeasePage: React.FC<Props> = (props) => {
     vats,
   } = props;
 
+  const navigate = useNavigate();
+  const params = useParams();
+  const location = useLocation();
+  const { search, pathname } = location;
+  const { leaseId } = params;
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(false);
   const [summaryFormState, setSummaryFormState] = useState({
@@ -301,6 +292,13 @@ const LeasePage: React.FC<Props> = (props) => {
     dirty: false,
     valid: true,
   });
+
+  const comments: CommentList = useSelector((state) =>
+    getCommentsByLease(state, Number(leaseId)),
+  );
+  const invoices: InvoiceList = useSelector((state) =>
+    getInvoicesByLease(state, Number(leaseId)),
+  );
 
   // Preventing stale values for `setInterval` and `saveUnsavedChanges`
   const currentValuesRef = useRef({
@@ -913,7 +911,7 @@ const LeasePage: React.FC<Props> = (props) => {
     delete query.plan_unit;
     delete query.plot;
     delete query.opened_invoice;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.LEASES)}`,
       search: getSearchQuery(query),
     });
@@ -922,7 +920,7 @@ const LeasePage: React.FC<Props> = (props) => {
   const handleTabClick = (tabId: string) => {
     const query = getUrlParams(search);
     query.tab = tabId;
-    return history.push({ ...location, search: getSearchQuery(query) });
+    return navigate({ ...location, search: getSearchQuery(query) });
   };
 
   const toggleCommentPanel = () => {
@@ -1382,12 +1380,10 @@ const LeasePage: React.FC<Props> = (props) => {
 export default flowRight(
   withLeasePageAttributes,
   withUiDataList,
-  withRouter,
   connect(
     (state, props: Props) => {
       return {
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
-        comments: getCommentsByLease(state, props.match.params.leaseId),
         constructabilityFormValues: getFormValues(
           FormNames.LEASE_CONSTRUCTABILITY,
         )(state),
@@ -1397,7 +1393,6 @@ export default flowRight(
         inspectionsFormValues: getFormValues(FormNames.LEASE_INSPECTIONS)(
           state,
         ),
-        invoices: getInvoicesByLease(state, props.match.params.leaseId),
         isEditMode: getIsEditMode(state),
         isFormValidFlags: getIsFormValidFlags(state),
         isContractsFormDirty: isDirty(FormNames.LEASE_CONTRACTS)(state),

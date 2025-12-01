@@ -1,20 +1,16 @@
 import React from "react";
-import { withRouter } from "react-router";
 import { FeatureGroup, GeoJSON, Popup } from "react-leaflet";
-import flowRight from "lodash/flowRight";
 import { Link } from "react-router-dom";
 import { getRouteById, Routes } from "@/root/routes";
 import type { LeafletGeoJson } from "types";
-type OwnProps = {
+
+type Props = {
   color: string;
   targetsGeoJson: LeafletGeoJson;
   stateOptions: Array<Record<string, any>>;
 };
-type Props = OwnProps & {
-  location: Record<string, any>;
-};
 
-const TargetListLayer = ({ color, targetsGeoJson }: Props) => {
+const TargetListLayer: React.FC<Props> = ({ color, targetsGeoJson }) => {
   const onMouseOver = (e) => {
     const layer = e.target;
     layer.setStyle({
@@ -61,6 +57,4 @@ const TargetListLayer = ({ color, targetsGeoJson }: Props) => {
   );
 };
 
-export default flowRight(withRouter)(
-  TargetListLayer,
-) as React.ComponentType<OwnProps>;
+export default TargetListLayer as React.ComponentType<Props>;

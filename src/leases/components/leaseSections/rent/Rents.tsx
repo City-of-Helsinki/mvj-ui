@@ -1,7 +1,5 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
-import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
 import BasisOfRents from "./BasisOfRents";
 import Divider from "@/components/content/Divider";
@@ -49,13 +47,17 @@ type Props = {
   usersPermissions: UsersPermissionsType;
 };
 
-const Rents = ({ currentLease, leaseAttributes, usersPermissions }: Props) => {
+const Rents: React.FC<Props> = ({
+  currentLease,
+  leaseAttributes,
+  usersPermissions,
+}) => {
   const rentsAll = getContentRents(currentLease);
   const rents = rentsAll.filter((rent) => !isArchived(rent));
   const rentsArchived = rentsAll.filter((rent) => isArchived(rent));
   const warnings = getRentWarnings(rents);
   return (
-    <Fragment>
+    <>
       <Title uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}>
         {LeaseRentsFieldTitles.RENTS}
       </Title>
@@ -193,7 +195,7 @@ const Rents = ({ currentLease, leaseAttributes, usersPermissions }: Props) => {
           <BasisOfRents />
         </>
       </Authorization>
-    </Fragment>
+    </>
   );
 };
 
@@ -205,7 +207,4 @@ const mapStateToProps = (state: RootState) => {
   };
 };
 
-export default flowRight(
-  connect(mapStateToProps),
-  withRouter,
-)(Rents) as React.ComponentType<any>;
+export default connect(mapStateToProps)(Rents) as React.ComponentType;
