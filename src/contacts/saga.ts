@@ -1,5 +1,4 @@
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
-import { push } from "connected-react-router";
 import { SubmissionError } from "redux-form";
 import {
   hideContactModal,
@@ -12,6 +11,7 @@ import {
   receiveSingleContact,
   notFound,
 } from "./actions";
+import { navigateTo } from "@/root/navigationService";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
 import {
@@ -121,7 +121,10 @@ function* createContactSaga({
 
     switch (statusCode) {
       case 201:
-        yield put(push(`${getRouteById(Routes.CONTACTS)}/${bodyAsJson.id}`));
+        yield call(
+          navigateTo,
+          `${getRouteById(Routes.CONTACTS)}/${bodyAsJson.id}`,
+        );
         displayUIMessage({
           title: "",
           body: "Asiakas luotu",

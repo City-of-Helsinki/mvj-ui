@@ -7,8 +7,8 @@ import {
   takeEvery,
   takeLatest,
 } from "redux-saga/effects";
-import { push } from "connected-react-router";
 import { SubmissionError } from "redux-form";
+import { navigateTo } from "@/root/navigationService";
 import { getRouteById, Routes } from "@/root/routes";
 import {
   fetchSingleLeaseAfterEdit,
@@ -81,10 +81,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
   }
 }
 
-function* fetchLeasesSaga({
-  payload: query,
-  type: any,
-}): Generator<any, any, any> {
+function* fetchLeasesSaga({ payload: query }): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -108,10 +105,7 @@ function* fetchLeasesSaga({
   }
 }
 
-function* fetchLeasesByBBoxSaga({
-  payload: query,
-  type: any,
-}): Generator<any, any, any> {
+function* fetchLeasesByBBoxSaga({ payload: query }): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -135,10 +129,7 @@ function* fetchLeasesByBBoxSaga({
   }
 }
 
-function* fetchSingleLeaseSaga({
-  payload: id,
-  type: any,
-}): Generator<any, any, any> {
+function* fetchSingleLeaseSaga({ payload: id }): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -166,10 +157,7 @@ function* fetchSingleLeaseSaga({
   }
 }
 
-function* fetchSingleLeaseAfterEditSaga({
-  payload,
-  type: any,
-}): Generator<any, any, any> {
+function* fetchSingleLeaseAfterEditSaga({ payload }): Generator<any, any, any> {
   try {
     const callbackFunctions = payload.callbackFunctions;
     const {
@@ -214,10 +202,7 @@ function* fetchSingleLeaseAfterEditSaga({
   }
 }
 
-function* fetchLeaseByIdSaga({
-  payload: id,
-  type: any,
-}): Generator<any, any, any> {
+function* fetchLeaseByIdSaga({ payload: id }): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -244,7 +229,7 @@ function* fetchLeaseByIdSaga({
   }
 }
 
-function* createLeaseSaga({ payload, type: any }): Generator<any, any, any> {
+function* createLeaseSaga({ payload }): Generator<any, any, any> {
   try {
     const { area_search_id, ...lease } = payload;
     const {
@@ -267,7 +252,10 @@ function* createLeaseSaga({ payload, type: any }): Generator<any, any, any> {
             },
           });
         }
-        yield put(push(`${getRouteById(Routes.LEASES)}/${bodyAsJson.id}`));
+        yield call(
+          navigateTo,
+          `${getRouteById(Routes.LEASES)}/${bodyAsJson.id}`,
+        );
         yield put(receiveIsSaveClicked(false));
         yield put(hideEditMode());
         displayUIMessage({
@@ -295,7 +283,6 @@ function* createLeaseSaga({ payload, type: any }): Generator<any, any, any> {
 
 function* createLeaseAndUpdateCurrentLeaseSaga({
   payload: lease,
-  type: any,
 }): Generator<any, any, any> {
   try {
     const currentLease = lease.relate_to;
@@ -334,10 +321,7 @@ function* createLeaseAndUpdateCurrentLeaseSaga({
   }
 }
 
-function* deleteLeaseSaga({
-  payload: leaseId,
-  type: any,
-}): Generator<any, any, any> {
+function* deleteLeaseSaga({ payload: leaseId }): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -352,8 +336,9 @@ function* deleteLeaseSaga({
         delete query.lease_area;
         delete query.plan_unit;
         delete query.plot;
-        yield put(
-          push(`${getRouteById(Routes.LEASES)}/${getSearchQuery(query)}`),
+        yield call(
+          navigateTo,
+          `${getRouteById(Routes.LEASES)}/${getSearchQuery(query)}`,
         );
         displayUIMessage({
           title: "",
@@ -379,10 +364,7 @@ function* deleteLeaseSaga({
   }
 }
 
-function* patchLeaseSaga({
-  payload: lease,
-  type: any,
-}): Generator<any, any, any> {
+function* patchLeaseSaga({ payload: lease }): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -433,7 +415,6 @@ function* patchLeaseSaga({
 
 function* patchLeaseInvoiceNotesSaga({
   payload: lease,
-  type: any,
 }): Generator<any, any, any> {
   try {
     const {
@@ -483,7 +464,7 @@ function* patchLeaseInvoiceNotesSaga({
   }
 }
 
-function* sendEmailSaga({ payload, type: any }): Generator<any, any, any> {
+function* sendEmailSaga({ payload }): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -530,10 +511,7 @@ function* sendEmailSaga({ payload, type: any }): Generator<any, any, any> {
   }
 }
 
-function* startInvoicingSaga({
-  payload: leaseId,
-  type: any,
-}): Generator<any, any, any> {
+function* startInvoicingSaga({ payload: leaseId }): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -570,10 +548,7 @@ function* startInvoicingSaga({
   }
 }
 
-function* stopInvoicingSaga({
-  payload: leaseId,
-  type: any,
-}): Generator<any, any, any> {
+function* stopInvoicingSaga({ payload: leaseId }): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -609,7 +584,6 @@ function* stopInvoicingSaga({
 
 function* setRentInfoCompleteSaga({
   payload: leaseId,
-  type: any,
 }): Generator<any, any, any> {
   try {
     const {
@@ -646,7 +620,6 @@ function* setRentInfoCompleteSaga({
 
 function* setRentInfoUncompleteSaga({
   payload: leaseId,
-  type: any,
 }): Generator<any, any, any> {
   try {
     const {
@@ -681,7 +654,7 @@ function* setRentInfoUncompleteSaga({
   }
 }
 
-function* createChargeSaga({ payload, type: any }): Generator<any, any, any> {
+function* createChargeSaga({ payload }): Generator<any, any, any> {
   try {
     const { leaseId } = payload;
     const {
@@ -712,7 +685,6 @@ function* createChargeSaga({ payload, type: any }): Generator<any, any, any> {
 
 function* copyAreasToContractSaga({
   payload: leaseId,
-  type: any,
 }): Generator<any, any, any> {
   try {
     const {
@@ -749,10 +721,7 @@ function* copyAreasToContractSaga({
   }
 }
 
-function* copyDecisionToLeasesSaga({
-  payload,
-  type: any,
-}): Generator<any, any, any> {
+function* copyDecisionToLeasesSaga({ payload }): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -792,7 +761,6 @@ function* copyDecisionToLeasesSaga({
 
 function* fetchLeasesForContractNumbersSaga({
   payload: query,
-  type: any,
 }): Generator<any, any, any> {
   try {
     const {

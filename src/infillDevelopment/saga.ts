@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { push } from "connected-react-router";
 import { SubmissionError } from "redux-form";
+import { navigateTo } from "@/root/navigationService";
 import {
   fetchSingleInfillDevelopment as fetchSingleInfillDevelopmentAction,
   hideEditMode,
@@ -129,8 +129,9 @@ function* createInfillDevelopmentSaga({
 
     switch (statusCode) {
       case 201:
-        yield put(
-          push(`${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${bodyAsJson.id}`),
+        yield call(
+          navigateTo,
+          `${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${bodyAsJson.id}`,
         );
         displayUIMessage({
           title: "",
