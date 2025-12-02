@@ -1,6 +1,6 @@
 import { all, fork, put, takeLatest, call } from "redux-saga/effects";
-import { push } from "connected-react-router";
 import { SubmissionError } from "redux-form";
+import { navigateTo } from "@/root/navigationService";
 import { displayUIMessage, getSearchQuery, getUrlParams } from "@/util/helpers";
 import {
   hideEditMode,
@@ -122,8 +122,9 @@ function* createLandUseContractSaga({
 
     switch (statusCode) {
       case 201:
-        yield put(
-          push(`${getRouteById(Routes.LAND_USE_CONTRACTS)}/${bodyAsJson.id}`),
+        yield call(
+          navigateTo,
+          `${getRouteById(Routes.LAND_USE_CONTRACTS)}/${bodyAsJson.id}`,
         );
         yield put(receiveIsSaveClicked(false));
         displayUIMessage({

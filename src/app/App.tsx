@@ -7,7 +7,7 @@ import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import { Sizes } from "@/foundation/enums";
 import { revealContext } from "@/foundation/reveal";
-import { setNavigate } from "./navigationService";
+import { setNavigate } from "@/root/navigationService";
 import { ActionTypes, AppConsumer, AppProvider } from "@/app/AppContext";
 import ApiErrorModal from "@/api/ApiErrorModal";
 import ConfirmationModal from "@/components/modal/ConfirmationModal";
