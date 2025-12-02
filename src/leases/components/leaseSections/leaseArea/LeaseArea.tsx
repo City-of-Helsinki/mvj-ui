@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { withRouter } from "react-router";
@@ -120,10 +120,10 @@ const LeaseArea = ({
   const typeOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.TYPE);
   const addresses = get(area, "addresses", []);
   const mapLinkUrl = getMapLinkUrl();
-  const archived = Boolean(area.archived_at);
+  const archived = Boolean(area?.archived_at);
 
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -225,7 +225,7 @@ const LeaseArea = ({
           {!addresses ||
             (!addresses.length && <FormText>Ei osoitteita</FormText>)}
           {!!addresses.length && (
-            <Fragment>
+            <>
               <Row>
                 <Column small={3} large={4}>
                   <Authorization
@@ -342,7 +342,7 @@ const LeaseArea = ({
                   );
                 })}
               </ListItems>
-            </Fragment>
+            </>
           )}
         </>
       </Authorization>
@@ -539,7 +539,7 @@ const LeaseArea = ({
           </Column>
         </Row>
       </Authorization>
-    </Fragment>
+    </>
   );
 };
 
