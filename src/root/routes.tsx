@@ -221,7 +221,7 @@ export default (
         path={getRouteById(Routes.CREDIT_DECISION)}
         element={<CreditDecisionSearchPage />}
       />
-      <Route element={<ErrorPage />} />
+      <Route path="*" element={<ErrorPage />} />
     </RouterRoutes>
   </App>
 ) as JSX.Element;
