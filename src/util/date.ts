@@ -285,6 +285,7 @@ export const getSplittedDateRangesWithItems = (
   startDatePath: string = "start_date",
   endDatePath: string = "end_date",
 ): Array<Record<string, any>> => {
+  if (!items) return [];
   const dateRanges = getSplittedDateRanges(items, startDatePath, endDatePath);
   const dateRangesWithItems = dateRanges.map((item) => ({
     ...item,
