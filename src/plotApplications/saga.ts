@@ -8,7 +8,7 @@ import {
   takeLatest,
 } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
-import { push } from "connected-react-router";
+import { navigateTo } from "@/root/navigationService";
 import { displayUIMessage } from "@/util/helpers";
 import {
   applicationRelatedFormNotFound,
@@ -174,8 +174,9 @@ function* createPlotApplicationSaga({
       case 201:
         yield put(receivePlotApplicationSaved(bodyAsJson.id));
         yield put(fetchSinglePlotApplication(bodyAsJson.id));
-        yield put(
-          push(`${getRouteById(Routes.PLOT_APPLICATIONS)}/${bodyAsJson.id}`),
+        yield call(
+          navigateTo,
+          `${getRouteById(Routes.PLOT_APPLICATIONS)}/${bodyAsJson.id}`,
         );
         yield put(hideEditMode());
         displayUIMessage({
@@ -679,7 +680,10 @@ function* createOpeningRecordSaga({
     switch (statusCode) {
       case 200:
       case 201:
-        yield put(push(`${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`));
+        yield call(
+          navigateTo,
+          `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`,
+        );
         yield put(showEditMode());
         displayUIMessage({
           title: "",

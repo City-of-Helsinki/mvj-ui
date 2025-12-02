@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { push } from "connected-react-router";
 import { SubmissionError } from "redux-form";
+import { navigateTo } from "@/root/navigationService";
 import {
   hideEditMode,
   attributesNotFound,
@@ -120,7 +120,10 @@ function* createRentBasisSaga({
 
     switch (statusCode) {
       case 201:
-        yield put(push(`${getRouteById(Routes.RENT_BASIS)}/${bodyAsJson.id}`));
+        yield call(
+          navigateTo,
+          `${getRouteById(Routes.RENT_BASIS)}/${bodyAsJson.id}`,
+        );
         displayUIMessage({
           title: "",
           body: "Vuokrausperiaate luotu",

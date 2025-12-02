@@ -7,8 +7,8 @@ import {
   takeEvery,
   take,
 } from "redux-saga/effects";
-import { push } from "connected-react-router";
 import { SubmissionError } from "redux-form";
+import { navigateTo } from "@/root/navigationService";
 import { displayUIMessage, getSearchQuery, getUrlParams } from "@/util/helpers";
 import {
   hideEditMode,
@@ -229,7 +229,10 @@ function* createPlotSearchSaga({
 
     switch (statusCode) {
       case 201:
-        yield put(push(`${getRouteById(Routes.PLOT_SEARCH)}/${bodyAsJson.id}`));
+        yield call(
+          navigateTo,
+          `${getRouteById(Routes.PLOT_SEARCH)}/${bodyAsJson.id}`,
+        );
         yield put(receiveIsSaveClicked(false));
         displayUIMessage({
           title: "",
@@ -415,8 +418,9 @@ function* deletePlotSearchSaga({
         const query = getUrlParams(location.search);
         // Remove page specific url parameters when moving to landuse list page
         delete query.tab;
-        yield put(
-          push(`${getRouteById(Routes.PLOT_SEARCH)}/${getSearchQuery(query)}`),
+        yield call(
+          navigateTo,
+          `${getRouteById(Routes.PLOT_SEARCH)}/${getSearchQuery(query)}`,
         );
         displayUIMessage({
           title: "",
