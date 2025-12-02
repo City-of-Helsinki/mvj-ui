@@ -1,5 +1,4 @@
 import React from "react";
-import { Fragment } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
@@ -55,7 +54,7 @@ const PlanUnitItem = ({
     const searchQuery = getUrlParams(search);
     delete searchQuery.lease_area;
     delete searchQuery.plot;
-    (searchQuery.plan_unit = planUnit.id), (searchQuery.tab = 7);
+    ((searchQuery.plan_unit = planUnit.id), (searchQuery.tab = 7));
     return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
@@ -406,7 +405,7 @@ const PlanUnitItem = ({
 
       {/* Usage distributions (Käyttöjakaumat) */}
       {planUnit.usage_distributions.length > 0 && (
-        <Fragment>
+        <>
           <SubTitle>{LeasePlanUnitsFieldTitles.USAGE_DISTRIBUTIONS}</SubTitle>
           <Row>
             <Column small={4} medium={4} large={4}>
@@ -475,7 +474,7 @@ const PlanUnitItem = ({
               </Column>
             </Row>
           ))}
-        </Fragment>
+        </>
       )}
     </BoxItem>
   );
