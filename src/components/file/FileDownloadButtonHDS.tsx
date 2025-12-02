@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { saveAs } from "file-saver";
-import { Button, IconDownload } from "hds-react";
+import { Button, ButtonVariant, IconDownload, LoadingSpinner } from "hds-react";
 import { displayUIMessage, getFileNameFromResponse } from "@/util/helpers";
 import { getApiToken } from "@/auth/selectors";
 type OwnProps = {
@@ -136,15 +136,18 @@ const FileDownloadButton = ({
     fetchFile();
   };
 
+  const iconStart = isLoading ? <LoadingSpinner small /> : <IconDownload />;
+  const variant = isLoading ? ButtonVariant.Clear : ButtonVariant.Primary;
+
   return (
     <Button
       disabled={disabled}
       onClick={handleClick}
-      iconStart={<IconDownload />}
-      {...(isLoading && { isLoading })}
-      {...(loadingText && { loadingText })}
+      iconStart={iconStart}
+      variant={variant}
+      style={{ cursor: isLoading ? "wait" : "" }}
     >
-      {label}
+      {isLoading ? loadingText : label}
     </Button>
   );
 };
