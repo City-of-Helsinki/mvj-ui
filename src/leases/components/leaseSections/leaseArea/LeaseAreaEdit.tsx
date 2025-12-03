@@ -653,7 +653,8 @@ class LeaseAreaEdit extends PureComponent<Props & WithRouterProps> {
     const searchQuery = getUrlParams(search);
     delete searchQuery.plan_unit;
     delete searchQuery.plot;
-    ((searchQuery.lease_area = areaId), (searchQuery.tab = 7));
+    searchQuery.lease_area = areaId;
+    searchQuery.tab = 7;
     return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
