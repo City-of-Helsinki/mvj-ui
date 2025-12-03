@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import classNames from "classnames";
-import ReactResizeDetector from "react-resize-detector";
+
 type Props = {
   children?: React.ReactNode;
   className?: string;
@@ -42,7 +42,6 @@ class PageContainer extends PureComponent<Props> {
           paddingTop: hasTabs ? 0 : null,
         }}
       >
-        <ReactResizeDetector handleHeight onResize={this.handleResize} />
         {children}
       </div>
     );
