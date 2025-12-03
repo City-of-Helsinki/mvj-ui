@@ -5897,13 +5897,6 @@ react-refresh@^0.18.0:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.18.0.tgz#2dce97f4fe932a4d8142fa1630e475c1729c8062"
   integrity sha512-QgT5//D3jfjJb6Gsjxv0Slpj23ip+HtOpnNgnb2S5zU3CB26G/IDPGoy4RJB42wzFE46DRsstbW6tKHoKbhAxw==
 
-react-resize-detector@9.1.1:
-  version "9.1.1"
-  resolved "https://registry.yarnpkg.com/react-resize-detector/-/react-resize-detector-9.1.1.tgz#ce13cf55b9b09d9978fc51e0c87bb3639704921e"
-  integrity sha512-siLzop7i4xIvZIACE/PHTvRegA8QRCEt0TfmvJ/qCIFQJ4U+3NuYcF8tNDmDWxfIn+X1eNCyY2rauH4KRxge8w==
-  dependencies:
-    lodash "^4.17.21"
-
 react-router-dom@6.30.2:
   version "6.30.2"
   resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.30.2.tgz#ee8c161bce4890d34484b552f8510f9af0e22b01"

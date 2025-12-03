@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import classNames from "classnames";
-import ReactResizeDetector from "react-resize-detector";
 import debounce from "lodash/debounce";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
+import classNames from "classnames";
 import SortableTableHeader from "./SortableTableHeader";
 import SortableTableGroup from "./SortableTableGroup";
 import SortableTableRow from "./SortableTableRow";
 import { sortStringByKeyAsc, sortStringByKeyDesc } from "@/util/helpers";
 import { TableSortOrder } from "@/enums";
+
 export type Column = {
   arrayRenderer?: (...args: Array<any>) => any;
   dataClassName?: string;
@@ -298,13 +298,6 @@ class SortableTable extends Component<Props, State> {
     }
   }
 
-  handleResize: () => void = debounce(() => {
-    const { fixedHeader } = this.props;
-
-    if (fixedHeader) {
-      this.setTableScrollHeaderColumnStyles();
-    }
-  }, 100);
   updateHeaderPosition: () => void = debounce(() => {
     const scrollLeft = this.scrollBodyWrapper.scrollLeft;
     this.scrollHeaderWrapper.scrollLeft = scrollLeft;
@@ -467,6 +460,7 @@ class SortableTable extends Component<Props, State> {
       : this.state.sortOrder;
     const column = columns.find((column) => sortKey === column.key);
     const grouping = column ? column.grouping : null;
+
     return (
       <div
         ref={this.setContainerRef}
@@ -479,9 +473,6 @@ class SortableTable extends Component<Props, State> {
         )}
         style={style}
       >
-        {fixedHeader && (
-          <ReactResizeDetector handleWidth onResize={this.handleResize} />
-        )}
         {fixedHeader && (
           <div
             ref={this.setScrollHeaderWrapperRef}
