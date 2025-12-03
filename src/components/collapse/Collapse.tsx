@@ -1,7 +1,6 @@
 import React, { PureComponent } from "react";
 import classNames from "classnames";
 import { Row, Column } from "react-foundation";
-import ReactResizeDetector from "react-resize-detector";
 import AccordionIcon from "@/components/icons/AccordionIcon";
 import ArchiveButton from "@/components/form/ArchiveButton";
 import CollapseHeaderTitle from "./CollapseHeaderTitle";
@@ -38,6 +37,7 @@ type State = {
 };
 
 class Collapse extends PureComponent<Props, State> {
+  resizeObserver?: ResizeObserver | null = null;
   component: any;
   content: any;
   tooltip: HTMLDivElement | null = null;
@@ -70,10 +70,19 @@ class Collapse extends PureComponent<Props, State> {
 
   componentDidMount() {
     this.component.addEventListener("transitionend", this.transitionEnds);
+
+    if (this.content) {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.calculateHeight();
+      });
+      this.resizeObserver.observe(this.content);
+    }
   }
 
   componentWillUnmount() {
     this.component.removeEventListener("transitionend", this.transitionEnds);
+
+    this.resizeObserver?.disconnect();
   }
 
   componentDidUpdate(
@@ -95,9 +104,6 @@ class Collapse extends PureComponent<Props, State> {
     }
   }
 
-  onResize: () => void = () => {
-    this.calculateHeight();
-  };
   calculateHeight: () => void = () => {
     const { clientHeight } = this.content;
     const { isOpen } = this.state;
@@ -248,7 +254,6 @@ class Collapse extends PureComponent<Props, State> {
             className="collapse__content-wrapper"
             hidden={!isOpen && !isCollapsing && !isExpanding}
           >
-            <ReactResizeDetector handleHeight onResize={this.onResize} />
             {children}
           </div>
         </div>
