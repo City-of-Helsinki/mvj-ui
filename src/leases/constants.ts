@@ -110,6 +110,10 @@ export const leaseStateFilterOptions = [
     value: "application",
     label: "Hakemus",
   },
+  {
+    value: "preliminary",
+    label: "Esisopimus",
+  },
 ];
 
 /**
