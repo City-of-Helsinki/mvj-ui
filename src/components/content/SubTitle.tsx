@@ -1,100 +1,58 @@
-import React, { PureComponent } from "react";
+import React, { useCallback, useState } from "react";
 import classNames from "classnames";
 import UIDataTooltip from "@/components/tooltip/UIDataTooltip";
+
 type Props = {
-  children?: any;
+  children?: React.ReactNode;
   enableUiDataEdit?: boolean;
   relativeTo?: any;
-  style?: Record<string, any>;
+  style?: React.CSSProperties;
   uiDataKey?: string | null | undefined;
 };
-type State = {
-  showAddButton: boolean;
+
+const SubTitle: React.FC<Props> = ({
+  children,
+  enableUiDataEdit = false,
+  relativeTo,
+  style,
+  uiDataKey,
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = useCallback(() => {
+    setIsHovered(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+  }, []);
+
+  const handleTooltipClose = useCallback(() => {
+    setIsHovered(false);
+  }, []);
+
+  const shouldShowTooltip = !!uiDataKey || enableUiDataEdit;
+
+  return (
+    <span
+      className={classNames("content__sub-title", {
+        "show-add-button": isHovered && shouldShowTooltip,
+      })}
+      style={style}
+      onMouseEnter={shouldShowTooltip ? handleMouseEnter : undefined}
+      onMouseLeave={shouldShowTooltip ? handleMouseLeave : undefined}
+    >
+      <span>{children}</span>
+      {shouldShowTooltip && (
+        <UIDataTooltip
+          enableUiDataEdit={enableUiDataEdit}
+          onTooltipClose={handleTooltipClose}
+          relativeTo={relativeTo}
+          uiDataKey={uiDataKey}
+        />
+      )}
+    </span>
+  );
 };
-
-class SubTitle extends PureComponent<Props, State> {
-  rootRef: React.RefObject<HTMLSpanElement>;
-  timer: any;
-  state: State = {
-    showAddButton: false,
-  };
-  static defaultProps: Partial<Props> = {
-    enableUiDataEdit: false,
-  };
-
-  constructor(props: Props) {
-    super(props);
-    this.rootRef = React.createRef();
-  }
-
-  componentWillUnmount() {
-    this.stopTimer();
-  }
-
-  startTimer: () => void = () => {
-    this.timer = setInterval(() => {
-      this.showAddButton();
-      this.stopTimer();
-    }, 500);
-  };
-  stopTimer: () => void = () => {
-    clearInterval(this.timer);
-  };
-  handleMouseEnter: () => void = () => {
-    this.startTimer();
-  };
-  handleMouseLeave: (arg0: React.MouseEvent<HTMLHeadingElement>) => void = (
-    event,
-  ) => {
-    const target = event.currentTarget;
-    const el = this.rootRef.current;
-
-    if (el && (target === el || el.contains(target))) {
-      this.stopTimer();
-      this.hideAddButton();
-    }
-  };
-  handleTooltipClose: () => void = () => {
-    this.stopTimer();
-    this.hideAddButton();
-  };
-  hideAddButton: () => void = () => {
-    this.setState({
-      showAddButton: false,
-    });
-  };
-  showAddButton: () => void = () => {
-    this.setState({
-      showAddButton: true,
-    });
-  };
-
-  render(): JSX.Element {
-    const { children, enableUiDataEdit, relativeTo, style, uiDataKey } =
-      this.props;
-    const { showAddButton } = this.state;
-    return (
-      <span
-        ref={this.rootRef}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-        className={classNames("content__sub-title", {
-          "show-add-button": showAddButton,
-        })}
-        style={style}
-      >
-        <span>{children}</span>
-        {(!!uiDataKey || enableUiDataEdit) && (
-          <UIDataTooltip
-            enableUiDataEdit={enableUiDataEdit}
-            onTooltipClose={this.handleTooltipClose}
-            relativeTo={relativeTo}
-            uiDataKey={uiDataKey}
-          />
-        )}
-      </span>
-    );
-  }
-}
 
 export default SubTitle;
