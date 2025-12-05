@@ -28,8 +28,6 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
   containerResizeObserver: ResizeObserver | null = null;
   panelResizeObserver: ResizeObserver | null = null;
   panelWrapper: HTMLDivElement | null = null;
-  handleResizeDebounced: (() => void) | null = null;
-  handlePanelResizeDebounced: (() => void) | null = null;
 
   setPanelRef = (el: any) => {
     this.panel = el;
@@ -43,20 +41,15 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
     this.calculateTableWidth();
     this.panelWrapper.addEventListener("transitionend", this.transitionEnds);
 
-    this.handleResizeDebounced = debounce(this.handleResize, 400);
-    this.handlePanelResizeDebounced = debounce(this.handlePanelResize, 1);
-
     if (this.container) {
-      this.containerResizeObserver = new ResizeObserver(() => {
-        this.handleResizeDebounced!();
-      });
+      this.containerResizeObserver = new ResizeObserver(
+        debounce(this.handleResize, 400),
+      );
       this.containerResizeObserver.observe(this.container);
     }
 
     if (this.panelWrapper) {
-      this.panelResizeObserver = new ResizeObserver(() => {
-        this.handlePanelResizeDebounced!();
-      });
+      this.panelResizeObserver = new ResizeObserver(this.handlePanelResize);
       this.panelResizeObserver.observe(this.panelWrapper);
     }
   }
