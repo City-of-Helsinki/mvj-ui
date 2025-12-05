@@ -130,6 +130,7 @@ export const LeaseState = {
   TENURE: "tenure",
   RYA: "rya",
   POWER_OF_ATTORNEY: "power_of_attorney",
+  PRELIMINARY: "preliminary",
 } as const;
 
 /**
