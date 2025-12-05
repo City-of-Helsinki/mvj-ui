@@ -47,7 +47,10 @@ const FieldTypeDatePicker = ({
 
   const handleChangeRaw: DatePickerProps["onChangeRaw"] = (e) => {
     const value = (e?.target as HTMLInputElement)?.value;
-    if (!value) return;
+    if (!value) {
+      onChange(null);
+      return;
+    }
     let parsedDate = getParsedDate(value);
     if (isValidDate(parsedDate)) {
       onChange(parsedDate);
