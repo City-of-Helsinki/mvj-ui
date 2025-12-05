@@ -918,10 +918,10 @@ export const isArchived = (
   return false;
 };
 
-export const debounce = (func: () => void, wait: number) => {
+export const debounce = (func: (...args: any[]) => void, wait: number) => {
   let timeout: NodeJS.Timeout;
-  return () => {
+  return (...args: any[]) => {
     clearTimeout(timeout);
-    timeout = setTimeout(() => func(), wait);
+    timeout = setTimeout(() => func(...args), wait);
   };
 };
