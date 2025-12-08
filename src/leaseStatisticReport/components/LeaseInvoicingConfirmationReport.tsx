@@ -19,7 +19,10 @@ import {
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from "@/util/helpers";
-import { LeaseStatisticReportFieldLabels, LeaseStatisticReportFormatOptions } from "@/leaseStatisticReport/enums";
+import {
+  LeaseStatisticReportFieldLabels,
+  LeaseStatisticReportFormatOptions,
+} from "@/leaseStatisticReport/enums";
 import {
   getDisplayName,
   getFormattedValue,
@@ -39,8 +42,7 @@ import { PermissionMissingTexts } from "@/enums";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import { withLeaseInvoicingConfirmationReportAttributes } from "@/components/attributes/LeaseInvoicingConfirmationReportAttributes";
 import type { ReportOptions } from "@/leaseStatisticReport/types";
-import { Link } from "hds-react";
-import { getRouteById } from "@/root/routes";
+
 type Props = {
   isFetchingLeaseInvoicingConfirmationReportAttributes: boolean;
   leaseInvoicingConfirmationReportAttributes: Attributes;
@@ -58,23 +60,6 @@ type Props = {
 type State = {
   leaseInvoicingConfirmationReport: Array<Record<string, any>>;
   leaseInvoicingConfirmationReportData: LeaseInvoicingConfirmationReportsType;
-};
-
-const renderLeaseIdentifier = (id: number, identifier: string) => {
-  if (id && identifier) {
-    return (
-      <Link
-        href={`${getRouteById("leases")}/${id}`}
-        openInNewTab
-        style={{ border: "unset", margin: "unset" }}
-      >
-        {identifier}
-      </Link>
-    );
-  } else if (!id && identifier) {
-    return identifier;
-  }
-  return "-";
 };
 
 class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
@@ -114,16 +99,14 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
           let isBold = false;
           let outputValue = value || "-";
           let decimals: number | null | undefined;
-          
-          if (field.key == LeaseStatisticReportFieldLabels.LEASE_IDENTIFIER) {
-            const { id, identifier } = value;
-            outputValue = renderLeaseIdentifier(id, identifier);
-          }
-          
-          if (field.key === LeaseStatisticReportFieldLabels.SUBVENTION_EUROS_PER_YEAR) {
+
+          if (
+            field.key ===
+            LeaseStatisticReportFieldLabels.SUBVENTION_EUROS_PER_YEAR
+          ) {
             decimals = 3;
           }
-          
+
           if (field.choices && value) {
             outputValue = getDisplayName(field.choices, value);
           } else if (field.format && value) {
