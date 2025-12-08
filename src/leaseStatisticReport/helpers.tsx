@@ -1,3 +1,4 @@
+import React from "react";
 import get from "lodash/get";
 import format from "date-fns/format";
 import { formatDate, formatNumber } from "@/util/helpers";
@@ -5,6 +6,7 @@ import { LeaseStatisticReportFormatOptions } from "@/leaseStatisticReport/enums"
 import type { Reports, SelectListOption } from "@/types";
 import { FieldTypes } from "@/enums";
 import type { ReportOptions, ReportOutputField } from "./types";
+import { Link } from "hds-react";
 
 /**
  * Get report type options
@@ -82,18 +84,11 @@ export const getDisplayName = (
   return displayName;
 };
 
-/**
- * Get formatted value
- * @param {string} formatType
- * @param {string} value
- * @param {number} decimals
- * @return {string}
- */
 export const getFormattedValue = (
   formatType: string,
-  value: string,
+  value: string | { url: string; name: string },
   decimals: number | null | undefined = 2,
-): string => {
+): string | React.JSX.Element => {
   switch (formatType) {
     case LeaseStatisticReportFormatOptions.DATE:
       return formatDate(value, "dd.MM.yyyy");
@@ -108,8 +103,14 @@ export const getFormattedValue = (
     case LeaseStatisticReportFormatOptions.AREA:
       return `${formatNumber(value, decimals)} m²`;
 
+    case LeaseStatisticReportFormatOptions.URL: {
+      if (typeof value === "object" && value !== null) {
+        const { url, name } = value;
+        return renderReportURL(url, name);
+      }
+    }
     default:
-      return value;
+      return value.toString();
   }
 };
 
@@ -183,4 +184,21 @@ export const formatType = (value: Record<string, any>): string => {
     default:
       return formattedValue;
   }
+};
+
+export const renderReportURL = (url: string, name: string) => {
+  if (url && name) {
+    return (
+      <Link
+        href={url}
+        openInNewTab
+        style={{ border: "unset", margin: "unset" }}
+      >
+        {name}
+      </Link>
+    );
+  } else if (!url && name) {
+    return name;
+  }
+  return "-";
 };
