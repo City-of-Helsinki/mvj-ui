@@ -107,10 +107,6 @@ export const leaseStateFilterOptions = [
     label: "Lupa",
   },
   {
-    value: "application",
-    label: "Hakemus",
-  },
-  {
     value: "preliminary",
     label: "Esisopimus",
   },
