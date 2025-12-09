@@ -151,6 +151,5 @@ export const LeaseStatisticReportFormatOptions = {
  */
 export const LeaseStatisticReportFieldLabels = {
   LEASE_IDENTIFIER: "lease_identifier",
-  LEASE_URL: "lease_url",
   SUBVENTION_EUROS_PER_YEAR: "subvention_euros_per_year",
 };
