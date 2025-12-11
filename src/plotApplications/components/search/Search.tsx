@@ -1,5 +1,8 @@
 import React, { Component, Fragment } from "react";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { connect } from "react-redux";
 import { formValueSelector, getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
@@ -35,7 +38,6 @@ type OwnProps = {
 type Props = OwnProps & {
   formValues: Record<string, any>;
   handleSubmit: (...args: Array<any>) => any;
-  location: Record<string, any>;
   plotSearchAttributes: Attributes;
   plotSearches: PlotSearchList;
   fetchPlotSearchSubtypes: (...args: Array<any>) => any;
@@ -53,7 +55,7 @@ type State = {
   attributes: Attributes;
 };
 
-class Search extends Component<Props, State> {
+class Search extends Component<Props & WithRouterProps, State> {
   _isMounted: boolean;
   state = {
     isBasicSearch: true,
@@ -471,7 +473,7 @@ class Search extends Component<Props, State> {
 
 const formName = FormNames.PLOT_APPLICATIONS_SEARCH;
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect(
     (state) => {
       return {

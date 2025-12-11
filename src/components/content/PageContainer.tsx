@@ -1,52 +1,44 @@
-import React, { PureComponent } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import classNames from "classnames";
-import ReactResizeDetector from "react-resize-detector";
+
 type Props = {
   children?: React.ReactNode;
   className?: string;
   hasTabs?: boolean;
 };
 
-class PageContainer extends PureComponent<Props> {
-  component: any;
-  setRef = (el: any) => {
-    this.component = el;
-  };
+const PageContainer: React.FC<Props> = ({ children, className, hasTabs }) => {
+  const componentRef = useRef<HTMLDivElement | null>(null);
 
-  componentDidMount() {
-    window.addEventListener("resize", this.handleResize);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.handleResize);
-  }
-
-  handleResize = () => {
+  const handleResize = useCallback(() => {
     const pageNavigation = document.getElementsByClassName(
       "content__page-navigator-wrapper",
     );
 
-    if (pageNavigation.length) {
+    if (pageNavigation.length && componentRef.current) {
       const { height } = pageNavigation[0].getClientRects()[0];
-      this.component.style.marginTop = height + "px";
+      componentRef.current.style.marginTop = height + "px";
     }
-  };
+  }, []);
 
-  render() {
-    const { children, className, hasTabs } = this.props;
-    return (
-      <div
-        ref={this.setRef}
-        className={classNames("content__page-container", className)}
-        style={{
-          paddingTop: hasTabs ? 0 : null,
-        }}
-      >
-        <ReactResizeDetector handleHeight onResize={this.handleResize} />
-        {children}
-      </div>
-    );
-  }
-}
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [handleResize]);
+
+  return (
+    <div
+      ref={componentRef}
+      className={classNames("content__page-container", className)}
+      style={{
+        paddingTop: hasTabs ? 0 : null,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 export default PageContainer;

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form } from "react-final-form";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useContactAttributes } from "@/components/attributes/ContactAttributes";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -52,7 +52,7 @@ const NewContactPage: React.FC = () => {
   const isFetchingContactAttributes = useSelector(getIsFetchingAttributes);
   const isSaveClicked = useSelector(getIsSaveClicked);
   const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const [formState, setFormState] = useState<{
     valid: boolean;
@@ -94,14 +94,14 @@ const NewContactPage: React.FC = () => {
   }, [handleLeavePage, dispatch]);
 
   const handleBack = () => {
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.CONTACTS)}`,
       search: location.search,
     });
   };
 
   const cancelChanges = () => {
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.CONTACTS),
     });
   };
@@ -109,7 +109,7 @@ const NewContactPage: React.FC = () => {
   const handleSubmit = async (values: Contact) => {
     dispatch(createContact(values));
     // On successful contact creation, navigate to contacts list
-    history.push({
+    navigate({
       pathname: getRouteById(Routes.CONTACTS),
     });
   };

@@ -1,5 +1,5 @@
-import { useEffect, useCallback, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useCallback, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   useApiTokens,
   useOidcClient,
@@ -17,9 +17,10 @@ import {
   userFound,
   receiveApiToken,
 } from "./actions";
+import { getApiToken, getLoggedInUser } from "./selectors";
+import { apiTokenKeyName } from "@/auth/constants";
 
 const useAuth = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
   const { login: oidcLogin, logout: oidcLogout } = useOidcClient();
   const authenticatedUser = useAuthenticatedUser();
   const dispatch = useDispatch();
@@ -27,28 +28,33 @@ const useAuth = () => {
     useApiTokensClientTracking();
   const { getStoredApiTokens } = useApiTokens();
 
-  const setLoggedInIfApiTokenExists = useCallback(() => {
+  const reduxUser = useSelector(getLoggedInUser);
+  const reduxApiToken = useSelector(getApiToken);
+
+  // Sync user updates
+  useEffect(() => {
+    if (authenticatedUser) {
+      const isUserEqual =
+        JSON.stringify(authenticatedUser) === JSON.stringify(reduxUser);
+      if (!reduxUser || !isUserEqual) dispatch(userFound(authenticatedUser));
+    } else {
+      if (reduxApiToken) dispatch(clearApiToken());
+      if (reduxUser) dispatch(clearUser());
+    }
+  }, [authenticatedUser, dispatch, reduxApiToken, reduxUser]);
+
+  // Initial sync for apiToken
+  useEffect(() => {
     const [_error, apiToken] = getStoredApiTokens();
     if (apiToken) {
       dispatch(receiveApiToken(apiToken));
-      setLoggedIn(true);
     }
-  }, [getStoredApiTokens, dispatch]);
+  }, [dispatch, getStoredApiTokens]);
 
-  useEffect(() => {
-    if (authenticatedUser) {
-      dispatch(userFound(authenticatedUser));
-      setLoggedInIfApiTokenExists();
-    } else {
-      dispatch(clearApiToken());
-      dispatch(clearUser());
-      setLoggedIn(false);
-    }
-  }, [authenticatedUser, setLoggedInIfApiTokenExists, dispatch]);
-
+  // Sync apiToken updates
   useEffect(() => {
     // Signal call order
-    // 1.
+    // 1. Always called in the renew cycle, does not indicate itention to only remove
     if (isApiTokensRemovedSignal(apiTokensClientSignal)) {
       // Placeholder for future use
     }
@@ -58,16 +64,22 @@ const useAuth = () => {
     }
     // 3.
     if (isApiTokensUpdatedSignal(apiTokensClientSignal)) {
-      setLoggedInIfApiTokenExists();
+      const [_error, apiToken] = getStoredApiTokens();
+      if (apiToken && apiToken?.[apiTokenKeyName] !== reduxApiToken) {
+        dispatch(receiveApiToken(apiToken));
+      }
     }
 
     return apiTokensClientSignalReset;
   }, [
     apiTokensClientSignal,
     apiTokensClientSignalReset,
-    setLoggedInIfApiTokenExists,
+    getStoredApiTokens,
     dispatch,
+    reduxApiToken,
   ]);
+
+  const loggedIn = Boolean(reduxUser) && Boolean(reduxApiToken);
 
   const determineRedirectPath = (redirectPath: string): string => {
     if (!redirectPath || redirectPath.startsWith("/callback")) {
@@ -90,7 +102,6 @@ const useAuth = () => {
   const logout = useCallback(() => {
     dispatch(clearApiToken());
     dispatch(clearUser());
-    setLoggedIn(false);
     oidcLogout();
   }, [oidcLogout, dispatch]);
 
@@ -99,7 +110,6 @@ const useAuth = () => {
     authenticatedUser,
     login,
     logout,
-    setLoggedInIfApiTokenExists,
   };
 };
 

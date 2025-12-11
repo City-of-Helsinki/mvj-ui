@@ -1,8 +1,7 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
-import { withRouter } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";
@@ -37,7 +36,6 @@ type Props = {
   infillDevelopmentAttributes: Attributes;
   leaseAttributes: Attributes;
   leaseId: LeaseId;
-  location: Record<string, any>;
   planUnits: Array<Record<string, any>>;
   plots: Array<Record<string, any>>;
   tenants: Array<Record<string, any>>;
@@ -48,15 +46,15 @@ const LeaseInfo = ({
   infillDevelopmentAttributes,
   leaseAttributes,
   leaseId,
-  location,
   planUnits,
   plots,
   tenants,
 }: Props) => {
+  const location = useLocation();
   const getMapLinkUrl = () => {
     const { pathname, search } = location;
     const searchQuery = getUrlParams(search);
-    (searchQuery.lease = leaseId), (searchQuery.tab = 1);
+    ((searchQuery.lease = leaseId), (searchQuery.tab = 1));
     return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
@@ -191,7 +189,6 @@ const LeaseInfo = ({
 };
 
 export default flowRight(
-  withRouter,
   connect((state) => {
     return {
       infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),

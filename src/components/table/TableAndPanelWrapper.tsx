@@ -1,6 +1,7 @@
 import React, { cloneElement, PureComponent } from "react";
 import classNames from "classnames";
-import ReactResizeDetector from "react-resize-detector";
+import { debounce } from "@/util/helpers";
+
 const TABLE_MIN_HEIGHT = 521;
 const PANEL_WIDTH = 607.5;
 type Props = {
@@ -24,7 +25,10 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
     tableWidth: null,
   };
   container: any;
+  containerResizeObserver: ResizeObserver | null = null;
+  panelResizeObserver: ResizeObserver | null = null;
   panelWrapper: HTMLDivElement | null = null;
+
   setPanelRef = (el: any) => {
     this.panel = el;
   };
@@ -36,6 +40,18 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
     this.calculateTableHeight();
     this.calculateTableWidth();
     this.panelWrapper.addEventListener("transitionend", this.transitionEnds);
+
+    if (this.container) {
+      this.containerResizeObserver = new ResizeObserver(
+        debounce(this.handleResize, 400),
+      );
+      this.containerResizeObserver.observe(this.container);
+    }
+
+    if (this.panelWrapper) {
+      this.panelResizeObserver = new ResizeObserver(this.handlePanelResize);
+      this.panelResizeObserver.observe(this.panelWrapper);
+    }
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -48,6 +64,13 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
 
   componentWillUnmount() {
     this.panelWrapper.removeEventListener("transitionend", this.transitionEnds);
+
+    if (this.containerResizeObserver) {
+      this.containerResizeObserver.disconnect();
+    }
+    if (this.panelResizeObserver) {
+      this.panelResizeObserver.disconnect();
+    }
   }
 
   setHidden = (isPanelOpen: boolean) => {
@@ -144,12 +167,6 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
         className="table__table-and-panel-wrapper"
         ref={this.setContainerRef}
       >
-        <ReactResizeDetector
-          handleWidth
-          onResize={this.handleResize}
-          refreshMode="debounce"
-          refreshRate={400}
-        />
         <div
           className="table__table-and-panel-wrapper_table-wrapper"
           style={{
@@ -172,12 +189,6 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
             },
           )}
         >
-          <ReactResizeDetector
-            handleHeight
-            onResize={this.handlePanelResize}
-            refreshMode="debounce"
-            refreshRate={1}
-          />
           {cloneElement(panelComponent, {
             ref: this.setPanelRef,
           })}

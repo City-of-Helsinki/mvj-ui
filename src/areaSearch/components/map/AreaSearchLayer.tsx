@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import { FeatureGroup, GeoJSON, Popup } from "react-leaflet";
 import flowRight from "lodash/flowRight";
 import { Link } from "react-router-dom";
@@ -13,15 +12,14 @@ type OwnProps = {
   stateOptions: Array<Record<string, any>>;
 };
 type Props = OwnProps & {
-  location: Record<string, any>;
   areaSearchAttributes: Attributes;
 };
 
-const AreaSearchLayer = ({
+const AreaSearchLayer: React.FC<Props> = ({
   color,
   areaSearchesGeoJson,
   areaSearchAttributes,
-}: Props) => {
+}) => {
   const intendedUseOptions = getFieldOptions(
     areaSearchAttributes,
     "intended_use",
@@ -99,7 +97,6 @@ const AreaSearchLayer = ({
   );
 };
 
-export default flowRight(
-  withRouter,
-  withAreaSearchAttributes,
-)(AreaSearchLayer) as React.ComponentType<OwnProps>;
+export default flowRight(withAreaSearchAttributes)(
+  AreaSearchLayer,
+) as React.ComponentType<OwnProps>;

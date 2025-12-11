@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import ReduxToastr from "react-redux-toastr";
-import { withRouter } from "react-router";
+import { withRouterLegacy } from "@/root/withRouterLegacy";
+import { useLocation, useNavigate } from "react-router";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import { Sizes } from "@/foundation/enums";
 import { revealContext } from "@/foundation/reveal";
+import { setNavigate } from "@/root/navigationService";
 import { ActionTypes, AppConsumer, AppProvider } from "@/app/AppContext";
 import ApiErrorModal from "@/api/ApiErrorModal";
 import ConfirmationModal from "@/components/modal/ConfirmationModal";
@@ -46,9 +48,7 @@ type Props = OwnProps & {
   apiError?: ApiError;
   clearError: typeof clearError;
   closeReveal: (...args: Array<any>) => any;
-  history: Record<string, any>;
   linkUrl?: string;
-  location: Record<string, any>;
   pageTitle: string;
   userActiveServiceUnit?: UserServiceUnit;
   userServiceUnits?: UserServiceUnits;
@@ -64,15 +64,20 @@ type State = {
 };
 
 const App: React.FC<Props> = (props) => {
+  const location = useLocation();
   const [displaySideMenu, setDisplaySideMenu] =
     useState<State["displaySideMenu"]>(false);
   const [displayUserGroups, setDisplayUserGroups] =
     useState<State["displayUserGroups"]>(false);
   const [isLoggingIn, setIsLoggingIn] = useState<State["isLoggingIn"]>(false);
   const { loggedIn, authenticatedUser, login, logout } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    setNavigate(navigate);
+  }, [navigate]);
 
   const handleLogin = () => {
-    const { pathname, search } = props.location;
+    const { pathname, search } = location;
     const redirectPath = `${pathname}${search}`;
     setIsLoggingIn(true);
     login(redirectPath);
@@ -99,7 +104,6 @@ const App: React.FC<Props> = (props) => {
     apiError,
     children,
     linkUrl,
-    location,
     pageTitle,
     showSearch,
     userGroups,
@@ -255,7 +259,7 @@ const mapStateToProps = (state: RootState) => {
 };
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect(mapStateToProps, {
     clearError,
   }),

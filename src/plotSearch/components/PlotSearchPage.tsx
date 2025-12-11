@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import {
@@ -99,9 +102,8 @@ import { getIsFetchingAttributes as getIsFetchingApplicationAttributes } from "@
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import type { Attributes, Methods as MethodType } from "types";
 import type { PlotSearch } from "@/plotSearch/types";
-import type { Form } from "@/application/types";
-type OwnProps = {};
-type Props = OwnProps & {
+
+type Props = {
   applicationFormValues: Record<string, any>;
   basicInformationFormValues: Record<string, any>;
   currentPlotSearch: PlotSearch;
@@ -112,7 +114,6 @@ type Props = OwnProps & {
   editPlotSearch: (...args: Array<any>) => any;
   fetchSinglePlotSearch: (...args: Array<any>) => any;
   hideEditMode: (...args: Array<any>) => any;
-  history: Record<string, any>;
   initialize: (...args: Array<any>) => any;
   isBasicInformationFormDirty: boolean;
   isBasicInformationFormValid: boolean;
@@ -129,10 +130,6 @@ type Props = OwnProps & {
   isFetchingSubtypes: boolean;
   isFormValidFlags: boolean;
   isLockedForModifications: boolean;
-  location: Record<string, any>;
-  match: {
-    params: Record<string, any>;
-  };
   plotSearchAttributes: Attributes;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   receiveIsSaveClicked: (...args: Array<any>) => any;
@@ -158,7 +155,7 @@ type State = {
   isDirectReservationLinkModalOpen: boolean;
 };
 
-class PlotSearchPage extends Component<Props, State> {
+class PlotSearchPage extends Component<Props & WithRouterProps, State> {
   state = {
     activeTab: 0,
     isRestoreModalOpen: false,
@@ -173,9 +170,7 @@ class PlotSearchPage extends Component<Props, State> {
       clearFormValidFlags,
       receiveTopNavigationSettings,
       fetchSinglePlotSearch,
-      match: {
-        params: { plotSearchId },
-      },
+      params: { plotSearchId },
       location: { search },
       receiveIsSaveClicked,
       hideEditMode,
@@ -211,9 +206,7 @@ class PlotSearchPage extends Component<Props, State> {
       currentPlotSearch,
       location: { search },
       isEditMode,
-      match: {
-        params: { plotSearchId },
-      },
+      params: { plotSearchId },
     } = this.props;
     const { activeTab } = this.state;
     const query = getUrlParams(search);
@@ -252,9 +245,7 @@ class PlotSearchPage extends Component<Props, State> {
     const {
       hideEditMode,
       location: { pathname },
-      match: {
-        params: { plotSearchId },
-      },
+      params: { plotSearchId },
       receiveSinglePlotSearch,
     } = this.props;
 
@@ -358,7 +349,7 @@ class PlotSearchPage extends Component<Props, State> {
   };
   handleTabClick = (tabId) => {
     const {
-      history,
+      navigate,
       location,
       location: { search },
     } = this.props;
@@ -369,13 +360,13 @@ class PlotSearchPage extends Component<Props, State> {
       },
       () => {
         query.tab = tabId;
-        return history.push({ ...location, search: getSearchQuery(query) });
+        return navigate({ ...location, search: getSearchQuery(query) });
       },
     );
   };
   handleBack = () => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -385,7 +376,7 @@ class PlotSearchPage extends Component<Props, State> {
     delete query.plan_unit;
     delete query.plot;
     delete query.opened_invoice;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.PLOT_SEARCH)}`,
       search: getSearchQuery(query),
     });
@@ -408,7 +399,7 @@ class PlotSearchPage extends Component<Props, State> {
 
     if (areFormsValid) {
       //TODO: Add helper functions to save plotSearch to DB when API is ready
-      let payload: Record<string, any> = {
+      const payload: Record<string, any> = {
         basicInfo: { ...currentPlotSearch },
         form: null,
       };
@@ -477,9 +468,7 @@ class PlotSearchPage extends Component<Props, State> {
       isBasicInformationFormDirty,
       isApplicationFormDirty,
       isFormValidFlags,
-      match: {
-        params: { plotSearchId },
-      },
+      params: { plotSearchId },
     } = this.props;
     let isDirty = false;
 
@@ -572,9 +561,7 @@ class PlotSearchPage extends Component<Props, State> {
   handleDelete = () => {
     const {
       deletePlotSearch,
-      match: {
-        params: { plotSearchId },
-      },
+      params: { plotSearchId },
     } = this.props;
     deletePlotSearch(plotSearchId);
   };
@@ -796,7 +783,7 @@ class PlotSearchPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   withPlotSearchAttributes,
   withUiDataList,
   connect(
@@ -862,4 +849,4 @@ export default flowRight(
       deletePlotSearch,
     },
   ),
-)(PlotSearchPage) as React.ComponentType<OwnProps>;
+)(PlotSearchPage) as React.ComponentType;

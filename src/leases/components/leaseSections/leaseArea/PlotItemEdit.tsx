@@ -2,8 +2,7 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
-import { withRouter } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
@@ -38,30 +37,29 @@ type Props = {
   field: string;
   geometry: Record<string, any> | null | undefined;
   isSaveClicked: boolean;
-  location: Record<string, any>;
   onRemove: (...args: Array<any>) => any;
   plotsData: Array<Record<string, any>>;
   plotId: number;
   usersPermissions: UsersPermissionsType;
 };
 
-const PlotItemsEdit = ({
+const PlotItemsEdit: React.FC<Props> = ({
   attributes,
   field,
   geometry,
   isSaveClicked,
-  location,
   onRemove,
   plotsData,
   plotId,
   usersPermissions,
-}: Props) => {
+}) => {
+  const location = useLocation();
   const getMapLinkUrl = () => {
     const { pathname, search } = location;
     const searchQuery = getUrlParams(search);
     delete searchQuery.lease_area;
     delete searchQuery.plan_unit;
-    (searchQuery.plot = plotId), (searchQuery.tab = 7);
+    ((searchQuery.plot = plotId), (searchQuery.tab = 7));
     return `${pathname}${getSearchQuery(searchQuery)}`;
   };
 
@@ -315,7 +313,6 @@ const PlotItemsEdit = ({
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
 export default flowRight(
-  withRouter,
   connect((state, props) => {
     const id = selector(state, `${props.field}.id`);
     return {

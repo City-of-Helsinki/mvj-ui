@@ -83,6 +83,10 @@ import {
   getUsersPermissions,
   getUserActiveServiceUnit,
 } from "@/usersPermissions/selectors";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { withLeaseAttributes } from "@/components/attributes/LeaseAttributes";
 import { withUiDataList } from "@/components/uiData/UiDataListHOC";
 import {
@@ -124,7 +128,6 @@ type Props = {
   fetchLeasesByBBox: (...args: Array<any>) => any;
   fetchLessors: (...args: Array<any>) => any;
   fetchServiceUnits: (...args: Array<any>) => any;
-  history: Record<string, any>;
   initialize: (...args: Array<any>) => any;
   isFetching: boolean;
   isFetchingByBBox: boolean;
@@ -134,7 +137,6 @@ type Props = {
   leaseMethods: MethodsType;
   leases: LeaseList;
   lessors: LessorList;
-  location: Record<string, any>;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   serviceUnits: ServiceUnits;
   userActiveServiceUnit: UserServiceUnit;
@@ -152,7 +154,7 @@ type State = {
   selectedServiceUnitOptionValue: unknown; // empty string if no value, otherwise number
 };
 
-class LeaseListPage extends PureComponent<Props, State> {
+class LeaseListPage extends PureComponent<Props & WithRouterProps, State> {
   _isMounted: boolean;
   _hasFetchedLeases: boolean; // Check if search has been done yet
 
@@ -463,7 +465,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     resetFilters: boolean = false,
   ) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -507,7 +509,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       delete searchQuery.lease_state;
     }
 
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.LEASES),
       search: getSearchQuery(searchQuery),
     });
@@ -529,17 +531,17 @@ class LeaseListPage extends PureComponent<Props, State> {
   };
   handleRowClick = (id) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.LEASES)}/${id}`,
       search: search,
     });
   };
   handlePageClick = (page: number) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -553,7 +555,7 @@ class LeaseListPage extends PureComponent<Props, State> {
     this.setState({
       activePage: page,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.LEASES),
       search: getSearchQuery(query),
     });
@@ -657,7 +659,7 @@ class LeaseListPage extends PureComponent<Props, State> {
       },
       () => {
         const {
-          history,
+          navigate,
           location: { search },
         } = this.props;
         const searchQuery = getUrlParams(search);
@@ -668,7 +670,7 @@ class LeaseListPage extends PureComponent<Props, State> {
           delete searchQuery.visualization;
         }
 
-        return history.push({
+        return navigate({
           pathname: getRouteById(Routes.LEASES),
           search: getSearchQuery(searchQuery),
         });
@@ -677,7 +679,7 @@ class LeaseListPage extends PureComponent<Props, State> {
   };
   handleSortingChange = ({ sortKey, sortOrder }) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
@@ -687,20 +689,20 @@ class LeaseListPage extends PureComponent<Props, State> {
       sortKey,
       sortOrder,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.LEASES),
       search: getSearchQuery(searchQuery),
     });
   };
   handleMapViewportChanged = debounce((mapOptions: Record<string, any>) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
     searchQuery.in_bbox = mapOptions.bBox.split(",");
     searchQuery.zoom = mapOptions.zoom;
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.LEASES),
       search: getSearchQuery(searchQuery),
     });
@@ -860,6 +862,7 @@ class LeaseListPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
+  withRouterLegacy,
   withLeaseAttributes,
   withUiDataList,
   connect(

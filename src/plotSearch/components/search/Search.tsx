@@ -1,5 +1,8 @@
 import React, { Component, Fragment } from "react";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { connect } from "react-redux";
 import { formValueSelector, getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
@@ -7,7 +10,6 @@ import debounce from "lodash/debounce";
 import flowRight from "lodash/flowRight";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
-import type { ContextRouter } from "react-router";
 import { getFieldOptions, getUrlParams } from "@/util/helpers";
 import { getAttributes, getPlotSearchSubTypes } from "@/plotSearch/selectors";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
@@ -27,14 +29,13 @@ type OwnProps = {
   onSearch: (...args: Array<any>) => any;
   states: Array<Record<string, any>>;
 };
-type Props = OwnProps &
-  ContextRouter & {
-    formValues: Record<string, any>;
-    attributes: Attributes;
-    plotSearchSubtypes: Record<string, any>;
-    selectedMainType: (number | string) | null | undefined;
-    change: (...args: Array<any>) => any;
-  };
+type Props = OwnProps & {
+  formValues: Record<string, any>;
+  attributes: Attributes;
+  plotSearchSubtypes: Record<string, any>;
+  selectedMainType: (number | string) | null | undefined;
+  change: (...args: Array<any>) => any;
+};
 type State = {
   isBasicSearch: boolean;
   attributes: Attributes;
@@ -42,7 +43,7 @@ type State = {
   subtypeOptions: Array<Record<string, any>>;
 };
 
-class Search extends Component<Props, State> {
+class Search extends Component<Props & WithRouterProps, State> {
   _isMounted: boolean;
   state = {
     isBasicSearch: true,
@@ -320,7 +321,7 @@ class Search extends Component<Props, State> {
 
 const formName = FormNames.PLOT_SEARCH_SEARCH;
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect((state) => {
     return {
       formValues: getFormValues(formName)(state),

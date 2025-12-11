@@ -1,23 +1,21 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
-import { ConnectedRouter } from "connected-react-router";
+import { BrowserRouter } from "react-router-dom";
 import { LoginProvider } from "hds-react";
-import configureStore, { history } from "@/root/configureStore";
+import configureStore from "@/root/configureStore";
 import routes from "@/root/routes";
 import { loginProviderProperties } from "@/auth/constants";
-
-import "./polyfills";
 
 export const store = configureStore();
 
 const container = document.getElementById("root");
+const root = createRoot(container);
 
-ReactDOM.render(
+root.render(
   <Provider store={store}>
     <LoginProvider {...loginProviderProperties}>
-      <ConnectedRouter history={history}>{routes}</ConnectedRouter>
+      <BrowserRouter>{routes}</BrowserRouter>
     </LoginProvider>
   </Provider>,
-  container,
 );

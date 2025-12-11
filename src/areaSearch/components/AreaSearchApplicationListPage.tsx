@@ -4,7 +4,10 @@ import isArray from "lodash/isArray";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { formValueSelector, initialize, reduxForm } from "redux-form";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import debounce from "lodash/debounce";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import {
@@ -97,8 +100,6 @@ const visualizationTypeOptions = [
 ];
 type OwnProps = {};
 type Props = OwnProps & {
-  history: Record<string, any>;
-  location: Record<string, any>;
   usersPermissions: UsersPermissionsType;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   areaSearchListAttributes: Attributes;
@@ -135,7 +136,10 @@ type State = {
   userActiveServiceUnit?: any;
 };
 
-class AreaSearchApplicationListPage extends PureComponent<Props, State> {
+class AreaSearchApplicationListPage extends PureComponent<
+  Props & WithRouterProps,
+  State
+> {
   _isMounted: boolean;
   _hasFetchedAreaSearches: boolean;
   state: State = {
@@ -188,7 +192,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       },
       () => {
         const {
-          history,
+          navigate,
           location: { search },
         } = this.props;
         const searchQuery = getUrlParams(search);
@@ -201,7 +205,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
           delete searchQuery.zoom;
         }
 
-        return history.push({
+        return navigate({
           pathname: getRouteById(Routes.AREA_SEARCH),
           search: getSearchQuery(searchQuery),
         });
@@ -431,17 +435,17 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   };
   handleRowClick = (id) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.AREA_SEARCH)}/${id}`,
       search: search,
     });
   };
   handleSortingChange = ({ sortKey, sortOrder }) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
@@ -451,14 +455,14 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       sortKey,
       sortOrder,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.AREA_SEARCH),
       search: getSearchQuery(searchQuery),
     });
   };
   handlePageClick = (page: number) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
@@ -472,7 +476,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     this.setState({
       activePage: page,
     });
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.AREA_SEARCH),
       search: getSearchQuery(query),
     });
@@ -491,7 +495,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     resetActivePage: boolean = true,
   ) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const urlQuery = getUrlParams(search);
@@ -515,7 +519,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
       query.zoom = urlQuery.zoom;
     }
 
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.AREA_SEARCH),
       search: getSearchQuery(query),
     });
@@ -594,13 +598,13 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
   };
   handleMapViewportChanged = debounce((mapOptions: Record<string, any>) => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
     searchQuery.in_bbox = mapOptions.bBox.split(",");
     searchQuery.zoom = mapOptions.zoom;
-    return history.push({
+    return navigate({
       pathname: getRouteById(Routes.AREA_SEARCH),
       search: getSearchQuery(searchQuery),
     });
@@ -665,8 +669,8 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
     );
   };
   openCreateAreaSearch = () => {
-    const { history } = this.props;
-    history.push({
+    const { navigate } = this.props;
+    navigate({
       pathname: `${getRouteById(Routes.AREA_SEARCH)}/uusi`,
     });
   };
@@ -906,7 +910,7 @@ class AreaSearchApplicationListPage extends PureComponent<Props, State> {
 const FORM_NAME = FormNames.AREA_SEARCH_EXPORT;
 const selector = formValueSelector(FORM_NAME);
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   withAreaSearchAttributes,
   connect(
     (state) => {

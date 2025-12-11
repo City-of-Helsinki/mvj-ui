@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import classnames from "classnames";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
@@ -22,7 +25,6 @@ type OwnProps = {
   onLinkClick: (...args: Array<any>) => any;
 };
 type Props = OwnProps & {
-  history: Record<string, any>;
   isFetchingUsersPermissions: boolean;
   usersPermissions: UsersPermissionsType;
 };
@@ -33,7 +35,7 @@ type State = {
   subMenuKey: string;
 };
 
-class SideMenu extends Component<Props, State> {
+class SideMenu extends Component<Props & WithRouterProps, State> {
   _isMounted: boolean;
   component: any;
   firstLink: HTMLElement | null = null;
@@ -130,9 +132,9 @@ class SideMenu extends Component<Props, State> {
               dispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
-                  const { history } = this.props;
+                  const { navigate } = this.props;
                   const relativeUrl = target.href.replace(location.origin, "");
-                  history.push(relativeUrl);
+                  navigate(relativeUrl);
                   onLinkClick();
                 },
                 confirmationModalButtonClassName: ButtonColors.ALERT,
@@ -448,5 +450,5 @@ class SideMenu extends Component<Props, State> {
 
 export default flowRight(
   withUsersPermissions,
-  withRouter,
+  withRouterLegacy,
 )(SideMenu) as React.ComponentType<OwnProps>;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Row, Column } from "react-foundation";
 import flowRight from "lodash/flowRight";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -130,12 +130,10 @@ const getColumns = (invoiceAttributes: Attributes) => {
 
 type Props = {
   fetchSapInvoices: (...args: Array<any>) => any;
-  history: Record<string, any>;
   invoiceAttributes: Attributes;
   invoiceMethods: MethodsType;
   isFetching: boolean;
   isFetchingInvoiceAttributes: boolean;
-  location: Record<string, any>;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   sapInvoiceList: SapInvoiceList;
   userActiveServiceUnit: UserServiceUnit;
@@ -143,16 +141,16 @@ type Props = {
 
 const SapInvoicesListPage: React.FC<Props> = ({
   fetchSapInvoices,
-  history,
   invoiceAttributes,
   invoiceMethods,
   isFetching,
   isFetchingInvoiceAttributes,
-  location,
   receiveTopNavigationSettings,
   sapInvoiceList,
   userActiveServiceUnit,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [activePage, setActivePage] = useState(1);
   const [columns, setColumns] = useState<Array<Record<string, any>>>([]);
   const [count, setCount] = useState(0);
@@ -270,12 +268,12 @@ const SapInvoicesListPage: React.FC<Props> = ({
 
   const handleSearchChange = useCallback(
     (query: any) => {
-      history.push({
+      navigate({
         pathname: getRouteById(Routes.SAP_INVOICES),
         search: getSearchQuery(query),
       });
     },
-    [history],
+    [navigate],
   );
 
   const handleSortingChange = useCallback(
@@ -374,7 +372,6 @@ const SapInvoicesListPage: React.FC<Props> = ({
 
 export default flowRight(
   withSapInvoicesAttributes,
-  withRouter,
   connect(
     (state) => {
       return {

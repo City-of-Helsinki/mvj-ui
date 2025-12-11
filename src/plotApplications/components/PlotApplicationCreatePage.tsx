@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import { initialize, isDirty, destroy, getFormValues } from "redux-form";
-import type { ContextRouter } from "react-router";
 import { FormNames } from "@/enums";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import FullWidthContainer from "@/components/content/FullWidthContainer";
@@ -67,8 +69,7 @@ import PlotApplicationCreate from "@/plotApplications/components/PlotApplication
 import type { PlotApplication as PlotApplicationType } from "@/plotApplications/types";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type OwnProps = ContextRouter;
-type Props = OwnProps & {
+type Props = {
   clearFormValidFlags: (...args: Array<any>) => any;
   currentPlotApplication: PlotApplicationType;
   fetchSinglePlotApplication: (...args: Array<any>) => any;
@@ -101,7 +102,7 @@ type State = {
   activeTab: number;
 };
 
-class PlotApplicationsPage extends Component<Props, State> {
+class PlotApplicationsPage extends Component<Props & WithRouterProps, State> {
   state = {
     activeTab: 0,
     isRestoreModalOpen: false,
@@ -182,25 +183,25 @@ class PlotApplicationsPage extends Component<Props, State> {
     return isApplicationFormValid;
   };
   cancelChanges = () => {
-    const { history } = this.props;
-    history.push(getRouteById(Routes.PLOT_APPLICATIONS));
+    const { navigate } = this.props;
+    navigate(getRouteById(Routes.PLOT_APPLICATIONS));
   };
   handleBack = () => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
     // Remove page specific url parameters when moving to application list page
     delete query.tab;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}`,
       search: getSearchQuery(query),
     });
   };
   handleTabClick = (tabId) => {
     const {
-      history,
+      navigate,
       location,
       location: { search },
     } = this.props;
@@ -211,7 +212,7 @@ class PlotApplicationsPage extends Component<Props, State> {
       },
       () => {
         query.tab = tabId;
-        return history.push({ ...location, search: getSearchQuery(query) });
+        return navigate({ ...location, search: getSearchQuery(query) });
       },
     );
   };
@@ -220,9 +221,7 @@ class PlotApplicationsPage extends Component<Props, State> {
     const {
       location: { search },
       currentPlotApplication,
-      match: {
-        params: { plotApplicationId },
-      },
+      params: { plotApplicationId },
     } = this.props;
     const { activeTab } = this.state;
     const query = getUrlParams(search);
@@ -422,7 +421,7 @@ class PlotApplicationsPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   withPlotApplicationsAttributes,
   connect(
     (state) => {
@@ -462,4 +461,4 @@ export default flowRight(
       createPlotApplication,
     },
   ),
-)(PlotApplicationsPage) as React.ComponentType<OwnProps>;
+)(PlotApplicationsPage) as React.ComponentType;

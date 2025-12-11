@@ -1,6 +1,9 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -32,9 +35,7 @@ import {
 } from "@/usersPermissions/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
-  history: Record<string, any>;
   isFetchingUsersPermissions: boolean;
-  location: Record<string, any>;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   usersPermissions: UsersPermissionsType;
 };
@@ -42,7 +43,7 @@ type State = {
   activeTab: number;
 };
 
-class BatchJobsPage extends PureComponent<Props, State> {
+class BatchJobsPage extends PureComponent<Props & WithRouterProps, State> {
   state = {
     activeTab: 0,
   };
@@ -78,7 +79,7 @@ class BatchJobsPage extends PureComponent<Props, State> {
   };
   handleTabClick = (tab: number) => {
     const {
-      history,
+      navigate,
       location,
       location: { search },
     } = this.props;
@@ -89,7 +90,7 @@ class BatchJobsPage extends PureComponent<Props, State> {
       },
       () => {
         query.tab = tab;
-        return history.push({ ...location, search: getSearchQuery(query) });
+        return navigate({ ...location, search: getSearchQuery(query) });
       },
     );
   };
@@ -159,7 +160,7 @@ class BatchJobsPage extends PureComponent<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect(
     (state) => {
       return {
@@ -171,4 +172,4 @@ export default flowRight(
       receiveTopNavigationSettings,
     },
   ),
-)(BatchJobsPage);
+)(BatchJobsPage) as React.ComponentType;

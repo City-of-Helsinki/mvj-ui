@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { flowRight } from "lodash/util";
 import { destroy, getFormValues, initialize, isDirty } from "redux-form";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { getRouteById, Routes } from "@/root/routes";
 import FullWidthContainer from "@/components/content/FullWidthContainer";
 import PageNavigationWrapper from "@/components/content/PageNavigationWrapper";
@@ -51,7 +55,6 @@ import { fetchFormAttributes } from "@/application/actions";
 import type { UploadedFileMeta } from "@/application/types";
 type OwnProps = {};
 type Props = OwnProps & {
-  history: Record<string, any>;
   isFetchingAttributes: boolean;
   fetchAttributes: (...args: Array<any>) => any;
   receiveSingleAreaSearch: (...args: Array<any>) => any;
@@ -83,7 +86,10 @@ type State = {
   initialized: boolean;
 };
 
-class AreaSearchApplicationCreatePage extends Component<Props, State> {
+class AreaSearchApplicationCreatePage extends Component<
+  Props & WithRouterProps,
+  State
+> {
   state: State = {
     activeTab: 0,
     attachments: [],
@@ -142,8 +148,8 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
   }
 
   handleBack: () => void = () => {
-    const { history } = this.props;
-    history.push(getRouteById(Routes.AREA_SEARCH));
+    const { navigate } = this.props;
+    navigate(getRouteById(Routes.AREA_SEARCH));
   };
   saveChanges: () => void = () => {
     const { createAreaSearchApplication, receiveIsSaveClicked } = this.props;
@@ -323,6 +329,7 @@ class AreaSearchApplicationCreatePage extends Component<Props, State> {
 }
 
 export default flowRight(
+  withRouterLegacy,
   connect(
     (state) => {
       return {

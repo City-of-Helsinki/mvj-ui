@@ -1,4 +1,5 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
+import { navigateTo } from "@/root/navigationService";
 import { receiveError } from "@/api/actions";
 import {
   receiveAttributes,
@@ -39,7 +40,6 @@ import {
 import { editApplicantInfoCheckItemRequest } from "@/plotApplications/requests";
 import { receiveUpdatedApplicantInfoCheckItem } from "@/application/actions";
 import { displayUIMessage } from "@/util/helpers";
-import { push } from "connected-react-router";
 import { getRouteById, Routes } from "@/root/routes";
 import { createApplicationRequest } from "@/application/requests";
 import type {
@@ -389,10 +389,9 @@ function* createAreaSearchApplicationSaga({
       case 201:
         yield put(receiveAreaSearchApplicationCreated());
         yield put(receiveSingleAreaSearch(null));
-        yield put(
-          push(
-            `${getRouteById(Routes.AREA_SEARCH)}/${application.area_search}`,
-          ),
+        yield call(
+          navigateTo,
+          `${getRouteById(Routes.AREA_SEARCH)}/${application.area_search}`,
         );
         yield put(hideEditMode());
         displayUIMessage({

@@ -1,5 +1,8 @@
 import React, { Fragment, PureComponent } from "react";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { connect } from "react-redux";
 import { getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
@@ -26,7 +29,6 @@ type Props = {
   infillDevelopmentAttributes: Attributes;
   initialize: (...args: Array<any>) => any;
   isSearchInitialized: boolean;
-  location: Record<string, any>;
   onSearch: (...args: Array<any>) => any;
   sortKey: string | null | undefined;
   sortOrder: string | null | undefined;
@@ -38,7 +40,7 @@ type State = {
   isBasicSearch: boolean;
 };
 
-class Search extends PureComponent<Props, State> {
+class Search extends PureComponent<Props & WithRouterProps, State> {
   _isMounted: boolean;
   state = {
     decisionMakerOptions: [],
@@ -254,7 +256,7 @@ class Search extends PureComponent<Props, State> {
 
 const formName = FormNames.INFILL_DEVELOPMENT_SEARCH;
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   connect((state) => {
     return {
       formValues: getFormValues(formName)(state),

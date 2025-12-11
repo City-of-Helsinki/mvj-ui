@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
+import {
+  withRouterLegacy,
+  type WithRouterProps,
+} from "@/root/withRouterLegacy";
 import { groupBy } from "lodash/collection";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
@@ -12,7 +15,6 @@ import {
   isValid,
   change,
 } from "redux-form";
-import type { ContextRouter } from "react-router";
 import { FormNames } from "@/enums";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import FullWidthContainer from "@/components/content/FullWidthContainer";
@@ -92,44 +94,43 @@ import {
   getApplicantInfoCheckItems,
   prepareApplicantInfoCheckForSubmission,
 } from "@/application/helpers";
-type OwnProps = {};
-type Props = ContextRouter &
-  OwnProps & {
-    clearFormValidFlags: (...args: Array<any>) => any;
-    currentPlotApplication: PlotApplicationType;
-    fetchSinglePlotApplication: (...args: Array<any>) => any;
-    basicInformationFormValues: Record<string, any>;
-    receiveTopNavigationSettings: (...args: Array<any>) => any;
-    showEditMode: (...args: Array<any>) => any;
-    hideEditMode: (...args: Array<any>) => any;
-    plotApplicationsMethods: MethodsType;
-    plotApplicationsAttributes: Attributes;
-    isFetchingPlotApplicationsAttributes: boolean;
-    usersPermissions: UsersPermissionsType;
-    isFetchingUsersPermissions: boolean;
-    isFetching: boolean;
-    isEditMode: boolean;
-    isSaveClicked: boolean;
-    receiveIsSaveClicked: (...args: Array<any>) => any;
-    initialize: (...args: Array<any>) => any;
-    change: (...args: Array<any>) => any;
-    destroy: (...args: Array<any>) => any;
-    isFormValidFlags: boolean;
-    receiveFormValidFlags: (...args: Array<any>) => any;
-    isPerformingFileOperation: boolean;
-    isSaving: boolean;
-    currentPlotSearch: PlotSearch | null | undefined;
-    applicantInfoChecks: Array<Record<string, any>>;
-    targetInfoChecks: Array<Record<string, any>>;
-    isFormDirty: (
-      arg0: string,
-      arg1: Array<string> | null | undefined,
-    ) => boolean;
-    isFormValid: (arg0: string) => boolean;
-    getValuesForForm: (arg0: string) => Record<string, any>;
-    batchEditApplicationModels: (...args: Array<any>) => any;
-    isSingleAllowed: boolean;
-  };
+
+type Props = {
+  clearFormValidFlags: (...args: Array<any>) => any;
+  currentPlotApplication: PlotApplicationType;
+  fetchSinglePlotApplication: (...args: Array<any>) => any;
+  basicInformationFormValues: Record<string, any>;
+  receiveTopNavigationSettings: (...args: Array<any>) => any;
+  showEditMode: (...args: Array<any>) => any;
+  hideEditMode: (...args: Array<any>) => any;
+  plotApplicationsMethods: MethodsType;
+  plotApplicationsAttributes: Attributes;
+  isFetchingPlotApplicationsAttributes: boolean;
+  usersPermissions: UsersPermissionsType;
+  isFetchingUsersPermissions: boolean;
+  isFetching: boolean;
+  isEditMode: boolean;
+  isSaveClicked: boolean;
+  receiveIsSaveClicked: (...args: Array<any>) => any;
+  initialize: (...args: Array<any>) => any;
+  change: (...args: Array<any>) => any;
+  destroy: (...args: Array<any>) => any;
+  isFormValidFlags: boolean;
+  receiveFormValidFlags: (...args: Array<any>) => any;
+  isPerformingFileOperation: boolean;
+  isSaving: boolean;
+  currentPlotSearch: PlotSearch | null | undefined;
+  applicantInfoChecks: Array<Record<string, any>>;
+  targetInfoChecks: Array<Record<string, any>>;
+  isFormDirty: (
+    arg0: string,
+    arg1: Array<string> | null | undefined,
+  ) => boolean;
+  isFormValid: (arg0: string) => boolean;
+  getValuesForForm: (arg0: string) => Record<string, any>;
+  batchEditApplicationModels: (...args: Array<any>) => any;
+  isSingleAllowed: boolean;
+};
 type State = {
   activeTab: number;
   isRestoreModalOpen: boolean;
@@ -137,7 +138,7 @@ type State = {
   targetInfoCheckFormNames: Array<string>;
 };
 
-class PlotApplicationPage extends Component<Props, State> {
+class PlotApplicationPage extends Component<Props & WithRouterProps, State> {
   state = {
     activeTab: 0,
     isRestoreModalOpen: false,
@@ -151,9 +152,7 @@ class PlotApplicationPage extends Component<Props, State> {
       clearFormValidFlags,
       receiveTopNavigationSettings,
       fetchSinglePlotApplication,
-      match: {
-        params: { plotApplicationId },
-      },
+      params: { plotApplicationId },
       location: { search },
       receiveIsSaveClicked,
     } = this.props;
@@ -261,9 +260,7 @@ class PlotApplicationPage extends Component<Props, State> {
     const {
       hideEditMode,
       fetchSinglePlotApplication,
-      match: {
-        params: { plotApplicationId },
-      },
+      params: { plotApplicationId },
     } = this.props;
     // Reload all data in case we tried and managed to save some but not all info check data.
     // These could be patched to the current plot application directly upon receiving success too,
@@ -275,20 +272,20 @@ class PlotApplicationPage extends Component<Props, State> {
   };
   handleBack = () => {
     const {
-      history,
+      navigate,
       location: { search },
     } = this.props;
     const query = getUrlParams(search);
     // Remove page specific url parameters when moving to application list page
     delete query.tab;
-    return history.push({
+    return navigate({
       pathname: `${getRouteById(Routes.PLOT_APPLICATIONS)}`,
       search: getSearchQuery(query),
     });
   };
   handleTabClick = (tabId) => {
     const {
-      history,
+      navigate,
       location,
       location: { search },
     } = this.props;
@@ -299,7 +296,7 @@ class PlotApplicationPage extends Component<Props, State> {
       },
       () => {
         query.tab = tabId;
-        return history.push({ ...location, search: getSearchQuery(query) });
+        return navigate({ ...location, search: getSearchQuery(query) });
       },
     );
   };
@@ -308,9 +305,7 @@ class PlotApplicationPage extends Component<Props, State> {
     const {
       location: { search },
       currentPlotApplication,
-      match: {
-        params: { plotApplicationId },
-      },
+      params: { plotApplicationId },
       isFetching,
       isEditMode,
       getValuesForForm,
@@ -647,7 +642,7 @@ class PlotApplicationPage extends Component<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
+  withRouterLegacy,
   withPlotApplicationsAttributes,
   connect(
     (state) => {
@@ -696,4 +691,4 @@ export default flowRight(
       batchEditApplicationModels,
     },
   ),
-)(PlotApplicationPage) as React.ComponentType<OwnProps>;
+)(PlotApplicationPage) as React.ComponentType;
