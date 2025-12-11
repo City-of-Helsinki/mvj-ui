@@ -810,6 +810,9 @@ const SummaryEdit: React.FC<Props> = ({ formApi }: Props) => {
                           name="application_metadata.application_received_at"
                           overrideValues={{
                             label: LeaseFieldTitles.APPLICATION_RECEIVED_AT,
+                            required:
+                              currentLease.service_unit
+                                .is_received_date_mandatory || false,
                           }}
                           enableUiDataEdit
                           uiDataKey={getUiDataLeaseKey(
