@@ -3,7 +3,7 @@ export type ServiceUnit = {
   id: number;
   name: string;
   use_rent_override_receivable_type: boolean;
-  is_received_date_mandatory: boolean;
+  is_application_received_at_mandatory: boolean;
 };
 export type ServiceUnits = Array<ServiceUnit>;
 export type ServiceUnitState = {

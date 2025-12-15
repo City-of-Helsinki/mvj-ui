@@ -812,7 +812,7 @@ const SummaryEdit: React.FC<Props> = ({ formApi }: Props) => {
                             label: LeaseFieldTitles.APPLICATION_RECEIVED_AT,
                             required:
                               currentLease.service_unit
-                                .is_received_date_mandatory || false,
+                                .is_application_received_at_mandatory || false,
                           }}
                           enableUiDataEdit
                           uiDataKey={getUiDataLeaseKey(
