@@ -274,6 +274,9 @@ const FormContent: React.FC<{
               overrideValues={{
                 fieldType: FieldTypes.DATE,
                 label: LeaseFieldTitles.APPLICATION_RECEIVED_AT,
+                required:
+                  userActiveServiceUnit.is_application_received_at_mandatory ||
+                  false,
               }}
               enableUiDataEdit
               uiDataKey={getUiDataLeaseKey(
