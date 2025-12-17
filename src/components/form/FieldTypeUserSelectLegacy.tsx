@@ -3,7 +3,7 @@ import debounce from "lodash/debounce";
 import AsyncSelect from "@/components/form/AsyncSelect";
 import { getContentUser } from "@/users/helpers";
 import { addEmptyOption, sortStringByKeyAsc } from "@/util/helpers";
-import { fetchSingleUser, fetchUsers } from "@/users/requestsAsync";
+import { fetchOfficers, fetchSingleUser } from "@/users/requestsAsync";
 import type { UserServiceUnit } from "@/usersPermissions/types";
 type Props = {
   disabled?: boolean;
@@ -67,7 +67,7 @@ const FieldTypeUserSelect = ({
 
   const getUsers = debounce(
     async (inputValue: string, callback: (...args: Array<any>) => any) => {
-      const contacts = await fetchUsers({
+      const contacts = await fetchOfficers({
         search: inputValue,
         service_unit: serviceUnit?.id || "",
       });

@@ -17,6 +17,23 @@ export const fetchUsers = async (
       return [];
   }
 };
+export const fetchOfficers = async (
+  query?: Record<string, any>,
+): Promise<Array<Record<string, any>>> => {
+  const {
+    response: { status },
+    bodyAsJson,
+  } = await callApiAsync(new Request(createUrl("officer/", query)));
+
+  switch (status) {
+    case 200:
+      return bodyAsJson.results;
+
+    default:
+      console.error("Failed to fetch officers");
+      return [];
+  }
+};
 export const fetchSingleUser = async (
   id: number,
 ): Promise<Record<string, any> | null> => {
