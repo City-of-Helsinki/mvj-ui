@@ -1,8 +1,7 @@
 import createUrl from "@/api/createUrl";
 import callApiAsync from "@/api/callApiAsync";
-export const fetchUsers = async (
-  query?: Record<string, any>,
-): Promise<Array<Record<string, any>>> => {
+import { User } from "hds-react";
+export const fetchUsers = async (query?: User): Promise<Array<User>> => {
   const {
     response: { status },
     bodyAsJson,
@@ -13,24 +12,22 @@ export const fetchUsers = async (
       return bodyAsJson.results;
 
     default:
-      console.error("Failed to fetch users");
+      console.error("Failed to fetch users with status %s", status);
       return [];
   }
 };
-export const fetchOfficers = async (
-  query?: Record<string, any>,
-): Promise<Array<Record<string, any>>> => {
+export const fetchOfficers = async (query?: User): Promise<Array<User>> => {
   const {
     response: { status },
     bodyAsJson,
   } = await callApiAsync(new Request(createUrl("officer/", query)));
 
   switch (status) {
-    case 200:
-      return bodyAsJson.results;
+    // case 200:
+    //   return bodyAsJson.results;
 
     default:
-      console.error("Failed to fetch officers");
+      console.error("Failed to fetch officers with status %s", status);
       return [];
   }
 };
