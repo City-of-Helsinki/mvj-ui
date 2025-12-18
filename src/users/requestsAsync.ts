@@ -23,8 +23,8 @@ export const fetchOfficers = async (query?: User): Promise<Array<User>> => {
   } = await callApiAsync(new Request(createUrl("officer/", query)));
 
   switch (status) {
-    // case 200:
-    //   return bodyAsJson.results;
+    case 200:
+      return bodyAsJson.results;
 
     default:
       console.error("Failed to fetch officers with status %s", status);
