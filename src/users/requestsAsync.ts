@@ -1,6 +1,7 @@
 import createUrl from "@/api/createUrl";
 import callApiAsync from "@/api/callApiAsync";
-import { User } from "hds-react";
+import { User } from "@/types";
+
 export const fetchUsers = async (query?: User): Promise<Array<User>> => {
   const {
     response: { status },
