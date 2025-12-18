@@ -12,7 +12,7 @@ import FormText from "@/components/form/FormText";
 import Modal from "@/components/modal/Modal";
 import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import TextAreaInput from "@/components/inputs/TextAreaInput";
-import { fetchUsers } from "@/users/requestsAsync";
+import { fetchOfficers } from "@/users/requestsAsync";
 import { ButtonColors } from "@/components/enums";
 import { getUserOptions } from "@/users/helpers";
 import { sortStringByKeyAsc } from "@/util/helpers";
@@ -51,7 +51,7 @@ const SendEmailModal: React.FC<Props> = ({
 
   const getUserList = useCallback(
     async (search: string) => {
-      const users = await fetchUsers({
+      const users = await fetchOfficers({
         search,
       });
       // Both selected and available arrays on DualListBox use options for filtering. So add selectedUsers to search results and remove duplicates
