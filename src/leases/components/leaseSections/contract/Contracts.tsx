@@ -1,5 +1,5 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import ContractFileModal from "./ContractFileModal";
 import ContractItem from "./ContractItem";
 import FormText from "@/components/form/FormText";
@@ -8,94 +8,59 @@ import { getContentContracts } from "@/leases/helpers";
 import { getFieldOptions } from "@/util/helpers";
 import { getAttributes, getCurrentLease } from "@/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "@/leases/types";
-type Props = {
-  attributes: Attributes;
-  currentLease: Lease;
+
+const Contracts: React.FC = () => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const currentLease = useSelector(getCurrentLease);
+
+  const [contractId, setContractId] = React.useState<number>(-1);
+  const [showContractModal, setShowContractModal] =
+    React.useState<boolean>(false);
+  const [contracts, setContracts] = React.useState<Array<Record<string, any>>>(
+    [],
+  );
+  const [typeOptions, setTypeOptions] = React.useState<
+    Array<Record<string, any>>
+  >([]);
+
+  useEffect(() => {
+    setTypeOptions(getFieldOptions(attributes, LeaseContractsFieldPaths.TYPE));
+    setContracts(getContentContracts(currentLease));
+  }, [attributes, currentLease]);
+
+  const handleShowContractFileModal = (contractId: number) => {
+    setContractId(contractId);
+    setShowContractModal(true);
+  };
+
+  const handleCloseContractFileModal = () => {
+    setContractId(-1);
+    setShowContractModal(false);
+  };
+
+  return (
+    <>
+      <ContractFileModal
+        contractId={contractId}
+        onClose={handleCloseContractFileModal}
+        open={showContractModal}
+      />
+
+      {(!contracts || !contracts.length) && (
+        <FormText className="no-margin">Ei sopimuksia</FormText>
+      )}
+      {contracts &&
+        !!contracts.length &&
+        contracts.map((contract, index) => (
+          <ContractItem
+            key={index}
+            contract={contract}
+            onShowContractFileModal={handleShowContractFileModal}
+            typeOptions={typeOptions}
+          />
+        ))}
+    </>
+  );
 };
-type State = {
-  attributes: Attributes;
-  contractId: number;
-  contracts: Array<Record<string, any>>;
-  currentLease: Lease;
-  showContractModal: boolean;
-  typeOptions: Array<Record<string, any>>;
-};
 
-class Contracts extends PureComponent<Props, State> {
-  state = {
-    attributes: null,
-    contractId: -1,
-    contracts: [],
-    currentLease: {},
-    showContractModal: false,
-    typeOptions: [],
-  };
-
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
-
-    if (props.attributes !== state.attributes) {
-      newState.attributes = props.attributes;
-      newState.typeOptions = getFieldOptions(
-        props.attributes,
-        LeaseContractsFieldPaths.TYPE,
-      );
-    }
-
-    if (props.currentLease !== state.currentLease) {
-      newState.currentLease = props.currentLease;
-      newState.contracts = getContentContracts(props.currentLease);
-    }
-
-    return newState;
-  }
-
-  handleShowContractFileModal = (contractId: number) => {
-    this.setState({
-      contractId,
-      showContractModal: true,
-    });
-  };
-  handleCloseContractFileModal = () => {
-    this.setState({
-      contractId: -1,
-      showContractModal: false,
-    });
-  };
-
-  render() {
-    const { contractId, contracts, showContractModal, typeOptions } =
-      this.state;
-    return (
-      <Fragment>
-        <ContractFileModal
-          contractId={contractId}
-          onClose={this.handleCloseContractFileModal}
-          open={showContractModal}
-        />
-
-        {(!contracts || !contracts.length) && (
-          <FormText className="no-margin">Ei sopimuksia</FormText>
-        )}
-        {contracts &&
-          !!contracts.length &&
-          contracts.map((contract, index) => (
-            <ContractItem
-              key={index}
-              contract={contract}
-              onShowContractFileModal={this.handleShowContractFileModal}
-              typeOptions={typeOptions}
-            />
-          ))}
-      </Fragment>
-    );
-  }
-}
-
-export default connect((state) => {
-  return {
-    attributes: getAttributes(state),
-    currentLease: getCurrentLease(state),
-  };
-})(Contracts);
+export default Contracts;

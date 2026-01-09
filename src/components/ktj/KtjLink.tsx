@@ -16,7 +16,7 @@ type Props = {
   idKey?: string;
   label: string;
   langCode?: string;
-  prefix: "ktjkii" | "ktjkir";
+  prefix?: "ktjkii" | "ktjkir";
 };
 type State = {
   isLoading: boolean;

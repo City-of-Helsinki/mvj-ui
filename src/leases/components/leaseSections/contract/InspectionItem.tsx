@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
@@ -21,10 +21,10 @@ type Props = {
   leaseAttributes: Attributes;
 };
 
-const InspectionItem = ({ inspection, leaseAttributes }: Props) => {
+const InspectionItem: React.FC<Props> = ({ inspection, leaseAttributes }) => {
   const inspectionAttachments = inspection.attachments;
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -147,7 +147,7 @@ const InspectionItem = ({ inspection, leaseAttributes }: Props) => {
           {!inspectionAttachments.length && <FormText>Ei tiedostoja</FormText>}
 
           {!!inspectionAttachments.length && (
-            <Fragment>
+            <>
               <Row>
                 <Column small={3} large={4}>
                   <Authorization
@@ -230,11 +230,11 @@ const InspectionItem = ({ inspection, leaseAttributes }: Props) => {
                   </Row>
                 );
               })}
-            </Fragment>
+            </>
           )}
         </>
       </Authorization>
-    </Fragment>
+    </>
   );
 };
 

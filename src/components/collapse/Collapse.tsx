@@ -15,7 +15,7 @@ type Props = {
   className?: string;
   defaultOpen: boolean;
   enableUiDataEdit?: boolean;
-  hasErrors: boolean;
+  hasErrors?: boolean;
   headerSubtitles?: any;
   headerTitle: any;
   headerExtras?: any;
