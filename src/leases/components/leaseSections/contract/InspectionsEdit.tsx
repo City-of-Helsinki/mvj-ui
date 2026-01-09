@@ -1,6 +1,5 @@
-import React, { PureComponent, ReactElement } from "react";
-import flowRight from "lodash/flowRight";
-import { connect } from "react-redux";
+import React, { ReactElement, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { FieldArray, reduxForm } from "redux-form";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -128,67 +127,41 @@ const renderInspections = ({
 };
 
 type Props = {
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-  receiveFormValidFlags: (...args: Array<any>) => any;
-  user: Record<string, any>;
-  usersPermissions: UsersPermissionsType;
   valid: boolean;
 };
 
-class InspectionsEdit extends PureComponent<Props> {
-  componentDidUpdate(prevProps) {
-    const { receiveFormValidFlags } = this.props;
+const InspectionsEdit: React.FC<Props> = ({ valid }) => {
+  const usersPermissions = useSelector(getUsersPermissions);
+  const leaseAttributes = useSelector(getLeaseAttributes);
+  const user = useSelector(getLoggedInUser);
 
-    if (prevProps.valid !== this.props.valid) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(
       receiveFormValidFlags({
-        [formName]: this.props.valid,
-      });
-    }
-  }
-
-  render() {
-    const { leaseAttributes, usersPermissions, user } = this.props;
-    return (
-      <form>
-        <GreenBox>
-          <FieldArray
-            component={renderInspections}
-            leaseAttributes={leaseAttributes}
-            name="inspections"
-            usersPermissions={usersPermissions}
-            username={get(user, "profile.name")}
-          />
-        </GreenBox>
-      </form>
+        [formName]: valid,
+      }),
     );
-  }
-}
+  }, [valid, dispatch]);
+
+  return (
+    <form>
+      <GreenBox>
+        <FieldArray
+          component={renderInspections}
+          leaseAttributes={leaseAttributes}
+          name="inspections"
+          usersPermissions={usersPermissions}
+          username={get(user, "profile.name")}
+        />
+      </GreenBox>
+    </form>
+  );
+};
 
 const formName = FormNames.LEASE_INSPECTIONS;
-export default flowRight(
-  connect(
-    (state) => {
-      const user = getLoggedInUser(state);
-
-      if (!user || user.expired) {
-        return {
-          user: null,
-        };
-      }
-
-      return {
-        leaseAttributes: getLeaseAttributes(state),
-        usersPermissions: getUsersPermissions(state),
-        user,
-      };
-    },
-    {
-      receiveFormValidFlags,
-    },
-  ),
-  reduxForm({
-    form: formName,
-    destroyOnUnmount: false,
-  }),
-)(InspectionsEdit) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+  destroyOnUnmount: false,
+})(InspectionsEdit) as React.ComponentType<any>;

@@ -1,5 +1,5 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import Button from "@/components/button/Button";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
@@ -19,108 +19,95 @@ import {
 } from "@/contractFile/selectors";
 type Props = {
   contractId: number;
-  fetchContractFilesById: (...args: Array<any>) => any;
-  files: Array<Record<string, any>> | null | undefined;
-  isFetching: boolean;
   onClose: (...args: Array<any>) => any;
   open: boolean;
 };
 
-class ContractFileModal extends PureComponent<Props> {
-  componentDidUpdate(prevProps: Props) {
-    if (!prevProps.open && this.props.open) {
-      const { contractId, fetchContractFilesById, files } = this.props;
+const ContractFileModal: React.FC<Props> = ({ contractId, onClose, open }) => {
+  const files = useSelector((state) => getContractFilesById(state, contractId));
+  const isFetching = useSelector((state) =>
+    getIsFetchingById(state, contractId),
+  );
 
-      if (!files) {
-        fetchContractFilesById(contractId);
-      }
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (open && !files) {
+      dispatch(fetchContractFilesById(contractId));
     }
-  }
+  }, [open, files, contractId, dispatch]);
 
-  render() {
-    const { contractId, files, isFetching, onClose, open } = this.props;
-    return (
-      <Modal isOpen={open} onClose={onClose} title="Sopimuksen tiedostot">
-        {isFetching && (
-          <LoaderWrapper>
-            <Loader isLoading={true} />
-          </LoaderWrapper>
-        )}
-        {files && !files.length && (
-          <FormText>Sopimuksella {contractId} ei ole tiedostoja</FormText>
-        )}
-        {files && !!files.length && (
-          <Fragment>
-            <Row>
-              <Column small={4}>
-                <FormTextTitle>Tiedosto</FormTextTitle>
-              </Column>
-              <Column small={4}>
-                <FormTextTitle>Tyyppi</FormTextTitle>
-              </Column>
-              <Column small={4}>
-                <FormTextTitle>Koko</FormTextTitle>
-              </Column>
-            </Row>
+  return (
+    <Modal isOpen={open} onClose={onClose} title="Sopimuksen tiedostot">
+      {isFetching && (
+        <LoaderWrapper>
+          <Loader isLoading={true} />
+        </LoaderWrapper>
+      )}
+      {files && !files.length && (
+        <FormText>Sopimuksella {contractId} ei ole tiedostoja</FormText>
+      )}
+      {files && !!files.length && (
+        <>
+          <Row>
+            <Column small={4}>
+              <FormTextTitle>Tiedosto</FormTextTitle>
+            </Column>
+            <Column small={4}>
+              <FormTextTitle>Tyyppi</FormTextTitle>
+            </Column>
+            <Column small={4}>
+              <FormTextTitle>Koko</FormTextTitle>
+            </Column>
+          </Row>
 
-            {files.map((file, index) => {
-              const getCategoryText = () => {
-                switch (file.fileCategory) {
-                  case "CONTRACT":
-                    return "Sopimus";
+          {files.map((file, index) => {
+            const getCategoryText = () => {
+              switch (file.fileCategory) {
+                case "CONTRACT":
+                  return "Sopimus";
 
-                  case "CONTRACT_ATTACHMENT":
-                    return "Sopimusliite";
+                case "CONTRACT_ATTACHMENT":
+                  return "Sopimusliite";
 
-                  case "OTHER_ATTACHMENT":
-                    return "Muu";
+                case "OTHER_ATTACHMENT":
+                  return "Muu";
 
-                  default:
-                    return file.fileCategory;
-                }
-              };
+                default:
+                  return file.fileCategory;
+              }
+            };
 
-              return (
-                <Row key={index}>
-                  <Column small={4}>
-                    <FileDownloadLink
-                      fileUrl={createUrlWithoutVersionSuffix(
-                        `contract_file/${contractId}/${file.id}/`,
-                      )}
-                      label={file.fileName}
-                    />
-                  </Column>
-                  <Column small={4}>
-                    <FormText>{getCategoryText()}</FormText>
-                  </Column>
-                  <Column small={4}>
-                    <FormText>{humanReadableByteCount(file.fileSize)}</FormText>
-                  </Column>
-                </Row>
-              );
-            })}
-          </Fragment>
-        )}
-        <ModalButtonWrapper>
-          <Button
-            className={ButtonColors.SECONDARY}
-            onClick={onClose}
-            text="Sulje"
-          />
-        </ModalButtonWrapper>
-      </Modal>
-    );
-  }
-}
+            return (
+              <Row key={index}>
+                <Column small={4}>
+                  <FileDownloadLink
+                    fileUrl={createUrlWithoutVersionSuffix(
+                      `contract_file/${contractId}/${file.id}/`,
+                    )}
+                    label={file.fileName}
+                  />
+                </Column>
+                <Column small={4}>
+                  <FormText>{getCategoryText()}</FormText>
+                </Column>
+                <Column small={4}>
+                  <FormText>{humanReadableByteCount(file.fileSize)}</FormText>
+                </Column>
+              </Row>
+            );
+          })}
+        </>
+      )}
+      <ModalButtonWrapper>
+        <Button
+          className={ButtonColors.SECONDARY}
+          onClick={onClose}
+          text="Sulje"
+        />
+      </ModalButtonWrapper>
+    </Modal>
+  );
+};
 
-export default connect(
-  (state, props) => {
-    return {
-      files: getContractFilesById(state, props.contractId),
-      isFetching: getIsFetchingById(state, props.contractId),
-    };
-  },
-  {
-    fetchContractFilesById,
-  },
-)(ContractFileModal);
+export default ContractFileModal;

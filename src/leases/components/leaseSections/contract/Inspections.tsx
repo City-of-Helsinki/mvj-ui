@@ -1,6 +1,5 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
+import React from "react";
+import { useSelector } from "react-redux";
 import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import FormText from "@/components/form/FormText";
@@ -13,73 +12,42 @@ import {
 } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
-type Props = {
-  currentLease: Lease;
-  leaseAttributes: Attributes;
-};
-type State = {
-  currentLease: Lease;
-  inspections: Array<Record<string, any>>;
-};
 
-class Inspections extends PureComponent<Props, State> {
-  state = {
-    currentLease: {},
-    inspections: [],
-  };
+const Inspections: React.FC = () => {
+  const currentLease: Lease = useSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const inspections = getContentInspections(currentLease);
 
-    if (props.currentLease !== state.currentLease) {
-      newState.currentLease = props.currentLease;
-      newState.inspections = getContentInspections(props.currentLease);
-    }
-
-    return newState;
-  }
-
-  render() {
-    const { leaseAttributes } = this.props;
-    const { inspections } = this.state;
-
-    if (!inspections || !inspections.length) {
-      return (
-        <FormText className="no-margin">
-          Ei tarkastuksia tai huomautuksia
-        </FormText>
-      );
-    }
-
+  if (!inspections || !inspections.length) {
     return (
-      <GreenBox>
-        {inspections && !!inspections.length && (
-          <BoxItemContainer>
-            {inspections.map((inspection) => {
-              return (
-                <BoxItem
-                  key={inspection.id}
-                  className="no-border-on-first-child no-border-on-last-child"
-                >
-                  <InspectionItem
-                    inspection={inspection}
-                    leaseAttributes={leaseAttributes}
-                  />
-                </BoxItem>
-              );
-            })}
-          </BoxItemContainer>
-        )}
-      </GreenBox>
+      <FormText className="no-margin">
+        Ei tarkastuksia tai huomautuksia
+      </FormText>
     );
   }
-}
 
-export default flowRight(
-  connect((state) => {
-    return {
-      currentLease: getCurrentLease(state),
-      leaseAttributes: getLeaseAttributes(state),
-    };
-  }),
-)(Inspections);
+  return (
+    <GreenBox>
+      {inspections && !!inspections.length && (
+        <BoxItemContainer>
+          {inspections.map((inspection) => {
+            return (
+              <BoxItem
+                key={inspection.id}
+                className="no-border-on-first-child no-border-on-last-child"
+              >
+                <InspectionItem
+                  inspection={inspection}
+                  leaseAttributes={leaseAttributes}
+                />
+              </BoxItem>
+            );
+          })}
+        </BoxItemContainer>
+      )}
+    </GreenBox>
+  );
+};
+
+export default Inspections;

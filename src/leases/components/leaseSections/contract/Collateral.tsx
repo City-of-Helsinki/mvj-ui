@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Row, Column } from "react-foundation";
-import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
+import { useSelector } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
 import FormText from "@/components/form/FormText";
@@ -33,7 +32,7 @@ const CollateralEmpty = ({
   typeOptions,
 }: EmptyProps) => {
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -57,7 +56,7 @@ const CollateralEmpty = ({
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
@@ -73,7 +72,7 @@ const CollateralFinancialGuarantee = ({
   typeOptions,
 }: FinancialGuaranteeProps) => {
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -179,7 +178,7 @@ const CollateralFinancialGuarantee = ({
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
@@ -195,7 +194,7 @@ const CollateralMortgageDocument = ({
   typeOptions,
 }: MortgageDocumentProps) => {
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -339,7 +338,7 @@ const CollateralMortgageDocument = ({
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
@@ -355,7 +354,7 @@ const CollateralOther = ({
   typeOptions,
 }: OtherProps) => {
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -518,19 +517,19 @@ const CollateralOther = ({
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
 type Props = {
-  attributes: Attributes;
   collateral: Record<string, any>;
   otherTypeOptions: Array<Record<string, any>>;
   typeOptions: Array<Record<string, any>>;
 };
 
-const Collateral = ({ attributes, collateral, typeOptions }: Props) => {
+const Collateral = ({ collateral, typeOptions }: Props) => {
   const collateralType = collateral.type;
+  const attributes: Attributes = useSelector(getAttributes);
   return (
     <BoxItem className="no-border-on-first-child no-border-on-last-child">
       {!collateralType && (
@@ -566,10 +565,4 @@ const Collateral = ({ attributes, collateral, typeOptions }: Props) => {
   );
 };
 
-export default flowRight(
-  connect((state) => {
-    return {
-      attributes: getAttributes(state),
-    };
-  }),
-)(Collateral);
+export default Collateral;

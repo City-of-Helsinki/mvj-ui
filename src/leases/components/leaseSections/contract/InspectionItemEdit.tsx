@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -42,48 +42,42 @@ import {
   getIsSaveClicked,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes } from "types";
-import type { Lease } from "@/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+
 type Props = {
-  createLeaseInspectionAttachment: (...args: Array<any>) => any;
-  currentLease: Lease;
-  deleteLeaseInspectionAttachment: (...args: Array<any>) => any;
   field: any;
-  inspectionId: number | null | undefined;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
   onRemove: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
 };
 
-const InspectionItemEdit = ({
-  createLeaseInspectionAttachment,
-  currentLease,
-  deleteLeaseInspectionAttachment,
-  field,
-  inspectionId,
-  isSaveClicked,
-  leaseAttributes,
-  onRemove,
-  usersPermissions,
-}: Props) => {
+const selector = formValueSelector(FormNames.LEASE_INSPECTIONS);
+
+const InspectionItemEdit: React.FC<Props> = ({ field, onRemove }) => {
+  const currentLease = useSelector(getCurrentLease);
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseAttributes = useSelector(getLeaseAttributes);
+  const usersPermissions = useSelector(getUsersPermissions);
+  const inspectionId = useSelector((state) => selector(state, `${field}.id`));
+  const dispatch = useDispatch();
+
   const handleAddInspectionAttachment = (e: any) => {
     if (!inspectionId) return;
-    createLeaseInspectionAttachment({
-      lease: currentLease.id,
-      data: {
-        inspection: inspectionId,
-      },
-      file: e.target.files[0],
-    });
+    dispatch(
+      createLeaseInspectionAttachment({
+        lease: currentLease.id,
+        data: {
+          inspection: inspectionId,
+        },
+        file: e.target.files[0],
+      }),
+    );
   };
 
   const handleDeleteInspectionAttachment = (fileId: number) => {
-    deleteLeaseInspectionAttachment({
-      id: fileId,
-      lease: currentLease.id,
-    });
+    dispatch(
+      deleteLeaseInspectionAttachment({
+        id: fileId,
+        lease: currentLease.id,
+      }),
+    );
   };
 
   const inspections = getContentInspections(currentLease);
@@ -234,7 +228,7 @@ const InspectionItemEdit = ({
                     )}
 
                   {!!inspectionAttachments.length && (
-                    <Fragment>
+                    <>
                       <Row>
                         <Column small={3} large={4}>
                           <Authorization
@@ -354,7 +348,7 @@ const InspectionItemEdit = ({
                           </Row>
                         );
                       })}
-                    </Fragment>
+                    </>
                   )}
 
                   <Authorization
@@ -379,19 +373,4 @@ const InspectionItemEdit = ({
   );
 };
 
-const selector = formValueSelector(FormNames.LEASE_INSPECTIONS);
-export default connect(
-  (state, props) => {
-    return {
-      currentLease: getCurrentLease(state),
-      inspectionId: selector(state, `${props.field}.id`),
-      isSaveClicked: getIsSaveClicked(state),
-      leaseAttributes: getLeaseAttributes(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    createLeaseInspectionAttachment,
-    deleteLeaseInspectionAttachment,
-  },
-)(InspectionItemEdit);
+export default InspectionItemEdit;
