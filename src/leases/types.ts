@@ -120,7 +120,6 @@ export type LeaseArea = {
   identifier: string;
   area: number;
   section_area: number | null;
-  draft_geometry: Record<string, any> | null;
   geometry: Record<string, any> | null;
   addresses: Array<LeaseAreaAddress>;
   type: string;
