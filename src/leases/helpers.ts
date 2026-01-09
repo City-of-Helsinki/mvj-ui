@@ -659,7 +659,6 @@ export const getContentLeaseArea = (area: LeaseArea): Record<string, any> => {
   return {
     id: area.id,
     identifier: area.identifier,
-    draft_geometry: area.draft_geometry,
     geometry: area.geometry,
     area: area.area,
     section_area: area.section_area,
@@ -2740,8 +2739,6 @@ export const getContentPlanUnitsGeoJson = (
 
 /**
  * Get coordinates of lease.
- * If lease has no areas, it returns coordinates of lease area draft.
- * If lease has no areas and no lease area draft, it returns empty array.
  * @param {Object} lease
  * @returns {Object[]}
  */
@@ -2756,14 +2753,6 @@ export const getLeaseCoordinates = (
   areas.forEach((area) => {
     coordinates.push(...getCoordinatesOfGeometry(area.geometry));
   });
-
-  if (!coordinates.length) {
-    areas.forEach((area) => {
-      if (area.draft_geometry?.coordinates?.length) {
-        coordinates.push(...getCoordinatesOfGeometry(area.draft_geometry));
-      }
-    });
-  }
 
   return coordinates;
 };
@@ -2959,7 +2948,6 @@ export const addAreasFormValuesToPayload = (
     return {
       id: area.id,
       identifier: area.identifier,
-      draft_geometry: area.draft_geometry,
       area: convertStrToDecimalNumber(area.area),
       section_area: convertStrToDecimalNumber(area.area),
       addresses: getPayloadLeaseAreaAddresses(area),
