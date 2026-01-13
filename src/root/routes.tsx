@@ -13,8 +13,6 @@ import IndexListPage from "@/index/components/IndexListPage";
 import InfillDevelopmentPage from "@/infillDevelopment/components/InfillDevelopmentPage";
 import InfillDevelopmentListPage from "@/infillDevelopment/components/InfillDevelopmentListPage";
 import InvoiceNoteListPage from "@/invoiceNote/components/InvoiceNoteListPage";
-import LandUseContractListPage from "@/landUseContract/components/LandUseContractListPage";
-import LandUseContractPage from "@/landUseContract/components/LandUseContractPage";
 import LeaseListPage from "@/leases/components/LeaseListPage";
 import LeasePage from "@/leases/components/LeasePage";
 import LeaseholdTransferListPage from "@/leaseholdTransfer/components/LeaseholdTransferListPage";
@@ -52,7 +50,6 @@ export const Routes = {
   INFILL_DEVELOPMENTS: "infill_developments",
   INFILL_DEVELOPMENT_NEW: "infill_development_new",
   INVOICE_NOTES: "invoice_notes",
-  LAND_USE_CONTRACTS: "land_use_contracts",
   LEASES: "leases",
   LEASEHOLD_TRANSFER: "leasehold_transfer",
   LOGOUT: "logout",
@@ -84,7 +81,6 @@ export const getRouteById = (id: string): string => {
     [Routes.INFILL_DEVELOPMENTS]: "/taydennysrakennuskorvaus",
     [Routes.INFILL_DEVELOPMENT_NEW]: "/uusitaydennysrakennuskorvaus",
     [Routes.INVOICE_NOTES]: "/laskujentiedotteet",
-    [Routes.LAND_USE_CONTRACTS]: "/maankayttosopimus",
     [Routes.LEASES]: "/vuokraukset",
     [Routes.LEASEHOLD_TRANSFER]: "/vuokraoikeudensiirrot",
     [Routes.LOGOUT]: "/logout",
@@ -126,14 +122,6 @@ export default (
       <Route
         path={`${getRouteById(Routes.INDEX)}`}
         element={<IndexListPage />}
-      />
-      <Route
-        path={getRouteById(Routes.LAND_USE_CONTRACTS)}
-        element={<LandUseContractListPage />}
-      />
-      <Route
-        path={`${getRouteById(Routes.LAND_USE_CONTRACTS)}/:landUseContractId`}
-        element={<LandUseContractPage />}
       />
       <Route
         path={getRouteById(Routes.AREA_NOTES)}

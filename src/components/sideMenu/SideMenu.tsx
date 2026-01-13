@@ -263,18 +263,6 @@ class SideMenu extends Component<Props & WithRouterProps, State> {
                     </li>
                   </Authorization>
 
-                  <li>
-                    <Link
-                      style={{
-                        color: "#b7b7b7",
-                      }}
-                      onClick={handleClick}
-                      to={getRouteById(Routes.LAND_USE_CONTRACTS)}
-                    >
-                      Maankäyttösopimukset
-                    </Link>
-                  </li>
-
                   {!import.meta.env.PROD && ( // TODO: Remove this when taking Tonttihaku in use
                     <SubMenu
                       header="Tonttihaut ja kilpailut"
