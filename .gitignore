@@ -5,6 +5,7 @@
 .env
 .env.demo
 .env.staging
+.env*
 .DS_Store
 yarn-error.log
 npm-debug.log
@@ -15,6 +16,7 @@ report.*.json
 
 docker-compose.override.yml
 docker-compose.dev.yml
+coverage.xml
 
 .vscode/launch.json
 .vscode/settings.json
