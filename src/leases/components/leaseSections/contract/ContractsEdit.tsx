@@ -27,7 +27,7 @@ type ContractsProps = {
   contracts: Array<Record<string, any>>;
 };
 
-const renderContracts = ({
+const Contracts = ({
   decisionOptions,
   fields,
   onShowContractFileModal,
@@ -153,7 +153,7 @@ const ContractsEdit: React.FC<Props> = ({ valid }) => {
       />
 
       <FieldArray
-        component={renderContracts}
+        component={Contracts}
         decisionOptions={decisionOptions}
         name="contracts"
         onShowContractFileModal={handleShowContractFileModal}

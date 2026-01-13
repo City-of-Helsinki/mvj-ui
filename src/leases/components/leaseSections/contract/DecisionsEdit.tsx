@@ -30,7 +30,7 @@ type DecisionsProps = {
   usersPermissions: UsersPermissionsType;
 };
 
-const renderDecisions = ({
+const Decisions = ({
   fields,
   onAttach,
   usersPermissions,
@@ -147,7 +147,7 @@ const DecisionsEdit: React.FC<Props> = ({ valid }) => {
       />
 
       <FieldArray
-        component={renderDecisions}
+        component={Decisions}
         name="decisions"
         onAttach={handleAttach}
         usersPermissions={usersPermissions}

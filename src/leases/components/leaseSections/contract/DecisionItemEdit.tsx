@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FieldArray, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
@@ -55,6 +55,8 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
   const usersPermissions: UsersPermissionsType =
     useSelector(getUsersPermissions);
 
+  const dispatch = useDispatch();
+
   const decisionId = useSelector((state) => selector(state, `${field}.id`));
 
   const errors = useSelector((state) => getErrorsByFormName(state, formName));
@@ -77,16 +79,17 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
     if (!decisionId) {
       return;
     }
-
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.LEASE_DECISIONS]: {
-          [decisionId]: {
-            [key]: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.EDIT]: {
+          [FormNames.LEASE_DECISIONS]: {
+            [decisionId]: {
+              [key]: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const handleDecisionCollapseToggle = (val: boolean) => {

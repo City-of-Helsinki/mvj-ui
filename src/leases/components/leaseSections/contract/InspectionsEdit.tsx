@@ -29,7 +29,7 @@ type InspectionsProps = {
   username: String;
 };
 
-const renderInspections = ({
+const Inspections = ({
   fields,
   leaseAttributes,
   username,
@@ -149,7 +149,7 @@ const InspectionsEdit: React.FC<Props> = ({ valid }) => {
     <form>
       <GreenBox>
         <FieldArray
-          component={renderInspections}
+          component={Inspections}
           leaseAttributes={leaseAttributes}
           name="inspections"
           usersPermissions={usersPermissions}

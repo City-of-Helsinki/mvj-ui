@@ -78,7 +78,7 @@ type ContractChangesProps = {
   usersPermissions: UsersPermissionsType;
 };
 
-const RenderContractChanges: React.FC<ContractChangesProps> = ({
+const ContractChanges: React.FC<ContractChangesProps> = ({
   attributes,
   collapseState,
   currentLease,
@@ -419,7 +419,7 @@ type CollateralsProps = {
   usersPermissions: UsersPermissionsType;
 };
 
-const RenderCollaterals: React.FC<CollateralsProps> = ({
+const Collaterals: React.FC<CollateralsProps> = ({
   collapseState,
   errors,
   fields,
@@ -1092,7 +1092,7 @@ const ContractItemEdit: React.FC<Props> = ({
         <FieldArray
           attributes={attributes}
           collapseState={contractChangesCollapseState}
-          component={RenderContractChanges}
+          component={ContractChanges}
           currentLease={currentLease}
           decisionOptions={decisionOptions}
           errors={errors}
@@ -1112,7 +1112,7 @@ const ContractItemEdit: React.FC<Props> = ({
       >
         <FieldArray
           collapseState={collateralsCollapseState}
-          component={RenderCollaterals}
+          component={Collaterals}
           errors={errors}
           name={`${field}.collaterals`}
           isSaveClicked={isSaveClicked}
