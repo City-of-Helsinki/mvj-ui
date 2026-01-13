@@ -69,7 +69,7 @@ const renderDecisions = ({
 
                 return (
                   <DecisionItemEdit
-                    key={decision?.id ?? index}
+                    key={index}
                     field={decision}
                     onAttach={onAttach}
                     onRemove={handleRemove}

@@ -146,9 +146,7 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                 <span>
                   &nbsp;&nbsp;{formatDate(savedDecision.decision_date)}
                 </span>
-              ) : (
-                <span></span>
-              )}
+              ) : null}
             </Authorization>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -158,9 +156,7 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
             >
               {savedDecision.section ? (
                 <span>&nbsp;&nbsp;{savedDecision.section} §</span>
-              ) : (
-                <span></span>
-              )}
+              ) : null}
             </Authorization>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -173,9 +169,7 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                   &nbsp;&nbsp;
                   {getLabelOfOption(typeOptions, savedDecision.type)}
                 </span>
-              ) : (
-                <span></span>
-              )}
+              ) : null}
             </Authorization>
             {!!savedDecision.conditions &&
               !!savedDecision.conditions.length &&

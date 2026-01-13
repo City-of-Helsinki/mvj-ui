@@ -93,12 +93,12 @@ const DecisionItem: React.FC<Props> = ({
               LeaseDecisionsFieldPaths.DECISION_MAKER,
             )}
           >
-            <>
+            <span>
               {getLabelOfOption(
                 decisionMakerOptions,
                 decision.decision_maker,
               ) || "-"}
-            </>
+            </span>
           </Authorization>
           <Authorization
             allow={isFieldAllowedToRead(
@@ -106,13 +106,9 @@ const DecisionItem: React.FC<Props> = ({
               LeaseDecisionsFieldPaths.DECISION_DATE,
             )}
           >
-            <>
-              {decision.decision_date ? (
-                <span>&nbsp;&nbsp;{formatDate(decision.decision_date)}</span>
-              ) : (
-                ""
-              )}
-            </>
+            {decision.decision_date ? (
+              <span>&nbsp;&nbsp;{formatDate(decision.decision_date)}</span>
+            ) : null}
           </Authorization>
           <Authorization
             allow={isFieldAllowedToRead(
@@ -120,13 +116,9 @@ const DecisionItem: React.FC<Props> = ({
               LeaseDecisionsFieldPaths.SECTION,
             )}
           >
-            <>
-              {decision.section ? (
-                <span>&nbsp;&nbsp;{decision.section} §</span>
-              ) : (
-                ""
-              )}
-            </>
+            {decision.section ? (
+              <span>&nbsp;&nbsp;{decision.section} §</span>
+            ) : null}
           </Authorization>
           <Authorization
             allow={isFieldAllowedToRead(
@@ -134,15 +126,11 @@ const DecisionItem: React.FC<Props> = ({
               LeaseDecisionsFieldPaths.TYPE,
             )}
           >
-            <>
-              {decision.type ? (
-                <span>
-                  &nbsp;&nbsp;{getLabelOfOption(typeOptions, decision.type)}
-                </span>
-              ) : (
-                ""
-              )}
-            </>
+            {decision.type ? (
+              <span>
+                &nbsp;&nbsp;{getLabelOfOption(typeOptions, decision.type)}
+              </span>
+            ) : null}
           </Authorization>
           {!!decision.conditions &&
             !!decision.conditions.length &&
