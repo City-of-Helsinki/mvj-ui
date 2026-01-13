@@ -294,10 +294,6 @@
                                 "display_name": "Lunastussiirtoehto"
                               },
                               {
-                                "value": 21,
-                                "display_name": "Maankäyttösopimus"
-                              },
-                              {
                                 "value": 22,
                                 "display_name": "Maksamaton kauppahinta"
                               },
@@ -881,10 +877,6 @@
                             "display_name": "Lunastussiirtoehto"
                           },
                           {
-                            "value": 21,
-                            "display_name": "Maankäyttösopimus"
-                          },
-                          {
                             "value": 22,
                             "display_name": "Maksamaton kauppahinta"
                           },
@@ -1173,10 +1165,6 @@
                         {
                           "value": 11,
                           "display_name": "Lunastussiirtoehto"
-                        },
-                        {
-                          "value": 21,
-                          "display_name": "Maankäyttösopimus"
                         },
                         {
                           "value": 22,

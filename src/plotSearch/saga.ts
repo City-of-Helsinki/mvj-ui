@@ -397,7 +397,7 @@ function* fetchSinglePlotSearchAfterEditSaga({
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch Land Use Contracts with error "%s"', error);
+    console.error('Failed to fetch Plot Searches with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
@@ -416,7 +416,7 @@ function* deletePlotSearchSaga({
     switch (statusCode) {
       case 204:
         const query = getUrlParams(location.search);
-        // Remove page specific url parameters when moving to landuse list page
+        // Remove page specific url parameters when moving to plotsearch list page
         delete query.tab;
         yield call(
           navigateTo,
@@ -440,7 +440,7 @@ function* deletePlotSearchSaga({
         break;
     }
   } catch (error) {
-    console.error('Failed to delete landusecontract with error "%s"', error);
+    console.error('Failed to delete plotsearch with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
