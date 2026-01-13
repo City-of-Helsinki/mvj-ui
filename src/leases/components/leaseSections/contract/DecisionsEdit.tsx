@@ -1,8 +1,7 @@
-import React, { Fragment, PureComponent, ReactElement } from "react";
-import { connect } from "react-redux";
+import React, { ReactElement, useEffect, useState } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButton from "@/components/form/AddButton";
 import AttachDecisionModal from "./AttachDecisionModal";
@@ -24,7 +23,6 @@ import {
   getIsAttachDecisionModalOpen,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type DecisionsProps = {
   fields: any;
@@ -32,7 +30,7 @@ type DecisionsProps = {
   usersPermissions: UsersPermissionsType;
 };
 
-const renderDecisions = ({
+const Decisions = ({
   fields,
   onAttach,
   usersPermissions,
@@ -45,7 +43,7 @@ const renderDecisions = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_DECISION) &&
               (!fields || !fields.length) && (
                 <FormText className="no-margin">Ei päätöksiä</FormText>
@@ -72,7 +70,6 @@ const renderDecisions = ({
                 return (
                   <DecisionItemEdit
                     key={index}
-                    index={index}
                     field={decision}
                     onAttach={onAttach}
                     onRemove={handleRemove}
@@ -91,7 +88,7 @@ const renderDecisions = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -99,101 +96,68 @@ const renderDecisions = ({
 };
 
 type Props = {
-  copyDecisionToLeases: (...args: Array<any>) => any;
-  currentLease: Lease;
-  hideAttachDecisionModal: (...args: Array<any>) => any;
-  isAttachDecisionModalOpen: boolean;
-  receiveFormValidFlags: (...args: Array<any>) => any;
-  showAttachDecisionModal: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
   valid: boolean;
 };
-type State = {
-  decisionToAttach: number | null | undefined;
+
+const DecisionsEdit: React.FC<Props> = ({ valid }) => {
+  const currentLease = useSelector(getCurrentLease);
+  const isAttachDecisionModalOpen = useSelector(getIsAttachDecisionModalOpen);
+  const usersPermissions = useSelector(getUsersPermissions);
+
+  const [decisionToAttach, setDecisionToAttach] = useState<
+    number | null | undefined
+  >(null);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(hideAttachDecisionModal());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(
+      receiveFormValidFlags({
+        [formName]: valid,
+      }),
+    );
+  }, [valid, dispatch]);
+
+  const handleAttach = (decisionId) => {
+    dispatch(showAttachDecisionModal());
+    setDecisionToAttach(decisionId);
+  };
+
+  const handleModalCancelAndClose = () => {
+    dispatch(hideAttachDecisionModal());
+    setDecisionToAttach(null);
+  };
+
+  const handleAttachDecisions = (payload: Record<string, any>) => {
+    dispatch(copyDecisionToLeases({ ...payload, decision: decisionToAttach }));
+  };
+
+  return (
+    <form>
+      <AttachDecisionModal
+        currentLeaseId={currentLease.id}
+        isOpen={isAttachDecisionModalOpen}
+        onCancel={handleModalCancelAndClose}
+        onClose={handleModalCancelAndClose}
+        onSubmit={handleAttachDecisions}
+      />
+
+      <FieldArray
+        component={Decisions}
+        name="decisions"
+        onAttach={handleAttach}
+        usersPermissions={usersPermissions}
+      />
+    </form>
+  );
 };
 
-class DecisionsEdit extends PureComponent<Props, State> {
-  state = {
-    decisionToAttach: null,
-  };
-  componentDidMount = () => {
-    const { hideAttachDecisionModal } = this.props;
-    hideAttachDecisionModal();
-  };
-
-  componentDidUpdate(prevProps) {
-    const { receiveFormValidFlags } = this.props;
-
-    if (prevProps.valid !== this.props.valid) {
-      receiveFormValidFlags({
-        [formName]: this.props.valid,
-      });
-    }
-  }
-
-  handleAttach = (decisionId) => {
-    const { showAttachDecisionModal } = this.props;
-    showAttachDecisionModal();
-    this.setState({
-      decisionToAttach: decisionId,
-    });
-  };
-  handleModalCancelAndClose = () => {
-    const { hideAttachDecisionModal } = this.props;
-    hideAttachDecisionModal();
-    this.setState({
-      decisionToAttach: null,
-    });
-  };
-  handleAttachDecisions = (payload: Record<string, any>) => {
-    const { copyDecisionToLeases } = this.props;
-    const { decisionToAttach } = this.state;
-    copyDecisionToLeases({ ...payload, decision: decisionToAttach });
-  };
-
-  render() {
-    const { currentLease, isAttachDecisionModalOpen, usersPermissions } =
-      this.props;
-    return (
-      <form>
-        <AttachDecisionModal
-          currentLeaseId={currentLease.id}
-          isOpen={isAttachDecisionModalOpen}
-          onCancel={this.handleModalCancelAndClose}
-          onClose={this.handleModalCancelAndClose}
-          onSubmit={this.handleAttachDecisions}
-        />
-
-        <FieldArray
-          component={renderDecisions}
-          name="decisions"
-          onAttach={this.handleAttach}
-          usersPermissions={usersPermissions}
-        />
-      </form>
-    );
-  }
-}
-
 const formName = FormNames.LEASE_DECISIONS;
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        currentLease: getCurrentLease(state),
-        isAttachDecisionModalOpen: getIsAttachDecisionModalOpen(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      copyDecisionToLeases,
-      hideAttachDecisionModal,
-      receiveFormValidFlags,
-      showAttachDecisionModal,
-    },
-  ),
-  reduxForm({
-    form: formName,
-    destroyOnUnmount: false,
-  }),
-)(DecisionsEdit) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+  destroyOnUnmount: false,
+})(DecisionsEdit) as React.ComponentType<any>;

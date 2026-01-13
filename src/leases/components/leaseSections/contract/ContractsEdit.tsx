@@ -1,8 +1,7 @@
-import React, { Fragment, PureComponent, ReactElement } from "react";
-import { connect } from "react-redux";
+import React, { ReactElement, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButton from "@/components/form/AddButton";
 import Authorization from "@/components/authorization/Authorization";
@@ -18,8 +17,6 @@ import { getContentContracts, getDecisionOptions } from "@/leases/helpers";
 import { hasPermissions } from "@/util/helpers";
 import { getCurrentLease } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes } from "types";
-import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type ContractsProps = {
   decisionOptions: Array<Record<string, any>>;
@@ -30,7 +27,7 @@ type ContractsProps = {
   contracts: Array<Record<string, any>>;
 };
 
-const renderContracts = ({
+const Contracts = ({
   decisionOptions,
   fields,
   onShowContractFileModal,
@@ -46,7 +43,7 @@ const renderContracts = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACT) &&
               (!fields || !fields.length) && (
                 <FormText className="no-margin">Ei sopimuksia</FormText>
@@ -76,7 +73,6 @@ const renderContracts = ({
                     key={index}
                     decisionOptions={decisionOptions}
                     field={contract}
-                    index={index}
                     onRemove={handleRemove}
                     onShowContractFileModal={onShowContractFileModal}
                     savedContracts={savedContracts}
@@ -97,7 +93,7 @@ const renderContracts = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -105,106 +101,73 @@ const renderContracts = ({
 };
 
 type Props = {
-  attributes: Attributes;
-  currentLease: Lease;
-  receiveFormValidFlags: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
   valid: boolean;
 };
-type State = {
-  contractId: number;
-  currentLease: Lease;
-  decisionOptions: Array<Record<string, any>>;
-  savedContracts: Array<Record<string, any>>;
-  showContractModal: boolean;
+
+const ContractsEdit: React.FC<Props> = ({ valid }) => {
+  const [contractId, setContractId] = React.useState<number>(-1);
+  const [decisionOptions, setDecisionOptions] = React.useState<
+    Array<Record<string, any>>
+  >([]);
+  const [savedContracts, setSavedContracts] = React.useState<
+    Array<Record<string, any>>
+  >([]);
+  const [showContractModal, setShowContractModal] =
+    React.useState<boolean>(false);
+
+  const currentLease = useSelector(getCurrentLease);
+  const usersPermissions = useSelector(getUsersPermissions);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (currentLease) {
+      setDecisionOptions(getDecisionOptions(currentLease));
+      setSavedContracts(getContentContracts(currentLease));
+    }
+  }, [currentLease]);
+
+  useEffect(() => {
+    dispatch(
+      receiveFormValidFlags({
+        [formName]: valid,
+      }),
+    );
+  }, [valid, dispatch]);
+
+  const handleShowContractFileModal = (contractId: number) => {
+    setContractId(contractId);
+    setShowContractModal(true);
+  };
+  const handleCloseContractFileModal = () => {
+    setContractId(-1);
+    setShowContractModal(false);
+  };
+
+  return (
+    <form>
+      <ContractFileModal
+        contractId={contractId}
+        onClose={handleCloseContractFileModal}
+        open={showContractModal}
+      />
+
+      <FieldArray
+        component={Contracts}
+        decisionOptions={decisionOptions}
+        name="contracts"
+        onShowContractFileModal={handleShowContractFileModal}
+        savedContracts={savedContracts}
+        usersPermissions={usersPermissions}
+        contracts={currentLease.contracts}
+      />
+    </form>
+  );
 };
 
-class ContractsEdit extends PureComponent<Props, State> {
-  state = {
-    contractId: -1,
-    currentLease: {},
-    decisionOptions: [],
-    savedContracts: [],
-    showContractModal: false,
-  };
-
-  static getDerivedStateFromProps(props, state) {
-    const newState: any = {};
-
-    if (props.currentLease !== state.currentLease) {
-      (newState.currentLease = props.currentLease),
-        (newState.decisionOptions = getDecisionOptions(props.currentLease));
-      newState.savedContracts = getContentContracts(props.currentLease);
-    }
-
-    return newState;
-  }
-
-  componentDidUpdate(prevProps) {
-    const { receiveFormValidFlags } = this.props;
-
-    if (prevProps.valid !== this.props.valid) {
-      receiveFormValidFlags({
-        [formName]: this.props.valid,
-      });
-    }
-  }
-
-  handleShowContractFileModal = (contractId: number) => {
-    this.setState({
-      contractId,
-      showContractModal: true,
-    });
-  };
-  handleCloseContractFileModal = () => {
-    this.setState({
-      contractId: -1,
-      showContractModal: false,
-    });
-  };
-
-  render() {
-    const { usersPermissions, currentLease } = this.props;
-    const { contractId, decisionOptions, savedContracts, showContractModal } =
-      this.state;
-    return (
-      <form>
-        <ContractFileModal
-          contractId={contractId}
-          onClose={this.handleCloseContractFileModal}
-          open={showContractModal}
-        />
-
-        <FieldArray
-          component={renderContracts}
-          decisionOptions={decisionOptions}
-          name="contracts"
-          onShowContractFileModal={this.handleShowContractFileModal}
-          savedContracts={savedContracts}
-          usersPermissions={usersPermissions}
-          contracts={currentLease.contracts}
-        />
-      </form>
-    );
-  }
-}
-
 const formName = FormNames.LEASE_CONTRACTS;
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        currentLease: getCurrentLease(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      receiveFormValidFlags,
-    },
-  ),
-  reduxForm({
-    form: formName,
-    destroyOnUnmount: false,
-    validate: validateContractForm,
-  }),
-)(ContractsEdit) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+  destroyOnUnmount: false,
+  validate: validateContractForm,
+})(ContractsEdit) as React.ComponentType<any>;

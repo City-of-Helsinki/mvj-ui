@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FieldArray, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
@@ -40,48 +40,56 @@ import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
-  attributes: Attributes;
-  conditionsCollapseState: boolean;
-  currentLease: Lease;
-  decisionCollapseState: boolean;
-  decisionId: number;
-  errors: Record<string, any> | null | undefined;
   field: string;
-  isSaveClicked: boolean;
   onAttach: (...args: Array<any>) => any;
   onRemove: (...args: Array<any>) => any;
-  receiveCollapseStates: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
 };
 
-const DecisionItemEdit = ({
-  attributes,
-  conditionsCollapseState,
-  currentLease,
-  decisionCollapseState,
-  decisionId,
-  errors,
-  field,
-  isSaveClicked,
-  onAttach,
-  onRemove,
-  receiveCollapseStates,
-  usersPermissions,
-}: Props) => {
+const formName = FormNames.LEASE_DECISIONS;
+const selector = formValueSelector(formName);
+
+const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const currentLease: Lease = useSelector(getCurrentLease);
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
+  const dispatch = useDispatch();
+
+  const decisionId = useSelector((state) => selector(state, `${field}.id`));
+
+  const errors = useSelector((state) => getErrorsByFormName(state, formName));
+
+  const conditionsCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${formName}.${decisionId}.conditions`,
+    ),
+  );
+
+  const decisionCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${formName}.${decisionId}.decision`,
+    ),
+  );
+
   const handleCollapseToggle = (key: string, val: boolean) => {
     if (!decisionId) {
       return;
     }
-
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.LEASE_DECISIONS]: {
-          [decisionId]: {
-            [key]: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.EDIT]: {
+          [FormNames.LEASE_DECISIONS]: {
+            [decisionId]: {
+              [key]: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const handleDecisionCollapseToggle = (val: boolean) => {
@@ -117,17 +125,19 @@ const DecisionItemEdit = ({
       hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
       headerTitle={
         savedDecision ? (
-          <Fragment>
+          <>
             <Authorization
               allow={isFieldAllowedToRead(
                 attributes,
                 LeaseDecisionsFieldPaths.DECISION_MAKER,
               )}
             >
-              {getLabelOfOption(
-                decisionMakerOptions,
-                get(savedDecision, "decision_maker"),
-              ) || "-"}
+              <span>
+                {getLabelOfOption(
+                  decisionMakerOptions,
+                  get(savedDecision, "decision_maker"),
+                ) || "-"}
+              </span>
             </Authorization>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -139,9 +149,7 @@ const DecisionItemEdit = ({
                 <span>
                   &nbsp;&nbsp;{formatDate(savedDecision.decision_date)}
                 </span>
-              ) : (
-                ""
-              )}
+              ) : null}
             </Authorization>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -151,9 +159,7 @@ const DecisionItemEdit = ({
             >
               {savedDecision.section ? (
                 <span>&nbsp;&nbsp;{savedDecision.section} §</span>
-              ) : (
-                ""
-              )}
+              ) : null}
             </Authorization>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -166,14 +172,12 @@ const DecisionItemEdit = ({
                   &nbsp;&nbsp;
                   {getLabelOfOption(typeOptions, savedDecision.type)}
                 </span>
-              ) : (
-                ""
-              )}
+              ) : null}
             </Authorization>
             {!!savedDecision.conditions &&
               !!savedDecision.conditions.length &&
               ` (${savedDecision.conditions.length} ${savedDecision.conditions.length === 1 ? "ehto" : "ehtoa"})`}
-          </Fragment>
+          </>
         ) : (
           "-"
         )
@@ -364,34 +368,4 @@ const DecisionItemEdit = ({
   );
 };
 
-const formName = FormNames.LEASE_DECISIONS;
-const selector = formValueSelector(formName);
-export default connect(
-  (state, props) => {
-    const id = selector(state, `${props.field}.id`);
-    const newProps: any = {
-      attributes: getAttributes(state),
-      currentLease: getCurrentLease(state),
-      decisionId: id,
-      errors: getErrorsByFormName(state, formName),
-      isSaveClicked: getIsSaveClicked(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-
-    if (id) {
-      newProps.conditionsCollapseState = getCollapseStateByKey(
-        state,
-        `${ViewModes.EDIT}.${formName}.${id}.conditions`,
-      );
-      newProps.decisionCollapseState = getCollapseStateByKey(
-        state,
-        `${ViewModes.EDIT}.${formName}.${id}.decision`,
-      );
-    }
-
-    return newProps;
-  },
-  {
-    receiveCollapseStates,
-  },
-)(DecisionItemEdit);
+export default DecisionItemEdit;

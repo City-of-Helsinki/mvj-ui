@@ -1,8 +1,7 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Row, Column } from "react-foundation";
 import { formValueSelector } from "redux-form";
-import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
+import { useSelector } from "react-redux";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
@@ -34,7 +33,7 @@ type EmptyProps = {
 
 const CollateralEmpty = ({ attributes, field, isSaveClicked }: EmptyProps) => {
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -61,7 +60,7 @@ const CollateralEmpty = ({ attributes, field, isSaveClicked }: EmptyProps) => {
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
@@ -77,7 +76,7 @@ const CollateralFinancialGuarantee = ({
   isSaveClicked,
 }: FinancialGuaranteeProps) => {
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -206,7 +205,7 @@ const CollateralFinancialGuarantee = ({
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
@@ -222,7 +221,7 @@ const CollateralMortgageDocument = ({
   isSaveClicked,
 }: MortgageDocumentProps) => {
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -400,7 +399,7 @@ const CollateralMortgageDocument = ({
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
@@ -412,7 +411,7 @@ type OtherProps = {
 
 const CollateralOther = ({ attributes, field, isSaveClicked }: OtherProps) => {
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -613,27 +612,26 @@ const CollateralOther = ({ attributes, field, isSaveClicked }: OtherProps) => {
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
+const formName = FormNames.LEASE_CONTRACTS;
+const selector = formValueSelector(formName);
+
 type Props = {
-  attributes: Attributes;
-  collateralType: number | null | undefined;
   field: string;
-  isSaveClicked: boolean;
   onRemove: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
 };
 
-const CollateralEdit = ({
-  attributes,
-  collateralType,
-  field,
-  isSaveClicked,
-  onRemove,
-  usersPermissions,
-}: Props) => {
+const CollateralEdit: React.FC<Props> = ({ field, onRemove }) => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const collateralType: number | null | undefined = useSelector((state) =>
+    selector(state, `${field}.type`),
+  );
+  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
   return (
     <BoxItem>
       <BoxContentWrapper>
@@ -682,15 +680,4 @@ const CollateralEdit = ({
   );
 };
 
-const formName = FormNames.LEASE_CONTRACTS;
-const selector = formValueSelector(formName);
-export default flowRight(
-  connect((state, props: Props) => {
-    return {
-      attributes: getAttributes(state),
-      collateralType: selector(state, `${props.field}.type`),
-      isSaveClicked: getIsSaveClicked(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  }),
-)(CollateralEdit);
+export default CollateralEdit;

@@ -1,7 +1,6 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -33,31 +32,30 @@ import {
 } from "@/util/helpers";
 import { getAttributes } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import { withWindowResize } from "@/components/resize/WindowResizeHandler";
+import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
-  attributes: Attributes;
   collapseState: boolean;
   errors: Record<string, any> | null | undefined;
   fields: any;
   isSaveClicked: boolean;
-  largeScreen: boolean;
   onCollapseToggle: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
 };
 
-const DecisionConditionsEdit = ({
-  attributes,
+const DecisionConditionsEdit: React.FC<Props> = ({
   collapseState,
   errors,
   fields,
   fields: { name },
   isSaveClicked,
-  largeScreen,
   onCollapseToggle,
-  usersPermissions,
-}: Props) => {
+}) => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+  const largeScreen = useWindowResize();
+
   const handleCollapseToggle = (val: boolean) => {
     onCollapseToggle(val);
   };
@@ -455,13 +453,4 @@ const DecisionConditionsEdit = ({
     </AppConsumer>
   );
 };
-
-export default flowRight(
-  withWindowResize,
-  connect((state) => {
-    return {
-      attributes: getAttributes(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  }),
-)(DecisionConditionsEdit);
+export default DecisionConditionsEdit;

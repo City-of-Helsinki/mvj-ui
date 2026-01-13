@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
 import ContractsEdit from "./ContractsEdit";
 import DecisionsEdit from "./DecisionsEdit";
@@ -18,13 +18,12 @@ import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
-type Props = {
-  attributes: Attributes;
-};
 
-const DecisionsMainEdit = ({ attributes }: Props) => {
+const DecisionsMainEdit: React.FC = () => {
+  const attributes: Attributes = useSelector(getAttributes);
+
   return (
-    <Fragment>
+    <>
       <Authorization
         allow={isFieldAllowedToRead(
           attributes,
@@ -80,12 +79,8 @@ const DecisionsMainEdit = ({ attributes }: Props) => {
           <InspectionsEdit />
         </>
       </Authorization>
-    </Fragment>
+    </>
   );
 };
 
-export default connect((state) => {
-  return {
-    attributes: getAttributes(state),
-  };
-})(DecisionsMainEdit);
+export default DecisionsMainEdit;

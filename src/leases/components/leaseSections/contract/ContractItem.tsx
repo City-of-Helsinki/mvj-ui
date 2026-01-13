@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";
@@ -36,41 +36,56 @@ import {
   getCurrentLease,
 } from "@/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "@/leases/types";
 const formName = FormNames.LEASE_CONTRACTS;
 type Props = {
-  attributes: Attributes;
-  collateralsCollapseState: boolean;
   contract: Record<string, any>;
-  contractCollapseState: boolean;
-  contractChangesCollapseState: boolean;
-  currentLease: Lease;
   onShowContractFileModal: (...args: Array<any>) => any;
-  receiveCollapseStates: (...args: Array<any>) => any;
   typeOptions: Array<Record<string, any>>;
 };
 
-const ContractItem = ({
-  attributes,
-  collateralsCollapseState,
+const ContractItem: React.FC<Props> = ({
   contract,
-  contractCollapseState,
-  contractChangesCollapseState,
-  currentLease,
   onShowContractFileModal,
-  receiveCollapseStates,
   typeOptions,
 }: Props) => {
+  const collateralsCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${contract.id}.collaterals`,
+    ),
+  );
+
+  const contractCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${contract.id}.contract`,
+    ),
+  );
+
+  const contractChangesCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${contract.id}.contract_changes`,
+    ),
+  );
+
+  const attributes: Attributes = useSelector(getAttributes);
+  const currentLease = useSelector(getCurrentLease);
+
+  const dispatch = useDispatch();
+
   const handleCollapseToggle = (val: boolean, field: string) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [formName]: {
-          [contract.id]: {
-            [field]: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.READONLY]: {
+          [formName]: {
+            [contract.id]: {
+              [field]: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const handleContractCollapseToggle = (val: boolean) => {
@@ -105,7 +120,7 @@ const ContractItem = ({
         contractCollapseState !== undefined ? contractCollapseState : false
       }
       headerSubtitles={
-        <Fragment>
+        <>
           <Column>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -118,7 +133,7 @@ const ContractItem = ({
               </CollapseHeaderSubtitle>
             </Authorization>
           </Column>
-        </Fragment>
+        </>
       }
       headerTitle={
         <Authorization
@@ -680,27 +695,4 @@ const ContractItem = ({
   );
 };
 
-export default connect(
-  (state, props) => {
-    const id = props.contract.id;
-    return {
-      attributes: getAttributes(state),
-      collateralsCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.collaterals`,
-      ),
-      contractCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.contract`,
-      ),
-      contractChangesCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.contract_changes`,
-      ),
-      currentLease: getCurrentLease(state),
-    };
-  },
-  {
-    receiveCollapseStates,
-  },
-)(ContractItem);
+export default ContractItem;

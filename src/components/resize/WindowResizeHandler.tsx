@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, useEffect } from "react";
 import throttle from "lodash/throttle";
 import { isLargeScreen } from "@/util/helpers";
 export function withWindowResize(WrappedComponent: any) {
@@ -39,4 +39,21 @@ export function withWindowResize(WrappedComponent: any) {
       );
     }
   };
+}
+
+export function useWindowResize() {
+  const [largeScreen, setLargeScreen] = React.useState(isLargeScreen());
+
+  useEffect(() => {
+    const handleResize = throttle(() => {
+      setLargeScreen(isLargeScreen());
+    }, 100);
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return largeScreen;
 }

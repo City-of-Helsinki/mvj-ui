@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
@@ -26,32 +25,40 @@ import {
   isFieldAllowedToRead,
 } from "@/util/helpers";
 import { getAttributes, getCollapseStateByKey } from "@/leases/selectors";
-import { withWindowResize } from "@/components/resize/WindowResizeHandler";
+import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
 const formName = FormNames.LEASE_DECISIONS;
 type Props = {
-  attributes: Attributes;
   conditionTypeOptions: Array<Record<string, any>>;
-  conditionsCollapseState: boolean;
-  decisionCollapseState: boolean;
   decisionMakerOptions: Array<Record<string, any>>;
   decision: Record<string, any>;
-  largeScreen: boolean;
-  receiveCollapseStates: (...args: Array<any>) => any;
   typeOptions: Array<Record<string, any>>;
 };
 
-const DecisionItem = ({
-  attributes,
+const DecisionItem: React.FC<Props> = ({
   conditionTypeOptions,
-  conditionsCollapseState,
-  decisionCollapseState,
   decisionMakerOptions,
   decision,
-  largeScreen,
-  receiveCollapseStates,
   typeOptions,
-}: Props) => {
+}) => {
+  const attributes: Attributes = useSelector(getAttributes);
+
+  const largeScreen = useWindowResize();
+
+  const conditionsCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${decision.id}.conditions`,
+    ),
+  );
+
+  const decisionCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${decision.id}.decision`,
+    ),
+  );
+
   const handleCollapseToggle = (key: string, val: boolean) => {
     receiveCollapseStates({
       [ViewModes.READONLY]: {
@@ -79,15 +86,19 @@ const DecisionItem = ({
         decisionCollapseState !== undefined ? decisionCollapseState : false
       }
       headerTitle={
-        <Fragment>
+        <>
           <Authorization
             allow={isFieldAllowedToRead(
               attributes,
               LeaseDecisionsFieldPaths.DECISION_MAKER,
             )}
           >
-            {getLabelOfOption(decisionMakerOptions, decision.decision_maker) ||
-              "-"}
+            <span>
+              {getLabelOfOption(
+                decisionMakerOptions,
+                decision.decision_maker,
+              ) || "-"}
+            </span>
           </Authorization>
           <Authorization
             allow={isFieldAllowedToRead(
@@ -97,9 +108,7 @@ const DecisionItem = ({
           >
             {decision.decision_date ? (
               <span>&nbsp;&nbsp;{formatDate(decision.decision_date)}</span>
-            ) : (
-              ""
-            )}
+            ) : null}
           </Authorization>
           <Authorization
             allow={isFieldAllowedToRead(
@@ -109,9 +118,7 @@ const DecisionItem = ({
           >
             {decision.section ? (
               <span>&nbsp;&nbsp;{decision.section} §</span>
-            ) : (
-              ""
-            )}
+            ) : null}
           </Authorization>
           <Authorization
             allow={isFieldAllowedToRead(
@@ -123,14 +130,12 @@ const DecisionItem = ({
               <span>
                 &nbsp;&nbsp;{getLabelOfOption(typeOptions, decision.type)}
               </span>
-            ) : (
-              ""
-            )}
+            ) : null}
           </Authorization>
           {!!decision.conditions &&
             !!decision.conditions.length &&
             ` (${decision.conditions.length} ${decision.conditions.length === 1 ? "ehto" : "ehtoa"})`}
-        </Fragment>
+        </>
       }
       onToggle={handleDecisionCollapseToggle}
     >
@@ -576,25 +581,4 @@ const DecisionItem = ({
   );
 };
 
-export default flowRight(
-  withWindowResize,
-  connect(
-    (state, props: Props) => {
-      const id = props.decision.id;
-      return {
-        attributes: getAttributes(state),
-        conditionsCollapseState: getCollapseStateByKey(
-          state,
-          `${ViewModes.READONLY}.${formName}.${id}.conditions`,
-        ),
-        decisionCollapseState: getCollapseStateByKey(
-          state,
-          `${ViewModes.READONLY}.${formName}.${id}.decision`,
-        ),
-      };
-    },
-    {
-      receiveCollapseStates,
-    },
-  ),
-)(DecisionItem);
+export default DecisionItem;
