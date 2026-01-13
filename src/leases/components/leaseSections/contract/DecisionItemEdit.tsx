@@ -129,12 +129,12 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                 LeaseDecisionsFieldPaths.DECISION_MAKER,
               )}
             >
-              <>
+              <span>
                 {getLabelOfOption(
                   decisionMakerOptions,
                   get(savedDecision, "decision_maker"),
                 ) || "-"}
-              </>
+              </span>
             </Authorization>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -142,15 +142,13 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                 LeaseDecisionsFieldPaths.DECISION_DATE,
               )}
             >
-              <>
-                {savedDecision.decision_date ? (
-                  <span>
-                    &nbsp;&nbsp;{formatDate(savedDecision.decision_date)}
-                  </span>
-                ) : (
-                  ""
-                )}
-              </>
+              {savedDecision.decision_date ? (
+                <span>
+                  &nbsp;&nbsp;{formatDate(savedDecision.decision_date)}
+                </span>
+              ) : (
+                <span></span>
+              )}
             </Authorization>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -158,13 +156,11 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                 LeaseDecisionsFieldPaths.SECTION,
               )}
             >
-              <>
-                {savedDecision.section ? (
-                  <span>&nbsp;&nbsp;{savedDecision.section} §</span>
-                ) : (
-                  ""
-                )}
-              </>
+              {savedDecision.section ? (
+                <span>&nbsp;&nbsp;{savedDecision.section} §</span>
+              ) : (
+                <span></span>
+              )}
             </Authorization>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -172,16 +168,14 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                 LeaseDecisionsFieldPaths.TYPE,
               )}
             >
-              <>
-                {savedDecision.type ? (
-                  <span>
-                    &nbsp;&nbsp;
-                    {getLabelOfOption(typeOptions, savedDecision.type)}
-                  </span>
-                ) : (
-                  ""
-                )}
-              </>
+              {savedDecision.type ? (
+                <span>
+                  &nbsp;&nbsp;
+                  {getLabelOfOption(typeOptions, savedDecision.type)}
+                </span>
+              ) : (
+                <span></span>
+              )}
             </Authorization>
             {!!savedDecision.conditions &&
               !!savedDecision.conditions.length &&

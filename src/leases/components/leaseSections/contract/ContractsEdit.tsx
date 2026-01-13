@@ -70,7 +70,7 @@ const renderContracts = ({
 
                 return (
                   <ContractItemEdit
-                    key={index}
+                    key={contract?.id ?? index}
                     decisionOptions={decisionOptions}
                     field={contract}
                     onRemove={handleRemove}

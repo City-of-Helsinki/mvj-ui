@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";
@@ -72,16 +72,20 @@ const ContractItem: React.FC<Props> = ({
   const attributes: Attributes = useSelector(getAttributes);
   const currentLease = useSelector(getCurrentLease);
 
+  const dispatch = useDispatch();
+
   const handleCollapseToggle = (val: boolean, field: string) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [formName]: {
-          [contract.id]: {
-            [field]: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.READONLY]: {
+          [formName]: {
+            [contract.id]: {
+              [field]: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const handleContractCollapseToggle = (val: boolean) => {

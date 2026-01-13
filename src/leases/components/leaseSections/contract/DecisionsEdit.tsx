@@ -69,7 +69,7 @@ const renderDecisions = ({
 
                 return (
                   <DecisionItemEdit
-                    key={index}
+                    key={decision?.id ?? index}
                     field={decision}
                     onAttach={onAttach}
                     onRemove={handleRemove}
@@ -123,17 +123,17 @@ const DecisionsEdit: React.FC<Props> = ({ valid }) => {
   }, [valid, dispatch]);
 
   const handleAttach = (decisionId) => {
-    showAttachDecisionModal();
+    dispatch(showAttachDecisionModal());
     setDecisionToAttach(decisionId);
   };
 
   const handleModalCancelAndClose = () => {
-    hideAttachDecisionModal();
+    dispatch(hideAttachDecisionModal());
     setDecisionToAttach(null);
   };
 
   const handleAttachDecisions = (payload: Record<string, any>) => {
-    copyDecisionToLeases({ ...payload, decision: decisionToAttach });
+    dispatch(copyDecisionToLeases({ ...payload, decision: decisionToAttach }));
   };
 
   return (

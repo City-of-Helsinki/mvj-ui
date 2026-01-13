@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FieldArray, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
@@ -517,7 +517,6 @@ const RenderCollaterals: React.FC<CollateralsProps> = ({
 };
 
 type Props = {
-  // contractId: number;
   decisionOptions: Array<Record<string, any>>;
   field: string;
   onRemove: (...args: Array<any>) => any;
@@ -553,12 +552,14 @@ const ContractItemEdit: React.FC<Props> = ({
     selector(state, `${field}.contract_number`),
   );
 
+  const dispatch = useDispatch();
+
   const collateralsCollapseState = useSelector(
     (state) =>
       contractId &&
       getCollapseStateByKey(
         state,
-        `${ViewModes.EDIT}.${formName}.${contract.id}.collaterals`,
+        `${ViewModes.EDIT}.${formName}.${contractId}.collaterals`,
       ),
   );
 
@@ -567,7 +568,7 @@ const ContractItemEdit: React.FC<Props> = ({
       contractId &&
       getCollapseStateByKey(
         state,
-        `${ViewModes.EDIT}.${formName}.${contract.id}.contract`,
+        `${ViewModes.EDIT}.${formName}.${contractId}.contract`,
       ),
   );
 
@@ -576,7 +577,7 @@ const ContractItemEdit: React.FC<Props> = ({
       contractId &&
       getCollapseStateByKey(
         state,
-        `${ViewModes.EDIT}.${formName}.${contract.id}.contract_changes`,
+        `${ViewModes.EDIT}.${formName}.${contractId}.contract_changes`,
       ),
   );
 
@@ -585,11 +586,13 @@ const ContractItemEdit: React.FC<Props> = ({
       contractNumber &&
       (!contract || contractNumber !== contract.contract_number)
     ) {
-      fetchLeasesForContractNumber({
-        contract_number: contractNumber,
-      });
+      dispatch(
+        fetchLeasesForContractNumber({
+          contract_number: contractNumber,
+        }),
+      );
     }
-  }, [contractNumber, contract]);
+  }, [contractNumber, contract, dispatch]);
 
   const getContractById = (id: number) =>
     id ? savedContracts.find((decision) => decision.id === id) : {};
