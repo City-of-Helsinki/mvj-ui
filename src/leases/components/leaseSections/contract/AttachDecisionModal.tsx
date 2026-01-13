@@ -16,7 +16,7 @@ import { fetchLeases } from "@/leases/requestsAsync";
 import { ButtonColors } from "@/components/enums";
 import { getContentLeaseOption } from "@/leases/helpers";
 import { sortStringByKeyAsc } from "@/util/helpers";
-import { SelectListOption } from "@/types";
+import type { SelectListOption } from "@/types";
 
 type FilterProps = {
   available: string;
