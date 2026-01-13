@@ -17,11 +17,8 @@ import indexSaga from "@/index/saga";
 import infillDevelopmentSaga from "@/infillDevelopment/saga";
 import infillDevelopmentAttachmentSaga from "@/infillDevelopmentAttachment/saga";
 import invoiceSaga from "@/invoices/saga";
-import landUseinvoiceSaga from "@/landUseInvoices/saga";
 import invoiceNoteSaga from "@/invoiceNote/saga";
 import invoiceSetSaga from "@/invoiceSets/saga";
-import landUseContractSaga from "@/landUseContract/saga";
-import landUseAgreementAttachmentSaga from "@/landUseAgreementAttachment/saga";
 import leaseSaga from "@/leases/saga";
 import leaseAreaAttachmentSaga from "@/leaseAreaAttachment/saga";
 import leaseInspectionAttachmentSaga from "@/leaseInspectionAttachment/saga";
@@ -68,11 +65,8 @@ export default () =>
       fork(infillDevelopmentSaga),
       fork(infillDevelopmentAttachmentSaga),
       fork(invoiceSaga),
-      fork(landUseinvoiceSaga),
       fork(invoiceNoteSaga),
       fork(invoiceSetSaga),
-      fork(landUseContractSaga),
-      fork(landUseAgreementAttachmentSaga),
       fork(leaseSaga),
       fork(leaseAreaAttachmentSaga),
       fork(leaseCreateChargeSaga),

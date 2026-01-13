@@ -115,14 +115,6 @@ export const getUiDataPlotSearchKey = (key: string): string =>
   getKeyWithPrefix(UiDataPrefixes.PLOT_SEARCH, key);
 
 /**
- * Get key for ui data on land use contract page
- * @param {string} key
- * @return {string}
- */
-export const getUiDataLandUseContractKey = (key: string): string =>
-  getKeyWithPrefix(UiDataPrefixes.LAND_USE_CONTRACT, key);
-
-/**
  * Get key for ui data on property page
  * @param {string} key
  * @return {string}
@@ -187,14 +179,6 @@ export const getUiDataTradeRegisterCompanyRepresentKey = (
   key: string,
 ): string =>
   getKeyWithPrefix(UiDataPrefixes.TRADE_REGISTER_COMPANY_REPRESENT, key);
-
-/**
- * Get key for ui data on trade register company notice component
- * @param {string} key
- * @return {string}
- */
-export const getUiDataLandUseAgreementAttachmentKey = (key: string): string =>
-  getKeyWithPrefix(UiDataPrefixes.LAND_USE_CONTRACT_AGREEMENT_ATTACHMENT, key);
 
 /**
  * Get key for ui data on credit decision component
