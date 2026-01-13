@@ -109,7 +109,11 @@ export default defineConfig({
       '@': path.resolve(__dirname, '/src'),
     },
     coverage: {
-      provider: 'istanbul'
+      provider: 'v8',
+      reporter: ['lcov', 'text'],
+      reportsDirectory: './coverage',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: ['src/**/*.{test,spec}.{ts,tsx}', 'src/**/*.d.ts'],
     },
   }
 })
