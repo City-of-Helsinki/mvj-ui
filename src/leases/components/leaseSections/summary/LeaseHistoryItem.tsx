@@ -142,7 +142,7 @@ const LeaseHistoryItem = ({
                     UsersPermissions.DELETE_LEASE_HISTORY_ITEM,
                   )}
                 >
-                  {onDelete && deleteId && (
+                  {Boolean(onDelete) && Boolean(deleteId) && (
                     <RemoveButton
                       className="related-leases-item_remove-button"
                       onClick={handleDelete}

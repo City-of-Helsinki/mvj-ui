@@ -484,16 +484,10 @@ const RentAdjustments = ({
                         </Column>
                         <Column small={6} medium={4} large={2}>
                           <Authorization
-                            allow={
-                              isFieldAllowedToRead(
-                                leaseAttributes,
-                                LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                              ) ||
-                              isFieldAllowedToRead(
-                                leaseAttributes,
-                                LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                              )
-                            }
+                            allow={isFieldAllowedToRead(
+                              leaseAttributes,
+                              LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT,
+                            )}
                           >
                             <>
                               <FormTextTitle

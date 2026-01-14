@@ -645,7 +645,17 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             >
               {" "}
               {/* style={{position: 'absolute', right: '35px', top: '-5px'}}> */}
-              <a onClick={() => this.updatePlanUnit(currentTarget)}>
+              <a
+                role="button"
+                tabIndex={0}
+                onClick={() => this.updatePlanUnit(currentTarget)}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    this.updatePlanUnit(currentTarget);
+                  }
+                }}
+              >
                 <WarningField
                   meta={{
                     warning: label + " Päivitä tiedot",
@@ -665,7 +675,17 @@ class PlotSearchSiteEdit extends Component<Props, State> {
             >
               {" "}
               {/* style={{position: 'absolute', right: '35px', top: '-5px'}}> */}
-              <a onClick={onRemove}>
+              <a
+                role="button"
+                tabIndex={0}
+                onClick={onRemove}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onRemove();
+                  }
+                }}
+              >
                 <WarningField
                   meta={{
                     warning: label + " Poista kohde hausta",

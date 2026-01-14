@@ -486,8 +486,8 @@ class PlotApplicationPage extends Component<Props & WithRouterProps, State> {
     const { applicantInfoCheckFormNames, targetInfoCheckFormNames } =
       this.state;
     destroy(FormNames.PLOT_APPLICATION);
-    applicantInfoCheckFormNames.map((name) => destroy(name));
-    targetInfoCheckFormNames.map((name) => destroy(name));
+    applicantInfoCheckFormNames.forEach((name) => destroy(name));
+    targetInfoCheckFormNames.forEach((name) => destroy(name));
     this.setState(() => ({
       applicantInfoCheckFormNames: [],
       targetInfoCheckFormNames: [],

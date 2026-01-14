@@ -17,9 +17,9 @@ class AuditLogTableItem extends PureComponent<Props, State> {
     collapse: false,
   };
   handleCollapseArrowIconClick = () => {
-    this.setState({
-      collapse: !this.state.collapse,
-    });
+    this.setState((prevState) => ({
+      collapse: !prevState.collapse,
+    }));
   };
   handleCollapseArrowIconKeyDown = (e: any) => {
     if (e.keyCode === 13) {

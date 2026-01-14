@@ -643,7 +643,21 @@ const ContractItemEdit: React.FC<Props> = ({
 
     return (
       <FormText>
-        {value ? <a onClick={handleShowContractFileModal}>{value}</a> : "-"}
+        {value ? (
+          <a
+            onClick={handleShowContractFileModal}
+            onKeyDown={(e: React.KeyboardEvent) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleShowContractFileModal();
+              }
+            }}
+          >
+            {value}
+          </a>
+        ) : (
+          "-"
+        )}
       </FormText>
     );
   };

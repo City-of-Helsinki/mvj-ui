@@ -28,9 +28,9 @@ class SortableTableGroup extends PureComponent<Props, State> {
     collapse: false,
   };
   handleCollapseArrowIconClick: () => void = () => {
-    this.setState({
-      collapse: !this.state.collapse,
-    });
+    this.setState((prevState) => ({
+      collapse: !prevState.collapse,
+    }));
   };
   handleCollapseArrowIconKeyDown: KeyboardEventHandler<HTMLAnchorElement> = (
     e: any,

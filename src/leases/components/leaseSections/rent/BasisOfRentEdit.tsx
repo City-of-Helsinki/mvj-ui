@@ -451,7 +451,6 @@ const renderMastChildren = ({
   parentField,
   fieldsDisabled,
 }: renderMastChildrenProps): ReactElement => {
-  fields = [{}, {}];
   return (
     <AppConsumer>
       {() => {
@@ -3113,16 +3112,10 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             </Column>
                             <Column small={4} large={2}>
                               <Authorization
-                                allow={
-                                  isFieldAllowedToRead(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                                  ) ||
-                                  isFieldAllowedToRead(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                                  )
-                                }
+                                allow={isFieldAllowedToRead(
+                                  leaseAttributes,
+                                  LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
+                                )}
                               >
                                 <>
                                   <FormTextTitle
@@ -3143,16 +3136,10 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             </Column>
                             <Column small={4} large={2}>
                               <Authorization
-                                allow={
-                                  isFieldAllowedToRead(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                                  ) ||
-                                  isFieldAllowedToRead(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                                  )
-                                }
+                                allow={isFieldAllowedToRead(
+                                  leaseAttributes,
+                                  LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
+                                )}
                               >
                                 <>
                                   <FormTextTitle

@@ -71,9 +71,9 @@ class SortableTableRow extends PureComponent<Props, State> {
     }
   };
   handleCollapseArrowIconClick: () => void = () => {
-    this.setState({
-      collapse: !this.state.collapse,
-    });
+    this.setState((prevState) => ({
+      collapse: !prevState.collapse,
+    }));
   };
   handleCollapseArrowIconKeyDown: KeyboardEventHandler<HTMLAnchorElement> = (
     e: any,

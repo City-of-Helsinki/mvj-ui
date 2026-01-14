@@ -114,9 +114,9 @@ class Search extends PureComponent<Props & WithRouterProps, State> {
     onSearch(newValues, true);
   };
   toggleSearchType = () => {
-    this.setState({
-      isBasicSearch: !this.state.isBasicSearch,
-    });
+    this.setState((prevState) => ({
+      isBasicSearch: !prevState.isBasicSearch,
+    }));
   };
   handleClear = () => {
     const { initialize, onSearch, sortKey, sortOrder } = this.props;

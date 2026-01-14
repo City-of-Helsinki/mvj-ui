@@ -74,8 +74,7 @@ const InvoiceSimulatorBillingPeriod = ({
           large={8}
           className="invoice-simulator__explanations"
         >
-          {explanations &&
-            explanations.length &&
+          {explanations?.length > 0 &&
             explanations.map((explanation, index) => {
               return (
                 <Fragment key={index}>

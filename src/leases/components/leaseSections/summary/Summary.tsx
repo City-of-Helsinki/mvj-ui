@@ -169,9 +169,9 @@ class Summary extends PureComponent<Props, State> {
     this.handleCollapseToggle("statistical", val);
   };
   handleCollapseBasisOfRentsClick = () => {
-    this.setState({
-      collapseBasisOfRents: !this.state.collapseBasisOfRents,
-    });
+    this.setState((prevState) => ({
+      collapseBasisOfRents: !prevState.collapseBasisOfRents,
+    }));
   };
   handleCollapseBasisOfRentsKeyDown = (e: any) => {
     if (e.keyCode === 13) {

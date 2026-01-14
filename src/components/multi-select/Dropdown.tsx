@@ -166,6 +166,12 @@ class Dropdown extends Component<Props, State> {
             },
           )}
           onClick={this.toggleExpanded}
+          onKeyDown={(e: React.KeyboardEvent) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              this.toggleExpanded(undefined);
+            }
+          }}
         >
           <span
             className={classNames("multi-select__dropdown-heading-value", {
