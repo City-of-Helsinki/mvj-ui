@@ -44,9 +44,9 @@ class ShowMore extends PureComponent<Props, State> {
     return this.state.open ? "Näytä vähemmän" : "Näytä lisää";
   };
   handleReadMoreClick = () => {
-    this.setState({
-      open: !this.state.open,
-    });
+    this.setState((prevState) => ({
+      open: !prevState.open,
+    }));
     this.checkOverflow();
   };
   handleKeyDown = (e: any) => {

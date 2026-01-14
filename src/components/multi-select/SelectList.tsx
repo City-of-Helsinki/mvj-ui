@@ -22,7 +22,7 @@ const SelectList = ({
 }: Props) => {
   const handleSelectionChanged = (option: Option, checked: boolean) => {
     if (disabled) {
-      true;
+      return;
     }
 
     if (checked) {

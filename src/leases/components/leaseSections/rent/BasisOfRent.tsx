@@ -76,11 +76,11 @@ type Props = {
  * There are many values in this component that are calculated with complex logic.
  * Values like these should not be calculated in components, but rather in the API,
  * and then fetched into the redux state to be used as readily calculated values.
- * 
- * The calculation logic of rents and subventions should be concentrated to the API code 
+ *
+ * The calculation logic of rents and subventions should be concentrated to the API code
  * so that there could be a single source of truth for the calculation of these values.
- * 
- * Values that should be returned in an API response 
+ *
+ * Values that should be returned in an API response
  * instead of being calculated here are:
  * - currentAmountPerArea
  * - basicAnnualRent
@@ -93,8 +93,8 @@ type Props = {
  * - temporarySubventionDiscountPercentage
  * - subventionDiscountedInitial
  * - zonePrice
- * - rent 
- *   (terminology of "rent" here is also misleading, 
+ * - rent
+ *   (terminology of "rent" here is also misleading,
  *    because it is not a rent object but amount)
  * - temporaryRent
  * - temporaryRentIndexed
@@ -1880,16 +1880,10 @@ const BasisOfRent = ({
                   </Column>
                   <Column small={4} large={2}>
                     <Authorization
-                      allow={
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                        ) ||
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                        )
-                      }
+                      allow={isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
+                      )}
                     >
                       <>
                         <FormTextTitle
@@ -1910,16 +1904,10 @@ const BasisOfRent = ({
                   </Column>
                   <Column small={4} large={2}>
                     <Authorization
-                      allow={
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                        ) ||
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                        )
-                      }
+                      allow={isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
+                      )}
                     >
                       <>
                         <FormTextTitle

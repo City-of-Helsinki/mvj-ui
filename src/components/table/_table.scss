@@ -51,7 +51,6 @@
     &.active {
       a {
         z-index: 1;
-        color: variables.$black;
         pointer-events: none;
         background-color: variables.$blue;
         color: variables.$white;

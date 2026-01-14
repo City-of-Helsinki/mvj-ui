@@ -133,6 +133,16 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
             hovered: false,
           })
         }
+        onFocus={() =>
+          this.setState({
+            hovered: true,
+          })
+        }
+        onBlur={() =>
+          this.setState({
+            hovered: false,
+          })
+        }
       >
         <ItemRenderer
           option={option}

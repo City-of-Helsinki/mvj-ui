@@ -35,7 +35,7 @@ export const getReportTypeOptions = (
 export const getReportUrl = (reports: Reports, reportType: string): string => {
   let url = "";
   if (reports)
-    Object.entries(reports).map(([key, value]) => {
+    Object.entries(reports).forEach(([key, value]) => {
       if (key === reportType) url = value.url;
     });
   return url;
@@ -129,7 +129,7 @@ export const getFields = (options: Record<string, any>): Array<any> => {
 export const getQueryParams = (formValues: Record<string, any>): any => {
   let query = "";
   if (formValues)
-    Object.entries(formValues).map(([key, value]) => {
+    Object.entries(formValues).forEach(([key, value]) => {
       if (key.includes("date")) {
         query += `${key}=${format(value, "yyyy-MM-dd")}&`;
       } else if (key.includes("service_unit")) {

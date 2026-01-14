@@ -187,7 +187,17 @@ const ContractItem: React.FC<Props> = ({
               </FormTextTitle>
               <FormText>
                 {contract.contract_number ? (
-                  <a onClick={handleShowContractFileModal}>
+                  <a
+                    role="button"
+                    tabIndex={0}
+                    onClick={handleShowContractFileModal}
+                    onKeyDown={(e: React.KeyboardEvent) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleShowContractFileModal();
+                      }
+                    }}
+                  >
                     {contract.contract_number}
                   </a>
                 ) : (

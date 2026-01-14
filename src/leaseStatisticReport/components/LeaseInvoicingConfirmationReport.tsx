@@ -91,7 +91,7 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
     const { reportOptions } = this.props;
     const columns = [];
     const outputFields = getOutputFields(reportOptions);
-    outputFields.map((field) => {
+    outputFields.forEach((field) => {
       columns.push({
         key: field.key,
         text: field.label,

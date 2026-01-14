@@ -145,9 +145,9 @@ class Search extends Component<Props & WithRouterProps, State> {
     onSearch({});
   };
   toggleSearchType = () => {
-    this.setState({
-      isBasicSearch: !this.state.isBasicSearch,
-    });
+    this.setState((prevState) => ({
+      isBasicSearch: !prevState.isBasicSearch,
+    }));
   };
 
   static getDerivedStateFromProps(props: Props, state: State) {

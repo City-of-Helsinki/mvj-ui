@@ -419,6 +419,9 @@ class AddressSearchInput extends Component<Props, State> {
                   <li
                     key={index}
                     onClick={handleClick}
+                    onKeyDown={(e: React.KeyboardEvent) => {
+                      if (e.key === "Enter") handleClick();
+                    }}
                     className={classNames("list-item", {
                       "is-focused": focusedValue === address,
                     })}

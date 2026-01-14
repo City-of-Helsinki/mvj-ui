@@ -10,7 +10,11 @@ import { getUserFullName } from "@/users/helpers";
 import type { Attributes } from "types";
 
 type OwnProps = {
-  openModal: (...args: Array<any>) => any;
+  openModal: (
+    checkItem: Record<string, any>,
+    form: string,
+    skipToForm: boolean,
+  ) => void;
   formName: string;
 };
 
@@ -32,6 +36,18 @@ const AreaSearchApplicantInfoCheckEditItem = ({
     infoCheckStatusOptions,
     formValues.data.state,
   );
+
+  const handleClick = (skipToForm: boolean) => {
+    openModal(formValues, formName, skipToForm);
+  };
+
+  const handleKeyDown = (skipToForm: boolean) => (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick(skipToForm);
+    }
+  };
+
   return (
     <Column
       small={6}
@@ -43,7 +59,11 @@ const AreaSearchApplicantInfoCheckEditItem = ({
       <Row>
         <Column small={8}>
           {formValues.kind.external && (
-            <a onClick={() => openModal(formValues, formName, false)}>
+            <a
+              role="button"
+              onClick={() => handleClick(false)}
+              onKeyDown={handleKeyDown(false)}
+            >
               {formValues.kind.label}
             </a>
           )}
@@ -54,7 +74,11 @@ const AreaSearchApplicantInfoCheckEditItem = ({
             <span>{statusText}</span>
           )}
           {(!formValues.kind.external || formValues.data.preparer) && (
-            <a onClick={() => openModal(formValues, formName, true)}>
+            <a
+              role="button"
+              onClick={() => handleClick(true)}
+              onKeyDown={handleKeyDown(true)}
+            >
               {statusText}
               {formValues.data.preparer && (
                 <>, {getUserFullName(formValues.data.preparer)}</>

@@ -34,7 +34,18 @@ const SearchInput = ({
         type={type}
         value={value}
       />
-      <span className="search-icon" onClick={onSubmit}></span>
+      <span
+        className="search-icon"
+        role="button"
+        tabIndex={0}
+        onClick={onSubmit}
+        onKeyDown={(e: React.KeyboardEvent) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            onSubmit();
+          }
+        }}
+      ></span>
     </div>
   );
 };

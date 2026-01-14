@@ -149,7 +149,7 @@ export const validateApplicationForm: (
 
     const searchSingleSection = (section, path) => {
       if (section.fields) {
-        Object.keys(section.fields).map((fieldIdentifier) => {
+        Object.keys(section.fields).forEach((fieldIdentifier) => {
           if (fieldIdentifier === CONTROL_SHARE_FIELD_IDENTIFIER) {
             const result = /^(\d+)\s*\/\s*(\d+)$/.exec(
               section.fields[fieldIdentifier].value,
@@ -170,7 +170,7 @@ export const validateApplicationForm: (
       }
 
       if (section.sections) {
-        Object.keys(section.sections).map((identifier) =>
+        Object.keys(section.sections).forEach((identifier) =>
           searchSection(
             section.sections[identifier],
             `${path}.sections.${identifier}`,
@@ -189,7 +189,7 @@ export const validateApplicationForm: (
       }
     };
 
-    Object.keys(root.sections).map((identifier) =>
+    Object.keys(root.sections).forEach((identifier) =>
       searchSection(
         root.sections[identifier],
         `${pathPrefix}.sections.${identifier}`,

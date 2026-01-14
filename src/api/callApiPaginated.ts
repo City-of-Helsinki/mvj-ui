@@ -21,8 +21,6 @@ function* callApiPaginated(request: Request): Generator<any, any, any> {
           return {
             response,
           };
-          break;
-
         default:
           return {
             response,
@@ -31,7 +29,6 @@ function* callApiPaginated(request: Request): Generator<any, any, any> {
               message: response.statusText,
             },
           };
-          break;
       }
 
       nextUrl = bodyAsJson.next || null;

@@ -1559,7 +1559,7 @@ export const calculateBasisOfRentDiscountedInitialYearRentsTotal = (
             getBasisOfRentIndexValue(basisOfRent, indexOptions),
           ),
         )
-        .reduce((sum, cur) => sum + cur),
+        .reduce((sum, cur) => sum + cur, 0),
     );
   else return 0;
 };
@@ -1584,7 +1584,7 @@ export const calculateInitialYearRentsTotal = (
         basicAnnualRent,
       );
     });
-    return Number(initialYearRents.reduce((sum, cur) => sum + cur));
+    return Number(initialYearRents.reduce((sum, cur) => sum + cur, 0));
   } else {
     return 0;
   }

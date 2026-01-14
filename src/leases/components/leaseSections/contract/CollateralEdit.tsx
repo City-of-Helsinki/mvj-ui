@@ -667,7 +667,7 @@ const CollateralEdit: React.FC<Props> = ({ field, onRemove }) => {
             isSaveClicked={isSaveClicked}
           />
         )}
-        {collateralType &&
+        {Boolean(collateralType) &&
           (collateralType === CollateralTypes.OTHER || collateralType > 3) && (
             <CollateralOther
               attributes={attributes}
