@@ -18,7 +18,7 @@ jobs:
       uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node }}
-    - run: yarn --frozen-lockfile
+    - run: yarn install --frozen-lockfile --ignore-scripts
     - run: yarn coverage
     - name: Store coverage/lcov.info
       uses: actions/cache/save@v5
