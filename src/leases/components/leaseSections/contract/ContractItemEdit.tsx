@@ -1,6 +1,6 @@
 import React, { ReactElement, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FieldArray, formValueSelector } from "redux-form";
+import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
@@ -15,7 +15,7 @@ import Collapse from "@/components/collapse/Collapse";
 import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle";
 import CollateralEdit from "./CollateralEdit";
 import DecisionLink from "@/components/links/DecisionLink";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import KtjLink from "@/components/ktj/KtjLink";
@@ -177,7 +177,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                                   LeaseContractChangesFieldPaths.SIGNING_DATE,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -202,7 +202,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                                   LeaseContractChangesFieldPaths.SIGN_BY_DATE,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -227,7 +227,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                                   LeaseContractChangesFieldPaths.FIRST_CALL_SENT,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -252,7 +252,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                                   LeaseContractChangesFieldPaths.SECOND_CALL_SENT,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -277,7 +277,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                                   LeaseContractChangesFieldPaths.THIRD_CALL_SENT,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -302,7 +302,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                                   LeaseContractChangesFieldPaths.THIRD_CALL_SENT,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -330,7 +330,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                                   LeaseContractChangesFieldPaths.DECISION,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -359,7 +359,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                                   LeaseContractChangesFieldPaths.DESCRIPTION,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -485,6 +485,7 @@ const Collaterals: React.FC<CollateralsProps> = ({
                         key={index}
                         field={field}
                         onRemove={handleRemove}
+                        collateralType={fields.value?.[index]?.type}
                       />
                     );
                   })}
@@ -526,7 +527,6 @@ type Props = {
 };
 
 const formName = FormNames.LEASE_CONTRACTS;
-const selector = formValueSelector(formName);
 
 const ContractItemEdit: React.FC<Props> = ({
   decisionOptions,
@@ -537,7 +537,6 @@ const ContractItemEdit: React.FC<Props> = ({
   contract,
 }) => {
   const errors = useSelector((state) => getErrorsByFormName(state, formName));
-  const contractId = useSelector((state) => selector(state, `${field}.id`));
   const isFetchingLeasesForContractNumbers = useSelector((state) =>
     getIsFetchingLeasesForContractNumbers(state),
   );
@@ -548,9 +547,8 @@ const ContractItemEdit: React.FC<Props> = ({
   const currentLease = useSelector(getCurrentLease);
   const isSaveClicked = useSelector(getIsSaveClicked);
   const usersPermissions = useSelector(getUsersPermissions);
-  const contractNumber = useSelector((state) =>
-    selector(state, `${field}.contract_number`),
-  );
+  const contractId = contract?.id;
+  const contractNumber = contract?.contract_number;
 
   const dispatch = useDispatch();
 
@@ -710,7 +708,7 @@ const ContractItemEdit: React.FC<Props> = ({
                 LeaseContractsFieldPaths.TYPE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -756,7 +754,7 @@ const ContractItemEdit: React.FC<Props> = ({
                     />
                   </WarningContainer>
                 )}
-                <FormFieldLegacy
+                <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     attributes,
@@ -782,7 +780,7 @@ const ContractItemEdit: React.FC<Props> = ({
                 LeaseContractsFieldPaths.SIGNING_DATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -808,7 +806,7 @@ const ContractItemEdit: React.FC<Props> = ({
                 LeaseContractsFieldPaths.SIGN_BY_DATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -832,7 +830,7 @@ const ContractItemEdit: React.FC<Props> = ({
                 LeaseContractsFieldPaths.FIRST_CALL_SENT,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -856,7 +854,7 @@ const ContractItemEdit: React.FC<Props> = ({
                 LeaseContractsFieldPaths.SECOND_CALL_SENT,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -880,7 +878,7 @@ const ContractItemEdit: React.FC<Props> = ({
                 LeaseContractsFieldPaths.THIRD_CALL_SENT,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -908,7 +906,7 @@ const ContractItemEdit: React.FC<Props> = ({
                       LeaseContractsFieldPaths.IS_READJUSTMENT_DECISION,
                     )}
                   >
-                    <FormFieldLegacy
+                    <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         attributes,
@@ -935,7 +933,7 @@ const ContractItemEdit: React.FC<Props> = ({
                 LeaseContractsFieldPaths.INSTITUTION_IDENTIFIER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -959,7 +957,7 @@ const ContractItemEdit: React.FC<Props> = ({
                 LeaseContractsFieldPaths.DECISION,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1038,7 +1036,7 @@ const ContractItemEdit: React.FC<Props> = ({
                 LeaseContractsFieldPaths.EXECUTOR,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1063,7 +1061,7 @@ const ContractItemEdit: React.FC<Props> = ({
                 LeaseContractsFieldPaths.SIGNING_NOTE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -1089,19 +1087,22 @@ const ContractItemEdit: React.FC<Props> = ({
           LeaseContractChangesFieldPaths.CONTRACT_CHANGES,
         )}
       >
-        <FieldArray
-          attributes={attributes}
-          collapseState={contractChangesCollapseState}
-          component={ContractChanges}
-          currentLease={currentLease}
-          decisionOptions={decisionOptions}
-          errors={errors}
-          name={`${field}.contract_changes`}
-          isSaveClicked={isSaveClicked}
-          onCollapseToggle={handleContractChangesCollapseToggle}
-          title={LeaseContractChangesFieldTitles.CONTRACT_CHANGES}
-          usersPermissions={usersPermissions}
-        />
+        <FieldArray name={`${field}.contract_changes`}>
+          {(fieldArrayProps) =>
+            ContractChanges({
+              ...fieldArrayProps,
+              attributes: attributes,
+              collapseState: contractChangesCollapseState,
+              currentLease: currentLease,
+              decisionOptions: decisionOptions,
+              errors: errors,
+              isSaveClicked: isSaveClicked,
+              onCollapseToggle: handleContractChangesCollapseToggle,
+              title: LeaseContractChangesFieldTitles.CONTRACT_CHANGES,
+              usersPermissions: usersPermissions,
+            })
+          }
+        </FieldArray>
       </Authorization>
 
       <Authorization
@@ -1110,16 +1111,19 @@ const ContractItemEdit: React.FC<Props> = ({
           LeaseContractCollateralsFieldPaths.COLLATRALS,
         )}
       >
-        <FieldArray
-          collapseState={collateralsCollapseState}
-          component={Collaterals}
-          errors={errors}
-          name={`${field}.collaterals`}
-          isSaveClicked={isSaveClicked}
-          onCollapseToggle={handleCollateralsCollapseToggle}
-          title={LeaseContractCollateralsFieldTitles.COLLATRALS}
-          usersPermissions={usersPermissions}
-        />
+        <FieldArray name={`${field}.collaterals`}>
+          {(fieldArrayProps) =>
+            Collaterals({
+              ...fieldArrayProps,
+              collapseState: collateralsCollapseState,
+              errors: errors,
+              isSaveClicked: isSaveClicked,
+              onCollapseToggle: handleCollateralsCollapseToggle,
+              title: LeaseContractCollateralsFieldTitles.COLLATRALS,
+              usersPermissions: usersPermissions,
+            })
+          }
+        </FieldArray>
       </Authorization>
     </Collapse>
   );

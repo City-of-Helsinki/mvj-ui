@@ -1,6 +1,8 @@
 import React, { ReactElement, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { FieldArray, reduxForm } from "redux-form";
+import { useSelector } from "react-redux";
+import { FieldArray } from "react-final-form-arrays";
+import { Form } from "react-final-form";
+import { FormApi } from "final-form";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButton from "@/components/form/AddButton";
@@ -8,11 +10,9 @@ import Authorization from "@/components/authorization/Authorization";
 import ContractFileModal from "./ContractFileModal";
 import ContractItemEdit from "./ContractItemEdit";
 import FormText from "@/components/form/FormText";
-import { receiveFormValidFlags } from "@/leases/actions";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
-import { validateContractForm } from "@/leases/formValidators";
 import { getContentContracts, getDecisionOptions } from "@/leases/helpers";
 import { hasPermissions } from "@/util/helpers";
 import { getCurrentLease } from "@/leases/selectors";
@@ -101,10 +101,10 @@ const Contracts = ({
 };
 
 type Props = {
-  valid: boolean;
+  formApi: FormApi;
 };
 
-const ContractsEdit: React.FC<Props> = ({ valid }) => {
+const ContractsEdit: React.FC<Props> = ({ formApi }) => {
   const [contractId, setContractId] = React.useState<number>(-1);
   const [decisionOptions, setDecisionOptions] = React.useState<
     Array<Record<string, any>>
@@ -118,22 +118,12 @@ const ContractsEdit: React.FC<Props> = ({ valid }) => {
   const currentLease = useSelector(getCurrentLease);
   const usersPermissions = useSelector(getUsersPermissions);
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
     if (currentLease) {
       setDecisionOptions(getDecisionOptions(currentLease));
       setSavedContracts(getContentContracts(currentLease));
     }
   }, [currentLease]);
-
-  useEffect(() => {
-    dispatch(
-      receiveFormValidFlags({
-        [formName]: valid,
-      }),
-    );
-  }, [valid, dispatch]);
 
   const handleShowContractFileModal = (contractId: number) => {
     setContractId(contractId);
@@ -145,29 +135,32 @@ const ContractsEdit: React.FC<Props> = ({ valid }) => {
   };
 
   return (
-    <form>
-      <ContractFileModal
-        contractId={contractId}
-        onClose={handleCloseContractFileModal}
-        open={showContractModal}
-      />
+    <Form form={formApi} onSubmit={formApi.submit}>
+      {() => (
+        <form>
+          <ContractFileModal
+            contractId={contractId}
+            onClose={handleCloseContractFileModal}
+            open={showContractModal}
+          />
 
-      <FieldArray
-        component={Contracts}
-        decisionOptions={decisionOptions}
-        name="contracts"
-        onShowContractFileModal={handleShowContractFileModal}
-        savedContracts={savedContracts}
-        usersPermissions={usersPermissions}
-        contracts={currentLease.contracts}
-      />
-    </form>
+          <FieldArray name="contracts">
+            {(fieldArrayProps) =>
+              Contracts({
+                ...fieldArrayProps,
+                decisionOptions: decisionOptions,
+                onShowContractFileModal: handleShowContractFileModal,
+                savedContracts: savedContracts,
+                usersPermissions: usersPermissions,
+                contracts: currentLease.contracts,
+              })
+            }
+          </FieldArray>
+        </form>
+      )}
+    </Form>
   );
 };
 
 const formName = FormNames.LEASE_CONTRACTS;
-export default reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-  validate: validateContractForm,
-})(ContractsEdit) as React.ComponentType<any>;
+export default ContractsEdit;

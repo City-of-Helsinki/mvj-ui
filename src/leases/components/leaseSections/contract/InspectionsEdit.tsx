@@ -1,7 +1,9 @@
-import React, { ReactElement, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { ReactElement } from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import { FieldArray, reduxForm } from "redux-form";
+import { FieldArray } from "react-final-form-arrays";
+import { Form } from "react-final-form";
+import { FormApi } from "final-form";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
@@ -10,7 +12,6 @@ import BoxItemContainer from "@/components/content/BoxItemContainer";
 import FormText from "@/components/form/FormText";
 import GreenBox from "@/components/content/GreenBox";
 import InspectionItemEdit from "./InspectionItemEdit";
-import { receiveFormValidFlags } from "@/leases/actions";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { LeaseInspectionsFieldPaths } from "@/leases/enums";
@@ -23,7 +24,6 @@ import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type InspectionsProps = {
   fields: any;
-  isSaveClicked: boolean;
   leaseAttributes: Attributes;
   usersPermissions: UsersPermissionsType;
   username: String;
@@ -98,6 +98,7 @@ const Inspections = ({
                       key={index}
                       field={field}
                       onRemove={handleRemove}
+                      inspectionId={fields.value?.[index]?.id}
                     />
                   );
                 })}
@@ -127,41 +128,35 @@ const Inspections = ({
 };
 
 type Props = {
-  valid: boolean;
+  formApi: FormApi;
 };
 
-const InspectionsEdit: React.FC<Props> = ({ valid }) => {
+const InspectionsEdit: React.FC<Props> = ({ formApi }) => {
   const usersPermissions = useSelector(getUsersPermissions);
   const leaseAttributes = useSelector(getLeaseAttributes);
   const user = useSelector(getLoggedInUser);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(
-      receiveFormValidFlags({
-        [formName]: valid,
-      }),
-    );
-  }, [valid, dispatch]);
-
   return (
-    <form>
-      <GreenBox>
-        <FieldArray
-          component={Inspections}
-          leaseAttributes={leaseAttributes}
-          name="inspections"
-          usersPermissions={usersPermissions}
-          username={get(user, "profile.name")}
-        />
-      </GreenBox>
-    </form>
+    <Form form={formApi} onSubmit={formApi.submit}>
+      {() => (
+        <form>
+          <GreenBox>
+            <FieldArray name="inspections">
+              {(fieldArrayProps) =>
+                Inspections({
+                  ...fieldArrayProps,
+                  leaseAttributes: leaseAttributes,
+                  usersPermissions: usersPermissions,
+                  username: get(user, "profile.name"),
+                })
+              }
+            </FieldArray>
+          </GreenBox>
+        </form>
+      )}
+    </Form>
   );
 };
 
 const formName = FormNames.LEASE_INSPECTIONS;
-export default reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-})(InspectionsEdit) as React.ComponentType<any>;
+export default InspectionsEdit;

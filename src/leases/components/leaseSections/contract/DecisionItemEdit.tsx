@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FieldArray, formValueSelector } from "redux-form";
+import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
@@ -8,7 +8,7 @@ import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import Collapse from "@/components/collapse/Collapse";
 import DecisionConditionsEdit from "./DecisionConditionsEdit";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import { receiveCollapseStates } from "@/leases/actions";
 import { FieldTypes, FormNames, ViewModes } from "@/enums";
 import {
@@ -41,14 +41,19 @@ import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
   field: string;
+  decisionId: number;
   onAttach: (...args: Array<any>) => any;
   onRemove: (...args: Array<any>) => any;
 };
 
 const formName = FormNames.LEASE_DECISIONS;
-const selector = formValueSelector(formName);
 
-const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
+const DecisionItemEdit: React.FC<Props> = ({
+  field,
+  onAttach,
+  onRemove,
+  decisionId,
+}) => {
   const attributes: Attributes = useSelector(getAttributes);
   const currentLease: Lease = useSelector(getCurrentLease);
   const isSaveClicked = useSelector(getIsSaveClicked);
@@ -56,8 +61,6 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
     useSelector(getUsersPermissions);
 
   const dispatch = useDispatch();
-
-  const decisionId = useSelector((state) => selector(state, `${field}.id`));
 
   const errors = useSelector((state) => getErrorsByFormName(state, formName));
 
@@ -204,7 +207,7 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                 LeaseDecisionsFieldPaths.DECISION_MAKER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -228,7 +231,7 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                 LeaseDecisionsFieldPaths.DECISION_DATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -252,7 +255,7 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                 LeaseDecisionsFieldPaths.SECTION,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -279,7 +282,7 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                 LeaseDecisionsFieldPaths.TYPE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -301,7 +304,7 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                 LeaseDecisionsFieldPaths.REFERENCE_NUMBER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -329,7 +332,7 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
                 LeaseDecisionsFieldPaths.DESCRIPTION,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -355,14 +358,17 @@ const DecisionItemEdit: React.FC<Props> = ({ field, onAttach, onRemove }) => {
           LeaseDecisionConditionsFieldPaths.CONDITIONS,
         )}
       >
-        <FieldArray
-          collapseState={conditionsCollapseState}
-          component={DecisionConditionsEdit}
-          errors={errors}
-          isSaveClicked={isSaveClicked}
-          name={`${field}.conditions`}
-          onCollapseToggle={handleConditionsCollapseToggle}
-        />
+        <FieldArray name={`${field}.conditions`}>
+          {(fieldArrayProps) =>
+            DecisionConditionsEdit({
+              ...fieldArrayProps,
+              errors: errors,
+              isSaveClicked: isSaveClicked,
+              collapseState: conditionsCollapseState,
+              onCollapseToggle: handleConditionsCollapseToggle,
+            })
+          }
+        </FieldArray>
       </Authorization>
     </Collapse>
   );

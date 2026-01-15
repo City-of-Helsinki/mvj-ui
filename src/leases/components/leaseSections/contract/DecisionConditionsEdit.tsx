@@ -12,7 +12,7 @@ import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import Collapse from "@/components/collapse/Collapse";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -206,7 +206,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
                               LeaseDecisionConditionsFieldPaths.TYPE,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -227,7 +227,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
                               LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -249,7 +249,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
                               LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 attributes,
@@ -273,7 +273,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
                                   LeaseDecisionConditionsFieldPaths.DESCRIPTION,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -332,7 +332,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
                                   LeaseDecisionConditionsFieldPaths.TYPE,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -357,7 +357,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
                                   LeaseDecisionConditionsFieldPaths.SUPERVISION_DATE,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -382,7 +382,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
                                   LeaseDecisionConditionsFieldPaths.SUPERVISED_DATE,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
@@ -407,7 +407,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
                                   LeaseDecisionConditionsFieldPaths.DESCRIPTION,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     attributes,
