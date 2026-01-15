@@ -1,6 +1,8 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
-import { FieldArray, reduxForm } from "redux-form";
+import { useDispatch, useSelector } from "react-redux";
+import { FieldArray } from "react-final-form-arrays";
+import { Form } from "react-final-form";
+import type { FormApi } from "final-form";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButton from "@/components/form/AddButton";
@@ -11,7 +13,6 @@ import FormText from "@/components/form/FormText";
 import {
   copyDecisionToLeases,
   hideAttachDecisionModal,
-  receiveFormValidFlags,
   showAttachDecisionModal,
 } from "@/leases/actions";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
@@ -73,6 +74,7 @@ const Decisions = ({
                     field={decision}
                     onAttach={onAttach}
                     onRemove={handleRemove}
+                    decisionId={fields.value?.[index]?.id}
                   />
                 );
               })}
@@ -96,10 +98,10 @@ const Decisions = ({
 };
 
 type Props = {
-  valid: boolean;
+  formApi: FormApi;
 };
 
-const DecisionsEdit: React.FC<Props> = ({ valid }) => {
+const DecisionsEdit: React.FC<Props> = ({ formApi }) => {
   const currentLease = useSelector(getCurrentLease);
   const isAttachDecisionModalOpen = useSelector(getIsAttachDecisionModalOpen);
   const usersPermissions = useSelector(getUsersPermissions);
@@ -113,14 +115,6 @@ const DecisionsEdit: React.FC<Props> = ({ valid }) => {
   useEffect(() => {
     dispatch(hideAttachDecisionModal());
   }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(
-      receiveFormValidFlags({
-        [formName]: valid,
-      }),
-    );
-  }, [valid, dispatch]);
 
   const handleAttach = (decisionId) => {
     dispatch(showAttachDecisionModal());
@@ -137,27 +131,30 @@ const DecisionsEdit: React.FC<Props> = ({ valid }) => {
   };
 
   return (
-    <form>
-      <AttachDecisionModal
-        currentLeaseId={currentLease.id}
-        isOpen={isAttachDecisionModalOpen}
-        onCancel={handleModalCancelAndClose}
-        onClose={handleModalCancelAndClose}
-        onSubmit={handleAttachDecisions}
-      />
+    <Form form={formApi} onSubmit={formApi.submit}>
+      {() => (
+        <form>
+          <AttachDecisionModal
+            currentLeaseId={currentLease.id}
+            isOpen={isAttachDecisionModalOpen}
+            onCancel={handleModalCancelAndClose}
+            onClose={handleModalCancelAndClose}
+            onSubmit={handleAttachDecisions}
+          />
 
-      <FieldArray
-        component={Decisions}
-        name="decisions"
-        onAttach={handleAttach}
-        usersPermissions={usersPermissions}
-      />
-    </form>
+          <FieldArray name="decisions">
+            {(fieldArrayProps) =>
+              Decisions({
+                ...fieldArrayProps,
+                onAttach: handleAttach,
+                usersPermissions,
+              })
+            }
+          </FieldArray>
+        </form>
+      )}
+    </Form>
   );
 };
 
-const formName = FormNames.LEASE_DECISIONS;
-export default reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-})(DecisionsEdit) as React.ComponentType<any>;
+export default DecisionsEdit;

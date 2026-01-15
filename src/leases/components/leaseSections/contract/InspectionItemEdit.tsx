@@ -1,6 +1,5 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
@@ -8,7 +7,7 @@ import AddFileButton from "@/components/form/AddFileButton";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -17,7 +16,7 @@ import {
   createLeaseInspectionAttachment,
   deleteLeaseInspectionAttachment,
 } from "@/leaseInspectionAttachment/actions";
-import { ConfirmationModalTexts, FieldTypes, FormNames } from "@/enums";
+import { ConfirmationModalTexts, FieldTypes } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import {
   LeaseInspectionAttachmentsFieldPaths,
@@ -46,16 +45,18 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 type Props = {
   field: any;
   onRemove: (...args: Array<any>) => any;
+  inspectionId: number;
 };
 
-const selector = formValueSelector(FormNames.LEASE_INSPECTIONS);
-
-const InspectionItemEdit: React.FC<Props> = ({ field, onRemove }) => {
+const InspectionItemEdit: React.FC<Props> = ({
+  field,
+  onRemove,
+  inspectionId,
+}) => {
   const currentLease = useSelector(getCurrentLease);
   const isSaveClicked = useSelector(getIsSaveClicked);
   const leaseAttributes = useSelector(getLeaseAttributes);
   const usersPermissions = useSelector(getUsersPermissions);
-  const inspectionId = useSelector((state) => selector(state, `${field}.id`));
   const dispatch = useDispatch();
 
   const handleAddInspectionAttachment = (e: any) => {
@@ -108,7 +109,7 @@ const InspectionItemEdit: React.FC<Props> = ({ field, onRemove }) => {
                     LeaseInspectionsFieldPaths.INSPECTOR,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -132,7 +133,7 @@ const InspectionItemEdit: React.FC<Props> = ({ field, onRemove }) => {
                     LeaseInspectionsFieldPaths.SUPERVISION_DATE,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -156,7 +157,7 @@ const InspectionItemEdit: React.FC<Props> = ({ field, onRemove }) => {
                     LeaseInspectionsFieldPaths.SUPERVISED_DATE,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -180,7 +181,7 @@ const InspectionItemEdit: React.FC<Props> = ({ field, onRemove }) => {
                     LeaseInspectionsFieldPaths.DESCRIPTION,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,

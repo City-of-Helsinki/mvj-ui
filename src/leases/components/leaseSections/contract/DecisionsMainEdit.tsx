@@ -18,8 +18,19 @@ import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
+import type { FormApi } from "final-form";
 
-const DecisionsMainEdit: React.FC = () => {
+type Props = {
+  decisionsFormApi: FormApi;
+  contractFormApi: FormApi;
+  inspectionsFormApi: FormApi;
+};
+
+const DecisionsMainEdit: React.FC<Props> = ({
+  decisionsFormApi,
+  contractFormApi,
+  inspectionsFormApi,
+}) => {
   const attributes: Attributes = useSelector(getAttributes);
 
   return (
@@ -38,7 +49,7 @@ const DecisionsMainEdit: React.FC = () => {
             {LeaseDecisionsFieldTitles.DECISIONS}
           </Title>
           <Divider />
-          <DecisionsEdit />
+          <DecisionsEdit formApi={decisionsFormApi} />
         </>
       </Authorization>
 
@@ -56,7 +67,7 @@ const DecisionsMainEdit: React.FC = () => {
             {LeaseContractsFieldTitles.CONTRACTS}
           </Title>
           <Divider />
-          <ContractsEdit />
+          <ContractsEdit formApi={contractFormApi} />
         </>
       </Authorization>
 
@@ -76,7 +87,7 @@ const DecisionsMainEdit: React.FC = () => {
             {LeaseInspectionsFieldTitles.INSPECTIONS}
           </Title>
           <Divider />
-          <InspectionsEdit />
+          <InspectionsEdit formApi={inspectionsFormApi} />
         </>
       </Authorization>
     </>
