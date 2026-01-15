@@ -18,7 +18,7 @@ import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
-import { FormApi } from "final-form";
+import type { FormApi } from "final-form";
 
 type Props = {
   decisionsFormApi: FormApi;

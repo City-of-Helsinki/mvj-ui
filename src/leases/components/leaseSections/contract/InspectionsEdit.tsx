@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
-import { FormApi } from "final-form";
+import type { FormApi } from "final-form";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
@@ -158,5 +158,4 @@ const InspectionsEdit: React.FC<Props> = ({ formApi }) => {
   );
 };
 
-const formName = FormNames.LEASE_INSPECTIONS;
 export default InspectionsEdit;

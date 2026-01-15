@@ -2,7 +2,7 @@ import React, { ReactElement, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
-import { FormApi } from "final-form";
+import type { FormApi } from "final-form";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButton from "@/components/form/AddButton";
@@ -162,5 +162,4 @@ const ContractsEdit: React.FC<Props> = ({ formApi }) => {
   );
 };
 
-const formName = FormNames.LEASE_CONTRACTS;
 export default ContractsEdit;

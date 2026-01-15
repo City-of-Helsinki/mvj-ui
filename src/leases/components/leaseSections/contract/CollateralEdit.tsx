@@ -678,5 +678,4 @@ const CollateralEdit: React.FC<Props> = ({
   );
 };
 
-const formName = FormNames.LEASE_CONTRACTS;
 export default CollateralEdit;

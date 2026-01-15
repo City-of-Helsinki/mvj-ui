@@ -2,7 +2,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
-import { FormApi } from "final-form";
+import type { FormApi } from "final-form";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButton from "@/components/form/AddButton";
@@ -157,5 +157,4 @@ const DecisionsEdit: React.FC<Props> = ({ formApi }) => {
   );
 };
 
-const formName = FormNames.LEASE_DECISIONS;
 export default DecisionsEdit;
