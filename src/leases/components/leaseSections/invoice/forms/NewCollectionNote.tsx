@@ -18,6 +18,7 @@ type Props = {
   collectionNoteAttributes: Attributes;
   field: any;
   note: string | null | undefined;
+  stage: string | null | undefined;
   onCancel: (...args: Array<any>) => any;
   onSave: (...args: Array<any>) => any;
 };
@@ -26,16 +27,37 @@ const NewCollectionNote = ({
   collectionNoteAttributes,
   field,
   note,
+  stage,
   onCancel,
   onSave,
 }: Props) => {
   const handleSave = () => {
-    onSave(note);
+    onSave(note, stage);
   };
 
   return (
     <Fragment>
       <Row>
+        <Column small={3}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              collectionNoteAttributes,
+              CollectionNoteFieldPaths.STAGE,
+            )}
+          >
+            <FormFieldLegacy
+              disableDirty
+              fieldAttributes={getFieldAttributes(
+                collectionNoteAttributes,
+                CollectionNoteFieldPaths.STAGE,
+              )}
+              name={`${field}.stage`}
+              overrideValues={{
+                label: CollectionNoteFieldTitles.STAGE,
+              }}
+            />
+          </Authorization>
+        </Column>
         <Column small={12}>
           <Authorization
             allow={isFieldAllowedToRead(
@@ -52,7 +74,6 @@ const NewCollectionNote = ({
                 ),
                 type: "textarea",
               }}
-              invisibleLabel={true}
               name={`${field}.note`}
               overrideValues={{
                 label: CollectionNoteFieldTitles.NOTE,
@@ -80,9 +101,10 @@ const NewCollectionNote = ({
 
 const formName = FormNames.LEASE_DEBT_COLLECTION;
 const selector = formValueSelector(formName);
-export default connect((state, props) => {
+export default connect((state, props: Props) => {
   return {
     collectionNoteAttributes: getCollectionNoteAttributes(state),
     note: selector(state, `${props.field}.note`),
+    stage: selector(state, `${props.field}.stage`),
   };
 })(NewCollectionNote);
