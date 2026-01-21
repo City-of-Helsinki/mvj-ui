@@ -11,7 +11,7 @@ export type CollectionNoteState = {
 export type CreateCollectionNotePayload = {
   lease: LeaseId;
   note: string;
-  stage: string;
+  collection_stage: string;
 };
 export type DeleteCollectionNotePayload = {
   id: CollectionNoteId;

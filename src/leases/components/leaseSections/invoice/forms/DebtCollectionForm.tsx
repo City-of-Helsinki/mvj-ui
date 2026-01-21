@@ -121,8 +121,8 @@ const renderNotes = ({
             fields.remove(index);
           };
 
-          const handleSave = (note: string, stage: string) => {
-            onCreate(note, stage);
+          const handleSave = (note: string, collectionStage: string) => {
+            onCreate(note, collectionStage);
             saveCallback(() => {
               fields.remove(index);
             });
@@ -300,12 +300,12 @@ class DebtCollectionForm extends PureComponent<Props, State> {
       lease: currentLease.id,
     });
   };
-  handleCreateCollectionNote = (note: string, stage: string) => {
+  handleCreateCollectionNote = (note: string, collectionStage: string) => {
     const { currentLease, createCollectionNote } = this.props;
     createCollectionNote({
       lease: currentLease.id,
       note: note,
-      stage: stage,
+      collection_stage: collectionStage,
     });
   };
   handleDeleteCollectionNote = (id: CollectionLetterId) => {
@@ -1001,7 +1001,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                     {sortedCollectionNotes &&
                       !!sortedCollectionNotes.length && (
                         <Row>
-                          <Column small={6} large={4}>
+                          <Column small={5} large={4}>
                             <Authorization
                               allow={isFieldAllowedToRead(
                                 collectionNoteAttributes,
@@ -1022,24 +1022,24 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                               </FormTextTitle>
                             </Authorization>
                           </Column>
-                          <Column small={2}>
+                          <Column small={3}>
                             <Authorization
                               allow={isFieldAllowedToRead(
                                 collectionNoteAttributes,
-                                CollectionNoteFieldPaths.STAGE,
+                                CollectionNoteFieldPaths.COLLECTION_STAGE,
                               )}
                             >
                               <FormTextTitle
                                 required={isFieldRequired(
                                   collectionNoteAttributes,
-                                  CollectionNoteFieldPaths.STAGE,
+                                  CollectionNoteFieldPaths.COLLECTION_STAGE,
                                 )}
                                 enableUiDataEdit
                                 uiDataKey={getUiDataCollectionNoteKey(
-                                  CollectionNoteFieldPaths.STAGE,
+                                  CollectionNoteFieldPaths.COLLECTION_STAGE,
                                 )}
                               >
-                                {CollectionNoteFieldTitles.STAGE}
+                                {CollectionNoteFieldTitles.COLLECTION_STAGE}
                               </FormTextTitle>
                             </Authorization>
                           </Column>
@@ -1097,7 +1097,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
 
                         return (
                           <Row key={note.id}>
-                            <Column small={6} large={4}>
+                            <Column small={5} large={4}>
                               <Authorization
                                 allow={isFieldAllowedToRead(
                                   collectionNoteAttributes,
@@ -1107,20 +1107,20 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                 <ShowMore text={note.note} />
                               </Authorization>
                             </Column>
-                            <Column small={2}>
+                            <Column small={3}>
                               <Authorization
                                 allow={isFieldAllowedToRead(
                                   collectionNoteAttributes,
-                                  CollectionNoteFieldPaths.STAGE,
+                                  CollectionNoteFieldPaths.COLLECTION_STAGE,
                                 )}
                               >
                                 <FormText>
                                   {getLabelOfOption(
                                     getFieldOptions(
                                       collectionNoteAttributes,
-                                      CollectionNoteFieldPaths.STAGE,
+                                      CollectionNoteFieldPaths.COLLECTION_STAGE,
                                     ),
-                                    note.stage,
+                                    note.collection_stage,
                                   ) || "-"}
                                 </FormText>
                               </Authorization>

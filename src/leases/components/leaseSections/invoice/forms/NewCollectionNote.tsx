@@ -18,7 +18,7 @@ type Props = {
   collectionNoteAttributes: Attributes;
   field: any;
   note: string | null | undefined;
-  stage: string | null | undefined;
+  collectionStage: string | null | undefined;
   onCancel: (...args: Array<any>) => any;
   onSave: (...args: Array<any>) => any;
 };
@@ -27,12 +27,12 @@ const NewCollectionNote = ({
   collectionNoteAttributes,
   field,
   note,
-  stage,
+  collectionStage,
   onCancel,
   onSave,
 }: Props) => {
   const handleSave = () => {
-    onSave(note, stage);
+    onSave(note, collectionStage);
   };
 
   return (
@@ -42,18 +42,17 @@ const NewCollectionNote = ({
           <Authorization
             allow={isFieldAllowedToRead(
               collectionNoteAttributes,
-              CollectionNoteFieldPaths.STAGE,
+              CollectionNoteFieldPaths.COLLECTION_STAGE,
             )}
           >
             <FormFieldLegacy
-              disableDirty
               fieldAttributes={getFieldAttributes(
                 collectionNoteAttributes,
-                CollectionNoteFieldPaths.STAGE,
+                CollectionNoteFieldPaths.COLLECTION_STAGE,
               )}
-              name={`${field}.stage`}
+              name={`${field}.collection_stage`}
               overrideValues={{
-                label: CollectionNoteFieldTitles.STAGE,
+                label: CollectionNoteFieldTitles.COLLECTION_STAGE,
               }}
             />
           </Authorization>
@@ -105,6 +104,6 @@ export default connect((state, props: Props) => {
   return {
     collectionNoteAttributes: getCollectionNoteAttributes(state),
     note: selector(state, `${props.field}.note`),
-    stage: selector(state, `${props.field}.stage`),
+    collectionStage: selector(state, `${props.field}.collection_stage`),
   };
 })(NewCollectionNote);
