@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
@@ -17,12 +17,12 @@ import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getAttributes, getCurrentLease } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
-type Props = {
-  attributes: Attributes;
-  currentLease: Lease;
-};
+type Props = {};
 
-const LeaseAreas = ({ attributes, currentLease }: Props) => {
+const LeaseAreas: React.FC<Props> = () => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const currentLease: Lease = useSelector(getCurrentLease);
+
   const areas = getContentLeaseAreas(currentLease);
   const activeAreas = areas.filter((area) => !area.archived_at);
   const archivedAreas = areas.filter((area) => area.archived_at);
@@ -32,6 +32,7 @@ const LeaseAreas = ({ attributes, currentLease }: Props) => {
   // Data state variables
   const noAreaData = !activeAreas.length && !archivedAreas.length;
   const hasActiveAreas = !!activeAreas && !!activeAreas.length;
+
   return (
     <div>
       <Title uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LEASE_AREAS)}>
@@ -81,9 +82,4 @@ const LeaseAreas = ({ attributes, currentLease }: Props) => {
   );
 };
 
-export default connect((state) => {
-  return {
-    attributes: getAttributes(state),
-    currentLease: getCurrentLease(state),
-  };
-})(LeaseAreas);
+export default LeaseAreas;

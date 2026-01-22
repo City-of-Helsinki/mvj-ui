@@ -1,8 +1,7 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
@@ -30,11 +29,12 @@ import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
 type Props = {
   areaArchived: boolean;
-  attributes: Attributes;
   plot: Record<string, any>;
 };
 
-const PlotItem: React.FC<Props> = ({ areaArchived, attributes, plot }) => {
+const PlotItem: React.FC<Props> = ({ areaArchived, plot }) => {
+  const attributes: Attributes = useSelector(getAttributes);
+
   const location = useLocation();
   const getMapLinkUrl = () => {
     const { pathname, search } = location;
@@ -44,9 +44,10 @@ const PlotItem: React.FC<Props> = ({ areaArchived, attributes, plot }) => {
     ((searchQuery.plot = plot.id), (searchQuery.tab = 7));
     return `${pathname}${getSearchQuery(searchQuery)}`;
   };
-
   const mapLinkUrl = getMapLinkUrl();
+
   const typeOptions = getFieldOptions(attributes, LeasePlotsFieldPaths.TYPE);
+
   return (
     <BoxItem className="no-border-on-first-child no-border-on-last-child">
       <Row>
@@ -184,7 +185,7 @@ const PlotItem: React.FC<Props> = ({ areaArchived, attributes, plot }) => {
         )}
       >
         {plot.identifier && (
-          <Fragment>
+          <>
             <SubTitle
               uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.KTJ_LINK)}
             >
@@ -235,17 +236,11 @@ const PlotItem: React.FC<Props> = ({ areaArchived, attributes, plot }) => {
                 />
               </Column>
             </Row>
-          </Fragment>
+          </>
         )}
       </Authorization>
     </BoxItem>
   );
 };
 
-export default flowRight(
-  connect((state) => {
-    return {
-      attributes: getAttributes(state),
-    };
-  }),
-)(PlotItem) as React.ComponentType<any>;
+export default PlotItem;

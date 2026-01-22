@@ -1,26 +1,21 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { formValueSelector, reduxForm } from "redux-form";
+import React from "react";
+import { useRef, useEffect } from "react";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
+import { useSelector } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import Modal from "@/components/modal/Modal";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
 import { LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "@/leases/enums";
+import { getAttributes, getCurrentLease } from "@/leases/selectors";
 import { ButtonColors } from "@/components/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToRead } from "@/util/helpers";
-import { getAttributes } from "@/leases/selectors";
-import type { Attributes } from "types";
+import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import { formValueSelector } from "redux-form";
+import { getDecisionOptions } from "@/leases/helpers";
 type Props = {
-  archivedNote: string;
-  archivedDecision: number | null | undefined;
-  attributes: Attributes;
-  decisionOptions: Array<Record<string, any>>;
-  label: string;
   onArchive: (...args: Array<any>) => any;
   onCancel: (...args: Array<any>) => any;
   onClose: (...args: Array<any>) => any;
@@ -28,22 +23,42 @@ type Props = {
   valid: boolean;
 };
 
-class ArchiveAreaModal extends Component<Props> {
-  firstField: any;
+const ArchiveAreaModal: React.FC<Props> = ({
+  onArchive,
+  onCancel,
+  onClose,
+  open,
+  valid,
+}) => {
+  const selector = formValueSelector(FormNames.LEASE_AREAS);
+  const attributes = useSelector(getAttributes);
+  const currentLease = useSelector(getCurrentLease);
+  const decisionOptions = getDecisionOptions(currentLease);
+  const archivedDecision = useSelector((state) =>
+    selector(state, "archived_decision"),
+  );
+  const archivedNote = useSelector((state) => selector(state, "archived_note"));
 
-  componentDidUpdate(prevProps: Props) {
-    if (!prevProps.open && this.props.open) {
-      if (this.firstField) {
-        this.firstField.focus();
+  let firstField: any = null;
+  const setRefForFirstField = (element: any) => {
+    firstField = element;
+  };
+
+  // Prevent focus() on first render
+  const mounted = useRef(true);
+  useEffect(() => {
+    if (mounted.current) {
+      mounted.current = false;
+      return;
+    }
+    if (open) {
+      if (firstField) {
+        firstField.focus();
       }
     }
-  }
+  });
 
-  setRefForFirstField = (element: any) => {
-    this.firstField = element;
-  };
-  handleArchive = () => {
-    const { archivedDecision, archivedNote, onArchive } = this.props;
+  const handleArchive = () => {
     onArchive({
       archived_at: new Date().toISOString(),
       archived_note: archivedNote,
@@ -51,17 +66,15 @@ class ArchiveAreaModal extends Component<Props> {
     });
   };
 
-  render() {
-    const { attributes, decisionOptions, onCancel, onClose, open, valid } =
-      this.props;
-    return (
-      <div>
-        <Modal
-          className="modal-small modal-autoheight"
-          title={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.TITLE}
-          isOpen={open}
-          onClose={onClose}
-        >
+  return (
+    <div>
+      <Modal
+        className="modal-small modal-autoheight"
+        title={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.TITLE}
+        isOpen={open}
+        onClose={onClose}
+      >
+        <>
           <FormText>{ConfirmationModalTexts.ARCHIVE_LEASE_AREA.LABEL}</FormText>
           <Row>
             <Column>
@@ -72,7 +85,7 @@ class ArchiveAreaModal extends Component<Props> {
                 )}
               >
                 <FormFieldLegacy
-                  setRefForField={this.setRefForFirstField}
+                  setRefForField={setRefForFirstField}
                   fieldAttributes={getFieldAttributes(
                     attributes,
                     LeaseAreasFieldPaths.ARCHIVED_DECISION,
@@ -124,27 +137,14 @@ class ArchiveAreaModal extends Component<Props> {
             <Button
               className={ButtonColors.SUCCESS}
               disabled={!valid}
-              onClick={this.handleArchive}
+              onClick={handleArchive}
               text={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.BUTTON}
             />
           </div>
-        </Modal>
-      </div>
-    );
-  }
-}
+        </>
+      </Modal>
+    </div>
+  );
+};
 
-const formName = FormNames.LEASE_ARCHIVE_AREA;
-const selector = formValueSelector(formName);
-export default flowRight(
-  connect((state) => {
-    return {
-      archivedDecision: selector(state, "archived_decision"),
-      archivedNote: selector(state, "archived_note"),
-      attributes: getAttributes(state),
-    };
-  }),
-  reduxForm({
-    form: formName,
-  }),
-)(ArchiveAreaModal) as React.ComponentType<any>;
+export default ArchiveAreaModal;

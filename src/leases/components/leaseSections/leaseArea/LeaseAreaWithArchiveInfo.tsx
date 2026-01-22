@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";
@@ -30,29 +30,36 @@ import type { Attributes } from "types";
 
 type Props = {
   area: Record<string, any>;
-  areaCollapseState: boolean;
-  attributes: Attributes;
   decisionOptions: Array<Record<string, any>>;
-  receiveCollapseStates: (...args: Array<any>) => any;
 };
 
-const LeaseAreaWithArchiveInfo = ({
+const LeaseAreaWithArchiveInfo: React.FC<Props> = ({
   area,
-  areaCollapseState,
-  attributes,
   decisionOptions,
-  receiveCollapseStates,
 }: Props) => {
+  const attributes: Attributes = useSelector(getAttributes);
+
+  const areaCollapseState: boolean = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${area.id}.area`,
+    ),
+  );
+
+  const dispatch = useDispatch();
+
   const handleAreaCollapseToggle = (val: boolean) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [FormNames.LEASE_AREAS]: {
-          [area.id]: {
-            area: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.READONLY]: {
+          [FormNames.LEASE_AREAS]: {
+            [area.id]: {
+              area: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const locationOptions = getFieldOptions(
@@ -68,7 +75,7 @@ const LeaseAreaWithArchiveInfo = ({
         areaCollapseState !== undefined ? areaCollapseState : !archived
       }
       headerSubtitles={
-        <Fragment>
+        <>
           <Column>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -117,7 +124,7 @@ const LeaseAreaWithArchiveInfo = ({
               </CollapseHeaderSubtitle>
             </Authorization>
           </Column>
-        </Fragment>
+        </>
       }
       headerTitle={
         <Authorization
@@ -202,18 +209,4 @@ const LeaseAreaWithArchiveInfo = ({
   );
 };
 
-export default connect(
-  (state, props) => {
-    const id = get(props, "area.id");
-    return {
-      areaCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.area`,
-      ),
-      attributes: getAttributes(state),
-    };
-  },
-  {
-    receiveCollapseStates,
-  },
-)(LeaseAreaWithArchiveInfo);
+export default LeaseAreaWithArchiveInfo;

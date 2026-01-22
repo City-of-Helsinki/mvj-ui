@@ -1,21 +1,22 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   FieldArray,
   formValueSelector,
   getFormValues,
   initialize,
+  InjectedFormProps,
   reduxForm,
 } from "redux-form";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
+
 import AddButton from "@/components/form/AddButton";
 import ArchiveAreaModal from "./ArchiveAreaModal";
+import LeaseAreaWithArchiveInfoEdit from "./LeaseAreaWithArchiveInfoEdit";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import Divider from "@/components/content/Divider";
-import LeaseAreaWithArchiveInfoEdit from "./LeaseAreaWithArchiveInfoEdit";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
 import { copyAreasToContract, receiveFormValidFlags } from "@/leases/actions";
@@ -26,7 +27,6 @@ import { UsersPermissions } from "@/usersPermissions/enums";
 import {
   calculateAreasSum,
   getContentLeaseAreas,
-  getDecisionOptions,
   getLeaseAreaById,
 } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
@@ -42,182 +42,146 @@ import {
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { store } from "@/index";
-import type { Attributes } from "types";
-import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 
 type AreaItemProps = {
-  decisionOptions: Array<Record<string, any>>;
   fields: any;
   isActive: boolean;
-  onArchive: (...args: Array<any>) => any;
-  onUnarchive: (...args: Array<any>) => any;
+  onArchive: (index: number, area: Record<string, any>) => void;
+  onUnarchive: (index: number, area: Record<string, any>) => void;
   usersPermissions: UsersPermissionsType;
 };
-
-class renderLeaseAreas extends PureComponent<AreaItemProps> {
-  handleAdd = () => {
-    const { fields } = this.props;
+const InnerLeaseAreas: React.FC<AreaItemProps> = ({
+  fields,
+  isActive,
+  onArchive,
+  onUnarchive,
+  usersPermissions,
+}) => {
+  const handleAdd = useCallback(() => {
     fields.push({
       addresses: [{}],
       location: AreaLocation.SURFACE,
     });
-  };
-  removeArea = (index: number) => {
-    const { fields } = this.props;
-    fields.remove(index);
-  };
+  }, [fields]);
 
-  render() {
-    const {
-      decisionOptions,
-      fields,
-      isActive,
-      onArchive,
-      onUnarchive,
-      usersPermissions,
-    } = this.props;
-    return (
-      <AppConsumer>
-        {({ dispatch }) => {
-          return (
-            <Fragment>
-              {!isActive && !!fields && !!fields.length && (
-                <h3
-                  style={{
-                    marginTop: 10,
-                    marginBottom: 5,
-                  }}
-                >
-                  Arkisto
-                </h3>
+  const removeArea = useCallback(
+    (index: number) => {
+      fields.remove(index);
+    },
+    [fields],
+  );
+
+  return (
+    <AppConsumer>
+      {({ dispatch: appDispatch }) => (
+        <>
+          {!isActive && !!fields && !!fields.length && (
+            <h3
+              style={{
+                marginTop: 10,
+                marginBottom: 5,
+              }}
+            >
+              Arkisto
+            </h3>
+          )}
+
+          {fields &&
+            !!fields.length &&
+            fields.map((area, index) => {
+              const handleRemove = () => {
+                appDispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    removeArea(index);
+                  },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
+                  confirmationModalButtonText:
+                    ConfirmationModalTexts.DELETE_LEASE_AREA.BUTTON,
+                  confirmationModalLabel:
+                    ConfirmationModalTexts.DELETE_LEASE_AREA.LABEL,
+                  confirmationModalTitle:
+                    ConfirmationModalTexts.DELETE_LEASE_AREA.TITLE,
+                });
+              };
+
+              return (
+                <LeaseAreaWithArchiveInfoEdit
+                  key={index}
+                  field={area}
+                  index={index}
+                  isActive={isActive}
+                  onArchive={onArchive}
+                  onRemove={handleRemove}
+                  onUnarchive={onUnarchive}
+                />
+              );
+            })}
+
+          {isActive && (
+            <Authorization
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.ADD_LEASEAREA,
               )}
-
-              {fields &&
-                !!fields.length &&
-                fields.map((area, index) => {
-                  const handleRemove = () => {
-                    dispatch({
-                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                      confirmationFunction: () => {
-                        fields.remove(index);
-                      },
-                      confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText:
-                        ConfirmationModalTexts.DELETE_LEASE_AREA.BUTTON,
-                      confirmationModalLabel:
-                        ConfirmationModalTexts.DELETE_LEASE_AREA.LABEL,
-                      confirmationModalTitle:
-                        ConfirmationModalTexts.DELETE_LEASE_AREA.TITLE,
-                    });
-                  };
-
-                  return (
-                    <LeaseAreaWithArchiveInfoEdit
-                      key={index}
-                      decisionOptions={decisionOptions}
-                      field={area}
-                      index={index}
-                      isActive={isActive}
-                      onArchive={onArchive}
-                      onRemove={handleRemove}
-                      onUnarchive={onUnarchive}
-                    />
-                  );
-                })}
-              {isActive && (
-                <Authorization
-                  allow={hasPermissions(
-                    usersPermissions,
-                    UsersPermissions.ADD_LEASEAREA,
-                  )}
-                >
-                  <Row>
-                    <Column>
-                      <AddButton label="Lisää kohde" onClick={this.handleAdd} />
-                    </Column>
-                  </Row>
-                </Authorization>
-              )}
-            </Fragment>
-          );
-        }}
-      </AppConsumer>
-    );
-  }
-}
+            >
+              <Row>
+                <Column>
+                  <AddButton label="Lisää kohde" onClick={handleAdd} />
+                </Column>
+              </Row>
+            </Authorization>
+          )}
+        </>
+      )}
+    </AppConsumer>
+  );
+};
 
 type Props = {
-  change: (...args: Array<any>) => any;
-  copyAreasToContract: (...args: Array<any>) => any;
-  currentLease: Lease;
-  editedActiveAreas: Array<Record<string, any>>;
-  editedArchivedAreas: Array<Record<string, any>>;
-  initialize: (...args: Array<any>) => any;
-  leaseAttributes: Attributes;
-  receiveFormValidFlags: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
   valid: boolean;
 };
-type State = {
-  areasSum: number | null | undefined;
-  areaToArchive: Record<string, any> | null | undefined;
-  areaIndexToArchive: number | null | undefined;
-  currentLease: Lease;
-  decisionOptions: Array<Record<string, any>>;
-  showArchiveAreaModal: boolean;
-};
 
-class LeaseAreasEdit extends PureComponent<Props, State> {
-  activeAreasComponent: any;
-  archivedAreasComponent: any;
-  state = {
-    areasSum: null,
-    areaToArchive: null,
-    areaIndexToArchive: null,
-    currentLease: {},
-    decisionOptions: [],
-    showArchiveAreaModal: false,
-  };
-  setActiveAreasRef = (el: any) => {
-    this.activeAreasComponent = el;
-  };
-  setArchivedAreasRef = (el: any) => {
-    this.archivedAreasComponent = el;
-  };
+const formName = FormNames.LEASE_AREAS;
+const selector = formValueSelector(formName);
+const LeaseAreasEdit: React.FC<Props & InjectedFormProps> = ({
+  valid,
+  change,
+}) => {
+  const dispatch = useDispatch();
 
-  static getDerivedStateFromProps(props, state) {
-    const newState: any = {};
+  const currentLease = useSelector(getCurrentLease);
+  const editedActiveAreas = useSelector((state) =>
+    selector(state, "lease_areas_active"),
+  );
+  const editedArchivedAreas = useSelector((state) =>
+    selector(state, "lease_areas_archived"),
+  );
+  const leaseAttributes = useSelector(getLeaseAttributes);
+  const usersPermissions = useSelector(getUsersPermissions);
 
-    if (props.currentLease !== state.currentLease) {
-      const areas = getContentLeaseAreas(props.currentLease),
-        activeAreas = areas.filter((area) => !area.archived_at);
-      newState.areas = areas;
-      newState.areasSum = calculateAreasSum(activeAreas);
-      newState.currentLease = props.currentLease;
-      newState.decisionOptions = getDecisionOptions(props.currentLease);
+  const { areas, activeAreas, areasSum } = useMemo(() => {
+    if (!currentLease) {
+      return {
+        areas: [],
+        activeAreas: [],
+        areasSum: 0,
+      };
     }
+    const currentAreas = getContentLeaseAreas(currentLease);
+    const currentlyActive = currentAreas.filter((area) => !area.archived_at);
+    const sum = calculateAreasSum(currentlyActive);
 
-    return newState;
-  }
+    return {
+      areas: currentAreas,
+      activeAreas: currentlyActive,
+      areasSum: sum,
+    };
+  }, [currentLease]);
 
-  componentDidUpdate(prevProps: Props) {
-    const { receiveFormValidFlags } = this.props;
-
-    if (prevProps.valid !== this.props.valid) {
-      receiveFormValidFlags({
-        [FormNames.LEASE_AREAS]: this.props.valid,
-      });
-    }
-
-    if (prevProps.currentLease !== this.props.currentLease) {
-      this.addCopiedPlotsAndPlanUnits();
-    }
-  }
-
-  addCopiedPlotsAndPlanUnits = () => {
-    const { change, currentLease } = this.props;
-    const formValues = getFormValues(formName)(store.getState());
+  useEffect(() => {
+    const formValues = getFormValues(formName)(store.getState()) as any;
 
     const addContractItemsToArea = (area: Record<string, any>) => {
       const savedArea = getLeaseAreaById(currentLease, area.id);
@@ -233,53 +197,94 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
       return { ...area, plan_units_contract: [], plots_contract: [] };
     };
 
-    change(
-      "lease_areas_active",
-      formValues.lease_areas_active.map((area) => addContractItemsToArea(area)),
-    );
-    change(
-      "lease_areas_archived",
-      formValues.lease_areas_archived.map((area) =>
-        addContractItemsToArea(area),
-      ),
-    );
-  };
-  showArchiveAreaModal = (index: number, area: Record<string, any>) => {
-    const { initialize } = this.props;
-    this.setState({
-      areaToArchive: area,
-      areaIndexToArchive: index,
-      showArchiveAreaModal: true,
-    });
-    initialize(FormNames.LEASE_ARCHIVE_AREA, {});
-  };
-  handleHideArchiveAreaModal = () => {
-    this.setState({
-      areaIndexToArchive: null,
-      areaToArchive: null,
-      showArchiveAreaModal: false,
-    });
-  };
-  handleArchive = (archiveInfo: Record<string, any>) => {
-    const { areaToArchive, areaIndexToArchive } = this.state;
-    this.activeAreasComponent
-      .getRenderedComponent()
-      .removeArea(areaIndexToArchive);
-    this.addArchivedItemToActiveItems({ ...areaToArchive, ...archiveInfo });
-    this.handleHideArchiveAreaModal();
-  };
-  addArchivedItemToActiveItems = (item: Record<string, any>) => {
-    const { change, editedArchivedAreas } = this.props,
-      newItems = [...editedArchivedAreas, item];
-    change("lease_areas_archived", newItems);
-  };
-  handleUnarchive = (index: number, item: Record<string, any>) => {
-    this.archivedAreasComponent.getRenderedComponent().removeArea(index);
-    this.addUnarchivedItemToArchivedItems(item);
-  };
-  addUnarchivedItemToArchivedItems = (item: Record<string, any>) => {
-    const { change, editedActiveAreas } = this.props,
-      newItems = [
+    if (formValues?.lease_areas_active) {
+      dispatch(
+        change(
+          "lease_areas_active",
+          formValues.lease_areas_active.map((area) =>
+            addContractItemsToArea(area),
+          ),
+        ),
+      );
+    }
+
+    if (formValues?.lease_areas_archived) {
+      dispatch(
+        change(
+          "lease_areas_archived",
+          formValues.lease_areas_archived.map((area) =>
+            addContractItemsToArea(area),
+          ),
+        ),
+      );
+    }
+  }, [currentLease, change, dispatch]);
+
+  const [areaToArchive, setAreaToArchive] = useState<Record<
+    string,
+    any
+  > | null>(null);
+
+  const [areaIndexToArchive, setAreaIndexToArchive] = useState<number | null>(
+    null,
+  );
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const showArchiveAreaModal = useCallback(
+    (index: number, area: Record<string, any>) => {
+      setAreaToArchive(area);
+      setAreaIndexToArchive(index);
+      setShowModal(true);
+      dispatch(initialize(FormNames.LEASE_ARCHIVE_AREA, {}));
+    },
+    [dispatch],
+  );
+
+  const hideArchiveAreaModal = useCallback(() => {
+    setAreaToArchive(null);
+    setAreaIndexToArchive(null);
+    setShowModal(false);
+  }, []);
+
+  const handleArchive = useCallback(
+    (archiveInfo: Record<string, any>) => {
+      if (areaIndexToArchive === null || !areaToArchive) return;
+
+      // Remove from active areas
+      const newActiveAreas = editedActiveAreas.filter(
+        (_, idx) => idx !== areaIndexToArchive,
+      );
+      change("lease_areas_active", newActiveAreas);
+
+      // Add to archived areas
+      const newArchivedItems = [
+        ...editedArchivedAreas,
+        { ...areaToArchive, ...archiveInfo },
+      ];
+      change("lease_areas_archived", newArchivedItems);
+
+      hideArchiveAreaModal();
+    },
+    [
+      areaIndexToArchive,
+      areaToArchive,
+      editedActiveAreas,
+      editedArchivedAreas,
+      change,
+      hideArchiveAreaModal,
+    ],
+  );
+
+  const handleUnarchiving = useCallback(
+    (index: number, item: Record<string, any>) => {
+      // Remove from archived areas
+      const newArchivedAreas = editedArchivedAreas.filter(
+        (_, idx) => idx !== index,
+      );
+      change("lease_areas_archived", newArchivedAreas);
+
+      // Add to active areas
+      const newActiveItems = [
         ...editedActiveAreas,
         {
           ...item,
@@ -288,157 +293,133 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
           archived_decision: null,
         },
       ];
-    change("lease_areas_active", newItems);
-  };
+      change("lease_areas_active", newActiveItems);
+    },
+    [editedActiveAreas, editedArchivedAreas, change],
+  );
 
-  render() {
-    const { areasSum, decisionOptions, showArchiveAreaModal } = this.state;
-    const { leaseAttributes, usersPermissions } = this.props;
-    return (
-      <AppConsumer>
-        {({ dispatch }) => {
-          const handleCopyAreasToContract = () => {
-            const { copyAreasToContract, currentLease } = this.props;
-            dispatch({
-              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-              confirmationFunction: () => {
-                copyAreasToContract(currentLease.id);
-              },
-              confirmationModalButtonClassName: ButtonColors.SUCCESS,
-              confirmationModalButtonText:
-                ConfirmationModalTexts.COPY_AREAS_TO_CONTRACT.BUTTON,
-              confirmationModalLabel:
-                ConfirmationModalTexts.COPY_AREAS_TO_CONTRACT.LABEL,
-              confirmationModalTitle:
-                ConfirmationModalTexts.COPY_AREAS_TO_CONTRACT.TITLE,
-            });
-          };
+  useEffect(() => {
+    dispatch(
+      receiveFormValidFlags({
+        [formName]: valid,
+      }),
+    );
+  }, [valid, dispatch]);
 
-          const handleUnarchive = (
-            index: number,
-            area: Record<string, any>,
-          ) => {
-            dispatch({
-              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-              confirmationFunction: () => {
-                this.handleUnarchive(index, area);
-              },
-              confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText:
-                ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.BUTTON,
-              confirmationModalLabel:
-                ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.LABEL,
-              confirmationModalTitle:
-                ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.TITLE,
-            });
-          };
+  return (
+    <AppConsumer>
+      {({ dispatch: appDispatch }) => {
+        const handleCopyAreasToContract = () => {
+          appDispatch({
+            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+            confirmationFunction: () => {
+              dispatch(copyAreasToContract(currentLease.id));
+            },
+            confirmationModalButtonClassName: ButtonColors.SUCCESS,
+            confirmationModalButtonText:
+              ConfirmationModalTexts.COPY_AREAS_TO_CONTRACT.BUTTON,
+            confirmationModalLabel:
+              ConfirmationModalTexts.COPY_AREAS_TO_CONTRACT.LABEL,
+            confirmationModalTitle:
+              ConfirmationModalTexts.COPY_AREAS_TO_CONTRACT.TITLE,
+          });
+        };
 
-          return (
-            <form>
-              <Authorization
-                allow={isFieldAllowedToEdit(
-                  leaseAttributes,
-                  LeaseAreasFieldPaths.ARCHIVED_AT,
-                )}
-              >
-                <ArchiveAreaModal
-                  decisionOptions={decisionOptions}
-                  onArchive={this.handleArchive}
-                  onCancel={this.handleHideArchiveAreaModal}
-                  onClose={this.handleHideArchiveAreaModal}
-                  open={showArchiveAreaModal}
-                />
-              </Authorization>
+        const handleUnarchive = (index: number, area: Record<string, any>) => {
+          appDispatch({
+            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+            confirmationFunction: () => {
+              handleUnarchiving(index, area);
+            },
+            confirmationModalButtonClassName: ButtonColors.ALERT,
+            confirmationModalButtonText:
+              ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.BUTTON,
+            confirmationModalLabel:
+              ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.LABEL,
+            confirmationModalTitle:
+              ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.TITLE,
+          });
+        };
 
-              <Title
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LEASE_AREAS)}
-              >
-                Vuokra-alue
-              </Title>
-              <WarningContainer
-                alignCenter
-                hideIcon
-                buttonComponent={
-                  <Authorization
-                    allow={hasPermissions(
-                      usersPermissions,
-                      UsersPermissions.ADD_LEASEAREA,
-                    )}
-                  >
-                    <Button
-                      className={ButtonColors.NEUTRAL}
-                      onClick={handleCopyAreasToContract}
-                      text="Kopioi sopimukseen"
-                    />
-                  </Authorization>
-                }
-              >
+        return (
+          <form>
+            <Authorization
+              allow={isFieldAllowedToEdit(
+                leaseAttributes,
+                LeaseAreasFieldPaths.ARCHIVED_AT,
+              )}
+            >
+              <ArchiveAreaModal
+                onArchive={handleArchive}
+                onCancel={hideArchiveAreaModal}
+                onClose={hideArchiveAreaModal}
+                open={showModal}
+                valid={valid}
+              />
+            </Authorization>
+
+            <Title
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LEASE_AREAS)}
+            >
+              Vuokra-alue
+            </Title>
+            <WarningContainer
+              alignCenter
+              hideIcon
+              buttonComponent={
                 <Authorization
-                  allow={isFieldAllowedToRead(
-                    leaseAttributes,
-                    LeaseAreasFieldPaths.AREA,
+                  allow={hasPermissions(
+                    usersPermissions,
+                    UsersPermissions.ADD_LEASEAREA,
                   )}
                 >
-                  <>
-                    Kokonaispinta-ala {formatNumber(areasSum) || "-"} m
-                    <sup>2</sup>
-                  </>
+                  <Button
+                    className={ButtonColors.NEUTRAL}
+                    onClick={handleCopyAreasToContract}
+                    text="Kopioi sopimukseen"
+                  />
                 </Authorization>
-              </WarningContainer>
-              <Divider />
+              }
+            >
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseAreasFieldPaths.AREA,
+                )}
+              >
+                <>
+                  Kokonaispinta-ala {formatNumber(areasSum) || "-"} m
+                  <sup>2</sup>
+                </>
+              </Authorization>
+            </WarningContainer>
+            <Divider />
 
-              <FieldArray
-                ref={this.setActiveAreasRef}
-                component={renderLeaseAreas}
-                decisionOptions={decisionOptions}
-                isActive={true}
-                name="lease_areas_active"
-                onArchive={this.showArchiveAreaModal}
-                usersPermissions={usersPermissions}
-                forwardRef
-              />
+            <FieldArray
+              component={InnerLeaseAreas}
+              isActive={true}
+              name="lease_areas_active"
+              onArchive={showArchiveAreaModal}
+              usersPermissions={usersPermissions}
+            />
 
-              {/* Archived lease areas */}
-              <FieldArray
-                ref={this.setArchivedAreasRef}
-                component={renderLeaseAreas}
-                decisionOptions={decisionOptions}
-                isActive={false}
-                name="lease_areas_archived"
-                onUnarchive={handleUnarchive}
-                usersPermissions={usersPermissions}
-                forwardRef
-              />
-            </form>
-          );
-        }}
-      </AppConsumer>
-    );
-  }
-}
+            {/* Archived lease areas */}
+            <FieldArray
+              component={InnerLeaseAreas}
+              isActive={false}
+              name="lease_areas_archived"
+              onUnarchive={handleUnarchive}
+              usersPermissions={usersPermissions}
+            />
+          </form>
+        );
+      }}
+    </AppConsumer>
+  );
+};
 
-const formName = FormNames.LEASE_AREAS;
-const selector = formValueSelector(formName);
-export default flowRight(
-  reduxForm({
-    form: formName,
-    destroyOnUnmount: false,
-  }),
-  connect(
-    (state) => {
-      return {
-        currentLease: getCurrentLease(state),
-        editedActiveAreas: selector(state, "lease_areas_active"),
-        editedArchivedAreas: selector(state, "lease_areas_archived"),
-        leaseAttributes: getLeaseAttributes(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      copyAreasToContract,
-      initialize,
-      receiveFormValidFlags,
-    },
-  ),
-)(LeaseAreasEdit) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+  destroyOnUnmount: false,
+})(LeaseAreasEdit);
