@@ -51,12 +51,10 @@ const ArchiveAreaModal: React.FC<Props> = ({
       mounted.current = false;
       return;
     }
-    if (open) {
-      if (firstField) {
-        firstField.focus();
-      }
+    if (open && firstField) {
+      firstField.focus();
     }
-  });
+  }, [open, firstField]);
 
   const handleArchive = () => {
     onArchive({
