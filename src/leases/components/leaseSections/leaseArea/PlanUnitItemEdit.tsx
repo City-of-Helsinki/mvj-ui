@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { Link, useLocation } from "react-router-dom";
@@ -31,30 +31,10 @@ import type { UsersPermissions as UsersPermissionsType } from "@/usersPermission
 
 type Props = {
   field: string;
-  geometry: Record<string, any> | null | undefined;
-  id: number;
   onRemove: (...args: Array<any>) => any;
-  change: (...args: Array<any>) => any;
-  identifier: any;
-  area: any;
-  section_area: any;
-  detailed_plan_identifier: any;
-  detailed_plan_latest_processing_date: any;
-  detailed_plan_latest_processing_date_note: any;
-  plot_division_identifier: any;
-  plot_division_state: any;
-  plot_division_effective_date: any;
-  plan_unit_type: any;
-  plan_unit_state: any;
-  plan_unit_intended_use: any;
-  is_master: boolean;
 };
 
-const PlanUnitItemEdit: React.FC<Props> = ({
-  field,
-  onRemove,
-  change,
-}: Props) => {
+const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
   const dispatch = useDispatch();
 
   const attributes: Attributes = useSelector(getAttributes);
@@ -103,67 +83,44 @@ const PlanUnitItemEdit: React.FC<Props> = ({
     selector(state, `${field}.is_master`),
   );
 
-  const state = {
-    identifier: identifier,
-    area: area,
-    section_area: section_area,
-    detailed_plan_identifier: detailed_plan_identifier,
-    detailed_plan_latest_processing_date: detailed_plan_latest_processing_date,
-    detailed_plan_latest_processing_date_note:
-      detailed_plan_latest_processing_date_note,
-    plot_division_identifier: plot_division_identifier,
-    plot_division_state: plot_division_state,
-    plot_division_effective_date: plot_division_effective_date,
-    plan_unit_type: plan_unit_type,
-    plan_unit_state: plan_unit_state,
-    plan_unit_intended_use: plan_unit_intended_use,
-    is_master: is_master,
-  };
+  const initialValuesRef = useRef({
+    identifier,
+    area,
+    section_area,
+    detailed_plan_identifier,
+    detailed_plan_latest_processing_date,
+    detailed_plan_latest_processing_date_note,
+    plot_division_identifier,
+    plot_division_state,
+    plot_division_effective_date,
+    plan_unit_type,
+    plan_unit_state,
+    plan_unit_intended_use,
+  });
 
   useEffect(() => {
-    if (state.is_master) return;
-
-    if (
-      state.identifier == identifier &&
-      state.area == area &&
-      state.section_area == section_area &&
-      state.detailed_plan_identifier == detailed_plan_identifier &&
-      state.detailed_plan_latest_processing_date ==
-        detailed_plan_latest_processing_date &&
-      state.detailed_plan_latest_processing_date_note ==
-        detailed_plan_latest_processing_date_note &&
-      state.plot_division_identifier == plot_division_identifier &&
-      state.plot_division_state == plot_division_state &&
-      state.plot_division_effective_date == plot_division_effective_date &&
-      state.plan_unit_type == plan_unit_type &&
-      state.plan_unit_state == plan_unit_state &&
-      state.plan_unit_intended_use == plan_unit_intended_use
-    ) {
-      dispatch(change(`${field}.is_master`, false));
-      return;
-    }
-
     if (is_master) return;
 
-    if (
-      state.identifier != identifier ||
-      state.area != area ||
-      state.section_area != section_area ||
-      state.detailed_plan_identifier != detailed_plan_identifier ||
-      state.detailed_plan_latest_processing_date !=
+    const initialValues = initialValuesRef.current;
+
+    const hasChanged =
+      initialValues.identifier !== identifier ||
+      initialValues.area !== area ||
+      initialValues.section_area !== section_area ||
+      initialValues.detailed_plan_identifier !== detailed_plan_identifier ||
+      initialValues.detailed_plan_latest_processing_date !==
         detailed_plan_latest_processing_date ||
-      state.detailed_plan_latest_processing_date_note !=
+      initialValues.detailed_plan_latest_processing_date_note !==
         detailed_plan_latest_processing_date_note ||
-      state.plot_division_identifier != plot_division_identifier ||
-      state.plot_division_state != plot_division_state ||
-      state.plot_division_effective_date != plot_division_effective_date ||
-      state.plan_unit_type != plan_unit_type ||
-      state.plan_unit_state != plan_unit_state ||
-      state.plan_unit_intended_use != plan_unit_intended_use
-    ) {
-      dispatch(change(`${field}.is_master`, true));
-      return;
-    }
+      initialValues.plot_division_identifier !== plot_division_identifier ||
+      initialValues.plot_division_state !== plot_division_state ||
+      initialValues.plot_division_effective_date !==
+        plot_division_effective_date ||
+      initialValues.plan_unit_type !== plan_unit_type ||
+      initialValues.plan_unit_state !== plan_unit_state ||
+      initialValues.plan_unit_intended_use !== plan_unit_intended_use;
+
+    dispatch(change(FormNames.LEASE_AREAS, `${field}.is_master`, hasChanged));
   }, [
     identifier,
     area,
@@ -178,22 +135,8 @@ const PlanUnitItemEdit: React.FC<Props> = ({
     plan_unit_state,
     plan_unit_intended_use,
     is_master,
-    change,
-    field,
-    state.is_master,
-    state.identifier,
-    state.area,
-    state.section_area,
-    state.detailed_plan_identifier,
-    state.detailed_plan_latest_processing_date,
-    state.detailed_plan_latest_processing_date_note,
-    state.plot_division_identifier,
-    state.plot_division_state,
-    state.plot_division_effective_date,
-    state.plan_unit_type,
-    state.plan_unit_state,
-    state.plan_unit_intended_use,
     dispatch,
+    field,
   ]);
 
   const getMapLinkUrl = () => {
