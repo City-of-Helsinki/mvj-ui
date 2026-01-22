@@ -1,9 +1,7 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
-import { formValueSelector } from "redux-form";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { Link, useLocation } from "react-router-dom";
-import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
@@ -13,7 +11,6 @@ import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import KtjLink from "@/components/ktj/KtjLink";
 import RemoveButton from "@/components/form/RemoveButton";
 import SubTitle from "@/components/content/SubTitle";
-import { FormNames } from "@/enums";
 import {
   LeasePlotsFieldPaths,
   LeasePlotsFieldTitles,
@@ -32,28 +29,29 @@ import { getAttributes, getIsSaveClicked } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+
 type Props = {
-  attributes: Attributes;
   field: string;
   geometry: Record<string, any> | null | undefined;
-  isSaveClicked: boolean;
   onRemove: (...args: Array<any>) => any;
   plotsData: Array<Record<string, any>>;
   plotId: number;
-  usersPermissions: UsersPermissionsType;
 };
 
 const PlotItemsEdit: React.FC<Props> = ({
-  attributes,
   field,
   geometry,
-  isSaveClicked,
   onRemove,
   plotsData,
   plotId,
-  usersPermissions,
 }) => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
   const location = useLocation();
+
   const getMapLinkUrl = () => {
     const { pathname, search } = location;
     const searchQuery = getUrlParams(search);
@@ -251,7 +249,7 @@ const PlotItemsEdit: React.FC<Props> = ({
           )}
         >
           {savedPlot && savedPlot.identifier && (
-            <Fragment>
+            <>
               <SubTitle
                 enableUiDataEdit
                 uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.KTJ_LINK)}
@@ -302,7 +300,7 @@ const PlotItemsEdit: React.FC<Props> = ({
                   />
                 </Column>
               </Row>
-            </Fragment>
+            </>
           )}
         </Authorization>
       </BoxContentWrapper>
@@ -310,17 +308,4 @@ const PlotItemsEdit: React.FC<Props> = ({
   );
 };
 
-const formName = FormNames.LEASE_AREAS;
-const selector = formValueSelector(formName);
-export default flowRight(
-  connect((state, props) => {
-    const id = selector(state, `${props.field}.id`);
-    return {
-      attributes: getAttributes(state),
-      geometry: selector(state, `${props.field}.geometry`),
-      isSaveClicked: getIsSaveClicked(state),
-      plotId: id,
-      usersPermissions: getUsersPermissions(state),
-    };
-  }),
-)(PlotItemsEdit) as React.ComponentType<any>;
+export default PlotItemsEdit;

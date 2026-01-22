@@ -1,8 +1,7 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
@@ -37,16 +36,11 @@ type OwnProps = {
   areaArchived: boolean;
   planUnit: Record<string, any>;
 };
-type Props = OwnProps & {
-  attributes: Attributes;
-};
 
-const PlanUnitItem: React.FC<Props> = ({
-  areaArchived,
-  attributes,
-  planUnit,
-}) => {
+const PlanUnitItem: React.FC<OwnProps> = ({ areaArchived, planUnit }) => {
   const location = useLocation();
+  const attributes: Attributes = useSelector(getAttributes);
+
   const getMapLinkUrl = () => {
     const { pathname, search } = location;
     const searchQuery = getUrlParams(search);
@@ -89,7 +83,7 @@ const PlanUnitItem: React.FC<Props> = ({
                   LeasePlanUnitsFieldPaths.IDENTIFIER,
                 )}
               >
-                {LeasePlanUnitsFieldTitles.IDENTIFIER}
+                <span>{LeasePlanUnitsFieldTitles.IDENTIFIER}</span>
               </FormTextTitle>
               <FormText>{planUnit.identifier || "-"}</FormText>
             </>
@@ -108,7 +102,7 @@ const PlanUnitItem: React.FC<Props> = ({
                   LeasePlanUnitsFieldPaths.IS_MASTER,
                 )}
               >
-                {LeasePlanUnitsFieldTitles.IS_MASTER}
+                <span>{LeasePlanUnitsFieldTitles.IS_MASTER}</span>
               </FormTextTitle>
               <FormText>{planUnit.is_master ? "Kyllä" : "Ei"}</FormText>
             </>
@@ -121,9 +115,13 @@ const PlanUnitItem: React.FC<Props> = ({
               LeasePlanUnitsFieldPaths.GEOMETRY,
             )}
           >
-            {!areaArchived && !isEmpty(planUnit.geometry) && (
-              <Link to={mapLinkUrl}>{LeasePlanUnitsFieldTitles.GEOMETRY}</Link>
-            )}
+            <span>
+              {!areaArchived && !isEmpty(planUnit.geometry) && (
+                <Link to={mapLinkUrl}>
+                  {LeasePlanUnitsFieldTitles.GEOMETRY}
+                </Link>
+              )}
+            </span>
           </Authorization>
         </Column>
       </Row>
@@ -190,16 +188,18 @@ const PlanUnitItem: React.FC<Props> = ({
               >
                 {LeasePlanUnitsFieldTitles.DETAILED_PLAN_IDENTIFIER}
               </FormTextTitle>
-              {planUnit.detailed_plan_identifier ? (
-                <ExternalLink
-                  href={createPTPPlanReportUrl(
-                    planUnit.detailed_plan_identifier,
-                  )}
-                  text={planUnit.detailed_plan_identifier}
-                />
-              ) : (
-                <FormText>-</FormText>
-              )}
+              <span>
+                {planUnit.detailed_plan_identifier ? (
+                  <ExternalLink
+                    href={createPTPPlanReportUrl(
+                      planUnit.detailed_plan_identifier,
+                    )}
+                    text={planUnit.detailed_plan_identifier}
+                  />
+                ) : (
+                  <FormText>-</FormText>
+                )}
+              </span>
             </>
           </Authorization>
         </Column>
@@ -267,16 +267,18 @@ const PlanUnitItem: React.FC<Props> = ({
               >
                 {LeasePlanUnitsFieldTitles.PLOT_DIVISION_IDENTIFIER}
               </FormTextTitle>
-              {planUnit.plot_division_identifier ? (
-                <ExternalLink
-                  href={createPTPPlotDivisionUrl(
-                    planUnit.plot_division_identifier,
-                  )}
-                  text={planUnit.plot_division_identifier}
-                />
-              ) : (
-                <FormText>-</FormText>
-              )}
+              <span>
+                {planUnit.plot_division_identifier ? (
+                  <ExternalLink
+                    href={createPTPPlotDivisionUrl(
+                      planUnit.plot_division_identifier,
+                    )}
+                    text={planUnit.plot_division_identifier}
+                  />
+                ) : (
+                  <FormText>-</FormText>
+                )}
+              </span>
             </>
           </Authorization>
         </Column>
@@ -402,86 +404,84 @@ const PlanUnitItem: React.FC<Props> = ({
       </Row>
 
       {/* Usage distributions (Käyttöjakaumat) */}
-      {planUnit.usage_distributions.length > 0 && (
-        <>
-          <SubTitle>{LeasePlanUnitsFieldTitles.USAGE_DISTRIBUTIONS}</SubTitle>
-          <Row>
-            <Column small={4} medium={4} large={4}>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION,
-                )}
-              >
-                {LeaseAreaUsageDistributionFieldTitles.DISTRIBUTION}
-              </FormTextTitle>
-            </Column>
-            <Column small={4} medium={4} large={4}>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION,
-                )}
-              >
-                {LeaseAreaUsageDistributionFieldTitles.BUILD_PERMISSION}
-              </FormTextTitle>
-            </Column>
-            <Column small={4} medium={4} large={4}>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseAreaUsageDistributionFieldPaths.NOTE,
-                )}
-              >
-                {LeaseAreaUsageDistributionFieldTitles.NOTE}
-              </FormTextTitle>
-            </Column>
-          </Row>
-          {planUnit.usage_distributions.map((usage_distribution) => (
-            <Row key={usage_distribution.distribution}>
+      <span>
+        {planUnit.usage_distributions.length > 0 && (
+          <>
+            <SubTitle>{LeasePlanUnitsFieldTitles.USAGE_DISTRIBUTIONS}</SubTitle>
+            <Row>
               <Column small={4} medium={4} large={4}>
-                <Authorization
-                  allow={isFieldAllowedToRead(
-                    attributes,
+                <FormTextTitle
+                  uiDataKey={getUiDataLeaseKey(
                     LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION,
                   )}
                 >
-                  <FormText>{usage_distribution.distribution || "-"}</FormText>
-                </Authorization>
+                  {LeaseAreaUsageDistributionFieldTitles.DISTRIBUTION}
+                </FormTextTitle>
               </Column>
               <Column small={4} medium={4} large={4}>
-                <Authorization
-                  allow={isFieldAllowedToRead(
-                    attributes,
+                <FormTextTitle
+                  uiDataKey={getUiDataLeaseKey(
                     LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION,
                   )}
                 >
-                  <FormText>
-                    {!isEmptyValue(usage_distribution.build_permission)
-                      ? `${formatNumber(usage_distribution.build_permission)} k-m²`
-                      : "-"}
-                  </FormText>
-                </Authorization>
+                  {LeaseAreaUsageDistributionFieldTitles.BUILD_PERMISSION}
+                </FormTextTitle>
               </Column>
               <Column small={4} medium={4} large={4}>
-                <Authorization
-                  allow={isFieldAllowedToRead(
-                    attributes,
+                <FormTextTitle
+                  uiDataKey={getUiDataLeaseKey(
                     LeaseAreaUsageDistributionFieldPaths.NOTE,
                   )}
                 >
-                  <FormText>{usage_distribution.note || "-"}</FormText>
-                </Authorization>
+                  {LeaseAreaUsageDistributionFieldTitles.NOTE}
+                </FormTextTitle>
               </Column>
             </Row>
-          ))}
-        </>
-      )}
+            {planUnit.usage_distributions.map((usage_distribution) => (
+              <Row key={usage_distribution.distribution}>
+                <Column small={4} medium={4} large={4}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      attributes,
+                      LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION,
+                    )}
+                  >
+                    <FormText>
+                      {usage_distribution.distribution || "-"}
+                    </FormText>
+                  </Authorization>
+                </Column>
+                <Column small={4} medium={4} large={4}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      attributes,
+                      LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION,
+                    )}
+                  >
+                    <FormText>
+                      {!isEmptyValue(usage_distribution.build_permission)
+                        ? `${formatNumber(usage_distribution.build_permission)} k-m²`
+                        : "-"}
+                    </FormText>
+                  </Authorization>
+                </Column>
+                <Column small={4} medium={4} large={4}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      attributes,
+                      LeaseAreaUsageDistributionFieldPaths.NOTE,
+                    )}
+                  >
+                    <FormText>{usage_distribution.note || "-"}</FormText>
+                  </Authorization>
+                </Column>
+              </Row>
+            ))}
+          </>
+        )}
+      </span>
     </BoxItem>
   );
 };
 
-export default flowRight(
-  connect((state) => {
-    return {
-      attributes: getAttributes(state),
-    };
-  }),
-)(PlanUnitItem) as React.ComponentType<OwnProps>;
+export default PlanUnitItem;
