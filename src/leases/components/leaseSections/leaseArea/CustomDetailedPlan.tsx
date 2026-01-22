@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
 import FormText from "@/components/form/FormText";
@@ -30,11 +29,12 @@ import SubTitle from "@/components/content/SubTitle";
 type OwnProps = {
   customDetailedPlan: Record<string, any>;
 };
-type Props = OwnProps & {
-  attributes: Attributes;
-};
 
-const CustomDetailedPlan = ({ attributes, customDetailedPlan }: Props) => {
+const CustomDetailedPlan: React.FC<OwnProps> = ({
+  customDetailedPlan,
+}: OwnProps) => {
+  const attributes: Attributes = useSelector(getAttributes);
+
   const stateOptions = getFieldOptions(
     attributes,
     LeaseAreaCustomDetailedPlanFieldPaths.STATE,
@@ -306,7 +306,7 @@ const CustomDetailedPlan = ({ attributes, customDetailedPlan }: Props) => {
       </Row>
       {/* Usage distributions (Käyttöjakaumat) */}
       {customDetailedPlan.usage_distributions.length > 0 && (
-        <Fragment>
+        <>
           <SubTitle>
             {LeaseAreaCustomDetailedPlanFieldTitles.USAGE_DISTRIBUTIONS}
           </SubTitle>
@@ -377,11 +377,11 @@ const CustomDetailedPlan = ({ attributes, customDetailedPlan }: Props) => {
               </Column>
             </Row>
           ))}
-        </Fragment>
+        </>
       )}
       {/* Info Links (Lisätietolinkit) */}
       {customDetailedPlan.info_links.length > 0 && (
-        <Fragment>
+        <>
           <SubTitle>
             {LeaseAreaCustomDetailedPlanFieldTitles.INFO_LINKS}
           </SubTitle>
@@ -453,16 +453,10 @@ const CustomDetailedPlan = ({ attributes, customDetailedPlan }: Props) => {
               </Column>
             </Row>
           ))}
-        </Fragment>
+        </>
       )}
     </BoxItem>
   );
 };
 
-export default flowRight(
-  connect((state) => {
-    return {
-      attributes: getAttributes(state),
-    };
-  }),
-)(CustomDetailedPlan) as React.ComponentType<OwnProps>;
+export default CustomDetailedPlan;

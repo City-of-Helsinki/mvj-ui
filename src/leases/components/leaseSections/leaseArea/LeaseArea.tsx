@@ -1,8 +1,7 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { Link, useLocation } from "react-router-dom";
-import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
@@ -46,40 +45,69 @@ import CustomDetailedPlan from "./CustomDetailedPlan";
 
 type Props = {
   area: Record<string, any>;
-  attributes: Attributes;
-  isEditMode: boolean;
-  planUnitsContractCollapseState: boolean;
-  planUnitsCurrentCollapseState: boolean;
-  plotsContractCollapseState: boolean;
-  plotsCurrentCollapseState: boolean;
-  customDetailedPlanCollapseState: boolean;
-  receiveCollapseStates: (...args: Array<any>) => any;
 };
 
-const LeaseArea = ({
-  area,
-  attributes,
-  isEditMode,
-  planUnitsContractCollapseState,
-  planUnitsCurrentCollapseState,
-  plotsContractCollapseState,
-  plotsCurrentCollapseState,
-  customDetailedPlanCollapseState,
-  receiveCollapseStates,
-}: Props) => {
+const LeaseArea: React.FC<Props> = ({ area }: Props) => {
   const location = useLocation();
+
+  const attributes: Attributes = useSelector(getAttributes);
+  const isEditMode = useSelector(getIsEditMode);
+
+  const planUnitsContractCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${
+        area.id
+      }.plan_units_contract`,
+    ),
+  );
+  const planUnitsCurrentCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${
+        area.id
+      }.plan_units_current`,
+    ),
+  );
+  const plotsContractCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${
+        area.id
+      }.plots_contract`,
+    ),
+  );
+  const plotsCurrentCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${
+        area.id
+      }.plots_current`,
+    ),
+  );
+  const customDetailedPlanCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${
+        area.id
+      }.custom_detailed_plan`,
+    ),
+  );
+  const dispatch = useDispatch();
 
   const handleCollapseToggle = (key: string, val: boolean) => {
     const mode: string = isEditMode ? ViewModes.EDIT : ViewModes.READONLY;
-    receiveCollapseStates({
-      [mode]: {
-        [formName]: {
-          [area.id]: {
-            [key]: val,
+    dispatch(
+      receiveCollapseStates({
+        [mode]: {
+          [formName]: {
+            [area.id]: {
+              [key]: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const handlePlanUnitContractCollapseToggle = (val: boolean) => {
@@ -543,6 +571,7 @@ const LeaseArea = ({
 };
 
 const formName = FormNames.LEASE_AREAS;
+/*
 export default flowRight(
   connect(
     (state, props) => {
@@ -578,3 +607,5 @@ export default flowRight(
     },
   ),
 )(LeaseArea) as React.ComponentType;
+*/
+export default LeaseArea;
