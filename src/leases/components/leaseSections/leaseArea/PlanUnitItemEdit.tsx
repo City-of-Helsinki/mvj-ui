@@ -104,21 +104,21 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
     const initialValues = initialValuesRef.current;
 
     const hasChanged =
-      initialValues.identifier !== identifier ||
-      initialValues.area !== area ||
-      initialValues.section_area !== section_area ||
-      initialValues.detailed_plan_identifier !== detailed_plan_identifier ||
-      initialValues.detailed_plan_latest_processing_date !==
+      initialValues.identifier != identifier ||
+      initialValues.area != area ||
+      initialValues.section_area != section_area ||
+      initialValues.detailed_plan_identifier != detailed_plan_identifier ||
+      initialValues.detailed_plan_latest_processing_date !=
         detailed_plan_latest_processing_date ||
-      initialValues.detailed_plan_latest_processing_date_note !==
+      initialValues.detailed_plan_latest_processing_date_note !=
         detailed_plan_latest_processing_date_note ||
-      initialValues.plot_division_identifier !== plot_division_identifier ||
-      initialValues.plot_division_state !== plot_division_state ||
-      initialValues.plot_division_effective_date !==
+      initialValues.plot_division_identifier != plot_division_identifier ||
+      initialValues.plot_division_state != plot_division_state ||
+      initialValues.plot_division_effective_date !=
         plot_division_effective_date ||
-      initialValues.plan_unit_type !== plan_unit_type ||
-      initialValues.plan_unit_state !== plan_unit_state ||
-      initialValues.plan_unit_intended_use !== plan_unit_intended_use;
+      initialValues.plan_unit_type != plan_unit_type ||
+      initialValues.plan_unit_state != plan_unit_state ||
+      initialValues.plan_unit_intended_use != plan_unit_intended_use;
 
     dispatch(change(FormNames.LEASE_AREAS, `${field}.is_master`, hasChanged));
   }, [

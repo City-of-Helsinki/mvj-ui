@@ -97,7 +97,6 @@ const PlanUnits = ({
   uiDataKey,
   usersPermissions,
 }: PlanUnitsProps): ReactElement => {
-  const dispatch = useDispatch();
   const handleAdd = () => {
     fields.push({
       addresses: [{}],
@@ -105,7 +104,7 @@ const PlanUnits = ({
   };
 
   const handleCollapseToggle = (val: boolean) => {
-    dispatch(onCollapseToggle(val));
+    onCollapseToggle(val);
   };
 
   const planUnitErrors = get(errors, name);
