@@ -1,5 +1,5 @@
-import React, { Fragment, ReactElement } from "react";
-import { connect } from "react-redux";
+import React, { ReactElement, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
@@ -21,7 +21,11 @@ import {
   LeaseAreaAddressesFieldPaths,
 } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
-import { getFullAddress, getLeaseAreaById } from "@/leases/helpers";
+import {
+  getDecisionOptions,
+  getFullAddress,
+  getLeaseAreaById,
+} from "@/leases/helpers";
 import {
   formatDate,
   formatNumber,
@@ -45,49 +49,46 @@ import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 
-type Props = OwnProps & {
-  archivedAt: string | null | undefined;
-  areaCollapseState: boolean | undefined;
-  areaId: number;
-  attributes: Attributes;
-  currentLease: Lease;
-  editedArea: Record<string, any>;
-  errors: Record<string, any> | null | undefined;
-  isSaveClicked: boolean;
-  usersPermissions: UsersPermissionsType;
-  receiveCollapseStates: (...args: Array<any>) => any;
-};
-
 type OwnProps = {
-  decisionOptions: Array<Record<string, any>>;
   field: string;
   index: number;
   isActive: boolean;
   onArchive: (...args: Array<any>) => any;
   onRemove: (...args: Array<any>) => any;
   onUnarchive: (...args: Array<any>) => any;
-  receiveCollapseStates: (...args: Array<any>) => any;
 };
 
 const LeaseAreaWithArchiveInfoEdit = ({
-  archivedAt,
-  areaCollapseState,
-  areaId,
-  attributes,
-  currentLease,
-  decisionOptions,
-  editedArea,
-  errors,
   field,
   index,
   isActive,
-  isSaveClicked,
   onArchive,
   onRemove,
   onUnarchive,
-  receiveCollapseStates,
-  usersPermissions,
-}: Props): ReactElement => {
+}: OwnProps): ReactElement => {
+  const dispatch = useDispatch();
+  const selector = formValueSelector(FormNames.LEASE_AREAS);
+
+  const areaId = useSelector((state) => selector(state, `${field}.id`));
+  const archivedAt = useSelector((state) =>
+    selector(state, `${field}.archived_at`),
+  );
+  const areaCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${areaId}.area`,
+    ),
+  );
+
+  const attributes: Attributes = useSelector(getAttributes);
+  const currentLease: Lease = useSelector(getCurrentLease);
+  const editedArea = useSelector((state) => selector(state, field));
+  const errors = useSelector((state) => getErrorsByFormName(state, formName));
+  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+  const decisionOptions = getDecisionOptions(currentLease);
+
   const handleArchive = () => {
     onArchive(index, editedArea);
   };
@@ -100,16 +101,17 @@ const LeaseAreaWithArchiveInfoEdit = ({
     if (!areaId) {
       return;
     }
-
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.LEASE_AREAS]: {
-          [areaId]: {
-            area: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.EDIT]: {
+          [FormNames.LEASE_AREAS]: {
+            [areaId]: {
+              area: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const typeOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.TYPE);
@@ -117,9 +119,16 @@ const LeaseAreaWithArchiveInfoEdit = ({
     attributes,
     LeaseAreasFieldPaths.LOCATION,
   );
-  const savedArea = getLeaseAreaById(currentLease, areaId);
-  const archived = Boolean(savedArea && savedArea.archived_at);
-  const areaErrors = get(errors, field);
+
+  const { savedArea, archived } = useMemo(() => {
+    const area = getLeaseAreaById(currentLease, areaId);
+    return {
+      savedArea: area,
+      archived: Boolean(area && area.archived_at),
+    };
+  }, [areaId, currentLease]);
+
+  const areaErrors = errors?.[field];
   return (
     <Collapse
       archived={archived}
@@ -129,7 +138,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
       hasErrors={isSaveClicked && !isEmpty(areaErrors)}
       headerSubtitles={
         savedArea && (
-          <Fragment>
+          <>
             <Column>
               <Authorization
                 allow={isFieldAllowedToRead(
@@ -178,7 +187,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
                 </CollapseHeaderSubtitle>
               </Authorization>
             </Column>
-          </Fragment>
+          </>
         )
       }
       headerTitle={
@@ -213,7 +222,12 @@ const LeaseAreaWithArchiveInfoEdit = ({
       onToggle={handleAreaCollapseToggle}
     >
       {isActive && (
-        <LeaseAreaEdit field={field} index={index} savedArea={savedArea} />
+        <LeaseAreaEdit
+          field={field}
+          index={index}
+          areaId={areaId}
+          savedArea={savedArea}
+        />
       )}
 
       {!isActive && <LeaseArea area={savedArea} />}
@@ -295,26 +309,4 @@ const LeaseAreaWithArchiveInfoEdit = ({
 };
 
 const formName = FormNames.LEASE_AREAS;
-const selector = formValueSelector(formName);
-export default connect(
-  (state, props) => {
-    const id = selector(state, `${props.field}.id`);
-    return {
-      archivedAt: selector(state, `${props.field}.archived_at`),
-      areaCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.area`,
-      ),
-      areaId: id,
-      attributes: getAttributes(state),
-      currentLease: getCurrentLease(state),
-      editedArea: selector(state, props.field),
-      errors: getErrorsByFormName(state, formName),
-      isSaveClicked: getIsSaveClicked(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    receiveCollapseStates,
-  },
-)(LeaseAreaWithArchiveInfoEdit);
+export default LeaseAreaWithArchiveInfoEdit;

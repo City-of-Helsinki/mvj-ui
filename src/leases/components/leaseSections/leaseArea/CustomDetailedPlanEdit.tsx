@@ -1,8 +1,7 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FieldArray, reduxForm, change } from "redux-form";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
@@ -28,7 +27,11 @@ import type { Attributes } from "types";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
-import { getAttributes } from "@/leases/selectors";
+import {
+  getAttributes,
+  getErrorsByFormName,
+  getIsSaveClicked,
+} from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import {
   getFieldAttributes,
@@ -36,39 +39,39 @@ import {
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from "@/util/helpers";
+
+const formName = FormNames.LEASE_AREAS;
+
 type UsageDistributionsProps = {
-  attributes: Attributes;
   buttonTitle: string;
   collapseState: boolean;
   errors: Record<string, any>;
   fields: any;
-  isSaveClicked: boolean;
   noDataText: string;
-  onCollapseToggle: (...args: Array<any>) => any;
   title: string;
   uiDataKey: string;
-  usersPermissions: UsersPermissionsType;
 };
 
-const renderUsageDistributions = ({
-  attributes,
+const UsageDistributions = ({
   buttonTitle,
   fields,
-  isSaveClicked,
   noDataText,
-  usersPermissions,
 }: UsageDistributionsProps): JSX.Element => {
   const handleAdd = () => {
     fields.push({
       usage_distributions: [{}],
     });
   };
+  const attributes: Attributes = useSelector(getAttributes);
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ dispatch: appDispatch }) => {
         return (
-          <Fragment>
+          <>
             {!isFieldAllowedToEdit(
               attributes,
               LeaseAreaCustomDetailedPlanFieldPaths.USAGE_DISTRIBUTIONS,
@@ -79,7 +82,7 @@ const renderUsageDistributions = ({
               <BoxItemContainer>
                 {fields.map((usageDistribution, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    appDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -214,7 +217,7 @@ const renderUsageDistributions = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -222,38 +225,34 @@ const renderUsageDistributions = ({
 };
 
 type InfoLinksProps = {
-  attributes: Attributes;
   buttonTitle: string;
-  collapseState: boolean;
   errors: Record<string, any>;
   fields: any;
-  isSaveClicked: boolean;
   noDataText: string;
-  onCollapseToggle: (...args: Array<any>) => any;
   title: string;
   uiDataKey: string;
-  usersPermissions: UsersPermissionsType;
 };
 
-const renderInfoLinks = ({
-  attributes,
+const InfoLinks = ({
   buttonTitle,
   fields,
-  isSaveClicked,
   noDataText,
-  usersPermissions,
 }: InfoLinksProps): JSX.Element => {
   const handleAdd = () => {
     fields.push({
       info_links: [{}],
     });
   };
+  const attributes: Attributes = useSelector(getAttributes);
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ dispatch: appDispatch }) => {
         return (
-          <Fragment>
+          <>
             {!isFieldAllowedToEdit(
               attributes,
               LeaseAreaCustomDetailedPlanFieldPaths.INFO_LINKS,
@@ -264,7 +263,7 @@ const renderInfoLinks = ({
               <BoxItemContainer>
                 {fields.map((infoLink, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    appDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -398,7 +397,7 @@ const renderInfoLinks = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -409,392 +408,366 @@ type OwnProps = {
   field: string;
   onRemove: (...args: Array<any>) => any;
 };
-type Props = OwnProps & {
-  usersPermissions: UsersPermissionsType;
-  attributes: Attributes;
-  isSaveClicked: boolean;
-  errors: Record<string, any>;
-};
 
-class CustomDetailedPlanEdit extends PureComponent<Props> {
-  render() {
-    const {
-      attributes,
-      usersPermissions,
-      onRemove,
-      isSaveClicked,
-      field,
-      errors,
-    } = this.props;
-    return (
-      <BoxContentWrapper>
-        <BoxItem className="no-border-on-first-child no-border-on-last-child">
-          <ActionButtonWrapper>
+const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+  const errors = useSelector((state) => getErrorsByFormName(state, formName));
+
+  return (
+    <BoxContentWrapper>
+      <BoxItem className="no-border-on-first-child no-border-on-last-child">
+        <ActionButtonWrapper>
+          <Authorization
+            allow={hasPermissions(
+              usersPermissions,
+              UsersPermissions.DELETE_CUSTOMDETAILEDPLAN,
+            )}
+          >
+            <RemoveButton onClick={onRemove} title="Poista oma muu alue" />
+          </Authorization>
+        </ActionButtonWrapper>
+        <Row>
+          {/* Kohteen tunnus */}
+          <Column small={12} medium={4} large={4}>
             <Authorization
-              allow={hasPermissions(
-                usersPermissions,
-                UsersPermissions.DELETE_CUSTOMDETAILEDPLAN,
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.IDENTIFIER,
               )}
             >
-              <RemoveButton onClick={onRemove} title="Poista oma muu alue" />
-            </Authorization>
-          </ActionButtonWrapper>
-          <Row>
-            {/* Kohteen tunnus */}
-            <Column small={12} medium={4} large={4}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   attributes,
                   LeaseAreaCustomDetailedPlanFieldPaths.IDENTIFIER,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    attributes,
-                    LeaseAreaCustomDetailedPlanFieldPaths.IDENTIFIER,
-                  )}
-                  name={`${field}.identifier`}
-                  overrideValues={{
-                    label: LeaseAreaCustomDetailedPlanFieldTitles.IDENTIFIER,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.IDENTIFIER,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            {/* Kaavayksikön käyttötarkoitus */}
-            <Column small={12} medium={4} large={4}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.identifier`}
+                overrideValues={{
+                  label: LeaseAreaCustomDetailedPlanFieldTitles.IDENTIFIER,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseAreaCustomDetailedPlanFieldPaths.IDENTIFIER,
+                )}
+              />
+            </Authorization>
+          </Column>
+          {/* Kaavayksikön käyttötarkoitus */}
+          <Column small={12} medium={4} large={4}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.INTENDED_USE,
+              )}
+            >
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   attributes,
                   LeaseAreaCustomDetailedPlanFieldPaths.INTENDED_USE,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    attributes,
-                    LeaseAreaCustomDetailedPlanFieldPaths.INTENDED_USE,
-                  )}
-                  name={`${field}.intended_use`}
-                  overrideValues={{
-                    label: LeaseAreaCustomDetailedPlanFieldTitles.INTENDED_USE,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.INTENDED_USE,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            {/* Osoite */}
-            <Column small={12} medium={4} large={4}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.intended_use`}
+                overrideValues={{
+                  label: LeaseAreaCustomDetailedPlanFieldTitles.INTENDED_USE,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseAreaCustomDetailedPlanFieldPaths.INTENDED_USE,
+                )}
+              />
+            </Authorization>
+          </Column>
+          {/* Osoite */}
+          <Column small={12} medium={4} large={4}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.ADDRESS,
+              )}
+            >
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   attributes,
                   LeaseAreaCustomDetailedPlanFieldPaths.ADDRESS,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    attributes,
-                    LeaseAreaCustomDetailedPlanFieldPaths.ADDRESS,
-                  )}
-                  name={`${field}.address`}
-                  overrideValues={{
-                    label: LeaseAreaCustomDetailedPlanFieldTitles.ADDRESS,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.ADDRESS,
-                  )}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-          <Row>
-            {/* Kokonaisala */}
-            <Column small={12} medium={4} large={4}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.address`}
+                overrideValues={{
+                  label: LeaseAreaCustomDetailedPlanFieldTitles.ADDRESS,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseAreaCustomDetailedPlanFieldPaths.ADDRESS,
+                )}
+              />
+            </Authorization>
+          </Column>
+        </Row>
+        <Row>
+          {/* Kokonaisala */}
+          <Column small={12} medium={4} large={4}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.AREA,
+              )}
+            >
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   attributes,
                   LeaseAreaCustomDetailedPlanFieldPaths.AREA,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    attributes,
-                    LeaseAreaCustomDetailedPlanFieldPaths.AREA,
-                  )}
-                  name={`${field}.area`}
-                  unit="m²"
-                  overrideValues={{
-                    label: LeaseAreaCustomDetailedPlanFieldTitles.AREA,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.AREA,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            {/* Kaavayksikön olotila*/}
-            <Column small={12} medium={4} large={4}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.area`}
+                unit="m²"
+                overrideValues={{
+                  label: LeaseAreaCustomDetailedPlanFieldTitles.AREA,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseAreaCustomDetailedPlanFieldPaths.AREA,
+                )}
+              />
+            </Authorization>
+          </Column>
+          {/* Kaavayksikön olotila*/}
+          <Column small={12} medium={4} large={4}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.STATE,
+              )}
+            >
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   attributes,
                   LeaseAreaCustomDetailedPlanFieldPaths.STATE,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    attributes,
-                    LeaseAreaCustomDetailedPlanFieldPaths.STATE,
-                  )}
-                  name={`${field}.state`}
-                  overrideValues={{
-                    label: LeaseAreaCustomDetailedPlanFieldTitles.STATE,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.STATE,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            {/* Kaavayksikön laji */}
-            <Column small={12} medium={4} large={4}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.state`}
+                overrideValues={{
+                  label: LeaseAreaCustomDetailedPlanFieldTitles.STATE,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseAreaCustomDetailedPlanFieldPaths.STATE,
+                )}
+              />
+            </Authorization>
+          </Column>
+          {/* Kaavayksikön laji */}
+          <Column small={12} medium={4} large={4}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.TYPE,
+              )}
+            >
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   attributes,
                   LeaseAreaCustomDetailedPlanFieldPaths.TYPE,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    attributes,
-                    LeaseAreaCustomDetailedPlanFieldPaths.TYPE,
-                  )}
-                  name={`${field}.type`}
-                  overrideValues={{
-                    label: LeaseAreaCustomDetailedPlanFieldTitles.TYPE,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.TYPE,
-                  )}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-          <Row>
-            {/* Asemakaava */}
-            <Column small={12} medium={4} large={4}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.type`}
+                overrideValues={{
+                  label: LeaseAreaCustomDetailedPlanFieldTitles.TYPE,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseAreaCustomDetailedPlanFieldPaths.TYPE,
+                )}
+              />
+            </Authorization>
+          </Column>
+        </Row>
+        <Row>
+          {/* Asemakaava */}
+          <Column small={12} medium={4} large={4}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN,
+              )}
+            >
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   attributes,
                   LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    attributes,
-                    LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN,
-                  )}
-                  name={`${field}.detailed_plan`}
-                  overrideValues={{
-                    label: LeaseAreaCustomDetailedPlanFieldTitles.DETAILED_PLAN,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            {/* Asemakaavan viim. käsittelypvm */}
-            <Column small={12} medium={4} large={4}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.detailed_plan`}
+                overrideValues={{
+                  label: LeaseAreaCustomDetailedPlanFieldTitles.DETAILED_PLAN,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN,
+                )}
+              />
+            </Authorization>
+          </Column>
+          {/* Asemakaavan viim. käsittelypvm */}
+          <Column small={12} medium={4} large={4}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE,
+              )}
+            >
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   attributes,
                   LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    attributes,
-                    LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE,
-                  )}
-                  name={`${field}.detailed_plan_latest_processing_date`}
-                  overrideValues={{
-                    label:
-                      LeaseAreaCustomDetailedPlanFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            {/* Asemak. käsittelypvm huomautus */}
-            <Column small={12} medium={4} large={4}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.detailed_plan_latest_processing_date`}
+                overrideValues={{
+                  label:
+                    LeaseAreaCustomDetailedPlanFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE,
+                )}
+              />
+            </Authorization>
+          </Column>
+          {/* Asemak. käsittelypvm huomautus */}
+          <Column small={12} medium={4} large={4}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE,
+              )}
+            >
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   attributes,
                   LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    attributes,
-                    LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE,
-                  )}
-                  name={`${field}.detailed_plan_latest_processing_date_note`}
-                  overrideValues={{
-                    label:
-                      LeaseAreaCustomDetailedPlanFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            {/* Kokonaisrakennusoikeus */}
-            <Column small={12} medium={4} large={4}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.detailed_plan_latest_processing_date_note`}
+                overrideValues={{
+                  label:
+                    LeaseAreaCustomDetailedPlanFieldTitles.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE,
+                )}
+              />
+            </Authorization>
+          </Column>
+          {/* Kokonaisrakennusoikeus */}
+          <Column small={12} medium={4} large={4}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.RENT_BUILD_PERMISSION,
+              )}
+            >
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   attributes,
                   LeaseAreaCustomDetailedPlanFieldPaths.RENT_BUILD_PERMISSION,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    attributes,
-                    LeaseAreaCustomDetailedPlanFieldPaths.RENT_BUILD_PERMISSION,
-                  )}
-                  name={`${field}.rent_build_permission`}
-                  unit="k-m²"
-                  overrideValues={{
-                    label:
-                      LeaseAreaCustomDetailedPlanFieldTitles.RENT_BUILD_PERMISSION,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.RENT_BUILD_PERMISSION,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            {/* Arvioitu rakentamisen valmius */}
-            <Column small={12} medium={4} large={4}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.rent_build_permission`}
+                unit="k-m²"
+                overrideValues={{
+                  label:
+                    LeaseAreaCustomDetailedPlanFieldTitles.RENT_BUILD_PERMISSION,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseAreaCustomDetailedPlanFieldPaths.RENT_BUILD_PERMISSION,
+                )}
+              />
+            </Authorization>
+          </Column>
+          {/* Arvioitu rakentamisen valmius */}
+          <Column small={12} medium={4} large={4}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT,
+              )}
+            >
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   attributes,
                   LeaseAreaCustomDetailedPlanFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    attributes,
-                    LeaseAreaCustomDetailedPlanFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT,
-                  )}
-                  name={`${field}.preconstruction_estimated_construction_readiness_moment`}
-                  overrideValues={{
-                    label:
-                      LeaseAreaCustomDetailedPlanFieldTitles.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT,
-                  )}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-          {/* Käyttöjakauma */}
-          <Row>
-            <Column small={12} large={12}>
-              <Authorization
-                allow={isFieldAllowedToEdit(
-                  attributes,
+                name={`${field}.preconstruction_estimated_construction_readiness_moment`}
+                overrideValues={{
+                  label:
+                    LeaseAreaCustomDetailedPlanFieldTitles.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseAreaCustomDetailedPlanFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT,
+                )}
+              />
+            </Authorization>
+          </Column>
+        </Row>
+        {/* Käyttöjakauma */}
+        <Row>
+          <Column small={12} large={12}>
+            <Authorization
+              allow={isFieldAllowedToEdit(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.USAGE_DISTRIBUTIONS,
+              )}
+            >
+              <FieldArray
+                buttonTitle="Lisää käyttöjakauma"
+                component={UsageDistributions}
+                errors={errors}
+                name={`${field}.usage_distributions`}
+                noDataText="Ei käyttöjakaumia"
+                title="Käyttöjakaumat"
+                uiDataKey={getUiDataLeaseKey(
                   LeaseAreaCustomDetailedPlanFieldPaths.USAGE_DISTRIBUTIONS,
                 )}
-              >
-                <FieldArray
-                  attributes={attributes}
-                  buttonTitle="Lisää käyttöjakauma"
-                  component={renderUsageDistributions}
-                  errors={errors}
-                  isSaveClicked={isSaveClicked}
-                  name={`${field}.usage_distributions`}
-                  noDataText="Ei käyttöjakaumia"
-                  title="Käyttöjakaumat"
-                  usersPermissions={usersPermissions}
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.USAGE_DISTRIBUTIONS,
-                  )}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-          {/* Lisätietolinkit */}
-          <Row>
-            <Column small={12} large={12}>
-              <Authorization
-                allow={isFieldAllowedToEdit(
-                  attributes,
+              />
+            </Authorization>
+          </Column>
+        </Row>
+        {/* Lisätietolinkit */}
+        <Row>
+          <Column small={12} large={12}>
+            <Authorization
+              allow={isFieldAllowedToEdit(
+                attributes,
+                LeaseAreaCustomDetailedPlanFieldPaths.INFO_LINKS,
+              )}
+            >
+              <FieldArray
+                buttonTitle="Lisää lisätietolinkki"
+                component={InfoLinks}
+                errors={errors}
+                name={`${field}.info_links`}
+                noDataText="Ei lisätietolinkkejä"
+                title="Lisätietolinkit"
+                uiDataKey={getUiDataLeaseKey(
                   LeaseAreaCustomDetailedPlanFieldPaths.INFO_LINKS,
                 )}
-              >
-                <FieldArray
-                  attributes={attributes}
-                  buttonTitle="Lisää lisätietolinkki"
-                  component={renderInfoLinks}
-                  errors={errors}
-                  isSaveClicked={isSaveClicked}
-                  name={`${field}.info_links`}
-                  noDataText="Ei lisätietolinkkejä"
-                  title="Lisätietolinkit"
-                  usersPermissions={usersPermissions}
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreaCustomDetailedPlanFieldPaths.INFO_LINKS,
-                  )}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-        </BoxItem>
-      </BoxContentWrapper>
-    );
-  }
-}
+              />
+            </Authorization>
+          </Column>
+        </Row>
+      </BoxItem>
+    </BoxContentWrapper>
+  );
+};
 
-const formName = FormNames.LEASE_AREAS;
-export default flowRight(
-  connect((state) => {
-    return {
-      attributes: getAttributes(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  }),
-  reduxForm({
-    form: formName,
-    destroyOnUnmount: false,
-    change,
-  }),
-)(CustomDetailedPlanEdit) as React.ComponentType<OwnProps>;
+export default reduxForm({
+  form: formName,
+  destroyOnUnmount: false,
+})(CustomDetailedPlanEdit);
