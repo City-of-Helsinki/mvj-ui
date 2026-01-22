@@ -9,6 +9,7 @@ export const CollectionNoteFieldPaths = {
   MODIFIED_AT: "modified_at",
   NOTE: "note",
   USER: "user",
+  COLLECTION_STAGE: "collection_stage",
 };
 
 /**
@@ -21,4 +22,5 @@ export const CollectionNoteFieldTitles = {
   MODIFIED_AT: "Lisätty",
   NOTE: "Huomautus",
   USER: "Lisääjä",
+  COLLECTION_STAGE: "Perintävaihe",
 };

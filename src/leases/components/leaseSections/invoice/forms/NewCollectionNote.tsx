@@ -18,6 +18,7 @@ type Props = {
   collectionNoteAttributes: Attributes;
   field: any;
   note: string | null | undefined;
+  collectionStage: string | null | undefined;
   onCancel: (...args: Array<any>) => any;
   onSave: (...args: Array<any>) => any;
 };
@@ -26,16 +27,36 @@ const NewCollectionNote = ({
   collectionNoteAttributes,
   field,
   note,
+  collectionStage,
   onCancel,
   onSave,
 }: Props) => {
   const handleSave = () => {
-    onSave(note);
+    onSave(note, collectionStage);
   };
 
   return (
     <Fragment>
       <Row>
+        <Column small={3}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              collectionNoteAttributes,
+              CollectionNoteFieldPaths.COLLECTION_STAGE,
+            )}
+          >
+            <FormFieldLegacy
+              fieldAttributes={getFieldAttributes(
+                collectionNoteAttributes,
+                CollectionNoteFieldPaths.COLLECTION_STAGE,
+              )}
+              name={`${field}.collection_stage`}
+              overrideValues={{
+                label: CollectionNoteFieldTitles.COLLECTION_STAGE,
+              }}
+            />
+          </Authorization>
+        </Column>
         <Column small={12}>
           <Authorization
             allow={isFieldAllowedToRead(
@@ -52,7 +73,6 @@ const NewCollectionNote = ({
                 ),
                 type: "textarea",
               }}
-              invisibleLabel={true}
               name={`${field}.note`}
               overrideValues={{
                 label: CollectionNoteFieldTitles.NOTE,
@@ -80,9 +100,10 @@ const NewCollectionNote = ({
 
 const formName = FormNames.LEASE_DEBT_COLLECTION;
 const selector = formValueSelector(formName);
-export default connect((state, props) => {
+export default connect((state, props: Props) => {
   return {
     collectionNoteAttributes: getCollectionNoteAttributes(state),
     note: selector(state, `${props.field}.note`),
+    collectionStage: selector(state, `${props.field}.collection_stage`),
   };
 })(NewCollectionNote);

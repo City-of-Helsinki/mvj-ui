@@ -67,6 +67,8 @@ import {
 } from "@/uiData/helpers";
 import {
   formatDate,
+  getFieldOptions,
+  getLabelOfOption,
   hasPermissions,
   isFieldAllowedToRead,
   isFieldRequired,
@@ -119,8 +121,8 @@ const renderNotes = ({
             fields.remove(index);
           };
 
-          const handleSave = (note: string) => {
-            onCreate(note);
+          const handleSave = (note: string, collectionStage: string) => {
+            onCreate(note, collectionStage);
             saveCallback(() => {
               fields.remove(index);
             });
@@ -298,11 +300,12 @@ class DebtCollectionForm extends PureComponent<Props, State> {
       lease: currentLease.id,
     });
   };
-  handleCreateCollectionNote = (note: string) => {
+  handleCreateCollectionNote = (note: string, collectionStage: string) => {
     const { currentLease, createCollectionNote } = this.props;
     createCollectionNote({
       lease: currentLease.id,
       note: note,
+      collection_stage: collectionStage,
     });
   };
   handleDeleteCollectionNote = (id: CollectionLetterId) => {
@@ -977,7 +980,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                 )}
               >
                 <Row>
-                  <Column small={12} large={6}>
+                  <Column small={12} large={9}>
                     <SubTitle
                       enableUiDataEdit
                       uiDataKey={getUiDataCollectionNoteKey(
@@ -998,7 +1001,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                     {sortedCollectionNotes &&
                       !!sortedCollectionNotes.length && (
                         <Row>
-                          <Column small={6}>
+                          <Column small={5} large={4}>
                             <Authorization
                               allow={isFieldAllowedToRead(
                                 collectionNoteAttributes,
@@ -1023,6 +1026,27 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                             <Authorization
                               allow={isFieldAllowedToRead(
                                 collectionNoteAttributes,
+                                CollectionNoteFieldPaths.COLLECTION_STAGE,
+                              )}
+                            >
+                              <FormTextTitle
+                                required={isFieldRequired(
+                                  collectionNoteAttributes,
+                                  CollectionNoteFieldPaths.COLLECTION_STAGE,
+                                )}
+                                enableUiDataEdit
+                                uiDataKey={getUiDataCollectionNoteKey(
+                                  CollectionNoteFieldPaths.COLLECTION_STAGE,
+                                )}
+                              >
+                                {CollectionNoteFieldTitles.COLLECTION_STAGE}
+                              </FormTextTitle>
+                            </Authorization>
+                          </Column>
+                          <Column small={2}>
+                            <Authorization
+                              allow={isFieldAllowedToRead(
+                                collectionNoteAttributes,
                                 CollectionNoteFieldPaths.MODIFIED_AT,
                               )}
                             >
@@ -1036,7 +1060,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                               </FormTextTitle>
                             </Authorization>
                           </Column>
-                          <Column small={3}>
+                          <Column small={2}>
                             <FormTextTitle
                               enableUiDataEdit
                               tooltipStyle={{
@@ -1073,7 +1097,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
 
                         return (
                           <Row key={note.id}>
-                            <Column small={6}>
+                            <Column small={5} large={4}>
                               <Authorization
                                 allow={isFieldAllowedToRead(
                                   collectionNoteAttributes,
@@ -1087,6 +1111,24 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                               <Authorization
                                 allow={isFieldAllowedToRead(
                                   collectionNoteAttributes,
+                                  CollectionNoteFieldPaths.COLLECTION_STAGE,
+                                )}
+                              >
+                                <FormText>
+                                  {getLabelOfOption(
+                                    getFieldOptions(
+                                      collectionNoteAttributes,
+                                      CollectionNoteFieldPaths.COLLECTION_STAGE,
+                                    ),
+                                    note.collection_stage,
+                                  ) || "-"}
+                                </FormText>
+                              </Authorization>
+                            </Column>
+                            <Column small={2}>
+                              <Authorization
+                                allow={isFieldAllowedToRead(
+                                  collectionNoteAttributes,
                                   CollectionNoteFieldPaths.MODIFIED_AT,
                                 )}
                               >
@@ -1095,7 +1137,7 @@ class DebtCollectionForm extends PureComponent<Props, State> {
                                 </FormText>
                               </Authorization>
                             </Column>
-                            <Column small={3}>
+                            <Column small={2}>
                               <FieldAndRemoveButtonWrapper
                                 field={
                                   // TODO: Check that attributes has CollectionNoteFieldPaths.USER when added API
