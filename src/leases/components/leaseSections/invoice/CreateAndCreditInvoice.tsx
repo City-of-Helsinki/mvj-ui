@@ -1,7 +1,6 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import AddButton from "@/components/form/AddButton";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
@@ -39,43 +38,41 @@ import { ConfirmationModalTexts } from "@/enums";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
-  createCharge: (...args: Array<any>) => any;
-  createInvoice: (...args: Array<any>) => any;
-  creditInvoice: (...args: Array<any>) => any;
-  creditInvoiceSet: (...args: Array<any>) => any;
-  currentLease: Lease;
-  deleteInvoice: (...args: Array<any>) => any;
   invoiceToCredit: Record<string, any> | null | undefined;
-  isCreateInvoicePanelOpen: boolean;
-  isCreditInvoicePanelOpen: boolean;
-  isInvoicingEnabled: boolean;
-  receiveIsCreateClicked: (...args: Array<any>) => any;
-  receiveIsCreateInvoicePanelOpen: (...args: Array<any>) => any;
-  receiveIsCreditClicked: (...args: Array<any>) => any;
-  receiveIsCreditInvoicePanelOpen: (...args: Array<any>) => any;
   ref?: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
 };
 
-class CreateAndCreditInvoice extends Component<Props> {
-  creditPanel: any;
-  creditPanelFirstField: any;
-  createPanel: any;
-  createPanelFirstField: any;
-  setCreatePanelRef = (el: any) => {
-    this.createPanel = el;
+const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit, ref }) => {
+  const currentLease: Lease = useSelector(getCurrentLease);
+  const isCreateInvoicePanelOpen = useSelector(getIsCreateInvoicePanelOpen);
+  const isCreditInvoicePanelOpen = useSelector(getIsCreditInvoicePanelOpen);
+  const isInvoicingEnabled = currentLease
+    ? !!currentLease.invoicing_enabled_at
+    : null;
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
+  const creditPanel = useRef<any>(null);
+  const creditPanelFirstField = useRef<any>(null);
+  const createPanel = useRef<any>(null);
+  const createPanelFirstField = useRef<any>(null);
+
+  const dispatch = useDispatch();
+
+  const setCreatePanelRef = (el: any) => {
+    createPanel.current = el;
   };
-  setCreditPanelRef = (el: any) => {
-    this.creditPanel = el;
+
+  const setCreditPanelRef = (el: any) => {
+    creditPanel.current = el;
   };
-  handleOpenCreateInvoicePanelButtonClick = () => {
-    const { receiveIsCreateClicked, receiveIsCreateInvoicePanelOpen } =
-      this.props;
-    receiveIsCreateClicked(false);
-    receiveIsCreateInvoicePanelOpen(true);
+
+  const handleOpenCreateInvoicePanelButtonClick = () => {
+    dispatch(receiveIsCreateClicked(false));
+    dispatch(receiveIsCreateInvoicePanelOpen(true));
     setTimeout(() => {
-      if (this.createPanel) {
-        const panelRect = this.createPanel.getBoundingClientRect();
+      if (createPanel) {
+        const panelRect = createPanel.current.getBoundingClientRect();
         const scrollTop =
           window.pageYOffset || document.documentElement.scrollTop;
         window.scrollTo({
@@ -83,44 +80,46 @@ class CreateAndCreditInvoice extends Component<Props> {
           behavior: "smooth",
         });
       }
-      this.setFocusOnCreatePanel();
+      setFocusOnCreatePanel();
     }, 50);
   };
-  handleSetRefForCreatePanelFirstField = (element: any) => {
-    this.createPanelFirstField = element;
+
+  const handleSetRefForCreatePanelFirstField = (element: any) => {
+    createPanelFirstField.current = element;
   };
-  setFocusOnCreatePanel = () => {
-    if (this.createPanelFirstField) {
-      this.createPanelFirstField.focus();
+
+  const setFocusOnCreatePanel = () => {
+    if (createPanelFirstField.current) {
+      createPanelFirstField.current.focus();
     }
   };
-  handleCloseCreateInvoicePanel = () => {
-    const { receiveIsCreateInvoicePanelOpen } = this.props;
-    receiveIsCreateInvoicePanelOpen(false);
+
+  const handleCloseCreateInvoicePanel = () => {
+    dispatch(receiveIsCreateInvoicePanelOpen(false));
   };
-  handleCreateInvoice = (invoice: Record<string, any>) => {
-    const { createCharge, createInvoice, currentLease } = this.props;
+
+  const handleCreateInvoice = (invoice: Record<string, any>) => {
     invoice.lease = currentLease.id;
 
     if (invoice.tenant === RecipientOptions.ALL) {
-      createCharge({
-        leaseId: currentLease.id,
-        data: getPayloadLeaseCreateCharge(invoice),
-      });
+      dispatch(
+        createCharge({
+          leaseId: currentLease.id,
+          data: getPayloadLeaseCreateCharge(invoice),
+        }),
+      );
     } else {
-      // eslint-disable-next-line
       const { recipient, ...getInvoiceTenant } = invoice;
-      createInvoice(getPayloadCreateInvoice(getInvoiceTenant));
+      dispatch(createInvoice(getPayloadCreateInvoice(getInvoiceTenant)));
     }
   };
-  handleOpenCreditInvoicePanelButtonClick = () => {
-    const { receiveIsCreditClicked, receiveIsCreditInvoicePanelOpen } =
-      this.props;
-    receiveIsCreditClicked(false);
-    receiveIsCreditInvoicePanelOpen(true);
+
+  const handleOpenCreditInvoicePanelButtonClick = () => {
+    dispatch(receiveIsCreditClicked(false));
+    dispatch(receiveIsCreditInvoicePanelOpen(true));
     setTimeout(() => {
-      if (this.creditPanel) {
-        const panelRect = this.creditPanel.getBoundingClientRect();
+      if (creditPanel.current) {
+        const panelRect = creditPanel.current.getBoundingClientRect();
         const scrollTop =
           window.pageYOffset || document.documentElement.scrollTop;
         window.scrollTo({
@@ -128,196 +127,162 @@ class CreateAndCreditInvoice extends Component<Props> {
           behavior: "smooth",
         });
       }
-      this.setFocusOnCreditPanel();
+      setFocusOnCreditPanel();
     }, 50);
   };
-  handleDeleteInvoicePanelButtonClick = () => {
-    const { invoiceToCredit, deleteInvoice, currentLease } = this.props;
-    deleteInvoice({ ...invoiceToCredit, lease: currentLease.id });
-  };
-  handleSetRefForCreditPanelFirstField = (element: any) => {
-    this.creditPanelFirstField = element;
-  };
-  setFocusOnCreditPanel = () => {
-    if (this.creditPanelFirstField) {
-      this.creditPanelFirstField.focus();
-    }
-  };
-  handleCloseCreditInvoicePanel = () => {
-    const { receiveIsCreditInvoicePanelOpen } = this.props;
-    receiveIsCreditInvoicePanelOpen(false);
-  };
-  handleCreditInvoice = (creditInvoiceData: Record<string, any>) => {
-    const { currentLease, invoiceToCredit } = this.props,
-      isInvoiceSet = this.isInvoiceSet();
 
-    if (isInvoiceSet) {
-      const { creditInvoiceSet } = this.props;
-      creditInvoiceSet({
-        creditData: getCreditInvoiceSetPayload(creditInvoiceData),
-        invoiceSetId: invoiceToCredit && invoiceToCredit.id,
-        lease: currentLease.id,
-      });
-    } else {
-      const { creditInvoice } = this.props;
-      creditInvoice({
-        creditData: getPayloadCreditInvoice(creditInvoiceData),
-        invoiceId: invoiceToCredit && invoiceToCredit.id,
-        lease: currentLease.id,
-      });
+  const handleDeleteInvoicePanelButtonClick = () => {
+    dispatch(deleteInvoice({ ...invoiceToCredit, lease: currentLease.id }));
+  };
+
+  const handleSetRefForCreditPanelFirstField = (element: any) => {
+    creditPanelFirstField.current = element;
+  };
+
+  const setFocusOnCreditPanel = () => {
+    if (creditPanelFirstField.current) {
+      creditPanelFirstField.current.focus();
     }
   };
-  isInvoiceSet = () => {
-    const { invoiceToCredit } = this.props;
+
+  const handleCloseCreditInvoicePanel = () => {
+    dispatch(receiveIsCreditInvoicePanelOpen(false));
+  };
+
+  const isInvoiceSet = () => {
     return invoiceToCredit && invoiceToCredit.tableGroupName ? true : false;
   };
 
-  render() {
-    const {
-      invoiceToCredit,
-      isCreateInvoicePanelOpen,
-      isCreditInvoicePanelOpen,
-      isInvoicingEnabled,
-      usersPermissions,
-    } = this.props;
-    const isInvoiceSet = this.isInvoiceSet();
-    return (
-      <div className="invoice__new-invoice">
-        <Authorization
-          allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
-        >
-          <Button
-            className={`${ButtonColors.NEUTRAL} no-margin`}
-            disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
-            onClick={this.handleOpenCreditInvoicePanelButtonClick}
-            text="Hyvitä lasku"
-          />
-        </Authorization>
+  const handleCreditInvoice = (creditInvoiceData: Record<string, any>) => {
+    if (isInvoiceSet()) {
+      dispatch(
+        creditInvoiceSet({
+          creditData: getCreditInvoiceSetPayload(creditInvoiceData),
+          invoiceSetId: invoiceToCredit && invoiceToCredit.id,
+          lease: currentLease.id,
+        }),
+      );
+    } else {
+      dispatch(
+        creditInvoice({
+          creditData: getPayloadCreditInvoice(creditInvoiceData),
+          invoiceId: invoiceToCredit && invoiceToCredit.id,
+          lease: currentLease.id,
+        }),
+      );
+    }
+  };
 
-        <AppConsumer>
-          {({ dispatch }) => {
-            const handleDelete = () => {
-              dispatch({
-                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                confirmationFunction: () => {
-                  this.handleDeleteInvoicePanelButtonClick();
-                },
-                confirmationModalButtonClassName: ButtonColors.ALERT,
-                confirmationModalButtonText:
-                  ConfirmationModalTexts.DELETE_INVOICE.BUTTON,
-                confirmationModalLabel:
-                  ConfirmationModalTexts.DELETE_INVOICE.LABEL,
-                confirmationModalTitle:
-                  ConfirmationModalTexts.DELETE_INVOICE.TITLE,
-              });
-            };
+  return (
+    <div className="invoice__new-invoice">
+      <Authorization
+        allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+      >
+        <Button
+          className={`${ButtonColors.NEUTRAL} no-margin`}
+          disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
+          onClick={handleOpenCreditInvoicePanelButtonClick}
+          text="Hyvitä lasku"
+        />
+      </Authorization>
 
-            return (
-              <Authorization
-                allow={hasPermissions(
+      <AppConsumer>
+        {({ dispatch: appDispatch }) => {
+          const handleDelete = () => {
+            appDispatch({
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
+                handleDeleteInvoicePanelButtonClick();
+              },
+              confirmationModalButtonClassName: ButtonColors.ALERT,
+              confirmationModalButtonText:
+                ConfirmationModalTexts.DELETE_INVOICE.BUTTON,
+              confirmationModalLabel:
+                ConfirmationModalTexts.DELETE_INVOICE.LABEL,
+              confirmationModalTitle:
+                ConfirmationModalTexts.DELETE_INVOICE.TITLE,
+            });
+          };
+
+          return (
+            <Authorization
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.DELETE_INVOICE,
+              )}
+            >
+              <Button
+                className={ButtonColors.ALERT}
+                disabled={
+                  !invoiceToCredit ||
+                  isCreditInvoicePanelOpen ||
+                  invoiceToCredit.number
+                }
+                onClick={handleDelete}
+                text="Poista lasku"
+              />
+            </Authorization>
+          );
+        }}
+      </AppConsumer>
+
+      <Authorization
+        allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+      >
+        <div ref={setCreditPanelRef}>
+          {isCreditInvoicePanelOpen && (
+            <CreditInvoiceForm
+              invoiceToCredit={invoiceToCredit}
+              isInvoiceSet={isInvoiceSet()}
+              onClose={handleCloseCreditInvoicePanel}
+              onSave={handleCreditInvoice}
+              setRefForFirstField={handleSetRefForCreditPanelFirstField}
+            />
+          )}
+        </div>
+      </Authorization>
+
+      <Authorization
+        allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+      >
+        <Row>
+          <Column>
+            <AddButton
+              disabled={isCreateInvoicePanelOpen || !isInvoicingEnabled}
+              label="Luo lasku"
+              onClick={handleOpenCreateInvoicePanelButtonClick}
+              style={{
+                marginTop: 15,
+              }}
+            />
+          </Column>
+        </Row>
+      </Authorization>
+
+      <Authorization
+        allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+      >
+        <div ref={setCreatePanelRef}>
+          {isCreateInvoicePanelOpen && (
+            <NewInvoiceForm
+              initialValues={{
+                recipient: hasPermissions(
                   usersPermissions,
-                  UsersPermissions.DELETE_INVOICE,
-                )}
-              >
-                <Button
-                  className={ButtonColors.ALERT}
-                  disabled={
-                    !invoiceToCredit ||
-                    isCreditInvoicePanelOpen ||
-                    invoiceToCredit.number
-                  }
-                  onClick={handleDelete}
-                  text="Poista lasku"
-                />
-              </Authorization>
-            );
-          }}
-        </AppConsumer>
+                  UsersPermissions.ADD_INVOICE,
+                )
+                  ? RecipientOptions.ALL
+                  : undefined,
+                rows: [{}],
+              }}
+              onClose={handleCloseCreateInvoicePanel}
+              onSave={handleCreateInvoice}
+              setRefForFirstField={handleSetRefForCreatePanelFirstField}
+            />
+          )}
+        </div>
+      </Authorization>
+    </div>
+  );
+};
 
-        <Authorization
-          allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
-        >
-          <div ref={this.setCreditPanelRef}>
-            {isCreditInvoicePanelOpen && (
-              <CreditInvoiceForm
-                invoiceToCredit={invoiceToCredit}
-                isInvoiceSet={isInvoiceSet}
-                onClose={this.handleCloseCreditInvoicePanel}
-                onSave={this.handleCreditInvoice}
-                setRefForFirstField={this.handleSetRefForCreditPanelFirstField}
-              />
-            )}
-          </div>
-        </Authorization>
-
-        <Authorization
-          allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
-        >
-          <Row>
-            <Column>
-              <AddButton
-                disabled={isCreateInvoicePanelOpen || !isInvoicingEnabled}
-                label="Luo lasku"
-                onClick={this.handleOpenCreateInvoicePanelButtonClick}
-                style={{
-                  marginTop: 15,
-                }}
-              />
-            </Column>
-          </Row>
-        </Authorization>
-
-        <Authorization
-          allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
-        >
-          <div ref={this.setCreatePanelRef}>
-            {isCreateInvoicePanelOpen && (
-              <NewInvoiceForm
-                initialValues={{
-                  recipient: hasPermissions(
-                    usersPermissions,
-                    UsersPermissions.ADD_INVOICE,
-                  )
-                    ? RecipientOptions.ALL
-                    : undefined,
-                  rows: [{}],
-                }}
-                onClose={this.handleCloseCreateInvoicePanel}
-                onSave={this.handleCreateInvoice}
-                setRefForFirstField={this.handleSetRefForCreatePanelFirstField}
-              />
-            )}
-          </div>
-        </Authorization>
-      </div>
-    );
-  }
-}
-
-export default flowRight(
-  connect(
-    (state) => {
-      const currentLease = getCurrentLease(state);
-      return {
-        currentLease: currentLease,
-        isCreateInvoicePanelOpen: getIsCreateInvoicePanelOpen(state),
-        isCreditInvoicePanelOpen: getIsCreditInvoicePanelOpen(state),
-        isInvoicingEnabled: currentLease
-          ? !!currentLease.invoicing_enabled_at
-          : null,
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      createCharge,
-      createInvoice,
-      creditInvoice,
-      creditInvoiceSet,
-      receiveIsCreateInvoicePanelOpen,
-      receiveIsCreateClicked,
-      receiveIsCreditClicked,
-      receiveIsCreditInvoicePanelOpen,
-      deleteInvoice,
-    },
-  ),
-)(CreateAndCreditInvoice);
+export default CreateAndCreditInvoice;

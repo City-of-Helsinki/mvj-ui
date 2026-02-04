@@ -10,10 +10,11 @@ export const getMethods: Selector<Methods, void> = (
 export const getIsFetchingAttributes: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.collectionLetter.isFetchingAttributes;
-export const getCollectionLettersByLease: Selector<boolean, LeaseId> = (
-  state: RootState,
-  lease: LeaseId,
-): boolean => state.collectionLetter.byLease[lease];
+export const getCollectionLettersByLease: Selector<
+  Array<Record<string, any>>,
+  LeaseId
+> = (state: RootState, lease: LeaseId): Array<Record<string, any>> =>
+  state.collectionLetter.byLease[lease];
 export const getIsFetchingByLease: Selector<boolean, LeaseId> = (
   state: RootState,
   lease: LeaseId,

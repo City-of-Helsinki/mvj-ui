@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import isEmpty from "lodash/isEmpty";
@@ -7,18 +7,27 @@ import FormText from "@/components/form/FormText";
 import { FormNames } from "@/enums";
 import { convertStrToDecimalNumber, formatNumber } from "@/util/helpers";
 import { getPenaltyInterestByInvoice } from "@/penaltyInterest/selectors";
-type OwnProps = {
+type Props = {
   selectedInvoices: Array<Record<string, any>>;
   fields: any;
 };
-type Props = OwnProps & {
-  penaltyInterestArray: Array<Record<string, any>>;
-};
 
-const CollectionLetterTotalRow = ({
-  selectedInvoices,
-  penaltyInterestArray,
-}: Props) => {
+const CollectionLetterTotalRow = ({ fields, selectedInvoices }: Props) => {
+  const penaltyInterestArray: Array<Record<string, any>> = useSelector(
+    (state) => {
+      const penaltyInterests = [];
+      fields.forEach((field) => {
+        const invoice = selector(state, field),
+          penaltyInterest = getPenaltyInterestByInvoice(state, invoice.invoice);
+
+        if (!isEmpty(penaltyInterest)) {
+          penaltyInterests.push(penaltyInterest);
+        }
+      });
+      return penaltyInterests;
+    },
+  );
+
   const getTotalOutstandingAmount = () => {
     let total = 0;
     penaltyInterestArray.forEach((penaltyInterest) => {
@@ -79,17 +88,4 @@ const CollectionLetterTotalRow = ({
 
 const formName = FormNames.LEASE_CREATE_COLLECTION_LETTER;
 const selector = formValueSelector(formName);
-export default connect((state, props) => {
-  const penaltyInterestArray = [];
-  props.fields.forEach((field) => {
-    const invoice = selector(state, field),
-      penaltyInterest = getPenaltyInterestByInvoice(state, invoice.invoice);
-
-    if (!isEmpty(penaltyInterest)) {
-      penaltyInterestArray.push(penaltyInterest);
-    }
-  });
-  return {
-    penaltyInterestArray: penaltyInterestArray,
-  };
-})(CollectionLetterTotalRow) as React.ComponentType<OwnProps>;
+export default CollectionLetterTotalRow;
