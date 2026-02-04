@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import Authorization from "@/components/authorization/Authorization";
 import FormText from "@/components/form/FormText";
@@ -39,7 +38,6 @@ type Props = {
   creditedInvoice: Record<string, any> | null | undefined;
   interestInvoiceFor: Record<string, any> | null | undefined;
   invoice: Record<string, any> | null | undefined;
-  invoiceAttributes: Attributes;
   onInvoiceLinkClick: (...args: Array<any>) => any;
   relativeTo?: any;
 };
@@ -48,10 +46,11 @@ const InvoiceTemplate = ({
   creditedInvoice,
   interestInvoiceFor,
   invoice,
-  invoiceAttributes,
   onInvoiceLinkClick,
   relativeTo,
 }: Props) => {
+  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
+
   const handleCreditedInvoiceClick = () => {
     onInvoiceLinkClick(invoice ? invoice.credited_invoice : 0);
   };
@@ -104,7 +103,7 @@ const InvoiceTemplate = ({
   const rows = invoice ? invoice.rows : [];
   const showOldInvoiceInfo = shouldShowOldInvoiceInfo();
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={8}>
           <Authorization
@@ -394,7 +393,7 @@ const InvoiceTemplate = ({
       </Row>
 
       {invoice && invoice.type !== InvoiceType.CREDIT_NOTE && (
-        <Fragment>
+        <>
           <SubTitle
             enableUiDataEdit
             relativeTo={relativeTo}
@@ -525,7 +524,7 @@ const InvoiceTemplate = ({
               </Authorization>
             </Column>
           </Row>
-        </Fragment>
+        </>
       )}
       {showOldInvoiceInfo && (
         <Row>
@@ -760,7 +759,7 @@ const InvoiceTemplate = ({
         )}
       >
         {!!creditInvoices.length && (
-          <Fragment>
+          <>
             <SubTitle
               enableUiDataEdit
               relativeTo={relativeTo}
@@ -772,7 +771,7 @@ const InvoiceTemplate = ({
             </SubTitle>
 
             {!!creditInvoices.length && (
-              <Fragment>
+              <>
                 <Row>
                   <Column small={4}>
                     <FormTextTitle
@@ -848,9 +847,9 @@ const InvoiceTemplate = ({
                     </Row>
                   );
                 })}
-              </Fragment>
+              </>
             )}
-          </Fragment>
+          </>
         )}
       </Authorization>
 
@@ -861,7 +860,7 @@ const InvoiceTemplate = ({
         )}
       >
         {!!interestInvoices.length && (
-          <Fragment>
+          <>
             <SubTitle
               relativeTo={relativeTo}
               uiDataKey={getUiDataInvoiceKey(
@@ -872,7 +871,7 @@ const InvoiceTemplate = ({
             </SubTitle>
 
             {!!interestInvoices.length && (
-              <Fragment>
+              <>
                 <Row>
                   <Column small={4}>
                     <FormTextTitle
@@ -945,9 +944,9 @@ const InvoiceTemplate = ({
                     </Row>
                   );
                 })}
-              </Fragment>
+              </>
             )}
-          </Fragment>
+          </>
         )}
       </Authorization>
 
@@ -966,14 +965,8 @@ const InvoiceTemplate = ({
           rows={rows}
         />
       </Authorization>
-    </Fragment>
+    </>
   );
 };
 
-export default flowRight(
-  connect((state) => {
-    return {
-      invoiceAttributes: getInvoiceAttributes(state),
-    };
-  }),
-)(InvoiceTemplate);
+export default InvoiceTemplate;

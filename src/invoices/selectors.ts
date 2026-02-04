@@ -36,9 +36,9 @@ export const getInvoicesByLease: Selector<InvoiceList, LeaseId> = (
   state: RootState,
   leaseId: LeaseId,
 ): InvoiceList => state.invoice.byLease[leaseId];
-export const getInvoiceToCredit: Selector<string | null | undefined, void> = (
+export const getInvoiceToCredit: Selector<Invoice | null | undefined, void> = (
   state: RootState,
-): string | null | undefined => state.invoice.invoiceToCredit;
+): Invoice | null | undefined => state.invoice.invoiceToCredit;
 export const getPatchedInvoice: Selector<Invoice | null | undefined, void> = (
   state: RootState,
 ): Invoice | null | undefined => state.invoice.patchedInvoice;

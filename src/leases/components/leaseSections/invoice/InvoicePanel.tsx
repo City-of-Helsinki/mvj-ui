@@ -1,5 +1,11 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { getFormValues, isValid } from "redux-form";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
@@ -18,81 +24,86 @@ import {
 } from "@/invoices/selectors";
 import { getCurrentLease } from "@/leases/selectors";
 import type { Methods as MethodsType } from "types";
-import type { Invoice, InvoiceList } from "@/invoices/types";
+import type { Invoice } from "@/invoices/types";
 
 type Props = {
-  formValues: Record<string, any>;
   invoice: Invoice | null | undefined;
-  invoices: InvoiceList;
-  invoiceMethods: MethodsType;
-  isEditClicked: boolean;
   onClose: (...args: Array<any>) => any;
   onInvoiceLinkClick: (...args: Array<any>) => any;
   onSave: (...args: Array<any>) => any;
-  receiveIsEditClicked: (...args: Array<any>) => any;
-  valid: boolean;
 };
 
-type State = {
-  creditedInvoice: Record<string, any> | null | undefined;
-  interestInvoiceFor: Record<string, any> | null | undefined;
-  invoice: Record<string, any> | null | undefined;
-};
+const InvoicePanel = forwardRef<any, Props>(
+  ({ invoice, onClose, onInvoiceLinkClick, onSave }, ref) => {
+    const currentLease = useSelector(getCurrentLease);
+    const formValues: Record<string, any> = useSelector(
+      getFormValues(formName),
+    );
+    const invoiceMethods: MethodsType = useSelector(getInvoiceMethods);
+    const invoices = useSelector((state) =>
+      getInvoicesByLease(state, currentLease.id),
+    );
+    const isEditClicked = useSelector(getIsEditClicked);
+    const valid = useSelector((state) => isValid(formName)(state));
 
-class InvoicePanel extends PureComponent<Props, State> {
-  component: any;
-  state = {
-    creditedInvoice: null,
-    interestInvoiceFor: null,
-    invoice: null,
-  };
-  setComponentRef = (el: any) => {
-    this.component = el;
-  };
+    const component = useRef<any>(null);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+    const [creditedInvoice, setCreditedInvoice] = useState<Record<
+      string,
+      any
+    > | null>(null);
+    const [interestInvoiceFor, setInterestInvoiceFor] = useState<Record<
+      string,
+      any
+    > | null>(null);
 
-    if (props.invoice !== state.invoice) {
-      const invoice = props.invoice;
-      const invoices = props.invoices;
-      newState.invoice = invoice;
-      newState.creditedInvoice =
-        invoice && invoice.credited_invoice && !isEmpty(invoices)
-          ? invoices.find((item) => item.id === invoice.credited_invoice)
-          : null;
-      newState.interestInvoiceFor =
-        invoice && invoice.interest_invoice_for && !isEmpty(invoices)
-          ? invoices.find((item) => item.id === invoice.interest_invoice_for)
-          : null;
-    }
+    const dispatch = useDispatch();
 
-    return !isEmpty(newState) ? newState : null;
-  }
+    const setComponentRef = (el: any) => {
+      component.current = el;
+    };
 
-  handleSave = () => {
-    const { formValues, onSave, receiveIsEditClicked, valid } = this.props;
-    receiveIsEditClicked(true);
+    useImperativeHandle(ref, () => ({
+      focus: () => {
+        if (component.current) {
+          component.current.focus();
+        }
+      },
+    }));
 
-    if (valid) {
-      onSave(formValues);
-    }
-  };
+    useEffect(() => {
+      if (invoice) {
+        if (invoice.credited_invoice && !isEmpty(invoices)) {
+          const credited = invoices.find(
+            (item) => item.id === invoice.credited_invoice,
+          );
+          setCreditedInvoice(credited || null);
+        } else {
+          setCreditedInvoice(null);
+        }
 
-  render() {
-    const {
-      invoice,
-      invoiceMethods,
-      isEditClicked,
-      onClose,
-      onInvoiceLinkClick,
-      valid,
-    } = this.props;
-    const { creditedInvoice, interestInvoiceFor } = this.state;
+        if (invoice.interest_invoice_for && !isEmpty(invoices)) {
+          const interestFor = invoices.find(
+            (item) => item.id === invoice.interest_invoice_for,
+          );
+          setInterestInvoiceFor(interestFor || null);
+        } else {
+          setInterestInvoiceFor(null);
+        }
+      }
+    }, [invoice, invoices]);
+
+    const handleSave = () => {
+      dispatch(receiveIsEditClicked(true));
+
+      if (valid) {
+        onSave(formValues);
+      }
+    };
 
     return (
       <TablePanelContainer
-        innerRef={this.setComponentRef}
+        innerRef={setComponentRef}
         footer={
           invoice &&
           !invoice.sap_id && (
@@ -108,7 +119,7 @@ class InvoicePanel extends PureComponent<Props, State> {
                 <Button
                   className={ButtonColors.SUCCESS}
                   disabled={isEditClicked || !valid}
-                  onClick={this.handleSave}
+                  onClick={handleSave}
                   text="Tallenna"
                 />
               </>
@@ -126,7 +137,7 @@ class InvoicePanel extends PureComponent<Props, State> {
             invoice={invoice}
             initialValues={{ ...invoice }}
             onInvoiceLinkClick={onInvoiceLinkClick}
-            relativeTo={this.component}
+            relativeTo={component.current}
           />
         ) : (
           <InvoiceTemplate
@@ -134,31 +145,16 @@ class InvoicePanel extends PureComponent<Props, State> {
             interestInvoiceFor={interestInvoiceFor}
             invoice={invoice}
             onInvoiceLinkClick={onInvoiceLinkClick}
-            relativeTo={this.component}
+            relativeTo={component.current}
           />
         )}
       </TablePanelContainer>
     );
-  }
-}
+  },
+);
+
+// Forwardref needs a display name
+InvoicePanel.displayName = "InvoicePanel";
 
 const formName = FormNames.LEASE_INVOICE_EDIT;
-export default connect(
-  (state) => {
-    const currentLease = getCurrentLease(state);
-    return {
-      formValues: getFormValues(formName)(state),
-      invoiceMethods: getInvoiceMethods(state),
-      invoices: getInvoicesByLease(state, currentLease.id),
-      isEditClicked: getIsEditClicked(state),
-      valid: isValid(formName)(state),
-    };
-  },
-  {
-    receiveIsEditClicked,
-  },
-  null,
-  {
-    forwardRef: true,
-  },
-)(InvoicePanel);
+export default InvoicePanel;

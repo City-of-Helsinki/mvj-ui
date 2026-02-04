@@ -1,7 +1,6 @@
 import classNames from "classnames";
-import flowRight from "lodash/flowRight";
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { initialize } from "redux-form";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import FormText from "@/components/form/FormText";
@@ -55,114 +54,43 @@ import type { Invoice, InvoiceList } from "@/invoices/types";
 import type { InvoiceSetList } from "@/invoiceSets/types";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import LoaderWrapper from "@/components/loader/LoaderWrapper";
+import Loader from "@/components/loader/Loader";
 type Props = {
-  clearPatchedInvoice: (...args: Array<any>) => any;
-  initialize: (...args: Array<any>) => any;
-  invoiceAttributes: Attributes;
-  invoiceListData: InvoiceList | null | undefined;
-  invoiceSets: InvoiceSetList | null | undefined;
   invoiceToCredit: Record<string, any> | null | undefined;
   onInvoiceToCreditChange: (...args: Array<any>) => any;
-  patchInvoice: (...args: Array<any>) => any;
-  patchedInvoice: Invoice | null | undefined;
-  usersPermissions: UsersPermissionsType;
-};
-type State = {
-  columns: Array<Record<string, any>>;
-  invoiceListData: InvoiceList | null | undefined;
-  invoices: Array<Record<string, any>>;
-  invoiceToCreditRowId: string | null | undefined;
-  isPanelOpen: boolean;
-  openedInvoice: Invoice | null | undefined;
 };
 
-class InvoiceTableAndPanel extends PureComponent<Props, State> {
-  tableAndPanelWrapper: any;
-  state = {
-    columns: [],
-    invoiceListData: null,
-    invoices: [],
-    invoiceToCreditRowId: null,
-    isPanelOpen: false,
-    openedInvoice: null,
-  };
+const InvoiceTableAndPanel: React.FC<Props> = ({
+  invoiceToCredit,
+  onInvoiceToCreditChange,
+}) => {
+  const currentLease = useSelector(getCurrentLease);
+  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
+  const invoiceListData: InvoiceList | null | undefined = useSelector((state) =>
+    getInvoicesByLease(state, currentLease.id),
+  );
+  const invoiceSets: InvoiceSetList | null | undefined = useSelector((state) =>
+    getInvoiceSetsByLease(state, currentLease.id),
+  );
+  const patchedInvoice: Invoice | null | undefined =
+    useSelector(getPatchedInvoice);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
 
-  componentDidMount() {
-    const { clearPatchedInvoice } = this.props;
-    clearPatchedInvoice();
-    this.setColumns();
-    document.addEventListener("keydown", this.handleKeyDown);
-  }
+  const dispatch = useDispatch();
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const tableAndPanelWrapper = useRef<TableAndPanelWrapper>(null);
 
-    if (props.invoiceListData !== state.invoiceListData) {
-      const invoices = getContentInvoices(props.invoiceListData || []);
-      newState.invoiceListData = props.invoiceListData;
-      newState.invoices = invoices;
-    }
+  const [columns, setColumns] = useState<Array<Record<string, any>>>([]);
+  const [invoices, setInvoices] = useState<Array<Record<string, any>>>([]);
+  const [invoiceToCreditRowId, setInvoiceToCreditRowId] = useState<
+    string | null
+  >(null);
+  const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
+  const [openedInvoice, setOpenedInvoice] = useState<Invoice | null>(null);
 
-    return newState;
-  }
-
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if (prevState.openedInvoice !== this.state.openedInvoice) {
-      if (this.state.openedInvoice) {
-        this.tableAndPanelWrapper.scrollToPanel();
-      }
-
-      this.scrollToOpenedRow();
-      this.tableAndPanelWrapper.calculateTableHeight();
-      this.tableAndPanelWrapper.calculateTableWidth();
-      this.initilizeEditInvoiceForm(this.state.openedInvoice);
-    }
-
-    if (this.props.patchedInvoice) {
-      const { clearPatchedInvoice, patchedInvoice } = this.props;
-      this.initilizeEditInvoiceForm(getContentIncoive(patchedInvoice));
-      clearPatchedInvoice();
-    }
-
-    if (
-      this.props.invoiceAttributes !== prevProps.invoiceAttributes ||
-      this.props.invoiceSets !== prevProps.invoiceSets ||
-      this.props.usersPermissions !== prevProps.usersPermissions
-    ) {
-      this.setColumns();
-    }
-  }
-
-  setColumns = () => {
-    const { invoiceAttributes, invoiceSets, usersPermissions } = this.props;
-    this.setState({
-      columns: this.getColumns(
-        invoiceAttributes,
-        invoiceSets,
-        usersPermissions,
-      ),
-    });
-  };
-
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyDown);
-  }
-
-  setTableAndPanelWrapperRef = (el: any) => {
-    this.tableAndPanelWrapper = el;
-  };
-  forceUpdateInvoiceToCreditRow = (rowId: string | null | undefined) => {
-    const el = findReactById(rowId);
-
-    if (el) {
-      el.forceUpdateHandler();
-    }
-  };
-  getColumns = (
-    invoiceAttributes: Attributes,
-    invoiceSets: InvoiceSetList | null | undefined,
-    usersPermissions: UsersPermissionsType,
-  ) => {
+  const getColumns = useCallback(() => {
     const receivableTypeOptions = getFieldOptions(
       invoiceAttributes,
       InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
@@ -245,28 +173,18 @@ class InvoiceTableAndPanel extends PureComponent<Props, State> {
         key: "select",
         text: "",
         renderer: (val, row, component) => {
-          const { invoiceToCredit } = this.props;
-
           const handleRadioChange = (checked: boolean) => {
-            const { onInvoiceToCreditChange } = this.props;
-            const { invoiceToCreditRowId } = this.state;
             onInvoiceToCreditChange(checked ? row : null);
-            this.setState(
-              {
-                invoiceToCreditRowId: checked ? component.props.id : null,
-              },
-              () => {
-                component.forceUpdateHandler();
-
-                if (component.props.id !== invoiceToCreditRowId) {
-                  this.forceUpdateInvoiceToCreditRow(invoiceToCreditRowId);
-                }
-              },
-            );
+            setInvoiceToCreditRowId((prevRowId) => {
+              if (prevRowId !== row.id) {
+                forceUpdateInvoiceToCreditRow(prevRowId);
+              }
+              return checked ? row.id : null;
+            });
           };
 
           const isTableGroup = row.isTableGroup || false;
-          const disabled = this.isTableRadioButtonDisabled(row);
+          const disabled = isTableRadioButtonDisabled(row);
           return (
             <SingleRadioInput
               checked={
@@ -453,82 +371,166 @@ class InvoiceTableAndPanel extends PureComponent<Props, State> {
     }
 
     return columns;
-  };
-  handleDataUpdate = () => {
-    const { invoiceToCreditRowId } = this.state;
-    this.forceUpdateInvoiceToCreditRow(invoiceToCreditRowId);
-    this.tableAndPanelWrapper.calculateTableHeight();
-    this.scrollToOpenedRow();
-  };
-  handleKeyDown = (e: any) => {
-    const { isPanelOpen } = this.state;
-    if (!isPanelOpen) return false;
+  }, [
+    invoiceAttributes,
+    invoiceSets,
+    usersPermissions,
+    invoiceToCredit,
+    onInvoiceToCreditChange,
+  ]);
 
-    switch (e.keyCode) {
-      case KeyCodes.ARROW_LEFT:
-        e.preventDefault();
-        this.openPreviousInvoice();
-        break;
+  const handleKeyDown = useCallback(
+    (e: any) => {
+      if (!isPanelOpen) return false;
 
-      case KeyCodes.ARROW_RIGHT:
-        e.preventDefault();
-        this.openNextInvoice();
-        break;
+      switch (e.keyCode) {
+        case KeyCodes.ARROW_LEFT:
+          e.preventDefault();
+          if (openPreviousInvoiceRef) {
+            openPreviousInvoiceRef.current();
+          }
+          break;
 
-      default:
-        break;
+        case KeyCodes.ARROW_RIGHT:
+          e.preventDefault();
+          if (openNextInvoiceRef) {
+            openNextInvoiceRef.current();
+          }
+          break;
+
+        default:
+          break;
+      }
+    },
+    [isPanelOpen],
+  );
+
+  const initilizeEditInvoiceForm = useCallback(
+    (invoice: Record<string, any>) => {
+      dispatch(initialize(FormNames.LEASE_INVOICE_EDIT, invoice));
+    },
+    [dispatch],
+  );
+
+  const scrollToOpenedRow = useCallback(() => {
+    if (!tableAndPanelWrapper.current) return;
+    const selectedRows =
+      tableAndPanelWrapper.current.table.scrollBodyWrapper.getElementsByClassName(
+        "selected",
+      );
+
+    if (selectedRows.length) {
+      scrollIntoViewIfNeeded(
+        selectedRows[0],
+        selectedRows[0].parentNode.parentNode.parentNode,
+      );
     }
-  };
-  openNextInvoice = () => {
-    const { openedInvoice } = this.state;
+  }, [tableAndPanelWrapper]);
 
+  useEffect(() => {
+    const invoices = getContentInvoices(invoiceListData || []);
+    setInvoices(invoices);
+  }, [invoiceListData]);
+
+  useEffect(() => {
+    dispatch(clearPatchedInvoice());
+    setColumns(getColumns());
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [dispatch, getColumns, handleKeyDown]);
+
+  useEffect(() => {
     if (openedInvoice) {
-      this.tableAndPanelWrapper.table.selectNext();
+      tableAndPanelWrapper.current.scrollToPanel();
     }
-  };
-  openPreviousInvoice = () => {
-    const { openedInvoice } = this.state;
+    scrollToOpenedRow();
+    if (tableAndPanelWrapper.current) {
+      tableAndPanelWrapper.current.calculateTableHeight();
+      tableAndPanelWrapper.current.calculateTableWidth();
+    }
+    initilizeEditInvoiceForm(openedInvoice);
+  }, [initilizeEditInvoiceForm, openedInvoice, scrollToOpenedRow]);
 
-    if (openedInvoice) {
-      this.tableAndPanelWrapper.table.selectPrevious();
+  useEffect(() => {
+    if (patchedInvoice) {
+      initilizeEditInvoiceForm(getContentIncoive(patchedInvoice));
+      dispatch(clearPatchedInvoice());
+    }
+  }, [dispatch, initilizeEditInvoiceForm, patchedInvoice]);
+
+  useEffect(() => {
+    setColumns(getColumns());
+  }, [getColumns]);
+
+  const forceUpdateInvoiceToCreditRow = (rowId: string | null | undefined) => {
+    const el = findReactById(rowId);
+
+    if (el) {
+      el.forceUpdateHandler();
     }
   };
-  selectOpenedInvoice = (invoice: Invoice) => {
-    this.setState({
-      openedInvoice: invoice,
-    });
+
+  const openNextInvoice = useCallback(() => {
+    if (openedInvoice) {
+      tableAndPanelWrapper.current.table.selectNext();
+    }
+  }, [openedInvoice]);
+
+  const openPreviousInvoice = useCallback(() => {
+    if (openedInvoice) {
+      tableAndPanelWrapper.current.table.selectPrevious();
+    }
+  }, [openedInvoice]);
+
+  useEffect(() => {
+    openNextInvoiceRef.current = openNextInvoice;
+    openPreviousInvoiceRef.current = openPreviousInvoice;
+  }, [openNextInvoice, openPreviousInvoice]);
+
+  const openNextInvoiceRef = useRef(openNextInvoice);
+  const openPreviousInvoiceRef = useRef(openPreviousInvoice);
+
+  const handleDataUpdate = () => {
+    forceUpdateInvoiceToCreditRow(invoiceToCreditRowId);
+    tableAndPanelWrapper.current.calculateTableHeight();
+    scrollToOpenedRow();
   };
-  handleRowClick = (id: number, row: Record<string, any>) => {
-    this.setState({
-      isPanelOpen: true,
-      openedInvoice: row,
-    });
+
+  const selectOpenedInvoice = (invoice: Invoice) => {
+    setOpenedInvoice(invoice);
   };
-  handlePanelClose = () => {
-    this.setState({
-      isPanelOpen: false,
-    });
+
+  const handleRowClick = (id: number, row: Record<string, any>) => {
+    setIsPanelOpen(true);
+    setOpenedInvoice(row);
   };
-  handlePanelClosed = () => {
-    this.setState({
-      openedInvoice: null,
-    });
+
+  const handlePanelClose = () => {
+    setIsPanelOpen(false);
   };
-  handleInvoiceLinkClick = (invoiceId: number) => {
-    const { invoices } = this.state,
-      selectedInvoice = invoices.find((invoice) => invoice.id === invoiceId);
+
+  const handlePanelClosed = () => {
+    setOpenedInvoice(null);
+  };
+
+  const handleInvoiceLinkClick = (invoiceId: number) => {
+    const selectedInvoice = invoices.find(
+      (invoice) => invoice.id === invoiceId,
+    );
 
     if (selectedInvoice) {
-      this.setState({
-        openedInvoice: selectedInvoice,
-      });
+      setOpenedInvoice(selectedInvoice);
     }
   };
-  handleSelectRow = (row: Record<string, any>) => {
-    const { onInvoiceToCreditChange } = this.props;
+
+  const handleSelectRow = (row: Record<string, any>) => {
     onInvoiceToCreditChange(row);
   };
-  isTableRadioButtonDisabled = (row: Record<string, any>) => {
+
+  const isTableRadioButtonDisabled = (row: Record<string, any>) => {
     if (row.tableGroupName === "invoiceset") {
       let disabled = true;
       row.tableRows.forEach((invoice) => {
@@ -542,20 +544,8 @@ class InvoiceTableAndPanel extends PureComponent<Props, State> {
 
     return row.type === InvoiceType.CREDIT_NOTE;
   };
-  scrollToOpenedRow = () => {
-    const selectedRows =
-      this.tableAndPanelWrapper.table.scrollBodyWrapper.getElementsByClassName(
-        "selected",
-      );
 
-    if (selectedRows.length) {
-      this.scrollIntoViewIfNeeded(
-        selectedRows[0],
-        selectedRows[0].parentNode.parentNode.parentNode,
-      );
-    }
-  };
-  scrollIntoViewIfNeeded = (element: any, parent: any) => {
+  const scrollIntoViewIfNeeded = (element: any, parent: any) => {
     const parentComputedStyle = window.getComputedStyle(parent, null),
       parentBorderTopWidth = parseInt(
         parentComputedStyle.getPropertyValue("border-top-width"),
@@ -573,70 +563,52 @@ class InvoiceTableAndPanel extends PureComponent<Props, State> {
         element.clientHeight / 2;
     }
   };
-  initilizeEditInvoiceForm = (invoice: Record<string, any>) => {
-    const { initialize } = this.props;
-    initialize(FormNames.LEASE_INVOICE_EDIT, invoice);
-  };
-  editInvoice = (invoice: Record<string, any>) => {
-    const { patchInvoice } = this.props;
-    patchInvoice(getPayloadEditInvoice(invoice));
+
+  const editInvoice = (invoice: Record<string, any>) => {
+    dispatch(patchInvoice(getPayloadEditInvoice(invoice)));
   };
 
-  render() {
-    const { invoiceToCredit } = this.props;
-    const { columns, isPanelOpen, invoices, openedInvoice } = this.state;
+  if (!invoiceListData) {
     return (
-      <TableAndPanelWrapper
-        ref={this.setTableAndPanelWrapperRef}
-        hasData={!!invoices.length}
-        isPanelOpen={isPanelOpen}
-        onPanelClosed={this.handlePanelClosed}
-        panelComponent={
-          <InvoicePanel
-            invoice={openedInvoice}
-            onClose={this.handlePanelClose}
-            onInvoiceLinkClick={this.handleInvoiceLinkClick}
-            onSave={this.editInvoice}
-          />
-        }
-        tableComponent={
-          <SortableTable
-            columns={columns}
-            data={invoices}
-            defaultSortKey="due_date"
-            defaultSortOrder={TableSortOrder.DESCENDING}
-            fixedHeader={true}
-            invoiceToCredit={invoiceToCredit}
-            onDataUpdate={this.handleDataUpdate}
-            onRowClick={this.handleRowClick}
-            onSelectNext={this.selectOpenedInvoice}
-            onSelectPrevious={this.selectOpenedInvoice}
-            onSelectRow={this.handleSelectRow}
-            selectedRow={openedInvoice}
-            sortable={true}
-          />
-        }
-      />
+      <LoaderWrapper>
+        <Loader isLoading={true} />
+      </LoaderWrapper>
     );
   }
-}
 
-export default flowRight(
-  connect(
-    (state) => {
-      const currentLease = getCurrentLease(state);
-      return {
-        invoiceAttributes: getInvoiceAttributes(state),
-        invoiceListData: getInvoicesByLease(state, currentLease.id),
-        invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
-        patchedInvoice: getPatchedInvoice(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      clearPatchedInvoice,
-      initialize,
-      patchInvoice,
-    },
-  ),
-)(InvoiceTableAndPanel) as React.ComponentType<any>;
+  return (
+    <TableAndPanelWrapper
+      ref={tableAndPanelWrapper}
+      hasData={!!invoices.length}
+      isPanelOpen={isPanelOpen}
+      onPanelClosed={handlePanelClosed}
+      panelComponent={
+        <InvoicePanel
+          invoice={openedInvoice}
+          onClose={handlePanelClose}
+          onInvoiceLinkClick={handleInvoiceLinkClick}
+          onSave={editInvoice}
+        />
+      }
+      tableComponent={
+        <SortableTable
+          columns={columns}
+          data={invoices}
+          defaultSortKey="due_date"
+          defaultSortOrder={TableSortOrder.DESCENDING}
+          fixedHeader={true}
+          invoiceToCredit={invoiceToCredit}
+          onDataUpdate={handleDataUpdate}
+          onRowClick={handleRowClick}
+          onSelectNext={selectOpenedInvoice}
+          onSelectPrevious={selectOpenedInvoice}
+          onSelectRow={handleSelectRow}
+          selectedRow={openedInvoice}
+          sortable={true}
+        />
+      }
+    />
+  );
+};
+
+export default InvoiceTableAndPanel;

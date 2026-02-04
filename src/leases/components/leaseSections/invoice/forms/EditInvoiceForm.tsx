@@ -1,8 +1,7 @@
-import React, { Fragment, ReactElement } from "react";
+import React, { ReactElement } from "react";
 import { Row, Column } from "react-foundation";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { FieldArray, formValueSelector, reduxForm } from "redux-form";
-import flowRight from "lodash/flowRight";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import AmountWithVat from "@/components/vat/AmountWithVat";
@@ -58,25 +57,20 @@ import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type PaymentsProps = {
-  attributes: Attributes;
   fields: any;
-  isEditClicked: boolean;
   relativeTo: any;
 };
+const Payments = ({ fields, relativeTo }: PaymentsProps): ReactElement => {
+  const attributes = useSelector(getInvoiceAttributes);
+  const isEditClicked = useSelector(getIsEditClicked);
 
-const renderPayments = ({
-  attributes,
-  fields,
-  isEditClicked,
-  relativeTo,
-}: PaymentsProps): ReactElement => {
   const handleAdd = () => fields.push({});
 
   return (
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             {!fields || (!fields.length && <FormText>Ei maksuja</FormText>)}
 
             {fields && !!fields.length && (
@@ -217,7 +211,7 @@ const renderPayments = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -226,33 +220,30 @@ const renderPayments = ({
 
 type Props = {
   creditedInvoice: Record<string, any> | null | undefined;
-  currentLease: Lease;
-  exportInvoiceToLaskeAndUpdateList: (...args: Array<any>) => any;
   handleSubmit: (...args: Array<any>) => any;
   interestInvoiceFor: Record<string, any> | null | undefined;
   invoice: Record<string, any> | null | undefined;
-  invoiceAttributes: Attributes;
-  isEditClicked: boolean;
   onInvoiceLinkClick: (...args: Array<any>) => any;
   relativeTo: any;
-  rows: Array<Record<string, any>>;
-  usersPermissions: UsersPermissionsType;
 };
 
-const EditInvoiceForm = ({
+const EditInvoiceForm: React.FC<Props> = ({
   creditedInvoice,
-  currentLease,
-  exportInvoiceToLaskeAndUpdateList,
   handleSubmit,
   interestInvoiceFor,
   invoice,
-  invoiceAttributes,
-  isEditClicked,
   onInvoiceLinkClick,
   relativeTo,
-  rows,
-  usersPermissions,
 }: Props) => {
+  const currentLease: Lease = useSelector(getCurrentLease);
+  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
+  const isEditClicked = useSelector(getIsEditClicked);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+  const rows: Array<Record<string, any>> = useSelector((state) =>
+    selector(state, "rows"),
+  );
+
   const handleCreditedInvoiceClick = () => {
     if (invoice) {
       onInvoiceLinkClick(invoice.credited_invoice);
@@ -726,7 +717,7 @@ const EditInvoiceForm = ({
       </Row>
 
       {invoice && invoice.type !== InvoiceType.CREDIT_NOTE && (
-        <Fragment>
+        <>
           <SubTitle
             enableUiDataEdit
             relativeTo={relativeTo}
@@ -744,9 +735,7 @@ const EditInvoiceForm = ({
                 )}
               >
                 <FieldArray
-                  attributes={invoiceAttributes}
-                  component={renderPayments}
-                  isEditClicked={isEditClicked}
+                  component={Payments}
                   name="payments"
                   relativeTo={relativeTo}
                 />
@@ -783,7 +772,7 @@ const EditInvoiceForm = ({
               </Authorization>
             </Column>
           </Row>
-        </Fragment>
+        </>
       )}
 
       {showOldInvoiceInfo && (
@@ -1025,7 +1014,7 @@ const EditInvoiceForm = ({
         )}
       >
         {!!creditInvoices.length && (
-          <Fragment>
+          <>
             <SubTitle
               enableUiDataEdit
               relativeTo={relativeTo}
@@ -1037,7 +1026,7 @@ const EditInvoiceForm = ({
             </SubTitle>
 
             {!!creditInvoices.length && (
-              <Fragment>
+              <>
                 <Row>
                   <Column small={4}>
                     <FormTextTitle
@@ -1113,9 +1102,9 @@ const EditInvoiceForm = ({
                     </Row>
                   );
                 })}
-              </Fragment>
+              </>
             )}
-          </Fragment>
+          </>
         )}
       </Authorization>
 
@@ -1126,7 +1115,7 @@ const EditInvoiceForm = ({
         )}
       >
         {!!interestInvoices.length && (
-          <Fragment>
+          <>
             <SubTitle
               enableUiDataEdit
               relativeTo={relativeTo}
@@ -1138,7 +1127,7 @@ const EditInvoiceForm = ({
             </SubTitle>
 
             {!!interestInvoices.length && (
-              <Fragment>
+              <>
                 <Row>
                   <Column small={4}>
                     <FormTextTitle
@@ -1214,9 +1203,9 @@ const EditInvoiceForm = ({
                     </Row>
                   );
                 })}
-              </Fragment>
+              </>
             )}
-          </Fragment>
+          </>
         )}
       </Authorization>
 
@@ -1240,23 +1229,7 @@ const EditInvoiceForm = ({
 
 const formName = FormNames.LEASE_INVOICE_EDIT;
 const selector = formValueSelector(formName);
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        currentLease: getCurrentLease(state),
-        invoiceAttributes: getInvoiceAttributes(state),
-        isEditClicked: getIsEditClicked(state),
-        rows: selector(state, "rows"),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      exportInvoiceToLaskeAndUpdateList,
-    },
-  ),
-  reduxForm({
-    form: formName,
-    validate: validateInvoiceForm,
-  }),
-)(EditInvoiceForm) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+  validate: validateInvoiceForm,
+})(EditInvoiceForm) as React.ComponentType<any>;

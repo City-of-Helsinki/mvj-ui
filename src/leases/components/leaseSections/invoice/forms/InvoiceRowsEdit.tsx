@@ -1,5 +1,5 @@
-import React, { Fragment, ReactElement } from "react";
-import { connect } from "react-redux";
+import React, { ReactElement } from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { formValueSelector } from "redux-form";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -33,23 +33,21 @@ import {
 import Loader from "@/components/loader/Loader";
 type Props = {
   fields: any;
-  invoiceAttributes: Attributes;
   isEditClicked: boolean;
   relativeTo: any;
-  receivableTypes: Record<string, any>;
-  rows: any;
   tenantOptions: Array<Record<string, any>>;
 };
 
 const InvoiceRowsEdit = ({
   fields,
-  invoiceAttributes,
   isEditClicked,
   relativeTo,
-  receivableTypes,
   tenantOptions,
-  rows,
 }: Props): ReactElement => {
+  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
+  const receivableTypes = useSelector(getReceivableTypes);
+  const rows = useSelector((state) => selector(state, `rows`));
+
   const handleAdd = () => {
     fields.push({});
   };
@@ -59,7 +57,7 @@ const InvoiceRowsEdit = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             <SubTitle
               enableUiDataEdit
               relativeTo={relativeTo}
@@ -68,7 +66,7 @@ const InvoiceRowsEdit = ({
               {InvoiceRowsFieldTitles.ROWS}
             </SubTitle>
             {!!fields && !!fields.length && (
-              <Fragment>
+              <>
                 <BoxItemContainer>
                   {fields.map((row, index) => {
                     const handleRemove = () => {
@@ -247,7 +245,7 @@ const InvoiceRowsEdit = ({
                     );
                   })}
                 </BoxItemContainer>
-              </Fragment>
+              </>
             )}
 
             <Authorization
@@ -262,7 +260,7 @@ const InvoiceRowsEdit = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -270,10 +268,4 @@ const InvoiceRowsEdit = ({
 };
 
 const selector = formValueSelector(FormNames.LEASE_INVOICE_EDIT);
-export default connect((state) => {
-  return {
-    invoiceAttributes: getInvoiceAttributes(state),
-    receivableTypes: getReceivableTypes(state),
-    rows: selector(state, `rows`),
-  };
-})(InvoiceRowsEdit);
+export default InvoiceRowsEdit;

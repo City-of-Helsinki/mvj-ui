@@ -1,8 +1,7 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { formValueSelector, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import FileInput from "@/components/file/FileInput";
@@ -20,49 +19,58 @@ import { getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
 import { getAttributes as getCollectionCourtDecisionAttributes } from "@/collectionCourtDecision/selectors";
 import type { Attributes } from "types";
 type Props = {
-  collectionCourtDecisionAttributes: Attributes;
-  decisionDate: string | null | undefined;
   initialize: (...args: Array<any>) => any;
   isOpen: boolean;
   largeScreen: boolean;
-  note: string | null | undefined;
   onClose: (...args: Array<any>) => any;
   onSave: (...args: Array<any>) => any;
   title: string;
   valid: boolean;
 };
-type State = {
-  file: Record<string, any> | null | undefined;
-};
 
-class CollectionCourtDecisionPanel extends PureComponent<Props, State> {
-  state = {
-    file: null,
-  };
-  componentDidUpdate = (prevProps: Props) => {
-    if (this.props.isOpen && !prevProps.isOpen) {
-      this.clearInputs();
-    }
-  };
-  clearInputs = () => {
-    const { initialize } = this.props;
+const CollectionCourtDecisionPanel: React.FC<Props> = ({
+  initialize,
+  isOpen,
+  largeScreen,
+  onClose,
+  onSave,
+  valid,
+}) => {
+  const collectionCourtDecisionAttributes: Attributes = useSelector(
+    getCollectionCourtDecisionAttributes,
+  );
+
+  const decisionDate: string | null | undefined = useSelector((state) =>
+    selector(state, "decision_date"),
+  );
+  const note: string | null | undefined = useSelector((state) =>
+    selector(state, "note"),
+  );
+
+  const [file, setFile] = useState<Record<string, any> | null | undefined>(
+    null,
+  );
+
+  const clearInputs = useCallback(() => {
     initialize({
       decision_date: undefined,
       note: "",
     });
-    this.setState({
-      file: null,
-    });
-  };
-  handleFileChange = (e: any) => {
+    setFile(null);
+  }, [initialize]);
+
+  useEffect(() => {
+    if (isOpen) {
+      clearInputs();
+    }
+  }, [clearInputs, isOpen]);
+
+  const handleFileChange = (e: any) => {
     const file = e.target.files[0];
-    this.setState({
-      file: file,
-    });
+    setFile(file);
   };
-  handleSave = () => {
-    const { decisionDate, note, onSave } = this.props;
-    const { file } = this.state;
+
+  const handleSave = () => {
     onSave({
       file: file,
       decision_date: decisionDate,
@@ -70,120 +78,100 @@ class CollectionCourtDecisionPanel extends PureComponent<Props, State> {
     });
   };
 
-  render() {
-    const {
-      collectionCourtDecisionAttributes,
-      isOpen,
-      largeScreen,
-      onClose,
-      valid,
-    } = this.props;
-    const { file } = this.state;
-    if (!isOpen) return null;
-    return (
-      <Fragment>
-        <Row>
-          <Column small={6} large={3}>
-            {!largeScreen && (
-              <FormTextTitle required>
-                {CollectionCourtDecisionFieldTitles.FILE}
-              </FormTextTitle>
+  if (!isOpen) return null;
+  return (
+    <>
+      <Row>
+        <Column small={6} large={3}>
+          {!largeScreen && (
+            <FormTextTitle required>
+              {CollectionCourtDecisionFieldTitles.FILE}
+            </FormTextTitle>
+          )}
+          <FileInput
+            name={"collection_court_decision_file"}
+            onChange={handleFileChange}
+            value={file}
+          />
+        </Column>
+        <Column small={3} large={1}>
+          {!largeScreen && (
+            <FormTextTitle>
+              {CollectionCourtDecisionFieldTitles.UPLOADED_AT}
+            </FormTextTitle>
+          )}
+          <FormText>-</FormText>
+        </Column>
+        <Column small={3} large={2}>
+          {!largeScreen && (
+            <FormTextTitle>
+              {CollectionCourtDecisionFieldTitles.UPLOADER}
+            </FormTextTitle>
+          )}
+          <FormText>-</FormText>
+        </Column>
+        <Column small={3} large={2}>
+          <Authorization
+            allow={isFieldAllowedToEdit(
+              collectionCourtDecisionAttributes,
+              CollectionCourtDecisionFieldPaths.DECISION_DATE,
             )}
-            <FileInput
-              name={"collection_court_decision_file"}
-              onChange={this.handleFileChange}
-              value={file}
-            />
-          </Column>
-          <Column small={3} large={1}>
-            {!largeScreen && (
-              <FormTextTitle>
-                {CollectionCourtDecisionFieldTitles.UPLOADED_AT}
-              </FormTextTitle>
-            )}
-            <FormText>-</FormText>
-          </Column>
-          <Column small={3} large={2}>
-            {!largeScreen && (
-              <FormTextTitle>
-                {CollectionCourtDecisionFieldTitles.UPLOADER}
-              </FormTextTitle>
-            )}
-            <FormText>-</FormText>
-          </Column>
-          <Column small={3} large={2}>
-            <Authorization
-              allow={isFieldAllowedToEdit(
+          >
+            <FormFieldLegacy
+              disableDirty
+              fieldAttributes={getFieldAttributes(
                 collectionCourtDecisionAttributes,
                 CollectionCourtDecisionFieldPaths.DECISION_DATE,
               )}
-            >
-              <FormFieldLegacy
-                disableDirty
-                fieldAttributes={getFieldAttributes(
-                  collectionCourtDecisionAttributes,
-                  CollectionCourtDecisionFieldPaths.DECISION_DATE,
-                )}
-                name="decision_date"
-                invisibleLabel={largeScreen}
-                overrideValues={{
-                  label: CollectionCourtDecisionFieldTitles.DECISION_DATE,
-                }}
-              />
-            </Authorization>
-          </Column>
-          <Column small={9} large={4}>
-            <Authorization
-              allow={isFieldAllowedToEdit(
+              name="decision_date"
+              invisibleLabel={largeScreen}
+              overrideValues={{
+                label: CollectionCourtDecisionFieldTitles.DECISION_DATE,
+              }}
+            />
+          </Authorization>
+        </Column>
+        <Column small={9} large={4}>
+          <Authorization
+            allow={isFieldAllowedToEdit(
+              collectionCourtDecisionAttributes,
+              CollectionCourtDecisionFieldPaths.NOTE,
+            )}
+          >
+            <FormFieldLegacy
+              disableDirty
+              fieldAttributes={getFieldAttributes(
                 collectionCourtDecisionAttributes,
                 CollectionCourtDecisionFieldPaths.NOTE,
               )}
-            >
-              <FormFieldLegacy
-                disableDirty
-                fieldAttributes={getFieldAttributes(
-                  collectionCourtDecisionAttributes,
-                  CollectionCourtDecisionFieldPaths.NOTE,
-                )}
-                invisibleLabel={largeScreen}
-                name="note"
-                overrideValues={{
-                  label: CollectionCourtDecisionFieldTitles.NOTE,
-                }}
-              />
-            </Authorization>
-          </Column>
-        </Row>
-        <ButtonWrapper>
-          <Button
-            className={ButtonColors.ALERT}
-            onClick={onClose}
-            text="Peruuta"
-          />
-          <Button
-            className={ButtonColors.SUCCESS}
-            disabled={!file || !valid}
-            onClick={this.handleSave}
-            text="Tallenna"
-          />
-        </ButtonWrapper>
-      </Fragment>
-    );
-  }
-}
+              invisibleLabel={largeScreen}
+              name="note"
+              overrideValues={{
+                label: CollectionCourtDecisionFieldTitles.NOTE,
+              }}
+            />
+          </Authorization>
+        </Column>
+      </Row>
+      <ButtonWrapper>
+        <Button
+          className={ButtonColors.ALERT}
+          onClick={onClose}
+          text="Peruuta"
+        />
+        <Button
+          className={ButtonColors.SUCCESS}
+          disabled={!file || !valid}
+          onClick={handleSave}
+          text="Tallenna"
+        />
+      </ButtonWrapper>
+    </>
+  );
+};
 
 const formName = FormNames.LEASE_CREATE_COLLECTION_COURT_DECISION;
 const selector = formValueSelector(formName);
-export default flowRight(
-  connect((state) => {
-    return {
-      collectionCourtDecisionAttributes:
-        getCollectionCourtDecisionAttributes(state),
-      decisionDate: selector(state, "decision_date"),
-      note: selector(state, "note"),
-    };
-  }),
-  reduxForm({
-    form: formName,
-  }),
-)(CollectionCourtDecisionPanel) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+})(CollectionCourtDecisionPanel) as React.ComponentType<any>;

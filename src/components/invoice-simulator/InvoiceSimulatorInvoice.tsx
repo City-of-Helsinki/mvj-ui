@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Row, Column } from "react-foundation";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import Collapse from "@/components/collapse/Collapse";
@@ -38,7 +38,7 @@ const InvoiceSimulatorInvoice = ({
       className="collapse__third"
       defaultOpen={false}
       headerSubtitles={
-        <Fragment>
+        <>
           <Column>
             <CollapseHeaderSubtitle>
               {formatDate(dueDate) || "-"}
@@ -49,7 +49,7 @@ const InvoiceSimulatorInvoice = ({
               <AmountWithVat amount={billedAmount} date={dueDate} />
             </CollapseHeaderSubtitle>
           </Column>
-        </Fragment>
+        </>
       }
       headerTitle={getContactFullName(recipient)}
     >

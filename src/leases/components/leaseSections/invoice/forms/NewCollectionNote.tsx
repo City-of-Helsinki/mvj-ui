@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
@@ -15,28 +15,26 @@ import { getFieldAttributes, isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getCollectionNoteAttributes } from "@/collectionNote/selectors";
 import type { Attributes } from "types";
 type Props = {
-  collectionNoteAttributes: Attributes;
   field: any;
-  note: string | null | undefined;
-  collectionStage: string | null | undefined;
   onCancel: (...args: Array<any>) => any;
   onSave: (...args: Array<any>) => any;
 };
 
-const NewCollectionNote = ({
-  collectionNoteAttributes,
-  field,
-  note,
-  collectionStage,
-  onCancel,
-  onSave,
-}: Props) => {
+const NewCollectionNote: React.FC<Props> = ({ field, onCancel, onSave }) => {
+  const collectionNoteAttributes: Attributes = useSelector(
+    getCollectionNoteAttributes,
+  );
+  const note = useSelector((state) => selector(state, `${field}.note`));
+  const collectionStage = useSelector((state) =>
+    selector(state, `${field}.collection_stage`),
+  );
+
   const handleSave = () => {
     onSave(note, collectionStage);
   };
 
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={3}>
           <Authorization
@@ -94,16 +92,10 @@ const NewCollectionNote = ({
           text="Tallenna"
         />
       </div>
-    </Fragment>
+    </>
   );
 };
 
 const formName = FormNames.LEASE_DEBT_COLLECTION;
 const selector = formValueSelector(formName);
-export default connect((state, props: Props) => {
-  return {
-    collectionNoteAttributes: getCollectionNoteAttributes(state),
-    note: selector(state, `${props.field}.note`),
-    collectionStage: selector(state, `${props.field}.collection_stage`),
-  };
-})(NewCollectionNote);
+export default NewCollectionNote;

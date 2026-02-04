@@ -1,8 +1,7 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { formValueSelector, getFormValues, reduxForm } from "redux-form";
-import flowRight from "lodash/flowRight";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import Button from "@/components/button/Button";
@@ -38,34 +37,31 @@ import {
 } from "@/invoices/selectors";
 import type { Attributes } from "types";
 type Props = {
-  formValues: Record<string, any>;
-  invoiceAttributes: Attributes;
   invoiceToCredit: Record<string, any>;
-  isCreditClicked: boolean;
   isInvoiceSet: boolean;
   onClose: (...args: Array<any>) => any;
   onSave: (...args: Array<any>) => any;
-  receiveIsCreditClicked: (...args: Array<any>) => any;
   setRefForFirstField?: (...args: Array<any>) => any;
-  type: string;
   valid: boolean;
 };
 
 const CreditInvoiceForm = ({
-  formValues,
-  invoiceAttributes,
   invoiceToCredit,
-  isCreditClicked,
   isInvoiceSet,
   onClose,
   onSave,
-  receiveIsCreditClicked,
   setRefForFirstField,
-  type,
   valid,
 }: Props) => {
+  const formValues = useSelector((state) => getFormValues(formName)(state));
+  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
+  const isCreditClicked = useSelector(getIsCreditClicked);
+  const type = useSelector((state) => selector(state, "type"));
+
+  const dispatch = useDispatch();
+
   const handleSave = () => {
-    receiveIsCreditClicked(true);
+    dispatch(receiveIsCreditClicked(true));
 
     if (valid) {
       onSave(formValues);
@@ -241,24 +237,9 @@ const CreditInvoiceForm = ({
 
 const formName = FormNames.LEASE_REFUND;
 const selector = formValueSelector(formName);
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        formValues: getFormValues(formName)(state),
-        invoiceAttributes: getInvoiceAttributes(state),
-        isCreditClicked: getIsCreditClicked(state),
-        type: selector(state, "type"),
-      };
-    },
-    {
-      receiveIsCreditClicked,
-    },
-  ),
-  reduxForm({
-    form: formName,
-    initialValues: {
-      type: CreditInvoiceOptionsEnum.FULL,
-    },
-  }),
-)(CreditInvoiceForm) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+  initialValues: {
+    type: CreditInvoiceOptionsEnum.FULL,
+  },
+})(CreditInvoiceForm) as React.ComponentType<any>;

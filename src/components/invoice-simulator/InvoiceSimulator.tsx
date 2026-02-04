@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import classNames from "classnames";
-import { formValueSelector, isValid } from "redux-form";
+import { formValueSelector, isValid as isFormValid } from "redux-form";
 import { Row, Column } from "react-foundation";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import Button from "@/components/button/Button";
@@ -22,149 +22,118 @@ import { getCurrentLease } from "@/leases/selectors";
 import { getIsFetching, getPreviewInvoices } from "@/previewInvoices/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "@/leases/types";
-import type { PreviewInvoices } from "@/previewInvoices/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type Props = {
-  currentLease: Lease;
-  fetchPreviewInvoices: (...args: Array<any>) => any;
-  invoiceAttributes: Attributes;
-  isFetching: boolean;
-  isValid: boolean;
-  previewInvoices: PreviewInvoices;
-  usersPermissions: UsersPermissionsType;
-  year: number;
-};
-type State = {
-  billingPeriods: Array<Record<string, any>> | null;
-  invoiceAttributes: Attributes;
-  invoiceReceivableTypeOptions: Array<Record<string, any>>;
-  invoiceTypeOptions: Array<Record<string, any>>;
-  previewInvoices: PreviewInvoices;
-};
 
-class InvoiceSimulator extends Component<Props, State> {
-  state = {
-    billingPeriods: null,
-    invoiceAttributes: null,
-    invoiceReceivableTypeOptions: [],
-    invoiceTypeOptions: [],
-    previewInvoices: null,
-  };
+const InvoiceSimulator: React.FC = () => {
+  const currentLease = useSelector(getCurrentLease);
+  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
+  const isFetching = useSelector(getIsFetching);
+  const previewInvoices = useSelector(getPreviewInvoices);
+  const usersPermissions = useSelector(getUsersPermissions);
+  const isValid = useSelector((state) => isFormValid(formName)(state));
+  const year = useSelector((state) =>
+    selector(state, "invoice_simulator_year"),
+  );
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const [billingPeriods, setBillingPeriods] = useState<Array<
+    Record<string, any>
+  > | null>(null);
+  const [invoiceReceivableTypeOptions, setInvoiceReceivableTypeOptions] =
+    useState<Array<Record<string, any>>>([]);
+  const [invoiceTypeOptions, setInvoiceTypeOptions] = useState<
+    Array<Record<string, any>>
+  >([]);
 
-    if (props.invoiceAttributes !== state.invoiceAttributes) {
-      newState.invoiceAttributes = props.invoiceAttributes;
-      newState.invoiceReceivableTypeOptions = getFieldOptions(
-        props.invoiceAttributes,
-        InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
-        false,
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (invoiceAttributes) {
+      setInvoiceReceivableTypeOptions(
+        getFieldOptions(
+          invoiceAttributes,
+          InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
+          false,
+        ),
       );
-      newState.invoiceTypeOptions = getFieldOptions(
-        props.invoiceAttributes,
-        InvoiceFieldPaths.TYPE,
-        false,
+      setInvoiceTypeOptions(
+        getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE, false),
       );
     }
+  }, [invoiceAttributes]);
 
-    if (props.previewInvoices !== state.previewInvoices) {
-      newState.previewInvoices = props.previewInvoices;
-      newState.billingPeriods = getContentPreviewInvoiceBillingPeriods(
-        props.previewInvoices,
+  useEffect(() => {
+    if (previewInvoices) {
+      setBillingPeriods(
+        getContentPreviewInvoiceBillingPeriods(previewInvoices),
       );
     }
+  }, [previewInvoices]);
 
-    return newState;
-  }
-
-  handleCreatePreviewInvoices = () => {
-    const { currentLease, fetchPreviewInvoices, year } = this.props;
-    fetchPreviewInvoices({
-      lease: currentLease.id,
-      year: year,
-    });
-  };
-
-  render() {
-    const { isFetching, isValid, usersPermissions } = this.props;
-    const { billingPeriods, invoiceReceivableTypeOptions, invoiceTypeOptions } =
-      this.state;
-
-    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
-      return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
-    }
-
-    return (
-      <div className="invoice-simulator">
-        <Row>
-          <Column small={6} medium={3} large={2}>
-            <InvoiceSimulatorForm onSubmit={this.handleCreatePreviewInvoices} />
-          </Column>
-          <Column small={6} medium={9} large={10}>
-            <Button
-              className={`${ButtonColors.SUCCESS} no-margin`}
-              disabled={isFetching || !isValid}
-              onClick={this.handleCreatePreviewInvoices}
-              text="Näytä laskut"
-            />
-          </Column>
-        </Row>
-        {billingPeriods && !billingPeriods.length && !isFetching && (
-          <FormText>Ei laskuja valittuna vuonna</FormText>
-        )}
-        {((billingPeriods && !!billingPeriods.length) || isFetching) && (
-          <div
-            className={classNames("invoice-simulator__container", {
-              "is-loading":
-                isFetching && (!billingPeriods || !billingPeriods.length),
-            })}
-          >
-            {isFetching && (
-              <LoaderWrapper className="relative-overlay-wrapper">
-                <Loader isLoading={isFetching} />
-              </LoaderWrapper>
-            )}
-            {billingPeriods &&
-              !!billingPeriods.length &&
-              billingPeriods.map((billingPeriod, index) => {
-                return (
-                  <InvoiceSimulatorBillingPeriod
-                    key={index}
-                    dueDate={billingPeriod.dueDate}
-                    endDate={billingPeriod.endDate}
-                    explanations={billingPeriod.explanations}
-                    invoices={billingPeriod.invoices}
-                    invoiceReceivableTypeOptions={invoiceReceivableTypeOptions}
-                    invoiceTypeOptions={invoiceTypeOptions}
-                    startDate={billingPeriod.startDate}
-                    totalAmount={billingPeriod.totalAmount}
-                  />
-                );
-              })}
-          </div>
-        )}
-      </div>
+  const handleCreatePreviewInvoices = () => {
+    dispatch(
+      fetchPreviewInvoices({
+        lease: currentLease.id,
+        year: year,
+      }),
     );
+  };
+
+  if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
+    return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
   }
-}
+
+  return (
+    <div className="invoice-simulator">
+      <Row>
+        <Column small={6} medium={3} large={2}>
+          <InvoiceSimulatorForm onSubmit={handleCreatePreviewInvoices} />
+        </Column>
+        <Column small={6} medium={9} large={10}>
+          <Button
+            className={`${ButtonColors.SUCCESS} no-margin`}
+            disabled={isFetching || !isValid}
+            onClick={handleCreatePreviewInvoices}
+            text="Näytä laskut"
+          />
+        </Column>
+      </Row>
+      {billingPeriods && !billingPeriods.length && !isFetching && (
+        <FormText>Ei laskuja valittuna vuonna</FormText>
+      )}
+      {((billingPeriods && !!billingPeriods.length) || isFetching) && (
+        <div
+          className={classNames("invoice-simulator__container", {
+            "is-loading":
+              isFetching && (!billingPeriods || !billingPeriods.length),
+          })}
+        >
+          {isFetching && (
+            <LoaderWrapper className="relative-overlay-wrapper">
+              <Loader isLoading={isFetching} />
+            </LoaderWrapper>
+          )}
+          {billingPeriods &&
+            !!billingPeriods.length &&
+            billingPeriods.map((billingPeriod, index) => {
+              return (
+                <InvoiceSimulatorBillingPeriod
+                  key={index}
+                  dueDate={billingPeriod.dueDate}
+                  endDate={billingPeriod.endDate}
+                  explanations={billingPeriod.explanations}
+                  invoices={billingPeriod.invoices}
+                  invoiceReceivableTypeOptions={invoiceReceivableTypeOptions}
+                  invoiceTypeOptions={invoiceTypeOptions}
+                  startDate={billingPeriod.startDate}
+                  totalAmount={billingPeriod.totalAmount}
+                />
+              );
+            })}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const formName = FormNames.INVOICE_SIMULATOR;
 const selector = formValueSelector(formName);
-export default connect(
-  (state) => {
-    return {
-      currentLease: getCurrentLease(state),
-      invoiceAttributes: getInvoiceAttributes(state),
-      isFetching: getIsFetching(state),
-      isValid: isValid(formName)(state),
-      previewInvoices: getPreviewInvoices(state),
-      usersPermissions: getUsersPermissions(state),
-      year: selector(state, "invoice_simulator_year"),
-    };
-  },
-  {
-    fetchPreviewInvoices,
-  },
-)(InvoiceSimulator);
+export default InvoiceSimulator;

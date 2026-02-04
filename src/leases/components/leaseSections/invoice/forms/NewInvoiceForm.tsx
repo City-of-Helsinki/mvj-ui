@@ -1,5 +1,5 @@
-import React, { Fragment, ReactElement } from "react";
-import { connect } from "react-redux";
+import React, { ReactElement } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import {
   FieldArray,
@@ -7,7 +7,6 @@ import {
   getFormValues,
   reduxForm,
 } from "redux-form";
-import flowRight from "lodash/flowRight";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
@@ -51,7 +50,7 @@ import {
 } from "@/invoices/selectors";
 import { getCurrentLease } from "@/leases/selectors";
 import {
-  getAttributes as getLeaseCreateCrargeAttributes,
+  getAttributes as getLeaseCreateChargeAttributes,
   getReceivableTypes,
 } from "@/leaseCreateCharge/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
@@ -61,21 +60,20 @@ import type { UsersPermissions as UsersPermissionsType } from "@/usersPermission
 import Loader from "@/components/loader/Loader";
 type InvoiceRowsProps = {
   fields: any;
-  invoiceAttributes: Attributes;
-  isCreateClicked: boolean;
-  leaseCreateChargeAttributes: Attributes;
-  receivableTypes: Record<string, any>;
   useLeaseCreateChargeEndpoint: boolean;
 };
 
 const InvoiceRows = ({
   fields,
-  invoiceAttributes,
-  isCreateClicked,
-  leaseCreateChargeAttributes,
-  receivableTypes,
   useLeaseCreateChargeEndpoint,
 }: InvoiceRowsProps): ReactElement => {
+  const invoiceAttributes = useSelector(getInvoiceAttributes);
+  const isCreateClicked = useSelector(getIsCreateClicked);
+  const leaseCreateChargeAttributes = useSelector(
+    getLeaseCreateChargeAttributes,
+  );
+  const receivableTypes = useSelector(getReceivableTypes);
+
   const handleAdd = () => {
     fields.push({});
   };
@@ -84,7 +82,7 @@ const InvoiceRows = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             <SubTitle
               enableUiDataEdit
               uiDataKey={getUiDataCreateChargeKey(
@@ -94,7 +92,7 @@ const InvoiceRows = ({
               Erittely
             </SubTitle>
             {!!fields && !!fields.length && (
-              <Fragment>
+              <>
                 <Row>
                   <Column small={3} large={2}>
                     <Authorization
@@ -298,7 +296,7 @@ const InvoiceRows = ({
                     </Row>
                   );
                 })}
-              </Fragment>
+              </>
             )}
 
             <Authorization
@@ -320,7 +318,7 @@ const InvoiceRows = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -328,42 +326,35 @@ const InvoiceRows = ({
 };
 
 type Props = {
-  formValues: Record<string, any>;
   handleSubmit: (...args: Array<any>) => any;
-  invoiceAttributes: Attributes;
-  isCreateClicked: boolean;
-  lease: Lease;
-  leaseCreateChargeAttributes: Attributes;
   onClose: (...args: Array<any>) => any;
   onSave: (...args: Array<any>) => any;
-  receiveIsCreateClicked: (...args: Array<any>) => any;
-  tenant: string;
-  rows: Array<Record<string, any>>;
-  receivableTypes: Record<string, any>;
   setRefForFirstField?: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
   valid: boolean;
 };
 
 const NewInvoiceForm = ({
-  formValues,
   handleSubmit,
-  invoiceAttributes,
-  isCreateClicked,
-  lease,
-  leaseCreateChargeAttributes,
   onClose,
   onSave,
-  receiveIsCreateClicked,
-  tenant,
-  rows,
-  receivableTypes,
   setRefForFirstField,
-  usersPermissions,
   valid,
 }: Props) => {
+  const formValues = useSelector(getFormValues(formName));
+  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
+  const isCreateClicked = useSelector(getIsCreateClicked);
+  const lease: Lease = useSelector(getCurrentLease);
+  const leaseCreateChargeAttributes: Attributes = useSelector(
+    getLeaseCreateChargeAttributes,
+  );
+  const tenant = useSelector((state) => selector(state, "tenant"));
+  const rows = useSelector((state) => selector(state, "rows"));
+  const usersPermissions = useSelector(getUsersPermissions);
+
+  const dispatch = useDispatch();
+
   const handleSave = () => {
-    receiveIsCreateClicked(true);
+    dispatch(receiveIsCreateClicked(true));
 
     if (valid) {
       onSave(formValues);
@@ -598,10 +589,6 @@ const NewInvoiceForm = ({
           >
             <FieldArray
               component={InvoiceRows}
-              receivableTypes={receivableTypes}
-              invoiceAttributes={invoiceAttributes}
-              isCreateClicked={isCreateClicked}
-              leaseCreateChargeAttributes={leaseCreateChargeAttributes}
               name="rows"
               useLeaseCreateChargeEndpoint={useLeaseCreateChargeEndpoint}
             />
@@ -632,27 +619,7 @@ const NewInvoiceForm = ({
 
 const formName = FormNames.LEASE_INVOICE_NEW;
 const selector = formValueSelector(formName);
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        formValues: getFormValues(formName)(state),
-        invoiceAttributes: getInvoiceAttributes(state),
-        isCreateClicked: getIsCreateClicked(state),
-        lease: getCurrentLease(state),
-        leaseCreateChargeAttributes: getLeaseCreateCrargeAttributes(state),
-        receivableTypes: getReceivableTypes(state),
-        tenant: selector(state, "tenant"),
-        rows: selector(state, "rows"),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      receiveIsCreateClicked,
-    },
-  ),
-  reduxForm({
-    form: formName,
-    validate: validateInvoiceForm,
-  }),
-)(NewInvoiceForm) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+  validate: validateInvoiceForm,
+})(NewInvoiceForm) as React.ComponentType<any>;

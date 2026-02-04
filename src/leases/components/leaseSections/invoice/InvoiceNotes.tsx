@@ -1,8 +1,7 @@
-import React, { Fragment, PureComponent, ReactElement } from "react";
+import React, { ReactElement } from "react";
 import { Row, Column } from "react-foundation";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FieldArray, formValueSelector, reduxForm } from "redux-form";
-import flowRight from "lodash/flowRight";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButton from "@/components/form/AddButton";
 import Authorization from "@/components/authorization/Authorization";
@@ -38,23 +37,20 @@ import {
   getMethods as getInvoiceNoteMethods,
 } from "@/invoiceNote/selectors";
 import { getCurrentLease } from "@/leases/selectors";
-import type { Attributes, Methods as MethodsType } from "types";
-import type { Lease } from "@/leases/types";
+import type { Attributes } from "types";
 type ReadOnlyProps = {
-  invoiceNoteAttributes: Attributes;
   invoiceNotes: Array<Record<string, any>>;
 };
 
-const InvoiceNotesReadOnly = ({
-  invoiceNoteAttributes,
-  invoiceNotes,
-}: ReadOnlyProps) => {
+const InvoiceNotesReadOnly = ({ invoiceNotes }: ReadOnlyProps) => {
+  const invoiceNoteAttributes = useSelector(getInvoiceNoteAttributes);
+
   if (!invoiceNotes.length) {
     return <FormText>Ei laskujen tiedotteita</FormText>;
   }
 
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={3} large={2}>
           <Authorization
@@ -132,30 +128,27 @@ const InvoiceNotesReadOnly = ({
           </Row>
         ))}
       </ListItems>
-    </Fragment>
+    </>
   );
 };
 
 type EditProps = {
   fields: any;
-  invoiceNoteAttributes: Attributes;
-  invoiceNoteMethods: MethodsType;
 };
 
-const InvoiceNotesEdit = ({
-  fields,
-  invoiceNoteAttributes,
-  invoiceNoteMethods,
-}: EditProps): ReactElement => {
+const InvoiceNotesEdit = ({ fields }: EditProps): ReactElement => {
+  const invoiceNoteAttributes = useSelector(getInvoiceNoteAttributes);
+  const invoiceNoteMethods = useSelector(getInvoiceNoteMethods);
+
   const handleAdd = () => {
     fields.push({});
   };
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ dispatch: appDispatch }) => {
         return (
-          <Fragment>
+          <>
             {fields && !!fields.length && (
               <Row>
                 <Column small={3} large={2}>
@@ -199,7 +192,7 @@ const InvoiceNotesEdit = ({
 
             {fields.map((note, index) => {
               const handleRemove = () => {
-                dispatch({
+                appDispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
                     fields.remove(index);
@@ -309,7 +302,7 @@ const InvoiceNotesEdit = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -317,135 +310,109 @@ const InvoiceNotesEdit = ({
 };
 
 type Props = {
-  currentLease: Lease;
   dirty: boolean;
-  editedInvoiceNotes: Array<Record<string, any>>;
-  invoiceNoteAttributes: Attributes;
-  invoiceNoteMethods: MethodsType;
   invoiceNotes: Array<Record<string, any>>;
-  patchLeaseInvoiceNotes: (...args: Array<any>) => any;
   reset: (...args: Array<any>) => any;
   valid: boolean;
 };
 
-class InvoiceNotes extends PureComponent<Props> {
-  handleCancel = () => {
-    const { reset } = this.props;
+const InvoiceNotes: React.FC<Props> = ({
+  dirty,
+  invoiceNotes,
+  reset,
+  valid,
+}) => {
+  const currentLease = useSelector(getCurrentLease);
+  const invoiceNoteMethods = useSelector(getInvoiceNoteMethods);
+  const editedInvoiceNotes = useSelector((state) =>
+    selector(state, "invoice_notes"),
+  );
+
+  const dispatch = useDispatch();
+
+  const handleCancel = () => {
     reset();
   };
-  handleSave = () => {
-    const { currentLease, editedInvoiceNotes, patchLeaseInvoiceNotes } =
-      this.props;
+
+  const handleSave = () => {
     const invoiceNotes = editedInvoiceNotes.map((note) => ({
       ...note,
       lease: currentLease.id,
     }));
-    patchLeaseInvoiceNotes({
-      id: currentLease.id,
-      invoice_notes: invoiceNotes,
-    });
+    dispatch(
+      patchLeaseInvoiceNotes({
+        id: currentLease.id,
+        invoice_notes: invoiceNotes,
+      }),
+    );
   };
 
-  render() {
-    const {
-      dirty,
-      invoiceNoteAttributes,
-      invoiceNoteMethods,
-      invoiceNotes,
-      valid,
-    } = this.props;
-    return (
-      <form>
-        <Authorization
-          allow={
-            isMethodAllowed(invoiceNoteMethods, Methods.GET) &&
-            !isMethodAllowed(invoiceNoteMethods, Methods.PATCH)
-          }
-        >
-          <InvoiceNotesReadOnly
-            invoiceNoteAttributes={invoiceNoteAttributes}
-            invoiceNotes={invoiceNotes}
-          />
-        </Authorization>
-        <Authorization
-          allow={isMethodAllowed(invoiceNoteMethods, Methods.PATCH)}
-        >
-          <AppConsumer>
-            {({ dispatch }) => {
-              const handleCancel = () => {
-                if (dirty) {
-                  dispatch({
-                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                    confirmationFunction: () => {
-                      this.handleCancel();
-                    },
-                    confirmationModalButtonClassName: ButtonColors.ALERT,
-                    confirmationModalButtonText:
-                      ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
-                    confirmationModalLabel:
-                      ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
-                    confirmationModalTitle:
-                      ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
-                  });
-                } else {
-                  this.handleCancel();
-                }
-              };
+  return (
+    <form>
+      <Authorization
+        allow={
+          isMethodAllowed(invoiceNoteMethods, Methods.GET) &&
+          !isMethodAllowed(invoiceNoteMethods, Methods.PATCH)
+        }
+      >
+        <InvoiceNotesReadOnly invoiceNotes={invoiceNotes} />
+      </Authorization>
+      <Authorization allow={isMethodAllowed(invoiceNoteMethods, Methods.PATCH)}>
+        <AppConsumer>
+          {({ dispatch }) => {
+            const handleCancel = () => {
+              if (dirty) {
+                dispatch({
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
+                    handleCancel();
+                  },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
+                  confirmationModalButtonText:
+                    ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+                  confirmationModalLabel:
+                    ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+                  confirmationModalTitle:
+                    ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
+                });
+              } else {
+                handleCancel();
+              }
+            };
 
-              return (
-                <Fragment>
-                  <FieldArray
-                    invoiceNoteAttributes={invoiceNoteAttributes}
-                    invoiceNoteMethods={invoiceNoteMethods}
-                    component={InvoiceNotesEdit}
-                    name="invoice_notes"
-                  />
+            return (
+              <>
+                <FieldArray component={InvoiceNotesEdit} name="invoice_notes" />
 
-                  <Row>
-                    <Column>
-                      <ButtonWrapper>
-                        <Button
-                          className={ButtonColors.SECONDARY}
-                          onClick={handleCancel}
-                          text="Peruuta"
-                        />
-                        <Button
-                          className={ButtonColors.SUCCESS}
-                          disabled={!valid}
-                          onClick={this.handleSave}
-                          text="Tallenna"
-                        />
-                      </ButtonWrapper>
-                    </Column>
-                  </Row>
-                </Fragment>
-              );
-            }}
-          </AppConsumer>
-        </Authorization>
-      </form>
-    );
-  }
-}
+                <Row>
+                  <Column>
+                    <ButtonWrapper>
+                      <Button
+                        className={ButtonColors.SECONDARY}
+                        onClick={handleCancel}
+                        text="Peruuta"
+                      />
+                      <Button
+                        className={ButtonColors.SUCCESS}
+                        disabled={!valid}
+                        onClick={handleSave}
+                        text="Tallenna"
+                      />
+                    </ButtonWrapper>
+                  </Column>
+                </Row>
+              </>
+            );
+          }}
+        </AppConsumer>
+      </Authorization>
+    </form>
+  );
+};
 
 const formName = FormNames.LEASE_INVOICE_NOTES;
 const selector = formValueSelector(formName);
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        currentLease: getCurrentLease(state),
-        editedInvoiceNotes: selector(state, "invoice_notes"),
-        invoiceNoteAttributes: getInvoiceNoteAttributes(state),
-        invoiceNoteMethods: getInvoiceNoteMethods(state),
-      };
-    },
-    {
-      patchLeaseInvoiceNotes,
-    },
-  ),
-  reduxForm({
-    form: formName,
-    enableReinitialize: true,
-  }),
-)(InvoiceNotes) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+  enableReinitialize: true,
+})(InvoiceNotes) as React.ComponentType<any>;
