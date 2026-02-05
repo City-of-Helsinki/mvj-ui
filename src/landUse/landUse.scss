@@ -236,40 +236,6 @@
   gap: 12px;
 }
 
-.landuse-detail__label {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-black-90);
-  margin-bottom: 4px;
-}
-
-.landuse-detail__link-field {
-  margin-top: -8px;
-}
-
-.landuse-detail__link-button {
-  background: none;
-  border: none;
-  color: var(--color-coat);
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 14px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &::before {
-    content: "⊕";
-    font-size: 16px;
-    font-weight: bold;
-  }
-}
-
 .landuse-detail__add-button {
   justify-content: flex-start !important;
 }
@@ -282,24 +248,6 @@
   border: 1px solid var(--color-black-20);
   border-radius: 4px;
   background-color: var(--color-black-5);
-}
-
-.landuse-detail__section-toggle {
-  background: none;
-  border: none;
-  color: var(--color-black-90);
-  cursor: pointer;
-  text-align: left;
-  font-size: 16px;
-  font-weight: 600;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  &:hover {
-    color: var(--color-coat);
-  }
 }
 
 .landuse-detail__fieldset--no-heading .hds-fieldset__legend {
