@@ -122,7 +122,10 @@ const LandUseListPage: React.FC = () => {
             ]}
             indexKey="identifier"
             rows={filteredData}
-            variant="light"
+            variant="dark"
+            theme={{
+              "--header-background-color": "var(--color-tram)",
+            }}
           />
         </div>
       ) : (
