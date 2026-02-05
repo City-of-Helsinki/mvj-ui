@@ -94,7 +94,7 @@ export const getRouteById = (id: string): string => {
   };
   return routes[id] ? routes[id] : "";
 };
-export default (
+export const AppRoutes = () => (
   <App>
     <RouterRoutes>
       <Route path="/" element={<Navigate to={getRouteById(Routes.LEASES)} />} />
@@ -212,4 +212,6 @@ export default (
       <Route path="*" element={<ErrorPage />} />
     </RouterRoutes>
   </App>
-) as JSX.Element;
+);
+
+export default AppRoutes;

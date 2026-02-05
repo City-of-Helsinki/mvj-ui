@@ -1,0 +1,372 @@
+.landuse-app {
+  font-family: var(--font-default);
+  color: var(--color-black-90);
+  background-color: var(--color-white);
+  min-height: 100vh;
+  padding: 0;
+}
+
+.landuse-header {
+  background-color: var(--color-tram);
+  color: var(--color-white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.landuse-header__left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  // Override HDS Logo default margin
+  img {
+    margin: 0 !important;
+  }
+}
+
+.landuse-header__title {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--color-white);
+}
+
+.landuse-header__right {
+  display: flex;
+  align-items: center;
+}
+
+.landuse-header__user {
+  position: relative;
+}
+
+.landuse-header__user-button {
+  background-color: var(--color-white);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-black-10);
+  }
+}
+
+.landuse-header__user-initials {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-black-90);
+}
+
+.landuse-header__user-arrow {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  font-size: 8px;
+  color: var(--color-black-60);
+}
+
+.landuse-header__user-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black-20);
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+  z-index: 1000;
+}
+
+.landuse-header__user-info {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-black-10);
+  color: var(--color-black-90);
+  font-size: 14px;
+}
+
+.landuse-header__user-menu-item {
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--color-black-90);
+  font-size: 14px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-black-5);
+  }
+}
+
+.landuse-list {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: var(--color-white);
+  min-height: 100vh;
+}
+
+.landuse-list__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.landuse-list__search-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.landuse-list__result-count {
+  font-size: 14px;
+  color: var(--color-black-60);
+  white-space: nowrap;
+}
+
+.landuse-list__table-wrapper {
+  overflow-x: auto;
+
+  // Override HDS Table header background
+  table thead {
+    background-color: var(--color-tram) !important;
+
+    th {
+      background-color: var(--color-tram) !important;
+      color: var(--color-white) !important;
+    }
+  }
+}
+
+.landuse-list__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  thead {
+    background-color: var(--color-tram);
+    color: var(--color-white);
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+
+      &:hover {
+        background-color: var(--color-tram-dark);
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid var(--color-black-10);
+
+      &:hover {
+        background-color: var(--color-black-5);
+      }
+    }
+
+    td {
+      padding: 12px 16px;
+
+      a {
+        color: var(--color-coat);
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.landuse-list__empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--color-black-60);
+  font-size: 16px;
+  background-color: var(--color-black-5);
+  border: 1px solid var(--color-black-10);
+  border-radius: 4px;
+
+  p {
+    margin: 0;
+  }
+}
+
+// Land Use Detail Page
+.landuse-detail {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: var(--color-white);
+  min-height: 100vh;
+}
+
+.landuse-detail__header {
+  margin: 24px 0;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-black-5);
+  border-radius: 4px;
+}
+
+.landuse-detail__title {
+  font-size: 32px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--color-black-90);
+}
+
+.landuse-detail__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.landuse-detail__content {
+  padding: 24px 0;
+}
+
+.landuse-detail__section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-black-90);
+  margin: 0 0 24px 0;
+}
+
+.landuse-detail__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
+  &--with-delete {
+    grid-template-columns: repeat(4, 1fr) auto;
+  }
+}
+
+.landuse-detail__column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.landuse-detail__field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.landuse-detail__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-black-90);
+  margin-bottom: 4px;
+}
+
+.landuse-detail__link-field {
+  margin-top: -8px;
+}
+
+.landuse-detail__link-button {
+  background: none;
+  border: none;
+  color: var(--color-coat);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &::before {
+    content: "⊕";
+    font-size: 16px;
+    font-weight: bold;
+  }
+}
+
+.landuse-detail__add-button {
+  justify-content: flex-start !important;
+}
+
+.landuse-detail__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-black-20);
+  border-radius: 4px;
+  background-color: var(--color-black-5);
+}
+
+.landuse-detail__section-toggle {
+  background: none;
+  border: none;
+  color: var(--color-black-90);
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    color: var(--color-coat);
+  }
+}
+
+.landuse-detail__fieldset--no-heading .hds-fieldset__legend {
+  display: none;
+}
+
+.landuse-detail__fieldset--with-margin {
+  margin-bottom: 32px;
+}
