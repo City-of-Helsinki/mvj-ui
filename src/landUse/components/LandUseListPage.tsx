@@ -14,7 +14,6 @@ import { mockLandUseList } from "../mocks/landUseMockData";
 
 type LandUseAgreement = (typeof mockLandUseList)[number];
 
-
 const LandUseListPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterVireilla, setFilterVireilla] = useState(false);
@@ -109,9 +108,9 @@ const LandUseListPage: React.FC = () => {
               {
                 key: "identifier",
                 headerName: "MA-tunnus",
-                transform: (row) => (
-                  <Link href={`/maankayttosopimukset/${row.identifier}`}>
-                    {row.identifier}
+                transform: ({ identifier }) => (
+                  <Link href={`/maankayttosopimukset/${identifier}`}>
+                    {identifier}
                   </Link>
                 ),
               },
@@ -123,7 +122,6 @@ const LandUseListPage: React.FC = () => {
             ]}
             indexKey="identifier"
             rows={filteredData}
-            renderIndexCol={false}
             variant="light"
           />
         </div>
