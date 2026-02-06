@@ -3,8 +3,12 @@ import react from '@vitejs/plugin-react';
 import commonjs from 'vite-plugin-commonjs';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import postcssUrl from 'postcss-url';
 import babel from '@rollup/plugin-babel';
+import fs from 'fs';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function patchReactLeafletDrawImports() {
   return {
@@ -27,10 +31,31 @@ function patchReactLeafletDrawImports() {
   };
 }
 
+function multiEntryPlugin() {
+  return {
+    name: 'multi-entry-plugin',
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        // Route /maankayttosopimukset/* to landuse.html
+        if (req.url.startsWith('/maankayttosopimukset')) {
+          const landuseHtmlPath = path.resolve(__dirname, 'src/landUse/landuse.html');
+          const landuseHtml = fs.readFileSync(landuseHtmlPath, 'utf-8');
+          let html = await server.transformIndexHtml('/maankayttosopimukset/', landuseHtml);
+          res.writeHead(200, { 'Content-Type': 'text/html' });
+          res.end(html);
+          return;
+        }
+        next();
+      });
+    },
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     patchReactLeafletDrawImports(), // Remove this when updating `react-leaflet-draw`
+    multiEntryPlugin(), // Temporery for development, Handle routing for multi-entry apps
     viteStaticCopy({
       targets: [
         { // copy leaflet-draw images to dist
@@ -57,6 +82,10 @@ export default defineConfig({
   build: {
     target: 'baseline-widely-available',
     rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        landuse: path.resolve(__dirname, 'src/landUse/landuse.html'),
+      },
       output: {
         format: 'es',
       },
