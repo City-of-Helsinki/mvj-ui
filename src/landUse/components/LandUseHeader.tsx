@@ -5,6 +5,7 @@ import {
   Logo,
   LogoSize,
   logoFiDark,
+  IconAngleDown,
 } from "hds-react";
 
 const LandUseHeader: React.FC = () => {
@@ -42,11 +43,12 @@ const LandUseHeader: React.FC = () => {
             className="landuse-header__user-button"
             onClick={() => setShowUserMenu(!showUserMenu)}
             aria-expanded={showUserMenu}
+            style={{ display: "flex", alignItems: "center", gap: "8px" }}
           >
             <span className="landuse-header__user-initials">
               {getUserInitials()}
             </span>
-            <span className="landuse-header__user-arrow">▼</span>
+            <IconAngleDown aria-hidden="true" />
           </button>
           {showUserMenu && (
             <div className="landuse-header__user-menu">
