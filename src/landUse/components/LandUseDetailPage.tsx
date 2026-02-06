@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import {
   Breadcrumb,
@@ -13,8 +13,66 @@ import {
   IconPen,
   IconTrash,
 } from "hds-react";
-import { mockLandUseStore } from "../mocks/landUseMockData";
-import LandUseSummary from "./LandUseSummary";
+import { createForm } from "final-form";
+import arrayMutators from "final-form-arrays";
+import { mockLandUseStore, MockLandUseData } from "../mocks/landUseMockData";
+import LandUseSummary, { LandUseSummaryFormValues } from "./LandUseSummary";
+
+const transformMockDataToFormValues = (
+  mockData: MockLandUseData | null,
+): LandUseSummaryFormValues => {
+  if (!mockData) {
+    return {
+      kohteet: [
+        {
+          kohteenTunnus: "",
+          maankayttosopimusType: "",
+          edistamisalue: "",
+          tila: "",
+        },
+      ],
+      valmistelijat: [{ value: "" }],
+      osoitteet: [{ katuosoite: "", postinumero: "", kaupunki: "" }],
+      arvioituEsittelyvuosi: "",
+      arvioituMaksuvuosi: "",
+      toimivaltainenPaattaja: "",
+      sisaltaaAmVelvoitteita: "kyllä",
+      velvoitteidenMaaraika: "",
+      asemakaavanNumero: "",
+      asemakaavanKasittelyvaihe: "",
+      kasittelyvaiheenViimeisinPvm: "",
+      asemakaavanHyvaksyjä: "",
+      asemakaavanDiaarinumero: "",
+    };
+  }
+
+  return {
+    kohteet: mockData.kohteet.map((kohde) => ({
+      kohteenTunnus: kohde.kohteenTunnus,
+      maankayttosopimusType: kohde.maankayttosopimusType,
+      edistamisalue: kohde.edistamisalue,
+      tila: kohde.tila,
+    })),
+    valmistelijat: mockData.valmistelijat.map((valmistelija) => ({
+      value: `${valmistelija.firstName} ${valmistelija.lastName}`.trim(),
+    })),
+    osoitteet: mockData.osoitteet.map((osoite) => ({
+      katuosoite: osoite.katuosoite,
+      postinumero: osoite.postinumero,
+      kaupunki: osoite.kaupunki,
+    })),
+    arvioituEsittelyvuosi: mockData.arvioituEsittelyvuosi,
+    arvioituMaksuvuosi: mockData.arvioituMaksuvuosi,
+    toimivaltainenPaattaja: mockData.toimivaltainenPaattaja,
+    sisaltaaAmVelvoitteita: mockData.sisaltaaAmVelvoitteita,
+    velvoitteidenMaaraika: mockData.velvotteidenMaaraAika,
+    asemakaavanNumero: mockData.asemakaavanNumero,
+    asemakaavanKasittelyvaihe: mockData.asemakaavanKayttotarkoitusyhmä,
+    kasittelyvaiheenViimeisinPvm: mockData.kasittelyvaiheenViimeisinPvm,
+    asemakaavanHyvaksyjä: mockData.asemakaavanHyvaksyjä,
+    asemakaavanDiaarinumero: mockData.asemakaavanDiaarinumero,
+  };
+};
 
 const LandUseDetailPage: React.FC = () => {
   const { id: identifier } = useParams<{ id: string }>();
@@ -23,6 +81,24 @@ const LandUseDetailPage: React.FC = () => {
 
   // Get mock data for this ID, or use defaults
   const mockData = identifier ? mockLandUseStore[identifier] : null;
+
+  // Create form API using useMemo to ensure stable reference
+  const summaryFormApi = useMemo(
+    () =>
+      createForm<LandUseSummaryFormValues>({
+        onSubmit: (values) => {
+          console.log("Form submitted:", values);
+        },
+        mutators: { ...arrayMutators },
+      }),
+    [],
+  );
+
+  // Initialize form with mock data
+  useEffect(() => {
+    const formValues = transformMockDataToFormValues(mockData);
+    summaryFormApi.initialize(formValues);
+  }, [mockData, summaryFormApi]);
 
   const handleEditClick = () => {
     setIsEditMode(true);
@@ -101,15 +177,15 @@ const LandUseDetailPage: React.FC = () => {
           <Tab onClick={() => setActiveTab(0)}>Perustiedot</Tab>
           <Tab onClick={() => setActiveTab(1)}>Osapuolet</Tab>
           <Tab onClick={() => setActiveTab(2)}>Korvaukset</Tab>
-          <Tab onClick={() => setActiveTab(3)}>Vahvonta</Tab>
-          <Tab onClick={() => setActiveTab(4)}>Päätökset ja...</Tab>
+          <Tab onClick={() => setActiveTab(3)}>Valvonta</Tab>
+          <Tab onClick={() => setActiveTab(4)}>Päätökset ja sopimukset</Tab>
           <Tab onClick={() => setActiveTab(5)}>Laskutus</Tab>
           <Tab onClick={() => setActiveTab(6)}>Kartta</Tab>
           <Tab onClick={() => setActiveTab(7)}>Muutoshistoria</Tab>
         </TabList>
 
         <TabPanel>
-          <LandUseSummary mockData={mockData} isEditMode={isEditMode} />
+          <LandUseSummary form={summaryFormApi} isEditMode={isEditMode} />
         </TabPanel>
 
         <TabPanel>
@@ -126,13 +202,13 @@ const LandUseDetailPage: React.FC = () => {
 
         <TabPanel>
           <div className="landuse-detail__content">
-            <p>Vahvonta</p>
+            <p>Valvonta</p>
           </div>
         </TabPanel>
 
         <TabPanel>
           <div className="landuse-detail__content">
-            <p>Päätökset ja...</p>
+            <p>Päätökset ja sopimukset</p>
           </div>
         </TabPanel>
 
