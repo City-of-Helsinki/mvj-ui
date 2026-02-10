@@ -257,3 +257,20 @@
 .landuse-detail__fieldset--with-margin {
   margin-bottom: 32px;
 }
+.landuse-detail__tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.landuse-detail__tab-icon {
+  flex-shrink: 0;
+
+  &--dirty {
+    color: var(--color-alert-dark);
+  }
+
+  &--error {
+    color: var(--color-error);
+  }
+}

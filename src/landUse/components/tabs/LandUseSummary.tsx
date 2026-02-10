@@ -63,7 +63,7 @@ const handleSelectChange = (
   }
 };
 
-const LandUseSummary: React.FC<LandUseSummaryProps> = ({
+export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   form,
   isEditMode,
 }) => {
@@ -584,5 +584,3 @@ const LandUseSummary: React.FC<LandUseSummaryProps> = ({
     />
   );
 };
-
-export default LandUseSummary;
