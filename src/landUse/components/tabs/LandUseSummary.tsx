@@ -15,16 +15,17 @@ import {
 import { Form, Field } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { FormApi } from "final-form";
+import { normalizeSelectValue } from "../../fieldUtils";
 
 interface KohdeEntry {
   kohteenTunnus: string;
-  maankayttosopimusType: string;
-  edistamisalue: string;
-  tila: string;
+  maankayttosopimusType: string | undefined;
+  edistamisalue: string | undefined;
+  tila: string | undefined;
 }
 
 interface ValmistelijaEntry {
-  value: string;
+  value: string | undefined;
 }
 
 interface OsoiteEntry {
@@ -56,10 +57,12 @@ interface LandUseSummaryProps {
 
 const handleSelectChange = (
   selectedOptions: { label: string; value: string }[],
-  callback: (value: string) => void,
+  callback: (value: string | undefined) => void,
 ) => {
   if (selectedOptions.length > 0) {
     callback(selectedOptions[0].value);
+  } else {
+    callback(undefined);
   }
 };
 
@@ -113,7 +116,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                       value: "Maankäyttösopimus",
                                     },
                                   ]}
-                                  value={input.value}
+                                  value={normalizeSelectValue(input.value)}
                                   onChange={(selectedOptions) =>
                                     handleSelectChange(
                                       selectedOptions,
@@ -138,7 +141,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   options={[
                                     { label: "Placeholder", value: "" },
                                   ]}
-                                  value={input.value}
+                                  value={normalizeSelectValue(input.value)}
                                   onChange={(selectedOptions) =>
                                     handleSelectChange(
                                       selectedOptions,
@@ -163,7 +166,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   options={[
                                     { label: "Vireillä", value: "Vireillä" },
                                   ]}
-                                  value={input.value}
+                                  value={normalizeSelectValue(input.value)}
                                   onChange={(selectedOptions) =>
                                     handleSelectChange(
                                       selectedOptions,
@@ -208,9 +211,9 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                             onClick={() =>
                               fields.push({
                                 kohteenTunnus: "",
-                                maankayttosopimusType: "",
-                                edistamisalue: "",
-                                tila: "",
+                                maankayttosopimusType: undefined,
+                                edistamisalue: undefined,
+                                tila: undefined,
                               })
                             }
                           >
@@ -299,7 +302,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                             className="landuse-detail__add-button"
                             variant={ButtonVariant.Supplementary}
                             iconStart={<IconPlusCircleFill />}
-                            onClick={() => fields.push({ value: "" })}
+                            onClick={() => fields.push({ value: undefined })}
                           >
                             Lisää valmistelija
                           </Button>

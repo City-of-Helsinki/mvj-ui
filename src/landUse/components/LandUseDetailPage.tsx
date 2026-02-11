@@ -44,6 +44,8 @@ import {
   type LandUseInvoicingFormValues,
 } from "./tabs/LandUseInvoicing";
 import { LandUseMap, type LandUseMapFormValues } from "./tabs/LandUseMap";
+import { mockLandUsePartiesStore } from "../mocks/landUsePartiesMockData";
+import { normalizeSelectValue } from "../fieldUtils";
 
 // Form state type for tracking dirty and valid states
 interface FormState {
@@ -82,6 +84,69 @@ const TABS_CONFIG: TabConfig[] = [
 // Initial form state
 const initialFormState: FormState = { dirty: false, valid: true };
 
+const createInitialPartiesFormValues = (): LandUsePartiesFormValues => ({
+  customer: {
+    name: undefined,
+    startDate: "",
+    endDate: "",
+    reference: "",
+    details: {
+      customerType: undefined,
+      companyName: "",
+      businessId: "",
+      language: undefined,
+      partnerCode: "",
+      ovtCode: "",
+      customerNumber: "",
+      streetAddress: "",
+      city: "",
+      postalCode: "",
+      country: undefined,
+      careOf: "",
+      phone: "",
+      email: "",
+      landlord: undefined,
+      note: "",
+    },
+  },
+  contactPerson: {
+    name: undefined,
+    phone: "",
+    email: "",
+  },
+  invoiceRecipient: {
+    name: undefined,
+    startDate: "",
+    endDate: "",
+    details: {
+      customerType: undefined,
+      companyName: "",
+      businessId: "",
+      language: undefined,
+      partnerCode: "",
+      ovtCode: "",
+      customerNumber: "",
+      sapCustomerNumber: "",
+      streetAddress: "",
+      city: "",
+      postalCode: "",
+      country: undefined,
+      careOf: "",
+      phone: "",
+      email: "",
+      landlord: undefined,
+      note: "",
+    },
+  },
+  negotiators: [{ name: undefined }],
+  signatories: [{ name: undefined }],
+});
+
+const clonePartiesFormValues = (
+  values: LandUsePartiesFormValues,
+): LandUsePartiesFormValues =>
+  JSON.parse(JSON.stringify(values)) as LandUsePartiesFormValues;
+
 const transformMockDataToFormValues = (
   mockData: MockLandUseData | null,
 ): LandUseSummaryFormValues => {
@@ -90,12 +155,12 @@ const transformMockDataToFormValues = (
       kohteet: [
         {
           kohteenTunnus: "",
-          maankayttosopimusType: "",
-          edistamisalue: "",
-          tila: "",
+          maankayttosopimusType: undefined,
+          edistamisalue: undefined,
+          tila: undefined,
         },
       ],
-      valmistelijat: [{ value: "" }],
+      valmistelijat: [{ value: undefined }],
       osoitteet: [{ katuosoite: "", postinumero: "", kaupunki: "" }],
       arvioituEsittelyvuosi: "",
       arvioituMaksuvuosi: "",
@@ -113,12 +178,14 @@ const transformMockDataToFormValues = (
   return {
     kohteet: mockData.kohteet.map((kohde) => ({
       kohteenTunnus: kohde.kohteenTunnus,
-      maankayttosopimusType: kohde.maankayttosopimusType,
-      edistamisalue: kohde.edistamisalue,
-      tila: kohde.tila,
+      maankayttosopimusType: normalizeSelectValue(kohde.maankayttosopimusType),
+      edistamisalue: normalizeSelectValue(kohde.edistamisalue),
+      tila: normalizeSelectValue(kohde.tila),
     })),
     valmistelijat: mockData.valmistelijat.map((valmistelija) => ({
-      value: `${valmistelija.firstName} ${valmistelija.lastName}`.trim(),
+      value: normalizeSelectValue(
+        `${valmistelija.firstName} ${valmistelija.lastName}`.trim(),
+      ),
     })),
     osoitteet: mockData.osoitteet.map((osoite) => ({
       katuosoite: osoite.katuosoite,
@@ -282,16 +349,21 @@ const LandUseDetailPage: React.FC = () => {
 
   // Initialize form with mock data
   useEffect(() => {
-    const formValues = transformMockDataToFormValues(mockData);
-    summaryFormApi.initialize(formValues);
-    // Initialize other forms with empty objects (placeholder forms)
-    partiesFormApi.initialize({});
+    const summaryFormValues = transformMockDataToFormValues(mockData);
+    const partiesFormValues =
+      identifier && mockLandUsePartiesStore[identifier]
+        ? clonePartiesFormValues(mockLandUsePartiesStore[identifier])
+        : createInitialPartiesFormValues();
+
+    summaryFormApi.initialize(summaryFormValues);
+    partiesFormApi.initialize(partiesFormValues);
     compensationsFormApi.initialize({});
     monitoringFormApi.initialize({});
     decisionsFormApi.initialize({});
     invoicingFormApi.initialize({});
     mapFormApi.initialize({});
   }, [
+    identifier,
     mockData,
     summaryFormApi,
     partiesFormApi,
