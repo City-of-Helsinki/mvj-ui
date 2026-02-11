@@ -10,3 +10,7 @@ applyTo: "src/landUse/**/*"
 - Use React's built-in state management, avoid external state management libraries like Redux.
 -
 
+# General instructions
+- When writing to yourself or to us, avoid unnecessary fluff text such as
+pleasantries, emojis, or other non-essential content. Focus on providing clear
+and concise information.
