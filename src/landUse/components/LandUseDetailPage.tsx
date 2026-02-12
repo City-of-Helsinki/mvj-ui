@@ -18,7 +18,7 @@ import {
 } from "hds-react";
 import { createForm } from "final-form";
 import arrayMutators from "final-form-arrays";
-import { mockLandUseStore, MockLandUseData } from "../mocks/landUseMockData";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   LandUseSummary,
   type LandUseSummaryFormValues,
@@ -44,8 +44,22 @@ import {
   type LandUseInvoicingFormValues,
 } from "./tabs/LandUseInvoicing";
 import { LandUseMap, type LandUseMapFormValues } from "./tabs/LandUseMap";
-import { mockLandUsePartiesStore } from "../mocks/landUsePartiesMockData";
-import { normalizeSelectValue } from "../fieldUtils";
+import {
+  getCompensations,
+  getDecisions,
+  getInvoicing,
+  getMap,
+  getMonitoring,
+  getParties,
+  getSummary,
+  updateCompensations,
+  updateDecisions,
+  updateInvoicing,
+  updateMap,
+  updateMonitoring,
+  updateParties,
+  updateSummary,
+} from "../api/landUseApi";
 
 // Form state type for tracking dirty and valid states
 interface FormState {
@@ -84,127 +98,13 @@ const TABS_CONFIG: TabConfig[] = [
 // Initial form state
 const initialFormState: FormState = { dirty: false, valid: true };
 
-const createInitialPartiesFormValues = (): LandUsePartiesFormValues => ({
-  customer: {
-    reference: "",
-    details: {
-      customerType: undefined,
-      name: "",
-      businessId: "",
-      language: undefined,
-      partnerCode: "",
-      ovtCode: "",
-      streetAddress: "",
-      city: "",
-      postalCode: "",
-      country: undefined,
-      careOf: "",
-      phone: "",
-      email: "",
-      landlord: undefined,
-      note: "",
-    },
-  },
-  contactPerson: {
-    name: undefined,
-    phone: "",
-    email: "",
-  },
-  invoiceRecipient: {
-    details: {
-      customerType: undefined,
-      name: "",
-      businessId: "",
-      language: undefined,
-      partnerCode: "",
-      ovtCode: "",
-      customerNumber: "",
-      sapCustomerNumber: "",
-      streetAddress: "",
-      city: "",
-      postalCode: "",
-      country: undefined,
-      careOf: "",
-      phone: "",
-      email: "",
-      landlord: undefined,
-      note: "",
-    },
-  },
-  negotiatorsOptions: [],
-  signatoriesOptions: [],
-  negotiators: [{ name: undefined }],
-  signatories: [{ name: undefined }],
-});
-
-const clonePartiesFormValues = (
-  values: LandUsePartiesFormValues,
-): LandUsePartiesFormValues =>
-  JSON.parse(JSON.stringify(values)) as LandUsePartiesFormValues;
-
-const transformMockDataToFormValues = (
-  mockData: MockLandUseData | null,
-): LandUseSummaryFormValues => {
-  if (!mockData) {
-    return {
-      kohteet: [
-        {
-          kohteenTunnus: "",
-          maankayttosopimusType: undefined,
-          edistamisalue: undefined,
-          tila: undefined,
-        },
-      ],
-      valmistelijat: [{ value: undefined }],
-      osoitteet: [{ katuosoite: "", postinumero: "", kaupunki: "" }],
-      arvioituEsittelyvuosi: "",
-      arvioituMaksuvuosi: "",
-      toimivaltainenPaattaja: "",
-      sisaltaaAmVelvoitteita: "kyllä",
-      velvoitteidenMaaraika: "",
-      asemakaavanNumero: "",
-      asemakaavanKasittelyvaihe: "",
-      kasittelyvaiheenViimeisinPvm: "",
-      asemakaavanHyvaksyjä: "",
-      asemakaavanDiaarinumero: "",
-    };
-  }
-
-  return {
-    kohteet: mockData.kohteet.map((kohde) => ({
-      kohteenTunnus: kohde.kohteenTunnus,
-      maankayttosopimusType: normalizeSelectValue(kohde.maankayttosopimusType),
-      edistamisalue: normalizeSelectValue(kohde.edistamisalue),
-      tila: normalizeSelectValue(kohde.tila),
-    })),
-    valmistelijat: mockData.valmistelijat.map((valmistelija) => ({
-      value: normalizeSelectValue(
-        `${valmistelija.firstName} ${valmistelija.lastName}`.trim(),
-      ),
-    })),
-    osoitteet: mockData.osoitteet.map((osoite) => ({
-      katuosoite: osoite.katuosoite,
-      postinumero: osoite.postinumero,
-      kaupunki: osoite.kaupunki,
-    })),
-    arvioituEsittelyvuosi: mockData.arvioituEsittelyvuosi,
-    arvioituMaksuvuosi: mockData.arvioituMaksuvuosi,
-    toimivaltainenPaattaja: mockData.toimivaltainenPaattaja,
-    sisaltaaAmVelvoitteita: mockData.sisaltaaAmVelvoitteita,
-    velvoitteidenMaaraika: mockData.velvotteidenMaaraAika,
-    asemakaavanNumero: mockData.asemakaavanNumero,
-    asemakaavanKasittelyvaihe: mockData.asemakaavanKayttotarkoitusyhmä,
-    kasittelyvaiheenViimeisinPvm: mockData.kasittelyvaiheenViimeisinPvm,
-    asemakaavanHyvaksyjä: mockData.asemakaavanHyvaksyjä,
-    asemakaavanDiaarinumero: mockData.asemakaavanDiaarinumero,
-  };
-};
-
 const LandUseDetailPage: React.FC = () => {
   const { id: identifier } = useParams<{ id: string }>();
+  const agreementId = identifier ?? "";
   const [activeTab, setActiveTab] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
+  const queryClient = useQueryClient();
 
   // Form state tracking for each tab
   const [formStates, setFormStates] = useState<Record<string, FormState>>({
@@ -217,8 +117,54 @@ const LandUseDetailPage: React.FC = () => {
     map: { ...initialFormState },
   });
 
-  // Get mock data for this ID, or use defaults
-  const mockData = identifier ? mockLandUseStore[identifier] : null;
+  const summaryQuery = useQuery({
+    queryKey: ["land-use", agreementId, "summary"],
+    queryFn: () => getSummary(agreementId),
+    enabled: Boolean(agreementId),
+    refetchOnWindowFocus: false,
+  });
+
+  const partiesQuery = useQuery({
+    queryKey: ["land-use", agreementId, "parties"],
+    queryFn: () => getParties(agreementId),
+    enabled: Boolean(agreementId),
+    refetchOnWindowFocus: false,
+  });
+
+  const compensationsQuery = useQuery({
+    queryKey: ["land-use", agreementId, "compensations"],
+    queryFn: () => getCompensations(agreementId),
+    enabled: Boolean(agreementId),
+    refetchOnWindowFocus: false,
+  });
+
+  const monitoringQuery = useQuery({
+    queryKey: ["land-use", agreementId, "monitoring"],
+    queryFn: () => getMonitoring(agreementId),
+    enabled: Boolean(agreementId),
+    refetchOnWindowFocus: false,
+  });
+
+  const decisionsQuery = useQuery({
+    queryKey: ["land-use", agreementId, "decisions"],
+    queryFn: () => getDecisions(agreementId),
+    enabled: Boolean(agreementId),
+    refetchOnWindowFocus: false,
+  });
+
+  const invoicingQuery = useQuery({
+    queryKey: ["land-use", agreementId, "invoicing"],
+    queryFn: () => getInvoicing(agreementId),
+    enabled: Boolean(agreementId),
+    refetchOnWindowFocus: false,
+  });
+
+  const mapQuery = useQuery({
+    queryKey: ["land-use", agreementId, "map"],
+    queryFn: () => getMap(agreementId),
+    enabled: Boolean(agreementId),
+    refetchOnWindowFocus: false,
+  });
 
   // Create form APIs using useMemo to ensure stable references
   const summaryFormApi = useMemo(
@@ -342,32 +288,77 @@ const LandUseDetailPage: React.FC = () => {
     };
   }, [formApis]);
 
-  // Initialize form with mock data
   useEffect(() => {
-    const summaryFormValues = transformMockDataToFormValues(mockData);
-    const partiesFormValues =
-      identifier && mockLandUsePartiesStore[identifier]
-        ? clonePartiesFormValues(mockLandUsePartiesStore[identifier])
-        : createInitialPartiesFormValues();
-
-    summaryFormApi.initialize(summaryFormValues);
-    partiesFormApi.initialize(partiesFormValues);
-    compensationsFormApi.initialize({});
-    monitoringFormApi.initialize({});
-    decisionsFormApi.initialize({});
-    invoicingFormApi.initialize({});
-    mapFormApi.initialize({});
+    if (summaryQuery.data) {
+      summaryFormApi.initialize(summaryQuery.data);
+    }
   }, [
-    identifier,
-    mockData,
     summaryFormApi,
-    partiesFormApi,
-    compensationsFormApi,
-    monitoringFormApi,
-    decisionsFormApi,
-    invoicingFormApi,
-    mapFormApi,
+    summaryQuery.data,
+    summaryQuery.dataUpdatedAt,
+    agreementId,
   ]);
+
+  useEffect(() => {
+    if (partiesQuery.data) {
+      partiesFormApi.initialize(partiesQuery.data);
+    }
+  }, [
+    partiesFormApi,
+    partiesQuery.data,
+    partiesQuery.dataUpdatedAt,
+    agreementId,
+  ]);
+
+  useEffect(() => {
+    if (compensationsQuery.data) {
+      compensationsFormApi.initialize(compensationsQuery.data);
+    }
+  }, [
+    compensationsFormApi,
+    compensationsQuery.data,
+    compensationsQuery.dataUpdatedAt,
+    agreementId,
+  ]);
+
+  useEffect(() => {
+    if (monitoringQuery.data) {
+      monitoringFormApi.initialize(monitoringQuery.data);
+    }
+  }, [
+    monitoringFormApi,
+    monitoringQuery.data,
+    monitoringQuery.dataUpdatedAt,
+    agreementId,
+  ]);
+
+  useEffect(() => {
+    if (decisionsQuery.data) {
+      decisionsFormApi.initialize(decisionsQuery.data);
+    }
+  }, [
+    decisionsFormApi,
+    decisionsQuery.data,
+    decisionsQuery.dataUpdatedAt,
+    agreementId,
+  ]);
+
+  useEffect(() => {
+    if (invoicingQuery.data) {
+      invoicingFormApi.initialize(invoicingQuery.data);
+    }
+  }, [
+    invoicingFormApi,
+    invoicingQuery.data,
+    invoicingQuery.dataUpdatedAt,
+    agreementId,
+  ]);
+
+  useEffect(() => {
+    if (mapQuery.data) {
+      mapFormApi.initialize(mapQuery.data);
+    }
+  }, [mapFormApi, mapQuery.data, mapQuery.dataUpdatedAt, agreementId]);
 
   // Check if any form is dirty
   const isAnyFormDirty = useCallback(() => {
@@ -399,8 +390,71 @@ const LandUseDetailPage: React.FC = () => {
     setIsEditMode(true);
   };
 
-  const handleSaveClick = () => {
+  const summaryMutation = useMutation({
+    mutationFn: (values: LandUseSummaryFormValues) =>
+      updateSummary(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "summary"], data);
+    },
+  });
+
+  const partiesMutation = useMutation({
+    mutationFn: (values: LandUsePartiesFormValues) =>
+      updateParties(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "parties"], data);
+    },
+  });
+
+  const compensationsMutation = useMutation({
+    mutationFn: (values: LandUseCompensationsFormValues) =>
+      updateCompensations(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ["land-use", agreementId, "compensations"],
+        data,
+      );
+    },
+  });
+
+  const monitoringMutation = useMutation({
+    mutationFn: (values: LandUseMonitoringFormValues) =>
+      updateMonitoring(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "monitoring"], data);
+    },
+  });
+
+  const decisionsMutation = useMutation({
+    mutationFn: (values: LandUseDecisionsFormValues) =>
+      updateDecisions(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "decisions"], data);
+    },
+  });
+
+  const invoicingMutation = useMutation({
+    mutationFn: (values: LandUseInvoicingFormValues) =>
+      updateInvoicing(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "invoicing"], data);
+    },
+  });
+
+  const mapMutation = useMutation({
+    mutationFn: (values: LandUseMapFormValues) =>
+      updateMap(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "map"], data);
+    },
+  });
+
+  const handleSaveClick = async () => {
     setIsSaveClicked(true);
+
+    if (!agreementId) {
+      return;
+    }
 
     // Check if all forms are valid
     if (!areAllFormsValid()) {
@@ -408,22 +462,74 @@ const LandUseDetailPage: React.FC = () => {
       return;
     }
 
-    // Collect values only from dirty forms
-    const payload: Record<string, unknown> = {};
+    const mutations: Array<Promise<unknown>> = [];
 
     Object.entries(formApis).forEach(([key, formApi]) => {
       const state = formApi.getState();
-      if (state.dirty) {
-        payload[key] = state.values;
+      if (!state.dirty) {
+        return;
+      }
+
+      switch (key) {
+        case "summary":
+          mutations.push(
+            summaryMutation.mutateAsync(
+              state.values as LandUseSummaryFormValues,
+            ),
+          );
+          break;
+        case "parties":
+          mutations.push(
+            partiesMutation.mutateAsync(
+              state.values as LandUsePartiesFormValues,
+            ),
+          );
+          break;
+        case "compensations":
+          mutations.push(
+            compensationsMutation.mutateAsync(
+              state.values as LandUseCompensationsFormValues,
+            ),
+          );
+          break;
+        case "monitoring":
+          mutations.push(
+            monitoringMutation.mutateAsync(
+              state.values as LandUseMonitoringFormValues,
+            ),
+          );
+          break;
+        case "decisions":
+          mutations.push(
+            decisionsMutation.mutateAsync(
+              state.values as LandUseDecisionsFormValues,
+            ),
+          );
+          break;
+        case "invoicing":
+          mutations.push(
+            invoicingMutation.mutateAsync(
+              state.values as LandUseInvoicingFormValues,
+            ),
+          );
+          break;
+        case "map":
+          mutations.push(
+            mapMutation.mutateAsync(state.values as LandUseMapFormValues),
+          );
+          break;
+        default:
+          break;
       }
     });
 
-    // TODO: Implement actual API call to save data
-    console.log("Saving changed forms:", payload);
-
-    // Reset states after successful save
-    setIsSaveClicked(false);
-    setIsEditMode(false);
+    try {
+      await Promise.all(mutations);
+      setIsSaveClicked(false);
+      setIsEditMode(false);
+    } catch (error) {
+      console.error("Failed to save agreement data", error);
+    }
   };
 
   const handleDiscardClick = () => {

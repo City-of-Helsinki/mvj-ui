@@ -1,0 +1,121 @@
+import type { LandUseCompensationsFormValues } from "../components/tabs/LandUseCompensations";
+import type { LandUseDecisionsFormValues } from "../components/tabs/LandUseDecisions";
+import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoicing";
+import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
+import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
+import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
+import type { LandUseSummaryFormValues } from "../components/tabs/LandUseSummary";
+import {
+  createEmptyPartiesFormValues,
+  createEmptySummaryFormValues,
+} from "./landUseFormValues";
+import { getAgreementTab, setAgreementTab } from "./landUseDb";
+import type { LandUseTabKey } from "./landUseTypes";
+
+const createEmptyTabValues = <T extends Record<string, unknown>>(): T =>
+  ({}) as T;
+
+const getTabData = async <T>(
+  agreementId: string,
+  tabKey: LandUseTabKey,
+  fallback: T,
+): Promise<T> => {
+  const data = await getAgreementTab<T>(agreementId, tabKey);
+  if (data) {
+    return data;
+  }
+
+  await setAgreementTab(agreementId, tabKey, fallback);
+  return fallback;
+};
+
+export const getSummary = async (
+  agreementId: string,
+): Promise<LandUseSummaryFormValues> =>
+  getTabData(agreementId, "summary", createEmptySummaryFormValues());
+
+export const updateSummary = async (
+  agreementId: string,
+  values: LandUseSummaryFormValues,
+): Promise<LandUseSummaryFormValues> => {
+  await setAgreementTab(agreementId, "summary", values);
+  return values;
+};
+
+export const getParties = async (
+  agreementId: string,
+): Promise<LandUsePartiesFormValues> =>
+  getTabData(agreementId, "parties", createEmptyPartiesFormValues());
+
+export const updateParties = async (
+  agreementId: string,
+  values: LandUsePartiesFormValues,
+): Promise<LandUsePartiesFormValues> => {
+  await setAgreementTab(agreementId, "parties", values);
+  return values;
+};
+
+export const getCompensations = async (
+  agreementId: string,
+): Promise<LandUseCompensationsFormValues> =>
+  getTabData(agreementId, "compensations", createEmptyTabValues());
+
+export const updateCompensations = async (
+  agreementId: string,
+  values: LandUseCompensationsFormValues,
+): Promise<LandUseCompensationsFormValues> => {
+  await setAgreementTab(agreementId, "compensations", values);
+  return values;
+};
+
+export const getMonitoring = async (
+  agreementId: string,
+): Promise<LandUseMonitoringFormValues> =>
+  getTabData(agreementId, "monitoring", createEmptyTabValues());
+
+export const updateMonitoring = async (
+  agreementId: string,
+  values: LandUseMonitoringFormValues,
+): Promise<LandUseMonitoringFormValues> => {
+  await setAgreementTab(agreementId, "monitoring", values);
+  return values;
+};
+
+export const getDecisions = async (
+  agreementId: string,
+): Promise<LandUseDecisionsFormValues> =>
+  getTabData(agreementId, "decisions", createEmptyTabValues());
+
+export const updateDecisions = async (
+  agreementId: string,
+  values: LandUseDecisionsFormValues,
+): Promise<LandUseDecisionsFormValues> => {
+  await setAgreementTab(agreementId, "decisions", values);
+  return values;
+};
+
+export const getInvoicing = async (
+  agreementId: string,
+): Promise<LandUseInvoicingFormValues> =>
+  getTabData(agreementId, "invoicing", createEmptyTabValues());
+
+export const updateInvoicing = async (
+  agreementId: string,
+  values: LandUseInvoicingFormValues,
+): Promise<LandUseInvoicingFormValues> => {
+  await setAgreementTab(agreementId, "invoicing", values);
+  return values;
+};
+
+export const getMap = async (
+  agreementId: string,
+): Promise<LandUseMapFormValues> =>
+  getTabData(agreementId, "map", createEmptyTabValues());
+
+export const updateMap = async (
+  agreementId: string,
+  values: LandUseMapFormValues,
+): Promise<LandUseMapFormValues> => {
+  await setAgreementTab(agreementId, "map", values);
+  return values;
+};
