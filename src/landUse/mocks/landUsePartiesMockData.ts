@@ -1,19 +1,27 @@
 import { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
 
+const negotiatorsOptions = [
+  { label: "NN", value: "NN" },
+  { label: "Liisa Virtanen", value: "Liisa Virtanen" },
+  { label: "Matti Meikäläinen", value: "Matti Meikäläinen" },
+];
+
+const signatoriesOptions = [
+  { label: "Ylipäällikkö", value: "Ylipäällikkö" },
+  { label: "Välipäällikkö", value: "Välipäällikkö" },
+  { label: "Alipäällikkö", value: "Alipäällikkö" },
+];
+
 const createBaseFormValues = (): LandUsePartiesFormValues => ({
   customer: {
-    name: "",
-    startDate: "",
-    endDate: "",
     reference: "",
     details: {
       customerType: "",
-      companyName: "",
+      name: "",
       businessId: "",
       language: "",
       partnerCode: "",
       ovtCode: "",
-      customerNumber: "",
       streetAddress: "",
       city: "",
       postalCode: "",
@@ -31,12 +39,9 @@ const createBaseFormValues = (): LandUsePartiesFormValues => ({
     email: "",
   },
   invoiceRecipient: {
-    name: "",
-    startDate: "",
-    endDate: "",
     details: {
       customerType: "",
-      companyName: "",
+      name: "",
       businessId: "",
       language: "",
       partnerCode: "",
@@ -54,6 +59,8 @@ const createBaseFormValues = (): LandUsePartiesFormValues => ({
       note: "",
     },
   },
+  negotiatorsOptions,
+  signatoriesOptions,
   negotiators: [{ name: "" }],
   signatories: [{ name: "" }],
 });
@@ -61,14 +68,12 @@ const createBaseFormValues = (): LandUsePartiesFormValues => ({
 const ma101 = createBaseFormValues();
 ma101.customer = {
   ...ma101.customer,
-  name: "senaatti-kiinteistot",
-  startDate: "01.01.2024",
   reference: "MA101-REF",
 };
 ma101.customer.details = {
   ...ma101.customer.details,
   customerType: "yritys",
-  companyName: "Senaatti kiinteistöt",
+  name: "Senaatti kiinteistöt",
   businessId: "12345",
   language: "suomi",
   country: "suomi",
@@ -76,18 +81,16 @@ ma101.customer.details = {
   note: "Placeholder",
 };
 ma101.contactPerson = {
-  name: "nn",
+  name: "NN",
   phone: "040 123 4567",
   email: "yhteys@example.com",
 };
 ma101.invoiceRecipient = {
   ...ma101.invoiceRecipient,
-  name: "senaatti-kiinteistot",
-  startDate: "01.01.2024",
   details: {
     ...ma101.invoiceRecipient.details,
     customerType: "yritys",
-    companyName: "Senaatti kiinteistöt",
+    name: "Senaatti kiinteistöt",
     businessId: "12345",
     language: "suomi",
     partnerCode: "12345",
@@ -101,38 +104,35 @@ ma101.invoiceRecipient = {
     landlord: "ei",
   },
 };
-ma101.negotiators = [{ name: "nn" }];
-ma101.signatories = [{ name: "nn" }];
+
+ma101.negotiators = [{ name: negotiatorsOptions[2].value }];
+ma101.signatories = [{ name: signatoriesOptions[2].value }];
 
 const ma113 = createBaseFormValues();
 ma113.customer = {
   ...ma113.customer,
-  name: "helsingin-kaupunki",
-  startDate: "15.03.2024",
   reference: "MA113-REF",
 };
 ma113.customer.details = {
   ...ma113.customer.details,
   customerType: "yritys",
-  companyName: "Helsingin kaupunki",
+  name: "Helsingin kaupunki",
   businessId: "3100001-5",
   language: "suomi",
   country: "suomi",
   landlord: "kylla",
 };
 ma113.contactPerson = {
-  name: "liisa-virtanen",
+  name: "Liisa Virtanen",
   phone: "050 555 0000",
   email: "liisa.virtanen@example.com",
 };
 ma113.invoiceRecipient = {
   ...ma113.invoiceRecipient,
-  name: "helsingin-kaupunki",
-  startDate: "15.03.2024",
   details: {
     ...ma113.invoiceRecipient.details,
     customerType: "yritys",
-    companyName: "Helsingin kaupunki",
+    name: "Helsingin kaupunki",
     businessId: "3100001-5",
     language: "suomi",
     partnerCode: "77777",
@@ -146,38 +146,34 @@ ma113.invoiceRecipient = {
     landlord: "kylla",
   },
 };
-ma113.negotiators = [{ name: "liisa-virtanen" }];
-ma113.signatories = [{ name: "liisa-virtanen" }];
+ma113.negotiators = [{ name: negotiatorsOptions[1].value }];
+ma113.signatories = [{ name: signatoriesOptions[0].value }];
 
 const ma112 = createBaseFormValues();
 ma112.customer = {
   ...ma112.customer,
-  name: "abc-oy",
-  startDate: "01.02.2024",
   reference: "MA112-REF",
 };
 ma112.customer.details = {
   ...ma112.customer.details,
   customerType: "yritys",
-  companyName: "ABC Oy",
+  name: "ABC Oy",
   businessId: "9876543-1",
   language: "englanti",
   country: "suomi",
   landlord: "ei",
 };
 ma112.contactPerson = {
-  name: "matti-meikalainen",
+  name: "Matti Meikäläinen",
   phone: "041 200 3000",
   email: "matti.meikalainen@example.com",
 };
 ma112.invoiceRecipient = {
   ...ma112.invoiceRecipient,
-  name: "abc-oy",
-  startDate: "01.02.2024",
   details: {
     ...ma112.invoiceRecipient.details,
     customerType: "yritys",
-    companyName: "ABC Oy",
+    name: "ABC Oy",
     businessId: "9876543-1",
     language: "englanti",
     customerNumber: "C-0987",
@@ -189,8 +185,8 @@ ma112.invoiceRecipient = {
     landlord: "ei",
   },
 };
-ma112.negotiators = [{ name: "matti-meikalainen" }];
-ma112.signatories = [{ name: "matti-meikalainen" }];
+ma112.negotiators = [{ name: negotiatorsOptions[0].value }];
+ma112.signatories = [{ name: signatoriesOptions[1].value }];
 
 export const mockLandUsePartiesStore: Record<string, LandUsePartiesFormValues> =
   {

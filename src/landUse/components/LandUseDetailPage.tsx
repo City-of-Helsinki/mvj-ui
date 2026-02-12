@@ -86,18 +86,14 @@ const initialFormState: FormState = { dirty: false, valid: true };
 
 const createInitialPartiesFormValues = (): LandUsePartiesFormValues => ({
   customer: {
-    name: undefined,
-    startDate: "",
-    endDate: "",
     reference: "",
     details: {
       customerType: undefined,
-      companyName: "",
+      name: "",
       businessId: "",
       language: undefined,
       partnerCode: "",
       ovtCode: "",
-      customerNumber: "",
       streetAddress: "",
       city: "",
       postalCode: "",
@@ -115,12 +111,9 @@ const createInitialPartiesFormValues = (): LandUsePartiesFormValues => ({
     email: "",
   },
   invoiceRecipient: {
-    name: undefined,
-    startDate: "",
-    endDate: "",
     details: {
       customerType: undefined,
-      companyName: "",
+      name: "",
       businessId: "",
       language: undefined,
       partnerCode: "",
@@ -138,6 +131,8 @@ const createInitialPartiesFormValues = (): LandUsePartiesFormValues => ({
       note: "",
     },
   },
+  negotiatorsOptions: [],
+  signatoriesOptions: [],
   negotiators: [{ name: undefined }],
   signatories: [{ name: undefined }],
 });
