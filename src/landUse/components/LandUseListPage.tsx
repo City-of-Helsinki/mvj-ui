@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   Button,
   ButtonVariant,
+  Dialog,
   SearchInput,
   Checkbox,
   SelectionGroup,
@@ -10,11 +11,21 @@ import {
   Link,
   Table,
   IconPlus,
+  Select,
 } from "hds-react";
-import { mockLandUseList } from "../mocks/landUseMockData";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { parseUrlParams, buildQueryString } from "../urlParams";
-
-type LandUseAgreement = (typeof mockLandUseList)[number];
+import {
+  createLandUseIdentifier,
+  getNextLandUseSequence,
+} from "../utils/landUseIdentifier";
+import {
+  createLandUseAgreement,
+  getAgreementIdentifiers,
+  getLandUseList,
+} from "../api/landUseApi";
+import type { LandUseListItem } from "../api/landUseListTypes";
+import { DISTRICT_OPTIONS, MUNICIPALITY_OPTIONS } from "../utils/landUseLookup";
 
 // Negotiation phase constants matching mockData values
 const NEGOTIATION_PHASES = {
@@ -29,9 +40,51 @@ type NegotiationPhase =
 const LandUseListPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const [landUseData, setLandUseData] = useState<LandUseAgreement[]>([]);
+  const [landUseData, setLandUseData] = useState<LandUseListItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [selectedMunicipality, setSelectedMunicipality] = useState<
+    string | undefined
+  >(undefined);
+  const [selectedDistrict, setSelectedDistrict] = useState<string | undefined>(
+    undefined,
+  );
+
+  const resetCreateDialog = () => {
+    setSelectedMunicipality(undefined);
+    setSelectedDistrict(undefined);
+    setIsCreateDialogOpen(false);
+  };
+
+  const agreementIdentifiersQuery = useQuery({
+    queryKey: ["land-use", "identifiers"],
+    queryFn: getAgreementIdentifiers,
+    refetchOnWindowFocus: false,
+  });
+
+  const landUseListQuery = useQuery({
+    queryKey: ["land-use", "list"],
+    queryFn: getLandUseList,
+    refetchOnWindowFocus: false,
+  });
+
+  const createAgreementMutation = useMutation({
+    mutationFn: ({
+      municipalityId,
+      districtId,
+    }: {
+      municipalityId: string;
+      districtId: string;
+    }) => createLandUseAgreement(municipalityId, districtId),
+    onSuccess: (identifier) => {
+      queryClient.invalidateQueries({ queryKey: ["land-use", "identifiers"] });
+      queryClient.invalidateQueries({ queryKey: ["land-use", "list"] });
+      resetCreateDialog();
+      navigate(identifier);
+    },
+  });
 
   // Parse filters from URL
   const getFiltersFromUrl = useCallback(() => {
@@ -79,19 +132,11 @@ const LandUseListPage: React.FC = () => {
       setIsLoading(true);
 
       try {
-        // Mock implementation - filtering locally
-        // TODO: Replace this with actual API call when backend is ready
-        // Example API call structure:
-        // const response = await fetch('/api/land-use-agreements?' + new URLSearchParams({
-        //   search: filters.search || '',
-        //   negotiation_phases: filters.negotiationPhases, // Will be appended multiple times
-        // }));
-        // const data = await response.json();
-        let filteredData = [...mockLandUseList];
+        let filteredData = [...(landUseListQuery.data ?? [])];
 
         // Apply search filter
         if (filters.search) {
-          filteredData = filteredData.filter((item: LandUseAgreement) =>
+          filteredData = filteredData.filter((item: LandUseListItem) =>
             Object.values(item).some(
               (value) =>
                 typeof value === "string" &&
@@ -102,15 +147,12 @@ const LandUseListPage: React.FC = () => {
 
         // Apply negotiation phase filter
         if (filters.negotiationPhases.length > 0) {
-          filteredData = filteredData.filter((item: LandUseAgreement) =>
+          filteredData = filteredData.filter((item: LandUseListItem) =>
             filters.negotiationPhases.includes(
               item.negotiationPhase as NegotiationPhase,
             ),
           );
         }
-
-        // Mock wait, remove this later
-        await new Promise((r) => setTimeout(r, 1000));
 
         setLandUseData(filteredData);
       } catch (error) {
@@ -120,7 +162,7 @@ const LandUseListPage: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [],
+    [landUseListQuery.data],
   );
 
   // Fetch data when URL changes
@@ -174,6 +216,44 @@ const LandUseListPage: React.FC = () => {
   const currentFilters = getFiltersFromUrl();
   const searchQuery = currentFilters.search;
   const selectedPhases = currentFilters.negotiationPhases;
+  const existingIdentifiers = agreementIdentifiersQuery.data ?? [];
+  const sequenceNumber =
+    selectedMunicipality && selectedDistrict
+      ? getNextLandUseSequence(
+          existingIdentifiers,
+          selectedMunicipality,
+          selectedDistrict,
+        )
+      : undefined;
+  const newIdentifier =
+    selectedMunicipality && selectedDistrict && sequenceNumber
+      ? createLandUseIdentifier(
+          selectedMunicipality,
+          selectedDistrict,
+          sequenceNumber,
+        )
+      : "";
+
+  const handleCreate = () => {
+    if (!selectedMunicipality || !selectedDistrict) {
+      return;
+    }
+    createAgreementMutation.mutate({
+      municipalityId: selectedMunicipality,
+      districtId: selectedDistrict,
+    });
+  };
+
+  const handleSelectChange = (
+    selectedOptions: { label: string; value: string }[],
+    callback: (value: string | undefined) => void,
+  ) => {
+    if (selectedOptions.length > 0) {
+      callback(selectedOptions[0].value);
+    } else {
+      callback(undefined);
+    }
+  };
 
   return (
     <div className="landuse-list">
@@ -189,7 +269,7 @@ const LandUseListPage: React.FC = () => {
       <div className="landuse-list__header">
         <Button
           iconStart={<IconPlus />}
-          onClick={() => console.log("Navigate to create new")}
+          onClick={() => setIsCreateDialogOpen(true)}
         >
           Luo uusi maankäyttösopimustunnus
         </Button>
@@ -292,6 +372,61 @@ const LandUseListPage: React.FC = () => {
           </p>
         </div>
       )}
+
+      <Dialog
+        id="landuse-create-identifier"
+        isOpen={isCreateDialogOpen}
+        aria-labelledby="landuse-create-identifier-title"
+        closeButtonLabelText="Sulje"
+        close={() => resetCreateDialog()}
+      >
+        <Dialog.Header
+          id="landuse-create-identifier-title"
+          title="Luo uusi maankäyttösopimustunnus"
+        />
+        <Dialog.Content>
+          <div className="landuse-list__dialog-content">
+            <Select
+              id="landuse-municipality"
+              options={MUNICIPALITY_OPTIONS}
+              value={selectedMunicipality}
+              onChange={(selected) =>
+                handleSelectChange(selected, setSelectedMunicipality)
+              }
+              texts={{
+                label: "Kaupunki",
+                placeholder: "Valitse",
+              }}
+              required
+            />
+            <Select
+              id="landuse-district"
+              options={DISTRICT_OPTIONS}
+              value={selectedDistrict}
+              onChange={(selected) =>
+                handleSelectChange(selected, setSelectedDistrict)
+              }
+              texts={{
+                label: "Kaupunginosa",
+                placeholder: "Valitse",
+              }}
+              required
+            />
+          </div>
+        </Dialog.Content>
+        <Dialog.ActionButtons>
+          <Button variant={ButtonVariant.Secondary} onClick={resetCreateDialog}>
+            Peruuta
+          </Button>
+          <Button
+            variant={ButtonVariant.Primary}
+            onClick={handleCreate}
+            disabled={!newIdentifier || createAgreementMutation.isPending}
+          >
+            Luo tunnus
+          </Button>
+        </Dialog.ActionButtons>
+      </Dialog>
     </div>
   );
 };

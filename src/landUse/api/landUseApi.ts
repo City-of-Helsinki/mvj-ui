@@ -9,8 +9,19 @@ import {
   createEmptyPartiesFormValues,
   createEmptySummaryFormValues,
 } from "./landUseFormValues";
-import { getAgreementTab, setAgreementTab } from "./landUseDb";
-import type { LandUseTabKey } from "./landUseTypes";
+import {
+  getAgreementIds,
+  getAgreementList,
+  getAgreementTab,
+  setAgreementListItem,
+  setAgreementTab,
+} from "./landUseDb";
+import type { LandUseListItem } from "./landUseListTypes";
+import { LAND_USE_TAB_KEYS, type LandUseTabKey } from "./landUseTypes";
+import {
+  createLandUseIdentifier,
+  getNextLandUseSequence,
+} from "../utils/landUseIdentifier";
 
 const createEmptyTabValues = <T extends Record<string, unknown>>(): T =>
   ({}) as T;
@@ -33,6 +44,63 @@ export const getSummary = async (
   agreementId: string,
 ): Promise<LandUseSummaryFormValues> =>
   getTabData(agreementId, "summary", createEmptySummaryFormValues());
+
+export const getAgreementIdentifiers = async (): Promise<string[]> =>
+  getAgreementIds();
+
+export const getLandUseList = async (): Promise<LandUseListItem[]> =>
+  getAgreementList();
+
+export const createLandUseAgreement = async (
+  municipalityId: string,
+  districtId: string,
+): Promise<string> => {
+  const existingIdentifiers = await getAgreementIds();
+  const sequence = getNextLandUseSequence(
+    existingIdentifiers,
+    municipalityId,
+    districtId,
+  );
+  const identifier = createLandUseIdentifier(
+    municipalityId,
+    districtId,
+    sequence,
+  );
+
+  await Promise.all(
+    LAND_USE_TAB_KEYS.map((tabKey) => {
+      if (tabKey === "summary") {
+        return setAgreementTab(
+          identifier,
+          tabKey,
+          createEmptySummaryFormValues(),
+        );
+      }
+
+      if (tabKey === "parties") {
+        return setAgreementTab(
+          identifier,
+          tabKey,
+          createEmptyPartiesFormValues(),
+        );
+      }
+
+      return setAgreementTab(identifier, tabKey, {});
+    }),
+  );
+
+  await setAgreementListItem({
+    id: identifier,
+    identifier,
+    party: "",
+    zoningPlanNumber: "",
+    target: "",
+    projectArea: "",
+    negotiationPhase: "",
+  });
+
+  return identifier;
+};
 
 export const updateSummary = async (
   agreementId: string,

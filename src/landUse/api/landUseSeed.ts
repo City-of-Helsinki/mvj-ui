@@ -5,7 +5,13 @@ import {
   createEmptyPartiesFormValues,
   mapMockToSummaryFormValues,
 } from "./landUseFormValues";
-import { hasAgreementTab, setAgreementTab } from "./landUseDb";
+import {
+  hasAgreementListItem,
+  hasAgreementTab,
+  setAgreementListItem,
+  setAgreementTab,
+} from "./landUseDb";
+import type { LandUseListItem } from "./landUseListTypes";
 import { LAND_USE_TAB_KEYS, type LandUseTabKey } from "./landUseTypes";
 
 const getAgreementIds = (): string[] => {
@@ -23,6 +29,13 @@ const seedTabIfMissing = async <T>(
   const exists = await hasAgreementTab(agreementId, tabKey);
   if (!exists) {
     await setAgreementTab(agreementId, tabKey, data);
+  }
+};
+
+const seedListItemIfMissing = async (item: LandUseListItem): Promise<void> => {
+  const exists = await hasAgreementListItem(item.identifier);
+  if (!exists) {
+    await setAgreementListItem(item);
   }
 };
 
@@ -49,5 +62,22 @@ export const seedLandUseDb = async (): Promise<void> => {
         emptyTabs.map((tabKey) => seedTabIfMissing(agreementId, tabKey, {})),
       );
     }),
+  );
+
+  await Promise.all(
+    mockLandUseStore
+      ? Object.values(mockLandUseStore).map((item) =>
+          seedListItemIfMissing({
+            id: item.identifier,
+            identifier: item.identifier,
+            party: item.party ?? "",
+            zoningPlanNumber: item.zoningPlanNumber ?? "",
+            target: item.kohteet[0]?.edistamisalue ?? "",
+            projectArea: item.projectArea ?? "",
+            negotiationPhase:
+              item.kohteet[0]?.tila ?? item.negotiationPhase ?? "",
+          }),
+        )
+      : [],
   );
 };

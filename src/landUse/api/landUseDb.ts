@@ -1,9 +1,11 @@
 import type { PersistedClient } from "@tanstack/query-persist-client-core";
 import type { LandUseTabKey } from "./landUseTypes";
+import type { LandUseListItem } from "./landUseListTypes";
 
 const LAND_USE_DB_NAME = "landUseDb";
-const LAND_USE_DB_VERSION = 1;
+const LAND_USE_DB_VERSION = 2;
 const AGREEMENT_TAB_STORE = "agreementTabs";
+const AGREEMENT_LIST_STORE = "agreementList";
 const REACT_QUERY_STORE = "reactQueryCache";
 const REACT_QUERY_KEY = "landUseQueryClient";
 
@@ -29,6 +31,11 @@ const openLandUseDb = (): Promise<IDBDatabase> =>
       if (!db.objectStoreNames.contains(AGREEMENT_TAB_STORE)) {
         db.createObjectStore(AGREEMENT_TAB_STORE, {
           keyPath: ["agreementId", "tabKey"],
+        });
+      }
+      if (!db.objectStoreNames.contains(AGREEMENT_LIST_STORE)) {
+        db.createObjectStore(AGREEMENT_LIST_STORE, {
+          keyPath: "identifier",
         });
       }
       if (!db.objectStoreNames.contains(REACT_QUERY_STORE)) {
@@ -102,6 +109,76 @@ export const hasAgreementTab = async (
 
   return new Promise((resolve, reject) => {
     const request = store.getKey([agreementId, tabKey]);
+    request.onsuccess = () => resolve(Boolean(request.result));
+    request.onerror = () => reject(request.error);
+    tx.oncomplete = () => db.close();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+};
+
+export const getAgreementIds = async (): Promise<string[]> => {
+  const { db, store, tx } = await getStore(AGREEMENT_TAB_STORE, "readonly");
+
+  return new Promise((resolve, reject) => {
+    const request = store.getAllKeys();
+
+    request.onsuccess = () => {
+      const keys = request.result as IDBValidKey[];
+      const ids = new Set<string>();
+
+      keys.forEach((key) => {
+        if (Array.isArray(key) && typeof key[0] === "string") {
+          ids.add(key[0]);
+        }
+      });
+
+      resolve(Array.from(ids));
+    };
+    request.onerror = () => reject(request.error);
+    tx.oncomplete = () => db.close();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+};
+
+export const getAgreementList = async (): Promise<LandUseListItem[]> => {
+  const { db, store, tx } = await getStore(AGREEMENT_LIST_STORE, "readonly");
+
+  return new Promise((resolve, reject) => {
+    const request = store.getAll();
+    request.onsuccess = () => {
+      resolve((request.result as LandUseListItem[]) ?? []);
+    };
+    request.onerror = () => reject(request.error);
+    tx.oncomplete = () => db.close();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+};
+
+export const setAgreementListItem = async (
+  item: LandUseListItem,
+): Promise<void> => {
+  const { db, store, tx } = await getStore(AGREEMENT_LIST_STORE, "readwrite");
+
+  return new Promise((resolve, reject) => {
+    const request = store.put(item);
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+    tx.oncomplete = () => db.close();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
+};
+
+export const hasAgreementListItem = async (
+  identifier: string,
+): Promise<boolean> => {
+  const { db, store, tx } = await getStore(AGREEMENT_LIST_STORE, "readonly");
+
+  return new Promise((resolve, reject) => {
+    const request = store.getKey(identifier);
     request.onsuccess = () => resolve(Boolean(request.result));
     request.onerror = () => reject(request.error);
     tx.oncomplete = () => db.close();
