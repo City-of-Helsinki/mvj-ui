@@ -39,10 +39,9 @@ import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
   invoiceToCredit: Record<string, any> | null | undefined;
-  ref?: (...args: Array<any>) => any;
 };
 
-const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit, ref }) => {
+const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
   const currentLease: Lease = useSelector(getCurrentLease);
   const isCreateInvoicePanelOpen = useSelector(getIsCreateInvoicePanelOpen);
   const isCreditInvoicePanelOpen = useSelector(getIsCreditInvoicePanelOpen);
@@ -52,18 +51,18 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit, ref }) => {
   const usersPermissions: UsersPermissionsType =
     useSelector(getUsersPermissions);
 
-  const creditPanel = useRef<any>(null);
-  const creditPanelFirstField = useRef<any>(null);
-  const createPanel = useRef<any>(null);
-  const createPanelFirstField = useRef<any>(null);
+  const creditPanel = useRef<HTMLDivElement | null>(null);
+  const creditPanelFirstField = useRef<HTMLElement | null>(null);
+  const createPanel = useRef<HTMLDivElement | null>(null);
+  const createPanelFirstField = useRef<HTMLElement | null>(null);
 
   const dispatch = useDispatch();
 
-  const setCreatePanelRef = (el: any) => {
+  const setCreatePanelRef = (el: HTMLDivElement | null) => {
     createPanel.current = el;
   };
 
-  const setCreditPanelRef = (el: any) => {
+  const setCreditPanelRef = (el: HTMLDivElement | null) => {
     creditPanel.current = el;
   };
 
@@ -71,7 +70,7 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit, ref }) => {
     dispatch(receiveIsCreateClicked(false));
     dispatch(receiveIsCreateInvoicePanelOpen(true));
     setTimeout(() => {
-      if (createPanel) {
+      if (createPanel.current) {
         const panelRect = createPanel.current.getBoundingClientRect();
         const scrollTop =
           window.pageYOffset || document.documentElement.scrollTop;
@@ -84,7 +83,9 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit, ref }) => {
     }, 50);
   };
 
-  const handleSetRefForCreatePanelFirstField = (element: any) => {
+  const handleSetRefForCreatePanelFirstField = (
+    element: HTMLElement | null,
+  ) => {
     createPanelFirstField.current = element;
   };
 
@@ -135,7 +136,9 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit, ref }) => {
     dispatch(deleteInvoice({ ...invoiceToCredit, lease: currentLease.id }));
   };
 
-  const handleSetRefForCreditPanelFirstField = (element: any) => {
+  const handleSetRefForCreditPanelFirstField = (
+    element: HTMLElement | null,
+  ) => {
     creditPanelFirstField.current = element;
   };
 
@@ -233,7 +236,7 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit, ref }) => {
           {isCreditInvoicePanelOpen && (
             <CreditInvoiceForm
               invoiceToCredit={invoiceToCredit}
-              isInvoiceSet={isInvoiceSet()}
+              isInvoiceSet={isInvoiceSet}
               onClose={handleCloseCreditInvoicePanel}
               onSave={handleCreditInvoice}
               setRefForFirstField={handleSetRefForCreditPanelFirstField}
@@ -265,15 +268,6 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit, ref }) => {
         <div ref={setCreatePanelRef}>
           {isCreateInvoicePanelOpen && (
             <NewInvoiceForm
-              initialValues={{
-                recipient: hasPermissions(
-                  usersPermissions,
-                  UsersPermissions.ADD_INVOICE,
-                )
-                  ? RecipientOptions.ALL
-                  : undefined,
-                rows: [{}],
-              }}
               onClose={handleCloseCreateInvoicePanel}
               onSave={handleCreateInvoice}
               setRefForFirstField={handleSetRefForCreatePanelFirstField}

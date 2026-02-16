@@ -1,11 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
-import { FormNames } from "@/enums";
+import FormField from "@/components/form/final-form/FormField";
+import { useField } from "react-final-form";
 import { ButtonColors } from "@/components/enums";
 import {
   CollectionNoteFieldPaths,
@@ -14,6 +13,7 @@ import {
 import { getFieldAttributes, isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getCollectionNoteAttributes } from "@/collectionNote/selectors";
 import type { Attributes } from "types";
+
 type Props = {
   field: any;
   onCancel: (...args: Array<any>) => any;
@@ -24,13 +24,11 @@ const NewCollectionNote: React.FC<Props> = ({ field, onCancel, onSave }) => {
   const collectionNoteAttributes: Attributes = useSelector(
     getCollectionNoteAttributes,
   );
-  const note = useSelector((state) => selector(state, `${field}.note`));
-  const collectionStage = useSelector((state) =>
-    selector(state, `${field}.collection_stage`),
-  );
+  const { input: note } = useField(`${field}.note`);
+  const { input: collectionStage } = useField(`${field}.collection_stage`);
 
   const handleSave = () => {
-    onSave(note, collectionStage);
+    onSave(note.value, collectionStage.value);
   };
 
   return (
@@ -43,7 +41,7 @@ const NewCollectionNote: React.FC<Props> = ({ field, onCancel, onSave }) => {
               CollectionNoteFieldPaths.COLLECTION_STAGE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               fieldAttributes={getFieldAttributes(
                 collectionNoteAttributes,
                 CollectionNoteFieldPaths.COLLECTION_STAGE,
@@ -62,7 +60,7 @@ const NewCollectionNote: React.FC<Props> = ({ field, onCancel, onSave }) => {
               CollectionNoteFieldPaths.NOTE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableDirty
               fieldAttributes={{
                 ...getFieldAttributes(
@@ -87,7 +85,7 @@ const NewCollectionNote: React.FC<Props> = ({ field, onCancel, onSave }) => {
         />
         <Button
           className={ButtonColors.SUCCESS}
-          disabled={!note}
+          disabled={!note.value}
           onClick={handleSave}
           text="Tallenna"
         />
@@ -96,6 +94,4 @@ const NewCollectionNote: React.FC<Props> = ({ field, onCancel, onSave }) => {
   );
 };
 
-const formName = FormNames.LEASE_DEBT_COLLECTION;
-const selector = formValueSelector(formName);
 export default NewCollectionNote;

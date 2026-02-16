@@ -127,6 +127,7 @@ const Invoices: React.FC = () => {
     ),
   );
   const usersPermissions = useSelector(getUsersPermissions);
+  const dispatch = useDispatch();
 
   const isInvoicingEnabled = useMemo(() => {
     return currentLease ? !!currentLease.invoicing_enabled_at : null;
@@ -135,8 +136,6 @@ const Invoices: React.FC = () => {
   const [invoiceNotes, setInvoiceNotes] = useState<Array<Record<string, any>>>(
     [],
   );
-
-  const dispatch = useDispatch();
 
   const [
     isFetchingLeaseInvoiceTabAttributes,
@@ -200,26 +199,48 @@ const Invoices: React.FC = () => {
     ) {
       dispatch(fetchCollectionCourtDecisionAttributes());
     }
+  }, [
+    dispatch,
+    isFetchingCollectionCourtDecisionAttributes,
+    collectionCourtDecisionAttributes,
+  ]);
 
+  useEffect(() => {
     if (!isFetchingCollectionLetterAttributes && !collectionLetterAttributes) {
       dispatch(fetchCollectionLetterAttributes());
     }
+  }, [
+    dispatch,
+    isFetchingCollectionLetterAttributes,
+    collectionLetterAttributes,
+  ]);
 
+  useEffect(() => {
     if (!isFetchingCollectionNoteAttributes && !collectionNoteAttributes) {
       dispatch(fetchCollectionNoteAttributes());
     }
+  }, [dispatch, isFetchingCollectionNoteAttributes, collectionNoteAttributes]);
 
+  useEffect(() => {
     if (
       !isFetchingCreateCollectionLetterAttributes &&
       !createCollectionLetterAttributes
     ) {
       dispatch(fetchCreateCollectionLetterAttributes());
     }
+  }, [
+    dispatch,
+    isFetchingCreateCollectionLetterAttributes,
+    createCollectionLetterAttributes,
+  ]);
 
+  useEffect(() => {
     if (!isFetchingInvoiceNoteAttributes && !invoiceNoteAttributes) {
       dispatch(fetchInvoiceNoteAttributes());
     }
+  }, [dispatch, isFetchingInvoiceNoteAttributes, invoiceNoteAttributes]);
 
+  useEffect(() => {
     if (
       !isFetchingLeaseCreateChargeAttributes &&
       !leaseCreateChargeAttributes
@@ -228,16 +249,6 @@ const Invoices: React.FC = () => {
     }
   }, [
     dispatch,
-    isFetchingCollectionCourtDecisionAttributes,
-    collectionCourtDecisionAttributes,
-    isFetchingCollectionLetterAttributes,
-    collectionLetterAttributes,
-    isFetchingCollectionNoteAttributes,
-    collectionNoteAttributes,
-    isFetchingCreateCollectionLetterAttributes,
-    createCollectionLetterAttributes,
-    isFetchingInvoiceNoteAttributes,
-    invoiceNoteAttributes,
     isFetchingLeaseCreateChargeAttributes,
     leaseCreateChargeAttributes,
   ]);
@@ -276,11 +287,6 @@ const Invoices: React.FC = () => {
     ) {
       dispatch(fetchCollectionNotesByLease(currentLease.id));
     }
-
-    dispatch(receiveIsCreateInvoicePanelOpen(false));
-    dispatch(receiveIsCreditInvoicePanelOpen(false));
-    dispatch(receiveInvoiceToCredit(null));
-    setInvoiceNotes(getContentInvoiceNotes(currentLease));
   }, [
     collectionCourtDecisions,
     collectionLetters,
@@ -290,6 +296,13 @@ const Invoices: React.FC = () => {
     invoiceSets,
     usersPermissions,
   ]);
+
+  useEffect(() => {
+    dispatch(receiveIsCreateInvoicePanelOpen(false));
+    dispatch(receiveIsCreditInvoicePanelOpen(false));
+    dispatch(receiveInvoiceToCredit(null));
+    setInvoiceNotes(getContentInvoiceNotes(currentLease));
+  }, [currentLease, dispatch]);
 
   const handleCollapseToggle = (key: string, val: boolean) => {
     dispatch(
@@ -486,12 +499,7 @@ const Invoices: React.FC = () => {
                   LeaseInvoiceNotesFieldPaths.INVOICE_NOTES,
                 )}
               >
-                <InvoiceNotes
-                  initialValues={{
-                    invoice_notes: invoiceNotes,
-                  }}
-                  invoiceNotes={invoiceNotes}
-                />
+                <InvoiceNotes invoiceNotes={invoiceNotes} />
               </Collapse>
             </Authorization>
 

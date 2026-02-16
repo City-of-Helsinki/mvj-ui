@@ -6,7 +6,9 @@ import React, {
   useState,
 } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getFormValues, isValid } from "redux-form";
+import { createForm } from "final-form";
+import type { FormApi } from "final-form";
+import arrayMutators from "final-form-arrays";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
@@ -14,7 +16,7 @@ import EditInvoiceForm from "./forms/EditInvoiceForm";
 import InvoiceTemplate from "./InvoiceTemplate";
 import TablePanelContainer from "@/components/table/TablePanelContainer";
 import { receiveIsEditClicked } from "@/invoices/actions";
-import { FormNames, Methods } from "@/enums";
+import { Methods } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { isMethodAllowed } from "@/util/helpers";
 import {
@@ -36,17 +38,23 @@ type Props = {
 const InvoicePanel = forwardRef<any, Props>(
   ({ invoice, onClose, onInvoiceLinkClick, onSave }, ref) => {
     const currentLease = useSelector(getCurrentLease);
-    const formValues: Record<string, any> = useSelector(
-      getFormValues(formName),
-    );
     const invoiceMethods: MethodsType = useSelector(getInvoiceMethods);
     const invoices = useSelector((state) =>
       getInvoicesByLease(state, currentLease.id),
     );
     const isEditClicked = useSelector(getIsEditClicked);
-    const valid = useSelector((state) => isValid(formName)(state));
+    const dispatch = useDispatch();
 
-    const component = useRef<any>(null);
+    const invoiceFormRef = useRef<FormApi>(
+      createForm({
+        onSubmit: (values) => {
+          onSave(values);
+        },
+        mutators: { ...arrayMutators },
+      }),
+    );
+
+    const component = useRef<HTMLDivElement | null>(null);
 
     const [creditedInvoice, setCreditedInvoice] = useState<Record<
       string,
@@ -57,9 +65,7 @@ const InvoicePanel = forwardRef<any, Props>(
       any
     > | null>(null);
 
-    const dispatch = useDispatch();
-
-    const setComponentRef = (el: any) => {
+    const setComponentRef = (el: HTMLDivElement | null) => {
       component.current = el;
     };
 
@@ -72,32 +78,29 @@ const InvoicePanel = forwardRef<any, Props>(
     }));
 
     useEffect(() => {
-      if (invoice) {
-        if (invoice.credited_invoice && !isEmpty(invoices)) {
-          const credited = invoices.find(
-            (item) => item.id === invoice.credited_invoice,
-          );
-          setCreditedInvoice(credited || null);
-        } else {
-          setCreditedInvoice(null);
-        }
+      if (invoice && invoice.credited_invoice && !isEmpty(invoices)) {
+        const credited = invoices.find(
+          (item) => item.id === invoice.credited_invoice,
+        );
+        setCreditedInvoice(credited || null);
+      } else {
+        setCreditedInvoice(null);
+      }
 
-        if (invoice.interest_invoice_for && !isEmpty(invoices)) {
-          const interestFor = invoices.find(
-            (item) => item.id === invoice.interest_invoice_for,
-          );
-          setInterestInvoiceFor(interestFor || null);
-        } else {
-          setInterestInvoiceFor(null);
-        }
+      if (invoice && invoice.interest_invoice_for && !isEmpty(invoices)) {
+        const interestFor = invoices.find(
+          (item) => item.id === invoice.interest_invoice_for,
+        );
+        setInterestInvoiceFor(interestFor || null);
+      } else {
+        setInterestInvoiceFor(null);
       }
     }, [invoice, invoices]);
 
     const handleSave = () => {
       dispatch(receiveIsEditClicked(true));
-
-      if (valid) {
-        onSave(formValues);
+      if (invoiceFormRef.current.getState().valid) {
+        invoiceFormRef.current.submit();
       }
     };
 
@@ -118,7 +121,9 @@ const InvoicePanel = forwardRef<any, Props>(
                 />
                 <Button
                   className={ButtonColors.SUCCESS}
-                  disabled={isEditClicked || !valid}
+                  disabled={
+                    isEditClicked || !invoiceFormRef.current.getState().valid
+                  }
                   onClick={handleSave}
                   text="Tallenna"
                 />
@@ -135,9 +140,9 @@ const InvoicePanel = forwardRef<any, Props>(
             creditedInvoice={creditedInvoice}
             interestInvoiceFor={interestInvoiceFor}
             invoice={invoice}
-            initialValues={{ ...invoice }}
             onInvoiceLinkClick={onInvoiceLinkClick}
             relativeTo={component.current}
+            formApi={invoiceFormRef.current}
           />
         ) : (
           <InvoiceTemplate
@@ -155,6 +160,4 @@ const InvoicePanel = forwardRef<any, Props>(
 
 // Forwardref needs a display name
 InvoicePanel.displayName = "InvoicePanel";
-
-const formName = FormNames.LEASE_INVOICE_EDIT;
 export default InvoicePanel;

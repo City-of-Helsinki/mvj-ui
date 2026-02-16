@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import classNames from "classnames";
-import { formValueSelector, isValid as isFormValid } from "redux-form";
-import { Row, Column } from "react-foundation";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
-import Button from "@/components/button/Button";
 import FormText from "@/components/form/FormText";
 import InvoiceSimulatorBillingPeriod from "./InvoiceSimulatorBillingPeriods";
 import InvoiceSimulatorForm from "./InvoiceSimulatorForm";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import { fetchPreviewInvoices } from "@/previewInvoices/actions";
-import { FormNames, PermissionMissingTexts } from "@/enums";
-import { ButtonColors } from "@/components/enums";
+import { PermissionMissingTexts } from "@/enums";
 import { InvoiceFieldPaths, InvoiceRowsFieldPaths } from "@/invoices/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getContentPreviewInvoiceBillingPeriods } from "@/components/helpers";
@@ -29,10 +25,6 @@ const InvoiceSimulator: React.FC = () => {
   const isFetching = useSelector(getIsFetching);
   const previewInvoices = useSelector(getPreviewInvoices);
   const usersPermissions = useSelector(getUsersPermissions);
-  const isValid = useSelector((state) => isFormValid(formName)(state));
-  const year = useSelector((state) =>
-    selector(state, "invoice_simulator_year"),
-  );
 
   const [billingPeriods, setBillingPeriods] = useState<Array<
     Record<string, any>
@@ -46,33 +38,29 @@ const InvoiceSimulator: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (invoiceAttributes) {
-      setInvoiceReceivableTypeOptions(
-        getFieldOptions(
-          invoiceAttributes,
-          InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
-          false,
-        ),
-      );
-      setInvoiceTypeOptions(
-        getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE, false),
-      );
-    }
+    setInvoiceReceivableTypeOptions(
+      getFieldOptions(
+        invoiceAttributes,
+        InvoiceRowsFieldPaths.RECEIVABLE_TYPE,
+        false,
+      ),
+    );
+    setInvoiceTypeOptions(
+      getFieldOptions(invoiceAttributes, InvoiceFieldPaths.TYPE, false),
+    );
   }, [invoiceAttributes]);
 
   useEffect(() => {
-    if (previewInvoices) {
-      setBillingPeriods(
-        getContentPreviewInvoiceBillingPeriods(previewInvoices),
-      );
-    }
+    setBillingPeriods(getContentPreviewInvoiceBillingPeriods(previewInvoices));
   }, [previewInvoices]);
 
-  const handleCreatePreviewInvoices = () => {
+  const handleCreatePreviewInvoices = (values: {
+    invoice_simulator_year: number;
+  }) => {
     dispatch(
       fetchPreviewInvoices({
         lease: currentLease.id,
-        year: year,
+        year: values.invoice_simulator_year,
       }),
     );
   };
@@ -83,19 +71,10 @@ const InvoiceSimulator: React.FC = () => {
 
   return (
     <div className="invoice-simulator">
-      <Row>
-        <Column small={6} medium={3} large={2}>
-          <InvoiceSimulatorForm onSubmit={handleCreatePreviewInvoices} />
-        </Column>
-        <Column small={6} medium={9} large={10}>
-          <Button
-            className={`${ButtonColors.SUCCESS} no-margin`}
-            disabled={isFetching || !isValid}
-            onClick={handleCreatePreviewInvoices}
-            text="Näytä laskut"
-          />
-        </Column>
-      </Row>
+      <InvoiceSimulatorForm
+        onSubmit={handleCreatePreviewInvoices}
+        isFetching={isFetching}
+      />
       {billingPeriods && !billingPeriods.length && !isFetching && (
         <FormText>Ei laskuja valittuna vuonna</FormText>
       )}
@@ -134,6 +113,4 @@ const InvoiceSimulator: React.FC = () => {
   );
 };
 
-const formName = FormNames.INVOICE_SIMULATOR;
-const selector = formValueSelector(formName);
 export default InvoiceSimulator;

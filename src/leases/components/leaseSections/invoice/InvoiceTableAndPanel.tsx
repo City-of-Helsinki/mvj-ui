@@ -6,7 +6,7 @@ import AmountWithVat from "@/components/vat/AmountWithVat";
 import FormText from "@/components/form/FormText";
 import InvoicePanel from "./InvoicePanel";
 import SingleRadioInput from "@/components/inputs/SingleRadioInput";
-import SortableTable from "@/components/table/SortableTable";
+import SortableTable, { Column } from "@/components/table/SortableTable";
 import TableAndPanelWrapper from "@/components/table/TableAndPanelWrapper";
 import { clearPatchedInvoice, patchInvoice } from "@/invoices/actions";
 import { FormNames, KeyCodes, TableSortOrder } from "@/enums";
@@ -82,13 +82,24 @@ const InvoiceTableAndPanel: React.FC<Props> = ({
 
   const tableAndPanelWrapper = useRef<TableAndPanelWrapper>(null);
 
-  const [columns, setColumns] = useState<Array<Record<string, any>>>([]);
+  const [columns, setColumns] = useState<Array<Column>>([]);
   const [invoices, setInvoices] = useState<Array<Record<string, any>>>([]);
   const [invoiceToCreditRowId, setInvoiceToCreditRowId] = useState<
     string | null
   >(null);
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
   const [openedInvoice, setOpenedInvoice] = useState<Invoice | null>(null);
+
+  const forceUpdateInvoiceToCreditRow = useCallback(
+    (rowId: string | null | undefined) => {
+      const el = findReactById(rowId);
+
+      if (el) {
+        el.forceUpdateHandler();
+      }
+    },
+    [],
+  );
 
   const getColumns = useCallback(() => {
     const receivableTypeOptions = getFieldOptions(
@@ -377,7 +388,20 @@ const InvoiceTableAndPanel: React.FC<Props> = ({
     usersPermissions,
     invoiceToCredit,
     onInvoiceToCreditChange,
+    forceUpdateInvoiceToCreditRow,
   ]);
+
+  const openNextInvoice = useCallback(() => {
+    if (openedInvoice && tableAndPanelWrapper.current) {
+      tableAndPanelWrapper.current.table.selectNext();
+    }
+  }, [openedInvoice]);
+
+  const openPreviousInvoice = useCallback(() => {
+    if (openedInvoice && tableAndPanelWrapper.current) {
+      tableAndPanelWrapper.current.table.selectPrevious();
+    }
+  }, [openedInvoice]);
 
   const handleKeyDown = useCallback(
     (e: any) => {
@@ -386,23 +410,19 @@ const InvoiceTableAndPanel: React.FC<Props> = ({
       switch (e.keyCode) {
         case KeyCodes.ARROW_LEFT:
           e.preventDefault();
-          if (openPreviousInvoiceRef) {
-            openPreviousInvoiceRef.current();
-          }
+          openPreviousInvoice();
           break;
 
         case KeyCodes.ARROW_RIGHT:
           e.preventDefault();
-          if (openNextInvoiceRef) {
-            openNextInvoiceRef.current();
-          }
+          openNextInvoice();
           break;
 
         default:
           break;
       }
     },
-    [isPanelOpen],
+    [isPanelOpen, openNextInvoice, openPreviousInvoice],
   );
 
   const initilizeEditInvoiceForm = useCallback(
@@ -434,24 +454,23 @@ const InvoiceTableAndPanel: React.FC<Props> = ({
 
   useEffect(() => {
     dispatch(clearPatchedInvoice());
-    setColumns(getColumns());
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [dispatch, getColumns, handleKeyDown]);
+  }, [dispatch, handleKeyDown]);
 
   useEffect(() => {
-    if (openedInvoice) {
-      tableAndPanelWrapper.current.scrollToPanel();
-    }
-    scrollToOpenedRow();
     if (tableAndPanelWrapper.current) {
+      if (openedInvoice) {
+        tableAndPanelWrapper.current.scrollToPanel();
+      }
+      scrollToOpenedRow();
       tableAndPanelWrapper.current.calculateTableHeight();
       tableAndPanelWrapper.current.calculateTableWidth();
+      initilizeEditInvoiceForm(openedInvoice);
     }
-    initilizeEditInvoiceForm(openedInvoice);
   }, [initilizeEditInvoiceForm, openedInvoice, scrollToOpenedRow]);
 
   useEffect(() => {
@@ -465,39 +484,13 @@ const InvoiceTableAndPanel: React.FC<Props> = ({
     setColumns(getColumns());
   }, [getColumns]);
 
-  const forceUpdateInvoiceToCreditRow = (rowId: string | null | undefined) => {
-    const el = findReactById(rowId);
-
-    if (el) {
-      el.forceUpdateHandler();
+  const handleDataUpdate = useCallback(() => {
+    if (tableAndPanelWrapper.current) {
+      forceUpdateInvoiceToCreditRow(invoiceToCreditRowId);
+      tableAndPanelWrapper.current.calculateTableHeight();
+      scrollToOpenedRow();
     }
-  };
-
-  const openNextInvoice = useCallback(() => {
-    if (openedInvoice) {
-      tableAndPanelWrapper.current.table.selectNext();
-    }
-  }, [openedInvoice]);
-
-  const openPreviousInvoice = useCallback(() => {
-    if (openedInvoice) {
-      tableAndPanelWrapper.current.table.selectPrevious();
-    }
-  }, [openedInvoice]);
-
-  useEffect(() => {
-    openNextInvoiceRef.current = openNextInvoice;
-    openPreviousInvoiceRef.current = openPreviousInvoice;
-  }, [openNextInvoice, openPreviousInvoice]);
-
-  const openNextInvoiceRef = useRef(openNextInvoice);
-  const openPreviousInvoiceRef = useRef(openPreviousInvoice);
-
-  const handleDataUpdate = () => {
-    forceUpdateInvoiceToCreditRow(invoiceToCreditRowId);
-    tableAndPanelWrapper.current.calculateTableHeight();
-    scrollToOpenedRow();
-  };
+  }, [forceUpdateInvoiceToCreditRow, invoiceToCreditRowId, scrollToOpenedRow]);
 
   const selectOpenedInvoice = (invoice: Invoice) => {
     setOpenedInvoice(invoice);

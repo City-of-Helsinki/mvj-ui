@@ -1,15 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { formValueSelector, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import FileInput from "@/components/file/FileInput";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
+import { useField, useForm } from "react-final-form";
 import ButtonWrapper from "@/components/content/ButtonWrapper";
-import { FormNames } from "@/enums";
 import {
   CollectionCourtDecisionFieldPaths,
   CollectionCourtDecisionFieldTitles,
@@ -19,7 +18,6 @@ import { getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
 import { getAttributes as getCollectionCourtDecisionAttributes } from "@/collectionCourtDecision/selectors";
 import type { Attributes } from "types";
 type Props = {
-  initialize: (...args: Array<any>) => any;
   isOpen: boolean;
   largeScreen: boolean;
   onClose: (...args: Array<any>) => any;
@@ -27,9 +25,7 @@ type Props = {
   title: string;
   valid: boolean;
 };
-
 const CollectionCourtDecisionPanel: React.FC<Props> = ({
-  initialize,
   isOpen,
   largeScreen,
   onClose,
@@ -40,30 +36,23 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
     getCollectionCourtDecisionAttributes,
   );
 
-  const decisionDate: string | null | undefined = useSelector((state) =>
-    selector(state, "decision_date"),
-  );
-  const note: string | null | undefined = useSelector((state) =>
-    selector(state, "note"),
-  );
+  const { input: decisionDate } = useField("decision_date");
+  const { input: note } = useField("note");
 
   const [file, setFile] = useState<Record<string, any> | null | undefined>(
     null,
   );
 
-  const clearInputs = useCallback(() => {
-    initialize({
-      decision_date: undefined,
-      note: "",
+  const form = useForm();
+
+  const handleClose = () => {
+    onClose();
+    form.batch(() => {
+      form.change("decision_date", undefined);
+      form.change("note", undefined);
     });
     setFile(null);
-  }, [initialize]);
-
-  useEffect(() => {
-    if (isOpen) {
-      clearInputs();
-    }
-  }, [clearInputs, isOpen]);
+  };
 
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
@@ -73,8 +62,8 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
   const handleSave = () => {
     onSave({
       file: file,
-      decision_date: decisionDate,
-      note: note,
+      decision_date: decisionDate.value === "" ? undefined : decisionDate.value,
+      note: note.value,
     });
   };
 
@@ -117,7 +106,7 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
               CollectionCourtDecisionFieldPaths.DECISION_DATE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableDirty
               fieldAttributes={getFieldAttributes(
                 collectionCourtDecisionAttributes,
@@ -138,7 +127,7 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
               CollectionCourtDecisionFieldPaths.NOTE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableDirty
               fieldAttributes={getFieldAttributes(
                 collectionCourtDecisionAttributes,
@@ -156,7 +145,7 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
       <ButtonWrapper>
         <Button
           className={ButtonColors.ALERT}
-          onClick={onClose}
+          onClick={handleClose}
           text="Peruuta"
         />
         <Button
@@ -170,8 +159,4 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
   );
 };
 
-const formName = FormNames.LEASE_CREATE_COLLECTION_COURT_DECISION;
-const selector = formValueSelector(formName);
-export default reduxForm({
-  form: formName,
-})(CollectionCourtDecisionPanel) as React.ComponentType<any>;
+export default CollectionCourtDecisionPanel;
