@@ -395,6 +395,7 @@ const LandUseDetailPage: React.FC = () => {
       updateSummary(agreementId, values),
     onSuccess: (data) => {
       queryClient.setQueryData(["land-use", agreementId, "summary"], data);
+      queryClient.invalidateQueries({ queryKey: ["land-use", "list"] });
     },
   });
 
@@ -403,6 +404,7 @@ const LandUseDetailPage: React.FC = () => {
       updateParties(agreementId, values),
     onSuccess: (data) => {
       queryClient.setQueryData(["land-use", agreementId, "parties"], data);
+      queryClient.invalidateQueries({ queryKey: ["land-use", "list"] });
     },
   });
 

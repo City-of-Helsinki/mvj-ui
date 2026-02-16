@@ -11,7 +11,6 @@ import {
 } from "./landUseFormValues";
 import {
   getAgreementIds,
-  getAgreementList,
   getAgreementTab,
   setAgreementListItem,
   setAgreementTab,
@@ -48,8 +47,37 @@ export const getSummary = async (
 export const getAgreementIdentifiers = async (): Promise<string[]> =>
   getAgreementIds();
 
-export const getLandUseList = async (): Promise<LandUseListItem[]> =>
-  getAgreementList();
+export const getLandUseList = async (): Promise<LandUseListItem[]> => {
+  const agreementIds = await getAgreementIds();
+
+  const listItems = await Promise.all(
+    agreementIds.map(async (agreementId) => {
+      const [summary, parties] = await Promise.all([
+        getSummary(agreementId),
+        getParties(agreementId),
+      ]);
+
+      const partyName = parties?.customer?.details?.name ?? "";
+      const kohdeValues =
+        summary?.kohteet
+          ?.map((kohde) => kohde.kohteenTunnus)
+          .filter((value): value is string => Boolean(value))
+          .join(", ") ?? "";
+
+      return {
+        id: agreementId,
+        identifier: agreementId,
+        party: partyName,
+        zoningPlanNumber: "",
+        target: kohdeValues,
+        projectArea: "",
+        negotiationPhase: "",
+      } satisfies LandUseListItem;
+    }),
+  );
+
+  return listItems;
+};
 
 export const createLandUseAgreement = async (
   municipalityId: string,
