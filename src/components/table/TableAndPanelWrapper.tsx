@@ -127,6 +127,7 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
     }
   };
   calculateTableHeight = () => {
+    if (!this.panelWrapper) return;
     const { isPanelOpen } = this.props;
     const { scrollHeight: panelHeight } = this.panelWrapper;
     const tableMinHeight = TABLE_MIN_HEIGHT,

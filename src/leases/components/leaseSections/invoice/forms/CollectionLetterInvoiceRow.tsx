@@ -1,17 +1,15 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import RemoveButton from "@/components/form/RemoveButton";
 import { fetchPenaltyInterestByInvoice } from "@/penaltyInterest/actions";
-import { FormNames } from "@/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import {
   convertStrToDecimalNumber,
@@ -23,7 +21,8 @@ import {
   getPenaltyInterestByInvoice,
 } from "@/penaltyInterest/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Invoice, InvoiceList } from "@/invoices/types";
+import type { InvoiceList } from "@/invoices/types";
+import { useFormState } from "react-final-form";
 type Props = {
   field: any;
   fields: any;
@@ -41,40 +40,37 @@ const CollectionLetterInvoiceRow: React.FC<Props> = ({
   onRemove,
   showDeleteButton,
 }) => {
-  const invoice: Invoice = useSelector((state) => selector(state, field));
-  const selectedInvoices: InvoiceList = useSelector((state) => {
-    const selected = [];
-    fields.forEach((field) => {
-      const item = selector(state, field);
+  const formState = useFormState();
+  const dispatch = useDispatch();
 
-      if (item && item !== invoice) {
-        selected.push(item);
-      }
-    });
-    return selected;
-  });
-  const collectionCharge: string = useSelector((state) =>
-    selector(state, `${field}.collection_charge`),
+  const currentInvoiceId = get(formState.values, `${field}.invoice`);
+
+  const selectedInvoices: InvoiceList = fields
+    .map((field) => get(formState.values, `${field}.invoice`))
+    .filter((item) => item && item !== currentInvoiceId);
+
+  const collectionCharge: string = get(
+    formState.values,
+    `${field}.collection_charge`,
+    "0",
   );
   const isFetching: boolean = useSelector((state) =>
-    getIsFetchingByInvoice(state, invoice.invoice),
+    getIsFetchingByInvoice(state, currentInvoiceId),
   );
   const penaltyInterest = useSelector((state) =>
-    getPenaltyInterestByInvoice(state, invoice.invoice),
+    getPenaltyInterestByInvoice(state, currentInvoiceId),
   );
   const usersPermissions = useSelector(getUsersPermissions);
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    if (invoice && isEmpty(penaltyInterest)) {
-      if (
-        hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)
-      ) {
-        dispatch(fetchPenaltyInterestByInvoice(invoice.invoice));
-      }
+    if (
+      currentInvoiceId &&
+      isEmpty(penaltyInterest) &&
+      hasPermissions(usersPermissions, UsersPermissions.ADD_COLLECTIONLETTER)
+    ) {
+      dispatch(fetchPenaltyInterestByInvoice(currentInvoiceId));
     }
-  }, [dispatch, invoice, penaltyInterest, usersPermissions]);
+  }, [dispatch, currentInvoiceId, penaltyInterest, usersPermissions]);
 
   const getTotalAmount = () => {
     if (!penaltyInterest || isEmpty(penaltyInterest)) {
@@ -96,7 +92,7 @@ const CollectionLetterInvoiceRow: React.FC<Props> = ({
   return (
     <Row>
       <Column small={4}>
-        <FormFieldLegacy
+        <FormField
           disableDirty={disableDirty}
           fieldAttributes={{
             type: "choice",
@@ -131,7 +127,7 @@ const CollectionLetterInvoiceRow: React.FC<Props> = ({
         </FormText>
       </Column>
       <Column small={2}>
-        <FormFieldLegacy
+        <FormField
           disableDirty={disableDirty}
           fieldAttributes={{
             type: "decimal",
@@ -175,6 +171,4 @@ const CollectionLetterInvoiceRow: React.FC<Props> = ({
   );
 };
 
-const formName = FormNames.LEASE_CREATE_COLLECTION_LETTER;
-const selector = formValueSelector(formName);
 export default CollectionLetterInvoiceRow;

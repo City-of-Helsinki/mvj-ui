@@ -1,17 +1,16 @@
 import React, { ReactElement } from "react";
 import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import { formValueSelector } from "redux-form";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import RemoveButton from "@/components/form/RemoveButton";
 import SubTitle from "@/components/content/SubTitle";
-import { ConfirmationModalTexts, FormNames } from "@/enums";
+import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import {
   InvoiceRowsFieldPaths,
@@ -36,6 +35,7 @@ type Props = {
   isEditClicked: boolean;
   relativeTo: any;
   tenantOptions: Array<Record<string, any>>;
+  rows: Array<Record<string, any>>;
 };
 
 const InvoiceRowsEdit = ({
@@ -43,10 +43,10 @@ const InvoiceRowsEdit = ({
   isEditClicked,
   relativeTo,
   tenantOptions,
+  rows,
 }: Props): ReactElement => {
   const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
   const receivableTypes = useSelector(getReceivableTypes);
-  const rows = useSelector((state) => selector(state, `rows`));
 
   const handleAdd = () => {
     fields.push({});
@@ -55,7 +55,7 @@ const InvoiceRowsEdit = ({
   const receivableType = receivableTypeFromRows(rows);
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ dispatch: appDispatch }) => {
         return (
           <>
             <SubTitle
@@ -70,7 +70,7 @@ const InvoiceRowsEdit = ({
                 <BoxItemContainer>
                   {fields.map((row, index) => {
                     const handleRemove = () => {
-                      dispatch({
+                      appDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           fields.remove(index);
@@ -108,7 +108,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.TENANT,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -130,7 +130,7 @@ const InvoiceRowsEdit = ({
                               )}
                             >
                               {receivableTypes ? (
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isEditClicked}
                                   fieldAttributes={
                                     receivableType === 2
@@ -164,7 +164,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.AMOUNT,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -185,7 +185,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.BILLING_PERIOD_START_DATE,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -206,7 +206,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.BILLING_PERIOD_END_DATE,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -227,7 +227,7 @@ const InvoiceRowsEdit = ({
                                 InvoiceRowsFieldPaths.DESCRIPTION,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isEditClicked}
                                 fieldAttributes={getFieldAttributes(
                                   invoiceAttributes,
@@ -267,5 +267,4 @@ const InvoiceRowsEdit = ({
   );
 };
 
-const selector = formValueSelector(FormNames.LEASE_INVOICE_EDIT);
 export default InvoiceRowsEdit;

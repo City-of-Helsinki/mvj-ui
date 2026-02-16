@@ -1,24 +1,26 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
+import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import FormText from "@/components/form/FormText";
-import { FormNames } from "@/enums";
 import { convertStrToDecimalNumber, formatNumber } from "@/util/helpers";
 import { getPenaltyInterestByInvoice } from "@/penaltyInterest/selectors";
+import { useFormState } from "react-final-form";
 type Props = {
   selectedInvoices: Array<Record<string, any>>;
   fields: any;
 };
 
 const CollectionLetterTotalRow = ({ fields, selectedInvoices }: Props) => {
+  const formState = useFormState();
+
   const penaltyInterestArray: Array<Record<string, any>> = useSelector(
     (state) => {
       const penaltyInterests = [];
       fields.forEach((field) => {
-        const invoice = selector(state, field),
-          penaltyInterest = getPenaltyInterestByInvoice(state, invoice.invoice);
+        const invoiceId = get(formState.values, `${field}.invoice`);
+        const penaltyInterest = getPenaltyInterestByInvoice(state, invoiceId);
 
         if (!isEmpty(penaltyInterest)) {
           penaltyInterests.push(penaltyInterest);
@@ -86,6 +88,4 @@ const CollectionLetterTotalRow = ({ fields, selectedInvoices }: Props) => {
   );
 };
 
-const formName = FormNames.LEASE_CREATE_COLLECTION_LETTER;
-const selector = formValueSelector(formName);
 export default CollectionLetterTotalRow;

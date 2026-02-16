@@ -1,6 +1,8 @@
 import React, { ReactElement, useMemo } from "react";
+import arrayMutators from "final-form-arrays";
 import { useSelector } from "react-redux";
-import { FieldArray, formValueSelector, reduxForm } from "redux-form";
+import { FieldArray } from "react-final-form-arrays";
+import { Form } from "react-final-form";
 import { Row, Column } from "react-foundation";
 import isEmpty from "lodash/isEmpty";
 import createUrl from "@/api/createUrl";
@@ -10,10 +12,10 @@ import CollectionLetterInvoiceRow from "./CollectionLetterInvoiceRow";
 import CollectionLetterTotalRow from "./CollectionLetterTotalRow";
 import Divider from "@/components/content/Divider";
 import FileDownloadButton from "@/components/file/FileDownloadButton";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import SubTitle from "@/components/content/SubTitle";
-import { FieldTypes, FormNames } from "@/enums";
+import { FieldTypes } from "@/enums";
 import {
   CreateCollectionLetterFieldPaths,
   CreateCollectionLetterFieldTitles,
@@ -151,10 +153,6 @@ const Invoices = ({
   );
 };
 
-type Props = {
-  valid: boolean;
-};
-
 const getInvoiceOptions = (invoices: Array<Record<string, any>>) =>
   !isEmpty(invoices)
     ? invoices
@@ -173,140 +171,137 @@ const getInvoiceOptions = (invoices: Array<Record<string, any>>) =>
         })
     : [];
 
-const CreateCollectionLetterForm: React.FC<Props> = ({ valid }) => {
-  const createCollectionLetterAttributes = useSelector((state) =>
-    getCreateCollectionLetterAttributes(state),
+const CreateCollectionLetterForm: React.FC = () => {
+  const createCollectionLetterAttributes = useSelector(
+    getCreateCollectionLetterAttributes,
   );
   const invoices = useSelector((state) =>
     getInvoicesByLease(state, getCurrentLease(state).id),
   );
-  const selectedInvoices = useSelector((state) => selector(state, "invoice"));
   const lease = useSelector(getCurrentLease);
-  const template = useSelector((state) => selector(state, "template"));
-  const tenants = useSelector((state) => selector(state, "tenants"));
 
   const invoiceOptions = useMemo(() => getInvoiceOptions(invoices), [invoices]);
   const tenantOptions = useMemo(() => getInvoiceTenantOptions(lease), [lease]);
 
   return (
-    <form>
-      <Row>
-        <Column small={12} large={6}>
+    <Form onSubmit={() => {}} mutators={{ ...arrayMutators }}>
+      {({ handleSubmit, valid, values }) => (
+        <form onSubmit={handleSubmit}>
           <Row>
-            <Column small={12} medium={4}>
-              <Authorization
-                allow={isFieldAllowedToEdit(
-                  createCollectionLetterAttributes,
-                  CreateCollectionLetterFieldPaths.TENANTS,
-                )}
-              >
-                <FormFieldLegacy
-                  disableDirty
-                  fieldAttributes={getFieldAttributes(
-                    createCollectionLetterAttributes,
-                    CreateCollectionLetterFieldPaths.TENANTS,
-                  )}
-                  name="tenants"
-                  overrideValues={{
-                    fieldType: FieldTypes.MULTISELECT,
-                    label: CreateCollectionLetterFieldTitles.TENANTS,
-                    options: tenantOptions,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataCreateCollectionLetterKey(
-                    CreateCollectionLetterFieldPaths.TENANTS,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            <Column small={12} medium={4}>
-              <Authorization
-                allow={isFieldAllowedToEdit(
-                  createCollectionLetterAttributes,
-                  CreateCollectionLetterFieldPaths.TEMPLATE,
-                )}
-              >
-                <FormFieldLegacy
-                  disableDirty
-                  fieldAttributes={getFieldAttributes(
-                    createCollectionLetterAttributes,
-                    CreateCollectionLetterFieldPaths.TEMPLATE,
-                  )}
-                  name="template"
-                  overrideValues={{
-                    label: CreateCollectionLetterFieldTitles.TEMPLATE,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataCreateCollectionLetterKey(
-                    CreateCollectionLetterFieldPaths.TEMPLATE,
-                  )}
-                />
-              </Authorization>
+            <Column small={12} large={6}>
+              <Row>
+                <Column small={12} medium={4}>
+                  <Authorization
+                    allow={isFieldAllowedToEdit(
+                      createCollectionLetterAttributes,
+                      CreateCollectionLetterFieldPaths.TENANTS,
+                    )}
+                  >
+                    <FormField
+                      disableDirty
+                      fieldAttributes={getFieldAttributes(
+                        createCollectionLetterAttributes,
+                        CreateCollectionLetterFieldPaths.TENANTS,
+                      )}
+                      name="tenants"
+                      overrideValues={{
+                        fieldType: FieldTypes.MULTISELECT,
+                        label: CreateCollectionLetterFieldTitles.TENANTS,
+                        options: tenantOptions,
+                      }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataCreateCollectionLetterKey(
+                        CreateCollectionLetterFieldPaths.TENANTS,
+                      )}
+                    />
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={4}>
+                  <Authorization
+                    allow={isFieldAllowedToEdit(
+                      createCollectionLetterAttributes,
+                      CreateCollectionLetterFieldPaths.TEMPLATE,
+                    )}
+                  >
+                    <FormField
+                      disableDirty
+                      fieldAttributes={getFieldAttributes(
+                        createCollectionLetterAttributes,
+                        CreateCollectionLetterFieldPaths.TEMPLATE,
+                      )}
+                      name="template"
+                      overrideValues={{
+                        label: CreateCollectionLetterFieldTitles.TEMPLATE,
+                      }}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataCreateCollectionLetterKey(
+                        CreateCollectionLetterFieldPaths.TEMPLATE,
+                      )}
+                    />
+                  </Authorization>
+                </Column>
+              </Row>
             </Column>
           </Row>
-        </Column>
-      </Row>
 
-      <Row>
-        <Column small={12}>
-          <Authorization
-            allow={isFieldAllowedToEdit(
-              createCollectionLetterAttributes,
-              CreateCollectionLetterFieldPaths.INVOICES,
-            )}
-          >
-            <>
-              <SubTitle
-                enableUiDataEdit
-                uiDataKey={getUiDataCreateCollectionLetterKey(
+          <Row>
+            <Column small={12}>
+              <Authorization
+                allow={isFieldAllowedToEdit(
+                  createCollectionLetterAttributes,
                   CreateCollectionLetterFieldPaths.INVOICES,
                 )}
               >
-                {CreateCollectionLetterFieldTitles.INVOICES}
-              </SubTitle>
-              <FieldArray
-                selectedInvoices={selectedInvoices}
-                disableDirty
-                component={Invoices}
-                invoiceOptions={invoiceOptions}
-                name="invoice"
+                <>
+                  <SubTitle
+                    enableUiDataEdit
+                    uiDataKey={getUiDataCreateCollectionLetterKey(
+                      CreateCollectionLetterFieldPaths.INVOICES,
+                    )}
+                  >
+                    {CreateCollectionLetterFieldTitles.INVOICES}
+                  </SubTitle>
+                  <FieldArray name="invoice">
+                    {(FieldArrayProps) =>
+                      Invoices({
+                        ...FieldArrayProps,
+                        selectedInvoices: values.invoice,
+                        invoiceOptions: invoiceOptions,
+                        disableDirty: true,
+                      })
+                    }
+                  </FieldArray>
+                </>
+              </Authorization>
+            </Column>
+            <Column
+              small={12}
+              style={{
+                margin: "10px 0",
+              }}
+            >
+              <FileDownloadButton
+                disabled={!valid}
+                label="Luo perintäkirje"
+                payload={{
+                  lease: lease.id,
+                  template: values.template,
+                  tenants: values.tenants,
+                  invoices: values.invoice?.map((invoice) => ({
+                    ...invoice,
+                    collection_charge: convertStrToDecimalNumber(
+                      invoice.collection_charge,
+                    ),
+                  })),
+                }}
+                url={createUrl(`lease_create_collection_letter/`)}
               />
-            </>
-          </Authorization>
-        </Column>
-        <Column
-          small={12}
-          style={{
-            margin: "10px 0",
-          }}
-        >
-          <FileDownloadButton
-            disabled={!valid}
-            label="Luo perintäkirje"
-            payload={{
-              lease: lease.id,
-              template: template,
-              tenants: tenants,
-              invoices: selectedInvoices?.map((invoice) => ({
-                ...invoice,
-                collection_charge: convertStrToDecimalNumber(
-                  invoice.collection_charge,
-                ),
-              })),
-            }}
-            url={createUrl(`lease_create_collection_letter/`)}
-          />
-        </Column>
-      </Row>
-    </form>
+            </Column>
+          </Row>
+        </form>
+      )}
+    </Form>
   );
 };
 
-const formName = FormNames.LEASE_CREATE_COLLECTION_LETTER;
-const selector = formValueSelector(formName);
-export default reduxForm({
-  form: formName,
-  initialValues: {
-    selectedInvoices: [{}],
-  },
-})(CreateCollectionLetterForm);
+export default CreateCollectionLetterForm;

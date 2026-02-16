@@ -92,7 +92,7 @@ export const deleteLease = (leaseId: LeaseId): DeleteLeaseAction =>
 export const patchLease = (lease: Lease): PatchLeaseAction =>
   createAction("mvj/leases/PATCH")(lease);
 export const patchLeaseInvoiceNotes = (
-  lease: Lease,
+  lease: Partial<Lease>,
 ): PatchLeaseInvoiceNotesAction =>
   createAction("mvj/leases/PATCH_INVOICE_NOTES")(lease);
 export const startInvoicing = (id: LeaseId): StartInvoicingAction =>
