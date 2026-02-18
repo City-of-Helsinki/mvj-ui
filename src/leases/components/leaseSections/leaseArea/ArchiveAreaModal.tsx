@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useRef, useEffect } from "react";
 import { Row, Column } from "react-foundation";
 import { useSelector } from "react-redux";
@@ -12,10 +12,11 @@ import { getAttributes, getCurrentLease } from "@/leases/selectors";
 import { ButtonColors } from "@/components/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToRead } from "@/util/helpers";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
-import { formValueSelector } from "redux-form";
+import FormField from "@/components/form/final-form/FormField";
 import { getDecisionOptions } from "@/leases/helpers";
+import { FormApi } from "final-form";
 type Props = {
+  formApi: FormApi;
   onArchive: (...args: Array<any>) => any;
   onCancel: (...args: Array<any>) => any;
   onClose: (...args: Array<any>) => any;
@@ -24,20 +25,19 @@ type Props = {
 };
 
 const ArchiveAreaModal: React.FC<Props> = ({
+  formApi,
   onArchive,
   onCancel,
   onClose,
   open,
   valid,
 }) => {
-  const selector = formValueSelector(FormNames.LEASE_AREAS);
   const attributes = useSelector(getAttributes);
   const currentLease = useSelector(getCurrentLease);
   const decisionOptions = getDecisionOptions(currentLease);
-  const archivedDecision = useSelector((state) =>
-    selector(state, "archived_decision"),
-  );
-  const archivedNote = useSelector((state) => selector(state, "archived_note"));
+
+  const archivedDecision = formApi.getFieldState("archived_decision")?.value;
+  const archivedNote = formApi.getFieldState("archived_note")?.value;
 
   let firstField: any = null;
   const setRefForFirstField = (element: any) => {
@@ -51,10 +51,16 @@ const ArchiveAreaModal: React.FC<Props> = ({
       mounted.current = false;
       return;
     }
-    if (open && firstField) {
-      firstField.focus();
+    if (open) {
+      // Reset form fields when modal opens
+      formApi.change("archived_decision", undefined);
+      formApi.change("archived_note", undefined);
+
+      if (firstField) {
+        firstField.focus();
+      }
     }
-  }, [open, firstField]);
+  }, [open, firstField, formApi]);
 
   const handleArchive = () => {
     onArchive({
@@ -66,81 +72,85 @@ const ArchiveAreaModal: React.FC<Props> = ({
 
   return (
     <div>
-      <Modal
-        className="modal-small modal-autoheight"
-        title={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.TITLE}
-        isOpen={open}
-        onClose={onClose}
-      >
-        <>
-          <FormText>{ConfirmationModalTexts.ARCHIVE_LEASE_AREA.LABEL}</FormText>
-          <Row>
-            <Column>
-              <Authorization
-                allow={isFieldAllowedToRead(
-                  attributes,
-                  LeaseAreasFieldPaths.ARCHIVED_DECISION,
-                )}
-              >
-                <FormFieldLegacy
-                  setRefForField={setRefForFirstField}
-                  fieldAttributes={getFieldAttributes(
+      {open && (
+        <Modal
+          className="modal-small modal-autoheight"
+          title={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.TITLE}
+          isOpen={open}
+          onClose={onClose}
+        >
+          <>
+            <FormText>
+              {ConfirmationModalTexts.ARCHIVE_LEASE_AREA.LABEL}
+            </FormText>
+            <Row>
+              <Column>
+                <Authorization
+                  allow={isFieldAllowedToRead(
                     attributes,
                     LeaseAreasFieldPaths.ARCHIVED_DECISION,
                   )}
-                  name="archived_decision"
-                  overrideValues={{
-                    label: LeaseAreasFieldTitles.ARCHIVED_DECISION,
-                    options: decisionOptions,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreasFieldPaths.ARCHIVED_DECISION,
-                  )}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Authorization
-                allow={isFieldAllowedToRead(
-                  attributes,
-                  LeaseAreasFieldPaths.ARCHIVED_NOTE,
-                )}
-              >
-                <FormFieldLegacy
-                  fieldAttributes={getFieldAttributes(
+                >
+                  <FormField
+                    setRefForField={setRefForFirstField}
+                    fieldAttributes={getFieldAttributes(
+                      attributes,
+                      LeaseAreasFieldPaths.ARCHIVED_DECISION,
+                    )}
+                    name="archived_decision"
+                    overrideValues={{
+                      label: LeaseAreasFieldTitles.ARCHIVED_DECISION,
+                      options: decisionOptions,
+                    }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseAreasFieldPaths.ARCHIVED_DECISION,
+                    )}
+                  />
+                </Authorization>
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                <Authorization
+                  allow={isFieldAllowedToRead(
                     attributes,
                     LeaseAreasFieldPaths.ARCHIVED_NOTE,
                   )}
-                  name="archived_note"
-                  overrideValues={{
-                    label: LeaseAreasFieldTitles.ARCHIVED_NOTE,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
-                    LeaseAreasFieldPaths.ARCHIVED_NOTE,
-                  )}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-          <div className="confirmation-modal__footer">
-            <Button
-              className={ButtonColors.SECONDARY}
-              onClick={onCancel}
-              text="Peruuta"
-            />
-            <Button
-              className={ButtonColors.SUCCESS}
-              disabled={!valid}
-              onClick={handleArchive}
-              text={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.BUTTON}
-            />
-          </div>
-        </>
-      </Modal>
+                >
+                  <FormField
+                    fieldAttributes={getFieldAttributes(
+                      attributes,
+                      LeaseAreasFieldPaths.ARCHIVED_NOTE,
+                    )}
+                    name="archived_note"
+                    overrideValues={{
+                      label: LeaseAreasFieldTitles.ARCHIVED_NOTE,
+                    }}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseAreasFieldPaths.ARCHIVED_NOTE,
+                    )}
+                  />
+                </Authorization>
+              </Column>
+            </Row>
+            <div className="confirmation-modal__footer">
+              <Button
+                className={ButtonColors.SECONDARY}
+                onClick={onCancel}
+                text="Peruuta"
+              />
+              <Button
+                className={ButtonColors.SUCCESS}
+                disabled={!valid}
+                onClick={handleArchive}
+                text={ConfirmationModalTexts.ARCHIVE_LEASE_AREA.BUTTON}
+              />
+            </div>
+          </>
+        </Modal>
+      )}
     </div>
   );
 };

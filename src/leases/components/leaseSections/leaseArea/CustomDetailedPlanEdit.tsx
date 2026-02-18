@@ -1,6 +1,6 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { FieldArray, reduxForm, change } from "redux-form";
+import { useSelector } from "react-redux";
+import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -10,7 +10,6 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import FormText from "@/components/form/FormText";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import RemoveButton from "@/components/form/RemoveButton";
 import { ButtonColors } from "@/components/enums";
 import { ConfirmationModalTexts } from "@/enums";
@@ -39,12 +38,14 @@ import {
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from "@/util/helpers";
+import { FormApi } from "final-form";
+import FormField from "@/components/form/final-form/FormField";
 
 const formName = FormNames.LEASE_AREAS;
 
 type UsageDistributionsProps = {
+  formApi: FormApi;
   buttonTitle: string;
-  collapseState: boolean;
   errors: Record<string, any>;
   fields: any;
   noDataText: string;
@@ -53,6 +54,7 @@ type UsageDistributionsProps = {
 };
 
 const UsageDistributions = ({
+  formApi,
   buttonTitle,
   fields,
   noDataText,
@@ -123,7 +125,7 @@ const UsageDistributions = ({
                                 LeaseAreaUsageDistributionFieldPaths.DISTRIBUTION,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -149,7 +151,7 @@ const UsageDistributions = ({
                                 LeaseAreaUsageDistributionFieldPaths.BUILD_PERMISSION,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -176,7 +178,7 @@ const UsageDistributions = ({
                                 LeaseAreaUsageDistributionFieldPaths.NOTE,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -225,6 +227,7 @@ const UsageDistributions = ({
 };
 
 type InfoLinksProps = {
+  formApi: FormApi;
   buttonTitle: string;
   errors: Record<string, any>;
   fields: any;
@@ -234,6 +237,7 @@ type InfoLinksProps = {
 };
 
 const InfoLinks = ({
+  formApi,
   buttonTitle,
   fields,
   noDataText,
@@ -303,7 +307,7 @@ const InfoLinks = ({
                                 LeaseAreaCustomDetailedPlanInfoLinksFieldPaths.DESCRIPTION,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -329,7 +333,7 @@ const InfoLinks = ({
                                 LeaseAreaCustomDetailedPlanInfoLinksFieldPaths.URL,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -355,7 +359,7 @@ const InfoLinks = ({
                                 LeaseAreaCustomDetailedPlanInfoLinksFieldPaths.LANGUAGE,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   attributes,
@@ -404,14 +408,19 @@ const InfoLinks = ({
   );
 };
 
-type OwnProps = {
+type Props = {
+  formApi: FormApi;
   field: string;
   onRemove: (...args: Array<any>) => any;
 };
 
-const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
+const CustomDetailedPlanEdit: React.FC<Props> = ({
+  formApi,
+  field,
+  onRemove,
+}) => {
   const attributes: Attributes = useSelector(getAttributes);
-  const isSaveClicked = useSelector(getIsSaveClicked);
+  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
     useSelector(getUsersPermissions);
   const errors = useSelector((state) => getErrorsByFormName(state, formName));
@@ -438,7 +447,7 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.IDENTIFIER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -463,7 +472,7 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.INTENDED_USE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -488,7 +497,7 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.ADDRESS,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -515,7 +524,7 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.AREA,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -541,7 +550,7 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.STATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -566,7 +575,7 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.TYPE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -593,7 +602,7 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -618,7 +627,7 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -644,7 +653,7 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -670,7 +679,7 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.RENT_BUILD_PERMISSION,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -697,7 +706,7 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.PRECONSTRUCTION_ESTIMATED_CONSTRUCTION_READINESS_MOMENT,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -725,17 +734,21 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.USAGE_DISTRIBUTIONS,
               )}
             >
-              <FieldArray
-                buttonTitle="Lisää käyttöjakauma"
-                component={UsageDistributions}
-                errors={errors}
-                name={`${field}.usage_distributions`}
-                noDataText="Ei käyttöjakaumia"
-                title="Käyttöjakaumat"
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseAreaCustomDetailedPlanFieldPaths.USAGE_DISTRIBUTIONS,
-                )}
-              />
+              <FieldArray name={`${field}.usage_distributions`}>
+                {(fieldArrayProps) =>
+                  UsageDistributions({
+                    ...fieldArrayProps,
+                    formApi,
+                    buttonTitle: "Lisää käyttöjakauma",
+                    errors: { errors },
+                    noDataText: "Ei käyttöjakaumia",
+                    title: "Käyttöjakaumat",
+                    uiDataKey: getUiDataLeaseKey(
+                      LeaseAreaCustomDetailedPlanFieldPaths.USAGE_DISTRIBUTIONS,
+                    ),
+                  })
+                }
+              </FieldArray>
             </Authorization>
           </Column>
         </Row>
@@ -748,17 +761,21 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
                 LeaseAreaCustomDetailedPlanFieldPaths.INFO_LINKS,
               )}
             >
-              <FieldArray
-                buttonTitle="Lisää lisätietolinkki"
-                component={InfoLinks}
-                errors={errors}
-                name={`${field}.info_links`}
-                noDataText="Ei lisätietolinkkejä"
-                title="Lisätietolinkit"
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseAreaCustomDetailedPlanFieldPaths.INFO_LINKS,
-                )}
-              />
+              <FieldArray name={`${field}.info_links`}>
+                {(fieldArrayProps) =>
+                  InfoLinks({
+                    ...fieldArrayProps,
+                    formApi,
+                    buttonTitle: "Lisää lisätietolinkki",
+                    errors: { errors },
+                    noDataText: "Ei lisätietolinkkejä",
+                    title: "Lisätietolinkit",
+                    uiDataKey: getUiDataLeaseKey(
+                      LeaseAreaCustomDetailedPlanFieldPaths.INFO_LINKS,
+                    ),
+                  })
+                }
+              </FieldArray>
             </Authorization>
           </Column>
         </Row>
@@ -767,7 +784,4 @@ const CustomDetailedPlanEdit: React.FC<OwnProps> = ({ field, onRemove }) => {
   );
 };
 
-export default reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-})(CustomDetailedPlanEdit);
+export default CustomDetailedPlanEdit;

@@ -27,6 +27,7 @@ import {
 } from "@/util/helpers";
 import { getAttributes, getCollapseStateByKey } from "@/leases/selectors";
 import type { Attributes } from "types";
+import { useForm } from "react-final-form";
 
 type Props = {
   area: Record<string, any>;
@@ -68,6 +69,7 @@ const LeaseAreaWithArchiveInfo: React.FC<Props> = ({
   );
   const typeOptions = getFieldOptions(attributes, LeaseAreasFieldPaths.TYPE);
   const archived = Boolean(area.archived_at);
+
   return (
     <Collapse
       archived={archived}
