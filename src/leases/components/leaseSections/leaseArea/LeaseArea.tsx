@@ -97,6 +97,7 @@ const LeaseArea: React.FC<Props> = ({ area }: Props) => {
 
   const handleCollapseToggle = (key: string, val: boolean) => {
     const mode: string = isEditMode ? ViewModes.EDIT : ViewModes.READONLY;
+    if (JSON.stringify(area) === "{}") return;
     dispatch(
       receiveCollapseStates({
         [mode]: {
@@ -571,41 +572,4 @@ const LeaseArea: React.FC<Props> = ({ area }: Props) => {
 };
 
 const formName = FormNames.LEASE_AREAS;
-/*
-export default flowRight(
-  connect(
-    (state, props) => {
-      const id = get(props, "area.id");
-      const isEditMode = getIsEditMode(state);
-      return {
-        attributes: getAttributes(state),
-        isEditMode: isEditMode,
-        planUnitsContractCollapseState: getCollapseStateByKey(
-          state,
-          `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.plan_units_contract`,
-        ),
-        planUnitsCurrentCollapseState: getCollapseStateByKey(
-          state,
-          `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.plan_units_current`,
-        ),
-        plotsContractCollapseState: getCollapseStateByKey(
-          state,
-          `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.plots_contract`,
-        ),
-        plotsCurrentCollapseState: getCollapseStateByKey(
-          state,
-          `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.plots_current`,
-        ),
-        customDetailedPlanCollapseState: getCollapseStateByKey(
-          state,
-          `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${id}.custom_detailed_plan`,
-        ),
-      };
-    },
-    {
-      receiveCollapseStates,
-    },
-  ),
-)(LeaseArea) as React.ComponentType;
-*/
 export default LeaseArea;

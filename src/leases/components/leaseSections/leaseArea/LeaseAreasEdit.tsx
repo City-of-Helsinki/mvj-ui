@@ -1,13 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  FieldArray,
-  formValueSelector,
-  getFormValues,
-  initialize,
-  InjectedFormProps,
-  reduxForm,
-} from "redux-form";
+import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 
@@ -19,7 +12,7 @@ import Button from "@/components/button/Button";
 import Divider from "@/components/content/Divider";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
-import { copyAreasToContract, receiveFormValidFlags } from "@/leases/actions";
+import { copyAreasToContract } from "@/leases/actions";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { AreaLocation, LeaseAreasFieldPaths } from "@/leases/enums";
@@ -41,23 +34,32 @@ import {
   getCurrentLease,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import { store } from "@/index";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import { Form } from "react-final-form";
+import { FormApi } from "final-form";
+import type { Lease } from "@/leases/types";
+import { Attributes } from "@/types";
 
 type AreaItemProps = {
   fields: any;
   isActive: boolean;
+  areaItems: Record<string, any>[] | undefined;
   onArchive: (index: number, area: Record<string, any>) => void;
   onUnarchive: (index: number, area: Record<string, any>) => void;
-  usersPermissions: UsersPermissionsType;
+  formApi: FormApi;
 };
+
 const InnerLeaseAreas: React.FC<AreaItemProps> = ({
   fields,
   isActive,
+  areaItems,
   onArchive,
   onUnarchive,
-  usersPermissions,
+  formApi,
 }) => {
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
   const handleAdd = useCallback(() => {
     fields.push({
       addresses: [{}],
@@ -108,6 +110,7 @@ const InnerLeaseAreas: React.FC<AreaItemProps> = ({
 
               return (
                 <LeaseAreaWithArchiveInfoEdit
+                  formApi={formApi}
                   key={index}
                   field={area}
                   index={index}
@@ -140,49 +143,43 @@ const InnerLeaseAreas: React.FC<AreaItemProps> = ({
 };
 
 type Props = {
-  valid: boolean;
+  formApi: FormApi;
 };
 
-const formName = FormNames.LEASE_AREAS;
-const selector = formValueSelector(formName);
-const LeaseAreasEdit: React.FC<Props & InjectedFormProps> = ({
-  valid,
-  change,
-}) => {
+const ATTR_LEASE_AREAS_ACTIVE = "lease_areas_active";
+const ATTR_LEASE_AREAS_ARCHIVED = "lease_areas_archived";
+
+const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
   const dispatch = useDispatch();
 
-  const currentLease = useSelector(getCurrentLease);
-  const editedActiveAreas = useSelector((state) =>
-    selector(state, "lease_areas_active"),
-  );
-  const editedArchivedAreas = useSelector((state) =>
-    selector(state, "lease_areas_archived"),
-  );
-  const leaseAttributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const currentLease: Lease = useSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
 
-  const { areas, activeAreas, areasSum } = useMemo(() => {
+  const { areas, activeAreas, archivedAreas, areasSum } = useMemo(() => {
     if (!currentLease) {
       return {
         areas: [],
         activeAreas: [],
+        archivedAreas: [],
         areasSum: 0,
       };
     }
     const currentAreas = getContentLeaseAreas(currentLease);
     const currentlyActive = currentAreas.filter((area) => !area.archived_at);
+    const currentlyArchived = currentAreas.filter((area) => area.archived_at);
     const sum = calculateAreasSum(currentlyActive);
 
     return {
       areas: currentAreas,
       activeAreas: currentlyActive,
+      archivedAreas: currentlyArchived,
       areasSum: sum,
     };
   }, [currentLease]);
 
   useEffect(() => {
-    const formValues = getFormValues(formName)(store.getState()) as any;
-
     const addContractItemsToArea = (area: Record<string, any>) => {
       const savedArea = getLeaseAreaById(currentLease, area.id);
 
@@ -197,28 +194,28 @@ const LeaseAreasEdit: React.FC<Props & InjectedFormProps> = ({
       return { ...area, plan_units_contract: [], plots_contract: [] };
     };
 
-    if (formValues?.lease_areas_active) {
-      dispatch(
-        change(
-          "lease_areas_active",
-          formValues.lease_areas_active.map((area) =>
+    if (formApi.getFieldState(ATTR_LEASE_AREAS_ACTIVE)?.value) {
+      formApi.change(
+        ATTR_LEASE_AREAS_ACTIVE,
+        formApi
+          .getState()
+          .values.lease_areas_active.map((area) =>
             addContractItemsToArea(area),
           ),
-        ),
       );
     }
 
-    if (formValues?.lease_areas_archived) {
-      dispatch(
-        change(
-          "lease_areas_archived",
-          formValues.lease_areas_archived.map((area) =>
+    if (formApi.getFieldState(ATTR_LEASE_AREAS_ARCHIVED)?.value) {
+      formApi.change(
+        ATTR_LEASE_AREAS_ARCHIVED,
+        formApi
+          .getState()
+          .values.lease_areas_archived.map((area) =>
             addContractItemsToArea(area),
           ),
-        ),
       );
     }
-  }, [currentLease, change, dispatch]);
+  }, [currentLease, formApi]);
 
   const [areaToArchive, setAreaToArchive] = useState<Record<
     string,
@@ -235,9 +232,8 @@ const LeaseAreasEdit: React.FC<Props & InjectedFormProps> = ({
       setAreaToArchive(area);
       setAreaIndexToArchive(index);
       setShowModal(true);
-      dispatch(initialize(FormNames.LEASE_ARCHIVE_AREA, {}));
     },
-    [dispatch],
+    [],
   );
 
   const hideArchiveAreaModal = useCallback(() => {
@@ -250,38 +246,40 @@ const LeaseAreasEdit: React.FC<Props & InjectedFormProps> = ({
     (archiveInfo: Record<string, any>) => {
       if (areaIndexToArchive === null || !areaToArchive) return;
 
+      const editedActiveAreas =
+        formApi.getState().values?.[ATTR_LEASE_AREAS_ACTIVE] || [];
+      const editedArchivedAreas =
+        formApi.getState().values?.[ATTR_LEASE_AREAS_ARCHIVED] || [];
+
       // Remove from active areas
       const newActiveAreas = editedActiveAreas.filter(
         (_, idx) => idx !== areaIndexToArchive,
       );
-      change("lease_areas_active", newActiveAreas);
+      formApi.change(ATTR_LEASE_AREAS_ACTIVE, newActiveAreas);
 
       // Add to archived areas
       const newArchivedItems = [
         ...editedArchivedAreas,
         { ...areaToArchive, ...archiveInfo },
       ];
-      change("lease_areas_archived", newArchivedItems);
-
+      formApi.change(ATTR_LEASE_AREAS_ARCHIVED, newArchivedItems);
       hideArchiveAreaModal();
     },
-    [
-      areaIndexToArchive,
-      areaToArchive,
-      editedActiveAreas,
-      editedArchivedAreas,
-      change,
-      hideArchiveAreaModal,
-    ],
+    [areaIndexToArchive, areaToArchive, formApi, hideArchiveAreaModal],
   );
 
   const handleUnarchiving = useCallback(
     (index: number, item: Record<string, any>) => {
+      const editedActiveAreas =
+        formApi.getState().values?.[ATTR_LEASE_AREAS_ACTIVE] || [];
+      const editedArchivedAreas =
+        formApi.getState().values?.[ATTR_LEASE_AREAS_ARCHIVED] || [];
+
       // Remove from archived areas
       const newArchivedAreas = editedArchivedAreas.filter(
         (_, idx) => idx !== index,
       );
-      change("lease_areas_archived", newArchivedAreas);
+      formApi.change(ATTR_LEASE_AREAS_ARCHIVED, newArchivedAreas);
 
       // Add to active areas
       const newActiveItems = [
@@ -293,18 +291,10 @@ const LeaseAreasEdit: React.FC<Props & InjectedFormProps> = ({
           archived_decision: null,
         },
       ];
-      change("lease_areas_active", newActiveItems);
+      formApi.change(ATTR_LEASE_AREAS_ACTIVE, newActiveItems);
     },
-    [editedActiveAreas, editedArchivedAreas, change],
+    [formApi],
   );
-
-  useEffect(() => {
-    dispatch(
-      receiveFormValidFlags({
-        [formName]: valid,
-      }),
-    );
-  }, [valid, dispatch]);
 
   return (
     <AppConsumer>
@@ -342,84 +332,104 @@ const LeaseAreasEdit: React.FC<Props & InjectedFormProps> = ({
         };
 
         return (
-          <form>
-            <Authorization
-              allow={isFieldAllowedToEdit(
-                leaseAttributes,
-                LeaseAreasFieldPaths.ARCHIVED_AT,
-              )}
-            >
-              <ArchiveAreaModal
-                onArchive={handleArchive}
-                onCancel={hideArchiveAreaModal}
-                onClose={hideArchiveAreaModal}
-                open={showModal}
-                valid={valid}
-              />
-            </Authorization>
-
-            <Title
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(LeaseAreasFieldPaths.LEASE_AREAS)}
-            >
-              Vuokra-alue
-            </Title>
-            <WarningContainer
-              alignCenter
-              hideIcon
-              buttonComponent={
+          <Form
+            form={formApi}
+            onSubmit={formApi.submit}
+            initialValues={{
+              [ATTR_LEASE_AREAS_ACTIVE]: activeAreas,
+              [ATTR_LEASE_AREAS_ARCHIVED]: archivedAreas,
+            }}
+          >
+            {({ handleSubmit, form, submitting, pristine, valid }) => (
+              <form onSubmit={handleSubmit}>
                 <Authorization
-                  allow={hasPermissions(
-                    usersPermissions,
-                    UsersPermissions.ADD_LEASEAREA,
+                  allow={isFieldAllowedToEdit(
+                    leaseAttributes,
+                    LeaseAreasFieldPaths.ARCHIVED_AT,
                   )}
                 >
-                  <Button
-                    className={ButtonColors.NEUTRAL}
-                    onClick={handleCopyAreasToContract}
-                    text="Kopioi sopimukseen"
+                  <ArchiveAreaModal
+                    formApi={formApi}
+                    onArchive={handleArchive}
+                    onCancel={hideArchiveAreaModal}
+                    onClose={hideArchiveAreaModal}
+                    open={showModal}
+                    valid={valid}
                   />
                 </Authorization>
-              }
-            >
-              <Authorization
-                allow={isFieldAllowedToRead(
-                  leaseAttributes,
-                  LeaseAreasFieldPaths.AREA,
-                )}
-              >
-                <>
-                  Kokonaispinta-ala {formatNumber(areasSum) || "-"} m
-                  <sup>2</sup>
-                </>
-              </Authorization>
-            </WarningContainer>
-            <Divider />
 
-            <FieldArray
-              component={InnerLeaseAreas}
-              isActive={true}
-              name="lease_areas_active"
-              onArchive={showArchiveAreaModal}
-              usersPermissions={usersPermissions}
-            />
+                <Title
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(
+                    LeaseAreasFieldPaths.LEASE_AREAS,
+                  )}
+                >
+                  Vuokra-alue
+                </Title>
+                <WarningContainer
+                  alignCenter
+                  hideIcon
+                  buttonComponent={
+                    <Authorization
+                      allow={hasPermissions(
+                        usersPermissions,
+                        UsersPermissions.ADD_LEASEAREA,
+                      )}
+                    >
+                      <Button
+                        className={ButtonColors.NEUTRAL}
+                        onClick={handleCopyAreasToContract}
+                        text="Kopioi sopimukseen"
+                      />
+                    </Authorization>
+                  }
+                >
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseAreasFieldPaths.AREA,
+                    )}
+                  >
+                    <>
+                      Kokonaispinta-ala {formatNumber(areasSum) || "-"} m
+                      <sup>2</sup>
+                    </>
+                  </Authorization>
+                </WarningContainer>
+                <Divider />
 
-            {/* Archived lease areas */}
-            <FieldArray
-              component={InnerLeaseAreas}
-              isActive={false}
-              name="lease_areas_archived"
-              onUnarchive={handleUnarchive}
-              usersPermissions={usersPermissions}
-            />
-          </form>
+                <FieldArray name={ATTR_LEASE_AREAS_ACTIVE}>
+                  {(fieldArrayProps) =>
+                    InnerLeaseAreas({
+                      ...fieldArrayProps,
+                      formApi: formApi,
+                      isActive: true,
+                      areaItems: activeAreas,
+                      onArchive: showArchiveAreaModal,
+                      onUnarchive: handleUnarchive,
+                    })
+                  }
+                </FieldArray>
+
+                <FieldArray name={ATTR_LEASE_AREAS_ARCHIVED}>
+                  {(fieldArrayProps) =>
+                    InnerLeaseAreas({
+                      ...fieldArrayProps,
+                      formApi: formApi,
+                      isActive: false,
+                      areaItems: archivedAreas,
+                      onArchive: showArchiveAreaModal,
+                      onUnarchive: handleUnarchive,
+                    })
+                  }
+                </FieldArray>
+              </form>
+            )}
+          </Form>
         );
       }}
     </AppConsumer>
   );
 };
 
-export default reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-})(LeaseAreasEdit);
+export default LeaseAreasEdit;

@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { Link, useLocation } from "react-router-dom";
 import isEmpty from "lodash/isEmpty";
@@ -7,7 +7,7 @@ import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import KtjLink from "@/components/ktj/KtjLink";
 import RemoveButton from "@/components/form/RemoveButton";
 import SubTitle from "@/components/content/SubTitle";
@@ -29,8 +29,10 @@ import { getAttributes, getIsSaveClicked } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import { FormApi } from "final-form";
 
 type Props = {
+  formApi: FormApi;
   field: string;
   geometry: Record<string, any> | null | undefined;
   onRemove: (...args: Array<any>) => any;
@@ -39,6 +41,7 @@ type Props = {
 };
 
 const PlotItemsEdit: React.FC<Props> = ({
+  formApi,
   field,
   geometry,
   onRemove,
@@ -91,7 +94,7 @@ const PlotItemsEdit: React.FC<Props> = ({
                 LeasePlotsFieldPaths.IDENTIFIER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -113,7 +116,7 @@ const PlotItemsEdit: React.FC<Props> = ({
                 LeasePlotsFieldPaths.TYPE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -150,7 +153,7 @@ const PlotItemsEdit: React.FC<Props> = ({
                 LeasePlotsFieldPaths.AREA,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -176,7 +179,7 @@ const PlotItemsEdit: React.FC<Props> = ({
                 LeasePlotsFieldPaths.SECTION_AREA,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -202,7 +205,7 @@ const PlotItemsEdit: React.FC<Props> = ({
                 LeasePlotsFieldPaths.REGISTRATION_DATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -226,7 +229,7 @@ const PlotItemsEdit: React.FC<Props> = ({
                 LeasePlotsFieldPaths.REPEAL_DATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,

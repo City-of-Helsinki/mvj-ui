@@ -1,14 +1,11 @@
 import React, { ReactElement, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
 import Collapse from "@/components/collapse/Collapse";
 import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle";
 import Divider from "@/components/content/Divider";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import LeaseArea from "./LeaseArea";
@@ -48,8 +45,11 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import type { FormApi } from "final-form";
+import { useField } from "react-final-form";
 
-type OwnProps = {
+type Props = {
+  formApi: FormApi;
   field: string;
   index: number;
   isActive: boolean;
@@ -59,20 +59,24 @@ type OwnProps = {
 };
 
 const LeaseAreaWithArchiveInfoEdit = ({
+  formApi,
   field,
   index,
   isActive,
   onArchive,
   onRemove,
   onUnarchive,
-}: OwnProps): ReactElement => {
+}: Props): ReactElement => {
   const dispatch = useDispatch();
-  const selector = formValueSelector(FormNames.LEASE_AREAS);
 
-  const areaId = useSelector((state) => selector(state, `${field}.id`));
-  const archivedAt = useSelector((state) =>
-    selector(state, `${field}.archived_at`),
-  );
+  const {
+    input: { value: areaValue = {} },
+  } = useField(field, { subscription: { value: true } });
+
+  const areaId = areaValue?.id;
+  const archivedAt = areaValue?.archived_at;
+  const editedArea = areaValue;
+
   const areaCollapseState = useSelector((state) =>
     getCollapseStateByKey(
       state,
@@ -82,8 +86,9 @@ const LeaseAreaWithArchiveInfoEdit = ({
 
   const attributes: Attributes = useSelector(getAttributes);
   const currentLease: Lease = useSelector(getCurrentLease);
-  const editedArea = useSelector((state) => selector(state, field));
-  const errors = useSelector((state) => getErrorsByFormName(state, formName));
+  const errors = useSelector((state) =>
+    getErrorsByFormName(state, FormNames.LEASE_AREAS),
+  );
   const isSaveClicked: boolean = useSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
     useSelector(getUsersPermissions);
@@ -128,14 +133,15 @@ const LeaseAreaWithArchiveInfoEdit = ({
     };
   }, [areaId, currentLease]);
 
-  const areaErrors = errors?.[field];
+  const areaErrors = errors?.["lease_areas_active"];
+
   return (
     <Collapse
       archived={archived}
       defaultOpen={
         areaCollapseState !== undefined ? areaCollapseState : !archived
       }
-      hasErrors={isSaveClicked && !isEmpty(areaErrors)}
+      hasErrors={isSaveClicked && JSON.stringify(areaErrors) !== "{}"}
       headerSubtitles={
         savedArea && (
           <>
@@ -159,7 +165,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
                 )}
               >
                 <CollapseHeaderSubtitle>
-                  {getFullAddress(get(savedArea, "addresses[0]")) || "-"}
+                  {getFullAddress(savedArea?.addresses?.[0]) || "-"}
                 </CollapseHeaderSubtitle>
               </Authorization>
             </Column>
@@ -223,6 +229,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
     >
       {isActive && (
         <LeaseAreaEdit
+          formApi={formApi}
           field={field}
           index={index}
           areaId={areaId}
@@ -260,7 +267,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
                 LeaseAreasFieldPaths.ARCHIVED_DECISION,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -285,7 +292,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
                 LeaseAreasFieldPaths.ARCHIVED_NOTE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,

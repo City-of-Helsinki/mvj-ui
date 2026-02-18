@@ -2,13 +2,12 @@ import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { Link, useLocation } from "react-router-dom";
-import { formValueSelector, change, reduxForm } from "redux-form";
 import isEmpty from "lodash/isEmpty";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import RemoveButton from "@/components/form/RemoveButton";
 import { FormNames } from "@/enums";
 import {
@@ -28,13 +27,19 @@ import { getAttributes, getIsSaveClicked } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import { FormApi } from "final-form";
 
 type Props = {
+  formApi: FormApi;
   field: string;
   onRemove: (...args: Array<any>) => any;
 };
 
-const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
+const PlanUnitItemEdit: React.FC<Props> = ({
+  formApi,
+  field,
+  onRemove,
+}: Props) => {
   const dispatch = useDispatch();
 
   const attributes: Attributes = useSelector(getAttributes);
@@ -43,45 +48,39 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
     useSelector(getUsersPermissions);
   const location = useLocation();
 
-  const geometry = useSelector((state) => selector(state, `${field}.geometry`));
-  const id = useSelector((state) => selector(state, `${field}.id`));
-  const identifier = useSelector((state) =>
-    selector(state, `${field}.identifier`),
-  );
-  const area = useSelector((state) => selector(state, `${field}.area`));
-  const section_area = useSelector((state) =>
-    selector(state, `${field}.section_area`),
-  );
-  const detailed_plan_identifier = useSelector((state) =>
-    selector(state, `${field}.detailed_plan_identifier`),
-  );
-  const detailed_plan_latest_processing_date = useSelector((state) =>
-    selector(state, `${field}.detailed_plan_latest_processing_date`),
-  );
-  const detailed_plan_latest_processing_date_note = useSelector((state) =>
-    selector(state, `${field}.detailed_plan_latest_processing_date_note`),
-  );
-  const plot_division_identifier = useSelector((state) =>
-    selector(state, `${field}.plot_division_identifier`),
-  );
-  const plot_division_state = useSelector((state) =>
-    selector(state, `${field}.plot_division_state`),
-  );
-  const plot_division_effective_date = useSelector((state) =>
-    selector(state, `${field}.plot_division_effective_date`),
-  );
-  const plan_unit_type = useSelector((state) =>
-    selector(state, `${field}.plan_unit_type`),
-  );
-  const plan_unit_state = useSelector((state) =>
-    selector(state, `${field}.plan_unit_state`),
-  );
-  const plan_unit_intended_use = useSelector((state) =>
-    selector(state, `${field}.plan_unit_intended_use`),
-  );
-  const is_master = useSelector((state) =>
-    selector(state, `${field}.is_master`),
-  );
+  const geometry = formApi.getFieldState(`${field}.geometry`)?.value;
+  const id = formApi.getFieldState(`${field}.id`)?.value;
+  const identifier = formApi.getFieldState(`${field}.identifier`)?.value;
+  const area = formApi.getFieldState(`${field}.area`)?.value;
+  const section_area = formApi.getFieldState(`${field}.section_area`)?.value;
+  const detailed_plan_identifier = formApi.getFieldState(
+    `${field}.detailed_plan_identifier`,
+  )?.value;
+  const detailed_plan_latest_processing_date = formApi.getFieldState(
+    `${field}.detailed_plan_latest_processing_date`,
+  )?.value;
+  const detailed_plan_latest_processing_date_note = formApi.getFieldState(
+    `${field}.detailed_plan_latest_processing_date_note`,
+  )?.value;
+  const plot_division_identifier = formApi.getFieldState(
+    `${field}.plot_division_identifier`,
+  )?.value;
+  const plot_division_state = formApi.getFieldState(
+    `${field}.plot_division_state`,
+  )?.value;
+  const plot_division_effective_date = formApi.getFieldState(
+    `${field}.plot_division_effective_date`,
+  )?.value;
+  const plan_unit_type = formApi.getFieldState(
+    `${field}.plan_unit_type`,
+  )?.value;
+  const plan_unit_state = formApi.getFieldState(
+    `${field}.plan_unit_state`,
+  )?.value;
+  const plan_unit_intended_use = formApi.getFieldState(
+    `${field}.plan_unit_intended_use`,
+  )?.value;
+  const is_master = formApi.getFieldState(`${field}.is_master`)?.value;
 
   const initialValuesRef = useRef({
     identifier,
@@ -120,7 +119,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
       initialValues.plan_unit_state != plan_unit_state ||
       initialValues.plan_unit_intended_use != plan_unit_intended_use;
 
-    dispatch(change(FormNames.LEASE_AREAS, `${field}.is_master`, hasChanged));
+    formApi.change(`${field}.is_master`, hasChanged);
   }, [
     identifier,
     area,
@@ -135,8 +134,9 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
     plan_unit_state,
     plan_unit_intended_use,
     is_master,
-    dispatch,
+    formApi,
     field,
+    dispatch,
   ]);
 
   const getMapLinkUrl = () => {
@@ -170,7 +170,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.IDENTIFIER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -194,7 +194,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.IS_MASTER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -236,7 +236,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.AREA,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -262,7 +262,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.SECTION_AREA,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -292,7 +292,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.DETAILED_PLAN_IDENTIFIER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -316,7 +316,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -343,7 +343,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.DETAILED_PLAN_LATEST_PROCESSING_DATE_NOTE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -370,7 +370,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.PLOT_DIVISION_IDENTIFIER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -394,7 +394,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -418,7 +418,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.PLOT_DIVISION_EFFECTIVE_DATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -444,7 +444,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -468,7 +468,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -492,7 +492,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
                 LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -516,10 +516,4 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }: Props) => {
 };
 
 const formName = FormNames.LEASE_AREAS;
-const selector = formValueSelector(formName);
-
-export default reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-  change,
-})(PlanUnitItemEdit);
+export default PlanUnitItemEdit;

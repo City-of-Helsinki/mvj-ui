@@ -1,19 +1,8 @@
 import React, { ReactElement } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import {
-  change,
-  FieldArray,
-  formValueSelector,
-  InjectedFormProps,
-} from "redux-form";
-import {
-  withRouterLegacy,
-  type WithRouterProps,
-} from "@/root/withRouterLegacy";
+
 import { Link, useLocation } from "react-router-dom";
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import AddButtonThird from "@/components/form/AddButtonThird";
@@ -22,7 +11,6 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import Collapse from "@/components/collapse/Collapse";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import PlanUnitItemEdit from "./PlanUnitItemEdit";
@@ -67,36 +55,42 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import CustomDetailedPlanEdit from "./CustomDetailedPlanEdit";
+import FormField from "@/components/form/final-form/FormField";
+import { FieldArray } from "react-final-form-arrays";
+import { useField } from "react-final-form";
+import { FormApi } from "final-form";
+
 type PlanUnitsProps = {
-  attributes: Attributes;
+  formApi: FormApi;
   buttonTitle: string;
   collapseState: boolean;
   errors: Record<string, any>;
   fields: any;
-  isSaveClicked: boolean;
   noDataText: string;
   onCollapseToggle: (...args: Array<any>) => any;
   title: string;
   uiDataKey: string;
-  usersPermissions: UsersPermissionsType;
 };
 
 const formName = FormNames.LEASE_AREAS;
 
 const PlanUnits = ({
-  attributes,
+  formApi,
   buttonTitle,
   collapseState,
   errors,
   fields,
   fields: { name },
-  isSaveClicked,
   noDataText,
   onCollapseToggle,
   title,
   uiDataKey,
-  usersPermissions,
 }: PlanUnitsProps): ReactElement => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
   const handleAdd = () => {
     fields.push({
       addresses: [{}],
@@ -107,7 +101,7 @@ const PlanUnits = ({
     onCollapseToggle(val);
   };
 
-  const planUnitErrors = get(errors, name);
+  const planUnitErrors = errors?.[name];
   return (
     <AppConsumer>
       {({ dispatch: appDispatch }) => {
@@ -115,7 +109,7 @@ const PlanUnits = ({
           <Collapse
             className="collapse__secondary"
             defaultOpen={collapseState !== undefined ? collapseState : true}
-            hasErrors={isSaveClicked && !isEmpty(planUnitErrors)}
+            hasErrors={isSaveClicked && JSON.stringify(planUnitErrors) !== "{}"}
             headerTitle={title}
             onToggle={handleCollapseToggle}
             enableUiDataEdit
@@ -148,9 +142,9 @@ const PlanUnits = ({
 
                   return (
                     <PlanUnitItemEdit
+                      formApi={formApi}
                       key={index}
                       field={planunit}
-                      isSaveClicked={isSaveClicked}
                       onRemove={handleRemove}
                     />
                   );
@@ -182,34 +176,30 @@ const PlanUnits = ({
 };
 
 type PlotsProps = {
-  attributes: Attributes;
+  formApi: FormApi;
   buttonTitle: string;
   collapseState: boolean;
-  errors: Record<string, any> | null | undefined;
+  errors: Record<string, any> | undefined;
   fields: any;
-  isSaveClicked: boolean;
   noDataText: string;
   onCollapseToggle: (...args: Array<any>) => any;
   plotsData: Array<Record<string, any>>;
   title: string;
   uiDataKey: string;
-  usersPermissions: UsersPermissionsType;
 };
 
 const Plots = ({
-  attributes,
+  formApi,
   buttonTitle,
   collapseState,
   errors,
   fields,
   fields: { name },
-  isSaveClicked,
   noDataText,
   onCollapseToggle,
   plotsData,
   title,
   uiDataKey,
-  usersPermissions,
 }: PlotsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({
@@ -217,11 +207,16 @@ const Plots = ({
     });
   };
 
+  const attributes: Attributes = useSelector(getAttributes);
+  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
   const handleCollapseToggle = (val: boolean) => {
     onCollapseToggle(val);
   };
 
-  const plotErrors = get(errors, name);
+  const plotErrors = errors?.[name];
   return (
     <AppConsumer>
       {({ dispatch: appDispatch }) => {
@@ -229,7 +224,7 @@ const Plots = ({
           <Collapse
             className="collapse__secondary"
             defaultOpen={collapseState !== undefined ? collapseState : true}
-            hasErrors={isSaveClicked && !isEmpty(plotErrors)}
+            hasErrors={isSaveClicked && plotErrors && plotErrors.length > 0}
             headerTitle={title}
             onToggle={handleCollapseToggle}
             enableUiDataEdit
@@ -259,11 +254,11 @@ const Plots = ({
 
                   return (
                     <PlotItemEdit
+                      formApi={formApi}
                       key={index}
                       field={plot}
                       plotId={plot.id}
                       geometry={plot.geometry}
-                      //index={index}
                       onRemove={handleDelete}
                       plotsData={plotsData}
                     />
@@ -296,25 +291,20 @@ const Plots = ({
 };
 
 type AddressProps = {
-  attributes: Attributes;
-  change: (...args: Array<any>) => any;
+  formApi: FormApi;
   field: string;
-  isSaveClicked: boolean;
   onRemove: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
 };
 
-const Address = ({
-  attributes,
-  change,
-  field,
-  isSaveClicked,
-  onRemove,
-  usersPermissions,
-}: AddressProps) => {
+const Address = ({ formApi, field, onRemove }: AddressProps) => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
   const handleAddressChange = (details: Record<string, any>) => {
-    change(formName, `${field}.postal_code`, details.postalCode);
-    change(formName, `${field}.city`, details.city);
+    formApi.change(`${field}.postal_code`, details.postalCode);
+    formApi.change(`${field}.city`, details.city);
   };
 
   return (
@@ -326,7 +316,7 @@ const Address = ({
             LeaseAreaAddressesFieldPaths.ADDRESS,
           )}
         >
-          <FormFieldLegacy
+          <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               attributes,
@@ -349,7 +339,7 @@ const Address = ({
             LeaseAreaAddressesFieldPaths.POSTAL_CODE,
           )}
         >
-          <FormFieldLegacy
+          <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               attributes,
@@ -370,7 +360,7 @@ const Address = ({
             LeaseAreaAddressesFieldPaths.CITY,
           )}
         >
-          <FormFieldLegacy
+          <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               attributes,
@@ -393,7 +383,7 @@ const Address = ({
                 LeaseAreaAddressesFieldPaths.IS_PRIMARY,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -428,20 +418,15 @@ const Address = ({
 };
 
 type AddressesProps = {
-  attributes: Attributes;
-  change: (...args: Array<any>) => any;
+  formApi: FormApi;
   fields: any;
-  isSaveClicked: boolean;
-  usersPermissions: UsersPermissionsType;
 };
 
-const AddressItems = ({
-  attributes,
-  change,
-  fields,
-  isSaveClicked,
-  usersPermissions,
-}: AddressesProps): ReactElement => {
+const AddressItems = ({ formApi, fields }: AddressesProps): ReactElement => {
+  const attributes: Attributes = useSelector(getAttributes);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
   const handleAdd = () => {
     fields.push({});
   };
@@ -568,13 +553,10 @@ const AddressItems = ({
 
                 return (
                   <Address
+                    formApi={formApi}
                     key={index}
-                    attributes={attributes}
-                    change={change}
                     field={field}
-                    isSaveClicked={isSaveClicked}
                     onRemove={handleRemove}
-                    usersPermissions={usersPermissions}
                   />
                 );
               })}
@@ -598,33 +580,37 @@ const AddressItems = ({
   );
 };
 
-type OwnProps = {
+type Props = {
+  formApi: FormApi;
   field: string;
   index: number;
   savedArea: Record<string, any>;
-};
-type Props = OwnProps & {
   areaId: number;
 };
 
-const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
+const LeaseAreaEdit: React.FC<Props> = ({
+  formApi,
   areaId,
+  index,
   field,
   savedArea,
 }) => {
   const dispatch = useDispatch();
 
-  const selector = formValueSelector(formName);
   const attributes = useSelector(getAttributes);
   const isSaveClicked = useSelector(getIsSaveClicked);
   const usersPermissions = useSelector(getUsersPermissions);
   const errors = useSelector((state) => getErrorsByFormName(state, formName));
   const location = useLocation();
 
-  const geometry = useSelector((state) => selector(state, `${field}.geometry`));
-  const custom_detailed_plan = useSelector((state) =>
-    selector(state, `${field}.custom_detailed_plan`),
-  );
+  const geometry = savedArea?.geometry;
+
+  const {
+    input: { value: custom_detailed_plan },
+  } = useField(`${field}.custom_detailed_plan`, {
+    subscription: { value: true },
+  });
+
   const planUnitsContractCollapseState = useSelector((state) =>
     getCollapseStateByKey(
       state,
@@ -687,6 +673,7 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
   const handlePlotsCurrentCollapseToggle = (val: boolean) => {
     handleCollapseToggle("plots_current", val);
   };
+
   const getMapLinkUrl = () => {
     const { pathname, search } = location;
     const searchQuery = getUrlParams(search);
@@ -709,7 +696,7 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
                 LeaseAreasFieldPaths.IDENTIFIER,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -731,7 +718,7 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
                 LeaseAreasFieldPaths.TYPE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -753,7 +740,7 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
                 LeaseAreasFieldPaths.AREA,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -779,7 +766,7 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
                 LeaseAreasFieldPaths.LOCATION,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   attributes,
@@ -801,7 +788,7 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
                 LeaseAreasFieldPaths.GEOMETRY,
               )}
             >
-              {!isEmpty(geometry) ? (
+              {JSON.stringify(geometry) !== "{}" ? (
                 <Link to={mapLinkUrl}>{LeaseAreasFieldTitles.GEOMETRY}</Link>
               ) : null}
             </Authorization>
@@ -813,14 +800,11 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
             LeaseAreaAddressesFieldPaths.ADDRESSES,
           )}
         >
-          <FieldArray
-            attributes={attributes}
-            change={change}
-            component={AddressItems}
-            isSaveClicked={isSaveClicked}
-            name={`${field}.addresses`}
-            usersPermissions={usersPermissions}
-          />
+          <FieldArray name={`${field}.addresses`}>
+            {(fieldArrayProps) => (
+              <AddressItems {...fieldArrayProps} formApi={formApi} />
+            )}
+          </FieldArray>
         </Authorization>
       </BoxContentWrapper>
 
@@ -829,38 +813,42 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
       >
         <Row>
           <Column small={12} large={6}>
-            <FieldArray
-              attributes={attributes}
-              buttonTitle="Lisää kiinteistö/määräala"
-              collapseState={plotsContractCollapseState}
-              component={Plots}
-              errors={errors}
-              isSaveClicked={isSaveClicked}
-              name={`${field}.plots_contract`}
-              noDataText="Ei kiinteistöjä/määräaloja sopimuksessa"
-              onCollapseToggle={handlePlotsContractCollapseToggle}
-              plotsData={get(savedArea, "plots_contract", [])}
-              title="Kiinteistöt / määräalat sopimuksessa"
-              uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS_CONTRACT)}
-              usersPermissions={usersPermissions}
-            />
+            <FieldArray name={`${field}.plots_contract`}>
+              {(fieldArrayProps) =>
+                Plots({
+                  ...fieldArrayProps,
+                  formApi,
+                  buttonTitle: "Lisää kiinteistö/määräala",
+                  collapseState: plotsContractCollapseState,
+                  errors: { errors },
+                  noDataText: "Ei kiinteistöjä/määräaloja sopimuksessa",
+                  onCollapseToggle: handlePlotsContractCollapseToggle,
+                  plotsData: savedArea ? savedArea["plots_contract"] : [],
+                  title: "Kiinteistöt / määräalat sopimuksessa",
+                  uiDataKey: getUiDataLeaseKey(
+                    LeasePlotsFieldPaths.PLOTS_CONTRACT,
+                  ),
+                })
+              }
+            </FieldArray>
           </Column>
           <Column small={12} large={6}>
-            <FieldArray
-              attributes={attributes}
-              buttonTitle="Lisää kiinteistö/määräala"
-              collapseState={plotsCurrentCollapseState}
-              component={Plots}
-              errors={errors}
-              isSaveClicked={isSaveClicked}
-              name={`${field}.plots_current`}
-              noDataText="Ei kiinteistöjä/määräaloja nykyhetkellä"
-              onCollapseToggle={handlePlotsCurrentCollapseToggle}
-              plotsData={get(savedArea, "plots_current", [])}
-              title="Kiinteistöt / määräalat nykyhetkellä"
-              uiDataKey={getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS)}
-              usersPermissions={usersPermissions}
-            />
+            <FieldArray name={`${field}.plots_current`}>
+              {(fieldArrayProps) =>
+                Plots({
+                  ...fieldArrayProps,
+                  formApi,
+                  buttonTitle: "Lisää kiinteistö/määräala",
+                  collapseState: plotsCurrentCollapseState,
+                  errors: { errors },
+                  noDataText: "Ei kiinteistöjä/määräaloja nykyhetkellä",
+                  onCollapseToggle: handlePlotsCurrentCollapseToggle,
+                  plotsData: savedArea ? savedArea["plots_current"] : [],
+                  title: "Kiinteistöt / määräalat nykyhetkellä",
+                  uiDataKey: getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS),
+                })
+              }
+            </FieldArray>
           </Column>
         </Row>
       </Authorization>
@@ -873,54 +861,60 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
       >
         <Row>
           <Column small={12} large={6}>
-            <FieldArray
-              attributes={attributes}
-              buttonTitle="Lisää kaavayksikkö"
-              collapseState={planUnitsContractCollapseState}
-              component={PlanUnits}
-              errors={errors}
-              isSaveClicked={isSaveClicked}
-              name={`${field}.plan_units_contract`}
-              noDataText="Ei kaavayksiköitä sopimuksessa"
-              onCollapseToggle={handlePlanUnitContractCollapseToggle}
-              title="Kaavayksiköt sopimuksessa"
-              uiDataKey={getUiDataLeaseKey(
-                LeasePlanUnitsFieldPaths.PLAN_UNITS_CONTRACT,
-              )}
-              usersPermissions={usersPermissions}
-            />
+            <FieldArray name={`${field}.plan_units_contract`}>
+              {(fieldArrayProps) =>
+                PlanUnits({
+                  ...fieldArrayProps,
+                  formApi,
+                  buttonTitle: "Lisää kaavayksikkö",
+                  collapseState: planUnitsContractCollapseState,
+                  errors: { errors },
+                  noDataText: "Ei kaavayksiköitä sopimuksessa",
+                  onCollapseToggle: handlePlanUnitContractCollapseToggle,
+                  title: "Kaavayksiköt sopimuksessa",
+                  uiDataKey: getUiDataLeaseKey(
+                    LeasePlanUnitsFieldPaths.PLAN_UNITS_CONTRACT,
+                  ),
+                })
+              }
+            </FieldArray>
           </Column>
           <Column small={12} large={6}>
-            <FieldArray
-              attributes={attributes}
-              buttonTitle="Lisää kaavayksikkö"
-              collapseState={planUnitsCurrentCollapseState}
-              component={PlanUnits}
-              errors={errors}
-              isSaveClicked={isSaveClicked}
-              name={`${field}.plan_units_current`}
-              noDataText="Ei kaavayksiköitä nykyhetkellä"
-              onCollapseToggle={handlePlanUnitCurrentCollapseToggle}
-              title="Kaavayksiköt nykyhetkellä"
-              uiDataKey={getUiDataLeaseKey(LeasePlanUnitsFieldPaths.PLAN_UNITS)}
-              usersPermissions={usersPermissions}
-            />
+            <FieldArray name={`${field}.plan_units_current`}>
+              {(fieldArrayProps) =>
+                PlanUnits({
+                  ...fieldArrayProps,
+                  formApi,
+                  buttonTitle: "Lisää kaavayksikkö",
+                  collapseState: planUnitsCurrentCollapseState,
+                  errors: { errors },
+                  noDataText: "Ei kaavayksiköitä nykyhetkellä",
+                  onCollapseToggle: handlePlanUnitCurrentCollapseToggle,
+                  title: "Kaavayksiköt nykyhetkellä",
+                  uiDataKey: getUiDataLeaseKey(
+                    LeasePlanUnitsFieldPaths.PLAN_UNITS,
+                  ),
+                })
+              }
+            </FieldArray>
           </Column>
           <Column small={0} large={6} /> {/* Force next column to right */}
           <Column small={12} large={6}>
-            <FieldArray
-              attributes={attributes}
-              buttonTitle="Vireillä olevat kaavayksiköt"
-              collapseState={planUnitsCurrentCollapseState}
-              component={PlanUnits}
-              errors={errors}
-              isSaveClicked={isSaveClicked}
-              name={`${field}.plan_units_pending`}
-              noDataText="Ei vireillä olevia kaavayksiköitä"
-              onCollapseToggle={handlePlanUnitCurrentCollapseToggle}
-              title="Vireillä olevat kaavayksiköt"
-              usersPermissions={usersPermissions}
-            />
+            <FieldArray name={`${field}.plan_units_pending`}>
+              {(fieldArrayProps) =>
+                PlanUnits({
+                  ...fieldArrayProps,
+                  formApi,
+                  buttonTitle: "Vireillä olevat kaavayksiköt",
+                  collapseState: planUnitsCurrentCollapseState,
+                  errors: { errors },
+                  noDataText: "Ei vireillä olevia kaavayksiköitä",
+                  onCollapseToggle: handlePlanUnitCurrentCollapseToggle,
+                  title: "Vireillä olevat kaavayksiköt",
+                  uiDataKey: null, // No uiDataKey
+                })
+              }
+            </FieldArray>
           </Column>
         </Row>
       </Authorization>
@@ -941,7 +935,8 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
                   : true
               }
               hasErrors={
-                isSaveClicked && !isEmpty(customDetailedPlanCollapseState)
+                isSaveClicked &&
+                JSON.stringify(customDetailedPlanCollapseState) !== "{}"
               }
               headerTitle={"Oma muu alue"}
               onToggle={(val) => handleCustomDetailedPlanCollapseToggle(val)}
@@ -953,11 +948,10 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
               {custom_detailed_plan && (
                 <BoxItemContainer>
                   <CustomDetailedPlanEdit
+                    formApi={formApi}
                     field={`${field}.custom_detailed_plan`}
                     onRemove={() =>
-                      dispatch(
-                        change(formName, `${field}.custom_detailed_plan`, null),
-                      )
+                      formApi.change(`${field}.custom_detailed_plan`, null)
                     }
                   />
                 </BoxItemContainer>
@@ -976,9 +970,7 @@ const LeaseAreaEdit: React.FC<Props & WithRouterProps> = ({
                       className={"no-top-margin"}
                       label={"Lisää oma muu alue"}
                       onClick={() =>
-                        dispatch(
-                          change(formName, `${field}.custom_detailed_plan`, {}),
-                        )
+                        formApi.change(`${field}.custom_detailed_plan`, {})
                       }
                     />
                   </Column>
