@@ -28,7 +28,7 @@ export interface MockLandUseData {
   asemakaavanDiaarinumero: string;
   party: string;
   zoningPlanNumber: string;
-  target: string;
+  site: string;
   projectArea: string;
   negotiationPhase: string;
 }
@@ -68,7 +68,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     asemakaavanDiaarinumero: "HEL 2024-012345",
     party: "Helsingin kaupunki",
     zoningPlanNumber: "12345",
-    target: "Kalasatama",
+    site: "Kalasatama",
     projectArea: "Kalasatama",
     negotiationPhase: "Vireillä",
   },
@@ -107,7 +107,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     asemakaavanDiaarinumero: "HEL 2023-009876",
     party: "ABC Oy",
     zoningPlanNumber: "11987",
-    target: "Jätkäsaari",
+    site: "Jätkäsaari",
     projectArea: "Jätkäsaari",
     negotiationPhase: "Neuvotteilla",
   },
@@ -142,7 +142,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     asemakaavanDiaarinumero: "HEL 2022-015678",
     party: "123 Oy",
     zoningPlanNumber: "13456",
-    target: "Östersundom",
+    site: "Östersundom",
     projectArea: "Östersundom",
     negotiationPhase: "Päätös",
   },
@@ -171,7 +171,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     asemakaavanDiaarinumero: "",
     party: "Rakennusliike 1 Oy",
     zoningPlanNumber: "1020",
-    target: "Pasila",
+    site: "Pasila",
     projectArea: "Keski-Pasila",
     negotiationPhase: "Vireillä",
   },
@@ -200,7 +200,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     asemakaavanDiaarinumero: "",
     party: "Rakennusyhtymä X",
     zoningPlanNumber: "10567",
-    target: "Kruunuvuorenranta",
+    site: "Kruunuvuorenranta",
     projectArea: "Kruunuvuorenranta",
     negotiationPhase: "Neuvotteilla",
   },
@@ -229,7 +229,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     asemakaavanDiaarinumero: "",
     party: "Suomi Oy Ab",
     zoningPlanNumber: "9876",
-    target: "Kuninkaantammi",
+    site: "Kuninkaantammi",
     projectArea: "Kuninkaantammi",
     negotiationPhase: "Päätös",
   },
@@ -258,7 +258,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     asemakaavanDiaarinumero: "",
     party: "Hotel Kilo India Oy",
     zoningPlanNumber: "8765",
-    target: "Honkasuo",
+    site: "Honkasuo",
     projectArea: "Honkasuo",
     negotiationPhase: "Neuvotteilla",
   },
@@ -269,7 +269,7 @@ export const mockLandUseList = Object.values(mockLandUseStore).map((item) => ({
   identifier: item.identifier,
   party: item.party,
   zoningPlanNumber: item.zoningPlanNumber,
-  target: item.kohteet[0]?.edistamisalue ?? "",
+  site: item.kohteet[0]?.edistamisalue ?? "",
   projectArea: item.projectArea,
   negotiationPhase: item.kohteet[0]?.tila ?? item.negotiationPhase,
 }));

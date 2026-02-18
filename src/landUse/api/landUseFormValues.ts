@@ -2,16 +2,9 @@ import { normalizeSelectValue } from "../fieldUtils";
 import type { MockLandUseData } from "../mocks/landUseMockData";
 import type { LandUseSummaryFormValues } from "../components/tabs/LandUseSummary";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
+import type { LandUseSitesFormValues } from "../components/tabs/LandUseSites";
 
 export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
-  kohteet: [
-    {
-      kohteenTunnus: "",
-      maankayttosopimusType: undefined,
-      edistamisalue: undefined,
-      tila: undefined,
-    },
-  ],
   valmistelijat: [{ value: undefined }],
   osoitteet: [{ katuosoite: "", postinumero: "", kaupunki: "" }],
   arvioituEsittelyvuosi: "",
@@ -34,12 +27,6 @@ export const mapMockToSummaryFormValues = (
   }
 
   return {
-    kohteet: mockData.kohteet.map((kohde) => ({
-      kohteenTunnus: kohde.kohteenTunnus,
-      maankayttosopimusType: normalizeSelectValue(kohde.maankayttosopimusType),
-      edistamisalue: normalizeSelectValue(kohde.edistamisalue),
-      tila: normalizeSelectValue(kohde.tila),
-    })),
     valmistelijat: mockData.valmistelijat.map((valmistelija) => ({
       value: normalizeSelectValue(
         `${valmistelija.firstName} ${valmistelija.lastName}`.trim(),
@@ -60,6 +47,25 @@ export const mapMockToSummaryFormValues = (
     kasittelyvaiheenViimeisinPvm: mockData.kasittelyvaiheenViimeisinPvm,
     asemakaavanHyvaksyjä: mockData.asemakaavanHyvaksyjä,
     asemakaavanDiaarinumero: mockData.asemakaavanDiaarinumero,
+  };
+};
+
+export const mapMockToSitesFormValues = (
+  mockData: MockLandUseData | null,
+): LandUseSitesFormValues => {
+  if (!mockData) {
+    return { items: [] };
+  }
+
+  return {
+    items: mockData.kohteet.map((kohde, index) => ({
+      id: `${mockData.identifier}-site-${index + 1}`,
+      kohteenTunnus: kohde.kohteenTunnus,
+      maankayttosopimusType: normalizeSelectValue(kohde.maankayttosopimusType),
+      edistamisalue: normalizeSelectValue(kohde.edistamisalue),
+      tila: normalizeSelectValue(kohde.tila),
+      label: kohde.kohteenTunnus,
+    })),
   };
 };
 

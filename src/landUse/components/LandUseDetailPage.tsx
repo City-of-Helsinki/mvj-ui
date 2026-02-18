@@ -19,6 +19,7 @@ import {
 import { createForm } from "final-form";
 import arrayMutators from "final-form-arrays";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { LandUseSites, type LandUseSitesFormValues } from "./tabs/LandUseSites";
 import {
   LandUseSummary,
   type LandUseSummaryFormValues,
@@ -51,6 +52,7 @@ import {
   getMap,
   getMonitoring,
   getParties,
+  getSites,
   getSummary,
   updateCompensations,
   updateDecisions,
@@ -58,6 +60,7 @@ import {
   updateMap,
   updateMonitoring,
   updateParties,
+  updateSites,
   updateSummary,
 } from "../api/landUseApi";
 
@@ -76,16 +79,18 @@ interface TabConfig {
 
 const TAB_FORM_KEYS = {
   summary: 0,
-  parties: 1,
-  compensations: 2,
-  monitoring: 3,
-  decisions: 4,
-  invoicing: 5,
-  map: 6,
+  sites: 1,
+  parties: 2,
+  compensations: 3,
+  monitoring: 4,
+  decisions: 5,
+  invoicing: 6,
+  map: 7,
 } as const;
 
 const TABS_CONFIG: TabConfig[] = [
   { label: "Perustiedot", hasForm: true, formKey: "summary" },
+  { label: "Kohteet", hasForm: true, formKey: "sites" },
   { label: "Osapuolet", hasForm: true, formKey: "parties" },
   { label: "Korvaukset", hasForm: true, formKey: "compensations" },
   { label: "Valvonta", hasForm: true, formKey: "monitoring" },
@@ -109,6 +114,7 @@ const LandUseDetailPage: React.FC = () => {
   // Form state tracking for each tab
   const [formStates, setFormStates] = useState<Record<string, FormState>>({
     summary: { ...initialFormState },
+    sites: { ...initialFormState },
     parties: { ...initialFormState },
     compensations: { ...initialFormState },
     monitoring: { ...initialFormState },
@@ -127,6 +133,13 @@ const LandUseDetailPage: React.FC = () => {
   const partiesQuery = useQuery({
     queryKey: ["land-use", agreementId, "parties"],
     queryFn: () => getParties(agreementId),
+    enabled: Boolean(agreementId),
+    refetchOnWindowFocus: false,
+  });
+
+  const sitesQuery = useQuery({
+    queryKey: ["land-use", agreementId, "sites"],
+    queryFn: () => getSites(agreementId),
     enabled: Boolean(agreementId),
     refetchOnWindowFocus: false,
   });
@@ -183,6 +196,17 @@ const LandUseDetailPage: React.FC = () => {
       createForm<LandUsePartiesFormValues>({
         onSubmit: (values) => {
           console.log("Parties form submitted:", values);
+        },
+        mutators: { ...arrayMutators },
+      }),
+    [],
+  );
+
+  const sitesFormApi = useMemo(
+    () =>
+      createForm<LandUseSitesFormValues>({
+        onSubmit: (values) => {
+          console.log("Sites form submitted:", values);
         },
         mutators: { ...arrayMutators },
       }),
@@ -248,6 +272,7 @@ const LandUseDetailPage: React.FC = () => {
   const formApis = useMemo(
     () => ({
       summary: summaryFormApi,
+      sites: sitesFormApi,
       parties: partiesFormApi,
       compensations: compensationsFormApi,
       monitoring: monitoringFormApi,
@@ -257,6 +282,7 @@ const LandUseDetailPage: React.FC = () => {
     }),
     [
       summaryFormApi,
+      sitesFormApi,
       partiesFormApi,
       compensationsFormApi,
       monitoringFormApi,
@@ -309,6 +335,12 @@ const LandUseDetailPage: React.FC = () => {
     partiesQuery.dataUpdatedAt,
     agreementId,
   ]);
+
+  useEffect(() => {
+    if (sitesQuery.data) {
+      sitesFormApi.initialize(sitesQuery.data);
+    }
+  }, [sitesFormApi, sitesQuery.data, sitesQuery.dataUpdatedAt, agreementId]);
 
   useEffect(() => {
     if (compensationsQuery.data) {
@@ -408,6 +440,14 @@ const LandUseDetailPage: React.FC = () => {
     },
   });
 
+  const sitesMutation = useMutation({
+    mutationFn: (values: LandUseSitesFormValues) =>
+      updateSites(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "sites"], data);
+    },
+  });
+
   const compensationsMutation = useMutation({
     mutationFn: (values: LandUseCompensationsFormValues) =>
       updateCompensations(agreementId, values),
@@ -485,6 +525,11 @@ const LandUseDetailPage: React.FC = () => {
             partiesMutation.mutateAsync(
               state.values as LandUsePartiesFormValues,
             ),
+          );
+          break;
+        case "sites":
+          mutations.push(
+            sitesMutation.mutateAsync(state.values as LandUseSitesFormValues),
           );
           break;
         case "compensations":
@@ -638,7 +683,15 @@ const LandUseDetailPage: React.FC = () => {
         </TabList>
 
         <TabPanel>
-          <LandUseSummary form={summaryFormApi} isEditMode={isEditMode} />
+          <LandUseSummary
+            form={summaryFormApi}
+            isEditMode={isEditMode}
+            sites={sitesQuery.data?.items ?? []}
+          />
+        </TabPanel>
+
+        <TabPanel>
+          <LandUseSites form={sitesFormApi} isEditMode={isEditMode} />
         </TabPanel>
 
         <TabPanel>

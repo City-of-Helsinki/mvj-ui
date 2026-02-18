@@ -346,7 +346,7 @@ const LandUseListPage: React.FC = () => {
               { key: "identifier", headerName: "MA-tunnus" },
               { key: "party", headerName: "Osapuoli" },
               { key: "zoningPlanNumber", headerName: "Asemakaavan numero" },
-              { key: "target", headerName: "Kohde" },
+              { key: "site", headerName: "Kohde" },
               { key: "projectArea", headerName: "Hankealue" },
               { key: "negotiationPhase", headerName: "Neuvotteluvaihe" },
             ]}

@@ -1,5 +1,6 @@
 export const LAND_USE_TAB_KEYS = [
   "summary",
+  "sites",
   "parties",
   "compensations",
   "monitoring",

@@ -4,6 +4,10 @@ import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoi
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
 import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
+import type {
+  LandUseSiteTreeNode,
+  LandUseSitesFormValues,
+} from "../components/tabs/LandUseSites";
 import type { LandUseSummaryFormValues } from "../components/tabs/LandUseSummary";
 import {
   createEmptyPartiesFormValues,
@@ -39,6 +43,22 @@ const getTabData = async <T>(
   return fallback;
 };
 
+const flattenSites = (items: LandUseSiteTreeNode[]): LandUseSiteTreeNode[] => {
+  const flattened: LandUseSiteTreeNode[] = [];
+
+  const collect = (nodes: LandUseSiteTreeNode[]) => {
+    nodes.forEach((node) => {
+      flattened.push(node);
+      if (node.children?.length) {
+        collect(node.children);
+      }
+    });
+  };
+
+  collect(items);
+  return flattened;
+};
+
 export const getSummary = async (
   agreementId: string,
 ): Promise<LandUseSummaryFormValues> =>
@@ -52,14 +72,15 @@ export const getLandUseList = async (): Promise<LandUseListItem[]> => {
 
   const listItems = await Promise.all(
     agreementIds.map(async (agreementId) => {
-      const [summary, parties] = await Promise.all([
-        getSummary(agreementId),
+      const [parties, sites] = await Promise.all([
         getParties(agreementId),
+        getSites(agreementId),
       ]);
 
       const partyName = parties?.customer?.details?.name ?? "";
+      const flatSites = flattenSites(sites?.items ?? []);
       const kohdeValues =
-        summary?.kohteet
+        flatSites
           ?.map((kohde) => kohde.kohteenTunnus)
           .filter((value): value is string => Boolean(value))
           .join(", ") ?? "";
@@ -69,7 +90,7 @@ export const getLandUseList = async (): Promise<LandUseListItem[]> => {
         identifier: agreementId,
         party: partyName,
         zoningPlanNumber: "",
-        target: kohdeValues,
+        site: kohdeValues,
         projectArea: "",
         negotiationPhase: "",
       } satisfies LandUseListItem;
@@ -113,6 +134,10 @@ export const createLandUseAgreement = async (
         );
       }
 
+      if (tabKey === "sites") {
+        return setAgreementTab(identifier, tabKey, { items: [] });
+      }
+
       return setAgreementTab(identifier, tabKey, {});
     }),
   );
@@ -122,7 +147,7 @@ export const createLandUseAgreement = async (
     identifier,
     party: "",
     zoningPlanNumber: "",
-    target: "",
+    site: "",
     projectArea: "",
     negotiationPhase: "",
   });
@@ -142,6 +167,19 @@ export const getParties = async (
   agreementId: string,
 ): Promise<LandUsePartiesFormValues> =>
   getTabData(agreementId, "parties", createEmptyPartiesFormValues());
+
+export const getSites = async (
+  agreementId: string,
+): Promise<LandUseSitesFormValues> =>
+  getTabData(agreementId, "sites", { items: [] });
+
+export const updateSites = async (
+  agreementId: string,
+  values: LandUseSitesFormValues,
+): Promise<LandUseSitesFormValues> => {
+  await setAgreementTab(agreementId, "sites", values);
+  return values;
+};
 
 export const updateParties = async (
   agreementId: string,
