@@ -5,6 +5,7 @@ import { Form, Field } from "react-final-form";
 import type { FormApi } from "final-form";
 import { normalizeSelectValue } from "../../fieldUtils";
 import { landUseCompensationSelectOptions } from "../../mocks/landUseMockData";
+import { collectNonLeafNodeIds } from "../../utils/siteTree";
 
 export interface LandUseSiteTreeNode {
   id: string;
@@ -208,6 +209,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
         const treeItems = values.items ?? [];
+        const nonLeafNodeIds = collectNonLeafNodeIds(treeItems);
         const selectedNode = selectedItemId
           ? findNodeById(treeItems, selectedItemId)
           : null;
@@ -309,8 +311,16 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
               <div className="landuse-detail__split-view">
                 <div className="landuse-detail__tree-wrapper landuse-detail__split-panel">
                   <RichTreeView
+                    className="landuse-detail__sites-tree"
                     items={treeItems}
                     onItemClick={(_, itemId) => setSelectedItemId(itemId)}
+                    slotProps={{
+                      item: ({ itemId }) => ({
+                        className: nonLeafNodeIds.has(itemId)
+                          ? "landuse-detail__sites-tree-item--non-leaf"
+                          : undefined,
+                      }),
+                    }}
                   />
                 </div>
 

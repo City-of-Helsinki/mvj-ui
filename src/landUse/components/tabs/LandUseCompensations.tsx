@@ -13,6 +13,7 @@ import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import type { LandUseSiteTreeNode } from "./LandUseSites";
+import { collectLeafNodes } from "../../utils/siteTree";
 
 interface PerustietotaulukkoRowValues {
   pintaAlaM2: string;
@@ -38,26 +39,6 @@ interface LandUseCompensationsProps {
   isEditMode: boolean;
   sites: LandUseSiteTreeNode[];
 }
-
-const collectLeafNodes = (
-  nodes: LandUseSiteTreeNode[],
-): LandUseSiteTreeNode[] => {
-  const leafNodes: LandUseSiteTreeNode[] = [];
-
-  const traverse = (items: LandUseSiteTreeNode[]) => {
-    items.forEach((item) => {
-      if (item.children?.length) {
-        traverse(item.children);
-        return;
-      }
-
-      leafNodes.push(item);
-    });
-  };
-
-  traverse(nodes);
-  return leafNodes;
-};
 
 const parseNumber = (value: string | number | undefined): number => {
   if (typeof value === "number") {
