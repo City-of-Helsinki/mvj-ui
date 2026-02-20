@@ -702,6 +702,7 @@ const LandUseDetailPage: React.FC = () => {
           <LandUseCompensations
             form={compensationsFormApi}
             isEditMode={isEditMode}
+            sites={sitesQuery.data?.items ?? []}
           />
         </TabPanel>
 

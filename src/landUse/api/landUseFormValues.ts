@@ -61,6 +61,9 @@ export const mapMockToSitesFormValues = (
     items: mockData.kohteet.map((kohde, index) => ({
       id: `${mockData.identifier}-site-${index + 1}`,
       kohteenTunnus: kohde.kohteenTunnus,
+      kayttotarkoitus: normalizeSelectValue(kohde.kayttotarkoitus),
+      hallintamuoto: normalizeSelectValue(kohde.hallintamuoto),
+      suojeltu: normalizeSelectValue(kohde.suojeltu),
       maankayttosopimusType: normalizeSelectValue(kohde.maankayttosopimusType),
       edistamisalue: normalizeSelectValue(kohde.edistamisalue),
       tila: normalizeSelectValue(kohde.tila),

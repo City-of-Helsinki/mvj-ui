@@ -4,10 +4,14 @@ import { Button, ButtonVariant, Select, TextInput } from "hds-react";
 import { Form, Field } from "react-final-form";
 import type { FormApi } from "final-form";
 import { normalizeSelectValue } from "../../fieldUtils";
+import { landUseCompensationSelectOptions } from "../../mocks/landUseMockData";
 
 export interface LandUseSiteTreeNode {
   id: string;
   kohteenTunnus: string;
+  kayttotarkoitus: string | undefined;
+  hallintamuoto: string | undefined;
+  suojeltu: string | undefined;
   maankayttosopimusType: string | undefined;
   edistamisalue: string | undefined;
   tila: string | undefined;
@@ -34,6 +38,26 @@ const maankayttosopimusTypeOptions = [
 const edistamisalueOptions = [{ label: "Placeholder", value: "" }];
 
 const tilaOptions = [{ label: "Vireillä", value: "Vireillä" }];
+
+const kayttotarkoitusOptions =
+  landUseCompensationSelectOptions.kayttotarkoitus.map((value) => ({
+    label: value,
+    value,
+  }));
+
+const hallintamuotoOptions = landUseCompensationSelectOptions.hallintamuoto.map(
+  (value) => ({
+    label: value,
+    value,
+  }),
+);
+
+const suojeltuOptions = landUseCompensationSelectOptions.suojeltu.map(
+  (value) => ({
+    label: value,
+    value,
+  }),
+);
 
 const handleSelectChange = (
   selectedOptions: { label: string; value: string }[],
@@ -137,7 +161,13 @@ const updateNodeIdentifier = (
   changes: Partial<
     Pick<
       LandUseSiteTreeNode,
-      "kohteenTunnus" | "maankayttosopimusType" | "edistamisalue" | "tila"
+      | "kohteenTunnus"
+      | "kayttotarkoitus"
+      | "hallintamuoto"
+      | "suojeltu"
+      | "maankayttosopimusType"
+      | "edistamisalue"
+      | "tila"
     >
   >,
 ): LandUseSiteTreeNode[] => {
@@ -191,6 +221,9 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
           const node: LandUseSiteTreeNode = {
             id: createUniqueSiteId(treeItems),
             kohteenTunnus: trimmedTunnus,
+            kayttotarkoitus: undefined,
+            hallintamuoto: undefined,
+            suojeltu: undefined,
             maankayttosopimusType: undefined,
             edistamisalue: undefined,
             tila: undefined,
@@ -209,6 +242,9 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
           const node: LandUseSiteTreeNode = {
             id: createUniqueSiteId(treeItems),
             kohteenTunnus: trimmedTunnus,
+            kayttotarkoitus: undefined,
+            hallintamuoto: undefined,
+            suojeltu: undefined,
             maankayttosopimusType: undefined,
             edistamisalue: undefined,
             tila: undefined,
@@ -299,6 +335,97 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                               kohteenTunnus: event.target.value,
                             }),
                           );
+                        }}
+                        disabled={!selectedItemId || !isEditMode}
+                      />
+                    )}
+                  </Field>
+
+                  <Field name="items">
+                    {() => (
+                      <Select
+                        id="landuse-site-kayttotarkoitus"
+                        options={kayttotarkoitusOptions}
+                        value={normalizeSelectValue(
+                          selectedNode?.kayttotarkoitus,
+                        )}
+                        onChange={(selectedOptions) => {
+                          if (!selectedItemId) {
+                            return;
+                          }
+
+                          handleSelectChange(selectedOptions, (value) => {
+                            form.change(
+                              "items",
+                              updateNodeIdentifier(treeItems, selectedItemId, {
+                                kayttotarkoitus: value,
+                              }),
+                            );
+                          });
+                        }}
+                        texts={{
+                          label: "Käyttötarkoitus",
+                          placeholder: "Valitse",
+                        }}
+                        disabled={!selectedItemId || !isEditMode}
+                      />
+                    )}
+                  </Field>
+
+                  <Field name="items">
+                    {() => (
+                      <Select
+                        id="landuse-site-hallintamuoto"
+                        options={hallintamuotoOptions}
+                        value={normalizeSelectValue(
+                          selectedNode?.hallintamuoto,
+                        )}
+                        onChange={(selectedOptions) => {
+                          if (!selectedItemId) {
+                            return;
+                          }
+
+                          handleSelectChange(selectedOptions, (value) => {
+                            form.change(
+                              "items",
+                              updateNodeIdentifier(treeItems, selectedItemId, {
+                                hallintamuoto: value,
+                              }),
+                            );
+                          });
+                        }}
+                        texts={{
+                          label: "Hallintamuoto",
+                          placeholder: "Valitse",
+                        }}
+                        disabled={!selectedItemId || !isEditMode}
+                      />
+                    )}
+                  </Field>
+
+                  <Field name="items">
+                    {() => (
+                      <Select
+                        id="landuse-site-suojeltu"
+                        options={suojeltuOptions}
+                        value={normalizeSelectValue(selectedNode?.suojeltu)}
+                        onChange={(selectedOptions) => {
+                          if (!selectedItemId) {
+                            return;
+                          }
+
+                          handleSelectChange(selectedOptions, (value) => {
+                            form.change(
+                              "items",
+                              updateNodeIdentifier(treeItems, selectedItemId, {
+                                suojeltu: value,
+                              }),
+                            );
+                          });
+                        }}
+                        texts={{
+                          label: "Suojeltu",
+                          placeholder: "Valitse",
                         }}
                         disabled={!selectedItemId || !isEditMode}
                       />

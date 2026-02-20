@@ -321,3 +321,62 @@
     font-weight: 600;
   }
 }
+
+.landuse-detail__subsection-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-black-90);
+  margin: 0 0 16px;
+}
+
+.landuse-detail__compensation-grid {
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+
+  &--notes {
+    margin-top: 20px;
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.landuse-detail__compensations-table-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.landuse-detail__compensations-table {
+  th,
+  td {
+    vertical-align: middle;
+  }
+
+  tbody td {
+    min-width: 120px;
+  }
+
+  tbody td:first-child,
+  thead th:first-child {
+    min-width: 140px;
+  }
+
+  .hds-text-input,
+  .hds-checkbox {
+    margin: 0;
+  }
+
+  .hds-text-input__input {
+    min-width: 110px;
+  }
+
+  tfoot th {
+    font-weight: 600;
+  }
+}
