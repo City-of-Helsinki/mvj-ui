@@ -16,8 +16,6 @@ import type { LandUseSiteTreeNode } from "./LandUseSites";
 import { collectLeafNodes } from "../../utils/siteTree";
 
 interface PerustietotaulukkoRowValues {
-  pintaAlaM2: string;
-  km2: string;
   yksikkohinta: string;
   perushinta: boolean;
   muutos: boolean;
@@ -93,8 +91,8 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
         const totals = leafSites.reduce(
           (accumulator, site) => {
             const row = rowsBySiteId[site.id];
-            const pintaAla = parseNumber(row?.pintaAlaM2);
-            const kerrosAla = parseNumber(row?.km2);
+            const pintaAla = parseNumber(site.pintaAlaM2);
+            const kerrosAla = parseNumber(site.km2);
             const yksikkohinta = parseNumber(row?.yksikkohinta);
 
             return {
@@ -238,7 +236,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         {leafSites.map((site) => {
                           const row = rowsBySiteId[site.id];
                           const rowSumma =
-                            parseNumber(row?.km2) *
+                            parseNumber(site.km2) *
                             parseNumber(row?.yksikkohinta);
 
                           return (
@@ -247,36 +245,8 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                               <td>{site.kayttotarkoitus || "-"}</td>
                               <td>{site.hallintamuoto || "-"}</td>
                               <td>{site.suojeltu || "-"}</td>
-                              <td>
-                                <Field
-                                  name={getRowFieldPath(site.id, "pintaAlaM2")}
-                                >
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`landuse-compensations-pinta-ala-${site.id}`}
-                                      label=""
-                                      hideLabel
-                                      value={input.value ?? ""}
-                                      onChange={input.onChange}
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
-                                </Field>
-                              </td>
-                              <td>
-                                <Field name={getRowFieldPath(site.id, "km2")}>
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`landuse-compensations-km2-${site.id}`}
-                                      label=""
-                                      hideLabel
-                                      value={input.value ?? ""}
-                                      onChange={input.onChange}
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
-                                </Field>
-                              </td>
+                              <td>{site.pintaAlaM2 || "-"}</td>
+                              <td>{site.km2 || "-"}</td>
                               <td>
                                 <Field
                                   name={getRowFieldPath(

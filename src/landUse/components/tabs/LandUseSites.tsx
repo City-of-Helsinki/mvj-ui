@@ -10,6 +10,8 @@ import { collectNonLeafNodeIds } from "../../utils/siteTree";
 export interface LandUseSiteTreeNode {
   id: string;
   kohteenTunnus: string;
+  pintaAlaM2?: string;
+  km2?: string;
   kayttotarkoitus: string | undefined;
   hallintamuoto: string | undefined;
   suojeltu: string | undefined;
@@ -163,6 +165,8 @@ const updateNodeIdentifier = (
     Pick<
       LandUseSiteTreeNode,
       | "kohteenTunnus"
+      | "pintaAlaM2"
+      | "km2"
       | "kayttotarkoitus"
       | "hallintamuoto"
       | "suojeltu"
@@ -223,6 +227,8 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
           const node: LandUseSiteTreeNode = {
             id: createUniqueSiteId(treeItems),
             kohteenTunnus: trimmedTunnus,
+            pintaAlaM2: "",
+            km2: "",
             kayttotarkoitus: undefined,
             hallintamuoto: undefined,
             suojeltu: undefined,
@@ -244,6 +250,8 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
           const node: LandUseSiteTreeNode = {
             id: createUniqueSiteId(treeItems),
             kohteenTunnus: trimmedTunnus,
+            pintaAlaM2: "",
+            km2: "",
             kayttotarkoitus: undefined,
             hallintamuoto: undefined,
             suojeltu: undefined,
@@ -343,6 +351,52 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                             "items",
                             updateNodeIdentifier(treeItems, selectedItemId, {
                               kohteenTunnus: event.target.value,
+                            }),
+                          );
+                        }}
+                        disabled={!selectedItemId || !isEditMode}
+                      />
+                    )}
+                  </Field>
+
+                  <Field name="items">
+                    {() => (
+                      <TextInput
+                        id="landuse-site-pinta-ala-m2"
+                        label="Pinta-ala m²"
+                        value={selectedNode?.pintaAlaM2 ?? ""}
+                        onChange={(event) => {
+                          if (!selectedItemId) {
+                            return;
+                          }
+
+                          form.change(
+                            "items",
+                            updateNodeIdentifier(treeItems, selectedItemId, {
+                              pintaAlaM2: event.target.value,
+                            }),
+                          );
+                        }}
+                        disabled={!selectedItemId || !isEditMode}
+                      />
+                    )}
+                  </Field>
+
+                  <Field name="items">
+                    {() => (
+                      <TextInput
+                        id="landuse-site-km2"
+                        label="k-m²"
+                        value={selectedNode?.km2 ?? ""}
+                        onChange={(event) => {
+                          if (!selectedItemId) {
+                            return;
+                          }
+
+                          form.change(
+                            "items",
+                            updateNodeIdentifier(treeItems, selectedItemId, {
+                              km2: event.target.value,
                             }),
                           );
                         }}
