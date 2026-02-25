@@ -110,8 +110,6 @@ const LandUseDetailPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
-  const [negotiationPhase, setNegotiationPhase] =
-    useState<LandUseSummaryFormValues["tila"]>(undefined);
   const queryClient = useQueryClient();
 
   // Form state tracking for each tab
@@ -320,7 +318,6 @@ const LandUseDetailPage: React.FC = () => {
   useEffect(() => {
     if (summaryQuery.data) {
       summaryFormApi.initialize(summaryQuery.data);
-      setNegotiationPhase(summaryQuery.data.tila);
     }
   }, [
     summaryFormApi,
@@ -328,17 +325,6 @@ const LandUseDetailPage: React.FC = () => {
     summaryQuery.dataUpdatedAt,
     agreementId,
   ]);
-
-  useEffect(() => {
-    const unsubscribe = summaryFormApi.subscribe(
-      (state) => {
-        setNegotiationPhase(state.values.tila);
-      },
-      { values: true },
-    );
-
-    return unsubscribe;
-  }, [summaryFormApi]);
 
   useEffect(() => {
     if (partiesQuery.data) {
@@ -613,7 +599,7 @@ const LandUseDetailPage: React.FC = () => {
   };
 
   const isDecisionPhase =
-    negotiationPhase === LAND_USE_NEGOTIATION_PHASES.PAATOS;
+    summaryQuery.data?.tila === LAND_USE_NEGOTIATION_PHASES.PAATOS;
 
   // Render tab label with status icons
   const renderTabLabel = (tabConfig: TabConfig, tabIndex: number) => {
@@ -705,7 +691,11 @@ const LandUseDetailPage: React.FC = () => {
         </TabPanel>
 
         <TabPanel>
-          <LandUseSites form={sitesFormApi} isEditMode={isEditMode} />
+          <LandUseSites
+            form={sitesFormApi}
+            isEditMode={isEditMode}
+            isDecisionPhase={isDecisionPhase}
+          />
         </TabPanel>
 
         <TabPanel>

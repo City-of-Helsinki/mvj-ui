@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { RichTreeView } from "@mui/x-tree-view";
-import { Button, ButtonVariant, Select, TextInput } from "hds-react";
+import {
+  Button,
+  ButtonVariant,
+  Notification,
+  Select,
+  TextInput,
+} from "hds-react";
 import { Form, Field } from "react-final-form";
 import type { FormApi } from "final-form";
 import { normalizeSelectValue } from "../../fieldUtils";
@@ -26,6 +32,7 @@ export interface LandUseSitesFormValues {
 interface LandUseSitesProps {
   form: FormApi<LandUseSitesFormValues>;
   isEditMode: boolean;
+  isDecisionPhase: boolean;
 }
 
 const kayttotarkoitusOptions =
@@ -186,9 +193,11 @@ const updateNodeIdentifier = (
 export const LandUseSites: React.FC<LandUseSitesProps> = ({
   form,
   isEditMode,
+  isDecisionPhase,
 }) => {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [newKohdeTunnus, setNewKohdeTunnus] = useState("");
+  const isSitesReadOnly = !isEditMode || isDecisionPhase;
 
   return (
     <Form<LandUseSitesFormValues>
@@ -203,7 +212,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
 
         const handleAddRoot = () => {
           const trimmedTunnus = newKohdeTunnus.trim();
-          if (!trimmedTunnus || !isEditMode) {
+          if (!trimmedTunnus || isSitesReadOnly) {
             return;
           }
 
@@ -223,7 +232,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
 
         const handleAddChild = () => {
           const trimmedTunnus = newKohdeTunnus.trim();
-          if (!trimmedTunnus || !selectedItemId || !isEditMode) {
+          if (!trimmedTunnus || !selectedItemId || isSitesReadOnly) {
             return;
           }
 
@@ -242,7 +251,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
         };
 
         const handleRemoveSelected = () => {
-          if (!selectedItemId || !isEditMode) {
+          if (!selectedItemId || isSitesReadOnly) {
             return;
           }
 
@@ -259,34 +268,45 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
             <div className="landuse-detail__content">
               <h2 className="landuse-detail__section-title">KOHTEET</h2>
 
+              {isDecisionPhase && (
+                <Notification
+                  type="info"
+                  position="inline"
+                  label="Info"
+                  style={{ marginBottom: "var(--spacing-m)" }}
+                >
+                  Kohteita ei voi muokata, kun sopimuksen tila on "Päätös"
+                </Notification>
+              )}
+
               <div className="landuse-detail__field-group landuse-detail__fieldset--with-margin">
                 <TextInput
                   id="landuse-site-new-kohde-tunnus"
                   label="Uuden kohteen tunnus"
                   value={newKohdeTunnus}
                   onChange={(event) => setNewKohdeTunnus(event.target.value)}
-                  disabled={!isEditMode}
+                  disabled={isSitesReadOnly}
                 />
 
                 <div className="landuse-detail__actions">
                   <Button
                     variant={ButtonVariant.Secondary}
                     onClick={handleAddRoot}
-                    disabled={!isEditMode}
+                    disabled={isSitesReadOnly}
                   >
                     Lisää juurikohde
                   </Button>
                   <Button
                     variant={ButtonVariant.Secondary}
                     onClick={handleAddChild}
-                    disabled={!selectedItemId || !isEditMode}
+                    disabled={!selectedItemId || isSitesReadOnly}
                   >
                     Lisää alikohde
                   </Button>
                   <Button
                     variant={ButtonVariant.Danger}
                     onClick={handleRemoveSelected}
-                    disabled={!selectedItemId || !isEditMode}
+                    disabled={!selectedItemId || isSitesReadOnly}
                   >
                     Poista valittu
                   </Button>
@@ -320,7 +340,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                         label="Kohteen tunnus"
                         value={selectedNode?.kohteenTunnus ?? ""}
                         onChange={(event) => {
-                          if (!selectedItemId) {
+                          if (!selectedItemId || isSitesReadOnly) {
                             return;
                           }
 
@@ -331,7 +351,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                             }),
                           );
                         }}
-                        disabled={!selectedItemId || !isEditMode}
+                        disabled={!selectedItemId || isSitesReadOnly}
                       />
                     )}
                   </Field>
@@ -343,7 +363,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                         label="Pinta-ala m²"
                         value={selectedNode?.pintaAlaM2 ?? ""}
                         onChange={(event) => {
-                          if (!selectedItemId) {
+                          if (!selectedItemId || isSitesReadOnly) {
                             return;
                           }
 
@@ -354,7 +374,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                             }),
                           );
                         }}
-                        disabled={!selectedItemId || !isEditMode}
+                        disabled={!selectedItemId || isSitesReadOnly}
                       />
                     )}
                   </Field>
@@ -366,7 +386,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                         label="k-m²"
                         value={selectedNode?.km2 ?? ""}
                         onChange={(event) => {
-                          if (!selectedItemId) {
+                          if (!selectedItemId || isSitesReadOnly) {
                             return;
                           }
 
@@ -377,7 +397,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                             }),
                           );
                         }}
-                        disabled={!selectedItemId || !isEditMode}
+                        disabled={!selectedItemId || isSitesReadOnly}
                       />
                     )}
                   </Field>
@@ -391,7 +411,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                           selectedNode?.kayttotarkoitus,
                         )}
                         onChange={(selectedOptions) => {
-                          if (!selectedItemId) {
+                          if (!selectedItemId || isSitesReadOnly) {
                             return;
                           }
 
@@ -408,7 +428,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                           label: "Käyttötarkoitus",
                           placeholder: "Valitse",
                         }}
-                        disabled={!selectedItemId || !isEditMode}
+                        disabled={!selectedItemId || isSitesReadOnly}
                       />
                     )}
                   </Field>
@@ -422,7 +442,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                           selectedNode?.hallintamuoto,
                         )}
                         onChange={(selectedOptions) => {
-                          if (!selectedItemId) {
+                          if (!selectedItemId || isSitesReadOnly) {
                             return;
                           }
 
@@ -439,7 +459,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                           label: "Hallintamuoto",
                           placeholder: "Valitse",
                         }}
-                        disabled={!selectedItemId || !isEditMode}
+                        disabled={!selectedItemId || isSitesReadOnly}
                       />
                     )}
                   </Field>
@@ -451,7 +471,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                         options={suojeltuOptions}
                         value={normalizeSelectValue(selectedNode?.suojeltu)}
                         onChange={(selectedOptions) => {
-                          if (!selectedItemId) {
+                          if (!selectedItemId || isSitesReadOnly) {
                             return;
                           }
 
@@ -468,7 +488,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                           label: "Suojeltu",
                           placeholder: "Valitse",
                         }}
-                        disabled={!selectedItemId || !isEditMode}
+                        disabled={!selectedItemId || isSitesReadOnly}
                       />
                     )}
                   </Field>
