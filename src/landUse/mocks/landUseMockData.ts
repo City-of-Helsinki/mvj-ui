@@ -4,6 +4,7 @@ export interface MockLandUseData {
   maankayttosopimusType: string;
   edistamisalue: string;
   tila: string;
+  suunnittelunPerusteenaOlevatKohteet: string[];
   kohteet: Array<{
     kohteenTunnus: string;
     kayttotarkoitus: string;
@@ -46,6 +47,21 @@ export const landUseCompensationSelectOptions = {
   suojeltu: ["-", "SR1", "SR2"],
 };
 
+export const landUseKohdeSelectOptions = [
+  { label: "01-49-920-6", value: "01-49-920-6" },
+  { label: "02-18-450-3", value: "02-18-450-3" },
+  { label: "03-27-780-1", value: "03-27-780-1" },
+  { label: "04-15-320-2", value: "04-15-320-2" },
+  { label: "05-33-120-9", value: "05-33-120-9" },
+  { label: "Kalasatama", value: "Kalasatama" },
+  { label: "Jätkäsaari", value: "Jätkäsaari" },
+  { label: "Östersundom", value: "Östersundom" },
+  { label: "Pasila", value: "Pasila" },
+  { label: "Kruunuvuorenranta", value: "Kruunuvuorenranta" },
+  { label: "Kuninkaantammi", value: "Kuninkaantammi" },
+  { label: "Honkasuo", value: "Honkasuo" },
+];
+
 export const mockLandUseStore: Record<string, MockLandUseData> = {
   "MA113-1": {
     id: 1,
@@ -53,6 +69,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     maankayttosopimusType: "Maankäyttösopimus",
     edistamisalue: "Kalasatama",
     tila: "Vireillä",
+    suunnittelunPerusteenaOlevatKohteet: ["01-49-920-6", "Kalasatama"],
     kohteet: [
       {
         kohteenTunnus: "01-49-920-6",
@@ -94,6 +111,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     maankayttosopimusType: "Maankäyttösopimus",
     edistamisalue: "Jätkäsaari",
     tila: "Neuvotteilla",
+    suunnittelunPerusteenaOlevatKohteet: ["02-18-450-3", "Jätkäsaari"],
     kohteet: [
       {
         kohteenTunnus: "02-18-450-3",
@@ -137,6 +155,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     maankayttosopimusType: "Maankäyttösopimus",
     edistamisalue: "Östersundom",
     tila: "Päätös",
+    suunnittelunPerusteenaOlevatKohteet: ["03-27-780-1", "Östersundom"],
     kohteet: [
       {
         kohteenTunnus: "03-27-780-1",
@@ -175,6 +194,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     maankayttosopimusType: "Maankäyttösopimus",
     edistamisalue: "Pasila",
     tila: "Vireillä",
+    suunnittelunPerusteenaOlevatKohteet: ["04-15-320-2", "Pasila"],
     kohteet: [
       {
         kohteenTunnus: "",
@@ -207,6 +227,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     maankayttosopimusType: "Maankäyttösopimus",
     edistamisalue: "Kruunuvuorenranta",
     tila: "Neuvotteilla",
+    suunnittelunPerusteenaOlevatKohteet: ["05-33-120-9", "Kruunuvuorenranta"],
     kohteet: [
       {
         kohteenTunnus: "",
@@ -239,6 +260,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     maankayttosopimusType: "Maankäyttösopimus",
     edistamisalue: "Kuninkaantammi",
     tila: "Päätös",
+    suunnittelunPerusteenaOlevatKohteet: ["Kuninkaantammi"],
     kohteet: [
       {
         kohteenTunnus: "",
@@ -271,6 +293,7 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
     maankayttosopimusType: "Maankäyttösopimus",
     edistamisalue: "Honkasuo",
     tila: "Neuvotteilla",
+    suunnittelunPerusteenaOlevatKohteet: ["Honkasuo"],
     kohteet: [
       {
         kohteenTunnus: "",

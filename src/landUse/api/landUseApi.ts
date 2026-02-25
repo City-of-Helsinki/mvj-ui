@@ -116,8 +116,25 @@ export const getSummary = async (
     createEmptySummaryFormValues(),
   );
 
-  if (summary.maankayttosopimusType || summary.edistamisalue || summary.tila) {
-    return summary;
+  const normalizedSummary = {
+    ...summary,
+    suunnittelunPerusteenaOlevatKohteet: summary
+      .suunnittelunPerusteenaOlevatKohteet?.length
+      ? summary.suunnittelunPerusteenaOlevatKohteet
+      : [{ value: undefined }],
+  };
+  const needsSummaryNormalization =
+    !summary.suunnittelunPerusteenaOlevatKohteet?.length;
+
+  if (
+    normalizedSummary.maankayttosopimusType ||
+    normalizedSummary.edistamisalue ||
+    normalizedSummary.tila
+  ) {
+    if (needsSummaryNormalization) {
+      await setAgreementTab(agreementId, "summary", normalizedSummary);
+    }
+    return normalizedSummary;
   }
 
   const sites = await getSites(agreementId);
@@ -130,11 +147,14 @@ export const getSummary = async (
     !migratedFields.edistamisalue &&
     !migratedFields.tila
   ) {
-    return summary;
+    if (needsSummaryNormalization) {
+      await setAgreementTab(agreementId, "summary", normalizedSummary);
+    }
+    return normalizedSummary;
   }
 
   const migratedSummary = {
-    ...summary,
+    ...normalizedSummary,
     ...migratedFields,
   };
 

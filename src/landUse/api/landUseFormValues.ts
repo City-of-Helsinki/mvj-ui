@@ -8,6 +8,7 @@ export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
   maankayttosopimusType: undefined,
   edistamisalue: undefined,
   tila: undefined,
+  suunnittelunPerusteenaOlevatKohteet: [{ value: undefined }],
   valmistelijat: [{ value: undefined }],
   osoitteet: [{ katuosoite: "", postinumero: "", kaupunki: "" }],
   arvioituEsittelyvuosi: "",
@@ -33,6 +34,10 @@ export const mapMockToSummaryFormValues = (
     maankayttosopimusType: normalizeSelectValue(mockData.maankayttosopimusType),
     edistamisalue: normalizeSelectValue(mockData.edistamisalue),
     tila: normalizeSelectValue(mockData.tila),
+    suunnittelunPerusteenaOlevatKohteet:
+      mockData.suunnittelunPerusteenaOlevatKohteet.map((kohde) => ({
+        value: normalizeSelectValue(kohde),
+      })),
     valmistelijat: mockData.valmistelijat.map((valmistelija) => ({
       value: normalizeSelectValue(
         `${valmistelija.firstName} ${valmistelija.lastName}`.trim(),
