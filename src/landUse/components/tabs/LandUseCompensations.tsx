@@ -48,7 +48,20 @@ const parseNumber = (value: string | number | undefined): number => {
     return 0;
   }
 
-  const normalized = value.replace(/\s/g, "").replace(",", ".");
+  const compactValue = value
+    .replace(/\u00A0/g, "")
+    .replace(/\s/g, "")
+    .replace(/€/g, "")
+    .replace(/[^0-9,.-]/g, "");
+
+  let normalized = compactValue.replace(/,/g, ".");
+  if ((normalized.match(/\./g) ?? []).length > 1) {
+    const lastDotIndex = normalized.lastIndexOf(".");
+    normalized =
+      normalized.slice(0, lastDotIndex).replace(/\./g, "") +
+      normalized.slice(lastDotIndex);
+  }
+
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : 0;
 };
@@ -64,6 +77,38 @@ const formatInteger = (value: number): string => {
   return value.toLocaleString("fi-FI", {
     maximumFractionDigits: 0,
   });
+};
+
+const hasDigits = (value: string | number | undefined): boolean => {
+  if (typeof value === "number") {
+    return Number.isFinite(value);
+  }
+
+  if (typeof value !== "string") {
+    return false;
+  }
+
+  return /\d/.test(value);
+};
+
+const formatCurrencyFieldValue = (
+  value: string | number | undefined,
+): string => {
+  if (!hasDigits(value)) {
+    return "";
+  }
+
+  return `${formatCurrency(parseNumber(value))} €`;
+};
+
+const formatEditableMoneyFieldValue = (
+  value: string | number | undefined,
+): string => {
+  if (!hasDigits(value)) {
+    return "";
+  }
+
+  return formatCurrency(parseNumber(value));
 };
 
 const getRowFieldPath = (
@@ -125,8 +170,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       <TextInput
                         id="landuse-compensations-rahakorvaus"
                         label="Rahakorvaus"
-                        value={input.value ?? ""}
+                        value={
+                          isEditMode
+                            ? (input.value ?? "")
+                            : formatCurrencyFieldValue(input.value)
+                        }
                         onChange={input.onChange}
+                        onBlur={(event) => {
+                          input.onBlur(event);
+                          input.onChange(
+                            formatEditableMoneyFieldValue(input.value),
+                          );
+                        }}
                         disabled={!isEditMode}
                       />
                     )}
@@ -137,8 +192,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       <TextInput
                         id="landuse-compensations-maakorvaus"
                         label="Maakorvaus"
-                        value={input.value ?? ""}
+                        value={
+                          isEditMode
+                            ? (input.value ?? "")
+                            : formatCurrencyFieldValue(input.value)
+                        }
                         onChange={input.onChange}
+                        onBlur={(event) => {
+                          input.onBlur(event);
+                          input.onChange(
+                            formatEditableMoneyFieldValue(input.value),
+                          );
+                        }}
                         disabled={!isEditMode}
                       />
                     )}
@@ -149,8 +214,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       <TextInput
                         id="landuse-compensations-muu-korvaus"
                         label="Muu"
-                        value={input.value ?? ""}
+                        value={
+                          isEditMode
+                            ? (input.value ?? "")
+                            : formatCurrencyFieldValue(input.value)
+                        }
                         onChange={input.onChange}
+                        onBlur={(event) => {
+                          input.onBlur(event);
+                          input.onChange(
+                            formatEditableMoneyFieldValue(input.value),
+                          );
+                        }}
                         disabled={!isEditMode}
                       />
                     )}
@@ -284,8 +359,22 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                                       id={`landuse-compensations-yksikkohinta-${site.id}`}
                                       label=""
                                       hideLabel
-                                      value={input.value ?? ""}
+                                      value={
+                                        isCompensationsTableReadOnly
+                                          ? formatCurrencyFieldValue(
+                                              input.value,
+                                            )
+                                          : (input.value ?? "")
+                                      }
                                       onChange={input.onChange}
+                                      onBlur={(event) => {
+                                        input.onBlur(event);
+                                        input.onChange(
+                                          formatEditableMoneyFieldValue(
+                                            input.value,
+                                          ),
+                                        );
+                                      }}
                                       disabled={isCompensationsTableReadOnly}
                                     />
                                   )}
@@ -354,8 +443,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       <TextInput
                         id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
                         label="Hankinnan arvo eur"
-                        value={input.value ?? ""}
+                        value={
+                          isEditMode
+                            ? (input.value ?? "")
+                            : formatCurrencyFieldValue(input.value)
+                        }
                         onChange={input.onChange}
+                        onBlur={(event) => {
+                          input.onBlur(event);
+                          input.onChange(
+                            formatEditableMoneyFieldValue(input.value),
+                          );
+                        }}
                         disabled={!isEditMode}
                       />
                     )}
