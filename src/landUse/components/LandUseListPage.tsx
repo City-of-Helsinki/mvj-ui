@@ -26,16 +26,10 @@ import {
 } from "../api/landUseApi";
 import type { LandUseListItem } from "../api/landUseListTypes";
 import { DISTRICT_OPTIONS, MUNICIPALITY_OPTIONS } from "../utils/landUseLookup";
-
-// Negotiation phase constants matching mockData values
-const NEGOTIATION_PHASES = {
-  VIREILLA: "Vireillä",
-  NEUVOTTEILLA: "Neuvotteilla",
-  PAATOS: "Päätös",
-} as const;
-
-type NegotiationPhase =
-  (typeof NEGOTIATION_PHASES)[keyof typeof NEGOTIATION_PHASES];
+import {
+  LAND_USE_NEGOTIATION_PHASES,
+  type LandUseNegotiationPhase,
+} from "../options";
 
 const LandUseListPage: React.FC = () => {
   const location = useLocation();
@@ -149,7 +143,7 @@ const LandUseListPage: React.FC = () => {
         if (filters.negotiationPhases.length > 0) {
           filteredData = filteredData.filter((item: LandUseListItem) =>
             filters.negotiationPhases.includes(
-              item.negotiationPhase as NegotiationPhase,
+              item.negotiationPhase as LandUseNegotiationPhase,
             ),
           );
         }
@@ -173,7 +167,7 @@ const LandUseListPage: React.FC = () => {
 
   // Handle phase filter changes
   const handlePhaseFilterChange = useCallback(
-    (phase: NegotiationPhase, checked: boolean) => {
+    (phase: LandUseNegotiationPhase, checked: boolean) => {
       const currentFilters = getFiltersFromUrl();
       let newPhases = [...currentFilters.negotiationPhases];
 
@@ -301,10 +295,12 @@ const LandUseListPage: React.FC = () => {
             <Checkbox
               id="filter-vireilla"
               label="Vireillä"
-              checked={selectedPhases.includes(NEGOTIATION_PHASES.VIREILLA)}
+              checked={selectedPhases.includes(
+                LAND_USE_NEGOTIATION_PHASES.VIREILLA,
+              )}
               onChange={(e) =>
                 handlePhaseFilterChange(
-                  NEGOTIATION_PHASES.VIREILLA,
+                  LAND_USE_NEGOTIATION_PHASES.VIREILLA,
                   e.target.checked,
                 )
               }
@@ -312,10 +308,12 @@ const LandUseListPage: React.FC = () => {
             <Checkbox
               id="filter-neuvotteilla"
               label="Neuvotteilla"
-              checked={selectedPhases.includes(NEGOTIATION_PHASES.NEUVOTTEILLA)}
+              checked={selectedPhases.includes(
+                LAND_USE_NEGOTIATION_PHASES.NEUVOTTEILLA,
+              )}
               onChange={(e) =>
                 handlePhaseFilterChange(
-                  NEGOTIATION_PHASES.NEUVOTTEILLA,
+                  LAND_USE_NEGOTIATION_PHASES.NEUVOTTEILLA,
                   e.target.checked,
                 )
               }
@@ -323,10 +321,12 @@ const LandUseListPage: React.FC = () => {
             <Checkbox
               id="filter-paatos"
               label="Päätös"
-              checked={selectedPhases.includes(NEGOTIATION_PHASES.PAATOS)}
+              checked={selectedPhases.includes(
+                LAND_USE_NEGOTIATION_PHASES.PAATOS,
+              )}
               onChange={(e) =>
                 handlePhaseFilterChange(
-                  NEGOTIATION_PHASES.PAATOS,
+                  LAND_USE_NEGOTIATION_PHASES.PAATOS,
                   e.target.checked,
                 )
               }

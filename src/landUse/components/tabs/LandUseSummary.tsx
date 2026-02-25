@@ -16,7 +16,10 @@ import { Form, Field } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { FormApi } from "final-form";
 import { normalizeSelectValue } from "../../fieldUtils";
-import { landUseEdistamisalueOptions } from "../../options";
+import {
+  landUseEdistamisalueOptions,
+  landUseNegotiationPhaseOptions,
+} from "../../options";
 import { landUseKohdeSelectOptions } from "../../mocks/landUseMockData";
 
 interface ValmistelijaEntry {
@@ -62,12 +65,6 @@ const maankayttosopimusTypeOptions = [
     label: "Maankäyttösopimus",
     value: "Maankäyttösopimus",
   },
-];
-
-const tilaOptions = [
-  { label: "Vireillä", value: "Vireillä" },
-  { label: "Neuvotteilla", value: "Neuvotteilla" },
-  { label: "Päätös", value: "Päätös" },
 ];
 
 const kohdeSelectFilter = (
@@ -149,7 +146,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                     {({ input }) => (
                       <Select
                         id="summary-tila"
-                        options={tilaOptions}
+                        options={landUseNegotiationPhaseOptions}
                         value={normalizeSelectValue(input.value)}
                         onChange={(selectedOptions) =>
                           handleSelectChange(selectedOptions, input.onChange)

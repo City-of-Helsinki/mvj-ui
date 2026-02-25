@@ -5,6 +5,7 @@ import {
   Fieldset,
   IconCopy,
   IconPlusCircleFill,
+  Notification,
   RadioButton,
   TextArea,
   TextInput,
@@ -34,6 +35,7 @@ export interface LandUseCompensationsFormValues {
 interface LandUseCompensationsProps {
   form: FormApi<LandUseCompensationsFormValues>;
   isEditMode: boolean;
+  isDecisionPhase: boolean;
   sites: LandUseSiteTreeNode[];
 }
 
@@ -75,9 +77,11 @@ const createEstateMapLink = (kohteenTunnus: string): string =>
 export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
   form,
   isEditMode,
+  isDecisionPhase,
   sites,
 }) => {
   const leafSites = collectLeafNodes(sites);
+  const isCompensationsTableReadOnly = !isEditMode || isDecisionPhase;
 
   return (
     <Form<LandUseCompensationsFormValues>
@@ -205,16 +209,25 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 heading="Perustietotaulukko"
                 className="landuse-detail__fieldset--with-margin"
               >
-                <div className="landuse-detail__compensations-table-header-actions">
-                  <Button
-                    variant={ButtonVariant.Supplementary}
-                    iconStart={<IconCopy />}
-                  >
-                    Kopioi taulukon tiedot
-                  </Button>
-                </div>
-
                 <div className="landuse-detail__sites-table-wrapper">
+                  {isDecisionPhase && (
+                    <Notification
+                      type="info"
+                      position="inline"
+                      label="Info"
+                      style={{ marginBottom: "var(--spacing-m)" }}
+                    >
+                      Taulukkoa ei voi muokata, kun sopimuksen tila on "Päätös"
+                    </Notification>
+                  )}
+                  <div className="landuse-detail__compensations-table-header-actions">
+                    <Button
+                      variant={ButtonVariant.Supplementary}
+                      iconStart={<IconCopy />}
+                    >
+                      Kopioi taulukon tiedot
+                    </Button>
+                  </div>
                   {leafSites.length > 0 ? (
                     <table className="landuse-detail__sites-table landuse-detail__compensations-table">
                       <thead>
@@ -273,7 +286,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                                       hideLabel
                                       value={input.value ?? ""}
                                       onChange={input.onChange}
-                                      disabled={!isEditMode}
+                                      disabled={isCompensationsTableReadOnly}
                                     />
                                   )}
                                 </Field>
@@ -295,7 +308,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                                       onChange={input.onChange}
                                       onBlur={input.onBlur}
                                       onFocus={input.onFocus}
-                                      disabled={!isEditMode}
+                                      disabled={isCompensationsTableReadOnly}
                                     />
                                   )}
                                 </Field>
