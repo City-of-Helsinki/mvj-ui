@@ -1,14 +1,14 @@
 export interface MockLandUseData {
   id: number;
   identifier: string;
+  maankayttosopimusType: string;
+  edistamisalue: string;
+  tila: string;
   kohteet: Array<{
     kohteenTunnus: string;
     kayttotarkoitus: string;
     hallintamuoto: string;
     suojeltu: string;
-    maankayttosopimusType: string;
-    edistamisalue: string;
-    tila: string;
   }>;
   osoitteet: Array<{
     katuosoite: string;
@@ -50,15 +50,15 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
   "MA113-1": {
     id: 1,
     identifier: "MA113-1",
+    maankayttosopimusType: "Maankäyttösopimus",
+    edistamisalue: "Kalasatama",
+    tila: "Vireillä",
     kohteet: [
       {
         kohteenTunnus: "01-49-920-6",
         kayttotarkoitus: "Asuinkerrostalojen korttelialue",
         hallintamuoto: "Vapaarahoitteinen omistus",
         suojeltu: "SR1",
-        maankayttosopimusType: "Maankäyttösopimus",
-        edistamisalue: "Kalasatama",
-        tila: "Vireillä",
       },
     ],
     osoitteet: [
@@ -91,6 +91,9 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
   "MA112-1": {
     id: 2,
     identifier: "MA112-1",
+    maankayttosopimusType: "Maankäyttösopimus",
+    edistamisalue: "Jätkäsaari",
+    tila: "Neuvotteilla",
     kohteet: [
       {
         kohteenTunnus: "02-18-450-3",
@@ -98,9 +101,6 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
           "Asuinkerrostalojen, liike- ja toimistorakennusten korttelialue",
         hallintamuoto: "ARA-Vuokra",
         suojeltu: "-",
-        maankayttosopimusType: "Maankäyttösopimus",
-        edistamisalue: "Jätkäsaari",
-        tila: "Neuvotteilla",
       },
     ],
     osoitteet: [
@@ -134,15 +134,15 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
   "MA101-1": {
     id: 3,
     identifier: "MA101-1",
+    maankayttosopimusType: "Maankäyttösopimus",
+    edistamisalue: "Östersundom",
+    tila: "Päätös",
     kohteet: [
       {
         kohteenTunnus: "03-27-780-1",
         kayttotarkoitus: "Asuinkerrostalojen korttelialue",
         hallintamuoto: "ASO",
         suojeltu: "SR2",
-        maankayttosopimusType: "Maankäyttösopimus",
-        edistamisalue: "Östersundom",
-        tila: "Päätös",
       },
     ],
     osoitteet: [
@@ -172,15 +172,15 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
   "MA104-2": {
     id: 4,
     identifier: "MA104-2",
+    maankayttosopimusType: "Maankäyttösopimus",
+    edistamisalue: "Pasila",
+    tila: "Vireillä",
     kohteet: [
       {
         kohteenTunnus: "",
         kayttotarkoitus: "Toimitilat",
         hallintamuoto: "Vapaarahoitteinen omistus",
         suojeltu: "-",
-        maankayttosopimusType: "Maankäyttösopimus",
-        edistamisalue: "Pasila",
-        tila: "Vireillä",
       },
     ],
     osoitteet: [],
@@ -204,15 +204,15 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
   "MA098-5": {
     id: 5,
     identifier: "MA098-5",
+    maankayttosopimusType: "Maankäyttösopimus",
+    edistamisalue: "Kruunuvuorenranta",
+    tila: "Neuvotteilla",
     kohteet: [
       {
         kohteenTunnus: "",
         kayttotarkoitus: "Asuinkerrostalojen korttelialue",
         hallintamuoto: "ARA-Vuokra",
         suojeltu: "SR1",
-        maankayttosopimusType: "Maankäyttösopimus",
-        edistamisalue: "Kruunuvuorenranta",
-        tila: "Neuvotteilla",
       },
     ],
     osoitteet: [],
@@ -236,15 +236,15 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
   "MA089-3": {
     id: 6,
     identifier: "MA089-3",
+    maankayttosopimusType: "Maankäyttösopimus",
+    edistamisalue: "Kuninkaantammi",
+    tila: "Päätös",
     kohteet: [
       {
         kohteenTunnus: "",
         kayttotarkoitus: "Asuinkerrostalojen korttelialue",
         hallintamuoto: "ASO",
         suojeltu: "-",
-        maankayttosopimusType: "Maankäyttösopimus",
-        edistamisalue: "Kuninkaantammi",
-        tila: "Päätös",
       },
     ],
     osoitteet: [],
@@ -268,15 +268,15 @@ export const mockLandUseStore: Record<string, MockLandUseData> = {
   "MA077-1": {
     id: 7,
     identifier: "MA077-1",
+    maankayttosopimusType: "Maankäyttösopimus",
+    edistamisalue: "Honkasuo",
+    tila: "Neuvotteilla",
     kohteet: [
       {
         kohteenTunnus: "",
         kayttotarkoitus: "Asuinkerrostalojen korttelialue",
         hallintamuoto: "Vapaarahoitteinen omistus",
         suojeltu: "SR2",
-        maankayttosopimusType: "Maankäyttösopimus",
-        edistamisalue: "Honkasuo",
-        tila: "Neuvotteilla",
       },
     ],
     osoitteet: [],
@@ -304,7 +304,7 @@ export const mockLandUseList = Object.values(mockLandUseStore).map((item) => ({
   identifier: item.identifier,
   party: item.party,
   zoningPlanNumber: item.zoningPlanNumber,
-  site: item.kohteet[0]?.edistamisalue ?? "",
+  site: item.edistamisalue,
   projectArea: item.projectArea,
-  negotiationPhase: item.kohteet[0]?.tila ?? item.negotiationPhase,
+  negotiationPhase: item.tila,
 }));

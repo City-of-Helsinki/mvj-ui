@@ -683,11 +683,7 @@ const LandUseDetailPage: React.FC = () => {
         </TabList>
 
         <TabPanel>
-          <LandUseSummary
-            form={summaryFormApi}
-            isEditMode={isEditMode}
-            sites={sitesQuery.data?.items ?? []}
-          />
+          <LandUseSummary form={summaryFormApi} isEditMode={isEditMode} />
         </TabPanel>
 
         <TabPanel>

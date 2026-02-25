@@ -59,10 +59,88 @@ const flattenSites = (items: LandUseSiteTreeNode[]): LandUseSiteTreeNode[] => {
   return flattened;
 };
 
+type LegacySiteSummaryFields = {
+  maankayttosopimusType?: string;
+  edistamisalue?: string;
+  tila?: string;
+  children?: LegacySiteSummaryFields[];
+};
+
+const getSummaryFieldsFromLegacySites = (
+  sites: LegacySiteSummaryFields[],
+): Pick<
+  LandUseSummaryFormValues,
+  "maankayttosopimusType" | "edistamisalue" | "tila"
+> => {
+  const visit = (
+    items: LegacySiteSummaryFields[],
+  ): Pick<
+    LandUseSummaryFormValues,
+    "maankayttosopimusType" | "edistamisalue" | "tila"
+  > | null => {
+    for (const item of items) {
+      if (item.maankayttosopimusType || item.edistamisalue || item.tila) {
+        return {
+          maankayttosopimusType: item.maankayttosopimusType,
+          edistamisalue: item.edistamisalue,
+          tila: item.tila,
+        };
+      }
+
+      if (item.children?.length) {
+        const nestedMatch = visit(item.children);
+        if (nestedMatch) {
+          return nestedMatch;
+        }
+      }
+    }
+
+    return null;
+  };
+
+  return (
+    visit(sites) ?? {
+      maankayttosopimusType: undefined,
+      edistamisalue: undefined,
+      tila: undefined,
+    }
+  );
+};
+
 export const getSummary = async (
   agreementId: string,
-): Promise<LandUseSummaryFormValues> =>
-  getTabData(agreementId, "summary", createEmptySummaryFormValues());
+): Promise<LandUseSummaryFormValues> => {
+  const summary = await getTabData(
+    agreementId,
+    "summary",
+    createEmptySummaryFormValues(),
+  );
+
+  if (summary.maankayttosopimusType || summary.edistamisalue || summary.tila) {
+    return summary;
+  }
+
+  const sites = await getSites(agreementId);
+  const migratedFields = getSummaryFieldsFromLegacySites(
+    (sites.items ?? []) as unknown as LegacySiteSummaryFields[],
+  );
+
+  if (
+    !migratedFields.maankayttosopimusType &&
+    !migratedFields.edistamisalue &&
+    !migratedFields.tila
+  ) {
+    return summary;
+  }
+
+  const migratedSummary = {
+    ...summary,
+    ...migratedFields,
+  };
+
+  await setAgreementTab(agreementId, "summary", migratedSummary);
+  return migratedSummary;
+};
 
 export const getAgreementIdentifiers = async (): Promise<string[]> =>
   getAgreementIds();

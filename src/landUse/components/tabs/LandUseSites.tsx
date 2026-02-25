@@ -15,9 +15,6 @@ export interface LandUseSiteTreeNode {
   kayttotarkoitus: string | undefined;
   hallintamuoto: string | undefined;
   suojeltu: string | undefined;
-  maankayttosopimusType: string | undefined;
-  edistamisalue: string | undefined;
-  tila: string | undefined;
   label: string;
   children?: LandUseSiteTreeNode[];
 }
@@ -30,17 +27,6 @@ interface LandUseSitesProps {
   form: FormApi<LandUseSitesFormValues>;
   isEditMode: boolean;
 }
-
-const maankayttosopimusTypeOptions = [
-  {
-    label: "Maankäyttösopimus",
-    value: "Maankäyttösopimus",
-  },
-];
-
-const edistamisalueOptions = [{ label: "Placeholder", value: "" }];
-
-const tilaOptions = [{ label: "Vireillä", value: "Vireillä" }];
 
 const kayttotarkoitusOptions =
   landUseCompensationSelectOptions.kayttotarkoitus.map((value) => ({
@@ -170,9 +156,6 @@ const updateNodeIdentifier = (
       | "kayttotarkoitus"
       | "hallintamuoto"
       | "suojeltu"
-      | "maankayttosopimusType"
-      | "edistamisalue"
-      | "tila"
     >
   >,
 ): LandUseSiteTreeNode[] => {
@@ -232,9 +215,6 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
             kayttotarkoitus: undefined,
             hallintamuoto: undefined,
             suojeltu: undefined,
-            maankayttosopimusType: undefined,
-            edistamisalue: undefined,
-            tila: undefined,
             label: trimmedTunnus,
           };
           form.change("items", [...treeItems, node]);
@@ -255,9 +235,6 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
             kayttotarkoitus: undefined,
             hallintamuoto: undefined,
             suojeltu: undefined,
-            maankayttosopimusType: undefined,
-            edistamisalue: undefined,
-            tila: undefined,
             label: trimmedTunnus,
           };
           form.change("items", addChildToNode(treeItems, selectedItemId, node));
@@ -489,97 +466,6 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                         }}
                         texts={{
                           label: "Suojeltu",
-                          placeholder: "Valitse",
-                        }}
-                        disabled={!selectedItemId || !isEditMode}
-                      />
-                    )}
-                  </Field>
-
-                  <Field name="items">
-                    {() => (
-                      <Select
-                        id="landuse-site-maankayttosopimus-type"
-                        options={maankayttosopimusTypeOptions}
-                        value={normalizeSelectValue(
-                          selectedNode?.maankayttosopimusType,
-                        )}
-                        onChange={(selectedOptions) => {
-                          if (!selectedItemId) {
-                            return;
-                          }
-
-                          handleSelectChange(selectedOptions, (value) => {
-                            form.change(
-                              "items",
-                              updateNodeIdentifier(treeItems, selectedItemId, {
-                                maankayttosopimusType: value,
-                              }),
-                            );
-                          });
-                        }}
-                        texts={{
-                          label: "Maankäyttösopimuksen tyyppi",
-                          placeholder: "Valitse",
-                        }}
-                        disabled={!selectedItemId || !isEditMode}
-                      />
-                    )}
-                  </Field>
-
-                  <Field name="items">
-                    {() => (
-                      <Select
-                        id="landuse-site-edistamisalue"
-                        options={edistamisalueOptions}
-                        value={normalizeSelectValue(
-                          selectedNode?.edistamisalue,
-                        )}
-                        onChange={(selectedOptions) => {
-                          if (!selectedItemId) {
-                            return;
-                          }
-
-                          handleSelectChange(selectedOptions, (value) => {
-                            form.change(
-                              "items",
-                              updateNodeIdentifier(treeItems, selectedItemId, {
-                                edistamisalue: value,
-                              }),
-                            );
-                          });
-                        }}
-                        texts={{
-                          label: "Edistämisalue",
-                          placeholder: "Valitse",
-                        }}
-                        disabled={!selectedItemId || !isEditMode}
-                      />
-                    )}
-                  </Field>
-
-                  <Field name="items">
-                    {() => (
-                      <Select
-                        id="landuse-site-tila"
-                        options={tilaOptions}
-                        value={normalizeSelectValue(selectedNode?.tila)}
-                        onChange={(selectedOptions) => {
-                          if (!selectedItemId) {
-                            return;
-                          }
-
-                          handleSelectChange(selectedOptions, (value) => {
-                            form.change(
-                              "items",
-                              updateNodeIdentifier(treeItems, selectedItemId, {
-                                tila: value,
-                              }),
-                            );
-                          });
-                        }}
-                        texts={{
-                          label: "Maankäyttösopimuksen tila",
                           placeholder: "Valitse",
                         }}
                         disabled={!selectedItemId || !isEditMode}

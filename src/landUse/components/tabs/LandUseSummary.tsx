@@ -16,7 +16,7 @@ import { Form, Field } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { FormApi } from "final-form";
 import { normalizeSelectValue } from "../../fieldUtils";
-import type { LandUseSiteTreeNode } from "./LandUseSites";
+import { landUseEdistamisalueOptions } from "../../options";
 
 interface ValmistelijaEntry {
   value: string | undefined;
@@ -29,6 +29,9 @@ interface OsoiteEntry {
 }
 
 export interface LandUseSummaryFormValues {
+  maankayttosopimusType: string | undefined;
+  edistamisalue: string | undefined;
+  tila: string | undefined;
   valmistelijat: ValmistelijaEntry[];
   osoitteet: OsoiteEntry[];
   arvioituEsittelyvuosi: string;
@@ -46,24 +49,20 @@ export interface LandUseSummaryFormValues {
 interface LandUseSummaryProps {
   form: FormApi<LandUseSummaryFormValues>;
   isEditMode: boolean;
-  sites: LandUseSiteTreeNode[];
 }
 
-const flattenSites = (sites: LandUseSiteTreeNode[]): LandUseSiteTreeNode[] => {
-  const flattened: LandUseSiteTreeNode[] = [];
+const maankayttosopimusTypeOptions = [
+  {
+    label: "Maankäyttösopimus",
+    value: "Maankäyttösopimus",
+  },
+];
 
-  const collect = (items: LandUseSiteTreeNode[]) => {
-    items.forEach((item) => {
-      flattened.push(item);
-      if (item.children?.length) {
-        collect(item.children);
-      }
-    });
-  };
-
-  collect(sites);
-  return flattened;
-};
+const tilaOptions = [
+  { label: "Vireillä", value: "Vireillä" },
+  { label: "Neuvotteilla", value: "Neuvotteilla" },
+  { label: "Päätös", value: "Päätös" },
+];
 
 const handleSelectChange = (
   selectedOptions: { label: string; value: string }[],
@@ -79,10 +78,7 @@ const handleSelectChange = (
 export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   form,
   isEditMode,
-  sites,
 }) => {
-  const flatSites = flattenSites(sites);
-
   return (
     <Form<LandUseSummaryFormValues>
       form={form}
@@ -92,36 +88,70 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
           <div className="landuse-detail__content">
             <h2 className="landuse-detail__section-title">PERUSTIEDOT</h2>
 
-            {/* Kohteet Section */}
             <Fieldset
               heading=""
               className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
             >
-              <div className="landuse-detail__sites-table-wrapper">
-                {flatSites.length > 0 ? (
-                  <table className="landuse-detail__sites-table">
-                    <thead>
-                      <tr>
-                        <th>Kohteen tunnus</th>
-                        <th>Maankäyttösopimuksen tyyppi</th>
-                        <th>Edistämisalue</th>
-                        <th>Maankäyttösopimuksen tila</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {flatSites.map((site) => (
-                        <tr key={site.id}>
-                          <td>{site.kohteenTunnus || "-"}</td>
-                          <td>{site.maankayttosopimusType || "-"}</td>
-                          <td>{site.edistamisalue || "-"}</td>
-                          <td>{site.tila || "-"}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p>Ei kohteita.</p>
-                )}
+              <div className="landuse-detail__grid">
+                <div className="landuse-detail__column">
+                  <Field name="maankayttosopimusType">
+                    {({ input }) => (
+                      <Select
+                        id="summary-maankayttosopimus-type"
+                        options={maankayttosopimusTypeOptions}
+                        value={normalizeSelectValue(input.value)}
+                        onChange={(selectedOptions) =>
+                          handleSelectChange(selectedOptions, input.onChange)
+                        }
+                        texts={{
+                          label: "Maankäyttösopimuksen tyyppi",
+                          placeholder: "Valitse",
+                        }}
+                        disabled={!isEditMode}
+                      />
+                    )}
+                  </Field>
+                </div>
+
+                <div className="landuse-detail__column">
+                  <Field name="edistamisalue">
+                    {({ input }) => (
+                      <Select
+                        id="summary-edistamisalue"
+                        options={landUseEdistamisalueOptions}
+                        value={normalizeSelectValue(input.value)}
+                        onChange={(selectedOptions) =>
+                          handleSelectChange(selectedOptions, input.onChange)
+                        }
+                        texts={{
+                          label: "Edistämisalue",
+                          placeholder: "Valitse",
+                        }}
+                        disabled={!isEditMode}
+                      />
+                    )}
+                  </Field>
+                </div>
+
+                <div className="landuse-detail__column">
+                  <Field name="tila">
+                    {({ input }) => (
+                      <Select
+                        id="summary-tila"
+                        options={tilaOptions}
+                        value={normalizeSelectValue(input.value)}
+                        onChange={(selectedOptions) =>
+                          handleSelectChange(selectedOptions, input.onChange)
+                        }
+                        texts={{
+                          label: "Maankäyttösopimuksen tila",
+                          placeholder: "Valitse",
+                        }}
+                        disabled={!isEditMode}
+                      />
+                    )}
+                  </Field>
+                </div>
               </div>
             </Fieldset>
 

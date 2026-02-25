@@ -5,6 +5,9 @@ import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties
 import type { LandUseSitesFormValues } from "../components/tabs/LandUseSites";
 
 export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
+  maankayttosopimusType: undefined,
+  edistamisalue: undefined,
+  tila: undefined,
   valmistelijat: [{ value: undefined }],
   osoitteet: [{ katuosoite: "", postinumero: "", kaupunki: "" }],
   arvioituEsittelyvuosi: "",
@@ -27,6 +30,9 @@ export const mapMockToSummaryFormValues = (
   }
 
   return {
+    maankayttosopimusType: normalizeSelectValue(mockData.maankayttosopimusType),
+    edistamisalue: normalizeSelectValue(mockData.edistamisalue),
+    tila: normalizeSelectValue(mockData.tila),
     valmistelijat: mockData.valmistelijat.map((valmistelija) => ({
       value: normalizeSelectValue(
         `${valmistelija.firstName} ${valmistelija.lastName}`.trim(),
@@ -64,9 +70,6 @@ export const mapMockToSitesFormValues = (
       kayttotarkoitus: normalizeSelectValue(kohde.kayttotarkoitus),
       hallintamuoto: normalizeSelectValue(kohde.hallintamuoto),
       suojeltu: normalizeSelectValue(kohde.suojeltu),
-      maankayttosopimusType: normalizeSelectValue(kohde.maankayttosopimusType),
-      edistamisalue: normalizeSelectValue(kohde.edistamisalue),
-      tila: normalizeSelectValue(kohde.tila),
       label: kohde.kohteenTunnus,
     })),
   };
