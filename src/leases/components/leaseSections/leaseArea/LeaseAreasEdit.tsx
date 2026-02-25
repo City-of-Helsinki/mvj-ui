@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
@@ -45,11 +45,15 @@ type AreaItemProps = {
   isActive: boolean;
   areaItems: Record<string, any>[] | undefined;
   onArchive: (index: number, area: Record<string, any>) => void;
-  onUnarchive: (index: number, area: Record<string, any>) => void;
+  onUnarchive: (
+    index: number,
+    area: Record<string, any>,
+    appDispatch: (...args: Array<any>) => any,
+  ) => void;
   formApi: FormApi;
 };
 
-const InnerLeaseAreas: React.FC<AreaItemProps> = ({
+const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
   fields,
   isActive,
   areaItems,
@@ -117,7 +121,9 @@ const InnerLeaseAreas: React.FC<AreaItemProps> = ({
                   isActive={isActive}
                   onArchive={onArchive}
                   onRemove={handleRemove}
-                  onUnarchive={onUnarchive}
+                  onUnarchive={(idx, areaData) =>
+                    onUnarchive(idx, areaData, appDispatch)
+                  }
                 />
               );
             })}
@@ -141,6 +147,8 @@ const InnerLeaseAreas: React.FC<AreaItemProps> = ({
     </AppConsumer>
   );
 };
+
+const InnerLeaseAreas = memo(InnerLeaseAreasBase);
 
 type Props = {
   formApi: FormApi;
@@ -296,6 +304,29 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
     [formApi],
   );
 
+  const handleUnarchive = useCallback(
+    (
+      index: number,
+      area: Record<string, any>,
+      appDispatch: (...args: Array<any>) => any,
+    ) => {
+      appDispatch({
+        type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+        confirmationFunction: () => {
+          handleUnarchiving(index, area);
+        },
+        confirmationModalButtonClassName: ButtonColors.ALERT,
+        confirmationModalButtonText:
+          ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.BUTTON,
+        confirmationModalLabel:
+          ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.LABEL,
+        confirmationModalTitle:
+          ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.TITLE,
+      });
+    },
+    [handleUnarchiving],
+  );
+
   return (
     <AppConsumer>
       {({ dispatch: appDispatch }) => {
@@ -312,22 +343,6 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
               ConfirmationModalTexts.COPY_AREAS_TO_CONTRACT.LABEL,
             confirmationModalTitle:
               ConfirmationModalTexts.COPY_AREAS_TO_CONTRACT.TITLE,
-          });
-        };
-
-        const handleUnarchive = (index: number, area: Record<string, any>) => {
-          appDispatch({
-            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-            confirmationFunction: () => {
-              handleUnarchiving(index, area);
-            },
-            confirmationModalButtonClassName: ButtonColors.ALERT,
-            confirmationModalButtonText:
-              ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.BUTTON,
-            confirmationModalLabel:
-              ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.LABEL,
-            confirmationModalTitle:
-              ConfirmationModalTexts.UNARCHIVE_LEASE_AREA.TITLE,
           });
         };
 
@@ -399,29 +414,29 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
                 <Divider />
 
                 <FieldArray name={ATTR_LEASE_AREAS_ACTIVE}>
-                  {(fieldArrayProps) =>
-                    InnerLeaseAreas({
-                      ...fieldArrayProps,
-                      formApi: formApi,
-                      isActive: true,
-                      areaItems: activeAreas,
-                      onArchive: showArchiveAreaModal,
-                      onUnarchive: handleUnarchive,
-                    })
-                  }
+                  {(fieldArrayProps) => (
+                    <InnerLeaseAreas
+                      {...fieldArrayProps}
+                      formApi={formApi}
+                      isActive={true}
+                      areaItems={activeAreas}
+                      onArchive={showArchiveAreaModal}
+                      onUnarchive={handleUnarchive}
+                    />
+                  )}
                 </FieldArray>
 
                 <FieldArray name={ATTR_LEASE_AREAS_ARCHIVED}>
-                  {(fieldArrayProps) =>
-                    InnerLeaseAreas({
-                      ...fieldArrayProps,
-                      formApi: formApi,
-                      isActive: false,
-                      areaItems: archivedAreas,
-                      onArchive: showArchiveAreaModal,
-                      onUnarchive: handleUnarchive,
-                    })
-                  }
+                  {(fieldArrayProps) => (
+                    <InnerLeaseAreas
+                      {...fieldArrayProps}
+                      formApi={formApi}
+                      isActive={false}
+                      areaItems={archivedAreas}
+                      onArchive={showArchiveAreaModal}
+                      onUnarchive={handleUnarchive}
+                    />
+                  )}
                 </FieldArray>
               </form>
             )}

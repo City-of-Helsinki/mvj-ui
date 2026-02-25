@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { Link, useLocation } from "react-router-dom";
-import isEmpty from "lodash/isEmpty";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
@@ -138,7 +137,7 @@ const PlotItemsEdit: React.FC<Props> = ({
                 LeasePlotsFieldPaths.GEOMETRY,
               )}
             >
-              {!isEmpty(geometry) && (
+              {JSON.stringify(geometry) !== "{}" && (
                 <Link to={mapLinkUrl}>{LeasePlotsFieldTitles.GEOMETRY}</Link>
               )}
             </Authorization>

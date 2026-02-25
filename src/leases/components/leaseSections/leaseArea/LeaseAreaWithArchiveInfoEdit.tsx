@@ -33,6 +33,7 @@ import {
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from "@/util/helpers";
+import get from "lodash/get";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import {
   getAttributes,
@@ -70,12 +71,11 @@ const LeaseAreaWithArchiveInfoEdit = ({
   const dispatch = useDispatch();
 
   const {
-    input: { value: areaValue = {} },
-  } = useField(field, { subscription: { value: true } });
-
-  const areaId = areaValue?.id;
-  const archivedAt = areaValue?.archived_at;
-  const editedArea = areaValue;
+    input: { value: areaId },
+  } = useField(`${field}.id`, { subscription: { value: true } });
+  const {
+    input: { value: archivedAt },
+  } = useField(`${field}.archived_at`, { subscription: { value: true } });
 
   const areaCollapseState = useSelector((state) =>
     getCollapseStateByKey(
@@ -95,10 +95,12 @@ const LeaseAreaWithArchiveInfoEdit = ({
   const decisionOptions = getDecisionOptions(currentLease);
 
   const handleArchive = () => {
+    const editedArea = get(formApi.getState().values, field);
     onArchive(index, editedArea);
   };
 
   const handleUnarchive = () => {
+    const editedArea = get(formApi.getState().values, field);
     onUnarchive(index, editedArea);
   };
 
