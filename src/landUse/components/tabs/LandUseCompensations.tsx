@@ -2,10 +2,10 @@ import React from "react";
 import {
   Button,
   ButtonVariant,
-  Checkbox,
   Fieldset,
   IconCopy,
   IconPlusCircleFill,
+  RadioButton,
   TextArea,
   TextInput,
 } from "hds-react";
@@ -17,7 +17,6 @@ import { collectLeafNodes } from "../../utils/siteTree";
 
 interface PerustietotaulukkoRowValues {
   yksikkohinta: string;
-  perushinta: boolean;
 }
 
 export interface LandUseCompensationsFormValues {
@@ -27,6 +26,7 @@ export interface LandUseCompensationsFormValues {
   maakorvausSelite: string;
   muuSelite: string;
   perustietotaulukkoRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
+  perushintaSiteId?: string;
   yleisetAlueetNeliot: string;
   yleisetAlueetHankinnanArvo: string;
 }
@@ -283,16 +283,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                               </td>
                               <td>{`${formatCurrency(rowSumma)} €`}</td>
                               <td>
-                                <Field
-                                  name={getRowFieldPath(site.id, "perushinta")}
-                                  type="checkbox"
+                                <Field<string>
+                                  name="perushintaSiteId"
+                                  type="radio"
+                                  value={site.id}
                                 >
                                   {({ input }) => (
-                                    <Checkbox
+                                    <RadioButton
                                       id={`landuse-compensations-perushinta-${site.id}`}
                                       label=""
                                       name={input.name}
-                                      checked={Boolean(input.checked)}
+                                      value={site.id}
+                                      checked={input.checked}
                                       onChange={input.onChange}
                                       onBlur={input.onBlur}
                                       onFocus={input.onFocus}
