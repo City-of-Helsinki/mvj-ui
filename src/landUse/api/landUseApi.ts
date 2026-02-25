@@ -26,8 +26,7 @@ import {
   getNextLandUseSequence,
 } from "../utils/landUseIdentifier";
 
-const createEmptyTabValues = <T extends Record<string, unknown>>(): T =>
-  ({}) as T;
+const createEmptyTabValues = <T extends object>(): T => ({}) as T;
 
 const getTabData = async <T>(
   agreementId: string,
@@ -290,7 +289,11 @@ export const updateParties = async (
 export const getCompensations = async (
   agreementId: string,
 ): Promise<LandUseCompensationsFormValues> =>
-  getTabData(agreementId, "compensations", createEmptyTabValues());
+  getTabData(
+    agreementId,
+    "compensations",
+    createEmptyTabValues<LandUseCompensationsFormValues>(),
+  );
 
 export const updateCompensations = async (
   agreementId: string,

@@ -18,7 +18,6 @@ import { collectLeafNodes } from "../../utils/siteTree";
 interface PerustietotaulukkoRowValues {
   yksikkohinta: string;
   perushinta: boolean;
-  muutos: boolean;
 }
 
 export interface LandUseCompensationsFormValues {
@@ -232,7 +231,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                           <th>Yksikköhinta</th>
                           <th>Summa</th>
                           <th>Perushinta</th>
-                          <th>Muutos</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -247,7 +245,9 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                               <td>
                                 {site.kohteenTunnus ? (
                                   <a
-                                    href={createEstateMapLink(site.kohteenTunnus)}
+                                    href={createEstateMapLink(
+                                      site.kohteenTunnus,
+                                    )}
                                     target="_blank"
                                     rel="noreferrer"
                                   >
@@ -301,25 +301,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                                   )}
                                 </Field>
                               </td>
-                              <td>
-                                <Field
-                                  name={getRowFieldPath(site.id, "muutos")}
-                                  type="checkbox"
-                                >
-                                  {({ input }) => (
-                                    <Checkbox
-                                      id={`landuse-compensations-muutos-${site.id}`}
-                                      label=""
-                                      name={input.name}
-                                      checked={Boolean(input.checked)}
-                                      onChange={input.onChange}
-                                      onBlur={input.onBlur}
-                                      onFocus={input.onFocus}
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
-                                </Field>
-                              </td>
                             </tr>
                           );
                         })}
@@ -332,7 +313,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                           <th>{formatInteger(totals.km2)}</th>
                           <th />
                           <th>{`${formatCurrency(totals.summa)} €`}</th>
-                          <th colSpan={2} />
+                          <th />
                         </tr>
                       </tfoot>
                     </table>
