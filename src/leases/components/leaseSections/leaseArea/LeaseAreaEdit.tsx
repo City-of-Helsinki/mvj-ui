@@ -934,10 +934,7 @@ const LeaseAreaEdit: React.FC<Props> = ({
                   ? customDetailedPlanCollapseState
                   : true
               }
-              hasErrors={
-                isSaveClicked &&
-                JSON.stringify(customDetailedPlanCollapseState) !== "{}"
-              }
+              hasErrors={isSaveClicked && !!errors?.custom_detailed_plan}
               headerTitle={"Oma muu alue"}
               onToggle={(val) => handleCustomDetailedPlanCollapseToggle(val)}
               enableUiDataEdit

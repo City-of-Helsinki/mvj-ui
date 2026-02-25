@@ -83,7 +83,7 @@ const PlanUnitItem: React.FC<OwnProps> = ({ areaArchived, planUnit }) => {
                   LeasePlanUnitsFieldPaths.IDENTIFIER,
                 )}
               >
-                <span>{LeasePlanUnitsFieldTitles.IDENTIFIER}</span>
+                {LeasePlanUnitsFieldTitles.IDENTIFIER}
               </FormTextTitle>
               <FormText>{planUnit.identifier || "-"}</FormText>
             </>
@@ -102,7 +102,7 @@ const PlanUnitItem: React.FC<OwnProps> = ({ areaArchived, planUnit }) => {
                   LeasePlanUnitsFieldPaths.IS_MASTER,
                 )}
               >
-                <span>{LeasePlanUnitsFieldTitles.IS_MASTER}</span>
+                {LeasePlanUnitsFieldTitles.IS_MASTER}
               </FormTextTitle>
               <FormText>{planUnit.is_master ? "Kyllä" : "Ei"}</FormText>
             </>
@@ -404,7 +404,7 @@ const PlanUnitItem: React.FC<OwnProps> = ({ areaArchived, planUnit }) => {
       </Row>
 
       {/* Usage distributions (Käyttöjakaumat) */}
-      <span>
+      <>
         {planUnit.usage_distributions.length > 0 && (
           <>
             <SubTitle>{LeasePlanUnitsFieldTitles.USAGE_DISTRIBUTIONS}</SubTitle>
@@ -479,7 +479,7 @@ const PlanUnitItem: React.FC<OwnProps> = ({ areaArchived, planUnit }) => {
             ))}
           </>
         )}
-      </span>
+      </>
     </BoxItem>
   );
 };

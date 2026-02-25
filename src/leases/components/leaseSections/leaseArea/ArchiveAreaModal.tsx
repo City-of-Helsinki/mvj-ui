@@ -39,9 +39,9 @@ const ArchiveAreaModal: React.FC<Props> = ({
   const archivedDecision = formApi.getFieldState("archived_decision")?.value;
   const archivedNote = formApi.getFieldState("archived_note")?.value;
 
-  let firstField: any = null;
+  const firstField = useRef<any>(null);
   const setRefForFirstField = (element: any) => {
-    firstField = element;
+    firstField.current = element;
   };
 
   // Prevent focus() on first render
@@ -56,8 +56,8 @@ const ArchiveAreaModal: React.FC<Props> = ({
       formApi.change("archived_decision", undefined);
       formApi.change("archived_note", undefined);
 
-      if (firstField) {
-        firstField.focus();
+      if (firstField.current) {
+        firstField.current.focus();
       }
     }
   }, [open, firstField, formApi]);
