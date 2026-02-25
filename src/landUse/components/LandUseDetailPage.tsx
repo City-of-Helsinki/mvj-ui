@@ -112,7 +112,13 @@ const LandUseDetailPage: React.FC = () => {
   const [isSaveClicked, setIsSaveClicked] = useState(false);
   const queryClient = useQueryClient();
 
-  // Form state tracking for each tab
+  /** Form state tracking for each tab.
+   * Is necessary, because react-final-form's FormApi's dirty state is unreliable:
+   * Whenever user navigates to a different tab, the form fields are unregistered,
+   * and final-form's dirty state resets to false.
+   * Apparently final-form requires all the fields to be registered at the same
+   * time for dirty state to work, which is not possible with our tabbed UI.
+   */
   const [formStates, setFormStates] = useState<Record<string, FormState>>({
     summary: { ...initialFormState },
     sites: { ...initialFormState },
@@ -123,6 +129,16 @@ const LandUseDetailPage: React.FC = () => {
     invoicing: { ...initialFormState },
     map: { ...initialFormState },
   });
+
+  const resetFormStates = () => {
+    setFormStates((prev) => {
+      const newState: Record<string, FormState> = {};
+      Object.keys(prev).forEach((key) => {
+        newState[key] = initialFormState;
+      });
+      return newState;
+    });
+  };
 
   const summaryQuery = useQuery({
     queryKey: ["land-use", agreementId, "summary"],
@@ -509,7 +525,10 @@ const LandUseDetailPage: React.FC = () => {
 
     Object.entries(formApis).forEach(([key, formApi]) => {
       const state = formApi.getState();
-      if (!state.dirty) {
+
+      // We must read dirty state from our custom formStates, because
+      // final-form's dirty state is unreliable in our tabbed UI.
+      if (!formStates[key]?.dirty) {
         return;
       }
 
@@ -575,6 +594,7 @@ const LandUseDetailPage: React.FC = () => {
       await Promise.all(mutations);
       setIsSaveClicked(false);
       setIsEditMode(false);
+      resetFormStates();
     } catch (error) {
       console.error("Failed to save agreement data", error);
     }
@@ -588,6 +608,7 @@ const LandUseDetailPage: React.FC = () => {
 
     setIsSaveClicked(false);
     setIsEditMode(false);
+    resetFormStates();
   };
 
   const handleDeleteClick = () => {
