@@ -115,9 +115,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 heading="Maankäyttökorvaus"
                 className="landuse-detail__fieldset--with-margin"
               >
-                <h3 className="landuse-detail__subsection-title">
-                  Korvauksen määrä
-                </h3>
                 <div className="landuse-detail__grid landuse-detail__compensation-grid">
                   <Field name="rahakorvaus">
                     {({ input }) => (
