@@ -70,6 +70,9 @@ const getRowFieldPath = (
   field: keyof PerustietotaulukkoRowValues,
 ): string => `perustietotaulukkoRowsBySiteId.${siteId}.${field}`;
 
+const createEstateMapLink = (kohteenTunnus: string): string =>
+  `https://kartta.hel.fi/?RegFormEstate=${encodeURIComponent(kohteenTunnus)}`;
+
 export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
   form,
   isEditMode,
@@ -241,7 +244,19 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
 
                           return (
                             <tr key={site.id}>
-                              <td>{site.kohteenTunnus || "-"}</td>
+                              <td>
+                                {site.kohteenTunnus ? (
+                                  <a
+                                    href={createEstateMapLink(site.kohteenTunnus)}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    {site.kohteenTunnus}
+                                  </a>
+                                ) : (
+                                  "-"
+                                )}
+                              </td>
                               <td>{site.kayttotarkoitus || "-"}</td>
                               <td>{site.hallintamuoto || "-"}</td>
                               <td>{site.suojeltu || "-"}</td>
