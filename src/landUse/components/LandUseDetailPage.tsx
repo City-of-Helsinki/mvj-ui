@@ -734,6 +734,7 @@ const LandUseDetailPage: React.FC = () => {
 
         <TabPanel>
           <LandUseMonitoring
+            agreementId={agreementId}
             form={monitoringFormApi}
             isEditMode={isEditMode}
             sites={sitesQuery.data?.items ?? []}

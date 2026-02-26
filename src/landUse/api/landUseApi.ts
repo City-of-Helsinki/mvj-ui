@@ -2,7 +2,10 @@ import type { LandUseCompensationsFormValues } from "../components/tabs/LandUseC
 import type { LandUseDecisionsFormValues } from "../components/tabs/LandUseDecisions";
 import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoicing";
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
-import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
+import type {
+  LandUseMonitoringFormValues,
+  MonitoringToteutunutEntry,
+} from "../components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
 import type {
   LandUseSiteTreeNode,
@@ -16,8 +19,11 @@ import {
 import {
   getAgreementIds,
   getAgreementTab,
+  getMonitoringToteutunutEntriesBySiteId,
   setAgreementListItem,
   setAgreementTab,
+  setMonitoringToteutunutEntries,
+  setMonitoringToteutunutEntriesBySiteId,
 } from "./landUseDb";
 import type { LandUseListItem } from "./landUseListTypes";
 import { LAND_USE_TAB_KEYS, type LandUseTabKey } from "./landUseTypes";
@@ -305,13 +311,63 @@ export const updateCompensations = async (
 
 export const getMonitoring = async (
   agreementId: string,
-): Promise<LandUseMonitoringFormValues> =>
-  getTabData(agreementId, "monitoring", createEmptyTabValues());
+): Promise<LandUseMonitoringFormValues> => {
+  const monitoring = await getTabData(
+    agreementId,
+    "monitoring",
+    createEmptyTabValues(),
+  );
+
+  const toteutunutEntriesBySiteId =
+    await getMonitoringToteutunutEntriesBySiteId(agreementId);
+
+  if (Object.keys(toteutunutEntriesBySiteId).length === 0) {
+    return monitoring;
+  }
+
+  const normalizedToteutunutBySiteId = {
+    ...(monitoring.toteutunutBySiteId ?? {}),
+    ...Object.fromEntries(
+      Object.keys(toteutunutEntriesBySiteId).map((siteId) => [siteId, "Kyllä"]),
+    ),
+  };
+
+  return {
+    ...monitoring,
+    toteutunutBySiteId: normalizedToteutunutBySiteId,
+    toteutunutKm2EntriesBySiteId: {
+      ...(monitoring.toteutunutKm2EntriesBySiteId ?? {}),
+      ...toteutunutEntriesBySiteId,
+    },
+  };
+};
+
+export const getMonitoringToteutunutEntries = async (
+  agreementId: string,
+): Promise<Record<string, MonitoringToteutunutEntry[]>> =>
+  getMonitoringToteutunutEntriesBySiteId(agreementId);
+
+export const addMonitoringToteutunutEntry = async (
+  agreementId: string,
+  siteId: string,
+  entry: MonitoringToteutunutEntry,
+): Promise<MonitoringToteutunutEntry[]> => {
+  const entriesBySiteId =
+    await getMonitoringToteutunutEntriesBySiteId(agreementId);
+  const nextEntries = [...(entriesBySiteId[siteId] ?? []), entry];
+
+  await setMonitoringToteutunutEntries(agreementId, siteId, nextEntries);
+  return nextEntries;
+};
 
 export const updateMonitoring = async (
   agreementId: string,
   values: LandUseMonitoringFormValues,
 ): Promise<LandUseMonitoringFormValues> => {
+  await setMonitoringToteutunutEntriesBySiteId(
+    agreementId,
+    values.toteutunutKm2EntriesBySiteId ?? {},
+  );
   await setAgreementTab(agreementId, "monitoring", values);
   return values;
 };

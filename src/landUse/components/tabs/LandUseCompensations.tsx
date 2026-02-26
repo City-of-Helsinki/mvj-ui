@@ -15,6 +15,7 @@ import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import type { LandUseSiteTreeNode } from "./LandUseSites";
 import { collectLeafNodes } from "../../utils/siteTree";
+import { parseLandUseNumericValueOrZero } from "../../utils/number";
 
 interface PerustietotaulukkoRowValues {
   yksikkohinta: string;
@@ -39,32 +40,8 @@ interface LandUseCompensationsProps {
   sites: LandUseSiteTreeNode[];
 }
 
-const parseNumber = (value: string | number | undefined): number => {
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : 0;
-  }
-
-  if (typeof value !== "string") {
-    return 0;
-  }
-
-  const compactValue = value
-    .replace(/\u00A0/g, "")
-    .replace(/\s/g, "")
-    .replace(/€/g, "")
-    .replace(/[^0-9,.-]/g, "");
-
-  let normalized = compactValue.replace(/,/g, ".");
-  if ((normalized.match(/\./g) ?? []).length > 1) {
-    const lastDotIndex = normalized.lastIndexOf(".");
-    normalized =
-      normalized.slice(0, lastDotIndex).replace(/\./g, "") +
-      normalized.slice(lastDotIndex);
-  }
-
-  const parsed = Number(normalized);
-  return Number.isFinite(parsed) ? parsed : 0;
-};
+const parseNumber = (value: string | number | undefined): number =>
+  parseLandUseNumericValueOrZero(value);
 
 const formatCurrency = (value: number): string => {
   return value.toLocaleString("fi-FI", {
@@ -292,7 +269,8 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       label="Info"
                       style={{ marginBottom: "var(--spacing-m)" }}
                     >
-                      Taulukkoa ei voi muokata, kun sopimuksen tila on "Päätös"
+                      Taulukkoa ei voi muokata, kun sopimuksen tila on
+                      &quot;Päätös&quot;
                     </Notification>
                   )}
                   <div className="landuse-detail__compensations-table-header-actions">

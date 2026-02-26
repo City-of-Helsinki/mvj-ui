@@ -475,9 +475,80 @@
   }
 }
 
-.landuse-detail__monitoring-toteutunut-cell {
+.landuse-detail__monitoring-actions-cell {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.landuse-detail__monitoring-km2-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  font-weight: 600;
+
+  &--match {
+    color: var(--color-success);
+    border-color: var(--color-success);
+    background-color: var(--color-black-5);
+  }
+
+  &--mismatch {
+    color: var(--color-error);
+    border-color: var(--color-error);
+    background-color: var(--color-black-5);
+  }
+}
+
+.landuse-detail__monitoring-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.landuse-detail__monitoring-dialog-site-label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.landuse-detail__monitoring-dialog-site-value {
+  margin: 0;
+}
+
+.landuse-detail__monitoring-dialog-km2-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.landuse-detail__monitoring-dialog-km2-target {
+  padding-bottom: 8px;
+  color: var(--color-black-70);
+}
+
+.landuse-detail__monitoring-dialog-list {
+  margin-top: 8px;
+}
+
+.landuse-detail__monitoring-dialog-empty {
+  margin: 0;
+  color: var(--color-black-70);
+}
+
+.landuse-detail__monitoring-dialog-items {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-black-20);
+  }
 }

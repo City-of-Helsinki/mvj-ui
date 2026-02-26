@@ -1,0 +1,36 @@
+export const parseLandUseNumericValue = (
+  value: string | number | undefined,
+): number | null => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : null;
+  }
+
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const compactValue = value
+    .replace(/\u00A0/g, "")
+    .replace(/\s/g, "")
+    .replace(/€/g, "")
+    .replace(/[^0-9,.-]/g, "");
+
+  if (!compactValue) {
+    return null;
+  }
+
+  let normalized = compactValue.replace(/,/g, ".");
+  if ((normalized.match(/\./g) ?? []).length > 1) {
+    const lastDotIndex = normalized.lastIndexOf(".");
+    normalized =
+      normalized.slice(0, lastDotIndex).replace(/\./g, "") +
+      normalized.slice(lastDotIndex);
+  }
+
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+export const parseLandUseNumericValueOrZero = (
+  value: string | number | undefined,
+): number => parseLandUseNumericValue(value) ?? 0;
