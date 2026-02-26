@@ -733,7 +733,14 @@ const LandUseDetailPage: React.FC = () => {
         </TabPanel>
 
         <TabPanel>
-          <LandUseMonitoring form={monitoringFormApi} isEditMode={isEditMode} />
+          <LandUseMonitoring
+            form={monitoringFormApi}
+            isEditMode={isEditMode}
+            sites={sitesQuery.data?.items ?? []}
+            compensationsRowsBySiteId={
+              compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
+            }
+          />
         </TabPanel>
 
         <TabPanel>

@@ -395,3 +395,89 @@
     font-weight: 600;
   }
 }
+
+.landuse-detail__monitoring-table-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 12px;
+
+  &--start {
+    justify-content: flex-start;
+    margin-top: 12px;
+    margin-bottom: 0;
+  }
+}
+
+.landuse-detail__monitoring-table {
+  th,
+  td {
+    vertical-align: middle;
+  }
+
+  tbody td {
+    min-width: 120px;
+  }
+
+  tbody td:first-child,
+  thead th:first-child {
+    min-width: 130px;
+  }
+
+  .hds-select,
+  .hds-text-input {
+    margin: 0;
+  }
+
+  .hds-text-input__input {
+    min-width: 100px;
+  }
+}
+
+.landuse-detail__monitoring-remaining-grid {
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.landuse-detail__monitoring-info-box {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(320px, 1fr);
+  gap: 20px;
+  padding: 16px;
+  border: 1px solid var(--color-black-20);
+  border-radius: 4px;
+  background-color: var(--color-black-5);
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.landuse-detail__monitoring-info-content {
+  p {
+    margin: 0;
+  }
+}
+
+.landuse-detail__monitoring-info-title {
+  font-weight: 600;
+  margin-bottom: 8px !important;
+}
+
+.landuse-detail__monitoring-info-table {
+  th,
+  td {
+    padding: 8px 12px;
+  }
+}
+
+.landuse-detail__monitoring-toteutunut-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
