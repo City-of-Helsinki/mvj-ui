@@ -312,11 +312,17 @@ export const updateCompensations = async (
 export const getMonitoring = async (
   agreementId: string,
 ): Promise<LandUseMonitoringFormValues> => {
-  const monitoring = await getTabData(
+  const monitoringData = await getTabData(
     agreementId,
     "monitoring",
-    createEmptyTabValues(),
+    createEmptyTabValues<LandUseMonitoringFormValues>(),
   );
+  const monitoring: LandUseMonitoringFormValues = {
+    toteutunutKm2EntriesBySiteId: monitoringData.toteutunutKm2EntriesBySiteId,
+    sakkoRows: monitoringData.sakkoRows,
+    sopimuksenMukainen: monitoringData.sopimuksenMukainen,
+    rahakorvaus: monitoringData.rahakorvaus,
+  };
 
   const toteutunutEntriesBySiteId =
     await getMonitoringToteutunutEntriesBySiteId(agreementId);
@@ -325,16 +331,8 @@ export const getMonitoring = async (
     return monitoring;
   }
 
-  const normalizedToteutunutBySiteId = {
-    ...(monitoring.toteutunutBySiteId ?? {}),
-    ...Object.fromEntries(
-      Object.keys(toteutunutEntriesBySiteId).map((siteId) => [siteId, "Kyllä"]),
-    ),
-  };
-
   return {
     ...monitoring,
-    toteutunutBySiteId: normalizedToteutunutBySiteId,
     toteutunutKm2EntriesBySiteId: {
       ...(monitoring.toteutunutKm2EntriesBySiteId ?? {}),
       ...toteutunutEntriesBySiteId,
@@ -364,12 +362,19 @@ export const updateMonitoring = async (
   agreementId: string,
   values: LandUseMonitoringFormValues,
 ): Promise<LandUseMonitoringFormValues> => {
+  const sanitizedValues: LandUseMonitoringFormValues = {
+    toteutunutKm2EntriesBySiteId: values.toteutunutKm2EntriesBySiteId,
+    sakkoRows: values.sakkoRows,
+    sopimuksenMukainen: values.sopimuksenMukainen,
+    rahakorvaus: values.rahakorvaus,
+  };
+
   await setMonitoringToteutunutEntriesBySiteId(
     agreementId,
-    values.toteutunutKm2EntriesBySiteId ?? {},
+    sanitizedValues.toteutunutKm2EntriesBySiteId ?? {},
   );
-  await setAgreementTab(agreementId, "monitoring", values);
-  return values;
+  await setAgreementTab(agreementId, "monitoring", sanitizedValues);
+  return sanitizedValues;
 };
 
 export const getDecisions = async (

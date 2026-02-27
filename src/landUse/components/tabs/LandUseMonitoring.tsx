@@ -33,9 +33,7 @@ export interface MonitoringToteutunutEntry {
 }
 
 export interface LandUseMonitoringFormValues {
-  toteutunutBySiteId?: Record<string, string>;
   toteutunutKm2EntriesBySiteId?: Record<string, MonitoringToteutunutEntry[]>;
-  vakuuslaskuriRows?: MonitoringVakuuslaskuriRow[];
   sakkoRows?: MonitoringSakkoRow[];
   sopimuksenMukainen?: string;
   rahakorvaus?: string;
@@ -46,7 +44,7 @@ interface MonitoringVakuuslaskuriRow {
   hallintamuoto?: string;
   km2: string;
   hintaero: string;
-  kerroin?: string;
+  kerroin: string;
   vakuustarve: string;
   vakuudet: string;
 }
@@ -83,40 +81,33 @@ const hallintamuotoOptions = landUseCompensationSelectOptions.hallintamuoto.map(
   (value) => ({ label: value, value }),
 );
 
-const vakuusKerroinOptions = ["100 %", "80 %", "70 %", "60 %"].map((value) => ({
-  label: value,
-  value,
-}));
+const formatEuroValue = (value: number): string =>
+  `${value.toLocaleString("fi-FI", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  })} €`;
 
-const defaultVakuuslaskuriRows: MonitoringVakuuslaskuriRow[] = [
-  {
-    kohteenTunnus: "91-38-52-1",
-    hallintamuoto: "Vapaarahoitteinen omistus",
-    km2: "1000",
-    hintaero: "1000",
-    kerroin: "100 %",
-    vakuustarve: "0",
-    vakuudet: "3",
-  },
-  {
-    kohteenTunnus: "91-38-52-8",
-    hallintamuoto: "ARA-Vuokra",
-    km2: "250",
-    hintaero: "500",
-    kerroin: "80 %",
-    vakuustarve: "100 000",
-    vakuudet: "0",
-  },
-  {
-    kohteenTunnus: "91-38-52-2",
-    hallintamuoto: "ASO",
-    km2: "1000",
-    hintaero: "500",
-    kerroin: "80 %",
-    vakuustarve: "0",
-    vakuudet: "0",
-  },
-];
+const formatNumericValue = (value: number): string =>
+  value.toLocaleString("fi-FI", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+
+const getKerroinPercent = (hintaero: number): number => {
+  if (hintaero <= 500) {
+    return 100;
+  }
+
+  if (hintaero <= 1000) {
+    return 80;
+  }
+
+  if (hintaero <= 1500) {
+    return 70;
+  }
+
+  return 60;
+};
 
 const defaultSakkoRows: MonitoringSakkoRow[] = [
   {
@@ -171,8 +162,48 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
       render={({ handleSubmit, values }) => {
         const toteutunutKm2EntriesBySiteId =
           values.toteutunutKm2EntriesBySiteId ?? {};
-        const vakuuslaskuriRows =
-          values.vakuuslaskuriRows ?? defaultVakuuslaskuriRows;
+        const vakuuslaskuriRows: MonitoringVakuuslaskuriRow[] = leafSites.map(
+          (site) => {
+            const kohteenTunnus = site.kohteenTunnus || "-";
+            const vaadittuValue = parseLandUseNumericValue(site.km2);
+            const latestToteutunutValue = parseLandUseNumericValue(
+              toteutunutKm2EntriesBySiteId[site.id]?.[
+                (toteutunutKm2EntriesBySiteId[site.id]?.length ?? 1) - 1
+              ]?.value,
+            );
+            const toteutunutValue = latestToteutunutValue ?? 0;
+            const hintaeroValue = parseLandUseNumericValue(
+              compensationsRowsBySiteId[site.id]?.yksikkohinta,
+            );
+            const kerroinPercent =
+              hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
+
+            const vakuustarveValue =
+              vaadittuValue !== null &&
+              hintaeroValue !== null &&
+              kerroinPercent !== null
+                ? Math.max(0, vaadittuValue - toteutunutValue) *
+                  hintaeroValue *
+                  (kerroinPercent / 100)
+                : null;
+
+            return {
+              kohteenTunnus,
+              hallintamuoto: site.hallintamuoto || "-",
+              km2: site.km2 || "-",
+              hintaero:
+                hintaeroValue !== null
+                  ? formatNumericValue(hintaeroValue)
+                  : "-",
+              kerroin: kerroinPercent !== null ? `${kerroinPercent} %` : "-",
+              vakuustarve:
+                vakuustarveValue !== null
+                  ? formatEuroValue(vakuustarveValue)
+                  : "-",
+              vakuudet: "-",
+            };
+          },
+        );
         const sakkoRows = values.sakkoRows ?? defaultSakkoRows;
         const selectedEntries = selectedSiteId
           ? (toteutunutKm2EntriesBySiteId[selectedSiteId] ?? [])
@@ -337,116 +368,12 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                             key={`vakuuslaskuri-row-${row.kohteenTunnus}-${index}`}
                           >
                             <td>{row.kohteenTunnus}</td>
-                            <td>
-                              <Field
-                                name={`vakuuslaskuriRows.${index}.hallintamuoto`}
-                              >
-                                {({ input }) => (
-                                  <Select
-                                    id={`monitoring-vakuuslaskuri-hallintamuoto-${index}`}
-                                    options={hallintamuotoOptions}
-                                    value={normalizeSelectValue(
-                                      input.value ?? row.hallintamuoto,
-                                    )}
-                                    onChange={(selectedOptions) =>
-                                      handleSelectChange(
-                                        selectedOptions,
-                                        input.onChange,
-                                      )
-                                    }
-                                    disabled={!isEditMode}
-                                    texts={{
-                                      label: "",
-                                      placeholder: "Valitse",
-                                    }}
-                                  />
-                                )}
-                              </Field>
-                            </td>
-                            <td>
-                              <Field name={`vakuuslaskuriRows.${index}.km2`}>
-                                {({ input }) => (
-                                  <TextInput
-                                    id={`monitoring-vakuuslaskuri-km2-${index}`}
-                                    label=""
-                                    value={input.value ?? row.km2}
-                                    onChange={input.onChange}
-                                    disabled={!isEditMode}
-                                  />
-                                )}
-                              </Field>
-                            </td>
-                            <td>
-                              <Field
-                                name={`vakuuslaskuriRows.${index}.hintaero`}
-                              >
-                                {({ input }) => (
-                                  <TextInput
-                                    id={`monitoring-vakuuslaskuri-hintaero-${index}`}
-                                    label=""
-                                    value={input.value ?? row.hintaero}
-                                    onChange={input.onChange}
-                                    disabled={!isEditMode}
-                                  />
-                                )}
-                              </Field>
-                            </td>
-                            <td>
-                              <Field
-                                name={`vakuuslaskuriRows.${index}.kerroin`}
-                              >
-                                {({ input }) => (
-                                  <Select
-                                    id={`monitoring-vakuuslaskuri-kerroin-${index}`}
-                                    options={vakuusKerroinOptions}
-                                    value={normalizeSelectValue(
-                                      input.value ?? row.kerroin,
-                                    )}
-                                    onChange={(selectedOptions) =>
-                                      handleSelectChange(
-                                        selectedOptions,
-                                        input.onChange,
-                                      )
-                                    }
-                                    disabled={!isEditMode}
-                                    texts={{
-                                      label: "",
-                                      placeholder: "Valitse",
-                                    }}
-                                  />
-                                )}
-                              </Field>
-                            </td>
-                            <td>
-                              <Field
-                                name={`vakuuslaskuriRows.${index}.vakuustarve`}
-                              >
-                                {({ input }) => (
-                                  <TextInput
-                                    id={`monitoring-vakuuslaskuri-vakuustarve-${index}`}
-                                    label=""
-                                    value={input.value ?? row.vakuustarve}
-                                    onChange={input.onChange}
-                                    disabled={!isEditMode}
-                                  />
-                                )}
-                              </Field>
-                            </td>
-                            <td>
-                              <Field
-                                name={`vakuuslaskuriRows.${index}.vakuudet`}
-                              >
-                                {({ input }) => (
-                                  <TextInput
-                                    id={`monitoring-vakuuslaskuri-vakuudet-${index}`}
-                                    label=""
-                                    value={input.value ?? row.vakuudet}
-                                    onChange={input.onChange}
-                                    disabled={!isEditMode}
-                                  />
-                                )}
-                              </Field>
-                            </td>
+                            <td>{row.hallintamuoto || "-"}</td>
+                            <td>{row.km2 || "-"}</td>
+                            <td>{row.hintaero}</td>
+                            <td>{row.kerroin}</td>
+                            <td>{row.vakuustarve}</td>
+                            <td>{row.vakuudet}</td>
                           </tr>
                         ))}
                       </tbody>
