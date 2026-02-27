@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   TextInput,
   RadioButton,
@@ -10,12 +10,12 @@ import {
   IconTrash,
   Fieldset,
   DateInput,
-  SearchInput,
 } from "hds-react";
 import { Form, Field } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { FormApi } from "final-form";
 import { normalizeSelectValue } from "../../fieldUtils";
+import { getAsemakaavat, type AsemakaavaListItem } from "../../api/landUseApi";
 import {
   landUseEdistamisalueOptions,
   landUseNegotiationPhaseOptions,
@@ -87,6 +87,63 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   form,
   isEditMode,
 }) => {
+  const [asemakaavat, setAsemakaavat] = useState<AsemakaavaListItem[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadAsemakaavat = async () => {
+      const items = await getAsemakaavat();
+      if (isMounted) {
+        setAsemakaavat(items);
+      }
+    };
+
+    void loadAsemakaavat();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const asemakaavaNumberOptions = useMemo(
+    () =>
+      asemakaavat.map((item) => ({
+        label: item.asemakaavanNumero,
+        value: item.asemakaavanNumero,
+      })),
+    [asemakaavat],
+  );
+
+  const handleAsemakaavaNumberChange = (
+    selectedOptions: { label: string; value: string }[],
+  ) => {
+    const selectedNumber = selectedOptions[0]?.value ?? "";
+    const selectedAsemakaava = asemakaavat.find(
+      (item) => item.asemakaavanNumero === selectedNumber,
+    );
+
+    form.batch(() => {
+      form.change("asemakaavanNumero", selectedNumber);
+      form.change(
+        "asemakaavanKasittelyvaihe",
+        selectedAsemakaava?.asemakaavanKasittelyvaihe ?? "",
+      );
+      form.change(
+        "kasittelyvaiheenViimeisinPvm",
+        selectedAsemakaava?.kasittelyvaiheenViimeisinPvm ?? "",
+      );
+      form.change(
+        "asemakaavanHyvaksyjä",
+        selectedAsemakaava?.asemakaavanHyvaksyjä ?? "",
+      );
+      form.change(
+        "asemakaavanDiaarinumero",
+        selectedAsemakaava?.asemakaavanDiaarinumero ?? "",
+      );
+    });
+  };
+
   return (
     <Form<LandUseSummaryFormValues>
       form={form}
@@ -532,15 +589,17 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                 <div className="landuse-detail__column">
                   <Field name="asemakaavanNumero">
                     {({ input }) => (
-                      <SearchInput
+                      <Select
                         id="asemakaavan-numero"
-                        label="Asemakaavan numero"
-                        value={input.value}
-                        onChange={input.onChange}
-                        onSubmit={(value) =>
-                          console.log("Search submitted:", value)
-                        }
-                        placeholder="Hae asemakaavaa"
+                        options={asemakaavaNumberOptions}
+                        value={normalizeSelectValue(input.value)}
+                        onChange={handleAsemakaavaNumberChange}
+                        filter={kohdeSelectFilter}
+                        texts={{
+                          label: "Asemakaavan numero",
+                          placeholder: "Valitse",
+                        }}
+                        disabled={!isEditMode}
                       />
                     )}
                   </Field>

@@ -34,6 +34,74 @@ import {
 
 const createEmptyTabValues = <T extends object>(): T => ({}) as T;
 
+export const ASEMAKAAVA_KASITTELYVAIHE_OPTIONS = [
+  "1. Käynnistys",
+  "2. OAS",
+  "3. Ehdotus",
+  "4. Tarkistettu ehdotus",
+  "5. Hyväksyminen",
+  "6. Voimaantulo",
+] as const;
+
+type AsemakaavaKasittelyvaihe =
+  (typeof ASEMAKAAVA_KASITTELYVAIHE_OPTIONS)[number];
+
+export interface AsemakaavaListItem {
+  asemakaavanNumero: string;
+  asemakaavanKasittelyvaihe: AsemakaavaKasittelyvaihe;
+  kasittelyvaiheenViimeisinPvm: string;
+  asemakaavanHyvaksyjä: string;
+  asemakaavanDiaarinumero: string;
+}
+
+const mockAsemakaavaStore: Record<string, AsemakaavaListItem> = {
+  "0000255": {
+    asemakaavanNumero: "0000255",
+    asemakaavanKasittelyvaihe: "1. Käynnistys",
+    kasittelyvaiheenViimeisinPvm: "12.01.2025",
+    asemakaavanHyvaksyjä: "Henkilö 1",
+    asemakaavanDiaarinumero: "HEL 2947-138205",
+  },
+  "0000412": {
+    asemakaavanNumero: "0000412",
+    asemakaavanKasittelyvaihe: "2. OAS",
+    kasittelyvaiheenViimeisinPvm: "27.03.2025",
+    asemakaavanHyvaksyjä: "Henkilö 2",
+    asemakaavanDiaarinumero: "HEL 1035-880164",
+  },
+  "0000569": {
+    asemakaavanNumero: "0000569",
+    asemakaavanKasittelyvaihe: "3. Ehdotus",
+    kasittelyvaiheenViimeisinPvm: "08.06.2025",
+    asemakaavanHyvaksyjä: "Henkilö 3",
+    asemakaavanDiaarinumero: "HEL 7408-064219",
+  },
+  "0000623": {
+    asemakaavanNumero: "0000623",
+    asemakaavanKasittelyvaihe: "4. Tarkistettu ehdotus",
+    kasittelyvaiheenViimeisinPvm: "14.09.2025",
+    asemakaavanHyvaksyjä: "Henkilö 4",
+    asemakaavanDiaarinumero: "HEL 5512-972406",
+  },
+  "0000738": {
+    asemakaavanNumero: "0000738",
+    asemakaavanKasittelyvaihe: "5. Hyväksyminen",
+    kasittelyvaiheenViimeisinPvm: "02.11.2025",
+    asemakaavanHyvaksyjä: "Henkilö 5",
+    asemakaavanDiaarinumero: "HEL 4120-305774",
+  },
+  "0000891": {
+    asemakaavanNumero: "0000891",
+    asemakaavanKasittelyvaihe: "6. Voimaantulo",
+    kasittelyvaiheenViimeisinPvm: "19.01.2026",
+    asemakaavanHyvaksyjä: "Henkilö 6",
+    asemakaavanDiaarinumero: "HEL 6689-451392",
+  },
+};
+
+export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> =>
+  Object.values(mockAsemakaavaStore);
+
 const getTabData = async <T>(
   agreementId: string,
   tabKey: LandUseTabKey,
