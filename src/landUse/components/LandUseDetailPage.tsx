@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   Breadcrumb,
   Tabs,
@@ -74,6 +74,7 @@ interface FormState {
 // Tab configuration with form mapping
 interface TabConfig {
   label: string;
+  queryKey: string;
   hasForm: boolean;
   formKey?: keyof typeof TAB_FORM_KEYS;
 }
@@ -90,24 +91,93 @@ const TAB_FORM_KEYS = {
 } as const;
 
 const TABS_CONFIG: TabConfig[] = [
-  { label: "Perustiedot", hasForm: true, formKey: "summary" },
-  { label: "Kohteet", hasForm: true, formKey: "sites" },
-  { label: "Osapuolet", hasForm: true, formKey: "parties" },
-  { label: "Korvaukset", hasForm: true, formKey: "compensations" },
-  { label: "Valvonta", hasForm: true, formKey: "monitoring" },
-  { label: "Päätökset ja sopimukset", hasForm: true, formKey: "decisions" },
-  { label: "Laskutus", hasForm: true, formKey: "invoicing" },
-  { label: "Kartta", hasForm: true, formKey: "map" },
-  { label: "Muutoshistoria", hasForm: false },
+  {
+    label: "Perustiedot",
+    queryKey: "summary",
+    hasForm: true,
+    formKey: "summary",
+  },
+  { label: "Kohteet", queryKey: "sites", hasForm: true, formKey: "sites" },
+  {
+    label: "Osapuolet",
+    queryKey: "parties",
+    hasForm: true,
+    formKey: "parties",
+  },
+  {
+    label: "Korvaukset",
+    queryKey: "compensations",
+    hasForm: true,
+    formKey: "compensations",
+  },
+  {
+    label: "Valvonta",
+    queryKey: "monitoring",
+    hasForm: true,
+    formKey: "monitoring",
+  },
+  {
+    label: "Päätökset ja sopimukset",
+    queryKey: "decisions",
+    hasForm: true,
+    formKey: "decisions",
+  },
+  {
+    label: "Laskutus",
+    queryKey: "invoicing",
+    hasForm: true,
+    formKey: "invoicing",
+  },
+  { label: "Kartta", queryKey: "map", hasForm: true, formKey: "map" },
+  { label: "Muutoshistoria", queryKey: "history", hasForm: false },
 ];
+
+const TAB_QUERY_PARAM = "tab";
+
+const getTabQueryKeyFromIndex = (tabIndex: number): string => {
+  return TABS_CONFIG[tabIndex]?.queryKey ?? TABS_CONFIG[0].queryKey;
+};
+
+const getTabIndexFromQueryKey = (queryKey: string): number => {
+  return TABS_CONFIG.findIndex((tab) => tab.queryKey === queryKey);
+};
+
+const getActiveTabFromSearch = (search: string): number => {
+  const tabValue = new URLSearchParams(search).get(TAB_QUERY_PARAM);
+
+  if (!tabValue) {
+    return 0;
+  }
+
+  const tabIndexFromKey = getTabIndexFromQueryKey(tabValue);
+  if (tabIndexFromKey >= 0) {
+    return tabIndexFromKey;
+  }
+
+  const tabIndex = Number(tabValue);
+
+  if (
+    Number.isInteger(tabIndex) &&
+    tabIndex >= 0 &&
+    tabIndex < TABS_CONFIG.length
+  ) {
+    return tabIndex;
+  }
+
+  return 0;
+};
 
 // Initial form state
 const initialFormState: FormState = { dirty: false, valid: true };
 
 const LandUseDetailPage: React.FC = () => {
   const { id: identifier } = useParams<{ id: string }>();
+  const location = useLocation();
+  const navigate = useNavigate();
   const agreementId = identifier ?? "";
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(() =>
+    getActiveTabFromSearch(location.search),
+  );
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
   const queryClient = useQueryClient();
@@ -622,6 +692,31 @@ const LandUseDetailPage: React.FC = () => {
   const isDecisionPhase =
     summaryQuery.data?.tila === LAND_USE_NEGOTIATION_PHASES.PAATOS;
 
+  useEffect(() => {
+    const tabFromSearch = getActiveTabFromSearch(location.search);
+    setActiveTab((prevActiveTab) =>
+      prevActiveTab === tabFromSearch ? prevActiveTab : tabFromSearch,
+    );
+  }, [location.search]);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const tabFromUrl = searchParams.get(TAB_QUERY_PARAM);
+    const activeTabQueryKey = getTabQueryKeyFromIndex(activeTab);
+
+    if (tabFromUrl === activeTabQueryKey) {
+      return;
+    }
+
+    searchParams.set(TAB_QUERY_PARAM, activeTabQueryKey);
+    const search = searchParams.toString();
+    navigate({ search: search ? `?${search}` : "" }, { replace: true });
+  }, [activeTab, location.search, navigate]);
+
+  const handleTabClick = useCallback((tabIndex: number) => {
+    setActiveTab(tabIndex);
+  }, []);
+
   // Render tab label with status icons
   const renderTabLabel = (tabConfig: TabConfig, tabIndex: number) => {
     const formKey = tabConfig.formKey;
@@ -701,7 +796,7 @@ const LandUseDetailPage: React.FC = () => {
       <Tabs initiallyActiveTab={activeTab}>
         <TabList>
           {TABS_CONFIG.map((tabConfig, index) => (
-            <Tab key={tabConfig.label} onClick={() => setActiveTab(index)}>
+            <Tab key={tabConfig.label} onClick={() => handleTabClick(index)}>
               {renderTabLabel(tabConfig, index)}
             </Tab>
           ))}

@@ -13,8 +13,13 @@ import LandUseDetailPage from "../LandUseDetailPage";
 import * as landUseApi from "../../api/landUseApi";
 import { LAND_USE_NEGOTIATION_PHASES } from "../../options";
 
+const mockNavigate = vi.fn();
+let mockLocationSearch = "";
+
 vi.mock("react-router-dom", () => ({
   useParams: () => ({ id: "LU-1" }),
+  useLocation: () => ({ search: mockLocationSearch }),
+  useNavigate: () => mockNavigate,
 }));
 
 vi.mock("../tabs/LandUseSummary", () => ({
@@ -352,6 +357,7 @@ describe("LandUseDetailPage", () => {
   beforeEach(() => {
     cleanup();
     vi.clearAllMocks();
+    mockLocationSearch = "";
 
     vi.mocked(landUseApi.getSummary).mockResolvedValue({
       tila: LAND_USE_NEGOTIATION_PHASES.VIREILLA,
@@ -448,6 +454,77 @@ describe("LandUseDetailPage", () => {
     expect(landUseApi.updateSites).toHaveBeenCalledWith(
       "LU-1",
       expect.objectContaining({ sitesField: "sites-updated" }),
+    );
+  });
+
+  it("opens the tab from query parameter on initial render", async () => {
+    mockLocationSearch = "?tab=parties";
+
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("parties-input")).toBeDefined();
+    });
+
+    expect(screen.queryByLabelText("summary-input")).toBeNull();
+  });
+
+  it("supports legacy numeric tab query parameter on initial render", async () => {
+    mockLocationSearch = "?tab=2";
+
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("parties-input")).toBeDefined();
+    });
+  });
+
+  it("writes summary query parameter when first tab is selected", async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("tab", { name: /Perustiedot/i })).toBeDefined();
+    });
+
+    fireEvent.click(screen.getByRole("tab", { name: /Kohteet/i }));
+    fireEvent.click(screen.getByRole("tab", { name: /Perustiedot/i }));
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      { search: "?tab=summary" },
+      { replace: true },
     );
   });
 });
