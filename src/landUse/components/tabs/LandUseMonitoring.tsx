@@ -11,6 +11,7 @@ import {
   IconPlusCircleFill,
   IconPen,
   Select,
+  Table,
   TextInput,
 } from "hds-react";
 import { Form } from "react-final-form";
@@ -209,6 +210,212 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           ? (toteutunutKm2EntriesBySiteId[selectedSiteId] ?? [])
           : [];
 
+        const monitoringPerustaulukkoCols = [
+          { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
+          { key: "hallintamuoto", headerName: "Hallintamuoto" },
+          { key: "vaadittuKm2", headerName: "Vaadittu k-m²" },
+          { key: "toteutunutKm2", headerName: "Toteutunut k-m²" },
+          { key: "toiminnot", headerName: "Toiminnot" },
+          { key: "yksikkohinta", headerName: "Yksikköhinta" },
+          { key: "muutos", headerName: "Muutos" },
+        ];
+
+        const monitoringPerustaulukkoRows = leafSites.map((site, index) => {
+          const toteutunutEntries = toteutunutKm2EntriesBySiteId[site.id] ?? [];
+          const latestToteutunutEntry =
+            toteutunutEntries[toteutunutEntries.length - 1];
+          const latestToteutunutKm2 = latestToteutunutEntry?.value ?? "-";
+          const isToteutunut = toteutunutEntries.length > 0;
+          const vaadittuValue = parseLandUseNumericValue(site.km2);
+          const toteutunutValue = parseLandUseNumericValue(
+            latestToteutunutEntry?.value,
+          );
+          const isMatchingValue =
+            vaadittuValue !== null &&
+            toteutunutValue !== null &&
+            vaadittuValue === toteutunutValue;
+          const yksikkohinta =
+            compensationsRowsBySiteId[site.id]?.yksikkohinta ?? "-";
+
+          return {
+            id: `perustaulukko-row-${site.id}-${index}`,
+            kohteenTunnus: site.kohteenTunnus || "-",
+            hallintamuoto: site.hallintamuoto || "-",
+            vaadittuKm2: site.km2 || "-",
+            toteutunutKm2: latestToteutunutEntry ? (
+              <span
+                className={
+                  isMatchingValue
+                    ? "landuse-detail__monitoring-km2-value landuse-detail__monitoring-km2-value--match"
+                    : "landuse-detail__monitoring-km2-value landuse-detail__monitoring-km2-value--mismatch"
+                }
+              >
+                {isMatchingValue ? (
+                  <IconCheck size={IconSize.Small} aria-hidden="true" />
+                ) : (
+                  <IconAlertCircle size={IconSize.Small} aria-hidden="true" />
+                )}
+                <span>{latestToteutunutKm2}</span>
+              </span>
+            ) : (
+              <span>{latestToteutunutKm2}</span>
+            ),
+            toiminnot: (
+              <div className="landuse-detail__monitoring-actions-cell">
+                <Button
+                  type="button"
+                  variant={ButtonVariant.Supplementary}
+                  iconStart={<IconPen />}
+                  disabled={!isEditMode}
+                  onClick={() => {
+                    setSelectedSiteId(site.id);
+                  }}
+                >
+                  Kirjaa toteuma
+                </Button>
+              </div>
+            ),
+            yksikkohinta,
+            muutos: isToteutunut ? "" : "Muutos",
+          };
+        });
+
+        const monitoringVakuuslaskuriCols = [
+          { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
+          { key: "hallintamuoto", headerName: "Hallintamuoto" },
+          { key: "km2", headerName: "k-m²" },
+          { key: "hintaero", headerName: "Hintaero" },
+          { key: "kerroin", headerName: "Kerroin" },
+          { key: "vakuustarve", headerName: "Vakuustarve" },
+          { key: "vakuudet", headerName: "Vakuudet" },
+        ];
+
+        const monitoringVakuuslaskuriTableRows = vakuuslaskuriRows.map(
+          (row, index) => ({
+            id: `vakuuslaskuri-row-${row.kohteenTunnus}-${index}`,
+            kohteenTunnus: row.kohteenTunnus,
+            hallintamuoto: row.hallintamuoto || "-",
+            km2: row.km2 || "-",
+            hintaero: row.hintaero,
+            kerroin: row.kerroin,
+            vakuustarve: row.vakuustarve,
+            vakuudet: row.vakuudet,
+          }),
+        );
+
+        const monitoringInfoCols = [
+          { key: "hintaero", headerName: "Hintaero" },
+          { key: "vakuustarvekerroin", headerName: "Vakuustarvekerroin" },
+        ];
+
+        const monitoringInfoRows = [
+          {
+            id: "info-1",
+            hintaero: "0 € / k-m² - 500 € / k-m²",
+            vakuustarvekerroin: "100 %",
+          },
+          {
+            id: "info-2",
+            hintaero: "501 € / k-m² - 1000 € / k-m²",
+            vakuustarvekerroin: "80 %",
+          },
+          {
+            id: "info-3",
+            hintaero: "1001 € / k-m² - 1500 € / k-m²",
+            vakuustarvekerroin: "70 %",
+          },
+          {
+            id: "info-4",
+            hintaero: "1501 € / k-m² -",
+            vakuustarvekerroin: "60 %",
+          },
+        ];
+
+        const monitoringSakkoCols = [
+          { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
+          { key: "hallintamuoto", headerName: "Hallintamuoto" },
+          { key: "vaadittuKerrosala", headerName: "Vaadittu kerrosala" },
+          { key: "toteutunutKerrosala", headerName: "Toteutunut kerrosala" },
+          { key: "hintaero", headerName: "Hintaero" },
+          { key: "korotus", headerName: "Korotus" },
+        ];
+
+        const monitoringSakkoTableRows = sakkoRows.map((row, index) => ({
+          id: `sakko-row-${row.kohteenTunnus}-${index}`,
+          kohteenTunnus: row.kohteenTunnus,
+          hallintamuoto: (
+            <Field name={`sakkoRows.${index}.hallintamuoto`}>
+              {({ input }) => (
+                <Select
+                  id={`monitoring-sakko-hallintamuoto-${index}`}
+                  options={hallintamuotoOptions}
+                  value={normalizeSelectValue(input.value ?? row.hallintamuoto)}
+                  onChange={(selectedOptions) =>
+                    handleSelectChange(selectedOptions, input.onChange)
+                  }
+                  disabled={!isEditMode}
+                  texts={{
+                    label: "",
+                    placeholder: "Valitse",
+                  }}
+                />
+              )}
+            </Field>
+          ),
+          vaadittuKerrosala: (
+            <Field name={`sakkoRows.${index}.vaadittuKerrosala`}>
+              {({ input }) => (
+                <TextInput
+                  id={`monitoring-sakko-vaadittu-kerrosala-${index}`}
+                  label=""
+                  value={input.value ?? row.vaadittuKerrosala}
+                  onChange={input.onChange}
+                  disabled={!isEditMode}
+                />
+              )}
+            </Field>
+          ),
+          toteutunutKerrosala: (
+            <Field name={`sakkoRows.${index}.toteutunutKerrosala`}>
+              {({ input }) => (
+                <TextInput
+                  id={`monitoring-sakko-toteutunut-kerrosala-${index}`}
+                  label=""
+                  value={input.value ?? row.toteutunutKerrosala}
+                  onChange={input.onChange}
+                  disabled={!isEditMode}
+                />
+              )}
+            </Field>
+          ),
+          hintaero: (
+            <Field name={`sakkoRows.${index}.hintaero`}>
+              {({ input }) => (
+                <TextInput
+                  id={`monitoring-sakko-hintaero-${index}`}
+                  label=""
+                  value={input.value ?? row.hintaero}
+                  onChange={input.onChange}
+                  disabled={!isEditMode}
+                />
+              )}
+            </Field>
+          ),
+          korotus: (
+            <Field name={`sakkoRows.${index}.korotus`}>
+              {({ input }) => (
+                <TextInput
+                  id={`monitoring-sakko-korotus-${index}`}
+                  label=""
+                  value={input.value ?? row.korotus}
+                  onChange={input.onChange}
+                  disabled={!isEditMode}
+                />
+              )}
+            </Field>
+          ),
+        }));
+
         return (
           <>
             <form onSubmit={handleSubmit}>
@@ -237,94 +444,14 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   </div>
 
                   <div className="landuse-detail__sites-table-wrapper">
-                    <table className="landuse-detail__sites-table landuse-detail__monitoring-table">
-                      <thead>
-                        <tr>
-                          <th>Kohteen tunnus</th>
-                          <th>Hallintamuoto</th>
-                          <th>Vaadittu k-m²</th>
-                          <th>Toteutunut k-m²</th>
-                          <th>Toiminnot</th>
-                          <th>Yksikköhinta</th>
-                          <th>Muutos</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {leafSites.map((site, index) => {
-                          const toteutunutEntries =
-                            toteutunutKm2EntriesBySiteId[site.id] ?? [];
-                          const latestToteutunutEntry =
-                            toteutunutEntries[toteutunutEntries.length - 1];
-                          const latestToteutunutKm2 =
-                            latestToteutunutEntry?.value ?? "-";
-                          const isToteutunut = toteutunutEntries.length > 0;
-                          const vaadittuValue = parseLandUseNumericValue(
-                            site.km2,
-                          );
-                          const toteutunutValue = parseLandUseNumericValue(
-                            latestToteutunutEntry?.value,
-                          );
-                          const isMatchingValue =
-                            vaadittuValue !== null &&
-                            toteutunutValue !== null &&
-                            vaadittuValue === toteutunutValue;
-                          const yksikkohinta =
-                            compensationsRowsBySiteId[site.id]?.yksikkohinta ??
-                            "-";
-
-                          return (
-                            <tr key={`perustaulukko-row-${site.id}-${index}`}>
-                              <td>{site.kohteenTunnus || "-"}</td>
-                              <td>{site.hallintamuoto || "-"}</td>
-                              <td>{site.km2 || "-"}</td>
-                              <td>
-                                {latestToteutunutEntry ? (
-                                  <span
-                                    className={
-                                      isMatchingValue
-                                        ? "landuse-detail__monitoring-km2-value landuse-detail__monitoring-km2-value--match"
-                                        : "landuse-detail__monitoring-km2-value landuse-detail__monitoring-km2-value--mismatch"
-                                    }
-                                  >
-                                    {isMatchingValue ? (
-                                      <IconCheck
-                                        size={IconSize.Small}
-                                        aria-hidden="true"
-                                      />
-                                    ) : (
-                                      <IconAlertCircle
-                                        size={IconSize.Small}
-                                        aria-hidden="true"
-                                      />
-                                    )}
-                                    <span>{latestToteutunutKm2}</span>
-                                  </span>
-                                ) : (
-                                  <span>{latestToteutunutKm2}</span>
-                                )}
-                              </td>
-                              <td>
-                                <div className="landuse-detail__monitoring-actions-cell">
-                                  <Button
-                                    type="button"
-                                    variant={ButtonVariant.Supplementary}
-                                    iconStart={<IconPen />}
-                                    disabled={!isEditMode}
-                                    onClick={() => {
-                                      setSelectedSiteId(site.id);
-                                    }}
-                                  >
-                                    Kirjaa toteuma
-                                  </Button>
-                                </div>
-                              </td>
-                              <td>{yksikkohinta}</td>
-                              <td>{isToteutunut ? "" : "Muutos"}</td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                    <Table
+                      className="landuse-detail__sites-table landuse-detail__monitoring-table"
+                      cols={monitoringPerustaulukkoCols}
+                      indexKey="id"
+                      renderIndexCol={false}
+                      rows={monitoringPerustaulukkoRows}
+                      variant="light"
+                    />
                   </div>
                 </Fieldset>
 
@@ -350,34 +477,14 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   </div>
 
                   <div className="landuse-detail__sites-table-wrapper">
-                    <table className="landuse-detail__sites-table landuse-detail__monitoring-table">
-                      <thead>
-                        <tr>
-                          <th>Kohteen tunnus</th>
-                          <th>Hallintamuoto</th>
-                          <th>k-m²</th>
-                          <th>Hintaero</th>
-                          <th>Kerroin</th>
-                          <th>Vakuustarve</th>
-                          <th>Vakuudet</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {vakuuslaskuriRows.map((row, index) => (
-                          <tr
-                            key={`vakuuslaskuri-row-${row.kohteenTunnus}-${index}`}
-                          >
-                            <td>{row.kohteenTunnus}</td>
-                            <td>{row.hallintamuoto || "-"}</td>
-                            <td>{row.km2 || "-"}</td>
-                            <td>{row.hintaero}</td>
-                            <td>{row.kerroin}</td>
-                            <td>{row.vakuustarve}</td>
-                            <td>{row.vakuudet}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                    <Table
+                      className="landuse-detail__sites-table landuse-detail__monitoring-table"
+                      cols={monitoringVakuuslaskuriCols}
+                      indexKey="id"
+                      renderIndexCol={false}
+                      rows={monitoringVakuuslaskuriTableRows}
+                      variant="light"
+                    />
                   </div>
                 </Fieldset>
 
@@ -422,138 +529,27 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       </p>
                     </div>
 
-                    <table className="landuse-detail__sites-table landuse-detail__monitoring-info-table">
-                      <thead>
-                        <tr>
-                          <th>Hintaero</th>
-                          <th>Vakuustarvekerroin</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>0 € / k-m² - 500 € / k-m²</td>
-                          <td>100 %</td>
-                        </tr>
-                        <tr>
-                          <td>501 € / k-m² - 1000 € / k-m²</td>
-                          <td>80 %</td>
-                        </tr>
-                        <tr>
-                          <td>1001 € / k-m² - 1500 € / k-m²</td>
-                          <td>70 %</td>
-                        </tr>
-                        <tr>
-                          <td>1501 € / k-m² -</td>
-                          <td>60 %</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <Table
+                      className="landuse-detail__sites-table landuse-detail__monitoring-info-table"
+                      cols={monitoringInfoCols}
+                      indexKey="id"
+                      renderIndexCol={false}
+                      rows={monitoringInfoRows}
+                      variant="light"
+                    />
                   </div>
                 </Fieldset>
 
                 <Fieldset heading="Sakko">
                   <div className="landuse-detail__sites-table-wrapper">
-                    <table className="landuse-detail__sites-table landuse-detail__monitoring-table">
-                      <thead>
-                        <tr>
-                          <th>Kohteen tunnus</th>
-                          <th>Hallintamuoto</th>
-                          <th>Vaadittu kerrosala</th>
-                          <th>Toteutunut kerrosala</th>
-                          <th>Hintaero</th>
-                          <th>Korotus</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {sakkoRows.map((row, index) => (
-                          <tr key={`sakko-row-${row.kohteenTunnus}-${index}`}>
-                            <td>{row.kohteenTunnus}</td>
-                            <td>
-                              <Field name={`sakkoRows.${index}.hallintamuoto`}>
-                                {({ input }) => (
-                                  <Select
-                                    id={`monitoring-sakko-hallintamuoto-${index}`}
-                                    options={hallintamuotoOptions}
-                                    value={normalizeSelectValue(
-                                      input.value ?? row.hallintamuoto,
-                                    )}
-                                    onChange={(selectedOptions) =>
-                                      handleSelectChange(
-                                        selectedOptions,
-                                        input.onChange,
-                                      )
-                                    }
-                                    disabled={!isEditMode}
-                                    texts={{
-                                      label: "",
-                                      placeholder: "Valitse",
-                                    }}
-                                  />
-                                )}
-                              </Field>
-                            </td>
-                            <td>
-                              <Field
-                                name={`sakkoRows.${index}.vaadittuKerrosala`}
-                              >
-                                {({ input }) => (
-                                  <TextInput
-                                    id={`monitoring-sakko-vaadittu-kerrosala-${index}`}
-                                    label=""
-                                    value={input.value ?? row.vaadittuKerrosala}
-                                    onChange={input.onChange}
-                                    disabled={!isEditMode}
-                                  />
-                                )}
-                              </Field>
-                            </td>
-                            <td>
-                              <Field
-                                name={`sakkoRows.${index}.toteutunutKerrosala`}
-                              >
-                                {({ input }) => (
-                                  <TextInput
-                                    id={`monitoring-sakko-toteutunut-kerrosala-${index}`}
-                                    label=""
-                                    value={
-                                      input.value ?? row.toteutunutKerrosala
-                                    }
-                                    onChange={input.onChange}
-                                    disabled={!isEditMode}
-                                  />
-                                )}
-                              </Field>
-                            </td>
-                            <td>
-                              <Field name={`sakkoRows.${index}.hintaero`}>
-                                {({ input }) => (
-                                  <TextInput
-                                    id={`monitoring-sakko-hintaero-${index}`}
-                                    label=""
-                                    value={input.value ?? row.hintaero}
-                                    onChange={input.onChange}
-                                    disabled={!isEditMode}
-                                  />
-                                )}
-                              </Field>
-                            </td>
-                            <td>
-                              <Field name={`sakkoRows.${index}.korotus`}>
-                                {({ input }) => (
-                                  <TextInput
-                                    id={`monitoring-sakko-korotus-${index}`}
-                                    label=""
-                                    value={input.value ?? row.korotus}
-                                    onChange={input.onChange}
-                                    disabled={!isEditMode}
-                                  />
-                                )}
-                              </Field>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                    <Table
+                      className="landuse-detail__sites-table landuse-detail__monitoring-table"
+                      cols={monitoringSakkoCols}
+                      indexKey="id"
+                      renderIndexCol={false}
+                      rows={monitoringSakkoTableRows}
+                      variant="light"
+                    />
                   </div>
 
                   <div className="landuse-detail__monitoring-table-toolbar landuse-detail__monitoring-table-toolbar--start">

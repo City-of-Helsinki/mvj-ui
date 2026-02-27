@@ -7,6 +7,7 @@ import {
   IconPlusCircleFill,
   Notification,
   RadioButton,
+  Table,
   TextArea,
   TextInput,
 } from "hds-react";
@@ -116,6 +117,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
         const muuKorvaus = parseNumber(values.muuKorvaus);
         const yhteensa = rahakorvaus + maakorvaus + muuKorvaus;
 
+        const compensationsTableCols = [
+          { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
+          { key: "kayttotarkoitus", headerName: "Käyttötarkoitus" },
+          { key: "hallintamuoto", headerName: "Hallintamuoto" },
+          { key: "suojeltu", headerName: "Suojeltu" },
+          { key: "pintaAlaM2", headerName: "Pinta-ala m²" },
+          { key: "km2", headerName: "k-m²" },
+          { key: "yksikkohinta", headerName: "Yksikköhinta" },
+          { key: "summa", headerName: "Summa" },
+          { key: "perushinta", headerName: "Perushinta" },
+        ];
+
         const totals = leafSites.reduce(
           (accumulator, site) => {
             const row = rowsBySiteId[site.id];
@@ -131,6 +144,94 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           },
           { pintaAlaM2: 0, km2: 0, summa: 0 },
         );
+
+        const compensationsTableRows = leafSites.map((site) => {
+          const row = rowsBySiteId[site.id];
+          const rowSumma =
+            parseNumber(site.km2) * parseNumber(row?.yksikkohinta);
+
+          return {
+            id: site.id,
+            kohteenTunnus: site.kohteenTunnus ? (
+              <a
+                href={createEstateMapLink(site.kohteenTunnus)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {site.kohteenTunnus}
+              </a>
+            ) : (
+              "-"
+            ),
+            kayttotarkoitus: site.kayttotarkoitus || "-",
+            hallintamuoto: site.hallintamuoto || "-",
+            suojeltu: site.suojeltu || "-",
+            pintaAlaM2: site.pintaAlaM2 || "-",
+            km2: site.km2 || "-",
+            yksikkohinta: (
+              <Field name={getRowFieldPath(site.id, "yksikkohinta")}>
+                {({ input }) => (
+                  <TextInput
+                    id={`landuse-compensations-yksikkohinta-${site.id}`}
+                    label=""
+                    hideLabel
+                    value={
+                      isCompensationsTableReadOnly
+                        ? formatCurrencyFieldValue(input.value)
+                        : (input.value ?? "")
+                    }
+                    onChange={input.onChange}
+                    onBlur={(event) => {
+                      input.onBlur(event);
+                      input.onChange(
+                        formatEditableMoneyFieldValue(input.value),
+                      );
+                    }}
+                    disabled={isCompensationsTableReadOnly}
+                  />
+                )}
+              </Field>
+            ),
+            summa: `${formatCurrency(rowSumma)} €`,
+            perushinta: (
+              <Field<string>
+                name="perushintaSiteId"
+                type="radio"
+                value={site.id}
+              >
+                {({ input }) => (
+                  <RadioButton
+                    id={`landuse-compensations-perushinta-${site.id}`}
+                    label=""
+                    name={input.name}
+                    value={site.id}
+                    checked={input.checked}
+                    onChange={input.onChange}
+                    onBlur={input.onBlur}
+                    onFocus={input.onFocus}
+                    disabled={isCompensationsTableReadOnly}
+                  />
+                )}
+              </Field>
+            ),
+          };
+        });
+
+        const compensationsTableRowsWithTotals = [
+          ...compensationsTableRows,
+          {
+            id: "totals-row",
+            kohteenTunnus: <strong>Yhteensä</strong>,
+            kayttotarkoitus: "",
+            hallintamuoto: "",
+            suojeltu: "",
+            pintaAlaM2: formatInteger(totals.pintaAlaM2),
+            km2: formatInteger(totals.km2),
+            yksikkohinta: "",
+            summa: `${formatCurrency(totals.summa)} €`,
+            perushinta: "",
+          },
+        ];
 
         return (
           <form onSubmit={handleSubmit}>
@@ -261,7 +362,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 heading="Perustietotaulukko"
                 className="landuse-detail__fieldset--with-margin"
               >
-                <div className="landuse-detail__sites-table-wrapper">
+                <div className="landuse-detail__sites-table-wrapper hds-table-container">
                   {isDecisionPhase && (
                     <Notification
                       type="info"
@@ -282,120 +383,14 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                     </Button>
                   </div>
                   {leafSites.length > 0 ? (
-                    <table className="landuse-detail__sites-table landuse-detail__compensations-table">
-                      <thead>
-                        <tr>
-                          <th>Kohteen tunnus</th>
-                          <th>Käyttötarkoitus</th>
-                          <th>Hallintamuoto</th>
-                          <th>Suojeltu</th>
-                          <th>Pinta-ala m²</th>
-                          <th>k-m²</th>
-                          <th>Yksikköhinta</th>
-                          <th>Summa</th>
-                          <th>Perushinta</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {leafSites.map((site) => {
-                          const row = rowsBySiteId[site.id];
-                          const rowSumma =
-                            parseNumber(site.km2) *
-                            parseNumber(row?.yksikkohinta);
-
-                          return (
-                            <tr key={site.id}>
-                              <td>
-                                {site.kohteenTunnus ? (
-                                  <a
-                                    href={createEstateMapLink(
-                                      site.kohteenTunnus,
-                                    )}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    {site.kohteenTunnus}
-                                  </a>
-                                ) : (
-                                  "-"
-                                )}
-                              </td>
-                              <td>{site.kayttotarkoitus || "-"}</td>
-                              <td>{site.hallintamuoto || "-"}</td>
-                              <td>{site.suojeltu || "-"}</td>
-                              <td>{site.pintaAlaM2 || "-"}</td>
-                              <td>{site.km2 || "-"}</td>
-                              <td>
-                                <Field
-                                  name={getRowFieldPath(
-                                    site.id,
-                                    "yksikkohinta",
-                                  )}
-                                >
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`landuse-compensations-yksikkohinta-${site.id}`}
-                                      label=""
-                                      hideLabel
-                                      value={
-                                        isCompensationsTableReadOnly
-                                          ? formatCurrencyFieldValue(
-                                              input.value,
-                                            )
-                                          : (input.value ?? "")
-                                      }
-                                      onChange={input.onChange}
-                                      onBlur={(event) => {
-                                        input.onBlur(event);
-                                        input.onChange(
-                                          formatEditableMoneyFieldValue(
-                                            input.value,
-                                          ),
-                                        );
-                                      }}
-                                      disabled={isCompensationsTableReadOnly}
-                                    />
-                                  )}
-                                </Field>
-                              </td>
-                              <td>{`${formatCurrency(rowSumma)} €`}</td>
-                              <td>
-                                <Field<string>
-                                  name="perushintaSiteId"
-                                  type="radio"
-                                  value={site.id}
-                                >
-                                  {({ input }) => (
-                                    <RadioButton
-                                      id={`landuse-compensations-perushinta-${site.id}`}
-                                      label=""
-                                      name={input.name}
-                                      value={site.id}
-                                      checked={input.checked}
-                                      onChange={input.onChange}
-                                      onBlur={input.onBlur}
-                                      onFocus={input.onFocus}
-                                      disabled={isCompensationsTableReadOnly}
-                                    />
-                                  )}
-                                </Field>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <th>Yhteensä</th>
-                          <th colSpan={3} />
-                          <th>{formatInteger(totals.pintaAlaM2)}</th>
-                          <th>{formatInteger(totals.km2)}</th>
-                          <th />
-                          <th>{`${formatCurrency(totals.summa)} €`}</th>
-                          <th />
-                        </tr>
-                      </tfoot>
-                    </table>
+                    <Table
+                      className="landuse-detail__sites-table landuse-detail__compensations-table"
+                      cols={compensationsTableCols}
+                      indexKey="id"
+                      renderIndexCol={false}
+                      rows={compensationsTableRowsWithTotals}
+                      variant="light"
+                    />
                   ) : (
                     <p>Perustietotaulukkoon ei ole vielä kohteita.</p>
                   )}
