@@ -443,14 +443,14 @@
   }
 }
 
-.landuse-detail__monitoring-info-box {
+.landuse-detail__monitoring-info-layout {
   display: grid;
   grid-template-columns: minmax(260px, 1fr) minmax(320px, 1fr);
   gap: 20px;
-  padding: 16px;
-  border: 1px solid var(--color-black-20);
-  border-radius: 4px;
-  background-color: var(--color-black-5);
+
+  p {
+    margin: 0;
+  }
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;

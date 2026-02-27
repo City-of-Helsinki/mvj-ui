@@ -10,6 +10,7 @@ import {
   IconSize,
   IconPlusCircleFill,
   IconPen,
+  Notification,
   Select,
   Table,
   TextInput,
@@ -517,27 +518,22 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       )}
                     </Field>
                   </div>
-
-                  <div className="landuse-detail__monitoring-info-box">
-                    <div className="landuse-detail__monitoring-info-content">
-                      <p className="landuse-detail__monitoring-info-title">
-                        Lorem ipsum
-                      </p>
+                  <Notification type="info" position="inline" label="Info">
+                    <div className="landuse-detail__monitoring-info-layout">
                       <p>
                         Korotettu vakuustarve määräytyy hintaeron mukaisesti
                         alla olevien rajojen mukaan.
                       </p>
+                      <Table
+                        className="landuse-detail__sites-table landuse-detail__monitoring-info-table"
+                        cols={monitoringInfoCols}
+                        indexKey="id"
+                        renderIndexCol={false}
+                        rows={monitoringInfoRows}
+                        variant="light"
+                      />
                     </div>
-
-                    <Table
-                      className="landuse-detail__sites-table landuse-detail__monitoring-info-table"
-                      cols={monitoringInfoCols}
-                      indexKey="id"
-                      renderIndexCol={false}
-                      rows={monitoringInfoRows}
-                      variant="light"
-                    />
-                  </div>
+                  </Notification>
                 </Fieldset>
 
                 <Fieldset heading="Sakko">
