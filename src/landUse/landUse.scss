@@ -552,3 +552,56 @@
     border-bottom: 1px solid var(--color-black-20);
   }
 }
+
+.landuse-detail__decisions-grid {
+  margin-bottom: 16px;
+}
+
+.landuse-detail__decisions-link-column {
+  grid-column: span 1;
+  gap: 8px;
+}
+
+.landuse-detail__decisions-label {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-black-70);
+}
+
+.landuse-detail__decisions-link-value {
+  margin: 0;
+  color: var(--color-bus);
+  font-weight: 500;
+}
+
+.landuse-detail__decisions-note-column,
+.landuse-detail__decisions-paatos-column {
+  grid-column: span 3;
+
+  @media (max-width: 1200px) {
+    grid-column: span 2;
+  }
+
+  @media (max-width: 768px) {
+    grid-column: span 1;
+  }
+}
+
+.landuse-detail__decisions-add-row {
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.landuse-detail__decisions-section-break {
+  margin-top: 24px;
+}
+
+.landuse-detail__decisions-vakuuslaskuri {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.landuse-detail__decisions-vakuus-block {
+  margin-bottom: 24px;
+}
