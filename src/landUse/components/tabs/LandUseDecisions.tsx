@@ -5,8 +5,10 @@ import {
   ButtonVariant,
   Checkbox,
   DateInput,
+  Dialog,
   Fieldset,
   IconPlusCircleFill,
+  IconTrash,
   Select,
   Table,
   TextInput,
@@ -14,6 +16,15 @@ import {
 import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
+import {
+  landUseAgreementTypeOptions,
+  landUseConditionTypeOptions,
+  landUseDecisionMakerOptions,
+  landUseDecisionTypeOptions,
+  landUseGuaranteeCategoryOptions,
+  landUseGuaranteeTypeOptions,
+  landUseSectionOptions,
+} from "../../options";
 
 interface DecisionCondition {
   conditionType?: string;
@@ -103,54 +114,6 @@ const handleSelectChange = (
   }
 };
 
-const paattajaOptions = [
-  { label: "Ville Virkailija", value: "Ville Virkailija" },
-  {
-    label: "Asuntotontit tiimipäällikkö",
-    value: "Asuntotontit tiimipäällikkö",
-  },
-];
-
-const pykalaOptions = [
-  { label: "60 §", value: "60 §" },
-  { label: "61 §", value: "61 §" },
-  { label: "62 §", value: "62 §" },
-];
-
-const paatoksenTyyppiOptions = [
-  {
-    label: "Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    value: "Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-  },
-  {
-    label: "Maankäyttösopimuksen hyväksyntä",
-    value: "Maankäyttösopimuksen hyväksyntä",
-  },
-];
-
-const ehtoTyyppiOptions = [
-  {
-    label: "Rasite - ja/tai rasitteenluont.ehto",
-    value: "Rasite - ja/tai rasitteenluont.ehto",
-  },
-  { label: "Muu ehto", value: "Muu ehto" },
-];
-
-const sopimuksenTyyppiOptions = [
-  { label: "Maankäyttösopimus", value: "Maankäyttösopimus" },
-  { label: "Esisopimus", value: "Esisopimus" },
-];
-
-const vakuudenTyyppiOptions = [
-  { label: "Muu vakuus", value: "Muu vakuus" },
-  { label: "Pankkitakaus", value: "Pankkitakaus" },
-];
-
-const vakuudenLajiOptions = [
-  { label: "-", value: "-" },
-  { label: "Rahavakuus", value: "Rahavakuus" },
-];
-
 const createNewDecisionCondition = (): DecisionCondition => ({
   conditionType: undefined,
   valvontapvm: "",
@@ -184,8 +147,19 @@ const createNewGuarantee = (): Guarantee => ({
   siteUsages: [],
 });
 
+const createNewDecision = (): DecisionItem => ({
+  title: "",
+  paattaja: undefined,
+  paatospvm: "",
+  pykala: undefined,
+  paatoksenTyyppi: undefined,
+  diaarinumero: "",
+  huomautus: "",
+  ehdot: [],
+});
+
 const createNewAgreement = (): AgreementItem => ({
-  title: "Uusi maankäyttösopimus",
+  title: "",
   sopimuksenTyyppi: undefined,
   sopimusnumero: "",
   allekirjoituspvm: "",
@@ -195,9 +169,9 @@ const createNewAgreement = (): AgreementItem => ({
   toinenKutsuLahetetty: "",
   kolmasKutsuLahetetty: "",
   paatos: undefined,
-  muutokset: [createNewAgreementChange()],
+  muutokset: [],
   vakuuslaskuri: false,
-  vakuudet: [createNewGuarantee()],
+  vakuudet: [],
 });
 
 const getDecisionAccordionHeading = (decision: DecisionItem): string => {
@@ -221,163 +195,6 @@ const getAgreementAccordionHeading = (agreement: AgreementItem): string => {
   return parts.join(" ") || "Sopimus";
 };
 
-const defaultDecisions: DecisionItem[] = [
-  {
-    title:
-      "Asuntotontit tiimipäällikkö 11.2025 60 § Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    paattaja: "Ville Virkailija",
-    paatospvm: "11.2025",
-    pykala: "60 §",
-    paatoksenTyyppi: "Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    diaarinumero: "HEL2025-0123456",
-    huomautus: "Ville Virkailija",
-    ehdot: [
-      {
-        conditionType: "Rasite - ja/tai rasitteenluont.ehto",
-        valvontapvm: "1.1.2025",
-        valvottuPvm: "1.1.2025",
-        note: "Placeholder",
-      },
-    ],
-  },
-  {
-    title:
-      "Asuntotontit tiimipäällikkö 11.2025 60 § Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    paattaja: "Ville Virkailija",
-    paatospvm: "11.2025",
-    pykala: "60 §",
-    paatoksenTyyppi: "Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    diaarinumero: "HEL2025-0123457",
-    huomautus: "",
-    ehdot: [],
-  },
-  {
-    title:
-      "Asuntotontit tiimipäällikkö 11.2025 60 § Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    paattaja: "Ville Virkailija",
-    paatospvm: "11.2025",
-    pykala: "60 §",
-    paatoksenTyyppi: "Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    diaarinumero: "HEL2025-0123458",
-    huomautus: "",
-    ehdot: [],
-  },
-  {
-    title:
-      "Asuntotontit tiimipäällikkö 11.2025 60 § Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    paattaja: "Ville Virkailija",
-    paatospvm: "11.2025",
-    pykala: "60 §",
-    paatoksenTyyppi: "Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    diaarinumero: "HEL2025-0123459",
-    huomautus: "",
-    ehdot: [],
-  },
-  {
-    title:
-      "Asuntotontit tiimipäällikkö 11.2025 60 § Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    paattaja: "Ville Virkailija",
-    paatospvm: "11.2025",
-    pykala: "60 §",
-    paatoksenTyyppi: "Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    diaarinumero: "HEL2025-0123460",
-    huomautus: "",
-    ehdot: [],
-  },
-];
-
-const defaultAgreements: AgreementItem[] = [
-  {
-    title: "Maankäyttösopimus ED4509",
-    sopimuksenTyyppi: "Maankäyttösopimus",
-    sopimusnumero: "ED4509",
-    allekirjoituspvm: "1.1.2025",
-    huomautus: "Placeholder",
-    allekirjoitettavaMennessa: "-",
-    ensimmainenKutsuLahetetty: "-",
-    toinenKutsuLahetetty: "-",
-    kolmasKutsuLahetetty: "-",
-    paatos:
-      "Asuntotontit tiimipäällikkö 11.2025 60 § Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
-    muutokset: [
-      {
-        allekirjoituspvm: "1.1.2025",
-        allekirjoitettavaMennessa: "-",
-        ensimmainenKutsuLahetetty: "-",
-        toinenKutsuLahetetty: "-",
-        kolmasKutsuLahetetty: "-",
-        paatos: "",
-        huomautus: "Placeholder",
-      },
-    ],
-    vakuuslaskuri: true,
-    vakuudet: [
-      {
-        jarjestysnumero: "1/2",
-        tyyppi: "Muu vakuus",
-        laji: "-",
-        vakuusnumero: "12345",
-        alkupvm: "1.1.2025",
-        loppupvm: "1.1.2025",
-        palautettuPvm: "1.1.2025",
-        huomautus: "Placeholder",
-        panttikirjanNumero: "Muu vakuus",
-        vakuudenMaara: "100 000 €",
-        vakuuttaKaytetty: "70%",
-        vakuuttaJaljella: "30 000 €",
-        siteUsages: [
-          {
-            kohde: "91-38-52-1",
-            hallintamuoto: "Vapaarahoitteinen omistusasuminen",
-            vakuuttaKaytettyEuro: "20 000 €",
-            vakuuttaKaytettyProsentti: "20 %",
-          },
-          {
-            kohde: "91-38-52-2",
-            hallintamuoto: "ARA-Vuokra",
-            vakuuttaKaytettyEuro: "20 000 €",
-            vakuuttaKaytettyProsentti: "20 %",
-          },
-          {
-            kohde: "91-38-52-3",
-            hallintamuoto: "ARA-Vuokra",
-            vakuuttaKaytettyEuro: "20 000 €",
-            vakuuttaKaytettyProsentti: "20 %",
-          },
-          {
-            kohde: "91-38-52-4",
-            hallintamuoto: "Vapaarahoitteinen omistusasuminen",
-            vakuuttaKaytettyEuro: "10 000 €",
-            vakuuttaKaytettyProsentti: "10 %",
-          },
-        ],
-      },
-      {
-        jarjestysnumero: "2/2",
-        tyyppi: "Muu vakuus",
-        laji: "-",
-        vakuusnumero: "123456",
-        alkupvm: "1.1.2025",
-        loppupvm: "1.1.2025",
-        palautettuPvm: "1.1.2025",
-        huomautus: "Placeholder",
-        panttikirjanNumero: "Muu vakuus",
-        vakuudenMaara: "30 000 €",
-        vakuuttaKaytetty: "100%",
-        vakuuttaJaljella: "0 €",
-        siteUsages: [
-          {
-            kohde: "91-38-52-5",
-            hallintamuoto: "ASO",
-            vakuuttaKaytettyEuro: "30 000 €",
-            vakuuttaKaytettyProsentti: "100 %",
-          },
-        ],
-      },
-    ],
-  },
-];
-
 const vakuudetTableCols = [
   { key: "kohde", headerName: "Kohteet joihin vakuutta käytetty" },
   { key: "hallintamuoto", headerName: "Hallintamuoto" },
@@ -392,29 +209,62 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
   form,
   isEditMode,
 }) => {
+  const [newDecisionIndexToOpen, setNewDecisionIndexToOpen] = React.useState<
+    number | null
+  >(null);
+  const [newAgreementIndexToOpen, setNewAgreementIndexToOpen] = React.useState<
+    number | null
+  >(null);
+  const [decisionIndexPendingDelete, setDecisionIndexPendingDelete] =
+    React.useState<number | null>(null);
+  const [agreementIndexPendingDelete, setAgreementIndexPendingDelete] =
+    React.useState<number | null>(null);
+
+  const closeDecisionDeleteDialog = () => {
+    setDecisionIndexPendingDelete(null);
+  };
+
+  const confirmDecisionDelete = () => {
+    if (decisionIndexPendingDelete === null) {
+      return;
+    }
+
+    const currentDecisions = form.getState().values.decisions ?? [];
+    form.change(
+      "decisions",
+      currentDecisions.filter(
+        (_, decisionIndex) => decisionIndex !== decisionIndexPendingDelete,
+      ),
+    );
+    closeDecisionDeleteDialog();
+  };
+
+  const closeAgreementDeleteDialog = () => {
+    setAgreementIndexPendingDelete(null);
+  };
+
+  const confirmAgreementDelete = () => {
+    if (agreementIndexPendingDelete === null) {
+      return;
+    }
+
+    const currentAgreements = form.getState().values.agreements ?? [];
+    form.change(
+      "agreements",
+      currentAgreements.filter(
+        (_, agreementIndex) => agreementIndex !== agreementIndexPendingDelete,
+      ),
+    );
+    closeAgreementDeleteDialog();
+  };
+
   return (
     <Form<LandUseDecisionsFormValues>
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
-        const decisions = values.decisions?.length
-          ? values.decisions
-          : defaultDecisions;
-        const agreements = values.agreements?.length
-          ? values.agreements
-          : defaultAgreements;
-
-        const ensureDecisionsInitialized = () => {
-          if (!values.decisions?.length) {
-            form.change("decisions", defaultDecisions);
-          }
-        };
-
-        const ensureAgreementsInitialized = () => {
-          if (!values.agreements?.length) {
-            form.change("agreements", defaultAgreements);
-          }
-        };
+        const decisions = values.decisions ?? [];
+        const agreements = values.agreements ?? [];
 
         return (
           <form onSubmit={handleSubmit}>
@@ -423,22 +273,13 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
 
               {decisions.map((decision, decisionIndex) => {
                 const decisionName = `decisions.${decisionIndex}`;
-                const conditions = decision.ehdot?.length
-                  ? decision.ehdot
-                  : [
-                      {
-                        conditionType: "Rasite - ja/tai rasitteenluont.ehto",
-                        valvontapvm: "1.1.2025",
-                        valvottuPvm: "1.1.2025",
-                        note: "Placeholder",
-                      },
-                    ];
+                const conditions = decision.ehdot ?? [];
 
                 return (
                   <Accordion
-                    key={`${decision.title}-${decisionIndex}`}
+                    key={`decision-${decisionIndex}`}
                     heading={getDecisionAccordionHeading(decision)}
-                    initiallyOpen={decisionIndex === 0}
+                    initiallyOpen={decisionIndex === newDecisionIndexToOpen}
                   >
                     <Fieldset
                       heading=""
@@ -454,7 +295,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   label: "Päättäjä",
                                   placeholder: "Valitse",
                                 }}
-                                options={paattajaOptions}
+                                options={landUseDecisionMakerOptions}
                                 value={
                                   input.value
                                     ? [
@@ -505,7 +346,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   label: "Pykälä",
                                   placeholder: "Valitse",
                                 }}
-                                options={pykalaOptions}
+                                options={landUseSectionOptions}
                                 value={
                                   input.value
                                     ? [
@@ -541,7 +382,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   label: "Päätöksen tyyppi",
                                   placeholder: "Valitse",
                                 }}
-                                options={paatoksenTyyppiOptions}
+                                options={landUseDecisionTypeOptions}
                                 value={
                                   input.value
                                     ? [
@@ -619,7 +460,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       label: "Ehtotyyppi",
                                       placeholder: "Valitse",
                                     }}
-                                    options={ehtoTyyppiOptions}
+                                    options={landUseConditionTypeOptions}
                                     value={
                                       input.value
                                         ? [
@@ -706,7 +547,6 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           iconStart={<IconPlusCircleFill />}
                           disabled={!isEditMode}
                           onClick={() => {
-                            ensureDecisionsInitialized();
                             form.mutators.push(
                               `decisions.${decisionIndex}.ehdot`,
                               createNewDecisionCondition(),
@@ -716,10 +556,40 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           Lisää ehto
                         </Button>
                       </div>
+
+                      <div className="landuse-detail__decisions-add-row">
+                        <Button
+                          type="button"
+                          variant={ButtonVariant.Danger}
+                          iconStart={<IconTrash />}
+                          disabled={!isEditMode}
+                          onClick={() => {
+                            setDecisionIndexPendingDelete(decisionIndex);
+                          }}
+                        >
+                          Poista päätös
+                        </Button>
+                      </div>
                     </Fieldset>
                   </Accordion>
                 );
               })}
+
+              <div className="landuse-detail__decisions-add-row">
+                <Button
+                  type="button"
+                  variant={ButtonVariant.Supplementary}
+                  iconStart={<IconPlusCircleFill />}
+                  disabled={!isEditMode}
+                  onClick={() => {
+                    const newDecisionIndex = decisions.length;
+                    form.mutators.push("decisions", createNewDecision());
+                    setNewDecisionIndexToOpen(newDecisionIndex);
+                  }}
+                >
+                  Lisää päätös
+                </Button>
+              </div>
 
               <h2 className="landuse-detail__section-title landuse-detail__decisions-section-break">
                 SOPIMUKSET
@@ -730,9 +600,9 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
 
                 return (
                   <Accordion
-                    key={`${agreement.title}-${agreementIndex}`}
+                    key={`agreement-${agreementIndex}`}
                     heading={getAgreementAccordionHeading(agreement)}
-                    initiallyOpen={agreementIndex === 0}
+                    initiallyOpen={agreementIndex === newAgreementIndexToOpen}
                   >
                     <Fieldset
                       heading=""
@@ -748,7 +618,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   label: "Sopimuksen tyyppi",
                                   placeholder: "Valitse",
                                 }}
-                                options={sopimuksenTyyppiOptions}
+                                options={landUseAgreementTypeOptions}
                                 value={
                                   input.value
                                     ? [
@@ -904,7 +774,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   label: "Päätös",
                                   placeholder: "Valitse",
                                 }}
-                                options={paatoksenTyyppiOptions}
+                                options={landUseDecisionTypeOptions}
                                 value={
                                   input.value
                                     ? [
@@ -932,42 +802,11 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                         </div>
                       </div>
 
-                      <div className="landuse-detail__decisions-add-row">
-                        <Button
-                          type="button"
-                          variant={ButtonVariant.Supplementary}
-                          iconStart={<IconPlusCircleFill />}
-                          disabled={!isEditMode}
-                          onClick={() => {
-                            ensureAgreementsInitialized();
-                            form.mutators.push(
-                              "agreements",
-                              createNewAgreement(),
-                            );
-                          }}
-                        >
-                          Lisää sopimus
-                        </Button>
-                      </div>
-
                       <h3 className="landuse-detail__subsection-title">
                         Sopimuksen muutokset
                       </h3>
 
-                      {(agreement.muutokset?.length
-                        ? agreement.muutokset
-                        : [
-                            {
-                              allekirjoituspvm: "1.1.2025",
-                              allekirjoitettavaMennessa: "-",
-                              ensimmainenKutsuLahetetty: "-",
-                              toinenKutsuLahetetty: "-",
-                              kolmasKutsuLahetetty: "-",
-                              paatos: "",
-                              huomautus: "Placeholder",
-                            },
-                          ]
-                      ).map((_, changeIndex) => {
+                      {(agreement.muutokset ?? []).map((_, changeIndex) => {
                         const changeName = `${agreementName}.muutokset.${changeIndex}`;
 
                         return (
@@ -1133,7 +972,6 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           iconStart={<IconPlusCircleFill />}
                           disabled={!isEditMode}
                           onClick={() => {
-                            ensureAgreementsInitialized();
                             form.mutators.push(
                               `agreements.${agreementIndex}.muutokset`,
                               createNewAgreementChange(),
@@ -1168,11 +1006,11 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                         </Field>
                       </div>
 
-                      {agreement.vakuudet.map((_, vakuusIndex) => {
+                      {(agreement.vakuudet ?? []).map((_, vakuusIndex) => {
                         const vakuusName = `${agreementName}.vakuudet.${vakuusIndex}`;
-                        const usageRows = agreement.vakuudet[
-                          vakuusIndex
-                        ].siteUsages.map((row, rowIndex) => ({
+                        const usageRows = (
+                          agreement.vakuudet[vakuusIndex].siteUsages ?? []
+                        ).map((row, rowIndex) => ({
                           id: `${agreementIndex}-${vakuusIndex}-${rowIndex}`,
                           kohde: row.kohde,
                           hallintamuoto: row.hallintamuoto,
@@ -1214,7 +1052,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                         label: "Vakuuden tyyppi",
                                         placeholder: "Valitse",
                                       }}
-                                      options={vakuudenTyyppiOptions}
+                                      options={landUseGuaranteeTypeOptions}
                                       value={
                                         input.value
                                           ? [
@@ -1260,7 +1098,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                         label: "Vakuuden laji",
                                         placeholder: "Valitse",
                                       }}
-                                      options={vakuudenLajiOptions}
+                                      options={landUseGuaranteeCategoryOptions}
                                       value={
                                         input.value
                                           ? [
@@ -1484,7 +1322,6 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           iconStart={<IconPlusCircleFill />}
                           disabled={!isEditMode}
                           onClick={() => {
-                            ensureAgreementsInitialized();
                             form.mutators.push(
                               `agreements.${agreementIndex}.vakuudet`,
                               createNewGuarantee(),
@@ -1494,10 +1331,104 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           Lisää vakuus
                         </Button>
                       </div>
+
+                      <div className="landuse-detail__decisions-add-row">
+                        <Button
+                          type="button"
+                          variant={ButtonVariant.Danger}
+                          iconStart={<IconTrash />}
+                          disabled={!isEditMode}
+                          onClick={() => {
+                            setAgreementIndexPendingDelete(agreementIndex);
+                          }}
+                        >
+                          Poista sopimus
+                        </Button>
+                      </div>
                     </Fieldset>
                   </Accordion>
                 );
               })}
+
+              <div className="landuse-detail__decisions-add-row">
+                <Button
+                  type="button"
+                  variant={ButtonVariant.Supplementary}
+                  iconStart={<IconPlusCircleFill />}
+                  disabled={!isEditMode}
+                  onClick={() => {
+                    const newAgreementIndex = agreements.length;
+                    form.mutators.push("agreements", createNewAgreement());
+                    setNewAgreementIndexToOpen(newAgreementIndex);
+                  }}
+                >
+                  Lisää sopimus
+                </Button>
+              </div>
+
+              <Dialog
+                id="landuse-decisions-delete-dialog"
+                isOpen={decisionIndexPendingDelete !== null}
+                aria-labelledby="landuse-decisions-delete-dialog-title"
+                closeButtonLabelText="Sulje"
+                close={closeDecisionDeleteDialog}
+              >
+                <Dialog.Header
+                  id="landuse-decisions-delete-dialog-title"
+                  title="Poista päätös"
+                />
+                <Dialog.Content>
+                  Haluatko varmasti poistaa tämän päätöksen?
+                </Dialog.Content>
+                <Dialog.ActionButtons>
+                  <Button
+                    type="button"
+                    variant={ButtonVariant.Secondary}
+                    onClick={closeDecisionDeleteDialog}
+                  >
+                    Peruuta
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={ButtonVariant.Danger}
+                    onClick={confirmDecisionDelete}
+                  >
+                    Poista
+                  </Button>
+                </Dialog.ActionButtons>
+              </Dialog>
+
+              <Dialog
+                id="landuse-agreements-delete-dialog"
+                isOpen={agreementIndexPendingDelete !== null}
+                aria-labelledby="landuse-agreements-delete-dialog-title"
+                closeButtonLabelText="Sulje"
+                close={closeAgreementDeleteDialog}
+              >
+                <Dialog.Header
+                  id="landuse-agreements-delete-dialog-title"
+                  title="Poista sopimus"
+                />
+                <Dialog.Content>
+                  Haluatko varmasti poistaa tämän sopimuksen?
+                </Dialog.Content>
+                <Dialog.ActionButtons>
+                  <Button
+                    type="button"
+                    variant={ButtonVariant.Secondary}
+                    onClick={closeAgreementDeleteDialog}
+                  >
+                    Peruuta
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={ButtonVariant.Danger}
+                    onClick={confirmAgreementDelete}
+                  >
+                    Poista
+                  </Button>
+                </Dialog.ActionButtons>
+              </Dialog>
             </div>
           </form>
         );
