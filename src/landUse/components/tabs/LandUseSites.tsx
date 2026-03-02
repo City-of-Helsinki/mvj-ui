@@ -275,7 +275,8 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                   label="Info"
                   style={{ marginBottom: "var(--spacing-m)" }}
                 >
-                  Kohteita ei voi muokata, kun sopimuksen tila on "Päätös"
+                  Kohteita ei voi muokata, kun sopimuksen tila on
+                  &quot;Päätös&quot;.
                 </Notification>
               )}
 
@@ -318,6 +319,7 @@ export const LandUseSites: React.FC<LandUseSitesProps> = ({
                   <RichTreeView
                     className="landuse-detail__sites-tree"
                     items={treeItems}
+                    defaultExpandedItems={Array.from(collectNodeIds(treeItems))}
                     onItemClick={(_, itemId) => setSelectedItemId(itemId)}
                     slotProps={{
                       item: ({ itemId }) => ({
