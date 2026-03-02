@@ -53,7 +53,10 @@ import {
 } from "@/util/helpers";
 import { getCoordinatesOfGeometry } from "@/util/map";
 import { getIsEditMode } from "./selectors";
-import { removeSessionStorageItem } from "@/util/storage";
+import {
+  getSessionStorageItem,
+  removeSessionStorageItem,
+} from "@/util/storage";
 import type {
   Lease,
   LeaseArea,
@@ -3867,17 +3870,22 @@ export const sortDueDates = (dueDates: Array<DueDate>): Array<DueDate> => {
  */
 export const isAnyLeaseFormDirty = (state: RootState): boolean => {
   const isEditMode = getIsEditMode(state);
-  return (
-    isEditMode &&
-    (isDirty(FormNames.LEASE_CONSTRUCTABILITY)(state) ||
-      isDirty(FormNames.LEASE_CONTRACTS)(state) ||
-      isDirty(FormNames.LEASE_DECISIONS)(state) ||
-      isDirty(FormNames.LEASE_INSPECTIONS)(state) ||
-      isDirty(FormNames.LEASE_AREAS)(state) ||
-      isDirty(FormNames.LEASE_RENTS)(state) ||
-      isDirty(FormNames.LEASE_SUMMARY)(state) ||
-      isDirty(FormNames.LEASE_TENANTS)(state))
+
+  if (!isEditMode) return false;
+
+  const hasDirtyFinalForm = Boolean(
+    getSessionStorageItem(FormNames.LEASE_CONSTRUCTABILITY) ||
+      getSessionStorageItem(FormNames.LEASE_CONTRACTS) ||
+      getSessionStorageItem(FormNames.LEASE_DECISIONS) ||
+      getSessionStorageItem(FormNames.LEASE_INSPECTIONS) ||
+      getSessionStorageItem(FormNames.LEASE_SUMMARY) ||
+      getSessionStorageItem(FormNames.LEASE_TENANTS) ||
+      getSessionStorageItem(FormNames.LEASE_AREAS),
   );
+
+  const hasDirtyReduxForm = isDirty(FormNames.LEASE_RENTS)(state);
+
+  return hasDirtyFinalForm || hasDirtyReduxForm;
 };
 
 /**
