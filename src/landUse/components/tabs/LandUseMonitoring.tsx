@@ -218,7 +218,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           { key: "toteutunutKm2", headerName: "Toteutunut k-m²" },
           { key: "toiminnot", headerName: "Toiminnot" },
           { key: "yksikkohinta", headerName: "Yksikköhinta" },
-          { key: "muutos", headerName: "Muutos" },
         ];
 
         const monitoringPerustaulukkoRows = leafSites.map((site, index) => {
@@ -226,7 +225,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           const latestToteutunutEntry =
             toteutunutEntries[toteutunutEntries.length - 1];
           const latestToteutunutKm2 = latestToteutunutEntry?.value ?? "-";
-          const isToteutunut = toteutunutEntries.length > 0;
           const vaadittuValue = parseLandUseNumericValue(site.km2);
           const toteutunutValue = parseLandUseNumericValue(
             latestToteutunutEntry?.value,
@@ -277,7 +275,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
               </div>
             ),
             yksikkohinta,
-            muutos: isToteutunut ? "" : "Muutos",
           };
         });
 
