@@ -11,6 +11,8 @@ applyTo: "src/landUse/**/*"
 - `src/landUse/api/landUseApi.ts` use these functions for all API interactions.
 - `src/landUse/api/landUseDb.ts` contains functions for interacting with the local IndexedDB database.
 - final-form FormAPI's are defined in `src/landUse/components/LandUseDetailPage.tsx`. LandUseDetailPage renders tab structure for each component which is at `src/landUse/components/tabs/`
+- Do not hardcode input values to forms in the components. If we request mock data, use `src/landUse/mockData/`.
+- For Select component option values, save them to `src/landUse/options.ts`.
 
 # General instructions
 - When writing to yourself or to us, avoid unnecessary fluff text such as
