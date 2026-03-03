@@ -33,6 +33,10 @@ import {
   type LandUseCompensationsFormValues,
 } from "./tabs/LandUseCompensations";
 import {
+  LandUseCollaterals,
+  type LandUseCollateralsFormValues,
+} from "./tabs/LandUseCollaterals";
+import {
   LandUseMonitoring,
   type LandUseMonitoringFormValues,
 } from "./tabs/LandUseMonitoring";
@@ -84,10 +88,11 @@ const TAB_FORM_KEYS = {
   sites: 1,
   parties: 2,
   compensations: 3,
-  monitoring: 4,
+  collaterals: 4,
   decisions: 5,
-  invoicing: 6,
-  map: 7,
+  monitoring: 6,
+  invoicing: 7,
+  map: 8,
 } as const;
 
 const TABS_CONFIG: TabConfig[] = [
@@ -109,6 +114,12 @@ const TABS_CONFIG: TabConfig[] = [
     queryKey: "compensations",
     hasForm: true,
     formKey: "compensations",
+  },
+  {
+    label: "Vakuudet",
+    queryKey: "collaterals",
+    hasForm: true,
+    formKey: "collaterals",
   },
   {
     label: "Päätökset ja sopimukset",
@@ -194,6 +205,7 @@ const LandUseDetailPage: React.FC = () => {
     sites: { ...initialFormState },
     parties: { ...initialFormState },
     compensations: { ...initialFormState },
+    collaterals: { ...initialFormState },
     monitoring: { ...initialFormState },
     decisions: { ...initialFormState },
     invoicing: { ...initialFormState },
@@ -311,6 +323,17 @@ const LandUseDetailPage: React.FC = () => {
     [],
   );
 
+  const collateralsFormApi = useMemo(
+    () =>
+      createForm<LandUseCollateralsFormValues>({
+        onSubmit: (values) => {
+          console.log("Collaterals form submitted:", values);
+        },
+        mutators: { ...arrayMutators },
+      }),
+    [],
+  );
+
   const monitoringFormApi = useMemo(
     () =>
       createForm<LandUseMonitoringFormValues>({
@@ -362,6 +385,7 @@ const LandUseDetailPage: React.FC = () => {
       sites: sitesFormApi,
       parties: partiesFormApi,
       compensations: compensationsFormApi,
+      collaterals: collateralsFormApi,
       monitoring: monitoringFormApi,
       decisions: decisionsFormApi,
       invoicing: invoicingFormApi,
@@ -372,6 +396,7 @@ const LandUseDetailPage: React.FC = () => {
       sitesFormApi,
       partiesFormApi,
       compensationsFormApi,
+      collateralsFormApi,
       monitoringFormApi,
       decisionsFormApi,
       invoicingFormApi,
@@ -824,6 +849,17 @@ const LandUseDetailPage: React.FC = () => {
             isEditMode={isEditMode}
             isDecisionPhase={isDecisionPhase}
             sites={sitesQuery.data?.items ?? []}
+          />
+        </TabPanel>
+
+        <TabPanel>
+          <LandUseCollaterals
+            form={collateralsFormApi}
+            isEditMode={isEditMode}
+            sites={sitesQuery.data?.items ?? []}
+            compensationsRowsBySiteId={
+              compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
+            }
           />
         </TabPanel>
 

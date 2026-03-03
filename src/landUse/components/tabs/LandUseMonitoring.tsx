@@ -10,7 +10,6 @@ import {
   IconSize,
   IconPlusCircleFill,
   IconPen,
-  Notification,
   Select,
   Table,
   TextInput,
@@ -37,18 +36,6 @@ export interface MonitoringToteutunutEntry {
 export interface LandUseMonitoringFormValues {
   toteutunutKm2EntriesBySiteId?: Record<string, MonitoringToteutunutEntry[]>;
   sakkoRows?: MonitoringSakkoRow[];
-  sopimuksenMukainen?: string;
-  rahakorvaus?: string;
-}
-
-interface MonitoringVakuuslaskuriRow {
-  kohteenTunnus: string;
-  hallintamuoto?: string;
-  km2: string;
-  hintaero: string;
-  kerroin: string;
-  vakuustarve: string;
-  vakuudet: string;
 }
 
 interface MonitoringSakkoRow {
@@ -82,34 +69,6 @@ const handleSelectChange = (
 const hallintamuotoOptions = landUseCompensationSelectOptions.hallintamuoto.map(
   (value) => ({ label: value, value }),
 );
-
-const formatEuroValue = (value: number): string =>
-  `${value.toLocaleString("fi-FI", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  })} €`;
-
-const formatNumericValue = (value: number): string =>
-  value.toLocaleString("fi-FI", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
-
-const getKerroinPercent = (hintaero: number): number => {
-  if (hintaero <= 500) {
-    return 100;
-  }
-
-  if (hintaero <= 1000) {
-    return 80;
-  }
-
-  if (hintaero <= 1500) {
-    return 70;
-  }
-
-  return 60;
-};
 
 const defaultSakkoRows: MonitoringSakkoRow[] = [
   {
@@ -164,48 +123,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
       render={({ handleSubmit, values }) => {
         const toteutunutKm2EntriesBySiteId =
           values.toteutunutKm2EntriesBySiteId ?? {};
-        const vakuuslaskuriRows: MonitoringVakuuslaskuriRow[] = leafSites.map(
-          (site) => {
-            const kohteenTunnus = site.kohteenTunnus || "-";
-            const vaadittuValue = parseLandUseNumericValue(site.km2);
-            const latestToteutunutValue = parseLandUseNumericValue(
-              toteutunutKm2EntriesBySiteId[site.id]?.[
-                (toteutunutKm2EntriesBySiteId[site.id]?.length ?? 1) - 1
-              ]?.value,
-            );
-            const toteutunutValue = latestToteutunutValue ?? 0;
-            const hintaeroValue = parseLandUseNumericValue(
-              compensationsRowsBySiteId[site.id]?.yksikkohinta,
-            );
-            const kerroinPercent =
-              hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
-
-            const vakuustarveValue =
-              vaadittuValue !== null &&
-              hintaeroValue !== null &&
-              kerroinPercent !== null
-                ? Math.max(0, vaadittuValue - toteutunutValue) *
-                  hintaeroValue *
-                  (kerroinPercent / 100)
-                : null;
-
-            return {
-              kohteenTunnus,
-              hallintamuoto: site.hallintamuoto || "-",
-              km2: site.km2 || "-",
-              hintaero:
-                hintaeroValue !== null
-                  ? formatNumericValue(hintaeroValue)
-                  : "-",
-              kerroin: kerroinPercent !== null ? `${kerroinPercent} %` : "-",
-              vakuustarve:
-                vakuustarveValue !== null
-                  ? formatEuroValue(vakuustarveValue)
-                  : "-",
-              vakuudet: "-",
-            };
-          },
-        );
         const sakkoRows = values.sakkoRows ?? defaultSakkoRows;
         const selectedEntries = selectedSiteId
           ? (toteutunutKm2EntriesBySiteId[selectedSiteId] ?? [])
@@ -277,57 +194,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             yksikkohinta,
           };
         });
-
-        const monitoringVakuuslaskuriCols = [
-          { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
-          { key: "hallintamuoto", headerName: "Hallintamuoto" },
-          { key: "km2", headerName: "k-m²" },
-          { key: "hintaero", headerName: "Hintaero" },
-          { key: "kerroin", headerName: "Kerroin" },
-          { key: "vakuustarve", headerName: "Vakuustarve" },
-          { key: "vakuudet", headerName: "Vakuudet" },
-        ];
-
-        const monitoringVakuuslaskuriTableRows = vakuuslaskuriRows.map(
-          (row, index) => ({
-            id: `vakuuslaskuri-row-${row.kohteenTunnus}-${index}`,
-            kohteenTunnus: row.kohteenTunnus,
-            hallintamuoto: row.hallintamuoto || "-",
-            km2: row.km2 || "-",
-            hintaero: row.hintaero,
-            kerroin: row.kerroin,
-            vakuustarve: row.vakuustarve,
-            vakuudet: row.vakuudet,
-          }),
-        );
-
-        const monitoringInfoCols = [
-          { key: "hintaero", headerName: "Hintaero" },
-          { key: "vakuustarvekerroin", headerName: "Vakuustarvekerroin" },
-        ];
-
-        const monitoringInfoRows = [
-          {
-            id: "info-1",
-            hintaero: "0 € / k-m² - 500 € / k-m²",
-            vakuustarvekerroin: "100 %",
-          },
-          {
-            id: "info-2",
-            hintaero: "501 € / k-m² - 1000 € / k-m²",
-            vakuustarvekerroin: "80 %",
-          },
-          {
-            id: "info-3",
-            hintaero: "1001 € / k-m² - 1500 € / k-m²",
-            vakuustarvekerroin: "70 %",
-          },
-          {
-            id: "info-4",
-            hintaero: "1501 € / k-m² -",
-            vakuustarvekerroin: "60 %",
-          },
-        ];
 
         const monitoringSakkoCols = [
           { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
@@ -451,86 +317,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       variant="light"
                     />
                   </div>
-                </Fieldset>
-
-                <Fieldset
-                  heading="Vakuuslaskuri"
-                  className="landuse-detail__fieldset--with-margin"
-                >
-                  <div className="landuse-detail__monitoring-table-toolbar">
-                    <Button
-                      variant={ButtonVariant.Supplementary}
-                      iconStart={<IconCopy />}
-                      disabled={!isEditMode}
-                    >
-                      Hae taulukon tiedot
-                    </Button>
-                    <Button
-                      variant={ButtonVariant.Supplementary}
-                      iconStart={<IconCopy />}
-                      disabled={!isEditMode}
-                    >
-                      Kopioi taulukon tiedot
-                    </Button>
-                  </div>
-
-                  <div className="landuse-detail__sites-table-wrapper">
-                    <Table
-                      className="landuse-detail__sites-table landuse-detail__monitoring-table"
-                      cols={monitoringVakuuslaskuriCols}
-                      indexKey="id"
-                      renderIndexCol={false}
-                      rows={monitoringVakuuslaskuriTableRows}
-                      variant="light"
-                    />
-                  </div>
-                </Fieldset>
-
-                <Fieldset
-                  heading="Jäljellä oleva vakuustarve"
-                  className="landuse-detail__fieldset--with-margin"
-                >
-                  <div className="landuse-detail__grid landuse-detail__monitoring-remaining-grid">
-                    <Field name="sopimuksenMukainen">
-                      {({ input }) => (
-                        <TextInput
-                          id="monitoring-sopimuksen-mukainen"
-                          label="Sopimuksen mukainen"
-                          value={input.value ?? "0 €"}
-                          onChange={input.onChange}
-                          disabled={!isEditMode}
-                        />
-                      )}
-                    </Field>
-
-                    <Field name="rahakorvaus">
-                      {({ input }) => (
-                        <TextInput
-                          id="monitoring-raha-korvaus"
-                          label="Rahakorvaus"
-                          value={input.value ?? "10 000 €"}
-                          onChange={input.onChange}
-                          disabled={!isEditMode}
-                        />
-                      )}
-                    </Field>
-                  </div>
-                  <Notification type="info" position="inline" label="Info">
-                    <div className="landuse-detail__monitoring-info-layout">
-                      <p>
-                        Korotettu vakuustarve määräytyy hintaeron mukaisesti
-                        alla olevien rajojen mukaan.
-                      </p>
-                      <Table
-                        className="landuse-detail__sites-table landuse-detail__monitoring-info-table"
-                        cols={monitoringInfoCols}
-                        indexKey="id"
-                        renderIndexCol={false}
-                        rows={monitoringInfoRows}
-                        variant="light"
-                      />
-                    </div>
-                  </Notification>
                 </Fieldset>
 
                 <Fieldset heading="Sakko">
