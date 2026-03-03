@@ -34,11 +34,23 @@ interface CollateralsVakuuslaskuriRow {
   vakuudet: string;
 }
 
+interface CollateralsGuarantee {
+  jarjestysnumero: string;
+  vakuudenMaara: string;
+  vakuuttaJaljella: string;
+}
+
+interface CollateralsAgreement {
+  sopimusnumero: string;
+  vakuudet?: CollateralsGuarantee[];
+}
+
 interface LandUseCollateralsProps {
   form: FormApi<LandUseCollateralsFormValues>;
   isEditMode: boolean;
   sites: LandUseSiteTreeNode[];
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
+  agreements: CollateralsAgreement[];
 }
 
 const formatEuroValue = (value: number): string =>
@@ -74,6 +86,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   isEditMode,
   sites,
   compensationsRowsBySiteId,
+  agreements,
 }) => {
   const leafSites = collectLeafNodes(sites);
 
@@ -168,6 +181,24 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           },
         ];
 
+        const collateralsGuaranteesCols = [
+          { key: "sopimusnumero", headerName: "Sopimusnumero" },
+          { key: "jarjestysnumero", headerName: "Vakuuden järjestysnumero" },
+          { key: "vakuudenMaara", headerName: "Vakuuden määrä" },
+          { key: "vakuuttaJaljella", headerName: "Vakuutta jäljellä" },
+        ];
+
+        const collateralsGuaranteesRows = agreements.flatMap(
+          (agreement, agreementIndex) =>
+            (agreement.vakuudet ?? []).map((guarantee, guaranteeIndex) => ({
+              id: `vakuus-row-${agreementIndex}-${guaranteeIndex}`,
+              sopimusnumero: agreement.sopimusnumero || "-",
+              jarjestysnumero: guarantee.jarjestysnumero || "-",
+              vakuudenMaara: guarantee.vakuudenMaara || "-",
+              vakuuttaJaljella: guarantee.vakuuttaJaljella || "-",
+            })),
+        );
+
         return (
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
@@ -253,6 +284,19 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                     />
                   </div>
                 </Notification>
+              </Fieldset>
+
+              <Fieldset heading="Vakuudet">
+                <div className="landuse-detail__sites-table-wrapper">
+                  <Table
+                    className="landuse-detail__sites-table landuse-detail__monitoring-table"
+                    cols={collateralsGuaranteesCols}
+                    indexKey="id"
+                    renderIndexCol={false}
+                    rows={collateralsGuaranteesRows}
+                    variant="light"
+                  />
+                </div>
               </Fieldset>
             </div>
           </form>

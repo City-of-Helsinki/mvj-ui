@@ -860,6 +860,7 @@ const LandUseDetailPage: React.FC = () => {
             compensationsRowsBySiteId={
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
             }
+            agreements={decisionsQuery.data?.agreements ?? []}
           />
         </TabPanel>
 
