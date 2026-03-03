@@ -18,6 +18,12 @@ import { FormApi } from "final-form";
 import type { LandUseSiteTreeNode } from "./LandUseSites";
 import { collectLeafNodes } from "../../utils/siteTree";
 import { parseLandUseNumericValue } from "../../utils/number";
+import {
+  calculateGuaranteeBalances,
+  getGuaranteesFromAgreements,
+  type CollateralAgreementValue,
+  type CollateralGuaranteeBalance,
+} from "../../utils/collateralGuarantees";
 
 export interface LandUseCollateralsFormValues {
   sopimuksenMukainen?: string;
@@ -29,7 +35,7 @@ interface CollateralSelectedGuarantee {
   guaranteeId: string;
   sopimusnumero: string;
   jarjestysnumero: string;
-  vakuuttaJaljella: string;
+  vakuuttaJaljella?: string;
   kaytettavaMaara: string;
 }
 
@@ -47,23 +53,12 @@ interface CollateralsVakuuslaskuriRow {
   vakuudet: React.ReactNode;
 }
 
-interface CollateralsGuarantee {
-  jarjestysnumero: string;
-  vakuudenMaara: string;
-  vakuuttaJaljella: string;
-}
-
-interface CollateralsAgreement {
-  sopimusnumero: string;
-  vakuudet?: CollateralsGuarantee[];
-}
-
 interface LandUseCollateralsProps {
   form: FormApi<LandUseCollateralsFormValues>;
   isEditMode: boolean;
   sites: LandUseSiteTreeNode[];
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
-  agreements: CollateralsAgreement[];
+  agreements: CollateralAgreementValue[];
 }
 
 const formatEuroValue = (value: number): string =>
@@ -99,17 +94,6 @@ const formatGuaranteeOptionLabel = (
   jarjestysnumero: string,
 ): string => `${sopimusnumero || "-"} / ${jarjestysnumero || "-"}`;
 
-const getGuaranteesFromAgreements = (agreements: CollateralsAgreement[]) =>
-  agreements.flatMap((agreement, agreementIndex) =>
-    (agreement.vakuudet ?? []).map((guarantee, guaranteeIndex) => ({
-      id: `agreement-${agreementIndex}-guarantee-${guaranteeIndex}`,
-      sopimusnumero: agreement.sopimusnumero || "-",
-      jarjestysnumero: guarantee.jarjestysnumero || "-",
-      vakuudenMaara: guarantee.vakuudenMaara || "-",
-      vakuuttaJaljella: guarantee.vakuuttaJaljella || "-",
-    })),
-  );
-
 export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   form,
   isEditMode,
@@ -142,17 +126,31 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
+        const guaranteeBalances = calculateGuaranteeBalances(
+          guarantees,
+          values.vakuusValinnatBySiteId,
+        );
+        const guaranteeBalanceById = guaranteeBalances.reduce<
+          Record<string, CollateralGuaranteeBalance>
+        >(
+          (accumulator, guaranteeBalance) => ({
+            ...accumulator,
+            [guaranteeBalance.id]: guaranteeBalance,
+          }),
+          {},
+        );
+
         const selectedSite = leafSites.find(
           (site) => site.id === selectedSiteId,
         );
-        const selectedGuarantee = guarantees.find(
-          (guarantee) => guarantee.id === selectedGuaranteeId,
-        );
+        const selectedGuarantee = selectedGuaranteeId
+          ? guaranteeBalanceById[selectedGuaranteeId]
+          : undefined;
         const selectedSiteGuarantees = selectedSiteId
           ? (values.vakuusValinnatBySiteId?.[selectedSiteId] ?? [])
           : [];
 
-        const guaranteeOptions = guarantees.map((guarantee) => ({
+        const guaranteeOptions = guaranteeBalances.map((guarantee) => ({
           label: formatGuaranteeOptionLabel(
             guarantee.sopimusnumero,
             guarantee.jarjestysnumero,
@@ -161,7 +159,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
         }));
 
         const selectedGuaranteeRemaining =
-          parseLandUseNumericValue(selectedGuarantee?.vakuuttaJaljella) ?? 0;
+          selectedGuarantee?.jaljellaMaara ?? 0;
         const kaytettavaMaaraValue = parseLandUseNumericValue(kaytettavaMaara);
         const isKaytettavaMaaraInvalid =
           kaytettavaMaara.trim().length > 0 &&
@@ -298,15 +296,14 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           { key: "vakuuttaJaljella", headerName: "Vakuutta jäljellä" },
         ];
 
-        const collateralsGuaranteesRows = agreements.flatMap(
-          (agreement, agreementIndex) =>
-            (agreement.vakuudet ?? []).map((guarantee, guaranteeIndex) => ({
-              id: `vakuus-row-${agreementIndex}-${guaranteeIndex}`,
-              sopimusnumero: agreement.sopimusnumero || "-",
-              jarjestysnumero: guarantee.jarjestysnumero || "-",
-              vakuudenMaara: guarantee.vakuudenMaara || "-",
-              vakuuttaJaljella: guarantee.vakuuttaJaljella || "-",
-            })),
+        const collateralsGuaranteesRows = guaranteeBalances.map(
+          (guarantee) => ({
+            id: `vakuus-row-${guarantee.id}`,
+            sopimusnumero: guarantee.sopimusnumero,
+            jarjestysnumero: guarantee.jarjestysnumero,
+            vakuudenMaara: guarantee.vakuudenMaara,
+            vakuuttaJaljella: formatEuroValue(guarantee.jaljellaMaara),
+          }),
         );
 
         return (
@@ -460,7 +457,11 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                   <TextInput
                     id="landuse-collaterals-vakuus-jaljella"
                     label="Vakuutta jäljellä"
-                    value={selectedGuarantee?.vakuuttaJaljella ?? "-"}
+                    value={
+                      selectedGuarantee
+                        ? formatEuroValue(selectedGuarantee.jaljellaMaara)
+                        : "-"
+                    }
                     disabled
                   />
 
@@ -503,7 +504,6 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                           guaranteeId: selectedGuarantee.id,
                           sopimusnumero: selectedGuarantee.sopimusnumero,
                           jarjestysnumero: selectedGuarantee.jarjestysnumero,
-                          vakuuttaJaljella: selectedGuarantee.vakuuttaJaljella,
                           kaytettavaMaara: kaytettavaMaara.trim(),
                         },
                       ];
