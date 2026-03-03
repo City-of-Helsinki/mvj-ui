@@ -111,16 +111,16 @@ const TABS_CONFIG: TabConfig[] = [
     formKey: "compensations",
   },
   {
-    label: "Valvonta",
-    queryKey: "monitoring",
-    hasForm: true,
-    formKey: "monitoring",
-  },
-  {
     label: "Päätökset ja sopimukset",
     queryKey: "decisions",
     hasForm: true,
     formKey: "decisions",
+  },
+  {
+    label: "Valvonta",
+    queryKey: "monitoring",
+    hasForm: true,
+    formKey: "monitoring",
   },
   {
     label: "Laskutus",
@@ -828,6 +828,10 @@ const LandUseDetailPage: React.FC = () => {
         </TabPanel>
 
         <TabPanel>
+          <LandUseDecisions form={decisionsFormApi} isEditMode={isEditMode} />
+        </TabPanel>
+
+        <TabPanel>
           <LandUseMonitoring
             agreementId={agreementId}
             form={monitoringFormApi}
@@ -837,10 +841,6 @@ const LandUseDetailPage: React.FC = () => {
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
             }
           />
-        </TabPanel>
-
-        <TabPanel>
-          <LandUseDecisions form={decisionsFormApi} isEditMode={isEditMode} />
         </TabPanel>
 
         <TabPanel>
