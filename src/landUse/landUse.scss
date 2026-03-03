@@ -553,6 +553,33 @@
   }
 }
 
+.landuse-detail__collaterals-drag-hint {
+  margin: 0;
+  color: var(--color-black-70);
+  font-size: 14px;
+}
+
+.landuse-detail__collaterals-draggable-item {
+  cursor: grab;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: var(--color-black-5);
+  }
+
+  &--dragging {
+    opacity: 0.65;
+    cursor: grabbing;
+  }
+}
+
+.landuse-detail__collaterals-drag-handle {
+  display: inline-block;
+  margin-right: 6px;
+  color: var(--color-black-60);
+  font-weight: 700;
+}
+
 .landuse-detail__decisions-grid {
   margin-bottom: 16px;
 }

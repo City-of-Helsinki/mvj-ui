@@ -2,9 +2,13 @@ import React from "react";
 import {
   Button,
   ButtonVariant,
+  Dialog,
   Fieldset,
   IconCopy,
+  IconPen,
+  IconPlusCircleFill,
   Notification,
+  Select,
   Table,
   TextInput,
 } from "hds-react";
@@ -18,6 +22,15 @@ import { parseLandUseNumericValue } from "../../utils/number";
 export interface LandUseCollateralsFormValues {
   sopimuksenMukainen?: string;
   rahakorvaus?: string;
+  vakuusValinnatBySiteId?: Record<string, CollateralSelectedGuarantee[]>;
+}
+
+interface CollateralSelectedGuarantee {
+  guaranteeId: string;
+  sopimusnumero: string;
+  jarjestysnumero: string;
+  vakuuttaJaljella: string;
+  kaytettavaMaara: string;
 }
 
 interface PerustietotaulukkoRowValues {
@@ -31,7 +44,7 @@ interface CollateralsVakuuslaskuriRow {
   hintaero: string;
   kerroin: string;
   vakuustarve: string;
-  vakuudet: string;
+  vakuudet: React.ReactNode;
 }
 
 interface CollateralsGuarantee {
@@ -81,6 +94,22 @@ const getKerroinPercent = (hintaero: number): number => {
   return 60;
 };
 
+const formatGuaranteeOptionLabel = (
+  sopimusnumero: string,
+  jarjestysnumero: string,
+): string => `${sopimusnumero || "-"} / ${jarjestysnumero || "-"}`;
+
+const getGuaranteesFromAgreements = (agreements: CollateralsAgreement[]) =>
+  agreements.flatMap((agreement, agreementIndex) =>
+    (agreement.vakuudet ?? []).map((guarantee, guaranteeIndex) => ({
+      id: `agreement-${agreementIndex}-guarantee-${guaranteeIndex}`,
+      sopimusnumero: agreement.sopimusnumero || "-",
+      jarjestysnumero: guarantee.jarjestysnumero || "-",
+      vakuudenMaara: guarantee.vakuudenMaara || "-",
+      vakuuttaJaljella: guarantee.vakuuttaJaljella || "-",
+    })),
+  );
+
 export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   form,
   isEditMode,
@@ -88,13 +117,58 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   compensationsRowsBySiteId,
   agreements,
 }) => {
+  const [selectedSiteId, setSelectedSiteId] = React.useState<string | null>(
+    null,
+  );
+  const [selectedGuaranteeId, setSelectedGuaranteeId] = React.useState("");
+  const [kaytettavaMaara, setKaytettavaMaara] = React.useState("");
+  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+
   const leafSites = collectLeafNodes(sites);
+  const guarantees = React.useMemo(
+    () => getGuaranteesFromAgreements(agreements),
+    [agreements],
+  );
+
+  const closeGuaranteeDialog = React.useCallback(() => {
+    setSelectedSiteId(null);
+    setSelectedGuaranteeId("");
+    setKaytettavaMaara("");
+    setDraggedIndex(null);
+  }, []);
 
   return (
     <Form<LandUseCollateralsFormValues>
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
+        const selectedSite = leafSites.find(
+          (site) => site.id === selectedSiteId,
+        );
+        const selectedGuarantee = guarantees.find(
+          (guarantee) => guarantee.id === selectedGuaranteeId,
+        );
+        const selectedSiteGuarantees = selectedSiteId
+          ? (values.vakuusValinnatBySiteId?.[selectedSiteId] ?? [])
+          : [];
+
+        const guaranteeOptions = guarantees.map((guarantee) => ({
+          label: formatGuaranteeOptionLabel(
+            guarantee.sopimusnumero,
+            guarantee.jarjestysnumero,
+          ),
+          value: guarantee.id,
+        }));
+
+        const selectedGuaranteeRemaining =
+          parseLandUseNumericValue(selectedGuarantee?.vakuuttaJaljella) ?? 0;
+        const kaytettavaMaaraValue = parseLandUseNumericValue(kaytettavaMaara);
+        const isKaytettavaMaaraInvalid =
+          kaytettavaMaara.trim().length > 0 &&
+          (kaytettavaMaaraValue === null ||
+            kaytettavaMaaraValue > selectedGuaranteeRemaining ||
+            kaytettavaMaaraValue < 0);
+
         const vakuuslaskuriRows: CollateralsVakuuslaskuriRow[] = leafSites.map(
           (site) => {
             const kohteenTunnus = site.kohteenTunnus || "-";
@@ -112,6 +186,9 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 ? vaadittuValue * hintaeroValue * (kerroinPercent / 100)
                 : null;
 
+            const selectedGuaranteesForSite =
+              values.vakuusValinnatBySiteId?.[site.id] ?? [];
+
             return {
               kohteenTunnus,
               hallintamuoto: site.hallintamuoto || "-",
@@ -125,7 +202,22 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 vakuustarveValue !== null
                   ? formatEuroValue(vakuustarveValue)
                   : "-",
-              vakuudet: "-",
+              vakuudet:
+                selectedGuaranteesForSite.length > 0 ? (
+                  <ul className="landuse-detail__monitoring-dialog-items">
+                    {selectedGuaranteesForSite.map((item, itemIndex) => (
+                      <li key={`${site.id}-${item.guaranteeId}-${itemIndex}`}>
+                        <span>
+                          {itemIndex + 1}. {item.sopimusnumero} /{" "}
+                          {item.jarjestysnumero}
+                        </span>
+                        <span>{item.kaytettavaMaara}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  "-"
+                ),
             };
           },
         );
@@ -138,6 +230,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           { key: "kerroin", headerName: "Kerroin" },
           { key: "vakuustarve", headerName: "Vakuustarve" },
           { key: "vakuudet", headerName: "Vakuudet" },
+          { key: "toiminnot", headerName: "Toiminnot" },
         ];
 
         const collateralsVakuuslaskuriTableRows = vakuuslaskuriRows.map(
@@ -150,6 +243,23 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             kerroin: row.kerroin,
             vakuustarve: row.vakuustarve,
             vakuudet: row.vakuudet,
+            toiminnot: (
+              <div className="landuse-detail__monitoring-actions-cell">
+                <Button
+                  type="button"
+                  variant={ButtonVariant.Supplementary}
+                  iconStart={<IconPen />}
+                  disabled={!isEditMode}
+                  onClick={() => {
+                    setSelectedSiteId(leafSites[index]?.id ?? null);
+                    setSelectedGuaranteeId("");
+                    setKaytettavaMaara("");
+                  }}
+                >
+                  Lisää vakuus
+                </Button>
+              </div>
+            ),
           }),
         );
 
@@ -200,106 +310,309 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
         );
 
         return (
-          <form onSubmit={handleSubmit}>
-            <div className="landuse-detail__content">
-              <h2 className="landuse-detail__section-title">VAKUUDET</h2>
+          <>
+            <form onSubmit={handleSubmit}>
+              <div className="landuse-detail__content">
+                <Field name="vakuusValinnatBySiteId">{() => null}</Field>
 
-              <Fieldset
-                heading="Vakuuslaskuri"
-                className="landuse-detail__fieldset--with-margin"
-              >
-                <div className="landuse-detail__monitoring-table-toolbar">
-                  <Button
-                    variant={ButtonVariant.Supplementary}
-                    iconStart={<IconCopy />}
-                    disabled={!isEditMode}
-                  >
-                    Hae taulukon tiedot
-                  </Button>
-                  <Button
-                    variant={ButtonVariant.Supplementary}
-                    iconStart={<IconCopy />}
-                    disabled={!isEditMode}
-                  >
-                    Kopioi taulukon tiedot
-                  </Button>
-                </div>
+                <h2 className="landuse-detail__section-title">VAKUUDET</h2>
 
-                <div className="landuse-detail__sites-table-wrapper">
-                  <Table
-                    className="landuse-detail__sites-table landuse-detail__monitoring-table"
-                    cols={collateralsVakuuslaskuriCols}
-                    indexKey="id"
-                    renderIndexCol={false}
-                    rows={collateralsVakuuslaskuriTableRows}
-                    variant="light"
-                  />
-                </div>
-              </Fieldset>
+                <Fieldset
+                  heading="Vakuuslaskuri"
+                  className="landuse-detail__fieldset--with-margin"
+                >
+                  <div className="landuse-detail__monitoring-table-toolbar">
+                    <Button
+                      variant={ButtonVariant.Supplementary}
+                      iconStart={<IconCopy />}
+                      disabled={!isEditMode}
+                    >
+                      Hae taulukon tiedot
+                    </Button>
+                    <Button
+                      variant={ButtonVariant.Supplementary}
+                      iconStart={<IconCopy />}
+                      disabled={!isEditMode}
+                    >
+                      Kopioi taulukon tiedot
+                    </Button>
+                  </div>
 
-              <Fieldset
-                heading="Jäljellä oleva vakuustarve"
-                className="landuse-detail__fieldset--with-margin"
-              >
-                <div className="landuse-detail__grid landuse-detail__monitoring-remaining-grid">
-                  <Field name="sopimuksenMukainen">
-                    {({ input }) => (
-                      <TextInput
-                        id="collaterals-sopimuksen-mukainen"
-                        label="Sopimuksen mukainen"
-                        value={
-                          input.value ?? values.sopimuksenMukainen ?? "0 €"
-                        }
-                        onChange={input.onChange}
-                        disabled={!isEditMode}
-                      />
-                    )}
-                  </Field>
-
-                  <Field name="rahakorvaus">
-                    {({ input }) => (
-                      <TextInput
-                        id="collaterals-raha-korvaus"
-                        label="Rahakorvaus"
-                        value={input.value ?? values.rahakorvaus ?? "10 000 €"}
-                        onChange={input.onChange}
-                        disabled={!isEditMode}
-                      />
-                    )}
-                  </Field>
-                </div>
-                <Notification type="info" position="inline" label="Info">
-                  <div className="landuse-detail__monitoring-info-layout">
-                    <p>
-                      Korotettu vakuustarve määräytyy hintaeron mukaisesti alla
-                      olevien rajojen mukaan.
-                    </p>
+                  <div className="landuse-detail__sites-table-wrapper">
                     <Table
-                      className="landuse-detail__sites-table landuse-detail__monitoring-info-table"
-                      cols={collateralsInfoCols}
+                      className="landuse-detail__sites-table landuse-detail__monitoring-table"
+                      cols={collateralsVakuuslaskuriCols}
                       indexKey="id"
                       renderIndexCol={false}
-                      rows={collateralsInfoRows}
+                      rows={collateralsVakuuslaskuriTableRows}
                       variant="light"
                     />
                   </div>
-                </Notification>
-              </Fieldset>
+                </Fieldset>
 
-              <Fieldset heading="Vakuudet">
-                <div className="landuse-detail__sites-table-wrapper">
-                  <Table
-                    className="landuse-detail__sites-table landuse-detail__monitoring-table"
-                    cols={collateralsGuaranteesCols}
-                    indexKey="id"
-                    renderIndexCol={false}
-                    rows={collateralsGuaranteesRows}
-                    variant="light"
+                <Fieldset
+                  heading="Jäljellä oleva vakuustarve"
+                  className="landuse-detail__fieldset--with-margin"
+                >
+                  <div className="landuse-detail__grid landuse-detail__monitoring-remaining-grid">
+                    <Field name="sopimuksenMukainen">
+                      {({ input }) => (
+                        <TextInput
+                          id="collaterals-sopimuksen-mukainen"
+                          label="Sopimuksen mukainen"
+                          value={
+                            input.value ?? values.sopimuksenMukainen ?? "0 €"
+                          }
+                          onChange={input.onChange}
+                          disabled={!isEditMode}
+                        />
+                      )}
+                    </Field>
+
+                    <Field name="rahakorvaus">
+                      {({ input }) => (
+                        <TextInput
+                          id="collaterals-raha-korvaus"
+                          label="Rahakorvaus"
+                          value={
+                            input.value ?? values.rahakorvaus ?? "10 000 €"
+                          }
+                          onChange={input.onChange}
+                          disabled={!isEditMode}
+                        />
+                      )}
+                    </Field>
+                  </div>
+                  <Notification type="info" position="inline" label="Info">
+                    <div className="landuse-detail__monitoring-info-layout">
+                      <p>
+                        Korotettu vakuustarve määräytyy hintaeron mukaisesti
+                        alla olevien rajojen mukaan.
+                      </p>
+                      <Table
+                        className="landuse-detail__sites-table landuse-detail__monitoring-info-table"
+                        cols={collateralsInfoCols}
+                        indexKey="id"
+                        renderIndexCol={false}
+                        rows={collateralsInfoRows}
+                        variant="light"
+                      />
+                    </div>
+                  </Notification>
+                </Fieldset>
+
+                <Fieldset heading="Vakuudet">
+                  <div className="landuse-detail__sites-table-wrapper">
+                    <Table
+                      className="landuse-detail__sites-table landuse-detail__monitoring-table"
+                      cols={collateralsGuaranteesCols}
+                      indexKey="id"
+                      renderIndexCol={false}
+                      rows={collateralsGuaranteesRows}
+                      variant="light"
+                    />
+                  </div>
+                </Fieldset>
+              </div>
+            </form>
+
+            <Dialog
+              id="landuse-collaterals-vakuus-dialog"
+              isOpen={Boolean(selectedSiteId)}
+              aria-labelledby="landuse-collaterals-vakuus-dialog-title"
+              closeButtonLabelText="Sulje"
+              close={closeGuaranteeDialog}
+            >
+              <Dialog.Header
+                id="landuse-collaterals-vakuus-dialog-title"
+                title="Valitse vakuus"
+              />
+              <Dialog.Content>
+                <div className="landuse-detail__monitoring-dialog-content">
+                  <p className="landuse-detail__monitoring-dialog-site-label">
+                    Kohteen tunnus
+                  </p>
+                  <p className="landuse-detail__monitoring-dialog-site-value">
+                    {selectedSite?.kohteenTunnus ?? "-"}
+                  </p>
+
+                  <Select
+                    id="landuse-collaterals-vakuus-select"
+                    options={guaranteeOptions}
+                    value={
+                      selectedGuaranteeId
+                        ? guaranteeOptions.filter(
+                            (option) => option.value === selectedGuaranteeId,
+                          )
+                        : []
+                    }
+                    onChange={(selectedOptions) => {
+                      const selectedValue = selectedOptions[0]?.value ?? "";
+                      setSelectedGuaranteeId(selectedValue);
+                    }}
+                    disabled={!isEditMode}
+                    texts={{
+                      label: "Vakuus",
+                      placeholder: "Valitse vakuus",
+                    }}
                   />
+
+                  <TextInput
+                    id="landuse-collaterals-vakuus-jaljella"
+                    label="Vakuutta jäljellä"
+                    value={selectedGuarantee?.vakuuttaJaljella ?? "-"}
+                    disabled
+                  />
+
+                  <TextInput
+                    id="landuse-collaterals-vakuus-kaytettava-maara"
+                    label="Käytettävä määrä"
+                    value={kaytettavaMaara}
+                    onChange={(event) => setKaytettavaMaara(event.target.value)}
+                    disabled={!isEditMode || !selectedGuaranteeId}
+                    invalid={isKaytettavaMaaraInvalid}
+                    errorText="Määrä ei voi ylittää vakuutta jäljellä"
+                  />
+
+                  <Button
+                    type="button"
+                    variant={ButtonVariant.Primary}
+                    iconStart={<IconPlusCircleFill />}
+                    disabled={
+                      !isEditMode ||
+                      !selectedSiteId ||
+                      !selectedGuarantee ||
+                      !kaytettavaMaara.trim() ||
+                      isKaytettavaMaaraInvalid
+                    }
+                    onClick={() => {
+                      if (
+                        !selectedSiteId ||
+                        !selectedGuarantee ||
+                        !kaytettavaMaara.trim() ||
+                        isKaytettavaMaaraInvalid
+                      ) {
+                        return;
+                      }
+
+                      const previousSelections =
+                        values.vakuusValinnatBySiteId?.[selectedSiteId] ?? [];
+                      const nextSelections = [
+                        ...previousSelections,
+                        {
+                          guaranteeId: selectedGuarantee.id,
+                          sopimusnumero: selectedGuarantee.sopimusnumero,
+                          jarjestysnumero: selectedGuarantee.jarjestysnumero,
+                          vakuuttaJaljella: selectedGuarantee.vakuuttaJaljella,
+                          kaytettavaMaara: kaytettavaMaara.trim(),
+                        },
+                      ];
+
+                      form.change("vakuusValinnatBySiteId", {
+                        ...(values.vakuusValinnatBySiteId ?? {}),
+                        [selectedSiteId]: nextSelections,
+                      });
+
+                      setSelectedGuaranteeId("");
+                      setKaytettavaMaara("");
+                    }}
+                  >
+                    Lisää vakuus
+                  </Button>
+
+                  <div className="landuse-detail__monitoring-dialog-list">
+                    <p className="landuse-detail__monitoring-dialog-site-label">
+                      Valitut vakuudet
+                    </p>
+                    <p className="landuse-detail__collaterals-drag-hint">
+                      Vedä rivejä kahvasta järjestääksesi vakuudet.
+                    </p>
+                    {selectedSiteGuarantees.length === 0 ? (
+                      <p className="landuse-detail__monitoring-dialog-empty">
+                        Ei lisättyjä vakuuksia.
+                      </p>
+                    ) : (
+                      <ul className="landuse-detail__monitoring-dialog-items">
+                        {selectedSiteGuarantees.map((item, index) => (
+                          <li
+                            key={`${item.guaranteeId}-${index}`}
+                            draggable={isEditMode}
+                            className={`landuse-detail__collaterals-draggable-item${
+                              draggedIndex === index
+                                ? " landuse-detail__collaterals-draggable-item--dragging"
+                                : ""
+                            }`}
+                            onDragStart={(event) => {
+                              setDraggedIndex(index);
+                              event.dataTransfer.effectAllowed = "move";
+                              event.dataTransfer.setData(
+                                "text/plain",
+                                String(index),
+                              );
+                            }}
+                            onDragEnd={() => {
+                              setDraggedIndex(null);
+                            }}
+                            onDragOver={(event) => {
+                              event.preventDefault();
+                              event.dataTransfer.dropEffect = "move";
+                            }}
+                            onDrop={() => {
+                              if (
+                                !selectedSiteId ||
+                                draggedIndex === null ||
+                                draggedIndex === index
+                              ) {
+                                setDraggedIndex(null);
+                                return;
+                              }
+
+                              const reordered = [...selectedSiteGuarantees];
+                              const [draggedItem] = reordered.splice(
+                                draggedIndex,
+                                1,
+                              );
+                              reordered.splice(index, 0, draggedItem);
+
+                              form.change("vakuusValinnatBySiteId", {
+                                ...(values.vakuusValinnatBySiteId ?? {}),
+                                [selectedSiteId]: reordered,
+                              });
+                              setDraggedIndex(null);
+                            }}
+                          >
+                            <span>
+                              <span
+                                className="landuse-detail__collaterals-drag-handle"
+                                aria-label="Vedä järjestääksesi"
+                                title="Vedä järjestääksesi"
+                              >
+                                ⠿
+                              </span>{" "}
+                              {index + 1}. {item.sopimusnumero} /{" "}
+                              {item.jarjestysnumero}
+                            </span>
+                            <span>
+                              Käytettävä määrä: {item.kaytettavaMaara}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
-              </Fieldset>
-            </div>
-          </form>
+              </Dialog.Content>
+              <Dialog.ActionButtons>
+                <Button
+                  type="button"
+                  variant={ButtonVariant.Primary}
+                  onClick={closeGuaranteeDialog}
+                >
+                  Sulje
+                </Button>
+              </Dialog.ActionButtons>
+            </Dialog>
+          </>
         );
       }}
     />

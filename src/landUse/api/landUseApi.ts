@@ -1,4 +1,5 @@
 import type { LandUseCompensationsFormValues } from "../components/tabs/LandUseCompensations";
+import type { LandUseCollateralsFormValues } from "../components/tabs/LandUseCollaterals";
 import type { LandUseDecisionsFormValues } from "../components/tabs/LandUseDecisions";
 import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoicing";
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
@@ -377,6 +378,23 @@ export const updateCompensations = async (
   return values;
 };
 
+export const getCollaterals = async (
+  agreementId: string,
+): Promise<LandUseCollateralsFormValues> =>
+  getTabData(
+    agreementId,
+    "collaterals",
+    createEmptyTabValues<LandUseCollateralsFormValues>(),
+  );
+
+export const updateCollaterals = async (
+  agreementId: string,
+  values: LandUseCollateralsFormValues,
+): Promise<LandUseCollateralsFormValues> => {
+  await setAgreementTab(agreementId, "collaterals", values);
+  return values;
+};
+
 export const getMonitoring = async (
   agreementId: string,
 ): Promise<LandUseMonitoringFormValues> => {
@@ -388,8 +406,6 @@ export const getMonitoring = async (
   const monitoring: LandUseMonitoringFormValues = {
     toteutunutKm2EntriesBySiteId: monitoringData.toteutunutKm2EntriesBySiteId,
     sakkoRows: monitoringData.sakkoRows,
-    sopimuksenMukainen: monitoringData.sopimuksenMukainen,
-    rahakorvaus: monitoringData.rahakorvaus,
   };
 
   const toteutunutEntriesBySiteId =
@@ -433,8 +449,6 @@ export const updateMonitoring = async (
   const sanitizedValues: LandUseMonitoringFormValues = {
     toteutunutKm2EntriesBySiteId: values.toteutunutKm2EntriesBySiteId,
     sakkoRows: values.sakkoRows,
-    sopimuksenMukainen: values.sopimuksenMukainen,
-    rahakorvaus: values.rahakorvaus,
   };
 
   await setMonitoringToteutunutEntriesBySiteId(

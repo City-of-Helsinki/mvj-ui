@@ -3,6 +3,7 @@ export const LAND_USE_TAB_KEYS = [
   "sites",
   "parties",
   "compensations",
+  "collaterals",
   "monitoring",
   "decisions",
   "invoicing",

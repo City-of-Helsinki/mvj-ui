@@ -51,6 +51,7 @@ import {
 import { LandUseMap, type LandUseMapFormValues } from "./tabs/LandUseMap";
 import {
   getCompensations,
+  getCollaterals,
   getDecisions,
   getInvoicing,
   getMap,
@@ -59,6 +60,7 @@ import {
   getSites,
   getSummary,
   updateCompensations,
+  updateCollaterals,
   updateDecisions,
   updateInvoicing,
   updateMap,
@@ -250,6 +252,13 @@ const LandUseDetailPage: React.FC = () => {
     refetchOnWindowFocus: false,
   });
 
+  const collateralsQuery = useQuery({
+    queryKey: ["land-use", agreementId, "collaterals"],
+    queryFn: () => getCollaterals(agreementId),
+    enabled: Boolean(agreementId),
+    refetchOnWindowFocus: false,
+  });
+
   const monitoringQuery = useQuery({
     queryKey: ["land-use", agreementId, "monitoring"],
     queryFn: () => getMonitoring(agreementId),
@@ -413,7 +422,10 @@ const LandUseDetailPage: React.FC = () => {
         (state) => {
           setFormStates((prev) => ({
             ...prev,
-            [key]: { dirty: state.dirty, valid: state.valid },
+            [key]: {
+              dirty: (prev[key]?.dirty ?? false) || state.dirty,
+              valid: state.valid,
+            },
           }));
         },
         { dirty: true, valid: true },
@@ -462,6 +474,17 @@ const LandUseDetailPage: React.FC = () => {
     compensationsFormApi,
     compensationsQuery.data,
     compensationsQuery.dataUpdatedAt,
+    agreementId,
+  ]);
+
+  useEffect(() => {
+    if (collateralsQuery.data) {
+      collateralsFormApi.initialize(collateralsQuery.data);
+    }
+  }, [
+    collateralsFormApi,
+    collateralsQuery.data,
+    collateralsQuery.dataUpdatedAt,
     agreementId,
   ]);
 
@@ -579,6 +602,14 @@ const LandUseDetailPage: React.FC = () => {
     },
   });
 
+  const collateralsMutation = useMutation({
+    mutationFn: (values: LandUseCollateralsFormValues) =>
+      updateCollaterals(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "collaterals"], data);
+    },
+  });
+
   const decisionsMutation = useMutation({
     mutationFn: (values: LandUseDecisionsFormValues) =>
       updateDecisions(agreementId, values),
@@ -651,6 +682,13 @@ const LandUseDetailPage: React.FC = () => {
           mutations.push(
             compensationsMutation.mutateAsync(
               state.values as LandUseCompensationsFormValues,
+            ),
+          );
+          break;
+        case "collaterals":
+          mutations.push(
+            collateralsMutation.mutateAsync(
+              state.values as LandUseCollateralsFormValues,
             ),
           );
           break;
