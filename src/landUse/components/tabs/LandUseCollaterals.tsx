@@ -317,6 +317,19 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
 
                 <h2 className="landuse-detail__section-title">VAKUUDET</h2>
 
+                <Fieldset heading="">
+                  <div className="landuse-detail__sites-table-wrapper">
+                    <Table
+                      className="landuse-detail__sites-table landuse-detail__monitoring-table"
+                      cols={collateralsGuaranteesCols}
+                      indexKey="id"
+                      renderIndexCol={false}
+                      rows={collateralsGuaranteesRows}
+                      variant="light"
+                    />
+                  </div>
+                </Fieldset>
+
                 <Fieldset
                   heading="Vakuuslaskuri"
                   className="landuse-detail__fieldset--with-margin"
@@ -399,19 +412,6 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                       />
                     </div>
                   </Notification>
-                </Fieldset>
-
-                <Fieldset heading="Vakuudet">
-                  <div className="landuse-detail__sites-table-wrapper">
-                    <Table
-                      className="landuse-detail__sites-table landuse-detail__monitoring-table"
-                      cols={collateralsGuaranteesCols}
-                      indexKey="id"
-                      renderIndexCol={false}
-                      rows={collateralsGuaranteesRows}
-                      variant="light"
-                    />
-                  </div>
                 </Fieldset>
               </div>
             </form>
