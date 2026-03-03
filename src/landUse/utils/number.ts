@@ -31,6 +31,31 @@ export const parseLandUseNumericValue = (
   return Number.isFinite(parsed) ? parsed : null;
 };
 
+export const formatLandUseNumericValue = (value: number): string =>
+  value.toLocaleString("fi-FI", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+
+export const formatLandUseIntegerValue = (value: number): string =>
+  value.toLocaleString("fi-FI", {
+    maximumFractionDigits: 0,
+  });
+
+export const formatLandUseEuroValue = (value: number): string =>
+  `${formatLandUseNumericValue(value)} €`;
+
+export const formatLandUseEuroDisplayValue = (
+  value: string | number | undefined,
+): string => {
+  const parsedValue = parseLandUseNumericValue(value);
+  if (parsedValue === null) {
+    return value?.toString() ?? "-";
+  }
+
+  return formatLandUseEuroValue(parsedValue);
+};
+
 export const parseLandUseNumericValueOrZero = (
   value: string | number | undefined,
 ): number => parseLandUseNumericValue(value) ?? 0;

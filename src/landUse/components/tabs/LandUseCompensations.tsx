@@ -16,7 +16,13 @@ import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import type { LandUseSiteTreeNode } from "./LandUseSites";
 import { collectLeafNodes } from "../../utils/siteTree";
-import { parseLandUseNumericValueOrZero } from "../../utils/number";
+import {
+  formatLandUseEuroDisplayValue,
+  formatLandUseEuroValue,
+  formatLandUseIntegerValue,
+  formatLandUseNumericValue,
+  parseLandUseNumericValueOrZero,
+} from "../../utils/number";
 
 interface PerustietotaulukkoRowValues {
   yksikkohinta: string;
@@ -44,19 +50,6 @@ interface LandUseCompensationsProps {
 const parseNumber = (value: string | number | undefined): number =>
   parseLandUseNumericValueOrZero(value);
 
-const formatCurrency = (value: number): string => {
-  return value.toLocaleString("fi-FI", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-};
-
-const formatInteger = (value: number): string => {
-  return value.toLocaleString("fi-FI", {
-    maximumFractionDigits: 0,
-  });
-};
-
 const hasDigits = (value: string | number | undefined): boolean => {
   if (typeof value === "number") {
     return Number.isFinite(value);
@@ -76,7 +69,7 @@ const formatCurrencyFieldValue = (
     return "";
   }
 
-  return `${formatCurrency(parseNumber(value))} €`;
+  return formatLandUseEuroDisplayValue(value);
 };
 
 const formatEditableMoneyFieldValue = (
@@ -86,7 +79,7 @@ const formatEditableMoneyFieldValue = (
     return "";
   }
 
-  return formatCurrency(parseNumber(value));
+  return formatLandUseNumericValue(parseNumber(value));
 };
 
 const getRowFieldPath = (
@@ -192,7 +185,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 )}
               </Field>
             ),
-            summa: `${formatCurrency(rowSumma)} €`,
+            summa: formatLandUseEuroValue(rowSumma),
             perushinta: (
               <Field<string>
                 name="perushintaSiteId"
@@ -225,10 +218,10 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             kayttotarkoitus: "",
             hallintamuoto: "",
             suojeltu: "",
-            pintaAlaM2: formatInteger(totals.pintaAlaM2),
-            km2: formatInteger(totals.km2),
+            pintaAlaM2: formatLandUseIntegerValue(totals.pintaAlaM2),
+            km2: formatLandUseIntegerValue(totals.km2),
             yksikkohinta: "",
-            summa: `${formatCurrency(totals.summa)} €`,
+            summa: formatLandUseEuroValue(totals.summa),
             perushinta: "",
           },
         ];
@@ -312,7 +305,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   <TextInput
                     id="landuse-compensations-yhteensa"
                     label="Yhteensä"
-                    value={`${formatCurrency(yhteensa)} €`}
+                    value={formatLandUseEuroValue(yhteensa)}
                     readOnly
                     disabled
                   />

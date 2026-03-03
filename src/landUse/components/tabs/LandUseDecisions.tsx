@@ -25,6 +25,11 @@ import {
   landUseGuaranteeTypeOptions,
   landUseSectionOptions,
 } from "../../options";
+import {
+  formatLandUseEuroValue,
+  formatLandUseNumericValue,
+  parseLandUseNumericValue,
+} from "../../utils/number";
 
 interface DecisionCondition {
   conditionType?: string;
@@ -1010,14 +1015,23 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                         const vakuusName = `${agreementName}.vakuudet.${vakuusIndex}`;
                         const usageRows = (
                           agreement.vakuudet[vakuusIndex].siteUsages ?? []
-                        ).map((row, rowIndex) => ({
-                          id: `${agreementIndex}-${vakuusIndex}-${rowIndex}`,
-                          kohde: row.kohde,
-                          hallintamuoto: row.hallintamuoto,
-                          vakuuttaKaytettyEuro: row.vakuuttaKaytettyEuro,
-                          vakuuttaKaytettyProsentti:
-                            row.vakuuttaKaytettyProsentti,
-                        }));
+                        ).map((row, rowIndex) => {
+                          const kaytettyEuroValue = parseLandUseNumericValue(
+                            row.vakuuttaKaytettyEuro,
+                          );
+
+                          return {
+                            id: `${agreementIndex}-${vakuusIndex}-${rowIndex}`,
+                            kohde: row.kohde,
+                            hallintamuoto: row.hallintamuoto,
+                            vakuuttaKaytettyEuro:
+                              kaytettyEuroValue !== null
+                                ? formatLandUseEuroValue(kaytettyEuroValue)
+                                : row.vakuuttaKaytettyEuro,
+                            vakuuttaKaytettyProsentti:
+                              row.vakuuttaKaytettyProsentti,
+                          };
+                        });
 
                         return (
                           <div
@@ -1248,60 +1262,44 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
 
                               <div className="landuse-detail__column">
                                 <Field name={`${vakuusName}.vakuudenMaara`}>
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`vakuus-vakuuden-maara-${agreementIndex}-${vakuusIndex}`}
-                                      label="Vakuuden määrä"
-                                      value={
-                                        input.value ??
-                                        agreement.vakuudet[vakuusIndex]
-                                          .vakuudenMaara
-                                      }
-                                      onChange={input.onChange}
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
-                                </Field>
-                              </div>
+                                  {({ input }) => {
+                                    const currentValue =
+                                      input.value ??
+                                      agreement.vakuudet[vakuusIndex]
+                                        .vakuudenMaara;
 
-                              <div className="landuse-detail__column">
-                                <Field name={`${vakuusName}.vakuuttaKaytetty`}>
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`vakuus-vakuutta-kaytetty-${agreementIndex}-${vakuusIndex}`}
-                                      label="Vakuutta käytetty"
-                                      value={
-                                        input.value ??
-                                        agreement.vakuudet[vakuusIndex]
-                                          .vakuuttaKaytetty
-                                      }
-                                      onChange={input.onChange}
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field name={`${vakuusName}.vakuuttaJaljella`}>
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`vakuus-vakuutta-jaljella-${agreementIndex}-${vakuusIndex}`}
-                                      label="Vakuutta jäljellä"
-                                      value={
-                                        input.value ??
-                                        agreement.vakuudet[vakuusIndex]
-                                          .vakuuttaJaljella
-                                      }
-                                      onChange={input.onChange}
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
+                                    return (
+                                      <TextInput
+                                        id={`vakuus-vakuuden-maara-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuuden määrä"
+                                        value={currentValue}
+                                        onChange={input.onChange}
+                                        onBlur={() => {
+                                          const parsedValue =
+                                            parseLandUseNumericValue(
+                                              currentValue,
+                                            );
+                                          if (parsedValue !== null) {
+                                            input.onChange(
+                                              formatLandUseNumericValue(
+                                                parsedValue,
+                                              ),
+                                            );
+                                          }
+                                          input.onBlur();
+                                        }}
+                                        disabled={!isEditMode}
+                                      />
+                                    );
+                                  }}
                                 </Field>
                               </div>
                             </div>
 
                             <div className="landuse-detail__sites-table-wrapper">
+                              TODO poista taulukko, tai toteuta
+                              &quot;käänteisenä&quot; vakuudet-välilehden
+                              taulukkoon nähden
                               <Table
                                 className="landuse-detail__sites-table landuse-detail__monitoring-table"
                                 cols={vakuudetTableCols}

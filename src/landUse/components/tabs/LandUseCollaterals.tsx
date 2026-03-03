@@ -7,6 +7,7 @@ import {
   IconCopy,
   IconPen,
   IconPlusCircleFill,
+  IconTrash,
   Notification,
   Select,
   Table,
@@ -17,7 +18,12 @@ import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import type { LandUseSiteTreeNode } from "./LandUseSites";
 import { collectLeafNodes } from "../../utils/siteTree";
-import { parseLandUseNumericValue } from "../../utils/number";
+import {
+  formatLandUseEuroDisplayValue,
+  formatLandUseEuroValue,
+  formatLandUseNumericValue,
+  parseLandUseNumericValue,
+} from "../../utils/number";
 import {
   calculateGuaranteeBalances,
   getGuaranteesFromAgreements,
@@ -60,18 +66,6 @@ interface LandUseCollateralsProps {
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
   agreements: CollateralAgreementValue[];
 }
-
-const formatEuroValue = (value: number): string =>
-  `${value.toLocaleString("fi-FI", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  })} €`;
-
-const formatNumericValue = (value: number): string =>
-  value.toLocaleString("fi-FI", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
 
 const getKerroinPercent = (hintaero: number): number => {
   if (hintaero <= 500) {
@@ -161,11 +155,16 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
         const selectedGuaranteeRemaining =
           selectedGuarantee?.jaljellaMaara ?? 0;
         const kaytettavaMaaraValue = parseLandUseNumericValue(kaytettavaMaara);
-        const isKaytettavaMaaraInvalid =
-          kaytettavaMaara.trim().length > 0 &&
+        const hasKaytettavaMaaraInput = kaytettavaMaara.trim().length > 0;
+        const isKaytettavaMaaraOverRemaining =
+          hasKaytettavaMaaraInput &&
+          kaytettavaMaaraValue !== null &&
+          kaytettavaMaaraValue > selectedGuaranteeRemaining;
+        const isKaytettavaMaaraInvalidForSubmit =
+          hasKaytettavaMaaraInput &&
           (kaytettavaMaaraValue === null ||
-            kaytettavaMaaraValue > selectedGuaranteeRemaining ||
-            kaytettavaMaaraValue < 0);
+            kaytettavaMaaraValue < 0 ||
+            isKaytettavaMaaraOverRemaining);
 
         const vakuuslaskuriRows: CollateralsVakuuslaskuriRow[] = leafSites.map(
           (site) => {
@@ -193,12 +192,12 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               km2: site.km2 || "-",
               hintaero:
                 hintaeroValue !== null
-                  ? formatNumericValue(hintaeroValue)
+                  ? formatLandUseNumericValue(hintaeroValue)
                   : "-",
               kerroin: kerroinPercent !== null ? `${kerroinPercent} %` : "-",
               vakuustarve:
                 vakuustarveValue !== null
-                  ? formatEuroValue(vakuustarveValue)
+                  ? formatLandUseEuroValue(vakuustarveValue)
                   : "-",
               vakuudet:
                 selectedGuaranteesForSite.length > 0 ? (
@@ -209,7 +208,9 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                           {itemIndex + 1}. {item.sopimusnumero} /{" "}
                           {item.jarjestysnumero}
                         </span>
-                        <span>{item.kaytettavaMaara}</span>
+                        <span>
+                          {formatLandUseEuroDisplayValue(item.kaytettavaMaara)}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -254,7 +255,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                     setKaytettavaMaara("");
                   }}
                 >
-                  Lisää vakuus
+                  Kohdista vakuuksia
                 </Button>
               </div>
             ),
@@ -301,8 +302,10 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             id: `vakuus-row-${guarantee.id}`,
             sopimusnumero: guarantee.sopimusnumero,
             jarjestysnumero: guarantee.jarjestysnumero,
-            vakuudenMaara: guarantee.vakuudenMaara,
-            vakuuttaJaljella: formatEuroValue(guarantee.jaljellaMaara),
+            vakuudenMaara: formatLandUseEuroDisplayValue(
+              guarantee.vakuudenMaara,
+            ),
+            vakuuttaJaljella: formatLandUseEuroValue(guarantee.jaljellaMaara),
           }),
         );
 
@@ -459,7 +462,9 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                     label="Vakuutta jäljellä"
                     value={
                       selectedGuarantee
-                        ? formatEuroValue(selectedGuarantee.jaljellaMaara)
+                        ? formatLandUseEuroValue(
+                            selectedGuarantee.jaljellaMaara,
+                          )
                         : "-"
                     }
                     disabled
@@ -471,8 +476,12 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                     value={kaytettavaMaara}
                     onChange={(event) => setKaytettavaMaara(event.target.value)}
                     disabled={!isEditMode || !selectedGuaranteeId}
-                    invalid={isKaytettavaMaaraInvalid}
-                    errorText="Määrä ei voi ylittää vakuutta jäljellä"
+                    invalid={isKaytettavaMaaraOverRemaining}
+                    errorText={
+                      isKaytettavaMaaraOverRemaining
+                        ? "Määrä ei voi ylittää vakuutta jäljellä"
+                        : undefined
+                    }
                   />
 
                   <Button
@@ -484,14 +493,14 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                       !selectedSiteId ||
                       !selectedGuarantee ||
                       !kaytettavaMaara.trim() ||
-                      isKaytettavaMaaraInvalid
+                      isKaytettavaMaaraInvalidForSubmit
                     }
                     onClick={() => {
                       if (
                         !selectedSiteId ||
                         !selectedGuarantee ||
                         !kaytettavaMaara.trim() ||
-                        isKaytettavaMaaraInvalid
+                        isKaytettavaMaaraInvalidForSubmit
                       ) {
                         return;
                       }
@@ -593,7 +602,32 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                               {item.jarjestysnumero}
                             </span>
                             <span>
-                              Käytettävä määrä: {item.kaytettavaMaara}
+                              Käytettävä määrä:{" "}
+                              {formatLandUseEuroDisplayValue(
+                                item.kaytettavaMaara,
+                              )}
+                              <Button
+                                type="button"
+                                variant={ButtonVariant.Supplementary}
+                                iconStart={<IconTrash />}
+                                disabled={!isEditMode}
+                                aria-label="Poista valittu vakuus"
+                                onClick={() => {
+                                  if (!selectedSiteId) {
+                                    return;
+                                  }
+
+                                  form.change("vakuusValinnatBySiteId", {
+                                    ...(values.vakuusValinnatBySiteId ?? {}),
+                                    [selectedSiteId]:
+                                      selectedSiteGuarantees.filter(
+                                        (_, itemIndex) => itemIndex !== index,
+                                      ),
+                                  });
+                                }}
+                              >
+                                Poista
+                              </Button>
                             </span>
                           </li>
                         ))}
