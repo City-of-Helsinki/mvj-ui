@@ -30,19 +30,28 @@ import {
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type Props = {
+
+type OwnProps = {
   currentAmountPerArea: number;
-  change: (...args: Array<any>) => any;
   disabled: boolean;
   field: any;
   formName: string;
   initialYearRent: number;
+  onRemove: (...args: Array<any>) => any;
+};
+
+type StateProps = {
   isSaveClicked: boolean;
   leaseAttributes: Attributes;
-  onRemove: (...args: Array<any>) => any;
-  subventionAmount: string;
+  subventionAmount: string | null | undefined;
   usersPermissions: UsersPermissionsType;
 };
+
+type DispatchProps = {
+  change: typeof change;
+};
+
+type Props = OwnProps & StateProps & DispatchProps;
 type State = {};
 
 class BasisOfRentManagementSubventionEdit extends PureComponent<Props, State> {
@@ -225,18 +234,17 @@ class BasisOfRentManagementSubventionEdit extends PureComponent<Props, State> {
   }
 }
 
-export default connect(
-  (state, props: Props) => {
-    const formName = props.formName;
-    const selector = formValueSelector(formName);
-    return {
-      isSaveClicked: getIsSaveClicked(state),
-      leaseAttributes: getLeaseAttributes(state),
-      subventionAmount: selector(state, `${props.field}.subvention_amount`),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    change,
-  },
-)(BasisOfRentManagementSubventionEdit);
+const mapStateToProps = (state: any, ownProps: OwnProps): StateProps => {
+  const formName = ownProps.formName;
+  const selector = formValueSelector(formName);
+  return {
+    isSaveClicked: getIsSaveClicked(state),
+    leaseAttributes: getLeaseAttributes(state),
+    subventionAmount: selector(state, `${ownProps.field}.subvention_amount`),
+    usersPermissions: getUsersPermissions(state),
+  };
+};
+
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, {
+  change,
+})(BasisOfRentManagementSubventionEdit);
