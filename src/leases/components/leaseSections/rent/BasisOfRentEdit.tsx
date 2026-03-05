@@ -544,6 +544,18 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         ? true
         : false,
   };
+  ensureMastChildrenInitialized = () => {
+    const { calculatorType, children, change, field, formName } = this.props;
+
+    // Initialize MAST children with 2 items if calculator type is MAST and children are empty
+    if (
+      calculatorType === CalculatorTypes.MAST &&
+      (!children || children.length === 0)
+    ) {
+      change(formName, `${field}.children`, [{}, {}]);
+    }
+  };
+
   initialFormValues = () => {
     const {
       basisOfRent,
@@ -582,9 +594,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
 
   componentDidMount() {
     this.initialFormValues();
+    this.ensureMastChildrenInitialized();
   }
 
   componentDidUpdate(prevProps: Props) {
+    this.ensureMastChildrenInitialized();
     const { showSubventions } = this.state;
     const {
       currentAmountPerArea,
@@ -900,12 +914,17 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   };
   // Reset all fields when calculator type changes
   onChangeTypeOptions = (value: any) => {
-    const { calculatorType } = this.props;
+    const { calculatorType, change, field, formName } = this.props;
 
     if (value !== calculatorType) {
       this.clearAllFields();
       this.handleRemoveSubventions();
       this.initialFormValues();
+
+      // Initialize MAST children with 2 items (Laitekaappi and Masto)
+      if (value === CalculatorTypes.MAST) {
+        change(formName, `${field}.children`, [{}, {}]);
+      }
     }
   };
   // LEASE: Yksikköhinta(ind 100)
