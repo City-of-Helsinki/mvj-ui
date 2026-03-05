@@ -26,20 +26,26 @@ import {
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type Props = {
+
+type OwnProps = {
   disabled: boolean;
   field: any;
   formName: string;
   initialYearRent: number;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
   onRemove: (...args: Array<any>) => any;
-  subventionPercent: string;
-  usersPermissions: UsersPermissionsType;
   managementSubventions: any;
   temporarySubventions: any;
   index: number;
 };
+
+type StateProps = {
+  isSaveClicked: boolean;
+  leaseAttributes: Attributes;
+  subventionPercent: string | null | undefined;
+  usersPermissions: UsersPermissionsType;
+};
+
+type Props = OwnProps & StateProps;
 
 const BasisOfRentTemporarySubventionEdit = ({
   disabled,
@@ -149,13 +155,17 @@ const BasisOfRentTemporarySubventionEdit = ({
   );
 };
 
-export default connect((state, props: Props) => {
-  const formName = props.formName;
+const mapStateToProps = (state: any, ownProps: OwnProps): StateProps => {
+  const formName = ownProps.formName;
   const selector = formValueSelector(formName);
   return {
     isSaveClicked: getIsSaveClicked(state),
     leaseAttributes: getLeaseAttributes(state),
-    subventionPercent: selector(state, `${props.field}.subvention_percent`),
+    subventionPercent: selector(state, `${ownProps.field}.subvention_percent`),
     usersPermissions: getUsersPermissions(state),
   };
-})(BasisOfRentTemporarySubventionEdit);
+};
+
+export default connect<StateProps, Record<string, never>, OwnProps>(
+  mapStateToProps,
+)(BasisOfRentTemporarySubventionEdit);

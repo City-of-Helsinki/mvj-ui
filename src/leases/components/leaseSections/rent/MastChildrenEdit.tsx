@@ -18,15 +18,21 @@ import {
 import { LeaseBasisOfRentsFieldPaths } from "@/leases/enums";
 import type { Attributes } from "types";
 import { mastCalculatorRent } from "@/leases/helpers";
-type Props = {
+
+type OwnProps = {
   formName: string;
   parentField: string;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
   index: number;
-  area: number;
   fieldsDisabled: boolean;
 };
+
+type StateProps = {
+  isSaveClicked: boolean;
+  leaseAttributes: Attributes;
+  area: number | null | undefined;
+};
+
+type Props = OwnProps & StateProps;
 
 const MastChildrenEdit = ({
   isSaveClicked,
@@ -152,12 +158,19 @@ const MastChildrenEdit = ({
   );
 };
 
-export default connect((state, props: Props) => {
-  const formName = props.formName;
+const mapStateToProps = (state: any, ownProps: OwnProps): StateProps => {
+  const formName = ownProps.formName;
   const selector = formValueSelector(formName);
   return {
     isSaveClicked: getIsSaveClicked(state),
     leaseAttributes: getLeaseAttributes(state),
-    area: selector(state, `${props.parentField}.children[${props.index}].area`),
+    area: selector(
+      state,
+      `${ownProps.parentField}.children[${ownProps.index}].area`,
+    ),
   };
-})(MastChildrenEdit);
+};
+
+export default connect<StateProps, Record<string, never>, OwnProps>(
+  mapStateToProps,
+)(MastChildrenEdit);

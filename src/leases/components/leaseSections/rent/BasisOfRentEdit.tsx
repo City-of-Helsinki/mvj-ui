@@ -435,8 +435,6 @@ const renderTemporarySubventions = ({
 };
 
 type renderMastChildrenProps = {
-  leaseAttributes: Attributes;
-  isSaveClicked: boolean;
   formName: string;
   parentField: string;
   fields: any;
@@ -444,8 +442,6 @@ type renderMastChildrenProps = {
 };
 
 const renderMastChildren = ({
-  leaseAttributes,
-  isSaveClicked,
   formName,
   fields,
   parentField,
@@ -457,14 +453,11 @@ const renderMastChildren = ({
         return (
           <Fragment>
             {!!fields.length &&
-              fields.map((field, index) => {
+              fields.map((_, index) => {
                 return (
                   <MastChildrenEdit
                     index={index}
                     formName={formName}
-                    leaseAttributes={leaseAttributes}
-                    isSaveClicked={isSaveClicked}
-                    field={field}
                     key={index}
                     parentField={parentField}
                     fieldsDisabled={fieldsDisabled}
@@ -1320,13 +1313,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
           indexOptions={indexOptions}
           intendedUseOptions={intendedUseOptions}
           managementTypeOptions={managementTypeOptions}
-          calculatorTypeOptions={calculatorTypeOptions}
           onRemove={onRemove}
           onUnarchive={this.handleUnarchive}
           showTotal={showTotal}
           subventionTypeOptions={subventionTypeOptions}
           totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
-          typeOptions={typeOptions}
         />
       );
     }
@@ -1832,7 +1823,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                 <Column large={6} medium={9} small={12}>
                                   <FieldArray
                                     component={renderMastChildren}
-                                    leaseAttributes={leaseAttributes}
                                     name={`${field}.children`}
                                     formName={formName}
                                     parentField={field}
