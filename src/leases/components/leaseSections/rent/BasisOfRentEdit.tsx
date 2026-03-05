@@ -471,55 +471,60 @@ const renderMastChildren = ({
   );
 };
 
-type Props = {
-  amountPerArea: number | null | undefined;
+type OwnProps = {
   archived: boolean;
-  area: number | null | undefined;
-  areaUnit: string | null | undefined;
-  currentAmountPerArea: number | null | undefined;
   areaUnitOptions: Array<Record<string, any>>;
-  basisOfRent: Record<string, any>;
-  calculatorType: string | null | undefined;
-  calculatorTypeOptions: Array<Record<string, any>>;
-  change: typeof change;
-  children: Record<string, any> | null | undefined;
-  clearFields: typeof clearFields;
-  currentLease: Lease;
-  discountPercentage: string | null | undefined;
   field: string;
   formName: string;
-  formValues: typeof getFormValues;
-  id: number | null | undefined;
-  index: number;
   indexOptions: Array<Record<string, any>>;
-  initialize: typeof initialize;
-  intendedUse: number;
   intendedUseOptions: Array<Record<string, any>>;
   isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-  lockedAt: string | null | undefined;
-  managementSubventions: Array<Record<string, any>> | null | undefined;
   managementTypeOptions: Array<Record<string, any>>;
   onArchive?: (...args: Array<any>) => any;
   onRemove: (...args: Array<any>) => any;
   onUnarchive?: (...args: Array<any>) => any;
-  plansInspectedAt: string | null | undefined;
-  profitMarginPercentage: string | null | undefined;
   showLockedAt?: boolean;
   showPlansInspectedAt?: boolean;
   showTotal: boolean;
+  subventionTypeOptions: Array<Record<string, any>>;
+  totalDiscountedInitialYearRent: number;
+};
+
+type StateProps = {
+  amountPerArea: number | null | undefined;
+  area: number | null | undefined;
+  areaUnit: string | null | undefined;
+  basisOfRent: Record<string, any>;
+  calculatorType: string | null | undefined;
+  children: Record<string, any> | null | undefined;
+  currentAmountPerArea: number | null | undefined;
+  currentLease: Lease;
+  discountPercentage: string | null | undefined;
+  formValues: Record<string, any>;
+  id: number | null | undefined;
+  index: number;
+  intendedUse: number;
+  leaseAttributes: Attributes;
+  lockedAt: string | null | undefined;
+  managementSubventions: Array<Record<string, any>> | null | undefined;
+  plansInspectedAt: string | null | undefined;
+  price: string | null | undefined;
+  profitMarginPercentage: string | null | undefined;
   subventionBasePercent: string | null | undefined;
   subventionGraduatedPercent: string | null | undefined;
   subventionType: string | null | undefined;
-  subventionTypeOptions: Array<Record<string, any>>;
-  price: string | null | undefined;
-  zone: string | null | undefined;
   temporarySubventions: Array<Record<string, any>> | null | undefined;
-  totalDiscountedInitialYearRent: number;
   usersPermissions: UsersPermissionsType;
-  zoneOptions: Array<Record<string, any>>;
-  typeOptions: Array<Record<string, any>>;
+  zone: string | null | undefined;
 };
+
+type DispatchProps = {
+  change: typeof change;
+  clearFields: typeof clearFields;
+  initialize: typeof initialize;
+};
+
+type Props = OwnProps & StateProps & DispatchProps;
 type State = {
   showSubventions: boolean;
 };
@@ -1033,8 +1038,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       usersPermissions,
       managementSubventions,
       temporarySubventions,
-      typeOptions,
-      calculatorTypeOptions,
       calculatorType,
       zone,
     } = this.props;
@@ -3247,7 +3250,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
 }
 
 export default connect(
-  (state, props: Props) => {
+  (state, props: OwnProps) => {
     const formName = props.formName;
     const selector = formValueSelector(formName);
     const formValues = getFormValues(formName)(state) || {};
