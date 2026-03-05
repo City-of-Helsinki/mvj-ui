@@ -17,7 +17,6 @@ import { ButtonColors } from "@/components/enums";
 import {
   BasisOfRentManagementSubventionsFieldPaths,
   LeaseBasisOfRentsFieldPaths,
-  calculatorTypeOptions,
 } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { calculateBasisOfRentTotalDiscountedInitialYearRent } from "@/leases/helpers";
@@ -131,7 +130,6 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
       intendedUseOptions,
       managementTypeOptions,
       subventionTypeOptions,
-      typeOptions,
     } = this.state;
     const totalDiscountedInitialYearRent =
       calculateBasisOfRentTotalDiscountedInitialYearRent(
@@ -251,8 +249,6 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                             totalDiscountedInitialYearRent={
                               totalDiscountedInitialYearRent
                             }
-                            typeOptions={typeOptions}
-                            calculatorTypeOptions={calculatorTypeOptions}
                           />
                         );
                       })}
@@ -332,8 +328,6 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                           totalDiscountedInitialYearRent={
                             totalDiscountedInitialYearRent
                           }
-                          typeOptions={typeOptions}
-                          calculatorTypeOptions={calculatorTypeOptions}
                         />
                       );
                     })}
