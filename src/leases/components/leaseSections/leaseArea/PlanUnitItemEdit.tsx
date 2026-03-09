@@ -119,7 +119,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({
       initialValues.plan_unit_state != plan_unit_state ||
       initialValues.plan_unit_intended_use != plan_unit_intended_use;
 
-    formApi.change(`${field}.is_master`, true);
+    formApi.change(`${field}.is_master`, hasChanged);
   }, [
     identifier,
     area,
