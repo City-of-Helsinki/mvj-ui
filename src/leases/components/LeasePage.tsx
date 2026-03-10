@@ -315,14 +315,6 @@ const LeasePage: React.FC<Props> = (props) => {
     rentsFormValues,
     leaseId,
     isFormValidFlags,
-    isEditMode,
-    constructabilityFormState,
-    contractsFormState,
-    decisionsFormState,
-    inspectionsFormState,
-    summaryFormState,
-    tenantsFormState,
-    leaseAreasFormState,
   });
   currentValuesRef.current = {
     contractsFormValues,
@@ -333,14 +325,6 @@ const LeasePage: React.FC<Props> = (props) => {
     rentsFormValues,
     leaseId,
     isFormValidFlags,
-    isEditMode,
-    constructabilityFormState,
-    contractsFormState,
-    decisionsFormState,
-    inspectionsFormState,
-    summaryFormState,
-    tenantsFormState,
-    leaseAreasFormState,
   };
 
   const timerAutoSave = useRef<NodeJS.Timeout>();
@@ -856,13 +840,6 @@ const LeasePage: React.FC<Props> = (props) => {
       rentsFormValues,
       leaseId,
       isFormValidFlags,
-      constructabilityFormState,
-      contractsFormState,
-      decisionsFormState,
-      inspectionsFormState,
-      summaryFormState,
-      tenantsFormState,
-      leaseAreasFormState,
     } = currentValuesRef.current;
 
     let isDirty = false;
