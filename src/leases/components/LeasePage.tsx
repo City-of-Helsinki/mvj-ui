@@ -381,29 +381,15 @@ const LeasePage: React.FC<Props> = (props) => {
     hideEditMode();
     window.addEventListener("beforeunload", handleLeavePage);
 
-    function syncFormStateToSessionStorage(
-      formState: any,
-      formName: string,
-      isDirty: boolean,
-    ) {
-      if (!currentValuesRef.current.isEditMode) return;
-      if (isDirty && !getSessionStorageItem(formName)) {
-        setSessionStorageItem(formName, formState.values);
-      } else if (!isDirty && getSessionStorageItem(formName)) {
-        removeSessionStorageItem(formName);
-      }
-    }
-
+    //isEqual is used as a comparator to ensure that dirty state is properly evaluated for field arrays.
     const unsubscribeSummaryForm = summaryFormRef.current.subscribe(
       (formState) => {
-        const isDirty = !isEqual(formState.values, formState.initialValues);
-        syncFormStateToSessionStorage(
-          formState,
-          FormNames.LEASE_SUMMARY,
-          isDirty,
+        const isDirtyIncludingFieldArrays = !isEqual(
+          formState.values,
+          formState.initialValues,
         );
         setSummaryFormState({
-          dirty: isDirty,
+          dirty: isDirtyIncludingFieldArrays,
           valid: formState.valid,
         });
       },
@@ -411,14 +397,12 @@ const LeasePage: React.FC<Props> = (props) => {
     );
     const unsubscribeLeaseTenantForm = leaseTenantFormRef.current.subscribe(
       (formState) => {
-        const isDirty = !isEqual(formState.values, formState.initialValues);
-        syncFormStateToSessionStorage(
-          formState,
-          FormNames.LEASE_TENANTS,
-          isDirty,
+        const isDirtyIncludingFieldArrays = !isEqual(
+          formState.values,
+          formState.initialValues,
         );
         setTenantsFormState({
-          dirty: isDirty,
+          dirty: isDirtyIncludingFieldArrays,
           valid: formState.valid,
         });
       },
@@ -427,14 +411,12 @@ const LeasePage: React.FC<Props> = (props) => {
     const unsubscribeLeaseConstructabilityForm =
       leaseConstructabilityFormRef.current.subscribe(
         (formState) => {
-          const isDirty = !isEqual(formState.values, formState.initialValues);
-          syncFormStateToSessionStorage(
-            formState,
-            FormNames.LEASE_CONSTRUCTABILITY,
-            isDirty,
+          const isDirtyIncludingFieldArrays = !isEqual(
+            formState.values,
+            formState.initialValues,
           );
           setConstructabilityFormState({
-            dirty: isDirty,
+            dirty: isDirtyIncludingFieldArrays,
             valid: formState.valid,
           });
         },
@@ -443,14 +425,12 @@ const LeasePage: React.FC<Props> = (props) => {
     const unsubscribeLeaseContractsForm =
       leaseContractsFormRef.current.subscribe(
         (formState) => {
-          const isDirty = !isEqual(formState.values, formState.initialValues);
-          syncFormStateToSessionStorage(
-            formState,
-            FormNames.LEASE_CONTRACTS,
-            isDirty,
+          const isDirtyIncludingFieldArrays = !isEqual(
+            formState.values,
+            formState.initialValues,
           );
           setContractsFormState({
-            dirty: isDirty,
+            dirty: isDirtyIncludingFieldArrays,
             valid: formState.valid,
           });
         },
@@ -459,14 +439,12 @@ const LeasePage: React.FC<Props> = (props) => {
     const unsubscribeLeaseDecisionsForm =
       leaseDecisionsFormRef.current.subscribe(
         (formState) => {
-          const isDirty = !isEqual(formState.values, formState.initialValues);
-          syncFormStateToSessionStorage(
-            formState,
-            FormNames.LEASE_DECISIONS,
-            isDirty,
+          const isDirtyIncludingFieldArrays = !isEqual(
+            formState.values,
+            formState.initialValues,
           );
           setDecisionsFormState({
-            dirty: isDirty,
+            dirty: isDirtyIncludingFieldArrays,
             valid: formState.valid,
           });
         },
@@ -475,14 +453,12 @@ const LeasePage: React.FC<Props> = (props) => {
     const unsubscribeLeaseInspectionsForm =
       leaseInspectionsFormRef.current.subscribe(
         (formState) => {
-          const isDirty = !isEqual(formState.values, formState.initialValues);
-          syncFormStateToSessionStorage(
-            formState,
-            FormNames.LEASE_INSPECTIONS,
-            isDirty,
+          const isDirtyIncludingFieldArrays = !isEqual(
+            formState.values,
+            formState.initialValues,
           );
           setInspectionsFormState({
-            dirty: isDirty,
+            dirty: isDirtyIncludingFieldArrays,
             valid: formState.valid,
           });
         },
@@ -490,14 +466,12 @@ const LeasePage: React.FC<Props> = (props) => {
       );
     const unsubscribeLeaseAreasForm = leaseAreasFormRef.current.subscribe(
       (formState) => {
-        const isDirty = !isEqual(formState.values, formState.initialValues);
-        syncFormStateToSessionStorage(
-          formState,
-          FormNames.LEASE_AREAS,
-          isDirty,
+        const isDirtyIncludingFieldArrays = !isEqual(
+          formState.values,
+          formState.initialValues,
         );
         setLeaseAreasFormState({
-          dirty: isDirty,
+          dirty: isDirtyIncludingFieldArrays,
           valid: formState.valid,
         });
       },
@@ -1021,6 +995,8 @@ const LeasePage: React.FC<Props> = (props) => {
         );
       }
 
+      // Constructability needs to be added to payload after lease areas as
+      // it is a part of lease areas and would be overridden.
       if (constructabilityFormState.dirty) {
         payload = addConstructabilityFormValuesToPayload(
           payload,
