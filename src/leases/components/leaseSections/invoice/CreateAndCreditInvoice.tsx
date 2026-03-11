@@ -243,7 +243,10 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
       </AppConsumer>
 
       <Authorization
-        allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+        allow={
+          hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE) &&
+          isServiceUnitSameAsActiveServiceUnit()
+        }
       >
         <div ref={setCreditPanelRef}>
           {isCreditInvoicePanelOpen && (

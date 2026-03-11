@@ -62,6 +62,6 @@ export const receivableTypesFromAttributes = (
  */
 export const receivableTypeFromRows = (
   rows: Array<Record<string, any>>,
-): Number | null | undefined => {
-  return rows ? (rows[0]?.receivable_type ?? null) : null;
+): number | null => {
+  return rows?.[0]?.receivable_type ?? null;
 };
