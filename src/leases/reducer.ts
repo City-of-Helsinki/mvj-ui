@@ -15,9 +15,11 @@ import type {
   ReceiveLeaseByIdAction,
   LeaseNotFoundByIdAction,
   ReceiveFormValidFlagsAction,
+  ReceiveFormDirtyFlagsAction,
   ReceiveIsSaveClickedAction,
   ReceiveCollapseStatesAction,
   ReceiveLeasesForContractNumbersAction,
+  LeaseFormFlags,
 } from "@/leases/types";
 const isAttachDecisionModalOpenReducer: Reducer<boolean> = handleActions(
   {
@@ -174,10 +176,10 @@ const byIdReducer: Reducer<Lease> = handleActions(
   },
   {},
 );
-const isFormValidByIdReducer: Reducer<Record<string, any>> = handleActions(
+const isFormValidByIdReducer: Reducer<LeaseFormFlags> = handleActions(
   {
     ["mvj/leases/RECEIVE_FORM_VALID_FLAGS"]: (
-      state: Record<string, any>,
+      state: LeaseFormFlags,
       { payload: valid }: ReceiveFormValidFlagsAction,
     ) => {
       return { ...state, ...valid };
@@ -204,6 +206,38 @@ const isFormValidByIdReducer: Reducer<Record<string, any>> = handleActions(
     [FormNames.LEASE_RENTS]: true,
     [FormNames.LEASE_SUMMARY]: true,
     [FormNames.LEASE_TENANTS]: true,
+  },
+);
+const isFormDirtyByIdReducer: Reducer<LeaseFormFlags> = handleActions(
+  {
+    ["mvj/leases/RECEIVE_FORM_DIRTY_FLAGS"]: (
+      state: LeaseFormFlags,
+      { payload: dirty }: ReceiveFormDirtyFlagsAction,
+    ) => {
+      return { ...state, ...dirty };
+    },
+    ["mvj/leases/CLEAR_FORM_DIRTY_FLAGS"]: () => {
+      return {
+        [FormNames.LEASE_CONSTRUCTABILITY]: false,
+        [FormNames.LEASE_CONTRACTS]: false,
+        [FormNames.LEASE_DECISIONS]: false,
+        [FormNames.LEASE_INSPECTIONS]: false,
+        [FormNames.LEASE_AREAS]: false,
+        [FormNames.LEASE_RENTS]: false,
+        [FormNames.LEASE_SUMMARY]: false,
+        [FormNames.LEASE_TENANTS]: false,
+      };
+    },
+  },
+  {
+    [FormNames.LEASE_CONSTRUCTABILITY]: false,
+    [FormNames.LEASE_CONTRACTS]: false,
+    [FormNames.LEASE_DECISIONS]: false,
+    [FormNames.LEASE_INSPECTIONS]: false,
+    [FormNames.LEASE_AREAS]: false,
+    [FormNames.LEASE_RENTS]: false,
+    [FormNames.LEASE_SUMMARY]: false,
+    [FormNames.LEASE_TENANTS]: false,
   },
 );
 const isSaveClickedReducer: Reducer<boolean> = handleActions(
@@ -255,6 +289,7 @@ export default combineReducers<Record<string, any>, any>({
   current: currentLeaseReducer,
   isAttachDecisionModalOpen: isAttachDecisionModalOpenReducer,
   isCreateModalOpen: isCreateModalOpenReducer,
+  isFormDirtyById: isFormDirtyByIdReducer,
   isFormValidById: isFormValidByIdReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,

@@ -4,7 +4,6 @@ import isPast from "date-fns/isPast";
 import isArray from "lodash/isArray";
 import isEmpty from "lodash/isEmpty";
 import isEqual from "lodash/isEqual";
-import { isDirty } from "redux-form";
 import {
   getSplittedDateRangesWithItems,
   sortByStartAndEndDateDesc,
@@ -52,11 +51,8 @@ import {
   sortStringByKeyDesc,
 } from "@/util/helpers";
 import { getCoordinatesOfGeometry } from "@/util/map";
-import { getIsEditMode } from "./selectors";
-import {
-  getSessionStorageItem,
-  removeSessionStorageItem,
-} from "@/util/storage";
+import { getIsEditMode, getIsFormDirtyFlags } from "./selectors";
+import { removeSessionStorageItem } from "@/util/storage";
 import type {
   Lease,
   LeaseArea,
@@ -3873,19 +3869,19 @@ export const isAnyLeaseFormDirty = (state: RootState): boolean => {
 
   if (!isEditMode) return false;
 
+  const dirtyFlags = getIsFormDirtyFlags(state);
   const hasDirtyFinalForm = Boolean(
-    getSessionStorageItem(FormNames.LEASE_CONSTRUCTABILITY) ||
-      getSessionStorageItem(FormNames.LEASE_CONTRACTS) ||
-      getSessionStorageItem(FormNames.LEASE_DECISIONS) ||
-      getSessionStorageItem(FormNames.LEASE_INSPECTIONS) ||
-      getSessionStorageItem(FormNames.LEASE_SUMMARY) ||
-      getSessionStorageItem(FormNames.LEASE_TENANTS) ||
-      getSessionStorageItem(FormNames.LEASE_AREAS),
+    dirtyFlags[FormNames.LEASE_CONSTRUCTABILITY] ||
+      dirtyFlags[FormNames.LEASE_CONTRACTS] ||
+      dirtyFlags[FormNames.LEASE_DECISIONS] ||
+      dirtyFlags[FormNames.LEASE_INSPECTIONS] ||
+      dirtyFlags[FormNames.LEASE_RENTS] ||
+      dirtyFlags[FormNames.LEASE_SUMMARY] ||
+      dirtyFlags[FormNames.LEASE_TENANTS] ||
+      dirtyFlags[FormNames.LEASE_AREAS],
   );
 
-  const hasDirtyReduxForm = isDirty(FormNames.LEASE_RENTS)(state);
-
-  return hasDirtyFinalForm || hasDirtyReduxForm;
+  return hasDirtyFinalForm;
 };
 
 /**

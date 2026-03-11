@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { connect, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router";
 import {
   change as reduxFormChange,
@@ -48,11 +48,13 @@ import Tenants from "./leaseSections/tenant/Tenants";
 import { fetchCommentsByLease } from "@/comments/actions";
 import { fetchInvoicesByLease } from "@/invoices/actions";
 import {
+  clearFormDirtyFlags,
   clearFormValidFlags,
   deleteLease,
   fetchSingleLease,
   hideEditMode,
   patchLease,
+  receiveFormDirtyFlags,
   receiveSingleLease,
   receiveFormValidFlags,
   receiveIsSaveClicked,
@@ -163,7 +165,6 @@ import {
 type Props = {
   areasFormValues: Record<string, any>;
   reduxFormChange: typeof reduxFormChange;
-  clearFormValidFlags: (...args: Array<any>) => any;
   clearPreviewInvoices: (...args: Array<any>) => any;
   commentMethods: MethodsType;
   // get via withLeasePageAttributes HOC
@@ -201,7 +202,6 @@ type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndex | null;
   patchLease: (...args: Array<any>) => any;
   receiveSingleLease: (...args: Array<any>) => any;
-  receiveFormValidFlags: (...args: Array<any>) => any;
   receiveIsSaveClicked: (...args: Array<any>) => any;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   rentsFormValues: Record<string, any>;
@@ -216,7 +216,6 @@ const LeasePage: React.FC<Props> = (props) => {
   const {
     areasFormValues,
     reduxFormChange,
-    clearFormValidFlags,
     clearPreviewInvoices,
     commentMethods,
     contractsFormValues,
@@ -252,7 +251,6 @@ const LeasePage: React.FC<Props> = (props) => {
     oldDwellingsInHousingCompaniesPriceIndex,
     patchLease,
     receiveSingleLease,
-    receiveFormValidFlags,
     receiveIsSaveClicked,
     receiveTopNavigationSettings,
     rentsFormValues,
@@ -261,6 +259,8 @@ const LeasePage: React.FC<Props> = (props) => {
     usersPermissions,
     vats,
   } = props;
+
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const params = useParams();
@@ -297,6 +297,31 @@ const LeasePage: React.FC<Props> = (props) => {
     dirty: false,
     valid: true,
   });
+
+  useEffect(() => {
+    dispatch(
+      receiveFormDirtyFlags({
+        [FormNames.LEASE_CONSTRUCTABILITY]: constructabilityFormState.dirty,
+        [FormNames.LEASE_CONTRACTS]: contractsFormState.dirty,
+        [FormNames.LEASE_DECISIONS]: decisionsFormState.dirty,
+        [FormNames.LEASE_INSPECTIONS]: inspectionsFormState.dirty,
+        [FormNames.LEASE_AREAS]: leaseAreasFormState.dirty,
+        [FormNames.LEASE_RENTS]: isRentsFormDirty,
+        [FormNames.LEASE_SUMMARY]: summaryFormState.dirty,
+        [FormNames.LEASE_TENANTS]: tenantsFormState.dirty,
+      }),
+    );
+  }, [
+    constructabilityFormState.dirty,
+    contractsFormState.dirty,
+    decisionsFormState.dirty,
+    inspectionsFormState.dirty,
+    isRentsFormDirty,
+    leaseAreasFormState.dirty,
+    summaryFormState.dirty,
+    tenantsFormState.dirty,
+    dispatch,
+  ]);
 
   const comments: CommentList = useSelector((state) =>
     getCommentsByLease(state, Number(leaseId)),
@@ -471,6 +496,7 @@ const LeasePage: React.FC<Props> = (props) => {
       clearPreviewInvoices();
       // Clear current lease
       receiveSingleLease({});
+      dispatch(clearFormDirtyFlags());
       destroy(FormNames.INVOICE_SIMULATOR);
       destroy(FormNames.RENT_CALCULATOR);
       hideEditMode();
@@ -627,7 +653,8 @@ const LeasePage: React.FC<Props> = (props) => {
     setLeaseAreasFormState({ dirty: false, valid: true });
 
     receiveIsSaveClicked(false);
-    clearFormValidFlags();
+    dispatch(clearFormValidFlags());
+    dispatch(clearFormDirtyFlags());
     destroyAllForms();
     initializeForms(currentLease);
     showEditMode();
@@ -735,7 +762,7 @@ const LeasePage: React.FC<Props> = (props) => {
 
   const restoreUnsavedChanges = () => {
     destroyAllForms();
-    clearFormValidFlags();
+    dispatch(clearFormValidFlags());
     showEditMode();
     initializeForms(currentLease);
     const storedAreasFormValues = getSessionStorageItem(FormNames.LEASE_AREAS);
@@ -804,7 +831,7 @@ const LeasePage: React.FC<Props> = (props) => {
     const storedFormValidity = getSessionStorageItem("leaseValidity");
 
     if (storedFormValidity) {
-      receiveFormValidFlags(storedFormValidity);
+      dispatch(receiveFormValidFlags(storedFormValidity));
     }
 
     startAutoSaveTimer();
@@ -932,6 +959,7 @@ const LeasePage: React.FC<Props> = (props) => {
   const cancelChanges = () => {
     hideEditMode();
     stopAutoSaveTimer();
+    dispatch(clearFormDirtyFlags());
     clearUnsavedChanges();
   };
 
@@ -1535,7 +1563,6 @@ export default flowRight(
     },
     {
       reduxFormChange,
-      clearFormValidFlags,
       clearPreviewInvoices,
       deleteLease,
       destroy,
@@ -1549,7 +1576,6 @@ export default flowRight(
       hideEditMode,
       initialize,
       patchLease,
-      receiveFormValidFlags,
       receiveIsSaveClicked,
       receiveSingleLease,
       receiveTopNavigationSettings,
