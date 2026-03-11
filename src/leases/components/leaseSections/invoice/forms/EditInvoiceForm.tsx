@@ -13,8 +13,6 @@ import { Form } from "react-final-form";
 import { FormApi } from "final-form";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import InvoiceRowsEdit from "./InvoiceRowsEdit";
-import ListItem from "@/components/content/ListItem";
-import ListItems from "@/components/content/ListItems";
 import RemoveButton from "@/components/form/RemoveButton";
 import SendupButton from "@/components/button/SendupButton";
 import SubTitle from "@/components/content/SubTitle";
@@ -59,6 +57,7 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import { PaymentsReadOnly } from "../InvoiceTemplate";
 type PaymentsProps = {
   fields: any;
   relativeTo: any;
@@ -221,11 +220,13 @@ const Payments = ({ fields, relativeTo }: PaymentsProps): ReactElement => {
   );
 };
 
-const INVOICE_STATE_EDITABLE_FIELDS: Record<string, Set<string> | null> = {
-  sentToSap: new Set([InvoiceFieldPaths.POSTPONE_DATE]),
-  creditNote: new Set([InvoiceFieldPaths.NOTES]),
-  generated: new Set(),
-  manual: null,
+const PAYMENTS = "payments";
+
+const INVOICE_STATE_EDITABLE_FIELDS: Record<string, Array<string>> = {
+  sentToSap: [InvoiceFieldPaths.POSTPONE_DATE],
+  creditNote: [InvoiceFieldPaths.NOTES],
+  generated: [PAYMENTS],
+  manual: [...Object.values(InvoiceFieldPaths), PAYMENTS],
 };
 
 type Props = {
@@ -268,11 +269,8 @@ const EditInvoiceForm: React.FC<Props> = ({
 
   const editableFieldsSet = INVOICE_STATE_EDITABLE_FIELDS[invoiceStateKey];
 
-  const paymentsEditable =
-    invoiceStateKey === "manual" || invoiceStateKey === "generated";
-
   const isEditable = (fieldPath: string) =>
-    editableFieldsSet === null || editableFieldsSet.has(fieldPath);
+    editableFieldsSet.includes(fieldPath);
 
   const handleCreditedInvoiceClick = () => {
     if (invoice) {
@@ -753,7 +751,7 @@ const EditInvoiceForm: React.FC<Props> = ({
                       InvoicePaymentsFieldPaths.PAYMENTS,
                     )}
                   >
-                    {paymentsEditable ? (
+                    {isEditable(PAYMENTS) ? (
                       <FieldArray name="payments">
                         {(fieldArrayProps) =>
                           Payments({
@@ -763,86 +761,12 @@ const EditInvoiceForm: React.FC<Props> = ({
                         }
                       </FieldArray>
                     ) : (
-                      <>
-                        {!payments.length && <FormText>Ei maksuja</FormText>}
-                        {!!payments.length && (
-                          <ListItems>
-                            <Row>
-                              <Column small={6}>
-                                <Authorization
-                                  allow={isFieldAllowedToRead(
-                                    invoiceAttributes,
-                                    InvoicePaymentsFieldPaths.PAID_AMOUNT,
-                                  )}
-                                >
-                                  <FormTextTitle
-                                    enableUiDataEdit
-                                    relativeTo={relativeTo}
-                                    uiDataKey={getUiDataInvoiceKey(
-                                      InvoicePaymentsFieldPaths.PAID_AMOUNT,
-                                    )}
-                                  >
-                                    {InvoicePaymentsFieldTitles.PAID_AMOUNT}
-                                  </FormTextTitle>
-                                </Authorization>
-                              </Column>
-                              <Column small={6}>
-                                <Authorization
-                                  allow={isFieldAllowedToRead(
-                                    invoiceAttributes,
-                                    InvoicePaymentsFieldPaths.PAID_DATE,
-                                  )}
-                                >
-                                  <FormTextTitle
-                                    enableUiDataEdit
-                                    relativeTo={relativeTo}
-                                    uiDataKey={getUiDataInvoiceKey(
-                                      InvoicePaymentsFieldPaths.PAID_DATE,
-                                    )}
-                                  >
-                                    {InvoicePaymentsFieldTitles.PAID_DATE}
-                                  </FormTextTitle>
-                                </Authorization>
-                              </Column>
-                            </Row>
-                            {payments.map((payment) => (
-                              <Row key={payment.id}>
-                                <Column small={6}>
-                                  <Authorization
-                                    allow={isFieldAllowedToRead(
-                                      invoiceAttributes,
-                                      InvoicePaymentsFieldPaths.PAID_AMOUNT,
-                                    )}
-                                  >
-                                    <ListItem>
-                                      {payment.paid_amount ? (
-                                        <AmountWithVat
-                                          amount={payment.paid_amount}
-                                          date={invoice.due_date}
-                                        />
-                                      ) : (
-                                        "-"
-                                      )}
-                                    </ListItem>
-                                  </Authorization>
-                                </Column>
-                                <Column small={6}>
-                                  <Authorization
-                                    allow={isFieldAllowedToRead(
-                                      invoiceAttributes,
-                                      InvoicePaymentsFieldPaths.PAID_DATE,
-                                    )}
-                                  >
-                                    <ListItem>
-                                      {formatDate(payment.paid_date) || "-"}
-                                    </ListItem>
-                                  </Authorization>
-                                </Column>
-                              </Row>
-                            ))}
-                          </ListItems>
-                        )}
-                      </>
+                      <PaymentsReadOnly
+                        payments={payments}
+                        invoiceAttributes={invoiceAttributes}
+                        invoice={invoice}
+                        relativeTo={relativeTo}
+                      />
                     )}
                   </Authorization>
                 </Column>
