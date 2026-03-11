@@ -25,6 +25,7 @@ import {
   getMethods as getInvoiceMethods,
 } from "@/invoices/selectors";
 import { getCurrentLease } from "@/leases/selectors";
+import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import type { Methods as MethodsType } from "types";
 import type { Invoice } from "@/invoices/types";
 
@@ -43,6 +44,7 @@ const InvoicePanel = forwardRef<any, Props>(
       getInvoicesByLease(state, currentLease.id),
     );
     const isEditClicked = useSelector(getIsEditClicked);
+    const activeServiceUnit = useSelector(getUserActiveServiceUnit);
     const dispatch = useDispatch();
 
     const invoiceFormRef = useRef<FormApi>(
@@ -64,6 +66,7 @@ const InvoicePanel = forwardRef<any, Props>(
       string,
       any
     > | null>(null);
+    const [isFormValid, setIsFormValid] = useState(false);
 
     const setComponentRef = (el: HTMLDivElement | null) => {
       component.current = el;
@@ -97,11 +100,28 @@ const InvoicePanel = forwardRef<any, Props>(
       }
     }, [invoice, invoices]);
 
+    useEffect(() => {
+      if (invoice && invoiceFormRef.current) {
+        invoiceFormRef.current.initialize(invoice);
+      }
+    }, [invoice]);
+
+    useEffect(() => {
+      return invoiceFormRef.current.subscribe(
+        ({ valid }) => setIsFormValid(valid),
+        { valid: true },
+      );
+    }, []);
+
     const handleSave = () => {
       dispatch(receiveIsEditClicked(true));
       if (invoiceFormRef.current.getState().valid) {
         invoiceFormRef.current.submit();
       }
+    };
+
+    const isServiceUnitSameAsActiveServiceUnit = () => {
+      return activeServiceUnit?.id === currentLease?.service_unit?.id;
     };
 
     return (
@@ -111,7 +131,10 @@ const InvoicePanel = forwardRef<any, Props>(
           invoice &&
           !invoice.sap_id && (
             <Authorization
-              allow={isMethodAllowed(invoiceMethods, Methods.PATCH)}
+              allow={
+                isMethodAllowed(invoiceMethods, Methods.PATCH) &&
+                isServiceUnitSameAsActiveServiceUnit()
+              }
             >
               <>
                 <Button
@@ -121,9 +144,7 @@ const InvoicePanel = forwardRef<any, Props>(
                 />
                 <Button
                   className={ButtonColors.SUCCESS}
-                  disabled={
-                    isEditClicked || !invoiceFormRef.current.getState().valid
-                  }
+                  disabled={isEditClicked || !isFormValid}
                   onClick={handleSave}
                   text="Tallenna"
                 />
@@ -135,7 +156,8 @@ const InvoicePanel = forwardRef<any, Props>(
         title="Laskun tiedot"
       >
         {isMethodAllowed(invoiceMethods, Methods.PATCH) &&
-        (!invoice || !invoice.sap_id) ? (
+        !invoice?.sap_id &&
+        isServiceUnitSameAsActiveServiceUnit() ? (
           <EditInvoiceForm
             creditedInvoice={creditedInvoice}
             interestInvoiceFor={interestInvoiceFor}

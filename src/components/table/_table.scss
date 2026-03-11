@@ -313,6 +313,7 @@
       position: relative;
       border: 1px solid variables.$blue;
       margin-bottom: rem-calc(10px);
+      overflow: visible;
 
       .scroll-head-wrapper {
         overflow: hidden;

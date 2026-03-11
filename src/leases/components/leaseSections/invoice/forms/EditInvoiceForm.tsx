@@ -13,6 +13,8 @@ import { Form } from "react-final-form";
 import { FormApi } from "final-form";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import InvoiceRowsEdit from "./InvoiceRowsEdit";
+import ListItem from "@/components/content/ListItem";
+import ListItems from "@/components/content/ListItems";
 import RemoveButton from "@/components/form/RemoveButton";
 import SendupButton from "@/components/button/SendupButton";
 import SubTitle from "@/components/content/SubTitle";
@@ -219,6 +221,13 @@ const Payments = ({ fields, relativeTo }: PaymentsProps): ReactElement => {
   );
 };
 
+const INVOICE_STATE_EDITABLE_FIELDS: Record<string, Set<string> | null> = {
+  sentToSap: new Set([InvoiceFieldPaths.POSTPONE_DATE]),
+  creditNote: new Set([InvoiceFieldPaths.NOTES]),
+  generated: new Set(),
+  manual: null,
+};
+
 type Props = {
   creditedInvoice: Record<string, any> | null | undefined;
   formApi: FormApi;
@@ -244,6 +253,26 @@ const EditInvoiceForm: React.FC<Props> = ({
   const dispatch = useDispatch();
 
   const rows = invoice ? invoice.rows : undefined;
+
+  const isSentToSap = invoice?.sent_to_sap_at || invoice?.sap_id;
+  const isCreditNote = invoice?.type === InvoiceType.CREDIT_NOTE;
+  const isGenerated = invoice?.generated;
+
+  const getInvoiceStateKey = () => {
+    if (isSentToSap) return "sentToSap";
+    if (isCreditNote) return "creditNote";
+    if (isGenerated) return "generated";
+    return "manual";
+  };
+  const invoiceStateKey = getInvoiceStateKey();
+
+  const editableFieldsSet = INVOICE_STATE_EDITABLE_FIELDS[invoiceStateKey];
+
+  const paymentsEditable =
+    invoiceStateKey === "manual" || invoiceStateKey === "generated";
+
+  const isEditable = (fieldPath: string) =>
+    editableFieldsSet === null || editableFieldsSet.has(fieldPath);
 
   const handleCreditedInvoiceClick = () => {
     if (invoice) {
@@ -303,6 +332,7 @@ const EditInvoiceForm: React.FC<Props> = ({
     invoiceAttributes,
     InvoiceFieldPaths.TYPE,
   );
+  const payments = invoice ? invoice.payments : [];
   const creditInvoices = invoice ? invoice.credit_invoices : [];
   const interestInvoices = invoice ? invoice.interest_invoices : [];
   const showOldInvoiceInfo = shouldShowOldInvoiceInfo();
@@ -400,13 +430,13 @@ const EditInvoiceForm: React.FC<Props> = ({
           </Row>
           <Row>
             <Column small={4}>
-              {invoice && invoice.type !== InvoiceType.CREDIT_NOTE && (
-                <Authorization
-                  allow={isFieldAllowedToRead(
-                    invoiceAttributes,
-                    InvoiceFieldPaths.DUE_DATE,
-                  )}
-                >
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  invoiceAttributes,
+                  InvoiceFieldPaths.DUE_DATE,
+                )}
+              >
+                {invoice && isEditable(InvoiceFieldPaths.DUE_DATE) ? (
                   <FormField
                     disableTouched={isEditClicked}
                     fieldAttributes={getFieldAttributes(
@@ -421,15 +451,7 @@ const EditInvoiceForm: React.FC<Props> = ({
                     relativeTo={relativeTo}
                     uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.DUE_DATE)}
                   />
-                </Authorization>
-              )}
-              {invoice && invoice.type === InvoiceType.CREDIT_NOTE && (
-                <Authorization
-                  allow={isFieldAllowedToRead(
-                    invoiceAttributes,
-                    InvoiceFieldPaths.DUE_DATE,
-                  )}
-                >
+                ) : (
                   <>
                     <FormTextTitle
                       enableUiDataEdit
@@ -444,8 +466,8 @@ const EditInvoiceForm: React.FC<Props> = ({
                       {(invoice && formatDate(invoice.due_date)) || "-"}
                     </FormText>
                   </>
-                </Authorization>
-              )}
+                )}
+              </Authorization>
             </Column>
             <Column small={4}>
               <Authorization
@@ -535,13 +557,14 @@ const EditInvoiceForm: React.FC<Props> = ({
               </Row>
               <Row>
                 <Column small={6}>
-                  {invoice && invoice.type !== InvoiceType.CREDIT_NOTE && (
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        invoiceAttributes,
-                        InvoiceFieldPaths.BILLING_PERIOD_START_DATE,
-                      )}
-                    >
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      invoiceAttributes,
+                      InvoiceFieldPaths.BILLING_PERIOD_START_DATE,
+                    )}
+                  >
+                    {invoice &&
+                    isEditable(InvoiceFieldPaths.BILLING_PERIOD_START_DATE) ? (
                       <FormField
                         disableTouched={isEditClicked}
                         fieldAttributes={getFieldAttributes(
@@ -554,31 +577,24 @@ const EditInvoiceForm: React.FC<Props> = ({
                           label: InvoiceFieldTitles.BILLING_PERIOD_START_DATE,
                         }}
                       />
-                    </Authorization>
-                  )}
-                  {invoice && invoice.type === InvoiceType.CREDIT_NOTE && (
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        invoiceAttributes,
-                        InvoiceFieldPaths.BILLING_PERIOD_START_DATE,
-                      )}
-                    >
+                    ) : (
                       <FormText>
                         {(invoice &&
                           formatDate(invoice.billing_period_start_date)) ||
                           "-"}
                       </FormText>
-                    </Authorization>
-                  )}
+                    )}
+                  </Authorization>
                 </Column>
                 <Column small={6}>
-                  {invoice && invoice.type !== InvoiceType.CREDIT_NOTE && (
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        invoiceAttributes,
-                        InvoiceFieldPaths.BILLING_PERIOD_END_DATE,
-                      )}
-                    >
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      invoiceAttributes,
+                      InvoiceFieldPaths.BILLING_PERIOD_END_DATE,
+                    )}
+                  >
+                    {invoice &&
+                    isEditable(InvoiceFieldPaths.BILLING_PERIOD_END_DATE) ? (
                       <FormField
                         disableTouched={isEditClicked}
                         fieldAttributes={getFieldAttributes(
@@ -591,33 +607,25 @@ const EditInvoiceForm: React.FC<Props> = ({
                           label: InvoiceFieldTitles.BILLING_PERIOD_END_DATE,
                         }}
                       />
-                    </Authorization>
-                  )}
-                  {invoice && invoice.type === InvoiceType.CREDIT_NOTE && (
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        invoiceAttributes,
-                        InvoiceFieldPaths.BILLING_PERIOD_END_DATE,
-                      )}
-                    >
+                    ) : (
                       <FormText>
                         {(invoice &&
                           formatDate(invoice.billing_period_end_date)) ||
                           "-"}
                       </FormText>
-                    </Authorization>
-                  )}
+                    )}
+                  </Authorization>
                 </Column>
               </Row>
             </Column>
             <Column small={4}>
-              {invoice && invoice.type !== InvoiceType.CREDIT_NOTE && (
-                <Authorization
-                  allow={isFieldAllowedToRead(
-                    invoiceAttributes,
-                    InvoiceFieldPaths.POSTPONE_DATE,
-                  )}
-                >
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  invoiceAttributes,
+                  InvoiceFieldPaths.POSTPONE_DATE,
+                )}
+              >
+                {invoice && isEditable(InvoiceFieldPaths.POSTPONE_DATE) ? (
                   <FormField
                     disableTouched={isEditClicked}
                     fieldAttributes={getFieldAttributes(
@@ -629,15 +637,7 @@ const EditInvoiceForm: React.FC<Props> = ({
                       label: InvoiceFieldTitles.POSTPONE_DATE,
                     }}
                   />
-                </Authorization>
-              )}
-              {invoice && invoice.type === InvoiceType.CREDIT_NOTE && (
-                <Authorization
-                  allow={isFieldAllowedToRead(
-                    invoiceAttributes,
-                    InvoiceFieldPaths.POSTPONE_DATE,
-                  )}
-                >
+                ) : (
                   <>
                     <FormTextTitle
                       enableUiDataEdit
@@ -652,8 +652,8 @@ const EditInvoiceForm: React.FC<Props> = ({
                       {(invoice && formatDate(invoice.postpone_date)) || "-"}
                     </FormText>
                   </>
-                </Authorization>
-              )}
+                )}
+              </Authorization>
             </Column>
           </Row>
           <Row>
@@ -753,14 +753,97 @@ const EditInvoiceForm: React.FC<Props> = ({
                       InvoicePaymentsFieldPaths.PAYMENTS,
                     )}
                   >
-                    <FieldArray name="payments">
-                      {(fieldArrayProps) =>
-                        Payments({
-                          ...fieldArrayProps,
-                          relativeTo: relativeTo,
-                        })
-                      }
-                    </FieldArray>
+                    {paymentsEditable ? (
+                      <FieldArray name="payments">
+                        {(fieldArrayProps) =>
+                          Payments({
+                            ...fieldArrayProps,
+                            relativeTo: relativeTo,
+                          })
+                        }
+                      </FieldArray>
+                    ) : (
+                      <>
+                        {!payments.length && <FormText>Ei maksuja</FormText>}
+                        {!!payments.length && (
+                          <ListItems>
+                            <Row>
+                              <Column small={6}>
+                                <Authorization
+                                  allow={isFieldAllowedToRead(
+                                    invoiceAttributes,
+                                    InvoicePaymentsFieldPaths.PAID_AMOUNT,
+                                  )}
+                                >
+                                  <FormTextTitle
+                                    enableUiDataEdit
+                                    relativeTo={relativeTo}
+                                    uiDataKey={getUiDataInvoiceKey(
+                                      InvoicePaymentsFieldPaths.PAID_AMOUNT,
+                                    )}
+                                  >
+                                    {InvoicePaymentsFieldTitles.PAID_AMOUNT}
+                                  </FormTextTitle>
+                                </Authorization>
+                              </Column>
+                              <Column small={6}>
+                                <Authorization
+                                  allow={isFieldAllowedToRead(
+                                    invoiceAttributes,
+                                    InvoicePaymentsFieldPaths.PAID_DATE,
+                                  )}
+                                >
+                                  <FormTextTitle
+                                    enableUiDataEdit
+                                    relativeTo={relativeTo}
+                                    uiDataKey={getUiDataInvoiceKey(
+                                      InvoicePaymentsFieldPaths.PAID_DATE,
+                                    )}
+                                  >
+                                    {InvoicePaymentsFieldTitles.PAID_DATE}
+                                  </FormTextTitle>
+                                </Authorization>
+                              </Column>
+                            </Row>
+                            {payments.map((payment) => (
+                              <Row key={payment.id}>
+                                <Column small={6}>
+                                  <Authorization
+                                    allow={isFieldAllowedToRead(
+                                      invoiceAttributes,
+                                      InvoicePaymentsFieldPaths.PAID_AMOUNT,
+                                    )}
+                                  >
+                                    <ListItem>
+                                      {payment.paid_amount ? (
+                                        <AmountWithVat
+                                          amount={payment.paid_amount}
+                                          date={invoice.due_date}
+                                        />
+                                      ) : (
+                                        "-"
+                                      )}
+                                    </ListItem>
+                                  </Authorization>
+                                </Column>
+                                <Column small={6}>
+                                  <Authorization
+                                    allow={isFieldAllowedToRead(
+                                      invoiceAttributes,
+                                      InvoicePaymentsFieldPaths.PAID_DATE,
+                                    )}
+                                  >
+                                    <ListItem>
+                                      {formatDate(payment.paid_date) || "-"}
+                                    </ListItem>
+                                  </Authorization>
+                                </Column>
+                              </Row>
+                            ))}
+                          </ListItems>
+                        )}
+                      </>
+                    )}
                   </Authorization>
                 </Column>
                 <Column small={6} medium={4}>
@@ -1014,21 +1097,34 @@ const EditInvoiceForm: React.FC<Props> = ({
                   InvoiceFieldPaths.NOTES,
                 )}
               >
-                <FormField
-                  disableTouched={isEditClicked}
-                  fieldAttributes={getFieldAttributes(
-                    invoiceAttributes,
-                    InvoiceFieldPaths.NOTES,
-                  )}
-                  name="notes"
-                  overrideValues={{
-                    label: InvoiceFieldTitles.NOTES,
-                    fieldType: FieldTypes.TEXTAREA,
-                  }}
-                  enableUiDataEdit
-                  relativeTo={relativeTo}
-                  uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.NOTES)}
-                />
+                {isEditable(InvoiceFieldPaths.NOTES) ? (
+                  <FormField
+                    disableTouched={isEditClicked}
+                    fieldAttributes={getFieldAttributes(
+                      invoiceAttributes,
+                      InvoiceFieldPaths.NOTES,
+                    )}
+                    name="notes"
+                    overrideValues={{
+                      label: InvoiceFieldTitles.NOTES,
+                      fieldType: FieldTypes.TEXTAREA,
+                    }}
+                    enableUiDataEdit
+                    relativeTo={relativeTo}
+                    uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.NOTES)}
+                  />
+                ) : (
+                  <>
+                    <FormTextTitle
+                      enableUiDataEdit
+                      relativeTo={relativeTo}
+                      uiDataKey={getUiDataInvoiceKey(InvoiceFieldPaths.NOTES)}
+                    >
+                      {InvoiceFieldTitles.NOTES}
+                    </FormTextTitle>
+                    <FormText>{invoice?.notes || "-"}</FormText>
+                  </>
+                )}
               </Authorization>
             </Column>
           </Row>

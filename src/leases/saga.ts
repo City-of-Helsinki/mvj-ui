@@ -440,6 +440,17 @@ function* patchLeaseInvoiceNotesSaga({
         );
         break;
 
+      case 403:
+        yield put(notFound());
+        yield put(
+          receiveError(
+            new SubmissionError({
+              ...bodyAsJson,
+            }),
+          ),
+        );
+        break;
+
       case 400:
         yield put(notFound());
         yield put(
