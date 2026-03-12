@@ -56,6 +56,16 @@ const defaultState: LeaseState = {
   isFetchingByBBox: false,
   isFetchingAttributes: false,
   isFetchingById: {},
+  isFormDirtyById: {
+    "constructability-form": false,
+    "contracts-form": false,
+    "decisions-form": false,
+    "inspections-form": false,
+    "lease-areas-form": false,
+    "rents-form": false,
+    "summary-form": false,
+    "tenants-form": false,
+  },
   isFormValidById: {
     "constructability-form": true,
     "contracts-form": true,
