@@ -103,6 +103,33 @@ const formatGuaranteeOptionLabel = (
   jarjestysnumero: string,
 ): string => `${sopimusnumero || "-"} / ${jarjestysnumero || "-"}`;
 
+const calculateRemainingVakuustarve = (
+  vaadittuValue: number | null,
+  hintaeroValue: number | null,
+  kerroinPercent: number | null,
+  selectedGuaranteesForSite: CollateralSelectedGuarantee[],
+): number | null => {
+  if (
+    vaadittuValue === null ||
+    hintaeroValue === null ||
+    kerroinPercent === null
+  ) {
+    return null;
+  }
+
+  const vakuustarveValue =
+    vaadittuValue * hintaeroValue * (kerroinPercent / 100);
+  const selectedGuaranteesTotal = selectedGuaranteesForSite.reduce(
+    (sum, guarantee) => {
+      const amount = parseLandUseNumericValue(guarantee.kaytettavaMaara);
+      return sum + (amount ?? 0);
+    },
+    0,
+  );
+
+  return vakuustarveValue - selectedGuaranteesTotal;
+};
+
 export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   form,
   isEditMode,
@@ -193,15 +220,15 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             const kerroinPercent =
               hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
 
-            const vakuustarveValue =
-              vaadittuValue !== null &&
-              hintaeroValue !== null &&
-              kerroinPercent !== null
-                ? vaadittuValue * hintaeroValue * (kerroinPercent / 100)
-                : null;
-
             const selectedGuaranteesForSite =
               values.vakuusValinnatBySiteId?.[site.id] ?? [];
+
+            const remainingVakuustarveValue = calculateRemainingVakuustarve(
+              vaadittuValue,
+              hintaeroValue,
+              kerroinPercent,
+              selectedGuaranteesForSite,
+            );
 
             return {
               kohteenTunnus,
@@ -213,8 +240,8 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                   : "-",
               kerroin: kerroinPercent !== null ? `${kerroinPercent} %` : "-",
               vakuustarve:
-                vakuustarveValue !== null
-                  ? formatLandUseEuroValue(vakuustarveValue)
+                remainingVakuustarveValue !== null
+                  ? formatLandUseEuroValue(remainingVakuustarveValue)
                   : "-",
               vakuudet:
                 selectedGuaranteesForSite.length > 0 ? (
