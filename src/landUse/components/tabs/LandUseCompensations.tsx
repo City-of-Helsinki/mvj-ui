@@ -6,7 +6,6 @@ import {
   IconCopy,
   IconPlusCircleFill,
   Notification,
-  RadioButton,
   Table,
   TextArea,
   TextInput,
@@ -32,10 +31,10 @@ export interface LandUseCompensationsFormValues {
   rahakorvaus: string;
   maakorvaus: string;
   muuKorvaus: string;
+  perushinta: string;
   maakorvausSelite: string;
   muuSelite: string;
   perustietotaulukkoRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
-  perushintaSiteId?: string;
   yleisetAlueetNeliot: string;
   yleisetAlueetHankinnanArvo: string;
 }
@@ -119,7 +118,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           { key: "km2", headerName: "k-m²" },
           { key: "yksikkohinta", headerName: "Yksikköhinta" },
           { key: "summa", headerName: "Summa" },
-          { key: "perushinta", headerName: "Perushinta" },
         ];
 
         const totals = leafSites.reduce(
@@ -186,27 +184,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
               </Field>
             ),
             summa: formatLandUseEuroValue(rowSumma),
-            perushinta: (
-              <Field<string>
-                name="perushintaSiteId"
-                type="radio"
-                value={site.id}
-              >
-                {({ input }) => (
-                  <RadioButton
-                    id={`landuse-compensations-perushinta-${site.id}`}
-                    label=""
-                    name={input.name}
-                    value={site.id}
-                    checked={input.checked}
-                    onChange={input.onChange}
-                    onBlur={input.onBlur}
-                    onFocus={input.onFocus}
-                    disabled={isCompensationsTableReadOnly}
-                  />
-                )}
-              </Field>
-            ),
           };
         });
 
@@ -222,7 +199,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             km2: formatLandUseIntegerValue(totals.km2),
             yksikkohinta: "",
             summa: formatLandUseEuroValue(totals.summa),
-            perushinta: "",
           },
         ];
 
@@ -349,6 +325,35 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 >
                   Lisää tiedosto
                 </Button>
+              </Fieldset>
+
+              <Fieldset
+                heading="Perushinta"
+                className="landuse-detail__fieldset--with-margin"
+              >
+                <div className="landuse-detail__grid landuse-detail__compensation-grid">
+                  <Field name="perushinta">
+                    {({ input }) => (
+                      <TextInput
+                        id="landuse-compensations-perushinta"
+                        label="Perushinta"
+                        value={
+                          isEditMode
+                            ? (input.value ?? "")
+                            : formatCurrencyFieldValue(input.value)
+                        }
+                        onChange={input.onChange}
+                        onBlur={(event) => {
+                          input.onBlur(event);
+                          input.onChange(
+                            formatEditableMoneyFieldValue(input.value),
+                          );
+                        }}
+                        disabled={!isEditMode}
+                      />
+                    )}
+                  </Field>
+                </div>
               </Fieldset>
 
               <Fieldset

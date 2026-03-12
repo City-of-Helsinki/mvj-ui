@@ -895,6 +895,7 @@ const LandUseDetailPage: React.FC = () => {
             form={collateralsFormApi}
             isEditMode={isEditMode}
             sites={sitesQuery.data?.items ?? []}
+            perushinta={compensationsQuery.data?.perushinta}
             compensationsRowsBySiteId={
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
             }

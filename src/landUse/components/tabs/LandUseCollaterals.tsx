@@ -63,6 +63,7 @@ interface LandUseCollateralsProps {
   form: FormApi<LandUseCollateralsFormValues>;
   isEditMode: boolean;
   sites: LandUseSiteTreeNode[];
+  perushinta?: string;
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
   agreements: CollateralAgreementValue[];
 }
@@ -83,6 +84,20 @@ const getKerroinPercent = (hintaero: number): number => {
   return 60;
 };
 
+const calculateHintaero = (
+  perushinta: string | undefined,
+  yksikkohinta: string | undefined,
+): number | null => {
+  const perushintaValue = parseLandUseNumericValue(perushinta);
+  const yksikkohintaValue = parseLandUseNumericValue(yksikkohinta);
+
+  if (perushintaValue === null || yksikkohintaValue === null) {
+    return null;
+  }
+
+  return Math.max(0, perushintaValue - yksikkohintaValue);
+};
+
 const formatGuaranteeOptionLabel = (
   sopimusnumero: string,
   jarjestysnumero: string,
@@ -92,6 +107,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   form,
   isEditMode,
   sites,
+  perushinta,
   compensationsRowsBySiteId,
   agreements,
 }) => {
@@ -170,7 +186,8 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           (site) => {
             const kohteenTunnus = site.kohteenTunnus || "-";
             const vaadittuValue = parseLandUseNumericValue(site.km2);
-            const hintaeroValue = parseLandUseNumericValue(
+            const hintaeroValue = calculateHintaero(
+              perushinta,
               compensationsRowsBySiteId[site.id]?.yksikkohinta,
             );
             const kerroinPercent =
