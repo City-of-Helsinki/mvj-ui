@@ -496,8 +496,6 @@ const LeasePage: React.FC<Props> = (props) => {
       clearPreviewInvoices();
       // Clear current lease
       receiveSingleLease({});
-      dispatch(clearFormDirtyFlags());
-      destroy(FormNames.INVOICE_SIMULATOR);
       destroy(FormNames.RENT_CALCULATOR);
       hideEditMode();
       window.removeEventListener("beforeunload", handleLeavePage);

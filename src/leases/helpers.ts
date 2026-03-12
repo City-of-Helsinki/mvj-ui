@@ -3866,22 +3866,19 @@ export const sortDueDates = (dueDates: Array<DueDate>): Array<DueDate> => {
  */
 export const isAnyLeaseFormDirty = (state: RootState): boolean => {
   const isEditMode = getIsEditMode(state);
-
-  if (!isEditMode) return false;
-
   const dirtyFlags = getIsFormDirtyFlags(state);
-  const hasDirtyFinalForm = Boolean(
-    dirtyFlags[FormNames.LEASE_CONSTRUCTABILITY] ||
+
+  return (
+    isEditMode &&
+    (dirtyFlags[FormNames.LEASE_CONSTRUCTABILITY] ||
       dirtyFlags[FormNames.LEASE_CONTRACTS] ||
       dirtyFlags[FormNames.LEASE_DECISIONS] ||
       dirtyFlags[FormNames.LEASE_INSPECTIONS] ||
       dirtyFlags[FormNames.LEASE_RENTS] ||
       dirtyFlags[FormNames.LEASE_SUMMARY] ||
       dirtyFlags[FormNames.LEASE_TENANTS] ||
-      dirtyFlags[FormNames.LEASE_AREAS],
+      dirtyFlags[FormNames.LEASE_AREAS])
   );
-
-  return hasDirtyFinalForm;
 };
 
 /**
