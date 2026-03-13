@@ -12,6 +12,7 @@ import {
   receiveIsEditClicked,
   receivePatchedInvoice,
   notFound,
+  receiveIsCreateClicked,
 } from "./actions";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
@@ -130,6 +131,8 @@ function* createInvoiceSaga({
     console.error('Failed to create invoice with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
+  } finally {
+    yield put(receiveIsCreateClicked(false));
   }
 }
 
