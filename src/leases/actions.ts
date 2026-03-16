@@ -34,6 +34,7 @@ import type {
   ReceiveFormValidFlagsAction,
   ReceiveFormDirtyFlagsAction,
   ReceiveIsSaveClickedAction,
+  ReceiveIsCreateClickedAction,
   ReceiveLeaseByIdAction,
   ReceiveLeasesAction,
   ReceiveLeasesByBBoxAction,
@@ -156,6 +157,10 @@ export const receiveIsSaveClicked = (
   isClicked: boolean,
 ): ReceiveIsSaveClickedAction =>
   createAction("mvj/leases/RECEIVE_SAVE_CLICKED")(isClicked);
+export const receiveIsCreateClicked = (
+  isClicked: boolean,
+): ReceiveIsCreateClickedAction =>
+  createAction("mvj/leases/RECEIVE_CREATE_CLICKED")(isClicked);
 export const receiveCollapseStates = (
   status: Record<string, any>,
 ): ReceiveCollapseStatesAction =>

@@ -265,6 +265,7 @@ export type ShowEditModeAction = Action<string, void>;
 export type HideCreateModalAction = Action<string, void>;
 export type ShowCreateModalAction = Action<string, void>;
 export type ReceiveIsSaveClickedAction = Action<string, boolean>;
+export type ReceiveIsCreateClickedAction = Action<string, boolean>;
 export type CopyAreasToContractAction = Action<string, LeaseId>;
 export type CopyDecisionToLeasesAction = Action<string, Record<string, any>>;
 export type HideAttachDecisionModalAction = Action<string, void>;

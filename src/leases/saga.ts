@@ -21,6 +21,7 @@ import {
   notFoundById,
   receiveAttributes,
   receiveMethods,
+  receiveIsCreateClicked as receiveIsCreateLeaseClicked,
   receiveIsSaveClicked,
   receiveLeases,
   receiveLeasesByBBox,
@@ -279,6 +280,8 @@ function* createLeaseSaga({ payload }): Generator<any, any, any> {
     console.error('Failed to create lease with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
+  } finally {
+    yield put(receiveIsCreateLeaseClicked(false));
   }
 }
 
