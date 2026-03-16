@@ -32,7 +32,10 @@ import {
   getIsCreateInvoicePanelOpen,
   getIsCreditInvoicePanelOpen,
 } from "@/invoices/selectors";
-import { getUsersPermissions } from "@/usersPermissions/selectors";
+import {
+  getUserActiveServiceUnit,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
 import { AppConsumer, ActionTypes } from "@/app/AppContext";
 import { ConfirmationModalTexts } from "@/enums";
 import type { Lease } from "@/leases/types";
@@ -50,6 +53,7 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
     : null;
   const usersPermissions: UsersPermissionsType =
     useSelector(getUsersPermissions);
+  const activeServiceUnit = useSelector(getUserActiveServiceUnit);
 
   const creditPanel = useRef<HTMLDivElement | null>(null);
   const creditPanelFirstField = useRef<HTMLElement | null>(null);
@@ -57,6 +61,10 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
   const createPanelFirstField = useRef<HTMLElement | null>(null);
 
   const dispatch = useDispatch();
+
+  const isServiceUnitSameAsActiveServiceUnit = () => {
+    return activeServiceUnit?.id === currentLease?.service_unit?.id;
+  };
 
   const setCreatePanelRef = (el: HTMLDivElement | null) => {
     createPanel.current = el;
@@ -179,7 +187,10 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
   return (
     <div className="invoice__new-invoice">
       <Authorization
-        allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+        allow={
+          hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE) &&
+          isServiceUnitSameAsActiveServiceUnit()
+        }
       >
         <Button
           className={`${ButtonColors.NEUTRAL} no-margin`}
@@ -209,10 +220,12 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
 
           return (
             <Authorization
-              allow={hasPermissions(
-                usersPermissions,
-                UsersPermissions.DELETE_INVOICE,
-              )}
+              allow={
+                hasPermissions(
+                  usersPermissions,
+                  UsersPermissions.DELETE_INVOICE,
+                ) && isServiceUnitSameAsActiveServiceUnit()
+              }
             >
               <Button
                 className={ButtonColors.ALERT}
@@ -230,7 +243,10 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
       </AppConsumer>
 
       <Authorization
-        allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+        allow={
+          hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE) &&
+          isServiceUnitSameAsActiveServiceUnit()
+        }
       >
         <div ref={setCreditPanelRef}>
           {isCreditInvoicePanelOpen && (
@@ -246,7 +262,10 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
       </Authorization>
 
       <Authorization
-        allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+        allow={
+          hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE) &&
+          isServiceUnitSameAsActiveServiceUnit()
+        }
       >
         <Row>
           <Column>
@@ -263,7 +282,10 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
       </Authorization>
 
       <Authorization
-        allow={hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)}
+        allow={
+          hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE) &&
+          isServiceUnitSameAsActiveServiceUnit()
+        }
       >
         <div ref={setCreatePanelRef}>
           {isCreateInvoicePanelOpen && (
