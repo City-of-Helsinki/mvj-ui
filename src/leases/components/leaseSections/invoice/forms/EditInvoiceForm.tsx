@@ -255,9 +255,13 @@ const EditInvoiceForm: React.FC<Props> = ({
 
   const rows = invoice ? invoice.rows : undefined;
 
-  const isSentToSap = invoice?.sent_to_sap_at || invoice?.sap_id;
-  const isCreditNote = invoice?.type === InvoiceType.CREDIT_NOTE;
-  const isGenerated = invoice?.generated;
+  const isSentToSap: boolean = Boolean(
+    invoice?.sent_to_sap_at || invoice?.sap_id,
+  );
+  const isCreditNote: boolean = Boolean(
+    invoice?.type === InvoiceType.CREDIT_NOTE,
+  );
+  const isGenerated: boolean = Boolean(invoice?.generated);
 
   const getInvoiceStateKey = () => {
     if (isSentToSap) return "sentToSap";
