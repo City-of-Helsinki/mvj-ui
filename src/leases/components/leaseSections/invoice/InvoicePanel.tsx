@@ -49,9 +49,7 @@ const InvoicePanel = forwardRef<any, Props>(
 
     const invoiceFormRef = useRef<FormApi>(
       createForm({
-        onSubmit: (values) => {
-          onSave(values);
-        },
+        onSubmit: (values) => onSave(values),
         mutators: { ...arrayMutators },
       }),
     );
