@@ -32,6 +32,7 @@ export type LeaseState = {
   isFetchingById: Record<string, any>;
   isFetchingAttributes: boolean;
   isSaveClicked: boolean;
+  isCreateClicked: boolean;
   isSaving: boolean;
   list: LeaseList;
   listByBBox: LeaseList;

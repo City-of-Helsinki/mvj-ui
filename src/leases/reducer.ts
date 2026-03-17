@@ -254,8 +254,6 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions(
 );
 const isCreateClickedReducer: Reducer<boolean> = handleActions(
   {
-    "mvj/leases/CREATE": () => true,
-    "mvj/leases/NOT_FOUND": () => false,
     ["mvj/leases/RECEIVE_CREATE_CLICKED"]: (
       state: boolean,
       { payload: isClicked }: ReceiveIsCreateClickedAction,
