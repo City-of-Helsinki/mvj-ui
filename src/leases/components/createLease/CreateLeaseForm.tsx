@@ -29,8 +29,10 @@ import {
   getDistrictsByMunicipality,
   getIsFetching as getIsFetchingDistricts,
 } from "@/district/selectors";
-import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
-import { getIsCreateClicked } from "@/leases/selectors";
+import {
+  getAttributes as getLeaseAttributes,
+  getIsCreateClicked,
+} from "@/leases/selectors";
 import { referenceNumber } from "@/components/form/validations";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import { AreaSearch } from "@/areaSearch/types";
