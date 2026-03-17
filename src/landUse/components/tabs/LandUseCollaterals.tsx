@@ -8,6 +8,7 @@ import {
   IconPen,
   IconPlusCircleFill,
   IconTrash,
+  NumberInput,
   Notification,
   Select,
   Table,
@@ -34,6 +35,7 @@ import {
 export interface LandUseCollateralsFormValues {
   sopimuksenMukainen?: string;
   rahakorvaus?: string;
+  vertailunPeruskerroin?: string;
   vakuusValinnatBySiteId?: Record<string, CollateralSelectedGuarantee[]>;
 }
 
@@ -378,6 +380,23 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                   heading="Vakuuslaskuri"
                   className="landuse-detail__fieldset--with-margin"
                 >
+                  <Field name="vertailunPeruskerroin">
+                    {({ input }) => (
+                      <div className="landuse-detail__collaterals-base-coefficient-field">
+                        <NumberInput
+                          id="collaterals-vertailun-peruskerroin"
+                          label="Vertailun peruskerroin"
+                          min={1}
+                          max={2}
+                          step={0.05}
+                          value={input.value}
+                          onChange={input.onChange}
+                          disabled={!isEditMode}
+                        />
+                      </div>
+                    )}
+                  </Field>
+
                   <div className="landuse-detail__monitoring-table-toolbar">
                     <Button
                       variant={ButtonVariant.Supplementary}
