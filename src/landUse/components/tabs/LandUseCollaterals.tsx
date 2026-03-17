@@ -35,7 +35,7 @@ import {
 export interface LandUseCollateralsFormValues {
   sopimuksenMukainen?: string;
   rahakorvaus?: string;
-  vertailunPeruskerroin?: string;
+  vertailunPeruskerroin?: number;
   vakuusValinnatBySiteId?: Record<string, CollateralSelectedGuarantee[]>;
 }
 
@@ -106,9 +106,10 @@ const formatGuaranteeOptionLabel = (
 ): string => `${sopimusnumero || "-"} / ${jarjestysnumero || "-"}`;
 
 const calculateRemainingVakuustarve = (
-  vaadittuValue: number | null,
-  hintaeroValue: number | null,
-  kerroinPercent: number | null,
+  vaadittuValue: number,
+  hintaeroValue: number,
+  kerroinPercent: number,
+  vertailunPeruskerroin: number,
   selectedGuaranteesForSite: CollateralSelectedGuarantee[],
 ): number | null => {
   if (
@@ -120,7 +121,10 @@ const calculateRemainingVakuustarve = (
   }
 
   const vakuustarveValue =
-    vaadittuValue * hintaeroValue * (kerroinPercent / 100);
+    vaadittuValue *
+    hintaeroValue *
+    (kerroinPercent / 100) *
+    vertailunPeruskerroin;
   const selectedGuaranteesTotal = selectedGuaranteesForSite.reduce(
     (sum, guarantee) => {
       const amount = parseLandUseNumericValue(guarantee.kaytettavaMaara);
@@ -229,6 +233,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               vaadittuValue,
               hintaeroValue,
               kerroinPercent,
+              values.vertailunPeruskerroin,
               selectedGuaranteesForSite,
             );
 
