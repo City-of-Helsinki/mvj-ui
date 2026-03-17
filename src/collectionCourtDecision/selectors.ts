@@ -22,3 +22,6 @@ export const getIsFetchingByLease: Selector<boolean, LeaseId> = (
 export const getIsCollectionCourtDecisionPanelOpen: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.collectionCourtDecision.isPanelOpen;
+export const getIsSaveClicked: Selector<boolean, void> = (
+  state: RootState,
+): boolean => state.collectionCourtDecision.isSaveClicked;

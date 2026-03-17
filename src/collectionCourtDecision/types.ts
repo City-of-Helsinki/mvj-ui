@@ -6,6 +6,7 @@ export type CollectionCourtDecisionState = {
   isFetchingAttributes: boolean;
   isFetchingByLease: Record<string, any>;
   isPanelOpen: boolean;
+  isSaveClicked: boolean;
   methods: Methods;
 };
 export type CollectionCourtDecisionId = number;
@@ -50,3 +51,4 @@ export type DeleteCollectionCourtDecisionAction = Action<
 >;
 export type HideCollectionCourtDecisionPanelAction = Action<string, void>;
 export type ShowCollectionCourtDecisionPanelAction = Action<string, void>;
+export type ReceiveIsSaveClickedAction = Action<string, boolean>;

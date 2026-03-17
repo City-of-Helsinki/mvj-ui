@@ -7,6 +7,7 @@ import type {
   FetchCollectionCourtDecisionsByLeaseAction,
   ReceiveCollectionCourtDecisionsByLeaseAction,
   CollectionCourtDecisionsNotFoundByLeaseAction,
+  ReceiveIsSaveClickedAction,
 } from "./types";
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions(
   {
@@ -80,11 +81,23 @@ const byLeaseReducer: Reducer<Record<string, any>> = handleActions(
   },
   {},
 );
+const isSaveClickedReducer: Reducer<boolean> = handleActions(
+  {
+    ["mvj/collectionCourtDecision/RECEIVE_SAVE_CLICKED"]: (
+      state: boolean,
+      { payload: isClicked }: ReceiveIsSaveClickedAction,
+    ) => {
+      return isClicked;
+    },
+  },
+  false,
+);
 export default combineReducers<Record<string, any>, any>({
   attributes: attributesReducer,
   byLease: byLeaseReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   isFetchingByLease: isFetchingByLeaseReducer,
   isPanelOpen: isPanelOpenReducer,
+  isSaveClicked: isSaveClickedReducer,
   methods: methodsReducer,
 });
