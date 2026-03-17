@@ -314,29 +314,29 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
         );
 
         const collateralsInfoCols = [
-          { key: "hintaero", headerName: "Hintaero" },
+          { key: "sopimussakko", headerName: "Sopimussakko" },
           { key: "vakuustarvekerroin", headerName: "Vakuustarvekerroin" },
         ];
 
         const collateralsInfoRows = [
           {
             id: "info-1",
-            hintaero: "0 € / k-m² - 500 € / k-m²",
+            sopimussakko: "0 € / k-m² - 500 € / k-m²",
             vakuustarvekerroin: "100 %",
           },
           {
             id: "info-2",
-            hintaero: "501 € / k-m² - 1000 € / k-m²",
+            sopimussakko: "501 € / k-m² - 1000 € / k-m²",
             vakuustarvekerroin: "80 %",
           },
           {
             id: "info-3",
-            hintaero: "1001 € / k-m² - 1500 € / k-m²",
+            sopimussakko: "1001 € / k-m² - 1500 € / k-m²",
             vakuustarvekerroin: "70 %",
           },
           {
             id: "info-4",
-            hintaero: "1501 € / k-m² -",
+            sopimussakko: "1501 € / k-m² -",
             vakuustarvekerroin: "60 %",
           },
         ];
@@ -464,10 +464,14 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                       )}
                     </Field>
                   </div>
-                  <Notification type="info" position="inline" label="Info">
+                  <Notification
+                    type="info"
+                    position="inline"
+                    label="Vakuustarvekertoimen määräytyminen"
+                  >
                     <div className="landuse-detail__monitoring-info-layout">
                       <p>
-                        Korotettu vakuustarve määräytyy hintaeron mukaisesti
+                        Korotettu vakuustarve määräytyy sopimussakon mukaisesti
                         alla olevien rajojen mukaan.
                       </p>
                       <Table
