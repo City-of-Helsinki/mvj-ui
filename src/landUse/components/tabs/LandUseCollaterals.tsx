@@ -5,6 +5,8 @@ import {
   Dialog,
   Fieldset,
   IconCopy,
+  IconAngleLeft,
+  IconAngleRight,
   IconPen,
   IconPlusCircleFill,
   IconTrash,
@@ -33,8 +35,6 @@ import {
 } from "../../utils/collateralGuarantees";
 
 export interface LandUseCollateralsFormValues {
-  sopimuksenMukainen?: string;
-  rahakorvaus?: string;
   vertailunPeruskerroin?: number;
   vakuusValinnatBySiteId?: Record<string, CollateralSelectedGuarantee[]>;
 }
@@ -106,16 +106,17 @@ const formatGuaranteeOptionLabel = (
 ): string => `${sopimusnumero || "-"} / ${jarjestysnumero || "-"}`;
 
 const calculateRemainingVakuustarve = (
-  vaadittuValue: number,
-  hintaeroValue: number,
-  kerroinPercent: number,
-  vertailunPeruskerroin: number,
+  vaadittuValue: number | null,
+  hintaeroValue: number | null,
+  kerroinPercent: number | null,
+  vertailunPeruskerroin: number | null,
   selectedGuaranteesForSite: CollateralSelectedGuarantee[],
 ): number | null => {
   if (
     vaadittuValue === null ||
     hintaeroValue === null ||
-    kerroinPercent === null
+    kerroinPercent === null ||
+    vertailunPeruskerroin === null
   ) {
     return null;
   }
@@ -169,6 +170,9 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
+        const vertailunPeruskerroin =
+          parseLandUseNumericValue(values.vertailunPeruskerroin) ?? 1;
+
         const guaranteeBalances = calculateGuaranteeBalances(
           guarantees,
           values.vakuusValinnatBySiteId,
@@ -233,7 +237,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               vaadittuValue,
               hintaeroValue,
               kerroinPercent,
-              values.vertailunPeruskerroin,
+              vertailunPeruskerroin,
               selectedGuaranteesForSite,
             );
 
@@ -312,6 +316,27 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             ),
           }),
         );
+
+        const sopimuksenMukainenValue = leafSites.reduce((sum, site) => {
+          const km2Value = parseLandUseNumericValue(site.km2) ?? 0;
+          const yksikkohintaValue =
+            parseLandUseNumericValue(
+              compensationsRowsBySiteId[site.id]?.yksikkohinta,
+            ) ?? 0;
+          return sum + km2Value * yksikkohintaValue;
+        }, 0);
+
+        const rahakorvausValue = vakuuslaskuriRows.reduce((sum, row) => {
+          const vakuustarveValue = parseLandUseNumericValue(row.vakuustarve);
+          return sum + (vakuustarveValue ?? 0);
+        }, 0);
+
+        const remainingSeparatorDirection =
+          sopimuksenMukainenValue > rahakorvausValue
+            ? "left"
+            : rahakorvausValue > sopimuksenMukainenValue
+              ? "right"
+              : "equal";
 
         const collateralsInfoCols = [
           { key: "sopimussakko", headerName: "Sopimussakko" },
@@ -436,33 +461,48 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                   className="landuse-detail__fieldset--with-margin"
                 >
                   <div className="landuse-detail__grid landuse-detail__monitoring-remaining-grid">
-                    <Field name="sopimuksenMukainen">
-                      {({ input }) => (
-                        <TextInput
-                          id="collaterals-sopimuksen-mukainen"
-                          label="Sopimuksen mukainen"
-                          value={
-                            input.value ?? values.sopimuksenMukainen ?? "0 €"
-                          }
-                          onChange={input.onChange}
-                          disabled={!isEditMode}
-                        />
-                      )}
-                    </Field>
+                    <div
+                      className={`landuse-detail__monitoring-remaining-field${
+                        remainingSeparatorDirection === "left"
+                          ? " landuse-detail__monitoring-remaining-field--highlight"
+                          : ""
+                      }`}
+                    >
+                      <NumberInput
+                        id="collaterals-sopimuksen-mukainen"
+                        label="Sopimuksen mukainen"
+                        value={sopimuksenMukainenValue}
+                        unit="€"
+                        disabled
+                      />
+                    </div>
 
-                    <Field name="rahakorvaus">
-                      {({ input }) => (
-                        <TextInput
-                          id="collaterals-raha-korvaus"
-                          label="Rahakorvaus"
-                          value={
-                            input.value ?? values.rahakorvaus ?? "10 000 €"
-                          }
-                          onChange={input.onChange}
-                          disabled={!isEditMode}
-                        />
+                    <span
+                      className={`landuse-detail__monitoring-remaining-separator landuse-detail__monitoring-remaining-separator--${remainingSeparatorDirection}`}
+                      aria-hidden="true"
+                    >
+                      {remainingSeparatorDirection === "right" ? (
+                        <IconAngleLeft />
+                      ) : (
+                        <IconAngleRight />
                       )}
-                    </Field>
+                    </span>
+
+                    <div
+                      className={`landuse-detail__monitoring-remaining-field${
+                        remainingSeparatorDirection === "right"
+                          ? " landuse-detail__monitoring-remaining-field--highlight"
+                          : ""
+                      }`}
+                    >
+                      <NumberInput
+                        id="collaterals-raha-korvaus"
+                        label="Rahakorvaus"
+                        value={rahakorvausValue}
+                        unit="€"
+                        disabled
+                      />
+                    </div>
                   </div>
                   <Notification
                     type="info"
