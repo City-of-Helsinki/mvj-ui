@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { connect, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router";
 import {
   change as reduxFormChange,
@@ -13,6 +13,7 @@ import type { FormApi } from "final-form";
 import arrayMutators from "final-form-arrays";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
+import isEqual from "lodash/isEqual";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import CommentPanel from "./leaseSections/comments/CommentPanel";
@@ -47,11 +48,13 @@ import Tenants from "./leaseSections/tenant/Tenants";
 import { fetchCommentsByLease } from "@/comments/actions";
 import { fetchInvoicesByLease } from "@/invoices/actions";
 import {
+  clearFormDirtyFlags,
   clearFormValidFlags,
   deleteLease,
   fetchSingleLease,
   hideEditMode,
   patchLease,
+  receiveFormDirtyFlags,
   receiveSingleLease,
   receiveFormValidFlags,
   receiveIsSaveClicked,
@@ -162,7 +165,6 @@ import {
 type Props = {
   areasFormValues: Record<string, any>;
   reduxFormChange: typeof reduxFormChange;
-  clearFormValidFlags: (...args: Array<any>) => any;
   clearPreviewInvoices: (...args: Array<any>) => any;
   commentMethods: MethodsType;
   // get via withLeasePageAttributes HOC
@@ -200,7 +202,6 @@ type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndex | null;
   patchLease: (...args: Array<any>) => any;
   receiveSingleLease: (...args: Array<any>) => any;
-  receiveFormValidFlags: (...args: Array<any>) => any;
   receiveIsSaveClicked: (...args: Array<any>) => any;
   receiveTopNavigationSettings: (...args: Array<any>) => any;
   rentsFormValues: Record<string, any>;
@@ -215,7 +216,6 @@ const LeasePage: React.FC<Props> = (props) => {
   const {
     areasFormValues,
     reduxFormChange,
-    clearFormValidFlags,
     clearPreviewInvoices,
     commentMethods,
     contractsFormValues,
@@ -251,7 +251,6 @@ const LeasePage: React.FC<Props> = (props) => {
     oldDwellingsInHousingCompaniesPriceIndex,
     patchLease,
     receiveSingleLease,
-    receiveFormValidFlags,
     receiveIsSaveClicked,
     receiveTopNavigationSettings,
     rentsFormValues,
@@ -260,6 +259,8 @@ const LeasePage: React.FC<Props> = (props) => {
     usersPermissions,
     vats,
   } = props;
+
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const params = useParams();
@@ -296,6 +297,31 @@ const LeasePage: React.FC<Props> = (props) => {
     dirty: false,
     valid: true,
   });
+
+  useEffect(() => {
+    dispatch(
+      receiveFormDirtyFlags({
+        [FormNames.LEASE_CONSTRUCTABILITY]: constructabilityFormState.dirty,
+        [FormNames.LEASE_CONTRACTS]: contractsFormState.dirty,
+        [FormNames.LEASE_DECISIONS]: decisionsFormState.dirty,
+        [FormNames.LEASE_INSPECTIONS]: inspectionsFormState.dirty,
+        [FormNames.LEASE_AREAS]: leaseAreasFormState.dirty,
+        [FormNames.LEASE_RENTS]: isRentsFormDirty,
+        [FormNames.LEASE_SUMMARY]: summaryFormState.dirty,
+        [FormNames.LEASE_TENANTS]: tenantsFormState.dirty,
+      }),
+    );
+  }, [
+    constructabilityFormState.dirty,
+    contractsFormState.dirty,
+    decisionsFormState.dirty,
+    inspectionsFormState.dirty,
+    isRentsFormDirty,
+    leaseAreasFormState.dirty,
+    summaryFormState.dirty,
+    tenantsFormState.dirty,
+    dispatch,
+  ]);
 
   const comments: CommentList = useSelector((state) =>
     getCommentsByLease(state, Number(leaseId)),
@@ -364,72 +390,101 @@ const LeasePage: React.FC<Props> = (props) => {
     hideEditMode();
     window.addEventListener("beforeunload", handleLeavePage);
 
+    //isEqual is used as a comparator to ensure that dirty state is properly evaluated for field arrays.
     const unsubscribeSummaryForm = summaryFormRef.current.subscribe(
       (formState) => {
+        const isDirtyIncludingFieldArrays = !isEqual(
+          formState.values,
+          formState.initialValues,
+        );
         setSummaryFormState({
-          dirty: formState.dirty,
+          dirty: isDirtyIncludingFieldArrays,
           valid: formState.valid,
         });
       },
-      { dirty: true, valid: true },
+      { valid: true, values: true, initialValues: true },
     );
     const unsubscribeLeaseTenantForm = leaseTenantFormRef.current.subscribe(
       (formState) => {
+        const isDirtyIncludingFieldArrays = !isEqual(
+          formState.values,
+          formState.initialValues,
+        );
         setTenantsFormState({
-          dirty: formState.dirty,
+          dirty: isDirtyIncludingFieldArrays,
           valid: formState.valid,
         });
       },
-      { dirty: true, valid: true },
+      { valid: true, values: true, initialValues: true },
     );
     const unsubscribeLeaseConstructabilityForm =
       leaseConstructabilityFormRef.current.subscribe(
         (formState) => {
+          const isDirtyIncludingFieldArrays = !isEqual(
+            formState.values,
+            formState.initialValues,
+          );
           setConstructabilityFormState({
-            dirty: formState.dirty,
+            dirty: isDirtyIncludingFieldArrays,
             valid: formState.valid,
           });
         },
-        { dirty: true, valid: true },
+        { valid: true, values: true, initialValues: true },
       );
     const unsubscribeLeaseContractsForm =
       leaseContractsFormRef.current.subscribe(
         (formState) => {
+          const isDirtyIncludingFieldArrays = !isEqual(
+            formState.values,
+            formState.initialValues,
+          );
           setContractsFormState({
-            dirty: formState.dirty,
+            dirty: isDirtyIncludingFieldArrays,
             valid: formState.valid,
           });
         },
-        { dirty: true, valid: true },
+        { valid: true, values: true, initialValues: true },
       );
     const unsubscribeLeaseDecisionsForm =
       leaseDecisionsFormRef.current.subscribe(
         (formState) => {
+          const isDirtyIncludingFieldArrays = !isEqual(
+            formState.values,
+            formState.initialValues,
+          );
           setDecisionsFormState({
-            dirty: formState.dirty,
+            dirty: isDirtyIncludingFieldArrays,
             valid: formState.valid,
           });
         },
-        { dirty: true, valid: true },
+        { valid: true, values: true, initialValues: true },
       );
     const unsubscribeLeaseInspectionsForm =
       leaseInspectionsFormRef.current.subscribe(
         (formState) => {
+          const isDirtyIncludingFieldArrays = !isEqual(
+            formState.values,
+            formState.initialValues,
+          );
           setInspectionsFormState({
-            dirty: formState.dirty,
+            dirty: isDirtyIncludingFieldArrays,
             valid: formState.valid,
           });
         },
-        { dirty: true, valid: true },
+        { valid: true, values: true, initialValues: true },
       );
     const unsubscribeLeaseAreasForm = leaseAreasFormRef.current.subscribe(
       (formState) => {
+        const isDirtyIncludingFieldArrays = !isEqual(
+          formState.values,
+          formState.initialValues,
+        );
         setLeaseAreasFormState({
-          dirty: formState.dirty,
+          dirty: isDirtyIncludingFieldArrays,
           valid: formState.valid,
         });
       },
-      { dirty: true, valid: true },
+      { valid: true, values: true, initialValues: true },
     );
 
     return () => {
@@ -441,7 +496,6 @@ const LeasePage: React.FC<Props> = (props) => {
       clearPreviewInvoices();
       // Clear current lease
       receiveSingleLease({});
-      destroy(FormNames.INVOICE_SIMULATOR);
       destroy(FormNames.RENT_CALCULATOR);
       hideEditMode();
       window.removeEventListener("beforeunload", handleLeavePage);
@@ -588,8 +642,17 @@ const LeasePage: React.FC<Props> = (props) => {
   };
 
   const openEditMode = () => {
+    setSummaryFormState({ dirty: false, valid: true });
+    setTenantsFormState({ dirty: false, valid: true });
+    setConstructabilityFormState({ dirty: false, valid: true });
+    setContractsFormState({ dirty: false, valid: true });
+    setDecisionsFormState({ dirty: false, valid: true });
+    setInspectionsFormState({ dirty: false, valid: true });
+    setLeaseAreasFormState({ dirty: false, valid: true });
+
     receiveIsSaveClicked(false);
-    clearFormValidFlags();
+    dispatch(clearFormValidFlags());
+    dispatch(clearFormDirtyFlags());
     destroyAllForms();
     initializeForms(currentLease);
     showEditMode();
@@ -597,14 +660,14 @@ const LeasePage: React.FC<Props> = (props) => {
   };
 
   const destroyAllForms = () => {
-    destroy(FormNames.LEASE_CONSTRUCTABILITY);
-    destroy(FormNames.LEASE_CONTRACTS);
-    destroy(FormNames.LEASE_DECISIONS);
-    destroy(FormNames.LEASE_INSPECTIONS);
-    destroy(FormNames.LEASE_AREAS);
+    summaryFormRef.current.restart();
+    leaseTenantFormRef.current.restart();
+    leaseConstructabilityFormRef.current.restart();
+    leaseContractsFormRef.current.restart();
+    leaseDecisionsFormRef.current.restart();
+    leaseInspectionsFormRef.current.restart();
+    leaseAreasFormRef.current.restart();
     destroy(FormNames.LEASE_RENTS);
-    destroy(FormNames.LEASE_SUMMARY);
-    destroy(FormNames.LEASE_TENANTS);
   };
 
   const summaryFormRef = useRef(
@@ -697,7 +760,7 @@ const LeasePage: React.FC<Props> = (props) => {
 
   const restoreUnsavedChanges = () => {
     destroyAllForms();
-    clearFormValidFlags();
+    dispatch(clearFormValidFlags());
     showEditMode();
     initializeForms(currentLease);
     const storedAreasFormValues = getSessionStorageItem(FormNames.LEASE_AREAS);
@@ -766,7 +829,7 @@ const LeasePage: React.FC<Props> = (props) => {
     const storedFormValidity = getSessionStorageItem("leaseValidity");
 
     if (storedFormValidity) {
-      receiveFormValidFlags(storedFormValidity);
+      dispatch(receiveFormValidFlags(storedFormValidity));
     }
 
     startAutoSaveTimer();
@@ -806,7 +869,7 @@ const LeasePage: React.FC<Props> = (props) => {
 
     let isDirty = false;
 
-    if (leaseConstructabilityFormRef.current.getState().dirty) {
+    if (constructabilityFormState.dirty) {
       setSessionStorageItem(
         FormNames.LEASE_CONSTRUCTABILITY,
         leaseConstructabilityFormRef.current.getState().values,
@@ -816,7 +879,7 @@ const LeasePage: React.FC<Props> = (props) => {
       removeSessionStorageItem(FormNames.LEASE_CONSTRUCTABILITY);
     }
 
-    if (leaseContractsFormRef.current.getState().dirty) {
+    if (contractsFormState.dirty) {
       setSessionStorageItem(
         FormNames.LEASE_CONTRACTS,
         leaseContractsFormRef.current.getState().values,
@@ -826,7 +889,7 @@ const LeasePage: React.FC<Props> = (props) => {
       removeSessionStorageItem(FormNames.LEASE_CONTRACTS);
     }
 
-    if (leaseDecisionsFormRef.current.getState().dirty) {
+    if (decisionsFormState.dirty) {
       setSessionStorageItem(
         FormNames.LEASE_DECISIONS,
         leaseDecisionsFormRef.current.getState().values,
@@ -836,7 +899,7 @@ const LeasePage: React.FC<Props> = (props) => {
       removeSessionStorageItem(FormNames.LEASE_DECISIONS);
     }
 
-    if (leaseInspectionsFormRef.current.getState().dirty) {
+    if (inspectionsFormState.dirty) {
       setSessionStorageItem(
         FormNames.LEASE_INSPECTIONS,
         leaseInspectionsFormRef.current.getState().values,
@@ -846,7 +909,7 @@ const LeasePage: React.FC<Props> = (props) => {
       removeSessionStorageItem(FormNames.LEASE_INSPECTIONS);
     }
 
-    if (leaseAreasFormRef.current.getState().dirty) {
+    if (leaseAreasFormState.dirty) {
       setSessionStorageItem(
         FormNames.LEASE_AREAS,
         leaseAreasFormRef.current.getState().values,
@@ -862,7 +925,8 @@ const LeasePage: React.FC<Props> = (props) => {
     } else {
       removeSessionStorageItem(FormNames.LEASE_RENTS);
     }
-    if (summaryFormRef.current.getState().dirty) {
+
+    if (summaryFormState.dirty) {
       setSessionStorageItem(
         FormNames.LEASE_SUMMARY,
         summaryFormRef.current.getState().values,
@@ -872,7 +936,7 @@ const LeasePage: React.FC<Props> = (props) => {
       removeSessionStorageItem(FormNames.LEASE_SUMMARY);
     }
 
-    if (leaseTenantFormRef.current.getState().dirty) {
+    if (tenantsFormState.dirty) {
       setSessionStorageItem(
         FormNames.LEASE_TENANTS,
         leaseTenantFormRef.current.getState().values,
@@ -893,6 +957,7 @@ const LeasePage: React.FC<Props> = (props) => {
   const cancelChanges = () => {
     hideEditMode();
     stopAutoSaveTimer();
+    dispatch(clearFormDirtyFlags());
     clearUnsavedChanges();
   };
 
@@ -905,38 +970,40 @@ const LeasePage: React.FC<Props> = (props) => {
         id: currentLease.id,
       };
 
-      if (leaseConstructabilityFormRef.current.getState().dirty) {
-        payload = addConstructabilityFormValuesToPayload(
-          payload,
-          leaseConstructabilityFormRef.current.getState().values,
-        );
-      }
-
-      if (leaseContractsFormRef.current.getState().dirty) {
+      if (contractsFormState.dirty) {
         payload = addContractsFormValuesToPayload(
           payload,
           leaseContractsFormRef.current.getState().values,
         );
       }
 
-      if (leaseDecisionsFormRef.current.getState().dirty) {
+      if (decisionsFormState.dirty) {
         payload = addDecisionsFormValuesToPayload(
           payload,
           leaseDecisionsFormRef.current.getState().values,
         );
       }
 
-      if (leaseInspectionsFormRef.current.getState().dirty) {
+      if (inspectionsFormState.dirty) {
         payload = addInspectionsFormValuesToPayload(
           payload,
           leaseInspectionsFormRef.current.getState().values,
         );
       }
 
-      if (leaseAreasFormRef.current.getState().dirty) {
+      if (leaseAreasFormState.dirty) {
         payload = addAreasFormValuesToPayload(
           payload,
           leaseAreasFormRef.current.getState().values,
+        );
+      }
+
+      // Constructability needs to be added to payload after lease areas as
+      // it is a part of lease areas and would be overridden.
+      if (constructabilityFormState.dirty) {
+        payload = addConstructabilityFormValuesToPayload(
+          payload,
+          leaseConstructabilityFormRef.current.getState().values,
         );
       }
 
@@ -955,7 +1022,7 @@ const LeasePage: React.FC<Props> = (props) => {
         );
       }
 
-      if (leaseTenantFormRef.current.getState().dirty) {
+      if (tenantsFormState.dirty) {
         payload = addTenantsFormValuesToPayload(
           payload,
           leaseTenantFormRef.current.getState().values,
@@ -1494,7 +1561,6 @@ export default flowRight(
     },
     {
       reduxFormChange,
-      clearFormValidFlags,
       clearPreviewInvoices,
       deleteLease,
       destroy,
@@ -1508,7 +1574,6 @@ export default flowRight(
       hideEditMode,
       initialize,
       patchLease,
-      receiveFormValidFlags,
       receiveIsSaveClicked,
       receiveSingleLease,
       receiveTopNavigationSettings,
