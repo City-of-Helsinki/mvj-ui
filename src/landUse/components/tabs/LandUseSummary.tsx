@@ -15,8 +15,9 @@ import { Form, Field } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { FormApi } from "final-form";
 import { normalizeSelectValue } from "../../fieldUtils";
-import { getAsemakaavat, type AsemakaavaListItem } from "../../api/landUseApi";
+import { getAsemakaavat } from "../../api/landUseApi";
 import {
+  type AsemakaavaListItem,
   landUseEdistamisalueOptions,
   landUseNegotiationPhaseOptions,
 } from "../../options";

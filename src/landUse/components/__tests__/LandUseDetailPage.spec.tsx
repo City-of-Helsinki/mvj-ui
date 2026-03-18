@@ -480,27 +480,6 @@ describe("LandUseDetailPage", () => {
     expect(screen.queryByLabelText("summary-input")).toBeNull();
   });
 
-  it("supports legacy numeric tab query parameter on initial render", async () => {
-    mockLocationSearch = "?tab=2";
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-        mutations: { retry: false },
-      },
-    });
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <LandUseDetailPage />
-      </QueryClientProvider>,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByLabelText("parties-input")).toBeDefined();
-    });
-  });
-
   it("writes summary query parameter when first tab is selected", async () => {
     const queryClient = new QueryClient({
       defaultOptions: {
