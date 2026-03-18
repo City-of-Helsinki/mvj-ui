@@ -142,7 +142,6 @@ const PlanUnits = ({
 
                   return (
                     <PlanUnitItemEdit
-                      formApi={formApi}
                       key={index}
                       field={planunit}
                       onRemove={handleRemove}
