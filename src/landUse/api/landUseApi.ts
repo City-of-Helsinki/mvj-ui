@@ -18,9 +18,9 @@ import {
   type AsemakaavaListItem,
 } from "../options";
 import {
-  createEmptyPartiesFormValues,
-  createEmptySummaryFormValues,
-} from "./landUseFormValues";
+  createLandUseIdentifier,
+  getNextLandUseSequence,
+} from "../utils/landUseIdentifier";
 import {
   getAgreementIds,
   getAgreementTab,
@@ -28,30 +28,9 @@ import {
   setAgreementTab,
 } from "./landUseDb";
 import type { LandUseListItem } from "./landUseListTypes";
-import { LAND_USE_TAB_KEYS, type LandUseTabKey } from "./landUseTypes";
-import {
-  createLandUseIdentifier,
-  getNextLandUseSequence,
-} from "../utils/landUseIdentifier";
-
-const createEmptyTabValues = <T extends object>(): T => ({}) as T;
 
 export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> =>
   landUseAsemakaavaListItems;
-
-const getTabData = async <T>(
-  agreementId: string,
-  tabKey: LandUseTabKey,
-  fallback: T,
-): Promise<T> => {
-  const data = await getAgreementTab<T>(agreementId, tabKey);
-  if (data) {
-    return data;
-  }
-
-  await setAgreementTab(agreementId, tabKey, fallback);
-  return fallback;
-};
 
 const flattenSites = (items: LandUseSiteTreeNode[]): LandUseSiteTreeNode[] => {
   const flattened: LandUseSiteTreeNode[] = [];
@@ -71,8 +50,8 @@ const flattenSites = (items: LandUseSiteTreeNode[]): LandUseSiteTreeNode[] => {
 
 export const getSummary = async (
   agreementId: string,
-): Promise<LandUseSummaryFormValues> =>
-  getTabData(agreementId, "summary", createEmptySummaryFormValues());
+): Promise<LandUseSummaryFormValues | null> =>
+  getAgreementTab<LandUseSummaryFormValues>(agreementId, "summary");
 
 export const getAgreementIdentifiers = async (): Promise<string[]> =>
   getAgreementIds();
@@ -149,13 +128,13 @@ export const updateSummary = async (
 
 export const getParties = async (
   agreementId: string,
-): Promise<LandUsePartiesFormValues> =>
-  getTabData(agreementId, "parties", createEmptyPartiesFormValues());
+): Promise<LandUsePartiesFormValues | null> =>
+  getAgreementTab<LandUsePartiesFormValues>(agreementId, "parties");
 
 export const getSites = async (
   agreementId: string,
-): Promise<LandUseSitesFormValues> =>
-  getTabData(agreementId, "sites", { items: [] });
+): Promise<LandUseSitesFormValues | null> =>
+  getAgreementTab<LandUseSitesFormValues>(agreementId, "sites");
 
 export const updateSites = async (
   agreementId: string,
@@ -175,12 +154,8 @@ export const updateParties = async (
 
 export const getCompensations = async (
   agreementId: string,
-): Promise<LandUseCompensationsFormValues> =>
-  getTabData(
-    agreementId,
-    "compensations",
-    createEmptyTabValues<LandUseCompensationsFormValues>(),
-  );
+): Promise<LandUseCompensationsFormValues | null> =>
+  getAgreementTab<LandUseCompensationsFormValues>(agreementId, "compensations");
 
 export const updateCompensations = async (
   agreementId: string,
@@ -192,12 +167,8 @@ export const updateCompensations = async (
 
 export const getCollaterals = async (
   agreementId: string,
-): Promise<LandUseCollateralsFormValues> =>
-  getTabData(
-    agreementId,
-    "collaterals",
-    createEmptyTabValues<LandUseCollateralsFormValues>(),
-  );
+): Promise<LandUseCollateralsFormValues | null> =>
+  getAgreementTab<LandUseCollateralsFormValues>(agreementId, "collaterals");
 
 export const updateCollaterals = async (
   agreementId: string,
@@ -209,12 +180,8 @@ export const updateCollaterals = async (
 
 export const getMonitoring = async (
   agreementId: string,
-): Promise<LandUseMonitoringFormValues> =>
-  getTabData(
-    agreementId,
-    "monitoring",
-    createEmptyTabValues<LandUseMonitoringFormValues>(),
-  );
+): Promise<LandUseMonitoringFormValues | null> =>
+  getAgreementTab<LandUseMonitoringFormValues>(agreementId, "monitoring");
 
 export const addMonitoringToteumaEntry = async (
   agreementId: string,
@@ -222,11 +189,11 @@ export const addMonitoringToteumaEntry = async (
   entry: MonitoringToteumaEntry,
 ): Promise<MonitoringToteumaEntry[]> => {
   const currentValues = await getMonitoring(agreementId);
-  const entriesBySiteId = currentValues.toteumaEntriesBySiteId ?? {};
+  const entriesBySiteId = currentValues?.toteumaEntriesBySiteId ?? {};
   const nextEntries = [...(entriesBySiteId[siteId] ?? []), entry];
 
   await setAgreementTab(agreementId, "monitoring", {
-    ...currentValues,
+    ...(currentValues ?? {}),
     toteumaEntriesBySiteId: {
       ...entriesBySiteId,
       [siteId]: nextEntries,
@@ -251,8 +218,8 @@ export const updateMonitoring = async (
 
 export const getDecisions = async (
   agreementId: string,
-): Promise<LandUseDecisionsFormValues> =>
-  getTabData(agreementId, "decisions", createEmptyTabValues());
+): Promise<LandUseDecisionsFormValues | null> =>
+  getAgreementTab<LandUseDecisionsFormValues>(agreementId, "decisions");
 
 export const updateDecisions = async (
   agreementId: string,
@@ -264,8 +231,8 @@ export const updateDecisions = async (
 
 export const getInvoicing = async (
   agreementId: string,
-): Promise<LandUseInvoicingFormValues> =>
-  getTabData(agreementId, "invoicing", createEmptyTabValues());
+): Promise<LandUseInvoicingFormValues | null> =>
+  getAgreementTab<LandUseInvoicingFormValues>(agreementId, "invoicing");
 
 export const updateInvoicing = async (
   agreementId: string,
@@ -277,8 +244,8 @@ export const updateInvoicing = async (
 
 export const getMap = async (
   agreementId: string,
-): Promise<LandUseMapFormValues> =>
-  getTabData(agreementId, "map", createEmptyTabValues());
+): Promise<LandUseMapFormValues | null> =>
+  getAgreementTab<LandUseMapFormValues>(agreementId, "map");
 
 export const updateMap = async (
   agreementId: string,

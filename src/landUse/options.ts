@@ -149,3 +149,33 @@ export const landUseAsemakaavaListItems: AsemakaavaListItem[] = [
     asemakaavanDiaarinumero: "HEL 6689-451392",
   },
 ];
+
+export const landUseCompensationSelectOptions = {
+  kayttotarkoitus: [
+    "Asuinkerrostalojen korttelialue",
+    "Asuinkerrostalojen, liike- ja toimistorakennusten korttelialue",
+    "Toimitilat",
+  ],
+  hallintamuoto: ["Vapaarahoitteinen omistus", "ARA-Vuokra", "ASO"],
+  suojeltu: ["-", "SR1", "SR2"],
+};
+
+export const landUseKohdeSelectOptions = [
+  { label: "01-49-920-6", value: "01-49-920-6" },
+  { label: "02-18-450-3", value: "02-18-450-3" },
+  { label: "03-27-780-1", value: "03-27-780-1" },
+  { label: "04-15-320-2", value: "04-15-320-2" },
+  { label: "05-33-120-9", value: "05-33-120-9" },
+];
+
+export const negotiatorsOptions = [
+  { label: "NN", value: "NN" },
+  { label: "Liisa Virtanen", value: "Liisa Virtanen" },
+  { label: "Matti Meikäläinen", value: "Matti Meikäläinen" },
+];
+
+export const signatoriesOptions = [
+  { label: "Ylipäällikkö", value: "Ylipäällikkö" },
+  { label: "Välipäällikkö", value: "Välipäällikkö" },
+  { label: "Alipäällikkö", value: "Alipäällikkö" },
+];

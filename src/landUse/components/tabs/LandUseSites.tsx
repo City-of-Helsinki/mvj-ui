@@ -10,7 +10,7 @@ import {
 import { Form, Field } from "react-final-form";
 import type { FormApi } from "final-form";
 import { normalizeSelectValue } from "../../fieldUtils";
-import { landUseCompensationSelectOptions } from "../../mocks/landUseMockData";
+import { landUseCompensationSelectOptions } from "../../options";
 import { collectNonLeafNodeIds } from "../../utils/siteTree";
 
 export interface LandUseSiteTreeNode {

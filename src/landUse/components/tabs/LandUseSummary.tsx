@@ -21,7 +21,7 @@ import {
   landUseEdistamisalueOptions,
   landUseNegotiationPhaseOptions,
 } from "../../options";
-import { landUseKohdeSelectOptions } from "../../mocks/landUseMockData";
+import { landUseKohdeSelectOptions } from "../../options";
 
 interface ValmistelijaEntry {
   value: string | undefined;

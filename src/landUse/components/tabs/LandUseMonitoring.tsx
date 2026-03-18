@@ -18,7 +18,7 @@ import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import { normalizeSelectValue } from "../../fieldUtils";
-import { landUseCompensationSelectOptions } from "../../mocks/landUseMockData";
+import { landUseCompensationSelectOptions } from "../../options";
 import type { LandUseSiteTreeNode } from "./LandUseSites";
 import { collectLeafNodes } from "../../utils/siteTree";
 import { parseLandUseNumericValue } from "../../utils/number";
