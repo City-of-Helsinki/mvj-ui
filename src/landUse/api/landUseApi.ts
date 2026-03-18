@@ -74,29 +74,8 @@ const flattenSites = (items: LandUseSiteTreeNode[]): LandUseSiteTreeNode[] => {
 
 export const getSummary = async (
   agreementId: string,
-): Promise<LandUseSummaryFormValues> => {
-  const summary = await getTabData(
-    agreementId,
-    "summary",
-    createEmptySummaryFormValues(),
-  );
-
-  const normalizedSummary = {
-    ...summary,
-    suunnittelunPerusteenaOlevatKohteet: summary
-      .suunnittelunPerusteenaOlevatKohteet?.length
-      ? summary.suunnittelunPerusteenaOlevatKohteet
-      : [{ value: undefined }],
-  };
-  const needsSummaryNormalization =
-    !summary.suunnittelunPerusteenaOlevatKohteet?.length;
-
-  if (needsSummaryNormalization) {
-    await setAgreementTab(agreementId, "summary", normalizedSummary);
-  }
-
-  return normalizedSummary;
-};
+): Promise<LandUseSummaryFormValues> =>
+  getTabData(agreementId, "summary", createEmptySummaryFormValues());
 
 export const getAgreementIdentifiers = async (): Promise<string[]> =>
   getAgreementIds();
@@ -148,32 +127,6 @@ export const createLandUseAgreement = async (
     municipalityId,
     districtId,
     sequence,
-  );
-
-  await Promise.all(
-    LAND_USE_TAB_KEYS.map((tabKey) => {
-      if (tabKey === "summary") {
-        return setAgreementTab(
-          identifier,
-          tabKey,
-          createEmptySummaryFormValues(),
-        );
-      }
-
-      if (tabKey === "parties") {
-        return setAgreementTab(
-          identifier,
-          tabKey,
-          createEmptyPartiesFormValues(),
-        );
-      }
-
-      if (tabKey === "sites") {
-        return setAgreementTab(identifier, tabKey, { items: [] });
-      }
-
-      return setAgreementTab(identifier, tabKey, {});
-    }),
   );
 
   await setAgreementListItem({

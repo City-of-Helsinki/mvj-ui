@@ -70,33 +70,6 @@ const hallintamuotoOptions = landUseCompensationSelectOptions.hallintamuoto.map(
   (value) => ({ label: value, value }),
 );
 
-const defaultSakkoRows: MonitoringSakkoRow[] = [
-  {
-    kohteenTunnus: "91-38-52-1",
-    hallintamuoto: "Vapaarahoitteinen omistus",
-    vaadittuKerrosala: "1000",
-    toteutunutKerrosala: "-",
-    hintaero: "0",
-    korotus: "10 %",
-  },
-  {
-    kohteenTunnus: "91-38-52-2",
-    hallintamuoto: "ARA-Vuokra",
-    vaadittuKerrosala: "500",
-    toteutunutKerrosala: "-",
-    hintaero: "300",
-    korotus: "10 %",
-  },
-  {
-    kohteenTunnus: "91-38-52-6",
-    hallintamuoto: "ASO",
-    vaadittuKerrosala: "1500",
-    toteutunutKerrosala: "-",
-    hintaero: "500",
-    korotus: "10 %",
-  },
-];
-
 export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
   agreementId,
   form,
