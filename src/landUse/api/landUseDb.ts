@@ -1,14 +1,13 @@
 import type { PersistedClient } from "@tanstack/query-persist-client-core";
 import type { LandUseTabKey } from "./landUseTypes";
 import type { LandUseListItem } from "./landUseListTypes";
+import { applyLandUseMigrations, LAND_USE_DB_VERSION } from "./migrations";
 
 const LAND_USE_DB_NAME = "landUseDb";
-const LAND_USE_DB_VERSION = 4;
 const AGREEMENT_TAB_STORE = "agreementTabs";
 const AGREEMENT_LIST_STORE = "agreementList";
 const REACT_QUERY_STORE = "reactQueryCache";
 const REACT_QUERY_KEY = "landUseQueryClient";
-const LEGACY_MONITORING_TOTEUTUNUT_STORE = "monitoringToteutunut";
 
 type AgreementTabRecord<T> = {
   agreementId: string;
@@ -27,21 +26,25 @@ const openLandUseDb = (): Promise<IDBDatabase> =>
   new Promise((resolve, reject) => {
     const request = indexedDB.open(LAND_USE_DB_NAME, LAND_USE_DB_VERSION);
 
-    request.onupgradeneeded = () => {
+    request.onupgradeneeded = (event) => {
       const db = request.result;
-      if (!db.objectStoreNames.contains(AGREEMENT_TAB_STORE)) {
-        db.createObjectStore(AGREEMENT_TAB_STORE, {
-          keyPath: ["agreementId", "tabKey"],
-        });
+      const transaction = request.transaction;
+
+      if (!transaction) {
+        reject(new Error("Database migration transaction is not available"));
+        return;
       }
-      if (!db.objectStoreNames.contains(AGREEMENT_LIST_STORE)) {
-        db.createObjectStore(AGREEMENT_LIST_STORE, {
-          keyPath: "identifier",
-        });
-      }
-      if (!db.objectStoreNames.contains(REACT_QUERY_STORE)) {
-        db.createObjectStore(REACT_QUERY_STORE, { keyPath: "key" });
-      }
+
+      applyLandUseMigrations(event.oldVersion, {
+        db,
+        transaction,
+        stores: {
+          agreementTabStore: AGREEMENT_TAB_STORE,
+          agreementListStore: AGREEMENT_LIST_STORE,
+          reactQueryStore: REACT_QUERY_STORE,
+          monitoringToteutunutStore: "monitoringToteutunut",
+        },
+      });
     };
 
     request.onsuccess = () => resolve(request.result);
@@ -201,51 +204,6 @@ export const removePersistedClient = async (): Promise<void> => {
   return new Promise((resolve, reject) => {
     const request = store.delete(REACT_QUERY_KEY);
     request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-    tx.oncomplete = () => db.close();
-    tx.onerror = () => reject(tx.error);
-    tx.onabort = () => reject(tx.error);
-  });
-};
-
-export const getLegacyMonitoringToteutunutEntriesBySiteId = async (
-  agreementId: string,
-): Promise<Record<string, { value: string; createdAt: string }[]>> => {
-  type LegacyMonitoringRecord = {
-    agreementId: string;
-    siteId: string;
-    entries: { value: string; createdAt: string }[];
-  };
-
-  const db = await openLandUseDb();
-
-  if (!db.objectStoreNames.contains(LEGACY_MONITORING_TOTEUTUNUT_STORE)) {
-    db.close();
-    return {};
-  }
-
-  const tx = db.transaction(LEGACY_MONITORING_TOTEUTUNUT_STORE, "readonly");
-  const store = tx.objectStore(LEGACY_MONITORING_TOTEUTUNUT_STORE);
-
-  return new Promise((resolve, reject) => {
-    const request = store.getAll();
-
-    request.onsuccess = () => {
-      const records = (request.result as LegacyMonitoringRecord[]) ?? [];
-
-      const entriesBySiteId = records.reduce<
-        Record<string, { value: string; createdAt: string }[]>
-      >((result, record) => {
-        if (record.agreementId === agreementId) {
-          result[record.siteId] = record.entries ?? [];
-        }
-
-        return result;
-      }, {});
-
-      resolve(entriesBySiteId);
-    };
-
     request.onerror = () => reject(request.error);
     tx.oncomplete = () => db.close();
     tx.onerror = () => reject(tx.error);

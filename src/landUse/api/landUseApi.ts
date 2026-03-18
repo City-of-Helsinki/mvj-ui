@@ -24,7 +24,6 @@ import {
 import {
   getAgreementIds,
   getAgreementTab,
-  getLegacyMonitoringToteutunutEntriesBySiteId,
   setAgreementListItem,
   setAgreementTab,
 } from "./landUseDb";
@@ -210,49 +209,12 @@ export const updateCollaterals = async (
 
 export const getMonitoring = async (
   agreementId: string,
-): Promise<LandUseMonitoringFormValues> => {
-  const monitoringData = await getTabData(
+): Promise<LandUseMonitoringFormValues> =>
+  getTabData(
     agreementId,
     "monitoring",
     createEmptyTabValues<LandUseMonitoringFormValues>(),
   );
-
-  const legacyData = monitoringData as LandUseMonitoringFormValues & {
-    toteutunutKm2EntriesBySiteId?: Record<string, MonitoringToteumaEntry[]>;
-  };
-  const currentEntriesBySiteId = monitoringData.toteumaEntriesBySiteId ?? {};
-  let legacyEntriesBySiteId: Record<string, MonitoringToteumaEntry[]> =
-    legacyData.toteutunutKm2EntriesBySiteId ?? {};
-
-  if (
-    Object.keys(legacyEntriesBySiteId).length === 0 &&
-    Object.keys(currentEntriesBySiteId).length === 0
-  ) {
-    legacyEntriesBySiteId =
-      await getLegacyMonitoringToteutunutEntriesBySiteId(agreementId);
-  }
-
-  const mergedEntriesBySiteId = {
-    ...legacyEntriesBySiteId,
-    ...currentEntriesBySiteId,
-  };
-
-  const hasLegacyKey = Boolean(legacyData.toteutunutKm2EntriesBySiteId);
-  const hasMissingUnifiedEntries =
-    Object.keys(mergedEntriesBySiteId).length > 0 &&
-    Object.keys(currentEntriesBySiteId).length === 0;
-
-  const normalizedValues: LandUseMonitoringFormValues = {
-    toteumaEntriesBySiteId: mergedEntriesBySiteId,
-    sakkoRows: monitoringData.sakkoRows,
-  };
-
-  if (hasLegacyKey || hasMissingUnifiedEntries) {
-    await setAgreementTab(agreementId, "monitoring", normalizedValues);
-  }
-
-  return normalizedValues;
-};
 
 export const addMonitoringToteumaEntry = async (
   agreementId: string,
