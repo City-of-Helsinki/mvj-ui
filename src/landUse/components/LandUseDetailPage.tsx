@@ -557,6 +557,19 @@ const LandUseDetailPage: React.FC = () => {
     setIsEditMode(true);
   };
 
+  /**
+   * Mark the monitoring tab dirty whenever a new toteuma is added
+   */
+  const handleMonitoringToteumaAdded = useCallback(() => {
+    setFormStates((prev) => ({
+      ...prev,
+      monitoring: {
+        dirty: true,
+        valid: prev.monitoring?.valid ?? true,
+      },
+    }));
+  }, []);
+
   const summaryMutation = useMutation({
     mutationFn: (values: LandUseSummaryFormValues) =>
       updateSummary(agreementId, values),
@@ -909,13 +922,13 @@ const LandUseDetailPage: React.FC = () => {
 
         <TabPanel>
           <LandUseMonitoring
-            agreementId={agreementId}
             form={monitoringFormApi}
             isEditMode={isEditMode}
             sites={sitesQuery.data?.items ?? []}
             compensationsRowsBySiteId={
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
             }
+            onToteumaAdded={handleMonitoringToteumaAdded}
           />
         </TabPanel>
 

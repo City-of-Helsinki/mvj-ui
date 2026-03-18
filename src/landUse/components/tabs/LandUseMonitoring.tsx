@@ -21,7 +21,6 @@ import { normalizeSelectValue } from "../../fieldUtils";
 import { landUseCompensationSelectOptions } from "../../mocks/landUseMockData";
 import type { LandUseSiteTreeNode } from "./LandUseSites";
 import { collectLeafNodes } from "../../utils/siteTree";
-import { addMonitoringToteumaEntry } from "../../api/landUseApi";
 import { parseLandUseNumericValue } from "../../utils/number";
 
 interface PerustietotaulukkoRowValues {
@@ -48,11 +47,11 @@ interface MonitoringSakkoRow {
 }
 
 interface LandUseMonitoringProps {
-  agreementId: string;
   form: FormApi<LandUseMonitoringFormValues>;
   isEditMode: boolean;
   sites: LandUseSiteTreeNode[];
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
+  onToteumaAdded?: () => void;
 }
 
 const handleSelectChange = (
@@ -70,12 +69,28 @@ const hallintamuotoOptions = landUseCompensationSelectOptions.hallintamuoto.map(
   (value) => ({ label: value, value }),
 );
 
+const getEntryTime = (entry: MonitoringToteumaEntry): number => {
+  const parsed = Date.parse(entry.createdAt);
+  return Number.isNaN(parsed) ? 0 : parsed;
+};
+
+const getLatestEntry = (
+  entries: MonitoringToteumaEntry[],
+): MonitoringToteumaEntry | undefined =>
+  entries.reduce<MonitoringToteumaEntry | undefined>((latest, entry) => {
+    if (!latest) {
+      return entry;
+    }
+
+    return getEntryTime(entry) >= getEntryTime(latest) ? entry : latest;
+  }, undefined);
+
 export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
-  agreementId,
   form,
   isEditMode,
   sites,
   compensationsRowsBySiteId,
+  onToteumaAdded,
 }) => {
   const [selectedSiteId, setSelectedSiteId] = React.useState<string | null>(
     null,
@@ -111,8 +126,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
 
         const monitoringPerustaulukkoRows = leafSites.map((site, index) => {
           const toteumaEntries = toteumaEntriesBySiteId[site.id] ?? [];
-          const latestToteutunutEntry =
-            toteumaEntries[toteumaEntries.length - 1];
+          const latestToteutunutEntry = getLatestEntry(toteumaEntries);
           const latestToteutunutKm2 = latestToteutunutEntry?.value ?? "-";
           const vaadittuValue = parseLandUseNumericValue(site.km2);
           const toteutunutValue = parseLandUseNumericValue(
@@ -372,14 +386,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                         ...toteumaEntriesBySiteId,
                         [selectedSiteId]: nextEntries,
                       });
-
-                      if (agreementId) {
-                        void addMonitoringToteumaEntry(
-                          agreementId,
-                          selectedSiteId,
-                          newEntry,
-                        );
-                      }
+                      onToteumaAdded?.();
 
                       setNewToteutunutKm2("");
                     }}
@@ -397,16 +404,18 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       </p>
                     ) : (
                       <ul className="landuse-detail__monitoring-dialog-items">
-                        {[...selectedEntries].reverse().map((entry, index) => (
-                          <li key={`${entry.createdAt}-${index}`}>
-                            <span>{entry.value}</span>
-                            <span>
-                              {new Date(entry.createdAt).toLocaleString(
-                                "fi-FI",
-                              )}
-                            </span>
-                          </li>
-                        ))}
+                        {[...selectedEntries]
+                          .sort((a, b) => getEntryTime(b) - getEntryTime(a))
+                          .map((entry, index) => (
+                            <li key={`${entry.createdAt}-${index}`}>
+                              <span>{entry.value}</span>
+                              <span>
+                                {new Date(entry.createdAt).toLocaleString(
+                                  "fi-FI",
+                                )}
+                              </span>
+                            </li>
+                          ))}
                       </ul>
                     )}
                   </div>
