@@ -5,7 +5,7 @@ import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoi
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
 import type {
   LandUseMonitoringFormValues,
-  MonitoringToteutunutEntry,
+  MonitoringToteumaEntry,
 } from "../components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
 import type {
@@ -24,11 +24,9 @@ import {
 import {
   getAgreementIds,
   getAgreementTab,
-  getMonitoringToteutunutEntriesBySiteId,
+  getLegacyMonitoringToteutunutEntriesBySiteId,
   setAgreementListItem,
   setAgreementTab,
-  setMonitoringToteutunutEntries,
-  setMonitoringToteutunutEntriesBySiteId,
 } from "./landUseDb";
 import type { LandUseListItem } from "./landUseListTypes";
 import { LAND_USE_TAB_KEYS, type LandUseTabKey } from "./landUseTypes";
@@ -218,37 +216,61 @@ export const getMonitoring = async (
     "monitoring",
     createEmptyTabValues<LandUseMonitoringFormValues>(),
   );
-  const monitoring: LandUseMonitoringFormValues = {
-    toteutunutKm2EntriesBySiteId: monitoringData.toteutunutKm2EntriesBySiteId,
+
+  const legacyData = monitoringData as LandUseMonitoringFormValues & {
+    toteutunutKm2EntriesBySiteId?: Record<string, MonitoringToteumaEntry[]>;
+  };
+  const currentEntriesBySiteId = monitoringData.toteumaEntriesBySiteId ?? {};
+  let legacyEntriesBySiteId: Record<string, MonitoringToteumaEntry[]> =
+    legacyData.toteutunutKm2EntriesBySiteId ?? {};
+
+  if (
+    Object.keys(legacyEntriesBySiteId).length === 0 &&
+    Object.keys(currentEntriesBySiteId).length === 0
+  ) {
+    legacyEntriesBySiteId =
+      await getLegacyMonitoringToteutunutEntriesBySiteId(agreementId);
+  }
+
+  const mergedEntriesBySiteId = {
+    ...legacyEntriesBySiteId,
+    ...currentEntriesBySiteId,
+  };
+
+  const hasLegacyKey = Boolean(legacyData.toteutunutKm2EntriesBySiteId);
+  const hasMissingUnifiedEntries =
+    Object.keys(mergedEntriesBySiteId).length > 0 &&
+    Object.keys(currentEntriesBySiteId).length === 0;
+
+  const normalizedValues: LandUseMonitoringFormValues = {
+    toteumaEntriesBySiteId: mergedEntriesBySiteId,
     sakkoRows: monitoringData.sakkoRows,
   };
 
-  const toteutunutEntriesBySiteId =
-    await getMonitoringToteutunutEntriesBySiteId(agreementId);
-
-  if (Object.keys(toteutunutEntriesBySiteId).length === 0) {
-    return monitoring;
+  if (hasLegacyKey || hasMissingUnifiedEntries) {
+    await setAgreementTab(agreementId, "monitoring", normalizedValues);
   }
 
-  return {
-    ...monitoring,
-    toteutunutKm2EntriesBySiteId: {
-      ...(monitoring.toteutunutKm2EntriesBySiteId ?? {}),
-      ...toteutunutEntriesBySiteId,
-    },
-  };
+  return normalizedValues;
 };
 
-export const addMonitoringToteutunutEntry = async (
+export const addMonitoringToteumaEntry = async (
   agreementId: string,
   siteId: string,
-  entry: MonitoringToteutunutEntry,
-): Promise<MonitoringToteutunutEntry[]> => {
-  const entriesBySiteId =
-    await getMonitoringToteutunutEntriesBySiteId(agreementId);
+  entry: MonitoringToteumaEntry,
+): Promise<MonitoringToteumaEntry[]> => {
+  const currentValues = await getMonitoring(agreementId);
+  const entriesBySiteId = currentValues.toteumaEntriesBySiteId ?? {};
   const nextEntries = [...(entriesBySiteId[siteId] ?? []), entry];
 
-  await setMonitoringToteutunutEntries(agreementId, siteId, nextEntries);
+  await setAgreementTab(agreementId, "monitoring", {
+    ...currentValues,
+    toteumaEntriesBySiteId: {
+      ...entriesBySiteId,
+      [siteId]: nextEntries,
+    },
+  } satisfies LandUseMonitoringFormValues);
+
   return nextEntries;
 };
 
@@ -257,14 +279,10 @@ export const updateMonitoring = async (
   values: LandUseMonitoringFormValues,
 ): Promise<LandUseMonitoringFormValues> => {
   const sanitizedValues: LandUseMonitoringFormValues = {
-    toteutunutKm2EntriesBySiteId: values.toteutunutKm2EntriesBySiteId,
+    toteumaEntriesBySiteId: values.toteumaEntriesBySiteId,
     sakkoRows: values.sakkoRows,
   };
 
-  await setMonitoringToteutunutEntriesBySiteId(
-    agreementId,
-    sanitizedValues.toteutunutKm2EntriesBySiteId ?? {},
-  );
   await setAgreementTab(agreementId, "monitoring", sanitizedValues);
   return sanitizedValues;
 };

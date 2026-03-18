@@ -21,20 +21,20 @@ import { normalizeSelectValue } from "../../fieldUtils";
 import { landUseCompensationSelectOptions } from "../../mocks/landUseMockData";
 import type { LandUseSiteTreeNode } from "./LandUseSites";
 import { collectLeafNodes } from "../../utils/siteTree";
-import { addMonitoringToteutunutEntry } from "../../api/landUseApi";
+import { addMonitoringToteumaEntry } from "../../api/landUseApi";
 import { parseLandUseNumericValue } from "../../utils/number";
 
 interface PerustietotaulukkoRowValues {
   yksikkohinta: string;
 }
 
-export interface MonitoringToteutunutEntry {
+export interface MonitoringToteumaEntry {
   value: string;
   createdAt: string;
 }
 
 export interface LandUseMonitoringFormValues {
-  toteutunutKm2EntriesBySiteId?: Record<string, MonitoringToteutunutEntry[]>;
+  toteumaEntriesBySiteId?: Record<string, MonitoringToteumaEntry[]>;
   sakkoRows?: MonitoringSakkoRow[];
 }
 
@@ -94,11 +94,10 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
-        const toteutunutKm2EntriesBySiteId =
-          values.toteutunutKm2EntriesBySiteId ?? {};
-        const sakkoRows = values.sakkoRows ?? defaultSakkoRows;
+        const toteumaEntriesBySiteId = values.toteumaEntriesBySiteId ?? {};
+        const sakkoRows = values.sakkoRows ?? [];
         const selectedEntries = selectedSiteId
-          ? (toteutunutKm2EntriesBySiteId[selectedSiteId] ?? [])
+          ? (toteumaEntriesBySiteId[selectedSiteId] ?? [])
           : [];
 
         const monitoringPerustaulukkoCols = [
@@ -111,9 +110,9 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
         ];
 
         const monitoringPerustaulukkoRows = leafSites.map((site, index) => {
-          const toteutunutEntries = toteutunutKm2EntriesBySiteId[site.id] ?? [];
+          const toteumaEntries = toteumaEntriesBySiteId[site.id] ?? [];
           const latestToteutunutEntry =
-            toteutunutEntries[toteutunutEntries.length - 1];
+            toteumaEntries[toteumaEntries.length - 1];
           const latestToteutunutKm2 = latestToteutunutEntry?.value ?? "-";
           const vaadittuValue = parseLandUseNumericValue(site.km2);
           const toteutunutValue = parseLandUseNumericValue(
@@ -362,20 +361,20 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       }
 
                       const previousEntries =
-                        toteutunutKm2EntriesBySiteId[selectedSiteId] ?? [];
+                        toteumaEntriesBySiteId[selectedSiteId] ?? [];
                       const newEntry = {
                         value: newToteutunutKm2.trim(),
                         createdAt: new Date().toISOString(),
                       };
                       const nextEntries = [...previousEntries, newEntry];
 
-                      form.change("toteutunutKm2EntriesBySiteId", {
-                        ...toteutunutKm2EntriesBySiteId,
+                      form.change("toteumaEntriesBySiteId", {
+                        ...toteumaEntriesBySiteId,
                         [selectedSiteId]: nextEntries,
                       });
 
                       if (agreementId) {
-                        void addMonitoringToteutunutEntry(
+                        void addMonitoringToteumaEntry(
                           agreementId,
                           selectedSiteId,
                           newEntry,

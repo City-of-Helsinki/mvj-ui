@@ -3,12 +3,12 @@ import type { LandUseTabKey } from "./landUseTypes";
 import type { LandUseListItem } from "./landUseListTypes";
 
 const LAND_USE_DB_NAME = "landUseDb";
-const LAND_USE_DB_VERSION = 3;
+const LAND_USE_DB_VERSION = 4;
 const AGREEMENT_TAB_STORE = "agreementTabs";
 const AGREEMENT_LIST_STORE = "agreementList";
 const REACT_QUERY_STORE = "reactQueryCache";
-const MONITORING_TOTEUTUNUT_STORE = "monitoringToteutunut";
 const REACT_QUERY_KEY = "landUseQueryClient";
+const LEGACY_MONITORING_TOTEUTUNUT_STORE = "monitoringToteutunut";
 
 type AgreementTabRecord<T> = {
   agreementId: string;
@@ -20,13 +20,6 @@ type AgreementTabRecord<T> = {
 type ReactQueryRecord = {
   key: string;
   client: PersistedClient;
-  updatedAt: string;
-};
-
-type MonitoringToteutunutEntryRecord = {
-  agreementId: string;
-  siteId: string;
-  entries: { value: string; createdAt: string }[];
   updatedAt: string;
 };
 
@@ -48,11 +41,6 @@ const openLandUseDb = (): Promise<IDBDatabase> =>
       }
       if (!db.objectStoreNames.contains(REACT_QUERY_STORE)) {
         db.createObjectStore(REACT_QUERY_STORE, { keyPath: "key" });
-      }
-      if (!db.objectStoreNames.contains(MONITORING_TOTEUTUNUT_STORE)) {
-        db.createObjectStore(MONITORING_TOTEUTUNUT_STORE, {
-          keyPath: ["agreementId", "siteId"],
-        });
       }
     };
 
@@ -220,111 +208,46 @@ export const removePersistedClient = async (): Promise<void> => {
   });
 };
 
-export const getMonitoringToteutunutEntriesBySiteId = async (
+export const getLegacyMonitoringToteutunutEntriesBySiteId = async (
   agreementId: string,
 ): Promise<Record<string, { value: string; createdAt: string }[]>> => {
-  const { db, store, tx } = await getStore(
-    MONITORING_TOTEUTUNUT_STORE,
-    "readonly",
-  );
+  type LegacyMonitoringRecord = {
+    agreementId: string;
+    siteId: string;
+    entries: { value: string; createdAt: string }[];
+  };
+
+  const db = await openLandUseDb();
+
+  if (!db.objectStoreNames.contains(LEGACY_MONITORING_TOTEUTUNUT_STORE)) {
+    db.close();
+    return {};
+  }
+
+  const tx = db.transaction(LEGACY_MONITORING_TOTEUTUNUT_STORE, "readonly");
+  const store = tx.objectStore(LEGACY_MONITORING_TOTEUTUNUT_STORE);
 
   return new Promise((resolve, reject) => {
     const request = store.getAll();
 
     request.onsuccess = () => {
-      const records =
-        (request.result as MonitoringToteutunutEntryRecord[] | undefined) ?? [];
-      const filtered = records.filter(
-        (record) => record.agreementId === agreementId,
-      );
+      const records = (request.result as LegacyMonitoringRecord[]) ?? [];
 
-      const entriesBySiteId = filtered.reduce<
+      const entriesBySiteId = records.reduce<
         Record<string, { value: string; createdAt: string }[]>
       >((result, record) => {
-        result[record.siteId] = record.entries ?? [];
+        if (record.agreementId === agreementId) {
+          result[record.siteId] = record.entries ?? [];
+        }
+
         return result;
       }, {});
 
       resolve(entriesBySiteId);
     };
+
     request.onerror = () => reject(request.error);
     tx.oncomplete = () => db.close();
-    tx.onerror = () => reject(tx.error);
-    tx.onabort = () => reject(tx.error);
-  });
-};
-
-export const setMonitoringToteutunutEntries = async (
-  agreementId: string,
-  siteId: string,
-  entries: { value: string; createdAt: string }[],
-): Promise<void> => {
-  const { db, store, tx } = await getStore(
-    MONITORING_TOTEUTUNUT_STORE,
-    "readwrite",
-  );
-
-  return new Promise((resolve, reject) => {
-    const record: MonitoringToteutunutEntryRecord = {
-      agreementId,
-      siteId,
-      entries,
-      updatedAt: new Date().toISOString(),
-    };
-
-    const request = store.put(record);
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-    tx.oncomplete = () => db.close();
-    tx.onerror = () => reject(tx.error);
-    tx.onabort = () => reject(tx.error);
-  });
-};
-
-export const setMonitoringToteutunutEntriesBySiteId = async (
-  agreementId: string,
-  entriesBySiteId: Record<string, { value: string; createdAt: string }[]>,
-): Promise<void> => {
-  const { db, store, tx } = await getStore(
-    MONITORING_TOTEUTUNUT_STORE,
-    "readwrite",
-  );
-
-  return new Promise((resolve, reject) => {
-    const existingKeysRequest = store.getAllKeys();
-
-    existingKeysRequest.onsuccess = () => {
-      const existingKeys = (existingKeysRequest.result as IDBValidKey[]) ?? [];
-      const nextSiteIds = new Set(Object.keys(entriesBySiteId));
-
-      existingKeys.forEach((key) => {
-        if (
-          Array.isArray(key) &&
-          key[0] === agreementId &&
-          typeof key[1] === "string" &&
-          !nextSiteIds.has(key[1])
-        ) {
-          store.delete(key);
-        }
-      });
-
-      Object.entries(entriesBySiteId).forEach(([siteId, entries]) => {
-        const record: MonitoringToteutunutEntryRecord = {
-          agreementId,
-          siteId,
-          entries,
-          updatedAt: new Date().toISOString(),
-        };
-
-        store.put(record);
-      });
-    };
-
-    existingKeysRequest.onerror = () => reject(existingKeysRequest.error);
-    tx.oncomplete = () => {
-      resolve();
-      db.close();
-    };
     tx.onerror = () => reject(tx.error);
     tx.onabort = () => reject(tx.error);
   });
