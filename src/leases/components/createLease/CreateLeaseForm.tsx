@@ -29,7 +29,10 @@ import {
   getDistrictsByMunicipality,
   getIsFetching as getIsFetchingDistricts,
 } from "@/district/selectors";
-import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
+import {
+  getAttributes as getLeaseAttributes,
+  getIsCreateClicked,
+} from "@/leases/selectors";
 import { referenceNumber } from "@/components/form/validations";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import { AreaSearch } from "@/areaSearch/types";
@@ -80,6 +83,7 @@ const FormContent: React.FC<{
     getDistrictsByMunicipality(state, parseInt(values.municipality)),
   );
   const districtOptions = getDistrictOptions(districts);
+  const isCreateClicked = useSelector(getIsCreateClicked);
 
   useEffect(() => {
     if (prevMunicipalityRef.current === null) {
@@ -321,7 +325,7 @@ const FormContent: React.FC<{
         />
         <Button
           className={ButtonColors.SUCCESS}
-          disabled={!valid || isFetchingDistricts}
+          disabled={!valid || isFetchingDistricts || isCreateClicked}
           onClick={handleSubmit}
           text={confirmButtonLabel || "Luo tunnus"}
         />
@@ -367,9 +371,9 @@ const CreateLeaseForm: React.FC<Props> = ({
   return (
     <Form
       initialValues={initialValues}
-      onSubmit={(values: CreateLeaseFormValues) =>
-        onSubmit(getPayloadCreateLease(values))
-      }
+      onSubmit={(values: CreateLeaseFormValues) => {
+        onSubmit(getPayloadCreateLease(values));
+      }}
     >
       {({ form, values, valid, handleSubmit }) => (
         <FormContent

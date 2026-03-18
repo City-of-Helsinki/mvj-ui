@@ -44,6 +44,9 @@ export const getIsFormDirtyFlags: Selector<LeaseFormFlags, void> = (
 export const getIsSaveClicked: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.lease.isSaveClicked;
+export const getIsCreateClicked: Selector<boolean, void> = (
+  state: RootState,
+): boolean => state.lease.isCreateClicked;
 export const getAttributes: Selector<Attributes, void> = (
   state: RootState,
 ): Attributes => state.lease.attributes;

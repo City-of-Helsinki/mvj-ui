@@ -17,6 +17,7 @@ import type {
   ReceiveFormValidFlagsAction,
   ReceiveFormDirtyFlagsAction,
   ReceiveIsSaveClickedAction,
+  ReceiveIsCreateClickedAction,
   ReceiveCollapseStatesAction,
   ReceiveLeasesForContractNumbersAction,
   LeaseFormFlags,
@@ -251,6 +252,17 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions(
   },
   false,
 );
+const isCreateClickedReducer: Reducer<boolean> = handleActions(
+  {
+    ["mvj/leases/RECEIVE_CREATE_CLICKED"]: (
+      state: boolean,
+      { payload: isClicked }: ReceiveIsCreateClickedAction,
+    ) => {
+      return isClicked;
+    },
+  },
+  false,
+);
 const collapseStatesReducer: Reducer<Record<string, any>> = handleActions(
   {
     ["mvj/leases/RECEIVE_COLLAPSE_STATES"]: (
@@ -290,6 +302,7 @@ export default combineReducers<Record<string, any>, any>({
   isAttachDecisionModalOpen: isAttachDecisionModalOpenReducer,
   isCreateModalOpen: isCreateModalOpenReducer,
   isFormDirtyById: isFormDirtyByIdReducer,
+  isCreateClicked: isCreateClickedReducer,
   isFormValidById: isFormValidByIdReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,

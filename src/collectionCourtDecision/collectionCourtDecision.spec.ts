@@ -11,6 +11,7 @@ import {
   deleteCollectionCourtDecision,
   hideCollectionCourtDecisionPanel,
   showCollectionCourtDecisionPanel,
+  receiveIsSaveClicked,
 } from "./actions";
 import collectionCourtDecisionReducer from "./reducer";
 import type { CollectionCourtDecisionState } from "./types";
@@ -20,6 +21,7 @@ const defaultState: CollectionCourtDecisionState = {
   isFetchingAttributes: false,
   isFetchingByLease: {},
   isPanelOpen: false,
+  isSaveClicked: false,
   methods: null,
 };
 
@@ -155,6 +157,14 @@ describe("collectionCourtDecision", () => {
         const state = collectionCourtDecisionReducer(
           {},
           showCollectionCourtDecisionPanel(),
+        );
+        expect(state).to.deep.equal(newState);
+      });
+      it("should update isSaveClicked", () => {
+        const newState = { ...defaultState, isSaveClicked: true };
+        const state = collectionCourtDecisionReducer(
+          {},
+          receiveIsSaveClicked(true),
         );
         expect(state).to.deep.equal(newState);
       });

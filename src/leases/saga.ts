@@ -21,6 +21,7 @@ import {
   notFoundById,
   receiveAttributes,
   receiveMethods,
+  receiveIsCreateClicked as receiveIsCreateLeaseClicked,
   receiveIsSaveClicked,
   receiveLeases,
   receiveLeasesByBBox,
@@ -31,6 +32,7 @@ import {
 import { receiveError } from "@/api/actions";
 import {
   fetchInvoicesByLease,
+  receiveIsCreateClicked,
   receiveIsCreateInvoicePanelOpen,
 } from "@/invoices/actions";
 import { fetchInvoiceSetsByLease } from "@/invoiceSets/actions";
@@ -278,6 +280,8 @@ function* createLeaseSaga({ payload }): Generator<any, any, any> {
     console.error('Failed to create lease with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
+  } finally {
+    yield put(receiveIsCreateLeaseClicked(false));
   }
 }
 
@@ -691,6 +695,8 @@ function* createChargeSaga({ payload }): Generator<any, any, any> {
   } catch (error) {
     console.error('Failed to create charge with error "%s"', error);
     yield put(receiveError(error));
+  } finally {
+    yield put(receiveIsCreateClicked(false));
   }
 }
 

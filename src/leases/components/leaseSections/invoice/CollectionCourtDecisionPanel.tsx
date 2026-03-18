@@ -15,7 +15,10 @@ import {
 } from "@/collectionCourtDecision/enums";
 import { ButtonColors } from "@/components/enums";
 import { getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
-import { getAttributes as getCollectionCourtDecisionAttributes } from "@/collectionCourtDecision/selectors";
+import {
+  getAttributes as getCollectionCourtDecisionAttributes,
+  getIsSaveClicked,
+} from "@/collectionCourtDecision/selectors";
 import type { Attributes } from "types";
 type Props = {
   isOpen: boolean;
@@ -35,6 +38,7 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
   const collectionCourtDecisionAttributes: Attributes = useSelector(
     getCollectionCourtDecisionAttributes,
   );
+  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
 
   const { input: decisionDate } = useField("decision_date");
   const { input: note } = useField("note");
@@ -150,7 +154,7 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
         />
         <Button
           className={ButtonColors.SUCCESS}
-          disabled={!file || !valid}
+          disabled={!file || !valid || isSaveClicked}
           onClick={handleSave}
           text="Tallenna"
         />

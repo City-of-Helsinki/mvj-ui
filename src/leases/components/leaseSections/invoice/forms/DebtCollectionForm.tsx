@@ -24,6 +24,7 @@ import SubTitle from "@/components/content/SubTitle";
 import {
   deleteCollectionCourtDecision,
   hideCollectionCourtDecisionPanel,
+  receiveIsSaveClicked,
   showCollectionCourtDecisionPanel,
   uploadCollectionCourtDecision,
 } from "@/collectionCourtDecision/actions";
@@ -250,6 +251,7 @@ const DebtCollectionForm: React.FC = () => {
         file: file,
       }),
     );
+    dispatch(receiveIsSaveClicked(true));
   };
 
   const handleCollectionLetterFileChange = (e) => {
