@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
@@ -187,6 +194,8 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
     };
   }, [currentLease]);
 
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
     const addContractItemsToArea = (area: Record<string, any>) => {
       const savedArea = getLeaseAreaById(currentLease, area.id);
@@ -201,6 +210,11 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
 
       return { ...area, plan_units_contract: [], plots_contract: [] };
     };
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
     if (formApi.getFieldState(ATTR_LEASE_AREAS_ACTIVE)?.value) {
       formApi.change(
