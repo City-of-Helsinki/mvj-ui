@@ -10,7 +10,7 @@ const REACT_QUERY_STORE = "reactQueryCache";
 const MONITORING_TOTEUTUNUT_STORE = "monitoringToteutunut";
 const REACT_QUERY_KEY = "landUseQueryClient";
 
-export type AgreementTabRecord<T> = {
+type AgreementTabRecord<T> = {
   agreementId: string;
   tabKey: LandUseTabKey;
   data: T;
@@ -155,21 +155,6 @@ export const getAgreementIds = async (): Promise<string[]> => {
   });
 };
 
-export const getAgreementList = async (): Promise<LandUseListItem[]> => {
-  const { db, store, tx } = await getStore(AGREEMENT_LIST_STORE, "readonly");
-
-  return new Promise((resolve, reject) => {
-    const request = store.getAll();
-    request.onsuccess = () => {
-      resolve((request.result as LandUseListItem[]) ?? []);
-    };
-    request.onerror = () => reject(request.error);
-    tx.oncomplete = () => db.close();
-    tx.onerror = () => reject(tx.error);
-    tx.onabort = () => reject(tx.error);
-  });
-};
-
 export const setAgreementListItem = async (
   item: LandUseListItem,
 ): Promise<void> => {
@@ -178,21 +163,6 @@ export const setAgreementListItem = async (
   return new Promise((resolve, reject) => {
     const request = store.put(item);
     request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-    tx.oncomplete = () => db.close();
-    tx.onerror = () => reject(tx.error);
-    tx.onabort = () => reject(tx.error);
-  });
-};
-
-export const hasAgreementListItem = async (
-  identifier: string,
-): Promise<boolean> => {
-  const { db, store, tx } = await getStore(AGREEMENT_LIST_STORE, "readonly");
-
-  return new Promise((resolve, reject) => {
-    const request = store.getKey(identifier);
-    request.onsuccess = () => resolve(Boolean(request.result));
     request.onerror = () => reject(request.error);
     tx.oncomplete = () => db.close();
     tx.onerror = () => reject(tx.error);

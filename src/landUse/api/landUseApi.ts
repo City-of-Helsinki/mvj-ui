@@ -424,11 +424,6 @@ export const getMonitoring = async (
   };
 };
 
-export const getMonitoringToteutunutEntries = async (
-  agreementId: string,
-): Promise<Record<string, MonitoringToteutunutEntry[]>> =>
-  getMonitoringToteutunutEntriesBySiteId(agreementId);
-
 export const addMonitoringToteutunutEntry = async (
   agreementId: string,
   siteId: string,
