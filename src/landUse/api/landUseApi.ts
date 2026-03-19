@@ -183,26 +183,6 @@ export const getMonitoring = async (
 ): Promise<LandUseMonitoringFormValues | null> =>
   getAgreementTab<LandUseMonitoringFormValues>(agreementId, "monitoring");
 
-export const addMonitoringToteumaEntry = async (
-  agreementId: string,
-  siteId: string,
-  entry: MonitoringToteumaEntry,
-): Promise<MonitoringToteumaEntry[]> => {
-  const currentValues = await getMonitoring(agreementId);
-  const entriesBySiteId = currentValues?.toteumaEntriesBySiteId ?? {};
-  const nextEntries = [...(entriesBySiteId[siteId] ?? []), entry];
-
-  await setAgreementTab(agreementId, "monitoring", {
-    ...(currentValues ?? {}),
-    toteumaEntriesBySiteId: {
-      ...entriesBySiteId,
-      [siteId]: nextEntries,
-    },
-  } satisfies LandUseMonitoringFormValues);
-
-  return nextEntries;
-};
-
 export const updateMonitoring = async (
   agreementId: string,
   values: LandUseMonitoringFormValues,
