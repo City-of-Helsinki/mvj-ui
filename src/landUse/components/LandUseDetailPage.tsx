@@ -78,7 +78,7 @@ interface FormState {
   valid: boolean;
 }
 
-type FormKey =
+export type FormKey =
   | "summary"
   | "sites"
   | "parties"
@@ -576,15 +576,12 @@ const LandUseDetailPage: React.FC = () => {
     setIsEditMode(true);
   };
 
-  /**
-   * Mark the monitoring tab dirty whenever a new toteuma is added
-   */
-  const handleMonitoringToteumaAdded = useCallback(() => {
+  const handleSetTabDirty = useCallback((formKey: FormKey) => {
     setFormStates((prev) => ({
       ...prev,
-      monitoring: {
+      [formKey]: {
         dirty: true,
-        valid: prev.monitoring?.valid ?? true,
+        valid: prev[formKey]?.valid ?? true,
       },
     }));
   }, []);
@@ -956,7 +953,7 @@ const LandUseDetailPage: React.FC = () => {
             compensationsRowsBySiteId={
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
             }
-            onToteumaAdded={handleMonitoringToteumaAdded}
+            onSetTabDirty={handleSetTabDirty}
           />
         </TabPanel>
 

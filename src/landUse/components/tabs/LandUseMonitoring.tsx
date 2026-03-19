@@ -17,6 +17,7 @@ import {
 import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
+import type { FormKey } from "../LandUseDetailPage";
 import { normalizeSelectValue } from "../../fieldUtils";
 import { landUseCompensationSelectOptions } from "../../options";
 import type { LandUseSiteTreeNode } from "./LandUseSites";
@@ -51,7 +52,7 @@ interface LandUseMonitoringProps {
   isEditMode: boolean;
   sites: LandUseSiteTreeNode[];
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
-  onToteumaAdded?: () => void;
+  onSetTabDirty?: (formKey: FormKey) => void;
 }
 
 const handleSelectChange = (
@@ -90,7 +91,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
   isEditMode,
   sites,
   compensationsRowsBySiteId,
-  onToteumaAdded,
+  onSetTabDirty,
 }) => {
   const [selectedSiteId, setSelectedSiteId] = React.useState<string | null>(
     null,
@@ -386,7 +387,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                         ...toteumaEntriesBySiteId,
                         [selectedSiteId]: nextEntries,
                       });
-                      onToteumaAdded?.();
+                      onSetTabDirty("monitoring");
 
                       setNewToteutunutKm2("");
                     }}
