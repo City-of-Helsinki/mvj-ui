@@ -49,11 +49,13 @@ import {
   type LandUseInvoicingFormValues,
 } from "./tabs/LandUseInvoicing";
 import { LandUseMap, type LandUseMapFormValues } from "./tabs/LandUseMap";
+import LandUseNotFoundPage from "../../landUse/components/LandUseNotFoundPage";
 import {
   getCompensations,
   getCollaterals,
   getDecisions,
   getInvoicing,
+  getLandUseList,
   getMap,
   getMonitoring,
   getParties,
@@ -71,31 +73,29 @@ import {
 } from "../api/landUseApi";
 import { LAND_USE_NEGOTIATION_PHASES } from "../options";
 
-// Form state type for tracking dirty and valid states
 interface FormState {
   dirty: boolean;
   valid: boolean;
 }
 
-// Tab configuration with form mapping
+type FormKey =
+  | "summary"
+  | "sites"
+  | "parties"
+  | "compensations"
+  | "collaterals"
+  | "monitoring"
+  | "decisions"
+  | "invoicing"
+  | "map"
+  | "history";
+
 interface TabConfig {
   label: string;
-  queryKey: string;
+  queryKey: FormKey;
   hasForm: boolean;
-  formKey?: keyof typeof TAB_FORM_KEYS;
+  formKey?: FormKey;
 }
-
-const TAB_FORM_KEYS = {
-  summary: 0,
-  sites: 1,
-  parties: 2,
-  compensations: 3,
-  collaterals: 4,
-  decisions: 5,
-  monitoring: 6,
-  invoicing: 7,
-  map: 8,
-} as const;
 
 const TABS_CONFIG: TabConfig[] = [
   {
@@ -224,66 +224,85 @@ const LandUseDetailPage: React.FC = () => {
     });
   };
 
+  const landUseListQuery = useQuery({
+    queryKey: ["land-use", "list"],
+    queryFn: getLandUseList,
+    enabled: Boolean(agreementId),
+    refetchOnWindowFocus: false,
+  });
+
+  const agreementExists =
+    Boolean(agreementId) &&
+    (landUseListQuery.data ?? []).some(
+      (item) => item.identifier === agreementId,
+    );
+
+  const isAgreementMissing =
+    Boolean(agreementId) && landUseListQuery.isSuccess && !agreementExists;
+
+  const canLoadAgreementData =
+    Boolean(agreementId) && (agreementExists || landUseListQuery.isError);
+
   const summaryQuery = useQuery({
     queryKey: ["land-use", agreementId, "summary"],
     queryFn: () => getSummary(agreementId),
-    enabled: Boolean(agreementId),
+    enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
 
   const partiesQuery = useQuery({
     queryKey: ["land-use", agreementId, "parties"],
     queryFn: () => getParties(agreementId),
-    enabled: Boolean(agreementId),
+    enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
 
   const sitesQuery = useQuery({
     queryKey: ["land-use", agreementId, "sites"],
     queryFn: () => getSites(agreementId),
-    enabled: Boolean(agreementId),
+    enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
 
   const compensationsQuery = useQuery({
     queryKey: ["land-use", agreementId, "compensations"],
     queryFn: () => getCompensations(agreementId),
-    enabled: Boolean(agreementId),
+    enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
 
   const collateralsQuery = useQuery({
     queryKey: ["land-use", agreementId, "collaterals"],
     queryFn: () => getCollaterals(agreementId),
-    enabled: Boolean(agreementId),
+    enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
 
   const monitoringQuery = useQuery({
     queryKey: ["land-use", agreementId, "monitoring"],
     queryFn: () => getMonitoring(agreementId),
-    enabled: Boolean(agreementId),
+    enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
 
   const decisionsQuery = useQuery({
     queryKey: ["land-use", agreementId, "decisions"],
     queryFn: () => getDecisions(agreementId),
-    enabled: Boolean(agreementId),
+    enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
 
   const invoicingQuery = useQuery({
     queryKey: ["land-use", agreementId, "invoicing"],
     queryFn: () => getInvoicing(agreementId),
-    enabled: Boolean(agreementId),
+    enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
 
   const mapQuery = useQuery({
     queryKey: ["land-use", agreementId, "map"],
     queryFn: () => getMap(agreementId),
-    enabled: Boolean(agreementId),
+    enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
 
@@ -792,6 +811,15 @@ const LandUseDetailPage: React.FC = () => {
   const handleTabClick = useCallback((tabIndex: number) => {
     setActiveTab(tabIndex);
   }, []);
+
+  if (isAgreementMissing) {
+    return (
+      <LandUseNotFoundPage
+        agreementId={agreementId}
+        onBackToList={() => navigate("/")}
+      />
+    );
+  }
 
   // Render tab label with status icons
   const renderTabLabel = (tabConfig: TabConfig, tabIndex: number) => {
