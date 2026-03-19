@@ -5,10 +5,10 @@ import {
   Fieldset,
   IconCopy,
   IconPlusCircleFill,
+  NumberInput,
   Notification,
   Table,
   TextArea,
-  TextInput,
 } from "hds-react";
 import { Form } from "react-final-form";
 import { Field } from "react-final-form";
@@ -116,8 +116,8 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           { key: "suojeltu", headerName: "Suojeltu" },
           { key: "pintaAlaM2", headerName: "Pinta-ala m²" },
           { key: "km2", headerName: "k-m²" },
-          { key: "yksikkohinta", headerName: "Yksikköhinta" },
-          { key: "summa", headerName: "Summa" },
+          { key: "yksikkohinta", headerName: "Yksikköhinta €" },
+          { key: "summa", headerName: "Summa €" },
         ];
 
         const totals = leafSites.reduce(
@@ -162,22 +162,13 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             yksikkohinta: (
               <Field name={getRowFieldPath(site.id, "yksikkohinta")}>
                 {({ input }) => (
-                  <TextInput
+                  <NumberInput
                     id={`landuse-compensations-yksikkohinta-${site.id}`}
                     label=""
                     hideLabel
-                    value={
-                      isCompensationsTableReadOnly
-                        ? formatCurrencyFieldValue(input.value)
-                        : (input.value ?? "")
-                    }
+                    value={input.value}
+                    unit="€"
                     onChange={input.onChange}
-                    onBlur={(event) => {
-                      input.onBlur(event);
-                      input.onChange(
-                        formatEditableMoneyFieldValue(input.value),
-                      );
-                    }}
                     disabled={isCompensationsTableReadOnly}
                   />
                 )}
@@ -214,21 +205,12 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 <div className="landuse-detail__grid landuse-detail__compensation-grid">
                   <Field name="rahakorvaus">
                     {({ input }) => (
-                      <TextInput
+                      <NumberInput
                         id="landuse-compensations-rahakorvaus"
                         label="Rahakorvaus"
-                        value={
-                          isEditMode
-                            ? (input.value ?? "")
-                            : formatCurrencyFieldValue(input.value)
-                        }
+                        value={input.value}
+                        unit="€"
                         onChange={input.onChange}
-                        onBlur={(event) => {
-                          input.onBlur(event);
-                          input.onChange(
-                            formatEditableMoneyFieldValue(input.value),
-                          );
-                        }}
                         disabled={!isEditMode}
                       />
                     )}
@@ -236,21 +218,12 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
 
                   <Field name="maakorvaus">
                     {({ input }) => (
-                      <TextInput
+                      <NumberInput
                         id="landuse-compensations-maakorvaus"
                         label="Maakorvaus"
-                        value={
-                          isEditMode
-                            ? (input.value ?? "")
-                            : formatCurrencyFieldValue(input.value)
-                        }
+                        value={input.value}
+                        unit="€"
                         onChange={input.onChange}
-                        onBlur={(event) => {
-                          input.onBlur(event);
-                          input.onChange(
-                            formatEditableMoneyFieldValue(input.value),
-                          );
-                        }}
                         disabled={!isEditMode}
                       />
                     )}
@@ -258,31 +231,22 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
 
                   <Field name="muuKorvaus">
                     {({ input }) => (
-                      <TextInput
+                      <NumberInput
                         id="landuse-compensations-muu-korvaus"
                         label="Muu"
-                        value={
-                          isEditMode
-                            ? (input.value ?? "")
-                            : formatCurrencyFieldValue(input.value)
-                        }
+                        value={input.value}
+                        unit="€"
                         onChange={input.onChange}
-                        onBlur={(event) => {
-                          input.onBlur(event);
-                          input.onChange(
-                            formatEditableMoneyFieldValue(input.value),
-                          );
-                        }}
                         disabled={!isEditMode}
                       />
                     )}
                   </Field>
 
-                  <TextInput
+                  <NumberInput
                     id="landuse-compensations-yhteensa"
                     label="Yhteensä"
-                    value={formatLandUseEuroValue(yhteensa)}
-                    readOnly
+                    value={yhteensa}
+                    unit="€"
                     disabled
                   />
                 </div>
@@ -294,7 +258,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         id="landuse-compensations-maakorvaus-selite"
                         label="Maakorvaus selite"
                         value={input.value ?? ""}
-                        onChange={input.onChange}
                         disabled={!isEditMode}
                       />
                     )}
@@ -306,7 +269,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         id="landuse-compensations-muu-selite"
                         label="Muu selite"
                         value={input.value ?? ""}
-                        onChange={input.onChange}
                         disabled={!isEditMode}
                       />
                     )}
@@ -334,21 +296,12 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 <div className="landuse-detail__grid landuse-detail__compensation-grid">
                   <Field name="perushinta">
                     {({ input }) => (
-                      <TextInput
+                      <NumberInput
                         id="landuse-compensations-perushinta"
                         label="Perushinta"
-                        value={
-                          isEditMode
-                            ? (input.value ?? "")
-                            : formatCurrencyFieldValue(input.value)
-                        }
+                        value={input.value}
+                        unit="€"
                         onChange={input.onChange}
-                        onBlur={(event) => {
-                          input.onBlur(event);
-                          input.onChange(
-                            formatEditableMoneyFieldValue(input.value),
-                          );
-                        }}
                         disabled={!isEditMode}
                       />
                     )}
@@ -399,10 +352,11 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 <div className="landuse-detail__grid landuse-detail__compensation-grid">
                   <Field name="yleisetAlueetNeliot">
                     {({ input }) => (
-                      <TextInput
+                      <NumberInput
                         id="landuse-compensations-yleiset-alueet-neliot"
                         label="Neliöt"
-                        value={input.value ?? ""}
+                        value={input.value}
+                        unit="m²"
                         onChange={input.onChange}
                         disabled={!isEditMode}
                       />
@@ -411,21 +365,12 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
 
                   <Field name="yleisetAlueetHankinnanArvo">
                     {({ input }) => (
-                      <TextInput
+                      <NumberInput
                         id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
                         label="Hankinnan arvo eur"
-                        value={
-                          isEditMode
-                            ? (input.value ?? "")
-                            : formatCurrencyFieldValue(input.value)
-                        }
+                        value={input.value}
+                        unit="€"
                         onChange={input.onChange}
-                        onBlur={(event) => {
-                          input.onBlur(event);
-                          input.onChange(
-                            formatEditableMoneyFieldValue(input.value),
-                          );
-                        }}
                         disabled={!isEditMode}
                       />
                     )}
