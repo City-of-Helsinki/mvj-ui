@@ -227,6 +227,9 @@ const LandUseDetailPage: React.FC = () => {
   const landUseListQuery = useQuery({
     queryKey: ["land-use", "list"],
     queryFn: getLandUseList,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: "always",
     enabled: Boolean(agreementId),
     refetchOnWindowFocus: false,
   });

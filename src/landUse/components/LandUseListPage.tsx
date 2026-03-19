@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Button,
@@ -24,20 +24,45 @@ import {
   getAgreementIdentifiers,
   getLandUseList,
 } from "../api/landUseApi";
-import type { LandUseListItem } from "../api/landUseListTypes";
 import { DISTRICT_OPTIONS, MUNICIPALITY_OPTIONS } from "../utils/landUseLookup";
 import {
   LAND_USE_NEGOTIATION_PHASES,
   type LandUseNegotiationPhase,
 } from "../options";
 
+type LandUseFilters = {
+  search: string;
+  phases: LandUseNegotiationPhase[];
+};
+
+const NEGOTIATION_PHASE_VALUES = new Set<LandUseNegotiationPhase>(
+  Object.values(LAND_USE_NEGOTIATION_PHASES),
+);
+
+const getFiltersFromUrl = (searchString: string): LandUseFilters => {
+  const params = parseUrlParams(searchString);
+  const phaseParams = params.negotiation_phases;
+  const search = params.search;
+  const phaseArray = phaseParams
+    ? Array.isArray(phaseParams)
+      ? phaseParams
+      : [phaseParams]
+    : [];
+  const phases = phaseArray.filter((phase): phase is LandUseNegotiationPhase =>
+    NEGOTIATION_PHASE_VALUES.has(phase as LandUseNegotiationPhase),
+  );
+
+  return {
+    search: Array.isArray(search) ? search[0] : search || "",
+    phases,
+  };
+};
+
 const LandUseListPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [landUseData, setLandUseData] = useState<LandUseListItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedMunicipality, setSelectedMunicipality] = useState<
     string | undefined
@@ -61,6 +86,9 @@ const LandUseListPage: React.FC = () => {
   const landUseListQuery = useQuery({
     queryKey: ["land-use", "list"],
     queryFn: getLandUseList,
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: "always",
     refetchOnWindowFocus: false,
   });
 
@@ -80,136 +108,102 @@ const LandUseListPage: React.FC = () => {
     },
   });
 
-  // Parse filters from URL
-  const getFiltersFromUrl = useCallback(() => {
+  const updateUrlWithFilters = (filters: LandUseFilters) => {
     const params = parseUrlParams(location.search);
-    const phases = params.negotiation_phases;
-    const search = params.search;
 
-    return {
-      search: Array.isArray(search) ? search[0] : search || "",
-      negotiationPhases: phases
-        ? Array.isArray(phases)
-          ? phases
-          : [phases]
-        : [],
-    };
-  }, [location.search]);
+    if (filters.search) {
+      params.search = filters.search;
+    } else {
+      delete params.search;
+    }
 
-  // Update URL with new filters
-  const updateUrlWithFilters = useCallback(
-    (filters: { search?: string; negotiationPhases: string[] }) => {
-      const params = parseUrlParams(location.search);
+    if (filters.phases.length > 0) {
+      params.negotiation_phases = filters.phases;
+    } else {
+      delete params.negotiation_phases;
+    }
 
-      if (filters.search) {
-        params.search = filters.search;
-      } else {
-        delete params.search;
-      }
-
-      if (filters.negotiationPhases.length > 0) {
-        params.negotiation_phases = filters.negotiationPhases;
-      } else {
-        delete params.negotiation_phases;
-      }
-
-      navigate({
-        search: buildQueryString(params),
-      });
-    },
-    [location.search, navigate],
-  );
-
-  // Fetch land use data based on filters
-  const fetchLandUseData = useCallback(
-    async (filters: { search: string; negotiationPhases: string[] }) => {
-      setIsLoading(true);
-
-      try {
-        let filteredData = [...(landUseListQuery.data ?? [])];
-
-        // Apply search filter
-        if (filters.search) {
-          filteredData = filteredData.filter((item: LandUseListItem) =>
-            Object.values(item).some(
-              (value) =>
-                typeof value === "string" &&
-                value.toLowerCase().includes(filters.search.toLowerCase()),
-            ),
-          );
-        }
-
-        // Apply negotiation phase filter
-        if (filters.negotiationPhases.length > 0) {
-          filteredData = filteredData.filter((item: LandUseListItem) =>
-            filters.negotiationPhases.includes(
-              item.negotiationPhase as LandUseNegotiationPhase,
-            ),
-          );
-        }
-
-        setLandUseData(filteredData);
-      } catch (error) {
-        console.error("Error fetching land use data:", error);
-        setLandUseData([]);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [landUseListQuery.data],
-  );
-
-  // Fetch data when URL changes
-  useEffect(() => {
-    const filters = getFiltersFromUrl();
-    fetchLandUseData(filters);
-  }, [location.search, getFiltersFromUrl, fetchLandUseData]);
+    navigate({
+      search: buildQueryString(params),
+    });
+  };
 
   // Handle phase filter changes
-  const handlePhaseFilterChange = useCallback(
-    (phase: LandUseNegotiationPhase, checked: boolean) => {
-      const currentFilters = getFiltersFromUrl();
-      let newPhases = [...currentFilters.negotiationPhases];
-
-      if (checked) {
-        if (!newPhases.includes(phase)) {
-          newPhases.push(phase);
-        }
-      } else {
-        newPhases = newPhases.filter((p) => p !== phase);
-      }
-
-      updateUrlWithFilters({
-        search: currentFilters.search,
-        negotiationPhases: newPhases,
-      });
-    },
-    [getFiltersFromUrl, updateUrlWithFilters],
+  const currentFilters = useMemo(
+    () => getFiltersFromUrl(location.search),
+    [location.search],
   );
+
+  const handlePhaseFilterChange = (
+    phase: LandUseNegotiationPhase,
+    checked: boolean,
+  ) => {
+    let newPhases = [...currentFilters.phases];
+
+    if (checked) {
+      if (!newPhases.includes(phase)) {
+        newPhases.push(phase);
+      }
+    } else {
+      newPhases = newPhases.filter((p) => p !== phase);
+    }
+
+    updateUrlWithFilters({
+      search: currentFilters.search,
+      phases: newPhases,
+    });
+  };
 
   // Handle search input changes
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      const currentFilters = getFiltersFromUrl();
-      updateUrlWithFilters({
-        search: value,
-        negotiationPhases: currentFilters.negotiationPhases,
-      });
-    },
-    [getFiltersFromUrl, updateUrlWithFilters],
-  );
+  const handleSearchChange = (value: string) => {
+    updateUrlWithFilters({
+      search: value,
+      phases: currentFilters.phases,
+    });
+  };
 
-  const clearSearch = useCallback(() => {
-    const currentFilters = getFiltersFromUrl();
+  const clearSearch = () => {
     updateUrlWithFilters({
       search: "",
-      negotiationPhases: currentFilters.negotiationPhases,
+      phases: currentFilters.phases,
     });
-  }, [getFiltersFromUrl, updateUrlWithFilters]);
+  };
 
-  const currentFilters = getFiltersFromUrl();
   const searchQuery = currentFilters.search;
-  const selectedPhases = currentFilters.negotiationPhases;
+  const selectedPhases = currentFilters.phases;
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const normalizedSelectedPhases = selectedPhases.map((phase) =>
+    phase.trim().toLowerCase(),
+  );
+  const landUseData = useMemo(() => {
+    let filteredData = [...(landUseListQuery.data ?? [])];
+
+    if (normalizedSearch) {
+      filteredData = filteredData.filter((item) =>
+        Object.values(item).some(
+          (value) =>
+            typeof value === "string" &&
+            value.toLowerCase().includes(normalizedSearch),
+        ),
+      );
+    }
+
+    if (selectedPhases.length > 0) {
+      filteredData = filteredData.filter((agreement) => {
+        const agreementPhase = agreement.negotiationPhase.trim().toLowerCase();
+        return normalizedSelectedPhases.includes(agreementPhase);
+      });
+    }
+
+    return filteredData;
+  }, [
+    landUseListQuery.data,
+    normalizedSearch,
+    selectedPhases,
+    normalizedSelectedPhases,
+  ]);
+  const isLoading = landUseListQuery.isLoading || landUseListQuery.isFetching;
+
   const existingIdentifiers = agreementIdentifiersQuery.data ?? [];
   const sequenceNumber =
     selectedMunicipality && selectedDistrict
@@ -242,11 +236,7 @@ const LandUseListPage: React.FC = () => {
     selectedOptions: { label: string; value: string }[],
     callback: (value: string | undefined) => void,
   ) => {
-    if (selectedOptions.length > 0) {
-      callback(selectedOptions[0].value);
-    } else {
-      callback(undefined);
-    }
+    callback(selectedOptions[0]?.value);
   };
 
   return (

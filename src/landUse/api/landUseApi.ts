@@ -61,7 +61,8 @@ export const getLandUseList = async (): Promise<LandUseListItem[]> => {
 
   const listItems = await Promise.all(
     agreementIds.map(async (agreementId) => {
-      const [parties, sites] = await Promise.all([
+      const [summary, parties, sites] = await Promise.all([
+        getSummary(agreementId),
         getParties(agreementId),
         getSites(agreementId),
       ]);
@@ -78,10 +79,10 @@ export const getLandUseList = async (): Promise<LandUseListItem[]> => {
         id: agreementId,
         identifier: agreementId,
         party: partyName,
-        zoningPlanNumber: "",
+        zoningPlanNumber: summary?.asemakaavanNumero ?? "",
         site: kohdeValues,
-        projectArea: "",
-        negotiationPhase: "",
+        projectArea: summary?.edistamisalue ?? "",
+        negotiationPhase: summary?.tila ?? "",
       } satisfies LandUseListItem;
     }),
   );
