@@ -16,10 +16,8 @@ import { FormApi } from "final-form";
 import type { LandUseSiteTreeNode } from "./LandUseSites";
 import { collectLeafNodes } from "../../utils/siteTree";
 import {
-  formatLandUseEuroDisplayValue,
   formatLandUseEuroValue,
   formatLandUseIntegerValue,
-  formatLandUseNumericValue,
   parseLandUseNumericValueOrZero,
 } from "../../utils/number";
 
@@ -48,38 +46,6 @@ interface LandUseCompensationsProps {
 
 const parseNumber = (value: string | number | undefined): number =>
   parseLandUseNumericValueOrZero(value);
-
-const hasDigits = (value: string | number | undefined): boolean => {
-  if (typeof value === "number") {
-    return Number.isFinite(value);
-  }
-
-  if (typeof value !== "string") {
-    return false;
-  }
-
-  return /\d/.test(value);
-};
-
-const formatCurrencyFieldValue = (
-  value: string | number | undefined,
-): string => {
-  if (!hasDigits(value)) {
-    return "";
-  }
-
-  return formatLandUseEuroDisplayValue(value);
-};
-
-const formatEditableMoneyFieldValue = (
-  value: string | number | undefined,
-): string => {
-  if (!hasDigits(value)) {
-    return "";
-  }
-
-  return formatLandUseNumericValue(parseNumber(value));
-};
 
 const getRowFieldPath = (
   siteId: string,
