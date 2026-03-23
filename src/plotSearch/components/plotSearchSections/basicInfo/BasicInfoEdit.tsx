@@ -49,7 +49,6 @@ import {
   getPlotSearchSubTypes,
   getDecisionCandidates,
 } from "@/plotSearch/selectors";
-import { filterSubTypes } from "@/plotSearch/helpers";
 import PlotSearchSiteEdit from "@/plotSearch/components/plotSearchSections/basicInfo/PlotSearchSiteEdit";
 import type { Attributes } from "types";
 import { hasMinimumRequiredFieldsFilled } from "@/plotSearch/helpers";
@@ -64,6 +63,8 @@ import PlotSearchTargetListing from "@/plotSearch/components/plotSearchSections/
 import { AUTOMATIC_PLOT_SEARCH_STAGES } from "@/plotSearch/constants";
 import { PlotSearchStageTypes } from "@/plotSearch/enums";
 import PlotSearchApplicationsOpeningSection from "@/plotSearch/components/plotSearchSections/basicInfo/PlotSearchApplicationsOpeningSection";
+import type { PlotSearchSubType } from "@/plotSearch/types";
+
 type DecisionsProps = {
   attributes: Attributes;
   disabled: boolean;
@@ -295,8 +296,7 @@ type Props = {
   errors: Record<string, any> | null | undefined;
   formName: string;
   isSaveClicked: boolean;
-  plotSearchSubTypes: Record<string, any>;
-  type: string;
+  plotSearchSubTypes: Array<PlotSearchSubType>;
   receiveFormValidFlags: (...args: Array<any>) => any;
   valid: boolean;
   hasMinimumRequiredFieldsFilled: boolean;
@@ -409,7 +409,6 @@ class BasicInfoEdit extends PureComponent<Props, State> {
       attributes,
       errors,
       plotSearchSubTypes,
-      type,
       decisionCandidates,
       selectedDecisions,
       hasMinimumRequiredFieldsFilled,
@@ -418,7 +417,12 @@ class BasicInfoEdit extends PureComponent<Props, State> {
       isLockedForModifications,
       stages,
     } = this.props;
-    const subTypeOptions = filterSubTypes(plotSearchSubTypes, type);
+
+    const subTypeOptions = plotSearchSubTypes.map((subType) => ({
+      value: subType.id,
+      label: `${subType.name}: ${subType.plot_search_type.name}`,
+    }));
+
     const hasUnidentifiedDecisions = selectedDecisions.some(
       (decision) => decision?.id && !decision?.relatedPlanUnitId,
     );

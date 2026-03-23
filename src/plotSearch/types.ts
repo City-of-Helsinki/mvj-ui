@@ -1,4 +1,21 @@
 import type { Action, Attributes, Methods } from "types";
+
+type PlotSearchType = {
+  id: number;
+  name: string;
+  ordering: number;
+};
+
+export type PlotSearchSubType = {
+  id: number;
+  name: string;
+  plot_search_type: PlotSearchType;
+  show_districts: boolean;
+  target_selection: boolean;
+  require_opening_record: boolean;
+  ordering: number;
+};
+
 export type PlotSearchState = {
   attributes: Attributes;
   current: PlotSearch;
@@ -19,7 +36,7 @@ export type PlotSearchState = {
   pendingPlanUnitFetches: Array<number>;
   isFetchingPlanUnitAttributes: boolean;
   isFetchingSubtypes: boolean;
-  subTypes: Record<string, any>;
+  subTypes: Array<PlotSearchSubType>;
   isFetchingForm: boolean;
   isFetchingTemplateForms: boolean;
   form: Record<string, any>;

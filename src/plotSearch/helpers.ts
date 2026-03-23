@@ -195,26 +195,6 @@ export const cleanDecisions = (
   };
 };
 
-/**
- * filter Sub Types
- * @param {Object} subTypes
- * @param {string} type
- * @returns {Object}
- */
-export const filterSubTypes = (
-  subTypes: Record<string, any>,
-  type: string,
-): Record<string, any> => {
-  if (isEmpty(subTypes)) return [];
-  const filteredSubTypes = subTypes.filter(
-    (subType) => subType.plot_search_type.id === type,
-  );
-  const subTypesAsOptions = filteredSubTypes.map((subType) => ({
-    value: subType.id,
-    label: subType.name,
-  }));
-  return subTypesAsOptions;
-};
 export const hasMinimumRequiredFieldsFilled = (
   state: PlotSearchState,
 ): boolean => {
