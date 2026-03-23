@@ -2,7 +2,7 @@ import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import type { RootState } from "@/root/types";
 import type { Attributes, Methods, Selector } from "types";
-import type { LeaseId, Lease, LeaseList } from "./types";
+import type { LeaseFormFlags, LeaseId, Lease, LeaseList } from "./types";
 export const getIsAttachDecisionModalOpen: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.lease.isAttachDecisionModalOpen;
@@ -35,12 +35,18 @@ export const getIsFormValidById: Selector<boolean, string> = (
   state: RootState,
   id: string,
 ): boolean => state.lease.isFormValidById[id];
-export const getIsFormValidFlags: Selector<Record<string, any>, void> = (
+export const getIsFormValidFlags: Selector<LeaseFormFlags, void> = (
   state: RootState,
-): Record<string, any> => state.lease.isFormValidById;
+): LeaseFormFlags => state.lease.isFormValidById;
+export const getIsFormDirtyFlags: Selector<LeaseFormFlags, void> = (
+  state: RootState,
+): LeaseFormFlags => state.lease.isFormDirtyById;
 export const getIsSaveClicked: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.lease.isSaveClicked;
+export const getIsCreateClicked: Selector<boolean, void> = (
+  state: RootState,
+): boolean => state.lease.isCreateClicked;
 export const getAttributes: Selector<Attributes, void> = (
   state: RootState,
 ): Attributes => state.lease.attributes;

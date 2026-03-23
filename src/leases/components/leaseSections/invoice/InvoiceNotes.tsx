@@ -40,6 +40,7 @@ import {
 } from "@/invoiceNote/selectors";
 import { getCurrentLease } from "@/leases/selectors";
 import type { Attributes } from "types";
+import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 type ReadOnlyProps = {
   invoiceNotes: Array<Record<string, any>>;
 };
@@ -320,6 +321,11 @@ type Props = {
 const InvoiceNotes: React.FC<Props> = ({ invoiceNotes }) => {
   const currentLease = useSelector(getCurrentLease);
   const invoiceNoteMethods = useSelector(getInvoiceNoteMethods);
+  const activeServiceUnit = useSelector(getUserActiveServiceUnit);
+
+  const isServiceUnitSameAsActiveServiceUnit = () => {
+    return activeServiceUnit?.id === currentLease?.service_unit?.id;
+  };
 
   const dispatch = useDispatch();
 
@@ -348,14 +354,18 @@ const InvoiceNotes: React.FC<Props> = ({ invoiceNotes }) => {
         <form onSubmit={handleSubmit}>
           <Authorization
             allow={
-              isMethodAllowed(invoiceNoteMethods, Methods.GET) &&
-              !isMethodAllowed(invoiceNoteMethods, Methods.PATCH)
+              (isMethodAllowed(invoiceNoteMethods, Methods.GET) &&
+                !isMethodAllowed(invoiceNoteMethods, Methods.PATCH)) ||
+              !isServiceUnitSameAsActiveServiceUnit()
             }
           >
             <InvoiceNotesReadOnly invoiceNotes={invoiceNotes} />
           </Authorization>
           <Authorization
-            allow={isMethodAllowed(invoiceNoteMethods, Methods.PATCH)}
+            allow={
+              isMethodAllowed(invoiceNoteMethods, Methods.PATCH) &&
+              isServiceUnitSameAsActiveServiceUnit()
+            }
           >
             <AppConsumer>
               {({ dispatch: appDispatch }) => {

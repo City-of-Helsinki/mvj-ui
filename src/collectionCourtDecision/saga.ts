@@ -9,6 +9,7 @@ import {
   hideCollectionCourtDecisionPanel,
   receiveCollectionCourtDecisionsByLease,
   notFoundByLease,
+  receiveIsSaveClicked,
 } from "./actions";
 import { displayUIMessage } from "@/util/helpers";
 import {
@@ -110,6 +111,8 @@ function* uploadCollectionCourtDecisionSaga({
       error,
     );
     yield put(receiveError(error));
+  } finally {
+    yield put(receiveIsSaveClicked(false));
   }
 }
 

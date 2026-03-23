@@ -12,6 +12,8 @@ import {
   receiveIsEditClicked,
   receivePatchedInvoice,
   notFound,
+  receiveIsCreateClicked,
+  receiveIsCreditClicked,
 } from "./actions";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
@@ -130,6 +132,8 @@ function* createInvoiceSaga({
     console.error('Failed to create invoice with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
+  } finally {
+    yield put(receiveIsCreateClicked(false));
   }
 }
 
@@ -164,6 +168,8 @@ function* creditInvoiceSaga({
   } catch (error) {
     console.error('Failed to create invoice with error "%s"', error);
     yield put(receiveError(error));
+  } finally {
+    yield put(receiveIsCreditClicked(false));
   }
 }
 
@@ -181,7 +187,6 @@ function* patchInvoiceSaga({
       case 200:
         yield put(fetchInvoicesByLease(bodyAsJson.lease));
         yield put(receivePatchedInvoice(bodyAsJson));
-        yield put(receiveIsEditClicked(false));
         displayUIMessage({
           title: "",
           body: "Lasku tallennettu",
@@ -200,6 +205,17 @@ function* patchInvoiceSaga({
         );
         break;
 
+      case 403:
+        yield put(notFound());
+        yield put(
+          receiveError(
+            new SubmissionError({
+              ...bodyAsJson,
+            }),
+          ),
+        );
+        break;
+
       case 500:
         yield put(notFound());
         yield put(receiveError(new Error(bodyAsJson)));
@@ -209,6 +225,8 @@ function* patchInvoiceSaga({
     console.error('Failed to edit invoice with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
+  } finally {
+    yield put(receiveIsEditClicked(false));
   }
 }
 

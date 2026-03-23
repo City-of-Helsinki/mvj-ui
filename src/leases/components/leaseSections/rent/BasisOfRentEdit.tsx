@@ -435,8 +435,6 @@ const renderTemporarySubventions = ({
 };
 
 type renderMastChildrenProps = {
-  leaseAttributes: Attributes;
-  isSaveClicked: boolean;
   formName: string;
   parentField: string;
   fields: any;
@@ -444,8 +442,6 @@ type renderMastChildrenProps = {
 };
 
 const renderMastChildren = ({
-  leaseAttributes,
-  isSaveClicked,
   formName,
   fields,
   parentField,
@@ -457,14 +453,11 @@ const renderMastChildren = ({
         return (
           <Fragment>
             {!!fields.length &&
-              fields.map((field, index) => {
+              fields.map((_, index) => {
                 return (
                   <MastChildrenEdit
                     index={index}
                     formName={formName}
-                    leaseAttributes={leaseAttributes}
-                    isSaveClicked={isSaveClicked}
-                    field={field}
                     key={index}
                     parentField={parentField}
                     fieldsDisabled={fieldsDisabled}
@@ -478,55 +471,60 @@ const renderMastChildren = ({
   );
 };
 
-type Props = {
-  amountPerArea: number | null | undefined;
+type OwnProps = {
   archived: boolean;
-  area: number | null | undefined;
-  areaUnit: string | null | undefined;
-  currentAmountPerArea: number | null | undefined;
   areaUnitOptions: Array<Record<string, any>>;
-  basisOfRent: Record<string, any>;
-  calculatorType: string | null | undefined;
-  calculatorTypeOptions: Array<Record<string, any>>;
-  change: typeof change;
-  children: Record<string, any> | null | undefined;
-  clearFields: typeof clearFields;
-  currentLease: Lease;
-  discountPercentage: string | null | undefined;
   field: string;
   formName: string;
-  formValues: typeof getFormValues;
-  id: number | null | undefined;
-  index: number;
   indexOptions: Array<Record<string, any>>;
-  initialize: typeof initialize;
-  intendedUse: number;
   intendedUseOptions: Array<Record<string, any>>;
   isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-  lockedAt: string | null | undefined;
-  managementSubventions: Array<Record<string, any>> | null | undefined;
   managementTypeOptions: Array<Record<string, any>>;
   onArchive?: (...args: Array<any>) => any;
   onRemove: (...args: Array<any>) => any;
   onUnarchive?: (...args: Array<any>) => any;
-  plansInspectedAt: string | null | undefined;
-  profitMarginPercentage: string | null | undefined;
   showLockedAt?: boolean;
   showPlansInspectedAt?: boolean;
   showTotal: boolean;
+  subventionTypeOptions: Array<Record<string, any>>;
+  totalDiscountedInitialYearRent: number;
+};
+
+type StateProps = {
+  amountPerArea: number | null | undefined;
+  area: number | null | undefined;
+  areaUnit: string | null | undefined;
+  basisOfRent: Record<string, any>;
+  calculatorType: string | null | undefined;
+  children: Record<string, any> | null | undefined;
+  currentAmountPerArea: number | null | undefined;
+  currentLease: Lease;
+  discountPercentage: string | null | undefined;
+  formValues: Record<string, any>;
+  id: number | null | undefined;
+  index: number;
+  intendedUse: number;
+  leaseAttributes: Attributes;
+  lockedAt: string | null | undefined;
+  managementSubventions: Array<Record<string, any>> | null | undefined;
+  plansInspectedAt: string | null | undefined;
+  price: string | null | undefined;
+  profitMarginPercentage: string | null | undefined;
   subventionBasePercent: string | null | undefined;
   subventionGraduatedPercent: string | null | undefined;
   subventionType: string | null | undefined;
-  subventionTypeOptions: Array<Record<string, any>>;
-  price: string | null | undefined;
-  zone: string | null | undefined;
   temporarySubventions: Array<Record<string, any>> | null | undefined;
-  totalDiscountedInitialYearRent: number;
   usersPermissions: UsersPermissionsType;
-  zoneOptions: Array<Record<string, any>>;
-  typeOptions: Array<Record<string, any>>;
+  zone: string | null | undefined;
 };
+
+type DispatchProps = {
+  change: typeof change;
+  clearFields: typeof clearFields;
+  initialize: typeof initialize;
+};
+
+type Props = OwnProps & StateProps & DispatchProps;
 type State = {
   showSubventions: boolean;
 };
@@ -544,6 +542,18 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         ? true
         : false,
   };
+  ensureMastChildrenInitialized = () => {
+    const { calculatorType, children, change, field, formName } = this.props;
+
+    // Initialize MAST children with 2 items if calculator type is MAST and children are empty
+    if (
+      calculatorType === CalculatorTypes.MAST &&
+      (!children || children.length === 0)
+    ) {
+      change(formName, `${field}.children`, [{}, {}]);
+    }
+  };
+
   initialFormValues = () => {
     const {
       basisOfRent,
@@ -582,9 +592,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
 
   componentDidMount() {
     this.initialFormValues();
+    this.ensureMastChildrenInitialized();
   }
 
   componentDidUpdate(prevProps: Props) {
+    this.ensureMastChildrenInitialized();
     const { showSubventions } = this.state;
     const {
       currentAmountPerArea,
@@ -900,12 +912,17 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
   };
   // Reset all fields when calculator type changes
   onChangeTypeOptions = (value: any) => {
-    const { calculatorType } = this.props;
+    const { calculatorType, change, field, formName } = this.props;
 
     if (value !== calculatorType) {
       this.clearAllFields();
       this.handleRemoveSubventions();
       this.initialFormValues();
+
+      // Initialize MAST children with 2 items (Laitekaappi and Masto)
+      if (value === CalculatorTypes.MAST) {
+        change(formName, `${field}.children`, [{}, {}]);
+      }
     }
   };
   // LEASE: Yksikköhinta(ind 100)
@@ -1021,8 +1038,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       usersPermissions,
       managementSubventions,
       temporarySubventions,
-      typeOptions,
-      calculatorTypeOptions,
       calculatorType,
       zone,
     } = this.props;
@@ -1301,13 +1316,11 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
           indexOptions={indexOptions}
           intendedUseOptions={intendedUseOptions}
           managementTypeOptions={managementTypeOptions}
-          calculatorTypeOptions={calculatorTypeOptions}
           onRemove={onRemove}
           onUnarchive={this.handleUnarchive}
           showTotal={showTotal}
           subventionTypeOptions={subventionTypeOptions}
           totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
-          typeOptions={typeOptions}
         />
       );
     }
@@ -1813,7 +1826,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                 <Column large={6} medium={9} small={12}>
                                   <FieldArray
                                     component={renderMastChildren}
-                                    leaseAttributes={leaseAttributes}
                                     name={`${field}.children`}
                                     formName={formName}
                                     parentField={field}
@@ -3238,7 +3250,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
 }
 
 export default connect(
-  (state, props: Props) => {
+  (state, props: OwnProps) => {
     const formName = props.formName;
     const selector = formValueSelector(formName);
     const formValues = getFormValues(formName)(state) || {};

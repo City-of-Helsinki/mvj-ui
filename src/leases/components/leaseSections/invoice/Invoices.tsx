@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import Authorization from "@/components/authorization/Authorization";
@@ -59,7 +59,10 @@ import {
   getCollapseStateByKey,
   getCurrentLease,
 } from "@/leases/selectors";
-import { getUsersPermissions } from "@/usersPermissions/selectors";
+import {
+  getUserActiveServiceUnit,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 
@@ -127,7 +130,12 @@ const Invoices: React.FC = () => {
     ),
   );
   const usersPermissions = useSelector(getUsersPermissions);
+  const activeServiceUnit = useSelector(getUserActiveServiceUnit);
   const dispatch = useDispatch();
+
+  const isServiceUnitSameAsActiveServiceUnit = () => {
+    return activeServiceUnit?.id === currentLease?.service_unit?.id;
+  };
 
   const isInvoicingEnabled = useMemo(() => {
     return currentLease ? !!currentLease.invoicing_enabled_at : null;
@@ -393,10 +401,12 @@ const Invoices: React.FC = () => {
               alignCenter
               buttonComponent={
                 <Authorization
-                  allow={hasPermissions(
-                    usersPermissions,
-                    UsersPermissions.CHANGE_LEASE_INVOICING_ENABLED_AT,
-                  )}
+                  allow={
+                    hasPermissions(
+                      usersPermissions,
+                      UsersPermissions.CHANGE_LEASE_INVOICING_ENABLED_AT,
+                    ) && isServiceUnitSameAsActiveServiceUnit()
+                  }
                 >
                   {isInvoicingEnabled ? (
                     <Button

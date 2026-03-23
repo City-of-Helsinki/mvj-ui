@@ -24,6 +24,7 @@ import SubTitle from "@/components/content/SubTitle";
 import {
   deleteCollectionCourtDecision,
   hideCollectionCourtDecisionPanel,
+  receiveIsSaveClicked,
   showCollectionCourtDecisionPanel,
   uploadCollectionCourtDecision,
 } from "@/collectionCourtDecision/actions";
@@ -89,7 +90,10 @@ import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
 } from "@/leases/selectors";
-import { getUsersPermissions } from "@/usersPermissions/selectors";
+import {
+  getUserActiveServiceUnit,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
 import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
 import type { CollectionCourtDecisionId } from "@/collectionCourtDecision/types";
@@ -173,6 +177,7 @@ const DebtCollectionForm: React.FC = () => {
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const usersPermissions: UsersPermissionsType =
     useSelector(getUsersPermissions);
+  const activeServiceUnit = useSelector(getUserActiveServiceUnit);
   const largeScreen = useWindowResize();
   const dispatch = useDispatch();
 
@@ -195,6 +200,10 @@ const DebtCollectionForm: React.FC = () => {
     () => getDecisionOptions(currentLease),
     [currentLease],
   );
+
+  const isServiceUnitSameAsActiveServiceUnit = () => {
+    return activeServiceUnit?.id === currentLease?.service_unit?.id;
+  };
 
   useEffect(() => {
     if (collectionCourtDecisions) {
@@ -242,6 +251,7 @@ const DebtCollectionForm: React.FC = () => {
         file: file,
       }),
     );
+    dispatch(receiveIsSaveClicked(true));
   };
 
   const handleCollectionLetterFileChange = (e) => {
@@ -459,10 +469,13 @@ const DebtCollectionForm: React.FC = () => {
                                     }
                                     removeButton={
                                       <Authorization
-                                        allow={hasPermissions(
-                                          usersPermissions,
-                                          UsersPermissions.DELETE_COLLECTIONLETTER,
-                                        )}
+                                        allow={
+                                          hasPermissions(
+                                            usersPermissions,
+                                            UsersPermissions.DELETE_COLLECTIONLETTER,
+                                          ) &&
+                                          isServiceUnitSameAsActiveServiceUnit()
+                                        }
                                       >
                                         <RemoveButton
                                           className="third-level"
@@ -482,10 +495,12 @@ const DebtCollectionForm: React.FC = () => {
                         )}
 
                       <Authorization
-                        allow={hasPermissions(
-                          usersPermissions,
-                          UsersPermissions.ADD_COLLECTIONLETTER,
-                        )}
+                        allow={
+                          hasPermissions(
+                            usersPermissions,
+                            UsersPermissions.ADD_COLLECTIONLETTER,
+                          ) && isServiceUnitSameAsActiveServiceUnit()
+                        }
                       >
                         <AddFileButton
                           label="Lisää perintäkirje"
@@ -695,10 +710,13 @@ const DebtCollectionForm: React.FC = () => {
                                     }
                                     removeButton={
                                       <Authorization
-                                        allow={hasPermissions(
-                                          usersPermissions,
-                                          UsersPermissions.DELETE_COLLECTIONCOURTDECISION,
-                                        )}
+                                        allow={
+                                          hasPermissions(
+                                            usersPermissions,
+                                            UsersPermissions.DELETE_COLLECTIONCOURTDECISION,
+                                          ) &&
+                                          isServiceUnitSameAsActiveServiceUnit()
+                                        }
                                       >
                                         <RemoveButton
                                           className="third-level"
@@ -751,10 +769,13 @@ const DebtCollectionForm: React.FC = () => {
                                 return (
                                   <BoxItem key={index}>
                                     <Authorization
-                                      allow={hasPermissions(
-                                        usersPermissions,
-                                        UsersPermissions.DELETE_COLLECTIONCOURTDECISION,
-                                      )}
+                                      allow={
+                                        hasPermissions(
+                                          usersPermissions,
+                                          UsersPermissions.DELETE_COLLECTIONCOURTDECISION,
+                                        ) &&
+                                        isServiceUnitSameAsActiveServiceUnit()
+                                      }
                                     >
                                       <ActionButtonWrapper>
                                         <RemoveButton
@@ -876,10 +897,12 @@ const DebtCollectionForm: React.FC = () => {
                           </BoxItemContainer>
                         )}
                       <Authorization
-                        allow={hasPermissions(
-                          usersPermissions,
-                          UsersPermissions.ADD_COLLECTIONCOURTDECISION,
-                        )}
+                        allow={
+                          hasPermissions(
+                            usersPermissions,
+                            UsersPermissions.ADD_COLLECTIONCOURTDECISION,
+                          ) && isServiceUnitSameAsActiveServiceUnit()
+                        }
                       >
                         <>
                           <CollectionCourtDecisionPanel
@@ -1117,10 +1140,13 @@ const DebtCollectionForm: React.FC = () => {
                                   }
                                   removeButton={
                                     <Authorization
-                                      allow={hasPermissions(
-                                        usersPermissions,
-                                        UsersPermissions.DELETE_COLLECTIONNOTE,
-                                      )}
+                                      allow={
+                                        hasPermissions(
+                                          usersPermissions,
+                                          UsersPermissions.DELETE_COLLECTIONNOTE,
+                                        ) &&
+                                        isServiceUnitSameAsActiveServiceUnit()
+                                      }
                                     >
                                       <RemoveButton
                                         className="third-level"
@@ -1139,10 +1165,12 @@ const DebtCollectionForm: React.FC = () => {
                         })}
 
                       <Authorization
-                        allow={hasPermissions(
-                          usersPermissions,
-                          UsersPermissions.ADD_COLLECTIONNOTE,
-                        )}
+                        allow={
+                          hasPermissions(
+                            usersPermissions,
+                            UsersPermissions.ADD_COLLECTIONNOTE,
+                          ) && isServiceUnitSameAsActiveServiceUnit()
+                        }
                       >
                         <FieldArray name="notes">
                           {(fieldArrayProps) =>

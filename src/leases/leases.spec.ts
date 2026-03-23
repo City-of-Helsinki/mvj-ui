@@ -41,6 +41,7 @@ import {
   stopInvoicing,
   fetchLeasesForContractNumber,
   receiveLeasesForContractNumbers,
+  receiveIsCreateClicked,
 } from "./actions";
 import leasesReducer from "./reducer";
 import type { LeaseState } from "./types";
@@ -50,12 +51,23 @@ const defaultState: LeaseState = {
   collapseStates: {},
   current: {},
   isAttachDecisionModalOpen: false,
+  isCreateClicked: false,
   isCreateModalOpen: false,
   isEditMode: false,
   isFetching: false,
   isFetchingByBBox: false,
   isFetchingAttributes: false,
   isFetchingById: {},
+  isFormDirtyById: {
+    "constructability-form": false,
+    "contracts-form": false,
+    "decisions-form": false,
+    "inspections-form": false,
+    "lease-areas-form": false,
+    "rents-form": false,
+    "summary-form": false,
+    "tenants-form": false,
+  },
   isFormValidById: {
     "constructability-form": true,
     "contracts-form": true,
@@ -378,6 +390,11 @@ describe("Leases", () => {
       it("should update isSaveClicked", () => {
         const newState = { ...defaultState, isSaveClicked: true };
         const state = leasesReducer({}, receiveIsSaveClicked(true));
+        expect(state).to.deep.equal(newState);
+      });
+      it("should update isCreateClicked", () => {
+        const newState = { ...defaultState, isCreateClicked: true };
+        const state = leasesReducer({}, receiveIsCreateClicked(true));
         expect(state).to.deep.equal(newState);
       });
       it("createCharge should not change state", () => {

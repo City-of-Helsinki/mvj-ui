@@ -2,6 +2,7 @@ import { createAction } from "redux-actions";
 import type { Attributes, Methods } from "types";
 import type {
   ClearFormValidFlagsAction,
+  ClearFormDirtyFlagsAction,
   CopyAreasToContractAction,
   CopyDecisionToLeasesAction,
   CreateChargeAction,
@@ -31,7 +32,9 @@ import type {
   ReceiveAttributesAction,
   ReceiveCollapseStatesAction,
   ReceiveFormValidFlagsAction,
+  ReceiveFormDirtyFlagsAction,
   ReceiveIsSaveClickedAction,
+  ReceiveIsCreateClickedAction,
   ReceiveLeaseByIdAction,
   ReceiveLeasesAction,
   ReceiveLeasesByBBoxAction,
@@ -47,6 +50,7 @@ import type {
   StartInvoicingAction,
   StopInvoicingAction,
   FetchLeasesForContractNumberAction,
+  LeaseFormFlags,
   ReceiveLeasesForContractNumbersAction,
   CreateLease,
 } from "./types";
@@ -138,15 +142,25 @@ export const hideCreateModal = (): HideCreateModalAction =>
 export const showCreateModal = (): ShowCreateModalAction =>
   createAction("mvj/leases/SHOW_CREATE_MODAL")();
 export const receiveFormValidFlags = (
-  valid: Record<string, any>,
+  valid: LeaseFormFlags,
 ): ReceiveFormValidFlagsAction =>
   createAction("mvj/leases/RECEIVE_FORM_VALID_FLAGS")(valid);
 export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
   createAction("mvj/leases/CLEAR_FORM_VALID_FLAGS")();
+export const receiveFormDirtyFlags = (
+  dirty: LeaseFormFlags,
+): ReceiveFormDirtyFlagsAction =>
+  createAction("mvj/leases/RECEIVE_FORM_DIRTY_FLAGS")(dirty);
+export const clearFormDirtyFlags = (): ClearFormDirtyFlagsAction =>
+  createAction("mvj/leases/CLEAR_FORM_DIRTY_FLAGS")();
 export const receiveIsSaveClicked = (
   isClicked: boolean,
 ): ReceiveIsSaveClickedAction =>
   createAction("mvj/leases/RECEIVE_SAVE_CLICKED")(isClicked);
+export const receiveIsCreateClicked = (
+  isClicked: boolean,
+): ReceiveIsCreateClickedAction =>
+  createAction("mvj/leases/RECEIVE_CREATE_CLICKED")(isClicked);
 export const receiveCollapseStates = (
   status: Record<string, any>,
 ): ReceiveCollapseStatesAction =>

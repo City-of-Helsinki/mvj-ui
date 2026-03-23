@@ -4,6 +4,7 @@ import {
   RelationTypes,
   ConstructabilityState,
 } from "@/leases/enums";
+import { FormNames } from "@/enums";
 import type {
   Action,
   ApiResponse,
@@ -23,13 +24,15 @@ export type LeaseState = {
   current: Lease;
   isAttachDecisionModalOpen: boolean;
   isCreateModalOpen: boolean;
-  isFormValidById: Record<string, any>;
+  isFormDirtyById: LeaseFormFlags;
+  isFormValidById: LeaseFormFlags;
   isEditMode: boolean;
   isFetching: boolean;
   isFetchingByBBox: boolean;
   isFetchingById: Record<string, any>;
   isFetchingAttributes: boolean;
   isSaveClicked: boolean;
+  isCreateClicked: boolean;
   isSaving: boolean;
   list: LeaseList;
   listByBBox: LeaseList;
@@ -217,6 +220,18 @@ export type PeriodicRentAdjustmentType =
   | "TASOTARKISTUS_20_20"
   | "TASOTARKISTUS_20_10";
 
+export type LeaseFormName =
+  | (typeof FormNames)["LEASE_CONSTRUCTABILITY"]
+  | (typeof FormNames)["LEASE_CONTRACTS"]
+  | (typeof FormNames)["LEASE_DECISIONS"]
+  | (typeof FormNames)["LEASE_INSPECTIONS"]
+  | (typeof FormNames)["LEASE_AREAS"]
+  | (typeof FormNames)["LEASE_RENTS"]
+  | (typeof FormNames)["LEASE_SUMMARY"]
+  | (typeof FormNames)["LEASE_TENANTS"];
+
+export type LeaseFormFlags = Partial<Record<LeaseFormName, boolean>>;
+
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type ReceiveMethodsAction = Action<string, Methods>;
@@ -251,13 +266,16 @@ export type ShowEditModeAction = Action<string, void>;
 export type HideCreateModalAction = Action<string, void>;
 export type ShowCreateModalAction = Action<string, void>;
 export type ReceiveIsSaveClickedAction = Action<string, boolean>;
+export type ReceiveIsCreateClickedAction = Action<string, boolean>;
 export type CopyAreasToContractAction = Action<string, LeaseId>;
 export type CopyDecisionToLeasesAction = Action<string, Record<string, any>>;
 export type HideAttachDecisionModalAction = Action<string, void>;
 export type ShowAttachDecisionModalAction = Action<string, void>;
 export type CreateChargeAction = Action<string, CreateChargePayload>;
-export type ReceiveFormValidFlagsAction = Action<string, Record<string, any>>;
+export type ReceiveFormValidFlagsAction = Action<string, LeaseFormFlags>;
 export type ClearFormValidFlagsAction = Action<string, void>;
+export type ReceiveFormDirtyFlagsAction = Action<string, LeaseFormFlags>;
+export type ClearFormDirtyFlagsAction = Action<string, void>;
 export type ReceiveCollapseStatesAction = Action<string, Record<string, any>>;
 export type FetchLeasesForContractNumberAction = Action<
   string,

@@ -15,6 +15,7 @@ import type {
   DeleteCollectionCourtDecisionAction,
   HideCollectionCourtDecisionPanelAction,
   ShowCollectionCourtDecisionPanelAction,
+  ReceiveIsSaveClickedAction,
 } from "./types";
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction("mvj/collectionCourtDecision/FETCH_ATTRIBUTES")();
@@ -53,3 +54,7 @@ export const hideCollectionCourtDecisionPanel =
 export const showCollectionCourtDecisionPanel =
   (): ShowCollectionCourtDecisionPanelAction =>
     createAction("mvj/collectionCourtDecision/SHOW_PANEL")();
+export const receiveIsSaveClicked = (
+  isClicked: boolean,
+): ReceiveIsSaveClickedAction =>
+  createAction("mvj/collectionCourtDecision/RECEIVE_SAVE_CLICKED")(isClicked);
