@@ -20,8 +20,7 @@ import { FormApi } from "final-form";
 import type { FormKey } from "../LandUseDetailPage";
 import { normalizeSelectValue } from "../../fieldUtils";
 import { landUseCompensationSelectOptions } from "../../options";
-import type { LandUseSiteTreeNode } from "./LandUseSites";
-import { collectLeafNodes } from "../../utils/siteTree";
+import type { LandUseSite } from "./LandUseCompensations";
 import { parseLandUseNumericValue } from "../../utils/number";
 
 interface PerustietotaulukkoRowValues {
@@ -50,7 +49,7 @@ interface MonitoringSakkoRow {
 interface LandUseMonitoringProps {
   form: FormApi<LandUseMonitoringFormValues>;
   isEditMode: boolean;
-  sites: LandUseSiteTreeNode[];
+  sites: LandUseSite[];
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
   onSetTabDirty?: (formKey: FormKey) => void;
 }
@@ -97,8 +96,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
     null,
   );
   const [newToteutunutKm2, setNewToteutunutKm2] = React.useState("");
-  const leafSites = collectLeafNodes(sites);
-  const selectedSite = leafSites.find((site) => site.id === selectedSiteId);
+  const selectedSite = sites.find((site) => site.id === selectedSiteId);
 
   const closeMonitoringDialog = React.useCallback(() => {
     setSelectedSiteId(null);
@@ -125,7 +123,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           { key: "yksikkohinta", headerName: "Yksikköhinta" },
         ];
 
-        const monitoringPerustaulukkoRows = leafSites.map((site, index) => {
+        const monitoringPerustaulukkoRows = sites.map((site, index) => {
           const toteumaEntries = toteumaEntriesBySiteId[site.id] ?? [];
           const latestToteutunutEntry = getLatestEntry(toteumaEntries);
           const latestToteutunutKm2 = latestToteutunutEntry?.value ?? "-";

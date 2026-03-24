@@ -1,11 +1,13 @@
 import type { LandUseCollateralsFormValues } from "../components/tabs/LandUseCollaterals";
-import type { LandUseCompensationsFormValues } from "../components/tabs/LandUseCompensations";
+import type {
+  LandUseCompensationsFormValues,
+  LandUseSite,
+} from "../components/tabs/LandUseCompensations";
 import type { LandUseDecisionsFormValues } from "../components/tabs/LandUseDecisions";
 import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoicing";
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
 import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
-import type { LandUseSitesFormValues } from "../components/tabs/LandUseSites";
 import { negotiatorsOptions, signatoriesOptions } from "../options";
 
 export interface MockLandUseData {
@@ -137,7 +139,6 @@ ma113Parties.signatories = [{ name: signatoriesOptions[0].value }];
 
 export interface LandUseAgreementMockTabs {
   summary: MockLandUseData | null;
-  sites: LandUseSitesFormValues;
   parties: LandUsePartiesFormValues | null;
   compensations: LandUseCompensationsFormValues;
   collaterals: LandUseCollateralsFormValues;
@@ -147,22 +148,20 @@ export interface LandUseAgreementMockTabs {
   map: LandUseMapFormValues;
 }
 
-const ma113Sites: LandUseSitesFormValues = {
-  items: [
-    {
-      id: "MA113-1-site-1",
-      kohteenTunnus: "01-49-920-6",
-      pintaAlaM2: "4500",
-      km2: "3600",
-      kayttotarkoitus: "Asuinkerrostalojen korttelialue",
-      hallintamuoto: "Vapaarahoitteinen omistus",
-      suojeltu: "SR1",
-      label: "01-49-920-6",
-    },
-  ],
-};
+const ma113Sites: LandUseSite[] = [
+  {
+    id: "MA113-1-site-1",
+    kohteenTunnus: "01-49-920-6",
+    pintaAlaM2: "4500",
+    km2: "3600",
+    kayttotarkoitus: "Asuinkerrostalojen korttelialue",
+    hallintamuoto: "Vapaarahoitteinen omistus",
+    suojeltu: "SR1",
+  },
+];
 
 const ma113Compensations: LandUseCompensationsFormValues = {
+  sites: ma113Sites,
   rahakorvaus: "450000",
   maakorvaus: "120000",
   muuKorvaus: "25000",
@@ -331,7 +330,6 @@ export const mockLandUseTabStore: Record<string, LandUseAgreementMockTabs> = {
       asemakaavanHyvaksyjä: "Henkilö 5",
       asemakaavanDiaarinumero: "HEL 4120-305774",
     },
-    sites: ma113Sites,
     parties: ma113Parties,
     compensations: ma113Compensations,
     collaterals: ma113Collaterals,

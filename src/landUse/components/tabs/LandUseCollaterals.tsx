@@ -19,8 +19,7 @@ import {
 import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
-import type { LandUseSiteTreeNode } from "./LandUseSites";
-import { collectLeafNodes } from "../../utils/siteTree";
+import type { LandUseSite } from "./LandUseCompensations";
 import {
   formatLandUseEuroDisplayValue,
   formatLandUseEuroValue,
@@ -64,7 +63,7 @@ interface CollateralsVakuuslaskuriRow {
 interface LandUseCollateralsProps {
   form: FormApi<LandUseCollateralsFormValues>;
   isEditMode: boolean;
-  sites: LandUseSiteTreeNode[];
+  sites: LandUseSite[];
   perushinta?: string;
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
   agreements: CollateralAgreementValue[];
@@ -152,7 +151,6 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   const [kaytettavaMaara, setKaytettavaMaara] = React.useState("");
   const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
 
-  const leafSites = collectLeafNodes(sites);
   const guarantees = React.useMemo(
     () => getGuaranteesFromAgreements(agreements),
     [agreements],
@@ -187,9 +185,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           {},
         );
 
-        const selectedSite = leafSites.find(
-          (site) => site.id === selectedSiteId,
-        );
+        const selectedSite = sites.find((site) => site.id === selectedSiteId);
         const selectedGuarantee = selectedGuaranteeId
           ? guaranteeBalanceById[selectedGuaranteeId]
           : undefined;
@@ -219,7 +215,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             kaytettavaMaaraValue < 0 ||
             isKaytettavaMaaraOverRemaining);
 
-        const vakuuslaskuriRows: CollateralsVakuuslaskuriRow[] = leafSites.map(
+        const vakuuslaskuriRows: CollateralsVakuuslaskuriRow[] = sites.map(
           (site) => {
             const kohteenTunnus = site.kohteenTunnus || "-";
             const vaadittuValue = parseLandUseNumericValue(site.km2);
@@ -305,7 +301,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                   iconStart={<IconPen />}
                   disabled={!isEditMode}
                   onClick={() => {
-                    setSelectedSiteId(leafSites[index]?.id ?? null);
+                    setSelectedSiteId(sites[index]?.id ?? null);
                     setSelectedGuaranteeId("");
                     setKaytettavaMaara("");
                   }}
@@ -317,7 +313,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           }),
         );
 
-        const sopimuksenMukainenValue = leafSites.reduce((sum, site) => {
+        const sopimuksenMukainenValue = sites.reduce((sum, site) => {
           const km2Value = parseLandUseNumericValue(site.km2) ?? 0;
           const yksikkohintaValue =
             parseLandUseNumericValue(

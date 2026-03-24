@@ -2,30 +2,45 @@ import React from "react";
 import {
   Button,
   ButtonVariant,
+  Dialog,
   Fieldset,
   IconCopy,
   IconPlusCircleFill,
+  IconTrash,
   NumberInput,
   Notification,
+  Select,
   Table,
   TextArea,
+  TextInput,
 } from "hds-react";
 import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
-import type { LandUseSiteTreeNode } from "./LandUseSites";
-import { collectLeafNodes } from "../../utils/siteTree";
+import { normalizeSelectValue } from "../../fieldUtils";
+import { landUseCompensationSelectOptions } from "../../options";
 import {
   formatLandUseEuroValue,
   formatLandUseIntegerValue,
   parseLandUseNumericValueOrZero,
 } from "../../utils/number";
 
+export interface LandUseSite {
+  id: string;
+  kohteenTunnus: string;
+  pintaAlaM2?: string;
+  km2?: string;
+  kayttotarkoitus: string | undefined;
+  hallintamuoto: string | undefined;
+  suojeltu: string | undefined;
+}
+
 interface PerustietotaulukkoRowValues {
   yksikkohinta: string;
 }
 
 export interface LandUseCompensationsFormValues {
+  sites: LandUseSite[];
   rahakorvaus: string;
   maakorvaus: string;
   muuKorvaus: string;
@@ -41,7 +56,6 @@ interface LandUseCompensationsProps {
   form: FormApi<LandUseCompensationsFormValues>;
   isEditMode: boolean;
   isDecisionPhase: boolean;
-  sites: LandUseSiteTreeNode[];
 }
 
 const parseNumber = (value: string | number | undefined): number =>
@@ -55,25 +69,107 @@ const getRowFieldPath = (
 const createEstateMapLink = (kohteenTunnus: string): string =>
   `https://kartta.hel.fi/?RegFormEstate=${encodeURIComponent(kohteenTunnus)}`;
 
+const kayttotarkoitusOptions =
+  landUseCompensationSelectOptions.kayttotarkoitus.map((value) => ({
+    label: value,
+    value,
+  }));
+
+const hallintamuotoOptions = landUseCompensationSelectOptions.hallintamuoto.map(
+  (value) => ({
+    label: value,
+    value,
+  }),
+);
+
+const suojeltuOptions = landUseCompensationSelectOptions.suojeltu.map(
+  (value) => ({
+    label: value,
+    value,
+  }),
+);
+
+const handleSelectChange = (
+  selectedOptions: { label: string; value: string }[],
+  callback: (value: string | undefined) => void,
+) => {
+  if (selectedOptions.length > 0) {
+    callback(selectedOptions[0].value);
+  } else {
+    callback(undefined);
+  }
+};
+
+const createUniqueSiteId = (sites: LandUseSite[]): string => {
+  const usedIds = new Set(sites.map((site) => site.id));
+  let index = 1;
+
+  while (usedIds.has(`site-${index}`)) {
+    index += 1;
+  }
+
+  return `site-${index}`;
+};
+
 export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
   form,
   isEditMode,
   isDecisionPhase,
-  sites,
 }) => {
-  const leafSites = collectLeafNodes(sites);
   const isCompensationsTableReadOnly = !isEditMode || isDecisionPhase;
+  const [isAddSiteDialogOpen, setIsAddSiteDialogOpen] = React.useState(false);
+  const [newKohteenTunnus, setNewKohteenTunnus] = React.useState("");
+
+  const resetAddSiteDialog = React.useCallback(() => {
+    setIsAddSiteDialogOpen(false);
+    setNewKohteenTunnus("");
+  }, []);
 
   return (
     <Form<LandUseCompensationsFormValues>
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
+        const sites = values.sites ?? [];
         const rowsBySiteId = values.perustietotaulukkoRowsBySiteId ?? {};
         const rahakorvaus = parseNumber(values.rahakorvaus);
         const maakorvaus = parseNumber(values.maakorvaus);
         const muuKorvaus = parseNumber(values.muuKorvaus);
         const yhteensa = rahakorvaus + maakorvaus + muuKorvaus;
+
+        const handleAddSite = () => {
+          if (isCompensationsTableReadOnly) {
+            return;
+          }
+
+          const kohteenTunnus = newKohteenTunnus.trim();
+          if (!kohteenTunnus) {
+            return;
+          }
+
+          const newSite: LandUseSite = {
+            id: createUniqueSiteId(sites),
+            kohteenTunnus,
+            pintaAlaM2: "",
+            km2: "",
+            kayttotarkoitus: undefined,
+            hallintamuoto: undefined,
+            suojeltu: undefined,
+          };
+          form.change("sites", [...sites, newSite]);
+          resetAddSiteDialog();
+        };
+
+        const handleRemoveSite = (siteId: string) => {
+          if (isCompensationsTableReadOnly) {
+            return;
+          }
+
+          form.change(
+            "sites",
+            sites.filter((site) => site.id !== siteId),
+          );
+        };
 
         const compensationsTableCols = [
           { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
@@ -84,9 +180,12 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           { key: "km2", headerName: "k-m²" },
           { key: "yksikkohinta", headerName: "Yksikköhinta €" },
           { key: "summa", headerName: "Summa €" },
+          ...(isEditMode
+            ? [{ key: "toiminnot", headerName: "Toiminnot" }]
+            : []),
         ];
 
-        const totals = leafSites.reduce(
+        const totals = sites.reduce(
           (accumulator, site) => {
             const row = rowsBySiteId[site.id];
             const pintaAla = parseNumber(site.pintaAlaM2);
@@ -102,7 +201,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           { pintaAlaM2: 0, km2: 0, summa: 0 },
         );
 
-        const compensationsTableRows = leafSites.map((site) => {
+        const compensationsTableRows = sites.map((site, index) => {
           const row = rowsBySiteId[site.id];
           const rowSumma =
             parseNumber(site.km2) * parseNumber(row?.yksikkohinta);
@@ -113,18 +212,87 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
               <a
                 href={createEstateMapLink(site.kohteenTunnus)}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 {site.kohteenTunnus}
               </a>
             ) : (
               "-"
             ),
-            kayttotarkoitus: site.kayttotarkoitus || "-",
-            hallintamuoto: site.hallintamuoto || "-",
-            suojeltu: site.suojeltu || "-",
-            pintaAlaM2: site.pintaAlaM2 || "-",
-            km2: site.km2 || "-",
+            kayttotarkoitus: (
+              <Field name={`sites.${index}.kayttotarkoitus`}>
+                {({ input }) => (
+                  <Select
+                    id={`landuse-compensations-kayttotarkoitus-${site.id}`}
+                    options={kayttotarkoitusOptions}
+                    value={normalizeSelectValue(input.value)}
+                    onChange={(selectedOptions) =>
+                      handleSelectChange(selectedOptions, input.onChange)
+                    }
+                    disabled={isCompensationsTableReadOnly}
+                    texts={{ label: "", placeholder: "Valitse" }}
+                  />
+                )}
+              </Field>
+            ),
+            hallintamuoto: (
+              <Field name={`sites.${index}.hallintamuoto`}>
+                {({ input }) => (
+                  <Select
+                    id={`landuse-compensations-hallintamuoto-${site.id}`}
+                    options={hallintamuotoOptions}
+                    value={normalizeSelectValue(input.value)}
+                    onChange={(selectedOptions) =>
+                      handleSelectChange(selectedOptions, input.onChange)
+                    }
+                    disabled={isCompensationsTableReadOnly}
+                    texts={{ label: "", placeholder: "Valitse" }}
+                  />
+                )}
+              </Field>
+            ),
+            suojeltu: (
+              <Field name={`sites.${index}.suojeltu`}>
+                {({ input }) => (
+                  <Select
+                    id={`landuse-compensations-suojeltu-${site.id}`}
+                    options={suojeltuOptions}
+                    value={normalizeSelectValue(input.value)}
+                    onChange={(selectedOptions) =>
+                      handleSelectChange(selectedOptions, input.onChange)
+                    }
+                    disabled={isCompensationsTableReadOnly}
+                    texts={{ label: "", placeholder: "Valitse" }}
+                  />
+                )}
+              </Field>
+            ),
+            pintaAlaM2: (
+              <Field name={`sites.${index}.pintaAlaM2`}>
+                {({ input }) => (
+                  <TextInput
+                    id={`landuse-compensations-pinta-ala-${site.id}`}
+                    label=""
+                    value={input.value ?? ""}
+                    onChange={input.onChange}
+                    disabled={isCompensationsTableReadOnly}
+                  />
+                )}
+              </Field>
+            ),
+            km2: (
+              <Field name={`sites.${index}.km2`}>
+                {({ input }) => (
+                  <TextInput
+                    id={`landuse-compensations-km2-${site.id}`}
+                    label=""
+                    value={input.value ?? ""}
+                    onChange={input.onChange}
+                    disabled={isCompensationsTableReadOnly}
+                  />
+                )}
+              </Field>
+            ),
             yksikkohinta: (
               <Field name={getRowFieldPath(site.id, "yksikkohinta")}>
                 {({ input }) => (
@@ -141,6 +309,21 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
               </Field>
             ),
             summa: formatLandUseEuroValue(rowSumma),
+            ...(isEditMode
+              ? {
+                  toiminnot: (
+                    <Button
+                      type="button"
+                      variant={ButtonVariant.Supplementary}
+                      iconStart={<IconTrash />}
+                      disabled={isCompensationsTableReadOnly}
+                      onClick={() => handleRemoveSite(site.id)}
+                    >
+                      Poista
+                    </Button>
+                  ),
+                }
+              : {}),
           };
         });
 
@@ -156,6 +339,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             km2: formatLandUseIntegerValue(totals.km2),
             yksikkohinta: "",
             summa: formatLandUseEuroValue(totals.summa),
+            ...(isEditMode ? { toiminnot: "" } : {}),
           },
         ];
 
@@ -247,6 +431,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 className="landuse-detail__fieldset--with-margin"
               >
                 <Button
+                  type="button"
                   variant={ButtonVariant.Supplementary}
                   iconStart={<IconPlusCircleFill />}
                   disabled={!isEditMode}
@@ -293,13 +478,14 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   )}
                   <div className="landuse-detail__compensations-table-header-actions">
                     <Button
+                      type="button"
                       variant={ButtonVariant.Supplementary}
                       iconStart={<IconCopy />}
                     >
                       Kopioi taulukon tiedot
                     </Button>
                   </div>
-                  {leafSites.length > 0 ? (
+                  {sites.length > 0 ? (
                     <Table
                       className="landuse-detail__sites-table landuse-detail__compensations-table"
                       cols={compensationsTableCols}
@@ -311,6 +497,17 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   ) : (
                     <p>Perustietotaulukkoon ei ole vielä kohteita.</p>
                   )}
+                  <div>
+                    <Button
+                      type="button"
+                      variant={ButtonVariant.Supplementary}
+                      iconStart={<IconPlusCircleFill />}
+                      disabled={isCompensationsTableReadOnly}
+                      onClick={() => setIsAddSiteDialogOpen(true)}
+                    >
+                      Lisää kohde
+                    </Button>
+                  </div>
                 </div>
               </Fieldset>
 
@@ -343,6 +540,49 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   </Field>
                 </div>
               </Fieldset>
+
+              <Dialog
+                id="landuse-compensations-add-site-dialog"
+                isOpen={isAddSiteDialogOpen}
+                aria-labelledby="landuse-compensations-add-site-dialog-title"
+                closeButtonLabelText="Sulje"
+                close={resetAddSiteDialog}
+              >
+                <Dialog.Header
+                  id="landuse-compensations-add-site-dialog-title"
+                  title="Lisää kohde"
+                />
+                <Dialog.Content>
+                  <TextInput
+                    id="landuse-compensations-new-kohteen-tunnus"
+                    label="Kohteen tunnus"
+                    value={newKohteenTunnus}
+                    onChange={(event) =>
+                      setNewKohteenTunnus(event.target.value)
+                    }
+                    required
+                  />
+                </Dialog.Content>
+                <Dialog.ActionButtons>
+                  <Button
+                    type="button"
+                    variant={ButtonVariant.Secondary}
+                    onClick={resetAddSiteDialog}
+                  >
+                    Peruuta
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={ButtonVariant.Primary}
+                    onClick={handleAddSite}
+                    disabled={
+                      isCompensationsTableReadOnly || !newKohteenTunnus.trim()
+                    }
+                  >
+                    Lisää kohde
+                  </Button>
+                </Dialog.ActionButtons>
+              </Dialog>
             </div>
           </form>
         );

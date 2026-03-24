@@ -2,7 +2,6 @@ import { mockLandUseTabStore } from "../mocks/landUseMockData";
 import {
   clonePartiesFormValues,
   createEmptyPartiesFormValues,
-  mapMockToSitesFormValues,
   mapMockToSummaryFormValues,
 } from "./landUseFormValues";
 import { hasAgreementTab, setAgreementTab } from "./landUseDb";
@@ -34,19 +33,15 @@ export const seedLandUseDb = async (): Promise<void> => {
       const summaryData = mapMockToSummaryFormValues(
         agreementMock?.summary ?? null,
       );
-      const sitesData =
-        agreementMock?.sites ??
-        mapMockToSitesFormValues(agreementMock?.summary ?? null);
       const partiesData = agreementMock?.parties
         ? clonePartiesFormValues(agreementMock.parties)
         : createEmptyPartiesFormValues();
 
       await seedTabIfMissing(agreementId, "summary", summaryData);
-      await seedTabIfMissing(agreementId, "sites", sitesData);
       await seedTabIfMissing(agreementId, "parties", partiesData);
 
       const emptyTabs = LAND_USE_TAB_KEYS.filter(
-        (key) => key !== "summary" && key !== "parties" && key !== "sites",
+        (key) => key !== "summary" && key !== "parties",
       );
 
       await Promise.all(

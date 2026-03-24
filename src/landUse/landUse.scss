@@ -275,47 +275,6 @@
   }
 }
 
-.landuse-detail__tree-wrapper {
-  padding: 16px;
-  border: 1px solid var(--color-black-20);
-  border-radius: 4px;
-}
-
-.landuse-detail__sites-tree-item--non-leaf > .MuiTreeItem-content {
-  background-color: var(--color-black-5);
-  color: var(--color-black-60);
-}
-
-.landuse-detail__sites-tree-item--non-leaf > .MuiTreeItem-content:hover {
-  background-color: var(--color-black-10);
-}
-
-.landuse-detail__sites-tree-item--non-leaf
-  > .MuiTreeItem-content
-  .MuiTreeItem-label {
-  color: var(--color-black-60);
-}
-
-.landuse-detail__split-view {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 24px;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.landuse-detail__split-panel {
-  min-height: 320px;
-}
-
-.landuse-detail__details-panel {
-  padding: 16px;
-  border: 1px solid var(--color-black-20);
-  border-radius: 4px;
-}
-
 .landuse-detail__sites-table-wrapper {
   overflow-x: auto;
 }

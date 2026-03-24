@@ -3,15 +3,8 @@ import type { LandUseCollateralsFormValues } from "../components/tabs/LandUseCol
 import type { LandUseDecisionsFormValues } from "../components/tabs/LandUseDecisions";
 import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoicing";
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
-import type {
-  LandUseMonitoringFormValues,
-  MonitoringToteumaEntry,
-} from "../components/tabs/LandUseMonitoring";
+import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
-import type {
-  LandUseSiteTreeNode,
-  LandUseSitesFormValues,
-} from "../components/tabs/LandUseSites";
 import type { LandUseSummaryFormValues } from "../components/tabs/LandUseSummary";
 import {
   landUseAsemakaavaListItems,
@@ -32,22 +25,6 @@ import type { LandUseListItem } from "./landUseListTypes";
 export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> =>
   landUseAsemakaavaListItems;
 
-const flattenSites = (items: LandUseSiteTreeNode[]): LandUseSiteTreeNode[] => {
-  const flattened: LandUseSiteTreeNode[] = [];
-
-  const collect = (nodes: LandUseSiteTreeNode[]) => {
-    nodes.forEach((node) => {
-      flattened.push(node);
-      if (node.children?.length) {
-        collect(node.children);
-      }
-    });
-  };
-
-  collect(items);
-  return flattened;
-};
-
 export const getSummary = async (
   agreementId: string,
 ): Promise<LandUseSummaryFormValues | null> =>
@@ -61,17 +38,17 @@ export const getLandUseList = async (): Promise<LandUseListItem[]> => {
 
   const listItems = await Promise.all(
     agreementIds.map(async (agreementId) => {
-      const [summary, parties, sites] = await Promise.all([
+      const [summary, parties, compensations] = await Promise.all([
         getSummary(agreementId),
         getParties(agreementId),
-        getSites(agreementId),
+        getCompensations(agreementId),
       ]);
 
       const partyName = parties?.customer?.details?.name ?? "";
-      const flatSites = flattenSites(sites?.items ?? []);
+      const sites = compensations?.sites ?? [];
       const kohdeValues =
-        flatSites
-          ?.map((kohde) => kohde.kohteenTunnus)
+        sites
+          .map((site) => site.kohteenTunnus)
           .filter((value): value is string => Boolean(value))
           .join(", ") ?? "";
 
@@ -131,19 +108,6 @@ export const getParties = async (
   agreementId: string,
 ): Promise<LandUsePartiesFormValues | null> =>
   getAgreementTab<LandUsePartiesFormValues>(agreementId, "parties");
-
-export const getSites = async (
-  agreementId: string,
-): Promise<LandUseSitesFormValues | null> =>
-  getAgreementTab<LandUseSitesFormValues>(agreementId, "sites");
-
-export const updateSites = async (
-  agreementId: string,
-  values: LandUseSitesFormValues,
-): Promise<LandUseSitesFormValues> => {
-  await setAgreementTab(agreementId, "sites", values);
-  return values;
-};
 
 export const updateParties = async (
   agreementId: string,

@@ -48,15 +48,25 @@ vi.mock("../tabs/LandUseSummary", () => ({
   ),
 }));
 
-vi.mock("../tabs/LandUseSites", () => ({
-  LandUseSites: ({ form, isEditMode }: { form: any; isEditMode: boolean }) => (
+vi.mock("../tabs/LandUseCompensations", () => ({
+  LandUseCompensations: ({
+    form,
+    isEditMode,
+  }: {
+    form: any;
+    isEditMode: boolean;
+  }) => (
     <Form
       form={form}
       onSubmit={() => {}}
       render={() => (
-        <Field name="sitesField">
+        <Field name="compensationsField">
           {({ input }) => (
-            <input aria-label="sites-input" {...input} disabled={!isEditMode} />
+            <input
+              aria-label="compensations-input"
+              {...input}
+              disabled={!isEditMode}
+            />
           )}
         </Field>
       )}
@@ -80,32 +90,6 @@ vi.mock("../tabs/LandUseParties", () => ({
           {({ input }) => (
             <input
               aria-label="parties-input"
-              {...input}
-              disabled={!isEditMode}
-            />
-          )}
-        </Field>
-      )}
-    />
-  ),
-}));
-
-vi.mock("../tabs/LandUseCompensations", () => ({
-  LandUseCompensations: ({
-    form,
-    isEditMode,
-  }: {
-    form: any;
-    isEditMode: boolean;
-  }) => (
-    <Form
-      form={form}
-      onSubmit={() => {}}
-      render={() => (
-        <Field name="compensationsField">
-          {({ input }) => (
-            <input
-              aria-label="compensations-input"
               {...input}
               disabled={!isEditMode}
             />
@@ -336,21 +320,22 @@ vi.mock("hds-react", async (importOriginal) => {
 
 vi.mock("../../api/landUseApi", () => ({
   getSummary: vi.fn(),
+  getLandUseList: vi.fn(),
   getParties: vi.fn(),
-  getSites: vi.fn(),
   getCompensations: vi.fn(),
   getMonitoring: vi.fn(),
   getDecisions: vi.fn(),
   getInvoicing: vi.fn(),
   getMap: vi.fn(),
+  getCollaterals: vi.fn(),
   updateSummary: vi.fn(),
   updateParties: vi.fn(),
-  updateSites: vi.fn(),
   updateCompensations: vi.fn(),
   updateMonitoring: vi.fn(),
   updateDecisions: vi.fn(),
   updateInvoicing: vi.fn(),
   updateMap: vi.fn(),
+  updateCollaterals: vi.fn(),
 }));
 
 describe("LandUseDetailPage", () => {
@@ -363,12 +348,12 @@ describe("LandUseDetailPage", () => {
       tila: LAND_USE_NEGOTIATION_PHASES.VIREILLA,
       summaryField: "initial-summary",
     } as any);
-    vi.mocked(landUseApi.getSites).mockResolvedValue({
-      items: [],
-      sitesField: "initial-sites",
-    } as any);
+    vi.mocked(landUseApi.getLandUseList).mockResolvedValue([
+      { identifier: "LU-1" },
+    ] as any);
     vi.mocked(landUseApi.getParties).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getCompensations).mockResolvedValue({} as any);
+    vi.mocked(landUseApi.getCollaterals).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getMonitoring).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getDecisions).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getInvoicing).mockResolvedValue({} as any);
@@ -377,13 +362,13 @@ describe("LandUseDetailPage", () => {
     vi.mocked(landUseApi.updateSummary).mockImplementation(
       async (_agreementId, values) => values as any,
     );
-    vi.mocked(landUseApi.updateSites).mockImplementation(
-      async (_agreementId, values) => values as any,
-    );
     vi.mocked(landUseApi.updateParties).mockImplementation(
       async (_agreementId, values) => values as any,
     );
     vi.mocked(landUseApi.updateCompensations).mockImplementation(
+      async (_agreementId, values) => values as any,
+    );
+    vi.mocked(landUseApi.updateCollaterals).mockImplementation(
       async (_agreementId, values) => values as any,
     );
     vi.mocked(landUseApi.updateMonitoring).mockImplementation(
@@ -418,24 +403,32 @@ describe("LandUseDetailPage", () => {
       expect(screen.getByRole("button", { name: "Muokkaa" })).toBeDefined();
     });
 
+    // Wait for initial data load to complete before editing
+    await waitFor(() => {
+      expect(landUseApi.getSummary).toHaveBeenCalled();
+    });
+
     fireEvent.click(screen.getByRole("button", { name: "Muokkaa" }));
 
     await waitFor(() => {
       expect(screen.getByLabelText("summary-input")).toBeDefined();
+      expect(
+        (screen.getByLabelText("summary-input") as HTMLInputElement).value,
+      ).toBe("initial-summary");
     });
 
     fireEvent.change(screen.getByLabelText("summary-input"), {
       target: { value: "summary-updated" },
     });
 
-    fireEvent.click(screen.getByRole("tab", { name: /Kohteet/i }));
+    fireEvent.click(screen.getByRole("tab", { name: /Korvaukset/i }));
 
     await waitFor(() => {
-      expect(screen.getByLabelText("sites-input")).toBeDefined();
+      expect(screen.getByLabelText("compensations-input")).toBeDefined();
     });
 
-    fireEvent.change(screen.getByLabelText("sites-input"), {
-      target: { value: "sites-updated" },
+    fireEvent.change(screen.getByLabelText("compensations-input"), {
+      target: { value: "compensations-updated" },
     });
 
     fireEvent.click(screen.getByRole("tab", { name: /Valvonta/i }));
@@ -443,7 +436,7 @@ describe("LandUseDetailPage", () => {
 
     await waitFor(() => {
       expect(landUseApi.updateSummary).toHaveBeenCalledTimes(1);
-      expect(landUseApi.updateSites).toHaveBeenCalledTimes(1);
+      expect(landUseApi.updateCompensations).toHaveBeenCalledTimes(1);
     });
 
     expect(landUseApi.updateSummary).toHaveBeenCalledWith(
@@ -451,9 +444,9 @@ describe("LandUseDetailPage", () => {
       expect.objectContaining({ summaryField: "summary-updated" }),
     );
 
-    expect(landUseApi.updateSites).toHaveBeenCalledWith(
+    expect(landUseApi.updateCompensations).toHaveBeenCalledWith(
       "LU-1",
-      expect.objectContaining({ sitesField: "sites-updated" }),
+      expect.objectContaining({ compensationsField: "compensations-updated" }),
     );
   });
 
@@ -498,7 +491,7 @@ describe("LandUseDetailPage", () => {
       expect(screen.getByRole("tab", { name: /Perustiedot/i })).toBeDefined();
     });
 
-    fireEvent.click(screen.getByRole("tab", { name: /Kohteet/i }));
+    fireEvent.click(screen.getByRole("tab", { name: /Korvaukset/i }));
     fireEvent.click(screen.getByRole("tab", { name: /Perustiedot/i }));
 
     expect(mockNavigate).toHaveBeenCalledWith(

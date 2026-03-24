@@ -2,7 +2,6 @@ import { normalizeSelectValue } from "../fieldUtils";
 import type { MockLandUseData } from "../mocks/landUseMockData";
 import type { LandUseSummaryFormValues } from "../components/tabs/LandUseSummary";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
-import type { LandUseSitesFormValues } from "../components/tabs/LandUseSites";
 
 export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
   maankayttosopimusType: undefined,
@@ -58,25 +57,6 @@ export const mapMockToSummaryFormValues = (
     kasittelyvaiheenViimeisinPvm: mockData.kasittelyvaiheenViimeisinPvm,
     asemakaavanHyvaksyjä: mockData.asemakaavanHyvaksyjä,
     asemakaavanDiaarinumero: mockData.asemakaavanDiaarinumero,
-  };
-};
-
-export const mapMockToSitesFormValues = (
-  mockData: MockLandUseData | null,
-): LandUseSitesFormValues => {
-  if (!mockData) {
-    return { items: [] };
-  }
-
-  return {
-    items: mockData.kohteet.map((kohde, index) => ({
-      id: `${mockData.identifier}-site-${index + 1}`,
-      kohteenTunnus: kohde.kohteenTunnus,
-      kayttotarkoitus: normalizeSelectValue(kohde.kayttotarkoitus),
-      hallintamuoto: normalizeSelectValue(kohde.hallintamuoto),
-      suojeltu: normalizeSelectValue(kohde.suojeltu),
-      label: kohde.kohteenTunnus,
-    })),
   };
 };
 

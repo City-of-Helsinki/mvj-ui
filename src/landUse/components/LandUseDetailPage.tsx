@@ -19,7 +19,6 @@ import {
 import { createForm } from "final-form";
 import arrayMutators from "final-form-arrays";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LandUseSites, type LandUseSitesFormValues } from "./tabs/LandUseSites";
 import {
   LandUseSummary,
   type LandUseSummaryFormValues,
@@ -59,7 +58,6 @@ import {
   getMap,
   getMonitoring,
   getParties,
-  getSites,
   getSummary,
   updateCompensations,
   updateCollaterals,
@@ -68,7 +66,6 @@ import {
   updateMap,
   updateMonitoring,
   updateParties,
-  updateSites,
   updateSummary,
 } from "../api/landUseApi";
 import { LAND_USE_NEGOTIATION_PHASES } from "../options";
@@ -80,7 +77,6 @@ interface FormState {
 
 export type FormKey =
   | "summary"
-  | "sites"
   | "parties"
   | "compensations"
   | "collaterals"
@@ -104,7 +100,6 @@ const TABS_CONFIG: TabConfig[] = [
     hasForm: true,
     formKey: "summary",
   },
-  { label: "Kohteet", queryKey: "sites", hasForm: true, formKey: "sites" },
   {
     label: "Osapuolet",
     queryKey: "parties",
@@ -204,7 +199,6 @@ const LandUseDetailPage: React.FC = () => {
    */
   const [formStates, setFormStates] = useState<Record<string, FormState>>({
     summary: { ...initialFormState },
-    sites: { ...initialFormState },
     parties: { ...initialFormState },
     compensations: { ...initialFormState },
     collaterals: { ...initialFormState },
@@ -256,13 +250,6 @@ const LandUseDetailPage: React.FC = () => {
   const partiesQuery = useQuery({
     queryKey: ["land-use", agreementId, "parties"],
     queryFn: () => getParties(agreementId),
-    enabled: canLoadAgreementData,
-    refetchOnWindowFocus: false,
-  });
-
-  const sitesQuery = useQuery({
-    queryKey: ["land-use", agreementId, "sites"],
-    queryFn: () => getSites(agreementId),
     enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
@@ -326,17 +313,6 @@ const LandUseDetailPage: React.FC = () => {
       createForm<LandUsePartiesFormValues>({
         onSubmit: (values) => {
           console.log("Parties form submitted:", values);
-        },
-        mutators: { ...arrayMutators },
-      }),
-    [],
-  );
-
-  const sitesFormApi = useMemo(
-    () =>
-      createForm<LandUseSitesFormValues>({
-        onSubmit: (values) => {
-          console.log("Sites form submitted:", values);
         },
         mutators: { ...arrayMutators },
       }),
@@ -413,7 +389,6 @@ const LandUseDetailPage: React.FC = () => {
   const formApis = useMemo(
     () => ({
       summary: summaryFormApi,
-      sites: sitesFormApi,
       parties: partiesFormApi,
       compensations: compensationsFormApi,
       collaterals: collateralsFormApi,
@@ -424,7 +399,6 @@ const LandUseDetailPage: React.FC = () => {
     }),
     [
       summaryFormApi,
-      sitesFormApi,
       partiesFormApi,
       compensationsFormApi,
       collateralsFormApi,
@@ -481,12 +455,6 @@ const LandUseDetailPage: React.FC = () => {
     partiesQuery.dataUpdatedAt,
     agreementId,
   ]);
-
-  useEffect(() => {
-    if (sitesQuery.data) {
-      sitesFormApi.initialize(sitesQuery.data);
-    }
-  }, [sitesFormApi, sitesQuery.data, sitesQuery.dataUpdatedAt, agreementId]);
 
   useEffect(() => {
     if (compensationsQuery.data) {
@@ -607,14 +575,6 @@ const LandUseDetailPage: React.FC = () => {
     },
   });
 
-  const sitesMutation = useMutation({
-    mutationFn: (values: LandUseSitesFormValues) =>
-      updateSites(agreementId, values),
-    onSuccess: (data) => {
-      queryClient.setQueryData(["land-use", agreementId, "sites"], data);
-    },
-  });
-
   const compensationsMutation = useMutation({
     mutationFn: (values: LandUseCompensationsFormValues) =>
       updateCompensations(agreementId, values),
@@ -703,11 +663,6 @@ const LandUseDetailPage: React.FC = () => {
             partiesMutation.mutateAsync(
               state.values as LandUsePartiesFormValues,
             ),
-          );
-          break;
-        case "sites":
-          mutations.push(
-            sitesMutation.mutateAsync(state.values as LandUseSitesFormValues),
           );
           break;
         case "compensations":
@@ -911,14 +866,6 @@ const LandUseDetailPage: React.FC = () => {
         </TabPanel>
 
         <TabPanel>
-          <LandUseSites
-            form={sitesFormApi}
-            isEditMode={isEditMode}
-            isDecisionPhase={isDecisionPhase}
-          />
-        </TabPanel>
-
-        <TabPanel>
           <LandUseParties form={partiesFormApi} isEditMode={isEditMode} />
         </TabPanel>
 
@@ -927,7 +874,6 @@ const LandUseDetailPage: React.FC = () => {
             form={compensationsFormApi}
             isEditMode={isEditMode}
             isDecisionPhase={isDecisionPhase}
-            sites={sitesQuery.data?.items ?? []}
           />
         </TabPanel>
 
@@ -935,7 +881,7 @@ const LandUseDetailPage: React.FC = () => {
           <LandUseCollaterals
             form={collateralsFormApi}
             isEditMode={isEditMode}
-            sites={sitesQuery.data?.items ?? []}
+            sites={compensationsQuery.data?.sites ?? []}
             perushinta={compensationsQuery.data?.perushinta}
             compensationsRowsBySiteId={
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
@@ -952,7 +898,7 @@ const LandUseDetailPage: React.FC = () => {
           <LandUseMonitoring
             form={monitoringFormApi}
             isEditMode={isEditMode}
-            sites={sitesQuery.data?.items ?? []}
+            sites={compensationsQuery.data?.sites ?? []}
             compensationsRowsBySiteId={
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
             }
