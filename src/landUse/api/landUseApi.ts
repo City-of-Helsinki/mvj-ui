@@ -142,6 +142,7 @@ export const updateMonitoring = async (
 ): Promise<LandUseMonitoringFormValues> => {
   const sanitizedValues: LandUseMonitoringFormValues = {
     toteumaEntriesBySiteId: values.toteumaEntriesBySiteId,
+    toteutunutHallintamuotoBySiteId: values.toteutunutHallintamuotoBySiteId,
     sakkoRows: values.sakkoRows,
   };
 

@@ -34,6 +34,7 @@ export interface MonitoringToteumaEntry {
 
 export interface LandUseMonitoringFormValues {
   toteumaEntriesBySiteId?: Record<string, MonitoringToteumaEntry[]>;
+  toteutunutHallintamuotoBySiteId?: Record<string, string | undefined>;
   sakkoRows?: MonitoringSakkoRow[];
 }
 
@@ -119,6 +120,8 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
         const toteumaEntriesBySiteId = values.toteumaEntriesBySiteId ?? {};
+        const toteutunutHallintamuotoBySiteId =
+          values.toteutunutHallintamuotoBySiteId ?? {};
         const sakkoRows = values.sakkoRows ?? [];
         const selectedEntries = selectedSiteId
           ? (toteumaEntriesBySiteId[selectedSiteId] ?? [])
@@ -127,6 +130,10 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
         const monitoringPerustaulukkoCols = [
           { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
           { key: "hallintamuoto", headerName: "Hallintamuoto" },
+          {
+            key: "toteutunutHallintamuoto",
+            headerName: "Toteutunut hallintamuoto",
+          },
           { key: "vaadittuKm2", headerName: "Vaadittu k-m²" },
           { key: "toteutunutKm2", headerName: "Toteutunut k-m²" },
           { key: "toiminnot", headerName: "Toiminnot" },
@@ -145,6 +152,12 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             vaadittuValue !== null &&
             toteutunutValue !== null &&
             vaadittuValue === toteutunutValue;
+          const rowHallintamuotoOptions = (site.hallintamuoto ?? []).map(
+            (value) => ({
+              label: value,
+              value,
+            }),
+          );
           const yksikkohinta =
             compensationsRowsBySiteId[site.id]?.yksikkohinta ?? "-";
 
@@ -152,6 +165,31 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             id: `perustaulukko-row-${site.id}-${index}`,
             kohteenTunnus: site.kohteenTunnus || "-",
             hallintamuoto: formatSiteHallintamuoto(site.hallintamuoto),
+            toteutunutHallintamuoto: isEditMode ? (
+              <Field name={`toteutunutHallintamuotoBySiteId.${site.id}`}>
+                {({ input }) => (
+                  <Select
+                    id={`monitoring-perustaulukko-toteutunut-hallintamuoto-${site.id}`}
+                    options={rowHallintamuotoOptions}
+                    value={normalizeSelectValue(
+                      input.value ??
+                        toteutunutHallintamuotoBySiteId[site.id] ??
+                        undefined,
+                    )}
+                    onChange={(selectedOptions) =>
+                      handleSelectChange(selectedOptions, input.onChange)
+                    }
+                    disabled={rowHallintamuotoOptions.length === 0}
+                    texts={{
+                      label: "",
+                      placeholder: "Valitse",
+                    }}
+                  />
+                )}
+              </Field>
+            ) : (
+              (toteutunutHallintamuotoBySiteId[site.id] ?? "-")
+            ),
             vaadittuKm2: site.km2 || "-",
             toteutunutKm2: latestToteutunutEntry ? (
               <span
