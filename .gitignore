@@ -14,6 +14,10 @@ npm-debug.log
 
 report.*.json
 
+*.png
+*.jpg
+*.jpeg
+
 docker-compose.override.yml
 docker-compose.dev.yml
 coverage.xml
