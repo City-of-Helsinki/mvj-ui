@@ -33,7 +33,7 @@ const baseState: PlotApplicationsState = {
   isFormValidById: {
     "plot-application": true,
   },
-  subTypes: null,
+  subTypes: [],
   plotSearch: null,
   isFetchingTargetInfoCheckAttributes: false,
   targetInfoCheckAttributes: null,

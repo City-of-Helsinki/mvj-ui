@@ -1,5 +1,5 @@
 import type { Action, Attributes } from "types";
-import type { PlotSearch } from "@/plotSearch/types";
+import type { PlotSearch, PlotSearchSubType } from "@/plotSearch/types";
 import type { ApplicationFormSection } from "@/application/types";
 export type PlotApplicationsState = {
   isFetching: boolean;
@@ -11,7 +11,7 @@ export type PlotApplicationsState = {
   isSaving: boolean;
   collapseStates: Record<string, any>;
   isFormValidById: Record<string, any>;
-  subTypes: Array<Record<string, any>> | null | undefined;
+  subTypes: Array<PlotSearchSubType>;
   isFetchingSubTypes: boolean;
   isPerformingFileOperation: boolean;
   currentEditorTargets: Array<Record<string, any>>;
@@ -69,7 +69,7 @@ export type ReceivePlotApplicationSaveFailedAction = Action<string, void>;
 export type FetchPlotSearchSubtypesAction = Action<string, void>;
 export type ReceivePlotSearchSubtypesAction = Action<
   string,
-  Record<string, any>
+  Array<PlotSearchSubType>
 >;
 export type PlotSearchSubtypesNotFoundAction = Action<string, void>;
 export type FetchApplicationRelatedFormAction = Action<string, void>;

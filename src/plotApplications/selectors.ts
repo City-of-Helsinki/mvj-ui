@@ -7,7 +7,7 @@ import type {
   PlotApplication,
   PlotApplicationsList,
 } from "@/plotApplications/types";
-import type { PlotSearch } from "@/plotSearch/types";
+import type { PlotSearch, PlotSearchSubType } from "@/plotSearch/types";
 export const getApplicationsByBBox: Selector<PlotApplicationsList, void> = (
   state: RootState,
 ): PlotApplicationsList => state.plotApplications.listByBBox;
@@ -65,9 +65,9 @@ export const getErrorsByFormName: Selector<
 
   return null;
 };
-export const getPlotSearchSubTypes: Selector<Record<string, any>, void> = (
+export const getPlotSearchSubTypes: Selector<Array<PlotSearchSubType>, void> = (
   state: RootState,
-): Record<string, any> => state.plotApplications.subTypes;
+): Array<PlotSearchSubType> => state.plotApplications.subTypes || [];
 export const getIsFetchingApplicationRelatedForm: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.plotApplications.isFetchingForm;

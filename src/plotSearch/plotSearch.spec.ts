@@ -66,7 +66,7 @@ const baseState: PlotSearchState = {
   isFetchingPlanUnitAttributes: false,
   pendingCustomDetailedPlanFetches: [],
   isFetchingCustomDetailedPlanAttributes: false,
-  subTypes: null,
+  subTypes: [],
   isFetchingForm: false,
   isFetchingTemplateForms: false,
   form: null,

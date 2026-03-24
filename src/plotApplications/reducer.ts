@@ -130,17 +130,18 @@ const isFormValidByIdReducer: Reducer<Record<string, any>> = handleActions(
     [FormNames.PLOT_APPLICATION]: true,
   },
 );
-const subTypesReducer: Reducer<Record<string, any>> = handleActions(
-  {
-    ["mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES"]: (
-      state: Record<string, any>,
-      { payload: subTypes }: ReceivePlotSearchSubtypesAction,
-    ) => {
-      return subTypes;
+const subTypesReducer: Reducer<PlotApplicationsState["subTypes"]> =
+  handleActions(
+    {
+      ["mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES"]: (
+        _state: PlotApplicationsState["subTypes"],
+        { payload: subTypes }: ReceivePlotSearchSubtypesAction,
+      ) => {
+        return subTypes;
+      },
     },
-  },
-  null,
-);
+    [],
+  );
 const isFetchingSubTypesReducer: Reducer<boolean> = handleActions(
   {
     ["mvj/plotApplications/FETCH_PLOT_SEARCH_SUB_TYPES"]: () => true,
