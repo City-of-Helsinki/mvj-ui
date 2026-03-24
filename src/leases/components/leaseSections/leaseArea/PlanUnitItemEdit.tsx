@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { Link, useLocation } from "react-router-dom";
+import { useField, useForm } from "react-final-form";
 import isEmpty from "lodash/isEmpty";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
@@ -9,7 +10,6 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
 import FormField from "@/components/form/final-form/FormField";
 import RemoveButton from "@/components/form/RemoveButton";
-import { FormNames } from "@/enums";
 import {
   LeasePlanUnitsFieldPaths,
   LeasePlanUnitsFieldTitles,
@@ -27,62 +27,98 @@ import { getAttributes, getIsSaveClicked } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-import { FormApi } from "final-form";
 
 type Props = {
-  formApi: FormApi;
   field: string;
   onRemove: (...args: Array<any>) => any;
 };
 
-const PlanUnitItemEdit: React.FC<Props> = ({
-  formApi,
-  field,
-  onRemove,
-}: Props) => {
-  const dispatch = useDispatch();
-
+const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }) => {
   const attributes: Attributes = useSelector(getAttributes);
-  const isSaveClicked = useSelector(getIsSaveClicked);
+  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
     useSelector(getUsersPermissions);
+  const form = useForm();
   const location = useLocation();
 
-  const geometry = formApi.getFieldState(`${field}.geometry`)?.value;
-  const id = formApi.getFieldState(`${field}.id`)?.value;
-  const identifier = formApi.getFieldState(`${field}.identifier`)?.value;
-  const area = formApi.getFieldState(`${field}.area`)?.value;
-  const section_area = formApi.getFieldState(`${field}.section_area`)?.value;
-  const detailed_plan_identifier = formApi.getFieldState(
-    `${field}.detailed_plan_identifier`,
-  )?.value;
-  const detailed_plan_latest_processing_date = formApi.getFieldState(
-    `${field}.detailed_plan_latest_processing_date`,
-  )?.value;
-  const detailed_plan_latest_processing_date_note = formApi.getFieldState(
-    `${field}.detailed_plan_latest_processing_date_note`,
-  )?.value;
-  const plot_division_identifier = formApi.getFieldState(
-    `${field}.plot_division_identifier`,
-  )?.value;
-  const plot_division_state = formApi.getFieldState(
-    `${field}.plot_division_state`,
-  )?.value;
-  const plot_division_effective_date = formApi.getFieldState(
-    `${field}.plot_division_effective_date`,
-  )?.value;
-  const plan_unit_type = formApi.getFieldState(
-    `${field}.plan_unit_type`,
-  )?.value;
-  const plan_unit_state = formApi.getFieldState(
-    `${field}.plan_unit_state`,
-  )?.value;
-  const plan_unit_intended_use = formApi.getFieldState(
-    `${field}.plan_unit_intended_use`,
-  )?.value;
-  const is_master = formApi.getFieldState(`${field}.is_master`)?.value;
+  const {
+    input: { value: id },
+  } = useField(`${field}.id`, { subscription: { value: true } });
+  const {
+    input: { value: geometry },
+  } = useField(`${field}.geometry`, { subscription: { value: true } });
+  const {
+    input: { value: identifier },
+  } = useField(`${field}.identifier`, { subscription: { value: true } });
+  const {
+    input: { value: area },
+  } = useField(`${field}.area`, { subscription: { value: true } });
+  const {
+    input: { value: section_area },
+  } = useField(`${field}.section_area`, { subscription: { value: true } });
+  const {
+    input: { value: detailed_plan_identifier },
+  } = useField(`${field}.detailed_plan_identifier`, {
+    subscription: { value: true },
+  });
+  const {
+    input: { value: detailed_plan_latest_processing_date },
+  } = useField(`${field}.detailed_plan_latest_processing_date`, {
+    subscription: { value: true },
+  });
+  const {
+    input: { value: detailed_plan_latest_processing_date_note },
+  } = useField(`${field}.detailed_plan_latest_processing_date_note`, {
+    subscription: { value: true },
+  });
+  const {
+    input: { value: plot_division_identifier },
+  } = useField(`${field}.plot_division_identifier`, {
+    subscription: { value: true },
+  });
+  const {
+    input: { value: plot_division_state },
+  } = useField(`${field}.plot_division_state`, {
+    subscription: { value: true },
+  });
+  const {
+    input: { value: plot_division_effective_date },
+  } = useField(`${field}.plot_division_effective_date`, {
+    subscription: { value: true },
+  });
+  const {
+    input: { value: plan_unit_type },
+  } = useField(`${field}.plan_unit_type`, { subscription: { value: true } });
+  const {
+    input: { value: plan_unit_state },
+  } = useField(`${field}.plan_unit_state`, { subscription: { value: true } });
+  const {
+    input: { value: plan_unit_intended_use },
+  } = useField(`${field}.plan_unit_intended_use`, {
+    subscription: { value: true },
+  });
+  const {
+    input: { value: is_master },
+  } = useField(`${field}.is_master`, { subscription: { value: true } });
 
+  // Snapshot of values
   const initialValuesRef = useRef({
+    identifier,
+    area,
+    section_area,
+    detailed_plan_identifier,
+    detailed_plan_latest_processing_date,
+    detailed_plan_latest_processing_date_note,
+    plot_division_identifier,
+    plot_division_state,
+    plot_division_effective_date,
+    plan_unit_type,
+    plan_unit_state,
+    plan_unit_intended_use,
+    is_master,
+  });
+
+  const prevValuesRef = useRef({
     identifier,
     area,
     section_area,
@@ -97,57 +133,99 @@ const PlanUnitItemEdit: React.FC<Props> = ({
     plan_unit_intended_use,
   });
 
+  /* The logic was inside 'componentDidUpgrade' -lifecycle method, so after refactoring to 
+    'useEffect'-hook it now requires a machanism to skip the component mounting event. Therefore
+    we use the 'isFirstRender'-ref. Otherwise entering edit mode will cause the form to dirty
+    because of form.change -call.
+  */
+  const isFirstRenderRef = useRef(true);
+
+  /* The state-logic contained here is just a faithful conversion of the original class-based 
+    implementation */
   useEffect(() => {
-    if (is_master) return;
+    const initial = initialValuesRef.current;
+    const prev = prevValuesRef.current;
+    const currentValues = {
+      identifier,
+      area,
+      section_area,
+      detailed_plan_identifier,
+      detailed_plan_latest_processing_date,
+      detailed_plan_latest_processing_date_note,
+      plot_division_identifier,
+      plot_division_state,
+      plot_division_effective_date,
+      plan_unit_type,
+      plan_unit_state,
+      plan_unit_intended_use,
+    };
 
-    const initialValues = initialValuesRef.current;
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false;
+      return;
+    }
 
-    const hasChanged =
-      initialValues.identifier != identifier ||
-      initialValues.area != area ||
-      initialValues.section_area != section_area ||
-      initialValues.detailed_plan_identifier != detailed_plan_identifier ||
-      initialValues.detailed_plan_latest_processing_date !=
+    if (initial.is_master) {
+      prevValuesRef.current = currentValues;
+      return;
+    }
+
+    if (
+      initial.identifier == identifier &&
+      initial.area == area &&
+      initial.section_area == section_area &&
+      initial.detailed_plan_identifier == detailed_plan_identifier &&
+      initial.detailed_plan_latest_processing_date ==
+        detailed_plan_latest_processing_date &&
+      initial.detailed_plan_latest_processing_date_note ==
+        detailed_plan_latest_processing_date_note &&
+      initial.plot_division_identifier == plot_division_identifier &&
+      initial.plot_division_state == plot_division_state &&
+      initial.plot_division_effective_date == plot_division_effective_date &&
+      initial.plan_unit_type == plan_unit_type &&
+      initial.plan_unit_state == plan_unit_state &&
+      initial.plan_unit_intended_use == plan_unit_intended_use
+    ) {
+      form.change(`${field}.is_master`, false);
+      prevValuesRef.current = currentValues;
+      return;
+    }
+
+    if (is_master) {
+      prevValuesRef.current = currentValues;
+      return;
+    }
+
+    if (
+      prev.identifier != identifier ||
+      prev.area != area ||
+      prev.section_area != section_area ||
+      prev.detailed_plan_identifier != detailed_plan_identifier ||
+      prev.detailed_plan_latest_processing_date !=
         detailed_plan_latest_processing_date ||
-      initialValues.detailed_plan_latest_processing_date_note !=
+      prev.detailed_plan_latest_processing_date_note !=
         detailed_plan_latest_processing_date_note ||
-      initialValues.plot_division_identifier != plot_division_identifier ||
-      initialValues.plot_division_state != plot_division_state ||
-      initialValues.plot_division_effective_date !=
-        plot_division_effective_date ||
-      initialValues.plan_unit_type != plan_unit_type ||
-      initialValues.plan_unit_state != plan_unit_state ||
-      initialValues.plan_unit_intended_use != plan_unit_intended_use;
-
-    formApi.change(`${field}.is_master`, hasChanged);
-  }, [
-    identifier,
-    area,
-    section_area,
-    detailed_plan_identifier,
-    detailed_plan_latest_processing_date,
-    detailed_plan_latest_processing_date_note,
-    plot_division_identifier,
-    plot_division_state,
-    plot_division_effective_date,
-    plan_unit_type,
-    plan_unit_state,
-    plan_unit_intended_use,
-    is_master,
-    formApi,
-    field,
-    dispatch,
-  ]);
+      prev.plot_division_identifier != plot_division_identifier ||
+      prev.plot_division_state != plot_division_state ||
+      prev.plot_division_effective_date != plot_division_effective_date ||
+      prev.plan_unit_type != plan_unit_type ||
+      prev.plan_unit_state != plan_unit_state ||
+      prev.plan_unit_intended_use != plan_unit_intended_use
+    ) {
+      form.change(`${field}.is_master`, true);
+    }
+    prevValuesRef.current = currentValues;
+  });
 
   const getMapLinkUrl = () => {
     const { pathname, search } = location;
     const searchQuery = getUrlParams(search);
     delete searchQuery.lease_area;
     delete searchQuery.plot;
-    ((searchQuery.plan_unit = id), (searchQuery.tab = 7));
+    searchQuery.plan_unit = id;
+    searchQuery.tab = 7;
     return `${pathname}${getSearchQuery(searchQuery)}`;
   };
-  const mapLinkUrl = getMapLinkUrl();
 
   return (
     <BoxItem>
@@ -220,7 +298,7 @@ const PlanUnitItemEdit: React.FC<Props> = ({
               )}
             >
               {!isEmpty(geometry) && (
-                <Link to={mapLinkUrl}>
+                <Link to={getMapLinkUrl()}>
                   {LeasePlanUnitsFieldTitles.GEOMETRY}
                 </Link>
               )}
@@ -515,5 +593,4 @@ const PlanUnitItemEdit: React.FC<Props> = ({
   );
 };
 
-const formName = FormNames.LEASE_AREAS;
 export default PlanUnitItemEdit;
