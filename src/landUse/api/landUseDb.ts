@@ -1,11 +1,9 @@
 import type { PersistedClient } from "@tanstack/query-persist-client-core";
 import type { LandUseTabKey } from "./landUseTypes";
-import type { LandUseListItem } from "./landUseListTypes";
 import { applyLandUseMigrations, LAND_USE_DB_VERSION } from "./migrations";
 
 const LAND_USE_DB_NAME = "landUseDb";
 const AGREEMENT_TAB_STORE = "agreementTabs";
-const AGREEMENT_LIST_STORE = "agreementList";
 const REACT_QUERY_STORE = "reactQueryCache";
 const REACT_QUERY_KEY = "landUseQueryClient";
 
@@ -40,7 +38,6 @@ const openLandUseDb = (): Promise<IDBDatabase> =>
         transaction,
         stores: {
           agreementTabStore: AGREEMENT_TAB_STORE,
-          agreementListStore: AGREEMENT_LIST_STORE,
           reactQueryStore: REACT_QUERY_STORE,
           monitoringToteutunutStore: "monitoringToteutunut",
         },
@@ -139,21 +136,6 @@ export const getAgreementIds = async (): Promise<string[]> => {
 
       resolve(Array.from(ids));
     };
-    request.onerror = () => reject(request.error);
-    tx.oncomplete = () => db.close();
-    tx.onerror = () => reject(tx.error);
-    tx.onabort = () => reject(tx.error);
-  });
-};
-
-export const setAgreementListItem = async (
-  item: LandUseListItem,
-): Promise<void> => {
-  const { db, store, tx } = await getStore(AGREEMENT_LIST_STORE, "readwrite");
-
-  return new Promise((resolve, reject) => {
-    const request = store.put(item);
-    request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);
     tx.oncomplete = () => db.close();
     tx.onerror = () => reject(tx.error);

@@ -8,11 +8,5 @@ export const migration001CreateAgreementStores: LandUseDbMigration = {
         keyPath: ["agreementId", "tabKey"],
       });
     }
-
-    if (!db.objectStoreNames.contains(stores.agreementListStore)) {
-      db.createObjectStore(stores.agreementListStore, {
-        keyPath: "identifier",
-      });
-    }
   },
 };

@@ -2,7 +2,6 @@ import type { LandUseTabKey } from "../landUseTypes";
 
 export interface LandUseDbStores {
   agreementTabStore: string;
-  agreementListStore: string;
   reactQueryStore: string;
   monitoringToteutunutStore: string;
 }

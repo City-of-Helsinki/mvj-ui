@@ -14,12 +14,8 @@ import {
   createLandUseIdentifier,
   getNextLandUseSequence,
 } from "../utils/landUseIdentifier";
-import {
-  getAgreementIds,
-  getAgreementTab,
-  setAgreementListItem,
-  setAgreementTab,
-} from "./landUseDb";
+import { createEmptySummaryFormValues } from "./landUseFormValues";
+import { getAgreementIds, getAgreementTab, setAgreementTab } from "./landUseDb";
 import type { LandUseListItem } from "./landUseListTypes";
 
 export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> =>
@@ -83,15 +79,7 @@ export const createLandUseAgreement = async (
     sequence,
   );
 
-  await setAgreementListItem({
-    id: identifier,
-    identifier,
-    party: "",
-    zoningPlanNumber: "",
-    site: "",
-    projectArea: "",
-    negotiationPhase: "",
-  });
+  await setAgreementTab(identifier, "summary", createEmptySummaryFormValues());
 
   return identifier;
 };
