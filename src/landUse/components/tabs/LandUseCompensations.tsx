@@ -12,6 +12,7 @@ import {
   Table,
   TextArea,
   TextInput,
+  ToggleButton,
 } from "hds-react";
 import { Form } from "react-final-form";
 import { Field } from "react-final-form";
@@ -32,6 +33,7 @@ export interface LandUseSite {
   kayttotarkoitus: string | undefined;
   hallintamuoto: string[] | undefined;
   suojeltu: string | undefined;
+  amVelvoite: boolean;
 }
 
 interface PerustietotaulukkoRowValues {
@@ -184,6 +186,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             kayttotarkoitus: undefined,
             hallintamuoto: [],
             suojeltu: undefined,
+            amVelvoite: false,
           };
           form.change("sites", [...sites, newSite]);
           resetAddSiteDialog();
@@ -201,7 +204,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
         };
 
         const compensationsTableCols = [
-          { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
+          { key: "kohteenTunnus", headerName: "Kohde" },
           { key: "kayttotarkoitus", headerName: "Käyttötarkoitus" },
           { key: "hallintamuoto", headerName: "Hallintamuoto" },
           { key: "suojeltu", headerName: "Suojeltu" },
@@ -209,6 +212,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           { key: "km2", headerName: "k-m²" },
           { key: "yksikkohinta", headerName: "Yksikköhinta €" },
           { key: "summa", headerName: "Summa €" },
+          { key: "amVelvoite", headerName: "AM-velvoite" },
           ...(isEditMode
             ? [{ key: "toiminnot", headerName: "Toiminnot" }]
             : []),
@@ -339,6 +343,19 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
               </Field>
             ),
             summa: formatLandUseEuroValue(rowSumma),
+            amVelvoite: (
+              <Field name={`sites.${index}.amVelvoite`}>
+                {({ input }) => (
+                  <ToggleButton
+                    id={`landuse-compensations-amvelvoite-${site.id}`}
+                    label="AM-velvoite"
+                    checked={Boolean(input.value)}
+                    onChange={() => input.onChange(!Boolean(input.value))}
+                    disabled={isCompensationsTableReadOnly}
+                  />
+                )}
+              </Field>
+            ),
             ...(isEditMode
               ? {
                   toiminnot: (
@@ -369,6 +386,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             km2: formatLandUseIntegerValue(totals.km2),
             yksikkohinta: "",
             summa: formatLandUseEuroValue(totals.summa),
+            amVelvoite: "",
             ...(isEditMode ? { toiminnot: "" } : {}),
           },
         ];
