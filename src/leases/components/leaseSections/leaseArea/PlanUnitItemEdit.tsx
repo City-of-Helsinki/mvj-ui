@@ -133,8 +133,15 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }) => {
     plan_unit_intended_use,
   });
 
+  /* The logic was inside 'componentDidUpgrade' -lifecycle method, so after refactoring to 
+    'useEffect'-hook it now requires a machanism to skip the component mounting event. Therefore
+    we use the 'isFirstRender'-ref. Otherwise entering edit mode will cause the form to dirty
+    because of form.change -call.
+  */
   const isFirstRenderRef = useRef(true);
 
+  /* The state-logic contained here is just a faithful conversion of the original class-based 
+    implementation */
   useEffect(() => {
     const initial = initialValuesRef.current;
     const prev = prevValuesRef.current;
