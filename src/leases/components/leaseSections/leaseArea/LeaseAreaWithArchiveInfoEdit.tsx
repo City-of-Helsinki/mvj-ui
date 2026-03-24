@@ -236,6 +236,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
           index={index}
           areaId={areaId}
           savedArea={savedArea}
+          isActive={isActive}
         />
       )}
 

@@ -89,25 +89,7 @@ const PlanUnitItem: React.FC<OwnProps> = ({ areaArchived, planUnit }) => {
             </>
           </Authorization>
         </Column>
-        <Column small={12} medium={2} large={2}>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              attributes,
-              LeasePlanUnitsFieldPaths.IS_MASTER,
-            )}
-          >
-            <>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeasePlanUnitsFieldPaths.IS_MASTER,
-                )}
-              >
-                {LeasePlanUnitsFieldTitles.IS_MASTER}
-              </FormTextTitle>
-              <FormText>{planUnit.is_master ? "Kyllä" : "Ei"}</FormText>
-            </>
-          </Authorization>
-        </Column>
+
         <Column small={12} medium={3} large={3}>
           <Authorization
             allow={isFieldAllowedToRead(
