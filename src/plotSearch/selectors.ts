@@ -7,6 +7,7 @@ import type {
   PlanUnit,
   PlotSearch,
   PlotSearchList,
+  PlotSearchSubType,
 } from "@/plotSearch/types";
 import { formValueSelector } from "redux-form";
 import { FormNames } from "@/enums";
@@ -97,9 +98,9 @@ export const getIsFetchingPlanUnitAttributes: Selector<boolean, void> = (
 export const getIsFetchingSubtypes: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.plotSearch.isFetchingSubtypes;
-export const getPlotSearchSubTypes: Selector<Record<string, any>, void> = (
+export const getPlotSearchSubTypes: Selector<Array<PlotSearchSubType>, void> = (
   state: RootState,
-): Record<string, any> => state.plotSearch.subTypes;
+): Array<PlotSearchSubType> => state.plotSearch.subTypes || [];
 export const getIsFetchingTemplateForms: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.plotSearch.isFetchingTemplateForms;

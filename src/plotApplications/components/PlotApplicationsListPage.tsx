@@ -61,6 +61,7 @@ import {
 import ApplicationListMap from "@/plotApplications/components/map/ApplicationListMap";
 import { getPlotApplicationsListByBBox } from "@/plotApplications/selectors";
 import PlotApplicationsListOpeningModal from "@/plotApplications/components/PlotApplicationsListOpeningModal";
+import type { PlotSearchSubType } from "@/plotSearch/types";
 const VisualizationTypes = {
   MAP: "map",
   TABLE: "table",
@@ -92,7 +93,7 @@ type Props = {
   plotApplicationsListData: Record<string, any>;
   plotApplicationsMapData: Record<string, any>;
   initialize: (...args: Array<any>) => any;
-  plotSearchSubtypes: Record<string, any>;
+  plotSearchSubtypes: Array<PlotSearchSubType>;
 };
 type State = {
   activePage: number;

@@ -183,7 +183,7 @@ export const plotSearchSubtypesNotFound =
   (): PlotSearchSubtypesNotFoundAction =>
     createAction("mvj/plotSearch/PLOT_SEARCH_SUB_TYPES_NOT_FOUND")();
 export const receivePlotSearchSubtype = (
-  subTypes: Record<string, any>,
+  subTypes: ReceivePlotSearchSubtypesAction["payload"],
 ): ReceivePlotSearchSubtypesAction =>
   createAction("mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES")(subTypes);
 export const nullPlanUnits = (): NullPlanUnitsAction =>

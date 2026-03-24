@@ -119,7 +119,7 @@ export type ReceiveCustomDetailedPlanAttributesAction = Action<
 export type FetchPlotSearchSubtypesAction = Action<string, void>;
 export type ReceivePlotSearchSubtypesAction = Action<
   string,
-  Record<string, any>
+  Array<PlotSearchSubType>
 >;
 export type PlotSearchSubtypesNotFoundAction = Action<string, void>;
 export type NullPlanUnitsAction = Action<string, void>;

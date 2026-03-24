@@ -117,7 +117,7 @@ export const plotSearchSubtypesNotFound =
   (): PlotSearchSubtypesNotFoundAction =>
     createAction("mvj/plotApplications/PLOT_SEARCH_SUB_TYPES_NOT_FOUND")();
 export const receivePlotSearchSubtypes = (
-  subTypes: Record<string, any>,
+  subTypes: ReceivePlotSearchSubtypesAction["payload"],
 ): ReceivePlotSearchSubtypesAction =>
   createAction("mvj/plotApplications/RECEIVE_PLOT_SEARCH_SUB_TYPES")(subTypes);
 export const receivePlotApplicationSaved = (

@@ -10,6 +10,7 @@ import type {
   PlotSearch,
   PlotSearchList,
   PlotSearchState,
+  PlotSearchSubType,
   ReceiveAttributesAction,
   ReceiveCollapseStatesAction,
   ReceiveFormAction,
@@ -255,16 +256,16 @@ const isFormValidByIdReducer: Reducer<Record<string, any>> = handleActions(
     [FormNames.PLOT_SEARCH_APPLICATION]: true,
   },
 );
-const subTypesReducer: Reducer<Record<string, any>> = handleActions(
+const subTypesReducer: Reducer<Array<PlotSearchSubType>> = handleActions(
   {
     ["mvj/plotSearch/RECEIVE_PLOT_SEARCH_SUB_TYPES"]: (
-      state: Record<string, any>,
+      _state: Array<PlotSearchSubType>,
       { payload: subTypes }: ReceivePlotSearchSubtypesAction,
     ) => {
       return subTypes;
     },
   },
-  null,
+  [],
 );
 const isFetchingTemplateFormsReducer: Reducer<boolean> = handleActions(
   {
@@ -445,7 +446,7 @@ const isFetchingRelatedApplicationsReducer: Reducer<boolean> = handleActions(
   },
   false,
 );
-export default combineReducers<Record<string, any>, any>({
+export default combineReducers<PlotSearchState, any>({
   attributes: attributesReducer,
   collapseStates: collapseStatesReducer,
   current: currentPlotSearchReducer,
@@ -484,4 +485,4 @@ export default combineReducers<Record<string, any>, any>({
   sectionEditorCollapseStates: sectionEditorCollapseStatesReducer,
   relatedApplications: relatedApplicationsReducer,
   isFetchingRelatedApplications: isFetchingRelatedApplicationsReducer,
-}) as any;
+});
