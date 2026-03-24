@@ -4,7 +4,6 @@ import {
   ButtonVariant,
   Dialog,
   Fieldset,
-  IconCopy,
   IconAngleLeft,
   IconAngleRight,
   IconPen,
@@ -432,23 +431,6 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                       </div>
                     )}
                   </Field>
-
-                  <div className="landuse-detail__monitoring-table-toolbar">
-                    <Button
-                      variant={ButtonVariant.Supplementary}
-                      iconStart={<IconCopy />}
-                      disabled={!isEditMode}
-                    >
-                      Hae taulukon tiedot
-                    </Button>
-                    <Button
-                      variant={ButtonVariant.Supplementary}
-                      iconStart={<IconCopy />}
-                      disabled={!isEditMode}
-                    >
-                      Kopioi taulukon tiedot
-                    </Button>
-                  </div>
 
                   <div className="landuse-detail__sites-table-wrapper">
                     <Table

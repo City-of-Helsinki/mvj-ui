@@ -6,7 +6,6 @@ import {
   Fieldset,
   IconAlertCircle,
   IconCheck,
-  IconCopy,
   IconSize,
   IconPlusCircleFill,
   IconPen,
@@ -323,23 +322,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   heading="Valvonnan perustaulukko VE1"
                   className="landuse-detail__fieldset--with-margin"
                 >
-                  <div className="landuse-detail__monitoring-table-toolbar">
-                    <Button
-                      variant={ButtonVariant.Supplementary}
-                      iconStart={<IconCopy />}
-                      disabled={!isEditMode}
-                    >
-                      Hae taulukon tiedot
-                    </Button>
-                    <Button
-                      variant={ButtonVariant.Supplementary}
-                      iconStart={<IconCopy />}
-                      disabled={!isEditMode}
-                    >
-                      Kopioi taulukon tiedot
-                    </Button>
-                  </div>
-
                   <div className="landuse-detail__sites-table-wrapper">
                     <Table
                       className="landuse-detail__sites-table landuse-detail__monitoring-table"

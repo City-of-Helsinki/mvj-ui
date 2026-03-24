@@ -4,7 +4,6 @@ import {
   ButtonVariant,
   Dialog,
   Fieldset,
-  IconCopy,
   IconPlusCircleFill,
   IconTrash,
   NumberInput,
@@ -507,15 +506,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       &quot;Päätös&quot;
                     </Notification>
                   )}
-                  <div className="landuse-detail__compensations-table-header-actions">
-                    <Button
-                      type="button"
-                      variant={ButtonVariant.Supplementary}
-                      iconStart={<IconCopy />}
-                    >
-                      Kopioi taulukon tiedot
-                    </Button>
-                  </div>
                   {sites.length > 0 ? (
                     <Table
                       className="landuse-detail__sites-table landuse-detail__compensations-table"
