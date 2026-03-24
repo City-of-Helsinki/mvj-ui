@@ -25,7 +25,7 @@ type FlatSite = {
   pintaAlaM2?: string;
   km2?: string;
   kayttotarkoitus: string | undefined;
-  hallintamuoto: string | undefined;
+  hallintamuoto: string[] | undefined;
   suojeltu: string | undefined;
 };
 
@@ -49,7 +49,7 @@ const flattenTreeNodes = (nodes: SiteTreeNode[]): FlatSite[] => {
         pintaAlaM2: node.pintaAlaM2,
         km2: node.km2,
         kayttotarkoitus: node.kayttotarkoitus,
-        hallintamuoto: node.hallintamuoto,
+        hallintamuoto: node.hallintamuoto ? [node.hallintamuoto] : [],
         suojeltu: node.suojeltu,
       });
       if (node.children?.length) {

@@ -69,6 +69,16 @@ interface LandUseCollateralsProps {
   agreements: CollateralAgreementValue[];
 }
 
+const formatSiteHallintamuoto = (
+  hallintamuoto: string[] | undefined,
+): string => {
+  if (!hallintamuoto || hallintamuoto.length === 0) {
+    return "-";
+  }
+
+  return hallintamuoto.join(", ");
+};
+
 const getKerroinPercent = (hintaero: number): number => {
   if (hintaero <= 500) {
     return 100;
@@ -239,7 +249,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
 
             return {
               kohteenTunnus,
-              hallintamuoto: site.hallintamuoto || "-",
+              hallintamuoto: formatSiteHallintamuoto(site.hallintamuoto),
               km2: site.km2 || "-",
               hintaero:
                 hintaeroValue !== null

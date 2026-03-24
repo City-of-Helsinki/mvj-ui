@@ -155,7 +155,7 @@ const ma113Sites: LandUseSite[] = [
     pintaAlaM2: "4500",
     km2: "3600",
     kayttotarkoitus: "Asuinkerrostalojen korttelialue",
-    hallintamuoto: "Vapaarahoitteinen omistus",
+    hallintamuoto: ["Vapaarahoitteinen omistus"],
     suojeltu: "SR1",
   },
 ];

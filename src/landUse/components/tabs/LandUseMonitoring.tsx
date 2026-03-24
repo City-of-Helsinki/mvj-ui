@@ -69,6 +69,16 @@ const hallintamuotoOptions = landUseCompensationSelectOptions.hallintamuoto.map(
   (value) => ({ label: value, value }),
 );
 
+const formatSiteHallintamuoto = (
+  hallintamuoto: string[] | undefined,
+): string => {
+  if (!hallintamuoto || hallintamuoto.length === 0) {
+    return "-";
+  }
+
+  return hallintamuoto.join(", ");
+};
+
 const getEntryTime = (entry: MonitoringToteumaEntry): number => {
   const parsed = Date.parse(entry.createdAt);
   return Number.isNaN(parsed) ? 0 : parsed;
@@ -141,7 +151,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           return {
             id: `perustaulukko-row-${site.id}-${index}`,
             kohteenTunnus: site.kohteenTunnus || "-",
-            hallintamuoto: site.hallintamuoto || "-",
+            hallintamuoto: formatSiteHallintamuoto(site.hallintamuoto),
             vaadittuKm2: site.km2 || "-",
             toteutunutKm2: latestToteutunutEntry ? (
               <span

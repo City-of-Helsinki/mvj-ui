@@ -31,7 +31,7 @@ export interface LandUseSite {
   pintaAlaM2?: string;
   km2?: string;
   kayttotarkoitus: string | undefined;
-  hallintamuoto: string | undefined;
+  hallintamuoto: string[] | undefined;
   suojeltu: string | undefined;
 }
 
@@ -89,12 +89,42 @@ const suojeltuOptions = landUseCompensationSelectOptions.suojeltu.map(
   }),
 );
 
+type SelectOption = { label: string; value: string };
+
 const handleSelectChange = (
-  selectedOptions: { label: string; value: string }[],
+  selectedOptions: SelectOption[],
   callback: (value: string | undefined) => void,
 ) => {
   if (selectedOptions.length > 0) {
     callback(selectedOptions[0].value);
+  } else {
+    callback(undefined);
+  }
+};
+
+const normalizeMultiSelectValue = (
+  value: string[] | string | undefined,
+): SelectOption[] => {
+  if (Array.isArray(value)) {
+    return value.map((optionValue) => ({
+      label: optionValue,
+      value: optionValue,
+    }));
+  }
+
+  if (typeof value === "string" && value !== "") {
+    return [{ label: value, value }];
+  }
+
+  return [];
+};
+
+const handleMultiSelectChange = (
+  selectedOptions: SelectOption[],
+  callback: (value: string[] | undefined) => void,
+) => {
+  if (selectedOptions.length > 0) {
+    callback(selectedOptions.map((option) => option.value));
   } else {
     callback(undefined);
   }
@@ -153,7 +183,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             pintaAlaM2: "",
             km2: "",
             kayttotarkoitus: undefined,
-            hallintamuoto: undefined,
+            hallintamuoto: [],
             suojeltu: undefined,
           };
           form.change("sites", [...sites, newSite]);
@@ -241,10 +271,11 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   <Select
                     id={`landuse-compensations-hallintamuoto-${site.id}`}
                     options={hallintamuotoOptions}
-                    value={normalizeSelectValue(input.value)}
+                    value={normalizeMultiSelectValue(input.value)}
                     onChange={(selectedOptions) =>
-                      handleSelectChange(selectedOptions, input.onChange)
+                      handleMultiSelectChange(selectedOptions, input.onChange)
                     }
+                    multiSelect
                     disabled={isCompensationsTableReadOnly}
                     texts={{ label: "", placeholder: "Valitse" }}
                   />
