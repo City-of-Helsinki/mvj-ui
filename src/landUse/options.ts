@@ -4,6 +4,15 @@
  * during UI mocking phase.
  */
 
+export const MUNICIPALITY_OPTIONS = [{ label: "Helsinki", value: "1" }];
+
+export const DISTRICT_OPTIONS = [
+  { label: "Kruununhaka", value: "1" },
+  { label: "Vallila", value: "22" },
+  { label: "Kalasatama", value: "49" },
+  { label: "Jätkäsaari", value: "18" },
+];
+
 export const LAND_USE_EDISTAMISALUE_VALUES = [
   "Kalasatama",
   "Jätkäsaari",

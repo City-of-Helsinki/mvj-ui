@@ -24,8 +24,9 @@ import {
   getAgreementIdentifiers,
   getLandUseList,
 } from "../api/landUseApi";
-import { DISTRICT_OPTIONS, MUNICIPALITY_OPTIONS } from "../utils/landUseLookup";
 import {
+  DISTRICT_OPTIONS,
+  MUNICIPALITY_OPTIONS,
   LAND_USE_NEGOTIATION_PHASES,
   type LandUseNegotiationPhase,
 } from "../options";
