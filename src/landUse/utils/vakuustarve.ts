@@ -63,3 +63,14 @@ export const calculateSopimussakko = (
 
   return hintaero * vertailunPeruskerroin;
 };
+
+export const calculateToteuttamatta = (
+  vaadittu: number | null,
+  toteutunut: number | null,
+): number | null => {
+  if (vaadittu === null || toteutunut === null) {
+    return null;
+  }
+
+  return Math.max(0, vaadittu - toteutunut);
+};

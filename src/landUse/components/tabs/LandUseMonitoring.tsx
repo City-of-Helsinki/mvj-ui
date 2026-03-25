@@ -31,6 +31,7 @@ import {
 import {
   calculateHintaero,
   calculateSopimussakko,
+  calculateToteuttamatta,
   calculateVakuustarve,
   getKerroinPercent,
 } from "../../utils/vakuustarve";
@@ -282,8 +283,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
         const monitoringVapauttaminenCols = [
           { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
           { key: "hallintamuoto", headerName: "Hallintamuoto" },
-          { key: "vaadittuKm2", headerName: "Vaadittu k-m²" },
-          { key: "toteutunutKm2", headerName: "Toteutunut k-m²" },
+          { key: "toteuttamatta", headerName: "Toteuttamatta" },
           { key: "sopimussakko", headerName: "Sopimussakko" },
           { key: "kerroin", headerName: "Kerroin" },
           { key: "vakuustarve", headerName: "Vakuustarve" },
@@ -314,12 +314,19 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             vertailunPeruskerroinValue,
           );
 
+          const toteuttamattaValue = calculateToteuttamatta(
+            vaadittuValue,
+            toteutunutValue,
+          );
+
           return {
             id: `vapauttaminen-row-${site.id}-${index}`,
             kohteenTunnus: site.kohteenTunnus || "-",
             hallintamuoto: formatSiteHallintamuoto(site.hallintamuoto),
-            vaadittuKm2: site.km2 || "-",
-            toteutunutKm2: latestToteutunutEntry?.value ?? "-",
+            toteuttamatta: formatLandUseNumericValueWithUnit(
+              toteuttamattaValue,
+              "kem²",
+            ),
             sopimussakko: formatLandUseNumericValueWithUnit(
               sopimussakkoValue,
               "€/kem²",
