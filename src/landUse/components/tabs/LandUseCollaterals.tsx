@@ -64,7 +64,7 @@ interface CollateralsVakuuslaskuriRow {
   hintaero: string;
   sopimussakko: string;
   kerroin: string;
-  vakuustarve: string;
+  vakuustarve: React.ReactNode;
   vakuudet: React.ReactNode;
 }
 
@@ -98,25 +98,26 @@ const calculateRemainingVakuustarve = (
   kerroinPercent: number | null,
   vertailunPeruskerroin: number | null,
   selectedGuaranteesForSite: CollateralSelectedGuarantee[],
-): number | null => {
+): Array<number | null> => {
   if (
     vaadittuValue === null ||
     hintaeroValue === null ||
     kerroinPercent === null ||
     vertailunPeruskerroin === null
   ) {
-    return null;
+    return [null, null];
   }
 
-  const vakuustarveValue = calculateVakuustarve(
+  const vakuustarveTotalValue = calculateVakuustarve(
     vaadittuValue,
     hintaeroValue,
     kerroinPercent,
     vertailunPeruskerroin,
   );
-  if (vakuustarveValue === null) {
-    return null;
+  if (vakuustarveTotalValue === null) {
+    return [null, null];
   }
+
   const selectedGuaranteesTotal = selectedGuaranteesForSite.reduce(
     (sum, guarantee) => {
       const amount = parseLandUseNumericValue(guarantee.kaytettavaMaara);
@@ -124,8 +125,9 @@ const calculateRemainingVakuustarve = (
     },
     0,
   );
+  const remainingVakuustarve = vakuustarveTotalValue - selectedGuaranteesTotal;
 
-  return vakuustarveValue - selectedGuaranteesTotal;
+  return [remainingVakuustarve, vakuustarveTotalValue];
 };
 
 export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
@@ -225,13 +227,14 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             const selectedGuaranteesForSite =
               values.vakuusValinnatBySiteId?.[site.id] ?? [];
 
-            const remainingVakuustarveValue = calculateRemainingVakuustarve(
-              vaadittuValue,
-              hintaeroValue,
-              kerroinPercent,
-              vertailunPeruskerroin,
-              selectedGuaranteesForSite,
-            );
+            const [remainingVakuustarveValue, totalVakuustarveValue] =
+              calculateRemainingVakuustarve(
+                vaadittuValue,
+                hintaeroValue,
+                kerroinPercent,
+                vertailunPeruskerroin,
+                selectedGuaranteesForSite,
+              );
 
             return {
               kohteenTunnus,
@@ -247,9 +250,15 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               ),
               kerroin: kerroinPercent !== null ? `${kerroinPercent} %` : "-",
               vakuustarve:
-                remainingVakuustarveValue !== null
-                  ? formatLandUseEuroValue(remainingVakuustarveValue)
-                  : "-",
+                remainingVakuustarveValue !== null &&
+                totalVakuustarveValue !== null ? (
+                  <span>
+                    {formatLandUseEuroValue(remainingVakuustarveValue)}
+                    <br />/ {formatLandUseEuroValue(totalVakuustarveValue)}
+                  </span>
+                ) : (
+                  "-"
+                ),
               vakuudet:
                 selectedGuaranteesForSite.length > 0 ? (
                   <ul className="landuse-detail__monitoring-dialog-items">
