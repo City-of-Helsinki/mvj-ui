@@ -890,7 +890,7 @@ const LeaseAreaEdit: React.FC<Props> = ({
                   uiDataKey: getUiDataLeaseKey(
                     LeasePlanUnitsFieldPaths.PLAN_UNITS_CONTRACT,
                   ),
-                  isMasterData: false,
+                  isMasterData: false, // These plan units' data is editable in MVJ
                   areas: savedArea?.plan_units_contract ?? [],
                   isActive,
                 })
@@ -911,7 +911,7 @@ const LeaseAreaEdit: React.FC<Props> = ({
                   uiDataKey: getUiDataLeaseKey(
                     LeasePlanUnitsFieldPaths.PLAN_UNITS,
                   ),
-                  isMasterData: true,
+                  isMasterData: true, // These plan units' data is received from master source (i.e. Facta) and is not editable in MVJ
                   areas: savedArea?.plan_units_current ?? [],
                   isActive,
                 })
@@ -931,7 +931,7 @@ const LeaseAreaEdit: React.FC<Props> = ({
                   onCollapseToggle: handlePlanUnitCurrentCollapseToggle,
                   title: "Vireillä olevat kaavayksiköt",
                   uiDataKey: null, // No uiDataKey
-                  isMasterData: true,
+                  isMasterData: true, // These plan units' data is received from master source (i.e. Facta) and is not editable in MVJ
                   areas: savedArea?.plan_units_pending ?? [],
                   isActive,
                 })
