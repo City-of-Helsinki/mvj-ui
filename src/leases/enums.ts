@@ -23,6 +23,7 @@ export const CalculatorTypes = {
   FIELD: "field",
   MAST: "mast",
   DEVICE_CABINET: "device cabinet",
+  ALLOTMENT: "allotment",
 };
 
 /**
@@ -1793,6 +1794,10 @@ export const calculatorTypeOptions = [
   {
     value: "device cabinet",
     label: "Laitekaappi",
+  },
+  {
+    value: "allotment",
+    label: "Siirtolapuutarha",
   },
 ];
 
