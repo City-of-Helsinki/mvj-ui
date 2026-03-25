@@ -46,59 +46,6 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }) => {
   const {
     input: { value: geometry },
   } = useField(`${field}.geometry`, { subscription: { value: true } });
-  const {
-    input: { value: identifier },
-  } = useField(`${field}.identifier`, { subscription: { value: true } });
-  const {
-    input: { value: area },
-  } = useField(`${field}.area`, { subscription: { value: true } });
-  const {
-    input: { value: section_area },
-  } = useField(`${field}.section_area`, { subscription: { value: true } });
-  const {
-    input: { value: detailed_plan_identifier },
-  } = useField(`${field}.detailed_plan_identifier`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: detailed_plan_latest_processing_date },
-  } = useField(`${field}.detailed_plan_latest_processing_date`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: detailed_plan_latest_processing_date_note },
-  } = useField(`${field}.detailed_plan_latest_processing_date_note`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: plot_division_identifier },
-  } = useField(`${field}.plot_division_identifier`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: plot_division_state },
-  } = useField(`${field}.plot_division_state`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: plot_division_effective_date },
-  } = useField(`${field}.plot_division_effective_date`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: plan_unit_type },
-  } = useField(`${field}.plan_unit_type`, { subscription: { value: true } });
-  const {
-    input: { value: plan_unit_state },
-  } = useField(`${field}.plan_unit_state`, { subscription: { value: true } });
-  const {
-    input: { value: plan_unit_intended_use },
-  } = useField(`${field}.plan_unit_intended_use`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: is_master },
-  } = useField(`${field}.is_master`, { subscription: { value: true } });
 
   const getMapLinkUrl = () => {
     const { pathname, search } = location;

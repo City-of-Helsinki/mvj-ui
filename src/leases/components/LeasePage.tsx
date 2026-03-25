@@ -909,8 +909,8 @@ const LeasePage: React.FC<Props> = (props) => {
       removeSessionStorageItem(FormNames.LEASE_INSPECTIONS);
     }
 
-    if (leaseAreasFormRef.current.getState().dirty) {
-      setSessionStorageItem(FormNames.LEASE_AREAS, areasFormValues)
+    if (leaseAreasFormState.dirty) {
+      setSessionStorageItem(FormNames.LEASE_AREAS, areasFormValues);
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.LEASE_AREAS);
