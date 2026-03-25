@@ -364,7 +364,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           0,
         );
 
-        const remainingSeparatorDirection =
+        const remainingCollateralSeparatorDirection =
           sopimuksenMukainenValue > saantelynMukainenValue
             ? "left"
             : saantelynMukainenValue > sopimuksenMukainenValue
@@ -498,11 +498,11 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   heading="Jäljellä oleva vakuustarve"
                   className="landuse-detail__fieldset--with-margin"
                 >
-                  <div className="landuse-detail__grid landuse-detail__monitoring-remaining-grid">
+                  <div className="landuse-detail__grid landuse-detail__monitoring-collateral-grid">
                     <div
-                      className={`landuse-detail__monitoring-remaining-field${
-                        remainingSeparatorDirection === "left"
-                          ? " landuse-detail__monitoring-remaining-field--highlight"
+                      className={`landuse-detail__monitoring-collateral-field${
+                        remainingCollateralSeparatorDirection === "left"
+                          ? " landuse-detail__monitoring-collateral-field--highlight"
                           : ""
                       }`}
                     >
@@ -516,10 +516,10 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                     </div>
 
                     <span
-                      className={`landuse-detail__monitoring-remaining-separator landuse-detail__monitoring-remaining-separator--${remainingSeparatorDirection}`}
+                      className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${remainingCollateralSeparatorDirection}`}
                       aria-hidden="true"
                     >
-                      {remainingSeparatorDirection === "right" ? (
+                      {remainingCollateralSeparatorDirection === "right" ? (
                         <IconAngleLeft />
                       ) : (
                         <IconAngleRight />
@@ -527,9 +527,9 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                     </span>
 
                     <div
-                      className={`landuse-detail__monitoring-remaining-field${
-                        remainingSeparatorDirection === "right"
-                          ? " landuse-detail__monitoring-remaining-field--highlight"
+                      className={`landuse-detail__monitoring-collateral-field${
+                        remainingCollateralSeparatorDirection === "right"
+                          ? " landuse-detail__monitoring-collateral-field--highlight"
                           : ""
                       }`}
                     >

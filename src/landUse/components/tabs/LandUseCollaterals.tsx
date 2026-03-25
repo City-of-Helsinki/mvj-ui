@@ -28,6 +28,7 @@ import {
 } from "../../utils/number";
 import {
   calculateHintaero,
+  calculateSaantelynMukainenOriginalValue,
   calculateSopimussakko,
   calculateVakuustarve,
   getKerroinPercent,
@@ -323,12 +324,14 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           return sum + km2Value * yksikkohintaValue;
         }, 0);
 
-        const saantelynMukainenValue = vakuuslaskuriRows.reduce((sum, row) => {
-          const vakuustarveValue = parseLandUseNumericValue(row.vakuustarve);
-          return sum + (vakuustarveValue ?? 0);
-        }, 0);
+        const saantelynMukainenValue = calculateSaantelynMukainenOriginalValue(
+          sites,
+          compensationsRowsBySiteId,
+          perushinta,
+          vertailunPeruskerroin,
+        );
 
-        const remainingSeparatorDirection =
+        const totalCollateralSeparatorDirection =
           sopimuksenMukainenValue > saantelynMukainenValue
             ? "left"
             : saantelynMukainenValue > sopimuksenMukainenValue
@@ -437,14 +440,14 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 </Fieldset>
 
                 <Fieldset
-                  heading="Jäljellä oleva vakuustarve"
+                  heading="Kokonaisvakuustarve"
                   className="landuse-detail__fieldset--with-margin"
                 >
-                  <div className="landuse-detail__grid landuse-detail__monitoring-remaining-grid">
+                  <div className="landuse-detail__grid landuse-detail__monitoring-collateral-grid">
                     <div
-                      className={`landuse-detail__monitoring-remaining-field${
-                        remainingSeparatorDirection === "left"
-                          ? " landuse-detail__monitoring-remaining-field--highlight"
+                      className={`landuse-detail__monitoring-collateral-field${
+                        totalCollateralSeparatorDirection === "left"
+                          ? " landuse-detail__monitoring-collateral-field--highlight"
                           : ""
                       }`}
                     >
@@ -458,10 +461,10 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                     </div>
 
                     <span
-                      className={`landuse-detail__monitoring-remaining-separator landuse-detail__monitoring-remaining-separator--${remainingSeparatorDirection}`}
+                      className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${totalCollateralSeparatorDirection}`}
                       aria-hidden="true"
                     >
-                      {remainingSeparatorDirection === "right" ? (
+                      {totalCollateralSeparatorDirection === "right" ? (
                         <IconAngleLeft />
                       ) : (
                         <IconAngleRight />
@@ -469,9 +472,9 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                     </span>
 
                     <div
-                      className={`landuse-detail__monitoring-remaining-field${
-                        remainingSeparatorDirection === "right"
-                          ? " landuse-detail__monitoring-remaining-field--highlight"
+                      className={`landuse-detail__monitoring-collateral-field${
+                        totalCollateralSeparatorDirection === "right"
+                          ? " landuse-detail__monitoring-collateral-field--highlight"
                           : ""
                       }`}
                     >

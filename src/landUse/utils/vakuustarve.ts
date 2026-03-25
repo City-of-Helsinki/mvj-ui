@@ -1,3 +1,4 @@
+import { LandUseSite } from "../components/tabs/LandUseCompensations";
 import { parseLandUseNumericValue } from "./number";
 
 export const getKerroinPercent = (hintaero: number): number => {
@@ -52,6 +53,27 @@ export const calculateVakuustarve = (
     vertailunPeruskerroin
   );
 };
+
+export const calculateSaantelynMukainenOriginalValue = (
+  sites: LandUseSite[],
+  compensationsRowsBySiteId: Record<string, { yksikkohinta: string }>,
+  perushinta: string | undefined,
+  vertailunPeruskerroin: number | null,
+): number =>
+  sites.reduce((sum, site) => {
+    const vaadittuValue = parseLandUseNumericValue(site.km2);
+    const yksikkohintaValue = compensationsRowsBySiteId[site.id]?.yksikkohinta;
+    const hintaeroValue = calculateHintaero(perushinta, yksikkohintaValue);
+    const kerroinPercent =
+      hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
+    const vakuustarveValue = calculateVakuustarve(
+      vaadittuValue,
+      hintaeroValue,
+      kerroinPercent,
+      vertailunPeruskerroin,
+    );
+    return sum + (vakuustarveValue ?? 0);
+  }, 0);
 
 export const calculateSopimussakko = (
   hintaero: number | null,

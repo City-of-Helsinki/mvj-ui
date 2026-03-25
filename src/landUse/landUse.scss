@@ -403,7 +403,7 @@
   }
 }
 
-.landuse-detail__monitoring-remaining-grid {
+.landuse-detail__monitoring-collateral-grid {
   grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
   align-items: end;
   column-gap: 12px;
@@ -414,7 +414,7 @@
   }
 }
 
-.landuse-detail__monitoring-remaining-field {
+.landuse-detail__monitoring-collateral-field {
   margin: 0;
 
   &--highlight {
@@ -431,7 +431,7 @@
   }
 }
 
-.landuse-detail__monitoring-remaining-separator {
+.landuse-detail__monitoring-collateral-separator {
   display: inline-flex;
   align-items: center;
   justify-content: center;
