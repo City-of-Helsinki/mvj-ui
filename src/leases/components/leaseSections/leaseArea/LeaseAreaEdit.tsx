@@ -891,7 +891,7 @@ const LeaseAreaEdit: React.FC<Props> = ({
                     LeasePlanUnitsFieldPaths.PLAN_UNITS_CONTRACT,
                   ),
                   isMasterData: false,
-                  areas: savedArea.plan_units_contract,
+                  areas: savedArea?.plan_units_contract ?? [],
                   isActive,
                 })
               }
@@ -912,7 +912,7 @@ const LeaseAreaEdit: React.FC<Props> = ({
                     LeasePlanUnitsFieldPaths.PLAN_UNITS,
                   ),
                   isMasterData: true,
-                  areas: savedArea.plan_units_current,
+                  areas: savedArea?.plan_units_current ?? [],
                   isActive,
                 })
               }
@@ -932,7 +932,7 @@ const LeaseAreaEdit: React.FC<Props> = ({
                   title: "Vireillä olevat kaavayksiköt",
                   uiDataKey: null, // No uiDataKey
                   isMasterData: true,
-                  areas: savedArea.plan_units_pending,
+                  areas: savedArea?.plan_units_pending ?? [],
                   isActive,
                 })
               }
