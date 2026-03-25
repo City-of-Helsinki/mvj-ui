@@ -17,6 +17,7 @@ import {
   getIsFetchingFormAttributes,
 } from "@/application/selectors";
 import { fetchFormAttributes } from "@/application/actions";
+import type { PlotSearchSubType } from "@/plotSearch/types";
 import type { Attributes, Methods } from "types";
 
 function PlotSearchAttributes(WrappedComponent: any) {
@@ -30,7 +31,7 @@ function PlotSearchAttributes(WrappedComponent: any) {
     isFetchingFormAttributes: boolean;
     plotSearchAttributes: Attributes;
     plotSearchMethods: Methods;
-    plotSearchSubTypes: Record<string, any>;
+    plotSearchSubTypes: Array<PlotSearchSubType>;
   };
   return class PlotSearchAttributes extends PureComponent<Props> {
     componentDidMount() {
@@ -47,7 +48,7 @@ function PlotSearchAttributes(WrappedComponent: any) {
         fetchPlotSearchAttributes();
       }
 
-      if (!isFetching && !plotSearchSubTypes) {
+      if (!isFetching && (!plotSearchSubTypes || !plotSearchSubTypes.length)) {
         fetchPlotSearchSubtypes();
       }
     }
