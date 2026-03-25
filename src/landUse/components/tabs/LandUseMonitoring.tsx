@@ -4,11 +4,14 @@ import {
   ButtonVariant,
   Dialog,
   Fieldset,
+  IconAngleLeft,
+  IconAngleRight,
   IconAlertCircle,
   IconCheck,
   IconSize,
   IconPlusCircleFill,
   IconPen,
+  NumberInput,
   Select,
   Table,
   TextInput,
@@ -20,7 +23,17 @@ import type { FormKey } from "../LandUseDetailPage";
 import { normalizeSelectValue } from "../../fieldUtils";
 import { landUseCompensationSelectOptions } from "../../options";
 import type { LandUseSite } from "./LandUseCompensations";
-import { parseLandUseNumericValue } from "../../utils/number";
+import {
+  formatLandUseEuroDisplayValue,
+  formatLandUseEuroValue,
+  formatLandUseNumericValue,
+  parseLandUseNumericValue,
+} from "../../utils/number";
+import {
+  calculateHintaero,
+  calculateVakuustarve,
+  getKerroinPercent,
+} from "../../utils/vakuustarve";
 
 interface PerustietotaulukkoRowValues {
   yksikkohinta: string;
@@ -50,7 +63,9 @@ interface LandUseMonitoringProps {
   form: FormApi<LandUseMonitoringFormValues>;
   isEditMode: boolean;
   sites: LandUseSite[];
+  perushinta?: string;
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
+  vertailunPeruskerroin?: number;
   onSetTabDirty?: (formKey: FormKey) => void;
 }
 
@@ -95,11 +110,37 @@ const getLatestEntry = (
     return getEntryTime(entry) >= getEntryTime(latest) ? entry : latest;
   }, undefined);
 
+const calculateVakuudenVapauttaminenTarve = (
+  vaadittuValue: number | null,
+  toteutunutValue: number | null,
+  hintaeroValue: number | null,
+  kerroinPercent: number | null,
+  vertailunPeruskerroinValue: number,
+): number | null => {
+  if (
+    vaadittuValue === null ||
+    toteutunutValue === null ||
+    hintaeroValue === null ||
+    kerroinPercent === null
+  ) {
+    return null;
+  }
+
+  return calculateVakuustarve(
+    vaadittuValue - toteutunutValue,
+    hintaeroValue,
+    kerroinPercent,
+    vertailunPeruskerroinValue,
+  );
+};
+
 export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
   form,
   isEditMode,
   sites,
+  perushinta,
   compensationsRowsBySiteId,
+  vertailunPeruskerroin,
   onSetTabDirty,
 }) => {
   const [selectedSiteId, setSelectedSiteId] = React.useState<string | null>(
@@ -122,6 +163,8 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
         const toteutunutHallintamuotoBySiteId =
           values.toteutunutHallintamuotoBySiteId ?? {};
         const sakkoRows = values.sakkoRows ?? [];
+        const vertailunPeruskerroinValue =
+          parseLandUseNumericValue(vertailunPeruskerroin) ?? 1;
         const selectedEntries = selectedSiteId
           ? (toteumaEntriesBySiteId[selectedSiteId] ?? [])
           : [];
@@ -236,6 +279,94 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           { key: "korotus", headerName: "Korotus" },
         ];
 
+        const monitoringVapauttaminenCols = [
+          { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
+          { key: "hallintamuoto", headerName: "Hallintamuoto" },
+          { key: "vaadittuKm2", headerName: "Vaadittu k-m²" },
+          { key: "toteutunutKm2", headerName: "Toteutunut k-m²" },
+          { key: "hintaero", headerName: "Hintaero" },
+          { key: "kerroin", headerName: "Kerroin" },
+          {
+            key: "vertailunPeruskerroin",
+            headerName: "Vertailun peruskerroin",
+          },
+          { key: "vakuustarve", headerName: "Vakuustarve" },
+        ];
+
+        const monitoringVapauttaminenRows = sites.map((site, index) => {
+          const latestToteutunutEntry = getLatestEntry(
+            toteumaEntriesBySiteId[site.id] ?? [],
+          );
+          const vaadittuValue = parseLandUseNumericValue(site.km2);
+          const toteutunutValue = parseLandUseNumericValue(
+            latestToteutunutEntry?.value,
+          );
+          const yksikkohintaRaw =
+            compensationsRowsBySiteId[site.id]?.yksikkohinta ?? "";
+          const hintaeroValue = calculateHintaero(perushinta, yksikkohintaRaw);
+          const kerroinPercent =
+            hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
+          const vakuustarveValue = calculateVakuudenVapauttaminenTarve(
+            vaadittuValue,
+            toteutunutValue,
+            hintaeroValue,
+            kerroinPercent,
+            vertailunPeruskerroinValue,
+          );
+
+          return {
+            id: `vapauttaminen-row-${site.id}-${index}`,
+            kohteenTunnus: site.kohteenTunnus || "-",
+            hallintamuoto: formatSiteHallintamuoto(site.hallintamuoto),
+            vaadittuKm2: site.km2 || "-",
+            toteutunutKm2: latestToteutunutEntry?.value ?? "-",
+            hintaero:
+              hintaeroValue !== null
+                ? formatLandUseEuroValue(hintaeroValue)
+                : "-",
+            kerroin: kerroinPercent !== null ? `${kerroinPercent} %` : "-",
+            vertailunPeruskerroin: formatLandUseNumericValue(
+              vertailunPeruskerroinValue,
+            ),
+            vakuustarve:
+              vakuustarveValue !== null
+                ? formatLandUseEuroValue(vakuustarveValue)
+                : "-",
+          };
+        });
+
+        const sopimuksenMukainenValue = sites.reduce((sum, site) => {
+          const vaadittuValue = parseLandUseNumericValue(site.km2);
+          const yksikkohintaRaw =
+            compensationsRowsBySiteId[site.id]?.yksikkohinta ?? "";
+          const hintaeroValue = calculateHintaero(perushinta, yksikkohintaRaw);
+          const kerroinPercent =
+            hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
+          const kokonaisVakuustarve = calculateVakuustarve(
+            vaadittuValue,
+            hintaeroValue,
+            kerroinPercent,
+            vertailunPeruskerroinValue,
+          );
+
+          return sum + (kokonaisVakuustarve ?? 0);
+        }, 0);
+
+        const saantelynMukainenValue = monitoringVapauttaminenRows.reduce(
+          (sum, row) => {
+            const vakuustarveValue = parseLandUseNumericValue(row.vakuustarve);
+            return sum + (vakuustarveValue ?? 0);
+          },
+          0,
+        );
+
+        const remainingSeparatorDirection =
+          sopimuksenMukainenValue > saantelynMukainenValue
+            ? "left"
+            : saantelynMukainenValue > sopimuksenMukainenValue
+              ? "right"
+              : "equal";
+
         const monitoringSakkoTableRows = sakkoRows.map((row, index) => ({
           id: `sakko-row-${row.kohteenTunnus}-${index}`,
           kohteenTunnus: row.kohteenTunnus,
@@ -331,6 +462,81 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       rows={monitoringPerustaulukkoRows}
                       variant="light"
                     />
+                  </div>
+                </Fieldset>
+
+                <Fieldset
+                  heading="Vakuuden vapauttaminen"
+                  className="landuse-detail__fieldset--with-margin"
+                >
+                  <div className="landuse-detail__collaterals-base-coefficient-field">
+                    <TextInput
+                      id="monitoring-vapauttaminen-perushinta"
+                      label="Perushinta"
+                      value={formatLandUseEuroDisplayValue(perushinta)}
+                      disabled
+                    />
+                  </div>
+
+                  <div className="landuse-detail__sites-table-wrapper">
+                    <Table
+                      className="landuse-detail__sites-table landuse-detail__monitoring-table"
+                      cols={monitoringVapauttaminenCols}
+                      indexKey="id"
+                      renderIndexCol={false}
+                      rows={monitoringVapauttaminenRows}
+                      variant="light"
+                    />
+                  </div>
+                </Fieldset>
+
+                <Fieldset
+                  heading="Jäljellä oleva vakuustarve"
+                  className="landuse-detail__fieldset--with-margin"
+                >
+                  <div className="landuse-detail__grid landuse-detail__monitoring-remaining-grid">
+                    <div
+                      className={`landuse-detail__monitoring-remaining-field${
+                        remainingSeparatorDirection === "left"
+                          ? " landuse-detail__monitoring-remaining-field--highlight"
+                          : ""
+                      }`}
+                    >
+                      <NumberInput
+                        id="monitoring-sopimuksen-mukainen"
+                        label="Sopimuksen mukainen"
+                        value={sopimuksenMukainenValue}
+                        unit="€"
+                        disabled
+                      />
+                    </div>
+
+                    <span
+                      className={`landuse-detail__monitoring-remaining-separator landuse-detail__monitoring-remaining-separator--${remainingSeparatorDirection}`}
+                      aria-hidden="true"
+                    >
+                      {remainingSeparatorDirection === "right" ? (
+                        <IconAngleLeft />
+                      ) : (
+                        <IconAngleRight />
+                      )}
+                    </span>
+
+                    <div
+                      className={`landuse-detail__monitoring-remaining-field${
+                        remainingSeparatorDirection === "right"
+                          ? " landuse-detail__monitoring-remaining-field--highlight"
+                          : ""
+                      }`}
+                    >
+                      <NumberInput
+                        id="monitoring-raha-korvaus"
+                        label="Sääntelyn mukainen"
+                        value={saantelynMukainenValue}
+                        unit="€"
+                        disabled
+                      />
+                    </div>
                   </div>
                 </Fieldset>
 

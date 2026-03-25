@@ -26,6 +26,11 @@ import {
   parseLandUseNumericValue,
 } from "../../utils/number";
 import {
+  calculateHintaero,
+  calculateVakuustarve,
+  getKerroinPercent,
+} from "../../utils/vakuustarve";
+import {
   calculateGuaranteeBalances,
   getGuaranteesFromAgreements,
   type CollateralAgreementValue,
@@ -78,36 +83,6 @@ const formatSiteHallintamuoto = (
   return hallintamuoto.join(", ");
 };
 
-const getKerroinPercent = (hintaero: number): number => {
-  if (hintaero <= 500) {
-    return 100;
-  }
-
-  if (hintaero <= 1000) {
-    return 80;
-  }
-
-  if (hintaero <= 1500) {
-    return 70;
-  }
-
-  return 60;
-};
-
-const calculateHintaero = (
-  perushinta: string | undefined,
-  yksikkohinta: string | undefined,
-): number | null => {
-  const perushintaValue = parseLandUseNumericValue(perushinta);
-  const yksikkohintaValue = parseLandUseNumericValue(yksikkohinta);
-
-  if (perushintaValue === null || yksikkohintaValue === null) {
-    return null;
-  }
-
-  return Math.max(0, perushintaValue - yksikkohintaValue);
-};
-
 const formatGuaranteeOptionLabel = (
   sopimusnumero: string,
   jarjestysnumero: string,
@@ -129,11 +104,15 @@ const calculateRemainingVakuustarve = (
     return null;
   }
 
-  const vakuustarveValue =
-    vaadittuValue *
-    hintaeroValue *
-    (kerroinPercent / 100) *
-    vertailunPeruskerroin;
+  const vakuustarveValue = calculateVakuustarve(
+    vaadittuValue,
+    hintaeroValue,
+    kerroinPercent,
+    vertailunPeruskerroin,
+  );
+  if (vakuustarveValue === null) {
+    return null;
+  }
   const selectedGuaranteesTotal = selectedGuaranteesForSite.reduce(
     (sum, guarantee) => {
       const amount = parseLandUseNumericValue(guarantee.kaytettavaMaara);
@@ -331,15 +310,15 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           return sum + km2Value * yksikkohintaValue;
         }, 0);
 
-        const rahakorvausValue = vakuuslaskuriRows.reduce((sum, row) => {
+        const saantelynMukainenValue = vakuuslaskuriRows.reduce((sum, row) => {
           const vakuustarveValue = parseLandUseNumericValue(row.vakuustarve);
           return sum + (vakuustarveValue ?? 0);
         }, 0);
 
         const remainingSeparatorDirection =
-          sopimuksenMukainenValue > rahakorvausValue
+          sopimuksenMukainenValue > saantelynMukainenValue
             ? "left"
-            : rahakorvausValue > sopimuksenMukainenValue
+            : saantelynMukainenValue > sopimuksenMukainenValue
               ? "right"
               : "equal";
 
@@ -484,9 +463,9 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                       }`}
                     >
                       <NumberInput
-                        id="collaterals-raha-korvaus"
-                        label="Rahakorvaus"
-                        value={rahakorvausValue}
+                        id="collaterals-saantelyn-mukainen"
+                        label="Sääntelyn mukainen"
+                        value={saantelynMukainenValue}
                         unit="€"
                         disabled
                       />

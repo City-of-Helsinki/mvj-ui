@@ -901,8 +901,14 @@ const LandUseDetailPage: React.FC = () => {
             form={monitoringFormApi}
             isEditMode={isEditMode}
             sites={compensationsQuery.data?.sites ?? []}
+            perushinta={compensationsQuery.data?.perushinta}
             compensationsRowsBySiteId={
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
+            }
+            vertailunPeruskerroin={
+              compensationsQuery.data?.vertailunPeruskerroin ??
+              collateralsQuery.data?.vertailunPeruskerroin ??
+              1.25
             }
             onSetTabDirty={handleSetTabDirty}
           />

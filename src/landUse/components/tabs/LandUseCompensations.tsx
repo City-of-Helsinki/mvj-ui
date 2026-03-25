@@ -46,6 +46,7 @@ export interface LandUseCompensationsFormValues {
   maakorvaus: string;
   muuKorvaus: string;
   perushinta: string;
+  vertailunPeruskerroin?: number;
   maakorvausSelite: string;
   muuSelite: string;
   perustietotaulukkoRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
@@ -350,7 +351,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                     id={`landuse-compensations-amvelvoite-${site.id}`}
                     label="AM-velvoite"
                     checked={Boolean(input.value)}
-                    onChange={() => input.onChange(!Boolean(input.value))}
+                    onChange={() => input.onChange(!input.value)}
                     disabled={isCompensationsTableReadOnly}
                   />
                 )}
