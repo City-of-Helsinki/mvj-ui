@@ -147,7 +147,7 @@ const PlanUnits = ({
                   if (isMasterData) {
                     return (
                       <PlanUnitItem
-                        key={index}
+                        key={planunit}
                         planUnit={areas[index]}
                         areaArchived={!isActive}
                       />
@@ -155,7 +155,7 @@ const PlanUnits = ({
                   } else {
                     return (
                       <PlanUnitItemEdit
-                        key={index}
+                        key={planunit}
                         field={planunit}
                         onRemove={handleRemove}
                       />
