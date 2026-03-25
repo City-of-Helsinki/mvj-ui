@@ -88,7 +88,7 @@ const PlanUnits = ({
   title,
   uiDataKey,
   areas,
-  isMasterData,
+  isMasterData, // This flag tells us whether we rendering master data
   isActive,
 }: PlanUnitsProps): ReactElement => {
   const attributes: Attributes = useSelector(getAttributes);
@@ -144,6 +144,7 @@ const PlanUnits = ({
                         ConfirmationModalTexts.DELETE_PLAN_UNIT.TITLE,
                     });
                   };
+                  // Master data (from Facta) cannot be edited in MVJ
                   if (isMasterData) {
                     return (
                       <PlanUnitItem
