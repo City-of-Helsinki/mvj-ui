@@ -52,3 +52,14 @@ export const calculateVakuustarve = (
     vertailunPeruskerroin
   );
 };
+
+export const calculateSopimussakko = (
+  hintaero: number | null,
+  vertailunPeruskerroin: number | null,
+): number | null => {
+  if (hintaero === null || vertailunPeruskerroin === null) {
+    return null;
+  }
+
+  return hintaero * vertailunPeruskerroin;
+};

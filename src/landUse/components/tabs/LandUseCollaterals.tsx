@@ -23,10 +23,12 @@ import {
   formatLandUseEuroDisplayValue,
   formatLandUseEuroValue,
   formatLandUseNumericValue,
+  formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
 } from "../../utils/number";
 import {
   calculateHintaero,
+  calculateSopimussakko,
   calculateVakuustarve,
   getKerroinPercent,
 } from "../../utils/vakuustarve";
@@ -59,6 +61,7 @@ interface CollateralsVakuuslaskuriRow {
   hallintamuoto?: string;
   km2: string;
   hintaero: string;
+  sopimussakko: string;
   kerroin: string;
   vakuustarve: string;
   vakuudet: React.ReactNode;
@@ -211,6 +214,10 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               perushinta,
               compensationsRowsBySiteId[site.id]?.yksikkohinta,
             );
+            const sopimussakkoValue = calculateSopimussakko(
+              hintaeroValue,
+              vertailunPeruskerroin,
+            );
             const kerroinPercent =
               hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
 
@@ -233,6 +240,10 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 hintaeroValue !== null
                   ? formatLandUseNumericValue(hintaeroValue)
                   : "-",
+              sopimussakko: formatLandUseNumericValueWithUnit(
+                sopimussakkoValue,
+                "€/kem²",
+              ),
               kerroin: kerroinPercent !== null ? `${kerroinPercent} %` : "-",
               vakuustarve:
                 remainingVakuustarveValue !== null
@@ -265,6 +276,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           { key: "hallintamuoto", headerName: "Hallintamuoto" },
           { key: "km2", headerName: "k-m²" },
           { key: "hintaero", headerName: "Hintaero" },
+          { key: "sopimussakko", headerName: "Sopimussakko" },
           { key: "kerroin", headerName: "Kerroin" },
           { key: "vakuustarve", headerName: "Vakuustarve" },
           { key: "vakuudet", headerName: "Vakuudet" },
@@ -278,6 +290,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             hallintamuoto: row.hallintamuoto || "-",
             km2: row.km2 || "-",
             hintaero: row.hintaero,
+            sopimussakko: row.sopimussakko,
             kerroin: row.kerroin,
             vakuustarve: row.vakuustarve,
             vakuudet: row.vakuudet,

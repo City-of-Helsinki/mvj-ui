@@ -25,12 +25,12 @@ import { landUseCompensationSelectOptions } from "../../options";
 import type { LandUseSite } from "./LandUseCompensations";
 import {
   formatLandUseEuroDisplayValue,
-  formatLandUseEuroValue,
-  formatLandUseNumericValue,
+  formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
 } from "../../utils/number";
 import {
   calculateHintaero,
+  calculateSopimussakko,
   calculateVakuustarve,
   getKerroinPercent,
 } from "../../utils/vakuustarve";
@@ -284,12 +284,8 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           { key: "hallintamuoto", headerName: "Hallintamuoto" },
           { key: "vaadittuKm2", headerName: "Vaadittu k-m²" },
           { key: "toteutunutKm2", headerName: "Toteutunut k-m²" },
-          { key: "hintaero", headerName: "Hintaero" },
+          { key: "sopimussakko", headerName: "Sopimussakko" },
           { key: "kerroin", headerName: "Kerroin" },
-          {
-            key: "vertailunPeruskerroin",
-            headerName: "Vertailun peruskerroin",
-          },
           { key: "vakuustarve", headerName: "Vakuustarve" },
         ];
 
@@ -304,6 +300,10 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           const yksikkohintaRaw =
             compensationsRowsBySiteId[site.id]?.yksikkohinta ?? "";
           const hintaeroValue = calculateHintaero(perushinta, yksikkohintaRaw);
+          const sopimussakkoValue = calculateSopimussakko(
+            hintaeroValue,
+            vertailunPeruskerroinValue,
+          );
           const kerroinPercent =
             hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
           const vakuustarveValue = calculateVakuudenVapauttaminenTarve(
@@ -320,18 +320,15 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             hallintamuoto: formatSiteHallintamuoto(site.hallintamuoto),
             vaadittuKm2: site.km2 || "-",
             toteutunutKm2: latestToteutunutEntry?.value ?? "-",
-            hintaero:
-              hintaeroValue !== null
-                ? formatLandUseEuroValue(hintaeroValue)
-                : "-",
-            kerroin: kerroinPercent !== null ? `${kerroinPercent} %` : "-",
-            vertailunPeruskerroin: formatLandUseNumericValue(
-              vertailunPeruskerroinValue,
+            sopimussakko: formatLandUseNumericValueWithUnit(
+              sopimussakkoValue,
+              "€/kem²",
             ),
-            vakuustarve:
-              vakuustarveValue !== null
-                ? formatLandUseEuroValue(vakuustarveValue)
-                : "-",
+            kerroin: kerroinPercent !== null ? `${kerroinPercent} %` : "-",
+            vakuustarve: formatLandUseNumericValueWithUnit(
+              vakuustarveValue,
+              "€",
+            ),
           };
         });
 

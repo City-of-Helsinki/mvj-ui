@@ -42,6 +42,16 @@ export const formatLandUseIntegerValue = (value: number): string =>
     maximumFractionDigits: 0,
   });
 
+export const formatLandUseNumericValueWithUnit = (
+  value: number,
+  unit: string,
+): string => {
+  if (value === null || value === undefined) {
+    return "-";
+  }
+  return `${formatLandUseNumericValue(value)} ${unit}`;
+};
+
 export const formatLandUseEuroValue = (value: number): string =>
   `${formatLandUseNumericValue(value)} €`;
 

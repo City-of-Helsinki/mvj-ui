@@ -500,7 +500,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         id="landuse-compensations-perushinta"
                         label="Perushinta"
                         value={input.value}
-                        unit="€"
+                        unit="€/kem²"
                         onChange={input.onChange}
                         disabled={!isEditMode}
                       />
