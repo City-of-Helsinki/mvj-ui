@@ -75,6 +75,7 @@ interface LandUseCollateralsProps {
   perushinta?: string;
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
   agreements: CollateralAgreementValue[];
+  maankayttokorvausYhteensa?: number;
 }
 
 const formatSiteHallintamuoto = (
@@ -137,6 +138,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   perushinta,
   compensationsRowsBySiteId,
   agreements,
+  maankayttokorvausYhteensa,
 }) => {
   const [selectedSiteId, setSelectedSiteId] = React.useState<string | null>(
     null,
@@ -324,14 +326,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           }),
         );
 
-        const sopimuksenMukainenValue = sites.reduce((sum, site) => {
-          const km2Value = parseLandUseNumericValue(site.km2) ?? 0;
-          const yksikkohintaValue =
-            parseLandUseNumericValue(
-              compensationsRowsBySiteId[site.id]?.yksikkohinta,
-            ) ?? 0;
-          return sum + km2Value * yksikkohintaValue;
-        }, 0);
+        const sopimuksenMukainenValue = maankayttokorvausYhteensa ?? 0;
 
         const saantelynMukainenValue = calculateSaantelynMukainenOriginalValue(
           sites,

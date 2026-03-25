@@ -69,6 +69,7 @@ import {
   updateSummary,
 } from "../api/landUseApi";
 import { LAND_USE_NEGOTIATION_PHASES } from "../options";
+import { parseLandUseNumericValueOrZero } from "../utils/number";
 
 interface FormState {
   dirty: boolean;
@@ -889,6 +890,17 @@ const LandUseDetailPage: React.FC = () => {
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
             }
             agreements={decisionsQuery.data?.agreements ?? []}
+            maankayttokorvausYhteensa={
+              parseLandUseNumericValueOrZero(
+                compensationsQuery.data?.rahakorvaus,
+              ) +
+              parseLandUseNumericValueOrZero(
+                compensationsQuery.data?.maakorvaus,
+              ) +
+              parseLandUseNumericValueOrZero(
+                compensationsQuery.data?.muuKorvaus,
+              )
+            }
           />
         </TabPanel>
 
@@ -909,6 +921,17 @@ const LandUseDetailPage: React.FC = () => {
               compensationsQuery.data?.vertailunPeruskerroin ??
               collateralsQuery.data?.vertailunPeruskerroin ??
               1.25
+            }
+            maankayttokorvausYhteensa={
+              parseLandUseNumericValueOrZero(
+                compensationsQuery.data?.rahakorvaus,
+              ) +
+              parseLandUseNumericValueOrZero(
+                compensationsQuery.data?.maakorvaus,
+              ) +
+              parseLandUseNumericValueOrZero(
+                compensationsQuery.data?.muuKorvaus,
+              )
             }
             onSetTabDirty={handleSetTabDirty}
           />

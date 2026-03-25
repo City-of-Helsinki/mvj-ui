@@ -457,6 +457,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         id="landuse-compensations-maakorvaus-selite"
                         label="Maakorvaus selite"
                         value={input.value ?? ""}
+                        onChange={input.onChange}
                         disabled={!isEditMode}
                       />
                     )}
@@ -468,6 +469,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         id="landuse-compensations-muu-selite"
                         label="Muu selite"
                         value={input.value ?? ""}
+                        onChange={input.onChange}
                         disabled={!isEditMode}
                       />
                     )}

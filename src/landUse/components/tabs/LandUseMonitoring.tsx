@@ -67,6 +67,7 @@ interface LandUseMonitoringProps {
   perushinta?: string;
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
   vertailunPeruskerroin?: number;
+  maankayttokorvausYhteensa?: number;
   onSetTabDirty?: (formKey: FormKey) => void;
 }
 
@@ -142,6 +143,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
   perushinta,
   compensationsRowsBySiteId,
   vertailunPeruskerroin,
+  maankayttokorvausYhteensa,
   onSetTabDirty,
 }) => {
   const [selectedSiteId, setSelectedSiteId] = React.useState<string | null>(
@@ -339,22 +341,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           };
         });
 
-        const sopimuksenMukainenValue = sites.reduce((sum, site) => {
-          const vaadittuValue = parseLandUseNumericValue(site.km2);
-          const yksikkohintaRaw =
-            compensationsRowsBySiteId[site.id]?.yksikkohinta ?? "";
-          const hintaeroValue = calculateHintaero(perushinta, yksikkohintaRaw);
-          const kerroinPercent =
-            hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
-          const kokonaisVakuustarve = calculateVakuustarve(
-            vaadittuValue,
-            hintaeroValue,
-            kerroinPercent,
-            vertailunPeruskerroinValue,
-          );
-
-          return sum + (kokonaisVakuustarve ?? 0);
-        }, 0);
+        const sopimuksenMukainenValue = maankayttokorvausYhteensa ?? 0;
 
         const saantelynMukainenValue = monitoringVapauttaminenRows.reduce(
           (sum, row) => {
