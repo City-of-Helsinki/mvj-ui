@@ -39,7 +39,6 @@ import {
   getBasisOfRentIndexValue,
   calculateExtraRent,
   calculateFieldsRent,
-  calculateAllotmentRent,
   calculateTemporaryRent,
   calculateBasicAnnualRentIndexed,
   mastCalculatorRent,
@@ -290,14 +289,6 @@ const BasisOfRent = ({
   const mastTotal = (mastAreaRent + rackAndHeightPrice) * 0.05;
   const mastTotalIndexed = calculateBasicAnnualRentIndexed(
     mastTotal,
-    indexValue,
-  );
-  const allotmentRent = calculateAllotmentRent(
-    basisOfRent.amount_per_area,
-    basisOfRent.area,
-  );
-  const allotmentRentIndexed = calculateBasicAnnualRentIndexed(
-    allotmentRent,
     indexValue,
   );
   const zoneOptions = getFieldOptions(
@@ -793,8 +784,7 @@ const BasisOfRent = ({
             </Column>
           )}
           {(calculatorType === CalculatorTypes.ADDITIONAL_YARD ||
-            calculatorType === CalculatorTypes.FIELD ||
-            calculatorType === CalculatorTypes.ALLOTMENT) && (
+            calculatorType === CalculatorTypes.FIELD) && (
             <Column small={3} medium={2} large={1}>
               <Authorization
                 allow={isFieldAllowedToRead(
@@ -873,8 +863,7 @@ const BasisOfRent = ({
                 </Authorization>
               </Column>
             )}
-          {(calculatorType === CalculatorTypes.ADDITIONAL_YARD ||
-            calculatorType === CalculatorTypes.ALLOTMENT) && (
+          {calculatorType === CalculatorTypes.ADDITIONAL_YARD && (
             <Column
               small={3}
               medium={2}
@@ -946,13 +935,6 @@ const BasisOfRent = ({
                       <FormText>
                         {!isEmptyValue(fieldsRent)
                           ? `${formatNumber(fieldsRent)} €`
-                          : "-"}
-                      </FormText>
-                    )}
-                    {calculatorType === CalculatorTypes.ALLOTMENT && (
-                      <FormText>
-                        {!isEmptyValue(allotmentRent)
-                          ? `${formatNumber(allotmentRent)} €`
                           : "-"}
                       </FormText>
                     )}
@@ -1066,13 +1048,6 @@ const BasisOfRent = ({
                       <FormText>
                         {!isEmptyValue(basicAnnualFieldRentIndexed)
                           ? `${formatNumber(basicAnnualFieldRentIndexed)} €/v`
-                          : "-"}
-                      </FormText>
-                    )}
-                    {calculatorType === CalculatorTypes.ALLOTMENT && (
-                      <FormText>
-                        {!isEmptyValue(allotmentRentIndexed)
-                          ? `${formatNumber(allotmentRentIndexed)} €/v`
                           : "-"}
                       </FormText>
                     )}

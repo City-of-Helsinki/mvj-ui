@@ -2121,18 +2121,6 @@ export const calculateFieldsRent = (
   );
 };
 
-export const calculateAllotmentRent = (
-  price: string | null | undefined,
-  area: number | null | undefined,
-): number => {
-  if (!price || !area) return 0;
-  return Number(
-    Number(convertStrToDecimalNumber(price)) *
-      Number(convertStrToDecimalNumber(area)) *
-      0.05,
-  );
-};
-
 /**
  * Calculate Rack price
  * @param {number} area
