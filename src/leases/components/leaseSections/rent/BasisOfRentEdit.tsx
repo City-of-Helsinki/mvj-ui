@@ -57,7 +57,6 @@ import {
   calculateTemporarySubventionDiscountPercentage,
   calculateExtraRent,
   calculateFieldsRent,
-  calculateAllotmentRent,
   calculateRackAndHeightPrice,
   calculateTemporaryRent,
   getBasisOfRentIndexValue,
@@ -1104,12 +1103,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       fieldsRent,
       indexValue,
     );
-    // Used by CalculatorTypes.ALLOTMENT
-    const allotmentRent = calculateAllotmentRent(price, area);
-    const allotmentRentIndexed = calculateBasicAnnualRentIndexed(
-      allotmentRent,
-      indexValue,
-    );
     // Used by CalculatorTypes.MAST
     const mastAreaRent = 1.5 * calculateFieldsRent(price, area);
     const rackAndHeightPrice = calculateRackAndHeightPrice(children);
@@ -1611,8 +1604,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                           </Column>
                         )}
                         {(calculatorType === CalculatorTypes.ADDITIONAL_YARD ||
-                          calculatorType === CalculatorTypes.FIELD ||
-                          calculatorType === CalculatorTypes.ALLOTMENT) && (
+                          calculatorType === CalculatorTypes.FIELD) && (
                           <Column small={4} medium={2} large={1}>
                             <FormTextTitle
                               required={isFieldRequired(
@@ -1896,8 +1888,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                             </Authorization>
                           </Column>
                         )}
-                        {(calculatorType === CalculatorTypes.ADDITIONAL_YARD ||
-                          calculatorType === CalculatorTypes.ALLOTMENT) && (
+                        {calculatorType === CalculatorTypes.ADDITIONAL_YARD && (
                           <Column
                             small={3}
                             medium={2}
@@ -1975,14 +1966,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                   <FormText>
                                     {!isEmptyValue(fieldsRent)
                                       ? `${formatNumber(fieldsRent)} €`
-                                      : "-"}
-                                  </FormText>
-                                )}
-                                {calculatorType ===
-                                  CalculatorTypes.ALLOTMENT && (
-                                  <FormText>
-                                    {!isEmptyValue(allotmentRent)
-                                      ? `${formatNumber(allotmentRent)} €`
                                       : "-"}
                                   </FormText>
                                 )}
@@ -2107,14 +2090,6 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                                   <FormText>
                                     {!isEmptyValue(basicAnnualFieldRentIndexed)
                                       ? `${formatNumber(basicAnnualFieldRentIndexed)} €/v`
-                                      : "-"}
-                                  </FormText>
-                                )}
-                                {calculatorType ===
-                                  CalculatorTypes.ALLOTMENT && (
-                                  <FormText>
-                                    {!isEmptyValue(allotmentRentIndexed)
-                                      ? `${formatNumber(allotmentRentIndexed)} €/v`
                                       : "-"}
                                   </FormText>
                                 )}
