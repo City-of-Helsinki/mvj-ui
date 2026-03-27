@@ -2,7 +2,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "src/*": ["./src/*"],
+      "@/*": ["./apps/leasing/src/*"],
+      "@leasing/*": ["./apps/leasing/src/*"],
+      "@landuse/*": ["./apps/landuse/src/*"],
     }
   }
 }

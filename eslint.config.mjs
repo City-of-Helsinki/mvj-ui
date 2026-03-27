@@ -13,7 +13,7 @@ export default [
       react: { version: "detect" }
     },
     languageOptions: { globals: globals.browser },
-    files: ["src/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    files: ["apps/**/src/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     plugins: {
       react: pluginReact,
       "react-hooks": pluginReactHooks
@@ -45,6 +45,22 @@ export default [
       "@typescript-eslint/no-duplicate-imports": "off",
       
       "@typescript-eslint/no-unsafe-function-type": "off"
+    }
+  },
+  {
+    files: ["apps/landuse/src/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          "paths": [
+            "redux",
+            "react-redux",
+            "redux-saga",
+            "redux-form"
+          ]
+        }
+      ]
     }
   }
 ];

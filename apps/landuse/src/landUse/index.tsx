@@ -5,11 +5,10 @@ import { LoginProvider } from "hds-react";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import LandUseApp from "@/landUse/LandUseApp";
-import { loginProviderProperties } from "@/auth/constants";
+import { loginProviderProperties } from "@/landUse/auth/constants";
 import { seedLandUseDb } from "@/landUse/api/landUseSeed";
 import { createLandUsePersister } from "@/landUse/api/landUseQueryPersister";
 import "@/landUse/landUse.scss"; // Only import landUse styles
-
 const createQueryClient = () =>
   new QueryClient({
     defaultOptions: {
@@ -54,7 +53,7 @@ const persister = createLandUsePersister();
 const queryClient = createQueryClient();
 
 root.render(
-  <BrowserRouter basename="/maankayttosopimukset">
+  <BrowserRouter>
     <LoginProvider {...loginProviderProperties}>
       <PersistQueryClientProvider
         client={queryClient}
