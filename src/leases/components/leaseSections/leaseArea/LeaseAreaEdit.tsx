@@ -13,6 +13,7 @@ import Collapse from "@/components/collapse/Collapse";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
+import PlanUnitItem from "./PlanUnitItem";
 import PlanUnitItemEdit from "./PlanUnitItemEdit";
 import PlotItemEdit from "./PlotItemEdit";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -61,7 +62,6 @@ import { useField } from "react-final-form";
 import { FormApi } from "final-form";
 
 type PlanUnitsProps = {
-  formApi: FormApi;
   buttonTitle: string;
   collapseState: boolean;
   errors: Record<string, any>;
@@ -70,12 +70,14 @@ type PlanUnitsProps = {
   onCollapseToggle: (...args: Array<any>) => any;
   title: string;
   uiDataKey: string;
+  areas: Record<string, any>;
+  isMasterData: boolean;
+  isActive: boolean;
 };
 
 const formName = FormNames.LEASE_AREAS;
 
 const PlanUnits = ({
-  formApi,
   buttonTitle,
   collapseState,
   errors,
@@ -85,6 +87,9 @@ const PlanUnits = ({
   onCollapseToggle,
   title,
   uiDataKey,
+  areas,
+  isMasterData, // This flag tells us whether we rendering master data
+  isActive,
 }: PlanUnitsProps): ReactElement => {
   const attributes: Attributes = useSelector(getAttributes);
   const isSaveClicked: boolean = useSelector(getIsSaveClicked);
@@ -139,34 +144,45 @@ const PlanUnits = ({
                         ConfirmationModalTexts.DELETE_PLAN_UNIT.TITLE,
                     });
                   };
-
-                  return (
-                    <PlanUnitItemEdit
-                      key={index}
-                      field={planunit}
-                      onRemove={handleRemove}
-                    />
-                  );
+                  // Master data (from Facta) cannot be edited in MVJ
+                  if (isMasterData) {
+                    return (
+                      <PlanUnitItem
+                        key={planunit}
+                        planUnit={areas[index]}
+                        areaArchived={!isActive}
+                      />
+                    );
+                  } else {
+                    return (
+                      <PlanUnitItemEdit
+                        key={planunit}
+                        field={planunit}
+                        onRemove={handleRemove}
+                      />
+                    );
+                  }
                 })}
               </BoxItemContainer>
             )}
-
-            <Authorization
-              allow={hasPermissions(
-                usersPermissions,
-                UsersPermissions.ADD_PLANUNIT,
-              )}
-            >
-              <Row>
-                <Column>
-                  <AddButtonSecondary
-                    className={!fields.length ? "no-top-margin" : ""}
-                    label={buttonTitle}
-                    onClick={handleAdd}
-                  />
-                </Column>
-              </Row>
-            </Authorization>
+            {!isMasterData && (
+              <Authorization
+                allow={hasPermissions(
+                  usersPermissions,
+                  UsersPermissions.ADD_PLANUNIT,
+                )}
+              >
+                <Row>
+                  <Column>
+                    <AddButtonSecondary
+                      className={!fields.length ? "no-top-margin" : ""}
+                      label={buttonTitle}
+                      onClick={handleAdd}
+                    />
+                  </Column>
+                </Row>
+              </Authorization>
+            )}
           </Collapse>
         );
       }}
@@ -585,6 +601,7 @@ type Props = {
   index: number;
   savedArea: Record<string, any>;
   areaId: number;
+  isActive: boolean;
 };
 
 const LeaseAreaEdit: React.FC<Props> = ({
@@ -593,6 +610,7 @@ const LeaseAreaEdit: React.FC<Props> = ({
   index,
   field,
   savedArea,
+  isActive,
 }) => {
   const dispatch = useDispatch();
 
@@ -864,7 +882,6 @@ const LeaseAreaEdit: React.FC<Props> = ({
               {(fieldArrayProps) =>
                 PlanUnits({
                   ...fieldArrayProps,
-                  formApi,
                   buttonTitle: "Lisää kaavayksikkö",
                   collapseState: planUnitsContractCollapseState,
                   errors: { errors },
@@ -874,6 +891,9 @@ const LeaseAreaEdit: React.FC<Props> = ({
                   uiDataKey: getUiDataLeaseKey(
                     LeasePlanUnitsFieldPaths.PLAN_UNITS_CONTRACT,
                   ),
+                  isMasterData: false, // These plan units' data is editable in MVJ
+                  areas: savedArea?.plan_units_contract ?? [],
+                  isActive,
                 })
               }
             </FieldArray>
@@ -883,7 +903,6 @@ const LeaseAreaEdit: React.FC<Props> = ({
               {(fieldArrayProps) =>
                 PlanUnits({
                   ...fieldArrayProps,
-                  formApi,
                   buttonTitle: "Lisää kaavayksikkö",
                   collapseState: planUnitsCurrentCollapseState,
                   errors: { errors },
@@ -893,6 +912,9 @@ const LeaseAreaEdit: React.FC<Props> = ({
                   uiDataKey: getUiDataLeaseKey(
                     LeasePlanUnitsFieldPaths.PLAN_UNITS,
                   ),
+                  isMasterData: true, // These plan units' data is received from master source (i.e. Facta) and is not editable in MVJ
+                  areas: savedArea?.plan_units_current ?? [],
+                  isActive,
                 })
               }
             </FieldArray>
@@ -903,7 +925,6 @@ const LeaseAreaEdit: React.FC<Props> = ({
               {(fieldArrayProps) =>
                 PlanUnits({
                   ...fieldArrayProps,
-                  formApi,
                   buttonTitle: "Vireillä olevat kaavayksiköt",
                   collapseState: planUnitsCurrentCollapseState,
                   errors: { errors },
@@ -911,6 +932,9 @@ const LeaseAreaEdit: React.FC<Props> = ({
                   onCollapseToggle: handlePlanUnitCurrentCollapseToggle,
                   title: "Vireillä olevat kaavayksiköt",
                   uiDataKey: null, // No uiDataKey
+                  isMasterData: true, // These plan units' data is received from master source (i.e. Facta) and is not editable in MVJ
+                  areas: savedArea?.plan_units_pending ?? [],
+                  isActive,
                 })
               }
             </FieldArray>

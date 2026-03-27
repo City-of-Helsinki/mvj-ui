@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { Link, useLocation } from "react-router-dom";
-import { useField, useForm } from "react-final-form";
+import { useField } from "react-final-form";
 import isEmpty from "lodash/isEmpty";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
@@ -38,7 +38,6 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }) => {
   const isSaveClicked: boolean = useSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
     useSelector(getUsersPermissions);
-  const form = useForm();
   const location = useLocation();
 
   const {
@@ -47,175 +46,6 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }) => {
   const {
     input: { value: geometry },
   } = useField(`${field}.geometry`, { subscription: { value: true } });
-  const {
-    input: { value: identifier },
-  } = useField(`${field}.identifier`, { subscription: { value: true } });
-  const {
-    input: { value: area },
-  } = useField(`${field}.area`, { subscription: { value: true } });
-  const {
-    input: { value: section_area },
-  } = useField(`${field}.section_area`, { subscription: { value: true } });
-  const {
-    input: { value: detailed_plan_identifier },
-  } = useField(`${field}.detailed_plan_identifier`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: detailed_plan_latest_processing_date },
-  } = useField(`${field}.detailed_plan_latest_processing_date`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: detailed_plan_latest_processing_date_note },
-  } = useField(`${field}.detailed_plan_latest_processing_date_note`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: plot_division_identifier },
-  } = useField(`${field}.plot_division_identifier`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: plot_division_state },
-  } = useField(`${field}.plot_division_state`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: plot_division_effective_date },
-  } = useField(`${field}.plot_division_effective_date`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: plan_unit_type },
-  } = useField(`${field}.plan_unit_type`, { subscription: { value: true } });
-  const {
-    input: { value: plan_unit_state },
-  } = useField(`${field}.plan_unit_state`, { subscription: { value: true } });
-  const {
-    input: { value: plan_unit_intended_use },
-  } = useField(`${field}.plan_unit_intended_use`, {
-    subscription: { value: true },
-  });
-  const {
-    input: { value: is_master },
-  } = useField(`${field}.is_master`, { subscription: { value: true } });
-
-  // Snapshot of values
-  const initialValuesRef = useRef({
-    identifier,
-    area,
-    section_area,
-    detailed_plan_identifier,
-    detailed_plan_latest_processing_date,
-    detailed_plan_latest_processing_date_note,
-    plot_division_identifier,
-    plot_division_state,
-    plot_division_effective_date,
-    plan_unit_type,
-    plan_unit_state,
-    plan_unit_intended_use,
-    is_master,
-  });
-
-  const prevValuesRef = useRef({
-    identifier,
-    area,
-    section_area,
-    detailed_plan_identifier,
-    detailed_plan_latest_processing_date,
-    detailed_plan_latest_processing_date_note,
-    plot_division_identifier,
-    plot_division_state,
-    plot_division_effective_date,
-    plan_unit_type,
-    plan_unit_state,
-    plan_unit_intended_use,
-  });
-
-  /* The logic was inside 'componentDidUpgrade' -lifecycle method, so after refactoring to 
-    'useEffect'-hook it now requires a machanism to skip the component mounting event. Therefore
-    we use the 'isFirstRender'-ref. Otherwise entering edit mode will cause the form to dirty
-    because of form.change -call.
-  */
-  const isFirstRenderRef = useRef(true);
-
-  /* The state-logic contained here is just a faithful conversion of the original class-based 
-    implementation */
-  useEffect(() => {
-    const initial = initialValuesRef.current;
-    const prev = prevValuesRef.current;
-    const currentValues = {
-      identifier,
-      area,
-      section_area,
-      detailed_plan_identifier,
-      detailed_plan_latest_processing_date,
-      detailed_plan_latest_processing_date_note,
-      plot_division_identifier,
-      plot_division_state,
-      plot_division_effective_date,
-      plan_unit_type,
-      plan_unit_state,
-      plan_unit_intended_use,
-    };
-
-    if (isFirstRenderRef.current) {
-      isFirstRenderRef.current = false;
-      return;
-    }
-
-    if (initial.is_master) {
-      prevValuesRef.current = currentValues;
-      return;
-    }
-
-    if (
-      initial.identifier == identifier &&
-      initial.area == area &&
-      initial.section_area == section_area &&
-      initial.detailed_plan_identifier == detailed_plan_identifier &&
-      initial.detailed_plan_latest_processing_date ==
-        detailed_plan_latest_processing_date &&
-      initial.detailed_plan_latest_processing_date_note ==
-        detailed_plan_latest_processing_date_note &&
-      initial.plot_division_identifier == plot_division_identifier &&
-      initial.plot_division_state == plot_division_state &&
-      initial.plot_division_effective_date == plot_division_effective_date &&
-      initial.plan_unit_type == plan_unit_type &&
-      initial.plan_unit_state == plan_unit_state &&
-      initial.plan_unit_intended_use == plan_unit_intended_use
-    ) {
-      form.change(`${field}.is_master`, false);
-      prevValuesRef.current = currentValues;
-      return;
-    }
-
-    if (is_master) {
-      prevValuesRef.current = currentValues;
-      return;
-    }
-
-    if (
-      prev.identifier != identifier ||
-      prev.area != area ||
-      prev.section_area != section_area ||
-      prev.detailed_plan_identifier != detailed_plan_identifier ||
-      prev.detailed_plan_latest_processing_date !=
-        detailed_plan_latest_processing_date ||
-      prev.detailed_plan_latest_processing_date_note !=
-        detailed_plan_latest_processing_date_note ||
-      prev.plot_division_identifier != plot_division_identifier ||
-      prev.plot_division_state != plot_division_state ||
-      prev.plot_division_effective_date != plot_division_effective_date ||
-      prev.plan_unit_type != plan_unit_type ||
-      prev.plan_unit_state != plan_unit_state ||
-      prev.plan_unit_intended_use != plan_unit_intended_use
-    ) {
-      form.change(`${field}.is_master`, true);
-    }
-    prevValuesRef.current = currentValues;
-  });
 
   const getMapLinkUrl = () => {
     const { pathname, search } = location;
@@ -261,31 +91,6 @@ const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }) => {
                 enableUiDataEdit
                 uiDataKey={getUiDataLeaseKey(
                   LeasePlanUnitsFieldPaths.IDENTIFIER,
-                )}
-              />
-            </Authorization>
-          </Column>
-          <Column small={12} medium={2} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                attributes,
-                LeasePlanUnitsFieldPaths.IS_MASTER,
-              )}
-            >
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(
-                  attributes,
-                  LeasePlanUnitsFieldPaths.IS_MASTER,
-                )}
-                name={`${field}.is_master`}
-                overrideValues={{
-                  label: LeasePlanUnitsFieldTitles.IS_MASTER,
-                  disabled: true,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(
-                  LeasePlanUnitsFieldPaths.IS_MASTER,
                 )}
               />
             </Authorization>
