@@ -199,6 +199,9 @@ export type ReceivableType = {
   name: string;
   is_active: boolean;
   service_unit_id: ServiceUnit["id"];
+  sap_material_code?: string;
+  sap_order_item_number?: string;
+  sap_project_number?: string;
 };
 export type SendEmailPayload = {
   type: string;

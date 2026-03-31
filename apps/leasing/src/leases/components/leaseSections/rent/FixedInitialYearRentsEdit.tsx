@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -15,7 +14,6 @@ import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
 import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
-import { Breakpoints } from "@/foundation/enums";
 import {
   LeaseRentFixedInitialYearRentsFieldPaths,
   LeaseRentFixedInitialYearRentsFieldTitles,
@@ -28,26 +26,23 @@ import {
   isFieldAllowedToRead,
   isFieldRequired,
 } from "@/util/helpers";
-import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
+import {
+  getIsSaveClicked,
+  getAttributes as getLeaseAttributes,
+} from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import { withWindowResize } from "@/components/resize/WindowResizeHandler";
+import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
   fields: any;
-  isSaveClicked: boolean;
-  largeScreen: boolean;
-  leaseAttributes: Attributes;
-  usersPermissions: UsersPermissionsType;
 };
 
-const FixedInitialYearRentsEdit = ({
-  fields,
-  isSaveClicked,
-  largeScreen,
-  leaseAttributes,
-  usersPermissions,
-}: Props) => {
+const FixedInitialYearRentsEdit = ({ fields }: Props) => {
+  const largeScreen = useWindowResize();
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const usersPermissions = useSelector(getUsersPermissions);
+
   const handleAdd = () => {
     fields.push({});
   };
@@ -66,7 +61,7 @@ const FixedInitialYearRentsEdit = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             {fields && !!fields.length && (
               <BoxItemContainer>
                 {largeScreen && (
@@ -431,19 +426,11 @@ const FixedInitialYearRentsEdit = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
   );
 };
 
-export default flowRight(
-  withWindowResize,
-  connect((state) => {
-    return {
-      leaseAttributes: getLeaseAttributes(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  }),
-)(FixedInitialYearRentsEdit);
+export default FixedInitialYearRentsEdit;

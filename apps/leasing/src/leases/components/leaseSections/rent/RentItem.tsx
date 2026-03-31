@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Column } from "react-foundation";
 import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";
@@ -45,54 +44,85 @@ import {
   getCurrentLeaseTypeIdentifier,
 } from "@/leases/selectors";
 import type { Attributes } from "types";
-import type { ServiceUnit } from "@/serviceUnits/types";
 import OldDwellingsInHousingCompaniesPriceIndexView from "./OldDwellingsInHousingCompaniesPriceIndex";
 import { isATypedLease } from "@/leases/helpers";
+import { useDispatch, useSelector } from "react-redux";
 
 const formName = FormNames.LEASE_RENTS;
 type Props = {
-  contractRentsCollapseState: boolean;
-  equalizedRentsCollapseState: boolean;
-  oldDwellingsInHousingCompaniesPriceIndexCollapseState: boolean;
-  fixedInitialYearRentsCollapseState: boolean;
-  indexAdjustedRentsCollapseState: boolean;
-  leaseAttributes: Attributes;
-  leaseTypeIdentifier: string;
-  payableRentsCollapseState: boolean;
-  receiveCollapseStates: (...args: Array<any>) => any;
   rent: Record<string, any>;
   rents: Array<Record<string, any>>;
-  rentAdjustmentsCollapseState: boolean;
-  rentCollapseState: boolean;
-  serviceUnit: ServiceUnit;
 };
 
-const RentItem = ({
-  contractRentsCollapseState,
-  equalizedRentsCollapseState,
-  oldDwellingsInHousingCompaniesPriceIndexCollapseState,
-  fixedInitialYearRentsCollapseState,
-  indexAdjustedRentsCollapseState,
-  leaseAttributes,
-  leaseTypeIdentifier,
-  payableRentsCollapseState,
-  receiveCollapseStates,
-  rent,
-  rents,
-  rentAdjustmentsCollapseState,
-  rentCollapseState,
-  serviceUnit,
-}: Props) => {
+const RentItem = ({ rent, rents }: Props) => {
+  const dispatch = useDispatch();
+
+  const id = rent.id;
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const leaseTypeIdentifier = useSelector(getCurrentLeaseTypeIdentifier);
+
+  const contractRentsCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${id}.contract_rents`,
+    ),
+  );
+  const equalizedRentsCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${id}.equalized_rents`,
+    ),
+  );
+  const oldDwellingsInHousingCompaniesPriceIndexCollapseState = useSelector(
+    (state) =>
+      getCollapseStateByKey(
+        state,
+        `${ViewModes.READONLY}.${formName}.${id}.old_dwellings_in_housing_companies_price_index`,
+      ),
+  );
+  const fixedInitialYearRentsCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${id}.fixed_initial_year_rents`,
+    ),
+  );
+  const indexAdjustedRentsCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${id}.index_adjusted_rents`,
+    ),
+  );
+  const payableRentsCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${id}.payable_rents`,
+    ),
+  );
+  const rentCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${id}.rent`,
+    ),
+  );
+  const rentAdjustmentsCollapseState = useSelector((state) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${formName}.${id}.rent_adjustments`,
+    ),
+  );
+
   const handleCollapseToggle = (key: string, val: boolean) => {
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [formName]: {
-          [rent.id]: {
-            [key]: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.READONLY]: {
+          [formName]: {
+            [rent.id]: {
+              [key]: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const handleRentCollapseToggle = (val: boolean) => {
@@ -187,12 +217,12 @@ const RentItem = ({
             LeaseRentsFieldPaths.TYPE,
           )}
         >
-          {getLabelOfOption(typeOptions, rentType) || "-"}
+          <>{getLabelOfOption(typeOptions, rentType) || "-"}</>
         </Authorization>
       }
       onToggle={handleRentCollapseToggle}
     >
-      <BasicInfo rent={rent} rentType={rentType} serviceUnit={serviceUnit} />
+      <BasicInfo rent={rent} rentType={rentType} />
 
       <Authorization
         allow={isFieldAllowedToRead(
@@ -392,48 +422,4 @@ const RentItem = ({
   );
 };
 
-export default connect(
-  (state, props: Props) => {
-    const id = props.rent.id;
-    return {
-      contractRentsCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.contract_rents`,
-      ),
-      equalizedRentsCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.equalized_rents`,
-      ),
-      oldDwellingsInHousingCompaniesPriceIndexCollapseState:
-        getCollapseStateByKey(
-          state,
-          `${ViewModes.READONLY}.${formName}.${id}.old_dwellings_in_housing_companies_price_index`,
-        ),
-      fixedInitialYearRentsCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.fixed_initial_year_rents`,
-      ),
-      indexAdjustedRentsCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.index_adjusted_rents`,
-      ),
-      leaseAttributes: getLeaseAttributes(state),
-      leaseTypeIdentifier: getCurrentLeaseTypeIdentifier(state),
-      payableRentsCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.payable_rents`,
-      ),
-      rentCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.rent`,
-      ),
-      rentAdjustmentsCollapseState: getCollapseStateByKey(
-        state,
-        `${ViewModes.READONLY}.${formName}.${id}.rent_adjustments`,
-      ),
-    };
-  },
-  {
-    receiveCollapseStates,
-  },
-)(RentItem);
+export default RentItem;

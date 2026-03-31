@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -11,25 +11,18 @@ import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { hasPermissions } from "@/util/helpers";
-import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
   fields: any;
-  leaseAttributes: Attributes;
   rentField: string;
   rentType: string;
-  usersPermissions: UsersPermissionsType;
 };
 
-const ContractRentsEdit = ({
-  fields,
-  leaseAttributes,
-  rentField,
-  rentType,
-  usersPermissions,
-}: Props) => {
+const ContractRentsEdit = ({ fields, rentField, rentType }: Props) => {
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
   const handleAdd = () => {
     fields.push({
       period: "per_year",
@@ -47,7 +40,7 @@ const ContractRentsEdit = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             {fields && !!fields.length && (
               <BoxItemContainer>
                 {fields.map((rent, index) => {
@@ -97,16 +90,11 @@ const ContractRentsEdit = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
   );
 };
 
-export default connect((state) => {
-  return {
-    leaseAttributes: getLeaseAttributes(state),
-    usersPermissions: getUsersPermissions(state),
-  };
-})(ContractRentsEdit);
+export default ContractRentsEdit;

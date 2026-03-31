@@ -1,5 +1,4 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState } from "react";
 import BasisOfRent from "./BasisOfRent";
 import CalculateRentTotal from "./CalculateRentTotal";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
@@ -21,183 +20,152 @@ import {
 } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
-type Props = {
-  currentLease: Lease;
-  leaseAttributes: Attributes;
-};
-type State = {
-  areaUnitOptions: Array<Record<string, any>>;
-  basisOfRents: Array<Record<string, any>>;
-  basisOfRentsArchived: Array<Record<string, any>>;
-  currentLease: Lease;
-  indexOptions: Array<Record<string, any>>;
-  intendedUseOptions: Array<Record<string, any>>;
-  leaseAttributes: Attributes;
-  managementTypeOptions: Array<Record<string, any>>;
-  subventionTypeOptions: Array<Record<string, any>>;
-};
+import { useSelector } from "react-redux";
 
-class BasisOfRents extends PureComponent<Props, State> {
-  state = {
-    areaUnitOptions: [],
-    basisOfRents: [],
-    basisOfRentsArchived: [],
-    currentLease: {},
-    indexOptions: [],
-    intendedUseOptions: [],
-    leaseAttributes: null,
-    managementTypeOptions: [],
-    subventionTypeOptions: [],
-  };
+const BasisOfRents = () => {
+  const currentLease: Lease = useSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const [areaUnitOptions, setAreaUnitOptions] = useState([]);
+  const [basisOfRents, setBasisOfRents] = useState([]);
+  const [basisOfRentsArchived, setBasisOfRentsArchived] = useState([]);
+  const [indexOptions, setIndexOptions] = useState([]);
+  const [intendedUseOptions, setIntendedUseOptions] = useState([]);
+  const [managementTypeOptions, setManagementTypeOptions] = useState([]);
+  const [subventionTypeOptions, setSubventionTypeOptions] = useState([]);
 
-    if (props.leaseAttributes !== state.leaseAttributes) {
-      newState.leaseAttributes = props.leaseAttributes;
-      newState.areaUnitOptions = getFieldOptions(
-        props.leaseAttributes,
+  useEffect(() => {
+    setAreaUnitOptions(
+      getFieldOptions(
+        leaseAttributes,
         LeaseBasisOfRentsFieldPaths.AREA_UNIT,
       ).map((item) => ({
         ...item,
         label: !isEmptyValue(item.label)
           ? item.label.replace("^2", "²")
           : item.label,
-      }));
-      newState.indexOptions = getFieldOptions(
-        props.leaseAttributes,
-        LeaseBasisOfRentsFieldPaths.INDEX,
-      );
-      newState.intendedUseOptions = getFieldOptions(
-        props.leaseAttributes,
+      })),
+    );
+    setIndexOptions(
+      getFieldOptions(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX),
+    );
+    setIntendedUseOptions(
+      getFieldOptions(
+        leaseAttributes,
         LeaseBasisOfRentsFieldPaths.INTENDED_USE,
-      );
-      newState.managementTypeOptions = getFieldOptions(
-        props.leaseAttributes,
+      ),
+    );
+    setManagementTypeOptions(
+      getFieldOptions(
+        leaseAttributes,
         BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT,
-      );
-      newState.subventionTypeOptions = getFieldOptions(
-        props.leaseAttributes,
+      ),
+    );
+    setSubventionTypeOptions(
+      getFieldOptions(
+        leaseAttributes,
         LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
-      );
-    }
+      ),
+    );
+  }, [leaseAttributes]);
 
-    if (props.currentLease !== state.currentLease) {
-      newState.currentLease = props.currentLease;
-      newState.basisOfRents = getContentBasisOfRents(props.currentLease).filter(
-        (item) => !item.archived_at,
-      );
-      newState.basisOfRentsArchived = getContentBasisOfRents(
-        props.currentLease,
-      ).filter((item) => item.archived_at);
-    }
+  useEffect(() => {
+    setBasisOfRents(
+      getContentBasisOfRents(currentLease).filter((item) => !item.archived_at),
+    );
+    setBasisOfRentsArchived(
+      getContentBasisOfRents(currentLease).filter((item) => item.archived_at),
+    );
+  }, [currentLease]);
 
-    return newState;
-  }
-
-  render() {
-    const {
-      areaUnitOptions,
+  const totalDiscountedInitialYearRent =
+    calculateBasisOfRentTotalDiscountedInitialYearRent(
       basisOfRents,
+      indexOptions,
+    );
+
+  const totalDiscountedInitialYearRentArchived =
+    calculateBasisOfRentTotalDiscountedInitialYearRent(
       basisOfRentsArchived,
       indexOptions,
-      intendedUseOptions,
-      managementTypeOptions,
-      subventionTypeOptions,
-    } = this.state;
-    const totalDiscountedInitialYearRent =
-      calculateBasisOfRentTotalDiscountedInitialYearRent(
-        basisOfRents,
-        indexOptions,
-      );
-    const totalDiscountedInitialYearRentArchived =
-      calculateBasisOfRentTotalDiscountedInitialYearRent(
-        basisOfRentsArchived,
-        indexOptions,
-      );
-    return (
-      <Fragment>
-        {!basisOfRents ||
-          (!basisOfRents.length && (
-            <FormText className="no-margin">Ei vuokralaskureita</FormText>
-          ))}
-        {basisOfRents && !!basisOfRents.length && (
-          <GreenBox>
-            <BoxItemContainer>
-              {basisOfRents.map((basisOfRent, index) => {
-                return (
-                  <BasisOfRent
-                    key={index}
-                    areaUnitOptions={areaUnitOptions}
-                    basisOfRent={basisOfRent}
-                    indexOptions={indexOptions}
-                    intendedUseOptions={intendedUseOptions}
-                    managementTypeOptions={managementTypeOptions}
-                    showTotal={
-                      basisOfRents.length > 1 &&
-                      basisOfRents.length === index + 1
-                    }
-                    subventionTypeOptions={subventionTypeOptions}
-                    totalDiscountedInitialYearRent={
-                      totalDiscountedInitialYearRent
-                    }
-                  />
-                );
-              })}
-              {basisOfRents.length > 1 && (
-                <CalculateRentTotal
-                  basisOfRents={basisOfRents}
-                  indexOptions={indexOptions}
-                />
-              )}
-            </BoxItemContainer>
-          </GreenBox>
-        )}
-
-        {basisOfRentsArchived && !!basisOfRentsArchived.length && (
-          <h3
-            style={{
-              marginTop: 10,
-              marginBottom: 5,
-            }}
-          >
-            Arkisto
-          </h3>
-        )}
-        {basisOfRentsArchived && !!basisOfRentsArchived.length && (
-          <GrayBox>
-            <BoxItemContainer>
-              {basisOfRentsArchived.map((basisOfRent, index) => {
-                return (
-                  <BasisOfRent
-                    key={index}
-                    areaUnitOptions={areaUnitOptions}
-                    basisOfRent={basisOfRent}
-                    indexOptions={indexOptions}
-                    intendedUseOptions={intendedUseOptions}
-                    managementTypeOptions={managementTypeOptions}
-                    showTotal={
-                      basisOfRentsArchived.length > 1 &&
-                      basisOfRentsArchived.length === index + 1
-                    }
-                    subventionTypeOptions={subventionTypeOptions}
-                    totalDiscountedInitialYearRent={
-                      totalDiscountedInitialYearRentArchived
-                    }
-                  />
-                );
-              })}
-            </BoxItemContainer>
-          </GrayBox>
-        )}
-      </Fragment>
     );
-  }
-}
 
-export default connect((state) => {
-  return {
-    currentLease: getCurrentLease(state),
-    leaseAttributes: getLeaseAttributes(state),
-  };
-})(BasisOfRents);
+  return (
+    <>
+      {!basisOfRents ||
+        (!basisOfRents.length && (
+          <FormText className="no-margin">Ei vuokralaskureita</FormText>
+        ))}
+      {basisOfRents && !!basisOfRents.length && (
+        <GreenBox>
+          <BoxItemContainer>
+            {basisOfRents.map((basisOfRent, index) => {
+              return (
+                <BasisOfRent
+                  key={index}
+                  areaUnitOptions={areaUnitOptions}
+                  basisOfRent={basisOfRent}
+                  indexOptions={indexOptions}
+                  intendedUseOptions={intendedUseOptions}
+                  managementTypeOptions={managementTypeOptions}
+                  showTotal={
+                    basisOfRents.length > 1 && basisOfRents.length === index + 1
+                  }
+                  subventionTypeOptions={subventionTypeOptions}
+                  totalDiscountedInitialYearRent={
+                    totalDiscountedInitialYearRent
+                  }
+                />
+              );
+            })}
+            {basisOfRents.length > 1 && (
+              <CalculateRentTotal
+                basisOfRents={basisOfRents}
+                indexOptions={indexOptions}
+              />
+            )}
+          </BoxItemContainer>
+        </GreenBox>
+      )}
+
+      {basisOfRentsArchived && !!basisOfRentsArchived.length && (
+        <h3
+          style={{
+            marginTop: 10,
+            marginBottom: 5,
+          }}
+        >
+          Arkisto
+        </h3>
+      )}
+      {basisOfRentsArchived && !!basisOfRentsArchived.length && (
+        <GrayBox>
+          <BoxItemContainer>
+            {basisOfRentsArchived.map((basisOfRent, index) => {
+              return (
+                <BasisOfRent
+                  key={index}
+                  areaUnitOptions={areaUnitOptions}
+                  basisOfRent={basisOfRent}
+                  indexOptions={indexOptions}
+                  intendedUseOptions={intendedUseOptions}
+                  managementTypeOptions={managementTypeOptions}
+                  showTotal={
+                    basisOfRentsArchived.length > 1 &&
+                    basisOfRentsArchived.length === index + 1
+                  }
+                  subventionTypeOptions={subventionTypeOptions}
+                  totalDiscountedInitialYearRent={
+                    totalDiscountedInitialYearRentArchived
+                  }
+                />
+              );
+            })}
+          </BoxItemContainer>
+        </GrayBox>
+      )}
+    </>
+  );
+};
+
+export default BasisOfRents;

@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import SortableTable from "@/components/table/SortableTable";
 import {
@@ -20,12 +19,14 @@ import {
 } from "@/util/helpers";
 import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
+import { useSelector } from "react-redux";
 type Props = {
-  attributes: Attributes;
   indexAdjustedRents: Array<Record<string, any>>;
 };
 
-const IndexAdjustedRents = ({ attributes, indexAdjustedRents }: Props) => {
+const IndexAdjustedRents = ({ indexAdjustedRents }: Props) => {
+  const attributes: Attributes = useSelector(getAttributes);
+
   const getColumns = () => {
     const columns = [];
     const intendedUseOptions = getFieldOptions(
@@ -124,8 +125,4 @@ const IndexAdjustedRents = ({ attributes, indexAdjustedRents }: Props) => {
   );
 };
 
-export default connect((state) => {
-  return {
-    attributes: getAttributes(state),
-  };
-})(IndexAdjustedRents);
+export default IndexAdjustedRents;

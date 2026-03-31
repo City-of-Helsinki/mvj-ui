@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
@@ -24,19 +24,18 @@ import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
   field: any;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
   onRemove: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
 };
 
-const RentAdjustmentManagementSubventionEdit = ({
+const RentAdjustmentManagementSubventionEdit: React.FC<Props> = ({
   field,
-  isSaveClicked,
-  leaseAttributes,
   onRemove,
-  usersPermissions,
 }: Props) => {
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
   return (
     <Row>
       <Column small={6} medium={4} large={2}>
@@ -109,10 +108,4 @@ const RentAdjustmentManagementSubventionEdit = ({
   );
 };
 
-export default connect((state) => {
-  return {
-    isSaveClicked: getIsSaveClicked(state),
-    leaseAttributes: getLeaseAttributes(state),
-    usersPermissions: getUsersPermissions(state),
-  };
-})(RentAdjustmentManagementSubventionEdit);
+export default RentAdjustmentManagementSubventionEdit;

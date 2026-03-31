@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
@@ -40,18 +40,14 @@ import {
   getCurrentLease,
 } from "@/leases/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "@/leases/types";
 type Props = {
-  currentLease: Lease;
-  leaseAttributes: Attributes;
   rentAdjustments: Array<Record<string, any>>;
 };
 
-const RentAdjustments = ({
-  currentLease,
-  leaseAttributes,
-  rentAdjustments,
-}: Props) => {
+const RentAdjustments: React.FC<Props> = ({ rentAdjustments }) => {
+  const currentLease = useSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+
   const decisionOptions = getDecisionOptions(currentLease),
     typeOptions = getFieldOptions(
       leaseAttributes,
@@ -181,7 +177,7 @@ const RentAdjustments = ({
                       >
                         {adjustment.amount_type !==
                           RentAdjustmentAmountTypes.AMOUNT_TOTAL && (
-                          <Fragment>
+                          <>
                             <FormTextTitle
                               uiDataKey={getUiDataLeaseKey(
                                 LeaseRentAdjustmentsFieldPaths.END_DATE,
@@ -192,7 +188,7 @@ const RentAdjustments = ({
                             <FormText>
                               {formatDate(adjustment.end_date) || "-"}
                             </FormText>
-                          </Fragment>
+                          </>
                         )}
                       </Authorization>
                     </Column>
@@ -228,7 +224,7 @@ const RentAdjustments = ({
                   >
                     {adjustment.amount_type ===
                       RentAdjustmentAmountTypes.AMOUNT_TOTAL && (
-                      <Fragment>
+                      <>
                         <FormTextTitle
                           uiDataKey={getUiDataLeaseKey(
                             LeaseRentAdjustmentsFieldPaths.AMOUNT_LEFT,
@@ -241,7 +237,7 @@ const RentAdjustments = ({
                             ? `${formatNumber(adjustment.amount_left)} €`
                             : "-"}
                         </FormText>
-                      </Fragment>
+                      </>
                     )}
                   </Authorization>
                 </Column>
@@ -343,7 +339,7 @@ const RentAdjustments = ({
                             ))}
                           {managementSubventions &&
                             managementSubventions.length && (
-                              <Fragment>
+                              <>
                                 <Row>
                                   <Column small={6} medium={4} large={2}>
                                     <Authorization
@@ -418,7 +414,7 @@ const RentAdjustments = ({
                                     </Column>
                                   </Row>
                                 ))}
-                              </Fragment>
+                              </>
                             )}
                         </>
                       </Authorization>
@@ -532,7 +528,7 @@ const RentAdjustments = ({
                           ))}
                         {temporarySubventions &&
                           temporarySubventions.length && (
-                            <Fragment>
+                            <>
                               <Row>
                                 <Column small={6} medium={4} large={2}>
                                   <Authorization
@@ -604,7 +600,7 @@ const RentAdjustments = ({
                                   </Column>
                                 </Row>
                               ))}
-                            </Fragment>
+                            </>
                           )}
                       </>
                     </Authorization>
@@ -633,10 +629,4 @@ const RentAdjustments = ({
   );
 };
 
-export default connect((state) => {
-  const currentLease = getCurrentLease(state);
-  return {
-    currentLease: currentLease,
-    leaseAttributes: getLeaseAttributes(state),
-  };
-})(RentAdjustments);
+export default RentAdjustments;

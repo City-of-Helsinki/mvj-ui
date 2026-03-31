@@ -1,6 +1,5 @@
-import React, { Fragment, ReactElement } from "react";
-import { connect } from "react-redux";
-import { change, FieldArray, formValueSelector } from "redux-form";
+import React, { ReactElement } from "react";
+import { FieldArray, formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import AddButtonThird from "@/components/form/AddButtonThird";
@@ -36,34 +35,32 @@ import {
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
+  getIsSaveClicked,
 } from "@/leases/selectors";
 import { getReceivableTypes } from "@/leaseCreateCharge/selectors";
 import { getLeaseTypeList } from "@/leaseType/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { PlotSearchFieldPaths } from "@/plotSearch/enums";
 import type { Attributes } from "types";
-import type { DueDate, Lease, ReceivableType } from "@/leases/types";
+import type { DueDate, ReceivableType } from "@/leases/types";
 import type { LeaseTypeList } from "@/leaseType/types";
 import type { ServiceUnit } from "@/serviceUnits/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import { useSelector } from "react-redux";
 const formName = FormNames.LEASE_RENTS;
 const selector = formValueSelector(formName);
 
 type DueDatesProps = {
   dueDates: Array<DueDate>;
   fields: any;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-  usersPermissions: UsersPermissionsType;
 };
 
-const renderDueDates = ({
-  dueDates,
-  fields,
-  isSaveClicked,
-  leaseAttributes,
-  usersPermissions,
-}: DueDatesProps): ReactElement => {
+const DueDates = ({ dueDates, fields }: DueDatesProps): ReactElement => {
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+
   const handleAdd = () => {
     fields.push({});
   };
@@ -204,15 +201,10 @@ const renderDueDates = ({
   );
 };
 
-type BasicInfoEmptyProps = {
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-};
+const BasicInfoEmpty = () => {
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
 
-const BasicInfoEmpty = ({
-  isSaveClicked,
-  leaseAttributes,
-}: BasicInfoEmptyProps) => {
   return (
     <Authorization
       allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}
@@ -239,33 +231,32 @@ const BasicInfoEmpty = ({
 };
 
 type BasicInfoIndexOrManualProps = {
-  cycle: string | null | undefined;
-  dueDates: Array<DueDate>;
-  dueDatesType: string | null | undefined;
   field: string;
   rentType: string;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
   receivableTypeOptions: Array<Record<string, any>>;
   serviceUnit: ServiceUnit;
-  usersPermissions: UsersPermissionsType;
   yearlyDueDates: Array<DueDate>;
 };
 
 const BasicInfoIndexOrManual = ({
-  cycle,
-  dueDates,
-  dueDatesType,
+  field,
   rentType,
-  isSaveClicked,
-  leaseAttributes,
   receivableTypeOptions,
   serviceUnit,
-  usersPermissions,
   yearlyDueDates,
 }: BasicInfoIndexOrManualProps) => {
+  const cycle = useSelector((state) => selector(state, `${field}.cycle`));
+  const dueDates = useSelector((state) =>
+    selector(state, `${field}.due_dates`),
+  );
+  const dueDatesType = useSelector((state) =>
+    selector(state, `${field}.due_dates_type`),
+  );
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const isSaveClicked = useSelector(getIsSaveClicked);
+
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -407,12 +398,9 @@ const BasicInfoIndexOrManual = ({
           <Column small={6} medium={4} large={1}>
             {/* Authorization is done on renderDueDates component */}
             <FieldArray
-              component={renderDueDates}
+              component={DueDates}
               dueDates={dueDates}
-              isSaveClicked={isSaveClicked}
-              leaseAttributes={leaseAttributes}
               name="due_dates"
-              usersPermissions={usersPermissions}
             />
           </Column>
         )}
@@ -581,24 +569,18 @@ const BasicInfoIndexOrManual = ({
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
-type BasicInfoOneTimeProps = {
-  dueDates: Array<DueDate>;
-  dueDatesType: string | null | undefined;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-  usersPermissions: UsersPermissionsType;
-};
+type BasicInfoOneTimeProps = {};
 
-const BasicInfoOneTime = ({
-  isSaveClicked,
-  leaseAttributes,
-}: BasicInfoOneTimeProps) => {
+const BasicInfoOneTime = () => {
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -711,35 +693,34 @@ const BasicInfoOneTime = ({
           </Column>
         </Row>
       </Authorization>
-    </Fragment>
+    </>
   );
 };
 
 type BasicInfoFixedProps = {
-  dueDates: Array<DueDate>;
-  dueDatesType: string | null | undefined;
   field: string;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
   receivableTypeOptions: Array<Record<string, any>>;
   serviceUnit: ServiceUnit;
-  usersPermissions: UsersPermissionsType;
   yearlyDueDates: Array<DueDate>;
 };
 
 const BasicInfoFixed = ({
-  dueDates,
-  dueDatesType,
   field,
-  isSaveClicked,
-  leaseAttributes,
   receivableTypeOptions,
   serviceUnit,
-  usersPermissions,
   yearlyDueDates,
 }: BasicInfoFixedProps) => {
+  const dueDates = useSelector((state) =>
+    selector(state, `${field}.due_dates`),
+  );
+  const dueDatesType = useSelector((state) =>
+    selector(state, `${field}.due_dates_type`),
+  );
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -833,12 +814,9 @@ const BasicInfoFixed = ({
           <Column small={6} medium={4} large={2}>
             {/* Authorization is done on renderDueDates component */}
             <FieldArray
-              component={renderDueDates}
+              component={DueDates}
               dueDates={dueDates}
-              isSaveClicked={isSaveClicked}
-              leaseAttributes={leaseAttributes}
               name="due_dates"
-              usersPermissions={usersPermissions}
             />
           </Column>
         )}
@@ -949,21 +927,18 @@ const BasicInfoFixed = ({
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
-type BasicInfoFreeProps = {
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-};
+type BasicInfoFreeProps = {};
 
-const BasicInfoFree = ({
-  isSaveClicked,
-  leaseAttributes,
-}: BasicInfoFreeProps) => {
+const BasicInfoFree = () => {
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -1054,7 +1029,7 @@ const BasicInfoFree = ({
           </Column>
         </Row>
       </Authorization>
-    </Fragment>
+    </>
   );
 };
 
@@ -1079,35 +1054,23 @@ const getOverrideReceivableTypeOptions = (
 };
 
 type Props = {
-  change: (...args: Array<any>) => any;
-  currentLease: Lease;
-  cycle: string;
-  dueDates: Array<DueDate>;
-  dueDatesPerYear: number | null | undefined;
-  dueDatesType: string | null | undefined;
   field: string;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-  leaseTypes: LeaseTypeList;
-  receivableTypes: Array<ReceivableType>;
   rentType: string | null | undefined;
-  usersPermissions: UsersPermissionsType;
 };
 
-const BasicInfoEdit = ({
-  currentLease,
-  cycle,
-  dueDates,
-  dueDatesPerYear,
-  dueDatesType,
-  field,
-  isSaveClicked,
-  leaseAttributes,
-  leaseTypes,
-  receivableTypes,
-  rentType,
-  usersPermissions,
-}: Props) => {
+const BasicInfoEdit = ({ field, rentType }: Props) => {
+  const currentLease = useSelector(getCurrentLease);
+  const leaseTypes: LeaseTypeList = useSelector(getLeaseTypeList);
+  const dueDatesPerYear: number | null | undefined = useSelector((state) =>
+    selector(state, `${field}.due_dates_per_year`),
+  );
+  const dueDatesType: string | null | undefined = useSelector((state) =>
+    selector(state, `${field}.due_dates_type`),
+  );
+
+  const receivableTypes: Array<ReceivableType> =
+    useSelector(getReceivableTypes);
+
   const getYearlyDueDates = () => {
     const leaseTypeId = get(currentLease, "type.id");
     const leaseType = leaseTypes.find((item) => item.id === leaseTypeId);
@@ -1127,83 +1090,31 @@ const BasicInfoEdit = ({
   const receivableTypeOptions =
     getOverrideReceivableTypeOptions(receivableTypes);
   return (
-    <Fragment>
-      {!rentType && (
-        <BasicInfoEmpty
-          isSaveClicked={isSaveClicked}
-          leaseAttributes={leaseAttributes}
-        />
-      )}
+    <>
+      {!rentType && <BasicInfoEmpty />}
       {(rentType === RentTypes.INDEX ||
         rentType === RentTypes.INDEX2022 ||
         rentType === RentTypes.MANUAL) && (
         <BasicInfoIndexOrManual
-          cycle={cycle}
-          dueDates={dueDates}
-          dueDatesType={dueDatesType}
           field={field}
           rentType={rentType}
-          isSaveClicked={isSaveClicked}
-          leaseAttributes={leaseAttributes}
-          usersPermissions={usersPermissions}
           yearlyDueDates={yearlyDueDates}
           receivableTypeOptions={receivableTypeOptions}
           serviceUnit={currentLease.service_unit}
         />
       )}
-      {rentType === RentTypes.ONE_TIME && (
-        <BasicInfoOneTime
-          dueDates={dueDates}
-          dueDatesType={dueDatesType}
-          isSaveClicked={isSaveClicked}
-          leaseAttributes={leaseAttributes}
-          usersPermissions={usersPermissions}
-        />
-      )}
+      {rentType === RentTypes.ONE_TIME && <BasicInfoOneTime />}
       {rentType === RentTypes.FIXED && (
         <BasicInfoFixed
-          dueDates={dueDates}
-          dueDatesType={dueDatesType}
           field={field}
-          isSaveClicked={isSaveClicked}
-          leaseAttributes={leaseAttributes}
-          usersPermissions={usersPermissions}
           yearlyDueDates={yearlyDueDates}
           receivableTypeOptions={receivableTypeOptions}
           serviceUnit={currentLease.service_unit}
         />
       )}
-      {rentType === RentTypes.FREE && (
-        <BasicInfoFree
-          isSaveClicked={isSaveClicked}
-          leaseAttributes={leaseAttributes}
-        />
-      )}
-    </Fragment>
+      {rentType === RentTypes.FREE && <BasicInfoFree />}
+    </>
   );
 };
 
-type BasicInfoEditProps = {
-  field: string;
-  isSaveClicked: boolean;
-  rentType: string;
-};
-
-export default connect(
-  (state, props: BasicInfoEditProps) => {
-    return {
-      currentLease: getCurrentLease(state),
-      cycle: selector(state, `${props.field}.cycle`),
-      dueDatesPerYear: selector(state, `${props.field}.due_dates_per_year`),
-      dueDatesType: selector(state, `${props.field}.due_dates_type`),
-      dueDates: selector(state, `${props.field}.due_dates`),
-      leaseAttributes: getLeaseAttributes(state),
-      leaseTypes: getLeaseTypeList(state),
-      receivableTypes: getReceivableTypes(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    change,
-  },
-)(BasicInfoEdit);
+export default BasicInfoEdit;

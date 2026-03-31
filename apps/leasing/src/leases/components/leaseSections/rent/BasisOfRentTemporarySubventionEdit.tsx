@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
@@ -25,9 +25,7 @@ import {
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-
-type OwnProps = {
+type Props = {
   disabled: boolean;
   field: any;
   formName: string;
@@ -38,28 +36,25 @@ type OwnProps = {
   index: number;
 };
 
-type StateProps = {
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-  subventionPercent: string | null | undefined;
-  usersPermissions: UsersPermissionsType;
-};
-
-type Props = OwnProps & StateProps;
-
-const BasisOfRentTemporarySubventionEdit = ({
+const BasisOfRentTemporarySubventionEdit: React.FC<Props> = ({
   disabled,
   field,
+  formName,
   initialYearRent,
-  isSaveClicked,
-  leaseAttributes,
   onRemove,
-  subventionPercent,
-  usersPermissions,
   managementSubventions,
   temporarySubventions,
   index,
-}: Props) => {
+}) => {
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const usersPermissions = useSelector(getUsersPermissions);
+
+  const selector = formValueSelector(formName);
+  const subventionPercent = useSelector((state) =>
+    selector(state, `${field}.subvention_percent`),
+  );
+
   const subventionAmount = calculateBasisOfRentSubventionAmountCumulative(
     initialYearRent,
     subventionPercent,
@@ -155,17 +150,4 @@ const BasisOfRentTemporarySubventionEdit = ({
   );
 };
 
-const mapStateToProps = (state: any, ownProps: OwnProps): StateProps => {
-  const formName = ownProps.formName;
-  const selector = formValueSelector(formName);
-  return {
-    isSaveClicked: getIsSaveClicked(state),
-    leaseAttributes: getLeaseAttributes(state),
-    subventionPercent: selector(state, `${ownProps.field}.subvention_percent`),
-    usersPermissions: getUsersPermissions(state),
-  };
-};
-
-export default connect<StateProps, Record<string, never>, OwnProps>(
-  mapStateToProps,
-)(BasisOfRentTemporarySubventionEdit);
+export default BasisOfRentTemporarySubventionEdit;
