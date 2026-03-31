@@ -1,5 +1,4 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
 import FormText from "@/components/form/FormText";
@@ -12,7 +11,6 @@ import {
   RentCycles,
   RentTypes,
   RentDueDateTypes,
-  LeaseFieldPaths,
 } from "@/leases/enums";
 import { formatDueDates, sortDueDates } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
@@ -24,25 +22,22 @@ import {
   isEmptyValue,
   isFieldAllowedToRead,
 } from "@/util/helpers";
-import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
+import {
+  getCurrentLease,
+  getAttributes as getLeaseAttributes,
+} from "@/leases/selectors";
 import type { Attributes } from "types";
-import type { ServiceUnit } from "@/serviceUnits/types";
+import { useSelector } from "react-redux";
 
 type Props = {
-  leaseAttributes: Attributes;
   rent: Record<string, any>;
   rentType: string | null | undefined;
 };
 
-type PropsWithServiceUnit = Props & {
-  serviceUnit: ServiceUnit;
-};
+const BasicInfoIndexOrManual = ({ rent }: Props) => {
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const serviceUnit = useSelector(getCurrentLease).service_unit;
 
-const BasicInfoIndexOrManual = ({
-  leaseAttributes,
-  rent,
-  serviceUnit,
-}: PropsWithServiceUnit) => {
   const areOldInfoVisible = () => {
     return (
       !isEmptyValue(rent.elementary_index) ||
@@ -77,7 +72,7 @@ const BasicInfoIndexOrManual = ({
   );
   const oldValuesVisible = areOldInfoVisible();
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -506,17 +501,18 @@ const BasicInfoIndexOrManual = ({
           </Column>
         </Row>
       )}
-    </Fragment>
+    </>
   );
 };
 
-const BasicInfoOneTime = ({ leaseAttributes, rent }: Props) => {
+const BasicInfoOneTime = ({ rent }: Props) => {
+  const leaseAttributes = useSelector(getLeaseAttributes);
   const typeOptions = getFieldOptions(
     leaseAttributes,
     LeaseRentsFieldPaths.TYPE,
   );
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -608,15 +604,13 @@ const BasicInfoOneTime = ({ leaseAttributes, rent }: Props) => {
           </Column>
         </Row>
       </Authorization>
-    </Fragment>
+    </>
   );
 };
 
-const BasicInfoFixed = ({
-  leaseAttributes,
-  rent,
-  serviceUnit,
-}: PropsWithServiceUnit) => {
+const BasicInfoFixed = ({ rent }: Props) => {
+  const leaseAttributes = useSelector(getLeaseAttributes);
+  const serviceUnit = useSelector(getCurrentLease).service_unit;
   const dueDatesTypeOptions = getFieldOptions(
     leaseAttributes,
     LeaseRentsFieldPaths.DUE_DATES_TYPE,
@@ -631,7 +625,7 @@ const BasicInfoFixed = ({
   );
 
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -827,17 +821,18 @@ const BasicInfoFixed = ({
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
-const BasicInfoFree = ({ leaseAttributes, rent }: Props) => {
+const BasicInfoFree = ({ rent }: Props) => {
+  const leaseAttributes = useSelector(getLeaseAttributes);
   const typeOptions = getFieldOptions(
     leaseAttributes,
     LeaseRentsFieldPaths.TYPE,
   );
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -908,57 +903,30 @@ const BasicInfoFree = ({ leaseAttributes, rent }: Props) => {
           </Column>
         </Row>
       </Authorization>
-    </Fragment>
+    </>
   );
 };
 
-const BasicInfo = ({
-  leaseAttributes,
-  rent,
-  rentType,
-  serviceUnit,
-}: PropsWithServiceUnit) => {
+const BasicInfo = ({ rent, rentType }: Props) => {
   return (
-    <Fragment>
+    <>
       {!rentType && <FormText>Vuokralajia ei ole valittu</FormText>}
       {(rentType === RentTypes.INDEX ||
         rentType === RentTypes.INDEX2022 ||
         rentType === RentTypes.MANUAL) && (
-        <BasicInfoIndexOrManual
-          leaseAttributes={leaseAttributes}
-          rent={rent}
-          rentType={rentType}
-          serviceUnit={serviceUnit}
-        />
+        <BasicInfoIndexOrManual rent={rent} rentType={rentType} />
       )}
       {rentType === RentTypes.ONE_TIME && (
-        <BasicInfoOneTime
-          leaseAttributes={leaseAttributes}
-          rent={rent}
-          rentType={rentType}
-        />
+        <BasicInfoOneTime rent={rent} rentType={rentType} />
       )}
       {rentType === RentTypes.FIXED && (
-        <BasicInfoFixed
-          leaseAttributes={leaseAttributes}
-          rent={rent}
-          rentType={rentType}
-          serviceUnit={serviceUnit}
-        />
+        <BasicInfoFixed rent={rent} rentType={rentType} />
       )}
       {rentType === RentTypes.FREE && (
-        <BasicInfoFree
-          leaseAttributes={leaseAttributes}
-          rent={rent}
-          rentType={rentType}
-        />
+        <BasicInfoFree rent={rent} rentType={rentType} />
       )}
-    </Fragment>
+    </>
   );
 };
 
-export default connect((state) => {
-  return {
-    leaseAttributes: getLeaseAttributes(state),
-  };
-})(BasicInfo);
+export default BasicInfo;

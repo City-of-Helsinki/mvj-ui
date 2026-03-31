@@ -1,7 +1,6 @@
 import React from "react";
 import { getFormValues, isValid } from "redux-form";
-import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
+import { useSelector } from "react-redux";
 import Button from "@/components/button/Button";
 import Modal from "@/components/modal/Modal";
 import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
@@ -9,29 +8,23 @@ import SteppedDiscountForm from "./SteppedDiscountForm";
 import { FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 type Props = {
-  decisionOptions: Array<Record<string, any>>;
-  formValues: Record<string, any>;
   isOpen: boolean;
   onClose: (...args: Array<any>) => any;
   onSave: (...args: Array<any>) => any;
-  valid: boolean;
 };
 
-const SteppedDiscountModal = ({
-  decisionOptions,
-  formValues,
-  isOpen,
-  onClose,
-  onSave,
-  valid,
-}: Props) => {
+const formName = FormNames.LEASE_STEPPED_DISCOUNT;
+const SteppedDiscountModal: React.FC<Props> = ({ isOpen, onClose, onSave }) => {
   const handleSave = () => {
     onSave(formValues);
   };
 
+  const formValues = useSelector(getFormValues(formName));
+  const valid = useSelector(isValid(formName));
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Porrastettu alennus">
-      <SteppedDiscountForm decisionOptions={decisionOptions} />
+      <SteppedDiscountForm />
 
       <ModalButtonWrapper>
         <Button
@@ -50,12 +43,4 @@ const SteppedDiscountModal = ({
   );
 };
 
-const formName = FormNames.LEASE_STEPPED_DISCOUNT;
-export default flowRight(
-  connect((state) => {
-    return {
-      formValues: getFormValues(formName)(state),
-      valid: isValid(formName)(state),
-    };
-  }),
-)(SteppedDiscountModal);
+export default SteppedDiscountModal;

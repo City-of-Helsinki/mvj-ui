@@ -1,5 +1,4 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import { Row, Column } from "react-foundation";
 import { LeaseBasisOfRentsFieldTitles } from "@/leases/enums";
 import FormText from "@/components/form/FormText";
@@ -24,7 +23,7 @@ const CalculateRentTotal = ({ basisOfRents, indexOptions }: Props) => {
     indexOptions,
   );
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={4} large={4}>
           <FormText className="semibold">
@@ -49,8 +48,8 @@ const CalculateRentTotal = ({ basisOfRents, indexOptions }: Props) => {
           </FormText>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
-export default connect()(CalculateRentTotal);
+export default CalculateRentTotal;

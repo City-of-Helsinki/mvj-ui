@@ -1,6 +1,6 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
-import { formValueSelector, initialize } from "redux-form";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { initialize } from "redux-form";
 import { Row, Column } from "react-foundation";
 import addMonths from "date-fns/addMonths";
 import format from "date-fns/format";
@@ -35,55 +35,28 @@ import {
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
-  adjustments: Array<Record<string, any>>;
-  currentLease: Lease;
   fields: any;
-  initialize: (...args: Array<any>) => any;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-  usersPermissions: UsersPermissionsType;
-};
-type State = {
-  amountTypeOptions: Array<Record<string, any>>;
-  currentLease: Lease;
-  decisionOptions: Array<Record<string, any>>;
-  isSteppedDiscountModalOpen: boolean;
-  leaseAttributes: Attributes;
 };
 
-class RentAdjustmentsEdit extends PureComponent<Props, State> {
-  state = {
-    amountTypeOptions: [],
-    currentLease: {},
-    decisionOptions: [],
-    isSteppedDiscountModalOpen: false,
-    leaseAttributes: null,
-  };
+const RentAdjustmentsEdit: React.FC<Props> = ({ fields }) => {
+  const currentLease = useSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const amountTypeOptions = getFieldOptions(
+    leaseAttributes,
+    LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE,
+  );
 
-    if (props.currentLease !== state.currentLease) {
-      newState.currentLease = props.currentLease;
-      newState.decisionOptions = getDecisionOptions(props.currentLease);
-    }
+  const decisionOptions = getDecisionOptions(currentLease);
 
-    if (props.leaseAttributes !== state.leaseAttributes) {
-      newState.leaseAttributes = props.leaseAttributes;
-      newState.amountTypeOptions = getFieldOptions(
-        props.leaseAttributes,
-        LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE,
-      );
-    }
+  const [isSteppedDiscountModalOpen, setIsSteppedDiscountModalOpen] =
+    useState(false);
 
-    return newState;
-  }
-
-  decisionReadOnlyRenderer = (value: number | null | undefined) => {
-    const { currentLease, decisionOptions } = this.state;
+  const decisionReadOnly = (value: number | null | undefined) => {
     return (
       <DecisionLink
         decision={getDecisionById(currentLease, value)}
@@ -91,27 +64,23 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
       />
     );
   };
-  handleAdd = () => {
-    const { fields } = this.props;
+
+  const handleAdd = () => {
     fields.push({});
   };
-  handleCloseSteppedDiscountModal = () => {
-    this.setState({
-      isSteppedDiscountModalOpen: false,
-    });
+  const handleCloseSteppedDiscountModal = () => {
+    setIsSteppedDiscountModalOpen(false);
   };
-  handleOpenSteppedDiscountModal = () => {
-    const { initialize } = this.props;
-    this.setState({
-      isSteppedDiscountModalOpen: true,
-    });
+
+  const handleOpenSteppedDiscountModal = () => {
+    setIsSteppedDiscountModalOpen(true);
     initialize(FormNames.LEASE_STEPPED_DISCOUNT, {});
   };
-  getSteppedDiscounts = (
+  const getSteppedDiscounts = (
     formValues: Record<string, any>,
   ): Array<Record<string, any>> => {
     const ranges = [];
-    let months = 12;
+    const months = 12;
     let current = formValues.start_date;
     const totalMonths =
       (convertStrToDecimalNumber(formValues.number_of_years) || 0) * months;
@@ -146,124 +115,100 @@ class RentAdjustmentsEdit extends PureComponent<Props, State> {
       };
     });
   };
-  handleSaveSteppedDiscount = (formValues: Record<string, any>) => {
-    const { fields } = this.props;
-    const discounts = this.getSteppedDiscounts(formValues);
+
+  const handleSaveSteppedDiscount = (formValues: Record<string, any>) => {
+    const discounts = getSteppedDiscounts(formValues);
     discounts.forEach((discount) => {
       fields.push(discount);
     });
-    this.handleCloseSteppedDiscountModal();
+    handleCloseSteppedDiscountModal();
   };
 
-  render() {
-    const { fields, isSaveClicked, usersPermissions } = this.props;
-    const { amountTypeOptions, decisionOptions, isSteppedDiscountModalOpen } =
-      this.state;
-
-    if (
-      !hasPermissions(usersPermissions, UsersPermissions.ADD_RENTADJUSTMENT) &&
-      (!fields || !fields.length)
-    ) {
-      return <FormText>Ei alennuksia tai korotuksia</FormText>;
-    }
-
-    return (
-      <AppConsumer>
-        {({ dispatch }) => {
-          return (
-            <Fragment>
-              <SteppedDiscountModal
-                decisionOptions={decisionOptions}
-                isOpen={isSteppedDiscountModalOpen}
-                onClose={this.handleCloseSteppedDiscountModal}
-                onSave={this.handleSaveSteppedDiscount}
-              />
-              {fields && !!fields.length && (
-                <BoxItemContainer>
-                  {fields.map((field, index) => {
-                    const handleRemove = () => {
-                      dispatch({
-                        type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                        confirmationFunction: () => {
-                          fields.remove(index);
-                        },
-                        confirmationModalButtonClassName: ButtonColors.ALERT,
-                        confirmationModalButtonText:
-                          ConfirmationModalTexts.DELETE_RENT_ADJUSTMENT.BUTTON,
-                        confirmationModalLabel:
-                          ConfirmationModalTexts.DELETE_RENT_ADJUSTMENT.LABEL,
-                        confirmationModalTitle:
-                          ConfirmationModalTexts.DELETE_RENT_ADJUSTMENT.TITLE,
-                      });
-                    };
-
-                    return (
-                      <RentAdjustmentEdit
-                        key={index}
-                        amountTypeOptions={amountTypeOptions}
-                        decisionOptions={decisionOptions}
-                        field={field}
-                        isSaveClicked={isSaveClicked}
-                        onRemove={handleRemove}
-                      />
-                    );
-                  })}
-                </BoxItemContainer>
-              )}
-
-              <Authorization
-                allow={hasPermissions(
-                  usersPermissions,
-                  UsersPermissions.ADD_RENTADJUSTMENT,
-                )}
-              >
-                <Row>
-                  <Column>
-                    <AddButtonSecondary
-                      className={
-                        !fields || !fields.length ? "no-top-margin" : ""
-                      }
-                      label="Lisää alennus/korotus"
-                      onClick={this.handleAdd}
-                    />
-                  </Column>
-                </Row>
-              </Authorization>
-              <Authorization
-                allow={hasPermissions(
-                  usersPermissions,
-                  UsersPermissions.ADD_RENTADJUSTMENT,
-                )}
-              >
-                <Row>
-                  <Column>
-                    <AddButtonSecondary
-                      label="Lisää porrastettu alennus"
-                      onClick={this.handleOpenSteppedDiscountModal}
-                    />
-                  </Column>
-                </Row>
-              </Authorization>
-            </Fragment>
-          );
-        }}
-      </AppConsumer>
-    );
+  if (
+    !hasPermissions(usersPermissions, UsersPermissions.ADD_RENTADJUSTMENT) &&
+    (!fields || !fields.length)
+  ) {
+    return <FormText>Ei alennuksia tai korotuksia</FormText>;
   }
-}
 
-const formName = FormNames.LEASE_RENTS;
-const selector = formValueSelector(formName);
-export default connect(
-  (state, props) => {
-    return {
-      adjustments: selector(state, props.fields.name),
-      currentLease: getCurrentLease(state),
-      leaseAttributes: getLeaseAttributes(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    initialize,
-  },
-)(RentAdjustmentsEdit);
+  return (
+    <AppConsumer>
+      {({ dispatch }) => {
+        return (
+          <>
+            <SteppedDiscountModal
+              isOpen={isSteppedDiscountModalOpen}
+              onClose={handleCloseSteppedDiscountModal}
+              onSave={handleSaveSteppedDiscount}
+            />
+            {fields && !!fields.length && (
+              <BoxItemContainer>
+                {fields.map((field, index) => {
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
+                        fields.remove(index);
+                      },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
+                      confirmationModalButtonText:
+                        ConfirmationModalTexts.DELETE_RENT_ADJUSTMENT.BUTTON,
+                      confirmationModalLabel:
+                        ConfirmationModalTexts.DELETE_RENT_ADJUSTMENT.LABEL,
+                      confirmationModalTitle:
+                        ConfirmationModalTexts.DELETE_RENT_ADJUSTMENT.TITLE,
+                    });
+                  };
+
+                  return (
+                    <RentAdjustmentEdit
+                      key={index}
+                      amountTypeOptions={amountTypeOptions}
+                      decisionOptions={decisionOptions}
+                      field={field}
+                      onRemove={handleRemove}
+                    />
+                  );
+                })}
+              </BoxItemContainer>
+            )}
+
+            <Authorization
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.ADD_RENTADJUSTMENT,
+              )}
+            >
+              <Row>
+                <Column>
+                  <AddButtonSecondary
+                    className={!fields || !fields.length ? "no-top-margin" : ""}
+                    label="Lisää alennus/korotus"
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
+            <Authorization
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.ADD_RENTADJUSTMENT,
+              )}
+            >
+              <Row>
+                <Column>
+                  <AddButtonSecondary
+                    label="Lisää porrastettu alennus"
+                    onClick={handleOpenSteppedDiscountModal}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
+          </>
+        );
+      }}
+    </AppConsumer>
+  );
+};
+
+export default RentAdjustmentsEdit;

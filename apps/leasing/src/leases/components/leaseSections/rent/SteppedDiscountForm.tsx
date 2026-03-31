@@ -1,7 +1,6 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { reduxForm } from "redux-form";
-import flowRight from "lodash/flowRight";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
@@ -13,14 +12,17 @@ import {
 import { validateSteppedDiscountForm } from "@/leases/formValidators";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
-import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
+import {
+  getCurrentLease,
+  getAttributes as getLeaseAttributes,
+} from "@/leases/selectors";
 import type { Attributes } from "types";
-type Props = {
-  decisionOptions: Array<Record<string, any>>;
-  leaseAttributes: Attributes;
-};
+import { getDecisionOptions } from "@/leases/helpers";
 
-const SteppedDiscountForm = ({ decisionOptions, leaseAttributes }: Props) => {
+const SteppedDiscountForm: React.FC = () => {
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const decisionOptions = getDecisionOptions(useSelector(getCurrentLease));
+
   return (
     <div>
       <Row>
@@ -182,14 +184,7 @@ const SteppedDiscountForm = ({ decisionOptions, leaseAttributes }: Props) => {
   );
 };
 
-export default flowRight(
-  connect((state) => {
-    return {
-      leaseAttributes: getLeaseAttributes(state),
-    };
-  }),
-  reduxForm({
-    form: FormNames.LEASE_STEPPED_DISCOUNT,
-    validate: validateSteppedDiscountForm,
-  }),
-)(SteppedDiscountForm) as React.ComponentType<any>;
+export default reduxForm({
+  form: FormNames.LEASE_STEPPED_DISCOUNT,
+  validate: validateSteppedDiscountForm,
+})(SteppedDiscountForm) as React.ComponentType<any>;

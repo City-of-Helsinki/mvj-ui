@@ -1,18 +1,9 @@
-import React, { Fragment, PureComponent } from "react";
+import React from "react";
 import { Row, Column } from "react-foundation";
-import {
-  getCurrentLeaseStartDate,
-  getAttributes as getLeaseAttributes,
-} from "@/leases/selectors";
-import { flowRight } from "lodash";
-import { connect } from "react-redux";
+import { getCurrentLeaseStartDate } from "@/leases/selectors";
 import type { PeriodicRentAdjustmentType } from "@/leases/types";
-import type {
-  OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps,
-  IndexPointFigureYearly as IndexPointFigureYearlyProps,
-} from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
+import type { OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
-import { withWindowResize } from "@/components/resize/WindowResizeHandler";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import {
@@ -25,92 +16,87 @@ import {
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDate } from "@/util/helpers";
 import { getReviewDays, getPointFigureFormText } from "@/leases/helpers";
+import { useSelector } from "react-redux";
 
 type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
   periodicRentAdjustmentType: PeriodicRentAdjustmentType;
-  leaseStartDate: string;
   startPriceIndexPointFigureValue: number | undefined;
   startPriceIndexPointFigureYear: number | undefined;
 };
 
-class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> {
-  render() {
-    const {
-      oldDwellingsInHousingCompaniesPriceIndex,
-      periodicRentAdjustmentType,
-      leaseStartDate,
-      startPriceIndexPointFigureValue,
-      startPriceIndexPointFigureYear,
-    } = this.props;
-    const {
-      point_figures: pointFigures,
-      source_table_label: sourceTableLabel,
-    } = oldDwellingsInHousingCompaniesPriceIndex || {};
-    return (
-      <Fragment>
-        <BoxItemContainer>
-          <Row>
-            <Column>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseRentsFieldPaths.PERIODIC_RENT_ADJUSTMENT_TYPE,
-                )}
-              >
-                {
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE
-                }
-              </FormTextTitle>
-              <FormText>
-                {periodicRentAdjustmentTypes[periodicRentAdjustmentType]}
-              </FormText>
-            </Column>
-            <Column>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.START_DATE,
-                )}
-              >
-                {LeaseFieldTitles.START_DATE}
-              </FormTextTitle>
-              <FormText>{formatDate(leaseStartDate)}</FormText>
-            </Column>
-            <Column>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.POINT_FIGURES,
-                )}
-              >
-                {
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.POINT_FIGURES
-                }
-              </FormTextTitle>
-              <FormText>
-                {getPointFigureFormText(
-                  pointFigures,
-                  leaseStartDate,
-                  startPriceIndexPointFigureYear,
-                  startPriceIndexPointFigureValue,
-                )}
-              </FormText>
-              <FormText>{sourceTableLabel}</FormText>
-            </Column>
-            <Column>
-              <FormTextTitle
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.REVIEW_DAYS,
-                )}
-              >
-                {
-                  LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS
-                }
-              </FormTextTitle>
-              <>
-                {leaseStartDate
-                  ? getReviewDays(
-                      leaseStartDate,
-                      periodicRentAdjustmentType,
-                    ).map((date: string, index: number) => {
+const OldDwellingsInHousingCompaniesPriceIndexView: React.FC<Props> = ({
+  oldDwellingsInHousingCompaniesPriceIndex,
+  periodicRentAdjustmentType,
+  startPriceIndexPointFigureValue,
+  startPriceIndexPointFigureYear,
+}) => {
+  const leaseStartDate = useSelector(getCurrentLeaseStartDate);
+
+  const { point_figures: pointFigures, source_table_label: sourceTableLabel } =
+    oldDwellingsInHousingCompaniesPriceIndex || {};
+  return (
+    <>
+      <BoxItemContainer>
+        <Row>
+          <Column>
+            <FormTextTitle
+              uiDataKey={getUiDataLeaseKey(
+                LeaseRentsFieldPaths.PERIODIC_RENT_ADJUSTMENT_TYPE,
+              )}
+            >
+              {
+                LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.TYPE
+              }
+            </FormTextTitle>
+            <FormText>
+              {periodicRentAdjustmentTypes[periodicRentAdjustmentType]}
+            </FormText>
+          </Column>
+          <Column>
+            <FormTextTitle
+              uiDataKey={getUiDataLeaseKey(
+                LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.START_DATE,
+              )}
+            >
+              {LeaseFieldTitles.START_DATE}
+            </FormTextTitle>
+            <FormText>{formatDate(leaseStartDate)}</FormText>
+          </Column>
+          <Column>
+            <FormTextTitle
+              uiDataKey={getUiDataLeaseKey(
+                LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.POINT_FIGURES,
+              )}
+            >
+              {
+                LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.POINT_FIGURES
+              }
+            </FormTextTitle>
+            <FormText>
+              {getPointFigureFormText(
+                pointFigures,
+                leaseStartDate,
+                startPriceIndexPointFigureYear,
+                startPriceIndexPointFigureValue,
+              )}
+            </FormText>
+            <FormText>{sourceTableLabel}</FormText>
+          </Column>
+          <Column>
+            <FormTextTitle
+              uiDataKey={getUiDataLeaseKey(
+                LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldPaths.REVIEW_DAYS,
+              )}
+            >
+              {
+                LeaseRentOldDwellingsInHousingCompaniesPriceIndexFieldTitles.REVIEW_DAYS
+              }
+            </FormTextTitle>
+            <>
+              {leaseStartDate
+                ? getReviewDays(leaseStartDate, periodicRentAdjustmentType).map(
+                    (date: string, index: number) => {
                       return (
                         <FormText
                           key={
@@ -121,23 +107,15 @@ class OldDwellingsInHousingCompaniesPriceIndexView extends PureComponent<Props> 
                           {date}
                         </FormText>
                       );
-                    })
-                  : ""}
-              </>
-            </Column>
-          </Row>
-        </BoxItemContainer>
-      </Fragment>
-    );
-  }
-}
+                    },
+                  )
+                : ""}
+            </>
+          </Column>
+        </Row>
+      </BoxItemContainer>
+    </>
+  );
+};
 
-export default flowRight(
-  withWindowResize,
-  connect((state) => {
-    return {
-      leaseAttributes: getLeaseAttributes(state),
-      leaseStartDate: getCurrentLeaseStartDate(state),
-    };
-  }),
-)(OldDwellingsInHousingCompaniesPriceIndexView);
+export default OldDwellingsInHousingCompaniesPriceIndexView;

@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import SortableTable from "@/components/table/SortableTable";
 import {
@@ -16,12 +15,13 @@ import {
 } from "@/util/helpers";
 import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
+import { useSelector } from "react-redux";
 type Props = {
-  leaseAttributes: Attributes;
   payableRents: Array<Record<string, any>>;
 };
 
-const PayableRents = ({ leaseAttributes, payableRents }: Props) => {
+const PayableRents = ({ payableRents }: Props) => {
+  const leaseAttributes: Attributes = useSelector(getAttributes);
   const getColumns = () => {
     const columns = [];
 
@@ -120,8 +120,4 @@ const PayableRents = ({ leaseAttributes, payableRents }: Props) => {
   );
 };
 
-export default connect((state) => {
-  return {
-    leaseAttributes: getAttributes(state),
-  };
-})(PayableRents);
+export default PayableRents;
