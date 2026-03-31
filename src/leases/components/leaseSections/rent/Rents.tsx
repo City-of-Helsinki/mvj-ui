@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
 import BasisOfRents from "./BasisOfRents";
 import Divider from "@/components/content/Divider";
@@ -38,20 +38,12 @@ import {
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { RootState } from "@/root/types";
-import type { Lease } from "@/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type Props = {
-  currentLease: Lease;
-  leaseAttributes: Attributes;
-  usersPermissions: UsersPermissionsType;
-};
 
-const Rents: React.FC<Props> = ({
-  currentLease,
-  leaseAttributes,
-  usersPermissions,
-}) => {
+const Rents: React.FC = () => {
+  const currentLease = useSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const usersPermissions = useSelector(getUsersPermissions);
+
   const rentsAll = getContentRents(currentLease);
   const rents = rentsAll.filter((rent) => !isArchived(rent));
   const rentsArchived = rentsAll.filter((rent) => isArchived(rent));
@@ -127,14 +119,7 @@ const Rents: React.FC<Props> = ({
           {rents &&
             !!rents.length &&
             rents.map((rent) => {
-              return (
-                <RentItem
-                  key={rent.id}
-                  rent={rent}
-                  rents={rents}
-                  serviceUnit={currentLease.service_unit}
-                />
-              );
+              return <RentItem key={rent.id} rent={rent} rents={rents} />;
             })}
 
           {!!rentsArchived.length && (
@@ -149,12 +134,7 @@ const Rents: React.FC<Props> = ({
           )}
           {!!rentsArchived.length &&
             rentsArchived.map((rent) => (
-              <RentItem
-                key={rent.id}
-                rent={rent}
-                rents={rents}
-                serviceUnit={currentLease.service_unit}
-              />
+              <RentItem key={rent.id} rent={rent} rents={rents} />
             ))}
         </>
       </Authorization>
@@ -199,12 +179,4 @@ const Rents: React.FC<Props> = ({
   );
 };
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    currentLease: getCurrentLease(state),
-    leaseAttributes: getLeaseAttributes(state),
-    usersPermissions: getUsersPermissions(state),
-  };
-};
-
-export default connect(mapStateToProps)(Rents) as React.ComponentType;
+export default Rents;

@@ -1,5 +1,5 @@
-import React, { Fragment, PureComponent, ReactElement } from "react";
-import { connect } from "react-redux";
+import React, { ReactElement, useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   change,
   FieldArray,
@@ -81,11 +81,10 @@ import {
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
+  getIsSaveClicked,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
-import type { Lease } from "@/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import MastChildrenEdit from "./MastChildrenEdit";
 type ManagementSubventionsProps = {
   currentAmountPerArea: number;
@@ -93,19 +92,18 @@ type ManagementSubventionsProps = {
   fields: any;
   formName: string;
   initialYearRent: number;
-  leaseAttributes: Attributes;
-  usersPermissions: UsersPermissionsType;
 };
 
-const renderManagementSubventions = ({
+const ManagementSubventions = ({
   currentAmountPerArea,
   disabled,
   fields,
   formName,
   initialYearRent,
-  leaseAttributes,
-  usersPermissions,
 }: ManagementSubventionsProps): ReactElement => {
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const usersPermissions = useSelector(getUsersPermissions);
+
   const handleAdd = () => {
     fields.push({});
   };
@@ -114,7 +112,7 @@ const renderManagementSubventions = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             {!isFieldAllowedToEdit(
               leaseAttributes,
               BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS,
@@ -259,7 +257,7 @@ const renderManagementSubventions = ({
                 </Row>
               )}
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -271,22 +269,21 @@ type TemporarySubventionsProps = {
   fields: any;
   formName: string;
   initialYearRent: number;
-  leaseAttributes: Attributes;
-  usersPermissions: UsersPermissionsType;
   managementSubventions: Record<string, any>;
   temporarySubventions: Record<string, any>;
 };
 
-const renderTemporarySubventions = ({
+const TemporarySubventions = ({
   disabled,
   fields,
   formName,
   initialYearRent,
-  leaseAttributes,
-  usersPermissions,
   managementSubventions,
   temporarySubventions,
 }: TemporarySubventionsProps): ReactElement => {
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const usersPermissions = useSelector(getUsersPermissions);
+
   const handleAdd = () => {
     fields.push({});
   };
@@ -295,7 +292,7 @@ const renderTemporarySubventions = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             {!isFieldAllowedToEdit(
               leaseAttributes,
               BasisOfRentTemporarySubventionsFieldPaths.TEMPORARY_SUBVENTIONS,
@@ -427,7 +424,7 @@ const renderTemporarySubventions = ({
                 </Row>
               )}
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -435,8 +432,6 @@ const renderTemporarySubventions = ({
 };
 
 type renderMastChildrenProps = {
-  leaseAttributes: Attributes;
-  isSaveClicked: boolean;
   formName: string;
   parentField: string;
   fields: any;
@@ -444,8 +439,6 @@ type renderMastChildrenProps = {
 };
 
 const renderMastChildren = ({
-  leaseAttributes,
-  isSaveClicked,
   formName,
   fields,
   parentField,
@@ -455,23 +448,20 @@ const renderMastChildren = ({
     <AppConsumer>
       {() => {
         return (
-          <Fragment>
+          <>
             {!!fields.length &&
               fields.map((field, index) => {
                 return (
                   <MastChildrenEdit
                     index={index}
                     formName={formName}
-                    leaseAttributes={leaseAttributes}
-                    isSaveClicked={isSaveClicked}
-                    field={field}
                     key={index}
                     parentField={parentField}
                     fieldsDisabled={fieldsDisabled}
                   />
                 );
               })}
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -479,82 +469,106 @@ const renderMastChildren = ({
 };
 
 type Props = {
-  amountPerArea: number | null | undefined;
   archived: boolean;
-  area: number | null | undefined;
-  areaUnit: string | null | undefined;
-  currentAmountPerArea: number | null | undefined;
   areaUnitOptions: Array<Record<string, any>>;
-  basisOfRent: Record<string, any>;
-  calculatorType: string | null | undefined;
-  calculatorTypeOptions: Array<Record<string, any>>;
-  change: typeof change;
-  children: Record<string, any> | null | undefined;
-  clearFields: typeof clearFields;
-  currentLease: Lease;
-  discountPercentage: string | null | undefined;
   field: string;
   formName: string;
-  formValues: typeof getFormValues;
-  id: number | null | undefined;
-  index: number;
   indexOptions: Array<Record<string, any>>;
-  initialize: typeof initialize;
-  intendedUse: number;
   intendedUseOptions: Array<Record<string, any>>;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-  lockedAt: string | null | undefined;
-  managementSubventions: Array<Record<string, any>> | null | undefined;
   managementTypeOptions: Array<Record<string, any>>;
   onArchive?: (...args: Array<any>) => any;
   onRemove: (...args: Array<any>) => any;
   onUnarchive?: (...args: Array<any>) => any;
-  plansInspectedAt: string | null | undefined;
-  profitMarginPercentage: string | null | undefined;
   showLockedAt?: boolean;
   showPlansInspectedAt?: boolean;
   showTotal: boolean;
-  subventionBasePercent: string | null | undefined;
-  subventionGraduatedPercent: string | null | undefined;
-  subventionType: string | null | undefined;
   subventionTypeOptions: Array<Record<string, any>>;
-  price: string | null | undefined;
-  zone: string | null | undefined;
-  temporarySubventions: Array<Record<string, any>> | null | undefined;
   totalDiscountedInitialYearRent: number;
-  usersPermissions: UsersPermissionsType;
-  zoneOptions: Array<Record<string, any>>;
-  typeOptions: Array<Record<string, any>>;
-};
-type State = {
-  showSubventions: boolean;
 };
 
-class BasisOfRentEdit extends PureComponent<Props, State> {
-  static defaultProps = {
-    showLockedAt: true,
-    showPlansInspectedAt: true,
-  };
-  state = {
-    showSubventions:
-      this.props.subventionType ||
-      (this.props.temporarySubventions &&
-        !!this.props.temporarySubventions.length)
-        ? true
-        : false,
-  };
-  initialFormValues = () => {
-    const {
-      basisOfRent,
-      field,
-      formName,
-      formValues,
-      indexOptions,
-      calculatorType,
-      initialize,
-    } = this.props;
+const BasisOfRentEdit: React.FC<Props> = ({
+  archived,
+  areaUnitOptions,
+  field,
+  formName,
+  indexOptions,
+  intendedUseOptions,
+  managementTypeOptions,
+  onArchive,
+  onRemove,
+  onUnarchive,
+  showLockedAt = true,
+  showPlansInspectedAt = true,
+  showTotal,
+  subventionTypeOptions,
+  totalDiscountedInitialYearRent,
+}) => {
+  const dispatch = useDispatch();
+  const selector = formValueSelector(formName);
 
+  const currentLease = useSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const usersPermissions = useSelector(getUsersPermissions);
+  const isSaveClicked = useSelector(getIsSaveClicked);
+
+  const formValues = useSelector(getFormValues(formName)) || {};
+  const amountPerArea = useSelector((state) =>
+    selector(state, `${field}.amount_per_area`),
+  );
+  const currentAmountPerArea = useSelector((state) =>
+    selector(state, `${field}.current_amount_per_area`),
+  );
+  const area = useSelector((state) => selector(state, `${field}.area`));
+  const zone = useSelector((state) => selector(state, `${field}.zone`));
+  const areaUnit = useSelector((state) =>
+    selector(state, `${field}.area_unit`),
+  );
+  const calculatorType = useSelector((state) =>
+    selector(state, `${field}.type`),
+  );
+  const basisOfRent = useSelector((state) => selector(state, `${field}`) || {});
+  const discountPercentage = useSelector((state) =>
+    selector(state, `${field}.discount_percentage`),
+  );
+  const id = useSelector((state) => selector(state, `${field}.id`));
+  const index = useSelector((state) => selector(state, `${field}.index`));
+  const children = useSelector((state) => selector(state, `${field}.children`));
+  const intendedUse = useSelector((state) =>
+    selector(state, `${field}.intended_use`),
+  );
+  const lockedAt = useSelector((state) =>
+    selector(state, `${field}.locked_at`),
+  );
+  const managementSubventions = useSelector((state) =>
+    selector(state, `${field}.management_subventions`),
+  );
+  const plansInspectedAt = useSelector((state) =>
+    selector(state, `${field}.plans_inspected_at`),
+  );
+  const price = useSelector((state) =>
+    selector(state, `${field}.amount_per_area`),
+  );
+  const profitMarginPercentage = useSelector((state) =>
+    selector(state, `${field}.profit_margin_percentage`),
+  );
+  const subventionBasePercent = useSelector((state) =>
+    selector(state, `${field}.subvention_base_percent`),
+  );
+  const subventionGraduatedPercent = useSelector((state) =>
+    selector(state, `${field}.subvention_graduated_percent`),
+  );
+  const subventionType = useSelector((state) =>
+    selector(state, `${field}.subvention_type`),
+  );
+  const temporarySubventions = useSelector((state) =>
+    selector(state, `${field}.temporary_subventions`),
+  );
+
+  const [showSubventions, setShowSubventions] = useState(
+    () => !!subventionType || !!temporarySubventions?.length,
+  );
+
+  const initialFormValues = () => {
     if (
       calculatorType &&
       (calculatorType === CalculatorTypes.LEASE ||
@@ -574,113 +588,148 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         currentAmountPerArea,
       );
       // re-initialize the form in order to avoid dirty states on field(s) that change
-      initialize(formName, newInitialValues);
+      dispatch(initialize(formName, newInitialValues));
     }
 
-    this.changeDiscounts();
+    changeDiscounts();
   };
 
-  componentDidMount() {
-    this.initialFormValues();
-  }
+  useEffect(() => {
+    initialFormValues();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  componentDidUpdate(prevProps: Props) {
-    const { showSubventions } = this.state;
-    const {
-      currentAmountPerArea,
-      managementSubventions,
+  const getReLeaseDiscountPercent = useCallback(() => {
+    return calculateReLeaseDiscountPercent(
       subventionBasePercent,
       subventionGraduatedPercent,
+    );
+  }, [subventionBasePercent, subventionGraduatedPercent]);
+
+  const calculateTotalTemporarySubventionPercent = useCallback(() => {
+    const temporarySubventionDiscountPercentage =
+      calculateTemporarySubventionDiscountPercentage(temporarySubventions);
+    dispatch(
+      change(
+        formName,
+        `${field}.temporary_subvention_discount_percentage`,
+        formatNumber(temporarySubventionDiscountPercentage),
+      ),
+    );
+  }, [dispatch, formName, field, temporarySubventions]);
+
+  const calculateTotalSubventionPercent = useCallback(() => {
+    const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
+    const currentAmountPerArea = getBasisOfRentAmountPerArea(
+      basisOfRent,
+      indexValue,
+    );
+    return calculateBasisOfRentSubventionPercent(
+      currentAmountPerArea,
       subventionType,
+      subventionBasePercent,
+      subventionGraduatedPercent,
+      managementSubventions,
       temporarySubventions,
-    } = this.props;
+    );
+  }, [
+    basisOfRent,
+    indexOptions,
+    subventionType,
+    subventionBasePercent,
+    subventionGraduatedPercent,
+    managementSubventions,
+    temporarySubventions,
+  ]);
 
-    if (
-      showSubventions ||
-      (temporarySubventions && !!temporarySubventions.length)
-    ) {
-      if (
-        currentAmountPerArea !== prevProps.currentAmountPerArea &&
-        managementSubventions !== undefined
-      ) {
-        this.changeDiscounts();
-      }
-
-      if (
-        subventionType !== prevProps.subventionType ||
-        subventionBasePercent !== prevProps.subventionBasePercent ||
-        subventionGraduatedPercent !== prevProps.subventionGraduatedPercent ||
-        managementSubventions !== prevProps.managementSubventions ||
-        temporarySubventions !== prevProps.temporarySubventions
-      ) {
-        // Don't change discount_percent automatically if basis of rent is deleted
-        if (
-          subventionType !== undefined ||
-          subventionBasePercent !== undefined ||
-          subventionGraduatedPercent !== undefined ||
-          managementSubventions !== undefined ||
-          temporarySubventions !== undefined
-        ) {
-          this.changeDiscounts();
-        }
-      }
-    }
-  }
-
-  changeDiscounts() {
-    const { change, field, subventionType, managementSubventions } = this.props;
-    change(
-      this.props.formName,
-      `${field}.discount_percentage`,
-      this.calculateTotalSubventionPercent(),
+  const changeDiscounts = useCallback(() => {
+    dispatch(
+      change(
+        formName,
+        `${field}.discount_percentage`,
+        calculateTotalSubventionPercent(),
+      ),
     );
 
     if (subventionType === SubventionTypes.RE_LEASE) {
-      const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
-      change(
-        this.props.formName,
-        `${field}.subvention_discount_percentage`,
-        releaseDiscountPercent.toFixed(2),
+      const releaseDiscountPercent = getReLeaseDiscountPercent();
+      dispatch(
+        change(
+          formName,
+          `${field}.subvention_discount_percentage`,
+          releaseDiscountPercent.toFixed(2),
+        ),
       );
     }
 
     if (subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
       if (managementSubventions && managementSubventions[0]) {
-        change(
-          this.props.formName,
-          `${field}.subvention_discount_percentage`,
-          managementSubventions[0].subvention_percent,
+        dispatch(
+          change(
+            formName,
+            `${field}.subvention_discount_percentage`,
+            managementSubventions[0].subvention_percent,
+          ),
         );
       }
     }
 
-    this.calculateTotalTemporarySubventionPercent();
-  }
+    calculateTotalTemporarySubventionPercent();
+  }, [
+    dispatch,
+    formName,
+    field,
+    calculateTotalSubventionPercent,
+    subventionType,
+    calculateTotalTemporarySubventionPercent,
+    getReLeaseDiscountPercent,
+    managementSubventions,
+  ]);
 
-  calculateTotalTemporarySubventionPercent = () => {
-    const { change, field, temporarySubventions } = this.props;
-    const temporarySubventionDiscountPercentage =
-      calculateTemporarySubventionDiscountPercentage(temporarySubventions);
-    change(
-      this.props.formName,
-      `${field}.temporary_subvention_discount_percentage`,
-      formatNumber(temporarySubventionDiscountPercentage),
-    );
-  };
-  getAreaText = (amount: number | null | undefined) => {
-    const { areaUnit, areaUnitOptions } = this.props;
+  useEffect(() => {
+    if (
+      showSubventions ||
+      (temporarySubventions && !!temporarySubventions.length)
+    ) {
+      if (managementSubventions !== undefined) {
+        changeDiscounts();
+      }
+
+      // Don't change discount_percent automatically if basis of rent is deleted
+      if (
+        subventionType !== undefined ||
+        subventionBasePercent !== undefined ||
+        subventionGraduatedPercent !== undefined ||
+        managementSubventions !== undefined ||
+        temporarySubventions !== undefined
+      ) {
+        changeDiscounts();
+      }
+    }
+  }, [
+    currentAmountPerArea,
+    managementSubventions,
+    subventionType,
+    subventionBasePercent,
+    subventionGraduatedPercent,
+    temporarySubventions,
+    showSubventions,
+    changeDiscounts,
+  ]);
+
+  const getAreaText = (amount: number | null | undefined) => {
     if (isEmptyValue(amount)) return "-";
     if (isEmptyValue(areaUnit)) return `${formatNumber(amount)} €`;
     return `${formatNumber(amount)} ${getLabelOfOption(areaUnitOptions, areaUnit) || ""}`;
   };
-  getAmountPerAreaText = (amount: number | null | undefined) => {
-    const { areaUnit, areaUnitOptions } = this.props;
+
+  const getAmountPerAreaText = (amount: number | null | undefined) => {
     if (isEmptyValue(amount)) return "-";
     if (isEmptyValue(areaUnit)) return `${formatNumber(amount)} €`;
     return `${formatNumber(amount)} € / ${getLabelOfOption(areaUnitOptions, areaUnit) || ""}`;
   };
-  getPlansInspectedText = () => {
-    const { currentLease, id, plansInspectedAt } = this.props;
+
+  const getPlansInspectedText = () => {
     const savedBasisOfRent = getBasisOfRentById(currentLease, id);
     if (
       !plansInspectedAt ||
@@ -692,8 +741,8 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       return formatDate(savedBasisOfRent.plans_inspected_at) || "-";
     return `${formatDate(savedBasisOfRent.plans_inspected_at) || ""} ${getUserFullName(savedBasisOfRent.plans_inspected_by)}`;
   };
-  getLockedText = () => {
-    const { currentLease, id, lockedAt } = this.props;
+
+  const getLockedText = () => {
     const savedBasisOfRent = getBasisOfRentById(currentLease, id);
     if (!lockedAt || !savedBasisOfRent || !savedBasisOfRent.locked_at)
       return "-";
@@ -701,16 +750,17 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       return formatDate(savedBasisOfRent.locked_at) || "-";
     return `${formatDate(savedBasisOfRent.locked_at) || ""} ${getUserFullName(savedBasisOfRent.locked_by)}`;
   };
-  handleArchive = () => {
-    const { currentLease, id, onArchive } = this.props;
+
+  const handleArchive = () => {
     const savedBasisOfRent = getBasisOfRentById(currentLease, id);
 
     if (onArchive) {
       onArchive(savedBasisOfRent);
     }
   };
-  handleCopyToClipboard = () => {
-    const tableContent = this.getTableContentForClipBoard(),
+
+  const handleCopyToClipboard = () => {
+    const tableContent = getTableContentForClipBoard(),
       el = document.createElement("table");
     el.className = "sortable-table__clipboard-table";
     el.innerHTML = tableContent;
@@ -722,39 +772,24 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       });
     }
   };
-  handleUnarchive = () => {
-    const { currentLease, id, onUnarchive } = this.props;
+
+  const handleUnarchive = () => {
     const savedBasisOfRent = getBasisOfRentById(currentLease, id);
 
     if (onUnarchive) {
       onUnarchive(savedBasisOfRent);
     }
   };
-  getTableContentForClipBoard = () => {
-    const {
-      amountPerArea,
-      area,
-      basisOfRent,
-      calculatorType,
-      index,
-      indexOptions,
-      intendedUse,
-      intendedUseOptions,
-      leaseAttributes,
-      profitMarginPercentage,
-      temporarySubventions,
-      managementSubventions,
-      subventionType,
-    } = this.props;
-    const areaText = this.getAreaText(area);
+
+  const getTableContentForClipBoard = () => {
+    const areaText = getAreaText(area);
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
     const currentAmountPerArea = getBasisOfRentAmountPerArea(
       basisOfRent,
       indexValue,
     );
-    const currentAmountPerAreaText =
-      this.getAmountPerAreaText(currentAmountPerArea);
-    const amountPerAreaText = this.getAmountPerAreaText(amountPerArea);
+    const currentAmountPerAreaText = getAmountPerAreaText(currentAmountPerArea);
+    const amountPerAreaText = getAmountPerAreaText(amountPerArea);
     const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(
       basisOfRent,
       indexValue,
@@ -775,7 +810,7 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     let subvention_discount_percentage = null;
 
     if (subventionType === SubventionTypes.RE_LEASE) {
-      const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
+      const releaseDiscountPercent = getReLeaseDiscountPercent();
       subvention_discount_percentage = releaseDiscountPercent.toFixed(2);
     }
 
@@ -821,96 +856,62 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         </tr>
       </tbody>`;
   };
-  handleAddSubventions = () => {
-    this.setState({
-      showSubventions: true,
-    });
+
+  const handleAddSubventions = () => {
+    setShowSubventions(true);
   };
-  handleRemoveSubventions = () => {
-    const { change, field, formName, temporarySubventions } = this.props;
-    change(formName, `${field}.subvention_type`, null);
+  const handleRemoveSubventions = () => {
+    dispatch(change(formName, `${field}.subvention_type`, null));
 
     if (!temporarySubventions?.length) {
-      this.setState({
-        showSubventions: false,
-      });
+      setShowSubventions(false);
     }
   };
-  calculateReLeaseDiscountPercent = () => {
-    const { subventionBasePercent, subventionGraduatedPercent } = this.props;
-    return calculateReLeaseDiscountPercent(
-      subventionBasePercent,
-      subventionGraduatedPercent,
-    );
-  };
-  calculateTotalSubventionPercent = () => {
-    const {
-      basisOfRent,
-      indexOptions,
-      subventionType,
-      subventionBasePercent,
-      subventionGraduatedPercent,
-      managementSubventions,
-      temporarySubventions,
-    } = this.props;
-    const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
-    const currentAmountPerArea = getBasisOfRentAmountPerArea(
-      basisOfRent,
-      indexValue,
-    );
-    return calculateBasisOfRentSubventionPercent(
-      currentAmountPerArea,
-      subventionType,
-      subventionBasePercent,
-      subventionGraduatedPercent,
-      managementSubventions,
-      temporarySubventions,
-    );
-  };
-  clearAllFields = () => {
-    const { clearFields, field } = this.props;
-    return clearFields(
-      this.props.formName,
-      false,
-      false,
-      `${field}.amount_per_area`, // Same field for both "price" and "amountPerArea"
-      `${field}.area`,
-      `${field}.area_unit`,
-      `${field}.base_year_rent`,
-      `${field}.current_amount_per_area`,
-      `${field}.discount_percentage`,
-      `${field}.discounted_intial_year_rent`,
-      `${field}.discounted_intial_year_rent_per_month`,
-      `${field}.discounted_intial_year_rent_per_month_total`,
-      `${field}.discounted_intial_year_rent_per_2_months`,
-      `${field}.discounted_intial_year_rent_per_2_months_total`,
-      `${field}.index`,
-      `${field}.intial_year_rent`,
-      `${field}.intended_use`,
-      `${field}.profit_margin_percentage`,
-      `${field}.subvention_base_percent`,
-      `${field}.subvention_discount_percentage`,
-      `${field}.subvention_graduated_percent`,
-      `${field}.subvention_re_lease_discount_amount`,
-      `${field}.subvention_re_lease_discount_precent`,
-      `${field}.temporary_subvention_discount_percentage`,
-      `${field}.unit_price`,
-      `${field}.zone`,
-    );
-  };
-  // Reset all fields when calculator type changes
-  onChangeTypeOptions = (value: any) => {
-    const { calculatorType } = this.props;
 
+  const clearAllFields = () => {
+    return dispatch(
+      clearFields(
+        formName,
+        false,
+        false,
+        `${field}.amount_per_area`, // Same field for both "price" and "amountPerArea"
+        `${field}.area`,
+        `${field}.area_unit`,
+        `${field}.base_year_rent`,
+        `${field}.current_amount_per_area`,
+        `${field}.discount_percentage`,
+        `${field}.discounted_intial_year_rent`,
+        `${field}.discounted_intial_year_rent_per_month`,
+        `${field}.discounted_intial_year_rent_per_month_total`,
+        `${field}.discounted_intial_year_rent_per_2_months`,
+        `${field}.discounted_intial_year_rent_per_2_months_total`,
+        `${field}.index`,
+        `${field}.intial_year_rent`,
+        `${field}.intended_use`,
+        `${field}.profit_margin_percentage`,
+        `${field}.subvention_base_percent`,
+        `${field}.subvention_discount_percentage`,
+        `${field}.subvention_graduated_percent`,
+        `${field}.subvention_re_lease_discount_amount`,
+        `${field}.subvention_re_lease_discount_precent`,
+        `${field}.temporary_subvention_discount_percentage`,
+        `${field}.unit_price`,
+        `${field}.zone`,
+      ),
+    );
+  };
+
+  // Reset all fields when calculator type changes
+  const onChangeTypeOptions = (value: any) => {
     if (value !== calculatorType) {
-      this.clearAllFields();
-      this.handleRemoveSubventions();
-      this.initialFormValues();
+      dispatch(clearAllFields());
+      handleRemoveSubventions();
+      initialFormValues();
     }
   };
+
   // LEASE: Yksikköhinta(ind 100)
-  onChangeAmountPerArea = (value: any) => {
-    const { basisOfRent, change, field, indexOptions } = this.props;
+  const onChangeAmountPerArea = (value: any) => {
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
     const currentAmountPerArea = getBasisOfRentAmountPerArea(
       {
@@ -918,30 +919,28 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
       },
       indexValue,
     );
-    change(
-      this.props.formName,
-      `${field}.current_amount_per_area`,
-      currentAmountPerArea,
+    dispatch(
+      change(
+        formName,
+        `${field}.current_amount_per_area`,
+        currentAmountPerArea,
+      ),
     );
   };
-  // LEASE & LEASE2022: Yksikköhinta (ind)
-  onChangeCurrentAmountPerArea = (value: any) => {
-    const { basisOfRent, change, field, indexOptions, calculatorType } =
-      this.props;
 
+  // LEASE & LEASE2022: Yksikköhinta (ind)
+  const onChangeCurrentAmountPerArea = (value: any) => {
     if (calculatorType === CalculatorTypes.LEASE2022) {
-      change(this.props.formName, `${field}.amount_per_area`, value);
+      dispatch(change(formName, `${field}.amount_per_area`, value));
     } else {
       const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
       const amountPerArea = calculateAmountFromValue(value, indexValue);
-      change(this.props.formName, `${field}.amount_per_area`, amountPerArea);
+      dispatch(change(formName, `${field}.amount_per_area`, amountPerArea));
     }
   };
-  // LEASE & LEASE2022: Indeksi
-  onChangeIndexOptions = (value: any) => {
-    const { basisOfRent, change, field, indexOptions, calculatorType } =
-      this.props;
 
+  // LEASE & LEASE2022: Indeksi
+  const onChangeIndexOptions = (value: any) => {
     if (calculatorType === CalculatorTypes.LEASE) {
       const indexValue = getBasisOfRentIndexValue(
         {
@@ -953,18 +952,19 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
         basisOfRent,
         indexValue,
       );
-      change(
-        this.props.formName,
-        `${field}.current_amount_per_area`,
-        currentAmountPerArea,
+      dispatch(
+        change(
+          formName,
+          `${field}.current_amount_per_area`,
+          currentAmountPerArea,
+        ),
       );
     }
   };
-  getSubventionDiscountedInitial = () => {
-    const { subventionType, managementSubventions, basisOfRent, indexOptions } =
-      this.props;
+
+  const getSubventionDiscountedInitial = () => {
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
-    const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
+    const releaseDiscountPercent = getReLeaseDiscountPercent();
     const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(
       basisOfRent,
       indexValue,
@@ -992,389 +992,1275 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
     return 0;
   };
 
-  render() {
-    const {
-      amountPerArea,
-      archived,
-      area,
-      areaUnitOptions,
-      basisOfRent,
-      currentLease,
-      children,
-      field,
-      formName,
-      id,
-      indexOptions,
-      intendedUseOptions,
-      isSaveClicked,
-      leaseAttributes,
-      managementTypeOptions,
-      onArchive,
-      onRemove,
-      showLockedAt,
-      showPlansInspectedAt,
-      showTotal,
-      subventionType,
-      subventionTypeOptions,
-      price,
-      totalDiscountedInitialYearRent,
-      usersPermissions,
-      managementSubventions,
-      temporarySubventions,
-      typeOptions,
-      calculatorTypeOptions,
-      calculatorType,
-      zone,
-    } = this.props;
-    const { showSubventions } = this.state;
-    const savedBasisOfRent = getBasisOfRentById(currentLease, id);
-    // Used by all CalculatorTypes
-    const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
-    const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(
-      basisOfRent,
-      indexValue,
-    );
-    const areaText = this.getAreaText(area);
-    const lockedAtText = this.getLockedText();
-    const isLocked = !!savedBasisOfRent && !!savedBasisOfRent.locked_at;
-    // Used by CalculatorTypes.LEASE
-    const amountPerAreaText = this.getAmountPerAreaText(amountPerArea);
-    const currentAmountPerArea = getBasisOfRentAmountPerArea(
-      basisOfRent,
-      indexValue,
-    );
-    // Used by CalculatorTypes.LEASE and CalculatorTypes.LEASE2022
-    const plansInspectedAtText = this.getPlansInspectedText();
-    const initialYearRent = calculateBasisOfRentInitialYearRent(
-      basisOfRent,
-      indexValue,
-      basicAnnualRent,
-    );
-    const releaseDiscountPercent = this.calculateReLeaseDiscountPercent();
-    const releaseDiscountAmount = calculateBasisOfRentSubventionAmount(
-      initialYearRent,
-      releaseDiscountPercent.toString(),
-    );
-    const totalSubventionPercent = this.calculateTotalSubventionPercent();
-    const totalSubventionAmount = calculateBasisOfRentSubventionAmount(
-      initialYearRent,
-      totalSubventionPercent.toString(),
-    );
-    const subventionDiscountedInitial = this.getSubventionDiscountedInitial();
-    const discountedInitialYearRent =
-      calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue);
-    const rentPerMonth =
-      discountedInitialYearRent != null ? discountedInitialYearRent / 12 : null;
-    const rentPer2Months =
-      discountedInitialYearRent != null ? discountedInitialYearRent / 6 : null;
-    const rentPerMonthTotal = totalDiscountedInitialYearRent / 12;
-    const rentPer2MonthsTotal = totalDiscountedInitialYearRent / 6;
-    // Used by CalculatorTypes.TEMPORARY
-    const zonePrice = getZonePriceFromValue(zone);
-    const temporaryRent = calculateTemporaryRent(zonePrice, area);
-    const temporaryRentIndexed = calculateBasicAnnualRentIndexed(
-      temporaryRent * 12,
-      indexValue,
-    );
-    // Used by CalculatorTypes.ADDITIONAL_YARD
-    const rentExtra = calculateExtraRent(price, area);
-    const rentExtraIndexed = calculateBasicAnnualRentIndexed(
-      rentExtra,
-      indexValue,
-    );
-    // Used by CalculatorTypes.FIELD
-    const fieldsRent = calculateFieldsRent(price, area);
-    const basicAnnualFieldRentIndexed = calculateBasicAnnualRentIndexed(
-      fieldsRent,
-      indexValue,
-    );
-    // Used by CalculatorTypes.MAST
-    const mastAreaRent = 1.5 * calculateFieldsRent(price, area);
-    const rackAndHeightPrice = calculateRackAndHeightPrice(children);
-    const mastTotal = (mastAreaRent + rackAndHeightPrice) * 0.05;
-    const mastTotalIndexed = calculateBasicAnnualRentIndexed(
-      mastTotal,
-      indexValue,
-    );
+  const savedBasisOfRent = getBasisOfRentById(currentLease, id);
+  // Used by all CalculatorTypes
+  const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
+  const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(
+    basisOfRent,
+    indexValue,
+  );
+  const areaText = getAreaText(area);
+  const lockedAtText = getLockedText();
+  const isLocked = !!savedBasisOfRent && !!savedBasisOfRent.locked_at;
+  // Used by CalculatorTypes.LEASE
+  const amountPerAreaText = getAmountPerAreaText(amountPerArea);
+  // Used by CalculatorTypes.LEASE and CalculatorTypes.LEASE2022
+  const plansInspectedAtText = getPlansInspectedText();
+  const initialYearRent = calculateBasisOfRentInitialYearRent(
+    basisOfRent,
+    indexValue,
+    basicAnnualRent,
+  );
+  const releaseDiscountPercent = getReLeaseDiscountPercent();
+  const releaseDiscountAmount = calculateBasisOfRentSubventionAmount(
+    initialYearRent,
+    releaseDiscountPercent.toString(),
+  );
+  const totalSubventionPercent = calculateTotalSubventionPercent();
+  const totalSubventionAmount = calculateBasisOfRentSubventionAmount(
+    initialYearRent,
+    totalSubventionPercent.toString(),
+  );
+  const subventionDiscountedInitial = getSubventionDiscountedInitial();
+  const discountedInitialYearRent =
+    calculateBasisOfRentDiscountedInitialYearRent(basisOfRent, indexValue);
+  const rentPerMonth =
+    discountedInitialYearRent != null ? discountedInitialYearRent / 12 : null;
+  const rentPer2Months =
+    discountedInitialYearRent != null ? discountedInitialYearRent / 6 : null;
+  const rentPerMonthTotal = totalDiscountedInitialYearRent / 12;
+  const rentPer2MonthsTotal = totalDiscountedInitialYearRent / 6;
+  // Used by CalculatorTypes.TEMPORARY
+  const zonePrice = getZonePriceFromValue(zone);
+  const temporaryRent = calculateTemporaryRent(zonePrice, area);
+  const temporaryRentIndexed = calculateBasicAnnualRentIndexed(
+    temporaryRent * 12,
+    indexValue,
+  );
+  // Used by CalculatorTypes.ADDITIONAL_YARD
+  const rentExtra = calculateExtraRent(price, area);
+  const rentExtraIndexed = calculateBasicAnnualRentIndexed(
+    rentExtra,
+    indexValue,
+  );
+  // Used by CalculatorTypes.FIELD
+  const fieldsRent = calculateFieldsRent(price, area);
+  const basicAnnualFieldRentIndexed = calculateBasicAnnualRentIndexed(
+    fieldsRent,
+    indexValue,
+  );
+  // Used by CalculatorTypes.MAST
+  const mastAreaRent = 1.5 * calculateFieldsRent(price, area);
+  const rackAndHeightPrice = calculateRackAndHeightPrice(children);
+  const mastTotal = (mastAreaRent + rackAndHeightPrice) * 0.05;
+  const mastTotalIndexed = calculateBasicAnnualRentIndexed(
+    mastTotal,
+    indexValue,
+  );
 
-    // Yksikköhinta (ind)
-    // text input
-    const renderUnitPriceFormField = (showLabel: boolean) => (
-      <Authorization
-        allow={
-          isFieldAllowedToRead(
-            leaseAttributes,
-            LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-          ) &&
-          isFieldAllowedToRead(
-            leaseAttributes,
-            LeaseBasisOfRentsFieldPaths.INDEX,
-          )
-        }
-      >
-        <>
-          {showLabel && (
-            <FormTextTitle
-              enableUiDataEdit
-              uiDataKey={getUiDataLeaseKey(
-                LeaseBasisOfRentsFieldPaths.UNIT_PRICE,
-              )}
-            >
-              {LeaseBasisOfRentsFieldTitles.UNIT_PRICE}
-            </FormTextTitle>
-          )}
-          <FormFieldLegacy
-            disableTouched={isSaveClicked}
-            onChange={this.onChangeCurrentAmountPerArea}
-            fieldAttributes={{
-              decimal_places: 2,
-              label: "Yksikköhinta",
-              max_digits: 10,
-              read_only: false,
-              required: false,
-              type: "decimal",
-            }}
-            disabled={isLocked}
-            name={`${field}.current_amount_per_area`}
-            unit="€"
-            invisibleLabel
-            overrideValues={{
-              label: LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA,
-            }}
-          />
-        </>
-      </Authorization>
-    );
-
-    // Tuottoprosentti
-    // text input
-    const renderProfitMarginPercentageFormField = () => (
-      <Authorization
-        allow={isFieldAllowedToRead(
+  // Yksikköhinta (ind)
+  // text input
+  const UnitPriceFormField = (showLabel: boolean) => (
+    <Authorization
+      allow={
+        isFieldAllowedToRead(
           leaseAttributes,
-          LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
+          LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+        ) &&
+        isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)
+      }
+    >
+      <>
+        {showLabel && (
+          <FormTextTitle
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(
+              LeaseBasisOfRentsFieldPaths.UNIT_PRICE,
+            )}
+          >
+            {LeaseBasisOfRentsFieldTitles.UNIT_PRICE}
+          </FormTextTitle>
         )}
-      >
         <FormFieldLegacy
           disableTouched={isSaveClicked}
-          fieldAttributes={
-            savedBasisOfRent && !!savedBasisOfRent.locked_at
-              ? {
-                  ...getFieldAttributes(
-                    leaseAttributes,
-                    LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
-                  ),
-                  required: false,
-                }
-              : getFieldAttributes(
+          onChange={onChangeCurrentAmountPerArea}
+          fieldAttributes={{
+            decimal_places: 2,
+            label: "Yksikköhinta",
+            max_digits: 10,
+            read_only: false,
+            required: false,
+            type: "decimal",
+          }}
+          disabled={isLocked}
+          name={`${field}.current_amount_per_area`}
+          unit="€"
+          invisibleLabel
+          overrideValues={{
+            label: LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA,
+          }}
+        />
+      </>
+    </Authorization>
+  );
+
+  // Tuottoprosentti
+  // text input
+  const ProfitMarginPercentageFormField = () => (
+    <Authorization
+      allow={isFieldAllowedToRead(
+        leaseAttributes,
+        LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
+      )}
+    >
+      <FormFieldLegacy
+        disableTouched={isSaveClicked}
+        fieldAttributes={
+          savedBasisOfRent && !!savedBasisOfRent.locked_at
+            ? {
+                ...getFieldAttributes(
                   leaseAttributes,
                   LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
-                )
-          }
-          disabled={isLocked}
-          name={`${field}.profit_margin_percentage`}
-          unit="%"
-          overrideValues={{
-            label: LeaseBasisOfRentsFieldTitles.PROFIT_MARGIN_PERCENTAGE,
-          }}
-          enableUiDataEdit
-          tooltipStyle={{
-            right: 17,
-          }}
-          uiDataKey={getUiDataLeaseKey(
-            LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
-          )}
-        />
-      </Authorization>
-    );
-
-    // Alkuvuosivuokra (ind)
-    // Read only text
-    const renderInitialYearRentFormField = () => (
-      <Authorization
-        allow={
-          isFieldAllowedToRead(
-            leaseAttributes,
-            LeaseBasisOfRentsFieldPaths.AREA,
-          ) &&
-          isFieldAllowedToRead(
-            leaseAttributes,
-            LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-          ) &&
-          isFieldAllowedToRead(
-            leaseAttributes,
-            LeaseBasisOfRentsFieldPaths.INDEX,
-          ) &&
-          isFieldAllowedToRead(
-            leaseAttributes,
-            LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
-          )
+                ),
+                required: false,
+              }
+            : getFieldAttributes(
+                leaseAttributes,
+                LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
+              )
         }
-      >
-        <>
-          <FormTextTitle
-            enableUiDataEdit
-            uiDataKey={getUiDataLeaseKey(
-              LeaseBasisOfRentsFieldPaths.INITIAL_YEAR_RENT,
-            )}
-          >
-            {LeaseBasisOfRentsFieldTitles.INITIAL_YEAR_RENT}
-          </FormTextTitle>
-          <FormText>
-            {!isEmptyValue(initialYearRent)
-              ? `${formatNumber(initialYearRent)} €/v`
-              : "-"}
-          </FormText>
-        </>
-      </Authorization>
-    );
+        disabled={isLocked}
+        name={`${field}.profit_margin_percentage`}
+        unit="%"
+        overrideValues={{
+          label: LeaseBasisOfRentsFieldTitles.PROFIT_MARGIN_PERCENTAGE,
+        }}
+        enableUiDataEdit
+        tooltipStyle={{
+          right: 17,
+        }}
+        uiDataKey={getUiDataLeaseKey(
+          LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
+        )}
+      />
+    </Authorization>
+  );
 
-    // Indeksi
-    // Dropdown
-    const renderIndexFormField = () => (
-      <Authorization
-        allow={isFieldAllowedToRead(
+  // Alkuvuosivuokra (ind)
+  // Read only text
+  const InitialYearRentFormField = () => (
+    <Authorization
+      allow={
+        isFieldAllowedToRead(
+          leaseAttributes,
+          LeaseBasisOfRentsFieldPaths.AREA,
+        ) &&
+        isFieldAllowedToRead(
+          leaseAttributes,
+          LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+        ) &&
+        isFieldAllowedToRead(
           leaseAttributes,
           LeaseBasisOfRentsFieldPaths.INDEX,
-        )}
-      >
-        <FormFieldLegacy
-          disableTouched={isSaveClicked}
-          fieldAttributes={{
-            ...getFieldAttributes(
-              leaseAttributes,
-              LeaseBasisOfRentsFieldPaths.INDEX,
-            ),
-            required: false,
-          }}
-          onChange={this.onChangeIndexOptions}
-          disabled={isLocked}
-          name={`${field}.index`}
-          overrideValues={{
-            label: LeaseBasisOfRentsFieldTitles.INDEX,
-            options: indexOptions,
-          }}
+        ) &&
+        isFieldAllowedToRead(
+          leaseAttributes,
+          LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
+        )
+      }
+    >
+      <>
+        <FormTextTitle
           enableUiDataEdit
-          uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INDEX)}
-        />
-      </Authorization>
-    );
+          uiDataKey={getUiDataLeaseKey(
+            LeaseBasisOfRentsFieldPaths.INITIAL_YEAR_RENT,
+          )}
+        >
+          {LeaseBasisOfRentsFieldTitles.INITIAL_YEAR_RENT}
+        </FormTextTitle>
+        <FormText>
+          {!isEmptyValue(initialYearRent)
+            ? `${formatNumber(initialYearRent)} €/v`
+            : "-"}
+        </FormText>
+      </>
+    </Authorization>
+  );
 
-    // Perusvuosivuokra (ind 100)
-    // Read only
-    const renderBaseYearRentFormField = () => (
-      <Authorization
-        allow={
-          isFieldAllowedToRead(
+  // Indeksi
+  // Dropdown
+  const IndexFormField = () => (
+    <Authorization
+      allow={isFieldAllowedToRead(
+        leaseAttributes,
+        LeaseBasisOfRentsFieldPaths.INDEX,
+      )}
+    >
+      <FormFieldLegacy
+        disableTouched={isSaveClicked}
+        fieldAttributes={{
+          ...getFieldAttributes(
             leaseAttributes,
-            LeaseBasisOfRentsFieldPaths.AREA,
-          ) &&
-          isFieldAllowedToRead(
-            leaseAttributes,
-            LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-          )
-        }
-      >
-        <>
-          <FormTextTitle
-            enableUiDataEdit
-            uiDataKey={getUiDataLeaseKey(
-              LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
+            LeaseBasisOfRentsFieldPaths.INDEX,
+          ),
+          required: false,
+        }}
+        onChange={onChangeIndexOptions}
+        disabled={isLocked}
+        name={`${field}.index`}
+        overrideValues={{
+          label: LeaseBasisOfRentsFieldTitles.INDEX,
+          options: indexOptions,
+        }}
+        enableUiDataEdit
+        uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.INDEX)}
+      />
+    </Authorization>
+  );
+
+  // Perusvuosivuokra (ind 100)
+  // Read only
+  const BaseYearRentFormField = () => (
+    <Authorization
+      allow={
+        isFieldAllowedToRead(
+          leaseAttributes,
+          LeaseBasisOfRentsFieldPaths.AREA,
+        ) &&
+        isFieldAllowedToRead(
+          leaseAttributes,
+          LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+        )
+      }
+    >
+      <>
+        <FormTextTitle
+          enableUiDataEdit
+          uiDataKey={getUiDataLeaseKey(
+            LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
+          )}
+        >
+          {LeaseBasisOfRentsFieldTitles.BASE_YEAR_RENT}
+        </FormTextTitle>
+        <FormText>
+          {!isEmptyValue(basicAnnualRent)
+            ? `${formatNumber(basicAnnualRent)} €/v`
+            : "-"}
+        </FormText>
+      </>
+    </Authorization>
+  );
+
+  if (archived && savedBasisOfRent) {
+    return (
+      <BasisOfRent
+        areaUnitOptions={areaUnitOptions}
+        basisOfRent={basisOfRent}
+        indexOptions={indexOptions}
+        intendedUseOptions={intendedUseOptions}
+        managementTypeOptions={managementTypeOptions}
+        onRemove={onRemove}
+        onUnarchive={handleUnarchive}
+        showTotal={showTotal}
+        subventionTypeOptions={subventionTypeOptions}
+        totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
+      />
+    );
+  }
+
+  return (
+    <BoxItem className="no-border-on-first-child">
+      <BoxContentWrapper>
+        <ActionButtonWrapper>
+          {(calculatorType === CalculatorTypes.LEASE ||
+            calculatorType === CalculatorTypes.LEASE2022) && (
+            <CopyToClipboardButton onClick={handleCopyToClipboard} />
+          )}
+          <Authorization
+            allow={isFieldAllowedToEdit(
+              leaseAttributes,
+              LeaseBasisOfRentsFieldPaths.ARCHIVED_AT,
             )}
           >
-            {LeaseBasisOfRentsFieldTitles.BASE_YEAR_RENT}
-          </FormTextTitle>
-          <FormText>
-            {!isEmptyValue(basicAnnualRent)
-              ? `${formatNumber(basicAnnualRent)} €/v`
-              : "-"}
-          </FormText>
-        </>
-      </Authorization>
-    );
-
-    if (archived && savedBasisOfRent) {
-      return (
-        <BasisOfRent
-          areaUnitOptions={areaUnitOptions}
-          basisOfRent={basisOfRent}
-          indexOptions={indexOptions}
-          intendedUseOptions={intendedUseOptions}
-          managementTypeOptions={managementTypeOptions}
-          calculatorTypeOptions={calculatorTypeOptions}
-          onRemove={onRemove}
-          onUnarchive={this.handleUnarchive}
-          showTotal={showTotal}
-          subventionTypeOptions={subventionTypeOptions}
-          totalDiscountedInitialYearRent={totalDiscountedInitialYearRent}
-          typeOptions={typeOptions}
-        />
-      );
-    }
-
-    return (
-      <BoxItem className="no-border-on-first-child">
-        <BoxContentWrapper>
-          <ActionButtonWrapper>
-            {(calculatorType === CalculatorTypes.LEASE ||
-              calculatorType === CalculatorTypes.LEASE2022) && (
-              <CopyToClipboardButton onClick={this.handleCopyToClipboard} />
+            {onArchive && savedBasisOfRent && !savedBasisOfRent.locked_at && (
+              <ArchiveButton onClick={handleArchive} />
             )}
+          </Authorization>
+          {(!savedBasisOfRent || !savedBasisOfRent.locked_at) && (
             <Authorization
-              allow={isFieldAllowedToEdit(
-                leaseAttributes,
-                LeaseBasisOfRentsFieldPaths.ARCHIVED_AT,
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.DELETE_LEASEBASISOFRENT,
               )}
             >
-              {onArchive && savedBasisOfRent && !savedBasisOfRent.locked_at && (
-                <ArchiveButton onClick={this.handleArchive} />
-              )}
+              <RemoveButton onClick={onRemove} title="Poista vuokralaskuri" />
             </Authorization>
-            {(!savedBasisOfRent || !savedBasisOfRent.locked_at) && (
+          )}
+        </ActionButtonWrapper>
+        <Row>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              leaseAttributes,
+              LeaseBasisOfRentsFieldPaths.TYPE,
+            )}
+          >
+            <Column small={6} medium={4} large={2}>
+              <FormFieldLegacy
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
+                  leaseAttributes,
+                  LeaseBasisOfRentsFieldPaths.TYPE,
+                )}
+                onChange={onChangeTypeOptions}
+                name={`${field}.type`}
+                disabled={isLocked}
+                overrideValues={{
+                  label: "Laskurin tyyppi",
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(LeaseBasisOfRentsFieldPaths.TYPE)}
+              />
+            </Column>
+          </Authorization>
+          {(calculatorType === CalculatorTypes.LEASE ||
+            calculatorType === CalculatorTypes.LEASE2022) && (
+            <Column small={6} medium={4} large={2}>
               <Authorization
-                allow={hasPermissions(
-                  usersPermissions,
-                  UsersPermissions.DELETE_LEASEBASISOFRENT,
+                allow={isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseBasisOfRentsFieldPaths.INTENDED_USE,
                 )}
               >
-                <RemoveButton onClick={onRemove} title="Poista vuokralaskuri" />
-              </Authorization>
-            )}
-          </ActionButtonWrapper>
-          <Row>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                leaseAttributes,
-                LeaseBasisOfRentsFieldPaths.TYPE,
-              )}
-            >
-              <Column small={6} medium={4} large={2}>
                 <FormFieldLegacy
                   disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    leaseAttributes,
-                    LeaseBasisOfRentsFieldPaths.TYPE,
-                  )}
-                  onChange={this.onChangeTypeOptions}
-                  name={`${field}.type`}
+                  fieldAttributes={
+                    savedBasisOfRent && !!savedBasisOfRent.locked_at
+                      ? {
+                          ...getFieldAttributes(
+                            leaseAttributes,
+                            LeaseBasisOfRentsFieldPaths.INTENDED_USE,
+                          ),
+                          required: false,
+                        }
+                      : getFieldAttributes(
+                          leaseAttributes,
+                          LeaseBasisOfRentsFieldPaths.INTENDED_USE,
+                        )
+                  }
                   disabled={isLocked}
+                  name={`${field}.intended_use`}
                   overrideValues={{
-                    label: "Laskurin tyyppi",
+                    label: LeaseBasisOfRentsFieldTitles.INTENDED_USE,
                   }}
                   enableUiDataEdit
                   uiDataKey={getUiDataLeaseKey(
-                    LeaseBasisOfRentsFieldPaths.TYPE,
+                    LeaseBasisOfRentsFieldPaths.INTENDED_USE,
                   )}
                 />
+              </Authorization>
+            </Column>
+          )}
+          {(calculatorType === CalculatorTypes.LEASE ||
+            calculatorType === CalculatorTypes.LEASE2022) && (
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={
+                  isFieldAllowedToEdit(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.AREA,
+                  ) ||
+                  isFieldAllowedToEdit(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+                  )
+                }
+                errorComponent={
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseBasisOfRentsFieldPaths.AREA,
+                    )}
+                  >
+                    <>
+                      <FormTextTitle
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(
+                          LeaseBasisOfRentsFieldPaths.AREA,
+                        )}
+                      >
+                        {LeaseBasisOfRentsFieldTitles.AREA}
+                      </FormTextTitle>
+                      <FormText>{areaText}</FormText>
+                    </>
+                  </Authorization>
+                }
+              >
+                <>
+                  <FormTextTitle
+                    required={isFieldRequired(
+                      leaseAttributes,
+                      LeaseBasisOfRentsFieldPaths.AREA,
+                    )}
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseBasisOfRentsFieldPaths.AREA,
+                    )}
+                  >
+                    {LeaseBasisOfRentsFieldTitles.AREA}
+                  </FormTextTitle>
+                  <Row>
+                    <Column small={6}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          leaseAttributes,
+                          LeaseBasisOfRentsFieldPaths.AREA,
+                        )}
+                      >
+                        <FormFieldLegacy
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={
+                            savedBasisOfRent && !!savedBasisOfRent.locked_at
+                              ? {
+                                  ...getFieldAttributes(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AREA,
+                                  ),
+                                  required: false,
+                                }
+                              : getFieldAttributes(
+                                  leaseAttributes,
+                                  LeaseBasisOfRentsFieldPaths.AREA,
+                                )
+                          }
+                          disabled={isLocked}
+                          name={`${field}.area`}
+                          invisibleLabel
+                          overrideValues={{
+                            label: LeaseBasisOfRentsFieldTitles.AREA,
+                          }}
+                        />
+                      </Authorization>
+                    </Column>
+                    <Column small={6}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          leaseAttributes,
+                          LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+                        )}
+                      >
+                        <FormFieldLegacy
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={
+                            savedBasisOfRent && !!savedBasisOfRent.locked_at
+                              ? {
+                                  ...getFieldAttributes(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+                                  ),
+                                  required: false,
+                                }
+                              : getFieldAttributes(
+                                  leaseAttributes,
+                                  LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+                                )
+                          }
+                          disabled={isLocked}
+                          name={`${field}.area_unit`}
+                          invisibleLabel
+                          overrideValues={{
+                            label: LeaseBasisOfRentsFieldTitles.AREA_UNIT,
+                            options: areaUnitOptions,
+                          }}
+                        />
+                      </Authorization>
+                    </Column>
+                  </Row>
+                </>
+              </Authorization>
+            </Column>
+          )}
+          {!!calculatorType &&
+            calculatorType !== CalculatorTypes.LEASE &&
+            calculatorType !== CalculatorTypes.LEASE2022 && (
+              <Column>
+                <Row>
+                  <Authorization
+                    allow={
+                      isFieldAllowedToEdit(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.AREA,
+                      ) ||
+                      isFieldAllowedToEdit(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+                      )
+                    }
+                    errorComponent={
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          leaseAttributes,
+                          LeaseBasisOfRentsFieldPaths.AREA,
+                        )}
+                      >
+                        <>
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={getUiDataLeaseKey(
+                              LeaseBasisOfRentsFieldPaths.AREA,
+                            )}
+                          >
+                            {LeaseBasisOfRentsFieldTitles.AREA}
+                          </FormTextTitle>
+                          <FormText>{areaText}</FormText>
+                        </>
+                      </Authorization>
+                    }
+                  >
+                    <>
+                      {calculatorType === CalculatorTypes.TEMPORARY && (
+                        <Column small={6} medium={4} large={2}>
+                          <Authorization
+                            allow={isFieldAllowedToRead(
+                              leaseAttributes,
+                              LeaseBasisOfRentsFieldPaths.AREA,
+                            )}
+                          >
+                            <FormFieldLegacy
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={getFieldAttributes(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.ZONE,
+                              )}
+                              name={`${field}.zone`}
+                              disabled={isLocked}
+                              overrideValues={{
+                                label: LeaseBasisOfRentsFieldTitles.ZONE,
+                              }}
+                              enableUiDataEdit
+                              uiDataKey={getUiDataLeaseKey(
+                                LeaseBasisOfRentsFieldPaths.ZONE,
+                              )}
+                            />
+                          </Authorization>
+                        </Column>
+                      )}
+                      {(calculatorType === CalculatorTypes.ADDITIONAL_YARD ||
+                        calculatorType === CalculatorTypes.FIELD) && (
+                        <Column small={4} medium={2} large={1}>
+                          <FormTextTitle
+                            required={isFieldRequired(
+                              leaseAttributes,
+                              LeaseBasisOfRentsFieldPaths.AREA,
+                            )}
+                            enableUiDataEdit
+                            uiDataKey={getUiDataLeaseKey(
+                              LeaseBasisOfRentsFieldPaths.AREA,
+                            )}
+                          >
+                            {LeaseBasisOfRentsFieldTitles.PRICE}
+                          </FormTextTitle>
+                          <Authorization
+                            allow={isFieldAllowedToRead(
+                              leaseAttributes,
+                              LeaseBasisOfRentsFieldPaths.AREA,
+                            )}
+                          >
+                            <FormFieldLegacy
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={
+                                savedBasisOfRent && !!savedBasisOfRent.locked_at
+                                  ? {
+                                      ...getFieldAttributes(
+                                        leaseAttributes,
+                                        LeaseBasisOfRentsFieldPaths.AREA,
+                                      ),
+                                      required: false,
+                                    }
+                                  : getFieldAttributes(
+                                      leaseAttributes,
+                                      LeaseBasisOfRentsFieldPaths.AREA,
+                                    )
+                              }
+                              name={`${field}.amount_per_area`}
+                              disabled={isLocked}
+                              invisibleLabel
+                              unit="€"
+                              overrideValues={{
+                                label: LeaseBasisOfRentsFieldTitles.PRICE,
+                              }}
+                            />
+                          </Authorization>
+                        </Column>
+                      )}
+                      {calculatorType === CalculatorTypes.ADDITIONAL_YARD && (
+                        <Column small={4} medium={2} large={1}>
+                          <FormTextTitle>{"Kerroin"}</FormTextTitle>
+                          <FormText>{"* 1,5"}</FormText>
+                        </Column>
+                      )}
+                      {calculatorType === CalculatorTypes.TEMPORARY && (
+                        <Column small={4} medium={2} large={1}>
+                          <Authorization
+                            allow={
+                              isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.AREA,
+                              ) &&
+                              isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                              )
+                            }
+                          >
+                            <>
+                              <FormTextTitle>{"Hinta"}</FormTextTitle>
+                              <FormText>
+                                {!isEmptyValue(zonePrice)
+                                  ? `${formatNumber(zonePrice)} €`
+                                  : "-"}
+                              </FormText>
+                            </>
+                          </Authorization>
+                        </Column>
+                      )}
+                      {calculatorType === CalculatorTypes.MAST && (
+                        <Column large={6} medium={9} small={12}>
+                          <Row>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization
+                                allow={
+                                  isFieldAllowedToRead(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AREA,
+                                  ) &&
+                                  isFieldAllowedToRead(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                                  )
+                                }
+                              >
+                                <>
+                                  <FormTextTitle>{"Laskuri"}</FormTextTitle>
+                                  <FormText>{`Alue`}</FormText>
+                                </>
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization
+                                allow={isFieldAllowedToRead(
+                                  leaseAttributes,
+                                  LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                                )}
+                              >
+                                {
+                                  <FormFieldLegacy
+                                    disableTouched={isSaveClicked}
+                                    fieldAttributes={getFieldAttributes(
+                                      leaseAttributes,
+                                      LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                                    )}
+                                    name={`${field}.amount_per_area`}
+                                    disabled={isLocked}
+                                    unit="€"
+                                    overrideValues={{
+                                      label: "Hinta",
+                                    }}
+                                  />
+                                }
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization
+                                allow={
+                                  isFieldAllowedToRead(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AREA,
+                                  ) &&
+                                  isFieldAllowedToRead(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                                  )
+                                }
+                              >
+                                <>
+                                  <FormTextTitle>{"Kerroin"}</FormTextTitle>
+                                  <FormText>{`*1,5`}</FormText>
+                                </>
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization
+                                allow={isFieldAllowedToRead(
+                                  leaseAttributes,
+                                  LeaseBasisOfRentsFieldPaths.AREA,
+                                )}
+                              >
+                                <FormFieldLegacy
+                                  disableTouched={isSaveClicked}
+                                  fieldAttributes={getFieldAttributes(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AREA,
+                                  )}
+                                  name={`${field}.area`}
+                                  disabled={isLocked}
+                                  overrideValues={{
+                                    label: "Ala/korkeus",
+                                  }}
+                                />
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization
+                                allow={
+                                  isFieldAllowedToRead(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AREA,
+                                  ) &&
+                                  isFieldAllowedToRead(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                                  )
+                                }
+                              >
+                                <>
+                                  <FormTextTitle>{"Yksikkö"}</FormTextTitle>
+                                  <FormText>{`m${String.fromCharCode(178)}`}</FormText>
+                                </>
+                              </Authorization>
+                            </Column>
+                            <Column small={6} medium={4} large={2}>
+                              <Authorization
+                                allow={
+                                  isFieldAllowedToRead(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AREA,
+                                  ) &&
+                                  isFieldAllowedToRead(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                                  )
+                                }
+                              >
+                                <>
+                                  <FormTextTitle>
+                                    {LeaseBasisOfRentsFieldTitles.RENT}
+                                  </FormTextTitle>
+                                  <FormText>
+                                    {!isEmptyValue(mastAreaRent)
+                                      ? `${formatNumber(mastAreaRent)} €`
+                                      : "-"}
+                                  </FormText>
+                                </>
+                              </Authorization>
+                            </Column>
+                          </Row>
+                        </Column>
+                      )}
+                      {calculatorType === CalculatorTypes.MAST && (
+                        <Column large={6} medium={9} small={12}></Column>
+                      )}
+                      {calculatorType === CalculatorTypes.MAST && (
+                        <AppConsumer>
+                          {() => {
+                            return (
+                              <Column large={6} medium={9} small={12}>
+                                <FieldArray
+                                  component={renderMastChildren}
+                                  name={`${field}.children`}
+                                  formName={formName}
+                                  parentField={field}
+                                  fieldsDisabled={isLocked}
+                                />
+                              </Column>
+                            );
+                          }}
+                        </AppConsumer>
+                      )}
+                      {calculatorType !== CalculatorTypes.MAST && (
+                        <Column small={6} medium={4} large={2}>
+                          <FormTextTitle
+                            required={isFieldRequired(
+                              leaseAttributes,
+                              LeaseBasisOfRentsFieldPaths.AREA,
+                            )}
+                            enableUiDataEdit
+                            uiDataKey={getUiDataLeaseKey(
+                              LeaseBasisOfRentsFieldPaths.AREA,
+                            )}
+                          >
+                            {LeaseBasisOfRentsFieldTitles.AREA}
+                          </FormTextTitle>
+                          <Authorization
+                            allow={isFieldAllowedToRead(
+                              leaseAttributes,
+                              LeaseBasisOfRentsFieldPaths.AREA,
+                            )}
+                          >
+                            <FormFieldLegacy
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={
+                                savedBasisOfRent && !!savedBasisOfRent.locked_at
+                                  ? {
+                                      ...getFieldAttributes(
+                                        leaseAttributes,
+                                        LeaseBasisOfRentsFieldPaths.AREA,
+                                      ),
+                                      required: false,
+                                    }
+                                  : getFieldAttributes(
+                                      leaseAttributes,
+                                      LeaseBasisOfRentsFieldPaths.AREA,
+                                    )
+                              }
+                              disabled={isLocked}
+                              name={`${field}.area`}
+                              invisibleLabel
+                              unit={
+                                calculatorType === CalculatorTypes.FIELD
+                                  ? "ha"
+                                  : `m${String.fromCharCode(178)}`
+                              }
+                              overrideValues={{
+                                label: LeaseBasisOfRentsFieldTitles.AREA,
+                              }}
+                            />
+                          </Authorization>
+                        </Column>
+                      )}
+                      {calculatorType === CalculatorTypes.ADDITIONAL_YARD && (
+                        <Column
+                          small={3}
+                          medium={2}
+                          large={1}
+                          style={{
+                            marginTop: 15,
+                          }}
+                        >
+                          <Authorization
+                            allow={isFieldAllowedToRead(
+                              leaseAttributes,
+                              LeaseBasisOfRentsFieldPaths.AREA,
+                            )}
+                          >
+                            <FormText>{"*5%"}</FormText>
+                          </Authorization>
+                        </Column>
+                      )}
+                      {calculatorType !== CalculatorTypes.MAST && (
+                        <Column small={3} medium={2} large={1}>
+                          <Authorization
+                            allow={
+                              isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.AREA,
+                              ) &&
+                              isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                              )
+                            }
+                          >
+                            <>
+                              {calculatorType !== CalculatorTypes.TEMPORARY && (
+                                <FormTextTitle
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(
+                                    LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
+                                  )}
+                                >
+                                  {LeaseBasisOfRentsFieldTitles.RENT_PER_YEAR}
+                                </FormTextTitle>
+                              )}
+                              {calculatorType === CalculatorTypes.TEMPORARY && (
+                                <FormTextTitle
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(
+                                    LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
+                                  )}
+                                >
+                                  {LeaseBasisOfRentsFieldTitles.RENT_PER_MONTH}
+                                </FormTextTitle>
+                              )}
+                              {calculatorType === CalculatorTypes.TEMPORARY && (
+                                <FormText>
+                                  {!isEmptyValue(temporaryRent)
+                                    ? `${formatNumber(temporaryRent)} €`
+                                    : "-"}
+                                </FormText>
+                              )}
+                              {calculatorType ===
+                                CalculatorTypes.ADDITIONAL_YARD && (
+                                <FormText>
+                                  {!isEmptyValue(rentExtra)
+                                    ? `${formatNumber(rentExtra)} €`
+                                    : "-"}
+                                </FormText>
+                              )}
+                              {calculatorType === CalculatorTypes.FIELD && (
+                                <FormText>
+                                  {!isEmptyValue(fieldsRent)
+                                    ? `${formatNumber(fieldsRent)} €`
+                                    : "-"}
+                                </FormText>
+                              )}
+                            </>
+                          </Authorization>
+                        </Column>
+                      )}
+                      {calculatorType === CalculatorTypes.TEMPORARY && (
+                        <Column small={3} medium={2} large={1}>
+                          <Authorization
+                            allow={
+                              isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.AREA,
+                              ) &&
+                              isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                              )
+                            }
+                          >
+                            <>
+                              {calculatorType === CalculatorTypes.TEMPORARY && (
+                                <FormTextTitle
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(
+                                    LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
+                                  )}
+                                >
+                                  {LeaseBasisOfRentsFieldTitles.RENT_PER_YEAR}
+                                </FormTextTitle>
+                              )}
+                              <FormText>
+                                {!isEmptyValue(temporaryRent)
+                                  ? `${formatNumber(temporaryRent * 12)} €`
+                                  : "-"}
+                              </FormText>
+                            </>
+                          </Authorization>
+                        </Column>
+                      )}
+                      {calculatorType !== CalculatorTypes.MAST && (
+                        <Column small={6} medium={4} large={2}>
+                          <Authorization
+                            allow={isFieldAllowedToRead(
+                              leaseAttributes,
+                              LeaseBasisOfRentsFieldPaths.INDEX,
+                            )}
+                          >
+                            <FormFieldLegacy
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={
+                                savedBasisOfRent && !!savedBasisOfRent.locked_at
+                                  ? {
+                                      ...getFieldAttributes(
+                                        leaseAttributes,
+                                        LeaseBasisOfRentsFieldPaths.INDEX,
+                                      ),
+                                      required: false,
+                                    }
+                                  : getFieldAttributes(
+                                      leaseAttributes,
+                                      LeaseBasisOfRentsFieldPaths.INDEX,
+                                    )
+                              }
+                              disabled={isLocked}
+                              name={`${field}.index`}
+                              overrideValues={{
+                                label: LeaseBasisOfRentsFieldTitles.INDEX,
+                                options: indexOptions,
+                              }}
+                              enableUiDataEdit
+                              uiDataKey={getUiDataLeaseKey(
+                                LeaseBasisOfRentsFieldPaths.INDEX,
+                              )}
+                            />
+                          </Authorization>
+                        </Column>
+                      )}
+                      {calculatorType !== CalculatorTypes.MAST && (
+                        <Column small={6} medium={4} large={2}>
+                          <Authorization
+                            allow={
+                              isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.AREA,
+                              ) &&
+                              isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                              )
+                            }
+                          >
+                            <>
+                              <FormTextTitle
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(
+                                  LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
+                                )}
+                              >
+                                {LeaseBasisOfRentsFieldTitles.BASE_YEAR_RENT}
+                              </FormTextTitle>
+                              {calculatorType === CalculatorTypes.TEMPORARY && (
+                                <FormText>
+                                  {!isEmptyValue(temporaryRentIndexed)
+                                    ? `${formatNumber(temporaryRentIndexed)} €/v`
+                                    : "-"}
+                                </FormText>
+                              )}
+                              {calculatorType ===
+                                CalculatorTypes.ADDITIONAL_YARD && (
+                                <FormText>
+                                  {!isEmptyValue(rentExtraIndexed)
+                                    ? `${formatNumber(rentExtraIndexed)} €/v`
+                                    : "-"}
+                                </FormText>
+                              )}
+                              {calculatorType === CalculatorTypes.FIELD && (
+                                <FormText>
+                                  {!isEmptyValue(basicAnnualFieldRentIndexed)
+                                    ? `${formatNumber(basicAnnualFieldRentIndexed)} €/v`
+                                    : "-"}
+                                </FormText>
+                              )}
+                            </>
+                          </Authorization>
+                        </Column>
+                      )}
+                    </>
+                  </Authorization>
+                </Row>
               </Column>
-            </Authorization>
-            {(calculatorType === CalculatorTypes.LEASE ||
-              calculatorType === CalculatorTypes.LEASE2022) && (
+            )}
+        </Row>
+
+        {calculatorType === CalculatorTypes.LEASE && (
+          <Row>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToEdit(
+                  leaseAttributes,
+                  LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                )}
+                errorComponent={
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                    )}
+                  >
+                    <>
+                      <FormTextTitle
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(
+                          LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                        )}
+                      >
+                        {LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}
+                      </FormTextTitle>
+                      <FormText>{amountPerAreaText}</FormText>
+                    </>
+                  </Authorization>
+                }
+              >
+                <>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                    )}
+                  >
+                    <FormTextTitle
+                      required={isFieldRequired(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                      )}
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(
+                        LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                      )}
+                    >
+                      {LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}
+                    </FormTextTitle>
+                  </Authorization>
+                  <Row>
+                    <Column small={6}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          leaseAttributes,
+                          LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                        )}
+                      >
+                        <FormFieldLegacy
+                          onChange={onChangeAmountPerArea}
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={
+                            savedBasisOfRent && !!savedBasisOfRent.locked_at
+                              ? {
+                                  ...getFieldAttributes(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                                  ),
+                                  required: false,
+                                }
+                              : getFieldAttributes(
+                                  leaseAttributes,
+                                  LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                                )
+                          }
+                          disabled={isLocked}
+                          name={`${field}.amount_per_area`}
+                          unit="€"
+                          invisibleLabel
+                          overrideValues={{
+                            label: LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA,
+                          }}
+                        />
+                      </Authorization>
+                    </Column>
+                    <Column small={6}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          leaseAttributes,
+                          LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+                        )}
+                      >
+                        <FormFieldLegacy
+                          className="with-slash"
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={
+                            savedBasisOfRent && !!savedBasisOfRent.locked_at
+                              ? {
+                                  ...getFieldAttributes(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+                                  ),
+                                  required: false,
+                                }
+                              : getFieldAttributes(
+                                  leaseAttributes,
+                                  LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+                                )
+                          }
+                          name={`${field}.area_unit`}
+                          disabled
+                          invisibleLabel
+                          overrideValues={{
+                            label: LeaseBasisOfRentsFieldTitles.AREA_UNIT,
+                            options: areaUnitOptions,
+                          }}
+                        />
+                      </Authorization>
+                    </Column>
+                  </Row>
+                </>
+              </Authorization>
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              {IndexFormField()}
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              {UnitPriceFormField(true)}
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              {ProfitMarginPercentageFormField()}
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              {BaseYearRentFormField()}
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              {InitialYearRentFormField()}
+            </Column>
+          </Row>
+        )}
+
+        {calculatorType === CalculatorTypes.LEASE2022 && (
+          <Row>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                )}
+              >
+                <FormTextTitle
+                  required={isFieldRequired(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.UNIT_PRICE,
+                  )}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(
+                    LeaseBasisOfRentsFieldPaths.UNIT_PRICE,
+                  )}
+                >
+                  {LeaseBasisOfRentsFieldTitles.UNIT_PRICE}
+                </FormTextTitle>
+              </Authorization>
+              <Row>
+                <Column small={6}>{UnitPriceFormField(false)}</Column>
+                <Column small={6}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+                    )}
+                  >
+                    <FormFieldLegacy
+                      className="with-slash"
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={
+                        savedBasisOfRent && !!savedBasisOfRent.locked_at
+                          ? {
+                              ...getFieldAttributes(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+                              ),
+                              required: false,
+                            }
+                          : getFieldAttributes(
+                              leaseAttributes,
+                              LeaseBasisOfRentsFieldPaths.AREA_UNIT,
+                            )
+                      }
+                      name={`${field}.area_unit`}
+                      disabled
+                      invisibleLabel
+                      overrideValues={{
+                        label: LeaseBasisOfRentsFieldTitles.AREA_UNIT,
+                        options: areaUnitOptions,
+                      }}
+                    />
+                  </Authorization>
+                </Column>
+              </Row>
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              {ProfitMarginPercentageFormField()}
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              {InitialYearRentFormField()}
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              {IndexFormField()}
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              {BaseYearRentFormField()}
+            </Column>
+          </Row>
+        )}
+
+        {(subventionType === SubventionTypes.FORM_OF_MANAGEMENT ||
+          subventionType === SubventionTypes.RE_LEASE) &&
+          showSubventions &&
+          (calculatorType === CalculatorTypes.LEASE ||
+            calculatorType === CalculatorTypes.LEASE2022) && (
+            <Row>
               <Column small={6} medium={4} large={2}>
                 <Authorization
                   allow={isFieldAllowedToRead(
                     leaseAttributes,
-                    LeaseBasisOfRentsFieldPaths.INTENDED_USE,
+                    LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
                   )}
                 >
                   <FormFieldLegacy
@@ -1384,1049 +2270,59 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                         ? {
                             ...getFieldAttributes(
                               leaseAttributes,
-                              LeaseBasisOfRentsFieldPaths.INTENDED_USE,
+                              LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
                             ),
                             required: false,
                           }
                         : getFieldAttributes(
                             leaseAttributes,
-                            LeaseBasisOfRentsFieldPaths.INTENDED_USE,
+                            LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
                           )
                     }
-                    disabled={isLocked}
-                    name={`${field}.intended_use`}
+                    disabled={
+                      (savedBasisOfRent && !!savedBasisOfRent.locked_at) ||
+                      showSubventions
+                    }
+                    name={`${field}.subvention_discount_percentage`}
+                    unit="%"
                     overrideValues={{
-                      label: LeaseBasisOfRentsFieldTitles.INTENDED_USE,
+                      label: "Subventioprosentti",
                     }}
                     enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(
-                      LeaseBasisOfRentsFieldPaths.INTENDED_USE,
-                    )}
+                    tooltipStyle={{
+                      right: 17,
+                    }}
                   />
                 </Authorization>
               </Column>
-            )}
-            {(calculatorType === CalculatorTypes.LEASE ||
-              calculatorType === CalculatorTypes.LEASE2022) && (
-              <Column small={6} medium={4} large={2}>
-                <Authorization
-                  allow={
-                    isFieldAllowedToEdit(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.AREA,
-                    ) ||
-                    isFieldAllowedToEdit(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.AREA_UNIT,
-                    )
-                  }
-                  errorComponent={
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseBasisOfRentsFieldPaths.AREA,
-                      )}
-                    >
-                      <>
-                        <FormTextTitle
-                          enableUiDataEdit
-                          uiDataKey={getUiDataLeaseKey(
-                            LeaseBasisOfRentsFieldPaths.AREA,
-                          )}
-                        >
-                          {LeaseBasisOfRentsFieldTitles.AREA}
-                        </FormTextTitle>
-                        <FormText>{areaText}</FormText>
-                      </>
-                    </Authorization>
-                  }
-                >
-                  <>
-                    <FormTextTitle
-                      required={isFieldRequired(
-                        leaseAttributes,
-                        LeaseBasisOfRentsFieldPaths.AREA,
-                      )}
-                      enableUiDataEdit
-                      uiDataKey={getUiDataLeaseKey(
-                        LeaseBasisOfRentsFieldPaths.AREA,
-                      )}
-                    >
-                      {LeaseBasisOfRentsFieldTitles.AREA}
-                    </FormTextTitle>
-                    <Row>
-                      <Column small={6}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            leaseAttributes,
-                            LeaseBasisOfRentsFieldPaths.AREA,
-                          )}
-                        >
-                          <FormFieldLegacy
-                            disableTouched={isSaveClicked}
-                            fieldAttributes={
-                              savedBasisOfRent && !!savedBasisOfRent.locked_at
-                                ? {
-                                    ...getFieldAttributes(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AREA,
-                                    ),
-                                    required: false,
-                                  }
-                                : getFieldAttributes(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.AREA,
-                                  )
-                            }
-                            disabled={isLocked}
-                            name={`${field}.area`}
-                            invisibleLabel
-                            overrideValues={{
-                              label: LeaseBasisOfRentsFieldTitles.AREA,
-                            }}
-                          />
-                        </Authorization>
-                      </Column>
-                      <Column small={6}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            leaseAttributes,
-                            LeaseBasisOfRentsFieldPaths.AREA_UNIT,
-                          )}
-                        >
-                          <FormFieldLegacy
-                            disableTouched={isSaveClicked}
-                            fieldAttributes={
-                              savedBasisOfRent && !!savedBasisOfRent.locked_at
-                                ? {
-                                    ...getFieldAttributes(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AREA_UNIT,
-                                    ),
-                                    required: false,
-                                  }
-                                : getFieldAttributes(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.AREA_UNIT,
-                                  )
-                            }
-                            disabled={isLocked}
-                            name={`${field}.area_unit`}
-                            invisibleLabel
-                            overrideValues={{
-                              label: LeaseBasisOfRentsFieldTitles.AREA_UNIT,
-                              options: areaUnitOptions,
-                            }}
-                          />
-                        </Authorization>
-                      </Column>
-                    </Row>
-                  </>
-                </Authorization>
-              </Column>
-            )}
-            {!!calculatorType &&
-              calculatorType !== CalculatorTypes.LEASE &&
-              calculatorType !== CalculatorTypes.LEASE2022 && (
-                <Column>
-                  <Row>
-                    <Authorization
-                      allow={
-                        isFieldAllowedToEdit(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.AREA,
-                        ) ||
-                        isFieldAllowedToEdit(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.AREA_UNIT,
-                        )
-                      }
-                      errorComponent={
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            leaseAttributes,
-                            LeaseBasisOfRentsFieldPaths.AREA,
-                          )}
-                        >
-                          <>
-                            <FormTextTitle
-                              enableUiDataEdit
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseBasisOfRentsFieldPaths.AREA,
-                              )}
-                            >
-                              {LeaseBasisOfRentsFieldTitles.AREA}
-                            </FormTextTitle>
-                            <FormText>{areaText}</FormText>
-                          </>
-                        </Authorization>
-                      }
-                    >
-                      <>
-                        {calculatorType === CalculatorTypes.TEMPORARY && (
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization
-                              allow={isFieldAllowedToRead(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.AREA,
-                              )}
-                            >
-                              <FormFieldLegacy
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={getFieldAttributes(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.ZONE,
-                                )}
-                                name={`${field}.zone`}
-                                disabled={isLocked}
-                                overrideValues={{
-                                  label: LeaseBasisOfRentsFieldTitles.ZONE,
-                                }}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(
-                                  LeaseBasisOfRentsFieldPaths.ZONE,
-                                )}
-                              />
-                            </Authorization>
-                          </Column>
-                        )}
-                        {(calculatorType === CalculatorTypes.ADDITIONAL_YARD ||
-                          calculatorType === CalculatorTypes.FIELD) && (
-                          <Column small={4} medium={2} large={1}>
-                            <FormTextTitle
-                              required={isFieldRequired(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.AREA,
-                              )}
-                              enableUiDataEdit
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseBasisOfRentsFieldPaths.AREA,
-                              )}
-                            >
-                              {LeaseBasisOfRentsFieldTitles.PRICE}
-                            </FormTextTitle>
-                            <Authorization
-                              allow={isFieldAllowedToRead(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.AREA,
-                              )}
-                            >
-                              <FormFieldLegacy
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={
-                                  savedBasisOfRent &&
-                                  !!savedBasisOfRent.locked_at
-                                    ? {
-                                        ...getFieldAttributes(
-                                          leaseAttributes,
-                                          LeaseBasisOfRentsFieldPaths.AREA,
-                                        ),
-                                        required: false,
-                                      }
-                                    : getFieldAttributes(
-                                        leaseAttributes,
-                                        LeaseBasisOfRentsFieldPaths.AREA,
-                                      )
-                                }
-                                name={`${field}.amount_per_area`}
-                                disabled={isLocked}
-                                invisibleLabel
-                                unit="€"
-                                overrideValues={{
-                                  label: LeaseBasisOfRentsFieldTitles.PRICE,
-                                }}
-                              />
-                            </Authorization>
-                          </Column>
-                        )}
-                        {calculatorType === CalculatorTypes.ADDITIONAL_YARD && (
-                          <Column small={4} medium={2} large={1}>
-                            <FormTextTitle>{"Kerroin"}</FormTextTitle>
-                            <FormText>{"* 1,5"}</FormText>
-                          </Column>
-                        )}
-                        {calculatorType === CalculatorTypes.TEMPORARY && (
-                          <Column small={4} medium={2} large={1}>
-                            <Authorization
-                              allow={
-                                isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.AREA,
-                                ) &&
-                                isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                )
-                              }
-                            >
-                              <>
-                                <FormTextTitle>{"Hinta"}</FormTextTitle>
-                                <FormText>
-                                  {!isEmptyValue(zonePrice)
-                                    ? `${formatNumber(zonePrice)} €`
-                                    : "-"}
-                                </FormText>
-                              </>
-                            </Authorization>
-                          </Column>
-                        )}
-                        {calculatorType === CalculatorTypes.MAST && (
-                          <Column large={6} medium={9} small={12}>
-                            <Row>
-                              <Column small={6} medium={4} large={2}>
-                                <Authorization
-                                  allow={
-                                    isFieldAllowedToRead(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AREA,
-                                    ) &&
-                                    isFieldAllowedToRead(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                    )
-                                  }
-                                >
-                                  <>
-                                    <FormTextTitle>{"Laskuri"}</FormTextTitle>
-                                    <FormText>{`Alue`}</FormText>
-                                  </>
-                                </Authorization>
-                              </Column>
-                              <Column small={6} medium={4} large={2}>
-                                <Authorization
-                                  allow={isFieldAllowedToRead(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                  )}
-                                >
-                                  {
-                                    <FormFieldLegacy
-                                      disableTouched={isSaveClicked}
-                                      fieldAttributes={getFieldAttributes(
-                                        leaseAttributes,
-                                        LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                      )}
-                                      name={`${field}.amount_per_area`}
-                                      disabled={isLocked}
-                                      unit="€"
-                                      overrideValues={{
-                                        label: "Hinta",
-                                      }}
-                                    />
-                                  }
-                                </Authorization>
-                              </Column>
-                              <Column small={6} medium={4} large={2}>
-                                <Authorization
-                                  allow={
-                                    isFieldAllowedToRead(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AREA,
-                                    ) &&
-                                    isFieldAllowedToRead(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                    )
-                                  }
-                                >
-                                  <>
-                                    <FormTextTitle>{"Kerroin"}</FormTextTitle>
-                                    <FormText>{`*1,5`}</FormText>
-                                  </>
-                                </Authorization>
-                              </Column>
-                              <Column small={6} medium={4} large={2}>
-                                <Authorization
-                                  allow={isFieldAllowedToRead(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.AREA,
-                                  )}
-                                >
-                                  <FormFieldLegacy
-                                    disableTouched={isSaveClicked}
-                                    fieldAttributes={getFieldAttributes(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AREA,
-                                    )}
-                                    name={`${field}.area`}
-                                    disabled={isLocked}
-                                    overrideValues={{
-                                      label: "Ala/korkeus",
-                                    }}
-                                  />
-                                </Authorization>
-                              </Column>
-                              <Column small={6} medium={4} large={2}>
-                                <Authorization
-                                  allow={
-                                    isFieldAllowedToRead(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AREA,
-                                    ) &&
-                                    isFieldAllowedToRead(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                    )
-                                  }
-                                >
-                                  <>
-                                    <FormTextTitle>{"Yksikkö"}</FormTextTitle>
-                                    <FormText>{`m${String.fromCharCode(178)}`}</FormText>
-                                  </>
-                                </Authorization>
-                              </Column>
-                              <Column small={6} medium={4} large={2}>
-                                <Authorization
-                                  allow={
-                                    isFieldAllowedToRead(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AREA,
-                                    ) &&
-                                    isFieldAllowedToRead(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                    )
-                                  }
-                                >
-                                  <>
-                                    <FormTextTitle>
-                                      {LeaseBasisOfRentsFieldTitles.RENT}
-                                    </FormTextTitle>
-                                    <FormText>
-                                      {!isEmptyValue(mastAreaRent)
-                                        ? `${formatNumber(mastAreaRent)} €`
-                                        : "-"}
-                                    </FormText>
-                                  </>
-                                </Authorization>
-                              </Column>
-                            </Row>
-                          </Column>
-                        )}
-                        {calculatorType === CalculatorTypes.MAST && (
-                          <Column large={6} medium={9} small={12}></Column>
-                        )}
-                        {calculatorType === CalculatorTypes.MAST && (
-                          <AppConsumer>
-                            {() => {
-                              return (
-                                <Column large={6} medium={9} small={12}>
-                                  <FieldArray
-                                    component={renderMastChildren}
-                                    leaseAttributes={leaseAttributes}
-                                    name={`${field}.children`}
-                                    formName={formName}
-                                    parentField={field}
-                                    fieldsDisabled={isLocked}
-                                  />
-                                </Column>
-                              );
-                            }}
-                          </AppConsumer>
-                        )}
-                        {calculatorType !== CalculatorTypes.MAST && (
-                          <Column small={6} medium={4} large={2}>
-                            <FormTextTitle
-                              required={isFieldRequired(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.AREA,
-                              )}
-                              enableUiDataEdit
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseBasisOfRentsFieldPaths.AREA,
-                              )}
-                            >
-                              {LeaseBasisOfRentsFieldTitles.AREA}
-                            </FormTextTitle>
-                            <Authorization
-                              allow={isFieldAllowedToRead(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.AREA,
-                              )}
-                            >
-                              <FormFieldLegacy
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={
-                                  savedBasisOfRent &&
-                                  !!savedBasisOfRent.locked_at
-                                    ? {
-                                        ...getFieldAttributes(
-                                          leaseAttributes,
-                                          LeaseBasisOfRentsFieldPaths.AREA,
-                                        ),
-                                        required: false,
-                                      }
-                                    : getFieldAttributes(
-                                        leaseAttributes,
-                                        LeaseBasisOfRentsFieldPaths.AREA,
-                                      )
-                                }
-                                disabled={isLocked}
-                                name={`${field}.area`}
-                                invisibleLabel
-                                unit={
-                                  calculatorType === CalculatorTypes.FIELD
-                                    ? "ha"
-                                    : `m${String.fromCharCode(178)}`
-                                }
-                                overrideValues={{
-                                  label: LeaseBasisOfRentsFieldTitles.AREA,
-                                }}
-                              />
-                            </Authorization>
-                          </Column>
-                        )}
-                        {calculatorType === CalculatorTypes.ADDITIONAL_YARD && (
-                          <Column
-                            small={3}
-                            medium={2}
-                            large={1}
-                            style={{
-                              marginTop: 15,
-                            }}
-                          >
-                            <Authorization
-                              allow={isFieldAllowedToRead(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.AREA,
-                              )}
-                            >
-                              <FormText>{"*5%"}</FormText>
-                            </Authorization>
-                          </Column>
-                        )}
-                        {calculatorType !== CalculatorTypes.MAST && (
-                          <Column small={3} medium={2} large={1}>
-                            <Authorization
-                              allow={
-                                isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.AREA,
-                                ) &&
-                                isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                )
-                              }
-                            >
-                              <>
-                                {calculatorType !==
-                                  CalculatorTypes.TEMPORARY && (
-                                  <FormTextTitle
-                                    enableUiDataEdit
-                                    uiDataKey={getUiDataLeaseKey(
-                                      LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
-                                    )}
-                                  >
-                                    {LeaseBasisOfRentsFieldTitles.RENT_PER_YEAR}
-                                  </FormTextTitle>
-                                )}
-                                {calculatorType ===
-                                  CalculatorTypes.TEMPORARY && (
-                                  <FormTextTitle
-                                    enableUiDataEdit
-                                    uiDataKey={getUiDataLeaseKey(
-                                      LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
-                                    )}
-                                  >
-                                    {
-                                      LeaseBasisOfRentsFieldTitles.RENT_PER_MONTH
-                                    }
-                                  </FormTextTitle>
-                                )}
-                                {calculatorType ===
-                                  CalculatorTypes.TEMPORARY && (
-                                  <FormText>
-                                    {!isEmptyValue(temporaryRent)
-                                      ? `${formatNumber(temporaryRent)} €`
-                                      : "-"}
-                                  </FormText>
-                                )}
-                                {calculatorType ===
-                                  CalculatorTypes.ADDITIONAL_YARD && (
-                                  <FormText>
-                                    {!isEmptyValue(rentExtra)
-                                      ? `${formatNumber(rentExtra)} €`
-                                      : "-"}
-                                  </FormText>
-                                )}
-                                {calculatorType === CalculatorTypes.FIELD && (
-                                  <FormText>
-                                    {!isEmptyValue(fieldsRent)
-                                      ? `${formatNumber(fieldsRent)} €`
-                                      : "-"}
-                                  </FormText>
-                                )}
-                              </>
-                            </Authorization>
-                          </Column>
-                        )}
-                        {calculatorType === CalculatorTypes.TEMPORARY && (
-                          <Column small={3} medium={2} large={1}>
-                            <Authorization
-                              allow={
-                                isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.AREA,
-                                ) &&
-                                isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                )
-                              }
-                            >
-                              <>
-                                {calculatorType ===
-                                  CalculatorTypes.TEMPORARY && (
-                                  <FormTextTitle
-                                    enableUiDataEdit
-                                    uiDataKey={getUiDataLeaseKey(
-                                      LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
-                                    )}
-                                  >
-                                    {LeaseBasisOfRentsFieldTitles.RENT_PER_YEAR}
-                                  </FormTextTitle>
-                                )}
-                                <FormText>
-                                  {!isEmptyValue(temporaryRent)
-                                    ? `${formatNumber(temporaryRent * 12)} €`
-                                    : "-"}
-                                </FormText>
-                              </>
-                            </Authorization>
-                          </Column>
-                        )}
-                        {calculatorType !== CalculatorTypes.MAST && (
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization
-                              allow={isFieldAllowedToRead(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.INDEX,
-                              )}
-                            >
-                              <FormFieldLegacy
-                                disableTouched={isSaveClicked}
-                                fieldAttributes={
-                                  savedBasisOfRent &&
-                                  !!savedBasisOfRent.locked_at
-                                    ? {
-                                        ...getFieldAttributes(
-                                          leaseAttributes,
-                                          LeaseBasisOfRentsFieldPaths.INDEX,
-                                        ),
-                                        required: false,
-                                      }
-                                    : getFieldAttributes(
-                                        leaseAttributes,
-                                        LeaseBasisOfRentsFieldPaths.INDEX,
-                                      )
-                                }
-                                disabled={isLocked}
-                                name={`${field}.index`}
-                                overrideValues={{
-                                  label: LeaseBasisOfRentsFieldTitles.INDEX,
-                                  options: indexOptions,
-                                }}
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(
-                                  LeaseBasisOfRentsFieldPaths.INDEX,
-                                )}
-                              />
-                            </Authorization>
-                          </Column>
-                        )}
-                        {calculatorType !== CalculatorTypes.MAST && (
-                          <Column small={6} medium={4} large={2}>
-                            <Authorization
-                              allow={
-                                isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.AREA,
-                                ) &&
-                                isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                )
-                              }
-                            >
-                              <>
-                                <FormTextTitle
-                                  enableUiDataEdit
-                                  uiDataKey={getUiDataLeaseKey(
-                                    LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
-                                  )}
-                                >
-                                  {LeaseBasisOfRentsFieldTitles.BASE_YEAR_RENT}
-                                </FormTextTitle>
-                                {calculatorType ===
-                                  CalculatorTypes.TEMPORARY && (
-                                  <FormText>
-                                    {!isEmptyValue(temporaryRentIndexed)
-                                      ? `${formatNumber(temporaryRentIndexed)} €/v`
-                                      : "-"}
-                                  </FormText>
-                                )}
-                                {calculatorType ===
-                                  CalculatorTypes.ADDITIONAL_YARD && (
-                                  <FormText>
-                                    {!isEmptyValue(rentExtraIndexed)
-                                      ? `${formatNumber(rentExtraIndexed)} €/v`
-                                      : "-"}
-                                  </FormText>
-                                )}
-                                {calculatorType === CalculatorTypes.FIELD && (
-                                  <FormText>
-                                    {!isEmptyValue(basicAnnualFieldRentIndexed)
-                                      ? `${formatNumber(basicAnnualFieldRentIndexed)} €/v`
-                                      : "-"}
-                                  </FormText>
-                                )}
-                              </>
-                            </Authorization>
-                          </Column>
-                        )}
-                      </>
-                    </Authorization>
-                  </Row>
-                </Column>
-              )}
-          </Row>
-
-          {calculatorType === CalculatorTypes.LEASE && (
-            <Row>
-              <Column small={6} medium={4} large={2}>
-                <Authorization
-                  allow={isFieldAllowedToEdit(
-                    leaseAttributes,
-                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                  )}
-                  errorComponent={
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                      )}
-                    >
-                      <>
-                        <FormTextTitle
-                          enableUiDataEdit
-                          uiDataKey={getUiDataLeaseKey(
-                            LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                          )}
-                        >
-                          {LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}
-                        </FormTextTitle>
-                        <FormText>{amountPerAreaText}</FormText>
-                      </>
-                    </Authorization>
-                  }
-                >
-                  <>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                      )}
-                    >
-                      <FormTextTitle
-                        required={isFieldRequired(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                        )}
-                        enableUiDataEdit
-                        uiDataKey={getUiDataLeaseKey(
-                          LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                        )}
-                      >
-                        {LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}
-                      </FormTextTitle>
-                    </Authorization>
-                    <Row>
-                      <Column small={6}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            leaseAttributes,
-                            LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                          )}
-                        >
-                          <FormFieldLegacy
-                            onChange={this.onChangeAmountPerArea}
-                            disableTouched={isSaveClicked}
-                            fieldAttributes={
-                              savedBasisOfRent && !!savedBasisOfRent.locked_at
-                                ? {
-                                    ...getFieldAttributes(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                    ),
-                                    required: false,
-                                  }
-                                : getFieldAttributes(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                                  )
-                            }
-                            disabled={isLocked}
-                            name={`${field}.amount_per_area`}
-                            unit="€"
-                            invisibleLabel
-                            overrideValues={{
-                              label:
-                                LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA,
-                            }}
-                          />
-                        </Authorization>
-                      </Column>
-                      <Column small={6}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            leaseAttributes,
-                            LeaseBasisOfRentsFieldPaths.AREA_UNIT,
-                          )}
-                        >
-                          <FormFieldLegacy
-                            className="with-slash"
-                            disableTouched={isSaveClicked}
-                            fieldAttributes={
-                              savedBasisOfRent && !!savedBasisOfRent.locked_at
-                                ? {
-                                    ...getFieldAttributes(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.AREA_UNIT,
-                                    ),
-                                    required: false,
-                                  }
-                                : getFieldAttributes(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.AREA_UNIT,
-                                  )
-                            }
-                            name={`${field}.area_unit`}
-                            disabled
-                            invisibleLabel
-                            overrideValues={{
-                              label: LeaseBasisOfRentsFieldTitles.AREA_UNIT,
-                              options: areaUnitOptions,
-                            }}
-                          />
-                        </Authorization>
-                      </Column>
-                    </Row>
-                  </>
-                </Authorization>
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                {renderIndexFormField()}
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                {renderUnitPriceFormField(true)}
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                {renderProfitMarginPercentageFormField()}
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                {renderBaseYearRentFormField()}
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                {renderInitialYearRentFormField()}
-              </Column>
-            </Row>
-          )}
-
-          {calculatorType === CalculatorTypes.LEASE2022 && (
-            <Row>
-              <Column small={6} medium={4} large={2}>
+              <Column small={5} medium={4} large={3}>
                 <Authorization
                   allow={isFieldAllowedToRead(
                     leaseAttributes,
-                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                    LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
                   )}
                 >
-                  <FormTextTitle
-                    required={isFieldRequired(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.UNIT_PRICE,
-                    )}
-                    enableUiDataEdit
-                    uiDataKey={getUiDataLeaseKey(
-                      LeaseBasisOfRentsFieldPaths.UNIT_PRICE,
-                    )}
-                  >
-                    {LeaseBasisOfRentsFieldTitles.UNIT_PRICE}
-                  </FormTextTitle>
+                  <>
+                    <FormTextTitle>
+                      {LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL}
+                    </FormTextTitle>
+                    <FormText>
+                      {!isEmptyValue(subventionDiscountedInitial)
+                        ? `${formatNumber(subventionDiscountedInitial)} €/v`
+                        : "-"}
+                    </FormText>
+                  </>
                 </Authorization>
-                <Row>
-                  <Column small={6}>{renderUnitPriceFormField(false)}</Column>
-                  <Column small={6}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseBasisOfRentsFieldPaths.AREA_UNIT,
-                      )}
-                    >
-                      <FormFieldLegacy
-                        className="with-slash"
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={
-                          savedBasisOfRent && !!savedBasisOfRent.locked_at
-                            ? {
-                                ...getFieldAttributes(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.AREA_UNIT,
-                                ),
-                                required: false,
-                              }
-                            : getFieldAttributes(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.AREA_UNIT,
-                              )
-                        }
-                        name={`${field}.area_unit`}
-                        disabled
-                        invisibleLabel
-                        overrideValues={{
-                          label: LeaseBasisOfRentsFieldTitles.AREA_UNIT,
-                          options: areaUnitOptions,
-                        }}
-                      />
-                    </Authorization>
-                  </Column>
-                </Row>
               </Column>
-              <Column small={6} medium={4} large={2}>
-                {renderProfitMarginPercentageFormField()}
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                {renderInitialYearRentFormField()}
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                {renderIndexFormField()}
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                {renderBaseYearRentFormField()}
-              </Column>
+              <Column small={0} medium={3} large={6}></Column>
             </Row>
           )}
 
-          {(subventionType === SubventionTypes.FORM_OF_MANAGEMENT ||
-            subventionType === SubventionTypes.RE_LEASE) &&
-            showSubventions &&
-            (calculatorType === CalculatorTypes.LEASE ||
-              calculatorType === CalculatorTypes.LEASE2022) && (
-              <Row>
-                <Column small={6} medium={4} large={2}>
-                  <Authorization
-                    allow={isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                    )}
-                  >
-                    <FormFieldLegacy
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={
-                        savedBasisOfRent && !!savedBasisOfRent.locked_at
-                          ? {
-                              ...getFieldAttributes(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                              ),
-                              required: false,
-                            }
-                          : getFieldAttributes(
-                              leaseAttributes,
-                              LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                            )
-                      }
-                      disabled={
-                        (savedBasisOfRent && !!savedBasisOfRent.locked_at) ||
-                        showSubventions
-                      }
-                      name={`${field}.subvention_discount_percentage`}
-                      unit="%"
-                      overrideValues={{
-                        label: "Subventioprosentti",
-                      }}
-                      enableUiDataEdit
-                      tooltipStyle={{
-                        right: 17,
-                      }}
-                    />
-                  </Authorization>
-                </Column>
-                <Column small={5} medium={4} large={3}>
-                  <Authorization
-                    allow={isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                    )}
-                  >
-                    <>
-                      <FormTextTitle>
-                        {LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL}
-                      </FormTextTitle>
-                      <FormText>
-                        {!isEmptyValue(subventionDiscountedInitial)
-                          ? `${formatNumber(subventionDiscountedInitial)} €/v`
-                          : "-"}
-                      </FormText>
-                    </>
-                  </Authorization>
-                </Column>
-                <Column small={0} medium={3} large={6}></Column>
-              </Row>
-            )}
-
-          {showSubventions &&
-            (calculatorType === CalculatorTypes.LEASE ||
-              calculatorType === CalculatorTypes.LEASE2022) && (
-              <Row>
-                <Column small={6} medium={4} large={2}>
-                  <Authorization
-                    allow={isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                    )}
-                  >
-                    <FormFieldLegacy
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={
-                        savedBasisOfRent && !!savedBasisOfRent.locked_at
-                          ? {
-                              ...getFieldAttributes(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                              ),
-                              required: false,
-                            }
-                          : getFieldAttributes(
-                              leaseAttributes,
-                              LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                            )
-                      }
-                      disabled={
-                        (savedBasisOfRent && !!savedBasisOfRent.locked_at) ||
-                        showSubventions
-                      }
-                      name={`${field}.temporary_subvention_discount_percentage`}
-                      unit="%"
-                      overrideValues={{
-                        label: "Tilapäisalennuksen prosentti",
-                      }}
-                      enableUiDataEdit
-                      tooltipStyle={{
-                        right: 17,
-                      }}
-                    />
-                  </Authorization>
-                </Column>
-                <Column small={6} medium={8} large={10}></Column>
-              </Row>
-            )}
-
-          {(calculatorType === CalculatorTypes.LEASE ||
+        {showSubventions &&
+          (calculatorType === CalculatorTypes.LEASE ||
             calculatorType === CalculatorTypes.LEASE2022) && (
             <Row>
-              <Column small={6} medium={4} large={2} hidden>
+              <Column small={6} medium={4} large={2}>
                 <Authorization
                   allow={isFieldAllowedToRead(
                     leaseAttributes,
@@ -2435,763 +2331,412 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                 >
                   <FormFieldLegacy
                     disableTouched={isSaveClicked}
-                    fieldAttributes={{
-                      label: "Lopullinen alennusprosentti",
-                      read_only: true,
-                      required: false,
-                      type: "string",
-                    }}
+                    fieldAttributes={
+                      savedBasisOfRent && !!savedBasisOfRent.locked_at
+                        ? {
+                            ...getFieldAttributes(
+                              leaseAttributes,
+                              LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
+                            ),
+                            required: false,
+                          }
+                        : getFieldAttributes(
+                            leaseAttributes,
+                            LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
+                          )
+                    }
                     disabled={
                       (savedBasisOfRent && !!savedBasisOfRent.locked_at) ||
                       showSubventions
                     }
-                    name={`${field}.discount_percentage`}
+                    name={`${field}.temporary_subvention_discount_percentage`}
+                    unit="%"
                     overrideValues={{
-                      label: LeaseBasisOfRentsFieldTitles.DISCOUNT_PERCENTAGE,
+                      label: "Tilapäisalennuksen prosentti",
                     }}
                     enableUiDataEdit
                     tooltipStyle={{
                       right: 17,
                     }}
-                    uiDataKey={getUiDataLeaseKey(
-                      LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                    )}
                   />
                 </Authorization>
               </Column>
-              <Column small={6} medium={4} large={3}>
-                <Authorization
-                  allow={
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.AREA,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.INDEX,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                    )
-                  }
-                >
-                  <>
-                    <FormTextTitle
-                      enableUiDataEdit
-                      uiDataKey={getUiDataLeaseKey(
-                        LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT,
-                      )}
-                    >
-                      {
-                        LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT
-                      }
-                    </FormTextTitle>
-                    <FormText>
-                      {!isEmptyValue(discountedInitialYearRent)
-                        ? `${formatNumber(discountedInitialYearRent)} €/v`
-                        : "-"}
-                    </FormText>
-                  </>
-                </Authorization>
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <Authorization
-                  allow={
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.AREA,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.INDEX,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                    )
-                  }
-                >
-                  <>
-                    <FormTextTitle
-                      enableUiDataEdit
-                      uiDataKey={getUiDataLeaseKey(
-                        LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH,
-                      )}
-                    >
-                      {
-                        LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH
-                      }
-                    </FormTextTitle>
-                    <FormText>
-                      {!isEmptyValue(rentPerMonth)
-                        ? `${formatNumber(rentPerMonth)} €`
-                        : "-"}
-                    </FormText>
-                  </>
-                </Authorization>
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <Authorization
-                  allow={
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.AREA,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.INDEX,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
-                    ) &&
-                    isFieldAllowedToRead(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                    )
-                  }
-                >
-                  <>
-                    <FormTextTitle
-                      enableUiDataEdit
-                      uiDataKey={getUiDataLeaseKey(
-                        LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS,
-                      )}
-                    >
-                      {
-                        LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS
-                      }
-                    </FormTextTitle>
-                    <FormText>
-                      {!isEmptyValue(rentPer2Months)
-                        ? `${formatNumber(rentPer2Months)} €`
-                        : "-"}
-                    </FormText>
-                  </>
-                </Authorization>
-              </Column>
-              {showTotal && (
-                <Fragment>
-                  <Column small={6} medium={4} large={2}>
-                    <Authorization
-                      allow={
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.AREA,
-                        ) &&
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                        ) &&
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.INDEX,
-                        ) &&
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
-                        ) &&
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                        )
-                      }
-                    >
-                      <>
-                        <FormTextTitle
-                          enableUiDataEdit
-                          uiDataKey={getUiDataLeaseKey(
-                            LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH_TOTAL,
-                          )}
-                        >
-                          {
-                            LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH_TOTAL
-                          }
-                        </FormTextTitle>
-                        <FormText>
-                          {!isEmptyValue(rentPerMonthTotal)
-                            ? `${formatNumber(rentPerMonthTotal)} €`
-                            : "-"}
-                        </FormText>
-                      </>
-                    </Authorization>
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <Authorization
-                      allow={
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.AREA,
-                        ) &&
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                        ) &&
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.INDEX,
-                        ) &&
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
-                        ) &&
-                        isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
-                        )
-                      }
-                    >
-                      <>
-                        <FormTextTitle
-                          enableUiDataEdit
-                          uiDataKey={getUiDataLeaseKey(
-                            LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS_TOTAL,
-                          )}
-                        >
-                          {
-                            LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS_TOTAL
-                          }
-                        </FormTextTitle>
-                        <FormText>
-                          {!isEmptyValue(rentPer2MonthsTotal)
-                            ? `${formatNumber(rentPer2MonthsTotal)} €`
-                            : "-"}
-                        </FormText>
-                      </>
-                    </Authorization>
-                  </Column>
-                </Fragment>
-              )}
+              <Column small={6} medium={8} large={10}></Column>
             </Row>
           )}
 
-          {calculatorType === CalculatorTypes.MAST && (
-            <Row>
-              <Authorization
-                allow={
-                  isFieldAllowedToRead(
-                    leaseAttributes,
-                    LeaseBasisOfRentsFieldPaths.AREA,
-                  ) &&
-                  isFieldAllowedToRead(
-                    leaseAttributes,
-                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                  )
-                }
-              >
-                <>
-                  <Column large={2} medium={4} small={6}></Column>
-                  <Column>
-                    <Row>
-                      <Column small={6}>
-                        <Divider />
-                      </Column>
-                    </Row>
-                  </Column>
-                </>
-              </Authorization>
-            </Row>
-          )}
-
-          {calculatorType === CalculatorTypes.MAST && (
-            <Row>
-              <Authorization
-                allow={
-                  isFieldAllowedToRead(
-                    leaseAttributes,
-                    LeaseBasisOfRentsFieldPaths.AREA,
-                  ) &&
-                  isFieldAllowedToRead(
-                    leaseAttributes,
-                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                  )
-                }
-              >
-                <>
-                  <Column large={2} medium={4} small={6}></Column>
-                  <Column>
-                    <Row>
-                      <Column small={6}>
-                        <Row>
-                          <Column small={6} medium={4} large={2}>
-                            <FormText className="semibold">
-                              {"Yhteensä"}
-                            </FormText>
-                          </Column>
-                          <Column small={6}></Column>
-                          <Column small={6} medium={4} large={2}>
-                            <FormText>{"*5%"}</FormText>
-                          </Column>
-                          <Column small={6} medium={4} large={2}>
-                            <FormText className="semibold">{`${formatNumber(mastTotal)} €`}</FormText>
-                          </Column>
-                        </Row>
-                      </Column>
-                      <Column
-                        small={6}
-                        medium={4}
-                        large={2}
-                        style={{
-                          marginTop: -15,
-                        }}
-                      >
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            leaseAttributes,
-                            LeaseBasisOfRentsFieldPaths.INDEX,
-                          )}
-                        >
-                          <FormFieldLegacy
-                            disableTouched={isSaveClicked}
-                            fieldAttributes={
-                              savedBasisOfRent && !!savedBasisOfRent.locked_at
-                                ? {
-                                    ...getFieldAttributes(
-                                      leaseAttributes,
-                                      LeaseBasisOfRentsFieldPaths.INDEX,
-                                    ),
-                                    required: false,
-                                  }
-                                : getFieldAttributes(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.INDEX,
-                                  )
-                            }
-                            disabled={isLocked}
-                            name={`${field}.index`}
-                            overrideValues={{
-                              label: LeaseBasisOfRentsFieldTitles.INDEX,
-                              options: indexOptions,
-                            }}
-                            enableUiDataEdit
-                            uiDataKey={getUiDataLeaseKey(
-                              LeaseBasisOfRentsFieldPaths.INDEX,
-                            )}
-                          />
-                        </Authorization>
-                      </Column>
-                      <Column
-                        small={6}
-                        medium={4}
-                        large={2}
-                        style={{
-                          marginTop: -15,
-                        }}
-                      >
-                        <Authorization
-                          allow={
-                            isFieldAllowedToRead(
-                              leaseAttributes,
-                              LeaseBasisOfRentsFieldPaths.AREA,
-                            ) &&
-                            isFieldAllowedToRead(
-                              leaseAttributes,
-                              LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                            )
-                          }
-                        >
-                          <>
-                            <FormTextTitle
-                              enableUiDataEdit
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
-                              )}
-                            >
-                              {LeaseBasisOfRentsFieldTitles.BASE_YEAR_RENT}
-                            </FormTextTitle>
-                            <FormText>
-                              {!isEmptyValue(mastTotalIndexed)
-                                ? `${formatNumber(mastTotalIndexed)} €/v`
-                                : "-"}
-                            </FormText>
-                          </>
-                        </Authorization>
-                      </Column>
-                    </Row>
-                  </Column>
-                </>
-              </Authorization>
-            </Row>
-          )}
-
+        {(calculatorType === CalculatorTypes.LEASE ||
+          calculatorType === CalculatorTypes.LEASE2022) && (
           <Row>
-            {showPlansInspectedAt &&
-              (calculatorType === CalculatorTypes.LEASE ||
-                calculatorType === CalculatorTypes.LEASE2022) && (
-                <Column small={6} medium={4} large={2}>
-                  <Authorization
-                    allow={isFieldAllowedToEdit(
-                      leaseAttributes,
-                      LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT,
-                    )}
-                    errorComponent={
-                      <Authorization
-                        allow={isFieldAllowedToRead(
-                          leaseAttributes,
-                          LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT,
-                        )}
-                      >
-                        <>
-                          <FormTextTitle>
-                            {LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}
-                          </FormTextTitle>
-                          <FormText>{plansInspectedAtText}</FormText>
-                        </>
-                      </Authorization>
-                    }
-                  >
-                    <FormFieldLegacy
-                      className="with-top-padding"
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={
-                        savedBasisOfRent && !!savedBasisOfRent.locked_at
-                          ? {
-                              ...getFieldAttributes(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT,
-                              ),
-                              required: false,
-                              type: "checkbox-date-time",
-                            }
-                          : {
-                              ...getFieldAttributes(
-                                leaseAttributes,
-                                LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT,
-                              ),
-                              type: "checkbox-date-time",
-                            }
-                      }
-                      disabled={isLocked}
-                      invisibleLabel
-                      name={`${field}.plans_inspected_at`}
-                      overrideValues={{
-                        label: LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT,
-                      }}
-                    />
-                  </Authorization>
-                </Column>
-              )}
-
-            {showLockedAt && (
-              <Column small={6} medium={4} large={2}>
-                <Authorization
-                  allow={isFieldAllowedToEdit(
-                    leaseAttributes,
-                    LeaseBasisOfRentsFieldPaths.LOCKED_AT,
-                  )}
-                  errorComponent={
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        leaseAttributes,
-                        LeaseBasisOfRentsFieldPaths.LOCKED_AT,
-                      )}
-                    >
-                      <>
-                        <FormTextTitle>
-                          {LeaseBasisOfRentsFieldTitles.LOCKED_AT}
-                        </FormTextTitle>
-                        <FormText>{lockedAtText}</FormText>
-                      </>
-                    </Authorization>
-                  }
-                >
-                  <FormFieldLegacy
-                    className="with-top-padding"
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={{
-                      ...getFieldAttributes(
-                        leaseAttributes,
-                        LeaseBasisOfRentsFieldPaths.LOCKED_AT,
-                      ),
-                      type: "checkbox-date-time",
-                    }}
-                    invisibleLabel
-                    name={`${field}.locked_at`}
-                    overrideValues={{
-                      label: LeaseBasisOfRentsFieldTitles.LOCKED_AT,
-                    }}
-                  />
-                </Authorization>
-              </Column>
-            )}
-          </Row>
-
-          {(!savedBasisOfRent || !savedBasisOfRent.locked_at) &&
-            !showSubventions &&
-            (calculatorType === CalculatorTypes.LEASE ||
-              calculatorType === CalculatorTypes.LEASE2022) && (
+            <Column small={6} medium={4} large={2} hidden>
               <Authorization
                 allow={isFieldAllowedToRead(
                   leaseAttributes,
-                  LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
+                  LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
                 )}
               >
-                <Row>
-                  <Column>
-                    <AddButtonSecondary
-                      label="Lisää subventio"
-                      onClick={this.handleAddSubventions}
-                    />
-                  </Column>
-                </Row>
+                <FormFieldLegacy
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={{
+                    label: "Lopullinen alennusprosentti",
+                    read_only: true,
+                    required: false,
+                    type: "string",
+                  }}
+                  disabled={
+                    (savedBasisOfRent && !!savedBasisOfRent.locked_at) ||
+                    showSubventions
+                  }
+                  name={`${field}.discount_percentage`}
+                  overrideValues={{
+                    label: LeaseBasisOfRentsFieldTitles.DISCOUNT_PERCENTAGE,
+                  }}
+                  enableUiDataEdit
+                  tooltipStyle={{
+                    right: 17,
+                  }}
+                  uiDataKey={getUiDataLeaseKey(
+                    LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
+                  )}
+                />
               </Authorization>
+            </Column>
+            <Column small={6} medium={4} large={3}>
+              <Authorization
+                allow={
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.AREA,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.INDEX,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
+                  )
+                }
+              >
+                <>
+                  <FormTextTitle
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT,
+                    )}
+                  >
+                    {LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT}
+                  </FormTextTitle>
+                  <FormText>
+                    {!isEmptyValue(discountedInitialYearRent)
+                      ? `${formatNumber(discountedInitialYearRent)} €/v`
+                      : "-"}
+                  </FormText>
+                </>
+              </Authorization>
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.AREA,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.INDEX,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
+                  )
+                }
+              >
+                <>
+                  <FormTextTitle
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH,
+                    )}
+                  >
+                    {
+                      LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH
+                    }
+                  </FormTextTitle>
+                  <FormText>
+                    {!isEmptyValue(rentPerMonth)
+                      ? `${formatNumber(rentPerMonth)} €`
+                      : "-"}
+                  </FormText>
+                </>
+              </Authorization>
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.AREA,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.INDEX,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
+                  ) &&
+                  isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
+                  )
+                }
+              >
+                <>
+                  <FormTextTitle
+                    enableUiDataEdit
+                    uiDataKey={getUiDataLeaseKey(
+                      LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS,
+                    )}
+                  >
+                    {
+                      LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS
+                    }
+                  </FormTextTitle>
+                  <FormText>
+                    {!isEmptyValue(rentPer2Months)
+                      ? `${formatNumber(rentPer2Months)} €`
+                      : "-"}
+                  </FormText>
+                </>
+              </Authorization>
+            </Column>
+            {showTotal && (
+              <>
+                <Column small={6} medium={4} large={2}>
+                  <Authorization
+                    allow={
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.AREA,
+                      ) &&
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                      ) &&
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.INDEX,
+                      ) &&
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
+                      ) &&
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
+                      )
+                    }
+                  >
+                    <>
+                      <FormTextTitle
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(
+                          LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH_TOTAL,
+                        )}
+                      >
+                        {
+                          LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH_TOTAL
+                        }
+                      </FormTextTitle>
+                      <FormText>
+                        {!isEmptyValue(rentPerMonthTotal)
+                          ? `${formatNumber(rentPerMonthTotal)} €`
+                          : "-"}
+                      </FormText>
+                    </>
+                  </Authorization>
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Authorization
+                    allow={
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.AREA,
+                      ) &&
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                      ) &&
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.INDEX,
+                      ) &&
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
+                      ) &&
+                      isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
+                      )
+                    }
+                  >
+                    <>
+                      <FormTextTitle
+                        enableUiDataEdit
+                        uiDataKey={getUiDataLeaseKey(
+                          LeaseBasisOfRentsFieldPaths.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS_TOTAL,
+                        )}
+                      >
+                        {
+                          LeaseBasisOfRentsFieldTitles.DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS_TOTAL
+                        }
+                      </FormTextTitle>
+                      <FormText>
+                        {!isEmptyValue(rentPer2MonthsTotal)
+                          ? `${formatNumber(rentPer2MonthsTotal)} €`
+                          : "-"}
+                      </FormText>
+                    </>
+                  </Authorization>
+                </Column>
+              </>
             )}
-          {showSubventions &&
-            (calculatorType === CalculatorTypes.LEASE ||
-              calculatorType === CalculatorTypes.LEASE2022) && (
-              <AppConsumer>
-                {({ dispatch }) => {
-                  const handleRemoveSubventions = () => {
-                    dispatch({
-                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                      confirmationFunction: () => {
-                        this.handleRemoveSubventions();
-                      },
-                      confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText:
-                        ConfirmationModalTexts.DELETE_SUBVENTION.BUTTON,
-                      confirmationModalLabel:
-                        ConfirmationModalTexts.DELETE_SUBVENTION.LABEL,
-                      confirmationModalTitle:
-                        ConfirmationModalTexts.DELETE_SUBVENTION.TITLE,
-                    });
-                  };
+          </Row>
+        )}
 
-                  return (
-                    <WhiteBox>
-                      {(!savedBasisOfRent || !savedBasisOfRent.locked_at) && (
-                        <ActionButtonWrapper>
-                          <RemoveButton
-                            onClick={handleRemoveSubventions}
-                            title="Poista subventiot"
-                          />
-                        </ActionButtonWrapper>
-                      )}
+        {calculatorType === CalculatorTypes.MAST && (
+          <Row>
+            <Authorization
+              allow={
+                isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseBasisOfRentsFieldPaths.AREA,
+                ) &&
+                isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                )
+              }
+            >
+              <>
+                <Column large={2} medium={4} small={6}></Column>
+                <Column>
+                  <Row>
+                    <Column small={6}>
+                      <Divider />
+                    </Column>
+                  </Row>
+                </Column>
+              </>
+            </Authorization>
+          </Row>
+        )}
+
+        {calculatorType === CalculatorTypes.MAST && (
+          <Row>
+            <Authorization
+              allow={
+                isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseBasisOfRentsFieldPaths.AREA,
+                ) &&
+                isFieldAllowedToRead(
+                  leaseAttributes,
+                  LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                )
+              }
+            >
+              <>
+                <Column large={2} medium={4} small={6}></Column>
+                <Column>
+                  <Row>
+                    <Column small={6}>
                       <Row>
                         <Column small={6} medium={4} large={2}>
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              leaseAttributes,
-                              LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
-                            )}
-                          >
-                            <FormFieldLegacy
-                              disableTouched={isSaveClicked}
-                              fieldAttributes={{
-                                ...getFieldAttributes(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
-                                ),
-                                required: false,
-                              }}
-                              name={`${field}.subvention_type`}
-                              disabled={isLocked}
-                              overrideValues={{
-                                label:
-                                  LeaseBasisOfRentsFieldTitles.SUBVENTION_TYPE,
-                              }}
-                              enableUiDataEdit
-                              uiDataKey={getUiDataLeaseKey(
-                                LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
-                              )}
-                            />
-                          </Authorization>
+                          <FormText className="semibold">{"Yhteensä"}</FormText>
+                        </Column>
+                        <Column small={6}></Column>
+                        <Column small={6} medium={4} large={2}>
+                          <FormText>{"*5%"}</FormText>
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <FormText className="semibold">{`${formatNumber(mastTotal)} €`}</FormText>
                         </Column>
                       </Row>
-                      {subventionType === SubventionTypes.FORM_OF_MANAGEMENT &&
-                        (calculatorType === CalculatorTypes.LEASE ||
-                          calculatorType === CalculatorTypes.LEASE2022) && (
-                          <Authorization
-                            allow={isFieldAllowedToRead(
-                              leaseAttributes,
-                              BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS,
-                            )}
-                          >
-                            <>
-                              <SubTitle
-                                enableUiDataEdit
-                                uiDataKey={getUiDataLeaseKey(
-                                  BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS,
-                                )}
-                              >
-                                {
-                                  BasisOfRentManagementSubventionsFieldTitles.MANAGEMENT_SUBVENTIONS
-                                }
-                              </SubTitle>
-                              <FieldArray
-                                component={renderManagementSubventions}
-                                disabled={isLocked}
-                                formName={formName}
-                                initialYearRent={initialYearRent}
-                                currentAmountPerArea={currentAmountPerArea}
-                                leaseAttributes={leaseAttributes}
-                                name={`${field}.management_subventions`}
-                                usersPermissions={usersPermissions}
-                              />
-                            </>
-                          </Authorization>
-                        )}
-                      {subventionType === SubventionTypes.RE_LEASE &&
-                        (calculatorType === CalculatorTypes.LEASE ||
-                          calculatorType === CalculatorTypes.LEASE2022) && (
-                          <Row>
-                            <Column small={4} large={2}>
-                              <Authorization
-                                allow={isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                                )}
-                              >
-                                <FormFieldLegacy
-                                  disableTouched={isSaveClicked}
-                                  fieldAttributes={getFieldAttributes(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                                  )}
-                                  name={`${field}.subvention_base_percent`}
-                                  disabled={isLocked}
-                                  overrideValues={{
-                                    label:
-                                      LeaseBasisOfRentsFieldTitles.SUBVENTION_BASE_PERCENT,
-                                  }}
-                                  unit="%"
-                                  enableUiDataEdit
-                                  uiDataKey={getUiDataLeaseKey(
-                                    LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                                  )}
-                                />
-                              </Authorization>
-                            </Column>
-                            <Column small={4} large={2}>
-                              <Authorization
-                                allow={isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                                )}
-                              >
-                                <FormFieldLegacy
-                                  disableTouched={isSaveClicked}
-                                  fieldAttributes={getFieldAttributes(
-                                    leaseAttributes,
-                                    LeaseBasisOfRentsFieldPaths.SUBVENTION_GRADUATED_PERCENT,
-                                  )}
-                                  name={`${field}.subvention_graduated_percent`}
-                                  disabled={isLocked}
-                                  overrideValues={{
-                                    label:
-                                      LeaseBasisOfRentsFieldTitles.SUBVENTION_GRADUATED_PERCENT,
-                                  }}
-                                  unit="%"
-                                  enableUiDataEdit
-                                  uiDataKey={getUiDataLeaseKey(
-                                    LeaseBasisOfRentsFieldPaths.SUBVENTION_GRADUATED_PERCENT,
-                                  )}
-                                />
-                              </Authorization>
-                            </Column>
-                            <Column small={4} large={2}>
-                              <Authorization
-                                allow={isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                                )}
-                              >
-                                <>
-                                  <FormTextTitle
-                                    enableUiDataEdit
-                                    uiDataKey={getUiDataLeaseKey(
-                                      LeaseBasisOfRentsFieldPaths.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT,
-                                    )}
-                                  >
-                                    {
-                                      LeaseBasisOfRentsFieldTitles.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT
-                                    }
-                                  </FormTextTitle>
-                                  <FormText>
-                                    {formatNumber(releaseDiscountPercent)} %
-                                  </FormText>
-                                </>
-                              </Authorization>
-                            </Column>
-                            <Column small={4} large={2}>
-                              <Authorization
-                                allow={isFieldAllowedToRead(
-                                  leaseAttributes,
-                                  LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
-                                )}
-                              >
-                                <>
-                                  <FormTextTitle
-                                    enableUiDataEdit
-                                    uiDataKey={getUiDataLeaseKey(
-                                      LeaseBasisOfRentsFieldPaths.SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT,
-                                    )}
-                                  >
-                                    {
-                                      LeaseBasisOfRentsFieldTitles.SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT
-                                    }
-                                  </FormTextTitle>
-                                  <FormText>
-                                    {formatNumber(releaseDiscountAmount)} €
-                                  </FormText>
-                                </>
-                              </Authorization>
-                            </Column>
-                          </Row>
-                        )}
-
+                    </Column>
+                    <Column
+                      small={6}
+                      medium={4}
+                      large={2}
+                      style={{
+                        marginTop: -15,
+                      }}
+                    >
                       <Authorization
                         allow={isFieldAllowedToRead(
                           leaseAttributes,
-                          BasisOfRentTemporarySubventionsFieldPaths.TEMPORARY_SUBVENTIONS,
+                          LeaseBasisOfRentsFieldPaths.INDEX,
                         )}
                       >
-                        <>
-                          <SubTitle
-                            enableUiDataEdit
-                            uiDataKey={getUiDataLeaseKey(
-                              BasisOfRentTemporarySubventionsFieldPaths.TEMPORARY_SUBVENTIONS,
-                            )}
-                          >
-                            {
-                              BasisOfRentTemporarySubventionsFieldTitles.TEMPORARY_SUBVENTIONS
-                            }
-                          </SubTitle>
-                          <FieldArray
-                            component={renderTemporarySubventions}
-                            leaseAttributes={leaseAttributes}
-                            disabled={isLocked}
-                            formName={formName}
-                            initialYearRent={initialYearRent}
-                            name={`${field}.temporary_subventions`}
-                            usersPermissions={usersPermissions}
-                            managementSubventions={managementSubventions}
-                            temporarySubventions={temporarySubventions}
-                          />
-                        </>
+                        <FormFieldLegacy
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={
+                            savedBasisOfRent && !!savedBasisOfRent.locked_at
+                              ? {
+                                  ...getFieldAttributes(
+                                    leaseAttributes,
+                                    LeaseBasisOfRentsFieldPaths.INDEX,
+                                  ),
+                                  required: false,
+                                }
+                              : getFieldAttributes(
+                                  leaseAttributes,
+                                  LeaseBasisOfRentsFieldPaths.INDEX,
+                                )
+                          }
+                          disabled={isLocked}
+                          name={`${field}.index`}
+                          overrideValues={{
+                            label: LeaseBasisOfRentsFieldTitles.INDEX,
+                            options: indexOptions,
+                          }}
+                          enableUiDataEdit
+                          uiDataKey={getUiDataLeaseKey(
+                            LeaseBasisOfRentsFieldPaths.INDEX,
+                          )}
+                        />
                       </Authorization>
-
+                    </Column>
+                    <Column
+                      small={6}
+                      medium={4}
+                      large={2}
+                      style={{
+                        marginTop: -15,
+                      }}
+                    >
                       <Authorization
                         allow={
                           isFieldAllowedToRead(
@@ -3201,96 +2746,428 @@ class BasisOfRentEdit extends PureComponent<Props, State> {
                           isFieldAllowedToRead(
                             leaseAttributes,
                             LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
-                          ) &&
-                          isFieldAllowedToRead(
-                            leaseAttributes,
-                            LeaseBasisOfRentsFieldPaths.INDEX,
                           )
                         }
                       >
                         <>
-                          <Row>
-                            <Column small={12} large={8}>
-                              <Divider />
-                            </Column>
-                          </Row>
-                          <Row>
-                            <Column small={4} large={6}>
-                              <FormText className="semibold">Yhteensä</FormText>
-                            </Column>
-                            <Column small={4} large={2}>
-                              <FormText className="semibold">
-                                {formatNumber(totalSubventionAmount)} €
-                              </FormText>
-                            </Column>
-                          </Row>
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={getUiDataLeaseKey(
+                              LeaseBasisOfRentsFieldPaths.BASE_YEAR_RENT,
+                            )}
+                          >
+                            {LeaseBasisOfRentsFieldTitles.BASE_YEAR_RENT}
+                          </FormTextTitle>
+                          <FormText>
+                            {!isEmptyValue(mastTotalIndexed)
+                              ? `${formatNumber(mastTotalIndexed)} €/v`
+                              : "-"}
+                          </FormText>
                         </>
                       </Authorization>
-                    </WhiteBox>
-                  );
-                }}
-              </AppConsumer>
-            )}
-        </BoxContentWrapper>
-      </BoxItem>
-    );
-  }
-}
+                    </Column>
+                  </Row>
+                </Column>
+              </>
+            </Authorization>
+          </Row>
+        )}
 
-export default connect(
-  (state, props: Props) => {
-    const formName = props.formName;
-    const selector = formValueSelector(formName);
-    const formValues = getFormValues(formName)(state) || {};
-    return {
-      amountPerArea: selector(state, `${props.field}.amount_per_area`),
-      currentAmountPerArea: selector(
-        state,
-        `${props.field}.current_amount_per_area`,
-      ),
-      area: selector(state, `${props.field}.area`),
-      zone: selector(state, `${props.field}.zone`),
-      areaUnit: selector(state, `${props.field}.area_unit`),
-      calculatorType: selector(state, `${props.field}.type`),
-      basisOfRent: selector(state, `${props.field}`) || {},
-      currentLease: getCurrentLease(state),
-      discountPercentage: selector(state, `${props.field}.discount_percentage`),
-      id: selector(state, `${props.field}.id`),
-      index: selector(state, `${props.field}.index`),
-      children: selector(state, `${props.field}.children`),
-      intendedUse: selector(state, `${props.field}.intended_use`),
-      leaseAttributes: getLeaseAttributes(state),
-      lockedAt: selector(state, `${props.field}.locked_at`),
-      managementSubventions: selector(
-        state,
-        `${props.field}.management_subventions`,
-      ),
-      plansInspectedAt: selector(state, `${props.field}.plans_inspected_at`),
-      price: selector(state, `${props.field}.amount_per_area`),
-      profitMarginPercentage: selector(
-        state,
-        `${props.field}.profit_margin_percentage`,
-      ),
-      subventionBasePercent: selector(
-        state,
-        `${props.field}.subvention_base_percent`,
-      ),
-      subventionGraduatedPercent: selector(
-        state,
-        `${props.field}.subvention_graduated_percent`,
-      ),
-      subventionType: selector(state, `${props.field}.subvention_type`),
-      temporarySubventions: selector(
-        state,
-        `${props.field}.temporary_subventions`,
-      ),
-      usersPermissions: getUsersPermissions(state),
-      formValues,
-    };
-  },
-  {
-    change,
-    clearFields,
-    initialize,
-  },
-)(BasisOfRentEdit);
+        <Row>
+          {showPlansInspectedAt &&
+            (calculatorType === CalculatorTypes.LEASE ||
+              calculatorType === CalculatorTypes.LEASE2022) && (
+              <Column small={6} medium={4} large={2}>
+                <Authorization
+                  allow={isFieldAllowedToEdit(
+                    leaseAttributes,
+                    LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT,
+                  )}
+                  errorComponent={
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT,
+                      )}
+                    >
+                      <>
+                        <FormTextTitle>
+                          {LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}
+                        </FormTextTitle>
+                        <FormText>{plansInspectedAtText}</FormText>
+                      </>
+                    </Authorization>
+                  }
+                >
+                  <FormFieldLegacy
+                    className="with-top-padding"
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={
+                      savedBasisOfRent && !!savedBasisOfRent.locked_at
+                        ? {
+                            ...getFieldAttributes(
+                              leaseAttributes,
+                              LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT,
+                            ),
+                            required: false,
+                            type: "checkbox-date-time",
+                          }
+                        : {
+                            ...getFieldAttributes(
+                              leaseAttributes,
+                              LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT,
+                            ),
+                            type: "checkbox-date-time",
+                          }
+                    }
+                    disabled={isLocked}
+                    invisibleLabel
+                    name={`${field}.plans_inspected_at`}
+                    overrideValues={{
+                      label: LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT,
+                    }}
+                  />
+                </Authorization>
+              </Column>
+            )}
+
+          {showLockedAt && (
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToEdit(
+                  leaseAttributes,
+                  LeaseBasisOfRentsFieldPaths.LOCKED_AT,
+                )}
+                errorComponent={
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      leaseAttributes,
+                      LeaseBasisOfRentsFieldPaths.LOCKED_AT,
+                    )}
+                  >
+                    <>
+                      <FormTextTitle>
+                        {LeaseBasisOfRentsFieldTitles.LOCKED_AT}
+                      </FormTextTitle>
+                      <FormText>{lockedAtText}</FormText>
+                    </>
+                  </Authorization>
+                }
+              >
+                <FormFieldLegacy
+                  className="with-top-padding"
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={{
+                    ...getFieldAttributes(
+                      leaseAttributes,
+                      LeaseBasisOfRentsFieldPaths.LOCKED_AT,
+                    ),
+                    type: "checkbox-date-time",
+                  }}
+                  invisibleLabel
+                  name={`${field}.locked_at`}
+                  overrideValues={{
+                    label: LeaseBasisOfRentsFieldTitles.LOCKED_AT,
+                  }}
+                />
+              </Authorization>
+            </Column>
+          )}
+        </Row>
+
+        {(!savedBasisOfRent || !savedBasisOfRent.locked_at) &&
+          !showSubventions &&
+          (calculatorType === CalculatorTypes.LEASE ||
+            calculatorType === CalculatorTypes.LEASE2022) && (
+            <Authorization
+              allow={isFieldAllowedToRead(
+                leaseAttributes,
+                LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
+              )}
+            >
+              <Row>
+                <Column>
+                  <AddButtonSecondary
+                    label="Lisää subventio"
+                    onClick={handleAddSubventions}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
+          )}
+        {showSubventions &&
+          (calculatorType === CalculatorTypes.LEASE ||
+            calculatorType === CalculatorTypes.LEASE2022) && (
+            <AppConsumer>
+              {({ dispatch }) => {
+                const handleRemoveSubventions = () => {
+                  dispatch({
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
+                      handleRemoveSubventions();
+                    },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
+                    confirmationModalButtonText:
+                      ConfirmationModalTexts.DELETE_SUBVENTION.BUTTON,
+                    confirmationModalLabel:
+                      ConfirmationModalTexts.DELETE_SUBVENTION.LABEL,
+                    confirmationModalTitle:
+                      ConfirmationModalTexts.DELETE_SUBVENTION.TITLE,
+                  });
+                };
+
+                return (
+                  <WhiteBox>
+                    {(!savedBasisOfRent || !savedBasisOfRent.locked_at) && (
+                      <ActionButtonWrapper>
+                        <RemoveButton
+                          onClick={handleRemoveSubventions}
+                          title="Poista subventiot"
+                        />
+                      </ActionButtonWrapper>
+                    )}
+                    <Row>
+                      <Column small={6} medium={4} large={2}>
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            leaseAttributes,
+                            LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
+                          )}
+                        >
+                          <FormFieldLegacy
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={{
+                              ...getFieldAttributes(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
+                              ),
+                              required: false,
+                            }}
+                            name={`${field}.subvention_type`}
+                            disabled={isLocked}
+                            overrideValues={{
+                              label:
+                                LeaseBasisOfRentsFieldTitles.SUBVENTION_TYPE,
+                            }}
+                            enableUiDataEdit
+                            uiDataKey={getUiDataLeaseKey(
+                              LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
+                            )}
+                          />
+                        </Authorization>
+                      </Column>
+                    </Row>
+                    {subventionType === SubventionTypes.FORM_OF_MANAGEMENT &&
+                      (calculatorType === CalculatorTypes.LEASE ||
+                        calculatorType === CalculatorTypes.LEASE2022) && (
+                        <Authorization
+                          allow={isFieldAllowedToRead(
+                            leaseAttributes,
+                            BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS,
+                          )}
+                        >
+                          <>
+                            <SubTitle
+                              enableUiDataEdit
+                              uiDataKey={getUiDataLeaseKey(
+                                BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT_SUBVENTIONS,
+                              )}
+                            >
+                              {
+                                BasisOfRentManagementSubventionsFieldTitles.MANAGEMENT_SUBVENTIONS
+                              }
+                            </SubTitle>
+                            <FieldArray
+                              component={ManagementSubventions}
+                              disabled={isLocked}
+                              formName={formName}
+                              initialYearRent={initialYearRent}
+                              currentAmountPerArea={currentAmountPerArea}
+                              name={`${field}.management_subventions`}
+                            />
+                          </>
+                        </Authorization>
+                      )}
+                    {subventionType === SubventionTypes.RE_LEASE &&
+                      (calculatorType === CalculatorTypes.LEASE ||
+                        calculatorType === CalculatorTypes.LEASE2022) && (
+                        <Row>
+                          <Column small={4} large={2}>
+                            <Authorization
+                              allow={isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
+                              )}
+                            >
+                              <FormFieldLegacy
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(
+                                  leaseAttributes,
+                                  LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
+                                )}
+                                name={`${field}.subvention_base_percent`}
+                                disabled={isLocked}
+                                overrideValues={{
+                                  label:
+                                    LeaseBasisOfRentsFieldTitles.SUBVENTION_BASE_PERCENT,
+                                }}
+                                unit="%"
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(
+                                  LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
+                                )}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={4} large={2}>
+                            <Authorization
+                              allow={isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
+                              )}
+                            >
+                              <FormFieldLegacy
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={getFieldAttributes(
+                                  leaseAttributes,
+                                  LeaseBasisOfRentsFieldPaths.SUBVENTION_GRADUATED_PERCENT,
+                                )}
+                                name={`${field}.subvention_graduated_percent`}
+                                disabled={isLocked}
+                                overrideValues={{
+                                  label:
+                                    LeaseBasisOfRentsFieldTitles.SUBVENTION_GRADUATED_PERCENT,
+                                }}
+                                unit="%"
+                                enableUiDataEdit
+                                uiDataKey={getUiDataLeaseKey(
+                                  LeaseBasisOfRentsFieldPaths.SUBVENTION_GRADUATED_PERCENT,
+                                )}
+                              />
+                            </Authorization>
+                          </Column>
+                          <Column small={4} large={2}>
+                            <Authorization
+                              allow={isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
+                              )}
+                            >
+                              <>
+                                <FormTextTitle
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(
+                                    LeaseBasisOfRentsFieldPaths.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT,
+                                  )}
+                                >
+                                  {
+                                    LeaseBasisOfRentsFieldTitles.SUBVENTION_RE_LEASE_DISCOUNT_PRECENT
+                                  }
+                                </FormTextTitle>
+                                <FormText>
+                                  {formatNumber(releaseDiscountPercent)} %
+                                </FormText>
+                              </>
+                            </Authorization>
+                          </Column>
+                          <Column small={4} large={2}>
+                            <Authorization
+                              allow={isFieldAllowedToRead(
+                                leaseAttributes,
+                                LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
+                              )}
+                            >
+                              <>
+                                <FormTextTitle
+                                  enableUiDataEdit
+                                  uiDataKey={getUiDataLeaseKey(
+                                    LeaseBasisOfRentsFieldPaths.SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT,
+                                  )}
+                                >
+                                  {
+                                    LeaseBasisOfRentsFieldTitles.SUBVENTION_RE_LEASE_DISCOUNT_AMOUNT
+                                  }
+                                </FormTextTitle>
+                                <FormText>
+                                  {formatNumber(releaseDiscountAmount)} €
+                                </FormText>
+                              </>
+                            </Authorization>
+                          </Column>
+                        </Row>
+                      )}
+
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        leaseAttributes,
+                        BasisOfRentTemporarySubventionsFieldPaths.TEMPORARY_SUBVENTIONS,
+                      )}
+                    >
+                      <>
+                        <SubTitle
+                          enableUiDataEdit
+                          uiDataKey={getUiDataLeaseKey(
+                            BasisOfRentTemporarySubventionsFieldPaths.TEMPORARY_SUBVENTIONS,
+                          )}
+                        >
+                          {
+                            BasisOfRentTemporarySubventionsFieldTitles.TEMPORARY_SUBVENTIONS
+                          }
+                        </SubTitle>
+                        <FieldArray
+                          component={TemporarySubventions}
+                          disabled={isLocked}
+                          formName={formName}
+                          initialYearRent={initialYearRent}
+                          name={`${field}.temporary_subventions`}
+                          managementSubventions={managementSubventions}
+                          temporarySubventions={temporarySubventions}
+                        />
+                      </>
+                    </Authorization>
+
+                    <Authorization
+                      allow={
+                        isFieldAllowedToRead(
+                          leaseAttributes,
+                          LeaseBasisOfRentsFieldPaths.AREA,
+                        ) &&
+                        isFieldAllowedToRead(
+                          leaseAttributes,
+                          LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
+                        ) &&
+                        isFieldAllowedToRead(
+                          leaseAttributes,
+                          LeaseBasisOfRentsFieldPaths.INDEX,
+                        )
+                      }
+                    >
+                      <>
+                        <Row>
+                          <Column small={12} large={8}>
+                            <Divider />
+                          </Column>
+                        </Row>
+                        <Row>
+                          <Column small={4} large={6}>
+                            <FormText className="semibold">Yhteensä</FormText>
+                          </Column>
+                          <Column small={4} large={2}>
+                            <FormText className="semibold">
+                              {formatNumber(totalSubventionAmount)} €
+                            </FormText>
+                          </Column>
+                        </Row>
+                      </>
+                    </Authorization>
+                  </WhiteBox>
+                );
+              }}
+            </AppConsumer>
+          )}
+      </BoxContentWrapper>
+    </BoxItem>
+  );
+};
+
+export default BasisOfRentEdit;

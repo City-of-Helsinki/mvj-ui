@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { formValueSelector } from "redux-form";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
@@ -21,21 +21,23 @@ import { mastCalculatorRent } from "@/leases/helpers";
 type Props = {
   formName: string;
   parentField: string;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
   index: number;
-  area: number;
   fieldsDisabled: boolean;
 };
 
-const MastChildrenEdit = ({
-  isSaveClicked,
+const MastChildrenEdit: React.FC<Props> = ({
+  formName,
   parentField,
-  leaseAttributes,
   index,
-  area,
   fieldsDisabled,
-}: Props) => {
+}) => {
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const selector = formValueSelector(formName);
+  const area = useSelector((state) =>
+    selector(state, `${parentField}.children[${index}].area`),
+  );
+
   const rent = mastCalculatorRent(index, area);
   return (
     <Fragment key={index}>
@@ -152,12 +154,4 @@ const MastChildrenEdit = ({
   );
 };
 
-export default connect((state, props: Props) => {
-  const formName = props.formName;
-  const selector = formValueSelector(formName);
-  return {
-    isSaveClicked: getIsSaveClicked(state),
-    leaseAttributes: getLeaseAttributes(state),
-    area: selector(state, `${props.parentField}.children[${props.index}].area`),
-  };
-})(MastChildrenEdit);
+export default MastChildrenEdit;

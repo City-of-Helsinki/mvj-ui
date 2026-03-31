@@ -1,5 +1,4 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import { Row, Column } from "react-foundation";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
@@ -58,12 +57,12 @@ import {
 } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
+import { useSelector } from "react-redux";
 type Props = {
   areaUnitOptions: Array<Record<string, any>>;
   basisOfRent: Record<string, any>;
   indexOptions: Array<Record<string, any>>;
   intendedUseOptions: Array<Record<string, any>>;
-  leaseAttributes: Attributes;
   managementTypeOptions: Array<Record<string, any>>;
   onRemove?: (...args: Array<any>) => any;
   onUnarchive?: (...args: Array<any>) => any;
@@ -113,7 +112,6 @@ const BasisOfRent = ({
   basisOfRent,
   indexOptions,
   intendedUseOptions,
-  leaseAttributes,
   managementTypeOptions,
   onRemove,
   onUnarchive,
@@ -121,6 +119,8 @@ const BasisOfRent = ({
   subventionTypeOptions,
   totalDiscountedInitialYearRent,
 }: Props) => {
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+
   const getAreaText = (amount: number | null | undefined) => {
     if (isEmptyValue(amount)) return "-";
     if (isEmptyValue(basisOfRent.area_unit)) return `${formatNumber(amount)} €`;
@@ -1469,7 +1469,7 @@ const BasisOfRent = ({
             </Column>
 
             {showTotal && (
-              <Fragment>
+              <>
                 <Column small={6} medium={4} large={2}>
                   <Authorization
                     allow={
@@ -1558,7 +1558,7 @@ const BasisOfRent = ({
                     </>
                   </Authorization>
                 </Column>
-              </Fragment>
+              </>
             )}
           </Row>
         )}
@@ -1665,7 +1665,7 @@ const BasisOfRent = ({
                       ))}
                     {managementSubventions &&
                       !!managementSubventions.length && (
-                        <Fragment>
+                        <>
                           <Row>
                             <Column small={4} large={2}>
                               <Authorization
@@ -1819,7 +1819,7 @@ const BasisOfRent = ({
                               </Row>
                             );
                           })}
-                        </Fragment>
+                        </>
                       )}
                   </>
                 </Authorization>
@@ -1951,7 +1951,7 @@ const BasisOfRent = ({
                       <FormText>Ei tilapäisalennuksia</FormText>
                     ))}
                   {!!temporarySubventions && !!temporarySubventions.length && (
-                    <Fragment>
+                    <>
                       <Row>
                         <Column small={4} large={2}>
                           <Authorization
@@ -2061,7 +2061,7 @@ const BasisOfRent = ({
                           </Row>
                         );
                       })}
-                    </Fragment>
+                    </>
                   )}
                 </>
               </Authorization>
@@ -2106,8 +2106,4 @@ const BasisOfRent = ({
   );
 };
 
-export default connect((state) => {
-  return {
-    leaseAttributes: getLeaseAttributes(state),
-  };
-})(BasisOfRent);
+export default BasisOfRent;

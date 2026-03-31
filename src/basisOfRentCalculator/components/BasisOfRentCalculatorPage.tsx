@@ -1,6 +1,5 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import BasisOfRentCalculatorForm from "./BasisOfRentCalculatorForm";
 import ContentContainer from "@/components/content/ContentContainer";
@@ -15,74 +14,51 @@ import {
   getIsFetching as getIsFetchingUsersPermissions,
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
-import { withLeaseAttributes } from "@/components/attributes/LeaseAttributes";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type Props = {
-  isFetchingLeaseAttributes: boolean;
-  isFetchingUsersPermissions: boolean;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
-};
+import { getIsFetchingAttributes } from "@/leases/selectors";
 
-class BasisOfRentCalculatorPage extends PureComponent<Props> {
-  componentDidMount() {
-    const { receiveTopNavigationSettings } = this.props;
+const BasisOfRentCalculatorPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const isFetchingLeaseAttributes = useSelector(getIsFetchingAttributes);
+  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
+  const usersPermissions = useSelector(getUsersPermissions);
+
+  useEffect(() => {
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.BASIS_OF_RENT_CALCULATOR),
+        pageTitle: "Vuokralaskuri",
+        showSearch: false,
+      }),
+    );
     setPageTitle("Vuokralaskuri");
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.BASIS_OF_RENT_CALCULATOR),
-      pageTitle: "Vuokralaskuri",
-      showSearch: false,
-    });
-  }
+  }, [dispatch]);
 
-  render() {
-    const {
-      isFetchingLeaseAttributes,
-      isFetchingUsersPermissions,
-      usersPermissions,
-    } = this.props;
-    if (isFetchingLeaseAttributes || isFetchingUsersPermissions)
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    if (!usersPermissions) return null;
-    if (
-      !hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT)
-    )
-      return (
-        <PageContainer>
-          <AuthorizationError
-            text={PermissionMissingTexts.BASIS_OF_RENT_CALCULATOR}
-          />
-        </PageContainer>
-      );
+  if (isFetchingLeaseAttributes || isFetchingUsersPermissions)
     return (
-      <PageContainer hasTabs>
-        <ContentContainer>
-          <BasisOfRentCalculatorForm
-            initialValues={{
-              basis_of_rents: [{}],
-            }}
-          />
-        </ContentContainer>
+      <PageContainer>
+        <Loader isLoading={true} />
       </PageContainer>
     );
-  }
-}
+  if (!usersPermissions) return null;
+  if (!hasPermissions(usersPermissions, UsersPermissions.ADD_LEASEBASISOFRENT))
+    return (
+      <PageContainer>
+        <AuthorizationError
+          text={PermissionMissingTexts.BASIS_OF_RENT_CALCULATOR}
+        />
+      </PageContainer>
+    );
+  return (
+    <PageContainer hasTabs>
+      <ContentContainer>
+        <BasisOfRentCalculatorForm
+          initialValues={{
+            basis_of_rents: [{}],
+          }}
+        />
+      </ContentContainer>
+    </PageContainer>
+  );
+};
 
-export default flowRight(
-  withLeaseAttributes,
-  connect(
-    (state) => {
-      return {
-        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      receiveTopNavigationSettings,
-    },
-  ),
-)(BasisOfRentCalculatorPage);
+export default BasisOfRentCalculatorPage;
