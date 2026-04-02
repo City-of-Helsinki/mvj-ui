@@ -1,15 +1,13 @@
 import React, { useEffect } from "react";
-import { formValueSelector, change } from "redux-form";
 import { Row, Column } from "react-foundation";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
-import { FormNames } from "@/enums";
 import {
   ContractRentPeriods,
   LeaseRentContractRentsFieldPaths,
@@ -36,7 +34,9 @@ import {
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { useForm } from "react-final-form";
+import { useFieldValue } from "@/components/helpers";
 type Props = {
   field: string;
   onRemove: (...args: Array<any>) => any;
@@ -46,28 +46,26 @@ type Props = {
 };
 
 const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
-  const dispatch = useDispatch();
+  const form = useForm();
   const isSaveClicked = useSelector(getIsSaveClicked);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const usersPermissions = useSelector(getUsersPermissions);
   const largeScreen = useWindowResize();
 
-  const contractRent = useSelector((state) => selector(state, field));
-  const amount = useSelector((state) => selector(state, `${field}.amount`));
-  const period = useSelector((state) => selector(state, `${field}.period`));
+  const contractRent = useFieldValue(field);
+  const amount = useFieldValue(`${field}.amount`);
+  const period = useFieldValue(`${field}.period`);
 
   useEffect(() => {
     if (
       rentType === RentTypes.INDEX2022 &&
       period !== ContractRentPeriods.PER_YEAR
     ) {
-      dispatch(
-        change(formName, `${field}.period`, ContractRentPeriods.PER_YEAR),
-      );
+      form.change(`${field}.period`, ContractRentPeriods.PER_YEAR);
     }
-    dispatch(change(formName, `${field}.base_amount_period`, period));
-    dispatch(change(formName, `${field}.base_amount`, amount));
-  }, [rentType, period, field, amount, dispatch]);
+    form.change(`${field}.base_amount_period`, period);
+    form.change(`${field}.base_amount`, amount);
+  }, [rentType, period, field, amount, form]);
 
   const getAmountUiDataKey = () => {
     if (rentType === RentTypes.FIXED) {
@@ -185,7 +183,7 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
                   LeaseRentContractRentsFieldPaths.AMOUNT,
                 )}
               >
-                <FormFieldLegacy
+                <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -210,7 +208,7 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
                   LeaseRentContractRentsFieldPaths.PERIOD,
                 )}
               >
-                <FormFieldLegacy
+                <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -239,7 +237,7 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
         LeaseRentContractRentsFieldPaths.INTENDED_USE,
       )}
     >
-      <FormFieldLegacy
+      <FormField
         disableTouched={isSaveClicked}
         fieldAttributes={getFieldAttributes(
           leaseAttributes,
@@ -305,7 +303,7 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
                   LeaseRentContractRentsFieldPaths.BASE_AMOUNT,
                 )}
               >
-                <FormFieldLegacy
+                <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -327,7 +325,7 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
                   LeaseRentContractRentsFieldPaths.BASE_AMOUNT_PERIOD,
                 )}
               >
-                <FormFieldLegacy
+                <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -355,7 +353,7 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
         LeaseRentContractRentsFieldPaths.BASE_YEAR_RENT,
       )}
     >
-      <FormFieldLegacy
+      <FormField
         disableTouched={isSaveClicked}
         fieldAttributes={getFieldAttributes(
           leaseAttributes,
@@ -384,7 +382,7 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
         LeaseRentContractRentsFieldPaths.START_DATE,
       )}
     >
-      <FormFieldLegacy
+      <FormField
         disableTouched={isSaveClicked}
         fieldAttributes={getFieldAttributes(
           leaseAttributes,
@@ -409,7 +407,7 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
         LeaseRentContractRentsFieldPaths.END_DATE,
       )}
     >
-      <FormFieldLegacy
+      <FormField
         disableTouched={isSaveClicked}
         fieldAttributes={getFieldAttributes(
           leaseAttributes,
@@ -432,7 +430,7 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
         LeaseRentContractRentsFieldPaths.INDEX,
       )}
     >
-      <FormFieldLegacy
+      <FormField
         disableTouched={isSaveClicked}
         fieldAttributes={{
           ...getFieldAttributes(
@@ -528,6 +526,4 @@ const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
   );
 };
 
-const formName = FormNames.LEASE_RENTS;
-const selector = formValueSelector(formName);
 export default ContractRentEdit;

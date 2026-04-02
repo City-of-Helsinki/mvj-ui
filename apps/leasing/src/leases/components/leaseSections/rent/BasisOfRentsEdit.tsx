@@ -28,7 +28,6 @@ type Props = {
   archived: boolean;
   basisOfRents: Array<Record<string, any>>;
   fields: any;
-  formName: string;
   onArchive?: (...args: Array<any>) => any;
   onUnarchive?: (...args: Array<any>) => any;
   showLockedAt?: boolean;
@@ -40,7 +39,6 @@ const BasisOfRentsEdit = ({
   archived,
   basisOfRents,
   fields,
-  formName,
   onArchive,
   onUnarchive,
   showLockedAt,
@@ -201,7 +199,6 @@ const BasisOfRentsEdit = ({
                           archived={true}
                           areaUnitOptions={areaUnitOptions}
                           field={field}
-                          formName={formName}
                           indexOptions={indexOptions}
                           intendedUseOptions={intendedUseOptions}
                           managementTypeOptions={managementTypeOptions}
@@ -276,7 +273,6 @@ const BasisOfRentsEdit = ({
                         archived={false}
                         areaUnitOptions={areaUnitOptions}
                         field={field}
-                        formName={formName}
                         indexOptions={indexOptions}
                         intendedUseOptions={intendedUseOptions}
                         managementTypeOptions={managementTypeOptions}

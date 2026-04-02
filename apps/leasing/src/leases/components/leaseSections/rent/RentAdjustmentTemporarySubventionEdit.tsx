@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import RemoveButton from "@/components/form/RemoveButton";
 import {
   RentAdjustmentTemporarySubventionsFieldPaths,
@@ -42,7 +42,7 @@ const RentAdjustmentTemporarySubventionEdit = ({ field, onRemove }: Props) => {
             RentAdjustmentTemporarySubventionsFieldPaths.DESCRIPTION,
           )}
         >
-          <FormFieldLegacy
+          <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               leaseAttributes,
@@ -67,7 +67,7 @@ const RentAdjustmentTemporarySubventionEdit = ({ field, onRemove }: Props) => {
             RentAdjustmentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT,
           )}
         >
-          <FormFieldLegacy
+          <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               leaseAttributes,

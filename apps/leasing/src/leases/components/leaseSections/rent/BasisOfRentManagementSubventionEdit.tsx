@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { change, formValueSelector } from "redux-form";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import RemoveButton from "@/components/form/RemoveButton";
 import {
@@ -29,11 +28,12 @@ import {
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
+import { useForm } from "react-final-form";
+import { useFieldValue } from "@/components/helpers";
 type Props = {
   currentAmountPerArea: number;
   disabled: boolean;
   field: any;
-  formName: string;
   initialYearRent: number;
   onRemove: (...args: Array<any>) => any;
 };
@@ -42,37 +42,22 @@ const BasisOfRentManagementSubventionEdit: React.FC<Props> = ({
   currentAmountPerArea,
   disabled,
   field,
-  formName,
   initialYearRent,
   onRemove,
 }) => {
+  const form = useForm();
   const isSaveClicked = useSelector(getIsSaveClicked);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const usersPermissions = useSelector(getUsersPermissions);
 
-  const selector = formValueSelector(formName);
-  const subventionAmount = useSelector((state) =>
-    selector(state, `${field}.subvention_amount`),
-  );
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const subventionPercent = calculateBasisOfRentSubventionPercentage(
-      subventionAmount,
-      currentAmountPerArea,
-    );
-    dispatch(
-      change(formName, `${field}.subvention_percent`, subventionPercent),
-    );
-  }, [subventionAmount, currentAmountPerArea, formName, field, dispatch]);
+  const subventionAmount = useFieldValue(`${field}.subvention_amount`);
 
   const onChangeCurrentSubventionAmount = (value: any) => {
     const subventionAmount = calculateSubventionAmountFromPercantage(
       value,
       currentAmountPerArea,
     );
-    dispatch(change(formName, `${field}.subvention_amount`, subventionAmount));
+    form.change(`${field}.subvention_amount`, subventionAmount);
   };
 
   const onChangeCurrentSubventionPercent = (value: any) => {
@@ -80,9 +65,7 @@ const BasisOfRentManagementSubventionEdit: React.FC<Props> = ({
       value,
       currentAmountPerArea,
     );
-    dispatch(
-      change(formName, `${field}.subvention_percent`, subventionPercent),
-    );
+    form.change(`${field}.subvention_percent`, subventionPercent);
   };
 
   /* Use current amount per area to calculate percantage */
@@ -105,7 +88,7 @@ const BasisOfRentManagementSubventionEdit: React.FC<Props> = ({
             BasisOfRentManagementSubventionsFieldPaths.MANAGEMENT,
           )}
         >
-          <FormFieldLegacy
+          <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               leaseAttributes,
@@ -128,7 +111,7 @@ const BasisOfRentManagementSubventionEdit: React.FC<Props> = ({
             BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT,
           )}
         >
-          <FormFieldLegacy
+          <FormField
             disableTouched={isSaveClicked}
             onChange={onChangeCurrentSubventionPercent}
             fieldAttributes={getFieldAttributes(
@@ -153,7 +136,7 @@ const BasisOfRentManagementSubventionEdit: React.FC<Props> = ({
             BasisOfRentManagementSubventionsFieldPaths.SUBVENTION_AMOUNT,
           )}
         >
-          <FormFieldLegacy
+          <FormField
             disableTouched={isSaveClicked}
             onChange={onChangeCurrentSubventionAmount}
             fieldAttributes={{

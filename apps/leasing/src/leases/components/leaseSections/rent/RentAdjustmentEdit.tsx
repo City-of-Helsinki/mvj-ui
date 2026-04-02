@@ -1,7 +1,6 @@
-import React, { ReactElement, useCallback, useEffect } from "react";
-import { change, FieldArray } from "redux-form";
-import { useSelector, useDispatch } from "react-redux";
-import { formValueSelector } from "redux-form";
+import React, { ReactElement, useCallback, useEffect, useRef } from "react";
+import { FieldArray } from "react-final-form-arrays";
+import { useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
@@ -12,7 +11,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
 import DecisionLink from "@/components/links/DecisionLink";
 import Divider from "@/components/content/Divider";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import GreenBox from "@/components/content/GreenBox";
@@ -20,7 +19,7 @@ import RemoveButton from "@/components/form/RemoveButton";
 import RentAdjustmentManagementSubventionEdit from "./RentAdjustmentManagementSubventionEdit";
 import RentAdjustmentTemporarySubventionEdit from "./RentAdjustmentTemporarySubventionEdit";
 import SubTitle from "@/components/content/SubTitle";
-import { ConfirmationModalTexts, FormNames } from "@/enums";
+import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import {
   LeaseRentAdjustmentsFieldPaths,
@@ -38,7 +37,6 @@ import {
   calculateReLeaseDiscountPercent,
   calculateRentAdjustmentSubventionPercentCumulative,
   getDecisionById,
-  hasSubventionDataChanged,
   hasSubventionValues,
   isSubventionTypeSpecified,
 } from "@/leases/helpers";
@@ -60,6 +58,8 @@ import {
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import { useForm } from "react-final-form";
+import { useFieldValue } from "@/components/helpers";
 type ManagementSubventionsProps = {
   fields: any;
   leaseAttributes: Attributes;
@@ -331,32 +331,25 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
   field,
   onRemove,
 }) => {
-  const dispatch = useDispatch();
+  const form = useForm();
 
-  const amountType = useSelector((state) =>
-    selector(state, `${field}.amount_type`),
+  const amountType = useFieldValue(`${field}.amount_type`);
+  const fullAmount = useFieldValue(`${field}.full_amount`);
+
+  const managementSubventions = useFieldValue(
+    `${field}.management_subventions`,
   );
+  const subventionBasePercent = useFieldValue(
+    `${field}.subvention_base_percent`,
+  );
+  const subventionGraduatedPercent = useFieldValue(
+    `${field}.subvention_graduated_percent`,
+  );
+  const subventionType = useFieldValue(`${field}.subvention_type`);
+  const temporarySubventions = useFieldValue(`${field}.temporary_subventions`);
+  const type = useFieldValue(`${field}.type`);
   const currentLease = useSelector(getCurrentLease);
-  const fullAmount = useSelector((state) =>
-    selector(state, `${field}.full_amount`),
-  );
   const leaseAttributes = useSelector(getLeaseAttributes);
-  const managementSubventions = useSelector((state) =>
-    selector(state, `${field}.management_subventions`),
-  );
-  const subventionBasePercent = useSelector((state) =>
-    selector(state, `${field}.subvention_base_percent`),
-  );
-  const subventionGraduatedPercent = useSelector((state) =>
-    selector(state, `${field}.subvention_graduated_percent`),
-  );
-  const subventionType = useSelector((state) =>
-    selector(state, `${field}.subvention_type`),
-  );
-  const temporarySubventions = useSelector((state) =>
-    selector(state, `${field}.temporary_subventions`),
-  );
-  const type = useSelector((state) => selector(state, `${field}.type`));
   const usersPermissions = useSelector(getUsersPermissions);
   const isSaveClicked = useSelector(getIsSaveClicked);
 
@@ -376,7 +369,14 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
     temporarySubventions,
   ]);
 
+  const hasInitialized = useRef(false);
+
   useEffect(() => {
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      return;
+    }
+
     if (
       isSubventionTypeSpecified(subventionType) &&
       hasSubventionValues(
@@ -387,9 +387,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
       )
     ) {
       const newFullAmount = calculateTotalSubventionPercent();
-      dispatch(
-        change(formName, `${field}.full_amount`, formatNumber(newFullAmount)),
-      );
+      form.change(`${field}.full_amount`, formatNumber(newFullAmount));
     }
   }, [
     subventionType,
@@ -397,9 +395,9 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
     temporarySubventions,
     subventionBasePercent,
     subventionGraduatedPercent,
-    dispatch,
     field,
     calculateTotalSubventionPercent,
+    form,
   ]);
 
   const decisionReadOnlyRenderer = (value: number | null | undefined) => {
@@ -418,13 +416,15 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
 
   const handleAddSubventions = () => {
     // To make the subvention form visible: null => "unspecified"
-    dispatch(change(formName, `${field}.subvention_type`, "unspecified"));
+    form.change(`${field}.subvention_type`, "unspecified");
   };
 
   const removeSubventions = () => {
-    dispatch(change(formName, `${field}.subvention_type`, null));
-    dispatch(change(formName, `${field}.management_subventions`, []));
-    dispatch(change(formName, `${field}.temporary_subventions`, []));
+    form.batch(() => {
+      form.change(`${field}.subvention_type`, null);
+      form.change(`${field}.management_subventions`, []);
+      form.change(`${field}.temporary_subventions`, []);
+    });
   };
 
   const getReLeaseDiscountPercent = () => {
@@ -434,7 +434,10 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
     );
   };
 
-  const showSubventions = typeof subventionType === "string";
+  const showSubventions =
+    subventionType !== null &&
+    subventionType !== undefined &&
+    subventionType !== "";
   const totalSubventionPercent = calculateTotalSubventionPercent();
   return (
     <BoxItem>
@@ -457,7 +460,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                 LeaseRentAdjustmentsFieldPaths.TYPE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
@@ -481,7 +484,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                 LeaseRentAdjustmentsFieldPaths.INTENDED_USE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
@@ -507,7 +510,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                     LeaseRentAdjustmentsFieldPaths.START_DATE,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={getFieldAttributes(
                       leaseAttributes,
@@ -532,7 +535,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                   )}
                 >
                   {amountType !== RentAdjustmentAmountTypes.AMOUNT_TOTAL && (
-                    <FormFieldLegacy
+                    <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={getFieldAttributes(
                         leaseAttributes,
@@ -605,7 +608,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                             LeaseRentAdjustmentsFieldPaths.FULL_AMOUNT,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disabled={
                               type === RentAdjustmentTypes.DISCOUNT &&
                               showSubventions
@@ -631,7 +634,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                             LeaseRentAdjustmentsFieldPaths.AMOUNT_TYPE,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               leaseAttributes,
@@ -660,7 +663,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
               )}
             >
               {amountType === RentAdjustmentAmountTypes.AMOUNT_TOTAL && (
-                <FormFieldLegacy
+                <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
@@ -689,7 +692,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                 LeaseRentAdjustmentsFieldPaths.DECISION,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
@@ -717,7 +720,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                 LeaseRentAdjustmentsFieldPaths.NOTE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
@@ -788,7 +791,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                           LeaseRentAdjustmentsFieldPaths.SUBVENTION_TYPE,
                         )}
                       >
-                        <FormFieldLegacy
+                        <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={{
                             ...getFieldAttributes(
@@ -828,12 +831,15 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                             RentAdjustmentManagementSubventionsFieldTitles.MANAGEMENT_SUBVENTIONS
                           }
                         </SubTitle>
-                        <FieldArray
-                          component={ManagementSubventions}
-                          leaseAttributes={leaseAttributes}
-                          name={`${field}.management_subventions`}
-                          usersPermissions={usersPermissions}
-                        />
+                        <FieldArray name={`${field}.management_subventions`}>
+                          {(fieldArrayProps) =>
+                            ManagementSubventions({
+                              ...fieldArrayProps,
+                              leaseAttributes: leaseAttributes,
+                              usersPermissions: usersPermissions,
+                            })
+                          }
+                        </FieldArray>
                       </>
                     </Authorization>
                   )}
@@ -846,7 +852,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                             LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               leaseAttributes,
@@ -872,7 +878,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                             LeaseRentAdjustmentsFieldPaths.SUBVENTION_BASE_PERCENT,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               leaseAttributes,
@@ -936,12 +942,15 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                           RentAdjustmentTemporarySubventionsFieldTitles.TEMPORARY_SUBVENTIONS
                         }
                       </SubTitle>
-                      <FieldArray
-                        component={TemporarySubventions}
-                        leaseAttributes={leaseAttributes}
-                        name={`${field}.temporary_subventions`}
-                        usersPermissions={usersPermissions}
-                      />
+                      <FieldArray name={`${field}.temporary_subventions`}>
+                        {(fieldArrayProps) =>
+                          TemporarySubventions({
+                            ...fieldArrayProps,
+                            leaseAttributes: leaseAttributes,
+                            usersPermissions: usersPermissions,
+                          })
+                        }
+                      </FieldArray>
                     </>
                   </Authorization>
 
@@ -970,6 +979,4 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
   );
 };
 
-const formName = FormNames.LEASE_RENTS;
-const selector = formValueSelector(formName);
 export default RentAdjustmentsEdit;

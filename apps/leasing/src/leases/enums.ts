@@ -1345,17 +1345,17 @@ export const LeaseBasisOfRentsFieldPaths = {
   BASE_YEAR_RENT: "basis_of_rents.child.children.base_year_rent",
   DISCOUNT_PERCENTAGE: "basis_of_rents.child.children.discount_percentage",
   DISCOUNTED_INITIAL_YEAR_RENT:
-    "basis_of_rents.child.children.discounted_intial_year_rent",
+    "basis_of_rents.child.children.discounted_initial_year_rent",
   DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH:
-    "basis_of_rents.child.children.discounted_intial_year_rent_per_month",
+    "basis_of_rents.child.children.discounted_initial_year_rent_per_month",
   DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH_TOTAL:
-    "basis_of_rents.child.children.discounted_intial_year_rent_per_month_total",
+    "basis_of_rents.child.children.discounted_initial_year_rent_per_month_total",
   DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS:
-    "basis_of_rents.child.children.discounted_intial_year_rent_per_2_months",
+    "basis_of_rents.child.children.discounted_initial_year_rent_per_2_months",
   DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS_TOTAL:
-    "basis_of_rents.child.children.discounted_intial_year_rent_per_2_months_total",
+    "basis_of_rents.child.children.discounted_initial_year_rent_per_2_months_total",
   INDEX: "basis_of_rents.child.children.index",
-  INITIAL_YEAR_RENT: "basis_of_rents.child.children.intial_year_rent",
+  INITIAL_YEAR_RENT: "basis_of_rents.child.children.initial_year_rent",
   INTENDED_USE: "basis_of_rents.child.children.intended_use",
   LOCKED_AT: "basis_of_rents.child.children.locked_at",
   PLANS_INSPECTED_AT: "basis_of_rents.child.children.plans_inspected_at",

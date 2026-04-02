@@ -1,15 +1,12 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
 import Authorization from "@/components/authorization/Authorization";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
-import { FormNames } from "@/enums";
+import FormField from "@/components/form/final-form/FormField";
 import {
   LeaseRentAdjustmentsFieldPaths,
   LeaseRentAdjustmentsFieldTitles,
 } from "@/leases/enums";
-import { validateSteppedDiscountForm } from "@/leases/formValidators";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
 import {
@@ -33,7 +30,7 @@ const SteppedDiscountForm: React.FC = () => {
               LeaseRentAdjustmentsFieldPaths.INTENDED_USE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentAdjustmentsFieldPaths.INTENDED_USE,
@@ -56,7 +53,7 @@ const SteppedDiscountForm: React.FC = () => {
               LeaseRentAdjustmentsFieldPaths.START_DATE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               fieldAttributes={{
                 ...getFieldAttributes(
                   leaseAttributes,
@@ -85,7 +82,7 @@ const SteppedDiscountForm: React.FC = () => {
         >
           <>
             <Column small={6} medium={4} large={4}>
-              <FormFieldLegacy
+              <FormField
                 fieldAttributes={{
                   max_digits: 10,
                   read_only: false,
@@ -99,7 +96,7 @@ const SteppedDiscountForm: React.FC = () => {
               />
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormFieldLegacy
+              <FormField
                 fieldAttributes={{
                   max_digits: 3,
                   read_only: false,
@@ -113,7 +110,7 @@ const SteppedDiscountForm: React.FC = () => {
               />
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormFieldLegacy
+              <FormField
                 fieldAttributes={{
                   max_digits: 10,
                   read_only: false,
@@ -137,7 +134,7 @@ const SteppedDiscountForm: React.FC = () => {
               LeaseRentAdjustmentsFieldPaths.DECISION,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentAdjustmentsFieldPaths.DECISION,
@@ -163,7 +160,7 @@ const SteppedDiscountForm: React.FC = () => {
               LeaseRentAdjustmentsFieldPaths.NOTE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentAdjustmentsFieldPaths.NOTE,
@@ -184,7 +181,4 @@ const SteppedDiscountForm: React.FC = () => {
   );
 };
 
-export default reduxForm({
-  form: FormNames.LEASE_STEPPED_DISCOUNT,
-  validate: validateSteppedDiscountForm,
-})(SteppedDiscountForm) as React.ComponentType<any>;
+export default SteppedDiscountForm;
