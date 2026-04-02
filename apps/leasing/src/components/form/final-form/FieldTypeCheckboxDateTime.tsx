@@ -12,11 +12,10 @@ const FieldTypeCheckboxDateTime = ({
 }: FieldComponentProps): JSX.Element => {
   const initialValueRef = useRef<string | null>(value);
 
-  const getValue = () => {
+  const getValue = (isChecked: boolean) => {
     // This logic handles the checkbox so that when it is toggled,
     // it doesn't lose the initial value (if it had one).
     // The component is keeping track of a datetime of when this was first checked.
-    const isChecked = !!value;
     const hasInitialValue = !!initialValueRef.current;
     if (!isChecked) return null;
     if (hasInitialValue) return initialValueRef.current;
@@ -24,7 +23,7 @@ const FieldTypeCheckboxDateTime = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = getValue();
+    const newValue = getValue(e.target.checked);
 
     onChange(newValue);
     onBlur();

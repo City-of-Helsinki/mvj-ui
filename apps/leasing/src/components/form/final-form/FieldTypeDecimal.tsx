@@ -23,6 +23,7 @@ const FieldTypeDecimal = ({
   isDirty = false,
   placeholder = "",
   setRefForField,
+  onChange: onValueChange,
 }: FieldComponentProps): JSX.Element => {
   const [innerValue, setInnerValue] = useState<string | null | undefined>(
     formatDecimalNumber(value),
@@ -40,6 +41,9 @@ const FieldTypeDecimal = ({
 
   const handleChange = (e: React.SyntheticEvent<HTMLInputElement>) => {
     onChange(e.currentTarget.value);
+    if (onValueChange) {
+      onValueChange(e.currentTarget.value);
+    }
     setInnerValue(e.currentTarget.value);
     if (autoBlur) {
       handleBlur(e);
