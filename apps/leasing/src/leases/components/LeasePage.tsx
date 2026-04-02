@@ -661,6 +661,7 @@ const LeasePage: React.FC<Props> = (props) => {
     setDecisionsFormState({ dirty: false, valid: true });
     setInspectionsFormState({ dirty: false, valid: true });
     setLeaseAreasFormState({ dirty: false, valid: true });
+    setRentsFormState({ dirty: false, valid: true });
 
     receiveIsSaveClicked(false);
     dispatch(clearFormValidFlags());
@@ -679,7 +680,7 @@ const LeasePage: React.FC<Props> = (props) => {
     leaseDecisionsFormRef.current.restart();
     leaseInspectionsFormRef.current.restart();
     leaseAreasFormRef.current.restart();
-    destroy(FormNames.LEASE_RENTS);
+    leaseRentsFormRef.current.restart();
   };
 
   const summaryFormRef = useRef(

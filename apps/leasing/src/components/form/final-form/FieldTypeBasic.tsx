@@ -13,9 +13,13 @@ const FieldTypeBasic = ({
   placeholder,
   setRefForField,
   type = "text",
+  onChange: onValueChange,
 }: FieldComponentProps): JSX.Element => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
+    if (onValueChange) {
+      onValueChange(e.target.value);
+    }
     if (autoBlur) {
       onBlur();
     }

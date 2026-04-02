@@ -25,6 +25,7 @@ const FieldTypeSelect = (props: FieldComponentProps): JSX.Element => {
     options,
     placeholder,
     setRefForField,
+    onChange: onValueChange,
   } = props;
 
   const [inputSearchValue, setInputSearchValue] = useState("");
@@ -38,6 +39,9 @@ const FieldTypeSelect = (props: FieldComponentProps): JSX.Element => {
     if (selectedOption) {
       const selectedValue = selectedOption.value;
       onChange(selectedValue);
+      if (onValueChange) {
+        onValueChange(selectedValue);
+      }
       if (autoBlur) {
         onBlur();
       }
