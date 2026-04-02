@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { change, FieldArray, formValueSelector, FormSection } from "redux-form";
+import { FieldArray } from "react-final-form-arrays";
 import { Column } from "react-foundation";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
@@ -60,6 +60,8 @@ import type { Attributes } from "types";
 import OldDwellingsInHousingCompaniesPriceIndexEdit from "./OldDwellingsInHousingCompaniesPriceIndexEdit";
 import { getOldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/selectors";
 import { isATypedLease } from "@/leases/helpers";
+import { useForm } from "react-final-form";
+import { useFieldValue } from "@/components/helpers";
 
 type Props = {
   field: string;
@@ -68,40 +70,37 @@ type Props = {
   rents: Array<Record<string, any>>;
 };
 
+const formName = FormNames.LEASE_RENTS;
+
 const getRentById = (rents: Array<Record<string, any>>, id: number) => {
   if (!id) return null;
   return rents.find((rent) => rent.id === id);
 };
 
 const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
-  const rentId = useSelector((state) => selector(state, `${field}.id`));
-  const contractRents = useSelector((state) =>
-    selector(state, `${field}.contract_rents`),
+  const dispatch = useDispatch();
+  const form = useForm();
+  const rentId = useFieldValue(`${field}.id`);
+  const contractRents = useFieldValue(`${field}.contract_rents`);
+  const dueDates = useFieldValue(`${field}.due_dates`);
+  const dueDatesType = useFieldValue(`${field}.due_dates_type`);
+  const fixedInitialYearRents = useFieldValue(
+    `${field}.fixed_initial_year_rents`,
   );
-  const dueDates = useSelector((state) =>
-    selector(state, `${field}.due_dates`),
+  const rentOldDwellingsInHousingCompaniesPriceIndex = useFieldValue(
+    `${field}.old_dwellings_in_housing_companies_price_index`,
   );
-  const dueDatesType = useSelector((state) =>
-    selector(state, `${field}.due_dates_type`),
-  );
+  const rentAdjustments = useFieldValue(`${field}.rent_adjustments`);
+  const rentType = useFieldValue(`${field}.type`);
+  const usersPermissions = useSelector(getUsersPermissions);
+
   const errors = useSelector((state) => getErrorsByFormName(state, formName));
-  const fixedInitialYearRents = useSelector((state) =>
-    selector(state, `${field}.fixed_initial_year_rents`),
-  );
   const isSaveClicked = useSelector(getIsSaveClicked);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const leaseTypeIdentifier = useSelector(getCurrentLeaseTypeIdentifier);
   const oldDwellingsInHousingCompaniesPriceIndex = useSelector(
     getOldDwellingsInHousingCompaniesPriceIndex,
   );
-  const rentOldDwellingsInHousingCompaniesPriceIndex = useSelector((state) =>
-    selector(state, `${field}.old_dwellings_in_housing_companies_price_index`),
-  );
-  const rentAdjustments = useSelector((state) =>
-    selector(state, `${field}.rent_adjustments`),
-  );
-  const rentType = useSelector((state) => selector(state, `${field}.type`));
-  const usersPermissions = useSelector(getUsersPermissions);
 
   const rentCollapseState = useSelector((state) =>
     rentId
@@ -171,7 +170,7 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
     rentId
       ? getCollapseStateByKey(
           state,
-          `${ViewModes.READONLY}.${formName}.${rentId}.equalized_rents`,
+          `${ViewModes.EDIT}.${formName}.${rentId}.equalized_rents`,
         )
       : undefined,
   );
@@ -192,8 +191,6 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
   const [typeOptions, setTypeOptions] = useState<Array<Record<string, any>>>(
     [],
   );
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     setTypeOptions(getFieldOptions(leaseAttributes, LeaseRentsFieldPaths.TYPE));
@@ -219,41 +216,36 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
           !isEmptyValue(item.period) &&
           item.period !== ContractRentPeriods.PER_YEAR
         ) {
-          dispatch(
-            change(formName, `${field}.contract_rents[${index}].period`, ""),
-          );
+          form.change(`${field}.contract_rents[${index}].period`, "");
         }
 
         if (
           !isEmptyValue(item.period) &&
           item.base_amount_period !== ContractRentPeriods.PER_YEAR
         ) {
-          dispatch(
-            change(
-              formName,
-              `${field}.contract_rents[${index}].base_amount_period`,
-              "",
-            ),
+          form.change(
+            `${field}.contract_rents[${index}].base_amount_period`,
+            "",
           );
         }
       });
     }
-  }, [rentType, contractRents, field, dispatch]);
+  }, [rentType, contractRents, form, field]);
 
   const addEmptyContractRentIfNeeded = useCallback(() => {
     if (!contractRents || !contractRents.length) {
-      dispatch(change(formName, `${field}.contract_rents`, [{}]));
+      form.change(`${field}.contract_rents`, [{}]);
     }
-  }, [contractRents, field, dispatch]);
+  }, [contractRents, field, form]);
 
   const addEmptyDueDateIfNeeded = useCallback(() => {
     if (
       dueDatesType === RentDueDateTypes.CUSTOM &&
       (!dueDates || !dueDates.length)
     ) {
-      dispatch(change(formName, `${field}.due_dates`, [{}]));
+      form.change(`${field}.due_dates`, [{}]);
     }
-  }, [dueDatesType, dueDates, field, dispatch]);
+  }, [dueDatesType, dueDates, field, form]);
 
   useEffect(() => {
     addEmptyContractRentIfNeeded();
@@ -265,12 +257,9 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
   }, [addEmptyDueDateIfNeeded, dueDatesType]);
 
   const addOldDwellingsInHousingCompaniesPriceIndex = () => {
-    dispatch(
-      change(
-        formName,
-        `${field}.old_dwellings_in_housing_companies_price_index`,
-        oldDwellingsInHousingCompaniesPriceIndex,
-      ),
+    form.change(
+      `${field}.old_dwellings_in_housing_companies_price_index`,
+      oldDwellingsInHousingCompaniesPriceIndex,
     );
   };
   const handleCollapseToggle = (key: string, val: boolean) => {
@@ -411,11 +400,9 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
       }
       onToggle={handleRentCollapseToggle}
     >
-      <FormSection name={field}>
-        <BoxContentWrapper>
-          <BasicInfoEdit field={field} rentType={rentType} />
-        </BoxContentWrapper>
-      </FormSection>
+      <BoxContentWrapper>
+        <BasicInfoEdit field={field} rentType={rentType} />
+      </BoxContentWrapper>
 
       <Authorization
         allow={isFieldAllowedToRead(
@@ -473,10 +460,13 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
               LeaseRentFixedInitialYearRentsFieldPaths.FIXED_INITIAL_YEAR_RENTS,
             )}
           >
-            <FieldArray
-              component={FixedInitialYearRentsEdit}
-              name={`${field}.fixed_initial_year_rents`}
-            />
+            <FieldArray name={`${field}.fixed_initial_year_rents`}>
+              {(fieldArrayProps) =>
+                FixedInitialYearRentsEdit({
+                  ...fieldArrayProps,
+                })
+              }
+            </FieldArray>
           </Collapse>
         )}
       </Authorization>
@@ -506,12 +496,15 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
               LeaseRentContractRentsFieldPaths.CONTRACT_RENTS,
             )}
           >
-            <FieldArray
-              component={ContractRentsEdit}
-              name={`${field}.contract_rents`}
-              rentField={field}
-              rentType={rentType}
-            />
+            <FieldArray name={`${field}.contract_rents`}>
+              {(fieldArrayProps) =>
+                ContractRentsEdit({
+                  ...fieldArrayProps,
+                  rentField: field,
+                  rentType: rentType,
+                })
+              }
+            </FieldArray>
           </Collapse>
         )}
       </Authorization>
@@ -568,10 +561,13 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
               LeaseRentAdjustmentsFieldPaths.RENT_ADJUSTMENTS,
             )}
           >
-            <FieldArray
-              component={RentAdjustmentsEdit}
-              name={`${field}.rent_adjustments`}
-            />
+            <FieldArray name={`${field}.rent_adjustments`}>
+              {(fieldArrayProps) =>
+                RentAdjustmentsEdit({
+                  ...fieldArrayProps,
+                })
+              }
+            </FieldArray>
           </Collapse>
         )}
       </Authorization>
@@ -635,6 +631,4 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
   );
 };
 
-const formName = FormNames.LEASE_RENTS;
-const selector = formValueSelector(formName);
 export default RentItemEdit;

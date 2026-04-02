@@ -1,16 +1,16 @@
 import React, { ReactElement } from "react";
-import { FieldArray, formValueSelector } from "redux-form";
+import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
 import get from "lodash/get";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
 import { rentCustomDateOptions } from "@/leases/constants";
-import { FieldTypes, FormNames } from "@/enums";
+import { FieldTypes } from "@/enums";
 import {
   DueDatesPositions,
   FixedDueDates,
@@ -40,15 +40,13 @@ import {
 import { getReceivableTypes } from "@/leaseCreateCharge/selectors";
 import { getLeaseTypeList } from "@/leaseType/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import { PlotSearchFieldPaths } from "@/plotSearch/enums";
 import type { Attributes } from "types";
 import type { DueDate, ReceivableType } from "@/leases/types";
 import type { LeaseTypeList } from "@/leaseType/types";
 import type { ServiceUnit } from "@/serviceUnits/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import { useSelector } from "react-redux";
-const formName = FormNames.LEASE_RENTS;
-const selector = formValueSelector(formName);
+import { useFieldValue } from "@/components/helpers";
 
 type DueDatesProps = {
   dueDates: Array<DueDate>;
@@ -122,7 +120,7 @@ const DueDates = ({ dueDates, fields }: DueDatesProps): ReactElement => {
                             LeaseRentDueDatesFieldPaths.DAY,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               leaseAttributes,
@@ -146,7 +144,7 @@ const DueDates = ({ dueDates, fields }: DueDatesProps): ReactElement => {
                                 LeaseRentDueDatesFieldPaths.MONTH,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 className="with-dot"
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
@@ -201,7 +199,9 @@ const DueDates = ({ dueDates, fields }: DueDatesProps): ReactElement => {
   );
 };
 
-const BasicInfoEmpty = () => {
+type BasicInfoEmptyProps = { field: string };
+
+const BasicInfoEmpty = ({ field }: BasicInfoEmptyProps) => {
   const isSaveClicked = useSelector(getIsSaveClicked);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
 
@@ -211,13 +211,13 @@ const BasicInfoEmpty = () => {
     >
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLegacy
+          <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               leaseAttributes,
               LeaseRentsFieldPaths.TYPE,
             )}
-            name={PlotSearchFieldPaths.TYPE}
+            name={`${field}.type`}
             overrideValues={{
               label: LeaseRentsFieldTitles.TYPE,
             }}
@@ -245,13 +245,9 @@ const BasicInfoIndexOrManual = ({
   serviceUnit,
   yearlyDueDates,
 }: BasicInfoIndexOrManualProps) => {
-  const cycle = useSelector((state) => selector(state, `${field}.cycle`));
-  const dueDates = useSelector((state) =>
-    selector(state, `${field}.due_dates`),
-  );
-  const dueDatesType = useSelector((state) =>
-    selector(state, `${field}.due_dates_type`),
-  );
+  const cycle = useFieldValue(`${field}.cycle`);
+  const dueDates = useFieldValue(`${field}.due_dates`) || [];
+  const dueDatesType = useFieldValue(`${field}.due_dates_type`);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const isSaveClicked = useSelector(getIsSaveClicked);
 
@@ -265,13 +261,13 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.TYPE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.TYPE,
               )}
-              name="type"
+              name={`${field}.type`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.TYPE,
               }}
@@ -287,13 +283,13 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.START_DATE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.START_DATE,
               )}
-              name="start_date"
+              name={`${field}.start_date`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.START_DATE,
               }}
@@ -309,13 +305,13 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.END_DATE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.END_DATE,
               )}
-              name="end_date"
+              name={`${field}.end_date`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.END_DATE,
               }}
@@ -331,13 +327,13 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.CYCLE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.CYCLE,
               )}
-              name="cycle"
+              name={`${field}.cycle`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.CYCLE,
               }}
@@ -355,13 +351,13 @@ const BasicInfoIndexOrManual = ({
                 LeaseRentsFieldPaths.INDEX_TYPE,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
                   LeaseRentsFieldPaths.INDEX_TYPE,
                 )}
-                name="index_type"
+                name={`${field}.index_type`}
                 overrideValues={{
                   label: LeaseRentsFieldTitles.INDEX_TYPE,
                 }}
@@ -379,13 +375,13 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.DUE_DATES_TYPE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.DUE_DATES_TYPE,
               )}
-              name="due_dates_type"
+              name={`${field}.due_dates_type`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.DUE_DATES_TYPE,
               }}
@@ -397,11 +393,11 @@ const BasicInfoIndexOrManual = ({
         {dueDatesType === RentDueDateTypes.CUSTOM && (
           <Column small={6} medium={4} large={1}>
             {/* Authorization is done on renderDueDates component */}
-            <FieldArray
-              component={DueDates}
-              dueDates={dueDates}
-              name="due_dates"
-            />
+            <FieldArray name={`${field}.due_dates`}>
+              {(fieldArrayProps) =>
+                DueDates({ ...fieldArrayProps, dueDates: dueDates })
+              }
+            </FieldArray>
           </Column>
         )}
         {dueDatesType === RentDueDateTypes.FIXED && (
@@ -412,13 +408,13 @@ const BasicInfoIndexOrManual = ({
                 LeaseRentsFieldPaths.DUE_DATES_PER_YEAR,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
                   LeaseRentsFieldPaths.DUE_DATES_PER_YEAR,
                 )}
-                name="due_dates_per_year"
+                name={`${field}.due_dates_per_year`}
                 overrideValues={{
                   fieldType: FieldTypes.CHOICE,
                   label: LeaseRentsFieldTitles.DUE_DATES_PER_YEAR,
@@ -471,13 +467,13 @@ const BasicInfoIndexOrManual = ({
                   LeaseRentsFieldPaths.MANUAL_RATIO,
                 )}
               >
-                <FormFieldLegacy
+                <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
                     LeaseRentsFieldPaths.MANUAL_RATIO,
                   )}
-                  name="manual_ratio"
+                  name={`${field}.manual_ratio`}
                   overrideValues={{
                     label: LeaseRentsFieldTitles.MANUAL_RATIO,
                   }}
@@ -497,13 +493,13 @@ const BasicInfoIndexOrManual = ({
                   LeaseRentsFieldPaths.MANUAL_RATIO_PREVIOUS,
                 )}
               >
-                <FormFieldLegacy
+                <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={getFieldAttributes(
                     leaseAttributes,
                     LeaseRentsFieldPaths.MANUAL_RATIO_PREVIOUS,
                   )}
-                  name="manual_ratio_previous"
+                  name={`${field}.manual_ratio_previous`}
                   overrideValues={{
                     label: LeaseRentsFieldTitles.MANUAL_RATIO_PREVIOUS,
                   }}
@@ -527,13 +523,13 @@ const BasicInfoIndexOrManual = ({
             )}
           >
             <Column small={12} medium={6} large={4}>
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
                   LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE,
                 )}
-                name="override_receivable_type"
+                name={`${field}.override_receivable_type`}
                 overrideValues={{
                   label: LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE,
                   options: receivableTypeOptions,
@@ -553,13 +549,13 @@ const BasicInfoIndexOrManual = ({
               LeaseRentsFieldPaths.NOTE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.NOTE,
               )}
-              name="note"
+              name={`${field}.note`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.NOTE,
               }}
@@ -573,9 +569,9 @@ const BasicInfoIndexOrManual = ({
   );
 };
 
-type BasicInfoOneTimeProps = {};
+type BasicInfoOneTimeProps = { field: string };
 
-const BasicInfoOneTime = () => {
+const BasicInfoOneTime = ({ field }: BasicInfoOneTimeProps) => {
   const isSaveClicked = useSelector(getIsSaveClicked);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
 
@@ -589,13 +585,13 @@ const BasicInfoOneTime = () => {
               LeaseRentsFieldPaths.TYPE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.TYPE,
               )}
-              name="type"
+              name={`${field}.type`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.TYPE,
               }}
@@ -611,13 +607,13 @@ const BasicInfoOneTime = () => {
               LeaseRentsFieldPaths.START_DATE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.START_DATE,
               )}
-              name="start_date"
+              name={`${field}.start_date`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.START_DATE,
               }}
@@ -633,13 +629,13 @@ const BasicInfoOneTime = () => {
               LeaseRentsFieldPaths.END_DATE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.END_DATE,
               )}
-              name="end_date"
+              name={`${field}.end_date`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.END_DATE,
               }}
@@ -655,13 +651,13 @@ const BasicInfoOneTime = () => {
               LeaseRentsFieldPaths.AMOUNT,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.AMOUNT,
               )}
-              name="amount"
+              name={`${field}.amount`}
               unit="€"
               overrideValues={{
                 label: LeaseRentsFieldTitles.AMOUNT,
@@ -677,13 +673,13 @@ const BasicInfoOneTime = () => {
       >
         <Row>
           <Column>
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.NOTE,
               )}
-              name="note"
+              name={`${field}.note`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.NOTE,
               }}
@@ -710,12 +706,8 @@ const BasicInfoFixed = ({
   serviceUnit,
   yearlyDueDates,
 }: BasicInfoFixedProps) => {
-  const dueDates = useSelector((state) =>
-    selector(state, `${field}.due_dates`),
-  );
-  const dueDatesType = useSelector((state) =>
-    selector(state, `${field}.due_dates_type`),
-  );
+  const dueDates = useFieldValue(`${field}.due_dates`) || [];
+  const dueDatesType = useFieldValue(`${field}.due_dates_type`);
   const isSaveClicked = useSelector(getIsSaveClicked);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
 
@@ -729,13 +721,13 @@ const BasicInfoFixed = ({
               LeaseRentsFieldPaths.TYPE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.TYPE,
               )}
-              name="type"
+              name={`${field}.type`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.TYPE,
               }}
@@ -751,13 +743,13 @@ const BasicInfoFixed = ({
               LeaseRentsFieldPaths.START_DATE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.START_DATE,
               )}
-              name="start_date"
+              name={`${field}.start_date`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.START_DATE,
               }}
@@ -773,13 +765,13 @@ const BasicInfoFixed = ({
               LeaseRentsFieldPaths.END_DATE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.END_DATE,
               )}
-              name="end_date"
+              name={`${field}.end_date`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.END_DATE,
               }}
@@ -795,13 +787,13 @@ const BasicInfoFixed = ({
               LeaseRentsFieldPaths.DUE_DATES_TYPE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.DUE_DATES_TYPE,
               )}
-              name="due_dates_type"
+              name={`${field}.due_dates_type`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.DUE_DATES_TYPE,
               }}
@@ -813,11 +805,11 @@ const BasicInfoFixed = ({
         {dueDatesType === RentDueDateTypes.CUSTOM && (
           <Column small={6} medium={4} large={2}>
             {/* Authorization is done on renderDueDates component */}
-            <FieldArray
-              component={DueDates}
-              dueDates={dueDates}
-              name="due_dates"
-            />
+            <FieldArray name={`${field}.due_dates`}>
+              {(fieldArrayProps) =>
+                DueDates({ ...fieldArrayProps, dueDates: dueDates })
+              }
+            </FieldArray>
           </Column>
         )}
         {dueDatesType === RentDueDateTypes.FIXED && (
@@ -828,13 +820,13 @@ const BasicInfoFixed = ({
                 LeaseRentsFieldPaths.DUE_DATES_PER_YEAR,
               )}
             >
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
                   LeaseRentsFieldPaths.DUE_DATES_PER_YEAR,
                 )}
-                name="due_dates_per_year"
+                name={`${field}.due_dates_per_year`}
                 overrideValues={{
                   fieldType: FieldTypes.CHOICE,
                   label: LeaseRentsFieldTitles.DUE_DATES_PER_YEAR,
@@ -885,13 +877,13 @@ const BasicInfoFixed = ({
             )}
           >
             <Column small={12} medium={6} large={4}>
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
                   LeaseRentsFieldPaths.OVERRIDE_RECEIVABLE_TYPE,
                 )}
-                name="override_receivable_type"
+                name={`${field}.override_receivable_type`}
                 overrideValues={{
                   label: LeaseRentsFieldTitles.OVERRIDE_RECEIVABLE_TYPE,
                   options: receivableTypeOptions,
@@ -911,13 +903,13 @@ const BasicInfoFixed = ({
               LeaseRentsFieldPaths.NOTE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.NOTE,
               )}
-              name="note"
+              name={`${field}.note`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.NOTE,
               }}
@@ -931,9 +923,9 @@ const BasicInfoFixed = ({
   );
 };
 
-type BasicInfoFreeProps = {};
+type BasicInfoFreeProps = { field: string };
 
-const BasicInfoFree = () => {
+const BasicInfoFree = ({ field }: BasicInfoFreeProps) => {
   const isSaveClicked = useSelector(getIsSaveClicked);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
 
@@ -947,13 +939,13 @@ const BasicInfoFree = () => {
               LeaseRentsFieldPaths.TYPE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.TYPE,
               )}
-              name="type"
+              name={`${field}.type`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.TYPE,
               }}
@@ -969,13 +961,13 @@ const BasicInfoFree = () => {
               LeaseRentsFieldPaths.START_DATE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.START_DATE,
               )}
-              name="start_date"
+              name={`${field}.start_date`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.START_DATE,
               }}
@@ -991,13 +983,13 @@ const BasicInfoFree = () => {
               LeaseRentsFieldPaths.END_DATE,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.END_DATE,
               )}
-              name="end_date"
+              name={`${field}.end_date`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.END_DATE,
               }}
@@ -1013,13 +1005,13 @@ const BasicInfoFree = () => {
       >
         <Row>
           <Column>
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
                 LeaseRentsFieldPaths.NOTE,
               )}
-              name="note"
+              name={`${field}.note`}
               overrideValues={{
                 label: LeaseRentsFieldTitles.NOTE,
               }}
@@ -1061,12 +1053,8 @@ type Props = {
 const BasicInfoEdit = ({ field, rentType }: Props) => {
   const currentLease = useSelector(getCurrentLease);
   const leaseTypes: LeaseTypeList = useSelector(getLeaseTypeList);
-  const dueDatesPerYear: number | null | undefined = useSelector((state) =>
-    selector(state, `${field}.due_dates_per_year`),
-  );
-  const dueDatesType: string | null | undefined = useSelector((state) =>
-    selector(state, `${field}.due_dates_type`),
-  );
+  const dueDatesPerYear = useFieldValue(`${field}.due_dates_per_year`);
+  const dueDatesType = useFieldValue(`${field}.due_dates_type`);
 
   const receivableTypes: Array<ReceivableType> =
     useSelector(getReceivableTypes);
@@ -1091,7 +1079,7 @@ const BasicInfoEdit = ({ field, rentType }: Props) => {
     getOverrideReceivableTypeOptions(receivableTypes);
   return (
     <>
-      {!rentType && <BasicInfoEmpty />}
+      {!rentType && <BasicInfoEmpty field={field} />}
       {(rentType === RentTypes.INDEX ||
         rentType === RentTypes.INDEX2022 ||
         rentType === RentTypes.MANUAL) && (
@@ -1103,7 +1091,7 @@ const BasicInfoEdit = ({ field, rentType }: Props) => {
           serviceUnit={currentLease.service_unit}
         />
       )}
-      {rentType === RentTypes.ONE_TIME && <BasicInfoOneTime />}
+      {rentType === RentTypes.ONE_TIME && <BasicInfoOneTime field={field} />}
       {rentType === RentTypes.FIXED && (
         <BasicInfoFixed
           field={field}
@@ -1112,7 +1100,7 @@ const BasicInfoEdit = ({ field, rentType }: Props) => {
           serviceUnit={currentLease.service_unit}
         />
       )}
-      {rentType === RentTypes.FREE && <BasicInfoFree />}
+      {rentType === RentTypes.FREE && <BasicInfoFree field={field} />}
     </>
   );
 };

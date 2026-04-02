@@ -21,6 +21,7 @@ import type {
   BillingPeriodInvoice,
   PreviewInvoices,
 } from "@/previewInvoices/types";
+import { useField } from "react-final-form";
 export const getRentsTotalAmount = (rents: Array<Record<string, any>>) => {
   let amount = 0;
   rents.forEach((rent) => {
@@ -181,4 +182,12 @@ export const getContentPreviewInvoiceBillingPeriods = (
   return invoices.map((billingPeriod) =>
     getContentBillingPeriod(billingPeriod),
   );
+};
+
+// Convenience function which simplifies field value subscription
+export const useFieldValue = (name: string) => {
+  return useField(name, {
+    subscription: { value: true },
+    format: (value) => value,
+  }).input.value;
 };

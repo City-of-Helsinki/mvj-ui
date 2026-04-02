@@ -6,10 +6,7 @@ import {
 } from "@/leases/selectors";
 import { useSelector } from "react-redux";
 import type { PeriodicRentAdjustmentType } from "@/leases/types";
-import type {
-  OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps,
-  IndexPointFigureYearly as IndexPointFigureYearlyProps,
-} from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
+import type { OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
@@ -21,7 +18,7 @@ import {
 } from "@/leases/enums";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDate, getFieldAttributes } from "@/util/helpers";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import { Attributes } from "@/types";
 import { getReviewDays, getPointFigureFormText } from "@/leases/helpers";
 import AddButton from "@/components/form/AddButton";
@@ -55,7 +52,7 @@ const OldDwellingsInHousingCompaniesPriceIndexEdit: React.FC<Props> = ({
       <BoxItemContainer>
         <Row>
           <Column>
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,

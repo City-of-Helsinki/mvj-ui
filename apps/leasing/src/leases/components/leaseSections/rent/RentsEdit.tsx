@@ -1,12 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Field,
-  FieldArray,
-  change,
-  formValueSelector,
-  reduxForm,
-} from "redux-form";
+import { FieldArray } from "react-final-form-arrays";
+import { Field, Form } from "react-final-form";
+import type { FormApi } from "final-form";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButton from "@/components/form/AddButton";
@@ -22,12 +18,8 @@ import SuccessField from "@/components/form/SuccessField";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
 import WarningField from "@/components/form/WarningField";
-import {
-  receiveFormValidFlags,
-  setRentInfoComplete,
-  setRentInfoUncomplete,
-} from "@/leases/actions";
-import { ConfirmationModalTexts, FormNames } from "@/enums";
+import { setRentInfoComplete, setRentInfoUncomplete } from "@/leases/actions";
+import { ConfirmationModalTexts } from "@/enums";
 import {
   ButtonColors,
   RentCalculatorFieldPaths,
@@ -40,7 +32,6 @@ import {
   LeaseRentsFieldTitles,
 } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
-import { validateRentForm, warnRentForm } from "@/leases/formValidators";
 import { getContentRents } from "@/leases/helpers";
 import {
   getUiDataLeaseKey,
@@ -54,8 +45,6 @@ import {
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
-  getErrorsByFormName,
-  getIsSaveClicked,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
@@ -184,24 +173,38 @@ const Rents: React.FC<RentsProps> = ({ archived, fields, rents }) => {
 };
 
 type Props = {
-  valid: boolean;
+  formApi: FormApi;
 };
 
-const RentsEdit: React.FC<Props> = ({ valid }) => {
+const RentsEdit: React.FC<Props> = ({ formApi }) => {
   const dispatch = useDispatch();
   const currentLease = useSelector(getCurrentLease);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const usersPermissions = useSelector(getUsersPermissions);
   const isRentInfoComplete = Boolean(currentLease?.rent_info_completed_at);
-  const editedActiveBasisOfRents = useSelector((state) =>
-    formValueSelector(formName)(state, "basis_of_rents"),
+  const [editedActiveBasisOfRents, setEditedActiveBasisOfRents] = useState(
+    () => formApi.getState().values.basis_of_rents,
   );
-  const editedArchivedBasisOfRents = useSelector((state) =>
-    formValueSelector(formName)(state, "basis_of_rents_archived"),
+  const [editedArchivedBasisOfRents, setEditedArchivedBasisOfRents] = useState(
+    () => formApi.getState().values.basis_of_rents_archived,
   );
 
-  const activeBasisOfRentsComponent = useRef(null);
-  const archivedBasisOfRentsComponent = useRef(null);
+  useEffect(() => {
+    const unsubcribeActive = formApi.registerField(
+      "basis_of_rents",
+      (field) => setEditedActiveBasisOfRents(field.value),
+      { value: true },
+    );
+    const unsubcribeArchived = formApi.registerField(
+      "basis_of_rents_archived",
+      (field) => setEditedArchivedBasisOfRents(field.value),
+      { value: true },
+    );
+    return () => {
+      unsubcribeActive();
+      unsubcribeArchived();
+    };
+  }, [formApi]);
 
   const [rents, setRents] = useState([]);
   const [rentsArchived, setRentsArchived] = useState([]);
@@ -212,14 +215,6 @@ const RentsEdit: React.FC<Props> = ({ valid }) => {
     setRentsArchived(rents.filter((rent) => isArchived(rent)));
   }, [currentLease]);
 
-  useEffect(() => {
-    dispatch(
-      receiveFormValidFlags({
-        [formName]: valid,
-      }),
-    );
-  }, [valid, dispatch]);
-
   const handleRentInfoComplete = () => {
     dispatch(setRentInfoComplete(currentLease.id));
   };
@@ -228,42 +223,34 @@ const RentsEdit: React.FC<Props> = ({ valid }) => {
     dispatch(setRentInfoUncomplete(currentLease.id));
   };
 
-  const setActiveBasisOfRentsRef = (ref: any) => {
-    activeBasisOfRentsComponent.current = ref;
-  };
-
-  const setArchivedBasisOfRentsRef = (ref: any) => {
-    archivedBasisOfRentsComponent.current = ref;
-  };
-
   const handleArchive = (index: number, item: Record<string, any>) => {
-    activeBasisOfRentsComponent.current
-      .getRenderedComponent()
-      .removeBasisOfRent(index);
-    addArchivedItemToUnarchivedItems(item);
-  };
-
-  const addArchivedItemToUnarchivedItems = (item: Record<string, any>) => {
-    const newItems = [
-      ...editedArchivedBasisOfRents,
+    const currentActive: Array<Record<string, any>> =
+      formApi.getState().values.basis_of_rents || [];
+    const currentArchived: Array<Record<string, any>> =
+      formApi.getState().values.basis_of_rents_archived || [];
+    formApi.change(
+      "basis_of_rents",
+      currentActive.filter((_, i) => i !== index),
+    );
+    formApi.change("basis_of_rents_archived", [
+      ...currentArchived,
       { ...item, archived_at: new Date().toISOString() },
-    ];
-    dispatch(change(formName, "basis_of_rents_archived", newItems));
+    ]);
   };
 
   const handleUnarchive = (index: number, item: Record<string, any>) => {
-    archivedBasisOfRentsComponent.current
-      .getRenderedComponent()
-      .removeBasisOfRent(index);
-    addUnarchivedItemToArchivedItems(item);
-  };
-
-  const addUnarchivedItemToArchivedItems = (item: Record<string, any>) => {
-    const newItems = [
-      ...editedActiveBasisOfRents,
+    const currentActive: Array<Record<string, any>> =
+      formApi.getState().values.basis_of_rents || [];
+    const currentArchived: Array<Record<string, any>> =
+      formApi.getState().values.basis_of_rents_archived || [];
+    formApi.change(
+      "basis_of_rents_archived",
+      currentArchived.filter((_, i) => i !== index),
+    );
+    formApi.change("basis_of_rents", [
+      ...currentActive,
       { ...item, archived_at: null },
-    ];
-    dispatch(change(formName, "basis_of_rents", newItems));
+    ]);
   };
 
   return (
@@ -302,166 +289,174 @@ const RentsEdit: React.FC<Props> = ({ valid }) => {
         };
 
         return (
-          <form>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                leaseAttributes,
-                LeaseRentsFieldPaths.RENTS,
-              )}
-            >
-              <>
-                <Title
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}
+          <Form form={formApi} onSubmit={formApi.submit}>
+            {() => (
+              <form>
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseRentsFieldPaths.RENTS,
+                  )}
                 >
-                  {LeaseRentsFieldTitles.RENTS}
-                </Title>
+                  <>
+                    <Title
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}
+                    >
+                      {LeaseRentsFieldTitles.RENTS}
+                    </Title>
+
+                    <Authorization
+                      allow={isFieldAllowedToRead(
+                        leaseAttributes,
+                        LeaseRentsFieldPaths.RENT_INFO_COMPLETED_AT,
+                      )}
+                    >
+                      <WarningContainer
+                        alignCenter
+                        buttonComponent={
+                          <Authorization
+                            allow={hasPermissions(
+                              usersPermissions,
+                              UsersPermissions.CHANGE_LEASE_RENT_INFO_COMPLETED_AT,
+                            )}
+                          >
+                            {isRentInfoComplete ? (
+                              <Button
+                                className={ButtonColors.NEUTRAL}
+                                onClick={handleSetRentInfoUncomplete}
+                                text="Merkitse keskeneräisiksi"
+                              />
+                            ) : (
+                              <Button
+                                className={ButtonColors.NEUTRAL}
+                                onClick={handleSetRentInfoComplete}
+                                text="Merkitse valmiiksi"
+                              />
+                            )}
+                          </Authorization>
+                        }
+                        success={isRentInfoComplete}
+                      >
+                        {isRentInfoComplete ? (
+                          <SuccessField
+                            meta={{
+                              warning: "Tiedot kunnossa",
+                            }}
+                            showWarning={true}
+                          />
+                        ) : (
+                          <WarningField
+                            meta={{
+                              warning: "Tiedot keskeneräiset",
+                            }}
+                            showWarning={true}
+                          />
+                        )}
+                      </WarningContainer>
+                    </Authorization>
+
+                    <Field name="rentWarnings" subscription={{ value: true }}>
+                      {({ meta }) => (
+                        <RentWarnings
+                          leaseAttributes={leaseAttributes}
+                          meta={meta}
+                        />
+                      )}
+                    </Field>
+                    <Divider />
+
+                    <FieldArray name="rents">
+                      {(fieldArrayProps) =>
+                        Rents({
+                          ...fieldArrayProps,
+                          archived: false,
+                          rents: rents,
+                        })
+                      }
+                    </FieldArray>
+
+                    {/* Archived rents */}
+                    <FieldArray name="rentsArchived">
+                      {(fieldArrayProps) =>
+                        Rents({
+                          ...fieldArrayProps,
+                          archived: true,
+                          rents: rentsArchived,
+                        })
+                      }
+                    </FieldArray>
+                  </>
+                </Authorization>
+
+                <Authorization
+                  allow={hasPermissions(
+                    usersPermissions,
+                    UsersPermissions.VIEW_INVOICE,
+                  )}
+                >
+                  <>
+                    <Title
+                      enableUiDataEdit
+                      uiDataKey={getUiDataRentCalculatorKey(
+                        RentCalculatorFieldPaths.RENT_CALCULATOR,
+                      )}
+                    >
+                      {RentCalculatorFieldTitles.RENT_CALCULATOR}
+                    </Title>
+                    <Divider />
+                    <GreenBox>
+                      <RentCalculator />
+                    </GreenBox>
+                  </>
+                </Authorization>
 
                 <Authorization
                   allow={isFieldAllowedToRead(
                     leaseAttributes,
-                    LeaseRentsFieldPaths.RENT_INFO_COMPLETED_AT,
-                  )}
-                >
-                  <WarningContainer
-                    alignCenter
-                    buttonComponent={
-                      <Authorization
-                        allow={hasPermissions(
-                          usersPermissions,
-                          UsersPermissions.CHANGE_LEASE_RENT_INFO_COMPLETED_AT,
-                        )}
-                      >
-                        {isRentInfoComplete ? (
-                          <Button
-                            className={ButtonColors.NEUTRAL}
-                            onClick={handleSetRentInfoUncomplete}
-                            text="Merkitse keskeneräisiksi"
-                          />
-                        ) : (
-                          <Button
-                            className={ButtonColors.NEUTRAL}
-                            onClick={handleSetRentInfoComplete}
-                            text="Merkitse valmiiksi"
-                          />
-                        )}
-                      </Authorization>
-                    }
-                    success={isRentInfoComplete}
-                  >
-                    {isRentInfoComplete ? (
-                      <SuccessField
-                        meta={{
-                          warning: "Tiedot kunnossa",
-                        }}
-                        showWarning={true}
-                      />
-                    ) : (
-                      <WarningField
-                        meta={{
-                          warning: "Tiedot keskeneräiset",
-                        }}
-                        showWarning={true}
-                      />
-                    )}
-                  </WarningContainer>
-                </Authorization>
-
-                <Field
-                  name="rentWarnings"
-                  component={RentWarnings}
-                  leaseAttributes={leaseAttributes}
-                  showWarning={true}
-                />
-                <Divider />
-
-                <FieldArray
-                  component={Rents}
-                  archived={false}
-                  name="rents"
-                  rents={rents}
-                />
-
-                {/* Archived rents */}
-                <FieldArray
-                  component={Rents}
-                  archived={true}
-                  name="rentsArchived"
-                  rents={rentsArchived}
-                />
-              </>
-            </Authorization>
-
-            <Authorization
-              allow={hasPermissions(
-                usersPermissions,
-                UsersPermissions.VIEW_INVOICE,
-              )}
-            >
-              <>
-                <Title
-                  enableUiDataEdit
-                  uiDataKey={getUiDataRentCalculatorKey(
-                    RentCalculatorFieldPaths.RENT_CALCULATOR,
-                  )}
-                >
-                  {RentCalculatorFieldTitles.RENT_CALCULATOR}
-                </Title>
-                <Divider />
-                <GreenBox>
-                  <RentCalculator />
-                </GreenBox>
-              </>
-            </Authorization>
-
-            <Authorization
-              allow={isFieldAllowedToRead(
-                leaseAttributes,
-                LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
-              )}
-            >
-              <>
-                <Title
-                  enableUiDataEdit
-                  uiDataKey={getUiDataLeaseKey(
                     LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
                   )}
                 >
-                  {LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}
-                </Title>
-                <Divider />
-                <FieldArray
-                  ref={setActiveBasisOfRentsRef}
-                  archived={false}
-                  basisOfRents={editedActiveBasisOfRents}
-                  component={BasisOfRentsEdit}
-                  formName={formName}
-                  name="basis_of_rents"
-                  onArchive={handleArchive}
-                />
+                  <>
+                    <Title
+                      enableUiDataEdit
+                      uiDataKey={getUiDataLeaseKey(
+                        LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
+                      )}
+                    >
+                      {LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}
+                    </Title>
+                    <Divider />
+                    <FieldArray name="basis_of_rents">
+                      {(fieldArrayProps) =>
+                        BasisOfRentsEdit({
+                          ...fieldArrayProps,
+                          archived: false,
+                          basisOfRents: editedActiveBasisOfRents,
+                          onArchive: handleArchive,
+                        })
+                      }
+                    </FieldArray>
 
-                <FieldArray
-                  ref={setArchivedBasisOfRentsRef}
-                  archived={true}
-                  basisOfRents={editedArchivedBasisOfRents}
-                  component={BasisOfRentsEdit}
-                  formName={formName}
-                  name="basis_of_rents_archived"
-                  onUnarchive={handleUnarchive}
-                />
-              </>
-            </Authorization>
-          </form>
+                    <FieldArray name="basis_of_rents_archived">
+                      {(fieldArrayProps) =>
+                        BasisOfRentsEdit({
+                          ...fieldArrayProps,
+                          archived: true,
+                          basisOfRents: editedArchivedBasisOfRents,
+                          onUnarchive: handleUnarchive,
+                        })
+                      }
+                    </FieldArray>
+                  </>
+                </Authorization>
+              </form>
+            )}
+          </Form>
         );
       }}
     </AppConsumer>
   );
 };
 
-const formName = FormNames.LEASE_RENTS;
-export default reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-  validate: validateRentForm,
-  warn: warnRentForm,
-})(RentsEdit) as React.ComponentType;
+export default RentsEdit;

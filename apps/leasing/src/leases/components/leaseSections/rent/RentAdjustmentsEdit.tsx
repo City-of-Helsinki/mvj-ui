@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { initialize } from "redux-form";
 import { Row, Column } from "react-foundation";
 import addMonths from "date-fns/addMonths";
 import format from "date-fns/format";
@@ -14,7 +13,7 @@ import DecisionLink from "@/components/links/DecisionLink";
 import FormText from "@/components/form/FormText";
 import RentAdjustmentEdit from "./RentAdjustmentEdit";
 import SteppedDiscountModal from "./SteppedDiscountModal";
-import { ConfirmationModalTexts, FormNames } from "@/enums";
+import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import {
   LeaseRentAdjustmentsFieldPaths,
@@ -74,7 +73,6 @@ const RentAdjustmentsEdit: React.FC<Props> = ({ fields }) => {
 
   const handleOpenSteppedDiscountModal = () => {
     setIsSteppedDiscountModalOpen(true);
-    initialize(FormNames.LEASE_STEPPED_DISCOUNT, {});
   };
   const getSteppedDiscounts = (
     formValues: Record<string, any>,

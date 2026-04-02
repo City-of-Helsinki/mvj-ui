@@ -1630,6 +1630,7 @@ export const calculateBasisOfRentTotalDiscountedInitialYearRent = (
   basisOfRents: Array<Record<string, any>>,
   indexOptions: Array<Record<string, any>>,
 ): number | null | undefined => {
+  if (!basisOfRents || !indexOptions) return null;
   return basisOfRents.reduce((total, basisOfRent) => {
     const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
     return (

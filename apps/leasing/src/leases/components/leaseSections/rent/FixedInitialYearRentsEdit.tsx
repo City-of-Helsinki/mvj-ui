@@ -8,7 +8,7 @@ import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -184,7 +184,7 @@ const FixedInitialYearRentsEdit = ({ fields }: Props) => {
                               LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,
@@ -206,7 +206,7 @@ const FixedInitialYearRentsEdit = ({ fields }: Props) => {
                               LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,
@@ -229,7 +229,7 @@ const FixedInitialYearRentsEdit = ({ fields }: Props) => {
                               LeaseRentFixedInitialYearRentsFieldPaths.START_DATE,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,
@@ -251,7 +251,7 @@ const FixedInitialYearRentsEdit = ({ fields }: Props) => {
                               LeaseRentFixedInitialYearRentsFieldPaths.END_DATE,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,
@@ -307,7 +307,7 @@ const FixedInitialYearRentsEdit = ({ fields }: Props) => {
                                   LeaseRentFixedInitialYearRentsFieldPaths.INTENDED_USE,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     leaseAttributes,
@@ -332,7 +332,7 @@ const FixedInitialYearRentsEdit = ({ fields }: Props) => {
                                   LeaseRentFixedInitialYearRentsFieldPaths.AMOUNT,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     leaseAttributes,
@@ -358,7 +358,7 @@ const FixedInitialYearRentsEdit = ({ fields }: Props) => {
                                   LeaseRentFixedInitialYearRentsFieldPaths.START_DATE,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     leaseAttributes,
@@ -383,7 +383,7 @@ const FixedInitialYearRentsEdit = ({ fields }: Props) => {
                                   LeaseRentFixedInitialYearRentsFieldPaths.END_DATE,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     leaseAttributes,
