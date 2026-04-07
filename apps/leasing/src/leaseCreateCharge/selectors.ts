@@ -1,6 +1,6 @@
 import type { Attributes, Selector } from "types";
 import type { RootState } from "@/root/types";
-import { ReceivableType } from "@/leases/types";
+import type { ReceivableType } from "@/leases/types";
 export const getIsFetchingAttributes: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.leaseCreateCharge.isFetchingAttributes;

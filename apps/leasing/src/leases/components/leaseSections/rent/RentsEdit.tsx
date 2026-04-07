@@ -48,6 +48,7 @@ import {
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
+import type { BasisOfRent } from "@/leases/types";
 type WarningsProps = {
   leaseAttributes: Attributes;
   meta: Record<string, any>;
@@ -182,22 +183,22 @@ const RentsEdit: React.FC<Props> = ({ formApi }) => {
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const usersPermissions = useSelector(getUsersPermissions);
   const isRentInfoComplete = Boolean(currentLease?.rent_info_completed_at);
-  const [editedActiveBasisOfRents, setEditedActiveBasisOfRents] = useState(
-    () => formApi.getState().values.basis_of_rents,
-  );
-  const [editedArchivedBasisOfRents, setEditedArchivedBasisOfRents] = useState(
-    () => formApi.getState().values.basis_of_rents_archived,
-  );
+  const [editedActiveBasisOfRents, setEditedActiveBasisOfRents] = useState<
+    Array<BasisOfRent>
+  >(() => formApi.getState().values.basis_of_rents || []);
+  const [editedArchivedBasisOfRents, setEditedArchivedBasisOfRents] = useState<
+    Array<BasisOfRent>
+  >(() => formApi.getState().values.basis_of_rents_archived || []);
 
   useEffect(() => {
     const unsubcribeActive = formApi.registerField(
       "basis_of_rents",
-      (field) => setEditedActiveBasisOfRents(field.value),
+      (field) => setEditedActiveBasisOfRents(field.value || []),
       { value: true },
     );
     const unsubcribeArchived = formApi.registerField(
       "basis_of_rents_archived",
-      (field) => setEditedArchivedBasisOfRents(field.value),
+      (field) => setEditedArchivedBasisOfRents(field.value || []),
       { value: true },
     );
     return () => {
@@ -223,10 +224,10 @@ const RentsEdit: React.FC<Props> = ({ formApi }) => {
     dispatch(setRentInfoUncomplete(currentLease.id));
   };
 
-  const handleArchive = (index: number, item: Record<string, any>) => {
-    const currentActive: Array<Record<string, any>> =
+  const handleArchive = (index: number, item: BasisOfRent) => {
+    const currentActive: Array<BasisOfRent> =
       formApi.getState().values.basis_of_rents || [];
-    const currentArchived: Array<Record<string, any>> =
+    const currentArchived: Array<BasisOfRent> =
       formApi.getState().values.basis_of_rents_archived || [];
     formApi.change(
       "basis_of_rents",
@@ -238,10 +239,10 @@ const RentsEdit: React.FC<Props> = ({ formApi }) => {
     ]);
   };
 
-  const handleUnarchive = (index: number, item: Record<string, any>) => {
-    const currentActive: Array<Record<string, any>> =
+  const handleUnarchive = (index: number, item: BasisOfRent) => {
+    const currentActive: Array<BasisOfRent> =
       formApi.getState().values.basis_of_rents || [];
-    const currentArchived: Array<Record<string, any>> =
+    const currentArchived: Array<BasisOfRent> =
       formApi.getState().values.basis_of_rents_archived || [];
     formApi.change(
       "basis_of_rents_archived",

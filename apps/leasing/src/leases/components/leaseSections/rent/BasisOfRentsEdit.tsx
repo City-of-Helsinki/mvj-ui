@@ -22,11 +22,12 @@ import { getFieldOptions, hasPermissions, isEmptyValue } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
+import type { BasisOfRent } from "@/leases/types";
 import { useSelector } from "react-redux";
 type Props = {
   addButtonClass?: string;
   archived: boolean;
-  basisOfRents: Array<Record<string, any>>;
+  basisOfRents: Array<BasisOfRent>;
   fields: any;
   onArchive?: (...args: Array<any>) => any;
   onUnarchive?: (...args: Array<any>) => any;

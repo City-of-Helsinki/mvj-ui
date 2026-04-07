@@ -45,7 +45,7 @@ export type Lease = {
   application_metadata: Record<string, any>;
   area_notes: Array<Record<string, any>>;
   area_searches: Array<AreaSearch>;
-  basis_of_rents: Array<Record<string, any>>;
+  basis_of_rents: Array<BasisOfRent>;
   building_selling_price: number | null;
   classification: (typeof Classification)[keyof typeof Classification];
   collection_court_decisions: Array<Record<string, any>>;
@@ -75,7 +75,7 @@ export type Lease = {
   lease_areas: Array<LeaseArea>;
   lessor: Record<string, any>;
   management: Record<string, any> | null;
-  matching_basis_of_rents: Array<Record<string, any>>;
+  matching_basis_of_rents: Array<BasisOfRent>;
   modified_at: string | null;
   municipality: Record<string, any>;
   note: string | null;
@@ -217,6 +217,29 @@ export type IntendedUse = {
   name_fi: string | null;
   name_sv: string | null;
   service_unit: ServiceUnit["id"];
+};
+export type BasisOfRent = {
+  id: number;
+  type: string;
+  intended_use: number;
+  area: string;
+  zone: string;
+  area_unit: string;
+  amount_per_area: string;
+  index: number;
+  profit_margin_percentage: string;
+  discount_percentage: string;
+  plans_inspected_at: string;
+  plans_inspected_by: User;
+  locked_at: string;
+  locked_by: User;
+  archived_at: string;
+  subvention_type: string;
+  subvention_base_percent: string;
+  subvention_graduated_percent: string;
+  temporary_subventions: Array<Record<string, any>>;
+  management_subventions: Array<Record<string, any>>;
+  children: Array<BasisOfRent>;
 };
 
 export type PeriodicRentAdjustmentType =

@@ -7,8 +7,9 @@ import {
   calculateInitialYearRentsTotal,
 } from "@/leases/helpers";
 import { formatNumber } from "@/util/helpers";
+import type { BasisOfRent } from "@/leases/types";
 type Props = {
-  basisOfRents: any;
+  basisOfRents: Array<BasisOfRent>;
   indexOptions: Array<Record<string, any>>;
 };
 

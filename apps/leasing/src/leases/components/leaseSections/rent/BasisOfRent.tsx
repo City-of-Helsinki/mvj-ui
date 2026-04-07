@@ -57,10 +57,11 @@ import {
 } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
+import type { BasisOfRent } from "@/leases/types";
 import { useSelector } from "react-redux";
 type Props = {
   areaUnitOptions: Array<Record<string, any>>;
-  basisOfRent: Record<string, any>;
+  basisOfRent: BasisOfRent;
   indexOptions: Array<Record<string, any>>;
   intendedUseOptions: Array<Record<string, any>>;
   managementTypeOptions: Array<Record<string, any>>;
@@ -121,13 +122,13 @@ const BasisOfRent = ({
 }: Props) => {
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
 
-  const getAreaText = (amount: number | null | undefined) => {
+  const getAreaText = (amount: string | null | undefined) => {
     if (isEmptyValue(amount)) return "-";
     if (isEmptyValue(basisOfRent.area_unit)) return `${formatNumber(amount)} €`;
     return `${formatNumber(amount)} ${basisOfRent.type === CalculatorTypes.FIELD ? "ha" : getLabelOfOption(areaUnitOptions, basisOfRent.area_unit) || ""}`;
   };
 
-  const getAmountPerAreaText = (amount: number | null | undefined) => {
+  const getAmountPerAreaText = (amount: number | string | null | undefined) => {
     if (isEmptyValue(amount)) return "-";
     if (isEmptyValue(basisOfRent.area_unit)) return `${formatNumber(amount)} €`;
     return `${formatNumber(amount)} € / ${getLabelOfOption(areaUnitOptions, basisOfRent.area_unit) || ""}`;
