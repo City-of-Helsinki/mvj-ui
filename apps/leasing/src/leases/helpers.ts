@@ -61,6 +61,7 @@ import type {
   PeriodicRentAdjustmentType,
   CreateLeaseFormValues,
   RelatedLeaseWrapper,
+  BasisOfRent,
 } from "./types";
 import type { CommentList } from "@/comments/types";
 import type {
@@ -2063,7 +2064,7 @@ export const calculateSubventionDiscountTotalFromReLease = (
  */
 export const calculateTemporaryRent = (
   price: number | null | undefined,
-  area: number | null | undefined,
+  area: string | null | undefined,
 ): number => {
   if (!price || !area) return 0;
   const areaDecimal = Number(convertStrToDecimalNumber(area));
@@ -2089,12 +2090,12 @@ export const calculateBasicAnnualRentIndexed = (
 /**
  * Calculate Extra rent
  * @param {string} price
- * @param {number} area
+ * @param {string} area
  * @return {number}
  */
 export const calculateExtraRent = (
   price: string | null | undefined,
-  area: number | null | undefined,
+  area: string | null | undefined,
 ): number => {
   if (!price || !area) return 0;
   return Number(
@@ -2108,12 +2109,12 @@ export const calculateExtraRent = (
 /**
  * Calculate Extra rent
  * @param {string} price
- * @param {number} area
+ * @param {string} area
  * @return {number}
  */
 export const calculateFieldsRent = (
   price: string | null | undefined,
-  area: number | null | undefined,
+  area: string | null | undefined,
 ): number => {
   if (!price || !area) return 0;
   return Number(
@@ -2152,7 +2153,7 @@ export const calcluateHightPrice = (
  * @return {number}
  */
 export const calculateRackAndHeightPrice = (
-  children: Record<string, any> | null | undefined,
+  children: Array<BasisOfRent> | null | undefined,
 ): number => {
   let total = 0;
   if (children && children[0] && children[0].area)
@@ -2412,9 +2413,7 @@ export const getRentWarnings = (
  * @param {Object} lease
  * @return {Object[]}
  */
-export const getContentBasisOfRents = (
-  lease: Lease,
-): Array<Record<string, any>> => {
+export const getContentBasisOfRents = (lease: Lease): Array<BasisOfRent> => {
   const allChildren = get(lease, "basis_of_rents", []).flatMap(
     (item) => item.children,
   );
@@ -2422,8 +2421,8 @@ export const getContentBasisOfRents = (
   // Get children sorted ascending by id
   const getSortedChildren = (
     lease: Lease,
-    item: Record<string, any>,
-  ): Array<Record<string, any>> => {
+    item: BasisOfRent,
+  ): Array<BasisOfRent> => {
     const children = get(lease, "basis_of_rents", []).filter((filterItem) =>
       get(item, "children", []).includes(filterItem.id),
     );
@@ -3564,7 +3563,7 @@ export const intendedUse = (item: Record<string, any>): number => {
 export const getBasisOfRentById = (
   lease: Lease,
   id: number | null | undefined,
-): Record<string, any> | null | undefined => {
+): BasisOfRent | null | undefined => {
   if (!id) return null;
   const basisOfRents = getContentBasisOfRents(lease);
   return basisOfRents.find((rent) => rent.id === id);
@@ -3816,11 +3815,11 @@ export const mapLeaseSearchFilters = (
 /**
  * calculate mast rent
  * @param {number} index
- * @param {number} area
+ * @param {string} area
  * @param {string} amountPerArea
  * @returns {number}
  */
-export const mastCalculatorRent = (index: number, area: number): number => {
+export const mastCalculatorRent = (index: number, area: string): number => {
   if (isEmpty(area)) return 0;
   if (index === 0 && area)
     return Number(1000 * Number(convertStrToDecimalNumber(area)));
