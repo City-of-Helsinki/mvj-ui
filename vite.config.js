@@ -31,31 +31,11 @@ function patchReactLeafletDrawImports() {
   };
 }
 
-// function multiEntryPlugin() {
-//   return {
-//     name: 'multi-entry-plugin',
-//     configureServer(server) {
-//       server.middlewares.use(async (req, res, next) => {
-//         // Route /maankayttosopimukset/* to landuse.html
-//         if (req.url.startsWith('/maankayttosopimukset')) {
-//           const landuseHtmlPath = path.resolve(__dirname, 'src/landUse/landuse.html');
-//           const landuseHtml = fs.readFileSync(landuseHtmlPath, 'utf-8');
-//           let html = await server.transformIndexHtml('/maankayttosopimukset/', landuseHtml);
-//           res.writeHead(200, { 'Content-Type': 'text/html' });
-//           res.end(html);
-//           return;
-//         }
-//         next();
-//       });
-//     },
-//   };
-// }
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     patchReactLeafletDrawImports(), // Remove this when updating `react-leaflet-draw`
-    // multiEntryPlugin(), // Temporery for development, Handle routing for multi-entry apps
     viteStaticCopy({
       targets: [
         { // copy leaflet-draw images to dist
