@@ -5,15 +5,15 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import postcssUrl from 'postcss-url';
 import babel from '@rollup/plugin-babel';
+import { LANDUSE_BASE_PATH } from './constants';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = path.resolve(__dirname, '../..');
-const landUseBasePath = '/';
 
 
 export default defineConfig({
   root: __dirname,
-  base: landUseBasePath,
+  base: LANDUSE_BASE_PATH,
   plugins: [
     react({ jsxRuntime: 'classic' }),
     commonjs(),
@@ -47,7 +47,7 @@ export default defineConfig({
         postcssUrl({
           url: (asset) => {
             if (asset.relativePath && asset.relativePath.startsWith('images/')) {
-              return `${landUseBasePath}assets/${asset.url}`;
+              return `${LANDUSE_BASE_PATH}/assets/${asset.url}`;
             }
             return asset.url;
           },

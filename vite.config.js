@@ -83,8 +83,8 @@ export default defineConfig({
     target: 'baseline-widely-available',
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'index.html'),
-        landuse: path.resolve(__dirname, 'src/landUse/landuse.html'),
+        leasing: path.resolve(__dirname, 'apps/leasing/index.html'),
+        landuse: path.resolve(__dirname, 'apps/landuse/index.html'),
       },
       output: {
         format: 'es',

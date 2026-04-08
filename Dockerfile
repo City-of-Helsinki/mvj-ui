@@ -3,8 +3,10 @@ FROM registry.access.redhat.com/ubi9/nodejs-22 AS appbase
 # ===============================================
 
 WORKDIR /app
-# Copy package and lock files
+# Copy package and lock files (root and all workspaces so Yarn installs workspace deps)
 COPY package.json yarn.lock ./
+COPY apps/leasing/package.json apps/leasing/
+COPY apps/landuse/package.json apps/landuse/
 
 # Install yarn
 USER root
