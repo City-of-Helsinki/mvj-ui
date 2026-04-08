@@ -157,6 +157,7 @@ const ma113Sites: LandUseSite[] = [
     kayttotarkoitus: "Asuinkerrostalojen korttelialue",
     hallintamuoto: ["Vapaarahoitteinen omistus"],
     suojeltu: "SR1",
+    amVelvoite: true,
   },
 ];
 
@@ -251,17 +252,6 @@ const ma113Decisions: LandUseDecisionsFormValues = {
 
 const ma113Collaterals: LandUseCollateralsFormValues = {
   vertailunPeruskerroin: 1,
-  vakuusValinnatBySiteId: {
-    "MA113-1-site-1": [
-      {
-        guaranteeId: "agreement-0-guarantee-0",
-        sopimusnumero: "MA113-SOP-2026-01",
-        jarjestysnumero: "1",
-        vakuuttaJaljella: "250000",
-        kaytettavaMaara: "80000",
-      },
-    ],
-  },
 };
 
 const ma113Monitoring: LandUseMonitoringFormValues = {

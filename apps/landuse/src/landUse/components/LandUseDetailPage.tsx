@@ -889,7 +889,6 @@ const LandUseDetailPage: React.FC = () => {
             compensationsRowsBySiteId={
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
             }
-            agreements={decisionsQuery.data?.agreements ?? []}
             maankayttokorvausYhteensa={
               parseLandUseNumericValueOrZero(
                 compensationsQuery.data?.rahakorvaus,
