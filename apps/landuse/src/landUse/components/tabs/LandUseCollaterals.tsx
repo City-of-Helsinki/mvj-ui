@@ -370,25 +370,6 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           },
         ];
 
-        const collateralsGuaranteesCols = [
-          { key: "sopimusnumero", headerName: "Sopimusnumero" },
-          { key: "jarjestysnumero", headerName: "Vakuuden järjestysnumero" },
-          { key: "vakuudenMaara", headerName: "Vakuuden määrä" },
-          { key: "vakuuttaJaljella", headerName: "Vakuutta jäljellä" },
-        ];
-
-        const collateralsGuaranteesRows = guaranteeBalances.map(
-          (guarantee) => ({
-            id: `vakuus-row-${guarantee.id}`,
-            sopimusnumero: guarantee.sopimusnumero,
-            jarjestysnumero: guarantee.jarjestysnumero,
-            vakuudenMaara: formatLandUseEuroDisplayValue(
-              guarantee.vakuudenMaara,
-            ),
-            vakuuttaJaljella: formatLandUseEuroValue(guarantee.jaljellaMaara),
-          }),
-        );
-
         return (
           <>
             <form onSubmit={handleSubmit}>
@@ -396,19 +377,6 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 <Field name="vakuusValinnatBySiteId">{() => null}</Field>
 
                 <h2 className="landuse-detail__section-title">VAKUUSTARVE</h2>
-
-                <Fieldset heading="">
-                  <div className="landuse-detail__sites-table-wrapper">
-                    <Table
-                      className="landuse-detail__sites-table landuse-detail__monitoring-table"
-                      cols={collateralsGuaranteesCols}
-                      indexKey="id"
-                      renderIndexCol={false}
-                      rows={collateralsGuaranteesRows}
-                      variant="light"
-                    />
-                  </div>
-                </Fieldset>
 
                 <Fieldset
                   heading="Vakuuslaskuri"
