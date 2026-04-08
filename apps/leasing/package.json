@@ -20,7 +20,7 @@
         "leaflet-geosearch": "4.2.2",
         "leaflet-measure-path": "^1.4.2",
         "leaflet-zoombox": "0.5.2",
-        "lodash": "^4.17.21",
+        "lodash": "^4.18.1",
         "proj4": "2.20.1",
         "proj4leaflet": "^1.0.2",
         "react-datepicker": "^8.8.0",
