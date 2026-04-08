@@ -83,3 +83,15 @@ yarn run test:coverage
 ## Automatic Code formatting
 
 Install Prettier extension for VSCode. The editor will format TypeScript and SCSS files automatically on save.
+
+
+## Environment variables
+
+There are multiple .env files. Fill them in based on .env.example files:
+- apps/leasing/.env
+- apps/landuse/.env
+
+The files contain e.g.
+- API URL
+- authentication provider parameters
+- feature flags

@@ -20,6 +20,7 @@ import { hasPermissions } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import { withUsersPermissions } from "@/components/attributes/UsersPermissions";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import { FLAG_LANDUSE } from "@/featureFlags";
 type OwnProps = {
   isOpen: boolean;
   onLinkClick: (...args: Array<any>) => any;
@@ -426,6 +427,17 @@ class SideMenu extends Component<Props & WithRouterProps, State> {
                       onHeaderClick={this.handleHeaderClick}
                     />
                   </Authorization>
+
+                  {FLAG_LANDUSE && (
+                    <>
+                      <hr />
+                      <li>
+                        <a href="/maankayttosopimukset/">
+                          Maankäyttösopimukset
+                        </a>
+                      </li>
+                    </>
+                  )}
                 </ul>
               )}
             </div>
