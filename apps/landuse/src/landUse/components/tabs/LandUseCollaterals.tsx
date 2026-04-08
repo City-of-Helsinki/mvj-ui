@@ -395,7 +395,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               <div className="landuse-detail__content">
                 <Field name="vakuusValinnatBySiteId">{() => null}</Field>
 
-                <h2 className="landuse-detail__section-title">VAKUUDET</h2>
+                <h2 className="landuse-detail__section-title">VAKUUSTARVE</h2>
 
                 <Fieldset heading="">
                   <div className="landuse-detail__sites-table-wrapper">

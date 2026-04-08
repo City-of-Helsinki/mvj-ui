@@ -114,7 +114,7 @@ const TABS_CONFIG: TabConfig[] = [
     formKey: "compensations",
   },
   {
-    label: "Vakuudet",
+    label: "Vakuustarve",
     queryKey: "collaterals",
     hasForm: true,
     formKey: "collaterals",
