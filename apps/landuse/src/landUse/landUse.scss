@@ -384,6 +384,19 @@
     vertical-align: middle;
   }
 
+  tbody tr:has(.landuse-detail__monitoring-plot-division-group-marker) td {
+    background-color: var(--color-bus-light);
+    color: var(--color-black-60);
+  }
+
+  tbody
+    tr:has(.landuse-detail__monitoring-plot-division-group-marker)
+    .landuse-detail__monitoring-km2-value {
+    color: var(--color-black-60);
+    border-color: var(--color-black-30);
+    background-color: var(--color-black-5);
+  }
+
   tbody td {
     min-width: 120px;
   }
@@ -477,8 +490,8 @@
 
 .landuse-detail__monitoring-actions-cell {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 12px;
 }
 
@@ -504,10 +517,32 @@
   }
 }
 
+.landuse-detail__monitoring-child-row-title {
+  display: inline-flex;
+  padding-left: 20px;
+  color: var(--color-black-70);
+}
+
 .landuse-detail__monitoring-dialog-content {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.landuse-detail__monitoring-site-edit-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.landuse-detail__monitoring-site-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 12px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .landuse-detail__monitoring-dialog-site-label {
