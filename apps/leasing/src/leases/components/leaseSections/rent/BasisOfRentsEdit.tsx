@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Row, Column } from "react-foundation";
 import classNames from "classnames";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -49,11 +49,14 @@ const BasisOfRentsEdit = ({
   const usersPermissions = useSelector(getUsersPermissions);
 
   const [areaUnitOptions, setAreaUnitOptions] = useState([]);
-  const [indexOptions, setIndexOptions] = useState([]);
   const [intendedUseOptions, setIntendedUseOptions] = useState([]);
   const [managementTypeOptions, setManagementTypeOptions] = useState([]);
   const [subventionTypeOptions, setSubventionTypeOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
+  const indexOptions = useMemo(
+    () => getFieldOptions(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX),
+    [leaseAttributes],
+  );
 
   useEffect(() => {
     setAreaUnitOptions(
@@ -66,9 +69,6 @@ const BasisOfRentsEdit = ({
           ? option.label.replace("^2", "²")
           : option.label,
       })),
-    );
-    setIndexOptions(
-      getFieldOptions(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX),
     );
     setIntendedUseOptions(
       getFieldOptions(
