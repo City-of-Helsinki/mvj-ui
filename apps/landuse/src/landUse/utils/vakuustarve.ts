@@ -21,6 +21,7 @@ export const calculateHintaero = (
   perushinta: string | undefined,
   yksikkohinta: string | undefined,
 ): number | null => {
+  const MINIMUM_HINTAERO = 250;
   const perushintaValue = parseLandUseNumericValue(perushinta);
   const yksikkohintaValue = parseLandUseNumericValue(yksikkohinta);
 
@@ -28,7 +29,7 @@ export const calculateHintaero = (
     return null;
   }
 
-  return Math.max(0, perushintaValue - yksikkohintaValue);
+  return Math.max(MINIMUM_HINTAERO, perushintaValue - yksikkohintaValue);
 };
 
 export const calculateVakuustarve = (
