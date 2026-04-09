@@ -41,6 +41,7 @@ import {
   calculateBasisOfRentDiscountedInitialYearRent,
   calculateBasisOfRentInitialYearRent,
   calculateBasisOfRentSubventionAmount,
+  calculateBasisOfRentSubventionPercentage,
   calculateReLeaseDiscountPercent,
   calculateBasicAnnualRentIndexed,
   calculateBasisOfRentSubventionPercent,
@@ -544,7 +545,6 @@ const BasisOfRentEdit: React.FC<Props> = ({
   }, [calculatorType, children, field, form]);
 
   const initialFormValues = () => {
-    changeDiscounts();
     ensureMastChildrenInitialized();
     if (
       calculatorType &&
@@ -564,6 +564,54 @@ const BasisOfRentEdit: React.FC<Props> = ({
         `${field}.current_amount_per_area`,
         currentAmountPerArea,
       );
+
+      // Calculate and set discounts, temporary subvention percents and
+      // management subventions manually on initialization to avoid dirtying the form
+      set(
+        newInitialValues,
+        `${field}.discount_percentage`,
+        calculateTotalSubventionPercent(),
+      );
+      set(
+        newInitialValues,
+        `${field}.temporary_subvention_discount_percentage`,
+        formatNumber(
+          calculateTemporarySubventionDiscountPercentage(temporarySubventions),
+        ),
+      );
+      if (Array.isArray(managementSubventions)) {
+        managementSubventions.forEach((subvention, index) => {
+          const subventionPercent = calculateBasisOfRentSubventionPercentage(
+            subvention?.subvention_amount,
+            currentAmountPerArea,
+          );
+          set(
+            newInitialValues,
+            `${field}.management_subventions[${index}].subvention_percent`,
+            subventionPercent,
+          );
+        });
+      }
+      if (subventionType === SubventionTypes.RE_LEASE) {
+        const releaseDiscountPct = calculateReLeaseDiscountPercent(
+          subventionBasePercent,
+          subventionGraduatedPercent,
+        );
+        set(
+          newInitialValues,
+          `${field}.subvention_discount_percentage`,
+          releaseDiscountPct.toFixed(2),
+        );
+      } else if (
+        subventionType === SubventionTypes.FORM_OF_MANAGEMENT &&
+        managementSubventions?.[0]
+      ) {
+        set(
+          newInitialValues,
+          `${field}.subvention_discount_percentage`,
+          managementSubventions[0].subvention_percent,
+        );
+      }
       // re-initialize the form in order to avoid dirty states on field(s) that change
       form.initialize(newInitialValues);
     }
@@ -654,10 +702,6 @@ const BasisOfRentEdit: React.FC<Props> = ({
       showSubventions ||
       (temporarySubventions && !!temporarySubventions.length)
     ) {
-      if (managementSubventions !== undefined) {
-        changeDiscounts();
-      }
-
       // Don't change discount_percent automatically if basis of rent is deleted
       if (
         subventionType !== undefined ||
@@ -877,7 +921,6 @@ const BasisOfRentEdit: React.FC<Props> = ({
     if (value !== calculatorType) {
       clearAllFields();
       removeSubventions();
-      initialFormValues();
 
       // Initialize MAST children with 2 items (Laitekaappi and Masto)
       if (value === CalculatorTypes.MAST) {

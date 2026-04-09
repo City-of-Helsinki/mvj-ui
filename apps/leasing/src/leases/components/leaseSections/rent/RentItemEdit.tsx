@@ -233,10 +233,16 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
   }, [rentType, contractRents, form, field]);
 
   const addEmptyContractRentIfNeeded = useCallback(() => {
-    if (!contractRents || !contractRents.length) {
+    if (
+      (rentType === RentTypes.INDEX ||
+        rentType === RentTypes.INDEX2022 ||
+        rentType === RentTypes.FIXED ||
+        rentType === RentTypes.MANUAL) &&
+      (!contractRents || !contractRents.length)
+    ) {
       form.change(`${field}.contract_rents`, [{}]);
     }
-  }, [contractRents, field, form]);
+  }, [contractRents, field, form, rentType]);
 
   const addEmptyDueDateIfNeeded = useCallback(() => {
     if (
