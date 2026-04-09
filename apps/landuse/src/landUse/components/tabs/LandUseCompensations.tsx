@@ -553,7 +553,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 </div>
               </Fieldset>
 
-              <Fieldset heading="Korvauksesta luovutettavat yleiset alueet">
+              <Fieldset heading="Korvauksetta luovutettavat yleiset alueet">
                 <div className="landuse-detail__grid landuse-detail__compensation-grid">
                   <Field name="yleisetAlueetNeliot">
                     {({ input }) => (

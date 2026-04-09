@@ -810,7 +810,7 @@ const LandUseDetailPage: React.FC = () => {
         list={[
           { title: "Maanvuokrausjärjestelmä", path: "/" },
           { title: "Maankäyttösopimukset", path: "/maankayttosopimukset" },
-          { title: "Uusi sopimus", path: "" },
+          { title: agreementId, path: "" },
         ]}
       />
 
