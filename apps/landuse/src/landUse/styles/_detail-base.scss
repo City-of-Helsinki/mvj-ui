@@ -150,15 +150,104 @@
   }
 }
 
-.landuse-detail__compensations-table-header-actions {
-  @include toolbar;
-}
+// -- Perustietotaulukko expandable table -------------------------------------
 
-.landuse-detail__compensations-table {
-  @include table-inline-form;
+.landuse-compensations-table {
+  @include table-base;
+  border-collapse: collapse;
+  line-height: 1.5;
+  margin-bottom: $space-lg;
 
-  tfoot th {
-    font-weight: 600;
+  thead tr {
+    background-color: var(--color-silver);
+  }
+
+  thead th {
+    padding: var(--spacing-xs) var(--spacing-m);
+    font-weight: 700;
+    font-size: var(--fontsize-body-m);
+    color: var(--color-black-90);
+    border-bottom: 1px solid var(--color-black-20);
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  tbody td {
+    padding: var(--spacing-xs) var(--spacing-m);
+    border-bottom: 1px solid var(--color-black-50);
+    color: var(--color-black-90);
+    font-size: var(--fontsize-body-m);
+    font-weight: 400;
+    background-color: var(--color-white);
+  }
+
+  tfoot td {
+    padding: var(--spacing-xs) var(--spacing-m);
+    border-top: 1px solid var(--color-black-50);
+    border-bottom: none;
+  }
+
+  &__toggle-cell {
+    width: 40px;
+    padding-left: $space-sm !important;
+    padding-right: 0 !important;
+  }
+
+  &__toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: $radius-sm;
+    background: transparent;
+    cursor: pointer;
+    color: var(--color-black-90);
+
+    &:hover {
+      background-color: var(--color-black-10);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-coat-of-arms);
+      outline-offset: 2px;
+    }
+  }
+
+  &__row {
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--color-black-5);
+    }
+  }
+
+  &__detail-row {
+    > td {
+      padding: 0 !important;
+      border-bottom: 1px solid var(--color-black-50);
+    }
+  }
+
+  &__detail-content {
+    width: 0;
+    min-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    box-shadow: inset 3px 0 0 var(--color-coat-of-arms);
+    padding: $space-lg $space-lg;
+  }
+
+  &__detail-grid {
+    @include responsive-grid;
+  }
+
+  &__detail-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: $space-lg;
   }
 }
 
