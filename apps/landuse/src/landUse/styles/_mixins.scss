@@ -1,0 +1,152 @@
+// ============================================================================
+// Reusable Mixins
+// ============================================================================
+// Each mixin captures a *repeated layout or style pattern* found across the
+// stylesheet.  Prefer using a mixin over copy-pasting the same 3+ lines in
+// multiple rules.
+// ============================================================================
+
+@use "variables" as *;
+
+// -- Responsive breakpoints --------------------------------------------------
+// Usage:  @include respond-to(tablet) { … }
+@mixin respond-to($name) {
+  @if $name == desktop {
+    @media (max-width: $bp-desktop) {
+      @content;
+    }
+  } @else if $name == tablet {
+    @media (max-width: $bp-tablet) {
+      @content;
+    }
+  } @else if $name == mobile {
+    @media (max-width: $bp-mobile) {
+      @content;
+    }
+  } @else {
+    @error "Unknown breakpoint `#{$name}`. Use desktop, tablet, or mobile.";
+  }
+}
+
+// -- Page container (list page, detail page) ---------------------------------
+@mixin page-container {
+  max-width: $page-max-width;
+  width: 100%;
+  margin: 0 auto;
+  padding: $space-2xl;
+  background-color: var(--color-white);
+  min-height: 100vh;
+}
+
+// -- Flex helpers ------------------------------------------------------------
+@mixin flex-row-center($gap: 0) {
+  display: flex;
+  align-items: center;
+  @if $gap != 0 {
+    gap: $gap;
+  }
+}
+
+@mixin flex-col($gap: 0) {
+  display: flex;
+  flex-direction: column;
+  @if $gap != 0 {
+    gap: $gap;
+  }
+}
+
+// -- Responsive grid ---------------------------------------------------------
+// The 4→2→1 column pattern used throughout detail pages.
+@mixin responsive-grid($cols: 4, $gap: $space-2xl) {
+  display: grid;
+  grid-template-columns: repeat($cols, 1fr);
+  gap: $gap;
+
+  @include respond-to(desktop) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to(mobile) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// -- Secondary / hint text ---------------------------------------------------
+// The repeated pattern for small muted helper text (labels, hints, empty states).
+@mixin secondary-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-black-70);
+}
+
+// -- Responsive grid (minmax variant) ----------------------------------------
+// For grids that need a minimum column width instead of fixed count.
+@mixin responsive-grid-minmax($min: 180px, $cols: 4, $gap: $space-2xl) {
+  display: grid;
+  grid-template-columns: repeat($cols, minmax($min, 1fr));
+  gap: $gap;
+
+  @include respond-to(desktop) {
+    grid-template-columns: repeat(2, minmax($min, 1fr));
+  }
+
+  @include respond-to(mobile) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// -- Base table reset --------------------------------------------------------
+@mixin table-base {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    vertical-align: middle;
+  }
+}
+
+// -- Inline-form table -------------------------------------------------------
+// Tables that embed HDS form controls inside cells.
+@mixin table-inline-form($min-cell-width: 120px) {
+  @include table-base;
+
+  tbody td {
+    min-width: $min-cell-width;
+  }
+
+  // Makes table cells more dense horizontally
+  thead th,
+  tbody td {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .hds-text-input,
+  .hds-select,
+  .hds-checkbox {
+    margin: 0;
+  }
+}
+
+// -- Toolbar row (above tables / sections) -----------------------------------
+@mixin toolbar($justify: flex-end, $gap: $space-md, $mb: $space-md) {
+  display: flex;
+  justify-content: $justify;
+  gap: $gap;
+  margin-bottom: $mb;
+}
+
+// -- Responsive column span --------------------------------------------------
+// For grid children that should span multiple columns but collapse on mobile.
+@mixin responsive-col-span($span: 3) {
+  grid-column: span $span;
+
+  @include respond-to(desktop) {
+    grid-column: span min($span, 2);
+  }
+
+  @include respond-to(mobile) {
+    grid-column: span 1;
+  }
+}

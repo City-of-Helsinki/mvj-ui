@@ -1,0 +1,106 @@
+// ============================================================================
+// Header & user menu
+// ============================================================================
+
+@use "variables" as *;
+@use "mixins" as *;
+
+.landuse-header {
+  background-color: var(--color-tram);
+  color: var(--color-white);
+  @include flex-row-center;
+  justify-content: space-between;
+  padding: $space-lg $space-2xl;
+  box-shadow: $shadow-sm;
+}
+
+.landuse-header__left {
+  @include flex-row-center($space-2xl);
+
+  // Override HDS Logo default margin
+  img {
+    margin: 0 !important;
+  }
+}
+
+.landuse-header__title {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--color-white);
+}
+
+.landuse-header__right {
+  @include flex-row-center;
+}
+
+.landuse-header__user {
+  position: relative;
+}
+
+.landuse-header__user-button {
+  background-color: var(--color-white);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-black-10);
+  }
+}
+
+.landuse-header__user-initials {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-black-90);
+}
+
+.landuse-header__user-arrow {
+  position: absolute;
+  bottom: $space-xs;
+  right: $space-xs;
+  font-size: 8px;
+  color: var(--color-black-60);
+}
+
+.landuse-header__user-menu {
+  position: absolute;
+  top: calc(100% + $space-sm);
+  right: 0;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-black-20);
+  border-radius: $radius-sm;
+  box-shadow: $shadow-md;
+  min-width: 200px;
+  z-index: $z-dropdown;
+}
+
+.landuse-header__user-info {
+  padding: $space-md $space-lg;
+  border-bottom: 1px solid var(--color-black-10);
+  color: var(--color-black-90);
+  font-size: 14px;
+}
+
+.landuse-header__user-menu-item {
+  width: 100%;
+  padding: $space-md $space-lg;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--color-black-90);
+  font-size: 14px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-black-5);
+  }
+}
