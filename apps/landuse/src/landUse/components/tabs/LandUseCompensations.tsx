@@ -515,7 +515,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 heading="Perustietotaulukko"
                 className="landuse-detail__fieldset--with-margin"
               >
-                <div className="landuse-detail__sites-table-wrapper hds-table-container">
+                <div className="landuse-detail__table-wrapper hds-table-container">
                   {isDecisionPhase && (
                     <Notification
                       type="info"
@@ -529,7 +529,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   )}
                   {sites.length > 0 ? (
                     <Table
-                      className="landuse-detail__sites-table landuse-detail__compensations-table table-td-dense-padding"
+                      className="landuse-detail__table landuse-detail__compensations-table table-td-dense-padding"
                       cols={compensationsTableCols}
                       indexKey="id"
                       renderIndexCol={false}

@@ -219,9 +219,9 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                   )}
                 </Field>
 
-                <div className="landuse-detail__sites-table-wrapper">
+                <div className="landuse-detail__table-wrapper">
                   <Table
-                    className="landuse-detail__sites-table landuse-detail__monitoring-table table-td-dense-padding"
+                    className="landuse-detail__table landuse-detail__monitoring-table table-td-dense-padding"
                     cols={collateralsVakuuslaskuriCols}
                     indexKey="id"
                     renderIndexCol={false}
@@ -290,7 +290,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                       alla olevien rajojen mukaan.
                     </p>
                     <Table
-                      className="landuse-detail__sites-table landuse-detail__monitoring-info-table"
+                      className="landuse-detail__table landuse-detail__monitoring-info-table"
                       cols={collateralsInfoCols}
                       indexKey="id"
                       renderIndexCol={false}
