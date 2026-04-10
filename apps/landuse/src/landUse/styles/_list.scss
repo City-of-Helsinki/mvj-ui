@@ -1,0 +1,43 @@
+// ============================================================================
+// Land Use list page
+// ============================================================================
+
+@use "variables" as *;
+@use "mixins" as *;
+
+.landuse-list {
+  @include page-container;
+}
+
+.landuse-list__header {
+  @include flex-row-center($space-lg);
+  margin-bottom: $space-2xl;
+  flex-wrap: wrap;
+}
+
+.landuse-list__search-group {
+  @include flex-row-center($space-md);
+}
+
+.landuse-list__result-count {
+  font-size: 14px;
+  color: var(--color-black-60);
+  white-space: nowrap;
+}
+
+.landuse-list__empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-4xl $space-2xl;
+  text-align: center;
+  color: var(--color-black-60);
+  font-size: 16px;
+  background-color: var(--color-black-5);
+  border: 1px solid var(--color-black-10);
+  border-radius: $radius-sm;
+
+  p {
+    margin: 0;
+  }
+}

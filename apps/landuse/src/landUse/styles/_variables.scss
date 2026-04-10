@@ -1,0 +1,37 @@
+// ============================================================================
+// Design Tokens & Variables
+// ============================================================================
+// Single source of truth for spacing, breakpoints, shadows, and z-index.
+// HDS CSS custom properties (--color-*, --font-*) are used directly in rules;
+// only project-level constants live here.
+// ============================================================================
+
+// -- Breakpoints (max-width, mobile-first override) -------------------------
+$bp-desktop: 1200px;
+$bp-tablet: 1024px;
+$bp-mobile: 768px;
+
+// -- Layout -----------------------------------------------------------------
+$page-max-width: 1440px;
+$page-padding: 24px;
+
+// -- Spacing scale (used in gap / margin / padding) -------------------------
+$space-xs: 4px;
+$space-sm: 8px;
+$space-md: 12px;
+$space-lg: 16px;
+$space-xl: 20px;
+$space-2xl: 24px;
+$space-3xl: 32px;
+$space-4xl: 48px;
+
+// -- Shadows ----------------------------------------------------------------
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+// -- Z-index layers ---------------------------------------------------------
+$z-dropdown: 1000;
+
+// -- Border radius ----------------------------------------------------------
+$radius-sm: 4px;
+$radius-pill: 9999px;

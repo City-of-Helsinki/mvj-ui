@@ -1,0 +1,242 @@
+// ============================================================================
+// Detail page – core layout, grids, sections, tabs, sites table
+// ============================================================================
+
+@use "variables" as *;
+@use "mixins" as *;
+
+// -- Page layout -------------------------------------------------------------
+
+.landuse-detail {
+  @include page-container;
+}
+
+.landuse-detail__header {
+  margin: $space-2xl 0;
+  padding: $space-lg $space-xl;
+  @include flex-row-center;
+  justify-content: space-between;
+  background-color: var(--color-black-5);
+  border-radius: $radius-sm;
+}
+
+.landuse-detail__title {
+  font-size: 32px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--color-black-90);
+}
+
+.landuse-detail__actions {
+  @include flex-row-center($space-md);
+  flex-wrap: wrap;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-sm;
+  }
+}
+
+.landuse-detail__content {
+  padding: $space-2xl 0;
+}
+
+// -- Section / field primitives ----------------------------------------------
+
+.landuse-detail__section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-black-90);
+  margin: 0 0 $space-2xl 0;
+}
+
+.landuse-detail__subsection-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-black-90);
+  margin: 0 0 $space-lg;
+}
+
+.landuse-detail__grid {
+  @include responsive-grid;
+
+  &--with-delete {
+    grid-template-columns: repeat(4, 1fr) auto;
+  }
+}
+
+.landuse-detail__column {
+  @include flex-col($space-xl);
+}
+
+.landuse-detail__field-group {
+  @include flex-col($space-md);
+}
+
+.landuse-detail__add-button {
+  justify-content: flex-start !important;
+}
+
+.landuse-detail__section {
+  @include flex-col($space-lg);
+  padding: $space-lg;
+  border: 1px solid var(--color-black-20);
+  border-radius: $radius-sm;
+  background-color: var(--color-black-5);
+}
+
+// -- Fieldset overrides ------------------------------------------------------
+
+.landuse-detail__fieldset--no-heading .hds-fieldset__legend {
+  display: none;
+}
+
+.landuse-detail__fieldset--with-margin {
+  margin-bottom: $space-3xl;
+}
+
+// -- Tab label / icons -------------------------------------------------------
+
+.landuse-detail__tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.landuse-detail__tab-icon {
+  flex-shrink: 0;
+
+  &--dirty {
+    color: var(--color-alert-dark);
+  }
+
+  &--error {
+    color: var(--color-error);
+  }
+}
+
+// -- Sites table -------------------------------------------------------------
+
+.landuse-detail__sites-table-wrapper {
+  overflow-x: auto;
+}
+
+.landuse-detail__sites-table {
+  @include table-base;
+
+  th,
+  td {
+    text-align: left;
+    border-bottom: 1px solid var(--color-black-10);
+  }
+
+  thead th {
+    color: var(--color-black-70);
+    font-weight: 600;
+  }
+}
+
+// ============================================================================
+// Compensations tab
+// ============================================================================
+
+.landuse-detail__compensation-grid {
+  @include responsive-grid-minmax(180px);
+
+  &--notes {
+    margin-top: $space-xl;
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
+.landuse-detail__compensations-table-header-actions {
+  @include toolbar;
+}
+
+.landuse-detail__compensations-table {
+  @include table-inline-form;
+
+  tfoot th {
+    font-weight: 600;
+  }
+}
+
+// ============================================================================
+// Collaterals tab
+// ============================================================================
+
+.landuse-detail__collaterals-base-coefficient-field {
+  width: 100%;
+  max-width: 25%;
+  margin-bottom: $space-md;
+
+  @include respond-to(mobile) {
+    max-width: 100%;
+  }
+}
+
+.landuse-detail__collaterals-drag-hint {
+  @include secondary-text;
+}
+
+.landuse-detail__collaterals-draggable-item {
+  cursor: grab;
+  border-radius: $radius-sm;
+
+  &:hover {
+    background-color: var(--color-black-5);
+  }
+
+  &--dragging {
+    opacity: 0.65;
+    cursor: grabbing;
+  }
+}
+
+.landuse-detail__collaterals-drag-handle {
+  display: inline-block;
+  margin-right: 6px;
+  color: var(--color-black-60);
+  font-weight: 700;
+}
+
+// ============================================================================
+// Decisions tab
+// ============================================================================
+
+.landuse-detail__decisions-grid {
+  margin-bottom: $space-lg;
+}
+
+.landuse-detail__decisions-label {
+  @include secondary-text;
+}
+
+.landuse-detail__decisions-link-value {
+  margin: 0;
+  color: var(--color-bus);
+  font-weight: 500;
+}
+
+.landuse-detail__decisions-note-column,
+.landuse-detail__decisions-paatos-column {
+  @include responsive-col-span(3);
+}
+
+.landuse-detail__decisions-add-row {
+  margin-top: $space-sm;
+  margin-bottom: $space-xl;
+}
+
+.landuse-detail__decisions-section-break {
+  margin-top: $space-2xl;
+}
+
+.landuse-detail__decisions-vakuuslaskuri {
+  @include toolbar;
+}
+
+.landuse-detail__decisions-vakuus-block {
+  margin-bottom: $space-2xl;
+}
