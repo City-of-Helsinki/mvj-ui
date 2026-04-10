@@ -119,7 +119,7 @@
 // -- Sites table -------------------------------------------------------------
 
 .landuse-detail__sites-table-wrapper {
-  overflow-x: auto;
+  overflow-x: visible; // Allow dropdowns etc to overflow the table wrapper
 }
 
 .landuse-detail__sites-table {
@@ -156,6 +156,10 @@
 
 .landuse-detail__compensations-table {
   @include table-inline-form;
+
+  // .hds-select__menu {
+  //   z-index: $z-dropdown;
+  // }
 
   tfoot th {
     font-weight: 600;
