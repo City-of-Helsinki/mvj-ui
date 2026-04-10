@@ -1301,7 +1301,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               &quot;käänteisenä&quot; vakuudet-välilehden
                               taulukkoon nähden
                               <Table
-                                className="landuse-detail__sites-table landuse-detail__monitoring-table"
+                                className="landuse-detail__sites-table landuse-detail__monitoring-table table-td-dense-padding"
                                 cols={vakuudetTableCols}
                                 indexKey="id"
                                 renderIndexCol={false}

@@ -529,7 +529,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   )}
                   {sites.length > 0 ? (
                     <Table
-                      className="landuse-detail__sites-table landuse-detail__compensations-table"
+                      className="landuse-detail__sites-table landuse-detail__compensations-table table-td-dense-padding"
                       cols={compensationsTableCols}
                       indexKey="id"
                       renderIndexCol={false}
