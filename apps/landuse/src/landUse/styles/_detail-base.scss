@@ -1,5 +1,5 @@
 // ============================================================================
-// Detail page – core layout, grids, sections, tabs, sites table
+// Detail page – core layout, grids, sections, tabs, tables, etc.
 // ============================================================================
 
 @use "variables" as *;
@@ -116,13 +116,13 @@
   }
 }
 
-// -- Sites table -------------------------------------------------------------
+// -- Tables -------------------------------------------------------------
 
-.landuse-detail__sites-table-wrapper {
+.landuse-detail__table-wrapper {
   overflow-x: visible; // Allow dropdowns etc to overflow the table wrapper
 }
 
-.landuse-detail__sites-table {
+.landuse-detail__table {
   @include table-base;
 
   th,

@@ -1296,12 +1296,12 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               </div>
                             </div>
 
-                            <div className="landuse-detail__sites-table-wrapper">
+                            <div className="landuse-detail__table-wrapper">
                               TODO poista taulukko, tai toteuta
                               &quot;käänteisenä&quot; vakuudet-välilehden
                               taulukkoon nähden
                               <Table
-                                className="landuse-detail__sites-table landuse-detail__monitoring-table table-td-dense-padding"
+                                className="landuse-detail__table landuse-detail__monitoring-table table-td-dense-padding"
                                 cols={vakuudetTableCols}
                                 indexKey="id"
                                 renderIndexCol={false}

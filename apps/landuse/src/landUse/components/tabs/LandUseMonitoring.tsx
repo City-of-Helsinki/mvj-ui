@@ -696,9 +696,9 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   heading="Valvonnan perustaulukko VE1"
                   className="landuse-detail__fieldset--with-margin"
                 >
-                  <div className="landuse-detail__sites-table-wrapper">
+                  <div className="landuse-detail__table-wrapper">
                     <Table
-                      className="landuse-detail__sites-table landuse-detail__monitoring-table table-td-dense-padding"
+                      className="landuse-detail__table landuse-detail__monitoring-table table-td-dense-padding"
                       cols={monitoringPerustaulukkoCols}
                       indexKey="id"
                       renderIndexCol={false}
@@ -721,9 +721,9 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                     />
                   </div>
 
-                  <div className="landuse-detail__sites-table-wrapper">
+                  <div className="landuse-detail__table-wrapper">
                     <Table
-                      className="landuse-detail__sites-table landuse-detail__monitoring-table table-td-dense-padding"
+                      className="landuse-detail__table landuse-detail__monitoring-table table-td-dense-padding"
                       cols={monitoringVapauttaminenCols}
                       indexKey="id"
                       renderIndexCol={false}
@@ -784,9 +784,9 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                 </Fieldset>
 
                 <Fieldset heading="Sakko">
-                  <div className="landuse-detail__sites-table-wrapper">
+                  <div className="landuse-detail__table-wrapper">
                     <Table
-                      className="landuse-detail__sites-table landuse-detail__monitoring-table table-td-dense-padding"
+                      className="landuse-detail__table landuse-detail__monitoring-table table-td-dense-padding"
                       cols={monitoringSakkoCols}
                       indexKey="id"
                       renderIndexCol={false}
