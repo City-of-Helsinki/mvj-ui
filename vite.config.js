@@ -6,7 +6,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import postcssUrl from 'postcss-url';
 import babel from '@rollup/plugin-babel';
-import fs from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -111,18 +110,4 @@ export default defineConfig({
     port: 3000,
     sourcemap: true,
   },
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    alias: {
-      '@': path.resolve(__dirname, '/src'),
-    },
-    coverage: {
-      provider: 'v8',
-      reporter: ['lcov', 'text'],
-      reportsDirectory: './coverage',
-      include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/**/*.{test,spec}.{ts,tsx}', 'src/**/*.d.ts'],
-    },
-  }
 })
