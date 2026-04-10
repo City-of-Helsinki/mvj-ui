@@ -157,10 +157,6 @@
 .landuse-detail__compensations-table {
   @include table-inline-form;
 
-  // .hds-select__menu {
-  //   z-index: $z-dropdown;
-  // }
-
   tfoot th {
     font-weight: 600;
   }
