@@ -18,3 +18,9 @@
 [class*="Select-module_selectAndListContainer"] {
   margin-bottom: 0 !important;
 }
+
+// Allow dropdowns (e.g. HDS Select) to overflow the table container, to avoid
+// clipping and scrollbars when the table is near the bottom of its container.
+[class*="table_hds-table-container"] {
+  overflow-x: visible;
+}
