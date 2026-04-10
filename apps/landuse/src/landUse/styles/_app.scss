@@ -8,3 +8,13 @@
   min-height: 100vh;
   padding: 0;
 }
+
+// -- HDS component overrides -------------------------------------------------
+
+// HDS Select internally wraps the control in a CSS-Module class whose hash
+// changes between library versions.  Target by the stable infix instead so
+// the override survives upgrades.
+// Remove this rule if HDS removes the bottom margin in a future version.
+[class*="Select-module_selectAndListContainer"] {
+  margin-bottom: 0 !important;
+}
