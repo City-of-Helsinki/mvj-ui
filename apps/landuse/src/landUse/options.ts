@@ -7,28 +7,247 @@
 export const MUNICIPALITY_OPTIONS = [{ label: "Helsinki", value: "1" }];
 
 export const DISTRICT_OPTIONS = [
-  { label: "Kruununhaka", value: "1" },
-  { label: "Vallila", value: "22" },
-  { label: "Kalasatama", value: "49" },
-  { label: "Jätkäsaari", value: "18" },
+  {
+    value: "0",
+    label: "Koko Helsinki",
+  },
+  {
+    value: "1",
+    label: "Kruununhaka",
+  },
+  {
+    value: "2",
+    label: "Kluuvi",
+  },
+  {
+    value: "3",
+    label: "Kaartinkaupunki",
+  },
+  {
+    value: "4",
+    label: "Kamppi",
+  },
+  {
+    value: "5",
+    label: "Punavuori",
+  },
+  {
+    value: "6",
+    label: "Eira",
+  },
+  {
+    value: "7",
+    label: "Ullanlinna",
+  },
+  {
+    value: "8",
+    label: "Katajanokka",
+  },
+  {
+    value: "9",
+    label: "Kaivopuisto",
+  },
+  {
+    value: "10",
+    label: "Sörnäinen",
+  },
+  {
+    value: "11",
+    label: "Kallio",
+  },
+  {
+    value: "12",
+    label: "Alppiharju",
+  },
+  {
+    value: "13",
+    label: "Etu-töölö",
+  },
+  {
+    value: "14",
+    label: "Taka-töölö",
+  },
+  {
+    value: "15",
+    label: "Meilahti",
+  },
+  {
+    value: "16",
+    label: "Ruskeasuo",
+  },
+  {
+    value: "17",
+    label: "Pasila",
+  },
+  {
+    value: "18",
+    label: "Laakso",
+  },
+  {
+    value: "19",
+    label: "Mustikkamaa-Korkeasaari",
+  },
+  {
+    value: "20",
+    label: "Länsisatama",
+  },
+  {
+    value: "21",
+    label: "Hermanni",
+  },
+  {
+    value: "22",
+    label: "Vallila",
+  },
+  {
+    value: "23",
+    label: "Toukola",
+  },
+  {
+    value: "24",
+    label: "Kumpula",
+  },
+  {
+    value: "25",
+    label: "Käpylä",
+  },
+  {
+    value: "26",
+    label: "Koskela",
+  },
+  {
+    value: "27",
+    label: "Vanhakaupunki",
+  },
+  {
+    value: "28",
+    label: "Oulunkylä",
+  },
+  {
+    value: "29",
+    label: "Haaga",
+  },
+  {
+    value: "30",
+    label: "Munkkiniemi",
+  },
+  {
+    value: "31",
+    label: "Lauttasaari",
+  },
+  {
+    value: "32",
+    label: "Konala",
+  },
+  {
+    value: "33",
+    label: "Kaarela",
+  },
+  {
+    value: "34",
+    label: "Pakila",
+  },
+  {
+    value: "35",
+    label: "Tuomarinkylä",
+  },
+  {
+    value: "36",
+    label: "Viikki",
+  },
+  {
+    value: "37",
+    label: "Pukinmäki",
+  },
+  {
+    value: "38",
+    label: "Malmi",
+  },
+  {
+    value: "39",
+    label: "Tapaninkylä",
+  },
+  {
+    value: "40",
+    label: "Suutarila",
+  },
+  {
+    value: "41",
+    label: "Suurmetsä",
+  },
+  {
+    value: "42",
+    label: "Kulosaari",
+  },
+  {
+    value: "43",
+    label: "Herttoniemi",
+  },
+  {
+    value: "44",
+    label: "Tammisalo",
+  },
+  {
+    value: "45",
+    label: "Vartiokylä",
+  },
+  {
+    value: "46",
+    label: "Pitäjänmäki",
+  },
+  {
+    value: "47",
+    label: "Mellunkylä",
+  },
+  {
+    value: "48",
+    label: "Vartiosaari",
+  },
+  {
+    value: "49",
+    label: "Laajasalo",
+  },
+  {
+    value: "50",
+    label: "Villinki",
+  },
+  {
+    value: "51",
+    label: "Santahamina",
+  },
+  {
+    value: "52",
+    label: "Suomenlinna",
+  },
+  {
+    value: "53",
+    label: "Ulkosaaret",
+  },
+  {
+    value: "54",
+    label: "Vuosaari",
+  },
+  {
+    value: "55",
+    label: "Östersundom",
+  },
+  {
+    value: "56",
+    label: "Salmenkallio",
+  },
+  {
+    value: "57",
+    label: "Talosaari",
+  },
+  {
+    value: "58",
+    label: "Karhusaari",
+  },
+  {
+    value: "59",
+    label: "Ultuna",
+  },
 ];
-
-export const LAND_USE_EDISTAMISALUE_VALUES = [
-  "Kalasatama",
-  "Jätkäsaari",
-  "Östersundom",
-  "Pasila",
-  "Kruunuvuorenranta",
-  "Kuninkaantammi",
-  "Honkasuo",
-] as const;
-
-export const landUseEdistamisalueOptions = LAND_USE_EDISTAMISALUE_VALUES.map(
-  (value) => ({
-    label: value,
-    value,
-  }),
-);
 
 export const LAND_USE_NEGOTIATION_PHASES = {
   VIREILLA: "Vireillä",
@@ -47,17 +266,21 @@ export const landUseNegotiationPhaseOptions = Object.values(
 }));
 
 export const landUseDecisionMakerOptions = [
-  { label: "Ville Virkailija", value: "Ville Virkailija" },
   {
-    label: "Asuntotontit tiimipäällikkö",
-    value: "Asuntotontit tiimipäällikkö",
+    label: "Tonttipäällikkö",
+    value: "Tonttipäällikkö",
   },
+  {
+    label: "Kaupunkiympäristölautakunta",
+    value: "Kaupunkiympäristölautakunta",
+  },
+  { label: "Kaupunginhallitus", value: "Kaupunginhallitus" },
 ];
 
 export const landUseSectionOptions = [
-  { label: "60 §", value: "60 §" },
-  { label: "61 §", value: "61 §" },
-  { label: "62 §", value: "62 §" },
+  { label: "10 §", value: "10 §" },
+  { label: "20 §", value: "20 §" },
+  { label: "30 §", value: "30 §" },
 ];
 
 export const landUseDecisionTypeOptions = [
@@ -81,17 +304,24 @@ export const landUseConditionTypeOptions = [
 
 export const landUseAgreementTypeOptions = [
   { label: "Maankäyttösopimus", value: "Maankäyttösopimus" },
-  { label: "Esisopimus", value: "Esisopimus" },
+  {
+    label: "Kiinteistökaupan esitietosopimus",
+    value: "Kiinteistökaupan esitietosopimus",
+  },
+  { label: "Muu", value: "Muu" },
 ];
 
 export const landUseGuaranteeTypeOptions = [
+  { label: "Panttikirja", value: "Panttikirja" },
+  { label: "Rahavakuus", value: "Rahavakuus" },
+  { label: "Omavelkainen takaus", value: "Omavelkainen takaus" },
+  { label: "Tilivarojen panttaus", value: "Tilivarojen panttaus" },
   { label: "Muu vakuus", value: "Muu vakuus" },
-  { label: "Pankkitakaus", value: "Pankkitakaus" },
 ];
 
 export const landUseGuaranteeCategoryOptions = [
-  { label: "-", value: "-" },
-  { label: "Rahavakuus", value: "Rahavakuus" },
+  { label: "Sähköinen", value: "Sähköinen" },
+  { label: "Paperinen", value: "Paperinen" },
 ];
 
 export const ASEMAKAAVA_KASITTELYVAIHE_OPTIONS = [
@@ -170,21 +400,21 @@ export const landUseCompensationSelectOptions = {
 };
 
 export const landUseKohdeSelectOptions = [
-  { label: "01-49-920-6", value: "01-49-920-6" },
-  { label: "02-18-450-3", value: "02-18-450-3" },
-  { label: "03-27-780-1", value: "03-27-780-1" },
-  { label: "04-15-320-2", value: "04-15-320-2" },
-  { label: "05-33-120-9", value: "05-33-120-9" },
+  { label: "91-10-100-1", value: "91-10-100-1" },
+  { label: "91-11-200-2", value: "91-11-200-2" },
+  { label: "91-12-300-3", value: "91-12-300-3" },
+  { label: "91-13-400-4", value: "91-13-400-4" },
+  { label: "91-14-500-5", value: "91-14-500-5" },
+  { label: "91-15-600-6", value: "91-15-600-6" },
 ];
 
 export const negotiatorsOptions = [
-  { label: "NN", value: "NN" },
   { label: "Liisa Virtanen", value: "Liisa Virtanen" },
   { label: "Matti Meikäläinen", value: "Matti Meikäläinen" },
 ];
 
 export const signatoriesOptions = [
-  { label: "Ylipäällikkö", value: "Ylipäällikkö" },
-  { label: "Välipäällikkö", value: "Välipäällikkö" },
   { label: "Alipäällikkö", value: "Alipäällikkö" },
+  { label: "Välipäällikkö", value: "Välipäällikkö" },
+  { label: "Ylipäällikkö", value: "Ylipäällikkö" },
 ];

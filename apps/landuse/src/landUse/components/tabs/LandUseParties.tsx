@@ -13,6 +13,10 @@ import { Form, Field } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { FormApi } from "final-form";
 import { normalizeSelectValue } from "../../fieldUtils";
+import {
+  negotiatorsOptions as defaultNegotiatorsOptions,
+  signatoriesOptions as defaultSignatoriesOptions,
+} from "../../options";
 
 export interface PartyDetails {
   customerType: string | undefined;
@@ -103,8 +107,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
-        const negotiatorsOptions = values?.negotiatorsOptions ?? [];
-        const signatoriesOptions = values?.signatoriesOptions ?? [];
+        const negotiatorsOptions = defaultNegotiatorsOptions;
+        const signatoriesOptions = defaultSignatoriesOptions;
         const customerName = values?.customer?.details?.name?.trim() || "Nimi";
 
         return (
@@ -360,8 +364,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                           <Select
                             id="customer-landlord"
                             texts={{
-                              label: "Vuokrantaja",
-                              placeholder: "Valitse vuokrantaja",
+                              label: "Vuokranantaja",
+                              placeholder: "Valitse vuokranantaja",
                             }}
                             options={landlordOptions}
                             value={normalizeSelectValue(input.value)}
@@ -696,8 +700,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                           <Select
                             id="invoice-landlord"
                             texts={{
-                              label: "Vuokrantaja",
-                              placeholder: "Valitse vuokrantaja",
+                              label: "Vuokranantaja",
+                              placeholder: "Valitse vuokranantaja",
                             }}
                             options={landlordOptions}
                             value={normalizeSelectValue(input.value)}
