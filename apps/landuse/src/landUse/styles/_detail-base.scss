@@ -99,6 +99,7 @@
 // -- Tab label / icons -------------------------------------------------------
 
 .landuse-detail__tab-label {
+  // For the dirty and error icons to be properly aligned with the text.
   display: inline-flex;
   align-items: center;
   gap: 6px;
