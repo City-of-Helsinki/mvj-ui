@@ -18,7 +18,7 @@ import { normalizeSelectValue } from "../../fieldUtils";
 import { getAsemakaavat } from "../../api/landUseApi";
 import {
   type AsemakaavaListItem,
-  landUseEdistamisalueOptions,
+  DISTRICT_OPTIONS,
   landUseNegotiationPhaseOptions,
 } from "../../options";
 import { landUseKohdeSelectOptions } from "../../options";
@@ -184,7 +184,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                     {({ input }) => (
                       <Select
                         id="summary-edistamisalue"
-                        options={landUseEdistamisalueOptions}
+                        options={DISTRICT_OPTIONS}
                         value={normalizeSelectValue(input.value)}
                         onChange={(selectedOptions) =>
                           handleSelectChange(selectedOptions, input.onChange)
