@@ -83,7 +83,7 @@ interface LandUseMonitoringProps {
   sites: LandUseSite[];
   perushinta?: string;
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
-  vertailunPeruskerroin?: number;
+  korotuskerroin?: number;
   maankayttokorvausYhteensa?: number;
   onSetTabDirty?: (formKey: FormKey) => void;
 }
@@ -138,7 +138,7 @@ const calculateVakuudenVapauttaminenTarve = (
   toteutunutValue: number | null,
   hintaeroValue: number | null,
   kerroinPercent: number | null,
-  vertailunPeruskerroinValue: number,
+  korotuskerroinValue: number,
 ): number | null => {
   if (
     vaadittuValue === null ||
@@ -153,7 +153,7 @@ const calculateVakuudenVapauttaminenTarve = (
     vaadittuValue - toteutunutValue,
     hintaeroValue,
     kerroinPercent,
-    vertailunPeruskerroinValue,
+    korotuskerroinValue,
   );
 };
 
@@ -163,7 +163,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
   sites,
   perushinta,
   compensationsRowsBySiteId,
-  vertailunPeruskerroin,
+  korotuskerroin,
   maankayttokorvausYhteensa,
   onSetTabDirty,
 }) => {
@@ -214,8 +214,8 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           values.toteutunutHallintamuotoBySiteId ?? {};
         const plotDivisionsBySiteId = values.plotDivisionsBySiteId ?? {};
         const sakkoRows = values.sakkoRows ?? [];
-        const vertailunPeruskerroinValue =
-          parseLandUseNumericValue(vertailunPeruskerroin) ?? 1;
+        const korotuskerroinValue =
+          parseLandUseNumericValue(korotuskerroin) ?? 1;
         const selectedPlotDivision = selectedPlotDivisionTarget
           ? (
               plotDivisionsBySiteId[selectedPlotDivisionTarget.siteId] ?? []
@@ -505,7 +505,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
               );
               const sopimussakkoValue = calculateSopimussakko(
                 hintaeroValue,
-                vertailunPeruskerroinValue,
+                korotuskerroinValue,
               );
               const kerroinPercent =
                 hintaeroValue !== null
@@ -516,7 +516,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                 toteutunutValue,
                 hintaeroValue,
                 kerroinPercent,
-                vertailunPeruskerroinValue,
+                korotuskerroinValue,
               );
               const toteuttamattaValue = calculateToteuttamatta(
                 vaadittuValue,
@@ -556,7 +556,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           const hintaeroValue = calculateHintaero(perushinta, yksikkohintaRaw);
           const sopimussakkoValue = calculateSopimussakko(
             hintaeroValue,
-            vertailunPeruskerroinValue,
+            korotuskerroinValue,
           );
           const kerroinPercent =
             hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
@@ -565,7 +565,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             toteutunutValue,
             hintaeroValue,
             kerroinPercent,
-            vertailunPeruskerroinValue,
+            korotuskerroinValue,
           );
 
           const toteuttamattaValue = calculateToteuttamatta(
@@ -712,7 +712,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   heading="Vakuuden vapauttaminen"
                   className="landuse-detail__fieldset--with-margin"
                 >
-                  <div className="landuse-detail__collaterals-base-coefficient-field">
+                  <div className="landuse-detail__collaterals-increase-factor-field">
                     <TextInput
                       id="monitoring-vapauttaminen-perushinta"
                       label="Perushinta"

@@ -8,6 +8,7 @@ import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoi
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
 import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
+import { DEFAULT_KOROTUSKERROIN } from "../constants";
 import { negotiatorsOptions, signatoriesOptions } from "../options";
 
 export interface MockLandUseData {
@@ -251,7 +252,7 @@ const ma113Decisions: LandUseDecisionsFormValues = {
 };
 
 const ma113Collaterals: LandUseCollateralsFormValues = {
-  vertailunPeruskerroin: 1,
+  korotuskerroin: DEFAULT_KOROTUSKERROIN,
 };
 
 const ma113Monitoring: LandUseMonitoringFormValues = {

@@ -48,7 +48,7 @@ export interface LandUseCompensationsFormValues {
   maakorvaus: string;
   muuKorvaus: string;
   perushinta: string;
-  vertailunPeruskerroin?: number;
+  korotuskerroin?: number;
   maakorvausSelite: string;
   muuSelite: string;
   perustietotaulukkoRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
