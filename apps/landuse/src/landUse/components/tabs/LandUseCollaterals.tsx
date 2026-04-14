@@ -24,9 +24,10 @@ import {
   calculateVakuustarve,
   getKerroinPercent,
 } from "../../utils/vakuustarve";
+import { DEFAULT_KOROTUSKERROIN } from "../../constants";
 
 export interface LandUseCollateralsFormValues {
-  vertailunPeruskerroin?: number;
+  korotuskerroin?: number;
 }
 
 interface PerustietotaulukkoRowValues {
@@ -75,8 +76,9 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
-        const vertailunPeruskerroin =
-          parseLandUseNumericValue(values.vertailunPeruskerroin) ?? 1;
+        const korotuskerroin =
+          parseLandUseNumericValue(values.korotuskerroin) ??
+          DEFAULT_KOROTUSKERROIN;
 
         const vakuuslaskuriRows: CollateralsVakuuslaskuriRow[] = sites.map(
           (site) => {
@@ -88,7 +90,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             );
             const sopimussakkoValue = calculateSopimussakko(
               hintaeroValue,
-              vertailunPeruskerroin,
+              korotuskerroin,
             );
             const kerroinPercent =
               hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
@@ -101,7 +103,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                     vaadittuValue,
                     hintaeroValue,
                     kerroinPercent,
-                    vertailunPeruskerroin,
+                    korotuskerroin,
                   )
                 : null;
 
@@ -155,7 +157,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           sites,
           compensationsRowsBySiteId,
           perushinta,
-          vertailunPeruskerroin,
+          korotuskerroin,
         );
 
         const totalCollateralSeparatorDirection =
@@ -202,12 +204,12 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 heading="Vakuuslaskuri"
                 className="landuse-detail__fieldset--with-margin"
               >
-                <Field name="vertailunPeruskerroin">
+                <Field name="korotuskerroin">
                   {({ input }) => (
-                    <div className="landuse-detail__collaterals-base-coefficient-field">
+                    <div className="landuse-detail__collaterals-increase-factor-field">
                       <NumberInput
-                        id="collaterals-vertailun-peruskerroin"
-                        label="Vertailun peruskerroin"
+                        id="collaterals-korotuskerroin"
+                        label="Korotuskerroin"
                         min={1}
                         max={2}
                         step={0.05}

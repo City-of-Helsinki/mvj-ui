@@ -36,22 +36,19 @@ export const calculateVakuustarve = (
   vaadittuValue: number | null,
   hintaeroValue: number | null,
   kerroinPercent: number | null,
-  vertailunPeruskerroin: number | null,
+  korotuskerroin: number | null,
 ): number | null => {
   if (
     vaadittuValue === null ||
     hintaeroValue === null ||
     kerroinPercent === null ||
-    vertailunPeruskerroin === null
+    korotuskerroin === null
   ) {
     return null;
   }
 
   return (
-    vaadittuValue *
-    hintaeroValue *
-    (kerroinPercent / 100) *
-    vertailunPeruskerroin
+    vaadittuValue * hintaeroValue * (kerroinPercent / 100) * korotuskerroin
   );
 };
 
@@ -59,7 +56,7 @@ export const calculateSaantelynMukainenOriginalValue = (
   sites: LandUseSite[],
   compensationsRowsBySiteId: Record<string, { yksikkohinta: string }>,
   perushinta: string | undefined,
-  vertailunPeruskerroin: number | null,
+  korotuskerroin: number | null,
 ): number =>
   sites.reduce((sum, site) => {
     const vaadittuValue = parseLandUseNumericValue(site.km2);
@@ -71,20 +68,20 @@ export const calculateSaantelynMukainenOriginalValue = (
       vaadittuValue,
       hintaeroValue,
       kerroinPercent,
-      vertailunPeruskerroin,
+      korotuskerroin,
     );
     return sum + (vakuustarveValue ?? 0);
   }, 0);
 
 export const calculateSopimussakko = (
   hintaero: number | null,
-  vertailunPeruskerroin: number | null,
+  korotuskerroin: number | null,
 ): number | null => {
-  if (hintaero === null || vertailunPeruskerroin === null) {
+  if (hintaero === null || korotuskerroin === null) {
     return null;
   }
 
-  return hintaero * vertailunPeruskerroin;
+  return hintaero * korotuskerroin;
 };
 
 export const calculateToteuttamatta = (

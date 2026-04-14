@@ -70,6 +70,7 @@ import {
 } from "../api/landUseApi";
 import { LAND_USE_NEGOTIATION_PHASES } from "../options";
 import { parseLandUseNumericValueOrZero } from "../utils/number";
+import { DEFAULT_KOROTUSKERROIN } from "../constants";
 
 interface FormState {
   dirty: boolean;
@@ -916,10 +917,8 @@ const LandUseDetailPage: React.FC = () => {
             compensationsRowsBySiteId={
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
             }
-            vertailunPeruskerroin={
-              compensationsQuery.data?.vertailunPeruskerroin ??
-              collateralsQuery.data?.vertailunPeruskerroin ??
-              1.25
+            korotuskerroin={
+              collateralsQuery.data?.korotuskerroin ?? DEFAULT_KOROTUSKERROIN
             }
             maankayttokorvausYhteensa={
               parseLandUseNumericValueOrZero(
