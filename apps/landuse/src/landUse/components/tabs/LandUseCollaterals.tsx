@@ -6,6 +6,8 @@ import {
   NumberInput,
   Notification,
   Table,
+  TextInput,
+  IconSize,
 } from "hds-react";
 import { Form } from "react-final-form";
 import { Field } from "react-final-form";
@@ -207,16 +209,28 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 <Field name="korotuskerroin">
                   {({ input }) => (
                     <div className="landuse-detail__collaterals-increase-factor-field">
-                      <NumberInput
-                        id="collaterals-korotuskerroin"
-                        label="Korotuskerroin"
-                        min={1}
-                        max={2}
-                        step={0.05}
-                        value={input.value}
-                        onChange={input.onChange}
-                        disabled={!isEditMode}
-                      />
+                      {isEditMode ? (
+                        <NumberInput
+                          id="collaterals-korotuskerroin"
+                          label="Korotuskerroin"
+                          min={1}
+                          max={2}
+                          step={0.05}
+                          value={input.value}
+                          onChange={input.onChange}
+                        />
+                      ) : (
+                        <TextInput
+                          id="collaterals-korotuskerroin"
+                          label="Korotuskerroin"
+                          value={
+                            input.value !== undefined && input.value !== ""
+                              ? formatLandUseNumericValue(Number(input.value))
+                              : "-"
+                          }
+                          readOnly
+                        />
+                      )}
                     </div>
                   )}
                 </Field>
@@ -238,48 +252,50 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 className="landuse-detail__fieldset--with-margin"
               >
                 <div className="landuse-detail__grid landuse-detail__monitoring-collateral-grid">
-                  <div
-                    className={`landuse-detail__monitoring-collateral-field${
+                  <TextInput
+                    id="collaterals-sopimuksen-mukainen"
+                    label="Sopimuksen mukainen"
+                    value={formatLandUseEuroValue(sopimuksenMukainenValue)}
+                    readOnly
+                    style={
                       totalCollateralSeparatorDirection === "left"
-                        ? " landuse-detail__monitoring-collateral-field--highlight"
-                        : ""
-                    }`}
-                  >
-                    <NumberInput
-                      id="collaterals-sopimuksen-mukainen"
-                      label="Sopimuksen mukainen"
-                      value={sopimuksenMukainenValue}
-                      unit="€"
-                      disabled
-                    />
-                  </div>
+                        ? {
+                            border: "4px solid var(--color-success)",
+                            padding: "var(--spacing-2-xs)",
+                          }
+                        : {
+                            padding: "var(--spacing-2-xs)",
+                          }
+                    }
+                  />
 
                   <span
                     className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${totalCollateralSeparatorDirection}`}
                     aria-hidden="true"
                   >
                     {totalCollateralSeparatorDirection === "right" ? (
-                      <IconAngleLeft />
+                      <IconAngleLeft size={IconSize.ExtraLarge} />
                     ) : (
-                      <IconAngleRight />
+                      <IconAngleRight size={IconSize.ExtraLarge} />
                     )}
                   </span>
 
-                  <div
-                    className={`landuse-detail__monitoring-collateral-field${
+                  <TextInput
+                    id="collaterals-saantelyn-mukainen"
+                    label="Sääntelyn mukainen"
+                    value={formatLandUseEuroValue(saantelynMukainenValue)}
+                    readOnly
+                    style={
                       totalCollateralSeparatorDirection === "right"
-                        ? " landuse-detail__monitoring-collateral-field--highlight"
-                        : ""
-                    }`}
-                  >
-                    <NumberInput
-                      id="collaterals-saantelyn-mukainen"
-                      label="Sääntelyn mukainen"
-                      value={saantelynMukainenValue}
-                      unit="€"
-                      disabled
-                    />
-                  </div>
+                        ? {
+                            border: "4px solid var(--color-success)",
+                            padding: "var(--spacing-2-xs)",
+                          }
+                        : {
+                            padding: "var(--spacing-2-xs)",
+                          }
+                    }
+                  />
                 </div>
                 <Notification
                   type="info"

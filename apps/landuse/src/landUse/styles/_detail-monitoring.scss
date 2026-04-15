@@ -54,29 +54,12 @@
   }
 }
 
-.landuse-detail__monitoring-collateral-field {
-  margin: 0;
-
-  &--highlight {
-    [class*="text-input_hds-text-input"] {
-      --input-border-color-default: var(--color-success);
-      --input-border-color-hover: var(--color-success);
-      --input-border-color-focus: var(--color-success);
-      --input-border-color-disabled: var(--color-success);
-    }
-
-    [class*="text-input_hds-text-input__input"][disabled] {
-      border-color: var(--color-success) !important;
-    }
-  }
-}
-
 .landuse-detail__monitoring-collateral-separator {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: $space-sm;
-  color: var(--color-black-60);
+  height: 100%;
+  color: var(--color-black-90);
 
   @include respond-to(mobile) {
     display: none;
