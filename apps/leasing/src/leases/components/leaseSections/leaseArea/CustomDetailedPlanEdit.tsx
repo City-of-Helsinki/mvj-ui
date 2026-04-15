@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
@@ -69,6 +69,18 @@ const UsageDistributions = ({
   const usersPermissions: UsersPermissionsType =
     useSelector(getUsersPermissions);
 
+  useEffect(() => {
+    if (
+      (!fields || fields.length === 0) &&
+      isFieldAllowedToEdit(
+        attributes,
+        LeaseAreaCustomDetailedPlanFieldPaths.USAGE_DISTRIBUTIONS,
+      )
+    ) {
+      fields.push({});
+    }
+  }, [attributes, fields]);
+
   return (
     <AppConsumer>
       {({ dispatch: appDispatch }) => {
@@ -110,10 +122,12 @@ const UsageDistributions = ({
                               UsersPermissions.DELETE_USAGEDISTRIBUTION,
                             )}
                           >
-                            <RemoveButton
-                              onClick={handleRemove}
-                              title="Poista käyttöjakauma"
-                            />
+                            {fields.length > 1 && (
+                              <RemoveButton
+                                onClick={handleRemove}
+                                title="Poista käyttöjakauma"
+                              />
+                            )}
                           </Authorization>
                         </ActionButtonWrapper>
                         <Row>
