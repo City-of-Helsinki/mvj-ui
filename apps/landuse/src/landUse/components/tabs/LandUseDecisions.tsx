@@ -23,7 +23,7 @@ import {
   landUseGuaranteeTypeOptions,
   landUseSectionOptions,
 } from "../../options";
-import { normalizeSelectValue } from "../../fieldUtils";
+import { normalizeSelectValue } from "../../utils/fieldUtils";
 import {
   formatLandUseNumericValue,
   parseLandUseNumericValue,

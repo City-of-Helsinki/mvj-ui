@@ -23,7 +23,7 @@ import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import type { FormKey } from "../LandUseDetailPage";
-import { normalizeSelectValue } from "../../fieldUtils";
+import { normalizeSelectValue } from "../../utils/fieldUtils";
 import { landUseCompensationSelectOptions } from "../../options";
 import type { LandUseSite } from "./LandUseCompensations";
 import {
