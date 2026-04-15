@@ -12,7 +12,11 @@ import {
 import { Form, Field } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { FormApi } from "final-form";
-import { normalizeSelectValue } from "../../utils/fieldUtils";
+import {
+  getFieldTextValue,
+  normalizeSelectValue,
+  readOnlyTextValue,
+} from "../../utils/fieldUtils";
 import {
   negotiatorsOptions as defaultNegotiatorsOptions,
   signatoriesOptions as defaultSignatoriesOptions,
@@ -97,13 +101,6 @@ const handleSelectChange = (
     callback(undefined);
   }
 };
-
-const readOnlyTextValue = (value: string | undefined): string => value || "-";
-
-const getFieldTextValue = (
-  isEditMode: boolean,
-  value: string | undefined,
-): string => (isEditMode ? (value ?? "") : readOnlyTextValue(value));
 
 export const LandUseParties: React.FC<LandUsePartiesProps> = ({
   form,

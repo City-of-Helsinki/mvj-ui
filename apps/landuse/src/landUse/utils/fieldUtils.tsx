@@ -8,3 +8,11 @@
  */
 export const normalizeSelectValue = (value?: string | null) =>
   value === "" || value == null ? undefined : value;
+
+export const getFieldTextValue = (
+  isEditMode: boolean,
+  value: string | undefined,
+): string => (isEditMode ? (value ?? "") : readOnlyTextValue(value));
+
+export const readOnlyTextValue = (value: string | undefined): string =>
+  value || "-";
