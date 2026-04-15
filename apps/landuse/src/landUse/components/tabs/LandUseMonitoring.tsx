@@ -28,6 +28,7 @@ import { landUseCompensationSelectOptions } from "../../options";
 import type { LandUseSite } from "./LandUseCompensations";
 import {
   formatLandUseEuroDisplayValue,
+  formatLandUseEuroValue,
   formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
 } from "../../utils/number";
@@ -780,48 +781,50 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   className="landuse-detail__fieldset--with-margin"
                 >
                   <div className="landuse-detail__grid landuse-detail__monitoring-collateral-grid">
-                    <div
-                      className={`landuse-detail__monitoring-collateral-field${
+                    <TextInput
+                      id="monitoring-sopimuksen-mukainen"
+                      label="Sopimuksen mukainen"
+                      value={formatLandUseEuroValue(sopimuksenMukainenValue)}
+                      readOnly
+                      style={
                         remainingCollateralSeparatorDirection === "left"
-                          ? " landuse-detail__monitoring-collateral-field--highlight"
-                          : ""
-                      }`}
-                    >
-                      <NumberInput
-                        id="monitoring-sopimuksen-mukainen"
-                        label="Sopimuksen mukainen"
-                        value={sopimuksenMukainenValue}
-                        unit="€"
-                        disabled
-                      />
-                    </div>
+                          ? {
+                              border: "4px solid var(--color-success)",
+                              padding: "var(--spacing-2-xs)",
+                            }
+                          : {
+                              padding: "var(--spacing-2-xs)",
+                            }
+                      }
+                    />
 
                     <span
                       className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${remainingCollateralSeparatorDirection}`}
                       aria-hidden="true"
                     >
                       {remainingCollateralSeparatorDirection === "right" ? (
-                        <IconAngleLeft />
+                        <IconAngleLeft size={IconSize.ExtraLarge} />
                       ) : (
-                        <IconAngleRight />
+                        <IconAngleRight size={IconSize.ExtraLarge} />
                       )}
                     </span>
 
-                    <div
-                      className={`landuse-detail__monitoring-collateral-field${
+                    <TextInput
+                      id="collaterals-saantelyn-mukainen"
+                      label="Sääntelyn mukainen"
+                      value={formatLandUseEuroValue(saantelynMukainenValue)}
+                      readOnly
+                      style={
                         remainingCollateralSeparatorDirection === "right"
-                          ? " landuse-detail__monitoring-collateral-field--highlight"
-                          : ""
-                      }`}
-                    >
-                      <NumberInput
-                        id="monitoring-raha-korvaus"
-                        label="Sääntelyn mukainen"
-                        value={saantelynMukainenValue}
-                        unit="€"
-                        disabled
-                      />
-                    </div>
+                          ? {
+                              border: "4px solid var(--color-success)",
+                              padding: "var(--spacing-2-xs)",
+                            }
+                          : {
+                              padding: "var(--spacing-2-xs)",
+                            }
+                      }
+                    />
                   </div>
                 </Fieldset>
 
