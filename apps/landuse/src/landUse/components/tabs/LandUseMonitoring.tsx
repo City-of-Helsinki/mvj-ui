@@ -698,7 +698,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                 >
                   <div className="landuse-detail__table-wrapper">
                     <Table
-                      className="landuse-detail__table landuse-detail__monitoring-table table-td-dense-padding"
+                      className="landuse-detail__table landuse-detail__monitoring-table"
                       cols={monitoringPerustaulukkoCols}
                       indexKey="id"
                       renderIndexCol={false}
@@ -723,7 +723,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
 
                   <div className="landuse-detail__table-wrapper">
                     <Table
-                      className="landuse-detail__table landuse-detail__monitoring-table table-td-dense-padding"
+                      className="landuse-detail__table landuse-detail__monitoring-table"
                       cols={monitoringVapauttaminenCols}
                       indexKey="id"
                       renderIndexCol={false}
@@ -786,7 +786,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                 <Fieldset heading="Sakko">
                   <div className="landuse-detail__table-wrapper">
                     <Table
-                      className="landuse-detail__table landuse-detail__monitoring-table table-td-dense-padding"
+                      className="landuse-detail__table landuse-detail__monitoring-table"
                       cols={monitoringSakkoCols}
                       indexKey="id"
                       renderIndexCol={false}

@@ -237,7 +237,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
 
                 <div className="landuse-detail__table-wrapper">
                   <Table
-                    className="landuse-detail__table landuse-detail__monitoring-table table-td-dense-padding"
+                    className="landuse-detail__table landuse-detail__monitoring-table"
                     cols={collateralsVakuuslaskuriCols}
                     indexKey="id"
                     renderIndexCol={false}
