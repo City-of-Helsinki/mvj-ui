@@ -1,6 +1,7 @@
 export const parseLandUseNumericValue = (
   value: string | number | undefined,
 ): number | null => {
+  // TODO simplify this and the entire numeric parsing call chain
   if (typeof value === "number") {
     return Number.isFinite(value) ? value : null;
   }

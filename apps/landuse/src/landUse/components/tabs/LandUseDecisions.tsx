@@ -3,14 +3,12 @@ import {
   Accordion,
   Button,
   ButtonVariant,
-  Checkbox,
   DateInput,
   Dialog,
   Fieldset,
   IconPlusCircleFill,
   IconTrash,
   Select,
-  Table,
   TextInput,
 } from "hds-react";
 import { Form } from "react-final-form";
@@ -25,8 +23,8 @@ import {
   landUseGuaranteeTypeOptions,
   landUseSectionOptions,
 } from "../../options";
+import { normalizeSelectValue } from "../../fieldUtils";
 import {
-  formatLandUseEuroValue,
   formatLandUseNumericValue,
   parseLandUseNumericValue,
 } from "../../utils/number";
@@ -200,16 +198,6 @@ const getAgreementAccordionHeading = (agreement: AgreementItem): string => {
   return parts.join(" ") || "Sopimus";
 };
 
-const vakuudetTableCols = [
-  { key: "kohde", headerName: "Kohteet joihin vakuutta käytetty" },
-  { key: "hallintamuoto", headerName: "Hallintamuoto" },
-  { key: "vakuuttaKaytettyEuro", headerName: "Vakuutta käytetty €" },
-  {
-    key: "vakuuttaKaytettyProsentti",
-    headerName: "Vakuutta käytetty %",
-  },
-];
-
 export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
   form,
   isEditMode,
@@ -293,124 +281,108 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                       <div className="landuse-detail__grid landuse-detail__decisions-grid">
                         <div className="landuse-detail__column">
                           <Field name={`${decisionName}.paattaja`}>
-                            {({ input }) => (
-                              <Select
-                                id={`decision-paattaja-${decisionIndex}`}
-                                texts={{
-                                  label: "Päättäjä",
-                                  placeholder: "Valitse",
-                                }}
-                                options={landUseDecisionMakerOptions}
-                                value={
-                                  input.value
-                                    ? [
-                                        {
-                                          label: input.value,
-                                          value: input.value,
-                                        },
-                                      ]
-                                    : decision.paattaja
-                                      ? [
-                                          {
-                                            label: decision.paattaja,
-                                            value: decision.paattaja,
-                                          },
-                                        ]
-                                      : []
-                                }
-                                onChange={(selected) =>
-                                  handleSelectChange(selected, input.onChange)
-                                }
-                                disabled={!isEditMode}
-                              />
-                            )}
+                            {({ input }) =>
+                              isEditMode ? (
+                                <Select
+                                  id={`decision-paattaja-${decisionIndex}`}
+                                  texts={{
+                                    label: "Päättäjä",
+                                    placeholder: "Valitse",
+                                  }}
+                                  options={landUseDecisionMakerOptions}
+                                  value={normalizeSelectValue(input.value)}
+                                  onChange={(selected) =>
+                                    handleSelectChange(selected, input.onChange)
+                                  }
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`decision-paattaja-${decisionIndex}`}
+                                  label="Päättäjä"
+                                  value={input.value || "-"}
+                                  readOnly
+                                />
+                              )
+                            }
                           </Field>
                         </div>
 
                         <div className="landuse-detail__column">
                           <Field name={`${decisionName}.paatospvm`}>
-                            {({ input }) => (
-                              <DateInput
-                                id={`decision-paatospvm-${decisionIndex}`}
-                                label="Päätöspvm"
-                                value={input.value ?? decision.paatospvm}
-                                onChange={input.onChange}
-                                placeholder="DD.MM.YYYY"
-                                disabled={!isEditMode}
-                              />
-                            )}
+                            {({ input }) =>
+                              isEditMode ? (
+                                <DateInput
+                                  id={`decision-paatospvm-${decisionIndex}`}
+                                  label="Päätöspvm"
+                                  value={input.value}
+                                  onChange={input.onChange}
+                                  placeholder="DD.MM.YYYY"
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`decision-paatospvm-${decisionIndex}`}
+                                  label="Päätöspvm"
+                                  value={input.value || "-"}
+                                  readOnly
+                                />
+                              )
+                            }
                           </Field>
                         </div>
 
                         <div className="landuse-detail__column">
                           <Field name={`${decisionName}.pykala`}>
-                            {({ input }) => (
-                              <Select
-                                id={`decision-pykala-${decisionIndex}`}
-                                texts={{
-                                  label: "Pykälä",
-                                  placeholder: "Valitse",
-                                }}
-                                options={landUseSectionOptions}
-                                value={
-                                  input.value
-                                    ? [
-                                        {
-                                          label: input.value,
-                                          value: input.value,
-                                        },
-                                      ]
-                                    : decision.pykala
-                                      ? [
-                                          {
-                                            label: decision.pykala,
-                                            value: decision.pykala,
-                                          },
-                                        ]
-                                      : []
-                                }
-                                onChange={(selected) =>
-                                  handleSelectChange(selected, input.onChange)
-                                }
-                                disabled={!isEditMode}
-                              />
-                            )}
+                            {({ input }) =>
+                              isEditMode ? (
+                                <Select
+                                  id={`decision-pykala-${decisionIndex}`}
+                                  texts={{
+                                    label: "Pykälä",
+                                    placeholder: "Valitse",
+                                  }}
+                                  options={landUseSectionOptions}
+                                  value={normalizeSelectValue(input.value)}
+                                  onChange={(selected) =>
+                                    handleSelectChange(selected, input.onChange)
+                                  }
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`decision-pykala-${decisionIndex}`}
+                                  label="Pykälä"
+                                  value={input.value || "-"}
+                                  readOnly
+                                />
+                              )
+                            }
                           </Field>
                         </div>
 
                         <div className="landuse-detail__column">
                           <Field name={`${decisionName}.paatoksenTyyppi`}>
-                            {({ input }) => (
-                              <Select
-                                id={`decision-paatoksen-tyyppi-${decisionIndex}`}
-                                texts={{
-                                  label: "Päätöksen tyyppi",
-                                  placeholder: "Valitse",
-                                }}
-                                options={landUseDecisionTypeOptions}
-                                value={
-                                  input.value
-                                    ? [
-                                        {
-                                          label: input.value,
-                                          value: input.value,
-                                        },
-                                      ]
-                                    : decision.paatoksenTyyppi
-                                      ? [
-                                          {
-                                            label: decision.paatoksenTyyppi,
-                                            value: decision.paatoksenTyyppi,
-                                          },
-                                        ]
-                                      : []
-                                }
-                                onChange={(selected) =>
-                                  handleSelectChange(selected, input.onChange)
-                                }
-                                disabled={!isEditMode}
-                              />
-                            )}
+                            {({ input }) =>
+                              isEditMode ? (
+                                <Select
+                                  id={`decision-paatoksen-tyyppi-${decisionIndex}`}
+                                  texts={{
+                                    label: "Päätöksen tyyppi",
+                                    placeholder: "Valitse",
+                                  }}
+                                  options={landUseDecisionTypeOptions}
+                                  value={normalizeSelectValue(input.value)}
+                                  onChange={(selected) =>
+                                    handleSelectChange(selected, input.onChange)
+                                  }
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`decision-paatoksen-tyyppi-${decisionIndex}`}
+                                  label="Päätöksen tyyppi"
+                                  value={input.value || "-"}
+                                  readOnly
+                                />
+                              )
+                            }
                           </Field>
                         </div>
 
@@ -420,9 +392,11 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <TextInput
                                 id={`decision-diaarinumero-${decisionIndex}`}
                                 label="Diaarinumero"
-                                value={input.value ?? decision.diaarinumero}
+                                value={
+                                  isEditMode ? input.value : input.value || "-"
+                                }
                                 onChange={input.onChange}
-                                disabled={!isEditMode}
+                                readOnly={!isEditMode}
                               />
                             )}
                           </Field>
@@ -434,10 +408,11 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <TextInput
                                 id={`decision-huomautus-${decisionIndex}`}
                                 label="Huomautus"
-                                value={input.value ?? decision.huomautus}
+                                value={
+                                  isEditMode ? input.value : input.value || "-"
+                                }
                                 onChange={input.onChange}
-                                disabled={!isEditMode}
-                                placeholder="Placeholder"
+                                readOnly={!isEditMode}
                               />
                             )}
                           </Field>
@@ -458,69 +433,78 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           >
                             <div className="landuse-detail__column">
                               <Field name={`${conditionName}.conditionType`}>
-                                {({ input }) => (
-                                  <Select
-                                    id={`decision-ehto-tyyppi-${decisionIndex}-${conditionIndex}`}
-                                    texts={{
-                                      label: "Ehtotyyppi",
-                                      placeholder: "Valitse",
-                                    }}
-                                    options={landUseConditionTypeOptions}
-                                    value={
-                                      input.value
-                                        ? [
-                                            {
-                                              label: input.value,
-                                              value: input.value,
-                                            },
-                                          ]
-                                        : []
-                                    }
-                                    onChange={(selected) =>
-                                      handleSelectChange(
-                                        selected,
-                                        input.onChange,
-                                      )
-                                    }
-                                    disabled={!isEditMode}
-                                  />
-                                )}
+                                {({ input }) =>
+                                  isEditMode ? (
+                                    <Select
+                                      id={`decision-ehto-tyyppi-${decisionIndex}-${conditionIndex}`}
+                                      texts={{
+                                        label: "Ehtotyyppi",
+                                        placeholder: "Valitse",
+                                      }}
+                                      options={landUseConditionTypeOptions}
+                                      value={normalizeSelectValue(input.value)}
+                                      onChange={(selected) =>
+                                        handleSelectChange(
+                                          selected,
+                                          input.onChange,
+                                        )
+                                      }
+                                    />
+                                  ) : (
+                                    <TextInput
+                                      id={`decision-ehto-tyyppi-${decisionIndex}-${conditionIndex}`}
+                                      label="Ehtotyyppi"
+                                      value={input.value || "-"}
+                                      readOnly
+                                    />
+                                  )
+                                }
                               </Field>
                             </div>
 
                             <div className="landuse-detail__column">
                               <Field name={`${conditionName}.valvontapvm`}>
-                                {({ input }) => (
-                                  <DateInput
-                                    id={`decision-ehto-valvontapvm-${decisionIndex}-${conditionIndex}`}
-                                    label="Valvontapvm"
-                                    value={
-                                      input.value ??
-                                      conditions[conditionIndex].valvontapvm
-                                    }
-                                    onChange={input.onChange}
-                                    placeholder="DD.MM.YYYY"
-                                    disabled={!isEditMode}
-                                  />
-                                )}
+                                {({ input }) =>
+                                  isEditMode ? (
+                                    <DateInput
+                                      id={`decision-ehto-valvontapvm-${decisionIndex}-${conditionIndex}`}
+                                      label="Valvontapvm"
+                                      value={input.value}
+                                      onChange={input.onChange}
+                                      placeholder="DD.MM.YYYY"
+                                    />
+                                  ) : (
+                                    <TextInput
+                                      id={`decision-ehto-valvontapvm-${decisionIndex}-${conditionIndex}`}
+                                      label="Valvontapvm"
+                                      value={input.value || "-"}
+                                      readOnly
+                                    />
+                                  )
+                                }
                               </Field>
                             </div>
 
                             <div className="landuse-detail__column">
                               <Field name={`${conditionName}.valvottuPvm`}>
-                                {({ input }) => (
-                                  <DateInput
-                                    id={`decision-ehto-valvottu-pvm-${decisionIndex}-${conditionIndex}`}
-                                    label="Valvottu pvm"
-                                    value={
-                                      input.value ??
-                                      conditions[conditionIndex].valvottuPvm
-                                    }
-                                    onChange={input.onChange}
-                                    placeholder="DD.MM.YYYY"
-                                    disabled={!isEditMode}
-                                  />
-                                )}
+                                {({ input }) =>
+                                  isEditMode ? (
+                                    <DateInput
+                                      id={`decision-ehto-valvottu-pvm-${decisionIndex}-${conditionIndex}`}
+                                      label="Valvottu pvm"
+                                      value={input.value}
+                                      onChange={input.onChange}
+                                      placeholder="DD.MM.YYYY"
+                                    />
+                                  ) : (
+                                    <TextInput
+                                      id={`decision-ehto-valvottu-pvm-${decisionIndex}-${conditionIndex}`}
+                                      label="Valvottu pvm"
+                                      value={input.value || "-"}
+                                      readOnly
+                                    />
+                                  )
+                                }
                               </Field>
                             </div>
 
@@ -531,12 +515,12 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                     id={`decision-ehto-huomautus-${decisionIndex}-${conditionIndex}`}
                                     label="Huomautus"
                                     value={
-                                      input.value ??
-                                      conditions[conditionIndex].note
+                                      isEditMode
+                                        ? input.value
+                                        : input.value || "-"
                                     }
                                     onChange={input.onChange}
-                                    disabled={!isEditMode}
-                                    placeholder="Placeholder"
+                                    readOnly={!isEditMode}
                                   />
                                 )}
                               </Field>
@@ -545,56 +529,59 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                         );
                       })}
 
-                      <div className="landuse-detail__decisions-add-row">
-                        <Button
-                          type="button"
-                          variant={ButtonVariant.Supplementary}
-                          iconStart={<IconPlusCircleFill />}
-                          disabled={!isEditMode}
-                          onClick={() => {
-                            form.mutators.push(
-                              `decisions.${decisionIndex}.ehdot`,
-                              createNewDecisionCondition(),
-                            );
-                          }}
-                        >
-                          Lisää ehto
-                        </Button>
-                      </div>
+                      {isEditMode && (
+                        <div className="landuse-detail__decisions-add-row">
+                          <Button
+                            type="button"
+                            variant={ButtonVariant.Supplementary}
+                            iconStart={<IconPlusCircleFill />}
+                            onClick={() => {
+                              form.mutators.push(
+                                `decisions.${decisionIndex}.ehdot`,
+                                createNewDecisionCondition(),
+                              );
+                            }}
+                          >
+                            Lisää ehto
+                          </Button>
+                        </div>
+                      )}
 
-                      <div className="landuse-detail__decisions-add-row">
-                        <Button
-                          type="button"
-                          variant={ButtonVariant.Danger}
-                          iconStart={<IconTrash />}
-                          disabled={!isEditMode}
-                          onClick={() => {
-                            setDecisionIndexPendingDelete(decisionIndex);
-                          }}
-                        >
-                          Poista päätös
-                        </Button>
-                      </div>
+                      {isEditMode && (
+                        <div className="landuse-detail__decisions-add-row">
+                          <Button
+                            type="button"
+                            variant={ButtonVariant.Danger}
+                            iconStart={<IconTrash />}
+                            onClick={() => {
+                              setDecisionIndexPendingDelete(decisionIndex);
+                            }}
+                          >
+                            Poista päätös
+                          </Button>
+                        </div>
+                      )}
                     </Fieldset>
                   </Accordion>
                 );
               })}
 
-              <div className="landuse-detail__decisions-add-row">
-                <Button
-                  type="button"
-                  variant={ButtonVariant.Supplementary}
-                  iconStart={<IconPlusCircleFill />}
-                  disabled={!isEditMode}
-                  onClick={() => {
-                    const newDecisionIndex = decisions.length;
-                    form.mutators.push("decisions", createNewDecision());
-                    setNewDecisionIndexToOpen(newDecisionIndex);
-                  }}
-                >
-                  Lisää päätös
-                </Button>
-              </div>
+              {isEditMode && (
+                <div className="landuse-detail__decisions-add-row">
+                  <Button
+                    type="button"
+                    variant={ButtonVariant.Supplementary}
+                    iconStart={<IconPlusCircleFill />}
+                    onClick={() => {
+                      const newDecisionIndex = decisions.length;
+                      form.mutators.push("decisions", createNewDecision());
+                      setNewDecisionIndexToOpen(newDecisionIndex);
+                    }}
+                  >
+                    Lisää päätös
+                  </Button>
+                </div>
+              )}
 
               <h2 className="landuse-detail__section-title landuse-detail__decisions-section-break">
                 SOPIMUKSET
@@ -616,37 +603,29 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                       <div className="landuse-detail__grid landuse-detail__decisions-grid">
                         <div className="landuse-detail__column">
                           <Field name={`${agreementName}.sopimuksenTyyppi`}>
-                            {({ input }) => (
-                              <Select
-                                id={`agreement-tyyppi-${agreementIndex}`}
-                                texts={{
-                                  label: "Sopimuksen tyyppi",
-                                  placeholder: "Valitse",
-                                }}
-                                options={landUseAgreementTypeOptions}
-                                value={
-                                  input.value
-                                    ? [
-                                        {
-                                          label: input.value,
-                                          value: input.value,
-                                        },
-                                      ]
-                                    : agreement.sopimuksenTyyppi
-                                      ? [
-                                          {
-                                            label: agreement.sopimuksenTyyppi,
-                                            value: agreement.sopimuksenTyyppi,
-                                          },
-                                        ]
-                                      : []
-                                }
-                                onChange={(selected) =>
-                                  handleSelectChange(selected, input.onChange)
-                                }
-                                disabled={!isEditMode}
-                              />
-                            )}
+                            {({ input }) =>
+                              isEditMode ? (
+                                <Select
+                                  id={`agreement-tyyppi-${agreementIndex}`}
+                                  texts={{
+                                    label: "Sopimuksen tyyppi",
+                                    placeholder: "Valitse",
+                                  }}
+                                  options={landUseAgreementTypeOptions}
+                                  value={normalizeSelectValue(input.value)}
+                                  onChange={(selected) =>
+                                    handleSelectChange(selected, input.onChange)
+                                  }
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`agreement-tyyppi-${agreementIndex}`}
+                                  label="Sopimuksen tyyppi"
+                                  value={input.value || "-"}
+                                  readOnly
+                                />
+                              )
+                            }
                           </Field>
                         </div>
 
@@ -656,9 +635,11 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <TextInput
                                 id={`agreement-sopimusnumero-${agreementIndex}`}
                                 label="Sopimusnumero"
-                                value={input.value ?? agreement.sopimusnumero}
+                                value={
+                                  isEditMode ? input.value : input.value || "-"
+                                }
                                 onChange={input.onChange}
-                                disabled={!isEditMode}
+                                readOnly={!isEditMode}
                               />
                             )}
                           </Field>
@@ -666,18 +647,24 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
 
                         <div className="landuse-detail__column">
                           <Field name={`${agreementName}.allekirjoituspvm`}>
-                            {({ input }) => (
-                              <DateInput
-                                id={`agreement-allekirjoituspvm-${agreementIndex}`}
-                                label="Allekirjoituspvm"
-                                value={
-                                  input.value ?? agreement.allekirjoituspvm
-                                }
-                                onChange={input.onChange}
-                                placeholder="DD.MM.YYYY"
-                                disabled={!isEditMode}
-                              />
-                            )}
+                            {({ input }) =>
+                              isEditMode ? (
+                                <DateInput
+                                  id={`agreement-allekirjoituspvm-${agreementIndex}`}
+                                  label="Allekirjoituspvm"
+                                  value={input.value}
+                                  onChange={input.onChange}
+                                  placeholder="DD.MM.YYYY"
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`agreement-allekirjoituspvm-${agreementIndex}`}
+                                  label="Allekirjoituspvm"
+                                  value={input.value || "-"}
+                                  readOnly
+                                />
+                              )
+                            }
                           </Field>
                         </div>
 
@@ -687,10 +674,11 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <TextInput
                                 id={`agreement-huomautus-${agreementIndex}`}
                                 label="Huomautus"
-                                value={input.value ?? agreement.huomautus}
+                                value={
+                                  isEditMode ? input.value : input.value || "-"
+                                }
                                 onChange={input.onChange}
-                                disabled={!isEditMode}
-                                placeholder="Placeholder"
+                                readOnly={!isEditMode}
                               />
                             )}
                           </Field>
@@ -700,19 +688,24 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           <Field
                             name={`${agreementName}.allekirjoitettavaMennessa`}
                           >
-                            {({ input }) => (
-                              <DateInput
-                                id={`agreement-allekirjoitettava-mennessa-${agreementIndex}`}
-                                label="Allekirjoitettava mennessä"
-                                value={
-                                  input.value ??
-                                  agreement.allekirjoitettavaMennessa
-                                }
-                                onChange={input.onChange}
-                                placeholder="DD.MM.YYYY"
-                                disabled={!isEditMode}
-                              />
-                            )}
+                            {({ input }) =>
+                              isEditMode ? (
+                                <DateInput
+                                  id={`agreement-allekirjoitettava-mennessa-${agreementIndex}`}
+                                  label="Allekirjoitettava mennessä"
+                                  value={input.value}
+                                  onChange={input.onChange}
+                                  placeholder="DD.MM.YYYY"
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`agreement-allekirjoitettava-mennessa-${agreementIndex}`}
+                                  label="Allekirjoitettava mennessä"
+                                  value={input.value || "-"}
+                                  readOnly
+                                />
+                              )
+                            }
                           </Field>
                         </div>
 
@@ -720,89 +713,98 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           <Field
                             name={`${agreementName}.ensimmainenKutsuLahetetty`}
                           >
-                            {({ input }) => (
-                              <DateInput
-                                id={`agreement-1-kutsu-${agreementIndex}`}
-                                label="1. kutsu lähetetty"
-                                value={
-                                  input.value ??
-                                  agreement.ensimmainenKutsuLahetetty
-                                }
-                                onChange={input.onChange}
-                                placeholder="DD.MM.YYYY"
-                                disabled={!isEditMode}
-                              />
-                            )}
+                            {({ input }) =>
+                              isEditMode ? (
+                                <DateInput
+                                  id={`agreement-1-kutsu-${agreementIndex}`}
+                                  label="1. kutsu lähetetty"
+                                  value={input.value}
+                                  onChange={input.onChange}
+                                  placeholder="DD.MM.YYYY"
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`agreement-1-kutsu-${agreementIndex}`}
+                                  label="1. kutsu lähetetty"
+                                  value={input.value || "-"}
+                                  readOnly
+                                />
+                              )
+                            }
                           </Field>
                         </div>
 
                         <div className="landuse-detail__column">
                           <Field name={`${agreementName}.toinenKutsuLahetetty`}>
-                            {({ input }) => (
-                              <DateInput
-                                id={`agreement-2-kutsu-${agreementIndex}`}
-                                label="2. kutsu lähetetty"
-                                value={
-                                  input.value ?? agreement.toinenKutsuLahetetty
-                                }
-                                onChange={input.onChange}
-                                placeholder="DD.MM.YYYY"
-                                disabled={!isEditMode}
-                              />
-                            )}
+                            {({ input }) =>
+                              isEditMode ? (
+                                <DateInput
+                                  id={`agreement-2-kutsu-${agreementIndex}`}
+                                  label="2. kutsu lähetetty"
+                                  value={input.value}
+                                  onChange={input.onChange}
+                                  placeholder="DD.MM.YYYY"
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`agreement-2-kutsu-${agreementIndex}`}
+                                  label="2. kutsu lähetetty"
+                                  value={input.value || "-"}
+                                  readOnly
+                                />
+                              )
+                            }
                           </Field>
                         </div>
 
                         <div className="landuse-detail__column">
                           <Field name={`${agreementName}.kolmasKutsuLahetetty`}>
-                            {({ input }) => (
-                              <DateInput
-                                id={`agreement-3-kutsu-${agreementIndex}`}
-                                label="3. kutsu lähetetty"
-                                value={
-                                  input.value ?? agreement.kolmasKutsuLahetetty
-                                }
-                                onChange={input.onChange}
-                                placeholder="DD.MM.YYYY"
-                                disabled={!isEditMode}
-                              />
-                            )}
+                            {({ input }) =>
+                              isEditMode ? (
+                                <DateInput
+                                  id={`agreement-3-kutsu-${agreementIndex}`}
+                                  label="3. kutsu lähetetty"
+                                  value={input.value}
+                                  onChange={input.onChange}
+                                  placeholder="DD.MM.YYYY"
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`agreement-3-kutsu-${agreementIndex}`}
+                                  label="3. kutsu lähetetty"
+                                  value={input.value || "-"}
+                                  readOnly
+                                />
+                              )
+                            }
                           </Field>
                         </div>
 
                         <div className="landuse-detail__column landuse-detail__decisions-paatos-column">
                           <Field name={`${agreementName}.paatos`}>
-                            {({ input }) => (
-                              <Select
-                                id={`agreement-paatos-${agreementIndex}`}
-                                texts={{
-                                  label: "Päätös",
-                                  placeholder: "Valitse",
-                                }}
-                                options={landUseDecisionTypeOptions}
-                                value={
-                                  input.value
-                                    ? [
-                                        {
-                                          label: input.value,
-                                          value: input.value,
-                                        },
-                                      ]
-                                    : agreement.paatos
-                                      ? [
-                                          {
-                                            label: agreement.paatos,
-                                            value: agreement.paatos,
-                                          },
-                                        ]
-                                      : []
-                                }
-                                onChange={(selected) =>
-                                  handleSelectChange(selected, input.onChange)
-                                }
-                                disabled={!isEditMode}
-                              />
-                            )}
+                            {({ input }) =>
+                              isEditMode ? (
+                                <Select
+                                  id={`agreement-paatos-${agreementIndex}`}
+                                  texts={{
+                                    label: "Päätös",
+                                    placeholder: "Valitse",
+                                  }}
+                                  options={landUseDecisionTypeOptions}
+                                  value={normalizeSelectValue(input.value)}
+                                  onChange={(selected) =>
+                                    handleSelectChange(selected, input.onChange)
+                                  }
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`agreement-paatos-${agreementIndex}`}
+                                  label="Päätös"
+                                  value={input.value || "-"}
+                                  readOnly
+                                />
+                              )
+                            }
                           </Field>
                         </div>
                       </div>
@@ -821,21 +823,24 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           >
                             <div className="landuse-detail__column">
                               <Field name={`${changeName}.allekirjoituspvm`}>
-                                {({ input }) => (
-                                  <DateInput
-                                    id={`agreement-muutos-allekirjoituspvm-${agreementIndex}-${changeIndex}`}
-                                    label="Allekirjoituspvm"
-                                    value={
-                                      input.value ??
-                                      agreement.muutokset[changeIndex]
-                                        ?.allekirjoituspvm ??
-                                      ""
-                                    }
-                                    onChange={input.onChange}
-                                    placeholder="DD.MM.YYYY"
-                                    disabled={!isEditMode}
-                                  />
-                                )}
+                                {({ input }) =>
+                                  isEditMode ? (
+                                    <DateInput
+                                      id={`agreement-muutos-allekirjoituspvm-${agreementIndex}-${changeIndex}`}
+                                      label="Allekirjoituspvm"
+                                      value={input.value}
+                                      onChange={input.onChange}
+                                      placeholder="DD.MM.YYYY"
+                                    />
+                                  ) : (
+                                    <TextInput
+                                      id={`agreement-muutos-allekirjoituspvm-${agreementIndex}-${changeIndex}`}
+                                      label="Allekirjoituspvm"
+                                      value={input.value || "-"}
+                                      readOnly
+                                    />
+                                  )
+                                }
                               </Field>
                             </div>
 
@@ -843,21 +848,24 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <Field
                                 name={`${changeName}.allekirjoitettavaMennessa`}
                               >
-                                {({ input }) => (
-                                  <DateInput
-                                    id={`agreement-muutos-allekirjoitettava-mennessa-${agreementIndex}-${changeIndex}`}
-                                    label="Allekirjoitettava mennessä"
-                                    value={
-                                      input.value ??
-                                      agreement.muutokset[changeIndex]
-                                        ?.allekirjoitettavaMennessa ??
-                                      ""
-                                    }
-                                    onChange={input.onChange}
-                                    placeholder="DD.MM.YYYY"
-                                    disabled={!isEditMode}
-                                  />
-                                )}
+                                {({ input }) =>
+                                  isEditMode ? (
+                                    <DateInput
+                                      id={`agreement-muutos-allekirjoitettava-mennessa-${agreementIndex}-${changeIndex}`}
+                                      label="Allekirjoitettava mennessä"
+                                      value={input.value}
+                                      onChange={input.onChange}
+                                      placeholder="DD.MM.YYYY"
+                                    />
+                                  ) : (
+                                    <TextInput
+                                      id={`agreement-muutos-allekirjoitettava-mennessa-${agreementIndex}-${changeIndex}`}
+                                      label="Allekirjoitettava mennessä"
+                                      value={input.value || "-"}
+                                      readOnly
+                                    />
+                                  )
+                                }
                               </Field>
                             </div>
 
@@ -865,21 +873,24 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <Field
                                 name={`${changeName}.ensimmainenKutsuLahetetty`}
                               >
-                                {({ input }) => (
-                                  <DateInput
-                                    id={`agreement-muutos-1-kutsu-${agreementIndex}-${changeIndex}`}
-                                    label="1. kutsu lähetetty"
-                                    value={
-                                      input.value ??
-                                      agreement.muutokset[changeIndex]
-                                        ?.ensimmainenKutsuLahetetty ??
-                                      ""
-                                    }
-                                    onChange={input.onChange}
-                                    placeholder="DD.MM.YYYY"
-                                    disabled={!isEditMode}
-                                  />
-                                )}
+                                {({ input }) =>
+                                  isEditMode ? (
+                                    <DateInput
+                                      id={`agreement-muutos-1-kutsu-${agreementIndex}-${changeIndex}`}
+                                      label="1. kutsu lähetetty"
+                                      value={input.value}
+                                      onChange={input.onChange}
+                                      placeholder="DD.MM.YYYY"
+                                    />
+                                  ) : (
+                                    <TextInput
+                                      id={`agreement-muutos-1-kutsu-${agreementIndex}-${changeIndex}`}
+                                      label="1. kutsu lähetetty"
+                                      value={input.value || "-"}
+                                      readOnly
+                                    />
+                                  )
+                                }
                               </Field>
                             </div>
 
@@ -887,21 +898,24 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <Field
                                 name={`${changeName}.toinenKutsuLahetetty`}
                               >
-                                {({ input }) => (
-                                  <DateInput
-                                    id={`agreement-muutos-2-kutsu-${agreementIndex}-${changeIndex}`}
-                                    label="2. kutsu lähetetty"
-                                    value={
-                                      input.value ??
-                                      agreement.muutokset[changeIndex]
-                                        ?.toinenKutsuLahetetty ??
-                                      ""
-                                    }
-                                    onChange={input.onChange}
-                                    placeholder="DD.MM.YYYY"
-                                    disabled={!isEditMode}
-                                  />
-                                )}
+                                {({ input }) =>
+                                  isEditMode ? (
+                                    <DateInput
+                                      id={`agreement-muutos-2-kutsu-${agreementIndex}-${changeIndex}`}
+                                      label="2. kutsu lähetetty"
+                                      value={input.value}
+                                      onChange={input.onChange}
+                                      placeholder="DD.MM.YYYY"
+                                    />
+                                  ) : (
+                                    <TextInput
+                                      id={`agreement-muutos-2-kutsu-${agreementIndex}-${changeIndex}`}
+                                      label="2. kutsu lähetetty"
+                                      value={input.value || "-"}
+                                      readOnly
+                                    />
+                                  )
+                                }
                               </Field>
                             </div>
 
@@ -909,21 +923,24 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <Field
                                 name={`${changeName}.kolmasKutsuLahetetty`}
                               >
-                                {({ input }) => (
-                                  <DateInput
-                                    id={`agreement-muutos-3-kutsu-${agreementIndex}-${changeIndex}`}
-                                    label="3. kutsu lähetetty"
-                                    value={
-                                      input.value ??
-                                      agreement.muutokset[changeIndex]
-                                        ?.kolmasKutsuLahetetty ??
-                                      ""
-                                    }
-                                    onChange={input.onChange}
-                                    placeholder="DD.MM.YYYY"
-                                    disabled={!isEditMode}
-                                  />
-                                )}
+                                {({ input }) =>
+                                  isEditMode ? (
+                                    <DateInput
+                                      id={`agreement-muutos-3-kutsu-${agreementIndex}-${changeIndex}`}
+                                      label="3. kutsu lähetetty"
+                                      value={input.value}
+                                      onChange={input.onChange}
+                                      placeholder="DD.MM.YYYY"
+                                    />
+                                  ) : (
+                                    <TextInput
+                                      id={`agreement-muutos-3-kutsu-${agreementIndex}-${changeIndex}`}
+                                      label="3. kutsu lähetetty"
+                                      value={input.value || "-"}
+                                      readOnly
+                                    />
+                                  )
+                                }
                               </Field>
                             </div>
 
@@ -934,14 +951,12 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                     id={`agreement-muutos-paatos-${agreementIndex}-${changeIndex}`}
                                     label="Päätös"
                                     value={
-                                      input.value ??
-                                      agreement.muutokset[changeIndex]
-                                        ?.paatos ??
-                                      ""
+                                      isEditMode
+                                        ? input.value
+                                        : input.value || "-"
                                     }
                                     onChange={input.onChange}
-                                    disabled={!isEditMode}
-                                    placeholder="Placeholder"
+                                    readOnly={!isEditMode}
                                   />
                                 )}
                               </Field>
@@ -954,14 +969,12 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                     id={`agreement-muutos-huomautus-${agreementIndex}-${changeIndex}`}
                                     label="Huomautus"
                                     value={
-                                      input.value ??
-                                      agreement.muutokset[changeIndex]
-                                        ?.huomautus ??
-                                      ""
+                                      isEditMode
+                                        ? input.value
+                                        : input.value || "-"
                                     }
                                     onChange={input.onChange}
-                                    disabled={!isEditMode}
-                                    placeholder="Placeholder"
+                                    readOnly={!isEditMode}
                                   />
                                 )}
                               </Field>
@@ -970,69 +983,30 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                         );
                       })}
 
-                      <div className="landuse-detail__decisions-add-row">
-                        <Button
-                          type="button"
-                          variant={ButtonVariant.Supplementary}
-                          iconStart={<IconPlusCircleFill />}
-                          disabled={!isEditMode}
-                          onClick={() => {
-                            form.mutators.push(
-                              `agreements.${agreementIndex}.muutokset`,
-                              createNewAgreementChange(),
-                            );
-                          }}
-                        >
-                          Lisää sopimuksen muutos
-                        </Button>
-                      </div>
+                      {isEditMode && (
+                        <div className="landuse-detail__decisions-add-row">
+                          <Button
+                            type="button"
+                            variant={ButtonVariant.Supplementary}
+                            iconStart={<IconPlusCircleFill />}
+                            onClick={() => {
+                              form.mutators.push(
+                                `agreements.${agreementIndex}.muutokset`,
+                                createNewAgreementChange(),
+                              );
+                            }}
+                          >
+                            Lisää sopimuksen muutos
+                          </Button>
+                        </div>
+                      )}
 
                       <h3 className="landuse-detail__subsection-title">
                         Vakuudet
                       </h3>
 
-                      <div className="landuse-detail__decisions-vakuuslaskuri">
-                        <Field name={`${agreementName}.vakuuslaskuri`}>
-                          {({ input }) => (
-                            <Checkbox
-                              id={`agreement-vakuuslaskuri-${agreementIndex}`}
-                              label="Vakuuslaskuri"
-                              checked={
-                                typeof input.value === "boolean"
-                                  ? input.value
-                                  : agreement.vakuuslaskuri
-                              }
-                              onChange={(event) =>
-                                input.onChange(event.target.checked)
-                              }
-                              disabled={!isEditMode}
-                            />
-                          )}
-                        </Field>
-                      </div>
-
                       {(agreement.vakuudet ?? []).map((_, vakuusIndex) => {
                         const vakuusName = `${agreementName}.vakuudet.${vakuusIndex}`;
-                        const usageRows = (
-                          agreement.vakuudet[vakuusIndex].siteUsages ?? []
-                        ).map((row, rowIndex) => {
-                          const kaytettyEuroValue = parseLandUseNumericValue(
-                            row.vakuuttaKaytettyEuro,
-                          );
-
-                          return {
-                            id: `${agreementIndex}-${vakuusIndex}-${rowIndex}`,
-                            kohde: row.kohde,
-                            hallintamuoto: row.hallintamuoto,
-                            vakuuttaKaytettyEuro:
-                              kaytettyEuroValue !== null
-                                ? formatLandUseEuroValue(kaytettyEuroValue)
-                                : row.vakuuttaKaytettyEuro,
-                            vakuuttaKaytettyProsentti:
-                              row.vakuuttaKaytettyProsentti,
-                          };
-                        });
-
                         return (
                           <div
                             className="landuse-detail__decisions-vakuus-block"
@@ -1295,20 +1269,6 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 </Field>
                               </div>
                             </div>
-
-                            <div className="landuse-detail__table-wrapper">
-                              TODO poista taulukko, tai toteuta
-                              &quot;käänteisenä&quot; vakuudet-välilehden
-                              taulukkoon nähden
-                              <Table
-                                className="landuse-detail__table landuse-detail__monitoring-table table-td-dense-padding"
-                                cols={vakuudetTableCols}
-                                indexKey="id"
-                                renderIndexCol={false}
-                                rows={usageRows}
-                                variant="light"
-                              />
-                            </div>
                           </div>
                         );
                       })}
@@ -1348,21 +1308,22 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                 );
               })}
 
-              <div className="landuse-detail__decisions-add-row">
-                <Button
-                  type="button"
-                  variant={ButtonVariant.Supplementary}
-                  iconStart={<IconPlusCircleFill />}
-                  disabled={!isEditMode}
-                  onClick={() => {
-                    const newAgreementIndex = agreements.length;
-                    form.mutators.push("agreements", createNewAgreement());
-                    setNewAgreementIndexToOpen(newAgreementIndex);
-                  }}
-                >
-                  Lisää sopimus
-                </Button>
-              </div>
+              {isEditMode && (
+                <div className="landuse-detail__decisions-add-row">
+                  <Button
+                    type="button"
+                    variant={ButtonVariant.Supplementary}
+                    iconStart={<IconPlusCircleFill />}
+                    onClick={() => {
+                      const newAgreementIndex = agreements.length;
+                      form.mutators.push("agreements", createNewAgreement());
+                      setNewAgreementIndexToOpen(newAgreementIndex);
+                    }}
+                  >
+                    Lisää sopimus
+                  </Button>
+                </div>
+              )}
 
               <Dialog
                 id="landuse-decisions-delete-dialog"
