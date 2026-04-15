@@ -153,8 +153,9 @@ interface SiteRowProps {
   isReadOnly: boolean;
   isEditMode: boolean;
   onRemove: (siteId: string) => void;
+  onToggle: (siteId: string) => void;
+  isOpen: boolean;
   colCount: number;
-  initiallyOpen?: boolean;
 }
 
 const SiteRow: React.FC<SiteRowProps> = ({
@@ -162,13 +163,11 @@ const SiteRow: React.FC<SiteRowProps> = ({
   siteIndex,
   rowValues,
   isReadOnly,
-  isEditMode,
   onRemove,
+  onToggle,
+  isOpen,
   colCount,
-  initiallyOpen = false,
 }) => {
-  const [isOpen, setIsOpen] = React.useState(initiallyOpen);
-
   const yksikkohinta = parseNumber(rowValues?.yksikkohinta);
   const kerrosAla = parseNumber(site.km2);
   const summa = kerrosAla * yksikkohinta;
@@ -177,7 +176,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
     <>
       <tr
         className="landuse-compensations-table__row"
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => onToggle(site.id)}
       >
         <td className="landuse-compensations-table__toggle-cell">
           <button
@@ -430,7 +429,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
   isDecisionPhase,
 }) => {
   const isCompensationsTableReadOnly = !isEditMode || isDecisionPhase;
-  const [newSiteId, setNewSiteId] = React.useState<string | null>(null);
+  const [openSiteId, setOpenSiteId] = React.useState<string | null>(null);
 
   return (
     <Form<LandUseCompensationsFormValues>
@@ -461,7 +460,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             amVelvoite: false,
           };
           form.change("sites", [...sites, newSite]);
-          setNewSiteId(id);
+          setOpenSiteId(id);
         };
 
         const handleRemoveSite = (siteId: string) => {
@@ -472,6 +471,16 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           form.change(
             "sites",
             sites.filter((site) => site.id !== siteId),
+          );
+
+          if (openSiteId === siteId) {
+            setOpenSiteId(null);
+          }
+        };
+
+        const handleToggleSite = (siteId: string) => {
+          setOpenSiteId((currentOpenSiteId) =>
+            currentOpenSiteId === siteId ? null : siteId,
           );
         };
 
@@ -709,8 +718,9 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                           isReadOnly={isCompensationsTableReadOnly}
                           isEditMode={isEditMode}
                           onRemove={handleRemoveSite}
+                          onToggle={handleToggleSite}
+                          isOpen={site.id === openSiteId}
                           colCount={10}
-                          initiallyOpen={site.id === newSiteId}
                         />
                       ))}
                     </tbody>
