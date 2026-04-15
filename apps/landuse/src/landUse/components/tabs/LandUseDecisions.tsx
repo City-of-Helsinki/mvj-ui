@@ -1005,7 +1005,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                         Vakuudet
                       </h3>
 
-                      {(agreement.vakuudet ?? []).map((_, vakuusIndex) => {
+                      {(agreement.vakuudet ?? []).map((vakuus, vakuusIndex) => {
                         const vakuusName = `${agreementName}.vakuudet.${vakuusIndex}`;
                         return (
                           <div
@@ -1015,202 +1015,262 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                             <div className="landuse-detail__grid landuse-detail__decisions-grid">
                               <div className="landuse-detail__column">
                                 <Field name={`${vakuusName}.jarjestysnumero`}>
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`vakuus-jarjestysnumero-${agreementIndex}-${vakuusIndex}`}
-                                      label="Vakuuden järjestysnumero"
-                                      value={
-                                        input.value ??
-                                        agreement.vakuudet[vakuusIndex]
-                                          .jarjestysnumero
-                                      }
-                                      onChange={input.onChange}
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <TextInput
+                                        id={`vakuus-jarjestysnumero-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuuden järjestysnumero"
+                                        value={
+                                          input.value ?? vakuus.jarjestysnumero
+                                        }
+                                        onChange={input.onChange}
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`vakuus-jarjestysnumero-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuuden järjestysnumero"
+                                        value={
+                                          (input.value ??
+                                            vakuus.jarjestysnumero) ||
+                                          "-"
+                                        }
+                                        readOnly
+                                      />
+                                    )
+                                  }
                                 </Field>
                               </div>
 
                               <div className="landuse-detail__column">
                                 <Field name={`${vakuusName}.tyyppi`}>
-                                  {({ input }) => (
-                                    <Select
-                                      id={`vakuus-tyyppi-${agreementIndex}-${vakuusIndex}`}
-                                      texts={{
-                                        label: "Vakuuden tyyppi",
-                                        placeholder: "Valitse",
-                                      }}
-                                      options={landUseGuaranteeTypeOptions}
-                                      value={
-                                        input.value
-                                          ? [
-                                              {
-                                                label: input.value,
-                                                value: input.value,
-                                              },
-                                            ]
-                                          : agreement.vakuudet[vakuusIndex]
-                                                .tyyppi
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <Select
+                                        id={`vakuus-tyyppi-${agreementIndex}-${vakuusIndex}`}
+                                        texts={{
+                                          label: "Vakuuden tyyppi",
+                                          placeholder: "Valitse",
+                                        }}
+                                        options={landUseGuaranteeTypeOptions}
+                                        value={
+                                          input.value
                                             ? [
                                                 {
-                                                  label:
-                                                    agreement.vakuudet[
-                                                      vakuusIndex
-                                                    ].tyyppi ?? "",
-                                                  value:
-                                                    agreement.vakuudet[
-                                                      vakuusIndex
-                                                    ].tyyppi ?? "",
+                                                  label: input.value,
+                                                  value: input.value,
                                                 },
                                               ]
-                                            : []
-                                      }
-                                      onChange={(selected) =>
-                                        handleSelectChange(
-                                          selected,
-                                          input.onChange,
-                                        )
-                                      }
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
+                                            : vakuus.tyyppi
+                                              ? [
+                                                  {
+                                                    label: vakuus.tyyppi ?? "",
+                                                    value: vakuus.tyyppi ?? "",
+                                                  },
+                                                ]
+                                              : []
+                                        }
+                                        onChange={(selected) =>
+                                          handleSelectChange(
+                                            selected,
+                                            input.onChange,
+                                          )
+                                        }
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`vakuus-tyyppi-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuuden tyyppi"
+                                        value={
+                                          (input.value ?? vakuus.tyyppi) || "-"
+                                        }
+                                        readOnly
+                                      />
+                                    )
+                                  }
                                 </Field>
                               </div>
 
                               <div className="landuse-detail__column">
                                 <Field name={`${vakuusName}.laji`}>
-                                  {({ input }) => (
-                                    <Select
-                                      id={`vakuus-laji-${agreementIndex}-${vakuusIndex}`}
-                                      texts={{
-                                        label: "Vakuuden laji",
-                                        placeholder: "Valitse",
-                                      }}
-                                      options={landUseGuaranteeCategoryOptions}
-                                      value={
-                                        input.value
-                                          ? [
-                                              {
-                                                label: input.value,
-                                                value: input.value,
-                                              },
-                                            ]
-                                          : agreement.vakuudet[vakuusIndex].laji
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <Select
+                                        id={`vakuus-laji-${agreementIndex}-${vakuusIndex}`}
+                                        texts={{
+                                          label: "Vakuuden laji",
+                                          placeholder: "Valitse",
+                                        }}
+                                        options={
+                                          landUseGuaranteeCategoryOptions
+                                        }
+                                        value={
+                                          input.value
                                             ? [
                                                 {
-                                                  label:
-                                                    agreement.vakuudet[
-                                                      vakuusIndex
-                                                    ].laji ?? "",
-                                                  value:
-                                                    agreement.vakuudet[
-                                                      vakuusIndex
-                                                    ].laji ?? "",
+                                                  label: input.value,
+                                                  value: input.value,
                                                 },
                                               ]
-                                            : []
-                                      }
-                                      onChange={(selected) =>
-                                        handleSelectChange(
-                                          selected,
-                                          input.onChange,
-                                        )
-                                      }
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
+                                            : vakuus.laji
+                                              ? [
+                                                  {
+                                                    label: vakuus.laji ?? "",
+                                                    value: vakuus.laji ?? "",
+                                                  },
+                                                ]
+                                              : []
+                                        }
+                                        onChange={(selected) =>
+                                          handleSelectChange(
+                                            selected,
+                                            input.onChange,
+                                          )
+                                        }
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`vakuus-laji-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuuden laji"
+                                        value={
+                                          (input.value ?? vakuus.laji) || "-"
+                                        }
+                                        readOnly
+                                      />
+                                    )
+                                  }
                                 </Field>
                               </div>
 
                               <div className="landuse-detail__column">
                                 <Field name={`${vakuusName}.vakuusnumero`}>
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`vakuus-vakuusnumero-${agreementIndex}-${vakuusIndex}`}
-                                      label="Vakuusnumero"
-                                      value={
-                                        input.value ??
-                                        agreement.vakuudet[vakuusIndex]
-                                          .vakuusnumero
-                                      }
-                                      onChange={input.onChange}
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <TextInput
+                                        id={`vakuus-vakuusnumero-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuusnumero"
+                                        value={
+                                          input.value ?? vakuus.vakuusnumero
+                                        }
+                                        onChange={input.onChange}
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`vakuus-vakuusnumero-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuusnumero"
+                                        value={
+                                          (input.value ??
+                                            vakuus.vakuusnumero) ||
+                                          "-"
+                                        }
+                                        readOnly
+                                      />
+                                    )
+                                  }
                                 </Field>
                               </div>
 
                               <div className="landuse-detail__column">
                                 <Field name={`${vakuusName}.alkupvm`}>
-                                  {({ input }) => (
-                                    <DateInput
-                                      id={`vakuus-alkupvm-${agreementIndex}-${vakuusIndex}`}
-                                      label="Vakuuden alkupvm"
-                                      value={
-                                        input.value ??
-                                        agreement.vakuudet[vakuusIndex].alkupvm
-                                      }
-                                      onChange={input.onChange}
-                                      placeholder="DD.MM.YYYY"
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <DateInput
+                                        id={`vakuus-alkupvm-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuuden alkupvm"
+                                        value={input.value ?? vakuus.alkupvm}
+                                        onChange={input.onChange}
+                                        placeholder="DD.MM.YYYY"
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`vakuus-alkupvm-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuuden alkupvm"
+                                        value={
+                                          (input.value ?? vakuus.alkupvm) || "-"
+                                        }
+                                        readOnly
+                                      />
+                                    )
+                                  }
                                 </Field>
                               </div>
 
                               <div className="landuse-detail__column">
                                 <Field name={`${vakuusName}.loppupvm`}>
-                                  {({ input }) => (
-                                    <DateInput
-                                      id={`vakuus-loppupvm-${agreementIndex}-${vakuusIndex}`}
-                                      label="Vakuuden loppupvm"
-                                      value={
-                                        input.value ??
-                                        agreement.vakuudet[vakuusIndex].loppupvm
-                                      }
-                                      onChange={input.onChange}
-                                      placeholder="DD.MM.YYYY"
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <DateInput
+                                        id={`vakuus-loppupvm-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuuden loppupvm"
+                                        value={input.value ?? vakuus.loppupvm}
+                                        onChange={input.onChange}
+                                        placeholder="DD.MM.YYYY"
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`vakuus-loppupvm-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuuden loppupvm"
+                                        value={
+                                          (input.value ?? vakuus.loppupvm) ||
+                                          "-"
+                                        }
+                                        readOnly
+                                      />
+                                    )
+                                  }
                                 </Field>
                               </div>
 
                               <div className="landuse-detail__column">
                                 <Field name={`${vakuusName}.palautettuPvm`}>
-                                  {({ input }) => (
-                                    <DateInput
-                                      id={`vakuus-palautettu-pvm-${agreementIndex}-${vakuusIndex}`}
-                                      label="Palautettu pvm"
-                                      value={
-                                        input.value ??
-                                        agreement.vakuudet[vakuusIndex]
-                                          .palautettuPvm
-                                      }
-                                      onChange={input.onChange}
-                                      placeholder="DD.MM.YYYY"
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <DateInput
+                                        id={`vakuus-palautettu-pvm-${agreementIndex}-${vakuusIndex}`}
+                                        label="Palautettu pvm"
+                                        value={
+                                          input.value ?? vakuus.palautettuPvm
+                                        }
+                                        onChange={input.onChange}
+                                        placeholder="DD.MM.YYYY"
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`vakuus-palautettu-pvm-${agreementIndex}-${vakuusIndex}`}
+                                        label="Palautettu pvm"
+                                        value={
+                                          (input.value ??
+                                            vakuus.palautettuPvm) ||
+                                          "-"
+                                        }
+                                        readOnly
+                                      />
+                                    )
+                                  }
                                 </Field>
                               </div>
 
                               <div className="landuse-detail__column">
                                 <Field name={`${vakuusName}.huomautus`}>
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`vakuus-huomautus-${agreementIndex}-${vakuusIndex}`}
-                                      label="Huomautus"
-                                      value={
-                                        input.value ??
-                                        agreement.vakuudet[vakuusIndex]
-                                          .huomautus
-                                      }
-                                      onChange={input.onChange}
-                                      disabled={!isEditMode}
-                                      placeholder="Placeholder"
-                                    />
-                                  )}
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <TextInput
+                                        id={`vakuus-huomautus-${agreementIndex}-${vakuusIndex}`}
+                                        label="Huomautus"
+                                        value={input.value ?? vakuus.huomautus}
+                                        onChange={input.onChange}
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`vakuus-huomautus-${agreementIndex}-${vakuusIndex}`}
+                                        label="Huomautus"
+                                        value={
+                                          (input.value ?? vakuus.huomautus) ||
+                                          "-"
+                                        }
+                                        readOnly
+                                      />
+                                    )
+                                  }
                                 </Field>
                               </div>
 
@@ -1218,19 +1278,30 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <Field
                                   name={`${vakuusName}.panttikirjanNumero`}
                                 >
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`vakuus-panttikirjan-numero-${agreementIndex}-${vakuusIndex}`}
-                                      label="Panttikirjan numero"
-                                      value={
-                                        input.value ??
-                                        agreement.vakuudet[vakuusIndex]
-                                          .panttikirjanNumero
-                                      }
-                                      onChange={input.onChange}
-                                      disabled={!isEditMode}
-                                    />
-                                  )}
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <TextInput
+                                        id={`vakuus-panttikirjan-numero-${agreementIndex}-${vakuusIndex}`}
+                                        label="Panttikirjan numero"
+                                        value={
+                                          input.value ??
+                                          vakuus.panttikirjanNumero
+                                        }
+                                        onChange={input.onChange}
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`vakuus-panttikirjan-numero-${agreementIndex}-${vakuusIndex}`}
+                                        label="Panttikirjan numero"
+                                        value={
+                                          (input.value ??
+                                            vakuus.panttikirjanNumero) ||
+                                          "-"
+                                        }
+                                        readOnly
+                                      />
+                                    )
+                                  }
                                 </Field>
                               </div>
 
@@ -1238,11 +1309,9 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <Field name={`${vakuusName}.vakuudenMaara`}>
                                   {({ input }) => {
                                     const currentValue =
-                                      input.value ??
-                                      agreement.vakuudet[vakuusIndex]
-                                        .vakuudenMaara;
+                                      input.value ?? vakuus.vakuudenMaara;
 
-                                    return (
+                                    return isEditMode ? (
                                       <TextInput
                                         id={`vakuus-vakuuden-maara-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuuden määrä"
@@ -1262,7 +1331,13 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                           }
                                           input.onBlur();
                                         }}
-                                        disabled={!isEditMode}
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`vakuus-vakuuden-maara-${agreementIndex}-${vakuusIndex}`}
+                                        label="Vakuuden määrä"
+                                        value={currentValue || "-"}
+                                        readOnly
                                       />
                                     );
                                   }}
