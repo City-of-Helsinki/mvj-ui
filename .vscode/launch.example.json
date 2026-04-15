@@ -2,16 +2,25 @@
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
+  "version": "1.0.0",
   "configurations": [
     {
       // Launches Chrome browser, where your actions can be detected in VSCode internal debugger.
       // Before this, you need to run the frontend in terminal with `yarn start`.
       "type": "chrome",
       "request": "launch",
-      "name": "Attach to localhost for debugging",
+      "name": "Debug leasing",
       "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}/src",
+      "webRoot": "${workspaceFolder}/apps/leasing/src",
+    },
+        {
+      // Launches Chrome browser, where your actions can be detected in VSCode internal debugger.
+      // Before this, you need to run the frontend in terminal with `yarn start`.
+      "type": "chrome",
+      "request": "launch",
+      "name": "Debug landuse",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/apps/landuse/src",
     }
   ]
 }
