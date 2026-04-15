@@ -1,4 +1,4 @@
-import { normalizeSelectValue } from "../fieldUtils";
+import { normalizeSelectValue } from "../utils/fieldUtils";
 import type { MockLandUseData } from "../mocks/landUseMockData";
 import type { LandUseSummaryFormValues } from "../components/tabs/LandUseSummary";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
