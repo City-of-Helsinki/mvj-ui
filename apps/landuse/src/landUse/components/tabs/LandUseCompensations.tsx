@@ -684,69 +684,65 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       &quot;Päätös&quot;
                     </Notification>
                   )}
-                  {sites.length > 0 ? (
-                    <table className="landuse-compensations-table">
-                      <thead>
-                        <tr>
-                          <th className="landuse-compensations-table__toggle-cell" />
-                          <th>Kohde</th>
-                          <th>Käyttötarkoitus</th>
-                          <th>Hallintamuoto</th>
-                          <th>Suojeltu</th>
-                          <th>Pinta-ala m²</th>
-                          <th>k-m²</th>
-                          <th>Yksikköhinta</th>
-                          <th>Summa €</th>
-                          <th>AM-velvoite</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {sites.map((site, index) => (
-                          <SiteRow
-                            key={site.id}
-                            site={site}
-                            siteIndex={index}
-                            rowValues={rowsBySiteId[site.id]}
-                            isReadOnly={isCompensationsTableReadOnly}
-                            isEditMode={isEditMode}
-                            onRemove={handleRemoveSite}
-                            colCount={10}
-                            initiallyOpen={site.id === newSiteId}
-                          />
-                        ))}
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <td />
-                          <td>
-                            <strong>Yhteensä</strong>
-                          </td>
-                          <td />
-                          <td />
-                          <td />
-                          <td>
-                            <strong>
-                              {formatLandUseIntegerValue(totals.pintaAlaM2)}
-                            </strong>
-                          </td>
-                          <td>
-                            <strong>
-                              {formatLandUseIntegerValue(totals.km2)}
-                            </strong>
-                          </td>
-                          <td />
-                          <td>
-                            <strong>
-                              {formatLandUseEuroValue(totals.summa)}
-                            </strong>
-                          </td>
-                          <td />
-                        </tr>
-                      </tfoot>
-                    </table>
-                  ) : (
-                    <p>Perustietotaulukkoon ei ole vielä kohteita.</p>
-                  )}
+                  <table className="landuse-compensations-table">
+                    <thead>
+                      <tr>
+                        <th className="landuse-compensations-table__toggle-cell" />
+                        <th>Kohde</th>
+                        <th>Käyttötarkoitus</th>
+                        <th>Hallintamuoto</th>
+                        <th>Suojeltu</th>
+                        <th>Pinta-ala m²</th>
+                        <th>k-m²</th>
+                        <th>Yksikköhinta</th>
+                        <th>Summa €</th>
+                        <th>AM-velvoite</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sites.map((site, index) => (
+                        <SiteRow
+                          key={site.id}
+                          site={site}
+                          siteIndex={index}
+                          rowValues={rowsBySiteId[site.id]}
+                          isReadOnly={isCompensationsTableReadOnly}
+                          isEditMode={isEditMode}
+                          onRemove={handleRemoveSite}
+                          colCount={10}
+                          initiallyOpen={site.id === newSiteId}
+                        />
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td />
+                        <td>
+                          <strong>Yhteensä</strong>
+                        </td>
+                        <td />
+                        <td />
+                        <td />
+                        <td>
+                          <strong>
+                            {formatLandUseIntegerValue(totals.pintaAlaM2)}
+                          </strong>
+                        </td>
+                        <td>
+                          <strong>
+                            {formatLandUseIntegerValue(totals.km2)}
+                          </strong>
+                        </td>
+                        <td />
+                        <td>
+                          <strong>
+                            {formatLandUseEuroValue(totals.summa)}
+                          </strong>
+                        </td>
+                        <td />
+                      </tr>
+                    </tfoot>
+                  </table>
                   <div>
                     <Button
                       type="button"
