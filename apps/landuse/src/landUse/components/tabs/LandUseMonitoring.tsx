@@ -615,73 +615,115 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           kohteenTunnus: row.kohteenTunnus,
           hallintamuoto: (
             <Field name={`sakkoRows.${index}.hallintamuoto`}>
-              {({ input }) => (
-                <Select
-                  id={`monitoring-sakko-hallintamuoto-${index}`}
-                  options={hallintamuotoOptions}
-                  value={normalizeSelectValue(input.value ?? row.hallintamuoto)}
-                  onChange={(selectedOptions) =>
-                    handleSelectChange(selectedOptions, input.onChange)
-                  }
-                  disabled={!isEditMode}
-                  texts={{
-                    label: "",
-                    placeholder: "Valitse",
-                  }}
-                />
-              )}
+              {({ input }) =>
+                isEditMode ? (
+                  <Select
+                    id={`monitoring-sakko-hallintamuoto-${index}`}
+                    options={hallintamuotoOptions}
+                    value={normalizeSelectValue(
+                      input.value ?? row.hallintamuoto,
+                    )}
+                    onChange={(selectedOptions) =>
+                      handleSelectChange(selectedOptions, input.onChange)
+                    }
+                    texts={{
+                      label: "",
+                      placeholder: "Valitse",
+                    }}
+                  />
+                ) : (
+                  <TextInput
+                    id={`monitoring-sakko-hallintamuoto-${index}`}
+                    label=""
+                    value={input.value ?? row.hallintamuoto ?? "-"}
+                    readOnly
+                  />
+                )
+              }
             </Field>
           ),
           vaadittuKerrosala: (
             <Field name={`sakkoRows.${index}.vaadittuKerrosala`}>
-              {({ input }) => (
-                <TextInput
-                  id={`monitoring-sakko-vaadittu-kerrosala-${index}`}
-                  label=""
-                  value={input.value ?? row.vaadittuKerrosala}
-                  onChange={input.onChange}
-                  disabled={!isEditMode}
-                />
-              )}
+              {({ input }) =>
+                isEditMode ? (
+                  <TextInput
+                    id={`monitoring-sakko-vaadittu-kerrosala-${index}`}
+                    label=""
+                    value={input.value ?? row.vaadittuKerrosala}
+                    onChange={input.onChange}
+                  />
+                ) : (
+                  <TextInput
+                    id={`monitoring-sakko-vaadittu-kerrosala-${index}`}
+                    label=""
+                    value={(input.value ?? row.vaadittuKerrosala) || "-"}
+                    readOnly
+                  />
+                )
+              }
             </Field>
           ),
           toteutunutKerrosala: (
             <Field name={`sakkoRows.${index}.toteutunutKerrosala`}>
-              {({ input }) => (
-                <TextInput
-                  id={`monitoring-sakko-toteutunut-kerrosala-${index}`}
-                  label=""
-                  value={input.value ?? row.toteutunutKerrosala}
-                  onChange={input.onChange}
-                  disabled={!isEditMode}
-                />
-              )}
+              {({ input }) =>
+                isEditMode ? (
+                  <TextInput
+                    id={`monitoring-sakko-toteutunut-kerrosala-${index}`}
+                    label=""
+                    value={input.value ?? row.toteutunutKerrosala}
+                    onChange={input.onChange}
+                  />
+                ) : (
+                  <TextInput
+                    id={`monitoring-sakko-toteutunut-kerrosala-${index}`}
+                    label=""
+                    value={(input.value ?? row.toteutunutKerrosala) || "-"}
+                    readOnly
+                  />
+                )
+              }
             </Field>
           ),
           hintaero: (
             <Field name={`sakkoRows.${index}.hintaero`}>
-              {({ input }) => (
-                <TextInput
-                  id={`monitoring-sakko-hintaero-${index}`}
-                  label=""
-                  value={input.value ?? row.hintaero}
-                  onChange={input.onChange}
-                  disabled={!isEditMode}
-                />
-              )}
+              {({ input }) =>
+                isEditMode ? (
+                  <TextInput
+                    id={`monitoring-sakko-hintaero-${index}`}
+                    label=""
+                    value={input.value ?? row.hintaero}
+                    onChange={input.onChange}
+                  />
+                ) : (
+                  <TextInput
+                    id={`monitoring-sakko-hintaero-${index}`}
+                    label=""
+                    value={(input.value ?? row.hintaero) || "-"}
+                    readOnly
+                  />
+                )
+              }
             </Field>
           ),
           korotus: (
             <Field name={`sakkoRows.${index}.korotus`}>
-              {({ input }) => (
-                <TextInput
-                  id={`monitoring-sakko-korotus-${index}`}
-                  label=""
-                  value={input.value ?? row.korotus}
-                  onChange={input.onChange}
-                  disabled={!isEditMode}
-                />
-              )}
+              {({ input }) =>
+                isEditMode ? (
+                  <TextInput
+                    id={`monitoring-sakko-korotus-${index}`}
+                    label=""
+                    value={input.value ?? row.korotus}
+                    onChange={input.onChange}
+                  />
+                ) : (
+                  <TextInput
+                    id={`monitoring-sakko-korotus-${index}`}
+                    label=""
+                    value={(input.value ?? row.korotus) || "-"}
+                    readOnly
+                  />
+                )
+              }
             </Field>
           ),
         }));
@@ -717,7 +759,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       id="monitoring-vapauttaminen-perushinta"
                       label="Perushinta"
                       value={formatLandUseEuroDisplayValue(perushinta)}
-                      disabled
+                      readOnly
                     />
                   </div>
 
