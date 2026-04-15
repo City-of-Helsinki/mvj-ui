@@ -23,7 +23,11 @@ import {
   landUseGuaranteeTypeOptions,
   landUseSectionOptions,
 } from "../../options";
-import { normalizeSelectValue } from "../../utils/fieldUtils";
+import {
+  getFieldTextValue,
+  normalizeSelectValue,
+  readOnlyTextValue,
+} from "../../utils/fieldUtils";
 import {
   formatLandUseNumericValue,
   parseLandUseNumericValue,
@@ -299,7 +303,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <TextInput
                                   id={`decision-paattaja-${decisionIndex}`}
                                   label="Päättäjä"
-                                  value={input.value || "-"}
+                                  value={readOnlyTextValue(input.value)}
                                   readOnly
                                 />
                               )
@@ -322,7 +326,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <TextInput
                                   id={`decision-paatospvm-${decisionIndex}`}
                                   label="Päätöspvm"
-                                  value={input.value || "-"}
+                                  value={readOnlyTextValue(input.value)}
                                   readOnly
                                 />
                               )
@@ -350,7 +354,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <TextInput
                                   id={`decision-pykala-${decisionIndex}`}
                                   label="Pykälä"
-                                  value={input.value || "-"}
+                                  value={readOnlyTextValue(input.value)}
                                   readOnly
                                 />
                               )
@@ -378,7 +382,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <TextInput
                                   id={`decision-paatoksen-tyyppi-${decisionIndex}`}
                                   label="Päätöksen tyyppi"
-                                  value={input.value || "-"}
+                                  value={readOnlyTextValue(input.value)}
                                   readOnly
                                 />
                               )
@@ -392,9 +396,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <TextInput
                                 id={`decision-diaarinumero-${decisionIndex}`}
                                 label="Diaarinumero"
-                                value={
-                                  isEditMode ? input.value : input.value || "-"
-                                }
+                                value={getFieldTextValue(
+                                  isEditMode,
+                                  input.value,
+                                )}
                                 onChange={input.onChange}
                                 readOnly={!isEditMode}
                               />
@@ -408,9 +413,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <TextInput
                                 id={`decision-huomautus-${decisionIndex}`}
                                 label="Huomautus"
-                                value={
-                                  isEditMode ? input.value : input.value || "-"
-                                }
+                                value={getFieldTextValue(
+                                  isEditMode,
+                                  input.value,
+                                )}
                                 onChange={input.onChange}
                                 readOnly={!isEditMode}
                               />
@@ -454,7 +460,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                     <TextInput
                                       id={`decision-ehto-tyyppi-${decisionIndex}-${conditionIndex}`}
                                       label="Ehtotyyppi"
-                                      value={input.value || "-"}
+                                      value={readOnlyTextValue(input.value)}
                                       readOnly
                                     />
                                   )
@@ -477,7 +483,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                     <TextInput
                                       id={`decision-ehto-valvontapvm-${decisionIndex}-${conditionIndex}`}
                                       label="Valvontapvm"
-                                      value={input.value || "-"}
+                                      value={readOnlyTextValue(input.value)}
                                       readOnly
                                     />
                                   )
@@ -500,7 +506,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                     <TextInput
                                       id={`decision-ehto-valvottu-pvm-${decisionIndex}-${conditionIndex}`}
                                       label="Valvottu pvm"
-                                      value={input.value || "-"}
+                                      value={readOnlyTextValue(input.value)}
                                       readOnly
                                     />
                                   )
@@ -514,11 +520,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   <TextInput
                                     id={`decision-ehto-huomautus-${decisionIndex}-${conditionIndex}`}
                                     label="Huomautus"
-                                    value={
-                                      isEditMode
-                                        ? input.value
-                                        : input.value || "-"
-                                    }
+                                    value={getFieldTextValue(
+                                      isEditMode,
+                                      input.value,
+                                    )}
                                     onChange={input.onChange}
                                     readOnly={!isEditMode}
                                   />
@@ -621,7 +626,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <TextInput
                                   id={`agreement-tyyppi-${agreementIndex}`}
                                   label="Sopimuksen tyyppi"
-                                  value={input.value || "-"}
+                                  value={readOnlyTextValue(input.value)}
                                   readOnly
                                 />
                               )
@@ -635,9 +640,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <TextInput
                                 id={`agreement-sopimusnumero-${agreementIndex}`}
                                 label="Sopimusnumero"
-                                value={
-                                  isEditMode ? input.value : input.value || "-"
-                                }
+                                value={getFieldTextValue(
+                                  isEditMode,
+                                  input.value,
+                                )}
                                 onChange={input.onChange}
                                 readOnly={!isEditMode}
                               />
@@ -660,7 +666,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <TextInput
                                   id={`agreement-allekirjoituspvm-${agreementIndex}`}
                                   label="Allekirjoituspvm"
-                                  value={input.value || "-"}
+                                  value={readOnlyTextValue(input.value)}
                                   readOnly
                                 />
                               )
@@ -674,9 +680,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <TextInput
                                 id={`agreement-huomautus-${agreementIndex}`}
                                 label="Huomautus"
-                                value={
-                                  isEditMode ? input.value : input.value || "-"
-                                }
+                                value={getFieldTextValue(
+                                  isEditMode,
+                                  input.value,
+                                )}
                                 onChange={input.onChange}
                                 readOnly={!isEditMode}
                               />
@@ -701,7 +708,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <TextInput
                                   id={`agreement-allekirjoitettava-mennessa-${agreementIndex}`}
                                   label="Allekirjoitettava mennessä"
-                                  value={input.value || "-"}
+                                  value={readOnlyTextValue(input.value)}
                                   readOnly
                                 />
                               )
@@ -726,7 +733,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <TextInput
                                   id={`agreement-1-kutsu-${agreementIndex}`}
                                   label="1. kutsu lähetetty"
-                                  value={input.value || "-"}
+                                  value={readOnlyTextValue(input.value)}
                                   readOnly
                                 />
                               )
@@ -749,7 +756,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <TextInput
                                   id={`agreement-2-kutsu-${agreementIndex}`}
                                   label="2. kutsu lähetetty"
-                                  value={input.value || "-"}
+                                  value={readOnlyTextValue(input.value)}
                                   readOnly
                                 />
                               )
@@ -772,7 +779,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <TextInput
                                   id={`agreement-3-kutsu-${agreementIndex}`}
                                   label="3. kutsu lähetetty"
-                                  value={input.value || "-"}
+                                  value={readOnlyTextValue(input.value)}
                                   readOnly
                                 />
                               )
@@ -800,7 +807,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 <TextInput
                                   id={`agreement-paatos-${agreementIndex}`}
                                   label="Päätös"
-                                  value={input.value || "-"}
+                                  value={readOnlyTextValue(input.value)}
                                   readOnly
                                 />
                               )
@@ -836,7 +843,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                     <TextInput
                                       id={`agreement-muutos-allekirjoituspvm-${agreementIndex}-${changeIndex}`}
                                       label="Allekirjoituspvm"
-                                      value={input.value || "-"}
+                                      value={readOnlyTextValue(input.value)}
                                       readOnly
                                     />
                                   )
@@ -861,7 +868,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                     <TextInput
                                       id={`agreement-muutos-allekirjoitettava-mennessa-${agreementIndex}-${changeIndex}`}
                                       label="Allekirjoitettava mennessä"
-                                      value={input.value || "-"}
+                                      value={readOnlyTextValue(input.value)}
                                       readOnly
                                     />
                                   )
@@ -886,7 +893,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                     <TextInput
                                       id={`agreement-muutos-1-kutsu-${agreementIndex}-${changeIndex}`}
                                       label="1. kutsu lähetetty"
-                                      value={input.value || "-"}
+                                      value={readOnlyTextValue(input.value)}
                                       readOnly
                                     />
                                   )
@@ -911,7 +918,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                     <TextInput
                                       id={`agreement-muutos-2-kutsu-${agreementIndex}-${changeIndex}`}
                                       label="2. kutsu lähetetty"
-                                      value={input.value || "-"}
+                                      value={readOnlyTextValue(input.value)}
                                       readOnly
                                     />
                                   )
@@ -936,7 +943,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                     <TextInput
                                       id={`agreement-muutos-3-kutsu-${agreementIndex}-${changeIndex}`}
                                       label="3. kutsu lähetetty"
-                                      value={input.value || "-"}
+                                      value={readOnlyTextValue(input.value)}
                                       readOnly
                                     />
                                   )
@@ -950,11 +957,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   <TextInput
                                     id={`agreement-muutos-paatos-${agreementIndex}-${changeIndex}`}
                                     label="Päätös"
-                                    value={
-                                      isEditMode
-                                        ? input.value
-                                        : input.value || "-"
-                                    }
+                                    value={getFieldTextValue(
+                                      isEditMode,
+                                      input.value,
+                                    )}
                                     onChange={input.onChange}
                                     readOnly={!isEditMode}
                                   />
@@ -968,11 +974,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   <TextInput
                                     id={`agreement-muutos-huomautus-${agreementIndex}-${changeIndex}`}
                                     label="Huomautus"
-                                    value={
-                                      isEditMode
-                                        ? input.value
-                                        : input.value || "-"
-                                    }
+                                    value={getFieldTextValue(
+                                      isEditMode,
+                                      input.value,
+                                    )}
                                     onChange={input.onChange}
                                     readOnly={!isEditMode}
                                   />
@@ -1020,20 +1025,14 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <TextInput
                                         id={`vakuus-jarjestysnumero-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuuden järjestysnumero"
-                                        value={
-                                          input.value ?? vakuus.jarjestysnumero
-                                        }
+                                        value={input.value}
                                         onChange={input.onChange}
                                       />
                                     ) : (
                                       <TextInput
                                         id={`vakuus-jarjestysnumero-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuuden järjestysnumero"
-                                        value={
-                                          (input.value ??
-                                            vakuus.jarjestysnumero) ||
-                                          "-"
-                                        }
+                                        value={readOnlyTextValue(input.value)}
                                         readOnly
                                       />
                                     )
@@ -1052,23 +1051,9 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                           placeholder: "Valitse",
                                         }}
                                         options={landUseGuaranteeTypeOptions}
-                                        value={
-                                          input.value
-                                            ? [
-                                                {
-                                                  label: input.value,
-                                                  value: input.value,
-                                                },
-                                              ]
-                                            : vakuus.tyyppi
-                                              ? [
-                                                  {
-                                                    label: vakuus.tyyppi ?? "",
-                                                    value: vakuus.tyyppi ?? "",
-                                                  },
-                                                ]
-                                              : []
-                                        }
+                                        value={normalizeSelectValue(
+                                          input.value,
+                                        )}
                                         onChange={(selected) =>
                                           handleSelectChange(
                                             selected,
@@ -1080,9 +1065,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <TextInput
                                         id={`vakuus-tyyppi-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuuden tyyppi"
-                                        value={
-                                          (input.value ?? vakuus.tyyppi) || "-"
-                                        }
+                                        value={readOnlyTextValue(input.value)}
                                         readOnly
                                       />
                                     )
@@ -1103,23 +1086,9 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                         options={
                                           landUseGuaranteeCategoryOptions
                                         }
-                                        value={
-                                          input.value
-                                            ? [
-                                                {
-                                                  label: input.value,
-                                                  value: input.value,
-                                                },
-                                              ]
-                                            : vakuus.laji
-                                              ? [
-                                                  {
-                                                    label: vakuus.laji ?? "",
-                                                    value: vakuus.laji ?? "",
-                                                  },
-                                                ]
-                                              : []
-                                        }
+                                        value={normalizeSelectValue(
+                                          input.value,
+                                        )}
                                         onChange={(selected) =>
                                           handleSelectChange(
                                             selected,
@@ -1131,9 +1100,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <TextInput
                                         id={`vakuus-laji-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuuden laji"
-                                        value={
-                                          (input.value ?? vakuus.laji) || "-"
-                                        }
+                                        value={readOnlyTextValue(input.value)}
                                         readOnly
                                       />
                                     )
@@ -1148,20 +1115,14 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <TextInput
                                         id={`vakuus-vakuusnumero-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuusnumero"
-                                        value={
-                                          input.value ?? vakuus.vakuusnumero
-                                        }
+                                        value={input.value}
                                         onChange={input.onChange}
                                       />
                                     ) : (
                                       <TextInput
                                         id={`vakuus-vakuusnumero-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuusnumero"
-                                        value={
-                                          (input.value ??
-                                            vakuus.vakuusnumero) ||
-                                          "-"
-                                        }
+                                        value={readOnlyTextValue(input.value)}
                                         readOnly
                                       />
                                     )
@@ -1176,7 +1137,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <DateInput
                                         id={`vakuus-alkupvm-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuuden alkupvm"
-                                        value={input.value ?? vakuus.alkupvm}
+                                        value={input.value}
                                         onChange={input.onChange}
                                         placeholder="DD.MM.YYYY"
                                       />
@@ -1184,9 +1145,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <TextInput
                                         id={`vakuus-alkupvm-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuuden alkupvm"
-                                        value={
-                                          (input.value ?? vakuus.alkupvm) || "-"
-                                        }
+                                        value={readOnlyTextValue(input.value)}
                                         readOnly
                                       />
                                     )
@@ -1201,7 +1160,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <DateInput
                                         id={`vakuus-loppupvm-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuuden loppupvm"
-                                        value={input.value ?? vakuus.loppupvm}
+                                        value={input.value}
                                         onChange={input.onChange}
                                         placeholder="DD.MM.YYYY"
                                       />
@@ -1209,10 +1168,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <TextInput
                                         id={`vakuus-loppupvm-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuuden loppupvm"
-                                        value={
-                                          (input.value ?? vakuus.loppupvm) ||
-                                          "-"
-                                        }
+                                        value={readOnlyTextValue(input.value)}
                                         readOnly
                                       />
                                     )
@@ -1227,9 +1183,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <DateInput
                                         id={`vakuus-palautettu-pvm-${agreementIndex}-${vakuusIndex}`}
                                         label="Palautettu pvm"
-                                        value={
-                                          input.value ?? vakuus.palautettuPvm
-                                        }
+                                        value={input.value}
                                         onChange={input.onChange}
                                         placeholder="DD.MM.YYYY"
                                       />
@@ -1237,11 +1191,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <TextInput
                                         id={`vakuus-palautettu-pvm-${agreementIndex}-${vakuusIndex}`}
                                         label="Palautettu pvm"
-                                        value={
-                                          (input.value ??
-                                            vakuus.palautettuPvm) ||
-                                          "-"
-                                        }
+                                        value={readOnlyTextValue(input.value)}
                                         readOnly
                                       />
                                     )
@@ -1256,17 +1206,14 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <TextInput
                                         id={`vakuus-huomautus-${agreementIndex}-${vakuusIndex}`}
                                         label="Huomautus"
-                                        value={input.value ?? vakuus.huomautus}
+                                        value={input.value}
                                         onChange={input.onChange}
                                       />
                                     ) : (
                                       <TextInput
                                         id={`vakuus-huomautus-${agreementIndex}-${vakuusIndex}`}
                                         label="Huomautus"
-                                        value={
-                                          (input.value ?? vakuus.huomautus) ||
-                                          "-"
-                                        }
+                                        value={readOnlyTextValue(input.value)}
                                         readOnly
                                       />
                                     )
@@ -1283,21 +1230,14 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <TextInput
                                         id={`vakuus-panttikirjan-numero-${agreementIndex}-${vakuusIndex}`}
                                         label="Panttikirjan numero"
-                                        value={
-                                          input.value ??
-                                          vakuus.panttikirjanNumero
-                                        }
+                                        value={input.value}
                                         onChange={input.onChange}
                                       />
                                     ) : (
                                       <TextInput
                                         id={`vakuus-panttikirjan-numero-${agreementIndex}-${vakuusIndex}`}
                                         label="Panttikirjan numero"
-                                        value={
-                                          (input.value ??
-                                            vakuus.panttikirjanNumero) ||
-                                          "-"
-                                        }
+                                        value={readOnlyTextValue(input.value)}
                                         readOnly
                                       />
                                     )
@@ -1308,8 +1248,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               <div className="landuse-detail__column">
                                 <Field name={`${vakuusName}.vakuudenMaara`}>
                                   {({ input }) => {
-                                    const currentValue =
-                                      input.value ?? vakuus.vakuudenMaara;
+                                    const currentValue = input.value;
 
                                     return isEditMode ? (
                                       <TextInput
@@ -1336,7 +1275,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       <TextInput
                                         id={`vakuus-vakuuden-maara-${agreementIndex}-${vakuusIndex}`}
                                         label="Vakuuden määrä"
-                                        value={currentValue || "-"}
+                                        value={readOnlyTextValue(currentValue)}
                                         readOnly
                                       />
                                     );

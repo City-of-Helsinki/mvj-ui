@@ -23,7 +23,10 @@ import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import type { FormKey } from "../LandUseDetailPage";
-import { normalizeSelectValue } from "../../utils/fieldUtils";
+import {
+  normalizeSelectValue,
+  readOnlyTextValue,
+} from "../../utils/fieldUtils";
 import { landUseCompensationSelectOptions } from "../../options";
 import type { LandUseSite } from "./LandUseCompensations";
 import {
@@ -374,9 +377,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       <Select
                         id={`monitoring-plot-division-toteutunut-hallintamuoto-${site.id}-${childIndex}`}
                         options={hallintamuotoOptions}
-                        value={normalizeSelectValue(
-                          input.value ?? plotDivision.hallintamuoto,
-                        )}
+                        value={normalizeSelectValue(input.value)}
                         onChange={(selectedOptions) =>
                           handleSelectChange(selectedOptions, input.onChange)
                         }
@@ -399,7 +400,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       <TextInput
                         id={`monitoring-plot-division-vaadittu-km2-${site.id}-${childIndex}`}
                         label=""
-                        value={input.value ?? plotDivision.vaadittuKm2}
+                        value={input.value}
                         onChange={input.onChange}
                       />
                     )}
@@ -451,7 +452,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       <TextInput
                         id={`monitoring-plot-division-yksikkohinta-${site.id}-${childIndex}`}
                         label=""
-                        value={input.value ?? plotDivision.yksikkohinta}
+                        value={input.value}
                         onChange={input.onChange}
                       />
                     )}
@@ -621,9 +622,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   <Select
                     id={`monitoring-sakko-hallintamuoto-${index}`}
                     options={hallintamuotoOptions}
-                    value={normalizeSelectValue(
-                      input.value ?? row.hallintamuoto,
-                    )}
+                    value={normalizeSelectValue(input.value)}
                     onChange={(selectedOptions) =>
                       handleSelectChange(selectedOptions, input.onChange)
                     }
@@ -636,7 +635,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   <TextInput
                     id={`monitoring-sakko-hallintamuoto-${index}`}
                     label=""
-                    value={input.value ?? row.hallintamuoto ?? "-"}
+                    value={readOnlyTextValue(input.value)}
                     readOnly
                   />
                 )
@@ -650,14 +649,14 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   <TextInput
                     id={`monitoring-sakko-vaadittu-kerrosala-${index}`}
                     label=""
-                    value={input.value ?? row.vaadittuKerrosala}
+                    value={input.value}
                     onChange={input.onChange}
                   />
                 ) : (
                   <TextInput
                     id={`monitoring-sakko-vaadittu-kerrosala-${index}`}
                     label=""
-                    value={(input.value ?? row.vaadittuKerrosala) || "-"}
+                    value={readOnlyTextValue(input.value)}
                     readOnly
                   />
                 )
@@ -671,14 +670,14 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   <TextInput
                     id={`monitoring-sakko-toteutunut-kerrosala-${index}`}
                     label=""
-                    value={input.value ?? row.toteutunutKerrosala}
+                    value={input.value}
                     onChange={input.onChange}
                   />
                 ) : (
                   <TextInput
                     id={`monitoring-sakko-toteutunut-kerrosala-${index}`}
                     label=""
-                    value={(input.value ?? row.toteutunutKerrosala) || "-"}
+                    value={readOnlyTextValue(input.value)}
                     readOnly
                   />
                 )
@@ -692,14 +691,14 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   <TextInput
                     id={`monitoring-sakko-hintaero-${index}`}
                     label=""
-                    value={input.value ?? row.hintaero}
+                    value={input.value}
                     onChange={input.onChange}
                   />
                 ) : (
                   <TextInput
                     id={`monitoring-sakko-hintaero-${index}`}
                     label=""
-                    value={(input.value ?? row.hintaero) || "-"}
+                    value={readOnlyTextValue(input.value)}
                     readOnly
                   />
                 )
@@ -713,14 +712,14 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   <TextInput
                     id={`monitoring-sakko-korotus-${index}`}
                     label=""
-                    value={input.value ?? row.korotus}
+                    value={input.value}
                     onChange={input.onChange}
                   />
                 ) : (
                   <TextInput
                     id={`monitoring-sakko-korotus-${index}`}
                     label=""
-                    value={(input.value ?? row.korotus) || "-"}
+                    value={readOnlyTextValue(input.value)}
                     readOnly
                   />
                 )

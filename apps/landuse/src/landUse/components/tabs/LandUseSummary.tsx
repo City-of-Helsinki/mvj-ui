@@ -14,7 +14,11 @@ import {
 import { Form, Field } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { FormApi } from "final-form";
-import { normalizeSelectValue } from "../../utils/fieldUtils";
+import {
+  getFieldTextValue,
+  normalizeSelectValue,
+  readOnlyTextValue,
+} from "../../utils/fieldUtils";
 import { getAsemakaavat } from "../../api/landUseApi";
 import {
   type AsemakaavaListItem,
@@ -180,7 +184,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                         <TextInput
                           id="summary-maankayttosopimus-type"
                           label="Maankäyttösopimuksen tyyppi"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -209,7 +213,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                         <TextInput
                           id="summary-edistamisalue"
                           label="Edistämisalue"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -238,7 +242,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                         <TextInput
                           id="summary-tila"
                           label="Maankäyttösopimuksen tila"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -297,7 +301,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <TextInput
                                     id={`suunnittelun-kohde-${index}`}
                                     label={`Kohde ${index + 1}`}
-                                    value={input.value || "-"}
+                                    value={readOnlyTextValue(input.value)}
                                     readOnly
                                   />
                                 )
@@ -391,7 +395,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                   <TextInput
                                     id={`valmistelija-${index}`}
                                     label="Valmistelija"
-                                    value={input.value || "-"}
+                                    value={readOnlyTextValue(input.value)}
                                     readOnly
                                   />
                                 )
@@ -451,7 +455,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                       <TextInput
                         id="arvioitu-esittelyvuosi"
                         label="Arvioitu esittelyvuosi"
-                        value={isEditMode ? input.value : input.value || "-"}
+                        value={getFieldTextValue(isEditMode, input.value)}
                         onChange={input.onChange}
                         readOnly={!isEditMode}
                       />
@@ -465,7 +469,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                       <TextInput
                         id="arvioitu-maksuvuosi"
                         label="Arvioitu maksuvuosi"
-                        value={isEditMode ? input.value : input.value || "-"}
+                        value={getFieldTextValue(isEditMode, input.value)}
                         onChange={input.onChange}
                         readOnly={!isEditMode}
                       />
@@ -498,7 +502,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                           <TextInput
                             id="am-velvoitteet"
                             label="Sisältää AM-velvoitteita"
-                            value={input.value || "-"}
+                            value={readOnlyTextValue(input.value)}
                             readOnly
                           />
                         )
@@ -523,7 +527,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                         <TextInput
                           id="velvoitteiden-maaraika"
                           label="Velvoitteiden määräaika"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -537,7 +541,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                       <TextInput
                         id="toimivaltainen-paattaja"
                         label="Toimivaltainen päättäjä"
-                        value={isEditMode ? input.value : input.value || "-"}
+                        value={getFieldTextValue(isEditMode, input.value)}
                         onChange={input.onChange}
                         readOnly={!isEditMode}
                       />
@@ -565,11 +569,10 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 <TextInput
                                   id={`katuosoite-${index}`}
                                   label="Katuosoite"
-                                  value={
-                                    isEditMode
-                                      ? input.value
-                                      : input.value || "-"
-                                  }
+                                  value={getFieldTextValue(
+                                    isEditMode,
+                                    input.value,
+                                  )}
                                   onChange={input.onChange}
                                   readOnly={!isEditMode}
                                 />
@@ -583,11 +586,10 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 <TextInput
                                   id={`postinumero-${index}`}
                                   label="Postinumero"
-                                  value={
-                                    isEditMode
-                                      ? input.value
-                                      : input.value || "-"
-                                  }
+                                  value={getFieldTextValue(
+                                    isEditMode,
+                                    input.value,
+                                  )}
                                   onChange={input.onChange}
                                   readOnly={!isEditMode}
                                 />
@@ -601,11 +603,10 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 <TextInput
                                   id={`kaupunki-${index}`}
                                   label="Kaupunki"
-                                  value={
-                                    isEditMode
-                                      ? input.value
-                                      : input.value || "-"
-                                  }
+                                  value={getFieldTextValue(
+                                    isEditMode,
+                                    input.value,
+                                  )}
                                   onChange={input.onChange}
                                   readOnly={!isEditMode}
                                 />
@@ -682,7 +683,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                         <TextInput
                           id="asemakaavan-numero"
                           label="Asemakaavan numero"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -696,7 +697,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                       <TextInput
                         id="asemakaavan-kasittelyvaihe"
                         label="Asemakaavan käsittelyvaihe"
-                        value={isEditMode ? input.value : input.value || "-"}
+                        value={getFieldTextValue(isEditMode, input.value)}
                         onChange={input.onChange}
                         readOnly
                       />
@@ -710,7 +711,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                       <TextInput
                         id="kasittelyvaiheen-viimeisin-pvm"
                         label="Käsittelyvaiheen viimeisin pvm"
-                        value={isEditMode ? input.value : input.value || "-"}
+                        value={getFieldTextValue(isEditMode, input.value)}
                         onChange={input.onChange}
                         readOnly
                       />
@@ -724,7 +725,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                       <TextInput
                         id="asemakaavan-hyvaksyja"
                         label="Asemakaavan hyväksyjä"
-                        value={isEditMode ? input.value : input.value || "-"}
+                        value={getFieldTextValue(isEditMode, input.value)}
                         onChange={input.onChange}
                         readOnly
                       />
@@ -738,7 +739,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                       <TextInput
                         id="asemakaavan-diaarinumero"
                         label="Asemakaavan diaarinumero"
-                        value={isEditMode ? input.value : input.value || "-"}
+                        value={getFieldTextValue(isEditMode, input.value)}
                         onChange={input.onChange}
                         readOnly
                       />

@@ -19,7 +19,11 @@ import {
 import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
-import { normalizeSelectValue } from "../../utils/fieldUtils";
+import {
+  getFieldTextValue,
+  normalizeSelectValue,
+  readOnlyTextValue,
+} from "../../utils/fieldUtils";
 import { landUseCompensationSelectOptions } from "../../options";
 import {
   formatLandUseEuroValue,
@@ -233,7 +237,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       <TextInput
                         id={`landuse-compensations-kohteen-tunnus-${site.id}`}
                         label="Kohteen tunnus"
-                        value={input.value || "-"}
+                        value={readOnlyTextValue(input.value)}
                         readOnly
                       />
                     ) : (
@@ -253,7 +257,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       <TextInput
                         id={`landuse-compensations-kayttotarkoitus-${site.id}`}
                         label="Käyttötarkoitus"
-                        value={input.value || "-"}
+                        value={readOnlyTextValue(input.value)}
                         readOnly
                       />
                     ) : (
@@ -313,7 +317,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       <TextInput
                         id={`landuse-compensations-suojeltu-${site.id}`}
                         label="Suojeltu"
-                        value={input.value || "-"}
+                        value={readOnlyTextValue(input.value)}
                         readOnly
                       />
                     ) : (
@@ -339,7 +343,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       id={`landuse-compensations-pinta-ala-${site.id}`}
                       label="Pinta-ala m²"
                       value={
-                        isReadOnly ? input.value || "-" : (input.value ?? "")
+                        getFieldTextValue(!isReadOnly, input.value)
                       }
                       onChange={input.onChange}
                       readOnly={isReadOnly}
@@ -353,7 +357,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       id={`landuse-compensations-km2-${site.id}`}
                       label="k-m²"
                       value={
-                        isReadOnly ? input.value || "-" : (input.value ?? "")
+                        getFieldTextValue(!isReadOnly, input.value)
                       }
                       onChange={input.onChange}
                       readOnly={isReadOnly}
@@ -367,7 +371,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       <TextInput
                         id={`landuse-compensations-yksikkohinta-${site.id}`}
                         label="Yksikköhinta"
-                        value={input.value || "-"}
+                        value={readOnlyTextValue(input.value)}
                         readOnly
                       />
                     ) : (
@@ -524,7 +528,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <TextInput
                           id="landuse-compensations-rahakorvaus"
                           label="Rahakorvaus"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -545,7 +549,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <TextInput
                           id="landuse-compensations-maakorvaus"
                           label="Maakorvaus"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -566,7 +570,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <TextInput
                           id="landuse-compensations-muu-korvaus"
                           label="Muu"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -605,7 +609,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <TextInput
                           id="landuse-compensations-maakorvaus-selite"
                           label="Maakorvaus selite"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -625,7 +629,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <TextInput
                           id="landuse-compensations-muu-selite"
                           label="Muu selite"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -668,7 +672,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <TextInput
                           id="landuse-compensations-perushinta"
                           label="Perushinta"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -783,7 +787,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <TextInput
                           id="landuse-compensations-yleiset-alueet-neliot"
                           label="Neliöt"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
@@ -804,7 +808,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <TextInput
                           id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
                           label="Hankinnan arvo eur"
-                          value={input.value || "-"}
+                          value={readOnlyTextValue(input.value)}
                           readOnly
                         />
                       )
