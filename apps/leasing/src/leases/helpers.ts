@@ -3573,61 +3573,16 @@ export const getBasisOfRentById = (
  * Add rents form values to payload
  * @param {Object} payload
  * @param {Object} formValues
- * @param {Object} currentLease
  * @returns {Object}
  */
 export const addRentsFormValuesToPayload = (
   payload: Record<string, any>,
   formValues: Record<string, any>,
-  currentLease: Lease,
 ): Record<string, any> => {
   payload.rent_info_completed_at = formValues.rent_info_completed_at
     ? true
     : false;
-  const basisOfRents = [
-    ...get(formValues, "basis_of_rents", []),
-    ...get(formValues, "basis_of_rents_archived", []),
-  ];
-  payload.basis_of_rents = basisOfRents.map((item) => {
-    const savedBasisOfRent = getBasisOfRentById(currentLease, item.id);
 
-    if (savedBasisOfRent && savedBasisOfRent.locked_at) {
-      return {
-        id: item.id,
-        locked_at: item.locked_at,
-      };
-    } else {
-      return {
-        id: item.id,
-        intended_use: intendedUse(item),
-        area: convertStrToDecimalNumber(item.area),
-        area_unit: areaUnit(item),
-        type: item.type,
-        amount_per_area: convertStrToDecimalNumber(item.amount_per_area),
-        index: item.index,
-        profit_margin_percentage: convertStrToDecimalNumber(
-          item.profit_margin_percentage,
-        ),
-        discount_percentage: convertStrToDecimalNumber(
-          item.discount_percentage,
-        ),
-        children: getPayloadChildren(item),
-        plans_inspected_at: item.plans_inspected_at,
-        locked_at: item.locked_at,
-        archived_at: item.archived_at,
-        subvention_type: item.subvention_type,
-        subvention_base_percent: convertStrToDecimalNumber(
-          item.subvention_base_percent,
-        ),
-        subvention_graduated_percent: convertStrToDecimalNumber(
-          item.subvention_graduated_percent,
-        ),
-        management_subventions: getPayloadManagementSubventions(item),
-        temporary_subventions: getPayloadTemporarySubventions(item),
-        zone: item.zone,
-      };
-    }
-  });
   const rents = [
     ...get(formValues, "rents", []),
     ...get(formValues, "rentsArchived", []),
@@ -3705,6 +3660,58 @@ export const addRentsFormValuesToPayload = (
     }
 
     return rentData;
+  });
+  return payload;
+};
+
+export const addBasisOfRentsFormValuesToPayload = (
+  payload: Record<string, any>,
+  formValues: Record<string, any>,
+  currentLease: Lease,
+): Record<string, any> => {
+  const basisOfRents = [
+    ...get(formValues, "basis_of_rents", []),
+    ...get(formValues, "basis_of_rents_archived", []),
+  ];
+  payload.basis_of_rents = basisOfRents.map((item) => {
+    const savedBasisOfRent = getBasisOfRentById(currentLease, item.id);
+
+    if (savedBasisOfRent && savedBasisOfRent.locked_at) {
+      return {
+        id: item.id,
+        locked_at: item.locked_at,
+      };
+    } else {
+      return {
+        id: item.id,
+        intended_use: intendedUse(item),
+        area: convertStrToDecimalNumber(item.area),
+        area_unit: areaUnit(item),
+        type: item.type,
+        amount_per_area: convertStrToDecimalNumber(item.amount_per_area),
+        index: item.index,
+        profit_margin_percentage: convertStrToDecimalNumber(
+          item.profit_margin_percentage,
+        ),
+        discount_percentage: convertStrToDecimalNumber(
+          item.discount_percentage,
+        ),
+        children: getPayloadChildren(item),
+        plans_inspected_at: item.plans_inspected_at,
+        locked_at: item.locked_at,
+        archived_at: item.archived_at,
+        subvention_type: item.subvention_type,
+        subvention_base_percent: convertStrToDecimalNumber(
+          item.subvention_base_percent,
+        ),
+        subvention_graduated_percent: convertStrToDecimalNumber(
+          item.subvention_graduated_percent,
+        ),
+        management_subventions: getPayloadManagementSubventions(item),
+        temporary_subventions: getPayloadTemporarySubventions(item),
+        zone: item.zone,
+      };
+    }
   });
   return payload;
 };
@@ -3876,6 +3883,7 @@ export const isAnyLeaseFormDirty = (state: RootState): boolean => {
       dirtyFlags[FormNames.LEASE_DECISIONS] ||
       dirtyFlags[FormNames.LEASE_INSPECTIONS] ||
       dirtyFlags[FormNames.LEASE_RENTS] ||
+      dirtyFlags[FormNames.LEASE_BASIS_OF_RENTS] ||
       dirtyFlags[FormNames.LEASE_SUMMARY] ||
       dirtyFlags[FormNames.LEASE_TENANTS] ||
       dirtyFlags[FormNames.LEASE_AREAS])
@@ -3892,6 +3900,7 @@ export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.LEASE_INSPECTIONS);
   removeSessionStorageItem(FormNames.LEASE_AREAS);
   removeSessionStorageItem(FormNames.LEASE_RENTS);
+  removeSessionStorageItem(FormNames.LEASE_BASIS_OF_RENTS);
   removeSessionStorageItem(FormNames.LEASE_SUMMARY);
   removeSessionStorageItem(FormNames.LEASE_TENANTS);
   removeSessionStorageItem("leaseId");

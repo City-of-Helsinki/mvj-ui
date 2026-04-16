@@ -494,6 +494,7 @@ export const FormNames = {
   LEASE_SUMMARY: "summary-form",
   LEASE_STATISTIC_REPORT: "lease-statistic-report-form",
   LEASE_TENANTS: "tenants-form",
+  LEASE_BASIS_OF_RENTS: "basis-of-rents-form",
   LEASEHOLD_TRANSFER_SEARCH: "leasehold-transfer-search-form",
   PLOT_SEARCH_SUMMARY: "plot-search-form",
   PLOT_SEARCH_SEARCH: "plot-search-search",
