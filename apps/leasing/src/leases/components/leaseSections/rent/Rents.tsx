@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
-import BasisOfRents from "./BasisOfRents";
+import BasisOfRents from "./basisOfRent/BasisOfRents";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
 import GreenBox from "@/components/content/GreenBox";

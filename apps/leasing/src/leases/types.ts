@@ -253,6 +253,7 @@ export type LeaseFormName =
   | (typeof FormNames)["LEASE_INSPECTIONS"]
   | (typeof FormNames)["LEASE_AREAS"]
   | (typeof FormNames)["LEASE_RENTS"]
+  | (typeof FormNames)["LEASE_BASIS_OF_RENTS"]
   | (typeof FormNames)["LEASE_SUMMARY"]
   | (typeof FormNames)["LEASE_TENANTS"];
 

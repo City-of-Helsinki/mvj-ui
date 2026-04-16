@@ -193,6 +193,7 @@ const isFormValidByIdReducer: Reducer<LeaseFormFlags> = handleActions(
         [FormNames.LEASE_INSPECTIONS]: true,
         [FormNames.LEASE_AREAS]: true,
         [FormNames.LEASE_RENTS]: true,
+        [FormNames.LEASE_BASIS_OF_RENTS]: true,
         [FormNames.LEASE_SUMMARY]: true,
         [FormNames.LEASE_TENANTS]: true,
       };
@@ -205,6 +206,7 @@ const isFormValidByIdReducer: Reducer<LeaseFormFlags> = handleActions(
     [FormNames.LEASE_INSPECTIONS]: true,
     [FormNames.LEASE_AREAS]: true,
     [FormNames.LEASE_RENTS]: true,
+    [FormNames.LEASE_BASIS_OF_RENTS]: true,
     [FormNames.LEASE_SUMMARY]: true,
     [FormNames.LEASE_TENANTS]: true,
   },
@@ -225,6 +227,7 @@ const isFormDirtyByIdReducer: Reducer<LeaseFormFlags> = handleActions(
         [FormNames.LEASE_INSPECTIONS]: false,
         [FormNames.LEASE_AREAS]: false,
         [FormNames.LEASE_RENTS]: false,
+        [FormNames.LEASE_BASIS_OF_RENTS]: false,
         [FormNames.LEASE_SUMMARY]: false,
         [FormNames.LEASE_TENANTS]: false,
       };
@@ -237,6 +240,7 @@ const isFormDirtyByIdReducer: Reducer<LeaseFormFlags> = handleActions(
     [FormNames.LEASE_INSPECTIONS]: false,
     [FormNames.LEASE_AREAS]: false,
     [FormNames.LEASE_RENTS]: false,
+    [FormNames.LEASE_BASIS_OF_RENTS]: false,
     [FormNames.LEASE_SUMMARY]: false,
     [FormNames.LEASE_TENANTS]: false,
   },
