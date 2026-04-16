@@ -60,6 +60,7 @@ import FormField from "@/components/form/final-form/FormField";
 import { FieldArray } from "react-final-form-arrays";
 import { useField } from "react-final-form";
 import { FormApi } from "final-form";
+import PlotItem from "./PlotItem";
 
 type PlanUnitsProps = {
   buttonTitle: string;
@@ -201,6 +202,9 @@ type PlotsProps = {
   plotsData: Array<Record<string, any>>;
   title: string;
   uiDataKey: string;
+  isMasterData: boolean;
+  isActive: boolean;
+  areas: Record<string, any>;
 };
 
 const Plots = ({
@@ -215,6 +219,9 @@ const Plots = ({
   plotsData,
   title,
   uiDataKey,
+  isMasterData,
+  isActive,
+  areas,
 }: PlotsProps): ReactElement => {
   const handleAdd = () => {
     fields.push({
@@ -266,38 +273,48 @@ const Plots = ({
                         ConfirmationModalTexts.DELETE_PLOT.TITLE,
                     });
                   };
-
-                  return (
-                    <PlotItemEdit
-                      formApi={formApi}
-                      key={index}
-                      field={plot}
-                      plotId={plot.id}
-                      geometry={plot.geometry}
-                      onRemove={handleDelete}
-                      plotsData={plotsData}
-                    />
-                  );
+                  if (isMasterData) {
+                    return (
+                      <PlotItem
+                        key={plot.id}
+                        areaArchived={!isActive}
+                        plot={areas[index]}
+                      />
+                    );
+                  } else {
+                    return (
+                      <PlotItemEdit
+                        formApi={formApi}
+                        key={index}
+                        field={plot}
+                        plotId={plot.id}
+                        geometry={plot.geometry}
+                        onRemove={handleDelete}
+                        plotsData={plotsData}
+                      />
+                    );
+                  }
                 })}
               </BoxItemContainer>
             )}
-
-            <Authorization
-              allow={hasPermissions(
-                usersPermissions,
-                UsersPermissions.ADD_PLOT,
-              )}
-            >
-              <Row>
-                <Column>
-                  <AddButtonSecondary
-                    className={!fields.length ? "no-top-margin" : ""}
-                    label={buttonTitle}
-                    onClick={handleAdd}
-                  />
-                </Column>
-              </Row>
-            </Authorization>
+            {!isMasterData && (
+              <Authorization
+                allow={hasPermissions(
+                  usersPermissions,
+                  UsersPermissions.ADD_PLOT,
+                )}
+              >
+                <Row>
+                  <Column>
+                    <AddButtonSecondary
+                      className={!fields.length ? "no-top-margin" : ""}
+                      label={buttonTitle}
+                      onClick={handleAdd}
+                    />
+                  </Column>
+                </Row>
+              </Authorization>
+            )}
           </Collapse>
         );
       }}
@@ -842,6 +859,9 @@ const LeaseAreaEdit: React.FC<Props> = ({
                   onCollapseToggle: handlePlotsContractCollapseToggle,
                   plotsData: savedArea ? savedArea["plots_contract"] : [],
                   title: "Kiinteistöt / määräalat sopimuksessa",
+                  isMasterData: false, // These plan units' data is editable in MVJ
+                  isActive,
+                  areas: savedArea?.plots_contract ?? [],
                   uiDataKey: getUiDataLeaseKey(
                     LeasePlotsFieldPaths.PLOTS_CONTRACT,
                   ),
@@ -862,6 +882,9 @@ const LeaseAreaEdit: React.FC<Props> = ({
                   onCollapseToggle: handlePlotsCurrentCollapseToggle,
                   plotsData: savedArea ? savedArea["plots_current"] : [],
                   title: "Kiinteistöt / määräalat nykyhetkellä",
+                  isMasterData: true, // These plan units' data is received from master source (i.e. Facta) and is not editable in MVJ
+                  isActive,
+                  areas: savedArea?.plots_current ?? [],
                   uiDataKey: getUiDataLeaseKey(LeasePlotsFieldPaths.PLOTS),
                 })
               }
