@@ -345,7 +345,7 @@ describe("LandUseDetailPage", () => {
     mockLocationSearch = "";
 
     vi.mocked(landUseApi.getSummary).mockResolvedValue({
-      tila: LAND_USE_NEGOTIATION_PHASES.VIREILLA,
+      tila: LAND_USE_NEGOTIATION_PHASES.IN_PROGRESS,
       summaryField: "initial-summary",
     } as any);
     vi.mocked(landUseApi.getLandUseList).mockResolvedValue([

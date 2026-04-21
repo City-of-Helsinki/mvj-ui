@@ -742,7 +742,7 @@ const LandUseDetailPage: React.FC = () => {
   };
 
   const isDecisionPhase =
-    summaryQuery.data?.tila === LAND_USE_NEGOTIATION_PHASES.PAATOS;
+    summaryQuery.data?.tila === LAND_USE_NEGOTIATION_PHASES.DECISION;
 
   useEffect(() => {
     const tabFromSearch = getActiveTabFromSearch(location.search);
