@@ -54,7 +54,7 @@ export const getLandUseList = async (): Promise<LandUseListItem[]> => {
         party: partyName,
         zoningPlanNumber: summary?.asemakaavanNumero ?? "",
         site: kohdeValues,
-        projectArea: summary?.edistamisalue ?? "",
+        projectArea: summary?.edistamisalue,
         negotiationPhase: summary?.tila ?? "",
       } satisfies LandUseListItem;
     }),

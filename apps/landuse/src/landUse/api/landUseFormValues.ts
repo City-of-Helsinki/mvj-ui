@@ -3,9 +3,25 @@ import type { MockLandUseData } from "../mocks/landUseMockData";
 import type { LandUseSummaryFormValues } from "../components/tabs/LandUseSummary";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
 
+const normalizeProjectAreaBoolean = (value: unknown): boolean => {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  if (typeof value === "string") {
+    return value.length > 0;
+  }
+
+  return false;
+};
+
 export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
   maankayttosopimusType: undefined,
-  edistamisalue: undefined,
+  edistamisalue: false,
   tila: undefined,
   suunnittelunPerusteenaOlevatKohteet: [{ value: undefined }],
   valmistelijat: [{ value: undefined }],
@@ -31,7 +47,7 @@ export const mapMockToSummaryFormValues = (
 
   return {
     maankayttosopimusType: normalizeSelectValue(mockData.maankayttosopimusType),
-    edistamisalue: normalizeSelectValue(mockData.edistamisalue),
+    edistamisalue: normalizeProjectAreaBoolean(mockData.edistamisalue),
     tila: normalizeSelectValue(mockData.tila),
     suunnittelunPerusteenaOlevatKohteet:
       mockData.suunnittelunPerusteenaOlevatKohteet.map((kohde) => ({
