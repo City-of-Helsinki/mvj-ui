@@ -23,9 +23,10 @@ import {
 import { getAsemakaavat } from "../../api/landUseApi";
 import {
   type AsemakaavaListItem,
+  landUseDecisionMakerOptions,
+  landUseKohdeSelectOptions,
   landUseNegotiationPhaseOptions,
 } from "../../options";
-import { landUseKohdeSelectOptions } from "../../options";
 
 interface ValmistelijaEntry {
   value: string | undefined;
@@ -549,15 +550,30 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
 
                 <div className="landuse-detail__column">
                   <Field name="toimivaltainenPaattaja">
-                    {({ input }) => (
-                      <TextInput
-                        id="toimivaltainen-paattaja"
-                        label="Toimivaltainen päättäjä"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly={!isEditMode}
-                      />
-                    )}
+                    {({ input }) =>
+                      isEditMode ? (
+                        <Select
+                          id="toimivaltainen-paattaja"
+                          options={landUseDecisionMakerOptions}
+                          value={normalizeSelectValue(input.value)}
+                          onChange={(selectedOptions) =>
+                            handleSelectChange(selectedOptions, input.onChange)
+                          }
+                          texts={{
+                            label: "Toimivaltainen päättäjä",
+                            placeholder: "Valitse",
+                          }}
+                          disabled={!isEditMode}
+                        />
+                      ) : (
+                        <TextInput
+                          id="toimivaltainen-paattaja"
+                          label="Toimivaltainen päättäjä"
+                          value={readOnlyTextValue(input.value)}
+                          readOnly
+                        />
+                      )
+                    }
                   </Field>
                 </div>
               </div>
