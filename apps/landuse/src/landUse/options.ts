@@ -250,9 +250,12 @@ export const DISTRICT_OPTIONS = [
 ];
 
 export const LAND_USE_NEGOTIATION_PHASES = {
-  VIREILLA: "Vireillä",
-  NEUVOTTEILLA: "Neuvotteilla",
-  PAATOS: "Päätös",
+  DRAFT: "Luonnos",
+  IN_PROGRESS: "Vireillä",
+  NEGOTIATION: "Neuvottelu",
+  DECISION: "Päätös",
+  SIGNATURE: "Allekirjoitus",
+  NO_AGREEMENT: "Ei sopimusta",
 } as const;
 
 export type LandUseNegotiationPhase =
