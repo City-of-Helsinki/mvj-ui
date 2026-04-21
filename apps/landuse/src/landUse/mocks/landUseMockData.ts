@@ -14,6 +14,7 @@ import { negotiatorsOptions, signatoriesOptions } from "../options";
 export interface MockLandUseData {
   identifier: string;
   maankayttosopimusType: string;
+  kaupunginosa: string;
   edistamisalue: boolean;
   tila: string;
   suunnittelunPerusteenaOlevatKohteet: string[];
@@ -288,6 +289,7 @@ export const mockLandUseTabStore: Record<string, LandUseAgreementMockTabs> = {
     summary: {
       identifier: "MA113-1",
       maankayttosopimusType: "Maankäyttösopimus",
+      kaupunginosa: "Kruununhaka",
       edistamisalue: true,
       tila: "Vireillä",
       suunnittelunPerusteenaOlevatKohteet: ["01-49-920-6"],
