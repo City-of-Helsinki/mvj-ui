@@ -5,7 +5,7 @@
     "jsx": "react",
     "module": "ESNext",
     "rootDir": "./",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "typeRoots": [
       "./node_modules/@types",
       "./types"
@@ -26,7 +26,6 @@
     "strictPropertyInitialization": false,
     "noImplicitThis": false,
     "useUnknownInCatchVariables": true,
-    "alwaysStrict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "exactOptionalPropertyTypes": false,
