@@ -4,6 +4,6 @@ export type LandUseListItem = {
   party: string;
   zoningPlanNumber: string;
   site: string;
-  projectArea: string;
+  projectArea: boolean;
   negotiationPhase: string;
 };

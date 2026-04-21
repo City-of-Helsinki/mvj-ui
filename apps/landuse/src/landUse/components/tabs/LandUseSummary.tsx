@@ -3,6 +3,7 @@ import {
   TextInput,
   RadioButton,
   SelectionGroup,
+  Checkbox,
   Select,
   Button,
   ButtonVariant,
@@ -22,7 +23,6 @@ import {
 import { getAsemakaavat } from "../../api/landUseApi";
 import {
   type AsemakaavaListItem,
-  DISTRICT_OPTIONS,
   landUseNegotiationPhaseOptions,
 } from "../../options";
 import { landUseKohdeSelectOptions } from "../../options";
@@ -43,7 +43,7 @@ interface KohdeEntry {
 
 export interface LandUseSummaryFormValues {
   maankayttosopimusType: string | undefined;
-  edistamisalue: string | undefined;
+  edistamisalue: boolean;
   tila: string | undefined;
   suunnittelunPerusteenaOlevatKohteet: KohdeEntry[];
   valmistelijat: ValmistelijaEntry[];
@@ -196,24 +196,22 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   <Field name="edistamisalue">
                     {({ input }) =>
                       isEditMode ? (
-                        <Select
-                          id="summary-edistamisalue"
-                          options={DISTRICT_OPTIONS}
-                          value={normalizeSelectValue(input.value)}
-                          onChange={(selectedOptions) =>
-                            handleSelectChange(selectedOptions, input.onChange)
-                          }
-                          texts={{
-                            label: "Edistämisalue",
-                            placeholder: "Valitse",
-                          }}
-                          disabled={!isEditMode}
-                        />
+                        <SelectionGroup label="Edistämisalue">
+                          <Checkbox
+                            id="summary-edistamisalue"
+                            label="Kyllä"
+                            checked={Boolean(input.value)}
+                            onChange={(event) =>
+                              input.onChange(event.currentTarget.checked)
+                            }
+                            disabled={!isEditMode}
+                          />
+                        </SelectionGroup>
                       ) : (
                         <TextInput
                           id="summary-edistamisalue"
                           label="Edistämisalue"
-                          value={readOnlyTextValue(input.value)}
+                          value={input.value ? "Kyllä" : "Ei"}
                           readOnly
                         />
                       )
