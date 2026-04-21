@@ -5,7 +5,7 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import { useOidcClient, useAuthenticatedUser } from "hds-react";
+import { Footer, useOidcClient, useAuthenticatedUser } from "hds-react";
 import LoginPage from "@/landUse/auth/LoginPage";
 import { setRedirectUrlToSessionStorage } from "@/landUse/utils/storage";
 import LandUseListPage from "@/landUse/components/LandUseListPage";
@@ -68,6 +68,7 @@ const LandUseApp: React.FC = () => {
           />
         )}
       </RouterRoutes>
+      {authenticatedUser ? <Footer /> : null}
     </div>
   );
 };
