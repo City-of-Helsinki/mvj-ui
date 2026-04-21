@@ -66,6 +66,7 @@ export const getLandUseList = async (): Promise<LandUseListItem[]> => {
 export const createLandUseAgreement = async (
   municipalityId: string,
   districtId: string,
+  districtName: string,
 ): Promise<string> => {
   const existingIdentifiers = await getAgreementIds();
   const sequence = getNextLandUseSequence(
@@ -79,7 +80,10 @@ export const createLandUseAgreement = async (
     sequence,
   );
 
-  await setAgreementTab(identifier, "summary", createEmptySummaryFormValues());
+  await setAgreementTab(identifier, "summary", {
+    ...createEmptySummaryFormValues(),
+    kaupunginosa: districtName,
+  });
 
   return identifier;
 };

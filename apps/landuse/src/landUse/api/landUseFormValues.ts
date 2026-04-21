@@ -21,6 +21,7 @@ const normalizeProjectAreaBoolean = (value: unknown): boolean => {
 
 export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
   maankayttosopimusType: undefined,
+  kaupunginosa: "",
   edistamisalue: false,
   tila: undefined,
   suunnittelunPerusteenaOlevatKohteet: [{ value: undefined }],
@@ -47,6 +48,7 @@ export const mapMockToSummaryFormValues = (
 
   return {
     maankayttosopimusType: normalizeSelectValue(mockData.maankayttosopimusType),
+    kaupunginosa: mockData.kaupunginosa ?? "",
     edistamisalue: normalizeProjectAreaBoolean(mockData.edistamisalue),
     tila: normalizeSelectValue(mockData.tila),
     suunnittelunPerusteenaOlevatKohteet:
