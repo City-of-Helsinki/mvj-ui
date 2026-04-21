@@ -295,11 +295,11 @@ const LandUseListPage: React.FC = () => {
               id="filter-vireilla"
               label="Vireillä"
               checked={selectedPhases.includes(
-                LAND_USE_NEGOTIATION_PHASES.VIREILLA,
+                LAND_USE_NEGOTIATION_PHASES.IN_PROGRESS,
               )}
               onChange={(e) =>
                 handlePhaseFilterChange(
-                  LAND_USE_NEGOTIATION_PHASES.VIREILLA,
+                  LAND_USE_NEGOTIATION_PHASES.IN_PROGRESS,
                   e.target.checked,
                 )
               }
@@ -308,11 +308,11 @@ const LandUseListPage: React.FC = () => {
               id="filter-neuvotteilla"
               label="Neuvotteilla"
               checked={selectedPhases.includes(
-                LAND_USE_NEGOTIATION_PHASES.NEUVOTTEILLA,
+                LAND_USE_NEGOTIATION_PHASES.NEGOTIATION,
               )}
               onChange={(e) =>
                 handlePhaseFilterChange(
-                  LAND_USE_NEGOTIATION_PHASES.NEUVOTTEILLA,
+                  LAND_USE_NEGOTIATION_PHASES.NEGOTIATION,
                   e.target.checked,
                 )
               }
@@ -321,11 +321,11 @@ const LandUseListPage: React.FC = () => {
               id="filter-paatos"
               label="Päätös"
               checked={selectedPhases.includes(
-                LAND_USE_NEGOTIATION_PHASES.PAATOS,
+                LAND_USE_NEGOTIATION_PHASES.DECISION,
               )}
               onChange={(e) =>
                 handlePhaseFilterChange(
-                  LAND_USE_NEGOTIATION_PHASES.PAATOS,
+                  LAND_USE_NEGOTIATION_PHASES.DECISION,
                   e.target.checked,
                 )
               }
