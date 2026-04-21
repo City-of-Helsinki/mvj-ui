@@ -360,102 +360,6 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
               </div>
             </Fieldset>
 
-            {/* Valmistelija Section */}
-            <Fieldset
-              heading=""
-              className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-            >
-              <div className="landuse-detail__grid">
-                <FieldArray<ValmistelijaEntry> name="valmistelijat">
-                  {({ fields }) => (
-                    <>
-                      {fields.map((name, index) => (
-                        <React.Fragment key={name}>
-                          <div className="landuse-detail__column">
-                            <Field name={`${name}.value`}>
-                              {({ input }) =>
-                                isEditMode ? (
-                                  <Select
-                                    id={`valmistelija-${index}`}
-                                    options={[
-                                      {
-                                        label: "Valmistelija 1",
-                                        value: "valmistelija1",
-                                      },
-                                      {
-                                        label: "Valmistelija 2",
-                                        value: "valmistelija2",
-                                      },
-                                      {
-                                        label: "Valmistelija 3",
-                                        value: "valmistelija3",
-                                      },
-                                    ]}
-                                    value={normalizeSelectValue(input.value)}
-                                    onChange={(selectedOptions) =>
-                                      handleSelectChange(
-                                        selectedOptions,
-                                        input.onChange,
-                                      )
-                                    }
-                                    texts={{
-                                      label: "Valmistelija",
-                                      placeholder: "Valitse",
-                                    }}
-                                    disabled={!isEditMode}
-                                  />
-                                ) : (
-                                  <TextInput
-                                    id={`valmistelija-${index}`}
-                                    label="Valmistelija"
-                                    value={readOnlyTextValue(input.value)}
-                                    readOnly
-                                  />
-                                )
-                              }
-                            </Field>
-                          </div>
-
-                          {isEditMode && (
-                            <div
-                              className="landuse-detail__column"
-                              style={{ justifyContent: "flex-end" }}
-                            >
-                              <Button
-                                variant={ButtonVariant.Supplementary}
-                                iconStart={<IconTrash />}
-                                onClick={() => fields.remove(index)}
-                                disabled={fields.length === 1}
-                                style={{ width: "fit-content" }}
-                              >
-                                Poista
-                              </Button>
-                            </div>
-                          )}
-                        </React.Fragment>
-                      ))}
-
-                      {isEditMode && (
-                        <div
-                          className="landuse-detail__column"
-                          style={{ justifyContent: "flex-end" }}
-                        >
-                          <Button
-                            className="landuse-detail__add-button"
-                            variant={ButtonVariant.Supplementary}
-                            iconStart={<IconPlusCircleFill />}
-                            onClick={() => fields.push({ value: undefined })}
-                          >
-                            Lisää valmistelija
-                          </Button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </FieldArray>
-              </div>
-            </Fieldset>
-
             {/* Additional Fields Section */}
             <Fieldset
               heading=""
@@ -774,6 +678,102 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                     )}
                   </Field>
                 </div>
+              </div>
+            </Fieldset>
+
+            {/* Valmistelija Section */}
+            <Fieldset
+              heading=""
+              className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
+            >
+              <div className="landuse-detail__grid">
+                <FieldArray<ValmistelijaEntry> name="valmistelijat">
+                  {({ fields }) => (
+                    <>
+                      {fields.map((name, index) => (
+                        <React.Fragment key={name}>
+                          <div className="landuse-detail__column">
+                            <Field name={`${name}.value`}>
+                              {({ input }) =>
+                                isEditMode ? (
+                                  <Select
+                                    id={`valmistelija-${index}`}
+                                    options={[
+                                      {
+                                        label: "Valmistelija 1",
+                                        value: "valmistelija1",
+                                      },
+                                      {
+                                        label: "Valmistelija 2",
+                                        value: "valmistelija2",
+                                      },
+                                      {
+                                        label: "Valmistelija 3",
+                                        value: "valmistelija3",
+                                      },
+                                    ]}
+                                    value={normalizeSelectValue(input.value)}
+                                    onChange={(selectedOptions) =>
+                                      handleSelectChange(
+                                        selectedOptions,
+                                        input.onChange,
+                                      )
+                                    }
+                                    texts={{
+                                      label: "Valmistelija",
+                                      placeholder: "Valitse",
+                                    }}
+                                    disabled={!isEditMode}
+                                  />
+                                ) : (
+                                  <TextInput
+                                    id={`valmistelija-${index}`}
+                                    label="Valmistelija"
+                                    value={readOnlyTextValue(input.value)}
+                                    readOnly
+                                  />
+                                )
+                              }
+                            </Field>
+                          </div>
+
+                          {isEditMode && (
+                            <div
+                              className="landuse-detail__column"
+                              style={{ justifyContent: "flex-end" }}
+                            >
+                              <Button
+                                variant={ButtonVariant.Supplementary}
+                                iconStart={<IconTrash />}
+                                onClick={() => fields.remove(index)}
+                                disabled={fields.length === 1}
+                                style={{ width: "fit-content" }}
+                              >
+                                Poista
+                              </Button>
+                            </div>
+                          )}
+                        </React.Fragment>
+                      ))}
+
+                      {isEditMode && (
+                        <div
+                          className="landuse-detail__column"
+                          style={{ justifyContent: "flex-end" }}
+                        >
+                          <Button
+                            className="landuse-detail__add-button"
+                            variant={ButtonVariant.Supplementary}
+                            iconStart={<IconPlusCircleFill />}
+                            onClick={() => fields.push({ value: undefined })}
+                          >
+                            Lisää valmistelija
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </FieldArray>
               </div>
             </Fieldset>
           </div>
