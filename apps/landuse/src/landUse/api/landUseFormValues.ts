@@ -79,9 +79,9 @@ export const mapMockToSummaryFormValues = (
 };
 
 export const createEmptyPartiesFormValues = (): LandUsePartiesFormValues => ({
-  customer: {
+  party: {
     details: {
-      customerType: undefined,
+      partyType: undefined,
       name: "",
       businessId: "",
       language: undefined,
@@ -109,7 +109,7 @@ export const createEmptyPartiesFormValues = (): LandUsePartiesFormValues => ({
   },
   invoiceRecipient: {
     details: {
-      customerType: undefined,
+      partyType: undefined,
       name: "",
       businessId: "",
       language: undefined,

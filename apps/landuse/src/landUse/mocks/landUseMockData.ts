@@ -47,9 +47,9 @@ export interface MockLandUseData {
 }
 
 const ma113Parties = createEmptyPartiesFormValues();
-ma113Parties.customer.details = {
-  ...ma113Parties.customer.details,
-  customerType: "yritys",
+ma113Parties.party.details = {
+  ...ma113Parties.party.details,
+  partyType: "yritys",
   name: "Helsingin kaupunki",
   businessId: "3100001-5",
   language: "suomi",
@@ -71,7 +71,7 @@ ma113Parties.invoiceRecipient = {
   ...ma113Parties.invoiceRecipient,
   details: {
     ...ma113Parties.invoiceRecipient.details,
-    customerType: "yritys",
+    partyType: "yritys",
     name: "Helsingin kaupunki",
     businessId: "3100001-5",
     language: "suomi",

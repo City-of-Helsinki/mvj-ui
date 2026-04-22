@@ -20,7 +20,7 @@ import {
 import { negotiatorsOptions, signatoriesOptions } from "../../options";
 
 export interface BasePartyDetails {
-  customerType: string | undefined;
+  partyType: string | undefined;
   name: string;
   language: string | undefined;
   streetAddress: string;
@@ -50,7 +50,7 @@ export interface BillingDetails {
 }
 
 export interface LandUsePartiesFormValues {
-  customer: {
+  party: {
     details: PersonPartyDetails | CompanyPartyDetails;
   };
   contactPerson: {
@@ -71,7 +71,7 @@ interface LandUsePartiesProps {
   isEditMode: boolean;
 }
 
-const customerTypeOptions = [
+const partyTypeOptions = [
   { label: "Yritys", value: "yritys" },
   { label: "Yksityishenkilö", value: "yksityishenkilo" },
 ];
@@ -512,30 +512,30 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
-        const customerName = values?.customer?.details?.name?.trim() || "Nimi";
+        const partyName = values?.party?.details?.name?.trim() || "Nimi";
 
         return (
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
               <h2 className="landuse-detail__section-title">OSAPUOLET</h2>
 
-              <Accordion heading={customerName} initiallyOpen>
+              <Accordion heading={partyName} initiallyOpen>
                 <Fieldset
                   heading="Sopimusosapuoli"
                   className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
                 >
                   <div className="landuse-detail__grid">
                     <div className="landuse-detail__column">
-                      <Field name="customer.details.customerType">
+                      <Field name="party.details.partyType">
                         {({ input }) =>
                           isEditMode ? (
                             <Select
-                              id="customer-type"
+                              id="party-type"
                               texts={{
                                 label: "Asiakastyyppi",
                                 placeholder: "Valitse asiakastyyppi",
                               }}
-                              options={customerTypeOptions}
+                              options={partyTypeOptions}
                               value={normalizeSelectValue(input.value)}
                               onChange={(selected) =>
                                 handleSelectChange(selected, input.onChange)
@@ -543,7 +543,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                             />
                           ) : (
                             <TextInput
-                              id="customer-type"
+                              id="party-type"
                               label="Asiakastyyppi"
                               value={readOnlyTextValue(input.value)}
                               readOnly
@@ -553,18 +553,18 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                       </Field>
                     </div>
 
-                    {values?.customer?.details?.customerType === "yritys" && (
+                    {values?.party?.details?.partyType === "yritys" && (
                       <CompanyPartyForm
-                        fieldPrefix="customer.details"
-                        idPrefix="customer"
+                        fieldPrefix="party.details"
+                        idPrefix="party"
                         isEditMode={isEditMode}
                       />
                     )}
-                    {values?.customer?.details?.customerType ===
+                    {values?.party?.details?.partyType ===
                       "yksityishenkilo" && (
                       <PersonPartyForm
-                        fieldPrefix="customer.details"
-                        idPrefix="customer"
+                        fieldPrefix="party.details"
+                        idPrefix="party"
                         isEditMode={isEditMode}
                       />
                     )}
@@ -640,7 +640,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                       <Field name="billingDetails.reference">
                         {({ input }) => (
                           <TextInput
-                            id="customer-reference"
+                            id="party-reference"
                             label="Viite"
                             value={getFieldTextValue(isEditMode, input.value)}
                             onChange={input.onChange}
@@ -711,16 +711,16 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                 >
                   <div className="landuse-detail__grid">
                     <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.customerType">
+                      <Field name="invoiceRecipient.details.partyType">
                         {({ input }) =>
                           isEditMode ? (
                             <Select
-                              id="invoice-customer-type"
+                              id="invoice-party-type"
                               texts={{
                                 label: "Asiakastyyppi",
                                 placeholder: "Valitse asiakastyyppi",
                               }}
-                              options={customerTypeOptions}
+                              options={partyTypeOptions}
                               value={normalizeSelectValue(input.value)}
                               onChange={(selected) =>
                                 handleSelectChange(selected, input.onChange)
@@ -728,7 +728,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                             />
                           ) : (
                             <TextInput
-                              id="invoice-customer-type"
+                              id="invoice-party-type"
                               label="Asiakastyyppi"
                               value={readOnlyTextValue(input.value)}
                               readOnly
@@ -738,7 +738,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                       </Field>
                     </div>
 
-                    {values?.invoiceRecipient?.details?.customerType ===
+                    {values?.invoiceRecipient?.details?.partyType ===
                       "yritys" && (
                       <CompanyPartyForm
                         fieldPrefix="invoiceRecipient.details"
@@ -746,7 +746,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                         isEditMode={isEditMode}
                       />
                     )}
-                    {values?.invoiceRecipient?.details?.customerType ===
+                    {values?.invoiceRecipient?.details?.partyType ===
                       "yksityishenkilo" && (
                       <PersonPartyForm
                         fieldPrefix="invoiceRecipient.details"
