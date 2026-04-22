@@ -328,12 +328,9 @@ export const landUseGuaranteeCategoryOptions = [
 ];
 
 export const ASEMAKAAVA_KASITTELYVAIHE_OPTIONS = [
-  "1. Käynnistys",
-  "2. OAS",
-  "3. Ehdotus",
-  "4. Tarkistettu ehdotus",
-  "5. Hyväksyminen",
-  "6. Voimaantulo",
+  "Vireillä",
+  "Voimassa",
+  "Kumottu",
 ] as const;
 
 export type AsemakaavaKasittelyvaihe =
@@ -350,42 +347,42 @@ export interface AsemakaavaListItem {
 export const landUseAsemakaavaListItems: AsemakaavaListItem[] = [
   {
     asemakaavanNumero: "0000255",
-    asemakaavanKasittelyvaihe: "1. Käynnistys",
+    asemakaavanKasittelyvaihe: "Vireillä",
     kasittelyvaiheenViimeisinPvm: "12.01.2025",
     asemakaavanHyvaksyjä: "Henkilö 1",
     asemakaavanDiaarinumero: "HEL 2947-138205",
   },
   {
     asemakaavanNumero: "0000412",
-    asemakaavanKasittelyvaihe: "2. OAS",
+    asemakaavanKasittelyvaihe: "Vireillä",
     kasittelyvaiheenViimeisinPvm: "27.03.2025",
     asemakaavanHyvaksyjä: "Henkilö 2",
     asemakaavanDiaarinumero: "HEL 1035-880164",
   },
   {
     asemakaavanNumero: "0000569",
-    asemakaavanKasittelyvaihe: "3. Ehdotus",
+    asemakaavanKasittelyvaihe: "Voimassa",
     kasittelyvaiheenViimeisinPvm: "08.06.2025",
     asemakaavanHyvaksyjä: "Henkilö 3",
     asemakaavanDiaarinumero: "HEL 7408-064219",
   },
   {
     asemakaavanNumero: "0000623",
-    asemakaavanKasittelyvaihe: "4. Tarkistettu ehdotus",
+    asemakaavanKasittelyvaihe: "Voimassa",
     kasittelyvaiheenViimeisinPvm: "14.09.2025",
     asemakaavanHyvaksyjä: "Henkilö 4",
     asemakaavanDiaarinumero: "HEL 5512-972406",
   },
   {
     asemakaavanNumero: "0000738",
-    asemakaavanKasittelyvaihe: "5. Hyväksyminen",
+    asemakaavanKasittelyvaihe: "Kumottu",
     kasittelyvaiheenViimeisinPvm: "02.11.2025",
     asemakaavanHyvaksyjä: "Henkilö 5",
     asemakaavanDiaarinumero: "HEL 4120-305774",
   },
   {
     asemakaavanNumero: "0000891",
-    asemakaavanKasittelyvaihe: "6. Voimaantulo",
+    asemakaavanKasittelyvaihe: "Kumottu",
     kasittelyvaiheenViimeisinPvm: "19.01.2026",
     asemakaavanHyvaksyjä: "Henkilö 6",
     asemakaavanDiaarinumero: "HEL 6689-451392",
