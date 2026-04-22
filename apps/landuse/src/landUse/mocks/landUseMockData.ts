@@ -153,7 +153,7 @@ export interface LandUseAgreementMockTabs {
 const ma113Sites: LandUseSite[] = [
   {
     id: "MA113-1-site-1",
-    kohteenTunnus: "01-49-920-6",
+    kohteenTunnus: "91-10-100-1",
     pintaAlaM2: "4500",
     km2: "3600",
     kayttotarkoitus: "Asuinkerrostalojen korttelialue",
@@ -240,7 +240,7 @@ const ma113Decisions: LandUseDecisionsFormValues = {
           vakuuttaJaljella: "170000",
           siteUsages: [
             {
-              kohde: "01-49-920-6",
+              kohde: "91-10-100-1",
               hallintamuoto: "Vapaarahoitteinen omistus",
               vakuuttaKaytettyEuro: "80000",
               vakuuttaKaytettyProsentti: "32",
@@ -271,7 +271,7 @@ const ma113Monitoring: LandUseMonitoringFormValues = {
   },
   sakkoRows: [
     {
-      kohteenTunnus: "01-49-920-6",
+      kohteenTunnus: "91-10-100-1",
       hallintamuoto: "Vapaarahoitteinen omistus",
       vaadittuKerrosala: "3600",
       toteutunutKerrosala: "3100",
@@ -292,10 +292,10 @@ export const mockLandUseTabStore: Record<string, LandUseAgreementMockTabs> = {
       kaupunginosa: "Kruununhaka",
       edistamisalue: true,
       tila: "Vireillä",
-      suunnittelunPerusteenaOlevatKohteet: ["01-49-920-6"],
+      suunnittelunPerusteenaOlevatKohteet: ["91-10-100-1"],
       kohteet: [
         {
-          kohteenTunnus: "01-49-920-6",
+          kohteenTunnus: "91-10-100-1",
           kayttotarkoitus: "Asuinkerrostalojen korttelialue",
           hallintamuoto: "Vapaarahoitteinen omistus",
           suojeltu: "SR1",
