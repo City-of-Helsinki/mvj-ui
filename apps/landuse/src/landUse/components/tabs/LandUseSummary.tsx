@@ -379,6 +379,99 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                 </div>
               </div>
             </Fieldset>
+
+            {/* Asemakaavat Section */}
+            <h3 className="landuse-detail__section-title">Asemakaavatiedot</h3>
+            <Fieldset
+              heading=""
+              className="landuse-detail__fieldset--no-heading"
+            >
+              <div className="landuse-detail__grid">
+                <div className="landuse-detail__column">
+                  <Field name="asemakaavanNumero">
+                    {({ input }) =>
+                      isEditMode ? (
+                        <Select
+                          id="asemakaavan-numero"
+                          options={asemakaavaNumberOptions}
+                          value={normalizeSelectValue(input.value)}
+                          onChange={handleAsemakaavaNumberChange}
+                          filter={kohdeSelectFilter}
+                          texts={{
+                            label: "Asemakaavan numero",
+                            placeholder: "Valitse",
+                          }}
+                          disabled={!isEditMode}
+                        />
+                      ) : (
+                        <TextInput
+                          id="asemakaavan-numero"
+                          label="Asemakaavan numero"
+                          value={readOnlyTextValue(input.value)}
+                          readOnly
+                        />
+                      )
+                    }
+                  </Field>
+                </div>
+
+                <div className="landuse-detail__column">
+                  <Field name="asemakaavanKasittelyvaihe">
+                    {({ input }) => (
+                      <TextInput
+                        id="asemakaavan-kasittelyvaihe"
+                        label="Asemakaavan käsittelyvaihe"
+                        value={getFieldTextValue(isEditMode, input.value)}
+                        onChange={input.onChange}
+                        readOnly
+                      />
+                    )}
+                  </Field>
+                </div>
+
+                <div className="landuse-detail__column">
+                  <Field name="kasittelyvaiheenViimeisinPvm">
+                    {({ input }) => (
+                      <TextInput
+                        id="kasittelyvaiheen-viimeisin-pvm"
+                        label="Käsittelyvaiheen viimeisin pvm"
+                        value={getFieldTextValue(isEditMode, input.value)}
+                        onChange={input.onChange}
+                        readOnly
+                      />
+                    )}
+                  </Field>
+                </div>
+
+                <div className="landuse-detail__column">
+                  <Field name="asemakaavanHyvaksyjä">
+                    {({ input }) => (
+                      <TextInput
+                        id="asemakaavan-hyvaksyja"
+                        label="Asemakaavan hyväksyjä"
+                        value={getFieldTextValue(isEditMode, input.value)}
+                        onChange={input.onChange}
+                        readOnly
+                      />
+                    )}
+                  </Field>
+                </div>
+
+                <div className="landuse-detail__column">
+                  <Field name="asemakaavanDiaarinumero">
+                    {({ input }) => (
+                      <TextInput
+                        id="asemakaavan-diaarinumero"
+                        label="Asemakaavan diaarinumero"
+                        value={getFieldTextValue(isEditMode, input.value)}
+                        onChange={input.onChange}
+                        readOnly
+                      />
+                    )}
+                  </Field>
+                </div>
+              </div>
+            </Fieldset>
             <h3 className="landuse-detail__section-title">
               Suunnittelun perusteena olevat kohteet
             </h3>
@@ -576,99 +669,6 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                     </>
                   )}
                 </FieldArray>
-              </div>
-            </Fieldset>
-
-            {/* Asemakaavat Section */}
-            <h3 className="landuse-detail__section-title">Asemakaavatiedot</h3>
-            <Fieldset
-              heading=""
-              className="landuse-detail__fieldset--no-heading"
-            >
-              <div className="landuse-detail__grid">
-                <div className="landuse-detail__column">
-                  <Field name="asemakaavanNumero">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <Select
-                          id="asemakaavan-numero"
-                          options={asemakaavaNumberOptions}
-                          value={normalizeSelectValue(input.value)}
-                          onChange={handleAsemakaavaNumberChange}
-                          filter={kohdeSelectFilter}
-                          texts={{
-                            label: "Asemakaavan numero",
-                            placeholder: "Valitse",
-                          }}
-                          disabled={!isEditMode}
-                        />
-                      ) : (
-                        <TextInput
-                          id="asemakaavan-numero"
-                          label="Asemakaavan numero"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
-                </div>
-
-                <div className="landuse-detail__column">
-                  <Field name="asemakaavanKasittelyvaihe">
-                    {({ input }) => (
-                      <TextInput
-                        id="asemakaavan-kasittelyvaihe"
-                        label="Asemakaavan käsittelyvaihe"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly
-                      />
-                    )}
-                  </Field>
-                </div>
-
-                <div className="landuse-detail__column">
-                  <Field name="kasittelyvaiheenViimeisinPvm">
-                    {({ input }) => (
-                      <TextInput
-                        id="kasittelyvaiheen-viimeisin-pvm"
-                        label="Käsittelyvaiheen viimeisin pvm"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly
-                      />
-                    )}
-                  </Field>
-                </div>
-
-                <div className="landuse-detail__column">
-                  <Field name="asemakaavanHyvaksyjä">
-                    {({ input }) => (
-                      <TextInput
-                        id="asemakaavan-hyvaksyja"
-                        label="Asemakaavan hyväksyjä"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly
-                      />
-                    )}
-                  </Field>
-                </div>
-
-                <div className="landuse-detail__column">
-                  <Field name="asemakaavanDiaarinumero">
-                    {({ input }) => (
-                      <TextInput
-                        id="asemakaavan-diaarinumero"
-                        label="Asemakaavan diaarinumero"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly
-                      />
-                    )}
-                  </Field>
-                </div>
               </div>
             </Fieldset>
 
