@@ -37,7 +37,6 @@ export interface PartyDetails {
   careOf: string;
   phone: string;
   email: string;
-  landlord: string | undefined;
   note: string;
 }
 
@@ -80,11 +79,6 @@ const languageOptions = [
   { label: "englanti", value: "englanti" },
 ];
 
-const landlordOptions = [
-  { label: "Kyllä", value: "kylla" },
-  { label: "Ei", value: "ei" },
-];
-
 const countryOptions = [
   { label: "Suomi", value: "suomi" },
   { label: "Ruotsi", value: "ruotsi" },
@@ -119,31 +113,6 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
               <h2 className="landuse-detail__section-title">OSAPUOLET</h2>
-
-              <Fieldset
-                heading=""
-                className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-              >
-                <div className="landuse-detail__grid">
-                  <div
-                    className="landuse-detail__column"
-                    style={{ gridColumn: "span 4" }}
-                  >
-                    <Field name="customer.reference">
-                      {({ input }) => (
-                        <TextInput
-                          id="customer-reference"
-                          label="Viite"
-                          value={getFieldTextValue(isEditMode, input.value)}
-                          onChange={input.onChange}
-                          readOnly={!isEditMode}
-                          placeholder="Placeholder"
-                        />
-                      )}
-                    </Field>
-                  </div>
-                </div>
-              </Fieldset>
 
               <h3 className="landuse-detail__section-title">
                 Asiakkaan tiedot
@@ -390,30 +359,17 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                     </div>
 
                     <div className="landuse-detail__column">
-                      <Field name="customer.details.landlord">
-                        {({ input }) =>
-                          isEditMode ? (
-                            <Select
-                              id="customer-landlord"
-                              texts={{
-                                label: "Vuokranantaja",
-                                placeholder: "Valitse vuokranantaja",
-                              }}
-                              options={landlordOptions}
-                              value={normalizeSelectValue(input.value)}
-                              onChange={(selected) =>
-                                handleSelectChange(selected, input.onChange)
-                              }
-                            />
-                          ) : (
-                            <TextInput
-                              id="customer-landlord"
-                              label="Vuokranantaja"
-                              value={readOnlyTextValue(input.value)}
-                              readOnly
-                            />
-                          )
-                        }
+                      <Field name="customer.reference">
+                        {({ input }) => (
+                          <TextInput
+                            id="customer-reference"
+                            label="Viite"
+                            value={getFieldTextValue(isEditMode, input.value)}
+                            onChange={input.onChange}
+                            readOnly={!isEditMode}
+                            placeholder="Placeholder"
+                          />
+                        )}
                       </Field>
                     </div>
 
@@ -757,34 +713,6 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                             placeholder="Placeholder"
                           />
                         )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.landlord">
-                        {({ input }) =>
-                          isEditMode ? (
-                            <Select
-                              id="invoice-landlord"
-                              texts={{
-                                label: "Vuokranantaja",
-                                placeholder: "Valitse vuokranantaja",
-                              }}
-                              options={landlordOptions}
-                              value={normalizeSelectValue(input.value)}
-                              onChange={(selected) =>
-                                handleSelectChange(selected, input.onChange)
-                              }
-                            />
-                          ) : (
-                            <TextInput
-                              id="invoice-landlord"
-                              label="Vuokranantaja"
-                              value={readOnlyTextValue(input.value)}
-                              readOnly
-                            />
-                          )
-                        }
                       </Field>
                     </div>
 

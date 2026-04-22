@@ -62,7 +62,6 @@ const createBasePartiesFormValues = (): LandUsePartiesFormValues => ({
       careOf: "",
       phone: "",
       email: "",
-      landlord: "",
       note: "",
     },
   },
@@ -88,7 +87,6 @@ const createBasePartiesFormValues = (): LandUsePartiesFormValues => ({
       careOf: "",
       phone: "",
       email: "",
-      landlord: "",
       note: "",
     },
   },
@@ -110,7 +108,6 @@ ma113Parties.customer.details = {
   businessId: "3100001-5",
   language: "suomi",
   country: "suomi",
-  landlord: "kylla",
 };
 ma113Parties.contactPerson = {
   name: "Liisa Virtanen",
@@ -133,7 +130,6 @@ ma113Parties.invoiceRecipient = {
     city: "Helsinki",
     postalCode: "00100",
     country: "suomi",
-    landlord: "kylla",
   },
 };
 ma113Parties.negotiators = [{ name: negotiatorsOptions[1].value }];
