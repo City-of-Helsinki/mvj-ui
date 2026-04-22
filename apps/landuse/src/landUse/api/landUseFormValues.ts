@@ -1,7 +1,10 @@
 import { normalizeSelectValue } from "../utils/fieldUtils";
 import type { MockLandUseData } from "../mocks/landUseMockData";
 import type { LandUseSummaryFormValues } from "../components/tabs/LandUseSummary";
-import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
+import type {
+  LandUsePartiesFormValues,
+  PartyEntry,
+} from "../components/tabs/LandUseParties";
 
 const normalizeProjectAreaBoolean = (value: unknown): boolean => {
   if (typeof value === "boolean") {
@@ -78,7 +81,7 @@ export const mapMockToSummaryFormValues = (
   };
 };
 
-export const createEmptyPartiesFormValues = (): LandUsePartiesFormValues => ({
+export const createEmptyPartyEntry = (): PartyEntry => ({
   party: {
     details: {
       partyType: undefined,
@@ -123,6 +126,10 @@ export const createEmptyPartiesFormValues = (): LandUsePartiesFormValues => ({
       note: "",
     },
   },
+});
+
+export const createEmptyPartiesFormValues = (): LandUsePartiesFormValues => ({
+  parties: [createEmptyPartyEntry()],
   negotiators: [{ name: undefined }],
   signatories: [{ name: undefined }],
 });

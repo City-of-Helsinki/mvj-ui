@@ -40,7 +40,7 @@ export const getLandUseList = async (): Promise<LandUseListItem[]> => {
         getCompensations(agreementId),
       ]);
 
-      const partyName = parties?.party?.details?.name ?? "";
+      const partyName = parties?.parties?.[0]?.party?.details?.name ?? "";
       const sites = compensations?.sites ?? [];
       const kohdeValues =
         sites

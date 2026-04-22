@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   TextInput,
   Select,
@@ -18,6 +18,7 @@ import {
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
 import { negotiatorsOptions, signatoriesOptions } from "../../options";
+import { createEmptyPartyEntry } from "../../api/landUseFormValues";
 
 export interface BasePartyDetails {
   partyType: string | undefined;
@@ -49,7 +50,7 @@ export interface BillingDetails {
   reference: string;
 }
 
-export interface LandUsePartiesFormValues {
+export interface PartyEntry {
   party: {
     details: PersonPartyDetails | CompanyPartyDetails;
   };
@@ -62,6 +63,10 @@ export interface LandUsePartiesFormValues {
   invoiceRecipient: {
     details: PersonPartyDetails | CompanyPartyDetails;
   };
+}
+
+export interface LandUsePartiesFormValues {
+  parties: PartyEntry[];
   negotiators: Array<{ name: string | undefined }>;
   signatories: Array<{ name: string | undefined }>;
 }
@@ -507,256 +512,367 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
   form,
   isEditMode,
 }) => {
+  const newlyAddedIndexRef = useRef<number | null>(null);
+
   return (
     <Form<LandUsePartiesFormValues>
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
-        const partyName = values?.party?.details?.name?.trim() || "Nimi";
+        const partiesCount = values?.parties?.length ?? 0;
+
+        const shouldOpenAccordion = (index: number): boolean => {
+          // When there are multiple parties, initially open none of the Accordions
+          // When there is only one party, initially open its Accordion
+          // When creating a new party, open its Accordion
+
+          if (newlyAddedIndexRef.current === index) {
+            newlyAddedIndexRef.current = null;
+            return true;
+          }
+          return partiesCount === 1;
+        };
 
         return (
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
               <h2 className="landuse-detail__section-title">OSAPUOLET</h2>
 
-              <Accordion heading={partyName} initiallyOpen>
-                <Fieldset
-                  heading="Sopimusosapuoli"
-                  className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-                >
-                  <div className="landuse-detail__grid">
-                    <div className="landuse-detail__column">
-                      <Field name="party.details.partyType">
-                        {({ input }) =>
-                          isEditMode ? (
-                            <Select
-                              id="party-type"
-                              texts={{
-                                label: "Asiakastyyppi",
-                                placeholder: "Valitse asiakastyyppi",
-                              }}
-                              options={partyTypeOptions}
-                              value={normalizeSelectValue(input.value)}
-                              onChange={(selected) =>
-                                handleSelectChange(selected, input.onChange)
-                              }
-                            />
-                          ) : (
-                            <TextInput
-                              id="party-type"
-                              label="Asiakastyyppi"
-                              value={readOnlyTextValue(input.value)}
-                              readOnly
-                            />
-                          )
-                        }
-                      </Field>
-                    </div>
+              <FieldArray<PartyEntry> name="parties">
+                {({ fields }) => (
+                  <>
+                    {fields.map((fieldName, index) => {
+                      const partyEntry = values?.parties?.[index];
+                      const partyName =
+                        partyEntry?.party?.details?.name?.trim() ||
+                        "Uusi osapuoli";
 
-                    {values?.party?.details?.partyType === "yritys" && (
-                      <CompanyPartyForm
-                        fieldPrefix="party.details"
-                        idPrefix="party"
-                        isEditMode={isEditMode}
-                      />
+                      return (
+                        <Accordion
+                          key={fieldName}
+                          heading={partyName}
+                          initiallyOpen={shouldOpenAccordion(index)}
+                        >
+                          <Fieldset
+                            heading="Sopimusosapuoli"
+                            className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
+                          >
+                            <div className="landuse-detail__grid">
+                              <div className="landuse-detail__column">
+                                <Field
+                                  name={`${fieldName}.party.details.partyType`}
+                                >
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <Select
+                                        id={`party-${index}-type`}
+                                        texts={{
+                                          label: "Asiakastyyppi",
+                                          placeholder: "Valitse asiakastyyppi",
+                                        }}
+                                        options={partyTypeOptions}
+                                        value={normalizeSelectValue(
+                                          input.value,
+                                        )}
+                                        onChange={(selected) =>
+                                          handleSelectChange(
+                                            selected,
+                                            input.onChange,
+                                          )
+                                        }
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`party-${index}-type`}
+                                        label="Asiakastyyppi"
+                                        value={readOnlyTextValue(input.value)}
+                                        readOnly
+                                      />
+                                    )
+                                  }
+                                </Field>
+                              </div>
+
+                              {partyEntry?.party?.details?.partyType ===
+                                "yritys" && (
+                                <CompanyPartyForm
+                                  fieldPrefix={`${fieldName}.party.details`}
+                                  idPrefix={`party-${index}`}
+                                  isEditMode={isEditMode}
+                                />
+                              )}
+                              {partyEntry?.party?.details?.partyType ===
+                                "yksityishenkilo" && (
+                                <PersonPartyForm
+                                  fieldPrefix={`${fieldName}.party.details`}
+                                  idPrefix={`party-${index}`}
+                                  isEditMode={isEditMode}
+                                />
+                              )}
+                            </div>
+                          </Fieldset>
+
+                          <Fieldset
+                            heading="Laskutustiedot"
+                            className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
+                          >
+                            <div className="landuse-detail__grid">
+                              <div className="landuse-detail__column">
+                                <Field
+                                  name={`${fieldName}.billingDetails.partnerCode`}
+                                >
+                                  {({ input }) => (
+                                    <TextInput
+                                      id={`billing-${index}-partner-code`}
+                                      label="Kumppanikoodi"
+                                      value={getFieldTextValue(
+                                        isEditMode,
+                                        input.value,
+                                      )}
+                                      onChange={input.onChange}
+                                      readOnly={!isEditMode}
+                                      placeholder="Placeholder"
+                                    />
+                                  )}
+                                </Field>
+                              </div>
+
+                              <div className="landuse-detail__column">
+                                <Field
+                                  name={`${fieldName}.billingDetails.ovtCode`}
+                                >
+                                  {({ input }) => (
+                                    <TextInput
+                                      id={`billing-${index}-ovt-code`}
+                                      label="Ovt-tunnus"
+                                      value={getFieldTextValue(
+                                        isEditMode,
+                                        input.value,
+                                      )}
+                                      onChange={input.onChange}
+                                      readOnly={!isEditMode}
+                                      placeholder="Placeholder"
+                                    />
+                                  )}
+                                </Field>
+                              </div>
+
+                              <div className="landuse-detail__column">
+                                <Field
+                                  name={`${fieldName}.billingDetails.customerNumber`}
+                                >
+                                  {({ input }) => (
+                                    <TextInput
+                                      id={`billing-${index}-customer-number`}
+                                      label="Asiakasnumero"
+                                      value={getFieldTextValue(
+                                        isEditMode,
+                                        input.value,
+                                      )}
+                                      onChange={input.onChange}
+                                      readOnly={!isEditMode}
+                                      placeholder="Placeholder"
+                                    />
+                                  )}
+                                </Field>
+                              </div>
+
+                              <div className="landuse-detail__column">
+                                <Field
+                                  name={`${fieldName}.billingDetails.sapCustomerNumber`}
+                                >
+                                  {({ input }) => (
+                                    <TextInput
+                                      id={`billing-${index}-sap-customer-number`}
+                                      label="SAP-asiakasnumero"
+                                      value={getFieldTextValue(
+                                        isEditMode,
+                                        input.value,
+                                      )}
+                                      onChange={input.onChange}
+                                      readOnly={!isEditMode}
+                                      placeholder="Placeholder"
+                                    />
+                                  )}
+                                </Field>
+                              </div>
+
+                              <div className="landuse-detail__column">
+                                <Field
+                                  name={`${fieldName}.billingDetails.reference`}
+                                >
+                                  {({ input }) => (
+                                    <TextInput
+                                      id={`billing-${index}-reference`}
+                                      label="Viite"
+                                      value={getFieldTextValue(
+                                        isEditMode,
+                                        input.value,
+                                      )}
+                                      onChange={input.onChange}
+                                      readOnly={!isEditMode}
+                                      placeholder="Placeholder"
+                                    />
+                                  )}
+                                </Field>
+                              </div>
+                            </div>
+                          </Fieldset>
+
+                          <Fieldset
+                            heading="Yhteyshenkilö"
+                            className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
+                          >
+                            <div className="landuse-detail__grid">
+                              <div className="landuse-detail__column">
+                                <Field name={`${fieldName}.contactPerson.name`}>
+                                  {({ input }) => (
+                                    <TextInput
+                                      id={`contact-${index}-person`}
+                                      label="Nimi"
+                                      value={getFieldTextValue(
+                                        isEditMode,
+                                        input.value,
+                                      )}
+                                      onChange={input.onChange}
+                                      readOnly={!isEditMode}
+                                      placeholder="Placeholder"
+                                    />
+                                  )}
+                                </Field>
+                              </div>
+
+                              <div className="landuse-detail__column">
+                                <Field
+                                  name={`${fieldName}.contactPerson.phone`}
+                                >
+                                  {({ input }) => (
+                                    <TextInput
+                                      id={`contact-${index}-person-phone`}
+                                      label="Puhelinnumero"
+                                      value={getFieldTextValue(
+                                        isEditMode,
+                                        input.value,
+                                      )}
+                                      onChange={input.onChange}
+                                      readOnly={!isEditMode}
+                                      placeholder="Placeholder"
+                                    />
+                                  )}
+                                </Field>
+                              </div>
+
+                              <div className="landuse-detail__column">
+                                <Field
+                                  name={`${fieldName}.contactPerson.email`}
+                                >
+                                  {({ input }) => (
+                                    <TextInput
+                                      id={`contact-${index}-person-email`}
+                                      label="Sähköposti"
+                                      value={getFieldTextValue(
+                                        isEditMode,
+                                        input.value,
+                                      )}
+                                      onChange={input.onChange}
+                                      readOnly={!isEditMode}
+                                      placeholder="Placeholder"
+                                    />
+                                  )}
+                                </Field>
+                              </div>
+                            </div>
+                          </Fieldset>
+
+                          <Fieldset
+                            heading="Laskunsaaja"
+                            className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
+                          >
+                            <div className="landuse-detail__grid">
+                              <div className="landuse-detail__column">
+                                <Field
+                                  name={`${fieldName}.invoiceRecipient.details.partyType`}
+                                >
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <Select
+                                        id={`invoice-${index}-party-type`}
+                                        texts={{
+                                          label: "Asiakastyyppi",
+                                          placeholder: "Valitse asiakastyyppi",
+                                        }}
+                                        options={partyTypeOptions}
+                                        value={normalizeSelectValue(
+                                          input.value,
+                                        )}
+                                        onChange={(selected) =>
+                                          handleSelectChange(
+                                            selected,
+                                            input.onChange,
+                                          )
+                                        }
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`invoice-${index}-party-type`}
+                                        label="Asiakastyyppi"
+                                        value={readOnlyTextValue(input.value)}
+                                        readOnly
+                                      />
+                                    )
+                                  }
+                                </Field>
+                              </div>
+
+                              {partyEntry?.invoiceRecipient?.details
+                                ?.partyType === "yritys" && (
+                                <CompanyPartyForm
+                                  fieldPrefix={`${fieldName}.invoiceRecipient.details`}
+                                  idPrefix={`invoice-${index}`}
+                                  isEditMode={isEditMode}
+                                />
+                              )}
+                              {partyEntry?.invoiceRecipient?.details
+                                ?.partyType === "yksityishenkilo" && (
+                                <PersonPartyForm
+                                  fieldPrefix={`${fieldName}.invoiceRecipient.details`}
+                                  idPrefix={`invoice-${index}`}
+                                  isEditMode={isEditMode}
+                                />
+                              )}
+                            </div>
+                          </Fieldset>
+
+                          {isEditMode && (
+                            <Button
+                              variant={ButtonVariant.Danger}
+                              iconStart={<IconTrash />}
+                              onClick={() => fields.remove(index)}
+                            >
+                              Poista osapuoli
+                            </Button>
+                          )}
+                        </Accordion>
+                      );
+                    })}
+
+                    {isEditMode && (
+                      <Button
+                        className="landuse-detail__add-button"
+                        variant={ButtonVariant.Supplementary}
+                        iconStart={<IconPlusCircleFill />}
+                        type="button"
+                        onClick={() => {
+                          newlyAddedIndexRef.current = fields.length ?? 0;
+                          fields.push(createEmptyPartyEntry());
+                        }}
+                      >
+                        Lisää osapuoli
+                      </Button>
                     )}
-                    {values?.party?.details?.partyType ===
-                      "yksityishenkilo" && (
-                      <PersonPartyForm
-                        fieldPrefix="party.details"
-                        idPrefix="party"
-                        isEditMode={isEditMode}
-                      />
-                    )}
-                  </div>
-                </Fieldset>
-
-                <Fieldset
-                  heading="Laskutustiedot"
-                  className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-                >
-                  <div className="landuse-detail__grid">
-                    <div className="landuse-detail__column">
-                      <Field name="billingDetails.partnerCode">
-                        {({ input }) => (
-                          <TextInput
-                            id="billing-partner-code"
-                            label="Kumppanikoodi"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="billingDetails.ovtCode">
-                        {({ input }) => (
-                          <TextInput
-                            id="billing-ovt-code"
-                            label="Ovt-tunnus"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="billingDetails.customerNumber">
-                        {({ input }) => (
-                          <TextInput
-                            id="billing-customer-number"
-                            label="Asiakasnumero"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="billingDetails.sapCustomerNumber">
-                        {({ input }) => (
-                          <TextInput
-                            id="billing-sap-customer-number"
-                            label="SAP-asiakasnumero"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="billingDetails.reference">
-                        {({ input }) => (
-                          <TextInput
-                            id="party-reference"
-                            label="Viite"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-                  </div>
-                </Fieldset>
-
-                <Fieldset
-                  heading="Yhteyshenkilö"
-                  className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-                >
-                  <div className="landuse-detail__grid">
-                    <div className="landuse-detail__column">
-                      <Field name="contactPerson.name">
-                        {({ input }) => (
-                          <TextInput
-                            id="contact-person"
-                            label="Nimi"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="contactPerson.phone">
-                        {({ input }) => (
-                          <TextInput
-                            id="contact-person-phone"
-                            label="Puhelinnumero"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="contactPerson.email">
-                        {({ input }) => (
-                          <TextInput
-                            id="contact-person-email"
-                            label="Sähköposti"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-                  </div>
-                </Fieldset>
-
-                <Fieldset
-                  heading="Laskunsaaja"
-                  className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-                >
-                  <div className="landuse-detail__grid">
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.partyType">
-                        {({ input }) =>
-                          isEditMode ? (
-                            <Select
-                              id="invoice-party-type"
-                              texts={{
-                                label: "Asiakastyyppi",
-                                placeholder: "Valitse asiakastyyppi",
-                              }}
-                              options={partyTypeOptions}
-                              value={normalizeSelectValue(input.value)}
-                              onChange={(selected) =>
-                                handleSelectChange(selected, input.onChange)
-                              }
-                            />
-                          ) : (
-                            <TextInput
-                              id="invoice-party-type"
-                              label="Asiakastyyppi"
-                              value={readOnlyTextValue(input.value)}
-                              readOnly
-                            />
-                          )
-                        }
-                      </Field>
-                    </div>
-
-                    {values?.invoiceRecipient?.details?.partyType ===
-                      "yritys" && (
-                      <CompanyPartyForm
-                        fieldPrefix="invoiceRecipient.details"
-                        idPrefix="invoice"
-                        isEditMode={isEditMode}
-                      />
-                    )}
-                    {values?.invoiceRecipient?.details?.partyType ===
-                      "yksityishenkilo" && (
-                      <PersonPartyForm
-                        fieldPrefix="invoiceRecipient.details"
-                        idPrefix="invoice"
-                        isEditMode={isEditMode}
-                      />
-                    )}
-                  </div>
-                </Fieldset>
-              </Accordion>
+                  </>
+                )}
+              </FieldArray>
 
               <h3 className="landuse-detail__section-title">Neuvottelijat</h3>
               <Fieldset
