@@ -47,30 +47,30 @@ export interface MockLandUseData {
 }
 
 const ma113Parties = createEmptyPartiesFormValues();
-ma113Parties.party.details = {
-  ...ma113Parties.party.details,
+ma113Parties.parties[0].party.details = {
+  ...ma113Parties.parties[0].party.details,
   partyType: "yritys",
   name: "Helsingin kaupunki",
   businessId: "3100001-5",
   language: "suomi",
   country: "suomi",
 };
-ma113Parties.contactPerson = {
+ma113Parties.parties[0].contactPerson = {
   name: "Liisa Virtanen",
   phone: "050 555 0000",
   email: "liisa.virtanen@example.com",
 };
-ma113Parties.billingDetails = {
+ma113Parties.parties[0].billingDetails = {
   partnerCode: "77777",
   ovtCode: "003703100001",
   customerNumber: "C-0456",
   sapCustomerNumber: "SAP-0456",
   reference: "MA113-REF",
 };
-ma113Parties.invoiceRecipient = {
-  ...ma113Parties.invoiceRecipient,
+ma113Parties.parties[0].invoiceRecipient = {
+  ...ma113Parties.parties[0].invoiceRecipient,
   details: {
-    ...ma113Parties.invoiceRecipient.details,
+    ...ma113Parties.parties[0].invoiceRecipient.details,
     partyType: "yritys",
     name: "Helsingin kaupunki",
     businessId: "3100001-5",
