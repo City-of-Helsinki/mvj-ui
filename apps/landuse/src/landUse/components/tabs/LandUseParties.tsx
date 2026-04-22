@@ -17,19 +17,12 @@ import {
   normalizeSelectValue,
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
-import {
-  negotiatorsOptions as defaultNegotiatorsOptions,
-  signatoriesOptions as defaultSignatoriesOptions,
-} from "../../options";
+import { negotiatorsOptions, signatoriesOptions } from "../../options";
 
-export interface PartyDetails {
+export interface BasePartyDetails {
   customerType: string | undefined;
   name: string;
-  businessId: string;
   language: string | undefined;
-  partnerCode: string;
-  ovtCode: string;
-  customerNumber?: string;
   streetAddress: string;
   city: string;
   postalCode: string;
@@ -40,25 +33,35 @@ export interface PartyDetails {
   note: string;
 }
 
-export interface InvoiceDetails extends PartyDetails {
+export interface PersonPartyDetails extends BasePartyDetails {
+  nationalIdentificationNumber: string;
+}
+
+export interface CompanyPartyDetails extends BasePartyDetails {
+  businessId: string;
+}
+
+export interface BillingDetails {
+  partnerCode: string;
+  ovtCode: string;
+  customerNumber: string;
   sapCustomerNumber: string;
+  reference: string;
 }
 
 export interface LandUsePartiesFormValues {
   customer: {
-    reference: string;
-    details: PartyDetails;
+    details: PersonPartyDetails | CompanyPartyDetails;
   };
   contactPerson: {
     name: string | undefined;
     phone: string;
     email: string;
   };
+  billingDetails: BillingDetails;
   invoiceRecipient: {
-    details: InvoiceDetails;
+    details: PersonPartyDetails | CompanyPartyDetails;
   };
-  negotiatorsOptions: Array<{ label: string; value: string }>;
-  signatoriesOptions: Array<{ label: string; value: string }>;
   negotiators: Array<{ name: string | undefined }>;
   signatories: Array<{ name: string | undefined }>;
 }
@@ -96,6 +99,410 @@ const handleSelectChange = (
   }
 };
 
+interface PartyFormProps {
+  fieldPrefix: string;
+  idPrefix: string;
+  isEditMode: boolean;
+}
+
+const CompanyPartyForm: React.FC<PartyFormProps> = ({
+  fieldPrefix,
+  idPrefix,
+  isEditMode,
+}) => (
+  <>
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.name`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-name`}
+            label="Nimi"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.businessId`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-business-id`}
+            label="Y-tunnus"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="12345"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.language`}>
+        {({ input }) =>
+          isEditMode ? (
+            <Select
+              id={`${idPrefix}-language`}
+              texts={{
+                label: "Kieli",
+                placeholder: "Valitse kieli",
+              }}
+              options={languageOptions}
+              value={normalizeSelectValue(input.value)}
+              onChange={(selected) =>
+                handleSelectChange(selected, input.onChange)
+              }
+            />
+          ) : (
+            <TextInput
+              id={`${idPrefix}-language`}
+              label="Kieli"
+              value={readOnlyTextValue(input.value)}
+              readOnly
+            />
+          )
+        }
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.streetAddress`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-street`}
+            label="Katuosoite"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.city`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-city`}
+            label="Postitoimipaikka"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.postalCode`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-postal-code`}
+            label="Postinumero"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.country`}>
+        {({ input }) =>
+          isEditMode ? (
+            <Select
+              id={`${idPrefix}-country`}
+              texts={{
+                label: "Maa",
+                placeholder: "Valitse maa",
+              }}
+              options={countryOptions}
+              value={normalizeSelectValue(input.value)}
+              onChange={(selected) =>
+                handleSelectChange(selected, input.onChange)
+              }
+            />
+          ) : (
+            <TextInput
+              id={`${idPrefix}-country`}
+              label="Maa"
+              value={readOnlyTextValue(input.value)}
+              readOnly
+            />
+          )
+        }
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.careOf`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-care-of`}
+            label="c/o"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.phone`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-phone`}
+            label="Puhelinnumero"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.email`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-email`}
+            label="Sähköposti"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column" style={{ gridColumn: "span 3" }}>
+      <Field name={`${fieldPrefix}.note`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-note`}
+            label="Huomautus"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+  </>
+);
+
+const PersonPartyForm: React.FC<PartyFormProps> = ({
+  fieldPrefix,
+  idPrefix,
+  isEditMode,
+}) => (
+  <>
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.name`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-name`}
+            label="Nimi"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.nationalIdentificationNumber`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-national-id`}
+            label="Henkilötunnus"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.language`}>
+        {({ input }) =>
+          isEditMode ? (
+            <Select
+              id={`${idPrefix}-language`}
+              texts={{
+                label: "Kieli",
+                placeholder: "Valitse kieli",
+              }}
+              options={languageOptions}
+              value={normalizeSelectValue(input.value)}
+              onChange={(selected) =>
+                handleSelectChange(selected, input.onChange)
+              }
+            />
+          ) : (
+            <TextInput
+              id={`${idPrefix}-language`}
+              label="Kieli"
+              value={readOnlyTextValue(input.value)}
+              readOnly
+            />
+          )
+        }
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.streetAddress`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-street`}
+            label="Katuosoite"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.city`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-city`}
+            label="Postitoimipaikka"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.postalCode`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-postal-code`}
+            label="Postinumero"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.country`}>
+        {({ input }) =>
+          isEditMode ? (
+            <Select
+              id={`${idPrefix}-country`}
+              texts={{
+                label: "Maa",
+                placeholder: "Valitse maa",
+              }}
+              options={countryOptions}
+              value={normalizeSelectValue(input.value)}
+              onChange={(selected) =>
+                handleSelectChange(selected, input.onChange)
+              }
+            />
+          ) : (
+            <TextInput
+              id={`${idPrefix}-country`}
+              label="Maa"
+              value={readOnlyTextValue(input.value)}
+              readOnly
+            />
+          )
+        }
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.careOf`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-care-of`}
+            label="c/o"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.phone`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-phone`}
+            label="Puhelinnumero"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column">
+      <Field name={`${fieldPrefix}.email`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-email`}
+            label="Sähköposti"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+
+    <div className="landuse-detail__column" style={{ gridColumn: "span 3" }}>
+      <Field name={`${fieldPrefix}.note`}>
+        {({ input }) => (
+          <TextInput
+            id={`${idPrefix}-note`}
+            label="Huomautus"
+            value={getFieldTextValue(isEditMode, input.value)}
+            onChange={input.onChange}
+            readOnly={!isEditMode}
+            placeholder="Placeholder"
+          />
+        )}
+      </Field>
+    </div>
+  </>
+);
+
 export const LandUseParties: React.FC<LandUsePartiesProps> = ({
   form,
   isEditMode,
@@ -105,8 +512,6 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
-        const negotiatorsOptions = defaultNegotiatorsOptions;
-        const signatoriesOptions = defaultSignatoriesOptions;
         const customerName = values?.customer?.details?.name?.trim() || "Nimi";
 
         return (
@@ -114,12 +519,9 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
             <div className="landuse-detail__content">
               <h2 className="landuse-detail__section-title">OSAPUOLET</h2>
 
-              <h3 className="landuse-detail__section-title">
-                Asiakkaan tiedot
-              </h3>
               <Accordion heading={customerName} initiallyOpen>
                 <Fieldset
-                  heading=""
+                  heading="Sopimusosapuoli"
                   className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
                 >
                   <div className="landuse-detail__grid">
@@ -151,69 +553,34 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                       </Field>
                     </div>
 
+                    {values?.customer?.details?.customerType === "yritys" && (
+                      <CompanyPartyForm
+                        fieldPrefix="customer.details"
+                        idPrefix="customer"
+                        isEditMode={isEditMode}
+                      />
+                    )}
+                    {values?.customer?.details?.customerType ===
+                      "yksityishenkilo" && (
+                      <PersonPartyForm
+                        fieldPrefix="customer.details"
+                        idPrefix="customer"
+                        isEditMode={isEditMode}
+                      />
+                    )}
+                  </div>
+                </Fieldset>
+
+                <Fieldset
+                  heading="Laskutustiedot"
+                  className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
+                >
+                  <div className="landuse-detail__grid">
                     <div className="landuse-detail__column">
-                      <Field name="customer.details.name">
+                      <Field name="billingDetails.partnerCode">
                         {({ input }) => (
                           <TextInput
-                            id="customer-company"
-                            label="Nimi"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="customer.details.businessId">
-                        {({ input }) => (
-                          <TextInput
-                            id="customer-business-id"
-                            label="Y-tunnus"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="12345"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="customer.details.language">
-                        {({ input }) =>
-                          isEditMode ? (
-                            <Select
-                              id="customer-language"
-                              texts={{
-                                label: "Kieli",
-                                placeholder: "Valitse kieli",
-                              }}
-                              options={languageOptions}
-                              value={normalizeSelectValue(input.value)}
-                              onChange={(selected) =>
-                                handleSelectChange(selected, input.onChange)
-                              }
-                            />
-                          ) : (
-                            <TextInput
-                              id="customer-language"
-                              label="Kieli"
-                              value={readOnlyTextValue(input.value)}
-                              readOnly
-                            />
-                          )
-                        }
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="customer.details.partnerCode">
-                        {({ input }) => (
-                          <TextInput
-                            id="customer-partner-code"
+                            id="billing-partner-code"
                             label="Kumppanikoodi"
                             value={getFieldTextValue(isEditMode, input.value)}
                             onChange={input.onChange}
@@ -225,10 +592,10 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                     </div>
 
                     <div className="landuse-detail__column">
-                      <Field name="customer.details.ovtCode">
+                      <Field name="billingDetails.ovtCode">
                         {({ input }) => (
                           <TextInput
-                            id="customer-ovt-code"
+                            id="billing-ovt-code"
                             label="Ovt-tunnus"
                             value={getFieldTextValue(isEditMode, input.value)}
                             onChange={input.onChange}
@@ -238,14 +605,13 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                         )}
                       </Field>
                     </div>
-                    <div className="landuse-detail__column" />
-                    <div className="landuse-detail__column" />
+
                     <div className="landuse-detail__column">
-                      <Field name="customer.details.streetAddress">
+                      <Field name="billingDetails.customerNumber">
                         {({ input }) => (
                           <TextInput
-                            id="customer-street"
-                            label="Katuosoite"
+                            id="billing-customer-number"
+                            label="Asiakasnumero"
                             value={getFieldTextValue(isEditMode, input.value)}
                             onChange={input.onChange}
                             readOnly={!isEditMode}
@@ -256,11 +622,11 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                     </div>
 
                     <div className="landuse-detail__column">
-                      <Field name="customer.details.city">
+                      <Field name="billingDetails.sapCustomerNumber">
                         {({ input }) => (
                           <TextInput
-                            id="customer-city"
-                            label="Postitoimipaikka"
+                            id="billing-sap-customer-number"
+                            label="SAP-asiakasnumero"
                             value={getFieldTextValue(isEditMode, input.value)}
                             onChange={input.onChange}
                             readOnly={!isEditMode}
@@ -271,95 +637,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                     </div>
 
                     <div className="landuse-detail__column">
-                      <Field name="customer.details.postalCode">
-                        {({ input }) => (
-                          <TextInput
-                            id="customer-postal-code"
-                            label="Postinumero"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="customer.details.country">
-                        {({ input }) =>
-                          isEditMode ? (
-                            <Select
-                              id="customer-country"
-                              texts={{
-                                label: "Maa",
-                                placeholder: "Valitse maa",
-                              }}
-                              options={countryOptions}
-                              value={normalizeSelectValue(input.value)}
-                              onChange={(selected) =>
-                                handleSelectChange(selected, input.onChange)
-                              }
-                            />
-                          ) : (
-                            <TextInput
-                              id="customer-country"
-                              label="Maa"
-                              value={readOnlyTextValue(input.value)}
-                              readOnly
-                            />
-                          )
-                        }
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="customer.details.careOf">
-                        {({ input }) => (
-                          <TextInput
-                            id="customer-care-of"
-                            label="c/o"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="customer.details.phone">
-                        {({ input }) => (
-                          <TextInput
-                            id="customer-phone"
-                            label="Puhelinnumero"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="customer.details.email">
-                        {({ input }) => (
-                          <TextInput
-                            id="customer-email"
-                            label="Sähköposti"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="customer.reference">
+                      <Field name="billingDetails.reference">
                         {({ input }) => (
                           <TextInput
                             id="customer-reference"
@@ -372,30 +650,11 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                         )}
                       </Field>
                     </div>
-
-                    <div
-                      className="landuse-detail__column"
-                      style={{ gridColumn: "span 3" }}
-                    >
-                      <Field name="customer.details.note">
-                        {({ input }) => (
-                          <TextInput
-                            id="customer-note"
-                            label="Huomautus"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
                   </div>
                 </Fieldset>
 
-                <h3 className="landuse-detail__section-title">Yhteyshenkilö</h3>
                 <Fieldset
-                  heading=""
+                  heading="Yhteyshenkilö"
                   className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
                 >
                   <div className="landuse-detail__grid">
@@ -446,9 +705,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                   </div>
                 </Fieldset>
 
-                <h3 className="landuse-detail__section-title">Laskunsaaja</h3>
                 <Fieldset
-                  heading=""
+                  heading="Laskunsaaja"
                   className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
                 >
                   <div className="landuse-detail__grid">
@@ -480,259 +738,22 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                       </Field>
                     </div>
 
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.name">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-company"
-                            label="Nimi"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.businessId">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-business-id"
-                            label="Y-tunnus"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="12345"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.language">
-                        {({ input }) =>
-                          isEditMode ? (
-                            <Select
-                              id="invoice-language"
-                              texts={{
-                                label: "Kieli",
-                                placeholder: "Valitse kieli",
-                              }}
-                              options={languageOptions}
-                              value={normalizeSelectValue(input.value)}
-                              onChange={(selected) =>
-                                handleSelectChange(selected, input.onChange)
-                              }
-                            />
-                          ) : (
-                            <TextInput
-                              id="invoice-language"
-                              label="Kieli"
-                              value={readOnlyTextValue(input.value)}
-                              readOnly
-                            />
-                          )
-                        }
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.partnerCode">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-partner-code"
-                            label="Kumppanikoodi"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.ovtCode">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-ovt-code"
-                            label="Ovt-tunnus"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.customerNumber">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-customer-number"
-                            label="Asiakasnumero"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.sapCustomerNumber">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-sap-customer-number"
-                            label="SAP-asiakasnumero"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.streetAddress">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-street"
-                            label="Katuosoite"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.city">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-city"
-                            label="Postitoimipaikka"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.postalCode">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-postal-code"
-                            label="Postinumero"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.country">
-                        {({ input }) =>
-                          isEditMode ? (
-                            <Select
-                              id="invoice-country"
-                              texts={{
-                                label: "Maa",
-                                placeholder: "Valitse maa",
-                              }}
-                              options={countryOptions}
-                              value={normalizeSelectValue(input.value)}
-                              onChange={(selected) =>
-                                handleSelectChange(selected, input.onChange)
-                              }
-                            />
-                          ) : (
-                            <TextInput
-                              id="invoice-country"
-                              label="Maa"
-                              value={readOnlyTextValue(input.value)}
-                              readOnly
-                            />
-                          )
-                        }
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.careOf">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-care-of"
-                            label="c/o"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.phone">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-phone"
-                            label="Puhelinnumero"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div className="landuse-detail__column">
-                      <Field name="invoiceRecipient.details.email">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-email"
-                            label="Sähköposti"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
-
-                    <div
-                      className="landuse-detail__column"
-                      style={{ gridColumn: "span 3" }}
-                    >
-                      <Field name="invoiceRecipient.details.note">
-                        {({ input }) => (
-                          <TextInput
-                            id="invoice-note"
-                            label="Huomautus"
-                            value={getFieldTextValue(isEditMode, input.value)}
-                            onChange={input.onChange}
-                            readOnly={!isEditMode}
-                            placeholder="Placeholder"
-                          />
-                        )}
-                      </Field>
-                    </div>
+                    {values?.invoiceRecipient?.details?.customerType ===
+                      "yritys" && (
+                      <CompanyPartyForm
+                        fieldPrefix="invoiceRecipient.details"
+                        idPrefix="invoice"
+                        isEditMode={isEditMode}
+                      />
+                    )}
+                    {values?.invoiceRecipient?.details?.customerType ===
+                      "yksityishenkilo" && (
+                      <PersonPartyForm
+                        fieldPrefix="invoiceRecipient.details"
+                        idPrefix="invoice"
+                        isEditMode={isEditMode}
+                      />
+                    )}
                   </div>
                 </Fieldset>
               </Accordion>

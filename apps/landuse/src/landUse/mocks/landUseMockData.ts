@@ -10,6 +10,7 @@ import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMoni
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
 import { DEFAULT_KOROTUSKERROIN } from "../constants";
 import { negotiatorsOptions, signatoriesOptions } from "../options";
+import { createEmptyPartiesFormValues } from "../api/landUseFormValues";
 
 export interface MockLandUseData {
   identifier: string;
@@ -45,62 +46,7 @@ export interface MockLandUseData {
   asemakaavanDiaarinumero: string;
 }
 
-const createBasePartiesFormValues = (): LandUsePartiesFormValues => ({
-  customer: {
-    reference: "",
-    details: {
-      customerType: "",
-      name: "",
-      businessId: "",
-      language: "",
-      partnerCode: "",
-      ovtCode: "",
-      streetAddress: "",
-      city: "",
-      postalCode: "",
-      country: "",
-      careOf: "",
-      phone: "",
-      email: "",
-      note: "",
-    },
-  },
-  contactPerson: {
-    name: "",
-    phone: "",
-    email: "",
-  },
-  invoiceRecipient: {
-    details: {
-      customerType: "",
-      name: "",
-      businessId: "",
-      language: "",
-      partnerCode: "",
-      ovtCode: "",
-      customerNumber: "",
-      sapCustomerNumber: "",
-      streetAddress: "",
-      city: "",
-      postalCode: "",
-      country: "",
-      careOf: "",
-      phone: "",
-      email: "",
-      note: "",
-    },
-  },
-  negotiatorsOptions,
-  signatoriesOptions,
-  negotiators: [{ name: "" }],
-  signatories: [{ name: "" }],
-});
-
-const ma113Parties = createBasePartiesFormValues();
-ma113Parties.customer = {
-  ...ma113Parties.customer,
-  reference: "MA113-REF",
-};
+const ma113Parties = createEmptyPartiesFormValues();
 ma113Parties.customer.details = {
   ...ma113Parties.customer.details,
   customerType: "yritys",
@@ -114,6 +60,13 @@ ma113Parties.contactPerson = {
   phone: "050 555 0000",
   email: "liisa.virtanen@example.com",
 };
+ma113Parties.billingDetails = {
+  partnerCode: "77777",
+  ovtCode: "003703100001",
+  customerNumber: "C-0456",
+  sapCustomerNumber: "SAP-0456",
+  reference: "MA113-REF",
+};
 ma113Parties.invoiceRecipient = {
   ...ma113Parties.invoiceRecipient,
   details: {
@@ -122,10 +75,6 @@ ma113Parties.invoiceRecipient = {
     name: "Helsingin kaupunki",
     businessId: "3100001-5",
     language: "suomi",
-    partnerCode: "77777",
-    ovtCode: "003703100001",
-    customerNumber: "C-0456",
-    sapCustomerNumber: "SAP-0456",
     streetAddress: "Kaupungintalo 1",
     city: "Helsinki",
     postalCode: "00100",

@@ -80,14 +80,11 @@ export const mapMockToSummaryFormValues = (
 
 export const createEmptyPartiesFormValues = (): LandUsePartiesFormValues => ({
   customer: {
-    reference: "",
     details: {
       customerType: undefined,
       name: "",
       businessId: "",
       language: undefined,
-      partnerCode: "",
-      ovtCode: "",
       streetAddress: "",
       city: "",
       postalCode: "",
@@ -103,16 +100,19 @@ export const createEmptyPartiesFormValues = (): LandUsePartiesFormValues => ({
     phone: "",
     email: "",
   },
+  billingDetails: {
+    partnerCode: "",
+    ovtCode: "",
+    customerNumber: "",
+    sapCustomerNumber: "",
+    reference: "",
+  },
   invoiceRecipient: {
     details: {
       customerType: undefined,
       name: "",
       businessId: "",
       language: undefined,
-      partnerCode: "",
-      ovtCode: "",
-      customerNumber: "",
-      sapCustomerNumber: "",
       streetAddress: "",
       city: "",
       postalCode: "",
@@ -123,8 +123,6 @@ export const createEmptyPartiesFormValues = (): LandUsePartiesFormValues => ({
       note: "",
     },
   },
-  negotiatorsOptions: [],
-  signatoriesOptions: [],
   negotiators: [{ name: undefined }],
   signatories: [{ name: undefined }],
 });
