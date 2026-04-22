@@ -88,8 +88,12 @@
 
 // -- Fieldset overrides ------------------------------------------------------
 
-.landuse-detail__fieldset--no-heading .hds-fieldset__legend {
-  display: none;
+.landuse-detail__fieldset--no-heading {
+  width: 100%;
+
+  .hds-fieldset__legend {
+    display: none;
+  }
 }
 
 .landuse-detail__fieldset--with-margin {
