@@ -262,110 +262,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                     }
                   </Field>
                 </div>
-              </div>
-            </Fieldset>
 
-            <h3 className="landuse-detail__section-title">
-              Suunnittelun perusteena olevat kohteet
-            </h3>
-            <Fieldset
-              heading=""
-              className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-            >
-              <div className="landuse-detail__grid">
-                <FieldArray<KohdeEntry> name="suunnittelunPerusteenaOlevatKohteet">
-                  {({ fields }) => (
-                    <>
-                      {fields.map((name, index) => (
-                        <div
-                          key={name}
-                          style={{
-                            gridColumn: "1 / -1",
-                            display: "flex",
-                            alignItems: "flex-end",
-                            gap: "16px",
-                          }}
-                        >
-                          <div
-                            className="landuse-detail__column"
-                            style={{ flex: "0 1 480px" }}
-                          >
-                            <Field name={`${name}.value`}>
-                              {({ input }) =>
-                                isEditMode ? (
-                                  <Select
-                                    id={`suunnittelun-kohde-${index}`}
-                                    options={landUseKohdeSelectOptions}
-                                    value={normalizeSelectValue(input.value)}
-                                    onChange={(selectedOptions) =>
-                                      handleSelectChange(
-                                        selectedOptions,
-                                        input.onChange,
-                                      )
-                                    }
-                                    filter={kohdeSelectFilter}
-                                    texts={{
-                                      label: `Kohde ${index + 1}`,
-                                      placeholder: "Valitse",
-                                    }}
-                                    disabled={!isEditMode}
-                                  />
-                                ) : (
-                                  <TextInput
-                                    id={`suunnittelun-kohde-${index}`}
-                                    label={`Kohde ${index + 1}`}
-                                    value={readOnlyTextValue(input.value)}
-                                    readOnly
-                                  />
-                                )
-                              }
-                            </Field>
-                          </div>
-
-                          {isEditMode && (
-                            <div
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
-                              <Button
-                                variant={ButtonVariant.Supplementary}
-                                iconStart={<IconTrash />}
-                                onClick={() => fields.remove(index)}
-                                style={{ width: "fit-content" }}
-                              >
-                                Poista
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-
-                      {isEditMode && (
-                        <div
-                          className="landuse-detail__column"
-                          style={{ gridColumn: "1 / -1" }}
-                        >
-                          <Button
-                            className="landuse-detail__add-button"
-                            variant={ButtonVariant.Supplementary}
-                            iconStart={<IconPlusCircleFill />}
-                            onClick={() => fields.push({ value: undefined })}
-                          >
-                            Lisää kohde
-                          </Button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </FieldArray>
-              </div>
-            </Fieldset>
-
-            {/* Additional Fields Section */}
-            <Fieldset
-              heading=""
-              className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-            >
-              <div className="landuse-detail__grid">
                 <div className="landuse-detail__column">
                   <Field name="arvioituEsittelyvuosi">
                     {({ input }) => (
@@ -480,6 +377,100 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                     }
                   </Field>
                 </div>
+              </div>
+            </Fieldset>
+            <h3 className="landuse-detail__section-title">
+              Suunnittelun perusteena olevat kohteet
+            </h3>
+            <Fieldset
+              heading=""
+              className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
+            >
+              <div className="landuse-detail__grid">
+                <FieldArray<KohdeEntry> name="suunnittelunPerusteenaOlevatKohteet">
+                  {({ fields }) => (
+                    <>
+                      {fields.map((name, index) => (
+                        <div
+                          key={name}
+                          style={{
+                            gridColumn: "1 / -1",
+                            display: "flex",
+                            alignItems: "flex-end",
+                            gap: "16px",
+                          }}
+                        >
+                          <div
+                            className="landuse-detail__column"
+                            style={{ flex: "0 1 480px" }}
+                          >
+                            <Field name={`${name}.value`}>
+                              {({ input }) =>
+                                isEditMode ? (
+                                  <Select
+                                    id={`suunnittelun-kohde-${index}`}
+                                    options={landUseKohdeSelectOptions}
+                                    value={normalizeSelectValue(input.value)}
+                                    onChange={(selectedOptions) =>
+                                      handleSelectChange(
+                                        selectedOptions,
+                                        input.onChange,
+                                      )
+                                    }
+                                    filter={kohdeSelectFilter}
+                                    texts={{
+                                      label: `Kohde ${index + 1}`,
+                                      placeholder: "Valitse",
+                                    }}
+                                    disabled={!isEditMode}
+                                  />
+                                ) : (
+                                  <TextInput
+                                    id={`suunnittelun-kohde-${index}`}
+                                    label={`Kohde ${index + 1}`}
+                                    value={readOnlyTextValue(input.value)}
+                                    readOnly
+                                  />
+                                )
+                              }
+                            </Field>
+                          </div>
+
+                          {isEditMode && (
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Button
+                                variant={ButtonVariant.Supplementary}
+                                iconStart={<IconTrash />}
+                                onClick={() => fields.remove(index)}
+                                style={{ width: "fit-content" }}
+                              >
+                                Poista
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+
+                      {isEditMode && (
+                        <div
+                          className="landuse-detail__column"
+                          style={{ gridColumn: "1 / -1" }}
+                        >
+                          <Button
+                            className="landuse-detail__add-button"
+                            variant={ButtonVariant.Supplementary}
+                            iconStart={<IconPlusCircleFill />}
+                            onClick={() => fields.push({ value: undefined })}
+                          >
+                            Lisää kohde
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </FieldArray>
               </div>
             </Fieldset>
 
