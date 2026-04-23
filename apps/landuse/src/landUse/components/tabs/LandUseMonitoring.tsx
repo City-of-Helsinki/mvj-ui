@@ -518,9 +518,8 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
               const vaadittuValue = parseLandUseNumericValue(
                 plotDivision.vaadittuKm2,
               );
-              const toteutunutValue = parseLandUseNumericValue(
-                latestPlotDivisionEntry?.value,
-              );
+              const toteutunutValue =
+                parseLandUseNumericValue(latestPlotDivisionEntry?.value) ?? 0;
               const yksikkohintaRaw = plotDivision.yksikkohinta ?? "";
               const hintaeroValue = calculateHintaero(
                 perushinta,
@@ -571,9 +570,8 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             toteumaEntriesBySiteId[site.id] ?? [],
           );
           const vaadittuValue = parseLandUseNumericValue(site.km2);
-          const toteutunutValue = parseLandUseNumericValue(
-            latestToteutunutEntry?.value,
-          );
+          const toteutunutValue =
+            parseLandUseNumericValue(latestToteutunutEntry?.value) ?? 0;
           const yksikkohintaRaw =
             compensationsRowsBySiteId[site.id]?.yksikkohinta ?? "";
           const hintaeroValue = calculateHintaero(perushinta, yksikkohintaRaw);
