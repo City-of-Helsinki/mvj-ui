@@ -13,7 +13,6 @@ import {
   IconPlusCircleFill,
   IconSitemap,
   IconSize,
-  IconTrash,
   NumberInput,
   Select,
   Table,
@@ -42,6 +41,7 @@ import {
   calculateVakuustarve,
   getKerroinPercent,
 } from "../../utils/vakuustarve";
+import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 
 interface PerustietotaulukkoRowValues {
   yksikkohinta: string;
@@ -885,21 +885,20 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                         {draftPlotDivisions.map((plotDivision) => (
                           <li key={plotDivision.id}>
                             <span>{plotDivision.kohteenTunnus || "-"}</span>
-                            <Button
-                              type="button"
-                              variant={ButtonVariant.Supplementary}
-                              iconStart={<IconTrash />}
+                            <ConfirmDeleteButton
+                              id={`monitoring-plot-division-delete-${plotDivision.id}`}
+                              buttonVariant={ButtonVariant.Supplementary}
                               disabled={!isEditMode}
-                              onClick={() => {
+                              onConfirm={() => {
                                 setDraftPlotDivisions((current) =>
                                   current.filter(
                                     (item) => item.id !== plotDivision.id,
                                   ),
                                 );
                               }}
-                            >
-                              Poista
-                            </Button>
+                              dialogTitle="Poista tonttijako"
+                              dialogContent={`Haluatko varmasti poistaa tonttijaon ${plotDivision.kohteenTunnus?.trim() ?? ""}?`}
+                            />
                           </li>
                         ))}
                       </ul>

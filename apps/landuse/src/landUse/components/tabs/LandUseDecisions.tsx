@@ -4,10 +4,8 @@ import {
   Button,
   ButtonVariant,
   DateInput,
-  Dialog,
   Fieldset,
   IconPlusCircleFill,
-  IconTrash,
   Select,
   TextInput,
 } from "hds-react";
@@ -32,6 +30,7 @@ import {
   formatLandUseNumericValue,
   parseLandUseNumericValue,
 } from "../../utils/number";
+import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 
 interface DecisionCondition {
   conditionType?: string;
@@ -212,48 +211,6 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
   const [newAgreementIndexToOpen, setNewAgreementIndexToOpen] = React.useState<
     number | null
   >(null);
-  const [decisionIndexPendingDelete, setDecisionIndexPendingDelete] =
-    React.useState<number | null>(null);
-  const [agreementIndexPendingDelete, setAgreementIndexPendingDelete] =
-    React.useState<number | null>(null);
-
-  const closeDecisionDeleteDialog = () => {
-    setDecisionIndexPendingDelete(null);
-  };
-
-  const confirmDecisionDelete = () => {
-    if (decisionIndexPendingDelete === null) {
-      return;
-    }
-
-    const currentDecisions = form.getState().values.decisions ?? [];
-    form.change(
-      "decisions",
-      currentDecisions.filter(
-        (_, decisionIndex) => decisionIndex !== decisionIndexPendingDelete,
-      ),
-    );
-    closeDecisionDeleteDialog();
-  };
-
-  const closeAgreementDeleteDialog = () => {
-    setAgreementIndexPendingDelete(null);
-  };
-
-  const confirmAgreementDelete = () => {
-    if (agreementIndexPendingDelete === null) {
-      return;
-    }
-
-    const currentAgreements = form.getState().values.agreements ?? [];
-    form.change(
-      "agreements",
-      currentAgreements.filter(
-        (_, agreementIndex) => agreementIndex !== agreementIndexPendingDelete,
-      ),
-    );
-    closeAgreementDeleteDialog();
-  };
 
   return (
     <Form<LandUseDecisionsFormValues>
@@ -554,16 +511,23 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
 
                       {isEditMode && (
                         <div className="landuse-detail__decisions-add-row">
-                          <Button
-                            type="button"
-                            variant={ButtonVariant.Danger}
-                            iconStart={<IconTrash />}
-                            onClick={() => {
-                              setDecisionIndexPendingDelete(decisionIndex);
+                          <ConfirmDeleteButton
+                            id={`decision-delete-${decisionIndex}`}
+                            buttonLabel="Poista päätös"
+                            onConfirm={() => {
+                              const currentDecisions =
+                                form.getState().values.decisions ?? [];
+                              form.change(
+                                "decisions",
+                                currentDecisions.filter(
+                                  (_, currentDecisionIndex) =>
+                                    currentDecisionIndex !== decisionIndex,
+                                ),
+                              );
                             }}
-                          >
-                            Poista päätös
-                          </Button>
+                            dialogTitle="Poista päätös"
+                            dialogContent={`Haluatko varmasti poistaa päätöksen ${getDecisionAccordionHeading(decision)}?`}
+                          />
                         </div>
                       )}
                     </Fieldset>
@@ -1305,17 +1269,24 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                       </div>
 
                       <div className="landuse-detail__decisions-add-row">
-                        <Button
-                          type="button"
-                          variant={ButtonVariant.Danger}
-                          iconStart={<IconTrash />}
+                        <ConfirmDeleteButton
+                          id={`agreement-delete-${agreementIndex}`}
+                          buttonLabel="Poista sopimus"
                           disabled={!isEditMode}
-                          onClick={() => {
-                            setAgreementIndexPendingDelete(agreementIndex);
+                          onConfirm={() => {
+                            const currentAgreements =
+                              form.getState().values.agreements ?? [];
+                            form.change(
+                              "agreements",
+                              currentAgreements.filter(
+                                (_, currentAgreementIndex) =>
+                                  currentAgreementIndex !== agreementIndex,
+                              ),
+                            );
                           }}
-                        >
-                          Poista sopimus
-                        </Button>
+                          dialogTitle="Poista sopimus"
+                          dialogContent={`Haluatko varmasti poistaa sopimuksen ${getAgreementAccordionHeading(agreement)}?`}
+                        />
                       </div>
                     </Fieldset>
                   </Accordion>
@@ -1338,70 +1309,6 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                   </Button>
                 </div>
               )}
-
-              <Dialog
-                id="landuse-decisions-delete-dialog"
-                isOpen={decisionIndexPendingDelete !== null}
-                aria-labelledby="landuse-decisions-delete-dialog-title"
-                closeButtonLabelText="Sulje"
-                close={closeDecisionDeleteDialog}
-              >
-                <Dialog.Header
-                  id="landuse-decisions-delete-dialog-title"
-                  title="Poista päätös"
-                />
-                <Dialog.Content>
-                  Haluatko varmasti poistaa tämän päätöksen?
-                </Dialog.Content>
-                <Dialog.ActionButtons>
-                  <Button
-                    type="button"
-                    variant={ButtonVariant.Secondary}
-                    onClick={closeDecisionDeleteDialog}
-                  >
-                    Peruuta
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={ButtonVariant.Danger}
-                    onClick={confirmDecisionDelete}
-                  >
-                    Poista
-                  </Button>
-                </Dialog.ActionButtons>
-              </Dialog>
-
-              <Dialog
-                id="landuse-agreements-delete-dialog"
-                isOpen={agreementIndexPendingDelete !== null}
-                aria-labelledby="landuse-agreements-delete-dialog-title"
-                closeButtonLabelText="Sulje"
-                close={closeAgreementDeleteDialog}
-              >
-                <Dialog.Header
-                  id="landuse-agreements-delete-dialog-title"
-                  title="Poista sopimus"
-                />
-                <Dialog.Content>
-                  Haluatko varmasti poistaa tämän sopimuksen?
-                </Dialog.Content>
-                <Dialog.ActionButtons>
-                  <Button
-                    type="button"
-                    variant={ButtonVariant.Secondary}
-                    onClick={closeAgreementDeleteDialog}
-                  >
-                    Peruuta
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={ButtonVariant.Danger}
-                    onClick={confirmAgreementDelete}
-                  >
-                    Poista
-                  </Button>
-                </Dialog.ActionButtons>
-              </Dialog>
             </div>
           </form>
         );
