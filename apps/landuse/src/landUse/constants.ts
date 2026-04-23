@@ -5,3 +5,9 @@
  * it serves as a reasonable starting point for the calculations.
  */
 export const DEFAULT_KOROTUSKERROIN = 1.25;
+
+/**
+ * Sakkokerroin is the penalty multiplier applied in the sakko (penalty) table
+ * in the monitoring tab. Initializes to 1.5 per current practice.
+ */
+export const INITIAL_SAKKOKERROIN = 1.5;

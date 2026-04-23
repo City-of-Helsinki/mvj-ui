@@ -22,12 +22,10 @@ import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import type { FormKey } from "../LandUseDetailPage";
-import {
-  normalizeSelectValue,
-  readOnlyTextValue,
-} from "../../utils/fieldUtils";
+import { normalizeSelectValue } from "../../utils/fieldUtils";
 import { landUseCompensationSelectOptions } from "../../options";
 import type { LandUseSite } from "./LandUseCompensations";
+import { INITIAL_SAKKOKERROIN } from "../../constants";
 import {
   formatLandUseEuroDisplayValue,
   formatLandUseEuroValue,
@@ -71,6 +69,8 @@ export interface LandUseMonitoringFormValues {
   toteutunutHallintamuotoBySiteId?: Record<string, string | undefined>;
   plotDivisionsBySiteId?: Record<string, MonitoringPlotDivision[]>;
   sakkoRows?: MonitoringSakkoRow[];
+  sakkoKerroinBySiteId?: Record<string, string>;
+  sakkoKerroinByPlotDivisionId?: Record<string, string>;
 }
 
 interface MonitoringSakkoRow {
@@ -80,6 +80,18 @@ interface MonitoringSakkoRow {
   toteutunutKerrosala: string;
   hintaero: string;
   korotus: string;
+}
+
+interface SakkoRowData {
+  id: string;
+  kohteenTunnus: string;
+  hallintamuoto: string;
+  vaadittuValue: number | null;
+  toteutunutValue: number;
+  sopimussakkoValue: number | null;
+  sakkokerroinFieldName: string;
+  sakkokerroinInputId: string;
+  sakkokerroinValue: string;
 }
 
 interface LandUseMonitoringProps {
@@ -218,7 +230,9 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
         const toteutunutHallintamuotoBySiteId =
           values.toteutunutHallintamuotoBySiteId ?? {};
         const plotDivisionsBySiteId = values.plotDivisionsBySiteId ?? {};
-        const sakkoRows = values.sakkoRows ?? [];
+        const sakkoKerroinBySiteId = values.sakkoKerroinBySiteId ?? {};
+        const sakkoKerroinByPlotDivisionId =
+          values.sakkoKerroinByPlotDivisionId ?? {};
         const korotuskerroinValue =
           parseLandUseNumericValue(korotuskerroin) ?? 1;
         const selectedPlotDivision = selectedPlotDivisionTarget
@@ -652,127 +666,137 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           { key: "hallintamuoto", headerName: "Hallintamuoto" },
           { key: "vaadittuKerrosala", headerName: "Vaadittu kerrosala" },
           { key: "toteutunutKerrosala", headerName: "Toteutunut kerrosala" },
-          { key: "hintaero", headerName: "Hintaero" },
-          { key: "korotus", headerName: "Korotus" },
+          { key: "sopimussakko", headerName: "Sopimussakko" },
+          { key: "korotus", headerName: "Sakkokerroin" },
+          { key: "sakonMaara", headerName: "Sakon määrä" },
         ];
 
-        const monitoringSakkoTableRows = sakkoRows.map((row, index) => ({
-          id: `sakko-row-${row.kohteenTunnus}-${index}`,
-          kohteenTunnus: row.kohteenTunnus,
-          hallintamuoto: (
-            <Field name={`sakkoRows.${index}.hallintamuoto`}>
-              {({ input }) =>
-                isEditMode ? (
-                  <Select
-                    id={`monitoring-sakko-hallintamuoto-${index}`}
-                    options={hallintamuotoOptions}
-                    value={normalizeSelectValue(input.value)}
-                    onChange={(selectedOptions) =>
-                      handleSelectChange(selectedOptions, input.onChange)
-                    }
-                    texts={{
-                      label: "",
-                      placeholder: "Valitse",
-                    }}
-                  />
-                ) : (
-                  <TextInput
-                    id={`monitoring-sakko-hallintamuoto-${index}`}
-                    label=""
-                    value={readOnlyTextValue(input.value)}
-                    readOnly
-                  />
-                )
-              }
-            </Field>
+        const sakkoRowDataList: SakkoRowData[] = sites.flatMap(
+          (site, index) => {
+            const plotDivisions = plotDivisionsBySiteId[site.id] ?? [];
+
+            if (plotDivisions.length > 0) {
+              return plotDivisions.map(
+                (plotDivision, childIndex): SakkoRowData => {
+                  const plotDivisionToteumaEntries =
+                    toteumaEntriesByPlotDivisionId[plotDivision.id] ?? [];
+                  const latestEntry = getLatestEntry(
+                    plotDivisionToteumaEntries,
+                  );
+                  const vaadittuValue = parseLandUseNumericValue(
+                    plotDivision.vaadittuKem2 ?? "",
+                  );
+                  const toteutunutValue =
+                    parseLandUseNumericValue(latestEntry?.value) ?? 0;
+                  const hintaeroValue = calculateHintaero(
+                    perushinta,
+                    plotDivision.yksikkohinta ?? "",
+                  );
+                  const sopimussakkoValue = calculateSopimussakko(
+                    hintaeroValue,
+                    korotuskerroinValue,
+                  );
+                  return {
+                    id: `sakko-row-${site.id}-plot-division-${plotDivision.id}-${childIndex}`,
+                    kohteenTunnus: plotDivision.kohteenTunnus || "-",
+                    hallintamuoto: plotDivision.hallintamuoto || "-",
+                    vaadittuValue,
+                    toteutunutValue,
+                    sopimussakkoValue,
+                    sakkokerroinFieldName: `sakkoKerroinByPlotDivisionId.${plotDivision.id}`,
+                    sakkokerroinInputId: `sakko-kerroin-plot-division-${plotDivision.id}`,
+                    sakkokerroinValue:
+                      sakkoKerroinByPlotDivisionId[plotDivision.id] ?? "",
+                  };
+                },
+              );
+            }
+
+            const latestEntry = getLatestEntry(
+              toteumaEntriesBySiteId[site.id] ?? [],
+            );
+            const vaadittuValue = parseLandUseNumericValue(site.kem2);
+            const toteutunutValue =
+              parseLandUseNumericValue(latestEntry?.value) ?? 0;
+            const yksikkohintaRaw =
+              compensationsRowsBySiteId[site.id]?.yksikkohinta ?? "";
+            const hintaeroValue = calculateHintaero(
+              perushinta,
+              yksikkohintaRaw,
+            );
+            const sopimussakkoValue = calculateSopimussakko(
+              hintaeroValue,
+              korotuskerroinValue,
+            );
+            return [
+              {
+                id: `sakko-row-${site.id}-${index}`,
+                kohteenTunnus: site.kohteenTunnus || "-",
+                hallintamuoto: formatSiteHallintamuoto(site.hallintamuoto),
+                vaadittuValue,
+                toteutunutValue,
+                sopimussakkoValue,
+                sakkokerroinFieldName: `sakkoKerroinBySiteId.${site.id}`,
+                sakkokerroinInputId: `sakko-kerroin-site-${site.id}`,
+                sakkokerroinValue: sakkoKerroinBySiteId[site.id] ?? "",
+              },
+            ];
+          },
+        );
+
+        const monitoringSakkoTableRows = sakkoRowDataList.map((rowData) => ({
+          id: rowData.id,
+          kohteenTunnus: rowData.kohteenTunnus,
+          hallintamuoto: rowData.hallintamuoto,
+          vaadittuKerrosala: formatLandUseNumericValueWithUnit(
+            rowData.vaadittuValue,
+            "kem²",
           ),
-          vaadittuKerrosala: (
-            <Field name={`sakkoRows.${index}.vaadittuKerrosala`}>
-              {({ input }) =>
-                isEditMode ? (
-                  <TextInput
-                    id={`monitoring-sakko-vaadittu-kerrosala-${index}`}
-                    label=""
-                    value={input.value}
-                    onChange={input.onChange}
-                  />
-                ) : (
-                  <TextInput
-                    id={`monitoring-sakko-vaadittu-kerrosala-${index}`}
-                    label=""
-                    value={formatLandUseNumericValueWithUnit(
-                      input.value,
-                      "kem²",
-                    )}
-                    readOnly
-                  />
-                )
-              }
-            </Field>
+          toteutunutKerrosala: formatLandUseNumericValueWithUnit(
+            rowData.toteutunutValue,
+            "kem²",
           ),
-          toteutunutKerrosala: (
-            <Field name={`sakkoRows.${index}.toteutunutKerrosala`}>
-              {({ input }) =>
-                isEditMode ? (
-                  <TextInput
-                    id={`monitoring-sakko-toteutunut-kerrosala-${index}`}
-                    label=""
-                    value={input.value}
-                    onChange={input.onChange}
-                  />
-                ) : (
-                  <TextInput
-                    id={`monitoring-sakko-toteutunut-kerrosala-${index}`}
-                    label=""
-                    value={readOnlyTextValue(input.value)}
-                    readOnly
-                  />
-                )
-              }
-            </Field>
-          ),
-          hintaero: (
-            <Field name={`sakkoRows.${index}.hintaero`}>
-              {({ input }) =>
-                isEditMode ? (
-                  <TextInput
-                    id={`monitoring-sakko-hintaero-${index}`}
-                    label=""
-                    value={input.value}
-                    onChange={input.onChange}
-                  />
-                ) : (
-                  <TextInput
-                    id={`monitoring-sakko-hintaero-${index}`}
-                    label=""
-                    value={readOnlyTextValue(input.value)}
-                    readOnly
-                  />
-                )
-              }
-            </Field>
+          sopimussakko: formatLandUseNumericValueWithUnit(
+            rowData.sopimussakkoValue,
+            "€/kem²",
           ),
           korotus: (
-            <Field name={`sakkoRows.${index}.korotus`}>
+            <Field name={rowData.sakkokerroinFieldName}>
               {({ input }) =>
                 isEditMode ? (
-                  <TextInput
-                    id={`monitoring-sakko-korotus-${index}`}
+                  <NumberInput
+                    id={rowData.sakkokerroinInputId}
                     label=""
-                    value={input.value}
+                    value={
+                      input.value !== ""
+                        ? Number(input.value)
+                        : INITIAL_SAKKOKERROIN
+                    }
                     onChange={input.onChange}
+                    step={0.5}
                   />
                 ) : (
                   <TextInput
-                    id={`monitoring-sakko-korotus-${index}`}
+                    id={`${rowData.sakkokerroinInputId}-readonly`}
                     label=""
-                    value={readOnlyTextValue(input.value)}
+                    value={input.value || String(INITIAL_SAKKOKERROIN)}
                     readOnly
                   />
                 )
               }
             </Field>
           ),
+          sakonMaara: (() => {
+            const k =
+              parseLandUseNumericValue(rowData.sakkokerroinValue) ??
+              INITIAL_SAKKOKERROIN;
+            const { vaadittuValue, sopimussakkoValue } = rowData;
+            const computed =
+              vaadittuValue !== null && sopimussakkoValue !== null && k !== null
+                ? vaadittuValue * sopimussakkoValue * k
+                : null;
+            return formatLandUseNumericValueWithUnit(computed, "€");
+          })(),
         }));
 
         return (
@@ -884,16 +908,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       rows={monitoringSakkoTableRows}
                       variant="light"
                     />
-                  </div>
-
-                  <div className="landuse-detail__monitoring-table-toolbar landuse-detail__monitoring-table-toolbar--start">
-                    <Button
-                      variant={ButtonVariant.Supplementary}
-                      iconStart={<IconPlusCircleFill />}
-                      disabled={!isEditMode}
-                    >
-                      Lisää yksikköhinta
-                    </Button>
                   </div>
                 </Fieldset>
               </div>
