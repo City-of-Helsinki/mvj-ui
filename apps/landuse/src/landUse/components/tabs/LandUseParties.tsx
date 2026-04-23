@@ -6,7 +6,6 @@ import {
   Button,
   ButtonVariant,
   IconPlusCircleFill,
-  IconTrash,
   Fieldset,
 } from "hds-react";
 import { Form, Field } from "react-final-form";
@@ -18,6 +17,7 @@ import {
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
 import { createEmptyPartyEntry } from "../../api/landUseFormValues";
+import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 
 export interface BasePartyDetails {
   partyType: string | undefined;
@@ -688,21 +688,20 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                           style={{ justifyContent: "flex-end" }}
                                         >
                                           {isEditMode ? (
-                                            <Button
-                                              aria-label={`Poista yhteyshenkilö ${contactIndex + 1}`}
-                                              variant={
+                                            <ConfirmDeleteButton
+                                              id={`contact-person-delete-${index}-${contactIndex}`}
+                                              buttonAriaLabel={`Poista yhteyshenkilö ${contactIndex + 1}`}
+                                              buttonVariant={
                                                 ButtonVariant.Supplementary
                                               }
-                                              iconStart={<IconTrash />}
-                                              type="button"
-                                              onClick={() =>
+                                              onConfirm={() =>
                                                 contactPersonFields.remove(
                                                   contactIndex,
                                                 )
                                               }
-                                            >
-                                              Poista
-                                            </Button>
+                                              dialogTitle="Poista yhteyshenkilö"
+                                              dialogContent={`Haluatko varmasti poistaa yhteyshenkilön ${partyEntry.contactPersons[contactIndex]?.name?.trim() ?? ""}?`}
+                                            />
                                           ) : null}
                                         </div>
                                       </div>
@@ -862,13 +861,13 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                           </Fieldset>
 
                           {isEditMode && (
-                            <Button
-                              variant={ButtonVariant.Danger}
-                              iconStart={<IconTrash />}
-                              onClick={() => fields.remove(index)}
-                            >
-                              Poista osapuoli
-                            </Button>
+                            <ConfirmDeleteButton
+                              id={`party-delete-${index}`}
+                              buttonLabel="Poista osapuoli"
+                              onConfirm={() => fields.remove(index)}
+                              dialogTitle="Poista osapuoli"
+                              dialogContent={`Haluatko varmasti poistaa osapuolen ${partyName?.trim() ?? ""}?`}
+                            />
                           )}
                         </Accordion>
                       );
