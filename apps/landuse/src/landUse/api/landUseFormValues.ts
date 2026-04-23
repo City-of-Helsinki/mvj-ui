@@ -98,11 +98,13 @@ export const createEmptyPartyEntry = (): PartyEntry => ({
       note: "",
     },
   },
-  contactPerson: {
-    name: undefined,
-    phone: "",
-    email: "",
-  },
+  contactPersons: [
+    {
+      name: undefined,
+      phone: "",
+      email: "",
+    },
+  ],
   billingDetails: {
     partnerCode: "",
     ovtCode: "",
