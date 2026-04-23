@@ -116,7 +116,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               km2: site.km2 || "-",
               hintaero:
                 hintaeroValue !== null
-                  ? formatLandUseNumericValue(hintaeroValue)
+                  ? formatLandUseNumericValueWithUnit(hintaeroValue, "€")
                   : "-",
               sopimussakko: formatLandUseNumericValueWithUnit(
                 sopimussakkoValue,
