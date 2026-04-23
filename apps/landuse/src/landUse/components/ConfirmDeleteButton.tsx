@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Button,
+  ButtonSize,
   ButtonVariant,
   Dialog,
   IconTrash,
@@ -15,6 +16,10 @@ interface ConfirmDeleteButtonProps {
   buttonLabel?: string;
   buttonAriaLabel?: string;
   buttonVariant?: ButtonVariant;
+  buttonSize?: ButtonSize;
+  buttonClassName?: string;
+  buttonStyle?: React.CSSProperties;
+  disabled?: boolean;
   confirmLabel?: string;
   cancelLabel?: string;
   iconStart?: React.ReactElement<IconProps>;
@@ -28,6 +33,10 @@ export const ConfirmDeleteButton: React.FC<ConfirmDeleteButtonProps> = ({
   buttonLabel = "Poista",
   buttonAriaLabel,
   buttonVariant = ButtonVariant.Danger,
+  buttonSize,
+  buttonClassName,
+  buttonStyle,
+  disabled = false,
   confirmLabel = "Poista",
   cancelLabel = "Peruuta",
   iconStart = <IconTrash />,
@@ -50,6 +59,10 @@ export const ConfirmDeleteButton: React.FC<ConfirmDeleteButtonProps> = ({
         type="button"
         aria-label={buttonAriaLabel}
         variant={buttonVariant}
+        size={buttonSize}
+        className={buttonClassName}
+        style={buttonStyle}
+        disabled={disabled}
         iconStart={iconStart}
         onClick={() => setIsDialogOpen(true)}
       >

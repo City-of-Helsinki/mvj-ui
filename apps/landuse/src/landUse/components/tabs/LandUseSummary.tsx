@@ -8,7 +8,6 @@ import {
   Button,
   ButtonVariant,
   IconPlusCircleFill,
-  IconTrash,
   Fieldset,
   DateInput,
 } from "hds-react";
@@ -21,6 +20,7 @@ import {
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
 import { getAsemakaavat } from "../../api/landUseApi";
+import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import {
   type AsemakaavaListItem,
   landUseDecisionMakerOptions,
@@ -155,7 +155,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
     <Form<LandUseSummaryFormValues>
       form={form}
       onSubmit={() => {}}
-      render={({ handleSubmit }) => (
+      render={({ handleSubmit, values }) => (
         <form onSubmit={handleSubmit}>
           <div className="landuse-detail__content">
             <h2 className="landuse-detail__section-title">PERUSTIEDOT</h2>
@@ -533,14 +533,14 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                             <div
                               style={{ display: "flex", alignItems: "center" }}
                             >
-                              <Button
-                                variant={ButtonVariant.Supplementary}
-                                iconStart={<IconTrash />}
-                                onClick={() => fields.remove(index)}
-                                style={{ width: "fit-content" }}
-                              >
-                                Poista
-                              </Button>
+                              <ConfirmDeleteButton
+                                id={`summary-kohde-delete-${index}`}
+                                buttonVariant={ButtonVariant.Supplementary}
+                                buttonStyle={{ width: "fit-content" }}
+                                onConfirm={() => fields.remove(index)}
+                                dialogTitle="Poista kohde"
+                                dialogContent={`Haluatko varmasti poistaa kohteen ${values.suunnittelunPerusteenaOlevatKohteet?.[index]?.value?.trim() ?? ""}?`}
+                              />
                             </div>
                           )}
                         </div>
@@ -635,14 +635,14 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                               className="landuse-detail__column"
                               style={{ justifyContent: "flex-end" }}
                             >
-                              <Button
-                                variant={ButtonVariant.Supplementary}
-                                iconStart={<IconTrash />}
-                                onClick={() => fields.remove(index)}
-                                style={{ width: "fit-content" }}
-                              >
-                                Poista
-                              </Button>
+                              <ConfirmDeleteButton
+                                id={`summary-osoite-delete-${index}`}
+                                buttonVariant={ButtonVariant.Supplementary}
+                                buttonStyle={{ width: "fit-content" }}
+                                onConfirm={() => fields.remove(index)}
+                                dialogTitle="Poista osoite"
+                                dialogContent={`Haluatko varmasti poistaa osoitteen ${values.osoitteet?.[index]?.katuosoite?.trim() ?? ""}?`}
+                              />
                             </div>
                           )}
                         </React.Fragment>
@@ -733,15 +733,15 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                               className="landuse-detail__column"
                               style={{ justifyContent: "flex-end" }}
                             >
-                              <Button
-                                variant={ButtonVariant.Supplementary}
-                                iconStart={<IconTrash />}
-                                onClick={() => fields.remove(index)}
+                              <ConfirmDeleteButton
+                                id={`summary-valmistelija-delete-${index}`}
+                                buttonVariant={ButtonVariant.Supplementary}
+                                buttonStyle={{ width: "fit-content" }}
                                 disabled={fields.length === 1}
-                                style={{ width: "fit-content" }}
-                              >
-                                Poista
-                              </Button>
+                                onConfirm={() => fields.remove(index)}
+                                dialogTitle="Poista valmistelija"
+                                dialogContent={`Haluatko varmasti poistaa valmistelijan ${values.valmistelijat?.[index]?.value?.trim() ?? ""}?`}
+                              />
                             </div>
                           )}
                         </React.Fragment>

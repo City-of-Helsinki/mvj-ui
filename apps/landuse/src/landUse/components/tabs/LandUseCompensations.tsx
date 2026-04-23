@@ -8,7 +8,6 @@ import {
   IconAngleUp,
   IconPlusCircleFill,
   IconSize,
-  IconTrash,
   NumberInput,
   Notification,
   Select,
@@ -31,6 +30,7 @@ import {
   parseLandUseNumericValue,
   parseLandUseNumericValueOrZero,
 } from "../../utils/number";
+import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 
 export interface LandUseSite {
   id: string;
@@ -342,9 +342,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                     <TextInput
                       id={`landuse-compensations-pinta-ala-${site.id}`}
                       label="Pinta-ala m²"
-                      value={
-                        getFieldTextValue(!isReadOnly, input.value)
-                      }
+                      value={getFieldTextValue(!isReadOnly, input.value)}
                       onChange={input.onChange}
                       readOnly={isReadOnly}
                     />
@@ -356,9 +354,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                     <TextInput
                       id={`landuse-compensations-km2-${site.id}`}
                       label="k-m²"
-                      value={
-                        getFieldTextValue(!isReadOnly, input.value)
-                      }
+                      value={getFieldTextValue(!isReadOnly, input.value)}
                       onChange={input.onChange}
                       readOnly={isReadOnly}
                     />
@@ -408,15 +404,15 @@ const SiteRow: React.FC<SiteRowProps> = ({
               </div>
               {!isReadOnly && (
                 <div className="landuse-compensations-table__detail-actions">
-                  <Button
-                    type="button"
-                    variant={ButtonVariant.Danger}
-                    size={ButtonSize.Small}
-                    iconStart={<IconTrash />}
-                    onClick={() => onRemove(site.id)}
-                  >
-                    Poista kohde
-                  </Button>
+                  <ConfirmDeleteButton
+                    id={`compensations-site-delete-${site.id}`}
+                    buttonLabel="Poista kohde"
+                    buttonVariant={ButtonVariant.Danger}
+                    buttonSize={ButtonSize.Small}
+                    onConfirm={() => onRemove(site.id)}
+                    dialogTitle="Poista kohde"
+                    dialogContent={`Haluatko varmasti poistaa kohteen ${site.kohteenTunnus?.trim() ?? ""}?`}
+                  />
                 </div>
               )}
             </div>
