@@ -280,7 +280,28 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             ),
             hallintamuoto,
             toteutunutHallintamuoto:
-              toteutunutHallintamuotoBySiteId[site.id] ?? hallintamuoto ?? "-",
+              isEditMode && !isPlotDivisionGroup ? (
+                <Field name={`toteutunutHallintamuotoBySiteId.${site.id}`}>
+                  {({ input }) => (
+                    <Select
+                      id={`monitoring-parent-toteutunut-hallintamuoto-${site.id}`}
+                      options={hallintamuotoOptions}
+                      value={normalizeSelectValue(input.value)}
+                      onChange={(selectedOptions) =>
+                        handleSelectChange(selectedOptions, input.onChange)
+                      }
+                      texts={{
+                        label: "",
+                        placeholder: "Valitse",
+                      }}
+                    />
+                  )}
+                </Field>
+              ) : (
+                (toteutunutHallintamuotoBySiteId[site.id] ??
+                hallintamuoto ??
+                "-")
+              ),
             vaadittuKm2: vaadittuKm2 || "-",
             toteutunutKm2: latestToteutunutEntry ? (
               <span
