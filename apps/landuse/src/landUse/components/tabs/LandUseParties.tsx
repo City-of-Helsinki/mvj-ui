@@ -50,15 +50,17 @@ export interface BillingDetails {
   reference: string;
 }
 
+export interface ContactPerson {
+  name: string | undefined;
+  phone: string;
+  email: string;
+}
+
 export interface PartyEntry {
   party: {
     details: PersonPartyDetails | CompanyPartyDetails;
   };
-  contactPerson: {
-    name: string | undefined;
-    phone: string;
-    email: string;
-  };
+  contactPersons: ContactPerson[];
   billingDetails: BillingDetails;
   invoiceRecipient: {
     details: PersonPartyDetails | CompanyPartyDetails;
@@ -611,6 +613,132 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                               )}
                             </div>
                           </Fieldset>
+                          <Fieldset
+                            heading="Yhteyshenkilöt/neuvottelijat"
+                            className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
+                          >
+                            <FieldArray<ContactPerson>
+                              name={`${fieldName}.contactPersons`}
+                            >
+                              {({ fields: contactPersonFields }) => (
+                                <>
+                                  {contactPersonFields.map(
+                                    (contactPersonFieldName, contactIndex) => (
+                                      <div
+                                        className="landuse-detail__grid landuse-detail__grid--with-delete landuse-detail__grid_row"
+                                        key={contactPersonFieldName}
+                                      >
+                                        <div className="landuse-detail__column">
+                                          <Field
+                                            name={`${contactPersonFieldName}.name`}
+                                          >
+                                            {({ input }) => (
+                                              <TextInput
+                                                id={`contact-${index}-person-${contactIndex}`}
+                                                label="Nimi"
+                                                value={getFieldTextValue(
+                                                  isEditMode,
+                                                  input.value,
+                                                )}
+                                                onChange={input.onChange}
+                                                readOnly={!isEditMode}
+                                                placeholder="Placeholder"
+                                              />
+                                            )}
+                                          </Field>
+                                        </div>
+
+                                        <div className="landuse-detail__column">
+                                          <Field
+                                            name={`${contactPersonFieldName}.phone`}
+                                          >
+                                            {({ input }) => (
+                                              <TextInput
+                                                id={`contact-${index}-person-phone-${contactIndex}`}
+                                                label="Puhelinnumero"
+                                                value={getFieldTextValue(
+                                                  isEditMode,
+                                                  input.value,
+                                                )}
+                                                onChange={input.onChange}
+                                                readOnly={!isEditMode}
+                                                placeholder="Placeholder"
+                                              />
+                                            )}
+                                          </Field>
+                                        </div>
+
+                                        <div className="landuse-detail__column">
+                                          <Field
+                                            name={`${contactPersonFieldName}.email`}
+                                          >
+                                            {({ input }) => (
+                                              <TextInput
+                                                id={`contact-${index}-person-email-${contactIndex}`}
+                                                label="Sähköposti"
+                                                value={getFieldTextValue(
+                                                  isEditMode,
+                                                  input.value,
+                                                )}
+                                                onChange={input.onChange}
+                                                readOnly={!isEditMode}
+                                                placeholder="Placeholder"
+                                              />
+                                            )}
+                                          </Field>
+                                        </div>
+
+                                        <div
+                                          className="landuse-detail__column"
+                                          style={{ justifyContent: "flex-end" }}
+                                        >
+                                          {isEditMode ? (
+                                            <Button
+                                              aria-label={`Poista yhteyshenkilö ${contactIndex + 1}`}
+                                              variant={
+                                                ButtonVariant.Supplementary
+                                              }
+                                              iconStart={<IconTrash />}
+                                              type="button"
+                                              onClick={() =>
+                                                contactPersonFields.remove(
+                                                  contactIndex,
+                                                )
+                                              }
+                                            >
+                                              Poista
+                                            </Button>
+                                          ) : null}
+                                        </div>
+                                      </div>
+                                    ),
+                                  )}
+
+                                  {isEditMode && (
+                                    <div className="landuse-detail__grid">
+                                      <div className="landuse-detail__column">
+                                        <Button
+                                          className="landuse-detail__add-button"
+                                          variant={ButtonVariant.Supplementary}
+                                          iconStart={<IconPlusCircleFill />}
+                                          type="button"
+                                          onClick={() =>
+                                            contactPersonFields.push({
+                                              name: undefined,
+                                              phone: "",
+                                              email: "",
+                                            })
+                                          }
+                                        >
+                                          Lisää yhteyshenkilö
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  )}
+                                </>
+                              )}
+                            </FieldArray>
+                          </Fieldset>
 
                           <Fieldset
                             heading="Laskutustiedot"
@@ -705,71 +833,6 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                     <TextInput
                                       id={`billing-${index}-reference`}
                                       label="Viite"
-                                      value={getFieldTextValue(
-                                        isEditMode,
-                                        input.value,
-                                      )}
-                                      onChange={input.onChange}
-                                      readOnly={!isEditMode}
-                                      placeholder="Placeholder"
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-                            </div>
-                          </Fieldset>
-
-                          <Fieldset
-                            heading="Yhteyshenkilö"
-                            className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-                          >
-                            <div className="landuse-detail__grid">
-                              <div className="landuse-detail__column">
-                                <Field name={`${fieldName}.contactPerson.name`}>
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`contact-${index}-person`}
-                                      label="Nimi"
-                                      value={getFieldTextValue(
-                                        isEditMode,
-                                        input.value,
-                                      )}
-                                      onChange={input.onChange}
-                                      readOnly={!isEditMode}
-                                      placeholder="Placeholder"
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field
-                                  name={`${fieldName}.contactPerson.phone`}
-                                >
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`contact-${index}-person-phone`}
-                                      label="Puhelinnumero"
-                                      value={getFieldTextValue(
-                                        isEditMode,
-                                        input.value,
-                                      )}
-                                      onChange={input.onChange}
-                                      readOnly={!isEditMode}
-                                      placeholder="Placeholder"
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field
-                                  name={`${fieldName}.contactPerson.email`}
-                                >
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`contact-${index}-person-email`}
-                                      label="Sähköposti"
                                       value={getFieldTextValue(
                                         isEditMode,
                                         input.value,

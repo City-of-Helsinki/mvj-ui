@@ -66,6 +66,10 @@
   }
 }
 
+.landuse-detail__grid_row {
+  margin-bottom: $space-2xl;
+}
+
 .landuse-detail__column {
   @include flex-col($space-xl);
 }

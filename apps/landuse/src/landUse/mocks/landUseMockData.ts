@@ -55,11 +55,13 @@ ma113Parties.parties[0].party.details = {
   language: "suomi",
   country: "suomi",
 };
-ma113Parties.parties[0].contactPerson = {
-  name: "Liisa Virtanen",
-  phone: "050 555 0000",
-  email: "liisa.virtanen@example.com",
-};
+ma113Parties.parties[0].contactPersons = [
+  {
+    name: "Liisa Virtanen",
+    phone: "050 555 0000",
+    email: "liisa.virtanen@example.com",
+  },
+];
 ma113Parties.parties[0].billingDetails = {
   partnerCode: "77777",
   ovtCode: "003703100001",
