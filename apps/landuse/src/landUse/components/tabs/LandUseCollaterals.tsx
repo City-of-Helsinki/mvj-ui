@@ -29,7 +29,7 @@ import {
 import { DEFAULT_KOROTUSKERROIN } from "../../constants";
 
 export interface LandUseCollateralsFormValues {
-  korotuskerroin?: number;
+  korotuskerroin?: string | number;
 }
 
 interface PerustietotaulukkoRowValues {
@@ -65,6 +65,9 @@ const formatSiteHallintamuoto = (
   return hallintamuoto.join(", ");
 };
 
+const getKorotuskerroinValue = (value: string | number | undefined): number =>
+  parseLandUseNumericValue(value) ?? DEFAULT_KOROTUSKERROIN;
+
 export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   form,
   isEditMode,
@@ -78,9 +81,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
-        const korotuskerroin =
-          parseLandUseNumericValue(values.korotuskerroin) ??
-          DEFAULT_KOROTUSKERROIN;
+        const korotuskerroin = getKorotuskerroinValue(values.korotuskerroin);
 
         const vakuuslaskuriRows: CollateralsVakuuslaskuriRow[] = sites.map(
           (site) => {
@@ -207,32 +208,36 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 className="landuse-detail__fieldset--with-margin"
               >
                 <Field name="korotuskerroin">
-                  {({ input }) => (
-                    <div className="landuse-detail__collaterals-increase-factor-field">
-                      {isEditMode ? (
-                        <NumberInput
-                          id="collaterals-korotuskerroin"
-                          label="Korotuskerroin"
-                          min={1}
-                          max={2}
-                          step={0.05}
-                          value={input.value}
-                          onChange={input.onChange}
-                        />
-                      ) : (
-                        <TextInput
-                          id="collaterals-korotuskerroin"
-                          label="Korotuskerroin"
-                          value={
-                            input.value !== undefined && input.value !== ""
-                              ? formatLandUseNumericValue(Number(input.value))
-                              : "-"
-                          }
-                          readOnly
-                        />
-                      )}
-                    </div>
-                  )}
+                  {({ input }) => {
+                    const korotuskerroinValue = getKorotuskerroinValue(
+                      input.value,
+                    );
+
+                    return (
+                      <div className="landuse-detail__collaterals-increase-factor-field">
+                        {isEditMode ? (
+                          <NumberInput
+                            id="collaterals-korotuskerroin"
+                            label="Korotuskerroin"
+                            min={1}
+                            max={2}
+                            step={0.05}
+                            value={korotuskerroinValue}
+                            onChange={input.onChange}
+                          />
+                        ) : (
+                          <TextInput
+                            id="collaterals-korotuskerroin"
+                            label="Korotuskerroin"
+                            value={formatLandUseNumericValue(
+                              korotuskerroinValue,
+                            )}
+                            readOnly
+                          />
+                        )}
+                      </div>
+                    );
+                  }}
                 </Field>
 
                 <div className="landuse-detail__table-wrapper">
