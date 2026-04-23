@@ -561,7 +561,10 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   toteuttamattaValue,
                   "kem²",
                 ),
-                hintaero: formatLandUseNumericValueWithUnit(hintaeroValue, "€"),
+                hintaero: formatLandUseNumericValueWithUnit(
+                  hintaeroValue,
+                  "€/kem²",
+                ),
                 sopimussakko: formatLandUseNumericValueWithUnit(
                   sopimussakkoValue,
                   "€/kem²",
@@ -610,6 +613,10 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             toteuttamatta: formatLandUseNumericValueWithUnit(
               toteuttamattaValue,
               "kem²",
+            ),
+            hintaero: formatLandUseNumericValueWithUnit(
+              hintaeroValue,
+              "€/kem²",
             ),
             sopimussakko: formatLandUseNumericValueWithUnit(
               sopimussakkoValue,
