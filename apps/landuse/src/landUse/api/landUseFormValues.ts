@@ -132,8 +132,6 @@ export const createEmptyPartyEntry = (): PartyEntry => ({
 
 export const createEmptyPartiesFormValues = (): LandUsePartiesFormValues => ({
   parties: [createEmptyPartyEntry()],
-  negotiators: [{ name: undefined }],
-  signatories: [{ name: undefined }],
 });
 
 export const clonePartiesFormValues = (

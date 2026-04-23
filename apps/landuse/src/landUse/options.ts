@@ -407,14 +407,3 @@ export const landUseKohdeSelectOptions = [
   { label: "91-14-500-5", value: "91-14-500-5" },
   { label: "91-15-600-6", value: "91-15-600-6" },
 ];
-
-export const negotiatorsOptions = [
-  { label: "Liisa Virtanen", value: "Liisa Virtanen" },
-  { label: "Matti Meikäläinen", value: "Matti Meikäläinen" },
-];
-
-export const signatoriesOptions = [
-  { label: "Alipäällikkö", value: "Alipäällikkö" },
-  { label: "Välipäällikkö", value: "Välipäällikkö" },
-  { label: "Ylipäällikkö", value: "Ylipäällikkö" },
-];

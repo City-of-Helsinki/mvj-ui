@@ -9,7 +9,6 @@ import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
 import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
 import { DEFAULT_KOROTUSKERROIN } from "../constants";
-import { negotiatorsOptions, signatoriesOptions } from "../options";
 import { createEmptyPartiesFormValues } from "../api/landUseFormValues";
 
 export interface MockLandUseData {
@@ -83,8 +82,6 @@ ma113Parties.parties[0].invoiceRecipient = {
     country: "suomi",
   },
 };
-ma113Parties.negotiators = [{ name: negotiatorsOptions[1].value }];
-ma113Parties.signatories = [{ name: signatoriesOptions[0].value }];
 
 export interface LandUseAgreementMockTabs {
   summary: MockLandUseData | null;
