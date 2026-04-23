@@ -733,14 +733,6 @@ const LandUseDetailPage: React.FC = () => {
     resetFormStates();
   };
 
-  const handleDeleteClick = () => {
-    // TODO: Implement confirmation modal and actual API call to delete
-    if (window.confirm("Oletko varma, että haluat poistaa tämän sopimuksen?")) {
-      console.log("Deleting agreement...");
-      // Navigate back to list
-    }
-  };
-
   const isDecisionPhase =
     summaryQuery.data?.tila === LAND_USE_NEGOTIATION_PHASES.DECISION;
 
@@ -826,13 +818,6 @@ const LandUseDetailPage: React.FC = () => {
                 iconStart={<IconCross />}
               >
                 Hylkää muutokset
-              </Button>
-              <Button
-                variant={ButtonVariant.Danger}
-                onClick={handleDeleteClick}
-                iconStart={<IconTrash />}
-              >
-                Poista
               </Button>
               <Button
                 variant={ButtonVariant.Primary}
