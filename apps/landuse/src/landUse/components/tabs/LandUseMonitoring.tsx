@@ -782,7 +782,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   <div className="landuse-detail__grid landuse-detail__monitoring-collateral-grid">
                     <TextInput
                       id="monitoring-sopimuksen-mukainen"
-                      label="Sopimuksen mukainen"
+                      label="Maankäyttökorvaus"
                       value={formatLandUseEuroValue(sopimuksenMukainenValue)}
                       readOnly
                       style={
@@ -810,7 +810,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
 
                     <TextInput
                       id="collaterals-saantelyn-mukainen"
-                      label="Sääntelyn mukainen"
+                      label="Asumismuotoehdot"
                       value={formatLandUseEuroValue(saantelynMukainenValue)}
                       readOnly
                       style={

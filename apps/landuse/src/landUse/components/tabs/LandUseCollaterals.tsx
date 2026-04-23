@@ -259,7 +259,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 <div className="landuse-detail__grid landuse-detail__monitoring-collateral-grid">
                   <TextInput
                     id="collaterals-sopimuksen-mukainen"
-                    label="Sopimuksen mukainen"
+                    label="Maankäyttökorvaus"
                     value={formatLandUseEuroValue(sopimuksenMukainenValue)}
                     readOnly
                     style={
@@ -287,7 +287,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
 
                   <TextInput
                     id="collaterals-saantelyn-mukainen"
-                    label="Sääntelyn mukainen"
+                    label="Asumismuotoehdot"
                     value={formatLandUseEuroValue(saantelynMukainenValue)}
                     readOnly
                     style={
