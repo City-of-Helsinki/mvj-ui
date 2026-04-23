@@ -5,8 +5,6 @@ type OldPartiesData = {
   contactPerson?: unknown;
   billingDetails?: unknown;
   invoiceRecipient?: unknown;
-  negotiators?: unknown;
-  signatories?: unknown;
   parties?: unknown[];
   [key: string]: unknown;
 };
@@ -41,8 +39,6 @@ export const migration014MigratePartiesToArray: LandUseDbMigration = {
         contactPerson,
         billingDetails,
         invoiceRecipient,
-        negotiators,
-        signatories,
         ...rest
       } = data;
 
@@ -66,8 +62,6 @@ export const migration014MigratePartiesToArray: LandUseDbMigration = {
       const migratedData = {
         ...rest,
         parties: [partyEntry],
-        negotiators: negotiators ?? [{ name: undefined }],
-        signatories: signatories ?? [{ name: undefined }],
       };
 
       cursor.update({ ...record, data: migratedData });

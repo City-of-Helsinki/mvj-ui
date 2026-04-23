@@ -17,7 +17,6 @@ import {
   normalizeSelectValue,
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
-import { negotiatorsOptions, signatoriesOptions } from "../../options";
 import { createEmptyPartyEntry } from "../../api/landUseFormValues";
 
 export interface BasePartyDetails {
@@ -69,8 +68,6 @@ export interface PartyEntry {
 
 export interface LandUsePartiesFormValues {
   parties: PartyEntry[];
-  negotiators: Array<{ name: string | undefined }>;
-  signatories: Array<{ name: string | undefined }>;
 }
 
 interface LandUsePartiesProps {
@@ -936,174 +933,6 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                   </>
                 )}
               </FieldArray>
-
-              <h3 className="landuse-detail__section-title">Neuvottelijat</h3>
-              <Fieldset
-                heading=""
-                className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-              >
-                <FieldArray<{ name: string | undefined }> name="negotiators">
-                  {({ fields }) => (
-                    <>
-                      {fields.map((name, index) => (
-                        <div
-                          className="landuse-detail__grid landuse-detail__grid--with-delete"
-                          key={name}
-                        >
-                          <div className="landuse-detail__column">
-                            <Field name={`${name}.name`}>
-                              {({ input }) =>
-                                isEditMode ? (
-                                  <Select
-                                    id={`negotiator-${index}`}
-                                    texts={{
-                                      label: `Neuvottelija ${index + 1}`,
-                                      placeholder: "Valitse neuvottelija",
-                                    }}
-                                    options={negotiatorsOptions}
-                                    value={normalizeSelectValue(input.value)}
-                                    onChange={(selected) =>
-                                      handleSelectChange(
-                                        selected,
-                                        input.onChange,
-                                      )
-                                    }
-                                  />
-                                ) : (
-                                  <TextInput
-                                    id={`negotiator-${index}`}
-                                    label={`Neuvottelija ${index + 1}`}
-                                    value={readOnlyTextValue(input.value)}
-                                    readOnly
-                                  />
-                                )
-                              }
-                            </Field>
-                          </div>
-
-                          {isEditMode && (
-                            <div
-                              className="landuse-detail__column"
-                              style={{ justifyContent: "flex-end" }}
-                            >
-                              <Button
-                                aria-label={`Poista neuvottelija ${index + 1}`}
-                                variant={ButtonVariant.Supplementary}
-                                iconStart={<IconTrash />}
-                                type="button"
-                                onClick={() => fields.remove(index)}
-                              >
-                                Poista
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-
-                      {isEditMode && (
-                        <div className="landuse-detail__grid">
-                          <div className="landuse-detail__column">
-                            <Button
-                              className="landuse-detail__add-button"
-                              variant={ButtonVariant.Supplementary}
-                              iconStart={<IconPlusCircleFill />}
-                              type="button"
-                              onClick={() => fields.push({ name: undefined })}
-                            >
-                              Lisää neuvottelija
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </FieldArray>
-              </Fieldset>
-
-              <h3 className="landuse-detail__section-title">
-                Allekirjoittajat
-              </h3>
-              <Fieldset
-                heading=""
-                className="landuse-detail__fieldset--no-heading"
-              >
-                <FieldArray<{ name: string | undefined }> name="signatories">
-                  {({ fields }) => (
-                    <>
-                      {fields.map((name, index) => (
-                        <div
-                          className="landuse-detail__grid landuse-detail__grid--with-delete"
-                          key={name}
-                        >
-                          <div className="landuse-detail__column">
-                            <Field name={`${name}.name`}>
-                              {({ input }) =>
-                                isEditMode ? (
-                                  <Select
-                                    id={`signatory-${index}`}
-                                    texts={{
-                                      label: `Allekirjoittaja ${index + 1}`,
-                                      placeholder: "Valitse allekirjoittaja",
-                                    }}
-                                    options={signatoriesOptions}
-                                    value={normalizeSelectValue(input.value)}
-                                    onChange={(selected) =>
-                                      handleSelectChange(
-                                        selected,
-                                        input.onChange,
-                                      )
-                                    }
-                                  />
-                                ) : (
-                                  <TextInput
-                                    id={`signatory-${index}`}
-                                    label={`Allekirjoittaja ${index + 1}`}
-                                    value={readOnlyTextValue(input.value)}
-                                    readOnly
-                                  />
-                                )
-                              }
-                            </Field>
-                          </div>
-
-                          {isEditMode && (
-                            <div
-                              className="landuse-detail__column"
-                              style={{ justifyContent: "flex-end" }}
-                            >
-                              <Button
-                                aria-label={`Poista allekirjoittaja ${index + 1}`}
-                                variant={ButtonVariant.Supplementary}
-                                iconStart={<IconTrash />}
-                                type="button"
-                                onClick={() => fields.remove(index)}
-                              >
-                                Poista
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-
-                      {isEditMode && (
-                        <div className="landuse-detail__grid">
-                          <div className="landuse-detail__column">
-                            <Button
-                              className="landuse-detail__add-button"
-                              variant={ButtonVariant.Supplementary}
-                              iconStart={<IconPlusCircleFill />}
-                              type="button"
-                              onClick={() => fields.push({ name: undefined })}
-                            >
-                              Lisää allekirjoittaja
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </FieldArray>
-              </Fieldset>
             </div>
           </form>
         );
