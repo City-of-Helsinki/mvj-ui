@@ -62,9 +62,7 @@ ma113Parties.parties[0].contactPersons = [
   },
 ];
 ma113Parties.parties[0].billingDetails = {
-  partnerCode: "77777",
   ovtCode: "003703100001",
-  customerNumber: "C-0456",
   sapCustomerNumber: "SAP-0456",
   reference: "MA113-REF",
 };

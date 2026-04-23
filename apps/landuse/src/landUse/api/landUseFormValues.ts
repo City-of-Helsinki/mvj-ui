@@ -106,9 +106,7 @@ export const createEmptyPartyEntry = (): PartyEntry => ({
     },
   ],
   billingDetails: {
-    partnerCode: "",
     ovtCode: "",
-    customerNumber: "",
     sapCustomerNumber: "",
     reference: "",
   },

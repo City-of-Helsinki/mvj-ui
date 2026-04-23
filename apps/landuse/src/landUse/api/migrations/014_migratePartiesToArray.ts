@@ -50,9 +50,7 @@ export const migration014MigratePartiesToArray: LandUseDbMigration = {
           email: "",
         },
         billingDetails: billingDetails ?? {
-          partnerCode: "",
           ovtCode: "",
-          customerNumber: "",
           sapCustomerNumber: "",
           reference: "",
         },

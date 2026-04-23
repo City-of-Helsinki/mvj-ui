@@ -42,9 +42,7 @@ export interface CompanyPartyDetails extends BasePartyDetails {
 }
 
 export interface BillingDetails {
-  partnerCode: string;
   ovtCode: string;
-  customerNumber: string;
   sapCustomerNumber: string;
   reference: string;
 }
@@ -744,52 +742,12 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                             <div className="landuse-detail__grid">
                               <div className="landuse-detail__column">
                                 <Field
-                                  name={`${fieldName}.billingDetails.partnerCode`}
-                                >
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`billing-${index}-partner-code`}
-                                      label="Kumppanikoodi"
-                                      value={getFieldTextValue(
-                                        isEditMode,
-                                        input.value,
-                                      )}
-                                      onChange={input.onChange}
-                                      readOnly={!isEditMode}
-                                      placeholder="Placeholder"
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field
                                   name={`${fieldName}.billingDetails.ovtCode`}
                                 >
                                   {({ input }) => (
                                     <TextInput
                                       id={`billing-${index}-ovt-code`}
                                       label="Ovt-tunnus"
-                                      value={getFieldTextValue(
-                                        isEditMode,
-                                        input.value,
-                                      )}
-                                      onChange={input.onChange}
-                                      readOnly={!isEditMode}
-                                      placeholder="Placeholder"
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field
-                                  name={`${fieldName}.billingDetails.customerNumber`}
-                                >
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`billing-${index}-customer-number`}
-                                      label="Asiakasnumero"
                                       value={getFieldTextValue(
                                         isEditMode,
                                         input.value,
