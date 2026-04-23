@@ -27,8 +27,9 @@ import { landUseCompensationSelectOptions } from "../../options";
 import {
   formatLandUseEuroValue,
   formatLandUseIntegerValue,
+  formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
-  parseLandUseNumericValueOrZero,
+  parseNumber,
 } from "../../utils/number";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 
@@ -36,7 +37,7 @@ export interface LandUseSite {
   id: string;
   kohteenTunnus: string;
   pintaAlaM2?: string;
-  km2?: string;
+  kem2?: string;
   kayttotarkoitus: string | undefined;
   hallintamuoto: string[] | undefined;
   suojeltu: string | undefined;
@@ -66,9 +67,6 @@ interface LandUseCompensationsProps {
   isEditMode: boolean;
   isDecisionPhase: boolean;
 }
-
-const parseNumber = (value: string | number | undefined): number =>
-  parseLandUseNumericValueOrZero(value);
 
 const getRowFieldPath = (
   siteId: string,
@@ -173,8 +171,9 @@ const SiteRow: React.FC<SiteRowProps> = ({
   colCount,
 }) => {
   const yksikkohinta = parseNumber(rowValues?.yksikkohinta);
-  const kerrosAla = parseNumber(site.km2);
-  const summa = kerrosAla * yksikkohinta;
+  const pintaAlaM2 = parseNumber(site.pintaAlaM2);
+  const kerrosala = parseNumber(site.kem2);
+  const summa = kerrosala * yksikkohinta;
 
   return (
     <>
@@ -217,10 +216,10 @@ const SiteRow: React.FC<SiteRowProps> = ({
             : "-"}
         </td>
         <td>{site.suojeltu ?? "-"}</td>
-        <td>{site.pintaAlaM2 || "-"}</td>
-        <td>{site.km2 || "-"}</td>
-        <td>{yksikkohinta ? formatLandUseEuroValue(yksikkohinta) : "-"}</td>
-        <td>{summa ? formatLandUseEuroValue(summa) : "-"}</td>
+        <td>{formatLandUseNumericValueWithUnit(pintaAlaM2, "m²")}</td>
+        <td>{formatLandUseNumericValueWithUnit(kerrosala, "kem²")}</td>
+        <td>{formatLandUseNumericValueWithUnit(yksikkohinta, "€/kem²")}</td>
+        <td>{formatLandUseEuroValue(summa)}</td>
         <td>{site.amVelvoite ? "Kyllä" : "Ei"}</td>
       </tr>
       {isOpen && (
@@ -341,7 +340,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                   {({ input }) => (
                     <TextInput
                       id={`landuse-compensations-pinta-ala-${site.id}`}
-                      label="Pinta-ala m²"
+                      label="Pinta-ala (m²)"
                       value={getFieldTextValue(!isReadOnly, input.value)}
                       onChange={input.onChange}
                       readOnly={isReadOnly}
@@ -349,11 +348,11 @@ const SiteRow: React.FC<SiteRowProps> = ({
                   )}
                 </Field>
 
-                <Field name={`sites.${siteIndex}.km2`}>
+                <Field name={`sites.${siteIndex}.kem2`}>
                   {({ input }) => (
                     <TextInput
-                      id={`landuse-compensations-km2-${site.id}`}
-                      label="k-m²"
+                      id={`landuse-compensations-kem2-${site.id}`}
+                      label="Kerrosala (kem²)"
                       value={getFieldTextValue(!isReadOnly, input.value)}
                       onChange={input.onChange}
                       readOnly={isReadOnly}
@@ -366,7 +365,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                     isReadOnly ? (
                       <TextInput
                         id={`landuse-compensations-yksikkohinta-${site.id}`}
-                        label="Yksikköhinta"
+                        label="Yksikköhinta (€/kem²)"
                         value={readOnlyTextValue(input.value)}
                         readOnly
                       />
@@ -453,7 +452,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             id,
             kohteenTunnus: "",
             pintaAlaM2: "",
-            km2: "",
+            kem2: "",
             kayttotarkoitus: undefined,
             hallintamuoto: [],
             suojeltu: undefined,
@@ -488,16 +487,16 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           (accumulator, site) => {
             const row = rowsBySiteId[site.id];
             const pintaAla = parseNumber(site.pintaAlaM2);
-            const kerrosAla = parseNumber(site.km2);
+            const kerrosala = parseNumber(site.kem2);
             const yksikkohinta = parseNumber(row?.yksikkohinta);
 
             return {
               pintaAlaM2: accumulator.pintaAlaM2 + pintaAla,
-              km2: accumulator.km2 + kerrosAla,
-              summa: accumulator.summa + kerrosAla * yksikkohinta,
+              kem2: accumulator.kem2 + kerrosala,
+              summa: accumulator.summa + kerrosala * yksikkohinta,
             };
           },
-          { pintaAlaM2: 0, km2: 0, summa: 0 },
+          { pintaAlaM2: 0, kem2: 0, summa: 0 },
         );
 
         return (
@@ -701,10 +700,10 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <th>Käyttötarkoitus</th>
                         <th>Hallintamuoto</th>
                         <th>Suojeltu</th>
-                        <th>Pinta-ala m²</th>
-                        <th>k-m²</th>
+                        <th>Pinta-ala</th>
+                        <th>Kerrosala</th>
                         <th>Yksikköhinta</th>
-                        <th>Summa €</th>
+                        <th>Summa</th>
                         <th>AM-velvoite</th>
                       </tr>
                     </thead>
@@ -735,12 +734,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         <td />
                         <td>
                           <strong>
-                            {formatLandUseIntegerValue(totals.pintaAlaM2)}
+                            {formatLandUseNumericValueWithUnit(
+                              totals.pintaAlaM2,
+                              "m²",
+                            )}
                           </strong>
                         </td>
                         <td>
                           <strong>
-                            {formatLandUseIntegerValue(totals.km2)}
+                            {formatLandUseNumericValueWithUnit(
+                              totals.kem2,
+                              "kem²",
+                            )}
                           </strong>
                         </td>
                         <td />

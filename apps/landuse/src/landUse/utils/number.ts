@@ -70,3 +70,6 @@ export const formatLandUseEuroDisplayValue = (
 export const parseLandUseNumericValueOrZero = (
   value: string | number | undefined,
 ): number => parseLandUseNumericValue(value) ?? 0;
+
+export const parseNumber = (value: string | number | undefined): number =>
+  parseLandUseNumericValueOrZero(value);

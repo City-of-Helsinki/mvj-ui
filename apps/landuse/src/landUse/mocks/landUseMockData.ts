@@ -97,7 +97,7 @@ const ma113Sites: LandUseSite[] = [
     id: "MA113-1-site-1",
     kohteenTunnus: "91-10-100-1",
     pintaAlaM2: "4500",
-    km2: "3600",
+    kem2: "3600",
     kayttotarkoitus: "Asuinkerrostalojen korttelialue",
     hallintamuoto: ["Vapaarahoitteinen omistus"],
     suojeltu: "SR1",

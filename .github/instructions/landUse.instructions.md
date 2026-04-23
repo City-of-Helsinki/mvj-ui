@@ -45,10 +45,10 @@ Land Use follows a layered feature architecture under `apps/landuse/src/landUse/
 ## Data flow expectations
 
 - Preferred flow: `UI -> form/hook -> landUseApi/landUseDb -> UI update`.
-- Keep data transformation close to API boundaries (mapping backend payloads into UI-safe shapes once), not repeated across components.
+- Keep data transformation close to API boundaries (mapping backend payloads into UI-safe shapes once), not repeated across components. Do not create normalization (or fallback) functions for data model changes that should be covered by migrations.
 - For async UI state, prefer local React state/hooks and query caches already in use; avoid introducing new app-wide state containers.
 
-## Change strategy for agents
+## Change strategy
 
 When implementing changes, apply this order:
 
@@ -56,7 +56,7 @@ When implementing changes, apply this order:
 2. Update form wiring in `LandUseDetailPage.tsx` if fields/tabs are affected.
 3. Update tab/component rendering.
 4. Update mocks in `mockData/` and tests.
-5. Create new migration files for any schema/data changes, and ensure `landUseDb.ts` is updated to use them.
+5. Create new migration files for any schema/data changes, and ensure `landUseDb.ts` is updated to use them. Never edit existing migration files.
 
 This minimizes regressions where UI changes land before data contracts.
 
