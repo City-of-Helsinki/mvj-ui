@@ -3,6 +3,7 @@
     "image": "mcr.microsoft.com/devcontainers/javascript-node:22-trixie",
 	"forwardPorts": [3000],
     "features":{},
+	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y ripgrep",
 	"customizations": {
 		"vscode": {
 			"settings": {
