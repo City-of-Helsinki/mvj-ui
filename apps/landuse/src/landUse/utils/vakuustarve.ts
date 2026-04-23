@@ -59,7 +59,7 @@ export const calculateSaantelynMukainenOriginalValue = (
   korotuskerroin: number | null,
 ): number =>
   sites.reduce((sum, site) => {
-    const vaadittuValue = parseLandUseNumericValue(site.km2);
+    const vaadittuValue = parseLandUseNumericValue(site.kem2);
     const yksikkohintaValue = compensationsRowsBySiteId[site.id]?.yksikkohinta;
     const hintaeroValue = calculateHintaero(perushinta, yksikkohintaValue);
     const kerroinPercent =

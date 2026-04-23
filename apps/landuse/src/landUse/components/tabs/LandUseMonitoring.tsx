@@ -33,6 +33,7 @@ import {
   formatLandUseEuroValue,
   formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
+  parseNumber,
 } from "../../utils/number";
 import {
   calculateHintaero,
@@ -56,7 +57,7 @@ interface MonitoringPlotDivision {
   id: string;
   kohteenTunnus: string;
   hallintamuoto: string;
-  vaadittuKm2: string;
+  vaadittuKem2: string;
   yksikkohinta: string;
 }
 
@@ -186,7 +187,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
   const [draftPlotDivisions, setDraftPlotDivisions] = React.useState<
     MonitoringPlotDivision[]
   >([]);
-  const [newToteutunutKm2, setNewToteutunutKm2] = React.useState("");
+  const [newToteutunutKem2, setNewToteutunutKem2] = React.useState("");
   const selectedSite = sites.find((site) => site.id === selectedSiteId);
   const selectedSiteForEdit = sites.find(
     (site) => site.id === selectedSiteEditId,
@@ -195,7 +196,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
   const closeMonitoringDialog = React.useCallback(() => {
     setSelectedSiteId(null);
     setSelectedPlotDivisionTarget(null);
-    setNewToteutunutKm2("");
+    setNewToteutunutKem2("");
   }, []);
 
   const closeSiteEditDialog = React.useCallback(() => {
@@ -243,8 +244,8 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             key: "toteutunutHallintamuoto",
             headerName: "Toteutunut hallintamuoto",
           },
-          { key: "vaadittuKm2", headerName: "Vaadittu k-m²" },
-          { key: "toteutunutKm2", headerName: "Toteutunut k-m²" },
+          { key: "vaadittuKem2", headerName: "Vaadittu kerrosala" },
+          { key: "toteutunutKem2", headerName: "Toteutunut kerrosala" },
           { key: "yksikkohinta", headerName: "Yksikköhinta" },
           { key: "toiminnot", headerName: "Toiminnot" },
         ];
@@ -254,11 +255,12 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           const plotDivisions = plotDivisionsBySiteId[site.id] ?? [];
           const isPlotDivisionGroup = plotDivisions.length > 0;
           const latestToteutunutEntry = getLatestEntry(toteumaEntries);
-          const latestToteutunutKm2 = latestToteutunutEntry?.value ?? "-";
+          const latestToteutunutKem2 = latestToteutunutEntry?.value ?? "-";
           const kohteenTunnus = site.kohteenTunnus || "-";
           const hallintamuoto = formatSiteHallintamuoto(site.hallintamuoto);
-          const vaadittuKm2 = site.km2 ?? "";
-          const vaadittuValue = parseLandUseNumericValue(vaadittuKm2);
+          const vaadittuKem2 = site.kem2 ?? "";
+          const vaadittuValue = parseLandUseNumericValue(vaadittuKem2);
+
           const toteutunutValue = parseLandUseNumericValue(
             latestToteutunutEntry?.value,
           );
@@ -302,13 +304,16 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                 hallintamuoto ??
                 "-")
               ),
-            vaadittuKm2: vaadittuKm2 || "-",
-            toteutunutKm2: latestToteutunutEntry ? (
+            vaadittuKem2: formatLandUseNumericValueWithUnit(
+              vaadittuValue,
+              "kem²",
+            ),
+            toteutunutKem2: latestToteutunutEntry ? (
               <span
                 className={
                   isMatchingValue
-                    ? "landuse-detail__monitoring-km2-value landuse-detail__monitoring-km2-value--match"
-                    : "landuse-detail__monitoring-km2-value landuse-detail__monitoring-km2-value--mismatch"
+                    ? "landuse-detail__monitoring-kem2-value landuse-detail__monitoring-kem2-value--match"
+                    : "landuse-detail__monitoring-kem2-value landuse-detail__monitoring-kem2-value--mismatch"
                 }
               >
                 {isMatchingValue ? (
@@ -316,10 +321,14 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                 ) : (
                   <IconAlertCircle size={IconSize.Small} aria-hidden="true" />
                 )}
-                <span>{latestToteutunutKm2}</span>
+                <span>{latestToteutunutKem2}</span>
               </span>
             ) : (
-              <span>{latestToteutunutKm2}</span>
+              <span>{latestToteutunutKem2}</span>
+            ),
+            yksikkohinta: formatLandUseNumericValueWithUnit(
+              parseNumber(yksikkohinta),
+              "€/kem²",
             ),
             toiminnot: (
               <div className="landuse-detail__monitoring-actions-cell">
@@ -354,7 +363,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                 </Button>
               </div>
             ),
-            yksikkohinta: yksikkohinta || "-",
           };
 
           const childRows = plotDivisions.map((plotDivision, childIndex) => {
@@ -363,11 +371,12 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             const latestPlotDivisionToteutunutEntry = getLatestEntry(
               plotDivisionToteumaEntries,
             );
-            const latestPlotDivisionToteutunutKm2 =
+            const latestPlotDivisionToteutunutKem2 =
               latestPlotDivisionToteutunutEntry?.value ?? "-";
             const isPlotDivisionLocked = plotDivisionToteumaEntries.length > 0;
+            const plotDivisionVaadittuKem2 = plotDivision.vaadittuKem2 ?? "";
             const plotDivisionVaadittuValue = parseLandUseNumericValue(
-              plotDivision.vaadittuKm2,
+              plotDivisionVaadittuKem2,
             );
             const plotDivisionToteutunutValue = parseLandUseNumericValue(
               latestPlotDivisionToteutunutEntry?.value,
@@ -412,14 +421,14 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                 ) : (
                   plotDivision.hallintamuoto || "-"
                 ),
-              vaadittuKm2:
+              vaadittuKem2:
                 isEditMode && !isPlotDivisionLocked ? (
                   <Field
-                    name={`plotDivisionsBySiteId.${site.id}.${childIndex}.vaadittuKm2`}
+                    name={`plotDivisionsBySiteId.${site.id}.${childIndex}.vaadittuKem2`}
                   >
                     {({ input }) => (
                       <TextInput
-                        id={`monitoring-plot-division-vaadittu-km2-${site.id}-${childIndex}`}
+                        id={`monitoring-plot-division-vaadittu-kem2-${site.id}-${childIndex}`}
                         label=""
                         value={input.value}
                         onChange={input.onChange}
@@ -427,14 +436,17 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                     )}
                   </Field>
                 ) : (
-                  plotDivision.vaadittuKm2 || "-"
+                  formatLandUseNumericValueWithUnit(
+                    parseNumber(plotDivisionVaadittuKem2),
+                    "kem²",
+                  )
                 ),
-              toteutunutKm2: latestPlotDivisionToteutunutEntry ? (
+              toteutunutKem2: latestPlotDivisionToteutunutEntry ? (
                 <span
                   className={
                     isPlotDivisionMatchingValue
-                      ? "landuse-detail__monitoring-km2-value landuse-detail__monitoring-km2-value--match"
-                      : "landuse-detail__monitoring-km2-value landuse-detail__monitoring-km2-value--mismatch"
+                      ? "landuse-detail__monitoring-kem2-value landuse-detail__monitoring-kem2-value--match"
+                      : "landuse-detail__monitoring-kem2-value landuse-detail__monitoring-kem2-value--mismatch"
                   }
                 >
                   {isPlotDivisionMatchingValue ? (
@@ -442,11 +454,31 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   ) : (
                     <IconAlertCircle size={IconSize.Small} aria-hidden="true" />
                   )}
-                  <span>{latestPlotDivisionToteutunutKm2}</span>
+                  <span>{latestPlotDivisionToteutunutKem2}</span>
                 </span>
               ) : (
-                <span>{latestPlotDivisionToteutunutKm2}</span>
+                <span>{latestPlotDivisionToteutunutKem2}</span>
               ),
+              yksikkohinta:
+                isEditMode && !isPlotDivisionLocked ? (
+                  <Field
+                    name={`plotDivisionsBySiteId.${site.id}.${childIndex}.yksikkohinta`}
+                  >
+                    {({ input }) => (
+                      <TextInput
+                        id={`monitoring-plot-division-yksikkohinta-${site.id}-${childIndex}`}
+                        label=""
+                        value={input.value}
+                        onChange={input.onChange}
+                      />
+                    )}
+                  </Field>
+                ) : (
+                  formatLandUseNumericValueWithUnit(
+                    parseNumber(plotDivision.yksikkohinta),
+                    "€/kem²",
+                  )
+                ),
               toiminnot: (
                 <Button
                   type="button"
@@ -464,37 +496,11 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   Kirjaa toteuma
                 </Button>
               ),
-              yksikkohinta:
-                isEditMode && !isPlotDivisionLocked ? (
-                  <Field
-                    name={`plotDivisionsBySiteId.${site.id}.${childIndex}.yksikkohinta`}
-                  >
-                    {({ input }) => (
-                      <TextInput
-                        id={`monitoring-plot-division-yksikkohinta-${site.id}-${childIndex}`}
-                        label=""
-                        value={input.value}
-                        onChange={input.onChange}
-                      />
-                    )}
-                  </Field>
-                ) : (
-                  plotDivision.yksikkohinta || "-"
-                ),
             };
           });
 
           return [parentRow, ...childRows];
         });
-
-        const monitoringSakkoCols = [
-          { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
-          { key: "hallintamuoto", headerName: "Hallintamuoto" },
-          { key: "vaadittuKerrosala", headerName: "Vaadittu kerrosala" },
-          { key: "toteutunutKerrosala", headerName: "Toteutunut kerrosala" },
-          { key: "hintaero", headerName: "Hintaero" },
-          { key: "korotus", headerName: "Korotus" },
-        ];
 
         const monitoringVapauttaminenCols = [
           { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
@@ -516,8 +522,9 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
               const latestPlotDivisionEntry = getLatestEntry(
                 plotDivisionToteumaEntries,
               );
+              const plotDivisionVaadittuKem2 = plotDivision.vaadittuKem2 ?? "";
               const vaadittuValue = parseLandUseNumericValue(
-                plotDivision.vaadittuKm2,
+                plotDivisionVaadittuKem2,
               );
               const toteutunutValue =
                 parseLandUseNumericValue(latestPlotDivisionEntry?.value) ?? 0;
@@ -571,7 +578,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           const latestToteutunutEntry = getLatestEntry(
             toteumaEntriesBySiteId[site.id] ?? [],
           );
-          const vaadittuValue = parseLandUseNumericValue(site.km2);
+          const vaadittuValue = parseLandUseNumericValue(site.kem2);
           const toteutunutValue =
             parseLandUseNumericValue(latestToteutunutEntry?.value) ?? 0;
           const yksikkohintaRaw =
@@ -633,6 +640,15 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
               ? "right"
               : "equal";
 
+        const monitoringSakkoCols = [
+          { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
+          { key: "hallintamuoto", headerName: "Hallintamuoto" },
+          { key: "vaadittuKerrosala", headerName: "Vaadittu kerrosala" },
+          { key: "toteutunutKerrosala", headerName: "Toteutunut kerrosala" },
+          { key: "hintaero", headerName: "Hintaero" },
+          { key: "korotus", headerName: "Korotus" },
+        ];
+
         const monitoringSakkoTableRows = sakkoRows.map((row, index) => ({
           id: `sakko-row-${row.kohteenTunnus}-${index}`,
           kohteenTunnus: row.kohteenTunnus,
@@ -677,7 +693,10 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   <TextInput
                     id={`monitoring-sakko-vaadittu-kerrosala-${index}`}
                     label=""
-                    value={readOnlyTextValue(input.value)}
+                    value={formatLandUseNumericValueWithUnit(
+                      input.value,
+                      "kem²",
+                    )}
                     readOnly
                   />
                 )
@@ -951,7 +970,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                         kohteenTunnus:
                           plotDivisionFormValues.kohteenTunnus.trim(),
                         hallintamuoto: "",
-                        vaadittuKm2: "",
+                        vaadittuKem2: "",
                         yksikkohinta: "",
                       };
 
@@ -1021,19 +1040,19 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       "-"}
                   </p>
 
-                  <div className="landuse-detail__monitoring-dialog-km2-row">
+                  <div className="landuse-detail__monitoring-dialog-kem2-row">
                     <TextInput
-                      id="landuse-monitoring-toteutunut-km2"
-                      label="Toteutunut k-m²"
-                      value={newToteutunutKm2}
+                      id="landuse-monitoring-toteutunut-kem2"
+                      label="Toteutunut kerrosala"
+                      value={newToteutunutKem2}
                       onChange={(event) =>
-                        setNewToteutunutKm2(event.target.value)
+                        setNewToteutunutKem2(event.target.value)
                       }
                     />
-                    <span className="landuse-detail__monitoring-dialog-km2-target">
+                    <span className="landuse-detail__monitoring-dialog-kem2-target">
                       /{" "}
-                      {selectedPlotDivision?.vaadittuKm2 ??
-                        selectedSite?.km2 ??
+                      {selectedPlotDivision?.vaadittuKem2 ??
+                        selectedSite?.kem2 ??
                         "-"}
                     </span>
                   </div>
@@ -1043,7 +1062,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                     variant={ButtonVariant.Primary}
                     iconStart={<IconPlusCircleFill />}
                     disabled={
-                      !newToteutunutKm2.trim() ||
+                      !newToteutunutKem2.trim() ||
                       (!selectedSiteId && !selectedPlotDivisionTarget)
                     }
                     onClick={() => {
@@ -1052,7 +1071,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       }
 
                       const newEntry = {
-                        value: newToteutunutKm2.trim(),
+                        value: newToteutunutKem2.trim(),
                         createdAt: new Date().toISOString(),
                       };
 
@@ -1081,7 +1100,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
 
                       onSetTabDirty?.("monitoring");
 
-                      setNewToteutunutKm2("");
+                      setNewToteutunutKem2("");
                     }}
                   >
                     Kirjaa toteuma

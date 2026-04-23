@@ -29,7 +29,7 @@
 
   tbody
     tr:has(.landuse-detail__monitoring-plot-division-group-marker)
-    .landuse-detail__monitoring-km2-value {
+    .landuse-detail__monitoring-kem2-value {
     color: var(--color-black-60);
     border-color: var(--color-black-30);
     background-color: var(--color-black-5);
@@ -94,14 +94,14 @@
   }
 }
 
-// -- Actions & KM2 badge ----------------------------------------------------
+// -- Actions & KEM2 badge ---------------------------------------------------
 
 .landuse-detail__monitoring-actions-cell {
   @include flex-col($space-md);
   align-items: flex-start;
 }
 
-.landuse-detail__monitoring-km2-value {
+.landuse-detail__monitoring-kem2-value {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -155,12 +155,12 @@
   font-weight: 600;
 }
 
-.landuse-detail__monitoring-dialog-km2-row {
+.landuse-detail__monitoring-dialog-kem2-row {
   @include flex-row-center($space-md);
   align-items: flex-end;
 }
 
-.landuse-detail__monitoring-dialog-km2-target {
+.landuse-detail__monitoring-dialog-kem2-target {
   padding-bottom: $space-sm;
   color: var(--color-black-70);
 }

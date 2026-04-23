@@ -39,7 +39,7 @@ interface PerustietotaulukkoRowValues {
 interface CollateralsVakuuslaskuriRow {
   kohteenTunnus: string;
   hallintamuoto?: string;
-  km2: string;
+  kem2: string;
   hintaero: string;
   sopimussakko: string;
   kerroin: string;
@@ -86,7 +86,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
         const vakuuslaskuriRows: CollateralsVakuuslaskuriRow[] = sites.map(
           (site) => {
             const kohteenTunnus = site.kohteenTunnus || "-";
-            const vaadittuValue = parseLandUseNumericValue(site.km2);
+            const vaadittuValue = parseLandUseNumericValue(site.kem2);
             const hintaeroValue = calculateHintaero(
               perushinta,
               compensationsRowsBySiteId[site.id]?.yksikkohinta,
@@ -113,7 +113,8 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             return {
               kohteenTunnus,
               hallintamuoto: formatSiteHallintamuoto(site.hallintamuoto),
-              km2: site.km2 || "-",
+              kem2:
+                formatLandUseNumericValueWithUnit(vaadittuValue, "kem²") || "-",
               hintaero:
                 hintaeroValue !== null
                   ? formatLandUseNumericValueWithUnit(hintaeroValue, "€")
@@ -134,7 +135,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
         const collateralsVakuuslaskuriCols = [
           { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
           { key: "hallintamuoto", headerName: "Hallintamuoto" },
-          { key: "km2", headerName: "k-m²" },
+          { key: "kem2", headerName: "Kerrosala" },
           { key: "hintaero", headerName: "Hintaero" },
           { key: "sopimussakko", headerName: "Sopimussakko" },
           { key: "kerroin", headerName: "Kerroin" },
@@ -146,7 +147,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             id: `vakuuslaskuri-row-${row.kohteenTunnus}-${index}`,
             kohteenTunnus: row.kohteenTunnus,
             hallintamuoto: row.hallintamuoto || "-",
-            km2: row.km2 || "-",
+            kem2: row.kem2 || "-",
             hintaero: row.hintaero,
             sopimussakko: row.sopimussakko,
             kerroin: row.kerroin,
@@ -178,22 +179,22 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
         const collateralsInfoRows = [
           {
             id: "info-1",
-            sopimussakko: "0 € / k-m² - 500 € / k-m²",
+            sopimussakko: "0 € / kem² - 500 € / kem²",
             vakuustarvekerroin: "100 %",
           },
           {
             id: "info-2",
-            sopimussakko: "501 € / k-m² - 1000 € / k-m²",
+            sopimussakko: "501 € / kem² - 1000 € / kem²",
             vakuustarvekerroin: "80 %",
           },
           {
             id: "info-3",
-            sopimussakko: "1001 € / k-m² - 1500 € / k-m²",
+            sopimussakko: "1001 € / kem² - 1500 € / kem²",
             vakuustarvekerroin: "70 %",
           },
           {
             id: "info-4",
-            sopimussakko: "1501 € / k-m² -",
+            sopimussakko: "1501 € / kem² -",
             vakuustarvekerroin: "60 %",
           },
         ];
