@@ -150,6 +150,8 @@ export const updateMonitoring = async (
     toteutunutHallintamuotoBySiteId: values.toteutunutHallintamuotoBySiteId,
     plotDivisionsBySiteId: values.plotDivisionsBySiteId,
     sakkoRows: values.sakkoRows,
+    sakkoKerroinBySiteId: values.sakkoKerroinBySiteId,
+    sakkoKerroinByPlotDivisionId: values.sakkoKerroinByPlotDivisionId,
   };
 
   await setAgreementTab(agreementId, "monitoring", sanitizedValues);
