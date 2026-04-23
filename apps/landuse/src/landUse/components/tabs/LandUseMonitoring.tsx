@@ -500,6 +500,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
           { key: "hallintamuoto", headerName: "Hallintamuoto" },
           { key: "toteuttamatta", headerName: "Toteuttamatta" },
+          { key: "hintaero", headerName: "Hintaero" },
           { key: "sopimussakko", headerName: "Sopimussakko" },
           { key: "kerroin", headerName: "Kerroin" },
           { key: "vakuustarve", headerName: "Vakuustarve" },
@@ -553,6 +554,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   toteuttamattaValue,
                   "kem²",
                 ),
+                hintaero: formatLandUseNumericValueWithUnit(hintaeroValue, "€"),
                 sopimussakko: formatLandUseNumericValueWithUnit(
                   sopimussakkoValue,
                   "€/kem²",
