@@ -1760,7 +1760,7 @@ export const calculateBasisOfRentSubventionPercentage = (
   const subventionPercentage =
     (1 -
       Number(convertStrToDecimalNumber(subventionAmount)) /
-        currentAmountPerArea) *
+        convertStrToDecimalNumber(currentAmountPerArea)) *
     100;
   return Number(subventionPercentage.toFixed(2));
 };
@@ -1779,7 +1779,7 @@ export const calculateSubventionAmountFromPercantage = (
   if (!currentAmountPerArea) return 0;
   const subventionAmount =
     (1 - Number(convertStrToDecimalNumber(subventionPercantage)) / 100) *
-    currentAmountPerArea;
+    convertStrToDecimalNumber(currentAmountPerArea);
   return Number(subventionAmount.toFixed(2));
 };
 
