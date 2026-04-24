@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { FieldArray } from "react-final-form-arrays";
-import type { FormApi } from "final-form";
+import React from "react";
+import { change, formValueSelector, FieldArray, reduxForm } from "redux-form";
 import Authorization from "@/components/authorization/Authorization";
 import BasisOfRentsEdit from "./BasisOfRentsEdit";
 import Divider from "@/components/content/Divider";
@@ -14,116 +13,99 @@ import { isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { BasisOfRent } from "@/leases/types";
-import { useSelector } from "react-redux";
-import { Form } from "react-final-form";
+import { useDispatch, useSelector } from "react-redux";
+import { FormNames } from "@/enums";
+import { validateRentBasisForm } from "@/rentbasis/formValidators";
 
-type Props = {
-  formApi: FormApi;
-};
+const formName = FormNames.LEASE_BASIS_OF_RENTS;
 
-const BasisOfRentsEditMain: React.FC<Props> = ({ formApi }) => {
+type Props = {};
+
+const BasisOfRentsEditMain: React.FC<Props> = () => {
+  const dispatch = useDispatch();
+  const selector = formValueSelector(formName);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const [editedActiveBasisOfRents, setEditedActiveBasisOfRents] = useState<
-    Array<BasisOfRent>
-  >(() => formApi.getState().values.basis_of_rents || []);
-  const [editedArchivedBasisOfRents, setEditedArchivedBasisOfRents] = useState<
-    Array<BasisOfRent>
-  >(() => formApi.getState().values.basis_of_rents_archived || []);
-
-  useEffect(() => {
-    const unsubcribeActive = formApi.registerField(
-      "basis_of_rents",
-      (field) => setEditedActiveBasisOfRents(field.value || []),
-      { value: true },
-    );
-    const unsubcribeArchived = formApi.registerField(
-      "basis_of_rents_archived",
-      (field) => setEditedArchivedBasisOfRents(field.value || []),
-      { value: true },
-    );
-    return () => {
-      unsubcribeActive();
-      unsubcribeArchived();
-    };
-  }, [formApi]);
-
+  const editedActiveBasisOfRents: Array<BasisOfRent> = useSelector(
+    (state) => selector(state, "basis_of_rents") || [],
+  );
+  const editedArchivedBasisOfRents: Array<BasisOfRent> = useSelector(
+    (state) => selector(state, "basis_of_rents_archived") || [],
+  );
   const handleArchive = (index: number, item: BasisOfRent) => {
-    const currentActive: Array<BasisOfRent> =
-      formApi.getState().values.basis_of_rents || [];
-    const currentArchived: Array<BasisOfRent> =
-      formApi.getState().values.basis_of_rents_archived || [];
-    formApi.change(
-      "basis_of_rents",
-      currentActive.filter((_, i) => i !== index),
+    dispatch(
+      change(
+        formName,
+        "basis_of_rents",
+        editedActiveBasisOfRents.filter((_, i) => i !== index),
+      ),
     );
-    formApi.change("basis_of_rents_archived", [
-      ...currentArchived,
-      { ...item, archived_at: new Date().toISOString() },
-    ]);
+    dispatch(
+      change(formName, "basis_of_rents_archived", [
+        ...editedArchivedBasisOfRents,
+        { ...item, archived_at: new Date().toISOString() },
+      ]),
+    );
   };
 
   const handleUnarchive = (index: number, item: BasisOfRent) => {
-    const currentActive: Array<BasisOfRent> =
-      formApi.getState().values.basis_of_rents || [];
-    const currentArchived: Array<BasisOfRent> =
-      formApi.getState().values.basis_of_rents_archived || [];
-    formApi.change(
-      "basis_of_rents_archived",
-      currentArchived.filter((_, i) => i !== index),
+    dispatch(
+      change(
+        formName,
+        "basis_of_rents_archived",
+        editedArchivedBasisOfRents.filter((_, i) => i !== index),
+      ),
     );
-    formApi.change("basis_of_rents", [
-      ...currentActive,
-      { ...item, archived_at: null },
-    ]);
+    dispatch(
+      change(formName, "basis_of_rents", [
+        ...editedActiveBasisOfRents,
+        { ...item, archived_at: null },
+      ]),
+    );
   };
 
   return (
-    <Form form={formApi} onSubmit={formApi.submit}>
-      {() => (
-        <form>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              leaseAttributes,
+    <form>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          leaseAttributes,
+          LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
+        )}
+      >
+        <>
+          <Title
+            enableUiDataEdit
+            uiDataKey={getUiDataLeaseKey(
               LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
             )}
           >
-            <>
-              <Title
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(
-                  LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
-                )}
-              >
-                {LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}
-              </Title>
-              <Divider />
-              <FieldArray name="basis_of_rents">
-                {(fieldArrayProps) =>
-                  BasisOfRentsEdit({
-                    ...fieldArrayProps,
-                    archived: false,
-                    basisOfRents: editedActiveBasisOfRents,
-                    onArchive: handleArchive,
-                  })
-                }
-              </FieldArray>
+            {LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}
+          </Title>
+          <Divider />
+          <FieldArray
+            archived={false}
+            basisOfRents={editedActiveBasisOfRents}
+            component={BasisOfRentsEdit}
+            formName={formName}
+            name="basis_of_rents"
+            onArchive={handleArchive}
+          />
 
-              <FieldArray name="basis_of_rents_archived">
-                {(fieldArrayProps) =>
-                  BasisOfRentsEdit({
-                    ...fieldArrayProps,
-                    archived: true,
-                    basisOfRents: editedArchivedBasisOfRents,
-                    onUnarchive: handleUnarchive,
-                  })
-                }
-              </FieldArray>
-            </>
-          </Authorization>
-        </form>
-      )}
-    </Form>
+          <FieldArray
+            archived={true}
+            basisOfRents={editedArchivedBasisOfRents}
+            component={BasisOfRentsEdit}
+            formName={formName}
+            name="basis_of_rents_archived"
+            onUnarchive={handleUnarchive}
+          />
+        </>
+      </Authorization>
+    </form>
   );
 };
 
-export default BasisOfRentsEditMain;
+export default reduxForm({
+  form: formName,
+  destroyOnUnmount: false,
+  validate: validateRentBasisForm,
+})(BasisOfRentsEditMain) as React.ComponentType;
