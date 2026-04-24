@@ -314,17 +314,38 @@ export const landUseAgreementTypeOptions = [
   { label: "Muu", value: "Muu" },
 ];
 
-export const landUseGuaranteeTypeOptions = [
-  { label: "Panttikirja", value: "Panttikirja" },
-  { label: "Rahavakuus", value: "Rahavakuus" },
-  { label: "Omavelkainen takaus", value: "Omavelkainen takaus" },
-  { label: "Tilivarojen panttaus", value: "Tilivarojen panttaus" },
-  { label: "Muu vakuus", value: "Muu vakuus" },
-];
+export const LAND_USE_GUARANTEE_TYPES = {
+  PANTTIKIRJA: "Panttikirja",
+  RAHAVAKUUS: "Rahavakuus",
+  OMAVELKAINEN_TAKAUS: "Omavelkainen takaus",
+  TILIVAROJEN_PANTTAUS: "Tilivarojen panttaus",
+  MUU_VAKUUS: "Muu vakuus",
+} as const;
+
+export type LandUseGuaranteeType =
+  (typeof LAND_USE_GUARANTEE_TYPES)[keyof typeof LAND_USE_GUARANTEE_TYPES];
+
+export const landUseGuaranteeTypeOptions: {
+  label: string;
+  value: LandUseGuaranteeType;
+}[] = Object.values(LAND_USE_GUARANTEE_TYPES).map((value) => ({
+  label: value,
+  value,
+}));
 
 export const landUseGuaranteeCategoryOptions = [
   { label: "Sähköinen", value: "Sähköinen" },
   { label: "Paperinen", value: "Paperinen" },
+];
+
+export const landUseGuaranteeTargetOptions = [
+  { label: "Kiinteistö", value: "Kiinteistö" },
+  { label: "Laitos", value: "Laitos" },
+];
+
+export const landUseGuaranteeVierasvelkapanttausOptions = [
+  { label: "Kyllä", value: "Kyllä" },
+  { label: "Ei", value: "Ei" },
 ];
 
 export const ASEMAKAAVA_KASITTELYVAIHE_OPTIONS = [

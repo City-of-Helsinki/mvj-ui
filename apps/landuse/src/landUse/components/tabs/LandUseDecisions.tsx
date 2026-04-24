@@ -17,20 +17,17 @@ import {
   landUseConditionTypeOptions,
   landUseDecisionMakerOptions,
   landUseDecisionTypeOptions,
-  landUseGuaranteeCategoryOptions,
   landUseGuaranteeTypeOptions,
   landUseSectionOptions,
+  type LandUseGuaranteeType,
 } from "../../options";
 import {
   getFieldTextValue,
   normalizeSelectValue,
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
-import {
-  formatLandUseNumericValue,
-  parseLandUseNumericValue,
-} from "../../utils/number";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
+import { CollateralFormByType, type Guarantee } from "../collateralForms";
 
 interface DecisionCondition {
   conditionType?: string;
@@ -58,29 +55,6 @@ interface AgreementChange {
   kolmasKutsuLahetetty: string;
   paatos?: string;
   huomautus: string;
-}
-
-interface GuaranteeSiteUsage {
-  kohde: string;
-  hallintamuoto: string;
-  vakuuttaKaytettyEuro: string;
-  vakuuttaKaytettyProsentti: string;
-}
-
-interface Guarantee {
-  jarjestysnumero: string;
-  tyyppi?: string;
-  laji?: string;
-  vakuusnumero: string;
-  alkupvm: string;
-  loppupvm: string;
-  palautettuPvm: string;
-  huomautus: string;
-  panttikirjanNumero: string;
-  vakuudenMaara: string;
-  vakuuttaKaytetty: string;
-  vakuuttaJaljella: string;
-  siteUsages: GuaranteeSiteUsage[];
 }
 
 interface AgreementItem {
@@ -138,19 +112,7 @@ const createNewAgreementChange = (): AgreementChange => ({
 });
 
 const createNewGuarantee = (): Guarantee => ({
-  jarjestysnumero: "",
   tyyppi: undefined,
-  laji: undefined,
-  vakuusnumero: "",
-  alkupvm: "",
-  loppupvm: "",
-  palautettuPvm: "",
-  huomautus: "",
-  panttikirjanNumero: "",
-  vakuudenMaara: "",
-  vakuuttaKaytetty: "",
-  vakuuttaJaljella: "",
-  siteUsages: [],
 });
 
 const createNewDecision = (): DecisionItem => ({
@@ -211,6 +173,17 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
   const [newAgreementIndexToOpen, setNewAgreementIndexToOpen] = React.useState<
     number | null
   >(null);
+  const [pendingGuaranteeTypeByAgreement, setPendingGuaranteeTypeByAgreement] =
+    React.useState<Record<number, LandUseGuaranteeType | undefined>>({});
+
+  const setPendingGuaranteeType = (
+    agreementIndex: number,
+    value: LandUseGuaranteeType | undefined,
+  ) =>
+    setPendingGuaranteeTypeByAgreement((prev) => ({
+      ...prev,
+      [agreementIndex]: value,
+    }));
 
   return (
     <Form<LandUseDecisionsFormValues>
@@ -983,290 +956,114 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           >
                             <div className="landuse-detail__grid landuse-detail__decisions-grid">
                               <div className="landuse-detail__column">
-                                <Field name={`${vakuusName}.jarjestysnumero`}>
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <TextInput
-                                        id={`vakuus-jarjestysnumero-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuuden järjestysnumero"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`vakuus-jarjestysnumero-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuuden järjestysnumero"
-                                        value={readOnlyTextValue(input.value)}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
                                 <Field name={`${vakuusName}.tyyppi`}>
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <Select
-                                        id={`vakuus-tyyppi-${agreementIndex}-${vakuusIndex}`}
-                                        texts={{
-                                          label: "Vakuuden tyyppi",
-                                          placeholder: "Valitse",
-                                        }}
-                                        options={landUseGuaranteeTypeOptions}
-                                        value={normalizeSelectValue(
-                                          input.value,
-                                        )}
-                                        onChange={(selected) =>
-                                          handleSelectChange(
-                                            selected,
-                                            input.onChange,
-                                          )
-                                        }
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`vakuus-tyyppi-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuuden tyyppi"
-                                        value={readOnlyTextValue(input.value)}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field name={`${vakuusName}.laji`}>
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <Select
-                                        id={`vakuus-laji-${agreementIndex}-${vakuusIndex}`}
-                                        texts={{
-                                          label: "Vakuuden laji",
-                                          placeholder: "Valitse",
-                                        }}
-                                        options={
-                                          landUseGuaranteeCategoryOptions
-                                        }
-                                        value={normalizeSelectValue(
-                                          input.value,
-                                        )}
-                                        onChange={(selected) =>
-                                          handleSelectChange(
-                                            selected,
-                                            input.onChange,
-                                          )
-                                        }
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`vakuus-laji-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuuden laji"
-                                        value={readOnlyTextValue(input.value)}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field name={`${vakuusName}.vakuusnumero`}>
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <TextInput
-                                        id={`vakuus-vakuusnumero-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuusnumero"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`vakuus-vakuusnumero-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuusnumero"
-                                        value={readOnlyTextValue(input.value)}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field name={`${vakuusName}.alkupvm`}>
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <DateInput
-                                        id={`vakuus-alkupvm-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuuden alkupvm"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                        placeholder="DD.MM.YYYY"
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`vakuus-alkupvm-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuuden alkupvm"
-                                        value={readOnlyTextValue(input.value)}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field name={`${vakuusName}.loppupvm`}>
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <DateInput
-                                        id={`vakuus-loppupvm-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuuden loppupvm"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                        placeholder="DD.MM.YYYY"
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`vakuus-loppupvm-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuuden loppupvm"
-                                        value={readOnlyTextValue(input.value)}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field name={`${vakuusName}.palautettuPvm`}>
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <DateInput
-                                        id={`vakuus-palautettu-pvm-${agreementIndex}-${vakuusIndex}`}
-                                        label="Palautettu pvm"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                        placeholder="DD.MM.YYYY"
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`vakuus-palautettu-pvm-${agreementIndex}-${vakuusIndex}`}
-                                        label="Palautettu pvm"
-                                        value={readOnlyTextValue(input.value)}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field name={`${vakuusName}.huomautus`}>
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <TextInput
-                                        id={`vakuus-huomautus-${agreementIndex}-${vakuusIndex}`}
-                                        label="Huomautus"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`vakuus-huomautus-${agreementIndex}-${vakuusIndex}`}
-                                        label="Huomautus"
-                                        value={readOnlyTextValue(input.value)}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field
-                                  name={`${vakuusName}.panttikirjanNumero`}
-                                >
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <TextInput
-                                        id={`vakuus-panttikirjan-numero-${agreementIndex}-${vakuusIndex}`}
-                                        label="Panttikirjan numero"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`vakuus-panttikirjan-numero-${agreementIndex}-${vakuusIndex}`}
-                                        label="Panttikirjan numero"
-                                        value={readOnlyTextValue(input.value)}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
-
-                              <div className="landuse-detail__column">
-                                <Field name={`${vakuusName}.vakuudenMaara`}>
-                                  {({ input }) => {
-                                    const currentValue = input.value;
-
-                                    return isEditMode ? (
-                                      <TextInput
-                                        id={`vakuus-vakuuden-maara-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuuden määrä"
-                                        value={currentValue}
-                                        onChange={input.onChange}
-                                        onBlur={() => {
-                                          const parsedValue =
-                                            parseLandUseNumericValue(
-                                              currentValue,
-                                            );
-                                          if (parsedValue !== null) {
-                                            input.onChange(
-                                              formatLandUseNumericValue(
-                                                parsedValue,
-                                              ),
-                                            );
-                                          }
-                                          input.onBlur();
-                                        }}
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`vakuus-vakuuden-maara-${agreementIndex}-${vakuusIndex}`}
-                                        label="Vakuuden määrä"
-                                        value={readOnlyTextValue(currentValue)}
-                                        readOnly
-                                      />
-                                    );
-                                  }}
+                                  {({ input }) => (
+                                    <TextInput
+                                      id={`vakuus-tyyppi-${agreementIndex}-${vakuusIndex}`}
+                                      label="Vakuuden tyyppi"
+                                      value={readOnlyTextValue(input.value)}
+                                      readOnly
+                                    />
+                                  )}
                                 </Field>
                               </div>
                             </div>
+
+                            <CollateralFormByType
+                              type={
+                                vakuus.tyyppi as
+                                  | LandUseGuaranteeType
+                                  | undefined
+                              }
+                              namePrefix={vakuusName}
+                              isEditMode={isEditMode}
+                            />
+
+                            {isEditMode && (
+                              <div className="landuse-detail__decisions-add-row">
+                                <ConfirmDeleteButton
+                                  id={`vakuus-delete-${agreementIndex}-${vakuusIndex}`}
+                                  buttonLabel="Poista vakuus"
+                                  onConfirm={() => {
+                                    form.mutators.remove(
+                                      `agreements.${agreementIndex}.vakuudet`,
+                                      vakuusIndex,
+                                    );
+                                  }}
+                                  dialogTitle="Poista vakuus"
+                                  dialogContent="Haluatko varmasti poistaa vakuuden?"
+                                />
+                              </div>
+                            )}
                           </div>
                         );
                       })}
 
-                      <div className="landuse-detail__decisions-add-row">
-                        <Button
-                          type="button"
-                          variant={ButtonVariant.Supplementary}
-                          iconStart={<IconPlusCircleFill />}
-                          disabled={!isEditMode}
-                          onClick={() => {
-                            form.mutators.push(
-                              `agreements.${agreementIndex}.vakuudet`,
-                              createNewGuarantee(),
-                            );
-                          }}
+                      {isEditMode && (
+                        <Fieldset
+                          heading="Lisää uusi vakuus"
+                          className="landuse-detail__fieldset--with-margin"
                         >
-                          Lisää vakuus
-                        </Button>
-                      </div>
+                          <div className="landuse-detail__decisions-add-vakuus-row">
+                            <div className="landuse-detail__decisions-add-vakuus-select">
+                              <Select
+                                id={`vakuus-new-tyyppi-${agreementIndex}`}
+                                texts={{
+                                  label: "Vakuuden tyyppi",
+                                  placeholder: "Valitse",
+                                }}
+                                options={landUseGuaranteeTypeOptions}
+                                value={
+                                  pendingGuaranteeTypeByAgreement[
+                                    agreementIndex
+                                  ]
+                                }
+                                onChange={(selected) => {
+                                  if (selected.length > 0) {
+                                    setPendingGuaranteeType(
+                                      agreementIndex,
+                                      selected[0].value as LandUseGuaranteeType,
+                                    );
+                                  } else {
+                                    setPendingGuaranteeType(
+                                      agreementIndex,
+                                      undefined,
+                                    );
+                                  }
+                                }}
+                              />
+                            </div>
+                            <Button
+                              type="button"
+                              variant={ButtonVariant.Supplementary}
+                              iconStart={<IconPlusCircleFill />}
+                              disabled={
+                                !pendingGuaranteeTypeByAgreement[agreementIndex]
+                              }
+                              onClick={() => {
+                                const pendingType =
+                                  pendingGuaranteeTypeByAgreement[
+                                    agreementIndex
+                                  ];
+                                if (!pendingType) return;
+                                form.mutators.push(
+                                  `agreements.${agreementIndex}.vakuudet`,
+                                  {
+                                    ...createNewGuarantee(),
+                                    tyyppi: pendingType,
+                                  },
+                                );
+                                setPendingGuaranteeType(
+                                  agreementIndex,
+                                  undefined,
+                                );
+                              }}
+                            >
+                              Lisää vakuus
+                            </Button>
+                          </div>
+                        </Fieldset>
+                      )}
 
                       <div className="landuse-detail__decisions-add-row">
                         <ConfirmDeleteButton

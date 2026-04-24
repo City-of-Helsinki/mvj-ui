@@ -338,3 +338,13 @@
 .landuse-detail__decisions-vakuus-block {
   margin-bottom: $space-2xl;
 }
+
+.landuse-detail__decisions-add-vakuus-row {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.landuse-detail__decisions-add-vakuus-select {
+  min-width: 260px;
+}
