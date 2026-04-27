@@ -12,8 +12,8 @@
 }
 
 .landuse-detail__header {
-  margin: $space-2xl 0;
-  padding: $space-lg $space-xl;
+  margin: var(--spacing-m) 0;
+  padding: var(--spacing-s) var(--spacing-m);
   @include flex-row-center;
   justify-content: space-between;
   background-color: var(--color-black-5);
@@ -28,18 +28,18 @@
 }
 
 .landuse-detail__actions {
-  @include flex-row-center($space-md);
+  @include flex-row-center(var(--spacing-xs));
   flex-wrap: wrap;
 
   button {
     display: inline-flex;
     align-items: center;
-    gap: $space-sm;
+    gap: var(--spacing-2-xs);
   }
 }
 
 .landuse-detail__content {
-  padding: $space-2xl 0;
+  padding: var(--spacing-m) 0;
 }
 
 // -- Section / field primitives ----------------------------------------------
@@ -48,46 +48,34 @@
   font-size: 20px;
   font-weight: 600;
   color: var(--color-black-90);
-  margin: 0 0 $space-2xl 0;
+  margin: 0 0 var(--spacing-m) 0;
 }
 
 .landuse-detail__subsection-title {
   font-size: 16px;
   font-weight: 600;
   color: var(--color-black-90);
-  margin: 0 0 $space-lg;
-}
-
-.landuse-detail__grid {
-  @include responsive-grid;
-
-  &--with-delete {
-    grid-template-columns: repeat(4, 1fr) auto;
-  }
-}
-
-.landuse-detail__grid_row {
-  margin-bottom: $space-2xl;
-}
-
-.landuse-detail__column {
-  @include flex-col($space-xl);
+  margin: 0 0 var(--spacing-s);
 }
 
 .landuse-detail__field-group {
-  @include flex-col($space-md);
+  @include flex-col(var(--spacing-xs));
 }
 
 .landuse-detail__add-button {
-  justify-content: flex-start !important;
+  justify-content: flex-start;
 }
 
 .landuse-detail__section {
-  @include flex-col($space-lg);
-  padding: $space-lg;
+  @include flex-col(var(--spacing-s));
+  padding: var(--spacing-s);
   border: 1px solid var(--color-black-20);
   border-radius: $radius-sm;
   background-color: var(--color-black-5);
+}
+
+.landuse-detail__container-max-width {
+  max-width: 100%;
 }
 
 // -- Fieldset overrides ------------------------------------------------------
@@ -101,7 +89,7 @@
 }
 
 .landuse-detail__fieldset--with-margin {
-  margin-bottom: $space-3xl;
+  margin-bottom: var(--spacing-l);
 }
 
 // -- Tab label / icons -------------------------------------------------------
@@ -154,7 +142,7 @@
   @include responsive-grid-minmax(180px);
 
   &--notes {
-    margin-top: $space-xl;
+    margin-top: var(--spacing-m);
     grid-template-columns: repeat(2, minmax(220px, 1fr));
   }
 }
@@ -165,7 +153,7 @@
   @include table-base;
   border-collapse: collapse;
   line-height: 1.5;
-  margin-bottom: $space-lg;
+  margin-bottom: var(--spacing-s);
 
   thead tr {
     background-color: var(--color-silver);
@@ -198,7 +186,7 @@
 
   &__toggle-cell {
     width: 40px;
-    padding-left: $space-sm !important;
+    padding-left: var(--spacing-2-xs) !important;
     padding-right: 0 !important;
   }
 
@@ -246,7 +234,7 @@
     box-sizing: border-box;
     overflow: hidden;
     box-shadow: inset 3px 0 0 var(--color-coat-of-arms);
-    padding: $space-lg $space-lg;
+    padding: var(--spacing-s) var(--spacing-s);
   }
 
   &__detail-grid {
@@ -256,7 +244,7 @@
   &__detail-actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: $space-lg;
+    margin-top: var(--spacing-s);
   }
 }
 
@@ -267,7 +255,7 @@
 .landuse-detail__collaterals-increase-factor-field {
   width: 100%;
   max-width: 25%;
-  margin-bottom: $space-md;
+  margin-bottom: var(--spacing-xs);
 
   @include respond-to(mobile) {
     max-width: 100%;
@@ -304,7 +292,7 @@
 // ============================================================================
 
 .landuse-detail__decisions-grid {
-  margin-bottom: $space-lg;
+  margin-bottom: var(--spacing-s);
 }
 
 .landuse-detail__decisions-label {
@@ -317,18 +305,13 @@
   font-weight: 500;
 }
 
-.landuse-detail__decisions-note-column,
-.landuse-detail__decisions-paatos-column {
-  @include responsive-col-span(3);
-}
-
 .landuse-detail__decisions-add-row {
-  margin-top: $space-sm;
-  margin-bottom: $space-xl;
+  margin-top: var(--spacing-2-xs);
+  margin-bottom: var(--spacing-m);
 }
 
 .landuse-detail__decisions-section-break {
-  margin-top: $space-2xl;
+  margin-top: var(--spacing-m);
 }
 
 .landuse-detail__decisions-vakuuslaskuri {
@@ -336,7 +319,7 @@
 }
 
 .landuse-detail__decisions-vakuus-block {
-  margin-bottom: $space-2xl;
+  margin-bottom: var(--spacing-m);
 }
 
 .landuse-detail__decisions-add-vakuus-row {

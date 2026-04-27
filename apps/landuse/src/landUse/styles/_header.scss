@@ -10,12 +10,12 @@
   color: var(--color-white);
   @include flex-row-center;
   justify-content: space-between;
-  padding: $space-lg $space-2xl;
+  padding: var(--spacing-s) var(--spacing-m);
   box-shadow: $shadow-sm;
 }
 
 .landuse-header__left {
-  @include flex-row-center($space-2xl);
+  @include flex-row-center(var(--spacing-m));
 
   // Override HDS Logo default margin
   img {
@@ -64,15 +64,15 @@
 
 .landuse-header__user-arrow {
   position: absolute;
-  bottom: $space-xs;
-  right: $space-xs;
+  bottom: var(--spacing-3-xs);
+  right: var(--spacing-3-xs);
   font-size: 8px;
   color: var(--color-black-60);
 }
 
 .landuse-header__user-menu {
   position: absolute;
-  top: calc(100% + $space-sm);
+  top: calc(100% + var(--spacing-2-xs));
   right: 0;
   background-color: var(--color-white);
   border: 1px solid var(--color-black-20);
@@ -83,7 +83,7 @@
 }
 
 .landuse-header__user-info {
-  padding: $space-md $space-lg;
+  padding: var(--spacing-xs) var(--spacing-s);
   border-bottom: 1px solid var(--color-black-10);
   color: var(--color-black-90);
   font-size: 14px;
@@ -91,7 +91,7 @@
 
 .landuse-header__user-menu-item {
   width: 100%;
-  padding: $space-md $space-lg;
+  padding: var(--spacing-xs) var(--spacing-s);
   background: none;
   border: none;
   text-align: left;

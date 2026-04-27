@@ -850,7 +850,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   heading="Jäljellä oleva vakuustarve"
                   className="landuse-detail__fieldset--with-margin"
                 >
-                  <div className="landuse-detail__grid landuse-detail__monitoring-collateral-grid">
+                  <div className="landuse-grid landuse-detail__monitoring-collateral-grid">
                     <TextInput
                       id="monitoring-sopimuksen-mukainen"
                       label="Maankäyttökorvaus"

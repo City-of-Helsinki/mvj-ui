@@ -164,8 +164,8 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
               heading=""
               className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
             >
-              <div className="landuse-detail__grid">
-                <div className="landuse-detail__column">
+              <div className="landuse-grid">
+                <div className="landuse-grid__column-3">
                   <Field name="maankayttosopimusType">
                     {({ input }) =>
                       isEditMode ? (
@@ -194,7 +194,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <Field name="kaupunginosa">
                     {({ input }) => (
                       <TextInput
@@ -207,7 +207,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <Field name="edistamisalue">
                     {({ input }) =>
                       isEditMode ? (
@@ -234,7 +234,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <Field name="tila">
                     {({ input }) =>
                       isEditMode ? (
@@ -263,7 +263,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <Field name="arvioituEsittelyvuosi">
                     {({ input }) => (
                       <TextInput
@@ -277,7 +277,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <Field name="arvioituMaksuvuosi">
                     {({ input }) => (
                       <TextInput
@@ -291,7 +291,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <div className="landuse-detail__field-group">
                     <Field name="sisaltaaAmVelvoitteita">
                       {({ input }) =>
@@ -325,7 +325,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </div>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <Field name="velvoitteidenMaaraika">
                     {({ input }) =>
                       isEditMode ? (
@@ -349,7 +349,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <Field name="toimivaltainenPaattaja">
                     {({ input }) =>
                       isEditMode ? (
@@ -386,8 +386,8 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
               heading=""
               className="landuse-detail__fieldset--no-heading"
             >
-              <div className="landuse-detail__grid">
-                <div className="landuse-detail__column">
+              <div className="landuse-grid">
+                <div className="landuse-grid__column-3">
                   <Field name="asemakaavanNumero">
                     {({ input }) =>
                       isEditMode ? (
@@ -415,7 +415,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <Field name="asemakaavanKasittelyvaihe">
                     {({ input }) => (
                       <TextInput
@@ -429,7 +429,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <Field name="kasittelyvaiheenViimeisinPvm">
                     {({ input }) => (
                       <TextInput
@@ -443,7 +443,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <Field name="asemakaavanHyvaksyjä">
                     {({ input }) => (
                       <TextInput
@@ -457,7 +457,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-detail__column">
+                <div className="landuse-grid__column-3">
                   <Field name="asemakaavanDiaarinumero">
                     {({ input }) => (
                       <TextInput
@@ -479,24 +479,13 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
               heading=""
               className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
             >
-              <div className="landuse-detail__grid">
+              <div className="landuse-grid">
                 <FieldArray<KohdeEntry> name="suunnittelunPerusteenaOlevatKohteet">
                   {({ fields }) => (
                     <>
                       {fields.map((name, index) => (
-                        <div
-                          key={name}
-                          style={{
-                            gridColumn: "1 / -1",
-                            display: "flex",
-                            alignItems: "flex-end",
-                            gap: "16px",
-                          }}
-                        >
-                          <div
-                            className="landuse-detail__column"
-                            style={{ flex: "0 1 480px" }}
-                          >
+                        <>
+                          <div className="landuse-grid__column-3">
                             <Field name={`${name}.value`}>
                               {({ input }) =>
                                 isEditMode ? (
@@ -530,9 +519,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                           </div>
 
                           {isEditMode && (
-                            <div
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
+                            <div className="landuse-grid__column-3">
                               <ConfirmDeleteButton
                                 id={`summary-kohde-delete-${index}`}
                                 buttonVariant={ButtonVariant.Supplementary}
@@ -543,14 +530,23 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                               />
                             </div>
                           )}
-                        </div>
+                          {isEditMode ? (
+                            <>
+                              <div className="landuse-grid__column-3" />
+                              <div className="landuse-grid__column-3" />
+                            </>
+                          ) : (
+                            <>
+                              <div className="landuse-grid__column-3" />
+                              <div className="landuse-grid__column-3" />
+                              <div className="landuse-grid__column-3" />
+                            </>
+                          )}
+                        </>
                       ))}
 
                       {isEditMode && (
-                        <div
-                          className="landuse-detail__column"
-                          style={{ gridColumn: "1 / -1" }}
-                        >
+                        <div className="landuse-grid__column-3">
                           <Button
                             className="landuse-detail__add-button"
                             variant={ButtonVariant.Supplementary}
@@ -573,13 +569,13 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
               heading=""
               className="landuse-detail__fieldset--no-heading"
             >
-              <div className="landuse-detail__grid">
+              <div className="landuse-grid">
                 <FieldArray<OsoiteEntry> name="osoitteet">
                   {({ fields }) => (
                     <>
                       {fields.map((name, index) => (
                         <React.Fragment key={name}>
-                          <div className="landuse-detail__column">
+                          <div className="landuse-grid__column-3">
                             <Field name={`${name}.katuosoite`}>
                               {({ input }) => (
                                 <TextInput
@@ -596,7 +592,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                             </Field>
                           </div>
 
-                          <div className="landuse-detail__column">
+                          <div className="landuse-grid__column-3">
                             <Field name={`${name}.postinumero`}>
                               {({ input }) => (
                                 <TextInput
@@ -613,7 +609,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                             </Field>
                           </div>
 
-                          <div className="landuse-detail__column">
+                          <div className="landuse-grid__column-3">
                             <Field name={`${name}.kaupunki`}>
                               {({ input }) => (
                                 <TextInput
@@ -632,7 +628,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
 
                           {isEditMode && (
                             <div
-                              className="landuse-detail__column"
+                              className="landuse-grid__column-3"
                               style={{ justifyContent: "flex-end" }}
                             >
                               <ConfirmDeleteButton
@@ -649,7 +645,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                       ))}
 
                       {isEditMode && (
-                        <div className="landuse-detail__column">
+                        <div className="landuse-grid__column-3">
                           <Button
                             className="landuse-detail__add-button"
                             variant={ButtonVariant.Supplementary}
@@ -677,13 +673,13 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
               heading=""
               className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
             >
-              <div className="landuse-detail__grid">
+              <div className="landuse-grid">
                 <FieldArray<ValmistelijaEntry> name="valmistelijat">
                   {({ fields }) => (
                     <>
                       {fields.map((name, index) => (
                         <React.Fragment key={name}>
-                          <div className="landuse-detail__column">
+                          <div className="landuse-grid__column-3">
                             <Field name={`${name}.value`}>
                               {({ input }) =>
                                 isEditMode ? (
@@ -730,7 +726,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
 
                           {isEditMode && (
                             <div
-                              className="landuse-detail__column"
+                              className="landuse-grid__column-3"
                               style={{ justifyContent: "flex-end" }}
                             >
                               <ConfirmDeleteButton
@@ -749,7 +745,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
 
                       {isEditMode && (
                         <div
-                          className="landuse-detail__column"
+                          className="landuse-grid__column-3"
                           style={{ justifyContent: "flex-end" }}
                         >
                           <Button
