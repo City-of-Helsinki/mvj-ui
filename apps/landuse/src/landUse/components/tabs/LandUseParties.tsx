@@ -113,7 +113,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
   isEditMode,
 }) => (
   <>
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.name`}>
         {({ input }) => (
           <TextInput
@@ -128,7 +128,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.businessId`}>
         {({ input }) => (
           <TextInput
@@ -143,7 +143,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.language`}>
         {({ input }) =>
           isEditMode ? (
@@ -171,7 +171,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.streetAddress`}>
         {({ input }) => (
           <TextInput
@@ -186,7 +186,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.city`}>
         {({ input }) => (
           <TextInput
@@ -201,7 +201,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.postalCode`}>
         {({ input }) => (
           <TextInput
@@ -216,7 +216,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.country`}>
         {({ input }) =>
           isEditMode ? (
@@ -244,7 +244,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.careOf`}>
         {({ input }) => (
           <TextInput
@@ -259,7 +259,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.phone`}>
         {({ input }) => (
           <TextInput
@@ -274,7 +274,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.email`}>
         {({ input }) => (
           <TextInput
@@ -289,7 +289,9 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column" style={{ gridColumn: "span 3" }}>
+    <div className="landuse-grid__column-3" />
+
+    <div className="landuse-grid__column-3" style={{ gridColumn: "span 3" }}>
       <Field name={`${fieldPrefix}.note`}>
         {({ input }) => (
           <TextInput
@@ -312,7 +314,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
   isEditMode,
 }) => (
   <>
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.name`}>
         {({ input }) => (
           <TextInput
@@ -327,7 +329,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.nationalIdentificationNumber`}>
         {({ input }) => (
           <TextInput
@@ -342,7 +344,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.language`}>
         {({ input }) =>
           isEditMode ? (
@@ -370,7 +372,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.streetAddress`}>
         {({ input }) => (
           <TextInput
@@ -385,7 +387,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.city`}>
         {({ input }) => (
           <TextInput
@@ -400,7 +402,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.postalCode`}>
         {({ input }) => (
           <TextInput
@@ -415,7 +417,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.country`}>
         {({ input }) =>
           isEditMode ? (
@@ -443,7 +445,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.careOf`}>
         {({ input }) => (
           <TextInput
@@ -458,7 +460,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.phone`}>
         {({ input }) => (
           <TextInput
@@ -473,7 +475,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column">
+    <div className="landuse-grid__column-3">
       <Field name={`${fieldPrefix}.email`}>
         {({ input }) => (
           <TextInput
@@ -488,7 +490,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-detail__column" style={{ gridColumn: "span 3" }}>
+    <div className="landuse-grid__column-3" style={{ gridColumn: "span 3" }}>
       <Field name={`${fieldPrefix}.note`}>
         {({ input }) => (
           <TextInput
@@ -554,8 +556,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                             heading="Sopimusosapuoli"
                             className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
                           >
-                            <div className="landuse-detail__grid">
-                              <div className="landuse-detail__column">
+                            <div className="landuse-grid">
+                              <div className="landuse-grid__column-3">
                                 <Field
                                   name={`${fieldName}.party.details.partyType`}
                                 >
@@ -620,10 +622,10 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                   {contactPersonFields.map(
                                     (contactPersonFieldName, contactIndex) => (
                                       <div
-                                        className="landuse-detail__grid landuse-detail__grid--with-delete landuse-detail__grid_row"
+                                        className="landuse-grid landuse-grid--with-delete landuse-grid__column"
                                         key={contactPersonFieldName}
                                       >
-                                        <div className="landuse-detail__column">
+                                        <div className="landuse-grid__column-3">
                                           <Field
                                             name={`${contactPersonFieldName}.name`}
                                           >
@@ -643,7 +645,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                           </Field>
                                         </div>
 
-                                        <div className="landuse-detail__column">
+                                        <div className="landuse-grid__column-3">
                                           <Field
                                             name={`${contactPersonFieldName}.phone`}
                                           >
@@ -663,7 +665,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                           </Field>
                                         </div>
 
-                                        <div className="landuse-detail__column">
+                                        <div className="landuse-grid__column-3">
                                           <Field
                                             name={`${contactPersonFieldName}.email`}
                                           >
@@ -684,7 +686,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                         </div>
 
                                         <div
-                                          className="landuse-detail__column"
+                                          className="landuse-grid__column-3"
                                           style={{ justifyContent: "flex-end" }}
                                         >
                                           {isEditMode ? (
@@ -709,8 +711,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                   )}
 
                                   {isEditMode && (
-                                    <div className="landuse-detail__grid">
-                                      <div className="landuse-detail__column">
+                                    <div className="landuse-grid">
+                                      <div className="landuse-grid__column-3">
                                         <Button
                                           className="landuse-detail__add-button"
                                           variant={ButtonVariant.Supplementary}
@@ -738,8 +740,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                             heading="Laskutustiedot"
                             className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
                           >
-                            <div className="landuse-detail__grid">
-                              <div className="landuse-detail__column">
+                            <div className="landuse-grid">
+                              <div className="landuse-grid__column-3">
                                 <Field
                                   name={`${fieldName}.billingDetails.ovtCode`}
                                 >
@@ -759,7 +761,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                 </Field>
                               </div>
 
-                              <div className="landuse-detail__column">
+                              <div className="landuse-grid__column-3">
                                 <Field
                                   name={`${fieldName}.billingDetails.sapCustomerNumber`}
                                 >
@@ -779,7 +781,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                 </Field>
                               </div>
 
-                              <div className="landuse-detail__column">
+                              <div className="landuse-grid__column-3">
                                 <Field
                                   name={`${fieldName}.billingDetails.reference`}
                                 >
@@ -805,8 +807,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                             heading="Laskunsaaja"
                             className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
                           >
-                            <div className="landuse-detail__grid">
-                              <div className="landuse-detail__column">
+                            <div className="landuse-grid">
+                              <div className="landuse-grid__column-3">
                                 <Field
                                   name={`${fieldName}.invoiceRecipient.details.partyType`}
                                 >

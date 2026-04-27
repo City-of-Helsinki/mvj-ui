@@ -229,7 +229,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
               className="landuse-compensations-table__detail-content"
               aria-label={`Kohteen ${site.kohteenTunnus} tiedot`}
             >
-              <div className="landuse-detail__grid landuse-compensations-table__detail-grid">
+              <div className="landuse-grid landuse-compensations-table__detail-grid">
                 <Field name={`sites.${siteIndex}.kohteenTunnus`}>
                   {({ input }) =>
                     isReadOnly ? (
@@ -508,7 +508,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 heading="Maankäyttökorvaus"
                 className="landuse-detail__fieldset--with-margin"
               >
-                <div className="landuse-detail__grid landuse-detail__compensation-grid">
+                <div className="landuse-grid landuse-detail__compensation-grid">
                   <Field name="rahakorvaus">
                     {({ input }) =>
                       isEditMode ? (
@@ -590,7 +590,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   )}
                 </div>
 
-                <div className="landuse-detail__grid landuse-detail__compensation-grid landuse-detail__compensation-grid--notes">
+                <div className="landuse-grid landuse-detail__compensation-grid landuse-detail__compensation-grid--notes">
                   <Field name="maakorvausSelite">
                     {({ input }) =>
                       isEditMode ? (
@@ -652,7 +652,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 heading="Perushinta"
                 className="landuse-detail__fieldset--with-margin"
               >
-                <div className="landuse-detail__grid landuse-detail__compensation-grid">
+                <div className="landuse-grid landuse-detail__compensation-grid">
                   <Field name="perushinta">
                     {({ input }) =>
                       isEditMode ? (
@@ -773,7 +773,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
               </Fieldset>
 
               <Fieldset heading="Korvauksetta luovutettavat yleiset alueet">
-                <div className="landuse-detail__grid landuse-detail__compensation-grid">
+                <div className="landuse-grid landuse-detail__compensation-grid">
                   <Field name="yleisetAlueetNeliot">
                     {({ input }) =>
                       isEditMode ? (

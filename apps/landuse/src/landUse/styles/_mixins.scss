@@ -9,30 +9,30 @@
 @use "variables" as *;
 
 // -- Responsive breakpoints --------------------------------------------------
-// Usage:  @include respond-to(tablet) { … }
 @mixin respond-to($name) {
+  // TODO fix media query conditions, and apply to e.g. grids
   @if $name == desktop {
-    @media (max-width: $bp-desktop) {
+    @media (max-width: var(--breakpoint-xxl)) {
       @content;
     }
-  } @else if $name == tablet {
-    @media (max-width: $bp-tablet) {
+  } @else if $name == laptop {
+    @media (max-width: var(--breakpoint-xl)) {
       @content;
     }
   } @else if $name == mobile {
-    @media (max-width: $bp-mobile) {
+    @media (max-width: var(--breakpoint-m)) {
       @content;
     }
   } @else {
-    @error "Unknown breakpoint `#{$name}`. Use desktop, tablet, or mobile.";
+    @error "Unknown breakpoint `#{$name}`. Use desktop, laptop, or mobile.";
   }
 }
 
 // -- Page container (list page, detail page) ---------------------------------
 @mixin page-container {
-  max-width: $page-max-width;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: $space-2xl;
+  padding: var(--spacing-m);
   background-color: var(--color-white);
   min-height: 100vh;
 }
@@ -56,17 +56,21 @@
 
 // -- Responsive grid ---------------------------------------------------------
 // The 4→2→1 column pattern used throughout detail pages.
-@mixin responsive-grid($cols: 4, $gap: $space-2xl) {
+@mixin responsive-grid($cols: 12, $gap: var(--spacing-m)) {
   display: grid;
   grid-template-columns: repeat($cols, 1fr);
   gap: $gap;
 
   @include respond-to(desktop) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  @include respond-to(laptop) {
+    grid-template-columns: repeat(9, 1fr);
   }
 
   @include respond-to(mobile) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(6, 1fr);
   }
 }
 
@@ -80,7 +84,7 @@
 
 // -- Responsive grid (minmax variant) ----------------------------------------
 // For grids that need a minimum column width instead of fixed count.
-@mixin responsive-grid-minmax($min: 180px, $cols: 4, $gap: $space-2xl) {
+@mixin responsive-grid-minmax($min: 180px, $cols: 12, $gap: var(--spacing-m)) {
   display: grid;
   grid-template-columns: repeat($cols, minmax($min, 1fr));
   gap: $gap;
@@ -129,7 +133,11 @@
 }
 
 // -- Toolbar row (above tables / sections) -----------------------------------
-@mixin toolbar($justify: flex-end, $gap: $space-md, $mb: $space-md) {
+@mixin toolbar(
+  $justify: flex-end,
+  $gap: var(--spacing-xs),
+  $mb: var(--spacing-xs)
+) {
   display: flex;
   justify-content: $justify;
   gap: $gap;
@@ -138,14 +146,14 @@
 
 // -- Responsive column span --------------------------------------------------
 // For grid children that should span multiple columns but collapse on mobile.
-@mixin responsive-col-span($span: 3) {
+@mixin responsive-col-span($span) {
   grid-column: span $span;
 
   @include respond-to(desktop) {
-    grid-column: span min($span, 2);
+    grid-column: span 6;
   }
 
   @include respond-to(mobile) {
-    grid-column: span 1;
+    grid-column: span 3;
   }
 }

@@ -12,7 +12,7 @@
 
   &--start {
     justify-content: flex-start;
-    margin-top: $space-md;
+    margin-top: var(--spacing-xs);
     margin-bottom: 0;
   }
 }
@@ -46,8 +46,8 @@
   display: grid;
   grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
   align-items: end;
-  column-gap: $space-md;
-  margin-bottom: $space-xl;
+  column-gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-m);
 
   @include respond-to(mobile) {
     grid-template-columns: 1fr;
@@ -71,33 +71,33 @@
 .landuse-detail__monitoring-info-layout {
   display: grid;
   grid-template-columns: minmax(260px, 1fr) minmax(320px, 1fr);
-  gap: $space-xl;
+  gap: var(--spacing-m);
 
   p {
     margin: 0;
   }
 
-  @include respond-to(tablet) {
+  @include respond-to(laptop) {
     grid-template-columns: 1fr;
   }
 }
 
 .landuse-detail__monitoring-info-title {
   font-weight: 600;
-  margin-bottom: $space-sm !important;
+  margin-bottom: var(--spacing-2-xs) !important;
 }
 
 .landuse-detail__monitoring-info-table {
   th,
   td {
-    padding: $space-sm $space-md;
+    padding: var(--spacing-2-xs) var(--spacing-xs);
   }
 }
 
 // -- Actions & KEM2 badge ---------------------------------------------------
 
 .landuse-detail__monitoring-actions-cell {
-  @include flex-col($space-md);
+  @include flex-col(var(--spacing-xs));
   align-items: flex-start;
 }
 
@@ -105,7 +105,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: $space-xs $space-sm;
+  padding: var(--spacing-3-xs) var(--spacing-2-xs);
   border: 1px solid transparent;
   border-radius: $radius-pill;
   font-weight: 600;
@@ -125,7 +125,7 @@
 
 .landuse-detail__monitoring-child-row-title {
   display: inline-flex;
-  padding-left: $space-xl;
+  padding-left: var(--spacing-m);
   color: var(--color-black-70);
 }
 
@@ -133,13 +133,13 @@
 
 .landuse-detail__monitoring-dialog-content,
 .landuse-detail__monitoring-site-edit-dialog-content {
-  @include flex-col($space-lg);
+  @include flex-col(var(--spacing-s));
 }
 
 .landuse-detail__monitoring-site-edit-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(220px, 1fr));
-  gap: $space-md;
+  gap: var(--spacing-xs);
 
   @include respond-to(mobile) {
     grid-template-columns: 1fr;
@@ -156,17 +156,17 @@
 }
 
 .landuse-detail__monitoring-dialog-kem2-row {
-  @include flex-row-center($space-md);
+  @include flex-row-center(var(--spacing-xs));
   align-items: flex-end;
 }
 
 .landuse-detail__monitoring-dialog-kem2-target {
-  padding-bottom: $space-sm;
+  padding-bottom: var(--spacing-2-xs);
   color: var(--color-black-70);
 }
 
 .landuse-detail__monitoring-dialog-list {
-  margin-top: $space-sm;
+  margin-top: var(--spacing-2-xs);
 }
 
 .landuse-detail__monitoring-dialog-empty {
@@ -174,15 +174,15 @@
 }
 
 .landuse-detail__monitoring-dialog-items {
-  margin: $space-sm 0 0;
+  margin: var(--spacing-2-xs) 0 0;
   padding: 0;
   list-style: none;
 
   li {
     display: flex;
     justify-content: space-between;
-    gap: $space-md;
-    padding: $space-sm 0;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-2-xs) 0;
     border-bottom: 1px solid var(--color-black-20);
   }
 }

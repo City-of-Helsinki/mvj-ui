@@ -1,0 +1,29 @@
+@use "mixins" as *;
+
+.landuse-grid__column-3 {
+  @include responsive-col-span(3);
+}
+
+.landuse-grid__column-6 {
+  @include responsive-col-span(6);
+}
+
+.landuse-grid__column-9 {
+  @include responsive-col-span(9);
+}
+
+.landuse-grid__column-12 {
+  @include responsive-col-span(12);
+}
+
+.landuse-grid {
+  @include responsive-grid(12);
+
+  &--with-delete {
+    grid-template-columns: repeat(12, 1fr) auto;
+  }
+}
+
+.landuse-grid__column {
+  margin-bottom: var(--spacing-m);
+}

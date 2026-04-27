@@ -10,13 +10,13 @@
 }
 
 .landuse-list__header {
-  @include flex-row-center($space-lg);
-  margin-bottom: $space-2xl;
+  @include flex-row-center(var(--spacing-s));
+  margin-bottom: var(--spacing-m);
   flex-wrap: wrap;
 }
 
 .landuse-list__search-group {
-  @include flex-row-center($space-md);
+  @include flex-row-center(var(--spacing-xs));
 }
 
 .landuse-list__result-count {
@@ -29,7 +29,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: $space-4xl $space-2xl;
+  padding: var(--spacing-2-xl) var(--spacing-m);
   text-align: center;
   color: var(--color-black-60);
   font-size: 16px;

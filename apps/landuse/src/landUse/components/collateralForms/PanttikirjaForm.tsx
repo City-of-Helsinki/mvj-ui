@@ -35,8 +35,8 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
   const target = targetField.input.value;
 
   return (
-    <div className="landuse-detail__grid landuse-detail__decisions-grid">
-      <div className="landuse-detail__column">
+    <div className="landuse-grid landuse-detail__decisions-grid">
+      <div className="landuse-grid__column-3">
         <CollateralSelectField
           namePrefix={namePrefix}
           fieldName="vakuusasiakirjanLaji"
@@ -47,7 +47,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-detail__column">
+      <div className="landuse-grid__column-3">
         <CollateralRadioField
           namePrefix={namePrefix}
           fieldName="kiinteistoVaiLaitos"
@@ -59,7 +59,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
       </div>
 
       {target === "Kiinteistö" && (
-        <div className="landuse-detail__column landuse-detail__decisions-note-column">
+        <div className="landuse-grid__column-9">
           <FieldArray<string> name={`${namePrefix}.kiinteistotunnukset`}>
             {({ fields }) => (
               <>
@@ -122,7 +122,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
       )}
 
       {target === "Laitos" && (
-        <div className="landuse-detail__column">
+        <div className="landuse-grid__column-3">
           <CollateralTextField
             namePrefix={namePrefix}
             fieldName="laitostunnus"
@@ -133,7 +133,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
         </div>
       )}
 
-      <div className="landuse-detail__column">
+      <div className="landuse-grid__column-3">
         <CollateralRadioField
           namePrefix={namePrefix}
           fieldName="vierasvelkapanttaus"
@@ -144,7 +144,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-detail__column">
+      <div className="landuse-grid__column-3">
         <CollateralTextField
           namePrefix={namePrefix}
           fieldName="panttikirjanNumero"
@@ -154,7 +154,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-detail__column">
+      <div className="landuse-grid__column-3">
         <CollateralDateField
           namePrefix={namePrefix}
           fieldName="panttikirjanPaivays"
@@ -164,7 +164,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-detail__column">
+      <div className="landuse-grid__column-3">
         <CollateralDateField
           namePrefix={namePrefix}
           fieldName="alkupvm"
@@ -174,7 +174,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-detail__column">
+      <div className="landuse-grid__column-3">
         <CollateralDateField
           namePrefix={namePrefix}
           fieldName="loppupvm"
@@ -184,7 +184,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-detail__column">
+      <div className="landuse-grid__column-3">
         <CollateralEuroField
           namePrefix={namePrefix}
           fieldName="maara"
@@ -194,7 +194,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-detail__column">
+      <div className="landuse-grid__column-3">
         <CollateralDateField
           namePrefix={namePrefix}
           fieldName="palautettuPvm"
@@ -204,7 +204,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-detail__column landuse-detail__decisions-note-column">
+      <div className="landuse-grid__column-9">
         <CollateralTextArea
           namePrefix={namePrefix}
           fieldName="lisatiedot"

@@ -212,8 +212,8 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                       heading=""
                       className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
                     >
-                      <div className="landuse-detail__grid landuse-detail__decisions-grid">
-                        <div className="landuse-detail__column">
+                      <div className="landuse-grid landuse-detail__decisions-grid">
+                        <div className="landuse-grid__column-3">
                           <Field name={`${decisionName}.paattaja`}>
                             {({ input }) =>
                               isEditMode ? (
@@ -241,7 +241,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column">
+                        <div className="landuse-grid__column-3">
                           <Field name={`${decisionName}.paatospvm`}>
                             {({ input }) =>
                               isEditMode ? (
@@ -264,7 +264,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column">
+                        <div className="landuse-grid__column-3">
                           <Field name={`${decisionName}.pykala`}>
                             {({ input }) =>
                               isEditMode ? (
@@ -292,7 +292,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column">
+                        <div className="landuse-grid__column-3">
                           <Field name={`${decisionName}.paatoksenTyyppi`}>
                             {({ input }) =>
                               isEditMode ? (
@@ -320,7 +320,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column landuse-detail__decisions-link-column">
+                        <div className="landuse-grid__column-3 landuse-detail__decisions-link-column">
                           <Field name={`${decisionName}.diaarinumero`}>
                             {({ input }) => (
                               <TextInput
@@ -337,7 +337,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column landuse-detail__decisions-note-column">
+                        <div className="landuse-grid__column-9">
                           <Field name={`${decisionName}.huomautus`}>
                             {({ input }) => (
                               <TextInput
@@ -364,10 +364,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
 
                         return (
                           <div
-                            className="landuse-detail__grid landuse-detail__decisions-grid"
+                            className="landuse-grid landuse-detail__decisions-grid"
                             key={`${conditionName}-${conditionIndex}`}
                           >
-                            <div className="landuse-detail__column">
+                            <div className="landuse-grid__column-3">
                               <Field name={`${conditionName}.conditionType`}>
                                 {({ input }) =>
                                   isEditMode ? (
@@ -398,7 +398,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               </Field>
                             </div>
 
-                            <div className="landuse-detail__column">
+                            <div className="landuse-grid__column-3">
                               <Field name={`${conditionName}.valvontapvm`}>
                                 {({ input }) =>
                                   isEditMode ? (
@@ -421,7 +421,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               </Field>
                             </div>
 
-                            <div className="landuse-detail__column">
+                            <div className="landuse-grid__column-3">
                               <Field name={`${conditionName}.valvottuPvm`}>
                                 {({ input }) =>
                                   isEditMode ? (
@@ -444,7 +444,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               </Field>
                             </div>
 
-                            <div className="landuse-detail__column">
+                            <div className="landuse-grid__column-3">
                               <Field name={`${conditionName}.note`}>
                                 {({ input }) => (
                                   <TextInput
@@ -542,8 +542,8 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                       heading=""
                       className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
                     >
-                      <div className="landuse-detail__grid landuse-detail__decisions-grid">
-                        <div className="landuse-detail__column">
+                      <div className="landuse-grid landuse-detail__decisions-grid">
+                        <div className="landuse-grid__column-3">
                           <Field name={`${agreementName}.sopimuksenTyyppi`}>
                             {({ input }) =>
                               isEditMode ? (
@@ -571,7 +571,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column">
+                        <div className="landuse-grid__column-3">
                           <Field name={`${agreementName}.sopimusnumero`}>
                             {({ input }) => (
                               <TextInput
@@ -588,7 +588,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column">
+                        <div className="landuse-grid__column-3">
                           <Field name={`${agreementName}.allekirjoituspvm`}>
                             {({ input }) =>
                               isEditMode ? (
@@ -611,7 +611,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column">
+                        <div className="landuse-grid__column-3">
                           <Field name={`${agreementName}.huomautus`}>
                             {({ input }) => (
                               <TextInput
@@ -628,7 +628,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column">
+                        <div className="landuse-grid__column-3">
                           <Field
                             name={`${agreementName}.allekirjoitettavaMennessa`}
                           >
@@ -653,7 +653,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column">
+                        <div className="landuse-grid__column-3">
                           <Field
                             name={`${agreementName}.ensimmainenKutsuLahetetty`}
                           >
@@ -678,7 +678,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column">
+                        <div className="landuse-grid__column-3">
                           <Field name={`${agreementName}.toinenKutsuLahetetty`}>
                             {({ input }) =>
                               isEditMode ? (
@@ -701,7 +701,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column">
+                        <div className="landuse-grid__column-3">
                           <Field name={`${agreementName}.kolmasKutsuLahetetty`}>
                             {({ input }) =>
                               isEditMode ? (
@@ -724,7 +724,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Field>
                         </div>
 
-                        <div className="landuse-detail__column landuse-detail__decisions-paatos-column">
+                        <div className="landuse-grid__column-9">
                           <Field name={`${agreementName}.paatos`}>
                             {({ input }) =>
                               isEditMode ? (
@@ -762,10 +762,10 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
 
                         return (
                           <div
-                            className="landuse-detail__grid landuse-detail__decisions-grid"
+                            className="landuse-grid landuse-detail__decisions-grid"
                             key={`${changeName}-${changeIndex}`}
                           >
-                            <div className="landuse-detail__column">
+                            <div className="landuse-grid__column-3">
                               <Field name={`${changeName}.allekirjoituspvm`}>
                                 {({ input }) =>
                                   isEditMode ? (
@@ -788,7 +788,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               </Field>
                             </div>
 
-                            <div className="landuse-detail__column">
+                            <div className="landuse-grid__column-3">
                               <Field
                                 name={`${changeName}.allekirjoitettavaMennessa`}
                               >
@@ -813,7 +813,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               </Field>
                             </div>
 
-                            <div className="landuse-detail__column">
+                            <div className="landuse-grid__column-3">
                               <Field
                                 name={`${changeName}.ensimmainenKutsuLahetetty`}
                               >
@@ -838,7 +838,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               </Field>
                             </div>
 
-                            <div className="landuse-detail__column">
+                            <div className="landuse-grid__column-3">
                               <Field
                                 name={`${changeName}.toinenKutsuLahetetty`}
                               >
@@ -863,7 +863,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               </Field>
                             </div>
 
-                            <div className="landuse-detail__column">
+                            <div className="landuse-grid__column-3">
                               <Field
                                 name={`${changeName}.kolmasKutsuLahetetty`}
                               >
@@ -888,7 +888,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               </Field>
                             </div>
 
-                            <div className="landuse-detail__column">
+                            <div className="landuse-grid__column-3">
                               <Field name={`${changeName}.paatos`}>
                                 {({ input }) => (
                                   <TextInput
@@ -905,7 +905,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               </Field>
                             </div>
 
-                            <div className="landuse-detail__column">
+                            <div className="landuse-grid__column-3">
                               <Field name={`${changeName}.huomautus`}>
                                 {({ input }) => (
                                   <TextInput
@@ -954,8 +954,8 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                             className="landuse-detail__decisions-vakuus-block"
                             key={`${vakuusName}-${vakuusIndex}`}
                           >
-                            <div className="landuse-detail__grid landuse-detail__decisions-grid">
-                              <div className="landuse-detail__column">
+                            <div className="landuse-grid landuse-detail__decisions-grid">
+                              <div className="landuse-grid__column-3">
                                 <Field name={`${vakuusName}.tyyppi`}>
                                   {({ input }) => (
                                     <TextInput
