@@ -229,177 +229,193 @@ const SiteRow: React.FC<SiteRowProps> = ({
               className="landuse-compensations-table__detail-content"
               aria-label={`Kohteen ${site.kohteenTunnus} tiedot`}
             >
-              <div className="landuse-grid landuse-compensations-table__detail-grid">
-                <Field name={`sites.${siteIndex}.kohteenTunnus`}>
-                  {({ input }) =>
-                    isReadOnly ? (
+              <div className="landuse-grid">
+                <div className="landuse-grid__column-3">
+                  <Field name={`sites.${siteIndex}.kohteenTunnus`}>
+                    {({ input }) =>
+                      isReadOnly ? (
+                        <TextInput
+                          id={`landuse-compensations-kohteen-tunnus-${site.id}`}
+                          label="Kohteen tunnus"
+                          value={readOnlyTextValue(input.value)}
+                          readOnly
+                        />
+                      ) : (
+                        <TextInput
+                          id={`landuse-compensations-kohteen-tunnus-${site.id}`}
+                          label="Kohteen tunnus"
+                          value={input.value ?? ""}
+                          onChange={input.onChange}
+                        />
+                      )
+                    }
+                  </Field>
+                </div>
+
+                <div className="landuse-grid__column-3">
+                  <Field name={`sites.${siteIndex}.kayttotarkoitus`}>
+                    {({ input }) =>
+                      isReadOnly ? (
+                        <TextInput
+                          id={`landuse-compensations-kayttotarkoitus-${site.id}`}
+                          label="Käyttötarkoitus"
+                          value={readOnlyTextValue(input.value)}
+                          readOnly
+                        />
+                      ) : (
+                        <Select
+                          id={`landuse-compensations-kayttotarkoitus-${site.id}`}
+                          options={kayttotarkoitusOptions}
+                          value={normalizeSelectValue(input.value)}
+                          onChange={(selectedOptions) =>
+                            handleSelectChange(selectedOptions, input.onChange)
+                          }
+                          texts={{
+                            label: "Käyttötarkoitus",
+                            placeholder: "Valitse",
+                          }}
+                        />
+                      )
+                    }
+                  </Field>
+                </div>
+
+                <div className="landuse-grid__column-3">
+                  <Field name={`sites.${siteIndex}.hallintamuoto`}>
+                    {({ input }) =>
+                      isReadOnly ? (
+                        <TextInput
+                          id={`landuse-compensations-hallintamuoto-${site.id}`}
+                          label="Hallintamuoto"
+                          value={
+                            Array.isArray(input.value) && input.value.length > 0
+                              ? input.value.join(", ")
+                              : "-"
+                          }
+                          readOnly
+                        />
+                      ) : (
+                        <Select
+                          id={`landuse-compensations-hallintamuoto-${site.id}`}
+                          options={hallintamuotoOptions}
+                          value={normalizeMultiSelectValue(input.value)}
+                          onChange={(selectedOptions) =>
+                            handleMultiSelectChange(
+                              selectedOptions,
+                              input.onChange,
+                            )
+                          }
+                          multiSelect
+                          texts={{
+                            label: "Hallintamuoto",
+                            placeholder: "Valitse",
+                          }}
+                        />
+                      )
+                    }
+                  </Field>
+                </div>
+
+                <div className="landuse-grid__column-3">
+                  <Field name={`sites.${siteIndex}.suojeltu`}>
+                    {({ input }) =>
+                      isReadOnly ? (
+                        <TextInput
+                          id={`landuse-compensations-suojeltu-${site.id}`}
+                          label="Suojeltu"
+                          value={readOnlyTextValue(input.value)}
+                          readOnly
+                        />
+                      ) : (
+                        <Select
+                          id={`landuse-compensations-suojeltu-${site.id}`}
+                          options={suojeltuOptions}
+                          value={normalizeSelectValue(input.value)}
+                          onChange={(selectedOptions) =>
+                            handleSelectChange(selectedOptions, input.onChange)
+                          }
+                          texts={{
+                            label: "Suojeltu",
+                            placeholder: "Valitse",
+                          }}
+                        />
+                      )
+                    }
+                  </Field>
+                </div>
+
+                <div className="landuse-grid__column-3">
+                  <Field name={`sites.${siteIndex}.pintaAlaM2`}>
+                    {({ input }) => (
                       <TextInput
-                        id={`landuse-compensations-kohteen-tunnus-${site.id}`}
-                        label="Kohteen tunnus"
-                        value={readOnlyTextValue(input.value)}
-                        readOnly
-                      />
-                    ) : (
-                      <TextInput
-                        id={`landuse-compensations-kohteen-tunnus-${site.id}`}
-                        label="Kohteen tunnus"
-                        value={input.value ?? ""}
+                        id={`landuse-compensations-pinta-ala-${site.id}`}
+                        label="Pinta-ala (m²)"
+                        value={getFieldTextValue(!isReadOnly, input.value)}
                         onChange={input.onChange}
+                        readOnly={isReadOnly}
                       />
-                    )
-                  }
-                </Field>
+                    )}
+                  </Field>
+                </div>
 
-                <Field name={`sites.${siteIndex}.kayttotarkoitus`}>
-                  {({ input }) =>
-                    isReadOnly ? (
+                <div className="landuse-grid__column-3">
+                  <Field name={`sites.${siteIndex}.kem2`}>
+                    {({ input }) => (
                       <TextInput
-                        id={`landuse-compensations-kayttotarkoitus-${site.id}`}
-                        label="Käyttötarkoitus"
-                        value={readOnlyTextValue(input.value)}
-                        readOnly
-                      />
-                    ) : (
-                      <Select
-                        id={`landuse-compensations-kayttotarkoitus-${site.id}`}
-                        options={kayttotarkoitusOptions}
-                        value={normalizeSelectValue(input.value)}
-                        onChange={(selectedOptions) =>
-                          handleSelectChange(selectedOptions, input.onChange)
-                        }
-                        texts={{
-                          label: "Käyttötarkoitus",
-                          placeholder: "Valitse",
-                        }}
-                      />
-                    )
-                  }
-                </Field>
-
-                <Field name={`sites.${siteIndex}.hallintamuoto`}>
-                  {({ input }) =>
-                    isReadOnly ? (
-                      <TextInput
-                        id={`landuse-compensations-hallintamuoto-${site.id}`}
-                        label="Hallintamuoto"
-                        value={
-                          Array.isArray(input.value) && input.value.length > 0
-                            ? input.value.join(", ")
-                            : "-"
-                        }
-                        readOnly
-                      />
-                    ) : (
-                      <Select
-                        id={`landuse-compensations-hallintamuoto-${site.id}`}
-                        options={hallintamuotoOptions}
-                        value={normalizeMultiSelectValue(input.value)}
-                        onChange={(selectedOptions) =>
-                          handleMultiSelectChange(
-                            selectedOptions,
-                            input.onChange,
-                          )
-                        }
-                        multiSelect
-                        texts={{
-                          label: "Hallintamuoto",
-                          placeholder: "Valitse",
-                        }}
-                      />
-                    )
-                  }
-                </Field>
-
-                <Field name={`sites.${siteIndex}.suojeltu`}>
-                  {({ input }) =>
-                    isReadOnly ? (
-                      <TextInput
-                        id={`landuse-compensations-suojeltu-${site.id}`}
-                        label="Suojeltu"
-                        value={readOnlyTextValue(input.value)}
-                        readOnly
-                      />
-                    ) : (
-                      <Select
-                        id={`landuse-compensations-suojeltu-${site.id}`}
-                        options={suojeltuOptions}
-                        value={normalizeSelectValue(input.value)}
-                        onChange={(selectedOptions) =>
-                          handleSelectChange(selectedOptions, input.onChange)
-                        }
-                        texts={{
-                          label: "Suojeltu",
-                          placeholder: "Valitse",
-                        }}
-                      />
-                    )
-                  }
-                </Field>
-
-                <Field name={`sites.${siteIndex}.pintaAlaM2`}>
-                  {({ input }) => (
-                    <TextInput
-                      id={`landuse-compensations-pinta-ala-${site.id}`}
-                      label="Pinta-ala (m²)"
-                      value={getFieldTextValue(!isReadOnly, input.value)}
-                      onChange={input.onChange}
-                      readOnly={isReadOnly}
-                    />
-                  )}
-                </Field>
-
-                <Field name={`sites.${siteIndex}.kem2`}>
-                  {({ input }) => (
-                    <TextInput
-                      id={`landuse-compensations-kem2-${site.id}`}
-                      label="Kerrosala (kem²)"
-                      value={getFieldTextValue(!isReadOnly, input.value)}
-                      onChange={input.onChange}
-                      readOnly={isReadOnly}
-                    />
-                  )}
-                </Field>
-
-                <Field name={getRowFieldPath(site.id, "yksikkohinta")}>
-                  {({ input }) =>
-                    isReadOnly ? (
-                      <TextInput
-                        id={`landuse-compensations-yksikkohinta-${site.id}`}
-                        label="Yksikköhinta (€/kem²)"
-                        value={readOnlyTextValue(input.value)}
-                        readOnly
-                      />
-                    ) : (
-                      <NumberInput
-                        id={`landuse-compensations-yksikkohinta-${site.id}`}
-                        label="Yksikköhinta"
-                        value={input.value}
-                        unit="€"
+                        id={`landuse-compensations-kem2-${site.id}`}
+                        label="Kerrosala (kem²)"
+                        value={getFieldTextValue(!isReadOnly, input.value)}
                         onChange={input.onChange}
+                        readOnly={isReadOnly}
                       />
-                    )
-                  }
-                </Field>
+                    )}
+                  </Field>
+                </div>
 
-                <Field name={`sites.${siteIndex}.amVelvoite`}>
-                  {({ input }) =>
-                    isReadOnly ? (
-                      <TextInput
-                        id={`landuse-compensations-amvelvoite-${site.id}`}
-                        label="AM-velvoite"
-                        value={input.value ? "Kyllä" : "Ei"}
-                        readOnly
-                      />
-                    ) : (
-                      <ToggleButton
-                        id={`landuse-compensations-amvelvoite-${site.id}`}
-                        label="AM-velvoite"
-                        checked={Boolean(input.value)}
-                        onChange={() => input.onChange(!input.value)}
-                      />
-                    )
-                  }
-                </Field>
+                <div className="landuse-grid__column-3">
+                  <Field name={getRowFieldPath(site.id, "yksikkohinta")}>
+                    {({ input }) =>
+                      isReadOnly ? (
+                        <TextInput
+                          id={`landuse-compensations-yksikkohinta-${site.id}`}
+                          label="Yksikköhinta (€/kem²)"
+                          value={readOnlyTextValue(input.value)}
+                          readOnly
+                        />
+                      ) : (
+                        <NumberInput
+                          id={`landuse-compensations-yksikkohinta-${site.id}`}
+                          label="Yksikköhinta"
+                          value={input.value}
+                          unit="€"
+                          onChange={input.onChange}
+                        />
+                      )
+                    }
+                  </Field>
+                </div>
+
+                <div className="landuse-grid__column-3">
+                  <Field name={`sites.${siteIndex}.amVelvoite`}>
+                    {({ input }) =>
+                      isReadOnly ? (
+                        <TextInput
+                          id={`landuse-compensations-amvelvoite-${site.id}`}
+                          label="AM-velvoite"
+                          value={input.value ? "Kyllä" : "Ei"}
+                          readOnly
+                        />
+                      ) : (
+                        <ToggleButton
+                          id={`landuse-compensations-amvelvoite-${site.id}`}
+                          label="AM-velvoite"
+                          checked={Boolean(input.value)}
+                          onChange={() => input.onChange(!input.value)}
+                        />
+                      )
+                    }
+                  </Field>
+                </div>
               </div>
               {!isReadOnly && (
                 <div className="landuse-compensations-table__detail-actions">
@@ -508,128 +524,128 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 heading="Maankäyttökorvaus"
                 className="landuse-detail__fieldset--with-margin"
               >
-                <div className="landuse-grid landuse-detail__compensation-grid">
-                  <Field name="rahakorvaus">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <NumberInput
-                          id="landuse-compensations-rahakorvaus"
-                          label="Rahakorvaus"
-                          value={input.value}
-                          unit="€"
-                          onChange={input.onChange}
-                        />
-                      ) : (
-                        <TextInput
-                          id="landuse-compensations-rahakorvaus"
-                          label="Rahakorvaus"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
+                <div className="landuse-grid">
+                  <div className="landuse-grid__column-3">
+                    <Field name="rahakorvaus">
+                      {({ input }) =>
+                        isEditMode ? (
+                          <NumberInput
+                            id="landuse-compensations-rahakorvaus"
+                            label="Rahakorvaus"
+                            value={input.value}
+                            unit="€"
+                            onChange={input.onChange}
+                          />
+                        ) : (
+                          <TextInput
+                            id="landuse-compensations-rahakorvaus"
+                            label="Rahakorvaus"
+                            value={readOnlyTextValue(input.value)}
+                            readOnly
+                          />
+                        )
+                      }
+                    </Field>
+                  </div>
 
-                  <Field name="maakorvaus">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <NumberInput
-                          id="landuse-compensations-maakorvaus"
-                          label="Maakorvaus"
-                          value={input.value}
-                          unit="€"
-                          onChange={input.onChange}
-                        />
-                      ) : (
-                        <TextInput
-                          id="landuse-compensations-maakorvaus"
-                          label="Maakorvaus"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
+                  <div className="landuse-grid__column-3">
+                    <Field name="maakorvaus">
+                      {({ input }) =>
+                        isEditMode ? (
+                          <NumberInput
+                            id="landuse-compensations-maakorvaus"
+                            label="Maakorvaus"
+                            value={input.value}
+                            unit="€"
+                            onChange={input.onChange}
+                          />
+                        ) : (
+                          <TextInput
+                            id="landuse-compensations-maakorvaus"
+                            label="Maakorvaus"
+                            value={readOnlyTextValue(input.value)}
+                            readOnly
+                          />
+                        )
+                      }
+                    </Field>
+                  </div>
 
-                  <Field name="muuKorvaus">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <NumberInput
-                          id="landuse-compensations-muu-korvaus"
-                          label="Muu"
-                          value={input.value}
-                          unit="€"
-                          onChange={input.onChange}
-                        />
-                      ) : (
-                        <TextInput
-                          id="landuse-compensations-muu-korvaus"
-                          label="Muu"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
+                  <div className="landuse-grid__column-3">
+                    <Field name="muuKorvaus">
+                      {({ input }) =>
+                        isEditMode ? (
+                          <NumberInput
+                            id="landuse-compensations-muu-korvaus"
+                            label="Muu"
+                            value={input.value}
+                            unit="€"
+                            onChange={input.onChange}
+                          />
+                        ) : (
+                          <TextInput
+                            id="landuse-compensations-muu-korvaus"
+                            label="Muu"
+                            value={readOnlyTextValue(input.value)}
+                            readOnly
+                          />
+                        )
+                      }
+                    </Field>
+                  </div>
 
-                  {isEditMode ? (
-                    <NumberInput
-                      id="landuse-compensations-yhteensa"
-                      label="Yhteensä"
-                      value={yhteensa || 0}
-                      unit="€"
-                      disabled
-                    />
-                  ) : (
+                  <div className="landuse-grid__column-3">
                     <TextInput
                       id="landuse-compensations-yhteensa"
                       label="Yhteensä"
                       value={formatLandUseEuroValue(yhteensa)}
                       readOnly
                     />
-                  )}
-                </div>
+                  </div>
 
-                <div className="landuse-grid landuse-detail__compensation-grid landuse-detail__compensation-grid--notes">
-                  <Field name="maakorvausSelite">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <TextArea
-                          id="landuse-compensations-maakorvaus-selite"
-                          label="Maakorvaus selite"
-                          value={input.value ?? ""}
-                          onChange={input.onChange}
-                        />
-                      ) : (
-                        <TextInput
-                          id="landuse-compensations-maakorvaus-selite"
-                          label="Maakorvaus selite"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
+                  <div className="landuse-grid__column-6">
+                    <Field name="maakorvausSelite">
+                      {({ input }) =>
+                        isEditMode ? (
+                          <TextArea
+                            id="landuse-compensations-maakorvaus-selite"
+                            label="Maakorvaus selite"
+                            value={input.value ?? ""}
+                            onChange={input.onChange}
+                          />
+                        ) : (
+                          <TextInput
+                            id="landuse-compensations-maakorvaus-selite"
+                            label="Maakorvaus selite"
+                            value={readOnlyTextValue(input.value)}
+                            readOnly
+                          />
+                        )
+                      }
+                    </Field>
+                  </div>
 
-                  <Field name="muuSelite">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <TextArea
-                          id="landuse-compensations-muu-selite"
-                          label="Muu selite"
-                          value={input.value ?? ""}
-                          onChange={input.onChange}
-                        />
-                      ) : (
-                        <TextInput
-                          id="landuse-compensations-muu-selite"
-                          label="Muu selite"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
+                  <div className="landuse-grid__column-6">
+                    <Field name="muuSelite">
+                      {({ input }) =>
+                        isEditMode ? (
+                          <TextArea
+                            id="landuse-compensations-muu-selite"
+                            label="Muu selite"
+                            value={input.value ?? ""}
+                            onChange={input.onChange}
+                          />
+                        ) : (
+                          <TextInput
+                            id="landuse-compensations-muu-selite"
+                            label="Muu selite"
+                            value={readOnlyTextValue(input.value)}
+                            readOnly
+                          />
+                        )
+                      }
+                    </Field>
+                  </div>
                 </div>
               </Fieldset>
 
@@ -652,27 +668,29 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 heading="Perushinta"
                 className="landuse-detail__fieldset--with-margin"
               >
-                <div className="landuse-grid landuse-detail__compensation-grid">
-                  <Field name="perushinta">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <NumberInput
-                          id="landuse-compensations-perushinta"
-                          label="Perushinta"
-                          value={input.value}
-                          unit="€/kem²"
-                          onChange={input.onChange}
-                        />
-                      ) : (
-                        <TextInput
-                          id="landuse-compensations-perushinta"
-                          label="Perushinta"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
+                <div className="landuse-grid">
+                  <div className="landuse-grid__column-3">
+                    <Field name="perushinta">
+                      {({ input }) =>
+                        isEditMode ? (
+                          <NumberInput
+                            id="landuse-compensations-perushinta"
+                            label="Perushinta"
+                            value={input.value}
+                            unit="€/kem²"
+                            onChange={input.onChange}
+                          />
+                        ) : (
+                          <TextInput
+                            id="landuse-compensations-perushinta"
+                            label="Perushinta"
+                            value={readOnlyTextValue(input.value)}
+                            readOnly
+                          />
+                        )
+                      }
+                    </Field>
+                  </div>
                 </div>
               </Fieldset>
 
@@ -773,48 +791,52 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
               </Fieldset>
 
               <Fieldset heading="Korvauksetta luovutettavat yleiset alueet">
-                <div className="landuse-grid landuse-detail__compensation-grid">
-                  <Field name="yleisetAlueetNeliot">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <NumberInput
-                          id="landuse-compensations-yleiset-alueet-neliot"
-                          label="Neliöt"
-                          value={input.value}
-                          unit="m²"
-                          onChange={input.onChange}
-                        />
-                      ) : (
-                        <TextInput
-                          id="landuse-compensations-yleiset-alueet-neliot"
-                          label="Neliöt"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
+                <div className="landuse-grid">
+                  <div className="landuse-grid__column-3">
+                    <Field name="yleisetAlueetNeliot">
+                      {({ input }) =>
+                        isEditMode ? (
+                          <NumberInput
+                            id="landuse-compensations-yleiset-alueet-neliot"
+                            label="Neliöt"
+                            value={input.value}
+                            unit="m²"
+                            onChange={input.onChange}
+                          />
+                        ) : (
+                          <TextInput
+                            id="landuse-compensations-yleiset-alueet-neliot"
+                            label="Neliöt"
+                            value={readOnlyTextValue(input.value)}
+                            readOnly
+                          />
+                        )
+                      }
+                    </Field>
+                  </div>
 
-                  <Field name="yleisetAlueetHankinnanArvo">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <NumberInput
-                          id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
-                          label="Hankinnan arvo eur"
-                          value={input.value}
-                          unit="€"
-                          onChange={input.onChange}
-                        />
-                      ) : (
-                        <TextInput
-                          id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
-                          label="Hankinnan arvo eur"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
+                  <div className="landuse-grid__column-3">
+                    <Field name="yleisetAlueetHankinnanArvo">
+                      {({ input }) =>
+                        isEditMode ? (
+                          <NumberInput
+                            id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
+                            label="Hankinnan arvo eur"
+                            value={input.value}
+                            unit="€"
+                            onChange={input.onChange}
+                          />
+                        ) : (
+                          <TextInput
+                            id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
+                            label="Hankinnan arvo eur"
+                            value={readOnlyTextValue(input.value)}
+                            readOnly
+                          />
+                        )
+                      }
+                    </Field>
+                  </div>
                 </div>
               </Fieldset>
             </div>
