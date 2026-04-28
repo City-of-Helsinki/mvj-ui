@@ -479,88 +479,89 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
               heading=""
               className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
             >
-              <div className="landuse-grid">
-                <FieldArray<KohdeEntry> name="suunnittelunPerusteenaOlevatKohteet">
-                  {({ fields }) => (
-                    <>
-                      {fields.map((name, index) => (
-                        <>
-                          <div className="landuse-grid__column-3">
-                            <Field name={`${name}.value`}>
-                              {({ input }) =>
-                                isEditMode ? (
-                                  <Select
-                                    id={`suunnittelun-kohde-${index}`}
-                                    options={landUseKohdeSelectOptions}
-                                    value={normalizeSelectValue(input.value)}
-                                    onChange={(selectedOptions) =>
-                                      handleSelectChange(
-                                        selectedOptions,
-                                        input.onChange,
-                                      )
-                                    }
-                                    filter={kohdeSelectFilter}
-                                    texts={{
-                                      label: `Kohde ${index + 1}`,
-                                      placeholder: "Valitse",
-                                    }}
-                                    disabled={!isEditMode}
-                                  />
-                                ) : (
-                                  <TextInput
-                                    id={`suunnittelun-kohde-${index}`}
-                                    label={`Kohde ${index + 1}`}
-                                    value={readOnlyTextValue(input.value)}
-                                    readOnly
-                                  />
-                                )
-                              }
-                            </Field>
-                          </div>
-
-                          {isEditMode && (
-                            <div className="landuse-grid__column-3">
-                              <ConfirmDeleteButton
-                                id={`summary-kohde-delete-${index}`}
-                                buttonVariant={ButtonVariant.Supplementary}
-                                buttonStyle={{ width: "fit-content" }}
-                                onConfirm={() => fields.remove(index)}
-                                dialogTitle="Poista kohde"
-                                dialogContent={`Haluatko varmasti poistaa kohteen ${values.suunnittelunPerusteenaOlevatKohteet?.[index]?.value?.trim() ?? ""}?`}
-                              />
-                            </div>
-                          )}
-                          {isEditMode ? (
-                            <>
-                              <div className="landuse-grid__column-3" />
-                              <div className="landuse-grid__column-3" />
-                            </>
-                          ) : (
-                            <>
-                              <div className="landuse-grid__column-3" />
-                              <div className="landuse-grid__column-3" />
-                              <div className="landuse-grid__column-3" />
-                            </>
-                          )}
-                        </>
-                      ))}
-
-                      {isEditMode && (
+              <FieldArray<KohdeEntry> name="suunnittelunPerusteenaOlevatKohteet">
+                {({ fields }) => (
+                  <>
+                    {fields.map((name, index) => (
+                      <div
+                        key={name}
+                        className="landuse-grid landuse-grid__bottom-margin"
+                      >
                         <div className="landuse-grid__column-3">
-                          <Button
-                            className="landuse-detail__add-button"
-                            variant={ButtonVariant.Supplementary}
-                            iconStart={<IconPlusCircleFill />}
-                            onClick={() => fields.push({ value: undefined })}
-                          >
-                            Lisää kohde
-                          </Button>
+                          <Field name={`${name}.value`}>
+                            {({ input }) =>
+                              isEditMode ? (
+                                <Select
+                                  id={`suunnittelun-kohde-${index}`}
+                                  options={landUseKohdeSelectOptions}
+                                  value={normalizeSelectValue(input.value)}
+                                  onChange={(selectedOptions) =>
+                                    handleSelectChange(
+                                      selectedOptions,
+                                      input.onChange,
+                                    )
+                                  }
+                                  filter={kohdeSelectFilter}
+                                  texts={{
+                                    label: `Kohde ${index + 1}`,
+                                    placeholder: "Valitse",
+                                  }}
+                                  disabled={!isEditMode}
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`suunnittelun-kohde-${index}`}
+                                  label={`Kohde ${index + 1}`}
+                                  value={readOnlyTextValue(input.value)}
+                                  readOnly
+                                />
+                              )
+                            }
+                          </Field>
                         </div>
-                      )}
-                    </>
-                  )}
-                </FieldArray>
-              </div>
+
+                        {isEditMode && (
+                          <div className="landuse-grid__column-3">
+                            <ConfirmDeleteButton
+                              id={`summary-kohde-delete-${index}`}
+                              buttonVariant={ButtonVariant.Supplementary}
+                              buttonStyle={{ width: "fit-content" }}
+                              onConfirm={() => fields.remove(index)}
+                              dialogTitle="Poista kohde"
+                              dialogContent={`Haluatko varmasti poistaa kohteen ${values.suunnittelunPerusteenaOlevatKohteet?.[index]?.value?.trim() ?? ""}?`}
+                            />
+                          </div>
+                        )}
+                        {isEditMode ? (
+                          <>
+                            <div className="landuse-grid__column-3" />
+                            <div className="landuse-grid__column-3" />
+                          </>
+                        ) : (
+                          <>
+                            <div className="landuse-grid__column-3" />
+                            <div className="landuse-grid__column-3" />
+                            <div className="landuse-grid__column-3" />
+                          </>
+                        )}
+                      </div>
+                    ))}
+
+                    {isEditMode && (
+                      <div className="landuse-grid__column-3">
+                        <Button
+                          className="landuse-detail__add-button"
+                          variant={ButtonVariant.Supplementary}
+                          iconStart={<IconPlusCircleFill />}
+                          onClick={() => fields.push({ value: undefined })}
+                        >
+                          Lisää kohde
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                )}
+              </FieldArray>
             </Fieldset>
 
             {/* Osoitteet Section */}
