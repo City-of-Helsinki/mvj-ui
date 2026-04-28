@@ -622,7 +622,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                   {contactPersonFields.map(
                                     (contactPersonFieldName, contactIndex) => (
                                       <div
-                                        className="landuse-grid landuse-grid--with-delete landuse-grid__column"
+                                        className="landuse-grid"
                                         key={contactPersonFieldName}
                                       >
                                         <div className="landuse-grid__column-3">
