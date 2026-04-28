@@ -10,17 +10,16 @@
 
 // -- Responsive breakpoints --------------------------------------------------
 @mixin respond-to($name) {
-  // TODO fix media query conditions, and apply to e.g. grids
   @if $name == desktop {
-    @media (max-width: var(--breakpoint-xxl)) {
+    @media (max-width: $breakpoint-xxl) {
       @content;
     }
   } @else if $name == laptop {
-    @media (max-width: var(--breakpoint-xl)) {
+    @media (max-width: $breakpoint-xl) {
       @content;
     }
   } @else if $name == mobile {
-    @media (max-width: var(--breakpoint-m)) {
+    @media (max-width: $breakpoint-m) {
       @content;
     }
   } @else {
@@ -61,16 +60,12 @@
   grid-template-columns: repeat($cols, 1fr);
   gap: $gap;
 
-  @include respond-to(desktop) {
-    grid-template-columns: repeat(12, 1fr);
-  }
-
   @include respond-to(laptop) {
-    grid-template-columns: repeat(9, 1fr);
+    grid-template-columns: repeat(6, 1fr);
   }
 
   @include respond-to(mobile) {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -80,22 +75,6 @@
   margin: 0;
   font-size: 14px;
   color: var(--color-black-70);
-}
-
-// -- Responsive grid (minmax variant) ----------------------------------------
-// For grids that need a minimum column width instead of fixed count.
-@mixin responsive-grid-minmax($min: 180px, $cols: 12, $gap: var(--spacing-m)) {
-  display: grid;
-  grid-template-columns: repeat($cols, minmax($min, 1fr));
-  gap: $gap;
-
-  @include respond-to(desktop) {
-    grid-template-columns: repeat(2, minmax($min, 1fr));
-  }
-
-  @include respond-to(mobile) {
-    grid-template-columns: 1fr;
-  }
 }
 
 // -- Base table reset --------------------------------------------------------
@@ -146,14 +125,14 @@
 
 // -- Responsive column span --------------------------------------------------
 // For grid children that should span multiple columns but collapse on mobile.
-@mixin responsive-col-span($span) {
+@mixin responsive-col-span($span, $laptop-span, $mobile-span) {
   grid-column: span $span;
 
-  @include respond-to(desktop) {
-    grid-column: span 6;
+  @include respond-to(laptop) {
+    grid-column: span $laptop-span;
   }
 
   @include respond-to(mobile) {
-    grid-column: span 3;
+    grid-column: span $mobile-span;
   }
 }
