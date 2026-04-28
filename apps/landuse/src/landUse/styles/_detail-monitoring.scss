@@ -41,19 +41,6 @@
 }
 
 // -- Collateral fields -------------------------------------------------------
-
-.landuse-detail__monitoring-collateral-grid {
-  display: grid;
-  grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
-  align-items: end;
-  column-gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-m);
-
-  @include respond-to(mobile) {
-    grid-template-columns: 1fr;
-  }
-}
-
 .landuse-detail__monitoring-collateral-separator {
   display: inline-flex;
   align-items: center;
