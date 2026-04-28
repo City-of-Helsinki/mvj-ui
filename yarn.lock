@@ -4343,6 +4343,11 @@ hds-core@4.8.1:
   resolved "https://registry.yarnpkg.com/hds-core/-/hds-core-4.8.1.tgz#58b977c1dcd36171ab309604fefbe76679aa8931"
   integrity sha512-7szkf/T6oWaaT4FIdl5KMrln+gScUjsccCQJaRxAHyZlxK7y1UUKSX9g9/vyj/euvrRTNb/Y8Dn7zJPmoCxaug==
 
+hds-design-tokens@4.8.1:
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/hds-design-tokens/-/hds-design-tokens-4.8.1.tgz#f0179bb52d68d50d6cbf5c81bc11735d5e31fbce"
+  integrity sha512-d1aAAH7vHuxHtJxmIL5zE/FPIh/sKo7TizeaKdL5FIWeHM3RfHp4QYFotyWA2Ogsc/KxY3wV8BwEGoCH1TC+ig==
+
 hds-react@^4.8.1:
   version "4.8.1"
   resolved "https://registry.yarnpkg.com/hds-react/-/hds-react-4.8.1.tgz#c71694c8ce3fd64a5076d519b896cf53f4affc8f"

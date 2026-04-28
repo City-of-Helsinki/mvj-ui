@@ -1,7 +1,7 @@
 // ============================================================================
 // Detail page – core layout, grids, sections, tabs, tables, etc.
 // ============================================================================
-
+@use "hds-design-tokens/lib/all" as hds;
 @use "variables" as *;
 @use "mixins" as *;
 
@@ -12,11 +12,11 @@
 }
 
 .landuse-detail__header {
-  margin: var(--spacing-m) 0;
-  padding: var(--spacing-s) var(--spacing-m);
+  margin: hds.$spacing-m 0;
+  padding: hds.$spacing-s hds.$spacing-m;
   @include flex-row-center;
   justify-content: space-between;
-  background-color: var(--color-black-5);
+  background-color: hds.$color-black-5;
   border-radius: $radius-sm;
 }
 
@@ -24,22 +24,22 @@
   font-size: 32px;
   font-weight: 500;
   margin: 0;
-  color: var(--color-black-90);
+  color: hds.$color-black-90;
 }
 
 .landuse-detail__actions {
-  @include flex-row-center(var(--spacing-xs));
+  @include flex-row-center(hds.$spacing-xs);
   flex-wrap: wrap;
 
   button {
     display: inline-flex;
     align-items: center;
-    gap: var(--spacing-2-xs);
+    gap: hds.$spacing-2-xs;
   }
 }
 
 .landuse-detail__content {
-  padding: var(--spacing-m) 0;
+  padding: hds.$spacing-m 0;
 }
 
 // -- Section / field primitives ----------------------------------------------
@@ -47,19 +47,19 @@
 .landuse-detail__section-title {
   font-size: 20px;
   font-weight: 600;
-  color: var(--color-black-90);
-  margin: 0 0 var(--spacing-m) 0;
+  color: hds.$color-black-90;
+  margin: 0 0 hds.$spacing-m 0;
 }
 
 .landuse-detail__subsection-title {
   font-size: 16px;
   font-weight: 600;
-  color: var(--color-black-90);
-  margin: 0 0 var(--spacing-s);
+  color: hds.$color-black-90;
+  margin: 0 0 hds.$spacing-s 0;
 }
 
 .landuse-detail__field-group {
-  @include flex-col(var(--spacing-xs));
+  @include flex-col(hds.$spacing-xs);
 }
 
 .landuse-detail__add-button {
@@ -67,11 +67,11 @@
 }
 
 .landuse-detail__section {
-  @include flex-col(var(--spacing-s));
-  padding: var(--spacing-s);
-  border: 1px solid var(--color-black-20);
+  @include flex-col(hds.$spacing-s);
+  padding: hds.$spacing-s;
+  border: 1px solid hds.$color-black-20;
   border-radius: $radius-sm;
-  background-color: var(--color-black-5);
+  background-color: hds.$color-black-5;
 }
 
 .landuse-detail__container-max-width {
@@ -89,7 +89,7 @@
 }
 
 .landuse-detail__fieldset--with-margin {
-  margin-bottom: var(--spacing-l);
+  margin-bottom: hds.$spacing-l;
 }
 
 // -- Tab label / icons -------------------------------------------------------
@@ -105,11 +105,11 @@
   flex-shrink: 0;
 
   &--dirty {
-    color: var(--color-alert-dark);
+    color: hds.$color-alert-dark;
   }
 
   &--error {
-    color: var(--color-error);
+    color: hds.$color-error;
   }
 }
 
@@ -117,7 +117,7 @@
 
 .landuse-detail__table-wrapper {
   overflow-x: visible; // Allow dropdowns etc to overflow the table wrapper
-  margin: var(--spacing-s) 0;
+  margin: hds.$spacing-s 0;
 }
 
 .landuse-detail__table {
@@ -126,11 +126,11 @@
   th,
   td {
     text-align: left;
-    border-bottom: 1px solid var(--color-black-10);
+    border-bottom: 1px solid hds.$color-black-10;
   }
 
   thead th {
-    color: var(--color-black-70);
+    color: hds.$color-black-70;
     font-weight: 600;
   }
 }
@@ -141,40 +141,40 @@
   @include table-base;
   border-collapse: collapse;
   line-height: 1.5;
-  margin-bottom: var(--spacing-s);
+  margin-bottom: hds.$spacing-s;
 
   thead tr {
-    background-color: var(--color-silver);
+    background-color: hds.$color-silver;
   }
 
   thead th {
-    padding: var(--spacing-xs) var(--spacing-m);
+    padding: hds.$spacing-xs hds.$spacing-m;
     font-weight: 700;
-    font-size: var(--fontsize-body-m);
-    color: var(--color-black-90);
-    border-bottom: 1px solid var(--color-black-20);
+    font-size: hds.$fontsize-body-m;
+    color: hds.$color-black-90;
+    border-bottom: 1px solid hds.$color-black-20;
     white-space: nowrap;
     text-align: left;
   }
 
   tbody td {
-    padding: var(--spacing-xs) var(--spacing-m);
-    border-bottom: 1px solid var(--color-black-50);
-    color: var(--color-black-90);
-    font-size: var(--fontsize-body-m);
+    padding: hds.$spacing-xs hds.$spacing-m;
+    border-bottom: 1px solid hds.$color-black-50;
+    color: hds.$color-black-90;
+    font-size: hds.$fontsize-body-m;
     font-weight: 400;
-    background-color: var(--color-white);
+    background-color: hds.$color-white;
   }
 
   tfoot td {
-    padding: var(--spacing-xs) var(--spacing-m);
-    border-top: 1px solid var(--color-black-50);
+    padding: hds.$spacing-xs hds.$spacing-m;
+    border-top: 1px solid hds.$color-black-50;
     border-bottom: none;
   }
 
   &__toggle-cell {
     width: 40px;
-    padding-left: var(--spacing-2-xs) !important;
+    padding-left: hds.$spacing-2-xs !important;
     padding-right: 0 !important;
   }
 
@@ -189,14 +189,14 @@
     border-radius: $radius-sm;
     background: transparent;
     cursor: pointer;
-    color: var(--color-black-90);
+    color: hds.$color-black-90;
 
     &:hover {
-      background-color: var(--color-black-10);
+      background-color: hds.$color-black-10;
     }
 
     &:focus-visible {
-      outline: 2px solid var(--color-coat-of-arms);
+      outline: 2px solid hds.$color-coat-of-arms;
       outline-offset: 2px;
     }
   }
@@ -205,14 +205,14 @@
     cursor: pointer;
 
     &:hover {
-      background-color: var(--color-black-5);
+      background-color: hds.$color-black-5;
     }
   }
 
   &__detail-row {
     > td {
       padding: 0 !important;
-      border-bottom: 1px solid var(--color-black-50);
+      border-bottom: 1px solid hds.$color-black-50;
     }
   }
 
@@ -221,14 +221,14 @@
     min-width: 100%;
     box-sizing: border-box;
     overflow: hidden;
-    box-shadow: inset 3px 0 0 var(--color-coat-of-arms);
-    padding: var(--spacing-s) var(--spacing-s);
+    box-shadow: inset 3px 0 0 hds.$color-coat-of-arms;
+    padding: hds.$spacing-s hds.$spacing-s;
   }
 
   &__detail-actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: var(--spacing-s);
+    margin-top: hds.$spacing-s;
   }
 }
 
@@ -244,7 +244,7 @@
   border-radius: $radius-sm;
 
   &:hover {
-    background-color: var(--color-black-5);
+    background-color: hds.$color-black-5;
   }
 
   &--dragging {
@@ -256,7 +256,7 @@
 .landuse-detail__collaterals-drag-handle {
   display: inline-block;
   margin-right: 6px;
-  color: var(--color-black-60);
+  color: hds.$color-black-60;
   font-weight: 700;
 }
 
@@ -265,7 +265,7 @@
 // ============================================================================
 
 .landuse-detail__decisions-grid {
-  margin-bottom: var(--spacing-s);
+  margin-bottom: hds.$spacing-s;
 }
 
 .landuse-detail__decisions-label {
@@ -274,17 +274,17 @@
 
 .landuse-detail__decisions-link-value {
   margin: 0;
-  color: var(--color-bus);
+  color: hds.$color-bus;
   font-weight: 500;
 }
 
 .landuse-detail__decisions-add-row {
-  margin-top: var(--spacing-2-xs);
-  margin-bottom: var(--spacing-m);
+  margin-top: hds.$spacing-2-xs;
+  margin-bottom: hds.$spacing-m;
 }
 
 .landuse-detail__decisions-section-break {
-  margin-top: var(--spacing-m);
+  margin-top: hds.$spacing-m;
 }
 
 .landuse-detail__decisions-vakuuslaskuri {
@@ -292,7 +292,7 @@
 }
 
 .landuse-detail__decisions-vakuus-block {
-  margin-bottom: var(--spacing-m);
+  margin-bottom: hds.$spacing-m;
 }
 
 .landuse-detail__decisions-add-vakuus-row {

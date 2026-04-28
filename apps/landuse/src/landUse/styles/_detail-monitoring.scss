@@ -1,7 +1,7 @@
 // ============================================================================
 // Detail page – Monitoring tab
 // ============================================================================
-
+@use "hds-design-tokens/lib/all" as hds;
 @use "variables" as *;
 @use "mixins" as *;
 
@@ -12,7 +12,7 @@
 
   &--start {
     justify-content: flex-start;
-    margin-top: var(--spacing-xs);
+    margin-top: hds.$spacing-xs;
     margin-bottom: 0;
   }
 }
@@ -23,16 +23,16 @@
   @include table-inline-form;
 
   tbody tr:has(.landuse-detail__monitoring-plot-division-group-marker) td {
-    background-color: var(--color-bus-light);
-    color: var(--color-black-60);
+    background-color: hds.$color-bus-light;
+    color: hds.$color-black-60;
   }
 
   tbody
     tr:has(.landuse-detail__monitoring-plot-division-group-marker)
     .landuse-detail__monitoring-kem2-value {
-    color: var(--color-black-60);
-    border-color: var(--color-black-30);
-    background-color: var(--color-black-5);
+    color: hds.$color-black-60;
+    border-color: hds.$color-black-30;
+    background-color: hds.$color-black-5;
   }
 
   .hds-text-input__input {
@@ -46,7 +46,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: var(--color-black-90);
+  color: hds.$color-black-90;
 
   @include respond-to(mobile) {
     display: none;
@@ -58,7 +58,7 @@
 .landuse-detail__monitoring-info-layout {
   display: grid;
   grid-template-columns: minmax(260px, 1fr) minmax(320px, 1fr);
-  gap: var(--spacing-m);
+  gap: hds.$spacing-m;
 
   p {
     margin: 0;
@@ -71,20 +71,20 @@
 
 .landuse-detail__monitoring-info-title {
   font-weight: 600;
-  margin-bottom: var(--spacing-2-xs) !important;
+  margin-bottom: hds.$spacing-2-xs !important;
 }
 
 .landuse-detail__monitoring-info-table {
   th,
   td {
-    padding: var(--spacing-2-xs) var(--spacing-xs);
+    padding: hds.$spacing-2-xs hds.$spacing-xs;
   }
 }
 
 // -- Actions & KEM2 badge ---------------------------------------------------
 
 .landuse-detail__monitoring-actions-cell {
-  @include flex-col(var(--spacing-xs));
+  @include flex-col(hds.$spacing-xs);
   align-items: flex-start;
 }
 
@@ -92,41 +92,41 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: var(--spacing-3-xs) var(--spacing-2-xs);
+  padding: hds.$spacing-3-xs hds.$spacing-2-xs;
   border: 1px solid transparent;
   border-radius: $radius-pill;
   font-weight: 600;
 
   &--match {
-    color: var(--color-success);
-    border-color: var(--color-success);
-    background-color: var(--color-black-5);
+    color: hds.$color-success;
+    border-color: hds.$color-success;
+    background-color: hds.$color-black-5;
   }
 
   &--mismatch {
-    color: var(--color-error);
-    border-color: var(--color-error);
-    background-color: var(--color-black-5);
+    color: hds.$color-error;
+    border-color: hds.$color-error;
+    background-color: hds.$color-black-5;
   }
 }
 
 .landuse-detail__monitoring-child-row-title {
   display: inline-flex;
-  padding-left: var(--spacing-m);
-  color: var(--color-black-70);
+  padding-left: hds.$spacing-m;
+  color: hds.$color-black-70;
 }
 
 // -- Dialogs -----------------------------------------------------------------
 
 .landuse-detail__monitoring-dialog-content,
 .landuse-detail__monitoring-site-edit-dialog-content {
-  @include flex-col(var(--spacing-s));
+  @include flex-col(hds.$spacing-s);
 }
 
 .landuse-detail__monitoring-site-edit-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(220px, 1fr));
-  gap: var(--spacing-xs);
+  gap: hds.$spacing-xs;
 
   @include respond-to(mobile) {
     grid-template-columns: 1fr;
@@ -143,17 +143,17 @@
 }
 
 .landuse-detail__monitoring-dialog-kem2-row {
-  @include flex-row-center(var(--spacing-xs));
+  @include flex-row-center(hds.$spacing-xs);
   align-items: flex-end;
 }
 
 .landuse-detail__monitoring-dialog-kem2-target {
-  padding-bottom: var(--spacing-2-xs);
-  color: var(--color-black-70);
+  padding-bottom: hds.$spacing-2-xs;
+  color: hds.$color-black-70;
 }
 
 .landuse-detail__monitoring-dialog-list {
-  margin-top: var(--spacing-2-xs);
+  margin-top: hds.$spacing-2-xs;
 }
 
 .landuse-detail__monitoring-dialog-empty {
@@ -161,15 +161,15 @@
 }
 
 .landuse-detail__monitoring-dialog-items {
-  margin: var(--spacing-2-xs) 0 0;
+  margin: hds.$spacing-2-xs 0 0;
   padding: 0;
   list-style: none;
 
   li {
     display: flex;
     justify-content: space-between;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-2-xs) 0;
-    border-bottom: 1px solid var(--color-black-20);
+    gap: hds.$spacing-xs;
+    padding: hds.$spacing-2-xs 0;
+    border-bottom: 1px solid hds.$color-black-20;
   }
 }

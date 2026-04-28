@@ -1,13 +1,15 @@
 // ============================================================================
 // App root
 // ============================================================================
+@use "hds-design-tokens/lib/all" as hds;
+
 body {
   margin: 0;
 }
 
 .landuse-app {
-  font-family: var(--font-default);
-  background-color: var(--color-white);
+  font-family: hds.$font-default;
+  background-color: hds.$color-white;
   min-height: 100vh;
   padding: 0;
 }

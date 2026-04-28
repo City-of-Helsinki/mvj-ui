@@ -5,21 +5,21 @@
 // stylesheet.  Prefer using a mixin over copy-pasting the same 3+ lines in
 // multiple rules.
 // ============================================================================
-
+@use "hds-design-tokens/lib/all" as hds;
 @use "variables" as *;
 
 // -- Responsive breakpoints --------------------------------------------------
 @mixin respond-to($name) {
   @if $name == desktop {
-    @media (max-width: $breakpoint-xxl) {
+    @media (max-width: hds.$breakpoint-xxl) {
       @content;
     }
   } @else if $name == laptop {
-    @media (max-width: $breakpoint-xl) {
+    @media (max-width: hds.$breakpoint-xl) {
       @content;
     }
   } @else if $name == mobile {
-    @media (max-width: $breakpoint-m) {
+    @media (max-width: hds.$breakpoint-m) {
       @content;
     }
   } @else {
@@ -31,8 +31,8 @@
 @mixin page-container {
   max-width: 1440px;
   margin: 0 auto;
-  padding: var(--spacing-m);
-  background-color: var(--color-white);
+  padding: hds.$spacing-m;
+  background-color: hds.$color-white;
   min-height: 100vh;
 }
 
@@ -55,7 +55,7 @@
 
 // -- Responsive grid ---------------------------------------------------------
 // The 4→2→1 column pattern used throughout detail pages.
-@mixin responsive-grid($cols: 12, $gap: var(--spacing-m)) {
+@mixin responsive-grid($cols: 12, $gap: hds.$spacing-m) {
   display: grid;
   grid-template-columns: repeat($cols, 1fr);
   gap: $gap;
@@ -74,7 +74,7 @@
 @mixin secondary-text {
   margin: 0;
   font-size: 14px;
-  color: var(--color-black-70);
+  color: hds.$color-black-70;
 }
 
 // -- Base table reset --------------------------------------------------------
@@ -114,8 +114,8 @@
 // -- Toolbar row (above tables / sections) -----------------------------------
 @mixin toolbar(
   $justify: flex-end,
-  $gap: var(--spacing-xs),
-  $mb: var(--spacing-xs)
+  $gap: hds.$spacing-xs,
+  $mb: hds.$spacing-xs
 ) {
   display: flex;
   justify-content: $justify;
