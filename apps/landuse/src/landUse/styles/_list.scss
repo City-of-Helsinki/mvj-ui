@@ -1,7 +1,7 @@
 // ============================================================================
 // Land Use list page
 // ============================================================================
-
+@use "hds-design-tokens/lib/all" as hds;
 @use "variables" as *;
 @use "mixins" as *;
 
@@ -10,18 +10,18 @@
 }
 
 .landuse-list__header {
-  @include flex-row-center(var(--spacing-s));
-  margin-bottom: var(--spacing-m);
+  @include flex-row-center(hds.$spacing-s);
+  margin-bottom: hds.$spacing-m;
   flex-wrap: wrap;
 }
 
 .landuse-list__search-group {
-  @include flex-row-center(var(--spacing-xs));
+  @include flex-row-center(hds.$spacing-xs);
 }
 
 .landuse-list__result-count {
   font-size: 14px;
-  color: var(--color-black-60);
+  color: hds.$color-black-60;
   white-space: nowrap;
 }
 
@@ -29,12 +29,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-2-xl) var(--spacing-m);
+  padding: hds.$spacing-2-xl hds.$spacing-m;
   text-align: center;
-  color: var(--color-black-60);
+  color: hds.$color-black-60;
   font-size: 16px;
-  background-color: var(--color-black-5);
-  border: 1px solid var(--color-black-10);
+  background-color: hds.$color-black-5;
+  border: 1px solid hds.$color-black-10;
   border-radius: $radius-sm;
 
   p {

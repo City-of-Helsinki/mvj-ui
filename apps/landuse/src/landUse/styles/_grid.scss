@@ -1,3 +1,4 @@
+@use "hds-design-tokens/lib/all" as hds;
 @use "mixins" as *;
 
 .landuse-grid__column-1 {
@@ -29,5 +30,5 @@
 }
 
 .landuse-grid__column {
-  margin-bottom: var(--spacing-m);
+  margin-bottom: hds.$spacing-m;
 }

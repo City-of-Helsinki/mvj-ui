@@ -1,21 +1,21 @@
 // ============================================================================
 // Header & user menu
 // ============================================================================
-
+@use "hds-design-tokens/lib/all" as hds;
 @use "variables" as *;
 @use "mixins" as *;
 
 .landuse-header {
-  background-color: var(--color-tram);
-  color: var(--color-white);
+  background-color: hds.$color-tram;
+  color: hds.$color-white;
   @include flex-row-center;
   justify-content: space-between;
-  padding: var(--spacing-s) var(--spacing-m);
+  padding: hds.$spacing-s hds.$spacing-m;
   box-shadow: $shadow-sm;
 }
 
 .landuse-header__left {
-  @include flex-row-center(var(--spacing-m));
+  @include flex-row-center(hds.$spacing-m);
 
   // Override HDS Logo default margin
   img {
@@ -27,7 +27,7 @@
   font-size: 20px;
   font-weight: 500;
   margin: 0;
-  color: var(--color-white);
+  color: hds.$color-white;
 }
 
 .landuse-header__right {
@@ -39,7 +39,7 @@
 }
 
 .landuse-header__user-button {
-  background-color: var(--color-white);
+  background-color: hds.$color-white;
   border: none;
   border-radius: 50%;
   width: 48px;
@@ -52,30 +52,30 @@
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: var(--color-black-10);
+    background-color: hds.$color-black-10;
   }
 }
 
 .landuse-header__user-initials {
   font-size: 16px;
   font-weight: 700;
-  color: var(--color-black-90);
+  color: hds.$color-black-90;
 }
 
 .landuse-header__user-arrow {
   position: absolute;
-  bottom: var(--spacing-3-xs);
-  right: var(--spacing-3-xs);
+  bottom: hds.$spacing-3-xs;
+  right: hds.$spacing-3-xs;
   font-size: 8px;
-  color: var(--color-black-60);
+  color: hds.$color-black-60;
 }
 
 .landuse-header__user-menu {
   position: absolute;
-  top: calc(100% + var(--spacing-2-xs));
+  top: calc(100% + hds.$spacing-2-xs);
   right: 0;
-  background-color: var(--color-white);
-  border: 1px solid var(--color-black-20);
+  background-color: hds.$color-white;
+  border: 1px solid hds.$color-black-20;
   border-radius: $radius-sm;
   box-shadow: $shadow-md;
   min-width: 200px;
@@ -83,24 +83,24 @@
 }
 
 .landuse-header__user-info {
-  padding: var(--spacing-xs) var(--spacing-s);
-  border-bottom: 1px solid var(--color-black-10);
-  color: var(--color-black-90);
+  padding: hds.$spacing-xs hds.$spacing-s;
+  border-bottom: 1px solid hds.$color-black-10;
+  color: hds.$color-black-90;
   font-size: 14px;
 }
 
 .landuse-header__user-menu-item {
   width: 100%;
-  padding: var(--spacing-xs) var(--spacing-s);
+  padding: hds.$spacing-xs hds.$spacing-s;
   background: none;
   border: none;
   text-align: left;
   cursor: pointer;
-  color: var(--color-black-90);
+  color: hds.$color-black-90;
   font-size: 14px;
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: var(--color-black-5);
+    background-color: hds.$color-black-5;
   }
 }
