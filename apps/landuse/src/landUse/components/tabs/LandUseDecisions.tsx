@@ -1013,11 +1013,11 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   placeholder: "Valitse",
                                 }}
                                 options={landUseGuaranteeTypeOptions}
-                                value={
+                                value={normalizeSelectValue(
                                   pendingGuaranteeTypeByAgreement[
                                     agreementIndex
-                                  ]
-                                }
+                                  ],
+                                )}
                                 onChange={(selected) => {
                                   if (selected.length > 0) {
                                     setPendingGuaranteeType(
