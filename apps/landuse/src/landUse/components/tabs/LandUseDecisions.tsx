@@ -212,7 +212,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                       heading=""
                       className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
                     >
-                      <div className="landuse-grid landuse-detail__decisions-grid">
+                      <div className="landuse-grid landuse-grid__bottom-margin">
                         <div className="landuse-grid__column-3">
                           <Field name={`${decisionName}.paattaja`}>
                             {({ input }) =>
@@ -364,7 +364,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
 
                         return (
                           <div
-                            className="landuse-grid landuse-detail__decisions-grid"
+                            className="landuse-grid landuse-grid__bottom-margin"
                             key={`${conditionName}-${conditionIndex}`}
                           >
                             <div className="landuse-grid__column-3">
@@ -542,7 +542,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                       heading=""
                       className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
                     >
-                      <div className="landuse-grid landuse-detail__decisions-grid">
+                      <div className="landuse-grid landuse-grid__bottom-margin">
                         <div className="landuse-grid__column-3">
                           <Field name={`${agreementName}.sopimuksenTyyppi`}>
                             {({ input }) =>
@@ -762,7 +762,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
 
                         return (
                           <div
-                            className="landuse-grid landuse-detail__decisions-grid"
+                            className="landuse-grid landuse-grid__bottom-margin"
                             key={`${changeName}-${changeIndex}`}
                           >
                             <div className="landuse-grid__column-3">
@@ -954,7 +954,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                             className="landuse-detail__decisions-vakuus-block"
                             key={`${vakuusName}-${vakuusIndex}`}
                           >
-                            <div className="landuse-grid landuse-detail__decisions-grid">
+                            <div className="landuse-grid landuse-grid__bottom-margin">
                               <div className="landuse-grid__column-3">
                                 <Field name={`${vakuusName}.tyyppi`}>
                                   {({ input }) => (

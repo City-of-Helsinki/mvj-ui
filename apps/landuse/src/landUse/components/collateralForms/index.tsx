@@ -15,6 +15,7 @@ export { RahavakuusForm } from "./RahavakuusForm";
 export { OmavelkainenTakausForm } from "./OmavelkainenTakausForm";
 export { TilivarojenPanttausForm } from "./TilivarojenPanttausForm";
 export { MuuVakuusForm } from "./MuuVakuusForm";
+export { SharedCollateralFields } from "./SharedCollateralFields";
 export type { Guarantee, CollateralFormProps } from "./types";
 
 interface CollateralFormByTypeProps extends CollateralFormProps {
