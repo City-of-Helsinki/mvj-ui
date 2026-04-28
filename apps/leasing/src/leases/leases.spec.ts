@@ -59,6 +59,7 @@ const defaultState: LeaseState = {
   isFetchingAttributes: false,
   isFetchingById: {},
   isFormDirtyById: {
+    "basis-of-rents-form": false,
     "constructability-form": false,
     "contracts-form": false,
     "decisions-form": false,
@@ -69,6 +70,7 @@ const defaultState: LeaseState = {
     "tenants-form": false,
   },
   isFormValidById: {
+    "basis-of-rents-form": true,
     "constructability-form": true,
     "contracts-form": true,
     "decisions-form": true,
@@ -278,6 +280,7 @@ describe("Leases", () => {
       });
       it("should update isFormValidById value", () => {
         const dummyFlags = {
+          "basis-of-rents-form": true,
           "constructability-form": true,
           "contracts-form": true,
           "decisions-form": true,
