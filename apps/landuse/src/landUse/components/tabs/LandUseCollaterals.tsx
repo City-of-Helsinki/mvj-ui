@@ -208,39 +208,42 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 heading="Vakuuslaskuri"
                 className="landuse-detail__fieldset--with-margin"
               >
-                <Field name="korotuskerroin">
-                  {({ input }) => {
-                    const korotuskerroinValue = getKorotuskerroinValue(
-                      input.value,
-                    );
+                <div className="landuse-grid">
+                  <div className="landuse-grid__column-3">
+                    <Field name="korotuskerroin">
+                      {({ input }) => {
+                        const korotuskerroinValue = getKorotuskerroinValue(
+                          input.value,
+                        );
 
-                    return (
-                      <div className="landuse-detail__collaterals-increase-factor-field">
-                        {isEditMode ? (
-                          <NumberInput
-                            id="collaterals-korotuskerroin"
-                            label="Korotuskerroin"
-                            min={1}
-                            max={2}
-                            step={0.05}
-                            value={korotuskerroinValue}
-                            onChange={input.onChange}
-                          />
-                        ) : (
-                          <TextInput
-                            id="collaterals-korotuskerroin"
-                            label="Korotuskerroin"
-                            value={formatLandUseNumericValue(
-                              korotuskerroinValue,
+                        return (
+                          <>
+                            {isEditMode ? (
+                              <NumberInput
+                                id="collaterals-korotuskerroin"
+                                label="Korotuskerroin"
+                                min={1}
+                                max={2}
+                                step={0.05}
+                                value={korotuskerroinValue}
+                                onChange={input.onChange}
+                              />
+                            ) : (
+                              <TextInput
+                                id="collaterals-korotuskerroin"
+                                label="Korotuskerroin"
+                                value={formatLandUseNumericValue(
+                                  korotuskerroinValue,
+                                )}
+                                readOnly
+                              />
                             )}
-                            readOnly
-                          />
-                        )}
-                      </div>
-                    );
-                  }}
-                </Field>
-
+                          </>
+                        );
+                      }}
+                    </Field>
+                  </div>
+                </div>
                 <div className="landuse-detail__table-wrapper">
                   <Table
                     className="landuse-detail__table landuse-detail__monitoring-table"
@@ -257,52 +260,59 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 heading="Kokonaisvakuustarve"
                 className="landuse-detail__fieldset--with-margin"
               >
-                <div className="landuse-grid landuse-detail__monitoring-collateral-grid">
-                  <TextInput
-                    id="collaterals-sopimuksen-mukainen"
-                    label="Maankäyttökorvaus"
-                    value={formatLandUseEuroValue(sopimuksenMukainenValue)}
-                    readOnly
-                    style={
-                      totalCollateralSeparatorDirection === "left"
-                        ? {
-                            border: "4px solid var(--color-success)",
-                            padding: "var(--spacing-2-xs)",
-                          }
-                        : {
-                            padding: "var(--spacing-2-xs)",
-                          }
-                    }
-                  />
+                <div className="landuse-grid">
+                  <div className="landuse-grid__column-2">
+                    <TextInput
+                      id="collaterals-sopimuksen-mukainen"
+                      label="Maankäyttökorvaus"
+                      value={formatLandUseEuroValue(sopimuksenMukainenValue)}
+                      readOnly
+                      style={
+                        totalCollateralSeparatorDirection === "left"
+                          ? {
+                              border: "4px solid var(--color-success)",
+                              padding: "var(--spacing-2-xs)",
+                            }
+                          : {
+                              padding: "var(--spacing-2-xs)",
+                            }
+                      }
+                    />
+                  </div>
 
-                  <span
-                    className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${totalCollateralSeparatorDirection}`}
-                    aria-hidden="true"
-                  >
-                    {totalCollateralSeparatorDirection === "right" ? (
-                      <IconAngleLeft size={IconSize.ExtraLarge} />
-                    ) : (
-                      <IconAngleRight size={IconSize.ExtraLarge} />
-                    )}
-                  </span>
+                  <div className="landuse-grid__column-1">
+                    <span
+                      className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${totalCollateralSeparatorDirection}`}
+                      aria-hidden="true"
+                    >
+                      {totalCollateralSeparatorDirection === "right" ? (
+                        <IconAngleLeft size={IconSize.ExtraLarge} />
+                      ) : (
+                        <IconAngleRight size={IconSize.ExtraLarge} />
+                      )}
+                    </span>
+                  </div>
 
-                  <TextInput
-                    id="collaterals-saantelyn-mukainen"
-                    label="Asumismuotoehdot"
-                    value={formatLandUseEuroValue(saantelynMukainenValue)}
-                    readOnly
-                    style={
-                      totalCollateralSeparatorDirection === "right"
-                        ? {
-                            border: "4px solid var(--color-success)",
-                            padding: "var(--spacing-2-xs)",
-                          }
-                        : {
-                            padding: "var(--spacing-2-xs)",
-                          }
-                    }
-                  />
+                  <div className="landuse-grid__column-2">
+                    <TextInput
+                      id="collaterals-saantelyn-mukainen"
+                      label="Asumismuotoehdot"
+                      value={formatLandUseEuroValue(saantelynMukainenValue)}
+                      readOnly
+                      style={
+                        totalCollateralSeparatorDirection === "right"
+                          ? {
+                              border: "4px solid var(--color-success)",
+                              padding: "var(--spacing-2-xs)",
+                            }
+                          : {
+                              padding: "var(--spacing-2-xs)",
+                            }
+                      }
+                    />
+                  </div>
                 </div>
+
                 <Notification
                   type="info"
                   position="inline"

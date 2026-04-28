@@ -117,6 +117,7 @@
 
 .landuse-detail__table-wrapper {
   overflow-x: visible; // Allow dropdowns etc to overflow the table wrapper
+  margin: var(--spacing-s) 0;
 }
 
 .landuse-detail__table {
@@ -234,17 +235,6 @@
 // ============================================================================
 // Collaterals tab
 // ============================================================================
-
-.landuse-detail__collaterals-increase-factor-field {
-  width: 100%;
-  max-width: 25%;
-  margin-bottom: var(--spacing-xs);
-
-  @include respond-to(mobile) {
-    max-width: 100%;
-  }
-}
-
 .landuse-detail__collaterals-drag-hint {
   @include secondary-text;
 }
