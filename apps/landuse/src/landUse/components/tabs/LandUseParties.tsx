@@ -535,7 +535,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
         return (
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
-              <h2 className="landuse-detail__section-title">OSAPUOLET</h2>
+              <h1>Osapuolet</h1>
 
               <FieldArray<PartyEntry> name="parties">
                 {({ fields }) => (
@@ -552,10 +552,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                           heading={partyName}
                           initiallyOpen={shouldOpenAccordion(index)}
                         >
-                          <Fieldset
-                            heading="Sopimusosapuoli"
-                            className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-                          >
+                          <h3>Sopimusosapuoli</h3>
+                          <Fieldset heading="" className="full-width">
                             <div className="landuse-grid">
                               <div className="landuse-grid__column-3">
                                 <Field
@@ -610,10 +608,9 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                               )}
                             </div>
                           </Fieldset>
-                          <Fieldset
-                            heading="Yhteyshenkilöt/neuvottelijat"
-                            className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-                          >
+
+                          <h3>Yhteyshenkilöt/neuvottelijat</h3>
+                          <Fieldset heading="" className="full-width">
                             <FieldArray<ContactPerson>
                               name={`${fieldName}.contactPersons`}
                             >
@@ -736,10 +733,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                             </FieldArray>
                           </Fieldset>
 
-                          <Fieldset
-                            heading="Laskutustiedot"
-                            className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-                          >
+                          <h3>Laskutustiedot</h3>
+                          <Fieldset heading="" className="full-width">
                             <div className="landuse-grid">
                               <div className="landuse-grid__column-3">
                                 <Field
@@ -803,10 +798,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                             </div>
                           </Fieldset>
 
-                          <Fieldset
-                            heading="Laskunsaaja"
-                            className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-                          >
+                          <h3>Laskunsaaja</h3>
+                          <Fieldset heading="" className="full-width">
                             <div className="landuse-grid">
                               <div className="landuse-grid__column-3">
                                 <Field

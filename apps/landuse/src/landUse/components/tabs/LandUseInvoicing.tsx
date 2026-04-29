@@ -22,7 +22,7 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
       render={({ handleSubmit }) => (
         <form onSubmit={handleSubmit}>
           <div className="landuse-detail__content">
-            <h2 className="landuse-detail__section-title">LASKUTUS</h2>
+            <h1>Laskutus</h1>
             <p>Laskutus-lomakkeen sisältö lisätään myöhemmin.</p>
           </div>
         </form>

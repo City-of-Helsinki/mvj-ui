@@ -803,10 +803,10 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           <>
             <form onSubmit={handleSubmit}>
               <div className="landuse-detail__content">
-                <h2 className="landuse-detail__section-title">VALVONTA</h2>
+                <h1>Valvonta</h1>
 
                 <Fieldset
-                  heading="Valvonnan perustaulukko VE1"
+                  heading=""
                   className="landuse-detail__fieldset--with-margin"
                 >
                   <div className="landuse-detail__table-wrapper">
@@ -821,8 +821,9 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   </div>
                 </Fieldset>
 
+                <h2>Vakuuden vapauttaminen</h2>
                 <Fieldset
-                  heading="Vakuuden vapauttaminen"
+                  heading=""
                   className="landuse-detail__fieldset--with-margin"
                 >
                   <div className="landuse-detail__collaterals-increase-factor-field">
@@ -846,8 +847,9 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   </div>
                 </Fieldset>
 
+                <h2>Jäljellä oleva vakuustarve</h2>
                 <Fieldset
-                  heading="Jäljellä oleva vakuustarve"
+                  heading=""
                   className="landuse-detail__fieldset--with-margin"
                 >
                   <div className="landuse-grid landuse-detail__monitoring-collateral-grid">
@@ -898,7 +900,8 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   </div>
                 </Fieldset>
 
-                <Fieldset heading="Sakko">
+                <h2>Sakko</h2>
+                <Fieldset heading="">
                   <div className="landuse-detail__table-wrapper">
                     <Table
                       className="landuse-detail__table landuse-detail__monitoring-table"

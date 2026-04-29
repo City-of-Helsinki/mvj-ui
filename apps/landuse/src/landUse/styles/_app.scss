@@ -14,6 +14,10 @@ body {
   padding: 0;
 }
 
+.full-width {
+  width: 100%;
+}
+
 // -- HDS component overrides -------------------------------------------------
 
 // HDS Select internally wraps the control in a CSS-Module class whose hash
@@ -29,3 +33,9 @@ body {
 [class*="table_hds-table-container"] {
   overflow-x: visible;
 }
+
+// [class*="Accordion"] {
+// background-color: whitesmoke;
+// padding: hds.$spacing-xs;
+// margin-bottom: hds.$spacing-s;
+// }

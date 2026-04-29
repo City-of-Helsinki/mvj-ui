@@ -19,7 +19,7 @@ export const LandUseMap: React.FC<LandUseMapProps> = ({ form, isEditMode }) => {
       render={({ handleSubmit }) => (
         <form onSubmit={handleSubmit}>
           <div className="landuse-detail__content">
-            <h2 className="landuse-detail__section-title">KARTTA</h2>
+            <h1>Kartta</h1>
             <p>Kartta-lomakkeen sisältö lisätään myöhemmin.</p>
           </div>
         </form>

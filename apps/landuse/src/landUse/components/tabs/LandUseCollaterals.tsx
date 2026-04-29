@@ -202,10 +202,11 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
         return (
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
-              <h2 className="landuse-detail__section-title">VAKUUSTARVE</h2>
+              <h1>Vakuustarve</h1>
 
+              <h2>Vakuuslaskuri</h2>
               <Fieldset
-                heading="Vakuuslaskuri"
+                heading=""
                 className="landuse-detail__fieldset--with-margin"
               >
                 <div className="landuse-grid">
@@ -256,8 +257,9 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 </div>
               </Fieldset>
 
+              <h2>Kokonaisvakuustarve</h2>
               <Fieldset
-                heading="Kokonaisvakuustarve"
+                heading=""
                 className="landuse-detail__fieldset--with-margin"
               >
                 <div className="landuse-grid">
@@ -313,26 +315,28 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                   </div>
                 </div>
 
-                <Notification
-                  type="info"
-                  position="inline"
-                  label="Vakuustarvekertoimen määräytyminen"
-                >
-                  <div className="landuse-detail__monitoring-info-layout">
-                    <p>
-                      Korotettu vakuustarve määräytyy sopimussakon mukaisesti
-                      alla olevien rajojen mukaan.
-                    </p>
-                    <Table
-                      className="landuse-detail__table landuse-detail__monitoring-info-table"
-                      cols={collateralsInfoCols}
-                      indexKey="id"
-                      renderIndexCol={false}
-                      rows={collateralsInfoRows}
-                      variant="light"
-                    />
-                  </div>
-                </Notification>
+                <div className="landuse-detail__notification-info-wrapper">
+                  <Notification
+                    type="info"
+                    position="inline"
+                    label="Vakuustarvekertoimen määräytyminen"
+                  >
+                    <div className="landuse-detail__monitoring-info-layout">
+                      <p>
+                        Korotettu vakuustarve määräytyy sopimussakon mukaisesti
+                        alla olevien rajojen mukaan.
+                      </p>
+                      <Table
+                        className="landuse-detail__table landuse-detail__monitoring-info-table"
+                        cols={collateralsInfoCols}
+                        indexKey="id"
+                        renderIndexCol={false}
+                        rows={collateralsInfoRows}
+                        variant="light"
+                      />
+                    </div>
+                  </Notification>
+                </div>
               </Fieldset>
             </div>
           </form>

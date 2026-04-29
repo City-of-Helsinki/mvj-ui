@@ -196,7 +196,8 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
         return (
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
-              <h2 className="landuse-detail__section-title">PÄÄTÖKSET</h2>
+              <h1>Päätökset ja sopimukset</h1>
+              <h2>Päätökset</h2>
 
               {decisions.map((decision, decisionIndex) => {
                 const decisionName = `decisions.${decisionIndex}`;
@@ -208,10 +209,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                     heading={getDecisionAccordionHeading(decision)}
                     initiallyOpen={decisionIndex === newDecisionIndexToOpen}
                   >
-                    <Fieldset
-                      heading=""
-                      className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-                    >
+                    <Fieldset heading="" className="full-width">
                       <div className="landuse-grid landuse-grid__bottom-margin">
                         <div className="landuse-grid__column-3">
                           <Field name={`${decisionName}.paattaja`}>
@@ -355,13 +353,9 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                         </div>
                       </div>
 
-                      <h3 className="landuse-detail__subsection-title">
-                        Ehdot
-                      </h3>
-
+                      <h3>Ehdot</h3>
                       {conditions.map((_, conditionIndex) => {
                         const conditionName = `${decisionName}.ehdot.${conditionIndex}`;
-
                         return (
                           <div
                             className="landuse-grid landuse-grid__bottom-margin"
@@ -525,23 +519,16 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                 </div>
               )}
 
-              <h2 className="landuse-detail__section-title landuse-detail__decisions-section-break">
-                SOPIMUKSET
-              </h2>
-
+              <h2>Sopimukset</h2>
               {agreements.map((agreement, agreementIndex) => {
                 const agreementName = `agreements.${agreementIndex}`;
-
                 return (
                   <Accordion
                     key={`agreement-${agreementIndex}`}
                     heading={getAgreementAccordionHeading(agreement)}
                     initiallyOpen={agreementIndex === newAgreementIndexToOpen}
                   >
-                    <Fieldset
-                      heading=""
-                      className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-                    >
+                    <Fieldset heading="" className="full-width">
                       <div className="landuse-grid landuse-grid__bottom-margin">
                         <div className="landuse-grid__column-3">
                           <Field name={`${agreementName}.sopimuksenTyyppi`}>
@@ -753,13 +740,9 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                         </div>
                       </div>
 
-                      <h3 className="landuse-detail__subsection-title">
-                        Sopimuksen muutokset
-                      </h3>
-
+                      <h3>Sopimuksen muutokset</h3>
                       {(agreement.muutokset ?? []).map((_, changeIndex) => {
                         const changeName = `${agreementName}.muutokset.${changeIndex}`;
-
                         return (
                           <div
                             className="landuse-grid landuse-grid__bottom-margin"
@@ -943,10 +926,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                         </div>
                       )}
 
-                      <h3 className="landuse-detail__subsection-title">
-                        Vakuudet
-                      </h3>
-
+                      <h3>Vakuudet</h3>
                       {(agreement.vakuudet ?? []).map((vakuus, vakuusIndex) => {
                         const vakuusName = `${agreementName}.vakuudet.${vakuusIndex}`;
                         return (
@@ -954,20 +934,19 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                             className="landuse-detail__decisions-vakuus-block"
                             key={`${vakuusName}-${vakuusIndex}`}
                           >
-                            <div className="landuse-grid landuse-grid__bottom-margin">
-                              <div className="landuse-grid__column-3">
-                                <Field name={`${vakuusName}.tyyppi`}>
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`vakuus-tyyppi-${agreementIndex}-${vakuusIndex}`}
-                                      label="Vakuuden tyyppi"
-                                      value={readOnlyTextValue(input.value)}
-                                      readOnly
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-                            </div>
+                            <h4>Vakuus: {vakuus.tyyppi ?? ""}</h4>
+                            {/* NOTE! Hidden field for vakuuden tyyppi for form data. */}
+                            <Field name={`${vakuusName}.tyyppi`}>
+                              {({ input }) => (
+                                <TextInput
+                                  id={`vakuus-tyyppi-${agreementIndex}-${vakuusIndex}`}
+                                  label=""
+                                  value={readOnlyTextValue(input.value)}
+                                  readOnly
+                                  hidden
+                                />
+                              )}
+                            </Field>
 
                             <CollateralFormByType
                               type={
@@ -1000,71 +979,76 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                       })}
 
                       {isEditMode && (
-                        <Fieldset
-                          heading="Lisää uusi vakuus"
-                          className="landuse-detail__fieldset--with-margin"
-                        >
-                          <div className="landuse-detail__decisions-add-vakuus-row">
-                            <div className="landuse-detail__decisions-add-vakuus-select">
-                              <Select
-                                id={`vakuus-new-tyyppi-${agreementIndex}`}
-                                texts={{
-                                  label: "Vakuuden tyyppi",
-                                  placeholder: "Valitse",
-                                }}
-                                options={landUseGuaranteeTypeOptions}
-                                value={normalizeSelectValue(
-                                  pendingGuaranteeTypeByAgreement[
+                        <>
+                          <h3>Lisää vakuus</h3>
+                          <Fieldset
+                            heading=""
+                            className="landuse-detail__fieldset--with-margin"
+                          >
+                            <div className="landuse-detail__decisions-add-vakuus-row">
+                              <div className="landuse-detail__decisions-add-vakuus-select">
+                                <Select
+                                  id={`vakuus-new-tyyppi-${agreementIndex}`}
+                                  texts={{
+                                    label: "Vakuuden tyyppi",
+                                    placeholder: "Valitse",
+                                  }}
+                                  options={landUseGuaranteeTypeOptions}
+                                  value={normalizeSelectValue(
+                                    pendingGuaranteeTypeByAgreement[
+                                      agreementIndex
+                                    ],
+                                  )}
+                                  onChange={(selected) => {
+                                    if (selected.length > 0) {
+                                      setPendingGuaranteeType(
+                                        agreementIndex,
+                                        selected[0]
+                                          .value as LandUseGuaranteeType,
+                                      );
+                                    } else {
+                                      setPendingGuaranteeType(
+                                        agreementIndex,
+                                        undefined,
+                                      );
+                                    }
+                                  }}
+                                />
+                              </div>
+                              <Button
+                                type="button"
+                                variant={ButtonVariant.Supplementary}
+                                iconStart={<IconPlusCircleFill />}
+                                disabled={
+                                  !pendingGuaranteeTypeByAgreement[
                                     agreementIndex
-                                  ],
-                                )}
-                                onChange={(selected) => {
-                                  if (selected.length > 0) {
-                                    setPendingGuaranteeType(
-                                      agreementIndex,
-                                      selected[0].value as LandUseGuaranteeType,
-                                    );
-                                  } else {
-                                    setPendingGuaranteeType(
-                                      agreementIndex,
-                                      undefined,
-                                    );
-                                  }
+                                  ]
+                                }
+                                onClick={() => {
+                                  const pendingType =
+                                    pendingGuaranteeTypeByAgreement[
+                                      agreementIndex
+                                    ];
+                                  if (!pendingType) return;
+                                  form.mutators.push(
+                                    `agreements.${agreementIndex}.vakuudet`,
+                                    {
+                                      ...createNewGuarantee(),
+                                      tyyppi: pendingType,
+                                    },
+                                  );
+                                  setPendingGuaranteeType(
+                                    agreementIndex,
+                                    undefined,
+                                  );
                                 }}
-                              />
+                              >
+                                Lisää vakuus
+                              </Button>
                             </div>
-                            <Button
-                              type="button"
-                              variant={ButtonVariant.Supplementary}
-                              iconStart={<IconPlusCircleFill />}
-                              disabled={
-                                !pendingGuaranteeTypeByAgreement[agreementIndex]
-                              }
-                              onClick={() => {
-                                const pendingType =
-                                  pendingGuaranteeTypeByAgreement[
-                                    agreementIndex
-                                  ];
-                                if (!pendingType) return;
-                                form.mutators.push(
-                                  `agreements.${agreementIndex}.vakuudet`,
-                                  {
-                                    ...createNewGuarantee(),
-                                    tyyppi: pendingType,
-                                  },
-                                );
-                                setPendingGuaranteeType(
-                                  agreementIndex,
-                                  undefined,
-                                );
-                              }}
-                            >
-                              Lisää vakuus
-                            </Button>
-                          </div>
-                        </Fieldset>
+                          </Fieldset>
+                        </>
                       )}
-
                       <div className="landuse-detail__decisions-add-row">
                         <ConfirmDeleteButton
                           id={`agreement-delete-${agreementIndex}`}

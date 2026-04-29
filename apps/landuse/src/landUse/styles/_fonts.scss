@@ -1,1 +1,30 @@
+@use "hds-design-tokens/lib/all" as hds;
 @import url("https://makasiini.hel.ninja/delivery/HelsinkiGrotesk/HelsinkiGrotesk.css");
+
+.landuse-detail__title {
+  // TODO replace with _fonts.scss
+  font-size: 32px;
+  font-weight: 500;
+  margin: 0;
+  color: hds.$color-black-90;
+}
+
+h1 {
+  font-size: hds.$fontsize-heading-xl;
+}
+
+h2 {
+  font-size: hds.$fontsize-heading-l;
+}
+
+h3 {
+  font-size: hds.$fontsize-heading-m;
+}
+
+h4 {
+  font-size: hds.$fontsize-heading-s;
+}
+
+h5 {
+  font-size: hds.$fontsize-heading-xs;
+}

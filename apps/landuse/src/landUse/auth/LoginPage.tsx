@@ -9,7 +9,7 @@ const LoginPage: React.FC<Props> = ({ buttonDisabled, onLoginClick }) => {
     <div className="login-page">
       <div className="login-page__content">
         <div className="helsinki-logo" />
-        <h3>Tervetuloa Helsingin maanvuokrausjärjestelmään</h3>
+        <h1>Tervetuloa Helsingin maanvuokrausjärjestelmään</h1>
         <p>Kirjaudu sisään jatkaaksesi</p>
         <button
           className="btn btn-default"
