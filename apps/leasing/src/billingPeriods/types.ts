@@ -6,7 +6,7 @@ export type BillingPeriodState = {
 };
 export type FetchBillingPeriodsPayload = {
   leaseId: LeaseId;
-  year: number;
+  year: string;
 };
 export type BillingPeriodList = Array<Record<string, any>>;
 export type FetchBillingPeriodsAction = Action<

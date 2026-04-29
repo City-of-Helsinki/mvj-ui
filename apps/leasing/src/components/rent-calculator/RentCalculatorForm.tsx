@@ -1,8 +1,6 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { change, Field, formValueSelector, reduxForm } from "redux-form";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import ErrorField from "@/components/form/ErrorField";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FieldTypes, FormNames } from "@/enums";
@@ -13,18 +11,11 @@ import { getCurrentYear } from "@/util/date";
 import { getCurrentLease } from "@/leases/selectors";
 import { getBillingPeriodsByLease } from "@/billingPeriods/selectors";
 import type { BillingPeriodList } from "@/billingPeriods/types";
+import { useDispatch, useSelector } from "react-redux";
 type Props = {
-  billingPeriod: number | null | undefined;
-  billingPeriods: BillingPeriodList;
-  change: (...args: Array<any>) => any;
   onSubmit: (...args: Array<any>) => any;
   showErrors: boolean;
-  type: string;
   valid: boolean;
-};
-type State = {
-  billingPeriodOptions: Array<Record<string, any>>;
-  billingPeriods: BillingPeriodList;
 };
 
 const getBillingPeriodsOptions = (billingPeriods: BillingPeriodList) => {
@@ -38,72 +29,62 @@ const getBillingPeriodsOptions = (billingPeriods: BillingPeriodList) => {
     };
   });
 };
+const formName = FormNames.RENT_CALCULATOR;
+const selector = formValueSelector(formName);
 
-class RentCalculatorForm extends Component<Props, State> {
-  state = {
-    billingPeriodOptions: [],
-    billingPeriods: [],
-  };
+const RentCalculatorForm: React.FC<Props> = ({ onSubmit, showErrors }) => {
+  const dispatch = useDispatch();
+  const currentLease = useSelector(getCurrentLease);
+  const billingPeriod = useSelector((state) =>
+    selector(state, "billing_period"),
+  );
+  const billingPeriods: BillingPeriodList = useSelector((state) =>
+    getBillingPeriodsByLease(state, currentLease.id),
+  );
+  const type = useSelector((state) => selector(state, "type"));
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const [billingPeriodOptions, setBillingPeriodOptions] = useState(
+    getBillingPeriodsOptions(billingPeriods),
+  );
 
-    if (props.billingPeriods !== state.billingPeriods) {
-      newState.billingPeriods = props.billingPeriods;
-      newState.billingPeriodOptions = getBillingPeriodsOptions(
-        props.billingPeriods,
-      );
-    }
+  useEffect(() => {
+    setBillingPeriodOptions(getBillingPeriodsOptions(billingPeriods));
+  }, [billingPeriods]);
 
-    return newState;
-  }
+  useEffect(() => {
+    const setDefaultValues = () => {
+      const currentYear = getCurrentYear();
+      dispatch(change(formName, "type", RentCalculatorTypes.YEAR));
+      dispatch(change(formName, "year", currentYear));
+      dispatch(change(formName, "billing_start_date", `${currentYear}-01-01`));
+      dispatch(change(formName, "billing_end_date", `${currentYear}-12-31`));
+    };
 
-  componentDidMount() {
-    const { billingPeriodOptions } = this.state;
-
-    if (billingPeriodOptions.length) {
-      this.autoselectBillingPeriod(billingPeriodOptions);
-    }
-
-    this.setDefaultValues();
-  }
-
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if (prevState.billingPeriodOptions !== this.state.billingPeriodOptions) {
-      this.autoselectBillingPeriod(this.state.billingPeriodOptions);
-    }
-  }
-
-  setDefaultValues = () => {
-    const { change } = this.props;
-    const currentYear = getCurrentYear();
-    change("type", RentCalculatorTypes.YEAR);
-    change("year", currentYear);
-    change("billing_start_date", `${currentYear}-01-01`);
-    change("billing_end_date", `${currentYear}-12-31`);
-  };
-  autoselectBillingPeriod = (
-    billingPeriodOptions: Array<Record<string, any>>,
-  ) => {
-    const { change } = this.props,
-      now = new Date(),
-      selected = billingPeriodOptions.find(
+    const autoselectBillingPeriod = (
+      billingPeriodOptions: Array<Record<string, any>>,
+    ) => {
+      const now = new Date();
+      const selected = billingPeriodOptions.find(
         (item) =>
           new Date(item.startDate) <= now && new Date(item.endDate) >= now,
       );
 
-    if (selected) {
-      change("billing_period", selected.value);
+      if (selected) {
+        dispatch(change(formName, "billing_period", selected.value));
+      }
+    };
+
+    if (billingPeriodOptions.length) {
+      autoselectBillingPeriod(billingPeriodOptions);
     }
-  };
-  handleSubmit = (e: any) => {
-    const { onSubmit } = this.props;
+    setDefaultValues();
+  }, [billingPeriodOptions, dispatch]);
+
+  const handleSubmit = (e: any) => {
     onSubmit();
     e.preventDefault();
   };
-  getRequestOptions = () => {
-    const { showErrors, type } = this.props;
-    const { billingPeriodOptions } = this.state;
+  const getRequestOptions = () => {
     return [
       {
         value: RentCalculatorTypes.YEAR,
@@ -239,52 +220,33 @@ class RentCalculatorForm extends Component<Props, State> {
     ];
   };
 
-  render() {
-    const requestOptions = this.getRequestOptions();
-    return (
-      <div onSubmit={this.handleSubmit}>
-        <Row>
-          <Column>
-            <FormFieldLegacy
-              className="no-margin"
-              fieldAttributes={{
-                label: "Laskelman tyyppi",
-                type: FieldTypes.RADIO_WITH_FIELD,
-                required: true,
-                read_only: false,
-              }}
-              name="type"
-              invisibleLabel
-              disableDirty
-              overrideValues={{
-                options: requestOptions,
-              }}
-            />
-          </Column>
-        </Row>
-      </div>
-    );
-  }
-}
+  const requestOptions = getRequestOptions();
+  return (
+    <div onSubmit={handleSubmit}>
+      <Row>
+        <Column>
+          <FormFieldLegacy
+            className="no-margin"
+            fieldAttributes={{
+              label: "Laskelman tyyppi",
+              type: FieldTypes.RADIO_WITH_FIELD,
+              required: true,
+              read_only: false,
+            }}
+            name="type"
+            invisibleLabel
+            disableDirty
+            overrideValues={{
+              options: requestOptions,
+            }}
+          />
+        </Column>
+      </Row>
+    </div>
+  );
+};
 
-const formName = FormNames.RENT_CALCULATOR;
-const selector = formValueSelector(formName);
-export default flowRight(
-  connect(
-    (state) => {
-      const currentLease = getCurrentLease(state);
-      return {
-        billingPeriod: selector(state, "billing_period"),
-        billingPeriods: getBillingPeriodsByLease(state, currentLease.id),
-        type: selector(state, "type"),
-      };
-    },
-    {
-      change,
-    },
-  ),
-  reduxForm({
-    form: formName,
-    validate: validateRentCalculatorForm,
-  }),
-)(RentCalculatorForm) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+  validate: validateRentCalculatorForm,
+})(RentCalculatorForm);

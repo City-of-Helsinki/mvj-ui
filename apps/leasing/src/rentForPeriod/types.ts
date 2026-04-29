@@ -10,10 +10,11 @@ export type FetchRentForPeriodPayload = {
   id: RentForPeriodId;
   allowDelete: boolean;
   leaseId: LeaseId;
-  type: "year" | "range" | "billing_period";
+  type: RentCalculatorType;
   startDate: string;
   endDate: string;
 };
+export type RentCalculatorType = "year" | "range" | "billing_period";
 export type DeleteRentForPeriodPayload = {
   id: RentForPeriodId;
   leaseId: LeaseId;
