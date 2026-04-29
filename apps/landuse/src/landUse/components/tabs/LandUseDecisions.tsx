@@ -209,6 +209,28 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                     heading={getDecisionAccordionHeading(decision)}
                     initiallyOpen={decisionIndex === newDecisionIndexToOpen}
                   >
+                    {isEditMode && (
+                      <div className="landuse-detail__decisions-delete-button-row">
+                        <ConfirmDeleteButton
+                          id={`decision-delete-${decisionIndex}`}
+                          buttonLabel="Poista päätös"
+                          onConfirm={() => {
+                            const currentDecisions =
+                              form.getState().values.decisions ?? [];
+                            form.change(
+                              "decisions",
+                              currentDecisions.filter(
+                                (_, currentDecisionIndex) =>
+                                  currentDecisionIndex !== decisionIndex,
+                              ),
+                            );
+                          }}
+                          dialogTitle="Poista päätös"
+                          dialogContent={`Haluatko varmasti poistaa päätöksen ${getDecisionAccordionHeading(decision)}?`}
+                        />
+                      </div>
+                    )}
+
                     <Fieldset heading="" className="full-width">
                       <div className="landuse-grid landuse-grid__bottom-margin">
                         <div className="landuse-grid__column-3">
@@ -475,28 +497,6 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Button>
                         </div>
                       )}
-
-                      {isEditMode && (
-                        <div className="landuse-detail__decisions-add-row">
-                          <ConfirmDeleteButton
-                            id={`decision-delete-${decisionIndex}`}
-                            buttonLabel="Poista päätös"
-                            onConfirm={() => {
-                              const currentDecisions =
-                                form.getState().values.decisions ?? [];
-                              form.change(
-                                "decisions",
-                                currentDecisions.filter(
-                                  (_, currentDecisionIndex) =>
-                                    currentDecisionIndex !== decisionIndex,
-                                ),
-                              );
-                            }}
-                            dialogTitle="Poista päätös"
-                            dialogContent={`Haluatko varmasti poistaa päätöksen ${getDecisionAccordionHeading(decision)}?`}
-                          />
-                        </div>
-                      )}
                     </Fieldset>
                   </Accordion>
                 );
@@ -528,6 +528,29 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                     heading={getAgreementAccordionHeading(agreement)}
                     initiallyOpen={agreementIndex === newAgreementIndexToOpen}
                   >
+                    {isEditMode && (
+                      <div className="landuse-detail__decisions-delete-button-row">
+                        <ConfirmDeleteButton
+                          id={`agreement-delete-${agreementIndex}`}
+                          buttonLabel="Poista sopimus"
+                          disabled={!isEditMode}
+                          onConfirm={() => {
+                            const currentAgreements =
+                              form.getState().values.agreements ?? [];
+                            form.change(
+                              "agreements",
+                              currentAgreements.filter(
+                                (_, currentAgreementIndex) =>
+                                  currentAgreementIndex !== agreementIndex,
+                              ),
+                            );
+                          }}
+                          dialogTitle="Poista sopimus"
+                          dialogContent={`Haluatko varmasti poistaa sopimuksen ${getAgreementAccordionHeading(agreement)}?`}
+                        />
+                      </div>
+                    )}
+
                     <Fieldset heading="" className="full-width">
                       <div className="landuse-grid landuse-grid__bottom-margin">
                         <div className="landuse-grid__column-3">
@@ -959,7 +982,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                             />
 
                             {isEditMode && (
-                              <div className="landuse-detail__decisions-add-row">
+                              <div className="landuse-detail__decisions-delete-button-row">
                                 <ConfirmDeleteButton
                                   id={`vakuus-delete-${agreementIndex}-${vakuusIndex}`}
                                   buttonLabel="Poista vakuus"
@@ -1049,26 +1072,6 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           </Fieldset>
                         </>
                       )}
-                      <div className="landuse-detail__decisions-add-row">
-                        <ConfirmDeleteButton
-                          id={`agreement-delete-${agreementIndex}`}
-                          buttonLabel="Poista sopimus"
-                          disabled={!isEditMode}
-                          onConfirm={() => {
-                            const currentAgreements =
-                              form.getState().values.agreements ?? [];
-                            form.change(
-                              "agreements",
-                              currentAgreements.filter(
-                                (_, currentAgreementIndex) =>
-                                  currentAgreementIndex !== agreementIndex,
-                              ),
-                            );
-                          }}
-                          dialogTitle="Poista sopimus"
-                          dialogContent={`Haluatko varmasti poistaa sopimuksen ${getAgreementAccordionHeading(agreement)}?`}
-                        />
-                      </div>
                     </Fieldset>
                   </Accordion>
                 );
