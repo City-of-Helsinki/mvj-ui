@@ -158,12 +158,9 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
       render={({ handleSubmit, values }) => (
         <form onSubmit={handleSubmit}>
           <div className="landuse-detail__content">
-            <h2 className="landuse-detail__section-title">PERUSTIEDOT</h2>
+            <h1>Perustiedot</h1>
 
-            <Fieldset
-              heading=""
-              className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-            >
+            <Fieldset heading="" className="full-width">
               <div className="landuse-grid">
                 <div className="landuse-grid__column-3">
                   <Field name="maankayttosopimusType">
@@ -381,11 +378,8 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
             </Fieldset>
 
             {/* Asemakaavat Section */}
-            <h3 className="landuse-detail__section-title">Asemakaavatiedot</h3>
-            <Fieldset
-              heading=""
-              className="landuse-detail__fieldset--no-heading"
-            >
+            <h2>Asemakaavatiedot</h2>
+            <Fieldset heading="" className="full-width">
               <div className="landuse-grid">
                 <div className="landuse-grid__column-3">
                   <Field name="asemakaavanNumero">
@@ -472,13 +466,8 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                 </div>
               </div>
             </Fieldset>
-            <h3 className="landuse-detail__section-title">
-              Suunnittelun perusteena olevat kohteet
-            </h3>
-            <Fieldset
-              heading=""
-              className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-            >
+            <h2>Suunnittelun perusteena olevat kohteet</h2>
+            <Fieldset heading="" className="full-width">
               <FieldArray<KohdeEntry> name="suunnittelunPerusteenaOlevatKohteet">
                 {({ fields }) => (
                   <>
@@ -565,11 +554,8 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
             </Fieldset>
 
             {/* Osoitteet Section */}
-            <h3 className="landuse-detail__section-title">Osoitteet</h3>
-            <Fieldset
-              heading=""
-              className="landuse-detail__fieldset--no-heading"
-            >
+            <h2>Osoitteet</h2>
+            <Fieldset heading="" className="full-width">
               <div className="landuse-grid">
                 <FieldArray<OsoiteEntry> name="osoitteet">
                   {({ fields }) => (
@@ -670,10 +656,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
             </Fieldset>
 
             {/* Valmistelija Section */}
-            <Fieldset
-              heading=""
-              className="landuse-detail__fieldset--no-heading landuse-detail__fieldset--with-margin"
-            >
+            <Fieldset heading="" className="full-width">
               <div className="landuse-grid">
                 <FieldArray<ValmistelijaEntry> name="valmistelijat">
                   {({ fields }) => (

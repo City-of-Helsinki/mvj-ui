@@ -518,10 +518,11 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
         return (
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
-              <h2 className="landuse-detail__section-title">KORVAUKSET</h2>
+              <h1>Korvaukset</h1>
 
+              <h2>Maankäyttökorvaus</h2>
               <Fieldset
-                heading="Maankäyttökorvaus"
+                heading=""
                 className="landuse-detail__fieldset--with-margin"
               >
                 <div className="landuse-grid">
@@ -649,8 +650,10 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 </div>
               </Fieldset>
 
+              <h2>Maankäyttökorvauksen laskelma</h2>
+              <h3>Luonnos</h3>
               <Fieldset
-                heading="Maankäyttökorvauksen laskelma"
+                heading=""
                 className="landuse-detail__fieldset--with-margin"
               >
                 {isEditMode && (
@@ -664,8 +667,10 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 )}
               </Fieldset>
 
+              <h3>Korvauslaskuri</h3>
+
               <Fieldset
-                heading="Perushinta"
+                heading=""
                 className="landuse-detail__fieldset--with-margin"
               >
                 <div className="landuse-grid">
@@ -695,7 +700,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
               </Fieldset>
 
               <Fieldset
-                heading="Perustietotaulukko"
+                heading=""
                 className="landuse-detail__fieldset--with-margin"
               >
                 <div className="landuse-detail__sites-table-wrapper">
@@ -790,7 +795,8 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 </div>
               </Fieldset>
 
-              <Fieldset heading="Korvauksetta luovutettavat yleiset alueet">
+              <h3>Korvauksetta luovutettavat yleiset alueet</h3>
+              <Fieldset heading="">
                 <div className="landuse-grid">
                   <div className="landuse-grid__column-3">
                     <Field name="yleisetAlueetNeliot">

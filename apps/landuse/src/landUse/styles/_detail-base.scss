@@ -20,13 +20,6 @@
   border-radius: $radius-sm;
 }
 
-.landuse-detail__title {
-  font-size: 32px;
-  font-weight: 500;
-  margin: 0;
-  color: hds.$color-black-90;
-}
-
 .landuse-detail__actions {
   @include flex-row-center(hds.$spacing-xs);
   flex-wrap: wrap;
@@ -42,21 +35,10 @@
   padding: hds.$spacing-m 0;
 }
 
+.landuse-detail__notification-info-wrapper {
+  margin: hds.$spacing-s;
+}
 // -- Section / field primitives ----------------------------------------------
-
-.landuse-detail__section-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: hds.$color-black-90;
-  margin: 0 0 hds.$spacing-m 0;
-}
-
-.landuse-detail__subsection-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: hds.$color-black-90;
-  margin: 0 0 hds.$spacing-s 0;
-}
 
 .landuse-detail__field-group {
   @include flex-col(hds.$spacing-xs);
@@ -72,24 +54,6 @@
   border: 1px solid hds.$color-black-20;
   border-radius: $radius-sm;
   background-color: hds.$color-black-5;
-}
-
-.landuse-detail__container-max-width {
-  max-width: 100%;
-}
-
-// -- Fieldset overrides ------------------------------------------------------
-
-.landuse-detail__fieldset--no-heading {
-  width: 100%;
-
-  .hds-fieldset__legend {
-    display: none;
-  }
-}
-
-.landuse-detail__fieldset--with-margin {
-  margin-bottom: hds.$spacing-l;
 }
 
 // -- Tab label / icons -------------------------------------------------------
