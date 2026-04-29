@@ -1,8 +1,7 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { formValueSelector, isValid } from "redux-form";
 import { Row, Column } from "react-foundation";
-import flowRight from "lodash/flowRight";
 import Button from "@/components/button/Button";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
@@ -36,69 +35,81 @@ import {
   getRentForPeriodArrayByLease,
 } from "@/rentForPeriod/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Lease } from "@/leases/types";
-import type { RentForPeriodId } from "@/rentForPeriod/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import type {
+  RentCalculatorType,
+  RentForPeriodId,
+} from "@/rentForPeriod/types";
 let rentForPeriodId = 1;
-type Props = {
-  billingPeriod: number;
-  billingPeriods: Array<Record<string, any>>;
-  currentLease: Lease;
-  deleteRentForPeriodByLease: (...args: Array<any>) => any;
-  endDate: string;
-  fetchBillingPeriodsByLease: (...args: Array<any>) => any;
-  fetchRentForPeriodByLease: (...args: Array<any>) => any;
-  fetching: boolean;
-  isEditMode: boolean;
-  receiveIsSaveClicked: (...args: Array<any>) => any;
-  rentForPeriodArray: Array<Record<string, any>>;
-  saveClicked: boolean;
-  startDate: string;
-  type: string;
-  usersPermissions: UsersPermissionsType;
-  valid: boolean;
-  year: string;
-};
 
-class RentCalculator extends Component<Props> {
-  componentDidMount() {
-    const { rentForPeriodArray, usersPermissions } = this.props;
+const formName = FormNames.RENT_CALCULATOR;
+const selector = formValueSelector(formName);
 
+const RentCalculator: React.FC = () => {
+  const dispatch = useDispatch();
+  const currentLease = useSelector(getCurrentLease);
+  const billingPeriod = useSelector((state) =>
+    selector(state, "billing_period"),
+  );
+  const billingPeriods = useSelector((state) =>
+    getBillingPeriodsByLease(state, currentLease.id),
+  );
+  const endDate = useSelector((state) => selector(state, "billing_end_date"));
+  const fetching = useSelector(getIsFetching);
+  const isEditMode = useSelector(getIsEditMode);
+  const rentForPeriodArray = useSelector((state) =>
+    getRentForPeriodArrayByLease(state, currentLease.id),
+  );
+  const saveClicked = useSelector(getIsSaveClicked);
+  const startDate = useSelector((state) =>
+    selector(state, "billing_start_date"),
+  );
+  const type: RentCalculatorType = useSelector((state) =>
+    selector(state, "type"),
+  );
+  const usersPermissions = useSelector(getUsersPermissions);
+  const valid = useSelector((state) => isValid(formName)(state));
+  const year = useSelector((state) => selector(state, "year"));
+
+  useEffect(() => {
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
-      this.fetchBillingPeriods();
+      fetchBillingPeriods();
     }
-
     if (
       hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) &&
       (!rentForPeriodArray || !rentForPeriodArray.length)
     ) {
-      this.fetchDefaultRentForPeriod();
+      fetchDefaultRentForPeriod();
     }
-  }
+    //TODO handle hook dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  fetchBillingPeriods = () => {
-    const { currentLease, fetchBillingPeriodsByLease } = this.props;
+  const fetchBillingPeriods = () => {
     const year = getCurrentYear();
-    fetchBillingPeriodsByLease({
-      leaseId: currentLease.id,
-      year: year,
-    });
+    dispatch(
+      fetchBillingPeriodsByLease({
+        leaseId: currentLease.id,
+        year: year,
+      }),
+    );
   };
-  fetchDefaultRentForPeriod = () => {
-    const { currentLease, fetchRentForPeriodByLease } = this.props;
+
+  const fetchDefaultRentForPeriod = () => {
     const currentYear = getCurrentYear();
-    const { startDate, endDate } = this.getYearStartAndEndDates(currentYear);
-    fetchRentForPeriodByLease({
-      id: rentForPeriodId++,
-      allowDelete: false,
-      rentCalculatorType: RentCalculatorTypes.YEAR,
-      endDate: endDate,
-      leaseId: currentLease.id,
-      startDate: startDate,
-    });
+    const { startDate, endDate } = getYearStartAndEndDates(currentYear);
+    dispatch(
+      fetchRentForPeriodByLease({
+        id: rentForPeriodId++,
+        allowDelete: false,
+        type: RentCalculatorTypes.YEAR as RentCalculatorType,
+        endDate: endDate,
+        leaseId: currentLease.id,
+        startDate: startDate,
+      }),
+    );
   };
-  getYearStartAndEndDates = (year: string) => {
-    const { currentLease } = this.props;
+
+  const getYearStartAndEndDates = (year: string) => {
     const rents = getContentRents(currentLease);
     let isAnyCycleAprilToMarch = false;
     rents.forEach((rent) => {
@@ -120,31 +131,20 @@ class RentCalculator extends Component<Props> {
       endDate: `${year}-12-31`,
     };
   };
-  handleCreateRentsForPeriod = () => {
-    const {
-      billingPeriod,
-      billingPeriods,
-      currentLease,
-      endDate,
-      fetchRentForPeriodByLease,
-      receiveIsSaveClicked,
-      startDate,
-      type,
-      usersPermissions,
-      valid,
-      year,
-    } = this.props;
+
+  const handleCreateRentsForPeriod = () => {
     let requestStartDate, requestEndDate;
     if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE))
       return;
 
     switch (type) {
-      case RentCalculatorTypes.YEAR:
+      case RentCalculatorTypes.YEAR: {
         const { startDate: tempStartDate, endDate: tempEndDate } =
-          this.getYearStartAndEndDates(year);
+          getYearStartAndEndDates(year);
         requestStartDate = tempStartDate;
         requestEndDate = tempEndDate;
         break;
+      }
 
       case RentCalculatorTypes.RANGE:
         requestStartDate = startDate;
@@ -160,122 +160,84 @@ class RentCalculator extends Component<Props> {
         break;
     }
 
-    receiveIsSaveClicked(true);
+    dispatch(receiveIsSaveClicked(true));
 
     if (valid) {
-      fetchRentForPeriodByLease({
-        id: rentForPeriodId++,
-        allowDelete: true,
-        rentCalculatorType: type,
-        endDate: requestEndDate,
-        leaseId: currentLease.id,
-        startDate: requestStartDate,
-      });
+      dispatch(
+        fetchRentForPeriodByLease({
+          id: rentForPeriodId++,
+          allowDelete: true,
+          type: type,
+          endDate: requestEndDate,
+          leaseId: currentLease.id,
+          startDate: requestStartDate,
+        }),
+      );
     }
   };
-  handleRentForPeriodDelete = (id: RentForPeriodId) => {
-    const { currentLease, deleteRentForPeriodByLease } = this.props;
-    deleteRentForPeriodByLease({
-      id: id,
-      leaseId: currentLease.id,
-    });
+
+  const handleRentForPeriodDelete = (id: RentForPeriodId) => {
+    dispatch(
+      deleteRentForPeriodByLease({
+        id: id,
+        leaseId: currentLease.id,
+      }),
+    );
   };
 
-  render() {
-    const {
-      fetching,
-      isEditMode,
-      rentForPeriodArray,
-      saveClicked,
-      usersPermissions,
-      valid,
-    } = this.props;
-    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE))
-      return null;
-    return (
-      <div className="rent-calculator">
-        <SubTitle
-          style={{
-            textTransform: "uppercase",
-          }}
-          enableUiDataEdit={isEditMode}
-          uiDataKey={getUiDataRentCalculatorKey(RentCalculatorFieldPaths.TYPE)}
-        >
-          {RentCalculatorFieldTitles.TYPE}
-        </SubTitle>
-        <Row>
-          <Column small={12} medium={6} large={4}>
-            <RentCalculatorForm
-              onSubmit={this.handleCreateRentsForPeriod}
-              showErrors={saveClicked}
+  if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE))
+    return null;
+  return (
+    <div className="rent-calculator">
+      <SubTitle
+        style={{
+          textTransform: "uppercase",
+        }}
+        enableUiDataEdit={isEditMode}
+        uiDataKey={getUiDataRentCalculatorKey(RentCalculatorFieldPaths.TYPE)}
+      >
+        {RentCalculatorFieldTitles.TYPE}
+      </SubTitle>
+      <Row>
+        <Column small={12} medium={6} large={4}>
+          <RentCalculatorForm
+            onSubmit={handleCreateRentsForPeriod}
+            showErrors={saveClicked}
+          />
+        </Column>
+        <Column small={12} medium={6} large={8}>
+          <div className="rent-calculator__button-wrapper">
+            <Button
+              className={`${ButtonColors.SUCCESS} no-margin`}
+              disabled={fetching || (saveClicked && !valid)}
+              onClick={handleCreateRentsForPeriod}
+              text="Laske"
             />
-          </Column>
-          <Column small={12} medium={6} large={8}>
-            <div className="rent-calculator__button-wrapper">
-              <Button
-                className={`${ButtonColors.SUCCESS} no-margin`}
-                disabled={fetching || (saveClicked && !valid)}
-                onClick={this.handleCreateRentsForPeriod}
-                text="Laske"
-              />
-            </div>
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            {rentForPeriodArray &&
-              !!rentForPeriodArray.length &&
-              rentForPeriodArray.map((rentForPeriod, index) => {
-                return (
-                  <RentForPeriod
-                    key={index}
-                    onRemove={this.handleRentForPeriodDelete}
-                    rentForPeriod={rentForPeriod}
-                  />
-                );
-              })}
-          </Column>
-        </Row>
-        {fetching && (
-          <LoaderWrapper>
-            <Loader isLoading={fetching} />
-          </LoaderWrapper>
-        )}
-      </div>
-    );
-  }
-}
+          </div>
+        </Column>
+      </Row>
+      <Row>
+        <Column>
+          {rentForPeriodArray &&
+            !!rentForPeriodArray.length &&
+            rentForPeriodArray.map((rentForPeriod, index) => {
+              return (
+                <RentForPeriod
+                  key={index}
+                  onRemove={handleRentForPeriodDelete}
+                  rentForPeriod={rentForPeriod}
+                />
+              );
+            })}
+        </Column>
+      </Row>
+      {fetching && (
+        <LoaderWrapper>
+          <Loader isLoading={fetching} />
+        </LoaderWrapper>
+      )}
+    </div>
+  );
+};
 
-const formName = FormNames.RENT_CALCULATOR;
-const selector = formValueSelector(formName);
-export default flowRight(
-  connect(
-    (state) => {
-      const currentLease = getCurrentLease(state);
-      return {
-        billingPeriod: selector(state, "billing_period"),
-        billingPeriods: getBillingPeriodsByLease(state, currentLease.id),
-        currentLease: currentLease,
-        endDate: selector(state, "billing_end_date"),
-        fetching: getIsFetching(state),
-        isEditMode: getIsEditMode(state),
-        rentForPeriodArray: getRentForPeriodArrayByLease(
-          state,
-          currentLease.id,
-        ),
-        saveClicked: getIsSaveClicked(state),
-        startDate: selector(state, "billing_start_date"),
-        type: selector(state, "type"),
-        usersPermissions: getUsersPermissions(state),
-        valid: isValid(formName)(state),
-        year: selector(state, "year"),
-      };
-    },
-    {
-      deleteRentForPeriodByLease,
-      fetchBillingPeriodsByLease,
-      fetchRentForPeriodByLease,
-      receiveIsSaveClicked,
-    },
-  ),
-)(RentCalculator);
+export default RentCalculator;

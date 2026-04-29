@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import classNames from "classnames";
 import get from "lodash/get";
@@ -14,17 +13,14 @@ import {
 } from "@/components/helpers";
 import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
+import { useSelector } from "react-redux";
 type Props = {
-  attributes: Attributes;
   date: string;
   explanation: Record<string, any>;
 };
 
-const RentCalculatorExplanation = ({
-  attributes,
-  date,
-  explanation,
-}: Props) => {
+const RentCalculatorExplanation = ({ date, explanation }: Props) => {
+  const attributes: Attributes = useSelector(getAttributes);
   const description = getRentExplanationDescription(explanation, attributes);
   const dates = get(explanation, "date_ranges");
   const amount = getRentExplanationAmount(explanation);
@@ -86,8 +82,4 @@ const RentCalculatorExplanation = ({
   );
 };
 
-export default connect((state) => {
-  return {
-    attributes: getAttributes(state),
-  };
-})(RentCalculatorExplanation);
+export default RentCalculatorExplanation;
