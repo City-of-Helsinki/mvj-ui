@@ -28,3 +28,11 @@ h4 {
 h5 {
   font-size: hds.$fontsize-heading-xs;
 }
+
+.math-operator-xl {
+  font-size: hds.$fontsize-heading-xl;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+}
