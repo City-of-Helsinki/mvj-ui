@@ -33,7 +33,7 @@ export const ConfirmDeleteButton: React.FC<ConfirmDeleteButtonProps> = ({
   buttonLabel = "Poista",
   buttonAriaLabel,
   buttonVariant = ButtonVariant.Danger,
-  buttonSize,
+  buttonSize = ButtonSize.Small,
   buttonClassName,
   buttonStyle,
   disabled = false,

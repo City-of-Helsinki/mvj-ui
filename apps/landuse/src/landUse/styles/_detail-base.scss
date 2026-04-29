@@ -249,6 +249,13 @@
   margin-bottom: hds.$spacing-m;
 }
 
+.landuse-detail__decisions-delete-button-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: hds.$spacing-m 0;
+  width: 100%;
+}
+
 .landuse-detail__decisions-section-break {
   margin-top: hds.$spacing-m;
 }
