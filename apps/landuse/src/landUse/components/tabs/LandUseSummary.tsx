@@ -656,6 +656,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
             </Fieldset>
 
             {/* Valmistelija Section */}
+            <h2>Valmistelijat</h2>
             <Fieldset heading="" className="full-width">
               <div className="landuse-grid">
                 <FieldArray<ValmistelijaEntry> name="valmistelijat">
