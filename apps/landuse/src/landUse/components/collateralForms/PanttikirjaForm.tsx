@@ -35,18 +35,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
   return (
     <>
       <div className="landuse-grid landuse-grid__bottom-margin">
-        <div className="landuse-grid__column-3">
-          <CollateralSelectField
-            namePrefix={namePrefix}
-            fieldName="vakuusasiakirjanLaji"
-            label="Vakuusasiakirjan laji"
-            idSuffix="vakuusasiakirjan-laji"
-            isEditMode={isEditMode}
-            options={landUseGuaranteeCategoryOptions}
-          />
-        </div>
-
-        <div className="landuse-grid__column-3">
+        <div className="landuse-grid__column-12">
           <CollateralRadioField
             namePrefix={namePrefix}
             fieldName="kiinteistoVaiLaitos"
@@ -56,27 +45,17 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
             options={landUseGuaranteeTargetOptions}
           />
         </div>
+      </div>
 
+      <div className="landuse-grid landuse-grid__bottom-margin">
         {target === "Kiinteistö" && (
-          <div className="landuse-grid__column-9">
-            <FieldArray<string> name={`${namePrefix}.kiinteistotunnukset`}>
-              {({ fields }) => (
-                <>
-                  {(fields.length ?? 0) === 0 && isEditMode && (
-                    <Button
-                      type="button"
-                      variant={ButtonVariant.Supplementary}
-                      iconStart={<IconPlusCircleFill />}
-                      onClick={() => fields.push("")}
-                    >
-                      Lisää kiinteistötunnus
-                    </Button>
-                  )}
-                  {fields.map((fieldName, index) => (
-                    <div
-                      key={fieldName}
-                      className="landuse-detail__collateral-repeat-row"
-                    >
+          // <div className="landuse-grid__column-3">
+          <FieldArray<string> name={`${namePrefix}.kiinteistotunnukset`}>
+            {({ fields }) => (
+              <>
+                {fields.map((fieldName, index) => (
+                  <React.Fragment key={fieldName}>
+                    <div className="landuse-grid__column-3">
                       <Field name={fieldName}>
                         {({ input }) => (
                           <TextInput
@@ -92,6 +71,8 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
                           />
                         )}
                       </Field>
+                    </div>
+                    <div className="landuse-grid__column-9">
                       {isEditMode && (
                         <ConfirmDeleteButton
                           id={`${namePrefix.replace(/\./g, "-")}-kiinteistotunnus-delete-${index}`}
@@ -103,8 +84,10 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
                         />
                       )}
                     </div>
-                  ))}
-                  {isEditMode && (fields.length ?? 0) > 0 && (
+                  </React.Fragment>
+                ))}
+                {isEditMode && (
+                  <div className="landuse-grid__column-12">
                     <Button
                       type="button"
                       variant={ButtonVariant.Supplementary}
@@ -113,13 +96,12 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
                     >
                       Lisää kiinteistötunnus
                     </Button>
-                  )}
-                </>
-              )}
-            </FieldArray>
-          </div>
+                  </div>
+                )}
+              </>
+            )}
+          </FieldArray>
         )}
-
         {target === "Laitos" && (
           <div className="landuse-grid__column-3">
             <CollateralTextField
@@ -131,6 +113,19 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
             />
           </div>
         )}
+      </div>
+
+      <div className="landuse-grid landuse-grid__bottom-margin">
+        <div className="landuse-grid__column-3">
+          <CollateralSelectField
+            namePrefix={namePrefix}
+            fieldName="vakuusasiakirjanLaji"
+            label="Vakuusasiakirjan laji"
+            idSuffix="vakuusasiakirjan-laji"
+            isEditMode={isEditMode}
+            options={landUseGuaranteeCategoryOptions}
+          />
+        </div>
 
         <div className="landuse-grid__column-3">
           <CollateralTextField
