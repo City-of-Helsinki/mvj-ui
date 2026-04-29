@@ -11,3 +11,13 @@ export const DEFAULT_KOROTUSKERROIN = 1.25;
  * in the monitoring tab. Initializes to 1.5 per current practice.
  */
 export const INITIAL_SAKKOKERROIN = 1.5;
+
+/**
+ * Korvauskynnys is used in maankäyttökorvaus calculations.
+ */
+export const INITIAL_KORVAUSKYNNYS_EURO = 1_000_000;
+
+/**
+ * Korvausprosentti is used in maankäyttökorvaus calculations.
+ */
+export const INITIAL_KORVAUS_PERCENTAGE = 35;

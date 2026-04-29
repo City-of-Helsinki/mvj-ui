@@ -8,7 +8,11 @@ import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoi
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
 import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
-import { DEFAULT_KOROTUSKERROIN } from "../constants";
+import {
+  DEFAULT_KOROTUSKERROIN,
+  INITIAL_KORVAUSKYNNYS_EURO,
+  INITIAL_KORVAUS_PERCENTAGE,
+} from "../constants";
 import { createEmptyPartiesFormValues } from "../api/landUseFormValues";
 
 export interface MockLandUseData {
@@ -113,11 +117,16 @@ const ma113Compensations: LandUseCompensationsFormValues = {
   perushinta: "1850",
   maakorvausSelite: "Maakorvaus kohdistuu puistoalueiden hankintaan.",
   muuSelite: "Muu korvaus sisältää kunnallistekniikan liittymismaksuja.",
+  kaavaehdotustaEdeltavaArvo: "5000",
   perustietotaulukkoRowsBySiteId: {
     "MA113-1-site-1": {
       yksikkohinta: "1725",
     },
   },
+  korvauskynnys: INITIAL_KORVAUSKYNNYS_EURO,
+  purkuTaiMuuVahennys: undefined,
+  korvausprosentti: INITIAL_KORVAUS_PERCENTAGE,
+  maankayttokorvaus: undefined,
   yleisetAlueetNeliot: "850",
   yleisetAlueetHankinnanArvo: "40000",
 };

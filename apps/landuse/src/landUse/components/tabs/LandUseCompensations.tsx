@@ -26,12 +26,15 @@ import {
 import { landUseCompensationSelectOptions } from "../../options";
 import {
   formatLandUseEuroValue,
-  formatLandUseIntegerValue,
   formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
   parseNumber,
 } from "../../utils/number";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
+import {
+  INITIAL_KORVAUSKYNNYS_EURO,
+  INITIAL_KORVAUS_PERCENTAGE,
+} from "@/landUse/constants";
 
 export interface LandUseSite {
   id: string;
@@ -54,10 +57,14 @@ export interface LandUseCompensationsFormValues {
   maakorvaus: string;
   muuKorvaus: string;
   perushinta: string;
-  korotuskerroin?: number;
   maakorvausSelite: string;
   muuSelite: string;
+  kaavaehdotustaEdeltavaArvo: string;
   perustietotaulukkoRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
+  korvauskynnys: number;
+  purkuTaiMuuVahennys: number;
+  korvausprosentti: number;
+  maankayttokorvaus: string;
   yleisetAlueetNeliot: string;
   yleisetAlueetHankinnanArvo: string;
 }
@@ -519,7 +526,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
               <h1>Korvaukset</h1>
-
               <h2>Maankäyttökorvaus</h2>
               <Fieldset
                 heading=""
@@ -597,7 +603,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
 
                   <div className="landuse-grid__column-3">
                     <TextInput
-                      id="landuse-compensations-yhteensa"
+                      id="landuse-compensations-maankayttokorvaus-yhteensa"
                       label="Yhteensä"
                       value={formatLandUseEuroValue(yhteensa)}
                       readOnly
@@ -649,7 +655,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   </div>
                 </div>
               </Fieldset>
-
               <h2>Maankäyttökorvauksen laskelma</h2>
               <h3>Luonnos</h3>
               <Fieldset
@@ -666,9 +671,34 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   </Button>
                 )}
               </Fieldset>
-
-              <h3>Korvauslaskuri</h3>
-
+              <h3>Kaavaehdotusta edeltävä arvo</h3>
+              <Fieldset heading="" className="">
+                <div className="landuse-grid">
+                  <div className="landuse-grid__column-3">
+                    <Field name="kaavaehdotustaEdeltavaArvo">
+                      {({ input }) =>
+                        isEditMode ? (
+                          <NumberInput
+                            id="landuse-compensations-kaavaehdotusta-edeltava-arvo"
+                            label="Edeltävä arvo"
+                            value={input.value}
+                            unit="€"
+                            onChange={input.onChange}
+                          />
+                        ) : (
+                          <TextInput
+                            id="landuse-compensations-kaavaehdotusta-edeltava-arvo"
+                            label="Edeltävä arvo"
+                            value={formatLandUseEuroValue(input.value)}
+                            readOnly
+                          />
+                        )
+                      }
+                    </Field>
+                  </div>
+                </div>
+              </Fieldset>
+              <h3>Kaavaehdotuksen mukainen arvo</h3>
               <Fieldset
                 heading=""
                 className="landuse-detail__fieldset--with-margin"
@@ -689,7 +719,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                           <TextInput
                             id="landuse-compensations-perushinta"
                             label="Perushinta"
-                            value={readOnlyTextValue(input.value)}
+                            value={formatLandUseEuroValue(input.value)}
                             readOnly
                           />
                         )
@@ -698,7 +728,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   </div>
                 </div>
               </Fieldset>
-
               <Fieldset
                 heading=""
                 className="landuse-detail__fieldset--with-margin"
@@ -792,6 +821,130 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       Lisää kohde
                     </Button>
                   </div>
+                </div>
+              </Fieldset>
+
+              <h3>Maankäyttökorvauksen laskuri</h3>
+              <Fieldset heading="">
+                <div className="landuse-flexbox-horizontal">
+                  <span className="math-operator-xl">(</span>
+                  <Field name="arvonnousu">
+                    {() => (
+                      <TextInput
+                        id="landuse-compensations-arvonnousu"
+                        label="Arvonnousu"
+                        value={formatLandUseEuroValue(
+                          totals.summa -
+                            parseNumber(values.kaavaehdotustaEdeltavaArvo),
+                        )}
+                        readOnly
+                      />
+                    )}
+                  </Field>
+                  <span className="math-operator-xl">-</span>
+                  <Field
+                    name="korvauskynnys"
+                    initialValue={INITIAL_KORVAUSKYNNYS_EURO}
+                    validate={(value) =>
+                      // TODO collect validators to central place
+                      value <= 0
+                        ? "Korvauskynnys ei saa olla negatiivinen"
+                        : undefined
+                    }
+                  >
+                    {({ input, meta }) =>
+                      isEditMode ? (
+                        <NumberInput
+                          id="landuse-compensations-korvauskynnys"
+                          label="Korvauskynnys"
+                          value={input.value}
+                          onChange={input.onChange}
+                          errorText={meta.error ? meta.error : undefined}
+                        />
+                      ) : (
+                        <TextInput
+                          id="landuse-compensations-korvauskynnys"
+                          label="Korvauskynnys"
+                          value={formatLandUseEuroValue(input.value)}
+                          readOnly
+                        />
+                      )
+                    }
+                  </Field>
+                  <span className="math-operator-xl">+</span>
+                  <Field name="purkuTaiMuuVahennys">
+                    {({ input }) =>
+                      isEditMode ? (
+                        <NumberInput
+                          id="landuse-compensations-purku-tai-muu-vahennys"
+                          label="Purkuvähennys"
+                          value={input.value}
+                          onChange={input.onChange}
+                        />
+                      ) : (
+                        <TextInput
+                          id="landuse-compensations-purku-tai-muu-vahennys"
+                          label="Purkuvähennys"
+                          value={formatLandUseEuroValue(input.value)}
+                          readOnly
+                        />
+                      )
+                    }
+                  </Field>
+                  <span className="math-operator-xl">) *</span>
+                  <Field
+                    name="korvausprosentti"
+                    initialValue={INITIAL_KORVAUS_PERCENTAGE}
+                  >
+                    {({ input }) =>
+                      isEditMode ? (
+                        <NumberInput
+                          id="landuse-compensations-korvausprosentti"
+                          label="Korvausprosentti %"
+                          value={input.value}
+                          onChange={input.onChange}
+                        />
+                      ) : (
+                        <TextInput
+                          id="landuse-compensations-korvausprosentti"
+                          label="Korvausprosentti %"
+                          value={formatLandUseNumericValueWithUnit(
+                            input.value,
+                            "%",
+                          )}
+                          readOnly
+                        />
+                      )
+                    }
+                  </Field>
+                  <span className="math-operator-xl"> = </span>
+                  <Field name="maankayttokorvaus">
+                    {() => {
+                      const arvonnousu =
+                        totals.summa -
+                        parseNumber(values.kaavaehdotustaEdeltavaArvo);
+                      const korvauskynnys = parseNumber(values.korvauskynnys);
+                      const purkuTaiMuuVahennys = parseNumber(
+                        values.purkuTaiMuuVahennys,
+                      );
+                      const korvausprosentti = parseNumber(
+                        values.korvausprosentti,
+                      );
+
+                      const maankayttokorvaus =
+                        (arvonnousu + korvauskynnys + purkuTaiMuuVahennys) *
+                        (korvausprosentti / 100);
+
+                      return (
+                        <TextInput
+                          id="landuse-compensations-maankayttokorvaus"
+                          label="Maankäyttökorvaus"
+                          value={formatLandUseEuroValue(maankayttokorvaus)}
+                          readOnly
+                        />
+                      );
+                    }}
+                  </Field>
                 </div>
               </Fieldset>
 

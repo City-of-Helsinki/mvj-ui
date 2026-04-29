@@ -38,6 +38,12 @@
 .landuse-detail__notification-info-wrapper {
   margin: hds.$spacing-s;
 }
+
+.landuse-flexbox-horizontal {
+  display: flex;
+  flex-direction: row;
+  gap: hds.$spacing-m;
+}
 // -- Section / field primitives ----------------------------------------------
 
 .landuse-detail__field-group {
