@@ -852,51 +852,57 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   heading=""
                   className="landuse-detail__fieldset--with-margin"
                 >
-                  <div className="landuse-grid landuse-detail__monitoring-collateral-grid">
-                    <TextInput
-                      id="monitoring-sopimuksen-mukainen"
-                      label="Maankäyttökorvaus"
-                      value={formatLandUseEuroValue(sopimuksenMukainenValue)}
-                      readOnly
-                      style={
-                        remainingCollateralSeparatorDirection === "left"
-                          ? {
-                              border: "4px solid var(--color-success)",
-                              padding: "var(--spacing-2-xs)",
-                            }
-                          : {
-                              padding: "var(--spacing-2-xs)",
-                            }
-                      }
-                    />
+                  <div className="landuse-grid">
+                    <div className="landuse-grid__column-2">
+                      <TextInput
+                        id="monitoring-sopimuksen-mukainen"
+                        label="Maankäyttökorvaus"
+                        value={formatLandUseEuroValue(sopimuksenMukainenValue)}
+                        readOnly
+                        style={
+                          remainingCollateralSeparatorDirection === "left"
+                            ? {
+                                border: "4px solid var(--color-success)",
+                                padding: "var(--spacing-2-xs)",
+                              }
+                            : {
+                                padding: "var(--spacing-2-xs)",
+                              }
+                        }
+                      />
+                    </div>
 
-                    <span
-                      className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${remainingCollateralSeparatorDirection}`}
-                      aria-hidden="true"
-                    >
-                      {remainingCollateralSeparatorDirection === "right" ? (
-                        <IconAngleLeft size={IconSize.ExtraLarge} />
-                      ) : (
-                        <IconAngleRight size={IconSize.ExtraLarge} />
-                      )}
-                    </span>
+                    <div className="landuse-grid__column-1">
+                      <span
+                        className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${remainingCollateralSeparatorDirection}`}
+                        aria-hidden="true"
+                      >
+                        {remainingCollateralSeparatorDirection === "right" ? (
+                          <IconAngleLeft size={IconSize.ExtraLarge} />
+                        ) : (
+                          <IconAngleRight size={IconSize.ExtraLarge} />
+                        )}
+                      </span>
+                    </div>
 
-                    <TextInput
-                      id="collaterals-saantelyn-mukainen"
-                      label="Asumismuotoehdot"
-                      value={formatLandUseEuroValue(saantelynMukainenValue)}
-                      readOnly
-                      style={
-                        remainingCollateralSeparatorDirection === "right"
-                          ? {
-                              border: "4px solid var(--color-success)",
-                              padding: "var(--spacing-2-xs)",
-                            }
-                          : {
-                              padding: "var(--spacing-2-xs)",
-                            }
-                      }
-                    />
+                    <div className="landuse-grid__column-2">
+                      <TextInput
+                        id="collaterals-saantelyn-mukainen"
+                        label="Asumismuotoehdot"
+                        value={formatLandUseEuroValue(saantelynMukainenValue)}
+                        readOnly
+                        style={
+                          remainingCollateralSeparatorDirection === "right"
+                            ? {
+                                border: "4px solid var(--color-success)",
+                                padding: "var(--spacing-2-xs)",
+                              }
+                            : {
+                                padding: "var(--spacing-2-xs)",
+                              }
+                        }
+                      />
+                    </div>
                   </div>
                 </Fieldset>
 
