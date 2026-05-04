@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { change, Field, formValueSelector, reduxForm } from "redux-form";
+import React, { useEffect, useMemo, useState } from "react";
+import { Form } from "react-final-form";
+import type { FormApi } from "final-form";
 import { Row, Column } from "react-foundation";
 import ErrorField from "@/components/form/ErrorField";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
-import { FieldTypes, FormNames } from "@/enums";
+import FormField from "@/components/form/final-form/FormField";
+import { FieldTypes } from "@/enums";
 import { RentCalculatorTypes } from "@/components/enums";
-import { validateRentCalculatorForm } from "@/components/formValidations";
 import { formatDateRange } from "@/util/helpers";
-import { getCurrentYear } from "@/util/date";
 import { getCurrentLease } from "@/leases/selectors";
 import { getBillingPeriodsByLease } from "@/billingPeriods/selectors";
 import type { BillingPeriodList } from "@/billingPeriods/types";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 type Props = {
+  formApi: FormApi;
   onSubmit: (...args: Array<any>) => any;
   showErrors: boolean;
-  valid: boolean;
+  errors?: Record<string, any>;
 };
 
 const getBillingPeriodsOptions = (billingPeriods: BillingPeriodList) => {
@@ -29,37 +29,34 @@ const getBillingPeriodsOptions = (billingPeriods: BillingPeriodList) => {
     };
   });
 };
-const formName = FormNames.RENT_CALCULATOR;
-const selector = formValueSelector(formName);
 
-const RentCalculatorForm: React.FC<Props> = ({ onSubmit, showErrors }) => {
-  const dispatch = useDispatch();
+const RentCalculatorForm: React.FC<Props> = ({
+  formApi,
+  onSubmit,
+  showErrors,
+  errors = {},
+}) => {
   const currentLease = useSelector(getCurrentLease);
-  const billingPeriod = useSelector((state) =>
-    selector(state, "billing_period"),
-  );
   const billingPeriods: BillingPeriodList = useSelector((state) =>
     getBillingPeriodsByLease(state, currentLease.id),
   );
-  const type = useSelector((state) => selector(state, "type"));
-
-  const [billingPeriodOptions, setBillingPeriodOptions] = useState(
-    getBillingPeriodsOptions(billingPeriods),
+  const billingPeriodOptions = useMemo(
+    () => getBillingPeriodsOptions(billingPeriods),
+    [billingPeriods],
   );
+  const [type, setType] = useState(RentCalculatorTypes.YEAR);
 
   useEffect(() => {
-    setBillingPeriodOptions(getBillingPeriodsOptions(billingPeriods));
-  }, [billingPeriods]);
+    const unsubscribe = formApi.subscribe(
+      ({ values }) => {
+        setType(values.type);
+      },
+      { values: true },
+    );
+    return () => unsubscribe();
+  }, [formApi]);
 
   useEffect(() => {
-    const setDefaultValues = () => {
-      const currentYear = getCurrentYear();
-      dispatch(change(formName, "type", RentCalculatorTypes.YEAR));
-      dispatch(change(formName, "year", currentYear));
-      dispatch(change(formName, "billing_start_date", `${currentYear}-01-01`));
-      dispatch(change(formName, "billing_end_date", `${currentYear}-12-31`));
-    };
-
     const autoselectBillingPeriod = (
       billingPeriodOptions: Array<Record<string, any>>,
     ) => {
@@ -70,20 +67,16 @@ const RentCalculatorForm: React.FC<Props> = ({ onSubmit, showErrors }) => {
       );
 
       if (selected) {
-        dispatch(change(formName, "billing_period", selected.value));
+        formApi.change("billing_period", selected.value);
       }
     };
 
     if (billingPeriodOptions.length) {
       autoselectBillingPeriod(billingPeriodOptions);
+      formApi.reset(formApi.getState().values);
     }
-    setDefaultValues();
-  }, [billingPeriodOptions, dispatch]);
+  }, [billingPeriodOptions, formApi]);
 
-  const handleSubmit = (e: any) => {
-    onSubmit();
-    e.preventDefault();
-  };
   const getRequestOptions = () => {
     return [
       {
@@ -93,7 +86,7 @@ const RentCalculatorForm: React.FC<Props> = ({ onSubmit, showErrors }) => {
           minWidth: "115px",
         },
         field: (
-          <FormFieldLegacy
+          <FormField
             fieldAttributes={{
               label: "Vuosi",
               type: "string",
@@ -109,13 +102,9 @@ const RentCalculatorForm: React.FC<Props> = ({ onSubmit, showErrors }) => {
           width: "180px",
         },
         errorField: (
-          <Field
-            name="yearErrors"
-            component={ErrorField}
-            showError={showErrors}
-            style={{
-              marginTop: "-10px",
-            }}
+          <ErrorField
+            showError={showErrors && !!errors.yearErrors}
+            meta={{ error: errors.yearErrors }}
           />
         ),
         errorFieldStyles: {
@@ -131,7 +120,7 @@ const RentCalculatorForm: React.FC<Props> = ({ onSubmit, showErrors }) => {
         field: (
           <Row>
             <Column small={6}>
-              <FormFieldLegacy
+              <FormField
                 fieldAttributes={{
                   label: "Alkupvm",
                   type: "date",
@@ -144,7 +133,7 @@ const RentCalculatorForm: React.FC<Props> = ({ onSubmit, showErrors }) => {
               />
             </Column>
             <Column small={6}>
-              <FormFieldLegacy
+              <FormField
                 className="with-dash"
                 fieldAttributes={{
                   label: "Loppupvm",
@@ -163,10 +152,9 @@ const RentCalculatorForm: React.FC<Props> = ({ onSubmit, showErrors }) => {
           width: "180px",
         },
         errorField: (
-          <Field
-            name="rangeErrors"
-            component={ErrorField}
-            showError={showErrors}
+          <ErrorField
+            showError={showErrors && !!errors.rangeErrors}
+            meta={{ error: errors.rangeErrors }}
             style={{
               marginTop: "-10px",
             }}
@@ -183,7 +171,7 @@ const RentCalculatorForm: React.FC<Props> = ({ onSubmit, showErrors }) => {
           minWidth: "115px",
         },
         field: (
-          <FormFieldLegacy
+          <FormField
             fieldAttributes={{
               label: "Laskutuskausi",
               type: "choice",
@@ -204,10 +192,9 @@ const RentCalculatorForm: React.FC<Props> = ({ onSubmit, showErrors }) => {
           marginBottom: 0,
         },
         errorField: (
-          <Field
-            name="billingPeriodErrors"
-            component={ErrorField}
-            showError={true}
+          <ErrorField
+            showError={showErrors && !!errors.billingPeriodErrors}
+            meta={{ error: errors.billingPeriodErrors }}
             style={{
               marginTop: "-10px",
             }}
@@ -222,31 +209,30 @@ const RentCalculatorForm: React.FC<Props> = ({ onSubmit, showErrors }) => {
 
   const requestOptions = getRequestOptions();
   return (
-    <div onSubmit={handleSubmit}>
-      <Row>
-        <Column>
-          <FormFieldLegacy
-            className="no-margin"
-            fieldAttributes={{
-              label: "Laskelman tyyppi",
-              type: FieldTypes.RADIO_WITH_FIELD,
-              required: true,
-              read_only: false,
-            }}
-            name="type"
-            invisibleLabel
-            disableDirty
-            overrideValues={{
-              options: requestOptions,
-            }}
-          />
-        </Column>
-      </Row>
-    </div>
+    <Form form={formApi} onSubmit={onSubmit}>
+      {() => (
+        <Row>
+          <Column>
+            <FormField
+              className="no-margin"
+              fieldAttributes={{
+                label: "Laskelman tyyppi",
+                type: FieldTypes.RADIO_WITH_FIELD,
+                required: true,
+                read_only: false,
+              }}
+              name="type"
+              invisibleLabel
+              disableDirty
+              overrideValues={{
+                options: requestOptions,
+              }}
+            />
+          </Column>
+        </Row>
+      )}
+    </Form>
   );
 };
 
-export default reduxForm({
-  form: formName,
-  validate: validateRentCalculatorForm,
-})(RentCalculatorForm);
+export default RentCalculatorForm;

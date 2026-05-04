@@ -11,9 +11,13 @@ import BasisOfRentsEditMain from "./basisOfRent/BasisOfRentsEditMain";
 
 type Props = {
   rentsFormApi: FormApi;
+  rentCalculatorFormApi: FormApi;
 };
 
-const RentsEditMain: React.FC<Props> = ({ rentsFormApi }) => {
+const RentsEditMain: React.FC<Props> = ({
+  rentsFormApi,
+  rentCalculatorFormApi,
+}) => {
   const dispatch = useDispatch();
   const currentLease = useSelector(getCurrentLease);
 
@@ -63,7 +67,8 @@ const RentsEditMain: React.FC<Props> = ({ rentsFormApi }) => {
         return (
           <>
             <RentsEdit
-              formApi={rentsFormApi}
+              rentsFormApi={rentsFormApi}
+              rentCalculatorFormApi={rentCalculatorFormApi}
               handleSetRentInfoComplete={handleSetRentInfoComplete}
               handleSetRentInfoUncomplete={handleSetRentInfoUncomplete}
             />

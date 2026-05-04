@@ -79,7 +79,7 @@ import {
   LeaseRentsFieldPaths,
   LeaseTenantsFieldPaths,
 } from "@/leases/enums";
-import { ButtonColors } from "@/components/enums";
+import { ButtonColors, RentCalculatorTypes } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import {
   addBasisOfRentsFormValuesToPayload,
@@ -136,6 +136,7 @@ import {
   removeSessionStorageItem,
   setSessionStorageItem,
 } from "@/util/storage";
+import { getCurrentYear } from "@/util/date";
 import { withLeasePageAttributes } from "@/components/attributes/LeasePageAttributes";
 import { withUiDataList } from "@/components/uiData/UiDataListHOC";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
@@ -162,6 +163,7 @@ import {
   validateSummaryForm,
   validateTenantForm,
 } from "../formValidators";
+import { validateRentCalculatorForm } from "@/components/formValidations";
 
 type Props = {
   areasFormValues: Record<string, any>;
@@ -299,6 +301,10 @@ const LeasePage: React.FC<Props> = (props) => {
     valid: true,
   });
   const [rentsFormState, setRentsFormState] = useState({
+    dirty: false,
+    valid: true,
+  });
+  const [rentCalculatorFormState, setRentCalculatorFormState] = useState({
     dirty: false,
     valid: true,
   });
@@ -506,6 +512,20 @@ const LeasePage: React.FC<Props> = (props) => {
       },
       { valid: true, values: true, initialValues: true },
     );
+    const unsubscribeLeaseRentCalculatorForm =
+      leaseRentCalculatorFormRef.current.subscribe(
+        (formState) => {
+          const isDirtyIncludingFieldArrays = !isEqual(
+            formState.values,
+            formState.initialValues,
+          );
+          setRentCalculatorFormState({
+            dirty: isDirtyIncludingFieldArrays,
+            valid: formState.valid,
+          });
+        },
+        { valid: true, values: true, initialValues: true },
+      );
 
     return () => {
       if (pathname !== `${getRouteById(Routes.LEASES)}/${leaseId}`) {
@@ -528,6 +548,7 @@ const LeasePage: React.FC<Props> = (props) => {
       unsubscribeLeaseInspectionsForm();
       unsubscribeLeaseAreasForm();
       unsubscribeLeaseRentsForm();
+      unsubscribeLeaseRentCalculatorForm();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -671,7 +692,7 @@ const LeasePage: React.FC<Props> = (props) => {
     setInspectionsFormState({ dirty: false, valid: true });
     setLeaseAreasFormState({ dirty: false, valid: true });
     setRentsFormState({ dirty: false, valid: true });
-
+    setRentCalculatorFormState({ dirty: false, valid: true });
     receiveIsSaveClicked(false);
     dispatch(clearFormValidFlags());
     dispatch(clearFormDirtyFlags());
@@ -690,6 +711,7 @@ const LeasePage: React.FC<Props> = (props) => {
     leaseInspectionsFormRef.current.restart();
     leaseAreasFormRef.current.restart();
     leaseRentsFormRef.current.restart();
+    leaseRentCalculatorFormRef.current.restart();
   };
 
   const summaryFormRef = useRef(
@@ -742,11 +764,19 @@ const LeasePage: React.FC<Props> = (props) => {
       mutators: { ...arrayMutators },
     }),
   );
+  const leaseRentCalculatorFormRef = useRef(
+    createForm({
+      onSubmit: () => {},
+      validate: validateRentCalculatorForm,
+      mutators: { ...arrayMutators },
+    }),
+  );
 
   const initializeForms = (lease: Lease) => {
     const areas = getContentLeaseAreas(lease),
       rents = getContentRents(lease),
-      tenants = getContentTenants(lease);
+      tenants = getContentTenants(lease),
+      currentYear = getCurrentYear();
     leaseConstructabilityFormRef.current.initialize({
       lease_areas: getContentConstructabilityAreas(lease),
     });
@@ -767,6 +797,12 @@ const LeasePage: React.FC<Props> = (props) => {
       rent_info_completed_at: lease.rent_info_completed_at,
       rents: rents.filter((rent) => !isArchived(rent)),
       rentsArchived: rents.filter((rent) => isArchived(rent)),
+    });
+    leaseRentCalculatorFormRef.current.initialize({
+      type: RentCalculatorTypes.YEAR,
+      year: currentYear,
+      billing_start_date: `${currentYear}-01-01`,
+      billing_end_date: `${currentYear}-12-31`,
     });
     initialize(FormNames.LEASE_BASIS_OF_RENTS, {
       basis_of_rents: getContentBasisOfRents(lease).filter(
@@ -1250,7 +1286,9 @@ const LeasePage: React.FC<Props> = (props) => {
               isDirty: rentsFormState.dirty || isBasisOfRentsFormDirty,
               hasError:
                 isSaveClicked &&
-                (!rentsFormState.valid || !isBasisOfRentsFormValid),
+                (!rentsFormState.valid ||
+                  !rentCalculatorFormState.valid ||
+                  !isBasisOfRentsFormValid),
             },
             {
               label: "Päätökset ja sopimukset",
@@ -1433,7 +1471,10 @@ const LeasePage: React.FC<Props> = (props) => {
                     <AuthorizationError text={PermissionMissingTexts.GENERAL} />
                   }
                 >
-                  <RentsEditMain rentsFormApi={leaseRentsFormRef.current} />
+                  <RentsEditMain
+                    rentsFormApi={leaseRentsFormRef.current}
+                    rentCalculatorFormApi={leaseRentCalculatorFormRef.current}
+                  />
                 </Authorization>
               ) : (
                 <Authorization
