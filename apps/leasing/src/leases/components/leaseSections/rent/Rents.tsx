@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useSelector } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
 import BasisOfRents from "./basisOfRent/BasisOfRents";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
+import arrayMutators from "final-form-arrays";
+import { createForm } from "final-form";
 import GreenBox from "@/components/content/GreenBox";
 import RentCalculator from "@/components/rent-calculator/RentCalculator";
 import RentItem from "./RentItem";
@@ -11,9 +13,11 @@ import SuccessField from "@/components/form/SuccessField";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
 import WarningField from "@/components/form/WarningField";
+import { validateRentCalculatorForm } from "@/components/formValidations";
 import {
   RentCalculatorFieldPaths,
   RentCalculatorFieldTitles,
+  RentCalculatorTypes,
 } from "@/components/enums";
 import {
   LeaseBasisOfRentsFieldPaths,
@@ -28,6 +32,7 @@ import {
   isArchived,
   isFieldAllowedToRead,
 } from "@/util/helpers";
+import { getCurrentYear } from "@/util/date";
 import {
   getUiDataLeaseKey,
   getUiDataRentCalculatorKey,
@@ -48,6 +53,22 @@ const Rents: React.FC = () => {
   const rents = rentsAll.filter((rent) => !isArchived(rent));
   const rentsArchived = rentsAll.filter((rent) => isArchived(rent));
   const warnings = getRentWarnings(rents);
+  const currentYear = getCurrentYear();
+
+  const rentCalculatorFormRef = useRef(
+    createForm({
+      onSubmit: () => {},
+      mutators: { ...arrayMutators },
+      validate: validateRentCalculatorForm,
+      initialValues: {
+        type: RentCalculatorTypes.YEAR,
+        year: currentYear,
+        billing_start_date: `${currentYear}-01-01`,
+        billing_end_date: `${currentYear}-12-31`,
+      },
+    }),
+  );
+
   return (
     <>
       <Title uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}>
@@ -152,7 +173,7 @@ const Rents: React.FC = () => {
           </Title>
           <Divider />
           <GreenBox>
-            <RentCalculator />
+            <RentCalculator formApi={rentCalculatorFormRef.current} />
           </GreenBox>
         </>
       </Authorization>

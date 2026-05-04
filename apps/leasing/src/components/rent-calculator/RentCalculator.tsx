@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { formValueSelector, isValid } from "redux-form";
+import type { FormApi } from "final-form";
 import { Row, Column } from "react-foundation";
 import Button from "@/components/button/Button";
 import Loader from "@/components/loader/Loader";
@@ -14,7 +14,6 @@ import {
   fetchRentForPeriodByLease,
   receiveIsSaveClicked,
 } from "@/rentForPeriod/actions";
-import { FormNames } from "@/enums";
 import {
   ButtonColors,
   RentCalculatorFieldPaths,
@@ -41,96 +40,104 @@ import type {
 } from "@/rentForPeriod/types";
 let rentForPeriodId = 1;
 
-const formName = FormNames.RENT_CALCULATOR;
-const selector = formValueSelector(formName);
+type Props = {
+  formApi: FormApi;
+};
 
-const RentCalculator: React.FC = () => {
+const RentCalculator: React.FC<Props> = ({ formApi }) => {
   const dispatch = useDispatch();
   const currentLease = useSelector(getCurrentLease);
-  const billingPeriod = useSelector((state) =>
-    selector(state, "billing_period"),
-  );
+  const saveClicked = useSelector(getIsSaveClicked);
+  const usersPermissions = useSelector(getUsersPermissions);
+  const fetching = useSelector(getIsFetching);
+  const isEditMode = useSelector(getIsEditMode);
   const billingPeriods = useSelector((state) =>
     getBillingPeriodsByLease(state, currentLease.id),
   );
-  const endDate = useSelector((state) => selector(state, "billing_end_date"));
-  const fetching = useSelector(getIsFetching);
-  const isEditMode = useSelector(getIsEditMode);
   const rentForPeriodArray = useSelector((state) =>
     getRentForPeriodArrayByLease(state, currentLease.id),
   );
-  const saveClicked = useSelector(getIsSaveClicked);
-  const startDate = useSelector((state) =>
-    selector(state, "billing_start_date"),
+  const [formValues, setFormValues] = useState(() => formApi.getState().values);
+  const [calculatorErrors, setCalculatorErrors] = useState<Record<string, any>>(
+    {},
   );
-  const type: RentCalculatorType = useSelector((state) =>
-    selector(state, "type"),
-  );
-  const usersPermissions = useSelector(getUsersPermissions);
-  const valid = useSelector((state) => isValid(formName)(state));
-  const year = useSelector((state) => selector(state, "year"));
 
   useEffect(() => {
+    const unsubscribe = formApi.subscribe(
+      (state) => {
+        setFormValues(state.values);
+        setCalculatorErrors(state.errors);
+      },
+      { values: true, errors: true },
+    );
+    return () => unsubscribe();
+  }, [formApi]);
+
+  const billingPeriod = formValues.billing_period;
+  const endDate = formValues.billing_end_date;
+  const startDate = formValues.billing_start_date;
+  const type: RentCalculatorType = formValues.type;
+  const year = formValues.year;
+
+  const getYearStartAndEndDates = useCallback(
+    (year: string) => {
+      const rents = getContentRents(currentLease);
+      const isAnyCycleAprilToMarch = rents.some(
+        (rent) => rent.cycle === RentCycles.APRIL_TO_MARCH,
+      );
+
+      if (isAnyCycleAprilToMarch) {
+        return {
+          startDate: `${year}-04-01`,
+          endDate: `${Number(year) + 1}-03-31`,
+        };
+      }
+
+      return {
+        startDate: `${year}-01-01`,
+        endDate: `${year}-12-31`,
+      };
+    },
+    [currentLease],
+  );
+
+  useEffect(() => {
+    const year = getCurrentYear();
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)) {
-      fetchBillingPeriods();
+      dispatch(
+        fetchBillingPeriodsByLease({
+          leaseId: currentLease.id,
+          year: year,
+        }),
+      );
     }
+  }, [currentLease.id, dispatch, usersPermissions]);
+
+  useEffect(() => {
     if (
       hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE) &&
       (!rentForPeriodArray || !rentForPeriodArray.length)
     ) {
-      fetchDefaultRentForPeriod();
+      const currentYear = getCurrentYear();
+      const { startDate, endDate } = getYearStartAndEndDates(currentYear);
+      dispatch(
+        fetchRentForPeriodByLease({
+          id: rentForPeriodId++,
+          allowDelete: false,
+          type: RentCalculatorTypes.YEAR as RentCalculatorType,
+          endDate: endDate,
+          leaseId: currentLease.id,
+          startDate: startDate,
+        }),
+      );
     }
-    //TODO handle hook dependencies
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const fetchBillingPeriods = () => {
-    const year = getCurrentYear();
-    dispatch(
-      fetchBillingPeriodsByLease({
-        leaseId: currentLease.id,
-        year: year,
-      }),
-    );
-  };
-
-  const fetchDefaultRentForPeriod = () => {
-    const currentYear = getCurrentYear();
-    const { startDate, endDate } = getYearStartAndEndDates(currentYear);
-    dispatch(
-      fetchRentForPeriodByLease({
-        id: rentForPeriodId++,
-        allowDelete: false,
-        type: RentCalculatorTypes.YEAR as RentCalculatorType,
-        endDate: endDate,
-        leaseId: currentLease.id,
-        startDate: startDate,
-      }),
-    );
-  };
-
-  const getYearStartAndEndDates = (year: string) => {
-    const rents = getContentRents(currentLease);
-    let isAnyCycleAprilToMarch = false;
-    rents.forEach((rent) => {
-      if (rent.cycle === RentCycles.APRIL_TO_MARCH) {
-        isAnyCycleAprilToMarch = true;
-        return false;
-      }
-    });
-
-    if (isAnyCycleAprilToMarch) {
-      return {
-        startDate: `${year}-04-01`,
-        endDate: `${Number(year) + 1}-03-31`,
-      };
-    }
-
-    return {
-      startDate: `${year}-01-01`,
-      endDate: `${year}-12-31`,
-    };
-  };
+  }, [
+    currentLease.id,
+    dispatch,
+    getYearStartAndEndDates,
+    rentForPeriodArray,
+    usersPermissions,
+  ]);
 
   const handleCreateRentsForPeriod = () => {
     let requestStartDate, requestEndDate;
@@ -160,9 +167,10 @@ const RentCalculator: React.FC = () => {
         break;
     }
 
+    const errors = formApi.getState().errors;
     dispatch(receiveIsSaveClicked(true));
 
-    if (valid) {
+    if (Object.keys(errors).length === 0) {
       dispatch(
         fetchRentForPeriodByLease({
           id: rentForPeriodId++,
@@ -201,15 +209,20 @@ const RentCalculator: React.FC = () => {
       <Row>
         <Column small={12} medium={6} large={4}>
           <RentCalculatorForm
+            formApi={formApi}
             onSubmit={handleCreateRentsForPeriod}
             showErrors={saveClicked}
+            errors={calculatorErrors}
           />
         </Column>
         <Column small={12} medium={6} large={8}>
           <div className="rent-calculator__button-wrapper">
             <Button
               className={`${ButtonColors.SUCCESS} no-margin`}
-              disabled={fetching || (saveClicked && !valid)}
+              disabled={
+                fetching ||
+                (saveClicked && Object.keys(calculatorErrors).length > 0)
+              }
               onClick={handleCreateRentsForPeriod}
               text="Laske"
             />

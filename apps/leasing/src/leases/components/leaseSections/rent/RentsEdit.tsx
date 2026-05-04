@@ -166,13 +166,15 @@ const Rents: React.FC<RentsProps> = ({ archived, fields, rents }) => {
 };
 
 type Props = {
-  formApi: FormApi;
+  rentsFormApi: FormApi;
+  rentCalculatorFormApi: FormApi;
   handleSetRentInfoComplete: () => void;
   handleSetRentInfoUncomplete: () => void;
 };
 
 const RentsEdit: React.FC<Props> = ({
-  formApi,
+  rentsFormApi,
+  rentCalculatorFormApi,
   handleSetRentInfoComplete,
   handleSetRentInfoUncomplete,
 }) => {
@@ -191,127 +193,128 @@ const RentsEdit: React.FC<Props> = ({
   }, [currentLease]);
 
   return (
-    <Form form={formApi} onSubmit={formApi.submit}>
-      {() => (
-        <form>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              leaseAttributes,
-              LeaseRentsFieldPaths.RENTS,
-            )}
-          >
-            <>
-              <Title
-                enableUiDataEdit
-                uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}
-              >
-                {LeaseRentsFieldTitles.RENTS}
-              </Title>
-
-              <Authorization
-                allow={isFieldAllowedToRead(
-                  leaseAttributes,
-                  LeaseRentsFieldPaths.RENT_INFO_COMPLETED_AT,
-                )}
-              >
-                <WarningContainer
-                  alignCenter
-                  buttonComponent={
-                    <Authorization
-                      allow={hasPermissions(
-                        usersPermissions,
-                        UsersPermissions.CHANGE_LEASE_RENT_INFO_COMPLETED_AT,
-                      )}
-                    >
-                      {isRentInfoComplete ? (
-                        <Button
-                          className={ButtonColors.NEUTRAL}
-                          onClick={handleSetRentInfoUncomplete}
-                          text="Merkitse keskeneräisiksi"
-                        />
-                      ) : (
-                        <Button
-                          className={ButtonColors.NEUTRAL}
-                          onClick={handleSetRentInfoComplete}
-                          text="Merkitse valmiiksi"
-                        />
-                      )}
-                    </Authorization>
-                  }
-                  success={isRentInfoComplete}
+    <>
+      <Form form={rentsFormApi} onSubmit={rentsFormApi.submit}>
+        {() => (
+          <form>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                leaseAttributes,
+                LeaseRentsFieldPaths.RENTS,
+              )}
+            >
+              <>
+                <Title
+                  enableUiDataEdit
+                  uiDataKey={getUiDataLeaseKey(LeaseRentsFieldPaths.RENTS)}
                 >
-                  {isRentInfoComplete ? (
-                    <SuccessField
-                      meta={{
-                        warning: "Tiedot kunnossa",
-                      }}
-                      showWarning={true}
-                    />
-                  ) : (
-                    <WarningField
-                      meta={{
-                        warning: "Tiedot keskeneräiset",
-                      }}
-                      showWarning={true}
+                  {LeaseRentsFieldTitles.RENTS}
+                </Title>
+
+                <Authorization
+                  allow={isFieldAllowedToRead(
+                    leaseAttributes,
+                    LeaseRentsFieldPaths.RENT_INFO_COMPLETED_AT,
+                  )}
+                >
+                  <WarningContainer
+                    alignCenter
+                    buttonComponent={
+                      <Authorization
+                        allow={hasPermissions(
+                          usersPermissions,
+                          UsersPermissions.CHANGE_LEASE_RENT_INFO_COMPLETED_AT,
+                        )}
+                      >
+                        {isRentInfoComplete ? (
+                          <Button
+                            className={ButtonColors.NEUTRAL}
+                            onClick={handleSetRentInfoUncomplete}
+                            text="Merkitse keskeneräisiksi"
+                          />
+                        ) : (
+                          <Button
+                            className={ButtonColors.NEUTRAL}
+                            onClick={handleSetRentInfoComplete}
+                            text="Merkitse valmiiksi"
+                          />
+                        )}
+                      </Authorization>
+                    }
+                    success={isRentInfoComplete}
+                  >
+                    {isRentInfoComplete ? (
+                      <SuccessField
+                        meta={{
+                          warning: "Tiedot kunnossa",
+                        }}
+                        showWarning={true}
+                      />
+                    ) : (
+                      <WarningField
+                        meta={{
+                          warning: "Tiedot keskeneräiset",
+                        }}
+                        showWarning={true}
+                      />
+                    )}
+                  </WarningContainer>
+                </Authorization>
+
+                <Field name="rentWarnings" subscription={{ value: true }}>
+                  {({ meta }) => (
+                    <RentWarnings
+                      leaseAttributes={leaseAttributes}
+                      meta={meta}
                     />
                   )}
-                </WarningContainer>
-              </Authorization>
+                </Field>
+                <Divider />
 
-              <Field name="rentWarnings" subscription={{ value: true }}>
-                {({ meta }) => (
-                  <RentWarnings leaseAttributes={leaseAttributes} meta={meta} />
-                )}
-              </Field>
-              <Divider />
+                <FieldArray name="rents">
+                  {(fieldArrayProps) =>
+                    Rents({
+                      ...fieldArrayProps,
+                      archived: false,
+                      rents: rents,
+                    })
+                  }
+                </FieldArray>
 
-              <FieldArray name="rents">
-                {(fieldArrayProps) =>
-                  Rents({
-                    ...fieldArrayProps,
-                    archived: false,
-                    rents: rents,
-                  })
-                }
-              </FieldArray>
-
-              {/* Archived rents */}
-              <FieldArray name="rentsArchived">
-                {(fieldArrayProps) =>
-                  Rents({
-                    ...fieldArrayProps,
-                    archived: true,
-                    rents: rentsArchived,
-                  })
-                }
-              </FieldArray>
-            </>
-          </Authorization>
-
-          <Authorization
-            allow={hasPermissions(
-              usersPermissions,
-              UsersPermissions.VIEW_INVOICE,
+                {/* Archived rents */}
+                <FieldArray name="rentsArchived">
+                  {(fieldArrayProps) =>
+                    Rents({
+                      ...fieldArrayProps,
+                      archived: true,
+                      rents: rentsArchived,
+                    })
+                  }
+                </FieldArray>
+              </>
+            </Authorization>
+          </form>
+        )}
+      </Form>
+      <Authorization
+        allow={hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE)}
+      >
+        <>
+          <Title
+            enableUiDataEdit
+            uiDataKey={getUiDataRentCalculatorKey(
+              RentCalculatorFieldPaths.RENT_CALCULATOR,
             )}
           >
-            <>
-              <Title
-                enableUiDataEdit
-                uiDataKey={getUiDataRentCalculatorKey(
-                  RentCalculatorFieldPaths.RENT_CALCULATOR,
-                )}
-              >
-                {RentCalculatorFieldTitles.RENT_CALCULATOR}
-              </Title>
-              <Divider />
-              <GreenBox>
-                <RentCalculator />
-              </GreenBox>
-            </>
-          </Authorization>
-        </form>
-      )}
-    </Form>
+            {RentCalculatorFieldTitles.RENT_CALCULATOR}
+          </Title>
+          <Divider />
+          <GreenBox>
+            <RentCalculator formApi={rentCalculatorFormApi} />
+          </GreenBox>
+        </>
+      </Authorization>
+    </>
   );
 };
 

@@ -26,7 +26,7 @@ function* fetchRentForPeriodSaga({
               ...bodyAsJson,
               id: payload.id,
               allowDelete: payload.allowDelete,
-              rentCalculatorType: payload.rentCalculatorType,
+              rentCalculatorType: payload.type,
             },
           }),
         );

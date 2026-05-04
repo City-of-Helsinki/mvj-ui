@@ -7,7 +7,7 @@ export const validateRentCalculatorForm = (values: Record<string, any>) => {
   switch (values.type) {
     case RentCalculatorTypes.YEAR:
       if (isEmptyValue(values.year)) errors.yearErrors = "Vuosi on pakollinen";
-      else errors.yearErrors = year(values.year);
+      else if (year(values.year)) errors.yearErrors = year(values.year);
       break;
 
     case RentCalculatorTypes.RANGE:
