@@ -1,5 +1,6 @@
 import type { Action } from "types";
 import type { LeaseId } from "@/leases/types";
+import { RentCalculatorTypes } from "@/components/enums";
 export type RentForPeriodId = number;
 export type RentForPeriodState = {
   byLease: Record<string, any>;
@@ -14,7 +15,8 @@ export type FetchRentForPeriodPayload = {
   startDate: string;
   endDate: string;
 };
-export type RentCalculatorType = "year" | "range" | "billing_period";
+export type RentCalculatorType =
+  (typeof RentCalculatorTypes)[keyof typeof RentCalculatorTypes];
 export type DeleteRentForPeriodPayload = {
   id: RentForPeriodId;
   leaseId: LeaseId;
