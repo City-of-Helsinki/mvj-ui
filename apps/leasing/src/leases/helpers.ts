@@ -3394,6 +3394,7 @@ export const getPayloadChildren = (
 ): Array<Record<string, any>> =>
   get(rentAdjustment, "children", []).map((item) => {
     return {
+      id: item.id,
       intended_use: 7,
       area_unit: "m2",
       area: convertStrToDecimalNumber(item.area),
