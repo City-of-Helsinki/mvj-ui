@@ -218,6 +218,7 @@ const getPayloadInvoiceRows = (
 ): Array<Record<string, any>> => {
   return get(invoice, "rows", []).map((row) => {
     return {
+      id: row.id,
       tenant: row.tenant,
       receivable_type: row.receivable_type,
       amount: convertStrToDecimalNumber(row.amount),
