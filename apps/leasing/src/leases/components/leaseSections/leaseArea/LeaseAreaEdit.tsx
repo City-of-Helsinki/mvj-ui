@@ -1,7 +1,6 @@
 import React, { ReactElement } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "react-foundation";
-
 import { Link, useLocation } from "react-router-dom";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -192,7 +191,6 @@ const PlanUnits = ({
 };
 
 type PlotsProps = {
-  formApi: FormApi;
   buttonTitle: string;
   collapseState: boolean;
   errors: Record<string, any> | undefined;
@@ -208,7 +206,6 @@ type PlotsProps = {
 };
 
 const Plots = ({
-  formApi,
   buttonTitle,
   collapseState,
   errors,
@@ -284,7 +281,6 @@ const Plots = ({
                   } else {
                     return (
                       <PlotItemEdit
-                        formApi={formApi}
                         key={index}
                         field={plot}
                         plotId={plot.id}
@@ -615,7 +611,6 @@ const AddressItems = ({ formApi, fields }: AddressesProps): ReactElement => {
 type Props = {
   formApi: FormApi;
   field: string;
-  index: number;
   savedArea: Record<string, any>;
   areaId: number;
   isActive: boolean;
@@ -624,7 +619,6 @@ type Props = {
 const LeaseAreaEdit: React.FC<Props> = ({
   formApi,
   areaId,
-  index,
   field,
   savedArea,
   isActive,
@@ -851,7 +845,6 @@ const LeaseAreaEdit: React.FC<Props> = ({
               {(fieldArrayProps) =>
                 Plots({
                   ...fieldArrayProps,
-                  formApi,
                   buttonTitle: "Lisää kiinteistö/määräala",
                   collapseState: plotsContractCollapseState,
                   errors: { errors },
@@ -874,7 +867,6 @@ const LeaseAreaEdit: React.FC<Props> = ({
               {(fieldArrayProps) =>
                 Plots({
                   ...fieldArrayProps,
-                  formApi,
                   buttonTitle: "Lisää kiinteistö/määräala",
                   collapseState: plotsCurrentCollapseState,
                   errors: { errors },
@@ -991,7 +983,6 @@ const LeaseAreaEdit: React.FC<Props> = ({
               {custom_detailed_plan && (
                 <BoxItemContainer>
                   <CustomDetailedPlanEdit
-                    formApi={formApi}
                     field={`${field}.custom_detailed_plan`}
                     onRemove={() =>
                       formApi.change(`${field}.custom_detailed_plan`, null)

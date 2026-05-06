@@ -28,10 +28,8 @@ import { getAttributes, getIsSaveClicked } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-import { FormApi } from "final-form";
 
 type Props = {
-  formApi: FormApi;
   field: string;
   geometry: Record<string, any> | null | undefined;
   onRemove: (...args: Array<any>) => any;
@@ -40,7 +38,6 @@ type Props = {
 };
 
 const PlotItemsEdit: React.FC<Props> = ({
-  formApi,
   field,
   geometry,
   onRemove,

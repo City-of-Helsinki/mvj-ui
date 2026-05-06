@@ -38,13 +38,11 @@ import {
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from "@/util/helpers";
-import { FormApi } from "final-form";
 import FormField from "@/components/form/final-form/FormField";
 
 const formName = FormNames.LEASE_AREAS;
 
 type UsageDistributionsProps = {
-  formApi: FormApi;
   buttonTitle: string;
   errors: Record<string, any>;
   fields: any;
@@ -54,7 +52,6 @@ type UsageDistributionsProps = {
 };
 
 const UsageDistributions = ({
-  formApi,
   buttonTitle,
   fields,
   noDataText,
@@ -241,7 +238,6 @@ const UsageDistributions = ({
 };
 
 type InfoLinksProps = {
-  formApi: FormApi;
   buttonTitle: string;
   errors: Record<string, any>;
   fields: any;
@@ -251,7 +247,6 @@ type InfoLinksProps = {
 };
 
 const InfoLinks = ({
-  formApi,
   buttonTitle,
   fields,
   noDataText,
@@ -423,16 +418,11 @@ const InfoLinks = ({
 };
 
 type Props = {
-  formApi: FormApi;
   field: string;
   onRemove: (...args: Array<any>) => any;
 };
 
-const CustomDetailedPlanEdit: React.FC<Props> = ({
-  formApi,
-  field,
-  onRemove,
-}) => {
+const CustomDetailedPlanEdit: React.FC<Props> = ({ field, onRemove }) => {
   const attributes: Attributes = useSelector(getAttributes);
   const isSaveClicked: boolean = useSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
@@ -752,7 +742,6 @@ const CustomDetailedPlanEdit: React.FC<Props> = ({
                 {(fieldArrayProps) =>
                   UsageDistributions({
                     ...fieldArrayProps,
-                    formApi,
                     buttonTitle: "Lisää käyttöjakauma",
                     errors: { errors },
                     noDataText: "Ei käyttöjakaumia",
@@ -779,7 +768,6 @@ const CustomDetailedPlanEdit: React.FC<Props> = ({
                 {(fieldArrayProps) =>
                   InfoLinks({
                     ...fieldArrayProps,
-                    formApi,
                     buttonTitle: "Lisää lisätietolinkki",
                     errors: { errors },
                     noDataText: "Ei lisätietolinkkejä",

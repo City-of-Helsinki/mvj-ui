@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useRef, useEffect } from "react";
 import { Row, Column } from "react-foundation";
 import { useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import FormText from "@/components/form/FormText";
 import Modal from "@/components/modal/Modal";
-import { ConfirmationModalTexts, FormNames } from "@/enums";
+import { ConfirmationModalTexts } from "@/enums";
 import { LeaseAreasFieldPaths, LeaseAreasFieldTitles } from "@/leases/enums";
 import { getAttributes, getCurrentLease } from "@/leases/selectors";
 import { ButtonColors } from "@/components/enums";
