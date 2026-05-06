@@ -27,7 +27,6 @@ import {
 } from "@/util/helpers";
 import { getAttributes, getCollapseStateByKey } from "@/leases/selectors";
 import type { Attributes } from "types";
-import { useForm } from "react-final-form";
 
 type Props = {
   area: Record<string, any>;

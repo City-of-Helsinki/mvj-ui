@@ -233,7 +233,6 @@ const LeaseAreaWithArchiveInfoEdit = ({
         <LeaseAreaEdit
           formApi={formApi}
           field={field}
-          index={index}
           areaId={areaId}
           savedArea={savedArea}
           isActive={isActive}
@@ -318,5 +317,4 @@ const LeaseAreaWithArchiveInfoEdit = ({
   );
 };
 
-const formName = FormNames.LEASE_AREAS;
 export default LeaseAreaWithArchiveInfoEdit;

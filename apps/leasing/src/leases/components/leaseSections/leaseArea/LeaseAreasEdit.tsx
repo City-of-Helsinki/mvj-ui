@@ -6,11 +6,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "react-foundation";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
-
 import AddButton from "@/components/form/AddButton";
 import ArchiveAreaModal from "./ArchiveAreaModal";
 import LeaseAreaWithArchiveInfoEdit from "./LeaseAreaWithArchiveInfoEdit";
@@ -20,7 +19,7 @@ import Divider from "@/components/content/Divider";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
 import { copyAreasToContract } from "@/leases/actions";
-import { ConfirmationModalTexts, FormNames } from "@/enums";
+import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { AreaLocation, LeaseAreasFieldPaths } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
@@ -50,7 +49,6 @@ import { Attributes } from "@/types";
 type AreaItemProps = {
   fields: any;
   isActive: boolean;
-  areaItems: Record<string, any>[] | undefined;
   onArchive: (index: number, area: Record<string, any>) => void;
   onUnarchive: (
     index: number,
@@ -63,7 +61,6 @@ type AreaItemProps = {
 const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
   fields,
   isActive,
-  areaItems,
   onArchive,
   onUnarchive,
   formApi,
@@ -165,17 +162,14 @@ const ATTR_LEASE_AREAS_ACTIVE = "lease_areas_active";
 const ATTR_LEASE_AREAS_ARCHIVED = "lease_areas_archived";
 
 const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
-  const dispatch = useDispatch();
-
   const currentLease: Lease = useSelector(getCurrentLease);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const usersPermissions: UsersPermissionsType =
     useSelector(getUsersPermissions);
 
-  const { areas, activeAreas, archivedAreas, areasSum } = useMemo(() => {
+  const { activeAreas, archivedAreas, areasSum } = useMemo(() => {
     if (!currentLease) {
       return {
-        areas: [],
         activeAreas: [],
         archivedAreas: [],
         areasSum: 0,
@@ -187,7 +181,6 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
     const sum = calculateAreasSum(currentlyActive);
 
     return {
-      areas: currentAreas,
       activeAreas: currentlyActive,
       archivedAreas: currentlyArchived,
       areasSum: sum,
@@ -369,7 +362,7 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
               [ATTR_LEASE_AREAS_ARCHIVED]: archivedAreas,
             }}
           >
-            {({ handleSubmit, form, submitting, pristine, valid }) => (
+            {({ handleSubmit, valid }) => (
               <form onSubmit={handleSubmit}>
                 <Authorization
                   allow={isFieldAllowedToEdit(
@@ -433,7 +426,6 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
                       {...fieldArrayProps}
                       formApi={formApi}
                       isActive={true}
-                      areaItems={activeAreas}
                       onArchive={showArchiveAreaModal}
                       onUnarchive={handleUnarchive}
                     />
@@ -446,7 +438,6 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
                       {...fieldArrayProps}
                       formApi={formApi}
                       isActive={false}
-                      areaItems={archivedAreas}
                       onArchive={showArchiveAreaModal}
                       onUnarchive={handleUnarchive}
                     />
