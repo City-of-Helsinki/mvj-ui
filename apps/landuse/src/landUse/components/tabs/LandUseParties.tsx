@@ -289,8 +289,6 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-grid__column-3" />
-
     <div className="landuse-grid__column-3" style={{ gridColumn: "span 3" }}>
       <Field name={`${fieldPrefix}.note`}>
         {({ input }) => (
