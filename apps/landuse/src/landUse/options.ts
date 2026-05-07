@@ -420,6 +420,11 @@ export const landUseCompensationSelectOptions = {
   suojeltu: ["-", "SR1", "SR2"],
 };
 
+export const landUseInvoicingSelectOptions = {
+  type: ["Maankäyttökorvaus", "Sakko", "Perintä"],
+  status: ["Avoin", "Maksettu"],
+};
+
 export const landUseKohdeSelectOptions = [
   { label: "91-10-100-1", value: "91-10-100-1" },
   { label: "91-11-200-2", value: "91-11-200-2" },

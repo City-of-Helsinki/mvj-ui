@@ -113,11 +113,11 @@
   line-height: 1.5;
   margin-bottom: hds.$spacing-s;
 
-  thead tr {
+  > thead > tr {
     background-color: hds.$color-silver;
   }
 
-  thead th {
+  > thead > tr > th {
     padding: hds.$spacing-xs hds.$spacing-m;
     font-weight: 700;
     font-size: hds.$fontsize-body-m;
@@ -127,7 +127,7 @@
     text-align: left;
   }
 
-  tbody td {
+  > tbody > tr > td {
     padding: hds.$spacing-xs hds.$spacing-m;
     border-bottom: 1px solid hds.$color-black-50;
     color: hds.$color-black-90;
@@ -136,7 +136,7 @@
     background-color: hds.$color-white;
   }
 
-  tfoot td {
+  > tfoot > tr > td {
     padding: hds.$spacing-xs hds.$spacing-m;
     border-top: 1px solid hds.$color-black-50;
     border-bottom: none;
@@ -193,6 +193,10 @@
     overflow: hidden;
     box-shadow: inset 3px 0 0 hds.$color-coat-of-arms;
     padding: hds.$spacing-s hds.$spacing-s;
+
+    &--overflow-visible {
+      overflow: visible;
+    }
   }
 
   &__detail-actions {

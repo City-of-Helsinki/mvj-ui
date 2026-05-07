@@ -1,5 +1,6 @@
 import { normalizeSelectValue } from "../utils/fieldUtils";
 import type { MockLandUseData } from "../mocks/landUseMockData";
+import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoicing";
 import type { LandUseSummaryFormValues } from "../components/tabs/LandUseSummary";
 import type {
   LandUsePartiesFormValues,
@@ -136,3 +137,8 @@ export const clonePartiesFormValues = (
   values: LandUsePartiesFormValues,
 ): LandUsePartiesFormValues =>
   JSON.parse(JSON.stringify(values)) as LandUsePartiesFormValues;
+
+export const createEmptyInvoicingFormValues =
+  (): LandUseInvoicingFormValues => ({
+    invoices: [],
+  });

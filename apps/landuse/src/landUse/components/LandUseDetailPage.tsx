@@ -921,7 +921,16 @@ const LandUseDetailPage: React.FC = () => {
         </TabPanel>
 
         <TabPanel>
-          <LandUseInvoicing form={invoicingFormApi} isEditMode={isEditMode} />
+          <LandUseInvoicing
+            form={invoicingFormApi}
+            isEditMode={isEditMode}
+            parties={
+              ((partiesFormApi.getState().values as LandUsePartiesFormValues)
+                ?.parties ??
+                partiesQuery.data?.parties) ||
+              []
+            }
+          />
         </TabPanel>
 
         <TabPanel>

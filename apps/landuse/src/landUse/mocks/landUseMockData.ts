@@ -222,7 +222,28 @@ const ma113Monitoring: LandUseMonitoringFormValues = {
   ],
 };
 
-const ma113Invoicing: LandUseInvoicingFormValues = {};
+const ma113Invoicing: LandUseInvoicingFormValues = {
+  invoices: [
+    {
+      recipientPartyIndex: "0",
+      dueDate: "2026-04-15",
+      invoiceNumber: "123456789",
+      type: "Maankäyttökorvaus",
+      status: "Avoin",
+      billedAmount: "450000",
+      remainingAmount: "125000",
+    },
+    {
+      recipientPartyIndex: "0",
+      dueDate: "2026-06-10",
+      invoiceNumber: "123456790",
+      type: "Perintä",
+      status: "Maksettu",
+      billedAmount: "3500",
+      remainingAmount: "0",
+    },
+  ],
+};
 const ma113Map: LandUseMapFormValues = {};
 
 export const mockLandUseTabStore: Record<string, LandUseAgreementMockTabs> = {
