@@ -783,7 +783,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                   {({ input }) => (
                                     <TextInput
                                       id={`billing-${index}-reference`}
-                                      label="Viite"
+                                      label="Asiakkaan viite"
                                       value={getFieldTextValue(
                                         isEditMode,
                                         input.value,
