@@ -47,15 +47,6 @@ export const patchLease = (lease: Lease): Generator<any, any, any> => {
     }),
   );
 };
-export const copyAreasToContract = (
-  leaseId: LeaseId,
-): Generator<any, any, any> => {
-  return callApi(
-    new Request(createUrl(`lease_copy_areas_to_contract/?lease=${leaseId}`), {
-      method: "POST",
-    }),
-  );
-};
 export const copyDecisionToLeases = (
   params: Record<string, any>,
 ): Generator<any, any, any> => {

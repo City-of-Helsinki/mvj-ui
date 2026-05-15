@@ -18,7 +18,6 @@ import Button from "@/components/button/Button";
 import Divider from "@/components/content/Divider";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
-import { copyAreasToContract } from "@/leases/actions";
 import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { AreaLocation, LeaseAreasFieldPaths } from "@/leases/enums";
@@ -160,6 +159,39 @@ type Props = {
 
 const ATTR_LEASE_AREAS_ACTIVE = "lease_areas_active";
 const ATTR_LEASE_AREAS_ARCHIVED = "lease_areas_archived";
+
+const copyItemToContract = (item: Record<string, any>): Record<string, any> => {
+  const excludedFields = new Set(["id", "is_master", "usage_distributions"]);
+  const result: Record<string, any> = {};
+  Object.entries(item).forEach(([key, value]) => {
+    if (!excludedFields.has(key)) {
+      result[key] = value;
+    }
+  });
+  result.in_contract = true;
+  result.is_master = false;
+  result.usage_distributions = [];
+  return result;
+};
+
+const mergeIntoContractItems = (
+  masterItems: Record<string, any>[],
+  contractItems: Record<string, any>[],
+): Record<string, any>[] => {
+  const updated = [...contractItems];
+  masterItems.forEach((master) => {
+    const existingIdx = updated.findIndex(
+      (c) => c.identifier === master.identifier,
+    );
+    const copyData = copyItemToContract(master);
+    if (existingIdx >= 0) {
+      updated[existingIdx] = { id: updated[existingIdx].id, ...copyData };
+    } else {
+      updated.push(copyData);
+    }
+  });
+  return updated;
+};
 
 const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
   const currentLease: Lease = useSelector(getCurrentLease);
@@ -334,6 +366,33 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
     [handleUnarchiving],
   );
 
+  const copyAreasToContract = useCallback(() => {
+    const currentActiveAreas =
+      formApi.getState().values?.[ATTR_LEASE_AREAS_ACTIVE] || [];
+
+    const updatedAreas = currentActiveAreas.map((area: Record<string, any>) => {
+      const masterPlots: Record<string, any>[] = area.plots_current || [];
+      const masterPlanUnits: Record<string, any>[] = [
+        ...(area.plan_units_current || []),
+        ...(area.plan_units_pending || []),
+      ];
+
+      return {
+        ...area,
+        plots_contract: mergeIntoContractItems(
+          masterPlots,
+          area.plots_contract || [],
+        ),
+        plan_units_contract: mergeIntoContractItems(
+          masterPlanUnits,
+          area.plan_units_contract || [],
+        ),
+      };
+    });
+
+    formApi.change(ATTR_LEASE_AREAS_ACTIVE, updatedAreas);
+  }, [formApi]);
+
   return (
     <AppConsumer>
       {({ dispatch: appDispatch }) => {
@@ -341,7 +400,7 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
           appDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
-              dispatch(copyAreasToContract(currentLease.id));
+              copyAreasToContract();
             },
             confirmationModalButtonClassName: ButtonColors.SUCCESS,
             confirmationModalButtonText:
