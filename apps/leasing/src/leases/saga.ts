@@ -38,7 +38,6 @@ import {
 import { fetchInvoiceSetsByLease } from "@/invoiceSets/actions";
 import { displayUIMessage, getSearchQuery, getUrlParams } from "@/util/helpers";
 import {
-  copyAreasToContract,
   copyDecisionToLeases,
   createCharge,
   createLease,
@@ -700,44 +699,6 @@ function* createChargeSaga({ payload }): Generator<any, any, any> {
   }
 }
 
-function* copyAreasToContractSaga({
-  payload: leaseId,
-}): Generator<any, any, any> {
-  try {
-    const {
-      response: { status: statusCode },
-      bodyAsJson,
-    } = yield call(copyAreasToContract, leaseId);
-
-    switch (statusCode) {
-      case 200:
-        yield put(
-          fetchSingleLeaseAfterEdit({
-            leaseId: leaseId,
-            callbackFunctions: [
-              () =>
-                displayUIMessage({
-                  title: "",
-                  body: "Kopioitu sopimukseen",
-                }),
-            ],
-          }),
-        );
-        break;
-
-      default:
-        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
-        break;
-    }
-  } catch (error) {
-    console.error(
-      'Failed to copy lease areas to contract with error "%s"',
-      error,
-    );
-    yield put(receiveError(error));
-  }
-}
-
 function* copyDecisionToLeasesSaga({ payload }): Generator<any, any, any> {
   try {
     const {
@@ -837,10 +798,6 @@ export default function* (): Generator<any, any, any> {
         setRentInfoUncompleteSaga,
       );
       yield takeLatest("mvj/leases/CREATE_CHARGE", createChargeSaga);
-      yield takeLatest(
-        "mvj/leases/COPY_AREAS_TO_CONTRACT",
-        copyAreasToContractSaga,
-      );
       yield takeLatest(
         "mvj/leases/COPY_DECISION_TO_LEASES",
         copyDecisionToLeasesSaga,

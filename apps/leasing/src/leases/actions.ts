@@ -3,7 +3,6 @@ import type { Attributes, Methods } from "types";
 import type {
   ClearFormValidFlagsAction,
   ClearFormDirtyFlagsAction,
-  CopyAreasToContractAction,
   CopyDecisionToLeasesAction,
   CreateChargeAction,
   CreateChargePayload,
@@ -125,10 +124,6 @@ export const hideEditMode = (): HideEditModeAction =>
   createAction("mvj/leases/HIDE_EDIT")();
 export const showEditMode = (): ShowEditModeAction =>
   createAction("mvj/leases/SHOW_EDIT")();
-export const copyAreasToContract = (
-  leaseId: LeaseId,
-): CopyAreasToContractAction =>
-  createAction("mvj/leases/COPY_AREAS_TO_CONTRACT")(leaseId);
 export const copyDecisionToLeases = (
   payload: Record<string, any>,
 ): CopyDecisionToLeasesAction =>

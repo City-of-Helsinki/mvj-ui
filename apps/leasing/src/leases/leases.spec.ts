@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   attributesNotFound,
   clearFormValidFlags,
-  copyAreasToContract,
   copyDecisionToLeases,
   createCharge,
   createLease,
@@ -244,11 +243,6 @@ describe("Leases", () => {
         const dummyLease = 1;
         const newState = { ...defaultState, isSaving: true };
         const state = leasesReducer({}, deleteLease(dummyLease));
-        expect(state).to.deep.equal(newState);
-      });
-      it("should update isSaving flag to true by copyAreasToContract", () => {
-        const newState = { ...defaultState, isSaving: true };
-        const state = leasesReducer({}, copyAreasToContract(1));
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true by copyDecisionToLeases", () => {
