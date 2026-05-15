@@ -2541,7 +2541,9 @@ export const getContentLeasesFeatures = (
 ): Array<LeafletFeature> => {
   return leases.map((lease) => {
     const coordinates = [];
-    const areas = get(lease, "lease_areas", []);
+    const areas = get(lease, "lease_areas", []).filter(
+      (area) => !area.archived_at,
+    );
     areas.forEach((area) => {
       const coords = get(area, "geometry.coordinates", []);
 
