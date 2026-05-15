@@ -1,0 +1,58 @@
+# Version control
+.git
+.gitignore
+.git-blame-ignore-revs
+
+# Dependencies (installed fresh in the build)
+node_modules
+apps/*/node_modules
+
+# Build output (rebuilt in the container)
+dist
+apps/*/dist
+
+# Test & coverage
+coverage
+apps/*/coverage
+*.spec.ts
+*.spec.tsx
+*.test.ts
+*.test.tsx
+vitest.config.js
+vitest.config.ts
+
+# Environment / secrets
+.env
+.env.*
+
+# CI/CD and pipelines
+azure-pipelines*.yml
+pipelines/
+.github/
+
+# Dev tooling & editor config
+.vscode/
+.devcontainer/
+.kiro/
+.editorconfig
+.prettierrc
+.prettierignore
+.babelrc
+.nvmrc
+.codeclimate.yml
+eslint.config.mjs
+jsconfig.json
+/tsconfig*.json
+!tsconfig.base.json
+
+# Logs & debug
+yarn-error.log
+npm-debug.log
+
+# OS artefacts
+.DS_Store
+Thumbs.db
+
+# Docs
+README.md
+LICENSE
