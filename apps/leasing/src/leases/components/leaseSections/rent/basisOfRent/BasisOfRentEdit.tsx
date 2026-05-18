@@ -569,15 +569,32 @@ const BasisOfRentEdit: React.FC<Props> = ({
     () => !!subventionType || !!temporarySubventions?.length,
   );
 
+  /**
+   * Initialize MAST calculator children with default value 0.
+   */
   const ensureMastChildrenInitialized = useCallback(() => {
-    // Initialize MAST children with 2 items if calculator type is MAST and children are empty
-    if (
-      calculatorType === CalculatorTypes.MAST &&
-      (!children || children.length === 0)
-    ) {
-      dispatch(change(formName, `${field}.children`, [{}, {}]));
+    const areaDefaultValue = 0;
+    if (calculatorType === CalculatorTypes.MAST) {
+      if (!children || children.length === 0) {
+        dispatch(change(formName, `${field}.children`, [{}, {}]));
+
+        if (isEmptyValue(area)) {
+          dispatch(change(formName, `${field}.area`, areaDefaultValue));
+        }
+      } else if (children.length > 0) {
+        if (children[0] && children[0].area === undefined) {
+          dispatch(
+            change(formName, `${field}.children[0].area`, areaDefaultValue),
+          );
+        }
+        if (children[1] && children[1].area === undefined) {
+          dispatch(
+            change(formName, `${field}.children[1].area`, areaDefaultValue),
+          );
+        }
+      }
     }
-  }, [calculatorType, children, dispatch, field, formName]);
+  }, [calculatorType, children, area, dispatch, field, formName]);
 
   const initialFormValues = () => {
     ensureMastChildrenInitialized();
@@ -656,7 +673,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
     initialFormValues();
     ensureMastChildrenInitialized();
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [calculatorType]);
 
   const getReLeaseDiscountPercent = useCallback(() => {
     return calculateReLeaseDiscountPercent(
