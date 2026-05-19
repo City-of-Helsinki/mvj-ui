@@ -204,6 +204,12 @@
     justify-content: flex-end;
     margin-top: hds.$spacing-s;
   }
+
+  &__field--grey {
+    background-color: hds.$color-black-10;
+    border-radius: $radius-sm;
+    padding: hds.$spacing-2-xs;
+  }
 }
 
 // ============================================================================

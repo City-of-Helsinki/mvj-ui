@@ -657,7 +657,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                         </Field>
                       </div>
 
-                      <div className="landuse-grid__column-3">
+                      <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
                         <Field name={`${fieldName}.status`}>
                           {({ input: statusInput }) =>
                             isEditMode ? (
@@ -688,7 +688,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                         </Field>
                       </div>
 
-                      <div className="landuse-grid__column-3">
+                      <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
                         <Field name={`${fieldName}.billedAmount`}>
                           {({ input: billedAmountInput }) =>
                             isEditMode ? (
@@ -713,7 +713,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                         </Field>
                       </div>
 
-                      <div className="landuse-grid__column-3">
+                      <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
                         <Field name={`${fieldName}.remainingAmount`}>
                           {({ input: remainingAmountInput }) =>
                             isEditMode ? (
