@@ -24,18 +24,37 @@ import {
 import { landUseInvoicingSelectOptions } from "../../options";
 import { formatLandUseEuroDisplayValue } from "../../utils/number";
 import type { PartyEntry } from "./LandUseParties";
+import type { LandUseDecisionsFormValues } from "./LandUseDecisions";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 
 type SelectOption = { label: string; value: string };
+type AgreementItem = NonNullable<
+  LandUseDecisionsFormValues["agreements"]
+>[number];
+
+interface AgreementOption extends SelectOption {
+  sopimusnumero: string;
+}
+
+export interface LandUseInvoiceItemRow {
+  description: string;
+  amountExcludingVat: string;
+}
 
 export interface LandUseInvoiceRow {
   recipientPartyIndex: string | undefined;
+  contractIndex: string | undefined;
+  installmentNumber: string;
+  installmentTotal: string;
+  signedDate: string;
+  validDate: string;
   dueDate: string;
   invoiceNumber: string;
   type: string | undefined;
   status: string | undefined;
   billedAmount: string;
   remainingAmount: string;
+  invoiceRows?: LandUseInvoiceItemRow[];
 }
 
 export interface LandUseInvoicingFormValues {
@@ -46,6 +65,18 @@ interface LandUseInvoicingProps {
   form: FormApi<LandUseInvoicingFormValues>;
   isEditMode: boolean;
   parties: PartyEntry[];
+  agreements: AgreementItem[];
+  asemakaavanNumero: string;
+}
+
+interface SelectedPartyInvoiceData {
+  streetAddress: string;
+  city: string;
+  postalCode: string;
+  ovtCode: string;
+  reference: string;
+  businessId: string;
+  isCompany: boolean;
 }
 
 const invoiceTypeOptions = landUseInvoicingSelectOptions.type.map((value) => ({
@@ -95,6 +126,23 @@ const createInvoiceRecipientOptions = (parties: PartyEntry[]): SelectOption[] =>
     value: String(index),
   }));
 
+const createInvoiceAgreementOptions = (
+  agreements: AgreementItem[],
+): AgreementOption[] =>
+  agreements.map((agreement, index) => {
+    const contractType = agreement.sopimuksenTyyppi?.trim();
+    const contractNumber = agreement.sopimusnumero?.trim() ?? "";
+    const parts = [contractType, contractNumber].filter(
+      (part): part is string => Boolean(part),
+    );
+
+    return {
+      label: parts.join(" ") || `Sopimus ${index + 1}`,
+      value: String(index),
+      sopimusnumero: contractNumber,
+    };
+  });
+
 const getRecipientDisplayValue = (
   recipientPartyIndex: string | undefined,
   partyOptions: SelectOption[],
@@ -109,24 +157,88 @@ const getRecipientDisplayValue = (
   );
 };
 
+const getSelectedPartyInvoiceData = (
+  recipientPartyIndex: string | undefined,
+  parties: PartyEntry[],
+): SelectedPartyInvoiceData => {
+  const selectedIndex = Number(recipientPartyIndex);
+  if (!Number.isInteger(selectedIndex) || selectedIndex < 0) {
+    return {
+      streetAddress: "",
+      city: "",
+      postalCode: "",
+      ovtCode: "",
+      reference: "",
+      businessId: "",
+      isCompany: false,
+    };
+  }
+
+  const selectedParty = parties[selectedIndex];
+  if (!selectedParty) {
+    return {
+      streetAddress: "",
+      city: "",
+      postalCode: "",
+      ovtCode: "",
+      reference: "",
+      businessId: "",
+      isCompany: false,
+    };
+  }
+
+  const recipientDetails =
+    selectedParty.invoiceRecipient?.details ?? selectedParty.party?.details;
+  const isCompany = recipientDetails?.partyType === "yritys";
+
+  return {
+    streetAddress: recipientDetails?.streetAddress ?? "",
+    city: recipientDetails?.city ?? "",
+    postalCode: recipientDetails?.postalCode ?? "",
+    ovtCode: selectedParty.billingDetails?.ovtCode ?? "",
+    reference: selectedParty.billingDetails?.reference ?? "",
+    businessId:
+      isCompany && "businessId" in recipientDetails
+        ? (recipientDetails.businessId ?? "")
+        : "",
+    isCompany,
+  };
+};
+
 const createEmptyInvoiceRow = (
   recipientPartyIndex: string | undefined,
+  contractIndex: string | undefined,
 ): LandUseInvoiceRow => ({
   recipientPartyIndex,
+  contractIndex,
+  installmentNumber: "",
+  installmentTotal: "",
+  signedDate: "",
+  validDate: "",
   dueDate: "",
   invoiceNumber: "",
   type: undefined,
   status: undefined,
   billedAmount: "",
   remainingAmount: "",
+  invoiceRows: [],
+});
+
+const createEmptyInvoiceItemRow = (): LandUseInvoiceItemRow => ({
+  description: "",
+  amountExcludingVat: "",
 });
 
 interface InvoiceRowProps {
   fieldName: string;
   index: number;
   isEditMode: boolean;
+  isExistingInvoice: boolean;
   isOpen: boolean;
+  parties: PartyEntry[];
   partyOptions: SelectOption[];
+  agreementOptions: AgreementOption[];
+  asemakaavanNumero: string;
   onRemove: (index: number) => void;
   onToggle: (index: number) => void;
 }
@@ -145,15 +257,33 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
   fieldName,
   index,
   isEditMode,
+  isExistingInvoice,
   isOpen,
+  parties,
   partyOptions,
+  agreementOptions,
+  asemakaavanNumero,
   onRemove,
   onToggle,
 }) => {
+  const canEditContract = isEditMode && !isExistingInvoice;
+
   return (
     <Field name={fieldName} subscription={{ value: true }}>
       {({ input }) => {
         const rowValue = (input.value ?? {}) as LandUseInvoiceRow;
+        const contractNumberDisplayValue =
+          agreementOptions.find(
+            (option) => option.value === rowValue.contractIndex,
+          )?.sopimusnumero ?? "-";
+        const installmentDisplayValue =
+          rowValue.installmentNumber && rowValue.installmentTotal
+            ? `${rowValue.installmentNumber}/${rowValue.installmentTotal}`
+            : "-";
+        const selectedPartyData = getSelectedPartyInvoiceData(
+          rowValue.recipientPartyIndex,
+          parties,
+        );
 
         return (
           <>
@@ -183,6 +313,8 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                   partyOptions,
                 )}
               </td>
+              <td>{readOnlyTextValue(contractNumberDisplayValue)}</td>
+              <td>{readOnlyTextValue(installmentDisplayValue)}</td>
               <td>{readOnlyTextValue(rowValue.dueDate)}</td>
               <td>{readOnlyTextValue(rowValue.invoiceNumber)}</td>
               <td>{readOnlyTextValue(rowValue.type)}</td>
@@ -192,12 +324,21 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
             </tr>
             {isOpen && (
               <tr className="landuse-compensations-table__detail-row">
-                <td colSpan={8}>
+                <td colSpan={10}>
                   <div
                     className="landuse-compensations-table__detail-content landuse-compensations-table__detail-content--overflow-visible"
                     aria-label={`Laskun ${rowValue.invoiceNumber || index + 1} tiedot`}
                   >
                     <div className="landuse-grid">
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-invoicing-asemakaavanumero-${index}`}
+                          label="Kaavanumero"
+                          value={readOnlyTextValue(asemakaavanNumero)}
+                          readOnly
+                        />
+                      </div>
+
                       <div className="landuse-grid__column-3">
                         <Field name={`${fieldName}.recipientPartyIndex`}>
                           {({ input: recipientInput }) =>
@@ -231,6 +372,213 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                   recipientInput.value,
                                   partyOptions,
                                 )}
+                                readOnly
+                              />
+                            )
+                          }
+                        </Field>
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <Field name={`${fieldName}.contractIndex`}>
+                          {({ input: contractInput }) =>
+                            canEditContract ? (
+                              <Select
+                                id={`landuse-invoicing-contract-${index}`}
+                                options={agreementOptions}
+                                value={normalizeSelectValue(
+                                  contractInput.value,
+                                )}
+                                onChange={(selectedOptions) =>
+                                  handleSelectChange(
+                                    selectedOptions,
+                                    contractInput.onChange,
+                                  )
+                                }
+                                disabled={agreementOptions.length === 0}
+                                texts={{
+                                  label: "Sopimus",
+                                  placeholder:
+                                    agreementOptions.length > 0
+                                      ? "Valitse"
+                                      : "Ei sopimuksia",
+                                }}
+                              />
+                            ) : (
+                              <TextInput
+                                id={`landuse-invoicing-contract-${index}`}
+                                label="Sopimus"
+                                value={
+                                  agreementOptions.find(
+                                    (option) =>
+                                      option.value === contractInput.value,
+                                  )?.label ?? "-"
+                                }
+                                readOnly
+                              />
+                            )
+                          }
+                        </Field>
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-invoicing-contract-number-${index}`}
+                          label="Sopimusnumero"
+                          value={contractNumberDisplayValue}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-invoicing-street-address-${index}`}
+                          label="Katuosoite"
+                          value={readOnlyTextValue(
+                            selectedPartyData.streetAddress,
+                          )}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-invoicing-city-${index}`}
+                          label="Postitoimipaikka"
+                          value={readOnlyTextValue(selectedPartyData.city)}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-invoicing-postal-code-${index}`}
+                          label="Postinumero"
+                          value={readOnlyTextValue(
+                            selectedPartyData.postalCode,
+                          )}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-invoicing-ovt-code-${index}`}
+                          label="OVT-tunnus"
+                          value={readOnlyTextValue(selectedPartyData.ovtCode)}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-invoicing-reference-${index}`}
+                          label="Asiakkaan viite"
+                          value={readOnlyTextValue(selectedPartyData.reference)}
+                          readOnly
+                        />
+                      </div>
+
+                      {selectedPartyData.isCompany && (
+                        <div className="landuse-grid__column-3">
+                          <TextInput
+                            id={`landuse-invoicing-business-id-${index}`}
+                            label="Y-tunnus"
+                            value={readOnlyTextValue(
+                              selectedPartyData.businessId,
+                            )}
+                            readOnly
+                          />
+                        </div>
+                      )}
+
+                      <div className="landuse-grid__column-3">
+                        <Field name={`${fieldName}.installmentNumber`}>
+                          {({ input: installmentNumberInput }) =>
+                            isEditMode ? (
+                              <NumberInput
+                                id={`landuse-invoicing-installment-number-${index}`}
+                                label="Laskutuserä"
+                                value={installmentNumberInput.value}
+                                onChange={installmentNumberInput.onChange}
+                              />
+                            ) : (
+                              <TextInput
+                                id={`landuse-invoicing-installment-number-${index}`}
+                                label="Laskutuserä"
+                                value={readOnlyTextValue(
+                                  installmentNumberInput.value,
+                                )}
+                                readOnly
+                              />
+                            )
+                          }
+                        </Field>
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <Field name={`${fieldName}.installmentTotal`}>
+                          {({ input: installmentTotalInput }) =>
+                            isEditMode ? (
+                              <NumberInput
+                                id={`landuse-invoicing-installment-total-${index}`}
+                                label="Laskutuseriä yhteensä"
+                                value={installmentTotalInput.value}
+                                onChange={installmentTotalInput.onChange}
+                              />
+                            ) : (
+                              <TextInput
+                                id={`landuse-invoicing-installment-total-${index}`}
+                                label="Laskutuseriä yhteensä"
+                                value={readOnlyTextValue(
+                                  installmentTotalInput.value,
+                                )}
+                                readOnly
+                              />
+                            )
+                          }
+                        </Field>
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <Field name={`${fieldName}.signedDate`}>
+                          {({ input: signedDateInput }) =>
+                            isEditMode ? (
+                              <DateInput
+                                id={`landuse-invoicing-signed-date-${index}`}
+                                label="Allekirjoituspäivämäärä"
+                                value={signedDateInput.value}
+                                onChange={signedDateInput.onChange}
+                                placeholder="DD.MM.YYYY"
+                              />
+                            ) : (
+                              <TextInput
+                                id={`landuse-invoicing-signed-date-${index}`}
+                                label="Allekirjoituspäivämäärä"
+                                value={readOnlyTextValue(signedDateInput.value)}
+                                readOnly
+                              />
+                            )
+                          }
+                        </Field>
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <Field name={`${fieldName}.validDate`}>
+                          {({ input: validDateInput }) =>
+                            isEditMode ? (
+                              <DateInput
+                                id={`landuse-invoicing-valid-date-${index}`}
+                                label="Lainvoimaisuuspäivämäärä"
+                                value={validDateInput.value}
+                                onChange={validDateInput.onChange}
+                                placeholder="DD.MM.YYYY"
+                              />
+                            ) : (
+                              <TextInput
+                                id={`landuse-invoicing-valid-date-${index}`}
+                                label="Lainvoimaisuuspäivämäärä"
+                                value={readOnlyTextValue(validDateInput.value)}
                                 readOnly
                               />
                             )
@@ -389,6 +737,106 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                           }
                         </Field>
                       </div>
+
+                      <div className="landuse-grid__column-12">
+                        <Fieldset heading="Laskurivit">
+                          <FieldArray<LandUseInvoiceItemRow>
+                            name={`${fieldName}.invoiceRows`}
+                          >
+                            {({ fields: invoiceRowFields }) => (
+                              <>
+                                {invoiceRowFields.length > 0 ? (
+                                  invoiceRowFields.map(
+                                    (invoiceRowFieldName, invoiceRowIndex) => (
+                                      <div
+                                        key={invoiceRowFieldName}
+                                        className="landuse-grid"
+                                      >
+                                        <div className="landuse-grid__column-6">
+                                          <Field
+                                            name={`${invoiceRowFieldName}.description`}
+                                          >
+                                            {({ input: descriptionInput }) => (
+                                              <TextInput
+                                                id={`landuse-invoicing-invoice-row-description-${index}-${invoiceRowIndex}`}
+                                                label="Selite"
+                                                value={getFieldTextValue(
+                                                  isEditMode,
+                                                  descriptionInput.value,
+                                                )}
+                                                onChange={
+                                                  descriptionInput.onChange
+                                                }
+                                                readOnly={!isEditMode}
+                                              />
+                                            )}
+                                          </Field>
+                                        </div>
+
+                                        <div className="landuse-grid__column-3">
+                                          <Field
+                                            name={`${invoiceRowFieldName}.amountExcludingVat`}
+                                          >
+                                            {({ input: amountInput }) => (
+                                              <TextInput
+                                                id={`landuse-invoicing-invoice-row-amount-${index}-${invoiceRowIndex}`}
+                                                label="Veroton summa (€)"
+                                                value={getFieldTextValue(
+                                                  isEditMode,
+                                                  amountInput.value,
+                                                )}
+                                                onChange={amountInput.onChange}
+                                                readOnly={!isEditMode}
+                                              />
+                                            )}
+                                          </Field>
+                                        </div>
+
+                                        {isEditMode && (
+                                          <div className="landuse-grid__column-3 landuse-compensations-table__detail-actions">
+                                            <Button
+                                              type="button"
+                                              size={ButtonSize.Small}
+                                              variant={ButtonVariant.Secondary}
+                                              onClick={() =>
+                                                invoiceRowFields.remove(
+                                                  invoiceRowIndex,
+                                                )
+                                              }
+                                            >
+                                              Poista rivi
+                                            </Button>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ),
+                                  )
+                                ) : (
+                                  <p>Ei laskurivejä.</p>
+                                )}
+
+                                {isEditMode && (
+                                  <div>
+                                    <Button
+                                      type="button"
+                                      variant={ButtonVariant.Supplementary}
+                                      size={ButtonSize.Small}
+                                      iconStart={<IconPlusCircleFill />}
+                                      onClick={() =>
+                                        invoiceRowFields.push(
+                                          createEmptyInvoiceItemRow(),
+                                        )
+                                      }
+                                    >
+                                      Lisää laskurivi
+                                    </Button>
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </FieldArray>
+                        </Fieldset>
+                      </div>
                     </div>
 
                     {isEditMode && (
@@ -419,6 +867,8 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
   form,
   isEditMode,
   parties,
+  agreements,
+  asemakaavanNumero,
 }) => {
   const [openInvoiceIndex, setOpenInvoiceIndex] = React.useState<number | null>(
     null,
@@ -430,12 +880,26 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
       onSubmit={() => {}}
       render={({ handleSubmit }) => {
         const partyOptions = createInvoiceRecipientOptions(parties ?? []);
+        const agreementOptions = createInvoiceAgreementOptions(
+          agreements ?? [],
+        );
+        const existingInvoices =
+          (
+            form.getState().initialValues as
+              | LandUseInvoicingFormValues
+              | undefined
+          )?.invoices ?? [];
 
         const handleAddInvoice = (
           push: (value: LandUseInvoiceRow) => void,
           currentLength: number,
         ) => {
-          push(createEmptyInvoiceRow(partyOptions[0]?.value));
+          push(
+            createEmptyInvoiceRow(
+              partyOptions[0]?.value,
+              agreementOptions[0]?.value,
+            ),
+          );
           setOpenInvoiceIndex(currentLength);
         };
 
@@ -485,6 +949,8 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
                             <tr>
                               <th className="landuse-compensations-table__toggle-cell" />
                               <th>Laskunsaaja</th>
+                              <th>Sopimusnumero</th>
+                              <th>Laskutuserä</th>
                               <th>Eräpäivä</th>
                               <th>Laskunumero</th>
                               <th>Tyyppi</th>
@@ -501,8 +967,14 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
                                   fieldName={fieldName}
                                   index={index}
                                   isEditMode={isEditMode}
+                                  isExistingInvoice={Boolean(
+                                    existingInvoices[index],
+                                  )}
                                   isOpen={openInvoiceIndex === index}
+                                  parties={parties}
                                   partyOptions={partyOptions}
+                                  agreementOptions={agreementOptions}
+                                  asemakaavanNumero={asemakaavanNumero}
                                   onRemove={(removeIndex) =>
                                     handleRemoveInvoice(
                                       fields.remove,
@@ -514,7 +986,7 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
                               ))
                             ) : (
                               <tr>
-                                <td colSpan={8}>Ei laskuja.</td>
+                                <td colSpan={10}>Ei laskuja.</td>
                               </tr>
                             )}
                           </tbody>
