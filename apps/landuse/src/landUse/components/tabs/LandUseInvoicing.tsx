@@ -52,6 +52,7 @@ export interface LandUseInvoiceRow {
   invoiceNumber: string;
   type: string | undefined;
   status: string | undefined;
+  sent_at?: string;
   billedAmount: string;
   remainingAmount: string;
   invoiceRows?: LandUseInvoiceItemRow[];
@@ -212,6 +213,7 @@ const createEmptyInvoiceRow = (
   invoiceNumber: "",
   type: undefined,
   status: "Luonnos",
+  sent_at: "",
   billedAmount: "",
   remainingAmount: "",
   invoiceRows: [],
@@ -234,7 +236,7 @@ const getInvoiceStatusAction = (
 
   if (status === "Odottaa hyväksyntää") {
     return {
-      buttonLabel: "Hyväksy ja lähetä lasku",
+      buttonLabel: "Hyväksy ja lähetä",
       nextStatus: "Avoin",
     };
   }
@@ -265,6 +267,8 @@ const getInvoiceDeleteLabel = (invoiceNumber: string | undefined): string => {
 
   return "tämä lasku";
 };
+
+const getSentAtTimestamp = (): string => new Date().toISOString();
 
 const InvoiceRow: React.FC<InvoiceRowProps> = ({
   fieldName,
@@ -692,11 +696,18 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                         type="button"
                                         variant={ButtonVariant.Primary}
                                         size={ButtonSize.Small}
-                                        onClick={() =>
-                                          statusInput.onChange(
-                                            statusAction.nextStatus,
-                                          )
-                                        }
+                                        onClick={() => {
+                                          const nextSentAtValue =
+                                            statusAction.nextStatus === "Avoin"
+                                              ? getSentAtTimestamp()
+                                              : (rowValue.sent_at ?? "");
+
+                                          input.onChange({
+                                            ...rowValue,
+                                            status: statusAction.nextStatus,
+                                            sent_at: nextSentAtValue,
+                                          });
+                                        }}
                                       >
                                         {statusAction.buttonLabel}
                                       </Button>
@@ -732,6 +743,15 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                             )
                           }
                         </Field>
+                      </div>
+
+                      <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
+                        <TextInput
+                          id={`landuse-invoicing-sent-at-${index}`}
+                          label="Lähetetty laskutukseen"
+                          value={readOnlyTextValue(rowValue.sent_at)}
+                          readOnly
+                        />
                       </div>
 
                       <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
