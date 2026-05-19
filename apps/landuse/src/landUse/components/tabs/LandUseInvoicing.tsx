@@ -84,13 +84,6 @@ const invoiceTypeOptions = landUseInvoicingSelectOptions.type.map((value) => ({
   value,
 }));
 
-const invoiceStatusOptions = landUseInvoicingSelectOptions.status.map(
-  (value) => ({
-    label: value,
-    value,
-  }),
-);
-
 const handleSelectChange = (
   selectedOptions: SelectOption[],
   callback: (value: string | undefined) => void,
@@ -228,6 +221,26 @@ const createEmptyInvoiceItemRow = (): LandUseInvoiceItemRow => ({
   description: "",
   amountExcludingVat: "",
 });
+
+const getInvoiceStatusAction = (
+  status: string | undefined,
+): { buttonLabel: string; nextStatus: string } | null => {
+  if (status === "Luonnos") {
+    return {
+      buttonLabel: "Merkitse valmiiksi",
+      nextStatus: "Odottaa hyväksyntää",
+    };
+  }
+
+  if (status === "Odottaa hyväksyntää") {
+    return {
+      buttonLabel: "Hyväksy ja lähetä lasku",
+      nextStatus: "Avoin",
+    };
+  }
+
+  return null;
+};
 
 interface InvoiceRowProps {
   fieldName: string;
@@ -657,33 +670,41 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                         </Field>
                       </div>
 
-                      <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
+                      <div className="landuse-grid__column-3 landuse-compensations-table__field--background-coat-of-arms-light">
                         <Field name={`${fieldName}.status`}>
                           {({ input: statusInput }) =>
-                            isEditMode ? (
-                              <Select
-                                id={`landuse-invoicing-status-${index}`}
-                                options={invoiceStatusOptions}
-                                value={normalizeSelectValue(statusInput.value)}
-                                onChange={(selectedOptions) =>
-                                  handleSelectChange(
-                                    selectedOptions,
-                                    statusInput.onChange,
-                                  )
-                                }
-                                texts={{
-                                  label: "Laskun tila",
-                                  placeholder: "Valitse",
-                                }}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-invoicing-status-${index}`}
-                                label="Laskun tila"
-                                value={readOnlyTextValue(statusInput.value)}
-                                readOnly
-                              />
-                            )
+                            (() => {
+                              const statusAction = getInvoiceStatusAction(
+                                statusInput.value,
+                              );
+
+                              return (
+                                <>
+                                  <TextInput
+                                    id={`landuse-invoicing-status-${index}`}
+                                    label="Laskun tila"
+                                    value={readOnlyTextValue(statusInput.value)}
+                                    readOnly
+                                  />
+                                  {isEditMode && statusAction && (
+                                    <div>
+                                      <Button
+                                        type="button"
+                                        variant={ButtonVariant.Primary}
+                                        size={ButtonSize.Small}
+                                        onClick={() =>
+                                          statusInput.onChange(
+                                            statusAction.nextStatus,
+                                          )
+                                        }
+                                      >
+                                        {statusAction.buttonLabel}
+                                      </Button>
+                                    </div>
+                                  )}
+                                </>
+                              );
+                            })()
                           }
                         </Field>
                       </div>
