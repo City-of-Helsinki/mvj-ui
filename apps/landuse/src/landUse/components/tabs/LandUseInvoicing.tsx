@@ -218,7 +218,7 @@ const createEmptyInvoiceRow = (
   dueDate: "",
   invoiceNumber: "",
   type: undefined,
-  status: undefined,
+  status: "Luonnos",
   billedAmount: "",
   remainingAmount: "",
   invoiceRows: [],
