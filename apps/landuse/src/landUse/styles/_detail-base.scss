@@ -210,6 +210,12 @@
     border-radius: $radius-sm;
     padding: hds.$spacing-2-xs;
   }
+
+  &__field--background-coat-of-arms-light {
+    background-color: hds.$color-coat-of-arms-light;
+    border-radius: $radius-sm;
+    padding: hds.$spacing-2-xs;
+  }
 }
 
 // ============================================================================
