@@ -930,6 +930,19 @@ const LandUseDetailPage: React.FC = () => {
                 partiesQuery.data?.parties) ||
               []
             }
+            agreements={
+              ((
+                decisionsFormApi.getState().values as LandUseDecisionsFormValues
+              )?.agreements ??
+                decisionsQuery.data?.agreements) ||
+              []
+            }
+            asemakaavanNumero={
+              ((summaryFormApi.getState().values as LandUseSummaryFormValues)
+                ?.asemakaavanNumero ??
+                summaryQuery.data?.asemakaavanNumero) ||
+              ""
+            }
           />
         </TabPanel>
 

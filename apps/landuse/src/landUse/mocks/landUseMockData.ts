@@ -226,6 +226,11 @@ const ma113Invoicing: LandUseInvoicingFormValues = {
   invoices: [
     {
       recipientPartyIndex: "0",
+      contractIndex: "0",
+      installmentNumber: "1",
+      installmentTotal: "2",
+      signedDate: "2026-01-20",
+      validDate: "2026-02-20",
       dueDate: "2026-04-15",
       invoiceNumber: "123456789",
       type: "Maankäyttökorvaus",
@@ -235,6 +240,11 @@ const ma113Invoicing: LandUseInvoicingFormValues = {
     },
     {
       recipientPartyIndex: "0",
+      contractIndex: "0",
+      installmentNumber: "2",
+      installmentTotal: "2",
+      signedDate: "2026-01-20",
+      validDate: "2026-02-20",
       dueDate: "2026-06-10",
       invoiceNumber: "123456790",
       type: "Perintä",
