@@ -422,7 +422,7 @@ export const landUseCompensationSelectOptions = {
 
 export const landUseInvoicingSelectOptions = {
   type: ["Maankäyttökorvaus", "Sakko", "Perintä"],
-  status: ["Avoin", "Maksettu"],
+  status: ["Luonnos", "Odottaa hyväksyntää", "Avoin", "Maksettu"],
 };
 
 export const landUseKohdeSelectOptions = [
