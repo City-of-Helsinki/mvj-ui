@@ -14,25 +14,6 @@ import {
 } from "@/landUse/utils/number";
 import { copyNumberToClipboard } from "@/landUse/utils/fieldUtils";
 
-// Type declarations for Temporal API (Stage 3 TC39 proposal)
-// Install @js-temporal/polyfill for browser support: npm install @js-temporal/polyfill
-declare namespace Temporal {
-  class PlainDate {
-    static from(
-      item: string | { year: number; month: number; day: number },
-    ): PlainDate;
-    until(other: PlainDate, options?: { largestUnit?: string }): Duration;
-    toString(): string;
-    year: number;
-    month: number;
-    day: number;
-  }
-
-  class Duration {
-    days: number;
-  }
-}
-
 /**
  * Calculates the interest based on the interest percentage and the number of days from due date to payment date.
  * https://pankkiasiat.fi/englantilainen-vuosikorko
@@ -191,7 +172,6 @@ export const KorkoCalculator: React.FC = () => {
               label: "Päiviä vuodessa",
               placeholder: "Valitse",
             }}
-            required
           />
         </div>
         <div className="landuse-grid__column-2">
