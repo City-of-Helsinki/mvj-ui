@@ -7,6 +7,9 @@
 node_modules
 apps/*/node_modules
 
+# Yarn state (created during docker build, must not be overwritten by COPY)
+.yarn
+
 # Build output (rebuilt in the container)
 dist
 apps/*/dist
