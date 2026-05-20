@@ -4,27 +4,23 @@ FROM registry.access.redhat.com/ubi9/nodejs-24 AS appbase
 
 WORKDIR /app
 # Copy package and lock files (root and all workspaces so Yarn installs workspace deps)
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarnrc.yml ./
 COPY apps/leasing/package.json apps/leasing/
 COPY apps/landuse/package.json apps/landuse/
 
-# Install yarn
+RUN npm install -g corepack
+# Set yarn version and fix /app ownership so default user can write
 USER root
 RUN chown -R default:root /app
-RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
-RUN dnf install -y yarn
+RUN corepack enable
 
-# Set Yarn version
-ENV YARN_VERSION=1.22.22
-RUN yarn policies set-version $YARN_VERSION
-
-# Use non-root user
 USER default
+RUN corepack prepare yarn@4.15.0 --activate
+RUN yarn --version
 
 # Install exact versions of dependencies and clean cache.
-# Use non-prod flag to install devDependencies.
-# Ignore engine restrictions for HDS 5.2.0 which requires Node 22, but we use 24.
-RUN yarn --frozen-lockfile --ignore-engines --production=false && yarn cache clean --force
+# Engine restrictions for HDS 5.2.0 are suppressed via ignoredErrors in .yarnrc.yml.
+RUN yarn install --immutable && yarn cache clean
 
 # ===================================
 FROM appbase AS staticbuilder

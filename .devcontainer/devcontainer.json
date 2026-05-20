@@ -3,7 +3,7 @@
     "image": "mcr.microsoft.com/devcontainers/javascript-node:24-trixie",
 	"forwardPorts": [3000],
     "features":{},
-	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y ripgrep",
+	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y ripgrep && sudo corepack enable && corepack prepare yarn@4.15.0 --activate",
 	"customizations": {
 		"vscode": {
 			"settings": {
