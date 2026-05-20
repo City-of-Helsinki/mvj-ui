@@ -348,14 +348,36 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                     className="landuse-compensations-table__detail-content landuse-compensations-table__detail-content--overflow-visible"
                     aria-label={`Laskun ${rowValue.invoiceNumber || index + 1} tiedot`}
                   >
-                    <div className="landuse-grid">
+                    <div className="landuse-grid landuse-grid__bottom-margin">
                       <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-invoicing-asemakaavanumero-${index}`}
-                          label="Kaavanumero"
-                          value={readOnlyTextValue(asemakaavanNumero)}
-                          readOnly
-                        />
+                        <Field name={`${fieldName}.type`}>
+                          {({ input: typeInput }) =>
+                            isEditMode ? (
+                              <Select
+                                id={`landuse-invoicing-type-${index}`}
+                                options={invoiceTypeOptions}
+                                value={normalizeSelectValue(typeInput.value)}
+                                onChange={(selectedOptions) =>
+                                  handleSelectChange(
+                                    selectedOptions,
+                                    typeInput.onChange,
+                                  )
+                                }
+                                texts={{
+                                  label: "Laskun tyyppi",
+                                  placeholder: "Valitse",
+                                }}
+                              />
+                            ) : (
+                              <TextInput
+                                id={`landuse-invoicing-type-${index}`}
+                                label="Tyyppi"
+                                value={readOnlyTextValue(typeInput.value)}
+                                readOnly
+                              />
+                            )
+                          }
+                        </Field>
                       </div>
 
                       <div className="landuse-grid__column-3">
@@ -440,11 +462,66 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                         </Field>
                       </div>
 
+                      <div className="landuse-grid__column-3 landuse-compensations-table__field--background-coat-of-arms-light">
+                        <Field name={`${fieldName}.status`}>
+                          {({ input: statusInput }) =>
+                            (() => {
+                              const statusAction = getInvoiceStatusAction(
+                                statusInput.value,
+                              );
+
+                              return (
+                                <>
+                                  <TextInput
+                                    id={`landuse-invoicing-status-${index}`}
+                                    label="Laskun tila"
+                                    value={readOnlyTextValue(statusInput.value)}
+                                    readOnly
+                                  />
+                                  {isEditMode && statusAction && (
+                                    <div>
+                                      <Button
+                                        type="button"
+                                        variant={ButtonVariant.Primary}
+                                        size={ButtonSize.Small}
+                                        onClick={() => {
+                                          const nextSentAtValue =
+                                            statusAction.nextStatus === "Avoin"
+                                              ? getSentAtTimestamp()
+                                              : (rowValue.sent_at ?? "");
+
+                                          input.onChange({
+                                            ...rowValue,
+                                            status: statusAction.nextStatus,
+                                            sent_at: nextSentAtValue,
+                                          });
+                                        }}
+                                      >
+                                        {statusAction.buttonLabel}
+                                      </Button>
+                                    </div>
+                                  )}
+                                </>
+                              );
+                            })()
+                          }
+                        </Field>
+                      </div>
+
                       <div className="landuse-grid__column-3">
                         <TextInput
                           id={`landuse-invoicing-contract-number-${index}`}
                           label="Sopimusnumero"
                           value={contractNumberDisplayValue}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-invoicing-asemakaavanumero-${index}`}
+                          label="Kaavanumero"
+                          value={readOnlyTextValue(asemakaavanNumero)}
                           readOnly
                         />
                       </div>
@@ -644,84 +721,8 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                           )}
                         </Field>
                       </div>
-
-                      <div className="landuse-grid__column-3">
-                        <Field name={`${fieldName}.type`}>
-                          {({ input: typeInput }) =>
-                            isEditMode ? (
-                              <Select
-                                id={`landuse-invoicing-type-${index}`}
-                                options={invoiceTypeOptions}
-                                value={normalizeSelectValue(typeInput.value)}
-                                onChange={(selectedOptions) =>
-                                  handleSelectChange(
-                                    selectedOptions,
-                                    typeInput.onChange,
-                                  )
-                                }
-                                texts={{
-                                  label: "Tyyppi",
-                                  placeholder: "Valitse",
-                                }}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-invoicing-type-${index}`}
-                                label="Tyyppi"
-                                value={readOnlyTextValue(typeInput.value)}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
-
-                      <div className="landuse-grid__column-3 landuse-compensations-table__field--background-coat-of-arms-light">
-                        <Field name={`${fieldName}.status`}>
-                          {({ input: statusInput }) =>
-                            (() => {
-                              const statusAction = getInvoiceStatusAction(
-                                statusInput.value,
-                              );
-
-                              return (
-                                <>
-                                  <TextInput
-                                    id={`landuse-invoicing-status-${index}`}
-                                    label="Laskun tila"
-                                    value={readOnlyTextValue(statusInput.value)}
-                                    readOnly
-                                  />
-                                  {isEditMode && statusAction && (
-                                    <div>
-                                      <Button
-                                        type="button"
-                                        variant={ButtonVariant.Primary}
-                                        size={ButtonSize.Small}
-                                        onClick={() => {
-                                          const nextSentAtValue =
-                                            statusAction.nextStatus === "Avoin"
-                                              ? getSentAtTimestamp()
-                                              : (rowValue.sent_at ?? "");
-
-                                          input.onChange({
-                                            ...rowValue,
-                                            status: statusAction.nextStatus,
-                                            sent_at: nextSentAtValue,
-                                          });
-                                        }}
-                                      >
-                                        {statusAction.buttonLabel}
-                                      </Button>
-                                    </div>
-                                  )}
-                                </>
-                              );
-                            })()
-                          }
-                        </Field>
-                      </div>
-
+                    </div>
+                    <div className="landuse-grid landuse-grid__bottom-margin">
                       <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
                         <Field name={`${fieldName}.billedAmount`}>
                           {({ input: billedAmountInput }) =>
@@ -780,7 +781,8 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                           }
                         </Field>
                       </div>
-
+                    </div>
+                    <div className="landuse-grid landuse-grid__bottom-margin">
                       <div className="landuse-grid__column-12">
                         <Fieldset heading="Laskurivit">
                           <FieldArray<LandUseInvoiceItemRow>
