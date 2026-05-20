@@ -1,5 +1,5 @@
 # ===============================================
-FROM registry.access.redhat.com/ubi9/nodejs-22 AS appbase
+FROM registry.access.redhat.com/ubi9/nodejs-24 AS appbase
 # ===============================================
 
 WORKDIR /app
