@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   ButtonSize,
@@ -56,6 +56,7 @@ export interface LandUseCompensationsFormValues {
   rahakorvaus: string;
   maakorvaus: string;
   muuKorvaus: string;
+  maankayttokorvausYhteensa: string;
   perushinta: string;
   maakorvausSelite: string;
   muuSelite: string;
@@ -465,6 +466,14 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           (parseLandUseNumericValue(values.maakorvaus) ?? 0) +
           (parseLandUseNumericValue(values.muuKorvaus) ?? 0);
 
+        // Update the yhteensa field in the form whenever component values change
+        useEffect(() => {
+          const yhteensaStr = yhteensa.toString();
+          if (values.maankayttokorvausYhteensa !== yhteensaStr) {
+            form.change("maankayttokorvausYhteensa", yhteensaStr);
+          }
+        }, [yhteensa, values.maankayttokorvausYhteensa]);
+
         const handleAddSite = () => {
           if (isCompensationsTableReadOnly) {
             return;
@@ -602,12 +611,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   </div>
 
                   <div className="landuse-grid__column-3">
-                    <TextInput
-                      id="landuse-compensations-maankayttokorvaus-yhteensa"
-                      label="Yhteensä"
-                      value={formatLandUseEuroValue(yhteensa)}
-                      readOnly
-                    />
+                    <Field name="maankayttokorvausYhteensa">
+                      {({ input }) => (
+                        <TextInput
+                          id="landuse-compensations-maankayttokorvaus-yhteensa"
+                          label="Yhteensä"
+                          value={formatLandUseEuroValue(
+                            parseLandUseNumericValue(input.value) ?? 0,
+                          )}
+                          readOnly
+                        />
+                      )}
+                    </Field>
                   </div>
 
                   <div className="landuse-grid__column-6">

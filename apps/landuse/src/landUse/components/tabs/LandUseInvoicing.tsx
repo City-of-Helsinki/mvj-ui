@@ -26,6 +26,8 @@ import { formatLandUseEuroDisplayValue } from "../../utils/number";
 import type { PartyEntry } from "./LandUseParties";
 import type { LandUseDecisionsFormValues } from "./LandUseDecisions";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
+import { KorotusCalculator } from "../invoicing/KorotusCalculator";
+import { KorkoCalculator } from "../invoicing/KorkoCalculator";
 
 type SelectOption = { label: string; value: string };
 type AgreementItem = NonNullable<
@@ -914,7 +916,6 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
   const [openInvoiceIndex, setOpenInvoiceIndex] = React.useState<number | null>(
     null,
   );
-
   return (
     <Form<LandUseInvoicingFormValues>
       form={form}
@@ -974,9 +975,9 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
         };
 
         return (
-          <form onSubmit={handleSubmit}>
-            <div className="landuse-detail__content">
-              <h1>Laskutus</h1>
+          <div className="landuse-detail__content">
+            <h1>Laskutus</h1>
+            <form onSubmit={handleSubmit}>
               <Fieldset
                 heading=""
                 className="landuse-detail__fieldset--with-margin"
@@ -1052,8 +1053,13 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
                   </FieldArray>
                 </div>
               </Fieldset>
-            </div>
-          </form>
+            </form>
+            <h2>Korotuslaskin</h2>
+            <KorotusCalculator />
+
+            <h2>Korkolaskin</h2>
+            <KorkoCalculator />
+          </div>
         );
       }}
     />

@@ -16,3 +16,8 @@ export const getFieldTextValue = (
 
 export const readOnlyTextValue = (value: string | undefined): string =>
   value || "-";
+
+export const copyNumberToClipboard = async (value: number) => {
+  const formattedValue = value.toFixed(2);
+  await navigator.clipboard.writeText(formattedValue);
+};
