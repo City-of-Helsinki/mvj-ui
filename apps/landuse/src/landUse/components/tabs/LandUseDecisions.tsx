@@ -7,6 +7,7 @@ import {
   Fieldset,
   IconPlusCircleFill,
   Select,
+  TextArea,
   TextInput,
 } from "hds-react";
 import { Form } from "react-final-form";
@@ -367,7 +368,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                         <div className="landuse-grid__column-9">
                           <Field name={`${decisionName}.huomautus`}>
                             {({ input }) => (
-                              <TextInput
+                              <TextArea
                                 id={`decision-huomautus-${decisionIndex}`}
                                 label="Huomautus"
                                 value={getFieldTextValue(
@@ -470,7 +471,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                             <div className="landuse-grid__column-3">
                               <Field name={`${conditionName}.note`}>
                                 {({ input }) => (
-                                  <TextInput
+                                  <TextArea
                                     id={`decision-ehto-huomautus-${decisionIndex}-${conditionIndex}`}
                                     label="Huomautus"
                                     value={getFieldTextValue(
@@ -631,7 +632,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                         <div className="landuse-grid__column-3">
                           <Field name={`${agreementName}.huomautus`}>
                             {({ input }) => (
-                              <TextInput
+                              <TextArea
                                 id={`agreement-huomautus-${agreementIndex}`}
                                 label="Huomautus"
                                 value={getFieldTextValue(
@@ -921,7 +922,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                             <div className="landuse-grid__column-3">
                               <Field name={`${changeName}.huomautus`}>
                                 {({ input }) => (
-                                  <TextInput
+                                  <TextArea
                                     id={`agreement-muutos-huomautus-${agreementIndex}-${changeIndex}`}
                                     label="Huomautus"
                                     value={getFieldTextValue(

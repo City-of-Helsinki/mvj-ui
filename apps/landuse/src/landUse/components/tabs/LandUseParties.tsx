@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import {
   TextInput,
+  TextArea,
   Select,
   Accordion,
   Button,
@@ -292,7 +293,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
     <div className="landuse-grid__column-3" style={{ gridColumn: "span 3" }}>
       <Field name={`${fieldPrefix}.note`}>
         {({ input }) => (
-          <TextInput
+          <TextArea
             id={`${idPrefix}-note`}
             label="Huomautus"
             value={getFieldTextValue(isEditMode, input.value)}
@@ -491,7 +492,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
     <div className="landuse-grid__column-3" style={{ gridColumn: "span 3" }}>
       <Field name={`${fieldPrefix}.note`}>
         {({ input }) => (
-          <TextInput
+          <TextArea
             id={`${idPrefix}-note`}
             label="Huomautus"
             value={getFieldTextValue(isEditMode, input.value)}
