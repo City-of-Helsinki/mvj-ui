@@ -187,11 +187,11 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
     </div>
 
     <div className="landuse-grid__column-3">
-      <Field name={`${fieldPrefix}.city`}>
+      <Field name={`${fieldPrefix}.postalCode`}>
         {({ input }) => (
           <TextInput
-            id={`${idPrefix}-city`}
-            label="Postitoimipaikka"
+            id={`${idPrefix}-postal-code`}
+            label="Postinumero"
             value={getFieldTextValue(isEditMode, input.value)}
             onChange={input.onChange}
             readOnly={!isEditMode}
@@ -202,11 +202,11 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
     </div>
 
     <div className="landuse-grid__column-3">
-      <Field name={`${fieldPrefix}.postalCode`}>
+      <Field name={`${fieldPrefix}.city`}>
         {({ input }) => (
           <TextInput
-            id={`${idPrefix}-postal-code`}
-            label="Postinumero"
+            id={`${idPrefix}-city`}
+            label="Postitoimipaikka"
             value={getFieldTextValue(isEditMode, input.value)}
             onChange={input.onChange}
             readOnly={!isEditMode}
@@ -386,11 +386,11 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
     </div>
 
     <div className="landuse-grid__column-3">
-      <Field name={`${fieldPrefix}.city`}>
+      <Field name={`${fieldPrefix}.postalCode`}>
         {({ input }) => (
           <TextInput
-            id={`${idPrefix}-city`}
-            label="Postitoimipaikka"
+            id={`${idPrefix}-postal-code`}
+            label="Postinumero"
             value={getFieldTextValue(isEditMode, input.value)}
             onChange={input.onChange}
             readOnly={!isEditMode}
@@ -401,11 +401,11 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
     </div>
 
     <div className="landuse-grid__column-3">
-      <Field name={`${fieldPrefix}.postalCode`}>
+      <Field name={`${fieldPrefix}.city`}>
         {({ input }) => (
           <TextInput
-            id={`${idPrefix}-postal-code`}
-            label="Postinumero"
+            id={`${idPrefix}-city`}
+            label="Postitoimipaikka"
             value={getFieldTextValue(isEditMode, input.value)}
             onChange={input.onChange}
             readOnly={!isEditMode}
