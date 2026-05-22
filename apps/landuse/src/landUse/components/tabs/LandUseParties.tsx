@@ -550,6 +550,18 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                           heading={partyName}
                           initiallyOpen={shouldOpenAccordion(index)}
                         >
+                          {isEditMode && (
+                            <div className="landuse-detail__delete-button-row">
+                              <ConfirmDeleteButton
+                                id={`party-delete-${index}`}
+                                buttonLabel="Poista osapuoli"
+                                onConfirm={() => fields.remove(index)}
+                                dialogTitle="Poista osapuoli"
+                                dialogContent={`Haluatko varmasti poistaa osapuolen ${partyName?.trim() ?? ""}?`}
+                              />
+                            </div>
+                          )}
+
                           <h3>Sopimusosapuoli</h3>
                           <Fieldset heading="" className="full-width">
                             <div className="landuse-grid">
@@ -852,16 +864,6 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                               )}
                             </div>
                           </Fieldset>
-
-                          {isEditMode && (
-                            <ConfirmDeleteButton
-                              id={`party-delete-${index}`}
-                              buttonLabel="Poista osapuoli"
-                              onConfirm={() => fields.remove(index)}
-                              dialogTitle="Poista osapuoli"
-                              dialogContent={`Haluatko varmasti poistaa osapuolen ${partyName?.trim() ?? ""}?`}
-                            />
-                          )}
                         </Accordion>
                       );
                     })}

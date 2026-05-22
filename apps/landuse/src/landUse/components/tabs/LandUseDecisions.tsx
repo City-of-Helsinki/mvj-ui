@@ -217,7 +217,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                     initiallyOpen={decisionIndex === newDecisionIndexToOpen}
                   >
                     {isEditMode && (
-                      <div className="landuse-detail__decisions-delete-button-row">
+                      <div className="landuse-detail__delete-button-row">
                         <ConfirmDeleteButton
                           id={`decision-delete-${decisionIndex}`}
                           buttonLabel="Poista päätös"
@@ -536,7 +536,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                     initiallyOpen={agreementIndex === newAgreementIndexToOpen}
                   >
                     {isEditMode && (
-                      <div className="landuse-detail__decisions-delete-button-row">
+                      <div className="landuse-detail__delete-button-row">
                         <ConfirmDeleteButton
                           id={`agreement-delete-${agreementIndex}`}
                           buttonLabel="Poista sopimus"
@@ -1001,7 +1001,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                             />
 
                             {isEditMode && !isVakuusLocked && (
-                              <div className="landuse-detail__decisions-delete-button-row">
+                              <div className="landuse-detail__delete-button-row">
                                 <ConfirmDeleteButton
                                   id={`vakuus-delete-${agreementIndex}-${vakuusIndex}`}
                                   buttonLabel="Poista vakuus"
