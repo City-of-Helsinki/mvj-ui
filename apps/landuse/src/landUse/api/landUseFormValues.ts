@@ -111,22 +111,7 @@ export const createEmptyPartyEntry = (): PartyEntry => ({
     sapCustomerNumber: "",
     reference: "",
   },
-  invoiceRecipient: {
-    details: {
-      partyType: undefined,
-      name: "",
-      businessId: "",
-      language: undefined,
-      streetAddress: "",
-      city: "",
-      postalCode: "",
-      country: undefined,
-      careOf: "",
-      phone: "",
-      email: "",
-      note: "",
-    },
-  },
+  invoiceRecipient: undefined,
 });
 
 export const createEmptyPartiesFormValues = (): LandUsePartiesFormValues => ({

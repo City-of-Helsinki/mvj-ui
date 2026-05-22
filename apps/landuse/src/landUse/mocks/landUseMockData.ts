@@ -73,7 +73,7 @@ ma113Parties.parties[0].billingDetails = {
 ma113Parties.parties[0].invoiceRecipient = {
   ...ma113Parties.parties[0].invoiceRecipient,
   details: {
-    ...ma113Parties.parties[0].invoiceRecipient.details,
+    ...ma113Parties.parties[0].invoiceRecipient?.details,
     partyType: "yritys",
     name: "Helsingin kaupunki",
     businessId: "3100001-5",
