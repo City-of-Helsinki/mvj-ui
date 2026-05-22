@@ -699,6 +699,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                           {isEditMode ? (
                                             <ConfirmDeleteButton
                                               id={`contact-person-delete-${index}-${contactIndex}`}
+                                              buttonLabel="Poista yhteyshenkilö"
                                               buttonAriaLabel={`Poista yhteyshenkilö ${contactIndex + 1}`}
                                               buttonVariant={
                                                 ButtonVariant.Supplementary
