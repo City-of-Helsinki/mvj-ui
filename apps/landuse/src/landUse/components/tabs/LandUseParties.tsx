@@ -59,7 +59,7 @@ export interface PartyEntry {
   };
   contactPersons: ContactPerson[];
   billingDetails: BillingDetails;
-  invoiceRecipient: {
+  invoiceRecipient?: {
     details: PersonPartyDetails | CompanyPartyDetails;
   };
 }
@@ -864,6 +864,28 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                               )}
                             </div>
                           </Fieldset>
+
+                          <div className="landuse-detail__delete-button-row">
+                            {isEditMode && partyEntry.invoiceRecipient ? (
+                              <ConfirmDeleteButton
+                                id={`invoice-receiver-delete`}
+                                buttonLabel="Poista laskunsaaja"
+                                buttonAriaLabel={`Poista laskunsaaja`}
+                                buttonVariant={ButtonVariant.Supplementary}
+                                onConfirm={() =>
+                                  partyEntry.invoiceRecipient &&
+                                  fields.update(index, {
+                                    ...partyEntry,
+                                    invoiceRecipient: undefined,
+                                  })
+                                }
+                                dialogTitle="Poista laskunsaaja"
+                                dialogContent={
+                                  "Haluatko varmasti poistaa laskunsaajan?"
+                                }
+                              />
+                            ) : null}
+                          </div>
                         </Accordion>
                       );
                     })}
