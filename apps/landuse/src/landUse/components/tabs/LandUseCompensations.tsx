@@ -20,8 +20,10 @@ import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import {
   getFieldTextValue,
+  normalizeMultiSelectValue,
   normalizeSelectValue,
   readOnlyTextValue,
+  type SelectOption,
 } from "../../utils/fieldUtils";
 import { landUseCompensationSelectOptions } from "../../options";
 import {
@@ -104,8 +106,6 @@ const suojeltuOptions = landUseCompensationSelectOptions.suojeltu.map(
   }),
 );
 
-type SelectOption = { label: string; value: string };
-
 const handleSelectChange = (
   selectedOptions: SelectOption[],
   callback: (value: string | undefined) => void,
@@ -115,23 +115,6 @@ const handleSelectChange = (
   } else {
     callback(undefined);
   }
-};
-
-const normalizeMultiSelectValue = (
-  value: string[] | string | undefined,
-): SelectOption[] => {
-  if (Array.isArray(value)) {
-    return value.map((optionValue) => ({
-      label: optionValue,
-      value: optionValue,
-    }));
-  }
-
-  if (typeof value === "string" && value !== "") {
-    return [{ label: value, value }];
-  }
-
-  return [];
 };
 
 const handleMultiSelectChange = (

@@ -5,9 +5,8 @@ import type { LandUseGuaranteeType } from "../../options";
  * Which fields apply depends on `tyyppi`.
  */
 export interface Guarantee {
-  // TODO for the actual data model, include mandatory fields from automatically available data,
-  // such as party details, and contract number.
   tyyppi?: LandUseGuaranteeType;
+  osapuolet?: string[];
   vakuusasiakirjanLaji?: string;
   kiinteistoVaiLaitos?: string;
   kiinteistotunnukset?: string[];
@@ -31,4 +30,5 @@ export interface Guarantee {
 export interface CollateralFormProps {
   namePrefix: string;
   isEditMode: boolean;
+  partyOptions: { label: string; value: string }[];
 }
