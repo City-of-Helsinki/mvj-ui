@@ -4,7 +4,6 @@ import {
   change,
   FieldArray,
   formValueSelector,
-  clearFields,
   initialize,
   getFormValues,
 } from "redux-form";
@@ -569,111 +568,144 @@ const BasisOfRentEdit: React.FC<Props> = ({
     () => !!subventionType || !!temporarySubventions?.length,
   );
 
-  /**
-   * Initialize MAST calculator children with default value 0.
-   */
-  const ensureMastChildrenInitialized = useCallback(() => {
-    const areaDefaultValue = 0;
-    if (calculatorType === CalculatorTypes.MAST) {
-      if (!children || children.length === 0) {
-        dispatch(change(formName, `${field}.children`, [{}, {}]));
+  const fieldsToClearOnTypeChange = [
+    `${field}.amount_per_area`, // Same field for both "price" and "amountPerArea"
+    `${field}.area`,
+    `${field}.area_unit`,
+    `${field}.base_year_rent`,
+    `${field}.current_amount_per_area`,
+    `${field}.discount_percentage`,
+    `${field}.discounted_initial_year_rent`,
+    `${field}.discounted_initial_year_rent_per_month`,
+    `${field}.discounted_initial_year_rent_per_month_total`,
+    `${field}.discounted_initial_year_rent_per_2_months`,
+    `${field}.discounted_initial_year_rent_per_2_months_total`,
+    `${field}.index`,
+    `${field}.initial_year_rent`,
+    `${field}.intended_use`,
+    `${field}.profit_margin_percentage`,
+    `${field}.subvention_base_percent`,
+    `${field}.subvention_discount_percentage`,
+    `${field}.subvention_graduated_percent`,
+    `${field}.subvention_re_lease_discount_amount`,
+    `${field}.subvention_re_lease_discount_precent`,
+    `${field}.temporary_subvention_discount_percentage`,
+    `${field}.unit_price`,
+    `${field}.zone`,
+    `${field}.children`,
+  ];
 
-        if (isEmptyValue(area)) {
-          dispatch(change(formName, `${field}.area`, areaDefaultValue));
-        }
-      } else if (children.length > 0) {
-        if (children[0] && children[0].area === undefined) {
-          dispatch(
-            change(formName, `${field}.children[0].area`, areaDefaultValue),
-          );
-        }
-        if (children[1] && children[1].area === undefined) {
-          dispatch(
-            change(formName, `${field}.children[1].area`, areaDefaultValue),
-          );
-        }
-      }
+  const initialFormValues = (
+    calculatorTypeValue: string | null | undefined = calculatorType,
+    forceInitialization = false,
+  ) => {
+    if (!calculatorTypeValue) return;
+
+    const newInitialValues = {
+      ...formValues,
+    };
+
+    if (forceInitialization) {
+      fieldsToClearOnTypeChange.forEach((fieldPath) => {
+        set(newInitialValues, fieldPath, undefined);
+      });
+      set(newInitialValues, `${field}.subvention_type`, null);
     }
-  }, [calculatorType, children, area, dispatch, field, formName]);
 
-  const initialFormValues = () => {
-    ensureMastChildrenInitialized();
-    if (
-      calculatorType &&
-      (calculatorType === CalculatorTypes.LEASE ||
-        calculatorType === CalculatorTypes.LEASE2022)
-    ) {
-      const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
-      const currentAmountPerArea = getBasisOfRentAmountPerArea(
-        basisOfRent,
-        indexValue,
-      );
-      const newInitialValues = {
-        ...formValues,
-      };
-      set(
-        newInitialValues,
-        `${field}.current_amount_per_area`,
-        currentAmountPerArea,
-      );
+    switch (calculatorTypeValue) {
+      case CalculatorTypes.MAST: {
+        if (!forceInitialization && children && children.length > 0) {
+          return;
+        }
 
-      // Calculate and set discounts, temporary subvention percents and
-      // management subventions manually on initialization to avoid dirtying the form
-      set(
-        newInitialValues,
-        `${field}.discount_percentage`,
-        calculateTotalSubventionPercent(),
-      );
-      set(
-        newInitialValues,
-        `${field}.temporary_subvention_discount_percentage`,
-        formatNumber(
-          calculateTemporarySubventionDiscountPercentage(temporarySubventions),
-        ),
-      );
-      if (Array.isArray(managementSubventions)) {
-        managementSubventions.forEach((subvention, index) => {
-          const subventionPercent = calculateBasisOfRentSubventionPercentage(
-            subvention?.subvention_amount,
-            currentAmountPerArea,
+        const areaDefaultValue = 0;
+        set(newInitialValues, `${field}.area`, areaDefaultValue);
+        set(newInitialValues, `${field}.children`, [
+          { area: areaDefaultValue },
+          { area: areaDefaultValue },
+        ]);
+        break;
+      }
+      case CalculatorTypes.LEASE:
+      case CalculatorTypes.LEASE2022: {
+        const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
+        const currentAmountPerArea = getBasisOfRentAmountPerArea(
+          basisOfRent,
+          indexValue,
+        );
+
+        set(
+          newInitialValues,
+          `${field}.current_amount_per_area`,
+          currentAmountPerArea,
+        );
+
+        // Calculate and set discounts, temporary subvention percents and
+        // management subventions manually on initialization to avoid dirtying the form
+        set(
+          newInitialValues,
+          `${field}.discount_percentage`,
+          calculateTotalSubventionPercent(),
+        );
+        set(
+          newInitialValues,
+          `${field}.temporary_subvention_discount_percentage`,
+          formatNumber(
+            calculateTemporarySubventionDiscountPercentage(
+              temporarySubventions,
+            ),
+          ),
+        );
+        if (Array.isArray(managementSubventions)) {
+          managementSubventions.forEach((subvention, index) => {
+            const subventionPercent = calculateBasisOfRentSubventionPercentage(
+              subvention?.subvention_amount,
+              currentAmountPerArea,
+            );
+            set(
+              newInitialValues,
+              `${field}.management_subventions[${index}].subvention_percent`,
+              subventionPercent,
+            );
+          });
+        }
+        if (subventionType === SubventionTypes.RE_LEASE) {
+          const releaseDiscountPct = calculateReLeaseDiscountPercent(
+            subventionBasePercent,
+            subventionGraduatedPercent,
           );
           set(
             newInitialValues,
-            `${field}.management_subventions[${index}].subvention_percent`,
-            subventionPercent,
+            `${field}.subvention_discount_percentage`,
+            releaseDiscountPct.toFixed(2),
           );
-        });
+        } else if (
+          subventionType === SubventionTypes.FORM_OF_MANAGEMENT &&
+          managementSubventions?.[0]
+        ) {
+          set(
+            newInitialValues,
+            `${field}.subvention_discount_percentage`,
+            managementSubventions[0].subvention_percent,
+          );
+        }
+        break;
       }
-      if (subventionType === SubventionTypes.RE_LEASE) {
-        const releaseDiscountPct = calculateReLeaseDiscountPercent(
-          subventionBasePercent,
-          subventionGraduatedPercent,
-        );
-        set(
-          newInitialValues,
-          `${field}.subvention_discount_percentage`,
-          releaseDiscountPct.toFixed(2),
-        );
-      } else if (
-        subventionType === SubventionTypes.FORM_OF_MANAGEMENT &&
-        managementSubventions?.[0]
-      ) {
-        set(
-          newInitialValues,
-          `${field}.subvention_discount_percentage`,
-          managementSubventions[0].subvention_percent,
-        );
-      }
-      // re-initialize the form in order to avoid dirty states on field(s) that change
-      dispatch(initialize(formName, newInitialValues));
+      default:
+        if (!forceInitialization) {
+          return;
+        }
     }
+
+    // Ensure the calculator type is updated, then the form doesnt end up initialized with new form values for the _previous_ type.
+    set(newInitialValues, `${field}.type`, calculatorTypeValue);
+    dispatch(initialize(formName, newInitialValues));
   };
 
   useEffect(() => {
     initialFormValues();
-    ensureMastChildrenInitialized();
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calculatorType]);
+  }, []);
 
   const getReLeaseDiscountPercent = useCallback(() => {
     return calculateReLeaseDiscountPercent(
@@ -757,7 +789,6 @@ const BasisOfRentEdit: React.FC<Props> = ({
   ]);
 
   useEffect(() => {
-    ensureMastChildrenInitialized();
     if (
       showSubventions ||
       (temporarySubventions && !!temporarySubventions.length)
@@ -782,7 +813,6 @@ const BasisOfRentEdit: React.FC<Props> = ({
     temporarySubventions,
     showSubventions,
     changeDiscounts,
-    ensureMastChildrenInitialized,
   ]);
 
   const getAreaText = (amount: number | null | undefined) => {
@@ -936,51 +966,11 @@ const BasisOfRentEdit: React.FC<Props> = ({
     }
   };
 
-  const clearAllFields = () => {
-    return dispatch(
-      clearFields(
-        formName,
-        false,
-        false,
-        `${field}.amount_per_area`, // Same field for both "price" and "amountPerArea"
-        `${field}.area`,
-        `${field}.area_unit`,
-        `${field}.base_year_rent`,
-        `${field}.current_amount_per_area`,
-        `${field}.discount_percentage`,
-        `${field}.discounted_initial_year_rent`,
-        `${field}.discounted_initial_year_rent_per_month`,
-        `${field}.discounted_initial_year_rent_per_month_total`,
-        `${field}.discounted_initial_year_rent_per_2_months`,
-        `${field}.discounted_initial_year_rent_per_2_months_total`,
-        `${field}.index`,
-        `${field}.initial_year_rent`,
-        `${field}.intended_use`,
-        `${field}.profit_margin_percentage`,
-        `${field}.subvention_base_percent`,
-        `${field}.subvention_discount_percentage`,
-        `${field}.subvention_graduated_percent`,
-        `${field}.subvention_re_lease_discount_amount`,
-        `${field}.subvention_re_lease_discount_precent`,
-        `${field}.temporary_subvention_discount_percentage`,
-        `${field}.unit_price`,
-        `${field}.zone`,
-        `${field}.children`,
-      ),
-    );
-  };
-
   // Reset all fields when calculator type changes
   const onChangeTypeOptions = (value: any) => {
     if (value !== calculatorType) {
-      clearAllFields();
-      removeSubventions();
-      initialFormValues();
-
-      // Initialize MAST children with 2 items (Laitekaappi and Masto)
-      if (value === CalculatorTypes.MAST) {
-        dispatch(change(formName, `${field}.children`, [{}, {}]));
-      }
+      setShowSubventions(false);
+      initialFormValues(value, true);
     }
   };
 
@@ -1076,6 +1066,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
   const areaText = getAreaText(area);
   const lockedAtText = getLockedText();
   const isLocked = !!savedBasisOfRent && !!savedBasisOfRent.locked_at;
+  const isExistingBasisOfRent = !isEmptyValue(id);
   // Used by CalculatorTypes.LEASE
   const amountPerAreaText = getAmountPerAreaText(amountPerArea);
   // Used by CalculatorTypes.LEASE and CalculatorTypes.LEASE2022
@@ -1379,6 +1370,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
             )}
           >
             <Column small={6} medium={4} large={2}>
+              {/* Mark disabled for existing values, prevents stale values leaking between form types. */}
               <FormFieldLegacy
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
@@ -1387,7 +1379,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                 )}
                 onChange={onChangeTypeOptions}
                 name={`${field}.type`}
-                disabled={isLocked}
+                disabled={isLocked || isExistingBasisOfRent}
                 overrideValues={{
                   label: "Laskurin tyyppi",
                 }}
