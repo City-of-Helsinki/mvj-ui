@@ -959,12 +959,23 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                       <h3>Vakuudet</h3>
                       {(agreement.vakuudet ?? []).map((vakuus, vakuusIndex) => {
                         const vakuusName = `${agreementName}.vakuudet.${vakuusIndex}`;
+                        const savedVakuus = (form.getState().initialValues
+                          ?.agreements?.[agreementIndex]?.vakuudet ?? [])[
+                          vakuusIndex
+                        ];
+                        const isVakuusLocked = Boolean(
+                          savedVakuus?.palautettuPvm,
+                        );
                         return (
                           <div
                             className="landuse-detail__decisions-vakuus-block"
                             key={`${vakuusName}-${vakuusIndex}`}
                           >
-                            <h4>Vakuus: {vakuus.tyyppi ?? ""}</h4>
+                            <h4>
+                              Vakuus: {vakuus.tyyppi ?? ""}
+                              {isVakuusLocked &&
+                                ` (palautettu ${savedVakuus?.palautettuPvm})`}
+                            </h4>
                             {/* NOTE! Hidden field for vakuuden tyyppi for form data. */}
                             <Field name={`${vakuusName}.tyyppi`}>
                               {({ input }) => (
@@ -985,11 +996,11 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   | undefined
                               }
                               namePrefix={vakuusName}
-                              isEditMode={isEditMode}
+                              isEditMode={isEditMode && !isVakuusLocked}
                               partyOptions={partyOptions}
                             />
 
-                            {isEditMode && (
+                            {isEditMode && !isVakuusLocked && (
                               <div className="landuse-detail__decisions-delete-button-row">
                                 <ConfirmDeleteButton
                                   id={`vakuus-delete-${agreementIndex}-${vakuusIndex}`}
