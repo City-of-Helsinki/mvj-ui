@@ -26,6 +26,7 @@ import type { CollateralFormProps } from "./types";
 export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
   namePrefix,
   isEditMode,
+  partyOptions,
 }) => {
   const targetField = useField<string>(`${namePrefix}.kiinteistoVaiLaitos`, {
     subscription: { value: true },
@@ -49,7 +50,6 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
 
       <div className="landuse-grid landuse-grid__bottom-margin">
         {target === "Kiinteistö" && (
-          // <div className="landuse-grid__column-3">
           <FieldArray<string> name={`${namePrefix}.kiinteistotunnukset`}>
             {({ fields }) => (
               <>
@@ -152,6 +152,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
         <SharedCollateralFields
           namePrefix={namePrefix}
           isEditMode={isEditMode}
+          partyOptions={partyOptions}
         />
       </div>
     </>

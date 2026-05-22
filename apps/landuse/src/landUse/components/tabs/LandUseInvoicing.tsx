@@ -20,6 +20,7 @@ import {
   getFieldTextValue,
   normalizeSelectValue,
   readOnlyTextValue,
+  type SelectOption,
 } from "../../utils/fieldUtils";
 import { landUseInvoicingSelectOptions } from "../../options";
 import { formatLandUseEuroDisplayValue } from "../../utils/number";
@@ -29,7 +30,6 @@ import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import { KorotusCalculator } from "../invoicing/KorotusCalculator";
 import { KorkoCalculator } from "../invoicing/KorkoCalculator";
 
-type SelectOption = { label: string; value: string };
 type AgreementItem = NonNullable<
   LandUseDecisionsFormValues["agreements"]
 >[number];

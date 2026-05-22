@@ -890,7 +890,16 @@ const LandUseDetailPage: React.FC = () => {
         </TabPanel>
 
         <TabPanel>
-          <LandUseDecisions form={decisionsFormApi} isEditMode={isEditMode} />
+          <LandUseDecisions
+            form={decisionsFormApi}
+            isEditMode={isEditMode}
+            parties={
+              ((partiesFormApi.getState().values as LandUsePartiesFormValues)
+                ?.parties ??
+                partiesQuery.data?.parties) ||
+              []
+            }
+          />
         </TabPanel>
 
         <TabPanel>

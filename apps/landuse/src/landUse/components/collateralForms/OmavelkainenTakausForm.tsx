@@ -7,6 +7,7 @@ import type { CollateralFormProps } from "./types";
 export const OmavelkainenTakausForm: React.FC<CollateralFormProps> = ({
   namePrefix,
   isEditMode,
+  partyOptions,
 }) => (
   <>
     <div className="landuse-grid landuse-grid__bottom-margin">
@@ -63,7 +64,11 @@ export const OmavelkainenTakausForm: React.FC<CollateralFormProps> = ({
     </div>
 
     <div className="landuse-grid">
-      <SharedCollateralFields namePrefix={namePrefix} isEditMode={isEditMode} />
+      <SharedCollateralFields
+        namePrefix={namePrefix}
+        isEditMode={isEditMode}
+        partyOptions={partyOptions}
+      />
     </div>
   </>
 );

@@ -26,19 +26,31 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
   type,
   namePrefix,
   isEditMode,
+  partyOptions,
 }) => {
   switch (type) {
     case LAND_USE_GUARANTEE_TYPES.PANTTIKIRJA:
       return (
-        <PanttikirjaForm namePrefix={namePrefix} isEditMode={isEditMode} />
+        <PanttikirjaForm
+          namePrefix={namePrefix}
+          isEditMode={isEditMode}
+          partyOptions={partyOptions}
+        />
       );
     case LAND_USE_GUARANTEE_TYPES.RAHAVAKUUS:
-      return <RahavakuusForm namePrefix={namePrefix} isEditMode={isEditMode} />;
+      return (
+        <RahavakuusForm
+          namePrefix={namePrefix}
+          isEditMode={isEditMode}
+          partyOptions={partyOptions}
+        />
+      );
     case LAND_USE_GUARANTEE_TYPES.OMAVELKAINEN_TAKAUS:
       return (
         <OmavelkainenTakausForm
           namePrefix={namePrefix}
           isEditMode={isEditMode}
+          partyOptions={partyOptions}
         />
       );
     case LAND_USE_GUARANTEE_TYPES.TILIVAROJEN_PANTTAUS:
@@ -46,10 +58,17 @@ export const CollateralFormByType: React.FC<CollateralFormByTypeProps> = ({
         <TilivarojenPanttausForm
           namePrefix={namePrefix}
           isEditMode={isEditMode}
+          partyOptions={partyOptions}
         />
       );
     case LAND_USE_GUARANTEE_TYPES.MUU_VAKUUS:
-      return <MuuVakuusForm namePrefix={namePrefix} isEditMode={isEditMode} />;
+      return (
+        <MuuVakuusForm
+          namePrefix={namePrefix}
+          isEditMode={isEditMode}
+          partyOptions={partyOptions}
+        />
+      );
     default:
       return null;
   }

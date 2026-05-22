@@ -28,6 +28,7 @@ import {
 } from "../../utils/fieldUtils";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import { CollateralFormByType, type Guarantee } from "../collateralForms";
+import type { PartyEntry } from "./LandUseParties";
 
 interface DecisionCondition {
   conditionType?: string;
@@ -81,6 +82,7 @@ export interface LandUseDecisionsFormValues {
 interface LandUseDecisionsProps {
   form: FormApi<LandUseDecisionsFormValues>;
   isEditMode: boolean;
+  parties: PartyEntry[];
 }
 
 const handleSelectChange = (
@@ -166,7 +168,12 @@ const getAgreementAccordionHeading = (agreement: AgreementItem): string => {
 export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
   form,
   isEditMode,
+  parties,
 }) => {
+  const partyOptions = parties.map((entry) => ({
+    label: entry.party.details.name,
+    value: entry.party.details.name,
+  }));
   const [newDecisionIndexToOpen, setNewDecisionIndexToOpen] = React.useState<
     number | null
   >(null);
@@ -979,6 +986,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                               }
                               namePrefix={vakuusName}
                               isEditMode={isEditMode}
+                              partyOptions={partyOptions}
                             />
 
                             {isEditMode && (

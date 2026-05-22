@@ -17,6 +17,20 @@ export const getFieldTextValue = (
 export const readOnlyTextValue = (value: string | undefined): string =>
   value || "-";
 
+export type SelectOption = { label: string; value: string };
+
+export const normalizeMultiSelectValue = (
+  value: string[] | string | undefined,
+): SelectOption[] => {
+  if (Array.isArray(value)) {
+    return value.map((v) => ({ label: v, value: v }));
+  }
+  if (typeof value === "string" && value !== "") {
+    return [{ label: value, value }];
+  }
+  return [];
+};
+
 export const copyNumberToClipboard = async (value: number) => {
   const formattedValue = value.toFixed(2);
   await navigator.clipboard.writeText(formattedValue);
