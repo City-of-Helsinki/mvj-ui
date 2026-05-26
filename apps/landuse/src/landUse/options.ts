@@ -363,6 +363,7 @@ export interface AsemakaavaListItem {
   kasittelyvaiheenViimeisinPvm: string;
   asemakaavanHyvaksyjä: string;
   asemakaavanDiaarinumero: string;
+  asemakaavanLainvoimaisuusPvm?: string;
 }
 
 export const landUseAsemakaavaListItems: AsemakaavaListItem[] = [
@@ -420,8 +421,17 @@ export const landUseCompensationSelectOptions = {
   suojeltu: ["-", "SR1", "SR2"],
 };
 
+export const LAND_USE_INVOICE_TYPES = {
+  MAANKAYTOKORVAUS: "Maankäyttökorvaus",
+  SAKKO: "Sakko",
+  PERINTA: "Perintä",
+} as const;
+
+export type LandUseInvoiceType =
+  (typeof LAND_USE_INVOICE_TYPES)[keyof typeof LAND_USE_INVOICE_TYPES];
+
 export const landUseInvoicingSelectOptions = {
-  type: ["Maankäyttökorvaus", "Sakko", "Perintä"],
+  type: Object.values(LAND_USE_INVOICE_TYPES),
   status: ["Luonnos", "Odottaa hyväksyntää", "Avoin", "Maksettu"],
 };
 
