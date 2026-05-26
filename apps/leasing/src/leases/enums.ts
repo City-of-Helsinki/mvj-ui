@@ -1395,15 +1395,12 @@ export const LeaseBasisOfRentsFieldTitles = {
   TEMPORARY_DISCOUNT_PERCENTAGE: "Tilapäisalennuksen prosentti",
   DISCOUNTED_INITIAL_YEAR_RENT:
     "Subventoitu ja alennettu alkuvuosivuokra (ind)",
-  DISCOUNTED_INITIAL_YEAR_RENT_TOTAL:
-    "Alennettu alkuvuosivuokra (ind) yhteensä",
   DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH: "1 kk vuokra",
   DISCOUNTED_INITIAL_YEAR_RENT_PER_MONTH_TOTAL: "1 kk vuokra yhteensä",
   DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS: "2 kk vuokra",
   DISCOUNTED_INITIAL_YEAR_RENT_PER_2_MONTHS_TOTAL: "2 kk vuokra yhteensä",
   INDEX: "Indeksi",
   INITIAL_YEAR_RENT: "Alkuvuosivuokra (ind)",
-  INITIAL_YEAR_RENT_TOTAL: "Alkuvuosivuokra (ind) yhteensä",
   INTENDED_USE: "Käyttötarkoitus",
   LOCKED_AT: "Laskuri lukittu",
   PLANS_INSPECTED_AT: "Piirustukset tarkastettu",
@@ -1419,6 +1416,9 @@ export const LeaseBasisOfRentsFieldTitles = {
   SUBVENTION_TYPE: "Subvention tyyppi",
   UNIT_PRICE: "Yksikköhinta (ind)",
   ZONE: "Vyöhyke",
+  UNLOCKED: "Avoin",
+  LOCKED: "Lukittu",
+  TOTAL: "Yhteensä",
 };
 
 /**

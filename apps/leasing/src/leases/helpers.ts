@@ -1535,54 +1535,63 @@ export const calculateBasisOfRentInitialYearRent = (
   );
 };
 
+type BasisOfRentTotals = { unlocked: number; locked: number; total: number };
+
 /**
- * Calculate basis of rent discounted initial year rents total
+ * Calculate basis of rent discounted initial year rent totals (unlocked, locked, total).
  * @param {Object[]} basisOfRents
  * @param {Object[]} indexOptions
- * @return {number}
+ * @return {{ unlocked: number, locked: number, total: number }}
  */
-export const calculateBasisOfRentDiscountedInitialYearRentsTotal = (
-  basisOfRents: Record<string, any>[],
+export const calculateBasisOfRentDiscountedInitialYearRentTotals = (
+  basisOfRents: BasisOfRent[],
   indexOptions: Record<string, any>[],
-): number => {
-  if (basisOfRents)
-    return Number(
-      basisOfRents
-        .map((basisOfRent) =>
-          calculateBasisOfRentDiscountedInitialYearRent(
-            basisOfRent,
-            getBasisOfRentIndexValue(basisOfRent, indexOptions),
-          ),
-        )
-        .reduce((sum, cur) => sum + cur, 0),
+): BasisOfRentTotals => {
+  if (!basisOfRents) return { unlocked: 0, locked: 0, total: 0 };
+  let unlocked = 0;
+  let locked = 0;
+  basisOfRents.forEach((basisOfRent) => {
+    const value = calculateBasisOfRentDiscountedInitialYearRent(
+      basisOfRent,
+      getBasisOfRentIndexValue(basisOfRent, indexOptions),
     );
-  else return 0;
+    if (basisOfRent.locked_at) {
+      locked += value;
+    } else {
+      unlocked += value;
+    }
+  });
+  return { unlocked, locked, total: unlocked + locked };
 };
 
 /**
- * Calculate basis of rent initial year rents total
+ * Calculate basis of rent initial year rent totals (unlocked, locked, total).
  * @param {Object[]} basisOfRents
  * @param {Object[]} indexOptions
- * @return {number}
+ * @return {{ unlocked: number, locked: number, total: number }}
  */
-export const calculateInitialYearRentsTotal = (
-  basisOfRents: Record<string, any>[],
+export const calculateInitialYearRentTotals = (
+  basisOfRents: BasisOfRent[],
   indexOptions: Record<string, any>[],
-): number => {
-  if (basisOfRents) {
-    const initialYearRents = basisOfRents.map((basisOfRent) => {
-      const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
-      const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
-      return calculateBasisOfRentInitialYearRent(
-        basisOfRent,
-        indexValue,
-        basicAnnualRent,
-      );
-    });
-    return Number(initialYearRents.reduce((sum, cur) => sum + cur, 0));
-  } else {
-    return 0;
-  }
+): BasisOfRentTotals => {
+  if (!basisOfRents) return { unlocked: 0, locked: 0, total: 0 };
+  let unlocked = 0;
+  let locked = 0;
+  basisOfRents.forEach((basisOfRent) => {
+    const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
+    const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
+    const value = calculateBasisOfRentInitialYearRent(
+      basisOfRent,
+      indexValue,
+      basicAnnualRent,
+    );
+    if (basisOfRent.locked_at) {
+      locked += value;
+    } else {
+      unlocked += value;
+    }
+  });
+  return { unlocked, locked, total: unlocked + locked };
 };
 
 /**
@@ -1592,7 +1601,7 @@ export const calculateInitialYearRentsTotal = (
  * @return {number}
  */
 export const calculateBasisOfRentDiscountedInitialYearRent = (
-  basisOfRent: Record<string, any>,
+  basisOfRent: BasisOfRent,
   indexValue: string | null | undefined,
 ): number => {
   const basicAnnualRent = calculateBasisOfRentBasicAnnualRent(basisOfRent);
@@ -1618,12 +1627,12 @@ export const calculateBasisOfRentDiscountedInitialYearRent = (
 
 /**
  * Calculate basis of rent total discounted initial year rent
- * @param {Object[]} basisOfRent<
+ * @param {Object[]} basisOfRent
  * @param {Object[]} indexOptions
  * @return {number}
  */
 export const calculateBasisOfRentTotalDiscountedInitialYearRent = (
-  basisOfRents: Array<Record<string, any>>,
+  basisOfRents: BasisOfRent[],
   indexOptions: Array<Record<string, any>>,
 ): number | null | undefined => {
   if (!basisOfRents || !indexOptions) return null;
