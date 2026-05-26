@@ -693,10 +693,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                           </Field>
                                         </div>
 
-                                        <div
-                                          className="landuse-grid__column-3"
-                                          style={{ justifyContent: "flex-end" }}
-                                        >
+                                        <div className="landuse-grid__column-3">
                                           {isEditMode ? (
                                             <ConfirmDeleteButton
                                               id={`contact-person-delete-${index}-${contactIndex}`}
