@@ -952,6 +952,7 @@ const LandUseDetailPage: React.FC = () => {
                 summaryQuery.data?.asemakaavanNumero) ||
               ""
             }
+            agreementIdentifier={agreementId}
           />
         </TabPanel>
 
