@@ -554,7 +554,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                           {isEditMode && (
                             <div className="landuse-detail__delete-button-row">
                               <ConfirmDeleteButton
-                                id={`party-delete-${index}`}
+                                id={`party-${index}-delete`}
                                 buttonLabel="Poista osapuoli"
                                 onConfirm={() => fields.remove(index)}
                                 dialogTitle="Poista osapuoli"
@@ -639,7 +639,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                           >
                                             {({ input }) => (
                                               <TextInput
-                                                id={`contact-${index}-person-${contactIndex}`}
+                                                id={`party-${index}-contact-${contactIndex}-name`}
                                                 label="Nimi"
                                                 value={getFieldTextValue(
                                                   isEditMode,
@@ -659,7 +659,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                           >
                                             {({ input }) => (
                                               <TextInput
-                                                id={`contact-${index}-person-phone-${contactIndex}`}
+                                                id={`party-${index}-contact-${contactIndex}-phone`}
                                                 label="Puhelinnumero"
                                                 value={getFieldTextValue(
                                                   isEditMode,
@@ -679,7 +679,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                           >
                                             {({ input }) => (
                                               <TextInput
-                                                id={`contact-${index}-person-email-${contactIndex}`}
+                                                id={`party-${index}-contact-${contactIndex}-email`}
                                                 label="Sähköposti"
                                                 value={getFieldTextValue(
                                                   isEditMode,
@@ -696,7 +696,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                         <div className="landuse-grid__column-3">
                                           {isEditMode ? (
                                             <ConfirmDeleteButton
-                                              id={`contact-person-delete-${index}-${contactIndex}`}
+                                              id={`party-${index}-contact-${contactIndex}-delete`}
                                               buttonLabel="Poista yhteyshenkilö"
                                               buttonAriaLabel={`Poista yhteyshenkilö ${contactIndex + 1}`}
                                               buttonVariant={
@@ -751,7 +751,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                 >
                                   {({ input }) => (
                                     <TextInput
-                                      id={`billing-${index}-ovt-code`}
+                                      id={`party-${index}-billing-ovt-code`}
                                       label="Ovt-tunnus"
                                       value={getFieldTextValue(
                                         isEditMode,
@@ -771,7 +771,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                 >
                                   {({ input }) => (
                                     <TextInput
-                                      id={`billing-${index}-sap-customer-number`}
+                                      id={`party-${index}-billing-sap-customer-number`}
                                       label="SAP-asiakasnumero"
                                       value={getFieldTextValue(
                                         isEditMode,
@@ -791,7 +791,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                 >
                                   {({ input }) => (
                                     <TextInput
-                                      id={`billing-${index}-reference`}
+                                      id={`party-${index}-billing-reference`}
                                       label="Asiakkaan viite"
                                       value={getFieldTextValue(
                                         isEditMode,
@@ -817,7 +817,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                   {({ input }) =>
                                     isEditMode ? (
                                       <Select
-                                        id={`invoice-${index}-party-type`}
+                                        id={`party-${index}-invoice-type`}
                                         texts={{
                                           label: "Asiakastyyppi",
                                           placeholder: "Valitse asiakastyyppi",
@@ -835,7 +835,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                       />
                                     ) : (
                                       <TextInput
-                                        id={`invoice-${index}-party-type`}
+                                        id={`party-${index}-invoice-type`}
                                         label="Asiakastyyppi"
                                         value={readOnlyTextValue(input.value)}
                                         readOnly
@@ -849,7 +849,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                 ?.partyType === "yritys" && (
                                 <CompanyPartyForm
                                   fieldPrefix={`${fieldName}.invoiceRecipient.details`}
-                                  idPrefix={`invoice-${index}`}
+                                  idPrefix={`party-${index}-invoice`}
                                   isEditMode={isEditMode}
                                 />
                               )}
@@ -857,7 +857,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                 ?.partyType === "yksityishenkilo" && (
                                 <PersonPartyForm
                                   fieldPrefix={`${fieldName}.invoiceRecipient.details`}
-                                  idPrefix={`invoice-${index}`}
+                                  idPrefix={`party-${index}-invoice`}
                                   isEditMode={isEditMode}
                                 />
                               )}
@@ -867,7 +867,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                           <div className="landuse-detail__delete-button-row">
                             {isEditMode && partyEntry.invoiceRecipient ? (
                               <ConfirmDeleteButton
-                                id={`invoice-receiver-delete`}
+                                id={`party-${index}-invoice-delete`}
                                 buttonLabel="Poista laskunsaaja"
                                 buttonAriaLabel={`Poista laskunsaaja`}
                                 buttonVariant={ButtonVariant.Supplementary}
