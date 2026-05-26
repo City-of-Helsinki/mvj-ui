@@ -527,9 +527,6 @@ const BasisOfRentEdit: React.FC<Props> = ({
     selector(state, `${field}.type`),
   );
   const basisOfRent = useSelector((state) => selector(state, `${field}`) || {});
-  const discountPercentage = useSelector((state) =>
-    selector(state, `${field}.discount_percentage`),
-  );
   const id = useSelector((state) => selector(state, `${field}.id`));
   const index = useSelector((state) => selector(state, `${field}.index`));
   const children = useSelector((state) => selector(state, `${field}.children`));
@@ -601,6 +598,8 @@ const BasisOfRentEdit: React.FC<Props> = ({
   ) => {
     if (!calculatorTypeValue) return;
 
+    // Mutating values on purpose in order to avoid using change to mutate each field separately causing the form to become dirty
+    // `structuredClone` would be used otherwise, but it causes bugs to appear currently.
     const newInitialValues = {
       ...formValues,
     };
@@ -641,11 +640,24 @@ const BasisOfRentEdit: React.FC<Props> = ({
         );
 
         // Calculate and set discounts, temporary subvention percents and
-        // management subventions manually on initialization to avoid dirtying the form
+        // management subventions manually on initialization to avoid dirtying the form.
+        // Use the locally computed currentAmountPerArea here rather than
+        // calculateTotalSubventionPercent(), which closes over the selector value of
+        // currentAmountPerArea that is still undefined at the time initialFormValues()
+        // runs on mount. Using the stale undefined value causes discount_percentage to
+        // be initialized to 0, while changeDiscounts() later computes the correct value
+        // and dispatches change() — creating a mismatch that marks the form as dirty.
         set(
           newInitialValues,
           `${field}.discount_percentage`,
-          calculateTotalSubventionPercent(),
+          calculateBasisOfRentSubventionPercent(
+            currentAmountPerArea,
+            subventionType,
+            subventionBasePercent,
+            subventionGraduatedPercent,
+            managementSubventions,
+            temporarySubventions,
+          ),
         );
         set(
           newInitialValues,
