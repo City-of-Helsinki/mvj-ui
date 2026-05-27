@@ -295,8 +295,7 @@ class LeaseListPage extends PureComponent<Props & WithRouterProps, State> {
       ? query.lease_state
       : query.lease_state
         ? [query.lease_state]
-        : query.search ||
-            Object.prototype.hasOwnProperty.call(query, "lease_state")
+        : query.search || Object.hasOwn(query, "lease_state")
           ? []
           : DEFAULT_LEASE_STATES;
   };

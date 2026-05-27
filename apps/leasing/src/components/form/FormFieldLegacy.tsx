@@ -80,11 +80,9 @@ const Types = {
 };
 
 const resolveFieldType = (type: string): React.ComponentType<any> =>
-  Object.prototype.hasOwnProperty.call(FieldTypes, type)
-    ? FieldTypes[type]
-    : FieldTypeBasic;
+  Object.hasOwn(FieldTypes, type) ? FieldTypes[type] : FieldTypeBasic;
 const resolveType = (type: string): string | null | undefined =>
-  Object.prototype.hasOwnProperty.call(Types, type) ? Types[type] : null;
+  Object.hasOwn(Types, type) ? Types[type] : null;
 
 type InputProps = {
   allowEdit: boolean;

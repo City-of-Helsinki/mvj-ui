@@ -103,8 +103,7 @@ class Search extends Component<Props & WithRouterProps, State> {
 
     if (
       !keys.length ||
-      (keys.length === 1 &&
-        Object.prototype.hasOwnProperty.call(searchQuery, "search"))
+      (keys.length === 1 && Object.hasOwn(searchQuery, "search"))
     ) {
       return true;
     }

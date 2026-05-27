@@ -748,7 +748,7 @@ class RentBasisForm extends PureComponent<Props, State> {
         true,
         (option) =>
           !isEmptyValue(option.display_name)
-            ? option.display_name.replace(/\^2/g, "²")
+            ? option.display_name.replaceAll(/\^2/g, "²")
             : option.display_name,
       );
       newState.indexOptions = getFieldOptions(
