@@ -22,8 +22,9 @@ RUN yarn policies set-version $YARN_VERSION
 USER default
 
 # Install exact versions of dependencies and clean cache.
-# Use non-prod flag to install devDependencies
-RUN yarn --frozen-lockfile --production=false && yarn cache clean --force
+# Use non-prod flag to install devDependencies.
+# Ignore engine restrictions for HDS 5.2.0 which requires Node 22, but we use 24.
+RUN yarn --frozen-lockfile --ignore-engines --production=false && yarn cache clean --force
 
 # ===================================
 FROM appbase AS staticbuilder
