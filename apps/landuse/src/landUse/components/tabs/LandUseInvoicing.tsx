@@ -785,8 +785,8 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                         />
                       </div>
 
-                      {selectedPartyData.isCompany && (
-                        <div className="landuse-grid__column-3">
+                      <div className="landuse-grid__column-3">
+                        {selectedPartyData.isCompany && (
                           <TextInput
                             id={`landuse-invoicing-business-id-${index}`}
                             label="Y-tunnus"
@@ -795,10 +795,10 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                             )}
                             readOnly
                           />
-                        </div>
-                      )}
+                        )}
+                      </div>
 
-                      <div className="landuse-grid__column-3">
+                      <div className="landuse-grid__column-1">
                         <Field name={`${fieldName}.installmentNumber`}>
                           {({ input: installmentNumberInput }) =>
                             isEditMode ? (
@@ -822,7 +822,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                         </Field>
                       </div>
 
-                      <div className="landuse-grid__column-3">
+                      <div className="landuse-grid__column-2">
                         <Field name={`${fieldName}.installmentTotal`}>
                           {({ input: installmentTotalInput }) =>
                             isEditMode ? (
@@ -916,84 +916,85 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                           }
                         </Field>
                       </div>
-
-                      <div className="landuse-grid__column-3">
-                        <Field name={`${fieldName}.invoiceNumber`}>
-                          {({ input: invoiceNumberInput }) => (
-                            <TextInput
-                              id={`landuse-invoicing-invoice-number-${index}`}
-                              label="Laskunumero"
-                              value={getFieldTextValue(
-                                isEditMode,
-                                invoiceNumberInput.value,
-                              )}
-                              onChange={invoiceNumberInput.onChange}
-                              readOnly={!isEditMode}
-                            />
-                          )}
-                        </Field>
-                      </div>
                     </div>
-                    <div className="landuse-grid landuse-grid__bottom-margin">
-                      <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
-                        <Field name={`${fieldName}.billedAmount`}>
-                          {({ input: billedAmountInput }) =>
-                            isEditMode ? (
-                              <NumberInput
-                                id={`landuse-invoicing-billed-amount-${index}`}
-                                label="Laskutettu"
-                                value={billedAmountInput.value}
-                                unit="€"
-                                onChange={billedAmountInput.onChange}
-                              />
-                            ) : (
+                    <Fieldset heading="Reskontra">
+                      <div className="landuse-grid landuse-grid__bottom-margin">
+                        <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
+                          <Field name={`${fieldName}.invoiceNumber`}>
+                            {({ input: invoiceNumberInput }) => (
                               <TextInput
-                                id={`landuse-invoicing-billed-amount-${index}`}
-                                label="Laskutettu"
-                                value={formatLandUseEuroDisplayValue(
-                                  billedAmountInput.value,
+                                id={`landuse-invoicing-invoice-number-${index}`}
+                                label="Laskunumero"
+                                value={getFieldTextValue(
+                                  isEditMode,
+                                  invoiceNumberInput.value,
                                 )}
-                                readOnly
+                                onChange={invoiceNumberInput.onChange}
+                                readOnly={!isEditMode}
                               />
-                            )
-                          }
-                        </Field>
-                      </div>
+                            )}
+                          </Field>
+                        </div>
+                        <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
+                          <Field name={`${fieldName}.billedAmount`}>
+                            {({ input: billedAmountInput }) =>
+                              isEditMode ? (
+                                <NumberInput
+                                  id={`landuse-invoicing-billed-amount-${index}`}
+                                  label="Laskutettu"
+                                  value={billedAmountInput.value}
+                                  unit="€"
+                                  onChange={billedAmountInput.onChange}
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`landuse-invoicing-billed-amount-${index}`}
+                                  label="Laskutettu"
+                                  value={formatLandUseEuroDisplayValue(
+                                    billedAmountInput.value,
+                                  )}
+                                  readOnly
+                                />
+                              )
+                            }
+                          </Field>
+                        </div>
 
-                      <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
-                        <TextInput
-                          id={`landuse-invoicing-sent-at-${index}`}
-                          label="Lähetetty laskutukseen"
-                          value={readOnlyTextValue(rowValue.sent_at)}
-                          readOnly
-                        />
-                      </div>
+                        <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
+                          <TextInput
+                            id={`landuse-invoicing-sent-at-${index}`}
+                            label="Lähetetty laskutukseen"
+                            value={readOnlyTextValue(rowValue.sent_at)}
+                            readOnly
+                          />
+                        </div>
 
-                      <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
-                        <Field name={`${fieldName}.remainingAmount`}>
-                          {({ input: remainingAmountInput }) =>
-                            isEditMode ? (
-                              <NumberInput
-                                id={`landuse-invoicing-remaining-amount-${index}`}
-                                label="Maksamatta"
-                                value={remainingAmountInput.value}
-                                unit="€"
-                                onChange={remainingAmountInput.onChange}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-invoicing-remaining-amount-${index}`}
-                                label="Maksamatta"
-                                value={formatLandUseEuroDisplayValue(
-                                  remainingAmountInput.value,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
+                        <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
+                          <Field name={`${fieldName}.remainingAmount`}>
+                            {({ input: remainingAmountInput }) =>
+                              isEditMode ? (
+                                <NumberInput
+                                  id={`landuse-invoicing-remaining-amount-${index}`}
+                                  label="Maksamatta"
+                                  value={remainingAmountInput.value}
+                                  unit="€"
+                                  onChange={remainingAmountInput.onChange}
+                                />
+                              ) : (
+                                <TextInput
+                                  id={`landuse-invoicing-remaining-amount-${index}`}
+                                  label="Maksamatta"
+                                  value={formatLandUseEuroDisplayValue(
+                                    remainingAmountInput.value,
+                                  )}
+                                  readOnly
+                                />
+                              )
+                            }
+                          </Field>
+                        </div>
                       </div>
-                    </div>
+                    </Fieldset>
                     <div className="landuse-grid landuse-grid__bottom-margin">
                       <div className="landuse-grid__column-12">
                         <Fieldset heading="Laskurivit">
