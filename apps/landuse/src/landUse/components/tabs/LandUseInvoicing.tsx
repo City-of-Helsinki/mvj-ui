@@ -302,7 +302,7 @@ const createBulkInvoice = (
   installmentNumber: number,
   values: BulkCreateFormValues,
   signedDate: string,
-  agreementType: string,
+  agreementIdentifier: string,
   sopimusnumero: string,
   asemakaavanNumero: string,
   recipientName: string,
@@ -327,7 +327,7 @@ const createBulkInvoice = (
     },
     {
       description: buildSecondRowSelite(
-        agreementType,
+        agreementIdentifier,
         sopimusnumero,
         asemakaavanNumero,
         installmentNumber,
