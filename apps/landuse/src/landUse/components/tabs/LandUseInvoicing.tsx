@@ -34,7 +34,6 @@ import { formatLandUseEuroDisplayValue } from "../../utils/number";
 import type { PartyEntry } from "./LandUseParties";
 import type { LandUseDecisionsFormValues } from "./LandUseDecisions";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
-import { KorotusCalculator } from "../invoicing/KorotusCalculator";
 import { KorkoCalculator } from "../invoicing/KorkoCalculator";
 
 type AgreementItem = NonNullable<
@@ -1311,9 +1310,6 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
                   </div>
                 </Fieldset>
               </form>
-              <h2>Korotuslaskin</h2>
-              <KorotusCalculator />
-
               <h2>Korkolaskin</h2>
               <KorkoCalculator />
             </div>
