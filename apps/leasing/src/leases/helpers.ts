@@ -1241,12 +1241,7 @@ export const getTenantRentShareWarnings = (
     });
     rentShares.forEach((rentShare) => {
       if (rentShare.intended_use != null) {
-        if (
-          Object.prototype.hasOwnProperty.call(
-            sharesByIntendedUse,
-            rentShare.intended_use,
-          )
-        ) {
+        if (Object.hasOwn(sharesByIntendedUse, rentShare.intended_use)) {
           sharesByIntendedUse[rentShare.intended_use].push(rentShare);
         } else {
           sharesByIntendedUse[rentShare.intended_use] = [rentShare];

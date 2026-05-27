@@ -246,11 +246,7 @@ export const getInfoLinkLanguageDisplayText = (
 };
 
 class UniqueTemporaryIdFactory {
-  i;
-
-  constructor() {
-    this.i = 0;
-  }
+  i: number = 0;
 
   next() {
     this.i++;

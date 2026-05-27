@@ -461,7 +461,7 @@ export const prepareApplicationForSubmission = (
             section.forEach((applicant) => {
               const applicantType = applicant.metadata.applicantType;
               applicant.sections = _.pickBy(
-                _.cloneDeep(applicant.sections),
+                structuredClone(applicant.sections),
                 (subsection, sectionIdentifier: string) =>
                   [
                     ApplicantTypes.BOTH,
@@ -533,7 +533,7 @@ export const prepareApplicationForSubmission = (
       return node;
     };
 
-    return purgeUIFields(attachMeta(_.cloneDeep(sections)));
+    return purgeUIFields(attachMeta(structuredClone(sections)));
   } catch (e) {
     console.log(e);
     return null;

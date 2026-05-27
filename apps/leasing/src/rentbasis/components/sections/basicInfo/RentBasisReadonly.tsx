@@ -65,7 +65,7 @@ const RentBasisReadonly = ({ rentBasis, rentBasisAttributes }: Props) => {
     true,
     (option) =>
       !isEmptyValue(option.display_name)
-        ? option.display_name.replace(/\^2/g, "²")
+        ? option.display_name.replaceAll(/\^2/g, "²")
         : option.display_name,
   );
   const decisionsMakerOptions = getFieldOptions(

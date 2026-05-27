@@ -159,10 +159,7 @@ class Search extends PureComponent<Props & WithRouterProps, State> {
       } = this.props;
       const searchQuery = getUrlParams(search);
       const addOnlyActiveLeases =
-        Object.prototype.hasOwnProperty.call(
-          searchQuery,
-          "only_active_leases",
-        ) ||
+        Object.hasOwn(searchQuery, "only_active_leases") ||
         prevProps.formValues.only_active_leases !==
           this.props.formValues.only_active_leases;
       this.onSearchChange(addOnlyActiveLeases);
@@ -174,7 +171,7 @@ class Search extends PureComponent<Props & WithRouterProps, State> {
       location: { search },
     } = this.props;
     const searchQuery = getUrlParams(search);
-    const addOnlyActiveLeases = Object.prototype.hasOwnProperty.call(
+    const addOnlyActiveLeases = Object.hasOwn(
       searchQuery,
       "only_active_leases",
     );
@@ -199,8 +196,7 @@ class Search extends PureComponent<Props & WithRouterProps, State> {
 
     if (
       !keys.length ||
-      (keys.length === 1 &&
-        Object.prototype.hasOwnProperty.call(searchQuery, "search"))
+      (keys.length === 1 && Object.hasOwn(searchQuery, "search"))
     ) {
       return true;
     }
