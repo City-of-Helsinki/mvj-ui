@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   TextInput,
   NumberInput,
@@ -6,13 +6,27 @@ import {
   Select,
   Button,
   ButtonVariant,
+  ButtonSize,
   IconCopy,
+  IconTrash,
+  Table,
 } from "hds-react";
 import {
   formatLandUseEuroDisplayValue,
   formatLandUseNumericValueWithUnit,
 } from "@/landUse/utils/number";
 import { copyNumberToClipboard } from "@/landUse/utils/fieldUtils";
+
+interface KorkoResult {
+  id: number;
+  maara: number;
+  korkoPercentage: number;
+  dueDate: string;
+  paymentDate: string;
+  korkoPeriodLengthDays: number;
+  daysInYear: number;
+  korkoValue: number;
+}
 
 /**
  * Calculates the interest based on the interest percentage and the number of days from due date to payment date.
@@ -25,6 +39,8 @@ export const KorkoCalculator: React.FC = () => {
   const [dueDate, setDueDate] = useState<string>("");
   const [paymentDate, setPaymentDate] = useState<string>("");
   const [daysInYear, setDaysInYear] = useState<number>(365);
+  const [korkoResults, setKorkoResults] = useState<KorkoResult[]>([]);
+  const [nextId, setNextId] = useState<number>(1);
 
   const korkoPercentage = peruskorko + marginaali;
 
@@ -79,6 +95,100 @@ export const KorkoCalculator: React.FC = () => {
 
   const korkoValue =
     (maara * (korkoPercentage / 100) * korkoPeriodLengthDays) / daysInYear;
+
+  const handleSaveResult = () => {
+    setKorkoResults((prev) => [
+      ...prev,
+      {
+        id: nextId,
+        maara,
+        korkoPercentage,
+        dueDate,
+        paymentDate,
+        korkoPeriodLengthDays,
+        daysInYear,
+        korkoValue,
+      },
+    ]);
+    setNextId((prev) => prev + 1);
+  };
+
+  const handleRemoveResult = useCallback((id: number) => {
+    setKorkoResults((prev) => prev.filter((r) => r.id !== id));
+  }, []);
+
+  const resultTableCols = React.useMemo(
+    () => [
+      {
+        key: "maara",
+        headerName: "Määrä",
+        transform: (row: KorkoResult) =>
+          formatLandUseEuroDisplayValue(row.maara),
+      },
+      {
+        key: "korkoPercentage",
+        headerName: "Korkoprosentti",
+        transform: (row: KorkoResult) =>
+          formatLandUseNumericValueWithUnit(row.korkoPercentage, "%"),
+      },
+      {
+        key: "dueDate",
+        headerName: "Alku",
+        transform: (row: KorkoResult) => row.dueDate || "-",
+      },
+      {
+        key: "paymentDate",
+        headerName: "Loppu",
+        transform: (row: KorkoResult) => row.paymentDate || "-",
+      },
+      {
+        key: "korkoPeriodLengthDays",
+        headerName: "Päiviä",
+        transform: (row: KorkoResult) =>
+          formatLandUseNumericValueWithUnit(
+            row.korkoPeriodLengthDays,
+            "päivää",
+          ),
+      },
+      { key: "daysInYear", headerName: "Päiviä/vuosi" },
+      {
+        key: "korkoValue",
+        headerName: "Korko",
+        transform: (row: KorkoResult) =>
+          formatLandUseEuroDisplayValue(row.korkoValue),
+      },
+      {
+        key: "copyAction",
+        headerName: "",
+        transform: (row: KorkoResult) => (
+          <Button
+            variant={ButtonVariant.Supplementary}
+            size={ButtonSize.Small}
+            iconStart={<IconCopy />}
+            onClick={() => copyNumberToClipboard(row.korkoValue)}
+          >
+            Kopioi korko leikepöydälle
+          </Button>
+        ),
+      },
+      {
+        key: "removeAction",
+        headerName: "",
+        transform: (row: KorkoResult) => (
+          <Button
+            variant={ButtonVariant.Supplementary}
+            size={ButtonSize.Small}
+            iconStart={<IconTrash />}
+            onClick={() => handleRemoveResult(row.id)}
+            aria-label="Poista tulos"
+          >
+            Poista
+          </Button>
+        ),
+      },
+    ],
+    [handleRemoveResult],
+  );
 
   return (
     <>
@@ -183,15 +293,21 @@ export const KorkoCalculator: React.FC = () => {
           />
         </div>
         <div className="landuse-grid__column-2">
-          <Button
-            variant={ButtonVariant.Supplementary}
-            iconStart={<IconCopy />}
-            onClick={() => copyNumberToClipboard(korkoValue)}
-          >
-            Kopioi korko leikepöydälle
+          <Button variant={ButtonVariant.Primary} onClick={handleSaveResult}>
+            Laita muistiin
           </Button>
         </div>
       </div>
+
+      {korkoResults.length > 0 && (
+        <Table
+          cols={resultTableCols}
+          rows={korkoResults}
+          indexKey="id"
+          renderIndexCol={false}
+          variant="light"
+        />
+      )}
     </>
   );
 };
