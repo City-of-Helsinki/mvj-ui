@@ -268,6 +268,7 @@ interface InvoiceRowProps {
   partyOptions: SelectOption[];
   agreementOptions: AgreementOption[];
   asemakaavanNumero: string;
+  korkoResults: KorkoResult[];
   onRemove: (index: number) => void;
   onToggle: (index: number) => void;
 }
@@ -490,6 +491,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
   partyOptions,
   agreementOptions,
   asemakaavanNumero,
+  korkoResults,
   onRemove,
   onToggle,
 }) => {
@@ -1007,7 +1009,9 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                         key={invoiceRowFieldName}
                                         className="landuse-grid"
                                       >
-                                        <div className="landuse-grid__column-6">
+                                        <div
+                                          className={"landuse-grid__column-6"}
+                                        >
                                           <Field
                                             name={`${invoiceRowFieldName}.description`}
                                           >
@@ -1028,27 +1032,70 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                           </Field>
                                         </div>
 
-                                        <div className="landuse-grid__column-3">
-                                          <Field
-                                            name={`${invoiceRowFieldName}.amountExcludingVat`}
-                                          >
-                                            {({ input: amountInput }) => (
-                                              <TextInput
-                                                id={`landuse-invoicing-invoice-row-amount-${index}-${invoiceRowIndex}`}
-                                                label="Veroton summa (€)"
-                                                value={getFieldTextValue(
-                                                  isEditMode,
-                                                  amountInput.value,
-                                                )}
-                                                onChange={amountInput.onChange}
-                                                readOnly={!isEditMode}
-                                              />
-                                            )}
-                                          </Field>
-                                        </div>
+                                        <Field
+                                          name={`${invoiceRowFieldName}.amountExcludingVat`}
+                                        >
+                                          {({ input: amountInput }) => (
+                                            <>
+                                              <div className="landuse-grid__column-2">
+                                                <TextInput
+                                                  id={`landuse-invoicing-invoice-row-amount-${index}-${invoiceRowIndex}`}
+                                                  label="Veroton summa (€)"
+                                                  value={
+                                                    isEditMode
+                                                      ? amountInput.value
+                                                      : formatLandUseEuroDisplayValue(
+                                                          amountInput.value,
+                                                        )
+                                                  }
+                                                  onChange={
+                                                    amountInput.onChange
+                                                  }
+                                                  readOnly={!isEditMode}
+                                                />
+                                              </div>
+
+                                              {isEditMode && (
+                                                <div className="landuse-grid__column-2">
+                                                  <Select
+                                                    id={`landuse-invoicing-invoice-row-korko-select-${index}-${invoiceRowIndex}`}
+                                                    options={korkoResults.map(
+                                                      (r) => ({
+                                                        label: `${r.id}. ${formatLandUseEuroDisplayValue(r.korkoValue)}`,
+                                                        value: String(
+                                                          r.korkoValue,
+                                                        ),
+                                                      }),
+                                                    )}
+                                                    onChange={(selected) => {
+                                                      if (selected.length > 0) {
+                                                        amountInput.onChange(
+                                                          Number(
+                                                            selected[0].value,
+                                                          ).toFixed(2),
+                                                        );
+                                                      }
+                                                    }}
+                                                    disabled={
+                                                      korkoResults.length === 0
+                                                    }
+                                                    texts={{
+                                                      label:
+                                                        "Täytä korkolaskimesta",
+                                                      placeholder:
+                                                        korkoResults.length > 0
+                                                          ? "Valitse"
+                                                          : "Ei tuloksia",
+                                                    }}
+                                                  />
+                                                </div>
+                                              )}
+                                            </>
+                                          )}
+                                        </Field>
 
                                         {isEditMode && (
-                                          <div className="landuse-grid__column-3 landuse-compensations-table__detail-actions">
+                                          <div className="landuse-grid__column-2 landuse-compensations-table__detail-actions">
                                             <Button
                                               type="button"
                                               size={ButtonSize.Small}
@@ -1272,6 +1319,7 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
                                     partyOptions={partyOptions}
                                     agreementOptions={agreementOptions}
                                     asemakaavanNumero={asemakaavanNumero}
+                                    korkoResults={korkoResults}
                                     onRemove={(removeIndex) =>
                                       handleRemoveInvoice(
                                         fields.remove,
