@@ -4,7 +4,7 @@ import {
   Button,
   ButtonVariant,
   Dialog,
-  SearchInput,
+  Search,
   Checkbox,
   SelectionGroup,
   Breadcrumb,
@@ -158,9 +158,10 @@ const LandUseListPage: React.FC = () => {
   };
 
   // Handle search input changes
-  const handleSearchChange = (value: string) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const searchValue = event.target.value;
     updateUrlWithFilters({
-      search: value,
+      search: searchValue,
       phases: currentFilters.phases,
     });
   };
@@ -268,12 +269,10 @@ const LandUseListPage: React.FC = () => {
         </Button>
 
         <div className="landuse-list__search-group">
-          <SearchInput
+          <Search
             id="search"
-            label=""
             value={searchQuery}
             onChange={handleSearchChange}
-            onSubmit={handleSearchChange}
             placeholder="Etsi sopimuksella, osapuolella tai asemakaavalla"
           />
           {searchQuery && (
