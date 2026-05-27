@@ -47,7 +47,6 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
   const [dueDate, setDueDate] = useState<string>("");
   const [paymentDate, setPaymentDate] = useState<string>("");
   const [daysInYear, setDaysInYear] = useState<number>(365);
-  const [nextId, setNextId] = useState<number>(1);
 
   const korkoPercentage = peruskorko + marginaali;
 
@@ -104,6 +103,10 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
     (maara * (korkoPercentage / 100) * korkoPeriodLengthDays) / daysInYear;
 
   const handleSaveResult = () => {
+    const nextId =
+      korkoResults.length > 0
+        ? Math.max(...korkoResults.map((r) => r.id)) + 1
+        : 1;
     setKorkoResults((prev) => [
       ...prev,
       {
@@ -117,7 +120,6 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
         korkoValue,
       },
     ]);
-    setNextId((prev) => prev + 1);
   };
 
   const handleRemoveResult = useCallback(
@@ -129,6 +131,11 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
 
   const resultTableCols = React.useMemo(
     () => [
+      {
+        key: "id",
+        headerName: "Rivi",
+        transform: (row: KorkoResult) => `${row.id}.`,
+      },
       {
         key: "maara",
         headerName: "Määrä",
@@ -314,7 +321,7 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
           cols={resultTableCols}
           rows={korkoResults}
           indexKey="id"
-          renderIndexCol={false}
+          renderIndexCol={true}
           variant="light"
         />
       )}
