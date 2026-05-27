@@ -17,7 +17,7 @@ import {
 } from "@/landUse/utils/number";
 import { copyNumberToClipboard } from "@/landUse/utils/fieldUtils";
 
-interface KorkoResult {
+export interface KorkoResult {
   id: number;
   maara: number;
   korkoPercentage: number;
@@ -28,18 +28,25 @@ interface KorkoResult {
   korkoValue: number;
 }
 
+interface KorkoCalculatorProps {
+  korkoResults: KorkoResult[];
+  setKorkoResults: React.Dispatch<React.SetStateAction<KorkoResult[]>>;
+}
+
 /**
  * Calculates the interest based on the interest percentage and the number of days from due date to payment date.
  * https://pankkiasiat.fi/englantilainen-vuosikorko
  */
-export const KorkoCalculator: React.FC = () => {
+export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
+  korkoResults,
+  setKorkoResults,
+}) => {
   const [maara, setMaara] = useState<number>(0);
   const [peruskorko, setPeruskorko] = useState<number>(2.25);
   const [marginaali, setMarginaali] = useState<number>(0.5);
   const [dueDate, setDueDate] = useState<string>("");
   const [paymentDate, setPaymentDate] = useState<string>("");
   const [daysInYear, setDaysInYear] = useState<number>(365);
-  const [korkoResults, setKorkoResults] = useState<KorkoResult[]>([]);
   const [nextId, setNextId] = useState<number>(1);
 
   const korkoPercentage = peruskorko + marginaali;
@@ -113,9 +120,12 @@ export const KorkoCalculator: React.FC = () => {
     setNextId((prev) => prev + 1);
   };
 
-  const handleRemoveResult = useCallback((id: number) => {
-    setKorkoResults((prev) => prev.filter((r) => r.id !== id));
-  }, []);
+  const handleRemoveResult = useCallback(
+    (id: number) => {
+      setKorkoResults((prev) => prev.filter((r) => r.id !== id));
+    },
+    [setKorkoResults],
+  );
 
   const resultTableCols = React.useMemo(
     () => [

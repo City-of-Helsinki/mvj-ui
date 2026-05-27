@@ -47,6 +47,7 @@ import {
   LandUseInvoicing,
   type LandUseInvoicingFormValues,
 } from "./tabs/LandUseInvoicing";
+import type { KorkoResult } from "./invoicing/KorkoCalculator";
 import { LandUseMap, type LandUseMapFormValues } from "./tabs/LandUseMap";
 import LandUseNotFoundPage from "../../landUse/components/LandUseNotFoundPage";
 import {
@@ -190,6 +191,7 @@ const LandUseDetailPage: React.FC = () => {
   );
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
+  const [korkoResults, setKorkoResults] = useState<KorkoResult[]>([]);
   const queryClient = useQueryClient();
 
   /** Form state tracking for each tab.
@@ -953,6 +955,8 @@ const LandUseDetailPage: React.FC = () => {
               ""
             }
             agreementIdentifier={agreementId}
+            korkoResults={korkoResults}
+            setKorkoResults={setKorkoResults}
           />
         </TabPanel>
 
