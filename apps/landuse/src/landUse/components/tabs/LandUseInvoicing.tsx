@@ -34,7 +34,10 @@ import { formatLandUseEuroDisplayValue } from "../../utils/number";
 import type { PartyEntry } from "./LandUseParties";
 import type { LandUseDecisionsFormValues } from "./LandUseDecisions";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
-import { KorkoCalculator } from "../invoicing/KorkoCalculator";
+import {
+  KorkoCalculator,
+  type KorkoResult,
+} from "../invoicing/KorkoCalculator";
 
 type AgreementItem = NonNullable<
   LandUseDecisionsFormValues["agreements"]
@@ -77,6 +80,8 @@ interface LandUseInvoicingProps {
   agreements: AgreementItem[];
   asemakaavanNumero: string;
   agreementIdentifier: string;
+  korkoResults: KorkoResult[];
+  setKorkoResults: React.Dispatch<React.SetStateAction<KorkoResult[]>>;
 }
 
 interface SelectedPartyInvoiceData {
@@ -1120,6 +1125,8 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
   agreements,
   asemakaavanNumero,
   agreementIdentifier,
+  korkoResults,
+  setKorkoResults,
 }) => {
   const [openInvoiceIndex, setOpenInvoiceIndex] = useState<number | null>(null);
   const [isBulkCreateOpen, setIsBulkCreateOpen] = useState(false);
@@ -1311,7 +1318,10 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
                 </Fieldset>
               </form>
               <h2>Korkolaskin</h2>
-              <KorkoCalculator />
+              <KorkoCalculator
+                korkoResults={korkoResults}
+                setKorkoResults={setKorkoResults}
+              />
             </div>
           );
         }}
