@@ -18,7 +18,8 @@ jobs:
       uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node }}
-    - run: yarn install --frozen-lockfile --ignore-scripts
+    - run: corepack enable && corepack install
+    - run: yarn install --immutable
     - run: yarn coverage
     - name: Store coverage/lcov.info
       uses: actions/cache/save@v5
