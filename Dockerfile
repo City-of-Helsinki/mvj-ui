@@ -15,7 +15,8 @@ RUN chown -R default:root /app
 RUN corepack enable
 
 USER default
-RUN corepack prepare yarn@4.15.0 --activate
+# Yarn version is read from "packageManager" in package.json
+RUN corepack install
 RUN yarn --version
 
 # Install exact versions of dependencies and clean cache.
