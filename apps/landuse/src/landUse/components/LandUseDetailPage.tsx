@@ -724,8 +724,13 @@ const LandUseDetailPage: React.FC = () => {
           const invoicesValues = (state.values as LandUseInvoicingFormValues)
             .invoices;
           for (const invoice of invoicesValues) {
-            if (Number(invoice.remainingAmount) <= 0)
+            if (
+              invoice.remainingAmount === "0" ||
+              invoice.remainingAmount === "0.00" ||
+              invoice.remainingAmount === "0,00"
+            ) {
               invoice.status = LAND_USE_INVOICE_STATUSES.PAID;
+            }
           }
           mutations.push(
             invoicingMutation.mutateAsync({
