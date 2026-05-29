@@ -118,6 +118,16 @@ const handleSelectChange = (
   }
 };
 
+function isInvoiceEditableBasedOnStatus(invoice: LandUseInvoice): boolean {
+  if (!invoice || !invoice.status) return true;
+  const editableStatuses: LandUseInvoiceStatus[] = [
+    LAND_USE_INVOICE_STATUSES.DRAFT,
+    LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
+  ];
+
+  return editableStatuses.includes(invoice.status);
+}
+
 const getPartyName = (value: string | undefined): string => value?.trim() ?? "";
 
 const getInvoiceRecipientLabel = (party: PartyEntry, index: number): string => {
@@ -278,6 +288,7 @@ interface InvoiceTableRowProps {
   agreementOptions: AgreementOption[];
   asemakaavanNumero: string;
   korkoResults: KorkoResult[];
+  isInvoiceTableRowEditable: boolean;
   onRemove: (index: number) => void;
   onToggle: (index: number) => void;
 }
@@ -396,7 +407,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
     onClose();
   };
 
-  const handleSubmit = () => {
+  const handleBulkInvoiceCreate = () => {
     onSubmit({
       installmentTotal: String(installmentTotal),
       contractIndex,
@@ -486,7 +497,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
         </Button>
         <Button
           variant={ButtonVariant.Primary}
-          onClick={handleSubmit}
+          onClick={handleBulkInvoiceCreate}
           disabled={isSubmitDisabled}
         >
           Luo laskut
@@ -507,25 +518,27 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
   agreementOptions,
   asemakaavanNumero,
   korkoResults,
+  isInvoiceTableRowEditable,
   onRemove,
   onToggle,
 }) => {
-  const canEditContract = isEditMode && !isExistingInvoice;
+  const canEditContract =
+    isEditMode && !isExistingInvoice && isInvoiceTableRowEditable;
 
   return (
     <Field name={fieldName} subscription={{ value: true }}>
       {({ input }) => {
-        const rowValue = (input.value ?? {}) as LandUseInvoice;
+        const invoice = (input.value ?? {}) as LandUseInvoice;
         const contractNumberDisplayValue =
           agreementOptions.find(
-            (option) => option.value === rowValue.contractIndex,
+            (option) => option.value === invoice.contractIndex,
           )?.sopimusnumero ?? "-";
         const installmentDisplayValue =
-          rowValue.installmentNumber && rowValue.installmentTotal
-            ? `${rowValue.installmentNumber}/${rowValue.installmentTotal}`
+          invoice.installmentNumber && invoice.installmentTotal
+            ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
             : "-";
         const selectedPartyData = getSelectedPartyInvoiceData(
-          rowValue.recipientPartyIndex,
+          invoice.recipientPartyIndex,
           parties,
         );
 
@@ -553,31 +566,32 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
               </td>
               <td>
                 {getRecipientDisplayValue(
-                  rowValue.recipientPartyIndex,
+                  invoice.recipientPartyIndex,
                   partyOptions,
                 )}
               </td>
               <td>{readOnlyTextValue(contractNumberDisplayValue)}</td>
               <td>{readOnlyTextValue(installmentDisplayValue)}</td>
-              <td>{readOnlyTextValue(rowValue.dueDate)}</td>
-              <td>{readOnlyTextValue(rowValue.invoiceNumber)}</td>
-              <td>{readOnlyTextValue(rowValue.type)}</td>
-              <td>{readOnlyTextValue(rowValue.status)}</td>
-              <td>{formatLandUseEuroDisplayValue(rowValue.billedAmount)}</td>
-              <td>{formatLandUseEuroDisplayValue(rowValue.remainingAmount)}</td>
+              <td>{readOnlyTextValue(invoice.dueDate)}</td>
+              <td>{readOnlyTextValue(invoice.invoiceNumber)}</td>
+              <td>{readOnlyTextValue(invoice.type)}</td>
+              <td>{readOnlyTextValue(invoice.status)}</td>
+              <td>{formatLandUseEuroDisplayValue(invoice.billedAmount)}</td>
+              <td>{formatLandUseEuroDisplayValue(invoice.remainingAmount)}</td>
             </tr>
             {isOpen && (
               <tr className="landuse-compensations-table__detail-row">
                 <td colSpan={10}>
                   <div
                     className="landuse-compensations-table__detail-content landuse-compensations-table__detail-content--overflow-visible"
-                    aria-label={`Laskun ${rowValue.invoiceNumber || index + 1} tiedot`}
+                    aria-label={`Laskun ${invoice.invoiceNumber || index + 1} tiedot`}
                   >
                     <div className="landuse-grid landuse-grid__bottom-margin">
                       <div className="landuse-grid__column-3">
                         <Field name={`${fieldName}.type`}>
                           {({ input: typeInput }) =>
-                            isEditMode ? (
+                            isEditMode &&
+                            isInvoiceEditableBasedOnStatus(invoice) ? (
                               <Select
                                 id={`landuse-invoicing-type-${index}`}
                                 options={landUseInvoiceTypeSelectOptions}
@@ -608,7 +622,8 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                       <div className="landuse-grid__column-3">
                         <Field name={`${fieldName}.recipientPartyIndex`}>
                           {({ input: recipientInput }) =>
-                            isEditMode ? (
+                            isEditMode &&
+                            isInvoiceEditableBasedOnStatus(invoice) ? (
                               <Select
                                 id={`landuse-invoicing-recipient-${index}`}
                                 options={partyOptions}
@@ -703,29 +718,56 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                     value={readOnlyTextValue(statusInput.value)}
                                     readOnly
                                   />
-                                  {isEditMode && statusAction && (
-                                    <div>
-                                      <Button
-                                        type="button"
-                                        variant={ButtonVariant.Primary}
-                                        size={ButtonSize.Small}
-                                        onClick={() => {
-                                          const nextSentAtValue =
-                                            statusAction.nextStatus === "Avoin"
-                                              ? getSentAtTimestamp()
-                                              : (rowValue.sentAt ?? "");
-
-                                          input.onChange({
-                                            ...rowValue,
-                                            status: statusAction.nextStatus,
-                                            sentAt: nextSentAtValue,
-                                          });
-                                        }}
-                                      >
-                                        {statusAction.buttonLabel}
-                                      </Button>
-                                    </div>
-                                  )}
+                                  {isEditMode &&
+                                    isInvoiceEditableBasedOnStatus(invoice) &&
+                                    statusAction && (
+                                      <div>
+                                        <Button
+                                          type="button"
+                                          variant={ButtonVariant.Primary}
+                                          size={ButtonSize.Small}
+                                          onClick={() => {
+                                            const nextSentAtValue =
+                                              statusAction.nextStatus ===
+                                              "Avoin"
+                                                ? getSentAtTimestamp()
+                                                : (invoice.sentAt ?? "");
+                                            if (
+                                              statusAction.nextStatus ===
+                                              "Avoin"
+                                            ) {
+                                              const invoiceAmount =
+                                                invoice.invoiceItems?.reduce(
+                                                  (sum, item) => {
+                                                    const amount = Number(
+                                                      item.amountExcludingVat,
+                                                    );
+                                                    return sum + amount;
+                                                  },
+                                                  0,
+                                                );
+                                              input.onChange({
+                                                ...invoice,
+                                                status: statusAction.nextStatus,
+                                                sentAt: nextSentAtValue,
+                                                invoiceNumber:
+                                                  Date.now().toString(),
+                                                billedAmount: invoiceAmount,
+                                                remainingAmount: invoiceAmount,
+                                              });
+                                            } else {
+                                              input.onChange({
+                                                ...invoice,
+                                                status: statusAction.nextStatus,
+                                                sentAt: nextSentAtValue,
+                                              });
+                                            }
+                                          }}
+                                        >
+                                          {statusAction.buttonLabel}
+                                        </Button>
+                                      </div>
+                                    )}
                                 </>
                               );
                             })()
@@ -816,7 +858,8 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                       <div className="landuse-grid__column-1">
                         <Field name={`${fieldName}.installmentNumber`}>
                           {({ input: installmentNumberInput }) =>
-                            isEditMode ? (
+                            isEditMode &&
+                            isInvoiceEditableBasedOnStatus(invoice) ? (
                               <NumberInput
                                 id={`landuse-invoicing-installment-number-${index}`}
                                 label="Laskutuserä"
@@ -840,7 +883,8 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                       <div className="landuse-grid__column-2">
                         <Field name={`${fieldName}.installmentTotal`}>
                           {({ input: installmentTotalInput }) =>
-                            isEditMode ? (
+                            isEditMode &&
+                            isInvoiceEditableBasedOnStatus(invoice) ? (
                               <NumberInput
                                 id={`landuse-invoicing-installment-total-${index}`}
                                 label="Laskutuseriä yhteensä"
@@ -864,7 +908,8 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                       <div className="landuse-grid__column-3">
                         <Field name={`${fieldName}.signedDate`}>
                           {({ input: signedDateInput }) =>
-                            isEditMode ? (
+                            isEditMode &&
+                            isInvoiceEditableBasedOnStatus(invoice) ? (
                               <DateInput
                                 id={`landuse-invoicing-signed-date-${index}`}
                                 label="Allekirjoituspäivämäärä"
@@ -888,7 +933,8 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                       <div className="landuse-grid__column-3">
                         <Field name={`${fieldName}.lainvoimaisuusPvm`}>
                           {({ input: lainvoimaisuusPvmInput }) =>
-                            isEditMode ? (
+                            isEditMode &&
+                            isInvoiceEditableBasedOnStatus(invoice) ? (
                               <DateInput
                                 id={`landuse-invoicing-valid-date-${index}`}
                                 label="Lainvoimaisuuspäivämäärä"
@@ -914,7 +960,8 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                       <div className="landuse-grid__column-3">
                         <Field name={`${fieldName}.dueDate`}>
                           {({ input: dueDateInput }) =>
-                            isEditMode ? (
+                            isEditMode &&
+                            isInvoiceEditableBasedOnStatus(invoice) ? (
                               <DateInput
                                 id={`landuse-invoicing-due-date-${index}`}
                                 label="Eräpäivä"
@@ -944,11 +991,15 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                 id={`landuse-invoicing-invoice-number-${index}`}
                                 label="Laskunumero"
                                 value={getFieldTextValue(
-                                  isEditMode,
+                                  isEditMode &&
+                                    isInvoiceEditableBasedOnStatus(invoice),
                                   invoiceNumberInput.value,
                                 )}
                                 onChange={invoiceNumberInput.onChange}
-                                readOnly={!isEditMode}
+                                readOnly={
+                                  !isEditMode ||
+                                  !isInvoiceEditableBasedOnStatus(invoice)
+                                }
                               />
                             )}
                           </Field>
@@ -956,7 +1007,8 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                         <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
                           <Field name={`${fieldName}.billedAmount`}>
                             {({ input: billedAmountInput }) =>
-                              isEditMode ? (
+                              isEditMode &&
+                              isInvoiceEditableBasedOnStatus(invoice) ? (
                                 <NumberInput
                                   id={`landuse-invoicing-billed-amount-${index}`}
                                   label="Laskutettu"
@@ -982,7 +1034,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                           <TextInput
                             id={`landuse-invoicing-sent-at-${index}`}
                             label="Lähetetty laskutukseen"
-                            value={readOnlyTextValue(rowValue.sentAt)}
+                            value={readOnlyTextValue(invoice.sentAt)}
                             readOnly
                           />
                         </div>
@@ -1042,13 +1094,21 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                                 id={`landuse-invoicing-invoice-row-description-${index}-${invoiceItemIndex}`}
                                                 label="Selite"
                                                 value={getFieldTextValue(
-                                                  isEditMode,
+                                                  isEditMode &&
+                                                    isInvoiceEditableBasedOnStatus(
+                                                      invoice,
+                                                    ),
                                                   descriptionInput.value,
                                                 )}
                                                 onChange={
                                                   descriptionInput.onChange
                                                 }
-                                                readOnly={!isEditMode}
+                                                readOnly={
+                                                  !isEditMode ||
+                                                  !isInvoiceEditableBasedOnStatus(
+                                                    invoice,
+                                                  )
+                                                }
                                               />
                                             )}
                                           </Field>
@@ -1059,7 +1119,10 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                             name={`${invoiceItemFieldName}.itemType`}
                                           >
                                             {({ input: itemTypeInput }) =>
-                                              isEditMode ? (
+                                              isEditMode &&
+                                              isInvoiceEditableBasedOnStatus(
+                                                invoice,
+                                              ) ? (
                                                 <Select
                                                   id={`landuse-invoicing-invoice-row-item-type-${index}-${invoiceItemIndex}`}
                                                   texts={{
@@ -1102,7 +1165,10 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                                   id={`landuse-invoicing-invoice-row-amount-${index}-${invoiceItemIndex}`}
                                                   label="Veroton summa (€)"
                                                   value={
-                                                    isEditMode
+                                                    isEditMode &&
+                                                    isInvoiceEditableBasedOnStatus(
+                                                      invoice,
+                                                    )
                                                       ? amountInput.value
                                                       : formatLandUseEuroDisplayValue(
                                                           amountInput.value,
@@ -1111,65 +1177,82 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                                   onChange={
                                                     amountInput.onChange
                                                   }
-                                                  readOnly={!isEditMode}
+                                                  readOnly={
+                                                    !isEditMode ||
+                                                    !isInvoiceEditableBasedOnStatus(
+                                                      invoice,
+                                                    )
+                                                  }
                                                 />
                                               </div>
 
-                                              {isEditMode && (
-                                                <div className="landuse-grid__column-2">
-                                                  <Select
-                                                    id={`landuse-invoicing-invoice-row-korko-select-${index}-${invoiceItemIndex}`}
-                                                    options={korkoResults.map(
-                                                      (r) => ({
-                                                        label: `${r.id}. ${formatLandUseEuroDisplayValue(r.korkoValue)}`,
-                                                        value: String(
-                                                          r.korkoValue,
-                                                        ),
-                                                      }),
-                                                    )}
-                                                    onChange={(selected) => {
-                                                      if (selected.length > 0) {
-                                                        amountInput.onChange(
-                                                          Number(
-                                                            selected[0].value,
-                                                          ).toFixed(2),
-                                                        );
+                                              {isEditMode &&
+                                                isInvoiceEditableBasedOnStatus(
+                                                  invoice,
+                                                ) && (
+                                                  <div className="landuse-grid__column-2">
+                                                    <Select
+                                                      id={`landuse-invoicing-invoice-row-korko-select-${index}-${invoiceItemIndex}`}
+                                                      options={korkoResults.map(
+                                                        (r) => ({
+                                                          label: `${r.id}. ${formatLandUseEuroDisplayValue(r.korkoValue)}`,
+                                                          value: String(
+                                                            r.korkoValue,
+                                                          ),
+                                                        }),
+                                                      )}
+                                                      onChange={(selected) => {
+                                                        if (
+                                                          selected.length > 0
+                                                        ) {
+                                                          amountInput.onChange(
+                                                            Number(
+                                                              selected[0].value,
+                                                            ).toFixed(2),
+                                                          );
+                                                        }
+                                                      }}
+                                                      disabled={
+                                                        korkoResults.length ===
+                                                        0
                                                       }
-                                                    }}
-                                                    disabled={
-                                                      korkoResults.length === 0
-                                                    }
-                                                    texts={{
-                                                      label:
-                                                        "Täytä korkolaskimesta",
-                                                      placeholder:
-                                                        korkoResults.length > 0
-                                                          ? "Valitse"
-                                                          : "Ei tuloksia",
-                                                    }}
-                                                  />
-                                                </div>
-                                              )}
+                                                      texts={{
+                                                        label:
+                                                          "Täytä korkolaskimesta",
+                                                        placeholder:
+                                                          korkoResults.length >
+                                                          0
+                                                            ? "Valitse"
+                                                            : "Ei tuloksia",
+                                                      }}
+                                                    />
+                                                  </div>
+                                                )}
                                             </>
                                           )}
                                         </Field>
 
-                                        {isEditMode && (
-                                          <div className="landuse-grid__column-2 landuse-compensations-table__detail-actions">
-                                            <Button
-                                              type="button"
-                                              size={ButtonSize.Small}
-                                              variant={ButtonVariant.Secondary}
-                                              onClick={() =>
-                                                invoiceItemFields.remove(
-                                                  invoiceItemIndex,
-                                                )
-                                              }
-                                            >
-                                              Poista rivi
-                                            </Button>
-                                          </div>
-                                        )}
+                                        {isEditMode &&
+                                          isInvoiceEditableBasedOnStatus(
+                                            invoice,
+                                          ) && (
+                                            <div className="landuse-grid__column-2 landuse-compensations-table__detail-actions">
+                                              <Button
+                                                type="button"
+                                                size={ButtonSize.Small}
+                                                variant={
+                                                  ButtonVariant.Secondary
+                                                }
+                                                onClick={() =>
+                                                  invoiceItemFields.remove(
+                                                    invoiceItemIndex,
+                                                  )
+                                                }
+                                              >
+                                                Poista rivi
+                                              </Button>
+                                            </div>
+                                          )}
                                       </div>
                                     ),
                                   )
@@ -1177,30 +1260,31 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                   <p>Ei laskurivejä.</p>
                                 )}
 
-                                {isEditMode && (
-                                  <div>
-                                    <Button
-                                      type="button"
-                                      variant={ButtonVariant.Supplementary}
-                                      size={ButtonSize.Small}
-                                      iconStart={<IconPlusCircleFill />}
-                                      onClick={() =>
-                                        invoiceItemFields.push(
-                                          createEmptyInvoiceItemRow(),
-                                        )
-                                      }
-                                    >
-                                      Lisää laskurivi
-                                    </Button>
-                                  </div>
-                                )}
+                                {isEditMode &&
+                                  isInvoiceEditableBasedOnStatus(invoice) && (
+                                    <div>
+                                      <Button
+                                        type="button"
+                                        variant={ButtonVariant.Supplementary}
+                                        size={ButtonSize.Small}
+                                        iconStart={<IconPlusCircleFill />}
+                                        onClick={() =>
+                                          invoiceItemFields.push(
+                                            createEmptyInvoiceItemRow(),
+                                          )
+                                        }
+                                      >
+                                        Lisää laskurivi
+                                      </Button>
+                                    </div>
+                                  )}
                               </>
                             )}
                           </FieldArray>
                         </Fieldset>
                       </div>
                     </div>
-
+                    {/* TODO: Do not allow deleting sent invoices, for now enabled for testing */}
                     {isEditMode && (
                       <div className="landuse-compensations-table__detail-actions">
                         <ConfirmDeleteButton
@@ -1210,7 +1294,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                           buttonSize={ButtonSize.Small}
                           onConfirm={() => onRemove(index)}
                           dialogTitle="Poista lasku"
-                          dialogContent={`Haluatko varmasti poistaa laskun ${getInvoiceDeleteLabel(rowValue.invoiceNumber)}?`}
+                          dialogContent={`Haluatko varmasti poistaa laskun ${getInvoiceDeleteLabel(invoice.invoiceNumber)}?`}
                         />
                       </div>
                     )}
@@ -1380,6 +1464,9 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
                                     agreementOptions={agreementOptions}
                                     asemakaavanNumero={asemakaavanNumero}
                                     korkoResults={korkoResults}
+                                    isInvoiceTableRowEditable={isInvoiceEditableBasedOnStatus(
+                                      existingInvoices[index] as LandUseInvoice,
+                                    )}
                                     onRemove={(removeIndex) =>
                                       handleRemoveInvoice(
                                         fields.remove,
