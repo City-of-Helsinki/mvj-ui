@@ -18,6 +18,10 @@ body {
   width: 100%;
 }
 
+.full-height {
+  height: 100%;
+}
+
 // -- HDS component overrides -------------------------------------------------
 
 // HDS Select internally wraps the control in a CSS-Module class whose hash

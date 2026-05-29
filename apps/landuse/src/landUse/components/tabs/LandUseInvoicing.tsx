@@ -1012,10 +1012,10 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                     (invoiceRowFieldName, invoiceRowIndex) => (
                                       <div
                                         key={invoiceRowFieldName}
-                                        className="landuse-grid"
+                                        className="landuse-grid landuse-grid__bottom-margin"
                                       >
                                         <div
-                                          className={"landuse-grid__column-6"}
+                                          className={"landuse-grid__column-12"}
                                         >
                                           <Field
                                             name={`${invoiceRowFieldName}.description`}
