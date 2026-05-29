@@ -20,7 +20,6 @@ RUN corepack install
 RUN yarn --version
 
 # Install exact versions of dependencies and clean cache.
-# Engine restrictions for HDS 5.2.0 are suppressed via ignoredErrors in .yarnrc.yml.
 RUN yarn install --immutable && yarn cache clean
 
 # ===================================
