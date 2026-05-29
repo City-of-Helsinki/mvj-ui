@@ -49,6 +49,16 @@ interface AgreementOption extends SelectOption {
   sopimusnumero: string;
 }
 
+export const LAND_USE_INVOICE_STATUSES = {
+  DRAFT: "Luonnos",
+  PENDING_APPROVAL: "Odottaa hyväksyntää",
+  OPEN: "Avoin",
+  PAID: "Maksettu",
+} as const;
+
+export type LandUseInvoiceStatus =
+  (typeof LAND_USE_INVOICE_STATUSES)[keyof typeof LAND_USE_INVOICE_STATUSES];
+
 export interface LandUseInvoiceItem {
   description: string;
   itemType: string;
@@ -65,7 +75,7 @@ export interface LandUseInvoice {
   dueDate: string;
   invoiceNumber: string;
   type: LandUseInvoiceType | undefined;
-  status: string | undefined;
+  status: LandUseInvoiceStatus | undefined;
   sentAt?: string;
   billedAmount: string;
   remainingAmount: string;
@@ -238,19 +248,19 @@ const createEmptyInvoiceItemRow = (): LandUseInvoiceItem => ({
 });
 
 const getInvoiceStatusAction = (
-  status: string | undefined,
-): { buttonLabel: string; nextStatus: string } | null => {
-  if (status === "Luonnos") {
+  status: LandUseInvoiceStatus | undefined,
+): { buttonLabel: string; nextStatus: LandUseInvoiceStatus } | null => {
+  if (status === LAND_USE_INVOICE_STATUSES.DRAFT) {
     return {
       buttonLabel: "Merkitse valmiiksi",
-      nextStatus: "Odottaa hyväksyntää",
+      nextStatus: LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
     };
   }
 
-  if (status === "Odottaa hyväksyntää") {
+  if (status === LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL) {
     return {
       buttonLabel: "Hyväksy ja lähetä",
-      nextStatus: "Avoin",
+      nextStatus: LAND_USE_INVOICE_STATUSES.OPEN,
     };
   }
 
