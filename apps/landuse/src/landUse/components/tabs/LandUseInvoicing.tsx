@@ -25,10 +25,12 @@ import {
   type SelectOption,
 } from "../../utils/fieldUtils";
 import {
-  landUseInvoicingSelectOptions,
+  landUseInvoiceTypeSelectOptions,
   LAND_USE_INVOICE_TYPES,
   type LandUseInvoiceType,
   AsemakaavaListItem,
+  LAND_USE_INVOICE_ITEM_TYPES,
+  landUseInvoiceItemTypeSelectOptions,
 } from "../../options";
 import { formatLandUseEuroDisplayValue } from "../../utils/number";
 import type { PartyEntry } from "./LandUseParties";
@@ -47,12 +49,13 @@ interface AgreementOption extends SelectOption {
   sopimusnumero: string;
 }
 
-export interface LandUseInvoiceItemRow {
+export interface LandUseInvoiceItem {
   description: string;
+  itemType: string;
   amountExcludingVat: string;
 }
 
-export interface LandUseInvoiceRow {
+export interface LandUseInvoice {
   recipientPartyIndex: string | undefined;
   contractIndex: string | undefined;
   installmentNumber: string;
@@ -63,14 +66,14 @@ export interface LandUseInvoiceRow {
   invoiceNumber: string;
   type: LandUseInvoiceType | undefined;
   status: string | undefined;
-  sent_at?: string;
+  sentAt?: string;
   billedAmount: string;
   remainingAmount: string;
-  invoiceRows?: LandUseInvoiceItemRow[];
+  invoiceItems?: LandUseInvoiceItem[];
 }
 
 export interface LandUseInvoicingFormValues {
-  invoices?: LandUseInvoiceRow[];
+  invoices?: LandUseInvoice[];
 }
 
 interface LandUseInvoicingProps {
@@ -93,11 +96,6 @@ interface SelectedPartyInvoiceData {
   businessId: string;
   isCompany: boolean;
 }
-
-const invoiceTypeOptions = landUseInvoicingSelectOptions.type.map((value) => ({
-  label: value,
-  value,
-}));
 
 const handleSelectChange = (
   selectedOptions: SelectOption[],
@@ -213,10 +211,10 @@ const getSelectedPartyInvoiceData = (
   };
 };
 
-const createEmptyInvoiceRow = (
+const createEmptyInvoiceTableRow = (
   recipientPartyIndex: string | undefined,
   contractIndex: string | undefined,
-): LandUseInvoiceRow => ({
+): LandUseInvoice => ({
   recipientPartyIndex,
   contractIndex,
   installmentNumber: "",
@@ -227,13 +225,14 @@ const createEmptyInvoiceRow = (
   invoiceNumber: "",
   type: undefined,
   status: "Luonnos",
-  sent_at: "",
+  sentAt: "",
   billedAmount: "",
   remainingAmount: "",
-  invoiceRows: [],
+  invoiceItems: [],
 });
 
-const createEmptyInvoiceItemRow = (): LandUseInvoiceItemRow => ({
+const createEmptyInvoiceItemRow = (): LandUseInvoiceItem => ({
+  itemType: "",
   description: "",
   amountExcludingVat: "",
 });
@@ -258,7 +257,7 @@ const getInvoiceStatusAction = (
   return null;
 };
 
-interface InvoiceRowProps {
+interface InvoiceTableRowProps {
   fieldName: string;
   index: number;
   isEditMode: boolean;
@@ -311,7 +310,7 @@ const createBulkInvoice = (
   sopimusnumero: string,
   asemakaavanNumero: string,
   recipientName: string,
-): LandUseInvoiceRow => ({
+): LandUseInvoice => ({
   recipientPartyIndex: values.recipientPartyIndex,
   contractIndex: values.contractIndex,
   installmentNumber: String(installmentNumber),
@@ -320,17 +319,22 @@ const createBulkInvoice = (
   lainvoimaisuusPvm: values.lainvoimaisuusPvm,
   dueDate: "",
   invoiceNumber: "",
-  type: LAND_USE_INVOICE_TYPES.MAANKAYTOKORVAUS,
+  type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
   status: "Luonnos",
-  sent_at: "",
+  sentAt: "",
   billedAmount: "",
   remainingAmount: "",
-  invoiceRows: [
+  invoiceItems: [
     {
+      itemType: LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS,
       description: "Maksutuotot maankäyttösopimuksista",
       amountExcludingVat: "",
     },
     {
+      itemType:
+        installmentNumber === 1
+          ? LAND_USE_INVOICE_ITEM_TYPES.KOROTUS
+          : LAND_USE_INVOICE_ITEM_TYPES.KORKO,
       description: buildSecondRowSelite(
         agreementIdentifier,
         sopimusnumero,
@@ -482,7 +486,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
   );
 };
 
-const InvoiceRow: React.FC<InvoiceRowProps> = ({
+const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
   fieldName,
   index,
   isEditMode,
@@ -501,7 +505,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
   return (
     <Field name={fieldName} subscription={{ value: true }}>
       {({ input }) => {
-        const rowValue = (input.value ?? {}) as LandUseInvoiceRow;
+        const rowValue = (input.value ?? {}) as LandUseInvoice;
         const contractNumberDisplayValue =
           agreementOptions.find(
             (option) => option.value === rowValue.contractIndex,
@@ -566,7 +570,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                             isEditMode ? (
                               <Select
                                 id={`landuse-invoicing-type-${index}`}
-                                options={invoiceTypeOptions}
+                                options={landUseInvoiceTypeSelectOptions}
                                 value={normalizeSelectValue(typeInput.value)}
                                 onChange={(selectedOptions) =>
                                   handleSelectChange(
@@ -582,7 +586,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                             ) : (
                               <TextInput
                                 id={`landuse-invoicing-type-${index}`}
-                                label="Tyyppi"
+                                label="Laskun tyyppi"
                                 value={readOnlyTextValue(typeInput.value)}
                                 readOnly
                               />
@@ -699,12 +703,12 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                           const nextSentAtValue =
                                             statusAction.nextStatus === "Avoin"
                                               ? getSentAtTimestamp()
-                                              : (rowValue.sent_at ?? "");
+                                              : (rowValue.sentAt ?? "");
 
                                           input.onChange({
                                             ...rowValue,
                                             status: statusAction.nextStatus,
-                                            sent_at: nextSentAtValue,
+                                            sentAt: nextSentAtValue,
                                           });
                                         }}
                                       >
@@ -968,7 +972,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                           <TextInput
                             id={`landuse-invoicing-sent-at-${index}`}
                             label="Lähetetty laskutukseen"
-                            value={readOnlyTextValue(rowValue.sent_at)}
+                            value={readOnlyTextValue(rowValue.sentAt)}
                             readOnly
                           />
                         </div>
@@ -1002,27 +1006,30 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                     <div className="landuse-grid landuse-grid__bottom-margin">
                       <div className="landuse-grid__column-12">
                         <Fieldset heading="Laskurivit">
-                          <FieldArray<LandUseInvoiceItemRow>
-                            name={`${fieldName}.invoiceRows`}
+                          <FieldArray<LandUseInvoiceItem>
+                            name={`${fieldName}.invoiceItems`}
                           >
-                            {({ fields: invoiceRowFields }) => (
+                            {({ fields: invoiceItemFields }) => (
                               <>
-                                {invoiceRowFields.length > 0 ? (
-                                  invoiceRowFields.map(
-                                    (invoiceRowFieldName, invoiceRowIndex) => (
+                                {invoiceItemFields.length > 0 ? (
+                                  invoiceItemFields.map(
+                                    (
+                                      invoiceItemFieldName,
+                                      invoiceItemIndex,
+                                    ) => (
                                       <div
-                                        key={invoiceRowFieldName}
+                                        key={invoiceItemFieldName}
                                         className="landuse-grid landuse-grid__bottom-margin"
                                       >
                                         <div
                                           className={"landuse-grid__column-12"}
                                         >
                                           <Field
-                                            name={`${invoiceRowFieldName}.description`}
+                                            name={`${invoiceItemFieldName}.description`}
                                           >
                                             {({ input: descriptionInput }) => (
                                               <TextInput
-                                                id={`landuse-invoicing-invoice-row-description-${index}-${invoiceRowIndex}`}
+                                                id={`landuse-invoicing-invoice-row-description-${index}-${invoiceItemIndex}`}
                                                 label="Selite"
                                                 value={getFieldTextValue(
                                                   isEditMode,
@@ -1037,14 +1044,52 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                           </Field>
                                         </div>
 
+                                        <div className="landuse-grid__column-2">
+                                          <Field
+                                            name={`${invoiceItemFieldName}.itemType`}
+                                          >
+                                            {({ input: itemTypeInput }) =>
+                                              isEditMode ? (
+                                                <Select
+                                                  id={`landuse-invoicing-invoice-row-item-type-${index}-${invoiceItemIndex}`}
+                                                  texts={{
+                                                    label: "Laskurivin tyyppi",
+                                                    placeholder: "Valitse",
+                                                  }}
+                                                  options={
+                                                    landUseInvoiceItemTypeSelectOptions
+                                                  }
+                                                  value={itemTypeInput.value}
+                                                  onChange={(selected) => {
+                                                    if (selected.length > 0) {
+                                                      itemTypeInput.onChange(
+                                                        selected[0].value,
+                                                      );
+                                                    }
+                                                  }}
+                                                />
+                                              ) : (
+                                                <TextInput
+                                                  id={`landuse-invoicing-invoice-row-item-type-${index}-${invoiceItemIndex}`}
+                                                  label="Laskurivin tyyppi"
+                                                  value={readOnlyTextValue(
+                                                    itemTypeInput.value,
+                                                  )}
+                                                  readOnly
+                                                />
+                                              )
+                                            }
+                                          </Field>
+                                        </div>
+
                                         <Field
-                                          name={`${invoiceRowFieldName}.amountExcludingVat`}
+                                          name={`${invoiceItemFieldName}.amountExcludingVat`}
                                         >
                                           {({ input: amountInput }) => (
                                             <>
                                               <div className="landuse-grid__column-2">
                                                 <TextInput
-                                                  id={`landuse-invoicing-invoice-row-amount-${index}-${invoiceRowIndex}`}
+                                                  id={`landuse-invoicing-invoice-row-amount-${index}-${invoiceItemIndex}`}
                                                   label="Veroton summa (€)"
                                                   value={
                                                     isEditMode
@@ -1063,7 +1108,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                               {isEditMode && (
                                                 <div className="landuse-grid__column-2">
                                                   <Select
-                                                    id={`landuse-invoicing-invoice-row-korko-select-${index}-${invoiceRowIndex}`}
+                                                    id={`landuse-invoicing-invoice-row-korko-select-${index}-${invoiceItemIndex}`}
                                                     options={korkoResults.map(
                                                       (r) => ({
                                                         label: `${r.id}. ${formatLandUseEuroDisplayValue(r.korkoValue)}`,
@@ -1106,8 +1151,8 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                               size={ButtonSize.Small}
                                               variant={ButtonVariant.Secondary}
                                               onClick={() =>
-                                                invoiceRowFields.remove(
-                                                  invoiceRowIndex,
+                                                invoiceItemFields.remove(
+                                                  invoiceItemIndex,
                                                 )
                                               }
                                             >
@@ -1130,7 +1175,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                       size={ButtonSize.Small}
                                       iconStart={<IconPlusCircleFill />}
                                       onClick={() =>
-                                        invoiceRowFields.push(
+                                        invoiceItemFields.push(
                                           createEmptyInvoiceItemRow(),
                                         )
                                       }
@@ -1240,11 +1285,11 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
             )?.invoices ?? [];
 
           const handleAddInvoice = (
-            push: (value: LandUseInvoiceRow) => void,
+            push: (value: LandUseInvoice) => void,
             currentLength: number,
           ) => {
             push(
-              createEmptyInvoiceRow(
+              createEmptyInvoiceTableRow(
                 partyOptions[0]?.value,
                 agreementOptions[0]?.value,
               ),
@@ -1290,7 +1335,7 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
                   className="landuse-detail__fieldset--with-margin"
                 >
                   <div className="landuse-detail__sites-table-wrapper">
-                    <FieldArray<LandUseInvoiceRow> name="invoices">
+                    <FieldArray<LandUseInvoice> name="invoices">
                       {({ fields }) => (
                         <>
                           <table className="landuse-compensations-table">
@@ -1311,7 +1356,7 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
                             <tbody>
                               {fields.length > 0 ? (
                                 fields.map((fieldName, index) => (
-                                  <InvoiceRow
+                                  <InvoiceTableRow
                                     key={fieldName}
                                     fieldName={fieldName}
                                     index={index}
