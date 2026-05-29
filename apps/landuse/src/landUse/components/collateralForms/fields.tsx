@@ -101,6 +101,7 @@ export const CollateralDateField: React.FC<CommonProps> = ({
             value={input.value}
             onChange={input.onChange}
             placeholder="DD.MM.YYYY"
+            language="fi"
           />
         ) : (
           <TextInput

@@ -461,6 +461,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
               value={lainvoimaisuusPvm}
               onChange={setLainvoimaisuusPvm}
               placeholder="DD.MM.YYYY"
+              language="fi"
             />
           </div>
         </div>
@@ -856,6 +857,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                 value={signedDateInput.value}
                                 onChange={signedDateInput.onChange}
                                 placeholder="DD.MM.YYYY"
+                                language="fi"
                               />
                             ) : (
                               <TextInput
@@ -879,6 +881,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                 value={lainvoimaisuusPvmInput.value}
                                 onChange={lainvoimaisuusPvmInput.onChange}
                                 placeholder="DD.MM.YYYY"
+                                language="fi"
                               />
                             ) : (
                               <TextInput
@@ -904,6 +907,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
                                 value={dueDateInput.value}
                                 onChange={dueDateInput.onChange}
                                 placeholder="DD.MM.YYYY"
+                                language="fi"
                               />
                             ) : (
                               <TextInput

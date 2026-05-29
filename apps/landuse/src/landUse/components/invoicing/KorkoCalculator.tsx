@@ -238,6 +238,7 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
             value={dueDate}
             onChange={(value) => setDueDate(value)}
             placeholder="DD.MM.YYYY"
+            language="fi"
           />
         </div>
         <div className="landuse-grid__column-2">
@@ -247,6 +248,7 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
             value={paymentDate}
             onChange={(value) => setPaymentDate(value)}
             placeholder="DD.MM.YYYY"
+            language="fi"
           />
         </div>
       </div>

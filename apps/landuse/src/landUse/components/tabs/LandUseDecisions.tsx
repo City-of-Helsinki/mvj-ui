@@ -279,6 +279,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   value={input.value}
                                   onChange={input.onChange}
                                   placeholder="DD.MM.YYYY"
+                                  language="fi"
                                 />
                               ) : (
                                 <TextInput
@@ -432,6 +433,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       value={input.value}
                                       onChange={input.onChange}
                                       placeholder="DD.MM.YYYY"
+                                      language="fi"
                                     />
                                   ) : (
                                     <TextInput
@@ -455,6 +457,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       value={input.value}
                                       onChange={input.onChange}
                                       placeholder="DD.MM.YYYY"
+                                      language="fi"
                                     />
                                   ) : (
                                     <TextInput
@@ -616,6 +619,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   value={input.value}
                                   onChange={input.onChange}
                                   placeholder="DD.MM.YYYY"
+                                  language="fi"
                                 />
                               ) : (
                                 <TextInput
@@ -658,6 +662,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   value={input.value}
                                   onChange={input.onChange}
                                   placeholder="DD.MM.YYYY"
+                                  language="fi"
                                 />
                               ) : (
                                 <TextInput
@@ -683,6 +688,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   value={input.value}
                                   onChange={input.onChange}
                                   placeholder="DD.MM.YYYY"
+                                  language="fi"
                                 />
                               ) : (
                                 <TextInput
@@ -706,6 +712,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   value={input.value}
                                   onChange={input.onChange}
                                   placeholder="DD.MM.YYYY"
+                                  language="fi"
                                 />
                               ) : (
                                 <TextInput
@@ -729,6 +736,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   value={input.value}
                                   onChange={input.onChange}
                                   placeholder="DD.MM.YYYY"
+                                  language="fi"
                                 />
                               ) : (
                                 <TextInput
@@ -789,6 +797,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       value={input.value}
                                       onChange={input.onChange}
                                       placeholder="DD.MM.YYYY"
+                                      language="fi"
                                     />
                                   ) : (
                                     <TextInput
@@ -814,6 +823,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       value={input.value}
                                       onChange={input.onChange}
                                       placeholder="DD.MM.YYYY"
+                                      language="fi"
                                     />
                                   ) : (
                                     <TextInput
@@ -839,6 +849,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       value={input.value}
                                       onChange={input.onChange}
                                       placeholder="DD.MM.YYYY"
+                                      language="fi"
                                     />
                                   ) : (
                                     <TextInput
@@ -864,6 +875,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       value={input.value}
                                       onChange={input.onChange}
                                       placeholder="DD.MM.YYYY"
+                                      language="fi"
                                     />
                                   ) : (
                                     <TextInput
@@ -889,6 +901,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                       value={input.value}
                                       onChange={input.onChange}
                                       placeholder="DD.MM.YYYY"
+                                      language="fi"
                                     />
                                   ) : (
                                     <TextInput

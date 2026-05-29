@@ -333,6 +333,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                           onChange={input.onChange}
                           placeholder="DD.MM.YYYY"
                           disabled={!isEditMode}
+                          language="fi"
                         />
                       ) : (
                         <TextInput
