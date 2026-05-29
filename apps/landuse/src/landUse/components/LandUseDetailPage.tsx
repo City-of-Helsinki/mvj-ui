@@ -993,6 +993,12 @@ const LandUseDetailPage: React.FC = () => {
                 summaryQuery.data?.asemakaavanNumero) ||
               ""
             }
+            asemakaavanLainvoimaisuusPvm={
+              ((summaryFormApi.getState().values as LandUseSummaryFormValues)
+                ?.asemakaavanLainvoimaisuusPvm ??
+                summaryQuery.data?.asemakaavanLainvoimaisuusPvm) ||
+              ""
+            }
             agreementIdentifier={agreementId}
             korkoResults={korkoResults}
             setKorkoResults={setKorkoResults}

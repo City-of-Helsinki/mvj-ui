@@ -91,7 +91,8 @@ interface LandUseInvoicingProps {
   isEditMode: boolean;
   parties: PartyEntry[];
   agreements: AgreementItem[];
-  asemakaavanNumero: string;
+  asemakaavanNumero: AsemakaavaListItem["asemakaavanNumero"];
+  asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
   agreementIdentifier: string;
   korkoResults: KorkoResult[];
   setKorkoResults: React.Dispatch<React.SetStateAction<KorkoResult[]>>;
@@ -376,6 +377,7 @@ interface BulkCreateInvoicesDialogProps {
   onSubmit: (values: BulkCreateFormValues) => void;
   partyOptions: SelectOption[];
   agreementOptions: AgreementOption[];
+  asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
 }
 
 const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
@@ -384,6 +386,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
   onSubmit,
   partyOptions,
   agreementOptions,
+  asemakaavanLainvoimaisuusPvm: asemakaavanLainvoimaisuusPvmProp,
 }) => {
   const [installmentTotal, setInstallmentTotal] = useState<number | "">("");
   const [contractIndex, setContractIndex] = useState<string | undefined>(
@@ -392,14 +395,18 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
   const [recipientPartyIndex, setRecipientPartyIndex] = useState<
     string | undefined
   >(undefined);
-  const [asemakaavanLainvoimaisuusPvm, setAsemakaavanLainvoimaisuusPvm] =
-    useState<AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"]>("");
+  const [
+    asemakaavanLainvoimaisuusPvmValue,
+    setAsemakaavanLainvoimaisuusPvmValue,
+  ] = useState<AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"]>(
+    asemakaavanLainvoimaisuusPvmProp,
+  );
 
   const reset = () => {
     setInstallmentTotal("");
     setContractIndex(undefined);
     setRecipientPartyIndex(undefined);
-    setAsemakaavanLainvoimaisuusPvm("");
+    setAsemakaavanLainvoimaisuusPvmValue(asemakaavanLainvoimaisuusPvmProp);
   };
 
   const handleClose = () => {
@@ -412,7 +419,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
       installmentTotal: String(installmentTotal),
       contractIndex,
       recipientPartyIndex,
-      asemakaavanLainvoimaisuusPvm: asemakaavanLainvoimaisuusPvm,
+      asemakaavanLainvoimaisuusPvm: asemakaavanLainvoimaisuusPvmValue,
     });
     reset();
   };
@@ -483,8 +490,8 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
             <DateInput
               id="bulk-create-valid-date"
               label="Lainvoimaisuus"
-              value={asemakaavanLainvoimaisuusPvm}
-              onChange={setAsemakaavanLainvoimaisuusPvm}
+              value={asemakaavanLainvoimaisuusPvmValue}
+              onChange={setAsemakaavanLainvoimaisuusPvmValue}
               placeholder="DD.MM.YYYY"
               language="fi"
             />
@@ -1319,6 +1326,7 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
   parties,
   agreements,
   asemakaavanNumero,
+  asemakaavanLainvoimaisuusPvm,
   agreementIdentifier,
   korkoResults,
   setKorkoResults,
@@ -1531,6 +1539,7 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
         onSubmit={handleBulkCreate}
         partyOptions={partyOptions}
         agreementOptions={agreementOptions}
+        asemakaavanLainvoimaisuusPvm={asemakaavanLainvoimaisuusPvm}
       />
     </>
   );
