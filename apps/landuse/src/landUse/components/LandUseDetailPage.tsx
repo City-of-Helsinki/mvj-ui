@@ -44,6 +44,9 @@ import {
   type LandUseDecisionsFormValues,
 } from "./tabs/LandUseDecisions";
 import {
+  LAND_USE_INVOICE_STATUSES,
+  LandUseInvoice,
+  LandUseInvoiceItem,
   LandUseInvoicing,
   type LandUseInvoicingFormValues,
 } from "./tabs/LandUseInvoicing";
@@ -69,7 +72,10 @@ import {
   updateParties,
   updateSummary,
 } from "../api/landUseApi";
-import { LAND_USE_NEGOTIATION_PHASES } from "../options";
+import {
+  LAND_USE_INVOICE_ITEM_TYPES,
+  LAND_USE_NEGOTIATION_PHASES,
+} from "../options";
 import { parseLandUseNumericValueOrZero } from "../utils/number";
 import { DEFAULT_KOROTUSKERROIN } from "../constants";
 
@@ -176,6 +182,21 @@ const getActiveTabFromSearch = (search: string): number => {
   }
 
   return 0;
+};
+
+const calculatePaidMaankayttokorvaus = (invoices: LandUseInvoice[]) => {
+  const isMaankayttokorvausItem = (item: LandUseInvoiceItem) =>
+    item.itemType === LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS;
+
+  return invoices
+    .filter((invoice) => invoice.status === LAND_USE_INVOICE_STATUSES.PAID)
+    .flatMap((invoice) => invoice.invoiceItems ?? [])
+    .filter(isMaankayttokorvausItem)
+    .reduce(
+      (sum, item) =>
+        sum + parseLandUseNumericValueOrZero(item.amountExcludingVat),
+      0,
+    );
 };
 
 // Initial form state
@@ -697,13 +718,23 @@ const LandUseDetailPage: React.FC = () => {
             ),
           );
           break;
-        case "invoicing":
+        case "invoicing": {
+          // Mark invoices paid when remaining amount is zero or less
+          // TODO: In the future API should handle this
+          const invoicesValues = (state.values as LandUseInvoicingFormValues)
+            .invoices;
+          for (const invoice of invoicesValues) {
+            if (Number(invoice.remainingAmount) <= 0)
+              invoice.status = LAND_USE_INVOICE_STATUSES.PAID;
+          }
           mutations.push(
-            invoicingMutation.mutateAsync(
-              state.values as LandUseInvoicingFormValues,
-            ),
+            invoicingMutation.mutateAsync({
+              ...state.values,
+              invoices: invoicesValues,
+            } as LandUseInvoicingFormValues),
           );
           break;
+        }
         case "map":
           mutations.push(
             mapMutation.mutateAsync(state.values as LandUseMapFormValues),
@@ -925,6 +956,9 @@ const LandUseDetailPage: React.FC = () => {
               ) +
               parseLandUseNumericValueOrZero(
                 compensationsQuery.data?.muuKorvaus,
+              ) -
+              calculatePaidMaankayttokorvaus(
+                invoicingQuery.data?.invoices ?? [],
               )
             }
             onSetTabDirty={handleSetTabDirty}
