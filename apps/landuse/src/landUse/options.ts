@@ -422,7 +422,7 @@ export const landUseCompensationSelectOptions = {
 };
 
 export const LAND_USE_INVOICE_TYPES = {
-  MAANKAYTOKORVAUS: "Maankäyttökorvaus",
+  MAANKAYTTOKORVAUS: "Maankäyttökorvaus",
   SAKKO: "Sakko",
   PERINTA: "Perintä",
 } as const;
@@ -430,10 +430,38 @@ export const LAND_USE_INVOICE_TYPES = {
 export type LandUseInvoiceType =
   (typeof LAND_USE_INVOICE_TYPES)[keyof typeof LAND_USE_INVOICE_TYPES];
 
-export const landUseInvoicingSelectOptions = {
-  type: Object.values(LAND_USE_INVOICE_TYPES),
-  status: ["Luonnos", "Odottaa hyväksyntää", "Avoin", "Maksettu"],
-};
+export const landUseInvoiceTypeSelectOptions: {
+  label: string;
+  value: LandUseInvoiceType;
+}[] = Object.values(LAND_USE_INVOICE_TYPES).map((value) => ({
+  label: value,
+  value,
+}));
+
+export const landUseInvoiceStatusSelectOptions = [
+  "Luonnos",
+  "Odottaa hyväksyntää",
+  "Avoin",
+  "Maksettu",
+].map((status) => ({ label: status, value: status }));
+
+export const LAND_USE_INVOICE_ITEM_TYPES = {
+  MAANKAYTTOKORVAUS: "Maankäyttökorvaus",
+  KOROTUS: "Korotus",
+  KORKO: "Korko",
+  SAKKO: "Sakko",
+} as const;
+
+export type LandUseInvoiceItemType =
+  (typeof LAND_USE_INVOICE_ITEM_TYPES)[keyof typeof LAND_USE_INVOICE_ITEM_TYPES];
+
+export const landUseInvoiceItemTypeSelectOptions: {
+  label: string;
+  value: LandUseInvoiceItemType;
+}[] = Object.values(LAND_USE_INVOICE_ITEM_TYPES).map((value) => ({
+  label: value,
+  value,
+}));
 
 export const landUseKohdeSelectOptions = [
   { label: "91-10-100-1", value: "91-10-100-1" },
