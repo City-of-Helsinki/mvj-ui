@@ -71,7 +71,7 @@ export interface LandUseInvoice {
   installmentNumber: string;
   installmentTotal: string;
   signedDate: string;
-  lainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
+  asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
   dueDate: string;
   invoiceNumber: string;
   type: LandUseInvoiceType | undefined;
@@ -240,7 +240,7 @@ const createEmptyInvoiceTableRow = (
   installmentNumber: "",
   installmentTotal: "",
   signedDate: "",
-  lainvoimaisuusPvm: "",
+  asemakaavanLainvoimaisuusPvm: "",
   dueDate: "",
   invoiceNumber: "",
   type: undefined,
@@ -309,7 +309,7 @@ interface BulkCreateFormValues {
   installmentTotal: string;
   contractIndex: string | undefined;
   recipientPartyIndex: string | undefined;
-  lainvoimaisuusPvm: string;
+  asemakaavanLainvoimaisuusPvm: string;
 }
 
 const buildSecondRowSelite = (
@@ -337,7 +337,7 @@ const createBulkInvoice = (
   installmentNumber: String(installmentNumber),
   installmentTotal: values.installmentTotal,
   signedDate,
-  lainvoimaisuusPvm: values.lainvoimaisuusPvm,
+  asemakaavanLainvoimaisuusPvm: values.asemakaavanLainvoimaisuusPvm,
   dueDate: "",
   invoiceNumber: "",
   type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
@@ -392,14 +392,14 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
   const [recipientPartyIndex, setRecipientPartyIndex] = useState<
     string | undefined
   >(undefined);
-  const [lainvoimaisuusPvm, setLainvoimaisuusPvm] =
+  const [asemakaavanLainvoimaisuusPvm, setAsemakaavanLainvoimaisuusPvm] =
     useState<AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"]>("");
 
   const reset = () => {
     setInstallmentTotal("");
     setContractIndex(undefined);
     setRecipientPartyIndex(undefined);
-    setLainvoimaisuusPvm("");
+    setAsemakaavanLainvoimaisuusPvm("");
   };
 
   const handleClose = () => {
@@ -412,7 +412,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
       installmentTotal: String(installmentTotal),
       contractIndex,
       recipientPartyIndex,
-      lainvoimaisuusPvm,
+      asemakaavanLainvoimaisuusPvm: asemakaavanLainvoimaisuusPvm,
     });
     reset();
   };
@@ -483,8 +483,8 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
             <DateInput
               id="bulk-create-valid-date"
               label="Lainvoimaisuus"
-              value={lainvoimaisuusPvm}
-              onChange={setLainvoimaisuusPvm}
+              value={asemakaavanLainvoimaisuusPvm}
+              onChange={setAsemakaavanLainvoimaisuusPvm}
               placeholder="DD.MM.YYYY"
               language="fi"
             />
@@ -931,15 +931,19 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                       </div>
 
                       <div className="landuse-grid__column-3">
-                        <Field name={`${fieldName}.lainvoimaisuusPvm`}>
-                          {({ input: lainvoimaisuusPvmInput }) =>
+                        <Field
+                          name={`${fieldName}.asemakaavanLainvoimaisuusPvm`}
+                        >
+                          {({ input: asemakaavanLainvoimaisuusPvmInput }) =>
                             isEditMode &&
                             isInvoiceEditableBasedOnStatus(invoice) ? (
                               <DateInput
                                 id={`landuse-invoicing-valid-date-${index}`}
                                 label="Lainvoimaisuuspäivämäärä"
-                                value={lainvoimaisuusPvmInput.value}
-                                onChange={lainvoimaisuusPvmInput.onChange}
+                                value={asemakaavanLainvoimaisuusPvmInput.value}
+                                onChange={
+                                  asemakaavanLainvoimaisuusPvmInput.onChange
+                                }
                                 placeholder="DD.MM.YYYY"
                                 language="fi"
                               />
@@ -948,7 +952,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                 id={`landuse-invoicing-valid-date-${index}`}
                                 label="Lainvoimaisuuspäivämäärä"
                                 value={readOnlyTextValue(
-                                  lainvoimaisuusPvmInput.value,
+                                  asemakaavanLainvoimaisuusPvmInput.value,
                                 )}
                                 readOnly
                               />

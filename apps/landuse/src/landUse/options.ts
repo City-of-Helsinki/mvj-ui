@@ -350,7 +350,7 @@ export const landUseGuaranteeVierasvelkapanttausOptions = [
 
 export const ASEMAKAAVA_KASITTELYVAIHE_OPTIONS = [
   "Vireillä",
-  "Voimassa",
+  "Lainvoimainen",
   "Kumottu",
 ] as const;
 
@@ -360,52 +360,34 @@ export type AsemakaavaKasittelyvaihe =
 export interface AsemakaavaListItem {
   asemakaavanNumero: string;
   asemakaavanKasittelyvaihe: AsemakaavaKasittelyvaihe;
-  kasittelyvaiheenViimeisinPvm: string;
+  vahvistamisHyvaksymisPvm: string;
   asemakaavanHyvaksyjä: string;
   asemakaavanDiaarinumero: string;
-  asemakaavanLainvoimaisuusPvm?: string;
+  asemakaavanLainvoimaisuusPvm: string | undefined;
 }
 
 export const landUseAsemakaavaListItems: AsemakaavaListItem[] = [
   {
-    asemakaavanNumero: "0000255",
-    asemakaavanKasittelyvaihe: "Vireillä",
-    kasittelyvaiheenViimeisinPvm: "12.01.2025",
-    asemakaavanHyvaksyjä: "Henkilö 1",
-    asemakaavanDiaarinumero: "HEL 2947-138205",
-  },
-  {
     asemakaavanNumero: "0000412",
     asemakaavanKasittelyvaihe: "Vireillä",
-    kasittelyvaiheenViimeisinPvm: "27.03.2025",
+    vahvistamisHyvaksymisPvm: "27.03.2025",
+    asemakaavanLainvoimaisuusPvm: undefined,
     asemakaavanHyvaksyjä: "Henkilö 2",
     asemakaavanDiaarinumero: "HEL 1035-880164",
   },
   {
-    asemakaavanNumero: "0000569",
-    asemakaavanKasittelyvaihe: "Voimassa",
-    kasittelyvaiheenViimeisinPvm: "08.06.2025",
-    asemakaavanHyvaksyjä: "Henkilö 3",
-    asemakaavanDiaarinumero: "HEL 7408-064219",
-  },
-  {
     asemakaavanNumero: "0000623",
-    asemakaavanKasittelyvaihe: "Voimassa",
-    kasittelyvaiheenViimeisinPvm: "14.09.2025",
+    asemakaavanKasittelyvaihe: "Lainvoimainen",
+    vahvistamisHyvaksymisPvm: "14.09.2025",
+    asemakaavanLainvoimaisuusPvm: "01.11.2025",
     asemakaavanHyvaksyjä: "Henkilö 4",
     asemakaavanDiaarinumero: "HEL 5512-972406",
   },
   {
-    asemakaavanNumero: "0000738",
-    asemakaavanKasittelyvaihe: "Kumottu",
-    kasittelyvaiheenViimeisinPvm: "02.11.2025",
-    asemakaavanHyvaksyjä: "Henkilö 5",
-    asemakaavanDiaarinumero: "HEL 4120-305774",
-  },
-  {
     asemakaavanNumero: "0000891",
     asemakaavanKasittelyvaihe: "Kumottu",
-    kasittelyvaiheenViimeisinPvm: "19.01.2026",
+    vahvistamisHyvaksymisPvm: "01.01.2010",
+    asemakaavanLainvoimaisuusPvm: "01.01.2010",
     asemakaavanHyvaksyjä: "Henkilö 6",
     asemakaavanDiaarinumero: "HEL 6689-451392",
   },

@@ -14,6 +14,10 @@ import {
   INITIAL_KORVAUS_PERCENTAGE,
 } from "../constants";
 import { createEmptyPartiesFormValues } from "../api/landUseFormValues";
+import {
+  ASEMAKAAVA_KASITTELYVAIHE_OPTIONS,
+  landUseAsemakaavaListItems,
+} from "../options";
 
 export interface MockLandUseData {
   identifier: string;
@@ -44,7 +48,8 @@ export interface MockLandUseData {
   velvoitteidenMaaraika: string;
   asemakaavanNumero: string;
   asemakaavanKasittelyvaihe: string;
-  kasittelyvaiheenViimeisinPvm: string;
+  vahvistamisHyvaksymisPvm: string;
+  asemakaavanLainvoimaisuusPvm: string | undefined;
   asemakaavanHyvaksyjä: string;
   asemakaavanDiaarinumero: string;
 }
@@ -115,6 +120,7 @@ const ma113Compensations: LandUseCompensationsFormValues = {
   maakorvaus: "120000",
   muuKorvaus: "25000",
   perushinta: "1850",
+  maankayttokorvausYhteensa: "595000",
   maakorvausSelite: "Maakorvaus kohdistuu puistoalueiden hankintaan.",
   muuSelite: "Muu korvaus sisältää kunnallistekniikan liittymismaksuja.",
   kaavaehdotustaEdeltavaArvo: "5000",
@@ -230,7 +236,7 @@ const ma113Invoicing: LandUseInvoicingFormValues = {
       installmentNumber: "1",
       installmentTotal: "2",
       signedDate: "2026-01-20",
-      lainvoimaisuusPvm: "2026-02-20",
+      asemakaavanLainvoimaisuusPvm: "2026-02-20",
       dueDate: "2026-04-15",
       invoiceNumber: "123456789",
       type: "Maankäyttökorvaus",
@@ -244,7 +250,7 @@ const ma113Invoicing: LandUseInvoicingFormValues = {
       installmentNumber: "2",
       installmentTotal: "2",
       signedDate: "2026-01-20",
-      lainvoimaisuusPvm: "2026-02-20",
+      asemakaavanLainvoimaisuusPvm: "2026-02-20",
       dueDate: "2026-06-10",
       invoiceNumber: "123456790",
       type: "Perintä",
@@ -290,8 +296,11 @@ export const mockLandUseTabStore: Record<string, LandUseAgreementMockTabs> = {
       sisaltaaAmVelvoitteita: "kyllä",
       velvoitteidenMaaraika: "11.2030",
       asemakaavanNumero: "0000738",
-      asemakaavanKasittelyvaihe: "5. Hyväksyminen",
-      kasittelyvaiheenViimeisinPvm: "02.11.2025",
+      asemakaavanKasittelyvaihe: ASEMAKAAVA_KASITTELYVAIHE_OPTIONS[1],
+      vahvistamisHyvaksymisPvm:
+        landUseAsemakaavaListItems[0].vahvistamisHyvaksymisPvm,
+      asemakaavanLainvoimaisuusPvm:
+        landUseAsemakaavaListItems[0].asemakaavanLainvoimaisuusPvm,
       asemakaavanHyvaksyjä: "Henkilö 5",
       asemakaavanDiaarinumero: "HEL 4120-305774",
     },

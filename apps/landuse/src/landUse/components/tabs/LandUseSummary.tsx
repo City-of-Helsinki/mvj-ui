@@ -57,7 +57,8 @@ export interface LandUseSummaryFormValues {
   velvoitteidenMaaraika: string;
   asemakaavanNumero: string;
   asemakaavanKasittelyvaihe: string;
-  kasittelyvaiheenViimeisinPvm: string;
+  vahvistamisHyvaksymisPvm: string;
+  asemakaavanLainvoimaisuusPvm: string;
   asemakaavanHyvaksyjä: string;
   asemakaavanDiaarinumero: string;
 }
@@ -137,8 +138,12 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
         selectedAsemakaava?.asemakaavanKasittelyvaihe ?? "",
       );
       form.change(
-        "kasittelyvaiheenViimeisinPvm",
-        selectedAsemakaava?.kasittelyvaiheenViimeisinPvm ?? "",
+        "vahvistamisHyvaksymisPvm",
+        selectedAsemakaava?.vahvistamisHyvaksymisPvm ?? "",
+      );
+      form.change(
+        "asemakaavanLainvoimaisuusPvm",
+        selectedAsemakaava?.asemakaavanLainvoimaisuusPvm ?? "",
       );
       form.change(
         "asemakaavanHyvaksyjä",
@@ -425,11 +430,11 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                 </div>
 
                 <div className="landuse-grid__column-3">
-                  <Field name="kasittelyvaiheenViimeisinPvm">
+                  <Field name="vahvistamisHyvaksymisPvm">
                     {({ input }) => (
                       <TextInput
-                        id="kasittelyvaiheen-viimeisin-pvm"
-                        label="Käsittelyvaiheen viimeisin pvm"
+                        id="vahvistamis-hyvaksymis-pvm"
+                        label="Vahvistamis/hyväksymispäivä"
                         value={getFieldTextValue(isEditMode, input.value)}
                         onChange={input.onChange}
                         readOnly
@@ -437,7 +442,19 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                     )}
                   </Field>
                 </div>
-
+                <div className="landuse-grid__column-3">
+                  <Field name="asemakaavanLainvoimaisuusPvm">
+                    {({ input }) => (
+                      <TextInput
+                        id="asemakaavan-lainvoimaisuus-pvm"
+                        label="Lainvoimaisuuspäivä"
+                        value={getFieldTextValue(isEditMode, input.value)}
+                        onChange={input.onChange}
+                        readOnly
+                      />
+                    )}
+                  </Field>
+                </div>
                 <div className="landuse-grid__column-3">
                   <Field name="asemakaavanHyvaksyjä">
                     {({ input }) => (
