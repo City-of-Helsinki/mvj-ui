@@ -1,5 +1,4 @@
 [![Build](https://github.com/City-of-Helsinki/mvj-ui/workflows/Node.js%20CI/badge.svg)](https://github.com/City-of-Helsinki/mvj-ui/actions)
-[![codecov](https://codecov.io/gh/City-of-Helsinki/mvj-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/City-of-Helsinki/mvj-ui)
 
 
 
@@ -15,9 +14,6 @@ City of Helsinki Land lease UI
 - [Vitest](https://vitest.dev/) Testing framework
 - [React](https://facebook.github.io/react/) User interface components
 - [Redux](http://redux.js.org/) Predictable state container
-- [Lodash](https://lodash.com/) Utility library
-- [Eslint](http://eslint.org/) Linting utility
-- [Prettier](https://prettier.io/) Formatting utility
 
 
 ## Usage with devcontainer
@@ -27,8 +23,9 @@ Open your editor, and then `Reopen in Container` (vscode).
 Run vite dev server and expose port:
 
 ```bash
-yarn --frozen-lockfile
-yarn start --host
+yarn --immutable
+yarn dev:leasing --host
+yarn dev:landuse --host
 ```
 
 ## Usage w/o Docker
@@ -40,7 +37,7 @@ Make sure you have [Yarn](https://yarnpkg.com/en/docs/install) installed globall
 #### 2. Install dependencies
 
 ```bash
-yarn --frozen-lockfile
+yarn --immutable
 ```
 
 #### 3. Add .env file
@@ -52,7 +49,8 @@ cp .env.example .env
 #### 4. Start the development server
 
 ```bash
-yarn start
+yarn dev:leasing
+yarn dev:landuse
 ```
 
 #### 5. Compile the distribution build
