@@ -2236,9 +2236,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mvj/landuse@workspace:apps/landuse"
   dependencies:
-    "@tanstack/query-persist-client-core": "npm:^5.91.19"
-    "@tanstack/react-query": "npm:^5.90.21"
-    "@tanstack/react-query-persist-client": "npm:^5.90.22"
+    "@tanstack/query-persist-client-core": "npm:5.91.19"
+    "@tanstack/react-query": "npm:5.90.21"
+    "@tanstack/react-query-persist-client": "npm:5.90.22"
     hds-design-tokens: "npm:5.2.0"
   languageName: unknown
   linkType: soft
@@ -2915,7 +2915,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-persist-client-core@npm:5.91.19, @tanstack/query-persist-client-core@npm:^5.91.19":
+"@tanstack/query-persist-client-core@npm:5.91.19":
   version: 5.91.19
   resolution: "@tanstack/query-persist-client-core@npm:5.91.19"
   dependencies:
@@ -2924,7 +2924,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query-persist-client@npm:^5.90.22":
+"@tanstack/react-query-persist-client@npm:5.90.22":
   version: 5.90.22
   resolution: "@tanstack/react-query-persist-client@npm:5.90.22"
   dependencies:
@@ -2936,7 +2936,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^5.90.21":
+"@tanstack/react-query@npm:5.90.21":
   version: 5.90.21
   resolution: "@tanstack/react-query@npm:5.90.21"
   dependencies:
