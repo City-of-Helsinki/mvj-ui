@@ -2247,43 +2247,43 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mvj/leasing@workspace:apps/leasing"
   dependencies:
-    "@types/file-saver": "npm:^2.0.7"
-    "@types/history": "npm:^4.7.11"
+    "@types/file-saver": "npm:2.0.7"
+    "@types/history": "npm:4.7.11"
     "@types/leaflet": "npm:1.9.21"
     "@types/leaflet-draw": "npm:1.0.13"
     "@types/lodash": "npm:4.17.20"
     "@types/proj4leaflet": "npm:1.0.12"
     "@types/react-redux": "npm:7.1.34"
-    "@types/redux-actions": "npm:^2.6.5"
-    "@types/redux-form": "npm:^8.2.5"
+    "@types/redux-actions": "npm:2.6.5"
+    "@types/redux-form": "npm:8.3.11"
     classnames: "npm:2.5.1"
     copy-to-clipboard: "npm:3.3.3"
     date-fns: "npm:2.30.0"
-    file-saver: "npm:^2.0.5"
-    foundation-sites: "npm:^6.9.0"
+    file-saver: "npm:2.0.5"
+    foundation-sites: "npm:6.9.0"
     history: "npm:4.10.1"
     leaflet: "npm:1.9.4"
-    leaflet-draw: "npm:^1.0.4"
+    leaflet-draw: "npm:1.0.4"
     leaflet-geosearch: "npm:4.2.2"
-    leaflet-measure-path: "npm:^1.4.2"
+    leaflet-measure-path: "npm:1.4.2"
     leaflet-zoombox: "npm:0.5.2"
-    lodash: "npm:^4.17.21"
+    lodash: "npm:4.18.1"
     proj4: "npm:2.20.1"
-    proj4leaflet: "npm:^1.0.2"
-    react-datepicker: "npm:^8.8.0"
-    react-dual-listbox: "npm:^6.0.3"
-    react-foundation: "npm:^0.9.7"
+    proj4leaflet: "npm:1.0.2"
+    react-datepicker: "npm:8.8.0"
+    react-dual-listbox: "npm:6.0.3"
+    react-foundation: "npm:0.9.7"
     react-leaflet: "npm:2.8.0"
     react-leaflet-draw: "npm:0.19.0"
-    react-leaflet-fullscreen: "npm:^1.0.2"
-    react-redux: "npm:^7.1.0"
-    react-redux-toastr: "npm:^8.0.0"
+    react-leaflet-fullscreen: "npm:1.0.2"
+    react-redux: "npm:7.2.9"
+    react-redux-toastr: "npm:8.0.0"
     react-router: "npm:6.30.2"
     react-select: "npm:5.10.2"
     redux: "npm:4.1.2"
-    redux-actions: "npm:^2.6.5"
-    redux-form: "npm:^8.2.5"
-    redux-saga: "npm:^1.0.5"
+    redux-actions: "npm:2.6.5"
+    redux-form: "npm:8.3.10"
+    redux-saga: "npm:1.4.2"
   languageName: unknown
   linkType: soft
 
@@ -3104,7 +3104,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/file-saver@npm:^2.0.7":
+"@types/file-saver@npm:2.0.7":
   version: 2.0.7
   resolution: "@types/file-saver@npm:2.0.7"
   checksum: 10c0/c6b88a1aea8eec58469da2a90828fef6e9d5d590c7094fb959783d7c32878af80d39439734f3d41b78355dadb507f606e3d04a29a160c85411c65251e58df847
@@ -3118,7 +3118,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/history@npm:^4.7.11":
+"@types/history@npm:4.7.11":
   version: 4.7.11
   resolution: "@types/history@npm:4.7.11"
   checksum: 10c0/3facf37c2493d1f92b2e93a22cac7ea70b06351c2ab9aaceaa3c56aa6099fb63516f6c4ec1616deb5c56b4093c026a043ea2d3373e6c0644d55710364d02c934
@@ -3253,14 +3253,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/redux-actions@npm:^2.6.5":
+"@types/redux-actions@npm:2.6.5":
   version: 2.6.5
   resolution: "@types/redux-actions@npm:2.6.5"
   checksum: 10c0/0b1a4da8448f90b777c227a26a04864dda6fae5d31b627e01a51f36d0ab6e9aa17b6ac5fb12f9ad3bdf122303c9ecb6b7ea11952cff0aaa3456dd040e8401041
   languageName: node
   linkType: hard
 
-"@types/redux-form@npm:^8.2.5":
+"@types/redux-form@npm:8.3.11":
   version: 8.3.11
   resolution: "@types/redux-form@npm:8.3.11"
   dependencies:
@@ -5484,7 +5484,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-saver@npm:^2.0.5":
+"file-saver@npm:2.0.5":
   version: 2.0.5
   resolution: "file-saver@npm:2.0.5"
   checksum: 10c0/0a361f683786c34b2574aea53744cb70d0a6feb0fa5e3af00f2fcb6c9d40d3049cc1470e38c6c75df24219f247f6fb3076f86943958f580e62ee2ffe897af8b1
@@ -5577,7 +5577,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"foundation-sites@npm:^6.9.0":
+"foundation-sites@npm:6.9.0":
   version: 6.9.0
   resolution: "foundation-sites@npm:6.9.0"
   peerDependencies:
@@ -6934,7 +6934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"leaflet-draw@npm:^1.0.4":
+"leaflet-draw@npm:1.0.4":
   version: 1.0.4
   resolution: "leaflet-draw@npm:1.0.4"
   checksum: 10c0/9e700b7e5e7d70c0f9d66efe2fec282f635eff63699e5f2f4eb733b140188058cc7cb2a5d3c6889c300958ec9e415fd5c0a02a08db0e1fc13a063d4710cff004
@@ -6956,7 +6956,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"leaflet-measure-path@npm:^1.4.2":
+"leaflet-measure-path@npm:1.4.2":
   version: 1.4.2
   resolution: "leaflet-measure-path@npm:1.4.2"
   checksum: 10c0/3eb58c70382a40155daa3672d2b0dbabd1bff1b9a932ed61e5f004a2bd1b4681b4e79fafd960f6766f251223f999030bcec9746896a6666b70621e6b6ef62075
@@ -7031,17 +7031,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash@npm:4.18.1, lodash@npm:^4.18.1":
+  version: 4.18.1
+  resolution: "lodash@npm:4.18.1"
+  checksum: 10c0/757228fc68805c59789e82185135cf85f05d0b2d3d54631d680ca79ec21944ec8314d4533639a14b8bcfbd97a517e78960933041a5af17ecb693ec6eecb99a27
+  languageName: node
+  linkType: hard
+
 "lodash@npm:^4.17.13, lodash@npm:^4.17.15, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
-  languageName: node
-  linkType: hard
-
-"lodash@npm:^4.18.1":
-  version: 4.18.1
-  resolution: "lodash@npm:4.18.1"
-  checksum: 10c0/757228fc68805c59789e82185135cf85f05d0b2d3d54631d680ca79ec21944ec8314d4533639a14b8bcfbd97a517e78960933041a5af17ecb693ec6eecb99a27
   languageName: node
   linkType: hard
 
@@ -7791,7 +7791,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"proj4leaflet@npm:^1.0.2":
+"proj4leaflet@npm:1.0.2":
   version: 1.0.2
   resolution: "proj4leaflet@npm:1.0.2"
   dependencies:
@@ -7859,7 +7859,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-datepicker@npm:^8.8.0":
+"react-datepicker@npm:8.8.0":
   version: 8.8.0
   resolution: "react-datepicker@npm:8.8.0"
   dependencies:
@@ -7885,7 +7885,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dual-listbox@npm:^6.0.3":
+"react-dual-listbox@npm:6.0.3":
   version: 6.0.3
   resolution: "react-dual-listbox@npm:6.0.3"
   dependencies:
@@ -7931,7 +7931,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-foundation@npm:^0.9.7":
+"react-foundation@npm:0.9.7":
   version: 0.9.7
   resolution: "react-foundation@npm:0.9.7"
   dependencies:
@@ -7980,7 +7980,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-leaflet-fullscreen@npm:^1.0.2":
+"react-leaflet-fullscreen@npm:1.0.2":
   version: 1.0.2
   resolution: "react-leaflet-fullscreen@npm:1.0.2"
   dependencies:
@@ -8028,7 +8028,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux-toastr@npm:^8.0.0":
+"react-redux-toastr@npm:8.0.0":
   version: 8.0.0
   resolution: "react-redux-toastr@npm:8.0.0"
   dependencies:
@@ -8043,7 +8043,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:^7.1.0":
+"react-redux@npm:7.2.9":
   version: 7.2.9
   resolution: "react-redux@npm:7.2.9"
   dependencies:
@@ -8174,7 +8174,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-actions@npm:^2.6.5":
+"redux-actions@npm:2.6.5":
   version: 2.6.5
   resolution: "redux-actions@npm:2.6.5"
   dependencies:
@@ -8187,7 +8187,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-form@npm:^8.2.5":
+"redux-form@npm:8.3.10":
   version: 8.3.10
   resolution: "redux-form@npm:8.3.10"
   dependencies:
@@ -8211,7 +8211,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-saga@npm:^1.0.5":
+"redux-saga@npm:1.4.2":
   version: 1.4.2
   resolution: "redux-saga@npm:1.4.2"
   dependencies:
