@@ -2278,7 +2278,7 @@ __metadata:
     react-leaflet-fullscreen: "npm:1.0.2"
     react-redux: "npm:7.2.9"
     react-redux-toastr: "npm:8.0.0"
-    react-router: "npm:6.30.2"
+    react-router: "npm:6.30.4"
     react-select: "npm:5.10.2"
     redux: "npm:4.1.2"
     redux-actions: "npm:2.6.5"
@@ -2693,6 +2693,13 @@ __metadata:
   version: 1.23.1
   resolution: "@remix-run/router@npm:1.23.1"
   checksum: 10c0/94ac9632c0070199b8275cd6dffe78eb4c02e8926328937c65561c5c30d7ddf842743df3c8f7df302f00a593dd204846d93667fbbbe3c3641437d7b8f333ed90
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.23.3":
+  version: 1.23.3
+  resolution: "@remix-run/router@npm:1.23.3"
+  checksum: 10c0/73622465dd9e9a2c5a7ced7d1151ea6e9195a8a979c99b4f70a67093eeff7f339daf03a7c6304709a9c27deb2081a8fff6737663aacb33529c1a12a0a0827a17
   languageName: node
   linkType: hard
 
@@ -8092,6 +8099,17 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 10c0/cff5ea92d248d2230adc46d4e2ed3fbeddfaf1ae2e63411da8b7ea6ddc207d71dbc522c05c492e671e553e2153934f4ab180ac02bd36205b274e097f2cfe6fc4
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.30.4":
+  version: 6.30.4
+  resolution: "react-router@npm:6.30.4"
+  dependencies:
+    "@remix-run/router": "npm:1.23.3"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10c0/fb6de7d1002bcab9ea12c4072d93792eca494f1e4f30cfec334ccb6523756d23ce3e093c7c1241399296cebed94789a3fb89f96ee76004e0e746458a8f6bab33
   languageName: node
   linkType: hard
 
