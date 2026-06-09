@@ -1,1 +1,2 @@
-import "./index.tsx";
+import "../../../sentry";
+import "./index";

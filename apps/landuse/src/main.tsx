@@ -1,1 +1,2 @@
-import "./landUse/index.tsx";
+import "../../../sentry";
+import "./landUse/index";
