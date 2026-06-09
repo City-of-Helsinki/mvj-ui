@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as Sentry from "@sentry/react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { LoginProvider } from "hds-react";
@@ -55,16 +56,26 @@ const persister = createLandUsePersister();
 const queryClient = createQueryClient();
 
 root.render(
-  <BrowserRouter basename={LANDUSE_BASE_PATH}>
-    <LoginProvider {...loginProviderProperties}>
-      <PersistQueryClientProvider
-        client={queryClient}
-        persistOptions={{ persister }}
-      >
-        <LandUseBootstrap>
-          <LandUseApp />
-        </LandUseBootstrap>
-      </PersistQueryClientProvider>
-    </LoginProvider>
-  </BrowserRouter>,
+  <Sentry.ErrorBoundary
+    fallback={
+      <p>
+        Järjestelmässä tapahtui odottamaton virhe. Ole hyvä ja lataa sivu
+        uudelleen.
+      </p>
+    }
+    showDialog // Shows Sentry's report dialog
+  >
+    <BrowserRouter basename={LANDUSE_BASE_PATH}>
+      <LoginProvider {...loginProviderProperties}>
+        <PersistQueryClientProvider
+          client={queryClient}
+          persistOptions={{ persister }}
+        >
+          <LandUseBootstrap>
+            <LandUseApp />
+          </LandUseBootstrap>
+        </PersistQueryClientProvider>
+      </LoginProvider>
+    </BrowserRouter>
+  </Sentry.ErrorBoundary>,
 );
