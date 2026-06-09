@@ -14,11 +14,13 @@ import {
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
 import { useDispatch, useSelector } from "react-redux";
-import { getIsFetchingAttributes } from "@/leases/selectors";
+import { getAttributes, getIsFetchingAttributes } from "@/leases/selectors";
+import { fetchAttributes } from "@/leases/actions";
 
 const BasisOfRentCalculatorPage: React.FC = () => {
   const dispatch = useDispatch();
   const isFetchingLeaseAttributes = useSelector(getIsFetchingAttributes);
+  const leaseAttributes = useSelector(getAttributes);
   const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
   const usersPermissions = useSelector(getUsersPermissions);
 
@@ -31,7 +33,10 @@ const BasisOfRentCalculatorPage: React.FC = () => {
         showSearch: false,
       }),
     );
-  }, [dispatch]);
+    if (!isFetchingLeaseAttributes && !leaseAttributes) {
+      dispatch(fetchAttributes());
+    }
+  }, [dispatch, isFetchingLeaseAttributes, leaseAttributes]);
 
   if (isFetchingLeaseAttributes || isFetchingUsersPermissions)
     return (
@@ -51,7 +56,11 @@ const BasisOfRentCalculatorPage: React.FC = () => {
   return (
     <PageContainer hasTabs>
       <ContentContainer>
-        <BasisOfRentCalculatorForm />
+        <BasisOfRentCalculatorForm
+          initialValues={{
+            basis_of_rents: [{}],
+          }}
+        />
       </ContentContainer>
     </PageContainer>
   );
