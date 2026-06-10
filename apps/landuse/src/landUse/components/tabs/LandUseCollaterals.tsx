@@ -24,7 +24,7 @@ import {
   calculateSaantelynMukainenOriginalValue,
   calculateSopimussakko,
   calculateVakuustarve,
-  getKerroinPercent,
+  getVakuustarveKerroinPercent,
 } from "../../utils/vakuustarve";
 import { DEFAULT_KOROTUSKERROIN } from "../../constants";
 
@@ -96,7 +96,9 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               korotuskerroin,
             );
             const kerroinPercent =
-              hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
+              sopimussakkoValue !== null
+                ? getVakuustarveKerroinPercent(sopimussakkoValue)
+                : null;
 
             const vakuustarveValue =
               vaadittuValue !== null &&

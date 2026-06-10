@@ -38,7 +38,7 @@ import {
   calculateSopimussakko,
   calculateToteuttamatta,
   calculateVakuustarve,
-  getKerroinPercent,
+  getVakuustarveKerroinPercent,
 } from "../../utils/vakuustarve";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 
@@ -552,8 +552,8 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                 korotuskerroinValue,
               );
               const kerroinPercent =
-                hintaeroValue !== null
-                  ? getKerroinPercent(hintaeroValue)
+                sopimussakkoValue !== null
+                  ? getVakuustarveKerroinPercent(sopimussakkoValue)
                   : null;
               const vakuustarveValue = calculateVakuudenVapauttaminenTarve(
                 vaadittuValue,
@@ -606,7 +606,9 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             korotuskerroinValue,
           );
           const kerroinPercent =
-            hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
+            hintaeroValue !== null
+              ? getVakuustarveKerroinPercent(hintaeroValue)
+              : null;
           const vakuustarveValue = calculateVakuudenVapauttaminenTarve(
             vaadittuValue,
             toteutunutValue,
