@@ -35,3 +35,14 @@ export const copyNumberToClipboard = async (value: number) => {
   const formattedValue = value.toFixed(2);
   await navigator.clipboard.writeText(formattedValue);
 };
+
+export const getOptionsDisplayValue = (
+  inputValue: string | undefined,
+  options: SelectOption[],
+): string => {
+  if (!inputValue) {
+    return "-";
+  }
+
+  return options.find((option) => option.value === inputValue)?.label ?? "-";
+};

@@ -22,6 +22,7 @@ import {
   getFieldTextValue,
   normalizeSelectValue,
   readOnlyTextValue,
+  getOptionsDisplayValue,
   type SelectOption,
 } from "../../utils/fieldUtils";
 import {
@@ -169,20 +170,6 @@ const createInvoiceAgreementOptions = (
       sopimusnumero: contractNumber,
     };
   });
-
-const getRecipientDisplayValue = (
-  recipientPartyIndex: string | undefined,
-  partyOptions: SelectOption[],
-): string => {
-  if (!recipientPartyIndex) {
-    return "-";
-  }
-
-  return (
-    partyOptions.find((option) => option.value === recipientPartyIndex)
-      ?.label ?? "-"
-  );
-};
 
 const getSelectedPartyInvoiceData = (
   recipientPartyIndex: string | undefined,
@@ -572,7 +559,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                 </button>
               </td>
               <td>
-                {getRecipientDisplayValue(
+                {getOptionsDisplayValue(
                   invoice.recipientPartyIndex,
                   partyOptions,
                 )}
@@ -656,7 +643,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                               <TextInput
                                 id={`landuse-invoicing-recipient-${index}`}
                                 label="Laskunsaaja"
-                                value={getRecipientDisplayValue(
+                                value={getOptionsDisplayValue(
                                   recipientInput.value,
                                   partyOptions,
                                 )}
