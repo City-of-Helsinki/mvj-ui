@@ -13,10 +13,7 @@ import {
   normalizeSelectValue,
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
-import {
-  formatLandUseCurrencyValue,
-  parseLandUseNumericValue,
-} from "../../utils/number";
+import { CurrencyInput } from "@/landUse/components/CurrencyInput";
 
 interface CommonProps {
   namePrefix: string;
@@ -126,28 +123,18 @@ export const CollateralEuroField: React.FC<CommonProps> = ({
   const id = buildId(namePrefix, idSuffix);
   return (
     <Field name={`${namePrefix}.${fieldName}`}>
-      {({ input }) => {
-        const currentValue = input.value;
-        return isEditMode ? (
-          <TextInput
+      {({ input, meta }) => {
+        return (
+          <CurrencyInput
             id={id}
             label={label}
-            value={currentValue}
+            value={input.value}
             onChange={input.onChange}
-            onBlur={() => {
-              const parsedValue = parseLandUseNumericValue(currentValue);
-              if (parsedValue !== null) {
-                input.onChange(formatLandUseCurrencyValue(parsedValue));
-              }
-              input.onBlur();
-            }}
-          />
-        ) : (
-          <TextInput
-            id={id}
-            label={label}
-            value={readOnlyTextValue(currentValue)}
-            readOnly
+            onBlur={input.onBlur}
+            isEditMode={isEditMode}
+            unit="€"
+            errorText={meta.error}
+            invalid={Boolean(meta.error)}
           />
         );
       }}

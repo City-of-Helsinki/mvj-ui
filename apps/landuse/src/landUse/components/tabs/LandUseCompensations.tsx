@@ -513,32 +513,16 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 <div className="landuse-grid">
                   <div className="landuse-grid__column-3">
                     <Field name="rahakorvaus">
-                      {({ input }) => (
-                        //   isEditMode ? (
-                        //     <NumberInput
-                        //       id="landuse-compensations-rahakorvaus"
-                        //       label="Rahakorvaus"
-                        //       value={input.value}
-                        //       unit="€"
-                        //       onChange={input.onChange}
-                        //     />
-                        //   ) : (
-                        //     <TextInput
-                        //       id="landuse-compensations-rahakorvaus"
-                        //       label="Rahakorvaus"
-                        //       value={readOnlyTextValue(input.value)}
-                        //       readOnly
-                        //     />
-                        //   )
-                        // }
+                      {({ input, meta }) => (
                         <CurrencyInput
                           id="landuse-compensations-rahakorvaus"
                           label="Rahakorvaus"
                           isEditMode={isEditMode}
                           value={input.value}
+                          unit="€"
                           onChange={input.onChange}
-                          errorText={input.error}
-                          invalid={Boolean(input.error)}
+                          errorText={meta.error}
+                          invalid={Boolean(meta.error)}
                         />
                       )}
                     </Field>
@@ -546,60 +530,50 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
 
                   <div className="landuse-grid__column-3">
                     <Field name="maakorvaus">
-                      {({ input }) =>
-                        isEditMode ? (
-                          <NumberInput
-                            id="landuse-compensations-maakorvaus"
-                            label="Maakorvaus"
-                            value={input.value}
-                            unit="€"
-                            onChange={input.onChange}
-                          />
-                        ) : (
-                          <TextInput
-                            id="landuse-compensations-maakorvaus"
-                            label="Maakorvaus"
-                            value={readOnlyTextValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
+                      {({ input, meta }) => (
+                        <CurrencyInput
+                          id="landuse-compensations-maakorvaus"
+                          label="Maakorvaus"
+                          isEditMode={isEditMode}
+                          value={input.value}
+                          unit="€"
+                          onChange={input.onChange}
+                          errorText={meta.error}
+                          invalid={Boolean(meta.error)}
+                        />
+                      )}
                     </Field>
                   </div>
 
                   <div className="landuse-grid__column-3">
                     <Field name="muuKorvaus">
-                      {({ input }) =>
-                        isEditMode ? (
-                          <NumberInput
-                            id="landuse-compensations-muu-korvaus"
-                            label="Muu"
-                            value={input.value}
-                            unit="€"
-                            onChange={input.onChange}
-                          />
-                        ) : (
-                          <TextInput
-                            id="landuse-compensations-muu-korvaus"
-                            label="Muu"
-                            value={readOnlyTextValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
+                      {({ input, meta }) => (
+                        <CurrencyInput
+                          id="landuse-compensations-muu-korvaus"
+                          label="Muu"
+                          isEditMode={isEditMode}
+                          value={input.value}
+                          unit="€"
+                          onChange={input.onChange}
+                          errorText={meta.error}
+                          invalid={Boolean(meta.error)}
+                        />
+                      )}
                     </Field>
                   </div>
 
                   <div className="landuse-grid__column-3">
                     <Field name="maankayttokorvausYhteensa">
-                      {({ input }) => (
-                        <TextInput
+                      {({ input, meta }) => (
+                        <CurrencyInput
                           id="landuse-compensations-maankayttokorvaus-yhteensa"
                           label="Yhteensä"
-                          value={formatLandUseEuroValue(
-                            parseLandUseNumericValue(input.value) ?? 0,
-                          )}
-                          readOnly
+                          isEditMode={false}
+                          value={input.value}
+                          unit="€"
+                          onChange={input.onChange}
+                          errorText={meta.error}
+                          invalid={Boolean(meta.error)}
                         />
                       )}
                     </Field>
@@ -671,24 +645,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 <div className="landuse-grid">
                   <div className="landuse-grid__column-3">
                     <Field name="kaavaehdotustaEdeltavaArvo">
-                      {({ input }) =>
-                        isEditMode ? (
-                          <NumberInput
-                            id="landuse-compensations-kaavaehdotusta-edeltava-arvo"
-                            label="Edeltävä arvo"
-                            value={input.value}
-                            unit="€"
-                            onChange={input.onChange}
-                          />
-                        ) : (
-                          <TextInput
-                            id="landuse-compensations-kaavaehdotusta-edeltava-arvo"
-                            label="Edeltävä arvo"
-                            value={formatLandUseEuroValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
+                      {({ input }) => (
+                        <CurrencyInput
+                          id="landuse-compensations-kaavaehdotusta-edeltava-arvo"
+                          label="Edeltävä arvo"
+                          isEditMode={isEditMode}
+                          value={input.value}
+                          unit="€"
+                          onChange={input.onChange}
+                          errorText={input.error}
+                          invalid={Boolean(input.error)}
+                        />
+                      )}
                     </Field>
                   </div>
                 </div>
@@ -701,24 +669,18 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 <div className="landuse-grid">
                   <div className="landuse-grid__column-3">
                     <Field name="perushinta">
-                      {({ input }) =>
-                        isEditMode ? (
-                          <NumberInput
-                            id="landuse-compensations-perushinta"
-                            label="Perushinta"
-                            value={input.value}
-                            unit="€/kem²"
-                            onChange={input.onChange}
-                          />
-                        ) : (
-                          <TextInput
-                            id="landuse-compensations-perushinta"
-                            label="Perushinta"
-                            value={formatLandUseEuroValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
+                      {({ input }) => (
+                        <CurrencyInput
+                          id="landuse-compensations-perushinta"
+                          label="Perushinta"
+                          isEditMode={isEditMode}
+                          value={input.value}
+                          unit="€/kem²"
+                          onChange={input.onChange}
+                          errorText={input.error}
+                          invalid={Boolean(input.error)}
+                        />
+                      )}
                     </Field>
                   </div>
                 </div>
@@ -835,70 +797,47 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         : undefined
                     }
                   >
-                    {({ input, meta }) =>
-                      isEditMode ? (
-                        <NumberInput
-                          id="landuse-compensations-korvauskynnys"
-                          label="Korvauskynnys"
-                          value={input.value}
-                          onChange={input.onChange}
-                          errorText={meta.error ? meta.error : undefined}
-                        />
-                      ) : (
-                        <TextInput
-                          id="landuse-compensations-korvauskynnys"
-                          label="Korvauskynnys"
-                          value={formatLandUseEuroValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
+                    {({ input, meta }) => (
+                      <CurrencyInput
+                        id="landuse-compensations-korvauskynnys"
+                        label="Korvauskynnys"
+                        isEditMode={isEditMode}
+                        value={input.value}
+                        unit="€"
+                        onChange={input.onChange}
+                        errorText={meta.error}
+                        invalid={Boolean(meta.error)}
+                      />
+                    )}
                   </Field>
                   <span className="math-operator-xl">+</span>
                   <Field name="purkuTaiMuuVahennys">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <NumberInput
-                          id="landuse-compensations-purku-tai-muu-vahennys"
-                          label="Purkuvähennys"
-                          value={input.value}
-                          onChange={input.onChange}
-                        />
-                      ) : (
-                        <TextInput
-                          id="landuse-compensations-purku-tai-muu-vahennys"
-                          label="Purkuvähennys"
-                          value={formatLandUseEuroValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
+                    {({ input }) => (
+                      <CurrencyInput
+                        id="landuse-compensations-purku-tai-muu-vahennys"
+                        label="Purkuvähennys"
+                        isEditMode={isEditMode}
+                        value={input.value}
+                        unit="€"
+                        onChange={input.onChange}
+                      />
+                    )}
                   </Field>
                   <span className="math-operator-xl">) *</span>
                   <Field
                     name="korvausprosentti"
                     initialValue={INITIAL_KORVAUS_PERCENTAGE}
                   >
-                    {({ input }) =>
-                      isEditMode ? (
-                        <NumberInput
-                          id="landuse-compensations-korvausprosentti"
-                          label="Korvausprosentti %"
-                          value={input.value}
-                          onChange={input.onChange}
-                        />
-                      ) : (
-                        <TextInput
-                          id="landuse-compensations-korvausprosentti"
-                          label="Korvausprosentti %"
-                          value={formatLandUseNumericValueWithUnit(
-                            input.value,
-                            "%",
-                          )}
-                          readOnly
-                        />
-                      )
-                    }
+                    {({ input }) => (
+                      <CurrencyInput
+                        id="landuse-compensations-korvausprosentti"
+                        label="Korvausprosentti %"
+                        isEditMode={isEditMode}
+                        value={input.value}
+                        unit="%"
+                        onChange={input.onChange}
+                      />
+                    )}
                   </Field>
                   <span className="math-operator-xl"> = </span>
                   <Field name="maankayttokorvaus">
@@ -936,47 +875,35 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 <div className="landuse-grid">
                   <div className="landuse-grid__column-3">
                     <Field name="yleisetAlueetNeliot">
-                      {({ input }) =>
-                        isEditMode ? (
-                          <NumberInput
-                            id="landuse-compensations-yleiset-alueet-neliot"
-                            label="Neliöt"
-                            value={input.value}
-                            unit="m²"
-                            onChange={input.onChange}
-                          />
-                        ) : (
-                          <TextInput
-                            id="landuse-compensations-yleiset-alueet-neliot"
-                            label="Neliöt"
-                            value={readOnlyTextValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
+                      {({ input }) => (
+                        <CurrencyInput
+                          id="landuse-compensations-yleiset-alueet-neliot"
+                          label="Neliöt"
+                          isEditMode={isEditMode}
+                          unit="m²"
+                          value={input.value}
+                          onChange={input.onChange}
+                          errorText={input.error}
+                          invalid={Boolean(input.error)}
+                        />
+                      )}
                     </Field>
                   </div>
 
                   <div className="landuse-grid__column-3">
                     <Field name="yleisetAlueetHankinnanArvo">
-                      {({ input }) =>
-                        isEditMode ? (
-                          <NumberInput
-                            id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
-                            label="Hankinnan arvo eur"
-                            value={input.value}
-                            unit="€"
-                            onChange={input.onChange}
-                          />
-                        ) : (
-                          <TextInput
-                            id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
-                            label="Hankinnan arvo eur"
-                            value={readOnlyTextValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
+                      {({ input }) => (
+                        <CurrencyInput
+                          id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
+                          label="Hankinnan arvo (€)"
+                          isEditMode={isEditMode}
+                          value={input.value}
+                          unit="€"
+                          onChange={input.onChange}
+                          errorText={input.error}
+                          invalid={Boolean(input.error)}
+                        />
+                      )}
                     </Field>
                   </div>
                 </div>
