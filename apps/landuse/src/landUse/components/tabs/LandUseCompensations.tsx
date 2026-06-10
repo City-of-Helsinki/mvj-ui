@@ -36,7 +36,7 @@ import {
   INITIAL_KORVAUSKYNNYS_EURO,
   INITIAL_KORVAUS_PERCENTAGE,
 } from "@/landUse/constants";
-import { CurrencyInput } from "@/landUse/components/CurrencyInput";
+import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
 
 export interface LandUseSite {
   id: string;
@@ -336,7 +336,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 <div className="landuse-grid__column-3">
                   <Field name={`sites.${siteIndex}.pintaAlaM2`}>
                     {({ input }) => (
-                      <CurrencyInput
+                      <NumericDecimalInput
                         id={`landuse-compensations-pinta-ala-${site.id}`}
                         label="Pinta-ala (m²)"
                         value={input.value}
@@ -350,7 +350,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 <div className="landuse-grid__column-3">
                   <Field name={`sites.${siteIndex}.kem2`}>
                     {({ input }) => (
-                      <CurrencyInput
+                      <NumericDecimalInput
                         id={`landuse-compensations-kem2-${site.id}`}
                         label="Kerrosala (kem²)"
                         value={input.value}
@@ -364,7 +364,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 <div className="landuse-grid__column-3">
                   <Field name={getRowFieldPath(site.id, "yksikkohinta")}>
                     {({ input }) => (
-                      <CurrencyInput
+                      <NumericDecimalInput
                         isEditMode={isEditMode}
                         id={`landuse-compensations-yksikkohinta-${site.id}`}
                         label="Yksikköhinta (€/kem²)"
@@ -514,7 +514,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   <div className="landuse-grid__column-3">
                     <Field name="rahakorvaus">
                       {({ input, meta }) => (
-                        <CurrencyInput
+                        <NumericDecimalInput
                           id="landuse-compensations-rahakorvaus"
                           label="Rahakorvaus"
                           isEditMode={isEditMode}
@@ -531,7 +531,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   <div className="landuse-grid__column-3">
                     <Field name="maakorvaus">
                       {({ input, meta }) => (
-                        <CurrencyInput
+                        <NumericDecimalInput
                           id="landuse-compensations-maakorvaus"
                           label="Maakorvaus"
                           isEditMode={isEditMode}
@@ -548,7 +548,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   <div className="landuse-grid__column-3">
                     <Field name="muuKorvaus">
                       {({ input, meta }) => (
-                        <CurrencyInput
+                        <NumericDecimalInput
                           id="landuse-compensations-muu-korvaus"
                           label="Muu"
                           isEditMode={isEditMode}
@@ -565,7 +565,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   <div className="landuse-grid__column-3">
                     <Field name="maankayttokorvausYhteensa">
                       {({ input, meta }) => (
-                        <CurrencyInput
+                        <NumericDecimalInput
                           id="landuse-compensations-maankayttokorvaus-yhteensa"
                           label="Yhteensä"
                           isEditMode={false}
@@ -646,7 +646,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   <div className="landuse-grid__column-3">
                     <Field name="kaavaehdotustaEdeltavaArvo">
                       {({ input }) => (
-                        <CurrencyInput
+                        <NumericDecimalInput
                           id="landuse-compensations-kaavaehdotusta-edeltava-arvo"
                           label="Edeltävä arvo"
                           isEditMode={isEditMode}
@@ -670,7 +670,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   <div className="landuse-grid__column-3">
                     <Field name="perushinta">
                       {({ input }) => (
-                        <CurrencyInput
+                        <NumericDecimalInput
                           id="landuse-compensations-perushinta"
                           label="Perushinta"
                           isEditMode={isEditMode}
@@ -773,7 +773,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
               <Fieldset heading="">
                 <div className="landuse-flexbox-horizontal">
                   <span className="math-operator-xl">(</span>
-                  <CurrencyInput
+                  <NumericDecimalInput
                     id="landuse-compensations-arvonnousu"
                     label="Arvonnousu"
                     value={
@@ -795,7 +795,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                     }
                   >
                     {({ input, meta }) => (
-                      <CurrencyInput
+                      <NumericDecimalInput
                         id="landuse-compensations-korvauskynnys"
                         label="Korvauskynnys"
                         isEditMode={isEditMode}
@@ -810,7 +810,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   <span className="math-operator-xl">+</span>
                   <Field name="purkuTaiMuuVahennys">
                     {({ input }) => (
-                      <CurrencyInput
+                      <NumericDecimalInput
                         id="landuse-compensations-purku-tai-muu-vahennys"
                         label="Purkuvähennys"
                         isEditMode={isEditMode}
@@ -826,7 +826,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                     initialValue={INITIAL_KORVAUS_PERCENTAGE}
                   >
                     {({ input }) => (
-                      <CurrencyInput
+                      <NumericDecimalInput
                         id="landuse-compensations-korvausprosentti"
                         label="Korvausprosentti %"
                         isEditMode={isEditMode}
@@ -855,7 +855,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         (korvausprosentti / 100);
 
                       return (
-                        <CurrencyInput
+                        <NumericDecimalInput
                           id="landuse-compensations-maankayttokorvaus"
                           label="Maankäyttökorvaus"
                           value={maankayttokorvaus}
@@ -874,7 +874,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   <div className="landuse-grid__column-3">
                     <Field name="yleisetAlueetNeliot">
                       {({ input }) => (
-                        <CurrencyInput
+                        <NumericDecimalInput
                           id="landuse-compensations-yleiset-alueet-neliot"
                           label="Neliöt"
                           isEditMode={isEditMode}
@@ -891,7 +891,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   <div className="landuse-grid__column-3">
                     <Field name="yleisetAlueetHankinnanArvo">
                       {({ input }) => (
-                        <CurrencyInput
+                        <NumericDecimalInput
                           id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
                           label="Hankinnan arvo (€)"
                           isEditMode={isEditMode}

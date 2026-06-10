@@ -7,11 +7,11 @@ import React, {
 } from "react";
 import { TextInput } from "hds-react";
 import {
-  formatLandUseCurrencyValue,
+  formatLandUseDecimalValue,
   parseLandUseNumericValue,
 } from "../utils/number";
 
-type CurrencyInputProps = {
+type NumericDecimalInputProps = {
   isEditMode: boolean;
   id: string;
   label: string;
@@ -24,7 +24,7 @@ type CurrencyInputProps = {
   style?: React.CSSProperties;
 };
 
-export const CurrencyInput = ({
+export const NumericDecimalInput = ({
   isEditMode,
   id,
   label,
@@ -35,7 +35,7 @@ export const CurrencyInput = ({
   invalid,
   unit,
   style,
-}: CurrencyInputProps) => {
+}: NumericDecimalInputProps) => {
   const [displayValue, setDisplayValue] = useState<string>("");
 
   const getFormattedValue = useCallback(
@@ -43,7 +43,7 @@ export const CurrencyInput = ({
       const parsed = parseLandUseNumericValue(val);
       if (parsed === null) return "";
       // U+00A0 No-Break Space (NBSP) Unicode Character
-      return formatLandUseCurrencyValue(parsed).replace(/\u00A0/g, " ");
+      return formatLandUseDecimalValue(parsed).replace(/\u00A0/g, " ");
     },
     [],
   );
@@ -75,7 +75,7 @@ export const CurrencyInput = ({
     const unitSuffix = unit ? ` ${unit}` : "";
     const display =
       parsedValue !== null
-        ? `${formatLandUseCurrencyValue(parsedValue).replace(/\u00A0/g, " ")}${unitSuffix}`
+        ? `${formatLandUseDecimalValue(parsedValue).replace(/\u00A0/g, " ")}${unitSuffix}`
         : "-";
 
     return (

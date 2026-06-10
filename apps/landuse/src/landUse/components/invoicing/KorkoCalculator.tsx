@@ -16,7 +16,7 @@ import {
   formatLandUseNumericValueWithUnit,
 } from "@/landUse/utils/number";
 import { copyNumberToClipboard } from "@/landUse/utils/fieldUtils";
-import { CurrencyInput } from "@/landUse/components/CurrencyInput";
+import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
 
 export interface KorkoResult {
   id: number;
@@ -258,7 +258,7 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
       {/* Korko value calculation */}
       <div className="landuse-grid landuse-grid__bottom-margin">
         <div className="landuse-grid__column-2">
-          <CurrencyInput
+          <NumericDecimalInput
             id="landuse-invoicing-korko-calculator-maara"
             label="Määrä (€)"
             value={maara}
@@ -307,7 +307,7 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
           />
         </div>
         <div className="landuse-grid__column-2">
-          <CurrencyInput
+          <NumericDecimalInput
             id="landuse-invoicing-korko-calculator-korko"
             label="Korko"
             value={korkoValue}

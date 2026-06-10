@@ -41,7 +41,7 @@ import {
   KorkoCalculator,
   type KorkoResult,
 } from "../invoicing/KorkoCalculator";
-import { CurrencyInput } from "@/landUse/components/CurrencyInput";
+import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
 
 type AgreementItem = NonNullable<
   LandUseDecisionsFormValues["agreements"]
@@ -1008,7 +1008,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                         <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
                           <Field name={`${fieldName}.billedAmount`}>
                             {({ input: billedAmountInput }) => (
-                              <CurrencyInput
+                              <NumericDecimalInput
                                 id={`landuse-invoicing-billed-amount-${index}`}
                                 label="Laskutettu"
                                 isEditMode={
@@ -1035,7 +1035,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                         <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
                           <Field name={`${fieldName}.remainingAmount`}>
                             {({ input: remainingAmountInput }) => (
-                              <CurrencyInput
+                              <NumericDecimalInput
                                 id={`landuse-invoicing-remaining-amount-${index}`}
                                 label="Maksamatta"
                                 isEditMode={isEditMode}
@@ -1144,7 +1144,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                           {({ input: amountInput }) => (
                                             <>
                                               <div className="landuse-grid__column-2">
-                                                <CurrencyInput
+                                                <NumericDecimalInput
                                                   id={`landuse-invoicing-invoice-row-amount-${index}-${invoiceItemIndex}`}
                                                   label="Veroton summa (€)"
                                                   value={amountInput.value}

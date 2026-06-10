@@ -15,7 +15,7 @@ import { FormApi } from "final-form";
 import type { LandUseSite } from "./LandUseCompensations";
 import {
   formatLandUseEuroValue,
-  formatLandUseCurrencyValue,
+  formatLandUseDecimalValue,
   formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
 } from "../../utils/number";
@@ -27,7 +27,7 @@ import {
   getVakuustarveKerroinPercent,
 } from "../../utils/vakuustarve";
 import { DEFAULT_KOROTUSKERROIN } from "../../constants";
-import { CurrencyInput } from "@/landUse/components/CurrencyInput";
+import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
 
 export interface LandUseCollateralsFormValues {
   korotuskerroin?: string | number;
@@ -236,7 +236,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                               <TextInput
                                 id="collaterals-korotuskerroin"
                                 label="Korotuskerroin"
-                                value={formatLandUseCurrencyValue(
+                                value={formatLandUseDecimalValue(
                                   korotuskerroinValue,
                                 )}
                                 readOnly
@@ -267,7 +267,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               >
                 <div className="landuse-grid">
                   <div className="landuse-grid__column-2">
-                    <CurrencyInput
+                    <NumericDecimalInput
                       id="collaterals-sopimuksen-mukainen"
                       label="Maankäyttökorvaus"
                       value={sopimuksenMukainenValue}
@@ -300,7 +300,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                   </div>
 
                   <div className="landuse-grid__column-2">
-                    <CurrencyInput
+                    <NumericDecimalInput
                       id="collaterals-saantelyn-mukainen"
                       label="Asumismuotoehdot"
                       value={saantelynMukainenValue}

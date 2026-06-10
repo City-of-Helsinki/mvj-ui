@@ -13,7 +13,7 @@ import {
   normalizeSelectValue,
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
-import { CurrencyInput } from "@/landUse/components/CurrencyInput";
+import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
 
 interface CommonProps {
   namePrefix: string;
@@ -125,7 +125,7 @@ export const CollateralEuroField: React.FC<CommonProps> = ({
     <Field name={`${namePrefix}.${fieldName}`}>
       {({ input, meta }) => {
         return (
-          <CurrencyInput
+          <NumericDecimalInput
             id={id}
             label={label}
             value={input.value}
