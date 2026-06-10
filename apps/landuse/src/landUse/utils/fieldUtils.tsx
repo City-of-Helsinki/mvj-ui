@@ -46,3 +46,10 @@ export const getOptionsDisplayValue = (
 
   return options.find((option) => option.value === inputValue)?.label ?? "-";
 };
+
+export const filterOptionsByValues = (
+  options: SelectOption[],
+  values: string[],
+): SelectOption[] => {
+  return options.filter((option) => values.includes(option.value));
+};

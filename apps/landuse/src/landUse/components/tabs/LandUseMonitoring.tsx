@@ -22,7 +22,10 @@ import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import type { FormKey } from "../LandUseDetailPage";
-import { normalizeSelectValue } from "../../utils/fieldUtils";
+import {
+  filterOptionsByValues,
+  normalizeSelectValue,
+} from "../../utils/fieldUtils";
 import { landUseCompensationSelectOptions } from "../../options";
 import type { LandUseSite } from "./LandUseCompensations";
 import { INITIAL_SAKKOKERROIN } from "../../constants";
@@ -301,7 +304,10 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   {({ input }) => (
                     <Select
                       id={`monitoring-parent-toteutunut-hallintamuoto-${site.id}`}
-                      options={hallintamuotoOptions}
+                      options={filterOptionsByValues(
+                        hallintamuotoOptions,
+                        site.hallintamuoto,
+                      )}
                       value={normalizeSelectValue(input.value)}
                       onChange={(selectedOptions) =>
                         handleSelectChange(selectedOptions, input.onChange)
@@ -415,12 +421,15 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
               toteutunutHallintamuoto:
                 isEditMode && !isPlotDivisionLocked ? (
                   <Field
-                    name={`plotDivisionsBySiteId.${site.id}.${childIndex}.hallintamuoto`}
+                    name={`plotDivisionsBySiteId.${site.id}.${childIndex}.toteutunutHallintamuoto`}
                   >
                     {({ input }) => (
                       <Select
                         id={`monitoring-plot-division-toteutunut-hallintamuoto-${site.id}-${childIndex}`}
-                        options={hallintamuotoOptions}
+                        options={filterOptionsByValues(
+                          hallintamuotoOptions,
+                          site.hallintamuoto,
+                        )}
                         value={normalizeSelectValue(input.value)}
                         onChange={(selectedOptions) =>
                           handleSelectChange(selectedOptions, input.onChange)
