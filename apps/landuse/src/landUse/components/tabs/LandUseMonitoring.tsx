@@ -256,7 +256,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
 
         const monitoringPerustaulukkoCols = [
           { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
-          { key: "hallintamuoto", headerName: "Hallintamuoto" },
           {
             key: "toteutunutHallintamuoto",
             headerName: "Toteutunut hallintamuoto",
@@ -274,10 +273,8 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
           const latestToteutunutEntry = getLatestEntry(toteumaEntries);
           const latestToteutunutKem2 = latestToteutunutEntry?.value ?? "-";
           const kohteenTunnus = site.kohteenTunnus || "-";
-          const hallintamuoto = formatSiteHallintamuoto(site.hallintamuoto);
           const vaadittuKem2 = site.kem2 ?? "";
           const vaadittuValue = parseLandUseNumericValue(vaadittuKem2);
-
           const toteutunutValue = parseLandUseNumericValue(
             latestToteutunutEntry?.value,
           );
@@ -297,7 +294,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
             ) : (
               kohteenTunnus
             ),
-            hallintamuoto,
             toteutunutHallintamuoto:
               isEditMode && !isPlotDivisionGroup ? (
                 <Field name={`toteutunutHallintamuotoBySiteId.${site.id}`}>
@@ -320,9 +316,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   )}
                 </Field>
               ) : (
-                (toteutunutHallintamuotoBySiteId[site.id] ??
-                hallintamuoto ??
-                "-")
+                (toteutunutHallintamuotoBySiteId[site.id] ?? "-")
               ),
             vaadittuKem2: formatLandUseNumericValueWithUnit(
               vaadittuValue,
@@ -417,7 +411,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   {plotDivision.kohteenTunnus || "-"}
                 </span>
               ),
-              hallintamuoto: plotDivision.hallintamuoto || "-",
               toteutunutHallintamuoto:
                 isEditMode && !isPlotDivisionLocked ? (
                   <Field
