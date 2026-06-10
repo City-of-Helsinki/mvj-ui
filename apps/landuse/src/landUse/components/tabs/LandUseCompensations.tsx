@@ -930,7 +930,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       );
 
                       const maankayttokorvaus =
-                        (arvonnousu + korvauskynnys + purkuTaiMuuVahennys) *
+                        (arvonnousu - korvauskynnys + purkuTaiMuuVahennys) *
                         (korvausprosentti / 100);
 
                       return (
