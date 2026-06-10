@@ -102,7 +102,7 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
       <CollateralEuroField
         namePrefix={namePrefix}
         fieldName="maara"
-        label="Määrä (euroa)"
+        label="Määrä (€)"
         idSuffix="maara"
         isEditMode={isEditMode}
       />

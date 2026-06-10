@@ -41,6 +41,7 @@ import {
   KorkoCalculator,
   type KorkoResult,
 } from "../invoicing/KorkoCalculator";
+import { CurrencyInput } from "@/landUse/components/CurrencyInput";
 
 type AgreementItem = NonNullable<
   LandUseDecisionsFormValues["agreements"]
@@ -1004,27 +1005,19 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                         </div>
                         <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
                           <Field name={`${fieldName}.billedAmount`}>
-                            {({ input: billedAmountInput }) =>
-                              isEditMode &&
-                              isInvoiceEditableBasedOnStatus(invoice) ? (
-                                <NumberInput
-                                  id={`landuse-invoicing-billed-amount-${index}`}
-                                  label="Laskutettu"
-                                  value={billedAmountInput.value}
-                                  unit="€"
-                                  onChange={billedAmountInput.onChange}
-                                />
-                              ) : (
-                                <TextInput
-                                  id={`landuse-invoicing-billed-amount-${index}`}
-                                  label="Laskutettu"
-                                  value={formatLandUseEuroDisplayValue(
-                                    billedAmountInput.value,
-                                  )}
-                                  readOnly
-                                />
-                              )
-                            }
+                            {({ input: billedAmountInput }) => (
+                              <CurrencyInput
+                                id={`landuse-invoicing-billed-amount-${index}`}
+                                label="Laskutettu"
+                                isEditMode={
+                                  isEditMode &&
+                                  isInvoiceEditableBasedOnStatus(invoice)
+                                }
+                                value={billedAmountInput.value}
+                                unit="€"
+                                onChange={billedAmountInput.onChange}
+                              />
+                            )}
                           </Field>
                         </div>
 
@@ -1039,26 +1032,16 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
 
                         <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
                           <Field name={`${fieldName}.remainingAmount`}>
-                            {({ input: remainingAmountInput }) =>
-                              isEditMode ? (
-                                <NumberInput
-                                  id={`landuse-invoicing-remaining-amount-${index}`}
-                                  label="Maksamatta"
-                                  value={remainingAmountInput.value}
-                                  unit="€"
-                                  onChange={remainingAmountInput.onChange}
-                                />
-                              ) : (
-                                <TextInput
-                                  id={`landuse-invoicing-remaining-amount-${index}`}
-                                  label="Maksamatta"
-                                  value={formatLandUseEuroDisplayValue(
-                                    remainingAmountInput.value,
-                                  )}
-                                  readOnly
-                                />
-                              )
-                            }
+                            {({ input: remainingAmountInput }) => (
+                              <CurrencyInput
+                                id={`landuse-invoicing-remaining-amount-${index}`}
+                                label="Maksamatta"
+                                isEditMode={isEditMode}
+                                value={remainingAmountInput.value}
+                                unit="€"
+                                onChange={remainingAmountInput.onChange}
+                              />
+                            )}
                           </Field>
                         </div>
                       </div>
