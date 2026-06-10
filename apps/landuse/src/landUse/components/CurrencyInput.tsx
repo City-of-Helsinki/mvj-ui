@@ -21,6 +21,7 @@ type CurrencyInputProps = {
   errorText?: string;
   invalid?: boolean;
   unit?: string;
+  style?: React.CSSProperties;
 };
 
 export const CurrencyInput = ({
@@ -33,6 +34,7 @@ export const CurrencyInput = ({
   errorText,
   invalid,
   unit,
+  style,
 }: CurrencyInputProps) => {
   const [displayValue, setDisplayValue] = useState<string>("");
 
@@ -76,7 +78,9 @@ export const CurrencyInput = ({
         ? `${formatLandUseCurrencyValue(parsedValue).replace(/\u00A0/g, " ")}${unitSuffix}`
         : "-";
 
-    return <TextInput id={id} label={label} value={display} readOnly />;
+    return (
+      <TextInput id={id} label={label} value={display} readOnly style={style} />
+    );
   }
 
   return (
@@ -88,6 +92,7 @@ export const CurrencyInput = ({
       onBlur={handleBlur}
       errorText={errorText}
       invalid={invalid}
+      style={style}
     />
   );
 };

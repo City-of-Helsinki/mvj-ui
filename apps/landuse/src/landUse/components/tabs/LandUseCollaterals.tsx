@@ -27,6 +27,7 @@ import {
   getVakuustarveKerroinPercent,
 } from "../../utils/vakuustarve";
 import { DEFAULT_KOROTUSKERROIN } from "../../constants";
+import { CurrencyInput } from "@/landUse/components/CurrencyInput";
 
 export interface LandUseCollateralsFormValues {
   korotuskerroin?: string | number;
@@ -266,11 +267,12 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               >
                 <div className="landuse-grid">
                   <div className="landuse-grid__column-2">
-                    <TextInput
+                    <CurrencyInput
                       id="collaterals-sopimuksen-mukainen"
                       label="Maankäyttökorvaus"
-                      value={formatLandUseEuroValue(sopimuksenMukainenValue)}
-                      readOnly
+                      value={sopimuksenMukainenValue}
+                      isEditMode={false}
+                      unit="€"
                       style={
                         totalCollateralSeparatorDirection === "left"
                           ? {
@@ -298,11 +300,12 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                   </div>
 
                   <div className="landuse-grid__column-2">
-                    <TextInput
+                    <CurrencyInput
                       id="collaterals-saantelyn-mukainen"
                       label="Asumismuotoehdot"
-                      value={formatLandUseEuroValue(saantelynMukainenValue)}
-                      readOnly
+                      value={saantelynMukainenValue}
+                      isEditMode={false}
+                      unit="€"
                       style={
                         totalCollateralSeparatorDirection === "right"
                           ? {
