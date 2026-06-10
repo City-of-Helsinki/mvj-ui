@@ -399,7 +399,12 @@ export const landUseCompensationSelectOptions = {
     "Asuinkerrostalojen, liike- ja toimistorakennusten korttelialue",
     "Toimitilat",
   ],
-  hallintamuoto: ["Vapaarahoitteinen omistus", "ARA-Vuokra", "ASO"],
+  hallintamuoto: [
+    "Vapaarahoitteinen omistus",
+    "Vapaarahoitteinen vuokra",
+    "Lyhyt korkotuki (ARA 10)",
+    "ASO",
+  ],
   suojeltu: ["-", "SR1", "SR2"],
 };
 
