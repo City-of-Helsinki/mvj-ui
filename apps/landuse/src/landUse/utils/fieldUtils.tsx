@@ -51,5 +51,7 @@ export const filterOptionsByValues = (
   options: SelectOption[],
   values: string[],
 ): SelectOption[] => {
-  return options.filter((option) => values.includes(option.value));
+  return (options || []).filter((option) =>
+    (values || []).includes(option.value),
+  );
 };
