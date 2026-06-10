@@ -32,12 +32,15 @@ export const parseLandUseNumericValue = (
   return Number.isFinite(parsed) ? parsed : null;
 };
 
-const isFractional = (value: number): boolean => value % 1 !== 0;
+const hasFractionalPart = (value: number): boolean => value % 1 !== 0;
 
-// If currency value has decimals enforce minimum two decimal places, otherwise show no decimals
-export const formatLandUseCurrencyValue = (value: number): string =>
+/**
+ * If numeric value has a fractional part, enforce minimum two decimal places,
+ * otherwise show no decimals.
+ */
+export const formatLandUseDecimalValue = (value: number): string =>
   value.toLocaleString("fi-FI", {
-    minimumFractionDigits: isFractional(value) ? 2 : 0,
+    minimumFractionDigits: hasFractionalPart(value) ? 2 : 0,
     maximumFractionDigits: 2,
   });
 
@@ -53,11 +56,11 @@ export const formatLandUseNumericValueWithUnit = (
   if (value === null || value === undefined) {
     return "-";
   }
-  return `${formatLandUseCurrencyValue(value)} ${unit}`;
+  return `${formatLandUseDecimalValue(value)} ${unit}`;
 };
 
 export const formatLandUseEuroValue = (value: number): string =>
-  `${formatLandUseCurrencyValue(value)} €`;
+  `${formatLandUseDecimalValue(value)} €`;
 
 export const formatLandUseEuroDisplayValue = (
   value: string | number | undefined,
