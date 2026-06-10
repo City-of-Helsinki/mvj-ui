@@ -1,16 +1,16 @@
 import { LandUseSite } from "../components/tabs/LandUseCompensations";
 import { parseLandUseNumericValue } from "./number";
 
-export const getKerroinPercent = (hintaero: number): number => {
-  if (hintaero <= 500) {
+export const getVakuustarveKerroinPercent = (sopimussakko: number): number => {
+  if (sopimussakko <= 500) {
     return 100;
   }
 
-  if (hintaero <= 1000) {
+  if (sopimussakko <= 1000) {
     return 80;
   }
 
-  if (hintaero <= 1500) {
+  if (sopimussakko <= 1500) {
     return 70;
   }
 
@@ -62,12 +62,13 @@ export const calculateSaantelynMukainenOriginalValue = (
     const vaadittuValue = parseLandUseNumericValue(site.kem2);
     const yksikkohintaValue = compensationsRowsBySiteId[site.id]?.yksikkohinta;
     const hintaeroValue = calculateHintaero(perushinta, yksikkohintaValue);
-    const kerroinPercent =
-      hintaeroValue !== null ? getKerroinPercent(hintaeroValue) : null;
+    const sopimussakko = calculateSopimussakko(hintaeroValue, korotuskerroin);
+    const vakuustarveKerroinPercent =
+      sopimussakko !== null ? getVakuustarveKerroinPercent(sopimussakko) : null;
     const vakuustarveValue = calculateVakuustarve(
       vaadittuValue,
       hintaeroValue,
-      kerroinPercent,
+      vakuustarveKerroinPercent,
       korotuskerroin,
     );
     return sum + (vakuustarveValue ?? 0);
