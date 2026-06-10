@@ -453,3 +453,25 @@ export const landUseKohdeSelectOptions = [
   { label: "91-14-500-5", value: "91-14-500-5" },
   { label: "91-15-600-6", value: "91-15-600-6" },
 ];
+
+export const partyRoleOptions = [
+  { label: "Maanomistaja", value: "maanomistaja" },
+  { label: "Toteuttaja", value: "toteuttaja" },
+];
+
+export const partyTypeOptions = [
+  { label: "Yritys", value: "yritys" },
+  { label: "Yksityishenkilö", value: "yksityishenkilo" },
+];
+
+export const languageOptions = [
+  { label: "suomi", value: "suomi" },
+  { label: "ruotsi", value: "ruotsi" },
+  { label: "englanti", value: "englanti" },
+];
+
+export const countryOptions = [
+  { label: "Suomi", value: "suomi" },
+  { label: "Ruotsi", value: "ruotsi" },
+  { label: "Norja", value: "norja" },
+];

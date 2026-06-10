@@ -16,11 +16,18 @@ import {
   getFieldTextValue,
   normalizeSelectValue,
   readOnlyTextValue,
+  getOptionsDisplayValue,
 } from "../../utils/fieldUtils";
 import { createEmptyPartyEntry } from "../../api/landUseFormValues";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
-
+import {
+  partyRoleOptions,
+  partyTypeOptions,
+  languageOptions,
+  countryOptions,
+} from "../../options";
 export interface BasePartyDetails {
+  partyRole: string | undefined;
   partyType: string | undefined;
   name: string;
   language: string | undefined;
@@ -73,23 +80,6 @@ interface LandUsePartiesProps {
   form: FormApi<LandUsePartiesFormValues>;
   isEditMode: boolean;
 }
-
-const partyTypeOptions = [
-  { label: "Yritys", value: "yritys" },
-  { label: "Yksityishenkilö", value: "yksityishenkilo" },
-];
-
-const languageOptions = [
-  { label: "suomi", value: "suomi" },
-  { label: "ruotsi", value: "ruotsi" },
-  { label: "englanti", value: "englanti" },
-];
-
-const countryOptions = [
-  { label: "Suomi", value: "suomi" },
-  { label: "Ruotsi", value: "ruotsi" },
-  { label: "Norja", value: "norja" },
-];
 
 const handleSelectChange = (
   selectedOptions: { label: string; value: string }[],
@@ -164,7 +154,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
             <TextInput
               id={`${idPrefix}-language`}
               label="Kieli"
-              value={readOnlyTextValue(input.value)}
+              value={getOptionsDisplayValue(input.value, languageOptions)}
               readOnly
             />
           )
@@ -237,7 +227,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
             <TextInput
               id={`${idPrefix}-country`}
               label="Maa"
-              value={readOnlyTextValue(input.value)}
+              value={getOptionsDisplayValue(input.value, countryOptions)}
               readOnly
             />
           )
@@ -363,7 +353,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
             <TextInput
               id={`${idPrefix}-language`}
               label="Kieli"
-              value={readOnlyTextValue(input.value)}
+              value={getOptionsDisplayValue(input.value, languageOptions)}
               readOnly
             />
           )
@@ -436,7 +426,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
             <TextInput
               id={`${idPrefix}-country`}
               label="Maa"
-              value={readOnlyTextValue(input.value)}
+              value={getOptionsDisplayValue(input.value, countryOptions)}
               readOnly
             />
           )
@@ -568,6 +558,45 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                             <div className="landuse-grid">
                               <div className="landuse-grid__column-3">
                                 <Field
+                                  name={`${fieldName}.party.details.partyRole`}
+                                >
+                                  {({ input }) =>
+                                    isEditMode ? (
+                                      <Select
+                                        id={`party-${index}-role`}
+                                        texts={{
+                                          label: "Rooli",
+                                          placeholder: "Valitse rooli",
+                                        }}
+                                        options={partyRoleOptions}
+                                        value={normalizeSelectValue(
+                                          input.value,
+                                        )}
+                                        onChange={(selected) =>
+                                          handleSelectChange(
+                                            selected,
+                                            input.onChange,
+                                          )
+                                        }
+                                        required
+                                      />
+                                    ) : (
+                                      <TextInput
+                                        id={`party-${index}-role`}
+                                        label="Rooli"
+                                        value={getOptionsDisplayValue(
+                                          input.value,
+                                          partyRoleOptions,
+                                        )}
+                                        readOnly
+                                      />
+                                    )
+                                  }
+                                </Field>
+                              </div>
+
+                              <div className="landuse-grid__column-3">
+                                <Field
                                   name={`${fieldName}.party.details.partyType`}
                                 >
                                   {({ input }) =>
@@ -593,7 +622,10 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                       <TextInput
                                         id={`party-${index}-type`}
                                         label="Asiakastyyppi"
-                                        value={readOnlyTextValue(input.value)}
+                                        value={getOptionsDisplayValue(
+                                          input.value,
+                                          partyTypeOptions,
+                                        )}
                                         readOnly
                                       />
                                     )
@@ -837,7 +869,10 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                       <TextInput
                                         id={`party-${index}-invoice-type`}
                                         label="Asiakastyyppi"
-                                        value={readOnlyTextValue(input.value)}
+                                        value={getOptionsDisplayValue(
+                                          input.value,
+                                          partyTypeOptions,
+                                        )}
                                         readOnly
                                       />
                                     )
