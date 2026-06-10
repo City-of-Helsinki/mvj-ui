@@ -721,8 +721,8 @@ const LandUseDetailPage: React.FC = () => {
         case "invoicing": {
           // Mark invoices paid when remaining amount is zero or less
           // TODO: In the future API should handle this
-          const invoicesValues = (state.values as LandUseInvoicingFormValues)
-            .invoices;
+          const invoicesValues =
+            (state.values as LandUseInvoicingFormValues).invoices || [];
           for (const invoice of invoicesValues) {
             if (
               invoice.remainingAmount === "0" ||
