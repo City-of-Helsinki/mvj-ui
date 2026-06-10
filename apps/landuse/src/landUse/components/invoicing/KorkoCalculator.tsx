@@ -16,6 +16,7 @@ import {
   formatLandUseNumericValueWithUnit,
 } from "@/landUse/utils/number";
 import { copyNumberToClipboard } from "@/landUse/utils/fieldUtils";
+import { CurrencyInput } from "@/landUse/components/CurrencyInput";
 
 export interface KorkoResult {
   id: number;
@@ -41,7 +42,7 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
   korkoResults,
   setKorkoResults,
 }) => {
-  const [maara, setMaara] = useState<number>(0);
+  const [maara, setMaara] = useState<number | null>(null);
   const [peruskorko, setPeruskorko] = useState<number>(2.25);
   const [marginaali, setMarginaali] = useState<number>(0.5);
   const [dueDate, setDueDate] = useState<string>("");
@@ -100,7 +101,8 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
   );
 
   const korkoValue =
-    (maara * (korkoPercentage / 100) * korkoPeriodLengthDays) / daysInYear;
+    ((maara ?? 0) * (korkoPercentage / 100) * korkoPeriodLengthDays) /
+    daysInYear;
 
   const handleSaveResult = () => {
     const nextId =
@@ -111,7 +113,7 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
       ...prev,
       {
         id: nextId,
-        maara,
+        maara: maara ?? 0,
         korkoPercentage,
         dueDate,
         paymentDate,
@@ -256,11 +258,12 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
       {/* Korko value calculation */}
       <div className="landuse-grid landuse-grid__bottom-margin">
         <div className="landuse-grid__column-2">
-          <NumberInput
+          <CurrencyInput
             id="landuse-invoicing-korko-calculator-maara"
             label="Määrä (€)"
-            onChange={(e) => setMaara(Number(e.target.value))}
-            defaultValue={maara}
+            value={maara}
+            onChange={(value) => setMaara(value)}
+            isEditMode={true}
           />
         </div>
         <div className="landuse-grid__column-2">
@@ -304,11 +307,12 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
           />
         </div>
         <div className="landuse-grid__column-2">
-          <TextInput
+          <CurrencyInput
             id="landuse-invoicing-korko-calculator-korko"
             label="Korko"
-            value={formatLandUseEuroDisplayValue(korkoValue)}
-            readOnly
+            value={korkoValue}
+            isEditMode={false}
+            unit="€"
           />
         </div>
         <div className="landuse-grid__column-2">

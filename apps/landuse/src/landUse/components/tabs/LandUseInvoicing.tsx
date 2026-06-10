@@ -862,6 +862,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                 onChange={installmentNumberInput.onChange}
                               />
                             ) : (
+                              // TODO integer field
                               <TextInput
                                 id={`landuse-invoicing-installment-number-${index}`}
                                 label="Laskutuserä"
@@ -880,6 +881,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                           {({ input: installmentTotalInput }) =>
                             isEditMode &&
                             isInvoiceEditableBasedOnStatus(invoice) ? (
+                              // TODO integer field
                               <NumberInput
                                 id={`landuse-invoicing-installment-total-${index}`}
                                 label="Laskutuseriä yhteensä"
@@ -1142,25 +1144,17 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                           {({ input: amountInput }) => (
                                             <>
                                               <div className="landuse-grid__column-2">
-                                                <TextInput
+                                                <CurrencyInput
                                                   id={`landuse-invoicing-invoice-row-amount-${index}-${invoiceItemIndex}`}
                                                   label="Veroton summa (€)"
-                                                  value={
-                                                    isEditMode &&
-                                                    isInvoiceEditableBasedOnStatus(
-                                                      invoice,
-                                                    )
-                                                      ? amountInput.value
-                                                      : formatLandUseEuroDisplayValue(
-                                                          amountInput.value,
-                                                        )
-                                                  }
+                                                  value={amountInput.value}
                                                   onChange={
                                                     amountInput.onChange
                                                   }
-                                                  readOnly={
-                                                    !isEditMode ||
-                                                    !isInvoiceEditableBasedOnStatus(
+                                                  unit="€"
+                                                  isEditMode={
+                                                    isEditMode &&
+                                                    isInvoiceEditableBasedOnStatus(
                                                       invoice,
                                                     )
                                                   }

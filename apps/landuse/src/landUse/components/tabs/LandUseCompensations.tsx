@@ -36,7 +36,7 @@ import {
   INITIAL_KORVAUSKYNNYS_EURO,
   INITIAL_KORVAUS_PERCENTAGE,
 } from "@/landUse/constants";
-import { CurrencyInput } from "../CurrencyInput";
+import { CurrencyInput } from "@/landUse/components/CurrencyInput";
 
 export interface LandUseSite {
   id: string;
@@ -336,12 +336,12 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 <div className="landuse-grid__column-3">
                   <Field name={`sites.${siteIndex}.pintaAlaM2`}>
                     {({ input }) => (
-                      <TextInput
+                      <CurrencyInput
                         id={`landuse-compensations-pinta-ala-${site.id}`}
                         label="Pinta-ala (m²)"
-                        value={getFieldTextValue(isEditMode, input.value)}
+                        value={input.value}
                         onChange={input.onChange}
-                        readOnly={!isEditMode}
+                        isEditMode={isEditMode}
                       />
                     )}
                   </Field>
@@ -350,12 +350,12 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 <div className="landuse-grid__column-3">
                   <Field name={`sites.${siteIndex}.kem2`}>
                     {({ input }) => (
-                      <TextInput
+                      <CurrencyInput
                         id={`landuse-compensations-kem2-${site.id}`}
                         label="Kerrosala (kem²)"
-                        value={getFieldTextValue(isEditMode, input.value)}
+                        value={input.value}
                         onChange={input.onChange}
-                        readOnly={!isEditMode}
+                        isEditMode={isEditMode}
                       />
                     )}
                   </Field>
@@ -773,19 +773,16 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
               <Fieldset heading="">
                 <div className="landuse-flexbox-horizontal">
                   <span className="math-operator-xl">(</span>
-                  <Field name="arvonnousu">
-                    {() => (
-                      <TextInput
-                        id="landuse-compensations-arvonnousu"
-                        label="Arvonnousu"
-                        value={formatLandUseEuroValue(
-                          totals.summa -
-                            parseNumber(values.kaavaehdotustaEdeltavaArvo),
-                        )}
-                        readOnly
-                      />
-                    )}
-                  </Field>
+                  <CurrencyInput
+                    id="landuse-compensations-arvonnousu"
+                    label="Arvonnousu"
+                    value={
+                      totals.summa -
+                      parseNumber(values.kaavaehdotustaEdeltavaArvo)
+                    }
+                    isEditMode={false}
+                    unit="€"
+                  />
                   <span className="math-operator-xl">-</span>
                   <Field
                     name="korvauskynnys"
@@ -858,11 +855,12 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         (korvausprosentti / 100);
 
                       return (
-                        <TextInput
+                        <CurrencyInput
                           id="landuse-compensations-maankayttokorvaus"
                           label="Maankäyttökorvaus"
-                          value={formatLandUseEuroValue(maankayttokorvaus)}
-                          readOnly
+                          value={maankayttokorvaus}
+                          unit="€"
+                          isEditMode={false}
                         />
                       );
                     }}
