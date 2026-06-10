@@ -808,6 +808,10 @@ const LandUseDetailPage: React.FC = () => {
     );
   }
 
+  const sitesWithAmVelvoite = (compensationsQuery.data?.sites ?? []).filter(
+    (site) => site.amVelvoite === true,
+  );
+
   // Render tab label with status icons
   const renderTabLabel = (tabConfig: TabConfig, tabIndex: number) => {
     const formKey = tabConfig.formKey;
@@ -906,9 +910,7 @@ const LandUseDetailPage: React.FC = () => {
           <LandUseCollaterals
             form={collateralsFormApi}
             isEditMode={isEditMode}
-            sites={(compensationsQuery.data?.sites ?? []).filter(
-              (site) => site.amVelvoite === true,
-            )}
+            sites={sitesWithAmVelvoite}
             perushinta={compensationsQuery.data?.perushinta}
             compensationsRowsBySiteId={
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
@@ -944,7 +946,7 @@ const LandUseDetailPage: React.FC = () => {
           <LandUseMonitoring
             form={monitoringFormApi}
             isEditMode={isEditMode}
-            sites={compensationsQuery.data?.sites ?? []}
+            sites={sitesWithAmVelvoite}
             perushinta={compensationsQuery.data?.perushinta}
             compensationsRowsBySiteId={
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
