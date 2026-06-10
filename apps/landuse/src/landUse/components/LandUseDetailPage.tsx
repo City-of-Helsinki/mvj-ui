@@ -771,9 +771,6 @@ const LandUseDetailPage: React.FC = () => {
     resetFormStates();
   };
 
-  const isDecisionPhase =
-    summaryQuery.data?.tila === LAND_USE_NEGOTIATION_PHASES.DECISION;
-
   useEffect(() => {
     const tabFromSearch = getActiveTabFromSearch(location.search);
     setActiveTab((prevActiveTab) =>
@@ -902,7 +899,6 @@ const LandUseDetailPage: React.FC = () => {
           <LandUseCompensations
             form={compensationsFormApi}
             isEditMode={isEditMode}
-            isDecisionPhase={isDecisionPhase}
           />
         </TabPanel>
 

@@ -15,7 +15,7 @@ import { FormApi } from "final-form";
 import type { LandUseSite } from "./LandUseCompensations";
 import {
   formatLandUseEuroValue,
-  formatLandUseNumericValue,
+  formatLandUseCurrencyValue,
   formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
 } from "../../utils/number";
@@ -235,7 +235,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                               <TextInput
                                 id="collaterals-korotuskerroin"
                                 label="Korotuskerroin"
-                                value={formatLandUseNumericValue(
+                                value={formatLandUseCurrencyValue(
                                   korotuskerroinValue,
                                 )}
                                 readOnly

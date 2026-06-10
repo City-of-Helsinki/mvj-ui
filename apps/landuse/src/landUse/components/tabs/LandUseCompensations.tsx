@@ -9,7 +9,6 @@ import {
   IconPlusCircleFill,
   IconSize,
   NumberInput,
-  Notification,
   Select,
   TextArea,
   TextInput,
@@ -37,6 +36,7 @@ import {
   INITIAL_KORVAUSKYNNYS_EURO,
   INITIAL_KORVAUS_PERCENTAGE,
 } from "@/landUse/constants";
+import { CurrencyInput } from "../CurrencyInput";
 
 export interface LandUseSite {
   id: string;
@@ -75,7 +75,6 @@ export interface LandUseCompensationsFormValues {
 interface LandUseCompensationsProps {
   form: FormApi<LandUseCompensationsFormValues>;
   isEditMode: boolean;
-  isDecisionPhase: boolean;
 }
 
 const getRowFieldPath = (
@@ -143,7 +142,6 @@ interface SiteRowProps {
   site: LandUseSite;
   siteIndex: number;
   rowValues: PerustietotaulukkoRowValues | undefined;
-  isReadOnly: boolean;
   isEditMode: boolean;
   onRemove: (siteId: string) => void;
   onToggle: (siteId: string) => void;
@@ -155,7 +153,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
   site,
   siteIndex,
   rowValues,
-  isReadOnly,
+  isEditMode,
   onRemove,
   onToggle,
   isOpen,
@@ -224,7 +222,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 <div className="landuse-grid__column-3">
                   <Field name={`sites.${siteIndex}.kohteenTunnus`}>
                     {({ input }) =>
-                      isReadOnly ? (
+                      !isEditMode ? (
                         <TextInput
                           id={`landuse-compensations-kohteen-tunnus-${site.id}`}
                           label="Kohteen tunnus"
@@ -246,7 +244,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 <div className="landuse-grid__column-3">
                   <Field name={`sites.${siteIndex}.kayttotarkoitus`}>
                     {({ input }) =>
-                      isReadOnly ? (
+                      !isEditMode ? (
                         <TextInput
                           id={`landuse-compensations-kayttotarkoitus-${site.id}`}
                           label="Käyttötarkoitus"
@@ -274,7 +272,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 <div className="landuse-grid__column-3">
                   <Field name={`sites.${siteIndex}.hallintamuoto`}>
                     {({ input }) =>
-                      isReadOnly ? (
+                      !isEditMode ? (
                         <TextInput
                           id={`landuse-compensations-hallintamuoto-${site.id}`}
                           label="Hallintamuoto"
@@ -310,7 +308,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                 <div className="landuse-grid__column-3">
                   <Field name={`sites.${siteIndex}.suojeltu`}>
                     {({ input }) =>
-                      isReadOnly ? (
+                      !isEditMode ? (
                         <TextInput
                           id={`landuse-compensations-suojeltu-${site.id}`}
                           label="Suojeltu"
@@ -341,9 +339,9 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       <TextInput
                         id={`landuse-compensations-pinta-ala-${site.id}`}
                         label="Pinta-ala (m²)"
-                        value={getFieldTextValue(!isReadOnly, input.value)}
+                        value={getFieldTextValue(isEditMode, input.value)}
                         onChange={input.onChange}
-                        readOnly={isReadOnly}
+                        readOnly={!isEditMode}
                       />
                     )}
                   </Field>
@@ -355,9 +353,9 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       <TextInput
                         id={`landuse-compensations-kem2-${site.id}`}
                         label="Kerrosala (kem²)"
-                        value={getFieldTextValue(!isReadOnly, input.value)}
+                        value={getFieldTextValue(isEditMode, input.value)}
                         onChange={input.onChange}
-                        readOnly={isReadOnly}
+                        readOnly={!isEditMode}
                       />
                     )}
                   </Field>
@@ -365,31 +363,22 @@ const SiteRow: React.FC<SiteRowProps> = ({
 
                 <div className="landuse-grid__column-3">
                   <Field name={getRowFieldPath(site.id, "yksikkohinta")}>
-                    {({ input }) =>
-                      isReadOnly ? (
-                        <TextInput
-                          id={`landuse-compensations-yksikkohinta-${site.id}`}
-                          label="Yksikköhinta (€/kem²)"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      ) : (
-                        <NumberInput
-                          id={`landuse-compensations-yksikkohinta-${site.id}`}
-                          label="Yksikköhinta"
-                          value={input.value}
-                          unit="€"
-                          onChange={input.onChange}
-                        />
-                      )
-                    }
+                    {({ input }) => (
+                      <CurrencyInput
+                        isEditMode={isEditMode}
+                        id={`landuse-compensations-yksikkohinta-${site.id}`}
+                        label="Yksikköhinta (€/kem²)"
+                        value={input.value}
+                        onChange={input.onChange}
+                      />
+                    )}
                   </Field>
                 </div>
 
                 <div className="landuse-grid__column-3">
                   <Field name={`sites.${siteIndex}.amVelvoite`}>
                     {({ input }) =>
-                      isReadOnly ? (
+                      !isEditMode ? (
                         <TextInput
                           id={`landuse-compensations-amvelvoite-${site.id}`}
                           label="AM-velvoite"
@@ -408,7 +397,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                   </Field>
                 </div>
               </div>
-              {!isReadOnly && (
+              {!isEditMode && (
                 <div className="landuse-compensations-table__detail-actions">
                   <ConfirmDeleteButton
                     id={`compensations-site-delete-${site.id}`}
@@ -432,9 +421,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
 export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
   form,
   isEditMode,
-  isDecisionPhase,
 }) => {
-  const isCompensationsTableReadOnly = !isEditMode || isDecisionPhase;
   const [openSiteId, setOpenSiteId] = React.useState<string | null>(null);
 
   return (
@@ -458,7 +445,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
         }, [yhteensa, values.maankayttokorvausYhteensa]);
 
         const handleAddSite = () => {
-          if (isCompensationsTableReadOnly) {
+          if (!isEditMode) {
             return;
           }
 
@@ -478,7 +465,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
         };
 
         const handleRemoveSite = (siteId: string) => {
-          if (isCompensationsTableReadOnly) {
+          if (!isEditMode) {
             return;
           }
 
@@ -526,24 +513,34 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 <div className="landuse-grid">
                   <div className="landuse-grid__column-3">
                     <Field name="rahakorvaus">
-                      {({ input }) =>
-                        isEditMode ? (
-                          <NumberInput
-                            id="landuse-compensations-rahakorvaus"
-                            label="Rahakorvaus"
-                            value={input.value}
-                            unit="€"
-                            onChange={input.onChange}
-                          />
-                        ) : (
-                          <TextInput
-                            id="landuse-compensations-rahakorvaus"
-                            label="Rahakorvaus"
-                            value={readOnlyTextValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
+                      {({ input }) => (
+                        //   isEditMode ? (
+                        //     <NumberInput
+                        //       id="landuse-compensations-rahakorvaus"
+                        //       label="Rahakorvaus"
+                        //       value={input.value}
+                        //       unit="€"
+                        //       onChange={input.onChange}
+                        //     />
+                        //   ) : (
+                        //     <TextInput
+                        //       id="landuse-compensations-rahakorvaus"
+                        //       label="Rahakorvaus"
+                        //       value={readOnlyTextValue(input.value)}
+                        //       readOnly
+                        //     />
+                        //   )
+                        // }
+                        <CurrencyInput
+                          id="landuse-compensations-rahakorvaus"
+                          label="Rahakorvaus"
+                          isEditMode={isEditMode}
+                          value={input.value}
+                          onChange={input.onChange}
+                          errorText={input.error}
+                          invalid={Boolean(input.error)}
+                        />
+                      )}
                     </Field>
                   </div>
 
@@ -731,17 +728,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 className="landuse-detail__fieldset--with-margin"
               >
                 <div className="landuse-detail__sites-table-wrapper">
-                  {isDecisionPhase && (
-                    <Notification
-                      type="info"
-                      position="inline"
-                      label="Info"
-                      style={{ marginBottom: "var(--spacing-m)" }}
-                    >
-                      Taulukkoa ei voi muokata, kun sopimuksen tila on
-                      &quot;Päätös&quot;
-                    </Notification>
-                  )}
                   <table className="landuse-compensations-table">
                     <thead>
                       <tr>
@@ -764,7 +750,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                           site={site}
                           siteIndex={index}
                           rowValues={rowsBySiteId[site.id]}
-                          isReadOnly={isCompensationsTableReadOnly}
                           isEditMode={isEditMode}
                           onRemove={handleRemoveSite}
                           onToggle={handleToggleSite}
@@ -813,7 +798,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                       type="button"
                       variant={ButtonVariant.Supplementary}
                       iconStart={<IconPlusCircleFill />}
-                      disabled={isCompensationsTableReadOnly}
+                      disabled={!isEditMode}
                       onClick={handleAddSite}
                     >
                       Lisää kohde

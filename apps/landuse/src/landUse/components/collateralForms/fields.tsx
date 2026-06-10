@@ -14,7 +14,7 @@ import {
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
 import {
-  formatLandUseNumericValue,
+  formatLandUseCurrencyValue,
   parseLandUseNumericValue,
 } from "../../utils/number";
 
@@ -137,7 +137,7 @@ export const CollateralEuroField: React.FC<CommonProps> = ({
             onBlur={() => {
               const parsedValue = parseLandUseNumericValue(currentValue);
               if (parsedValue !== null) {
-                input.onChange(formatLandUseNumericValue(parsedValue));
+                input.onChange(formatLandUseCurrencyValue(parsedValue));
               }
               input.onBlur();
             }}
