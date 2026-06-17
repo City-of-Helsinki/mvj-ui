@@ -1,5 +1,28 @@
 import callApi from "@/api/callApi";
 import createUrlWithoutVersionSuffix from "@/api/createUrlWithoutVersionSuffix";
+
+export const fetchRyytiStructuredTradeRegisterExtract = (
+  businessId: string,
+): Generator<any, any, any> => {
+  return callApi(
+    new Request(
+      createUrlWithoutVersionSuffix(`ryyti/trade_register_json/${businessId}/`),
+    ),
+  );
+};
+
+export const fetchRyytiNotifications = (
+  businessId: string,
+): Generator<any, any, any> => {
+  return callApi(
+    new Request(
+      createUrlWithoutVersionSuffix(
+        `ryyti/get_company_notifications_json/${businessId}/`,
+      ),
+    ),
+  );
+};
+
 export const fetchCompanyExtended = (
   businessId: string,
 ): Generator<any, any, any> => {
