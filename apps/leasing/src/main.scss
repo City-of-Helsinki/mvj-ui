@@ -6,7 +6,6 @@
 @use "styles/mixins";
 
 // Vendor
-@use "react-redux-toastr/src/styles/index";
 @use "react-datepicker/src/stylesheets/datepicker.scss";
 @use "leaflet-draw/dist/leaflet.draw" as *;
 @use "react-dual-listbox/src/scss/react-dual-listbox.scss";
@@ -44,7 +43,6 @@
 @use "components/table/table";
 @use "components/tabs/tabs";
 @use "components/tooltip/tooltip";
-@use "components/toastr/toastr";
 @use "components/topNavigation/top-navigation";
 
 // App

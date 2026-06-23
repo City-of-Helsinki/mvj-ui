@@ -46,15 +46,15 @@ class FileDownloadLink extends PureComponent<Props, State> {
         const response = await fetch(request);
 
         switch (response.status) {
-          case 200:
+          case 200: {
             const blob = await response.blob();
             const filename = fileNameProp
               ? fileNameProp
               : getFileNameFromResponse(response);
             saveAs(blob, filename || label);
             break;
-
-          default:
+          }
+          default: {
             const errors = await response.json();
             const errorMessage = errors?.error ? errors.error : "";
             displayUIMessage(
@@ -68,6 +68,7 @@ class FileDownloadLink extends PureComponent<Props, State> {
               },
             );
             break;
+          }
         }
 
         stopLoader();

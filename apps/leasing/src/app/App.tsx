@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import ReduxToastr from "react-redux-toastr";
 import { withRouterLegacy } from "@/root/withRouterLegacy";
 import { useLocation, useNavigate } from "react-router";
 import flowRight from "lodash/flowRight";
@@ -12,6 +11,7 @@ import { ActionTypes, AppConsumer, AppProvider } from "@/app/AppContext";
 import ApiErrorModal from "@/api/ApiErrorModal";
 import ConfirmationModal from "@/components/modal/ConfirmationModal";
 import Loader from "@/components/loader/Loader";
+import NotificationCenter from "@/components/notification/NotificationCenter";
 import useAuth from "@/auth/useAuth";
 import LoginPage from "@/auth/components/LoginPage";
 import SideMenu from "@/components/sideMenu/SideMenu";
@@ -116,16 +116,7 @@ const App: React.FC<Props> = (props) => {
   if (!loggedIn) {
     return (
       <div className={appStyle}>
-        <ReduxToastr
-          newestOnTop={true}
-          position="bottom-right"
-          preventDuplicates={true}
-          progressBar={false}
-          timeOut={2000}
-          transitionIn="fadeIn"
-          transitionOut="fadeOut"
-          closeOnToastrClick={true}
-        />
+        <NotificationCenter />
 
         <ApiErrorModal
           data={apiError}
@@ -184,16 +175,7 @@ const App: React.FC<Props> = (props) => {
                 title={confirmationModalTitle || ""}
               />
 
-              <ReduxToastr
-                newestOnTop={true}
-                position="bottom-right"
-                preventDuplicates={true}
-                progressBar={false}
-                timeOut={2000}
-                transitionIn="fadeIn"
-                transitionOut="fadeOut"
-                closeOnToastrClick={true}
-              />
+              <NotificationCenter />
 
               <TopNavigation
                 isMenuOpen={displaySideMenu}

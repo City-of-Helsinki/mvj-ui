@@ -1,6 +1,5 @@
 import { combineReducers } from "redux";
 import { reducer as formReducer } from "redux-form";
-import { reducer as toastrReducer } from "react-redux-toastr";
 import apiReducer from "@/api/reducer";
 import areaNoteReducer from "@/areaNote/reducer";
 import areaSearchReducer from "@/areaSearch/reducer";
@@ -89,7 +88,6 @@ export default (): Reducer<RootState> =>
     rentForPeriod: rentForPeriodReducer,
     serviceUnits: serviceUnitsReducer,
     sapInvoice: sapInvoiceReducer,
-    toastr: toastrReducer,
     topNavigation: topNavigationReducer,
     tradeRegister: tradeRegisterReducer,
     uiData: uiDataReducer,
