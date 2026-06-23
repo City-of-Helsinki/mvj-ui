@@ -134,7 +134,7 @@ export const CompanyExtendedFieldTitles = {
   CONTACT_INFORMATION_VISITATION_STREET_ADDRESS: "Katuosoite",
   CONTACT_INFORMATION_VISITATION_ZIP_CODE: "Postinumero",
   DELIVERY_DATE_OF_LAST_FINANCIAL_STATEMENT:
-    "Viimeisimmön tilinpäätöksen toimittamispvm",
+    "Viimeisimmän tilinpäätöksen toimittamispvm",
   DISSOLUTION_DATE: "Lakkaamispvm",
   DOMICILE: "Kotipaikka",
   DOMICILE_CODE: "Kotipaikka",

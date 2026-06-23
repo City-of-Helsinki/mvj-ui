@@ -6,12 +6,19 @@ import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import { displayUIMessage, getFileNameFromResponse } from "@/util/helpers";
 import { getApiToken } from "@/auth/selectors";
+
+// @ts-ignore
+const pdfPolicy = window.trustedTypes?.createPolicy("pdf-policy", {
+  createHTML: (string: string) => string,
+});
+
 type Props = {
   apiToken: string;
   className?: string;
   fileName?: string;
   fileUrl: string;
   label: string;
+  openInlineInNewTab?: boolean;
 };
 type State = {
   isLoading: boolean;
@@ -22,7 +29,13 @@ class FileDownloadLink extends PureComponent<Props, State> {
     isLoading: false,
   };
   handleClick = () => {
-    const { apiToken, fileName: fileNameProp, fileUrl, label } = this.props;
+    const {
+      apiToken,
+      fileName: fileNameProp,
+      fileUrl,
+      label,
+      openInlineInNewTab,
+    } = this.props;
     const { isLoading } = this.state;
     if (isLoading) return;
     this.setState({
@@ -48,12 +61,39 @@ class FileDownloadLink extends PureComponent<Props, State> {
         switch (response.status) {
           case 200: {
             const blob = await response.blob();
-            const filename = fileNameProp
-              ? fileNameProp
-              : getFileNameFromResponse(response);
-            saveAs(blob, filename || label);
+
+            if (!openInlineInNewTab) {
+              // Download the file
+              const filename = fileNameProp
+                ? fileNameProp
+                : getFileNameFromResponse(response);
+              saveAs(blob, filename || label);
+
+              break;
+            }
+
+            // Show the file in a new tab inside a html embed element
+            const contentTypeHeader = response.headers.get("Content-Type");
+            const contentType = contentTypeHeader
+              ? contentTypeHeader.split(";")[0]
+              : "application/pdf";
+            const fileBlob = new Blob([blob], { type: contentType });
+            const fileUrl = URL.createObjectURL(fileBlob);
+            const title = fileNameProp ? fileNameProp : label;
+            const htmlContent = `<html><head><meta charset="UTF-8" /><title>${title}</title></head><body style="margin:0;"><embed src="${fileUrl}" type="${contentType}" width="100%" height="100%"></body></html>`;
+
+            let htmlString: string | any = htmlContent;
+            if (pdfPolicy) {
+              htmlString = pdfPolicy.createHTML(htmlContent);
+            }
+
+            const htmlBlob = new Blob([htmlString], { type: "text/html" });
+            const htmlUrl = URL.createObjectURL(htmlBlob);
+
+            window.open(htmlUrl, "_blank");
             break;
           }
+
           default: {
             const errors = await response.json();
             const errorMessage = errors?.error ? errors.error : "";

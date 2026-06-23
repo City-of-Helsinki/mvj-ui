@@ -14,6 +14,7 @@ import {
   getIsFetchingCompanyExtendedById,
 } from "@/tradeRegister/selectors";
 import createUrlWithoutVersionSuffix from "@/api/createUrlWithoutVersionSuffix";
+import { FLAG_TRADE_REGISTER_RYYTI } from "@/featureFlags";
 type Props = {
   businessId: string;
   companyExtended: Record<string, any> | null | undefined;
@@ -63,9 +64,12 @@ const DownloadableFiles = ({
                   <FileDownloadLink
                     fileName={`kaupparekisteriote_${businessId}.pdf`}
                     fileUrl={createUrlWithoutVersionSuffix(
-                      `trade_register/trade_register_entry/${businessId}/`,
+                      FLAG_TRADE_REGISTER_RYYTI
+                        ? `ryyti/trade_register_pdf/${businessId}/`
+                        : `trade_register/trade_register_entry/${businessId}/`,
                     )}
                     label="Kaupparekisteriote (pdf)"
+                    openInlineInNewTab={FLAG_TRADE_REGISTER_RYYTI}
                   />
                 </Column>
               </Row>
@@ -74,9 +78,12 @@ const DownloadableFiles = ({
                   <FileDownloadLink
                     fileName={`yhteisosaannot_${businessId}.pdf`}
                     fileUrl={createUrlWithoutVersionSuffix(
-                      `trade_register/statute/${businessId}/`,
+                      FLAG_TRADE_REGISTER_RYYTI
+                        ? `ryyti/organisation_rules_pdf/${businessId}/`
+                        : `trade_register/statute/${businessId}/`,
                     )}
                     label="Yhteisösäännöt (pdf)"
+                    openInlineInNewTab={FLAG_TRADE_REGISTER_RYYTI}
                   />
                 </Column>
               </Row>
