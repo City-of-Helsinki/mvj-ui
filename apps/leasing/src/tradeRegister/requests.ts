@@ -17,7 +17,7 @@ export const fetchRyytiNotifications = (
   return callApi(
     new Request(
       createUrlWithoutVersionSuffix(
-        `ryyti/get_company_notifications_json/${businessId}/`,
+        `ryyti/company_notifications_json/${businessId}/`,
       ),
     ),
   );
