@@ -2277,7 +2277,6 @@ __metadata:
     react-leaflet-draw: "npm:0.19.0"
     react-leaflet-fullscreen: "npm:1.0.2"
     react-redux: "npm:7.2.9"
-    react-redux-toastr: "npm:8.0.0"
     react-router: "npm:6.30.2"
     react-select: "npm:5.10.2"
     redux: "npm:4.1.2"
@@ -4300,7 +4299,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:2.5.1, classnames@npm:^2.2.5, classnames@npm:^2.2.6, classnames@npm:^2.3.2":
+"classnames@npm:2.5.1, classnames@npm:^2.2.5, classnames@npm:^2.2.6":
   version: 2.5.1
   resolution: "classnames@npm:2.5.1"
   checksum: 10c0/afff4f77e62cea2d79c39962980bf316bacb0d7c49e13a21adaadb9221e1c6b9d3cdb829d8bb1b23c406f4e740507f37e1dcf506f7e3b7113d17c5bab787aa69
@@ -5437,13 +5436,6 @@ __metadata:
   version: 2.0.3
   resolution: "esutils@npm:2.0.3"
   checksum: 10c0/9a2fe69a41bfdade834ba7c42de4723c97ec776e40656919c62cbd13607c45e127a003f05f724a1ea55e5029a4cf2de444b13009f2af71271e42d93a637137c7
-  languageName: node
-  linkType: hard
-
-"eventemitter3@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "eventemitter3@npm:3.1.2"
-  checksum: 10c0/c67262eccbf85848b7cc6d4abb6c6e34155e15686db2a01c57669fd0d44441a574a19d44d25948b442929e065774cbe5003d8e77eed47674fbf876ac77887793
   languageName: node
   linkType: hard
 
@@ -8096,21 +8088,6 @@ __metadata:
     "@popperjs/core": ^2.0.0
     react: ^16.8.0 || ^17
   checksum: 10c0/199ff9ec23670eece1c5972d48d2c5e9c28938dd610c432979fdab631a38371f8a3a5fbb9dcaeec0cff9ce9fb58b3bc1965c525de14fdb78f5e9b35f0d90f335
-  languageName: node
-  linkType: hard
-
-"react-redux-toastr@npm:8.0.0":
-  version: 8.0.0
-  resolution: "react-redux-toastr@npm:8.0.0"
-  dependencies:
-    classnames: "npm:^2.3.2"
-    eventemitter3: "npm:^3.1.2"
-  peerDependencies:
-    prop-types: ^15.5.7
-    react: ^0.14 || ^15.0.1 || ^16.0.0 || ^17.0.0 || ^18.0.0
-    react-redux: ^4.0.1 || ^5.0.1 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
-    redux: ^3.0.5 || ^4.0.0 || ^5.0.0
-  checksum: 10c0/62c5fa1900867a7fe6b94febeddbad799b4b974d4a738319e12afad5ad9345bc6cbb1517887dfedc1863bfbe8df61edfe1cc709480266708a037534b76a0f802
   languageName: node
   linkType: hard
 

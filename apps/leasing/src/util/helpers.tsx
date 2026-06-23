@@ -7,8 +7,7 @@ import get from "lodash/get";
 import isArray from "lodash/isArray";
 import isEmpty from "lodash/isEmpty";
 import isNumber from "lodash/isNumber";
-import { toastr } from "react-redux-toastr";
-import ToastrIcons from "@/components/toastr/ToastrIcons";
+import { enqueueNotification } from "@/components/notification/notificationService";
 import { PAIKKATIETOPALVELU_URL } from "@/util/constants";
 import { Breakpoints } from "@/foundation/enums";
 import type {
@@ -119,7 +118,7 @@ export const scrollToTopPage = () => {
  * @returns {string}
  */
 export const getSearchQuery = (filters: any): string => {
-  let query = [];
+  const query = [];
   forEach(filters, (filter: any, key) => {
     if (
       filter != null &&
@@ -183,11 +182,10 @@ export const displayUIMessage = (
   message: Record<string, any>,
   opts: Record<string, any> = {
     type: "success",
+    preventDuplicates: true,
   },
 ): void => {
-  const { title, body } = message;
-  const icon = <ToastrIcons name={opts.type} />;
-  return toastr[opts.type](title, body, { ...opts, icon: icon });
+  enqueueNotification(message, opts);
 };
 
 /**
@@ -919,7 +917,7 @@ export const isArchived = (
 };
 
 export const debounce = (func: (...args: any[]) => void, wait: number) => {
-  let timeout: NodeJS.Timeout;
+  let timeout: ReturnType<typeof setTimeout>;
   return (...args: any[]) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);

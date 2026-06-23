@@ -61,14 +61,14 @@ const FileDownloadButton = ({
       clearTimeout(timeoutId);
 
       switch (response.status) {
-        case 200:
+        case 200: {
           const blob = await response.blob();
           const filename = getFileNameFromResponse(response);
           saveAs(blob, filename);
           onSuccess && onSuccess();
           break;
-
-        default:
+        }
+        default: {
           const errors = await response.json();
 
           if (errors && errors.detail) {
@@ -94,13 +94,14 @@ const FileDownloadButton = ({
               },
               {
                 type: "error",
-                timeOut: 15000,
+                timeOut: 10_000,
               },
             );
           }
 
           onFailure && onFailure();
           break;
+        }
       }
     } catch (e) {
       if (e instanceof DOMException && e.name === "AbortError") {
