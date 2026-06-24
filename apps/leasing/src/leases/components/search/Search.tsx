@@ -151,6 +151,7 @@ class Search extends PureComponent<Props & WithRouterProps, State> {
     }
 
     if (
+      prevProps.isSearchInitialized &&
       isSearchInitialized &&
       !isEqual(prevProps.formValues, this.props.formValues)
     ) {
