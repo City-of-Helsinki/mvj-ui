@@ -667,7 +667,7 @@ const CompanyExtended = ({
                             </Column>
                             <Column small={4} large={2}>
                               <ListItem>
-                                {formatDate(name.expidationDate) || "-"}
+                                {formatDate(name.expirationDate) || "-"}
                               </ListItem>
                             </Column>
                           </Row>
@@ -760,7 +760,7 @@ const CompanyExtended = ({
                             </Column>
                             <Column small={3} large={2}>
                               <ListItem>
-                                {formatDate(name.expidationDate) || "-"}
+                                {formatDate(name.expirationDate) || "-"}
                               </ListItem>
                             </Column>
                           </Row>
@@ -833,7 +833,7 @@ const CompanyExtended = ({
                             </Column>
                             <Column small={4} large={2}>
                               <ListItem>
-                                {formatDate(name.expidationDate) || "-"}
+                                {formatDate(name.expirationDate) || "-"}
                               </ListItem>
                             </Column>
                           </Row>
