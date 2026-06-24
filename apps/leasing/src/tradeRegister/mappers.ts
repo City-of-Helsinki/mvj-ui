@@ -112,7 +112,7 @@ const mapRyytiPersonToJuristic = (
 const mapNameHistory = (item: Record<string, any>) => ({
   name: get(item, "name") || null,
   registrationDate: get(item, "startDate") || null,
-  expidationDate: get(item, "endDate") || null,
+  expirationDate: get(item, "endDate") || null,
 });
 
 const mapAddress = (address: Record<string, any> | null | undefined) => ({
@@ -179,15 +179,7 @@ export const mapRyytiStructuredExtractToCompanyExtended = (
         value: get(latestBusinessLine, "businessLine") || null,
       },
       registrationDate: get(companyDetails, "registerTime") || null,
-      expidationDate: get(latestNameHistory, "endDate") || null,
-      parallelCompanyName: [
-        {
-          name: get(parallelCompanyNames, "companyName") || null,
-          lineOfBusiness: null,
-          expirationDate: null,
-          registrationDate: null,
-        },
-      ],
+      expirationDate: get(latestNameHistory, "endDate") || null,
       historicalNames: nameHistory.map(mapNameHistory),
     },
     auxiliaryCompanyName: [
@@ -219,7 +211,7 @@ export const mapRyytiStructuredExtractToCompanyExtended = (
     domicile: {
       code: toCodeOrValue(get(latestDomicile, "municipalCode")) || null,
       registrationDate: get(latestDomicile, "startTime") || null,
-      expidationDate: get(latestDomicile, "endTime") || null,
+      expirationDate: get(latestDomicile, "endTime") || null,
     },
     form: {
       type: toCodeOrValue(get(companyDetails, "companyFormCode")) || null,
