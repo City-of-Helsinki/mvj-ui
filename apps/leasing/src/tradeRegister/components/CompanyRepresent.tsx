@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React, { memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
@@ -25,6 +24,8 @@ import {
   getCompanyRepresentById,
   getIsFetchingCompanyRepresentById,
 } from "@/tradeRegister/selectors";
+import type { RootState } from "@/root/types";
+
 type JusristicPersonProps = {
   person: Record<string, any>;
 };
@@ -152,52 +153,79 @@ const NaturalPerson = ({ person }: NaturalPersonProps) => {
 
 type Props = {
   businessId: string;
-  companyRepresent?: Record<string, any> | null;
-  companyRepresentCollapseState?: boolean | null;
-  companyRepresentBodyCollapseState?: boolean | null;
-  companyRepresentLegalRepresentationCollapseState?: boolean | null;
-  companyRepresentRepresentationCollapseState?: boolean | null;
-  isFetchingCompanyRepresent?: boolean;
-  receiveCollapseStates?: (...args: Array<any>) => any;
 };
 
-const CompanyRepresent = ({
-  businessId,
-  companyRepresent,
-  companyRepresentCollapseState,
-  companyRepresentBodyCollapseState,
-  companyRepresentLegalRepresentationCollapseState,
-  companyRepresentRepresentationCollapseState,
-  isFetchingCompanyRepresent,
-  receiveCollapseStates,
-}: Props) => {
+const CompanyRepresent = ({ businessId }: Props) => {
+  const dispatch = useDispatch();
+
+  const companyRepresent = useSelector((state: RootState) =>
+    getCompanyRepresentById(state, businessId),
+  );
+  const companyRepresentCollapseState = useSelector((state: RootState) =>
+    getCollapseStateByKey(
+      state,
+      `${CollapseStatePaths.COMPANY_REPRESENT}.${businessId}`,
+    ),
+  );
+  const companyRepresentBodyCollapseState = useSelector((state: RootState) =>
+    getCollapseStateByKey(
+      state,
+      `${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.BODY}.${businessId}`,
+    ),
+  );
+  const companyRepresentLegalRepresentationCollapseState = useSelector(
+    (state: RootState) =>
+      getCollapseStateByKey(
+        state,
+        `${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.LEGAL_REPRESENTATION}.${businessId}`,
+      ),
+  );
+  const companyRepresentRepresentationCollapseState = useSelector(
+    (state: RootState) =>
+      getCollapseStateByKey(
+        state,
+        `${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.REPRESENTATION}.${businessId}`,
+      ),
+  );
+  const isFetchingCompanyRepresent = useSelector((state: RootState) =>
+    getIsFetchingCompanyRepresentById(state, businessId),
+  );
+
   const handleCollapseToggleCompanyRepresent = (val: boolean) => {
-    receiveCollapseStates({
-      [`${CollapseStatePaths.COMPANY_REPRESENT}.${businessId}`]: val,
-    });
+    dispatch(
+      receiveCollapseStates({
+        [`${CollapseStatePaths.COMPANY_REPRESENT}.${businessId}`]: val,
+      }),
+    );
   };
 
   const handleCollapseToggleCompanyRepresentBody = (val: boolean) => {
-    receiveCollapseStates({
-      [`${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.BODY}.${businessId}`]:
-        val,
-    });
+    dispatch(
+      receiveCollapseStates({
+        [`${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.BODY}.${businessId}`]:
+          val,
+      }),
+    );
   };
 
   const handleCollapseToggleCompanyRepresentLegalRepresentation = (
     val: boolean,
   ) => {
-    receiveCollapseStates({
-      [`${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.LEGAL_REPRESENTATION}.${businessId}`]:
-        val,
-    });
+    dispatch(
+      receiveCollapseStates({
+        [`${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.LEGAL_REPRESENTATION}.${businessId}`]:
+          val,
+      }),
+    );
   };
 
   const handleCollapseToggleCompanyRepresentRepresentation = (val: boolean) => {
-    receiveCollapseStates({
-      [`${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.REPRESENTATION}.${businessId}`]:
-        val,
-    });
+    dispatch(
+      receiveCollapseStates({
+        [`${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.REPRESENTATION}.${businessId}`]:
+          val,
+      }),
+    );
   };
 
   const body = get(companyRepresent, CompanyRepresentFieldPaths.BODY, []);
@@ -233,12 +261,12 @@ const CompanyRepresent = ({
         </LoaderWrapper>
       )}
       {!isFetchingCompanyRepresent && (
-        <Fragment>
+        <>
           {!companyRepresent && (
             <FormText>Edustamistiedot ei saatavilla</FormText>
           )}
           {!!companyRepresent && (
-            <Fragment>
+            <>
               <Collapse
                 className="collapse__secondary"
                 defaultOpen={
@@ -259,7 +287,7 @@ const CompanyRepresent = ({
                   body.map((item, index) => {
                     const persons = get(item, "_value_1", []);
                     return (
-                      <Fragment key={index}>
+                      <React.Fragment key={index}>
                         <SubTitle>{item.type}</SubTitle>
                         {!persons.length && (
                           <FormText>Tietoa ei saatavilla</FormText>
@@ -294,7 +322,7 @@ const CompanyRepresent = ({
                             })}
                           </BoxItemContainer>
                         )}
-                      </Fragment>
+                      </React.Fragment>
                     );
                   })}
               </Collapse>
@@ -337,7 +365,7 @@ const CompanyRepresent = ({
                       [],
                     );
                     return (
-                      <Fragment key={index}>
+                      <React.Fragment key={index}>
                         <SubTitle>{item.rule}</SubTitle>
                         <BoxItemContainer>
                           {!!naturalPersons.length &&
@@ -365,7 +393,7 @@ const CompanyRepresent = ({
                         </BoxItemContainer>
 
                         {!!additionalGroup && (
-                          <Fragment>
+                          <>
                             <SubTitle
                               enableUiDataEdit
                               uiDataKey={getUiDataTradeRegisterCompanyRepresentKey(
@@ -404,9 +432,9 @@ const CompanyRepresent = ({
                                   },
                                 )}
                             </BoxItemContainer>
-                          </Fragment>
+                          </>
                         )}
-                      </Fragment>
+                      </React.Fragment>
                     );
                   })}
               </Collapse>
@@ -516,43 +544,12 @@ const CompanyRepresent = ({
                   </BoxItemContainer>
                 )}
               </Collapse>
-            </Fragment>
+            </>
           )}
-        </Fragment>
+        </>
       )}
     </Collapse>
   );
 };
 
-export default flowRight(
-  connect(
-    (state, props: Props) => {
-      return {
-        companyRepresent: getCompanyRepresentById(state, props.businessId),
-        companyRepresentCollapseState: getCollapseStateByKey(
-          state,
-          `${CollapseStatePaths.COMPANY_REPRESENT}.${props.businessId}`,
-        ),
-        companyRepresentBodyCollapseState: getCollapseStateByKey(
-          state,
-          `${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.BODY}.${props.businessId}`,
-        ),
-        companyRepresentLegalRepresentationCollapseState: getCollapseStateByKey(
-          state,
-          `${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.LEGAL_REPRESENTATION}.${props.businessId}`,
-        ),
-        companyRepresentRepresentationCollapseState: getCollapseStateByKey(
-          state,
-          `${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.REPRESENTATION}.${props.businessId}`,
-        ),
-        isFetchingCompanyRepresent: getIsFetchingCompanyRepresentById(
-          state,
-          props.businessId,
-        ),
-      };
-    },
-    {
-      receiveCollapseStates,
-    },
-  ),
-)(CompanyRepresent);
+export default memo(CompanyRepresent);

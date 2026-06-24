@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React, { memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
@@ -25,28 +24,36 @@ import {
   getCompanyNoticeById,
   getIsFetchingCompanyNoticeById,
 } from "@/tradeRegister/selectors";
-import { withWindowResize } from "@/components/resize/WindowResizeHandler";
+import { useWindowResize } from "@/components/resize/WindowResizeHandler";
+import type { RootState } from "@/root/types";
+
 type Props = {
   businessId: string;
-  companyNotice?: Record<string, any> | null;
-  companyNoticeCollapseState?: boolean | null;
-  isFetchingCompanyNotice?: boolean;
-  largeScreen: boolean;
-  receiveCollapseStates?: (...args: Array<any>) => any;
 };
 
-const CompanyNotice = ({
-  businessId,
-  companyNotice,
-  companyNoticeCollapseState,
-  isFetchingCompanyNotice,
-  largeScreen,
-  receiveCollapseStates,
-}: Props) => {
+const CompanyNotice = ({ businessId }: Props) => {
+  const dispatch = useDispatch();
+  const largeScreen = useWindowResize();
+
+  const companyNotice = useSelector((state: RootState) =>
+    getCompanyNoticeById(state, businessId),
+  );
+  const companyNoticeCollapseState = useSelector((state: RootState) =>
+    getCollapseStateByKey(
+      state,
+      `${CollapseStatePaths.COMPANY_NOTICE}.${businessId}`,
+    ),
+  );
+  const isFetchingCompanyNotice = useSelector((state: RootState) =>
+    getIsFetchingCompanyNoticeById(state, businessId),
+  );
+
   const handleCollapseToggleCompanyNotice = (val: boolean) => {
-    receiveCollapseStates({
-      [`${CollapseStatePaths.COMPANY_NOTICE}.${businessId}`]: val,
-    });
+    dispatch(
+      receiveCollapseStates({
+        [`${CollapseStatePaths.COMPANY_NOTICE}.${businessId}`]: val,
+      }),
+    );
   };
 
   const notices = get(companyNotice, CompanyNoticeFieldPaths.NOTICE, []);
@@ -71,20 +78,20 @@ const CompanyNotice = ({
         </LoaderWrapper>
       )}
       {!isFetchingCompanyNotice && (
-        <Fragment>
+        <>
           {!companyNotice && (
             <FormText>Vireillä olevat ilmoitukset ei saatavilla</FormText>
           )}
           {!!companyNotice && (
-            <Fragment>
+            <>
               {!notices.length && (
                 <FormText>Ei vireillä olevia ilmoituksia</FormText>
               )}
 
               {!!notices.length && (
-                <Fragment>
+                <>
                   {largeScreen && (
-                    <Fragment>
+                    <>
                       <Row>
                         <Column large={2}>
                           <FormTextTitle
@@ -170,7 +177,7 @@ const CompanyNotice = ({
                           );
                         })}
                       </ListItems>
-                    </Fragment>
+                    </>
                   )}
                   {!largeScreen && (
                     <BoxItemContainer>
@@ -257,34 +264,14 @@ const CompanyNotice = ({
                       })}
                     </BoxItemContainer>
                   )}
-                </Fragment>
+                </>
               )}
-            </Fragment>
+            </>
           )}
-        </Fragment>
+        </>
       )}
     </Collapse>
   );
 };
 
-export default flowRight(
-  withWindowResize,
-  connect(
-    (state, props: Props) => {
-      return {
-        companyNotice: getCompanyNoticeById(state, props.businessId),
-        companyNoticeCollapseState: getCollapseStateByKey(
-          state,
-          `${CollapseStatePaths.COMPANY_NOTICE}.${props.businessId}`,
-        ),
-        isFetchingCompanyNotice: getIsFetchingCompanyNoticeById(
-          state,
-          props.businessId,
-        ),
-      };
-    },
-    {
-      receiveCollapseStates,
-    },
-  ),
-)(CompanyNotice);
+export default memo(CompanyNotice);
