@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";
 import ExternalLink from "@/components/links/ExternalLink";

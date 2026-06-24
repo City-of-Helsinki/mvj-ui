@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { formValueSelector } from "redux-form";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";

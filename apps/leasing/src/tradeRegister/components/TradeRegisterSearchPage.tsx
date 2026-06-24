@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { connect } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import isEmpty from "lodash/isEmpty";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";

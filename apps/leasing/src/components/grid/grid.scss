@@ -1,0 +1,57 @@
+.grid-row {
+  display: flex;
+  flex-flow: row wrap;
+  margin-left: -0.625rem;
+  margin-right: -0.625rem;
+}
+
+.grid-column {
+  flex: 1 1 0px;
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
+  min-width: 0;
+
+  @media screen and (min-width: 0em) {
+    @for $i from 1 through 12 {
+      &.small-#{$i} {
+        flex: 0 0 (100% * ($i / 12));
+        max-width: (100% * ($i / 12));
+      }
+    }
+    @for $i from 1 through 11 {
+      &.offset-small-#{$i} {
+        margin-left: (100% * ($i / 12));
+      }
+    }
+  }
+
+  @media screen and (min-width: 40em) {
+    // Foundation medium breakpoint (640px)
+    @for $i from 1 through 12 {
+      &.medium-#{$i} {
+        flex: 0 0 (100% * ($i / 12));
+        max-width: (100% * ($i / 12));
+      }
+    }
+    @for $i from 1 through 11 {
+      &.offset-medium-#{$i} {
+        margin-left: (100% * ($i / 12));
+      }
+    }
+  }
+
+  @media screen and (min-width: 64em) {
+    // Foundation large breakpoint (1024px)
+    @for $i from 1 through 12 {
+      &.large-#{$i} {
+        flex: 0 0 (100% * ($i / 12));
+        max-width: (100% * ($i / 12));
+      }
+    }
+    @for $i from 1 through 11 {
+      &.offset-large-#{$i} {
+        margin-left: (100% * ($i / 12));
+      }
+    }
+  }
+}

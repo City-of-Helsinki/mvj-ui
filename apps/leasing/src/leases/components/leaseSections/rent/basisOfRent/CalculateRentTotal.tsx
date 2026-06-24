@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { LeaseBasisOfRentsFieldTitles } from "@/leases/enums";
 import FormText from "@/components/form/FormText";
 import {

@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback } from "react";
 import { change, FieldArray, formValueSelector } from "redux-form";
 import { connect } from "react-redux";
-import { Column, Row } from "react-foundation";
+import { Column, Row } from "@/components/grid/Grid";
 import AddButton from "@/components/form/AddButton";
 import RemoveButton from "@/components/form/RemoveButton";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";

@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import orderBy from "lodash/orderBy";
-import { Column, Row } from "react-foundation";
+import { Column, Row } from "@/components/grid/Grid";
 import { Link, Table } from "hds-react";
 import { getAttributes, getCurrentAreaSearch } from "@/areaSearch/selectors";
 import AreaSearchApplicationAnswersSection from "@/areaSearch/components/AreaSearchApplicationAnswersSection";

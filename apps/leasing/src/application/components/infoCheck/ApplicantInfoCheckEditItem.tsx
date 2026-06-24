@@ -2,7 +2,7 @@ import React from "react";
 import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
 import { getFormValues, reduxForm } from "redux-form";
-import { Column, Row } from "react-foundation";
+import { Column, Row } from "@/components/grid/Grid";
 import classNames from "classnames";
 import { getApplicantInfoCheckAttributes } from "@/application/selectors";
 import { getFieldOptions, getLabelOfOption } from "@/util/helpers";

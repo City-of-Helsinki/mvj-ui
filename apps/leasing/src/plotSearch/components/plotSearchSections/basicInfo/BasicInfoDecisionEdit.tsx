@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { formValueSelector } from "redux-form";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import RemoveButton from "@/components/form/RemoveButton";
 import { getUsersPermissions } from "@/usersPermissions/selectors";

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { Form } from "react-final-form";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";

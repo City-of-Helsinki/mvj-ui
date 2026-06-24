@@ -5,7 +5,7 @@ import {
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
 import { initialize } from "redux-form";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";

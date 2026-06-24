@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import classNames from "classnames";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";

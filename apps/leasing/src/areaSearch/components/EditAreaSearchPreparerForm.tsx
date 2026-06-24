@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { flowRight } from "lodash/util";
 import { getFormValues, reduxForm, change } from "redux-form";
 import { connect } from "react-redux";
-import { Column, Row } from "react-foundation";
+import { Column, Row } from "@/components/grid/Grid";
 import get from "lodash/get";
 import { editAreaSearch } from "@/areaSearch/actions";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";

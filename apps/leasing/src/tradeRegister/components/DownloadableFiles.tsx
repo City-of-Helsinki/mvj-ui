@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import Collapse from "@/components/collapse/Collapse";
 import FormText from "@/components/form/FormText";
 import FileDownloadLink from "@/components/file/FileDownloadLink";

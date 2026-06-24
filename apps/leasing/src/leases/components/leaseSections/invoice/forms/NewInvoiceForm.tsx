@@ -1,6 +1,6 @@
 import React, { ReactElement, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import arrayMutators from "final-form-arrays";

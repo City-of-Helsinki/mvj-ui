@@ -3,7 +3,7 @@ import arrayMutators from "final-form-arrays";
 import { useSelector } from "react-redux";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import isEmpty from "lodash/isEmpty";
 import createUrl from "@/api/createUrl";
 import AddButtonThird from "@/components/form/AddButtonThird";

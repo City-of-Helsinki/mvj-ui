@@ -7,7 +7,7 @@ import {
   initialize,
   getFormValues,
 } from "redux-form";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import set from "lodash/set";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";

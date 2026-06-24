@@ -18,6 +18,7 @@
 @use "components/button/icon-radio-buttons";
 @use "components/collapse/collapse";
 @use "components/content/content";
+@use "components/grid/grid";
 @use "components/controlButtons/control-buttons";
 @use "components/file/file";
 @use "components/form/form";
@@ -84,9 +85,6 @@
 @use "application/components/applicant-info-check";
 
 @use "foundation/styles" as *;
-
-// @include foundation-everything(true);
-// @include foundation-flex-grid;
 
 html {
   -webkit-font-smoothing: antialiased;

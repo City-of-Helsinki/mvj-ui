@@ -1,7 +1,7 @@
 import React, { Fragment, PureComponent, ReactNode } from "react";
 import { connect } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import flowRight from "lodash/flowRight";
 import AddButtonThird from "@/components/form/AddButtonThird";

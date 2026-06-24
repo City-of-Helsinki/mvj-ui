@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";

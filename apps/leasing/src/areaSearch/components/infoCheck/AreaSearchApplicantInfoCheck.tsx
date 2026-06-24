@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Column, Row } from "react-foundation";
+import { Column, Row } from "@/components/grid/Grid";
 import { getLabelOfOption } from "@/util/helpers";
 import { getUserFullName } from "@/users/helpers";
 

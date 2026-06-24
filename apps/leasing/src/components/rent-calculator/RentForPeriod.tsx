@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import get from "lodash/get";
 import FormText from "@/components/form/FormText";
 import RemoveButton from "@/components/form/RemoveButton";

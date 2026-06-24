@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import orderBy from "lodash/orderBy";
 import get from "lodash/get";
-import { Column, Row } from "react-foundation";
+import { Column, Row } from "@/components/grid/Grid";
 import { reduxForm, change, getFormValues } from "redux-form";
 import { getAttributes, getCurrentAreaSearch } from "@/areaSearch/selectors";
 import AreaSearchApplicationAnswersSection from "@/areaSearch/components/AreaSearchApplicationAnswersSection";

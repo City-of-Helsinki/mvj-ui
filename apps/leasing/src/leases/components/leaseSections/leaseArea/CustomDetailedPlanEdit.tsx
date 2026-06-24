@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { FieldArray } from "react-final-form-arrays";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import BoxItemContainer from "@/components/content/BoxItemContainer";

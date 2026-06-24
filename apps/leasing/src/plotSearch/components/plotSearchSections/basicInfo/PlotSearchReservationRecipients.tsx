@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Column, Row } from "react-foundation";
+import { Column, Row } from "@/components/grid/Grid";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import FormText from "@/components/form/FormText";
 import { PlotSearchFieldTitles } from "@/plotSearch/enums";

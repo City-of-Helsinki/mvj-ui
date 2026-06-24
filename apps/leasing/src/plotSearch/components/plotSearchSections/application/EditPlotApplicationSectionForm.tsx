@@ -6,7 +6,7 @@ import {
   getFormValues,
   change,
 } from "redux-form";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import classNames from "classnames";

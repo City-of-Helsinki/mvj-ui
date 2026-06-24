@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { getFormValues, reduxForm } from "redux-form";
-import { Column, Row } from "react-foundation";
+import { Column, Row } from "@/components/grid/Grid";
 import { get } from "lodash/object";
 import { flowRight } from "lodash/util";
 import { connect } from "react-redux";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { Form, Field } from "react-final-form";
 import flowRight from "lodash/flowRight";
 import Button from "@/components/button/Button";

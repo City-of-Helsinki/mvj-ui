@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import ErrorField from "@/components/form/ErrorField";
 import FormField from "@/components/form/final-form/FormField";
 import { FieldTypes } from "@/enums";

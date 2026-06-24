@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { FieldArray } from "react-final-form-arrays";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import get from "lodash/get";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
