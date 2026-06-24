@@ -28,11 +28,11 @@ import {
 import { withWindowResize } from "@/components/resize/WindowResizeHandler";
 type Props = {
   businessId: string;
-  companyNotice: Record<string, any> | null | undefined;
-  companyNoticeCollapseState: boolean | null | undefined;
-  isFetchingCompanyNotice: boolean;
+  companyNotice?: Record<string, any> | null;
+  companyNoticeCollapseState?: boolean | null;
+  isFetchingCompanyNotice?: boolean;
   largeScreen: boolean;
-  receiveCollapseStates: (...args: Array<any>) => any;
+  receiveCollapseStates?: (...args: Array<any>) => any;
 };
 
 const CompanyNotice = ({

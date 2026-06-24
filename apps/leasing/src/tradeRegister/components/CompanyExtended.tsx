@@ -32,12 +32,12 @@ import {
 } from "@/tradeRegister/selectors";
 type Props = {
   businessId: string;
-  companyExtended: Record<string, any> | null | undefined;
-  companyExtendedCollapseState: boolean | null | undefined;
-  companyNameCollapseState: boolean | null | undefined;
-  contactInformationCollapseState: boolean | null | undefined;
-  isFetchingCompanyExtended: boolean;
-  receiveCollapseStates: (...args: Array<any>) => any;
+  companyExtended?: Record<string, any> | null;
+  companyExtendedCollapseState?: boolean | null;
+  companyNameCollapseState?: boolean | null;
+  contactInformationCollapseState?: boolean | null;
+  isFetchingCompanyExtended?: boolean;
+  receiveCollapseStates?: (...args: Array<any>) => any;
 };
 
 const CompanyExtended = ({

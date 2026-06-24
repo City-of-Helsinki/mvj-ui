@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from "react";
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import flowRight from "lodash/flowRight";
 import CompanyExtended from "@/tradeRegister/components/CompanyExtended";
@@ -20,6 +20,8 @@ import {
   getIsFetchingCompanyNoticeById,
   getIsFetchingCompanyRepresentById,
 } from "@/tradeRegister/selectors";
+import { FLAG_TRADE_REGISTER_RYYTI } from "@/featureFlags";
+
 type Props = {
   businessId: string;
   companyExtended: Record<string, any> | null | undefined;
@@ -55,20 +57,30 @@ class TradeRegisterTemplate extends PureComponent<Props> {
       fetchTradeRegisterCompanyExtendedById,
       fetchTradeRegisterCompanyNoticeById,
       fetchTradeRegisterCompanyRepresentById,
+      isFetchingCompanyExtended,
+      isFetchingCompanyNotice,
+      isFetchingCompanyRepresent,
     } = this.props;
+
     if (!businessId) return;
 
-    if (companyExtended === undefined) {
-      fetchTradeRegisterCompanyExtendedById(businessId);
+    const needsExtended =
+      companyExtended === undefined && !isFetchingCompanyExtended;
+    const needsNotice = companyNotice === undefined && !isFetchingCompanyNotice;
+    const needsRepresent =
+      companyRepresent === undefined && !isFetchingCompanyRepresent;
+
+    if (FLAG_TRADE_REGISTER_RYYTI) {
+      if (needsExtended || needsNotice || needsRepresent) {
+        // Any of the actions will trigger the unified Ryyti fetch
+        fetchTradeRegisterCompanyExtendedById(businessId);
+      }
+      return;
     }
 
-    if (companyNotice === undefined) {
-      fetchTradeRegisterCompanyNoticeById(businessId);
-    }
-
-    if (companyRepresent === undefined) {
-      fetchTradeRegisterCompanyRepresentById(businessId);
-    }
+    if (needsExtended) fetchTradeRegisterCompanyExtendedById(businessId);
+    if (needsNotice) fetchTradeRegisterCompanyNoticeById(businessId);
+    if (needsRepresent) fetchTradeRegisterCompanyRepresentById(businessId);
   };
 
   render() {
@@ -92,7 +104,7 @@ class TradeRegisterTemplate extends PureComponent<Props> {
     }
 
     return (
-      <Fragment>
+      <>
         <DownloadableFiles businessId={businessId} />
 
         <CompanyExtended businessId={businessId} />
@@ -100,7 +112,7 @@ class TradeRegisterTemplate extends PureComponent<Props> {
         <CompanyRepresent businessId={businessId} />
 
         <CompanyNotice businessId={businessId} />
-      </Fragment>
+      </>
     );
   }
 }

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "react-foundation";
 import Collapse from "@/components/collapse/Collapse";
@@ -17,10 +17,10 @@ import createUrlWithoutVersionSuffix from "@/api/createUrlWithoutVersionSuffix";
 import { FLAG_TRADE_REGISTER_RYYTI } from "@/featureFlags";
 type Props = {
   businessId: string;
-  companyExtended: Record<string, any> | null | undefined;
-  downloadableFilesCollapseState: boolean | null | undefined;
-  isFetchingCompanyExtended: boolean;
-  receiveCollapseStates: (...args: Array<any>) => any;
+  companyExtended?: Record<string, any> | null;
+  downloadableFilesCollapseState?: boolean | null;
+  isFetchingCompanyExtended?: boolean;
+  receiveCollapseStates?: (...args: Array<any>) => any;
 };
 
 const DownloadableFiles = ({
@@ -53,12 +53,12 @@ const DownloadableFiles = ({
         </LoaderWrapper>
       )}
       {!isFetchingCompanyExtended && (
-        <Fragment>
+        <>
           {!companyExtended && (
             <FormText>Ladattavia tiedostoja ei saatavilla</FormText>
           )}
           {!!companyExtended && (
-            <Fragment>
+            <>
               <Row>
                 <Column>
                   <FileDownloadLink
@@ -87,9 +87,9 @@ const DownloadableFiles = ({
                   />
                 </Column>
               </Row>
-            </Fragment>
+            </>
           )}
-        </Fragment>
+        </>
       )}
     </Collapse>
   );

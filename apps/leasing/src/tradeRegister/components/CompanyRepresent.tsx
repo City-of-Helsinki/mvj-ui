@@ -152,13 +152,13 @@ const NaturalPerson = ({ person }: NaturalPersonProps) => {
 
 type Props = {
   businessId: string;
-  companyRepresent: Record<string, any> | null | undefined;
-  companyRepresentCollapseState: boolean | null | undefined;
-  companyRepresentBodyCollapseState: boolean | null | undefined;
-  companyRepresentLegalRepresentationCollapseState: boolean | null | undefined;
-  companyRepresentRepresentationCollapseState: boolean | null | undefined;
-  isFetchingCompanyRepresent: boolean;
-  receiveCollapseStates: (...args: Array<any>) => any;
+  companyRepresent?: Record<string, any> | null;
+  companyRepresentCollapseState?: boolean | null;
+  companyRepresentBodyCollapseState?: boolean | null;
+  companyRepresentLegalRepresentationCollapseState?: boolean | null;
+  companyRepresentRepresentationCollapseState?: boolean | null;
+  isFetchingCompanyRepresent?: boolean;
+  receiveCollapseStates?: (...args: Array<any>) => any;
 };
 
 const CompanyRepresent = ({
