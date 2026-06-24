@@ -1,9 +1,8 @@
-import React from "react";
+import React, { memo } from "react";
 import { Row, Column } from "@/components/grid/Grid";
 import { Form, Field } from "react-final-form";
-import flowRight from "lodash/flowRight";
 import Button from "@/components/button/Button";
-import FormField from "@/components/form/final-form/FormField"; // Adjusted import to match final-form usage
+import FormField from "@/components/form/final-form/FormField";
 import SearchInputColumn from "@/components/search/SearchInputColumn";
 import SearchLabel from "@/components/search/SearchLabel";
 import SearchLabelColumn from "@/components/search/SearchLabelColumn";
@@ -74,4 +73,4 @@ const Search: React.FC<Props> = ({ onSearch, initialValues }) => {
   );
 };
 
-export default flowRight(Search) as React.ComponentType<any>;
+export default memo(Search);

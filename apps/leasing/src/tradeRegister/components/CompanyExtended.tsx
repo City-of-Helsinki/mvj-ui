@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React, { memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
 import get from "lodash/get";
 import Collapse from "@/components/collapse/Collapse";
@@ -30,43 +30,64 @@ import {
   getCompanyExtendedById,
   getIsFetchingCompanyExtendedById,
 } from "@/tradeRegister/selectors";
+import type { RootState } from "@/root/types";
+
 type Props = {
   businessId: string;
-  companyExtended?: Record<string, any> | null;
-  companyExtendedCollapseState?: boolean | null;
-  companyNameCollapseState?: boolean | null;
-  contactInformationCollapseState?: boolean | null;
-  isFetchingCompanyExtended?: boolean;
-  receiveCollapseStates?: (...args: Array<any>) => any;
 };
 
-const CompanyExtended = ({
-  businessId,
-  companyExtended,
-  companyExtendedCollapseState,
-  companyNameCollapseState,
-  contactInformationCollapseState,
-  isFetchingCompanyExtended,
-  receiveCollapseStates,
-}: Props) => {
+const CompanyExtended = ({ businessId }: Props) => {
+  const dispatch = useDispatch();
+
+  const companyExtended = useSelector((state: RootState) =>
+    getCompanyExtendedById(state, businessId),
+  );
+  const companyExtendedCollapseState = useSelector((state: RootState) =>
+    getCollapseStateByKey(
+      state,
+      `${CollapseStatePaths.COMPANY_EXTENDED}.${businessId}`,
+    ),
+  );
+  const companyNameCollapseState = useSelector((state: RootState) =>
+    getCollapseStateByKey(
+      state,
+      `${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldTitles.COMPANY_NAME}.${businessId}`,
+    ),
+  );
+  const contactInformationCollapseState = useSelector((state: RootState) =>
+    getCollapseStateByKey(
+      state,
+      `${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldTitles.CONTACT_INFORMATION}.${businessId}`,
+    ),
+  );
+  const isFetchingCompanyExtended = useSelector((state: RootState) =>
+    getIsFetchingCompanyExtendedById(state, businessId),
+  );
+
   const handleCollapseToggleCompanyExtended = (val: boolean) => {
-    receiveCollapseStates({
-      [`${CollapseStatePaths.COMPANY_EXTENDED}.${businessId}`]: val,
-    });
+    dispatch(
+      receiveCollapseStates({
+        [`${CollapseStatePaths.COMPANY_EXTENDED}.${businessId}`]: val,
+      }),
+    );
   };
 
   const handleCollapseToggleCompanyName = (val: boolean) => {
-    receiveCollapseStates({
-      [`${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldPaths.COMPANY_NAME}.${businessId}`]:
-        val,
-    });
+    dispatch(
+      receiveCollapseStates({
+        [`${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldPaths.COMPANY_NAME}.${businessId}`]:
+          val,
+      }),
+    );
   };
 
   const handleCollapseToggleContactInformation = (val: boolean) => {
-    receiveCollapseStates({
-      [`${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldPaths.CONTACT_INFORMATION}.${businessId}`]:
-        val,
-    });
+    dispatch(
+      receiveCollapseStates({
+        [`${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldPaths.CONTACT_INFORMATION}.${businessId}`]:
+          val,
+      }),
+    );
   };
 
   const auxiliaryCompanyNames = get(
@@ -105,12 +126,12 @@ const CompanyExtended = ({
         </LoaderWrapper>
       )}
       {!isFetchingCompanyExtended && (
-        <Fragment>
+        <>
           {!companyExtended && (
             <FormText>Laajennetut perustiedot ei saatavilla</FormText>
           )}
           {!!companyExtended && (
-            <Fragment>
+            <>
               <Row>
                 <Column small={12} medium={4} large={2}>
                   <FormTextTitle
@@ -614,7 +635,7 @@ const CompanyExtended = ({
                   <FormText>Ei rinnakkaistoiminimiä</FormText>
                 )}
                 {!!parallelCompanyNames.length && (
-                  <Fragment>
+                  <>
                     <Row>
                       <Column small={4} large={2}>
                         <FormTextTitle
@@ -674,7 +695,7 @@ const CompanyExtended = ({
                         );
                       })}
                     </ListItems>
-                  </Fragment>
+                  </>
                 )}
 
                 <SubTitle
@@ -689,7 +710,7 @@ const CompanyExtended = ({
                   <FormText>Ei aputoiminimiä</FormText>
                 )}
                 {!!auxiliaryCompanyNames.length && (
-                  <Fragment>
+                  <>
                     <Row>
                       <Column small={3} large={2}>
                         <FormTextTitle
@@ -767,7 +788,7 @@ const CompanyExtended = ({
                         );
                       })}
                     </ListItems>
-                  </Fragment>
+                  </>
                 )}
 
                 <SubTitle
@@ -782,7 +803,7 @@ const CompanyExtended = ({
                   <FormText>Ei entisiä nimiä</FormText>
                 )}
                 {!!historicalNames.length && (
-                  <Fragment>
+                  <>
                     <Row>
                       <Column small={4} large={2}>
                         <FormTextTitle
@@ -840,7 +861,7 @@ const CompanyExtended = ({
                         );
                       })}
                     </ListItems>
-                  </Fragment>
+                  </>
                 )}
               </Collapse>
 
@@ -1140,37 +1161,12 @@ const CompanyExtended = ({
                   </Column>
                 </Row>
               </Collapse>
-            </Fragment>
+            </>
           )}
-        </Fragment>
+        </>
       )}
     </Collapse>
   );
 };
 
-export default connect(
-  (state, props: Props) => {
-    return {
-      companyExtended: getCompanyExtendedById(state, props.businessId),
-      companyExtendedCollapseState: getCollapseStateByKey(
-        state,
-        `${CollapseStatePaths.COMPANY_EXTENDED}.${props.businessId}`,
-      ),
-      companyNameCollapseState: getCollapseStateByKey(
-        state,
-        `${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldTitles.COMPANY_NAME}.${props.businessId}`,
-      ),
-      contactInformationCollapseState: getCollapseStateByKey(
-        state,
-        `${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldTitles.CONTACT_INFORMATION}.${props.businessId}`,
-      ),
-      isFetchingCompanyExtended: getIsFetchingCompanyExtendedById(
-        state,
-        props.businessId,
-      ),
-    };
-  },
-  {
-    receiveCollapseStates,
-  },
-)(CompanyExtended);
+export default memo(CompanyExtended);

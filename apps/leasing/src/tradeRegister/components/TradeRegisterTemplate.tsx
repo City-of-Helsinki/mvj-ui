@@ -1,6 +1,5 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
+import React, { useEffect, memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import CompanyExtended from "@/tradeRegister/components/CompanyExtended";
 import CompanyNotice from "@/tradeRegister/components/CompanyNotice";
 import CompanyRepresent from "@/tradeRegister/components/CompanyRepresent";
@@ -21,47 +20,35 @@ import {
   getIsFetchingCompanyRepresentById,
 } from "@/tradeRegister/selectors";
 import { FLAG_TRADE_REGISTER_RYYTI } from "@/featureFlags";
+import type { RootState } from "@/root/types";
 
 type Props = {
   businessId: string;
-  companyExtended: Record<string, any> | null | undefined;
-  companyNotice: Record<string, any> | null | undefined;
-  companyRepresent: Record<string, any> | null | undefined;
-  fetchTradeRegisterCompanyExtendedById: (...args: Array<any>) => any;
-  fetchTradeRegisterCompanyNoticeById: (...args: Array<any>) => any;
-  fetchTradeRegisterCompanyRepresentById: (...args: Array<any>) => any;
-  isFetchingCompanyExtended: boolean;
-  isFetchingCompanyNotice: boolean;
-  isFetchingCompanyRepresent: boolean;
 };
 
-class TradeRegisterTemplate extends PureComponent<Props> {
-  componentDidMount() {
-    this.fetchCompanyDataIfNeeded();
-  }
+const TradeRegisterTemplate = ({ businessId }: Props) => {
+  const dispatch = useDispatch();
 
-  componentDidUpdate(prevProps: Props) {
-    const { businessId } = this.props;
+  const companyExtended = useSelector((state: RootState) =>
+    getCompanyExtendedById(state, businessId),
+  );
+  const companyNotice = useSelector((state: RootState) =>
+    getCompanyNoticeById(state, businessId),
+  );
+  const companyRepresent = useSelector((state: RootState) =>
+    getCompanyRepresentById(state, businessId),
+  );
+  const isFetchingCompanyExtended = useSelector((state: RootState) =>
+    getIsFetchingCompanyExtendedById(state, businessId),
+  );
+  const isFetchingCompanyNotice = useSelector((state: RootState) =>
+    getIsFetchingCompanyNoticeById(state, businessId),
+  );
+  const isFetchingCompanyRepresent = useSelector((state: RootState) =>
+    getIsFetchingCompanyRepresentById(state, businessId),
+  );
 
-    if (businessId !== prevProps.businessId) {
-      this.fetchCompanyDataIfNeeded();
-    }
-  }
-
-  fetchCompanyDataIfNeeded = () => {
-    const {
-      businessId,
-      companyExtended,
-      companyNotice,
-      companyRepresent,
-      fetchTradeRegisterCompanyExtendedById,
-      fetchTradeRegisterCompanyNoticeById,
-      fetchTradeRegisterCompanyRepresentById,
-      isFetchingCompanyExtended,
-      isFetchingCompanyNotice,
-      isFetchingCompanyRepresent,
-    } = this.props;
-
+  useEffect(() => {
     if (!businessId) return;
 
     const needsExtended =
@@ -73,75 +60,41 @@ class TradeRegisterTemplate extends PureComponent<Props> {
     if (FLAG_TRADE_REGISTER_RYYTI) {
       if (needsExtended || needsNotice || needsRepresent) {
         // Any of the actions will trigger the unified Ryyti fetch
-        fetchTradeRegisterCompanyExtendedById(businessId);
+        dispatch(fetchTradeRegisterCompanyExtendedById(businessId));
       }
       return;
     }
 
-    if (needsExtended) fetchTradeRegisterCompanyExtendedById(businessId);
-    if (needsNotice) fetchTradeRegisterCompanyNoticeById(businessId);
-    if (needsRepresent) fetchTradeRegisterCompanyRepresentById(businessId);
-  };
+    if (needsExtended)
+      dispatch(fetchTradeRegisterCompanyExtendedById(businessId));
+    if (needsNotice) dispatch(fetchTradeRegisterCompanyNoticeById(businessId));
+    if (needsRepresent)
+      dispatch(fetchTradeRegisterCompanyRepresentById(businessId));
+  }, [businessId, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  render() {
-    const {
-      businessId,
-      isFetchingCompanyExtended,
-      isFetchingCompanyNotice,
-      isFetchingCompanyRepresent,
-    } = this.props;
-
-    if (
-      isFetchingCompanyExtended &&
-      isFetchingCompanyNotice &&
-      isFetchingCompanyRepresent
-    ) {
-      return (
-        <LoaderWrapper>
-          <Loader isLoading={true} />
-        </LoaderWrapper>
-      );
-    }
-
+  if (
+    isFetchingCompanyExtended &&
+    isFetchingCompanyNotice &&
+    isFetchingCompanyRepresent
+  ) {
     return (
-      <>
-        <DownloadableFiles businessId={businessId} />
-
-        <CompanyExtended businessId={businessId} />
-
-        <CompanyRepresent businessId={businessId} />
-
-        <CompanyNotice businessId={businessId} />
-      </>
+      <LoaderWrapper>
+        <Loader isLoading={true} />
+      </LoaderWrapper>
     );
   }
-}
 
-export default flowRight(
-  connect(
-    (state, props: Props) => {
-      return {
-        companyExtended: getCompanyExtendedById(state, props.businessId),
-        companyNotice: getCompanyNoticeById(state, props.businessId),
-        companyRepresent: getCompanyRepresentById(state, props.businessId),
-        isFetchingCompanyExtended: getIsFetchingCompanyExtendedById(
-          state,
-          props.businessId,
-        ),
-        isFetchingCompanyNotice: getIsFetchingCompanyNoticeById(
-          state,
-          props.businessId,
-        ),
-        isFetchingCompanyRepresent: getIsFetchingCompanyRepresentById(
-          state,
-          props.businessId,
-        ),
-      };
-    },
-    {
-      fetchTradeRegisterCompanyExtendedById,
-      fetchTradeRegisterCompanyNoticeById,
-      fetchTradeRegisterCompanyRepresentById,
-    },
-  ),
-)(TradeRegisterTemplate);
+  return (
+    <>
+      <DownloadableFiles businessId={businessId} />
+
+      <CompanyExtended businessId={businessId} />
+
+      <CompanyRepresent businessId={businessId} />
+
+      <CompanyNotice businessId={businessId} />
+    </>
+  );
+};
+
+export default memo(TradeRegisterTemplate);

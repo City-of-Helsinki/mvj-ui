@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import { Row, Column } from "@/components/grid/Grid";
 import isEmpty from "lodash/isEmpty";
@@ -24,21 +24,20 @@ import {
   getIsFetching as getIsFetchingUsersPermissions,
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import type { RootState } from "@/root/types";
 
-type Props = {
-  isFetchingUsersPermissions: boolean;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
-};
-
-const TradeRegisterSearchPage: React.FC<Props> = ({
-  isFetchingUsersPermissions,
-  receiveTopNavigationSettings,
-  usersPermissions,
-}) => {
+const TradeRegisterSearchPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+
+  const isFetchingUsersPermissions = useSelector((state: RootState) =>
+    getIsFetchingUsersPermissions(state),
+  );
+  const usersPermissions = useSelector((state: RootState) =>
+    getUsersPermissions(state),
+  );
+
   const [businessId, setBusinessId] = useState<string>("");
   const [searchFormInitialValues, setSearchFormInitialValues] = useState<
     Record<string, any>
@@ -46,24 +45,17 @@ const TradeRegisterSearchPage: React.FC<Props> = ({
 
   // On mount
   useEffect(() => {
-    const query = getUrlParams(location.search);
     setPageTitle("Kaupparekisterihaku");
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.TRADE_REGISTER),
-      pageTitle: "Kaupparekisterihaku",
-      showSearch: false,
-    });
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.TRADE_REGISTER),
+        pageTitle: "Kaupparekisterihaku",
+        showSearch: false,
+      }),
+    );
+  }, [dispatch]);
 
-    if (query.business_id) {
-      setBusinessId(query.business_id);
-      setSearchFormInitialValues({ business_id: query.business_id });
-    } else {
-      setSearchFormInitialValues({});
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // On location.search change
+  // On location.search change (includes initial mount)
   useEffect(() => {
     const query = getUrlParams(location.search);
     setBusinessId(query.business_id || "");
@@ -119,14 +111,4 @@ const TradeRegisterSearchPage: React.FC<Props> = ({
   );
 };
 
-export default connect(
-  (state) => {
-    return {
-      isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  },
-  {
-    receiveTopNavigationSettings,
-  },
-)(TradeRegisterSearchPage) as React.FC<Props>;
+export default TradeRegisterSearchPage;
