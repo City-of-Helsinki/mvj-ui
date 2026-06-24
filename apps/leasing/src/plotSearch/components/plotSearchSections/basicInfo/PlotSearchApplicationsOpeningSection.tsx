@@ -4,7 +4,7 @@ import { formValueSelector, reduxForm } from "redux-form";
 import { connect } from "react-redux";
 import { flowRight } from "lodash/util";
 import type { RootState } from "@/root/types";
-import { Column, Row } from "react-foundation";
+import { Column, Row } from "@/components/grid/Grid";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import {
   PlotApplicationOpeningRecordLabels,

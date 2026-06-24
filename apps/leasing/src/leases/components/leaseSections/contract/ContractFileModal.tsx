@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import Button from "@/components/button/Button";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
 import FormText from "@/components/form/FormText";

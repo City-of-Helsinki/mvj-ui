@@ -2,7 +2,7 @@ import React, { Fragment, PureComponent } from "react";
 import flowRight from "lodash/flowRight";
 import isArray from "lodash/isArray";
 import { connect } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { formValueSelector, initialize, reduxForm } from "redux-form";
 import {
   withRouterLegacy,

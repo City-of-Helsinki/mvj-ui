@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import classNames from "classnames";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import AccordionIcon from "@/components/icons/AccordionIcon";
 import ArchiveButton from "@/components/form/ArchiveButton";
 import CollapseHeaderTitle from "./CollapseHeaderTitle";

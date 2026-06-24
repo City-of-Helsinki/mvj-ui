@@ -6,7 +6,7 @@ import {
   withRouterLegacy,
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { initialize } from "redux-form";
 import Search from "@/plotApplications/components/search/Search";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";

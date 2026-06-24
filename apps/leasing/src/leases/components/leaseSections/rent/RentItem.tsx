@@ -1,5 +1,5 @@
 import React from "react";
-import { Column } from "react-foundation";
+import { Column } from "@/components/grid/Grid";
 import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";
 import BasicInfo from "./BasicInfo";

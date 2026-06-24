@@ -1,7 +1,7 @@
 import React, { Fragment, PureComponent } from "react";
 import flowRight from "lodash/flowRight";
 import { connect } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { initialize } from "redux-form";
 import {
   withRouterLegacy,

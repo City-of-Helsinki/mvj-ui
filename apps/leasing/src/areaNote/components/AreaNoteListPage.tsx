@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { connect } from "react-redux";
 import {
   withRouterLegacy,

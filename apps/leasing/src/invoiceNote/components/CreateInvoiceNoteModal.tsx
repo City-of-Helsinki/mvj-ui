@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { reduxForm } from "redux-form";
 import { connect } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import flowRight from "lodash/flowRight";
 import Button from "@/components/button/Button";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";

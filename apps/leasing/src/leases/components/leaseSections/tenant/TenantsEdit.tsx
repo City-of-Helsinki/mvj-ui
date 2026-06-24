@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
 import { FieldArray } from "react-final-form-arrays";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import Authorization from "@/components/authorization/Authorization";
 import AddButton from "@/components/form/AddButton";

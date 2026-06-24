@@ -1,6 +1,6 @@
 import React, { Fragment, PureComponent, ReactElement } from "react";
 import { connect } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { formValueSelector, FieldArray, reduxForm, change } from "redux-form";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";

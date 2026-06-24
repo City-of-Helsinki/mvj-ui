@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import AddButton from "@/components/form/AddButton";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";

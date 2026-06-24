@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import Button from "@/components/button/Button";
 import EditButton from "@/components/button/EditButton";
 import ShowMore from "@/components/showMore/ShowMore";

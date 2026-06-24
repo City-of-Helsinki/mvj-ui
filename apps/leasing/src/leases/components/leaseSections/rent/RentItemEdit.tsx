@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FieldArray } from "react-final-form-arrays";
-import { Column } from "react-foundation";
+import { Column } from "@/components/grid/Grid";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";

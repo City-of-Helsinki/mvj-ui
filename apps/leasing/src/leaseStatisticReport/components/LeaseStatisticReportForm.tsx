@@ -6,7 +6,7 @@ import {
   getFormValues,
   reduxForm,
 } from "redux-form";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import flowRight from "lodash/flowRight";
 import Button from "@/components/button/Button";
 import { ButtonColors } from "@/components/enums";

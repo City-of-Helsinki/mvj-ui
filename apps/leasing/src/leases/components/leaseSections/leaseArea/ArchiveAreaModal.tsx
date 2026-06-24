@@ -1,6 +1,6 @@
 import React from "react";
 import { useRef, useEffect } from "react";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { useSelector } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";

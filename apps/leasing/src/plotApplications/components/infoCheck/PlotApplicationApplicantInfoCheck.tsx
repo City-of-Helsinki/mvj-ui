@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Column, Row } from "react-foundation";
+import { Column, Row } from "@/components/grid/Grid";
 import { connect } from "react-redux";
 import { getFieldOptions, getLabelOfOption } from "@/util/helpers";
 import { getUserFullName } from "@/users/helpers";

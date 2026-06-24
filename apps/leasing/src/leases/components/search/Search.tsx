@@ -10,7 +10,7 @@ import {
   getFormValues,
   reduxForm,
 } from "redux-form";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import debounce from "lodash/debounce";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";

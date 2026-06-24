@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { useDispatch, useSelector } from "react-redux";
 import classNames from "classnames";
 import get from "lodash/get";

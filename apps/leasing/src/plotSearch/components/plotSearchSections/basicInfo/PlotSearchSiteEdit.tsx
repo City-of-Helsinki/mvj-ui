@@ -1,7 +1,7 @@
 import React, { Fragment, Component, ReactElement } from "react";
 import { connect } from "react-redux";
 import { FieldArray, formValueSelector } from "redux-form";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import flowRight from "lodash/flowRight";

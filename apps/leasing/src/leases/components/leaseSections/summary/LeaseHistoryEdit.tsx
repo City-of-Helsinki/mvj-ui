@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import { useDispatch, useSelector } from "react-redux";
 import { ActionTypes } from "@/app/AppContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";

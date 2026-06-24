@@ -1,5 +1,5 @@
 import React from "react";
-import { Column, Row } from "react-foundation";
+import { Column, Row } from "@/components/grid/Grid";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import FormText from "@/components/form/FormText";

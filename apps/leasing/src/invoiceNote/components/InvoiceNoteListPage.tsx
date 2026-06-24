@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { initialize } from "redux-form";
 import { withRouterLegacy, WithRouterProps } from "@/root/withRouterLegacy";
-import { Row, Column } from "react-foundation";
+import { Row, Column } from "@/components/grid/Grid";
 import flowRight from "lodash/flowRight";
 import isEmpty from "lodash/isEmpty";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";

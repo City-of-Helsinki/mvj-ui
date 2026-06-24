@@ -1,5 +1,5 @@
 import React from "react";
-import { Row } from "react-foundation";
+import { Row } from "@/components/grid/Grid";
 import { connect } from "react-redux";
 import {
   getCurrentPlotSearch,
