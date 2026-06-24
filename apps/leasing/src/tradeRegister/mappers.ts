@@ -2,9 +2,129 @@ import get from "lodash/get";
 
 const BUSINESS_ID_REGEX = /^\d{7}-\d$/;
 
-const getCode = (
-  value: Record<string, any> | null | undefined,
-): string | null => get(value, "code", null);
+const ENTRY_TYPES = {
+  BUSINESS_LINE: ["TAL"],
+  DOMICILE: ["KOTI", "KOTIM"],
+  SHARE_CAPITAL: ["OPO"],
+  SHARE_COUNT: ["OSLUKU"],
+  NOMINAL_VALUE: ["NIMAR"],
+  REGISTERED_NAME: ["TMI"],
+  PARALLEL_NAME: ["TMIR"],
+  AUXILIARY_NAME: ["TMIA"],
+  AUXILIARY_LINE_OF_BUSINESS: ["TALA"],
+  DISSOLUTION_OR_TERMINATION: ["OIKP"],
+  LEGAL_REPRESENTATION: ["NIML", "NIMA", "SELA"],
+  NOTICE_FALLBACK: ["SELAS"],
+} as const;
+
+type CodeValue = {
+  code?: string | null;
+};
+
+type ValueWithCode = string | CodeValue | null | undefined;
+
+type Address = {
+  coAddress?: string | null;
+  streetName?: string | null;
+  houseNumber?: string | null;
+  postcode?: ValueWithCode;
+  city?: string | null;
+  countryCode?: ValueWithCode;
+};
+
+type ContactDetails = {
+  internetAddress?: string | null;
+  emailAddress?: string | null;
+  telephoneNumber?: string | null;
+  mobilePhoneNumber?: string | null;
+  faxNumber?: string | null;
+  companyAddress?: {
+    postalAddress?: Address;
+    streetAddress?: Address;
+  };
+};
+
+type CompanyDetails = {
+  businessId?: string | null;
+  tradeRegisterNumber?: string | null;
+  registerTime?: string | null;
+  name?: string | null;
+  companyFormCode?: ValueWithCode;
+  companyStatusCode?: ValueWithCode;
+};
+
+type CompanyNameHistoryItem = {
+  name?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+};
+
+type FinancialStatement = {
+  accountingPeriodEndDate?: string | null;
+};
+
+type PersonLike = {
+  identification?: string | null;
+  name?: string | null;
+  rolecode?: ValueWithCode;
+  dateOfBirth?: string | null;
+  representingWayCode?: ValueWithCode;
+  groupnumber?: number | null;
+};
+
+type JuridicPerson = {
+  businessId?: string | null;
+  name?: string | null;
+  registerCode?: ValueWithCode;
+};
+
+type RegistryEntry = {
+  "@type"?: string;
+  startTime?: string | null;
+  endTime?: string | null;
+  companyName?: string | null;
+  businessLine?: string | null;
+  dissolutionDate?: string | null;
+  municipalCode?: ValueWithCode;
+  amount?: number | string | null;
+  count?: number | string | null;
+  nominalValue?: number | string | null;
+  convertedRegistryEntryText?: string | null;
+  registerEntryText?: string | null;
+  representingWayCode?: ValueWithCode;
+  companyStatus?: string | null;
+  matterTypeCode?: ValueWithCode;
+  notificationTypeCode?: ValueWithCode;
+  personList?: PersonLike[];
+  identificationNameList?: PersonLike[];
+  groupedPersonList?: PersonLike[];
+};
+
+type StructuredExtractQueryResult = {
+  companyDetails?: CompanyDetails;
+  contactDetails?: ContactDetails;
+  companyNameHistoryList?: CompanyNameHistoryItem[];
+  financialStatementList?: FinancialStatement[];
+  registryEntryList?: RegistryEntry[];
+  juridicPersonList?: JuridicPerson[];
+};
+
+type NotificationItem = {
+  notificationType?: ValueWithCode;
+  notificationRecordNumber?: string | null;
+  notificationArrivalTimestamp?: string | null;
+  notificationClosingTimestamp?: string | null;
+  notificationState?: ValueWithCode;
+  publicNotificationLastPhase?: ValueWithCode;
+};
+
+type NotificationsQueryResult = {
+  pendingNotifications?: NotificationItem[];
+  handledNotifications?: NotificationItem[];
+};
+
+const getCode = (value: CodeValue | null | undefined): string | null =>
+  get(value, "code", null);
 
 const splitName = (name: string | null | undefined) => {
   if (!name) {
@@ -37,134 +157,367 @@ const normalizeBirthDate = (
   return null;
 };
 
-const toCodeOrValue = (value: any): string | null => {
+const toCodeOrValue = (value: ValueWithCode): string | null => {
   if (typeof value === "string") return value;
   return getCode(value);
 };
 
 const getEntriesByType = (
-  queryResult: Record<string, any>,
-  types: string[],
-): Array<Record<string, any>> => {
-  const entries = get(queryResult, "registryEntryList", []);
-  return entries.filter((entry: Record<string, any>) =>
-    types.includes(entry?.["@type"]),
-  );
+  queryResult: StructuredExtractQueryResult,
+  types: readonly string[],
+): RegistryEntry[] => {
+  const entries = queryResult.registryEntryList || [];
+  return entries.filter((entry) => types.includes(entry["@type"] || ""));
 };
 
-const getLatestEntry = (
-  queryResult: Record<string, any>,
-  types: string[],
-): Record<string, any> | null => {
-  const entries = getEntriesByType(queryResult, types);
-  if (!entries.length) return null;
+const getLatestByDate = <T extends object>(
+  items: T[] | null | undefined,
+  dateField: string,
+): T | null => {
+  if (!items || !items.length) return null;
 
-  return entries.slice().sort((a, b) => {
-    const aTime = new Date(get(a, "startTime", 0)).getTime();
-    const bTime = new Date(get(b, "startTime", 0)).getTime();
+  return items.slice().sort((a, b) => {
+    const aValue = get(a, dateField, 0) as string | number | Date;
+    const bValue = get(b, dateField, 0) as string | number | Date;
+    const aTime = new Date(aValue).getTime();
+    const bTime = new Date(bValue).getTime();
     return bTime - aTime;
   })[0];
 };
 
+const getLatestEntry = (
+  queryResult: StructuredExtractQueryResult,
+  types: readonly string[],
+): RegistryEntry | null => {
+  const entries = getEntriesByType(queryResult, types);
+  return getLatestByDate(entries, "startTime");
+};
+
+const mapNameHistory = (item: CompanyNameHistoryItem) => ({
+  name: item.name || null,
+  registrationDate: item.startDate || null,
+  expirationDate: item.endDate || null,
+});
+
+const mapAddress = (address: Address | null | undefined) => ({
+  co: address?.coAddress || null,
+  streetAddress:
+    [address?.streetName, address?.houseNumber].filter(Boolean).join(" ") ||
+    null,
+  zipCode: toCodeOrValue(address?.postcode) || null,
+  city: address?.city || null,
+  country: toCodeOrValue(address?.countryCode) || null,
+});
+
+const mapCompanyNameSection = (
+  companyDetails: CompanyDetails,
+  latestBusinessLine: RegistryEntry | null,
+  latestNameHistory: CompanyNameHistoryItem | null,
+  parallelCompanyNames: RegistryEntry[],
+  nameHistory: CompanyNameHistoryItem[],
+) => ({
+  name: companyDetails.name || null,
+  lineOfBusiness: {
+    value: latestBusinessLine?.businessLine || null,
+  },
+  registrationDate: companyDetails.registerTime || null,
+  expirationDate: latestNameHistory?.endDate || null,
+  parallelCompanyName: parallelCompanyNames.map((entry) => ({
+    name: entry.companyName || null,
+    lineOfBusiness: null,
+    expirationDate: entry.endTime || null,
+    registrationDate: entry.startTime || null,
+  })),
+  historicalNames: nameHistory.map(mapNameHistory),
+});
+
+const mapAuxiliaryCompanyNamesSection = (
+  auxiliaryCompanyName: RegistryEntry | null,
+  auxiliaryCompanyLineOfBusiness: RegistryEntry | null,
+) => {
+  if (!auxiliaryCompanyName?.companyName) {
+    return [];
+  }
+
+  return [
+    {
+      name: auxiliaryCompanyName.companyName || null,
+      lineOfBusiness: auxiliaryCompanyLineOfBusiness?.businessLine || null,
+      expirationDate: auxiliaryCompanyName.endTime || null,
+      registrationDate: auxiliaryCompanyName.startTime || null,
+    },
+  ];
+};
+
+const mapContactInformationSection = (contactDetails: ContactDetails) => ({
+  homepage: contactDetails.internetAddress || null,
+  email: contactDetails.emailAddress || null,
+  phone: {
+    number: [
+      contactDetails.telephoneNumber,
+      contactDetails.mobilePhoneNumber,
+    ].filter(Boolean),
+  },
+  fax: {
+    number: [contactDetails.faxNumber].filter(Boolean),
+  },
+  postal: mapAddress(contactDetails.companyAddress?.postalAddress),
+  visitation: mapAddress(contactDetails.companyAddress?.streetAddress),
+});
+
+const mapDomicileSection = (latestDomicile: RegistryEntry | null) => ({
+  code: toCodeOrValue(latestDomicile?.municipalCode) || null,
+  registrationDate: latestDomicile?.startTime || null,
+  expirationDate: latestDomicile?.endTime || null,
+});
+
+const mapFormSection = (
+  companyDetails: CompanyDetails,
+  latestBusinessLine: RegistryEntry | null,
+) => ({
+  type: toCodeOrValue(companyDetails.companyFormCode) || null,
+  registrationDate: latestBusinessLine?.startTime || null,
+  expirationDate: latestBusinessLine?.endTime || null,
+});
+
+const mapShareCapitalSection = (
+  latestShareCount: RegistryEntry | null,
+  latestShareCapital: RegistryEntry | null,
+  latestNominalValue: RegistryEntry | null,
+) => ({
+  amountOfShares: latestShareCount?.count || null,
+  currency: null,
+  value: latestShareCapital?.amount || null,
+  paidValue: null,
+  nominalValue: latestNominalValue?.nominalValue || null,
+  registrationDate: latestShareCapital?.startTime || null,
+  expirationDate: latestShareCapital?.endTime || null,
+});
+
+const mapStateSection = (
+  companyDetails: CompanyDetails,
+  registeredInfoName: RegistryEntry | null,
+) => ({
+  type: toCodeOrValue(companyDetails.companyStatusCode) || null,
+  registrationDate: registeredInfoName?.startTime || null,
+  expirationDate: registeredInfoName?.endTime || null,
+});
+
+const isJuristicPerson = (
+  person: PersonLike,
+  juridicPeople: JuridicPerson[],
+) => {
+  const identification = person.identification || "";
+  return (
+    BUSINESS_ID_REGEX.test(identification) ||
+    juridicPeople.some(
+      (juridic) =>
+        juridic.businessId === identification || juridic.name === person.name,
+    )
+  );
+};
+
+const getEntryPersons = (entry: RegistryEntry): PersonLike[] => [
+  ...(entry.personList || []),
+  ...(entry.identificationNameList || []),
+];
+
+const groupByGroupNumber = (groupedPersons: PersonLike[]) =>
+  groupedPersons.reduce<Record<string, PersonLike[]>>((acc, item) => {
+    const key = String(item.groupnumber || 1);
+    acc[key] = acc[key] || [];
+    acc[key].push(item);
+    return acc;
+  }, {});
+
 const mapRyytiPersonToNatural = (
-  person: Record<string, any>,
+  person: PersonLike,
   roleOverride: string | null = null,
 ) => {
-  const name = get(person, "name");
+  const name = person.name;
   const { firstname, surname } = splitName(name);
 
   return {
-    role: roleOverride || toCodeOrValue(get(person, "rolecode")) || null,
+    role: roleOverride || toCodeOrValue(person.rolecode) || null,
     firstname,
     surname,
     dateOfBirth:
-      normalizeBirthDate(get(person, "identification")) ||
-      get(person, "dateOfBirth") ||
-      null,
+      normalizeBirthDate(person.identification) || person.dateOfBirth || null,
   };
 };
 
 const mapRyytiPersonToJuristic = (
-  person: Record<string, any>,
-  juridicPeople: Array<Record<string, any>>,
+  person: PersonLike,
+  juridicPeople: JuridicPerson[],
   roleOverride: string | null = null,
 ) => {
-  const identification = get(person, "identification", "");
-  const name = get(person, "name", null);
+  const identification = person.identification || "";
+  const name = person.name || null;
 
   const matchByBusinessId = juridicPeople.find(
-    (item) => get(item, "businessId") === identification,
+    (item) => item.businessId === identification,
   );
-  const matchByName = juridicPeople.find((item) => get(item, "name") === name);
+  const matchByName = juridicPeople.find((item) => item.name === name);
   const match = matchByBusinessId || matchByName;
 
   return {
-    role: roleOverride || toCodeOrValue(get(person, "rolecode")) || null,
-    name: name || get(match, "name") || null,
+    role: roleOverride || toCodeOrValue(person.rolecode) || null,
+    name: name || match?.name || null,
     businessId:
-      get(match, "businessId") ||
+      match?.businessId ||
       (BUSINESS_ID_REGEX.test(identification) ? identification : null),
-    register: toCodeOrValue(get(match, "registerCode")) || null,
+    register: toCodeOrValue(match?.registerCode) || null,
     registrationNumber: null,
   };
 };
 
-const mapNameHistory = (item: Record<string, any>) => ({
-  name: get(item, "name") || null,
-  registrationDate: get(item, "startDate") || null,
-  expirationDate: get(item, "endDate") || null,
+const mapBodyEntry = (
+  entry: RegistryEntry,
+  juridicPeople: JuridicPerson[],
+) => ({
+  type: entry["@type"] || "-",
+  _value_1: getEntryPersons(entry).map((person) => {
+    if (isJuristicPerson(person, juridicPeople)) {
+      return {
+        juristicPerson: mapRyytiPersonToJuristic(person, juridicPeople),
+      };
+    }
+
+    return {
+      naturalPerson: mapRyytiPersonToNatural(person),
+    };
+  }),
 });
 
-const mapAddress = (address: Record<string, any> | null | undefined) => ({
-  co: get(address, "coAddress") || null,
-  streetAddress:
-    [get(address, "streetName"), get(address, "houseNumber")]
-      .filter(Boolean)
-      .join(" ") || null,
-  zipCode: toCodeOrValue(get(address, "postcode")) || null,
-  city: get(address, "city") || null,
-  country: toCodeOrValue(get(address, "countryCode")) || null,
-});
+const mapGroupedPersons = (
+  items: PersonLike[],
+  juridicPeople: JuridicPerson[],
+) => {
+  const naturalPerson: Array<Record<string, unknown>> = [];
+  const juristicPerson: Array<Record<string, unknown>> = [];
+
+  items.forEach((item) => {
+    const identification = item.identification || "";
+    const role = toCodeOrValue(item.representingWayCode);
+    const personWithRole: PersonLike = {
+      ...item,
+      rolecode: role ? { code: role } : null,
+    };
+
+    if (BUSINESS_ID_REGEX.test(identification)) {
+      juristicPerson.push(
+        mapRyytiPersonToJuristic(personWithRole, juridicPeople, role),
+      );
+      return;
+    }
+
+    naturalPerson.push(mapRyytiPersonToNatural(personWithRole, role));
+  });
+
+  return {
+    naturalPerson,
+    juristicPerson,
+  };
+};
+
+const mapRepresentationEntry = (
+  entry: RegistryEntry,
+  juridicPeople: JuridicPerson[],
+) => {
+  const groupedPersons = entry.groupedPersonList || [];
+  const byGroupNumber = groupByGroupNumber(groupedPersons);
+  const groupNumbers = Object.keys(byGroupNumber)
+    .map((value) => Number(value))
+    .sort((a, b) => a - b);
+
+  const primaryGroup = byGroupNumber[String(groupNumbers[0])] || [];
+  const additionalGroup = byGroupNumber[String(groupNumbers[1])] || [];
+  const mappedPrimary = mapGroupedPersons(primaryGroup, juridicPeople);
+  const mappedAdditional = mapGroupedPersons(additionalGroup, juridicPeople);
+
+  return {
+    rule:
+      toCodeOrValue(primaryGroup[0]?.representingWayCode) ||
+      entry.convertedRegistryEntryText ||
+      entry.registerEntryText ||
+      entry["@type"] ||
+      "-",
+    group: mappedPrimary,
+    additionalGroup:
+      mappedAdditional.naturalPerson.length ||
+      mappedAdditional.juristicPerson.length
+        ? mappedAdditional
+        : null,
+  };
+};
+
+const mapLegalRepresentation = (entries: RegistryEntry[]) =>
+  entries
+    .filter((entry) =>
+      ENTRY_TYPES.LEGAL_REPRESENTATION.includes(
+        (entry["@type"] ||
+          "") as (typeof ENTRY_TYPES.LEGAL_REPRESENTATION)[number],
+      ),
+    )
+    .map((entry) => ({
+      header: entry["@type"] || null,
+      text: entry.convertedRegistryEntryText || entry.registerEntryText || null,
+      signingCode: toCodeOrValue(entry.representingWayCode) || null,
+      registrationDate: entry.startTime || null,
+      expireDate: entry.endTime || null,
+    }));
 
 export const mapRyytiStructuredExtractToCompanyExtended = (
-  queryResult: Record<string, any> | null | undefined,
+  queryResult: StructuredExtractQueryResult | null | undefined,
 ): Record<string, any> | null => {
   if (!queryResult) return null;
 
-  const companyDetails = get(queryResult, "companyDetails", {});
-  const contactDetails = get(queryResult, "contactDetails", {});
+  const companyDetails = queryResult.companyDetails || {};
+  const contactDetails = queryResult.contactDetails || {};
 
-  const nameHistory = get(queryResult, "companyNameHistoryList", []);
-  const latestNameHistory = nameHistory
-    .slice()
-    .sort(
-      (a: Record<string, any>, b: Record<string, any>) =>
-        new Date(get(b, "startDate", 0)).getTime() -
-        new Date(get(a, "startDate", 0)).getTime(),
-    )[0];
+  const nameHistory = queryResult.companyNameHistoryList || [];
+  const latestNameHistory = getLatestByDate(nameHistory, "startDate");
 
-  const latestBusinessLine = getLatestEntry(queryResult, ["TAL"]);
-  const latestDomicile = getLatestEntry(queryResult, ["KOTI", "KOTIM"]);
-  const latestShareCapital = getLatestEntry(queryResult, ["OPO"]);
-  const latestShareCount = getLatestEntry(queryResult, ["OSLUKU"]);
-  const latestNominalValue = getLatestEntry(queryResult, ["NIMAR"]);
-  const registeredInfoName = getLatestEntry(queryResult, ["TMI"]);
-  const parallelCompanyNames = getEntriesByType(queryResult, ["TMIR"]);
-  const auxiliaryCompanyName = getLatestEntry(queryResult, ["TMIA"]);
-  const auxiliaryCompanyLineOfBusiness = getLatestEntry(queryResult, ["TALA"]);
-  const dissolutionOrTermination = getLatestEntry(queryResult, ["OIKP"]);
-
-  const latestFinancialStatement = get(
+  const latestBusinessLine = getLatestEntry(
     queryResult,
-    "financialStatementList",
-    [],
-  )
-    .slice()
-    .sort(
-      (a: Record<string, any>, b: Record<string, any>) =>
-        new Date(get(b, "accountingPeriodEndDate", 0)).getTime() -
-        new Date(get(a, "accountingPeriodEndDate", 0)).getTime(),
-    )[0];
+    ENTRY_TYPES.BUSINESS_LINE,
+  );
+  const latestDomicile = getLatestEntry(queryResult, ENTRY_TYPES.DOMICILE);
+  const latestShareCapital = getLatestEntry(
+    queryResult,
+    ENTRY_TYPES.SHARE_CAPITAL,
+  );
+  const latestShareCount = getLatestEntry(queryResult, ENTRY_TYPES.SHARE_COUNT);
+  const latestNominalValue = getLatestEntry(
+    queryResult,
+    ENTRY_TYPES.NOMINAL_VALUE,
+  );
+  const registeredInfoName = getLatestEntry(
+    queryResult,
+    ENTRY_TYPES.REGISTERED_NAME,
+  );
+  const parallelCompanyNames = getEntriesByType(
+    queryResult,
+    ENTRY_TYPES.PARALLEL_NAME,
+  );
+  const auxiliaryCompanyName = getLatestEntry(
+    queryResult,
+    ENTRY_TYPES.AUXILIARY_NAME,
+  );
+  const auxiliaryCompanyLineOfBusiness = getLatestEntry(
+    queryResult,
+    ENTRY_TYPES.AUXILIARY_LINE_OF_BUSINESS,
+  );
+  const dissolutionOrTermination = getLatestEntry(
+    queryResult,
+    ENTRY_TYPES.DISSOLUTION_OR_TERMINATION,
+  );
+
+  const financialStatements = queryResult.financialStatementList || [];
+  const latestFinancialStatement = getLatestByDate(
+    financialStatements,
+    "accountingPeriodEndDate",
+  );
 
   return {
     businessId: get(companyDetails, "businessId") || null,
@@ -173,209 +526,50 @@ export const mapRyytiStructuredExtractToCompanyExtended = (
     dissolutionDate: get(dissolutionOrTermination, "dissolutionDate") || null,
     deliveryDateOfLastFinancialStatement:
       get(latestFinancialStatement, "accountingPeriodEndDate") || null,
-    companyName: {
-      name: get(companyDetails, "name") || null,
-      lineOfBusiness: {
-        value: get(latestBusinessLine, "businessLine") || null,
-      },
-      registrationDate: get(companyDetails, "registerTime") || null,
-      expirationDate: get(latestNameHistory, "endDate") || null,
-      historicalNames: nameHistory.map(mapNameHistory),
-    },
-    auxiliaryCompanyName: [
-      {
-        name: get(auxiliaryCompanyName, "companyName") || null,
-        lineOfBusiness:
-          get(auxiliaryCompanyLineOfBusiness, "businessLine") || null,
-        expirationDate: null,
-        registrationDate: null,
-      },
-    ],
-    contactInformation: {
-      homepage: get(contactDetails, "internetAddress") || null,
-      email: get(contactDetails, "emailAddress") || null,
-      phone: {
-        number: [
-          get(contactDetails, "telephoneNumber"),
-          get(contactDetails, "mobilePhoneNumber"),
-        ].filter(Boolean),
-      },
-      fax: {
-        number: [get(contactDetails, "faxNumber")].filter(Boolean),
-      },
-      postal: mapAddress(get(contactDetails, "companyAddress.postalAddress")),
-      visitation: mapAddress(
-        get(contactDetails, "companyAddress.streetAddress"),
-      ),
-    },
-    domicile: {
-      code: toCodeOrValue(get(latestDomicile, "municipalCode")) || null,
-      registrationDate: get(latestDomicile, "startTime") || null,
-      expirationDate: get(latestDomicile, "endTime") || null,
-    },
-    form: {
-      type: toCodeOrValue(get(companyDetails, "companyFormCode")) || null,
-      registrationDate: get(latestBusinessLine, "startTime") || null,
-      expirationDate: get(latestBusinessLine, "endTime") || null,
-    },
-    shareCapital: {
-      amountOfShares: get(latestShareCount, "count") || null,
-      currency: null,
-      value: get(latestShareCapital, "amount") || null,
-      paidValue: null,
-      nominalValue: get(latestNominalValue, "nominalValue") || null,
-      registrationDate: get(latestShareCapital, "startTime") || null,
-      expirationDate: get(latestShareCapital, "endTime") || null,
-    },
-    state: {
-      type: toCodeOrValue(get(companyDetails, "companyStatusCode")) || null,
-      registrationDate: get(registeredInfoName, "startTime") || null,
-      expirationDate: get(registeredInfoName, "endTime") || null,
-    },
+    companyName: mapCompanyNameSection(
+      companyDetails,
+      latestBusinessLine,
+      latestNameHistory,
+      parallelCompanyNames,
+      nameHistory,
+    ),
+    auxiliaryCompanyName: mapAuxiliaryCompanyNamesSection(
+      auxiliaryCompanyName,
+      auxiliaryCompanyLineOfBusiness,
+    ),
+    contactInformation: mapContactInformationSection(contactDetails),
+    domicile: mapDomicileSection(latestDomicile),
+    form: mapFormSection(companyDetails, latestBusinessLine),
+    shareCapital: mapShareCapitalSection(
+      latestShareCount,
+      latestShareCapital,
+      latestNominalValue,
+    ),
+    state: mapStateSection(companyDetails, registeredInfoName),
   };
 };
 
 export const mapRyytiStructuredExtractToCompanyRepresent = (
-  queryResult: Record<string, any> | null | undefined,
+  queryResult: StructuredExtractQueryResult | null | undefined,
 ): Record<string, any> | null => {
   if (!queryResult) return null;
 
-  const entries = get(queryResult, "registryEntryList", []);
-  const juridicPeople = get(queryResult, "juridicPersonList", []);
+  const entries = queryResult.registryEntryList || [];
+  const juridicPeople = queryResult.juridicPersonList || [];
 
   const body = entries
     .filter(
-      (entry: Record<string, any>) =>
-        Array.isArray(entry?.personList) ||
-        Array.isArray(entry?.identificationNameList),
+      (entry) =>
+        Array.isArray(entry.personList) ||
+        Array.isArray(entry.identificationNameList),
     )
-    .map((entry: Record<string, any>) => {
-      const persons = [
-        ...(get(entry, "personList", []) || []),
-        ...(get(entry, "identificationNameList", []) || []),
-      ];
-
-      return {
-        type: entry["@type"] || "-",
-        _value_1: persons.map((person: Record<string, any>) => {
-          const identification = get(person, "identification", "");
-          const isJuristic =
-            BUSINESS_ID_REGEX.test(identification) ||
-            !!juridicPeople.find(
-              (juridic: Record<string, any>) =>
-                get(juridic, "businessId") === identification ||
-                get(juridic, "name") === get(person, "name"),
-            );
-
-          if (isJuristic) {
-            return {
-              juristicPerson: mapRyytiPersonToJuristic(person, juridicPeople),
-            };
-          }
-
-          return {
-            naturalPerson: mapRyytiPersonToNatural(person),
-          };
-        }),
-      };
-    });
+    .map((entry) => mapBodyEntry(entry, juridicPeople));
 
   const representation = entries
-    .filter((entry: Record<string, any>) =>
-      Array.isArray(entry?.groupedPersonList),
-    )
-    .map((entry: Record<string, any>) => {
-      const groupedPersons = get(entry, "groupedPersonList", []);
-      const byGroupNumber = groupedPersons.reduce(
-        (
-          acc: Record<string, Array<Record<string, any>>>,
-          item: Record<string, any>,
-        ) => {
-          const key = String(get(item, "groupnumber", 1));
-          acc[key] = acc[key] || [];
-          acc[key].push(item);
-          return acc;
-        },
-        {},
-      );
+    .filter((entry) => Array.isArray(entry.groupedPersonList))
+    .map((entry) => mapRepresentationEntry(entry, juridicPeople));
 
-      const groupNumbers = Object.keys(byGroupNumber)
-        .map((value) => Number(value))
-        .sort((a, b) => a - b);
-      const primaryGroup = byGroupNumber[String(groupNumbers[0])] || [];
-      const additionalGroup = byGroupNumber[String(groupNumbers[1])] || [];
-
-      const mapGrouped = (items: Array<Record<string, any>>) => {
-        const naturalPerson: Array<Record<string, any>> = [];
-        const juristicPerson: Array<Record<string, any>> = [];
-
-        items.forEach((item: Record<string, any>) => {
-          const identification = get(item, "identification", "");
-          const role = toCodeOrValue(get(item, "representingWayCode"));
-
-          if (BUSINESS_ID_REGEX.test(identification)) {
-            juristicPerson.push(
-              mapRyytiPersonToJuristic(
-                {
-                  ...item,
-                  rolecode: role ? { code: role } : null,
-                },
-                juridicPeople,
-                role,
-              ),
-            );
-          } else {
-            naturalPerson.push(
-              mapRyytiPersonToNatural(
-                {
-                  ...item,
-                  rolecode: role ? { code: role } : null,
-                },
-                role,
-              ),
-            );
-          }
-        });
-
-        return {
-          naturalPerson,
-          juristicPerson,
-        };
-      };
-
-      const mappedPrimary = mapGrouped(primaryGroup);
-      const mappedAdditional = mapGrouped(additionalGroup);
-
-      return {
-        rule:
-          toCodeOrValue(get(primaryGroup, "0.representingWayCode")) ||
-          get(entry, "convertedRegistryEntryText") ||
-          get(entry, "registerEntryText") ||
-          get(entry, "@type") ||
-          "-",
-        group: mappedPrimary,
-        additionalGroup:
-          mappedAdditional.naturalPerson.length ||
-          mappedAdditional.juristicPerson.length
-            ? mappedAdditional
-            : null,
-      };
-    });
-
-  const legalRepresentation = entries
-    .filter((entry: Record<string, any>) =>
-      ["NIML", "NIMA", "SELA"].includes(entry?.["@type"]),
-    )
-    .map((entry: Record<string, any>) => ({
-      header: get(entry, "@type") || null,
-      text:
-        get(entry, "convertedRegistryEntryText") ||
-        get(entry, "registerEntryText") ||
-        null,
-      signingCode: toCodeOrValue(get(entry, "representingWayCode")) || null,
-      registrationDate: get(entry, "startTime") || null,
-      expireDate: get(entry, "endTime") || null,
-    }));
+  const legalRepresentation = mapLegalRepresentation(entries);
 
   return {
     body,
@@ -385,7 +579,7 @@ export const mapRyytiStructuredExtractToCompanyRepresent = (
 };
 
 export const mapRyytiNotificationsToCompanyNotice = (
-  queryResult: Record<string, any> | null | undefined,
+  queryResult: NotificationsQueryResult | null | undefined,
 ): Record<string, any> => {
   if (!queryResult) {
     return {
@@ -393,27 +587,27 @@ export const mapRyytiNotificationsToCompanyNotice = (
     };
   }
 
-  const pending = get(queryResult, "pendingNotifications", []) || [];
-  const handled = get(queryResult, "handledNotifications", []) || [];
+  const pending = queryResult.pendingNotifications || [];
+  const handled = queryResult.handledNotifications || [];
 
-  const mapItem = (item: Record<string, any>) => ({
-    type: toCodeOrValue(get(item, "notificationType")) || null,
-    recordNumber: get(item, "notificationRecordNumber") || null,
-    arrivalDate: get(item, "notificationArrivalTimestamp") || null,
+  const mapItem = (item: NotificationItem) => ({
+    type: toCodeOrValue(item.notificationType) || null,
+    recordNumber: item.notificationRecordNumber || null,
+    arrivalDate: item.notificationArrivalTimestamp || null,
     latestPhaseArrivalDate:
-      get(item, "notificationClosingTimestamp") ||
-      get(item, "notificationArrivalTimestamp") ||
+      item.notificationClosingTimestamp ||
+      item.notificationArrivalTimestamp ||
       null,
     latestPhaseName:
-      toCodeOrValue(get(item, "notificationState")) ||
-      toCodeOrValue(get(item, "publicNotificationLastPhase")) ||
+      toCodeOrValue(item.notificationState) ||
+      toCodeOrValue(item.publicNotificationLastPhase) ||
       null,
   });
 
   const notices = [...pending, ...handled]
     .map(mapItem)
     .sort(
-      (a: Record<string, any>, b: Record<string, any>) =>
+      (a, b) =>
         new Date(b.arrivalDate || 0).getTime() -
         new Date(a.arrivalDate || 0).getTime(),
     );
@@ -424,7 +618,7 @@ export const mapRyytiNotificationsToCompanyNotice = (
 };
 
 export const mapRyytiStructuredExtractToCompanyNoticeFallback = (
-  queryResult: Record<string, any> | null | undefined,
+  queryResult: StructuredExtractQueryResult | null | undefined,
 ): Record<string, any> => {
   if (!queryResult) {
     return {
@@ -432,18 +626,15 @@ export const mapRyytiStructuredExtractToCompanyNoticeFallback = (
     };
   }
 
-  const entries = getEntriesByType(queryResult, ["SELAS"]);
+  const entries = getEntriesByType(queryResult, ENTRY_TYPES.NOTICE_FALLBACK);
 
-  const notices = entries.map((item: Record<string, any>) => ({
-    type: toCodeOrValue(get(item, "notificationTypeCode")) || null,
+  const notices = entries.map((item) => ({
+    type: toCodeOrValue(item.notificationTypeCode) || null,
     recordNumber: null,
-    arrivalDate: get(item, "startTime") || null,
-    latestPhaseArrivalDate:
-      get(item, "endTime") || get(item, "startTime") || null,
+    arrivalDate: item.startTime || null,
+    latestPhaseArrivalDate: item.endTime || item.startTime || null,
     latestPhaseName:
-      get(item, "companyStatus") ||
-      toCodeOrValue(get(item, "matterTypeCode")) ||
-      null,
+      item.companyStatus || toCodeOrValue(item.matterTypeCode) || null,
   }));
 
   return {

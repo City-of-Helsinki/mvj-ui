@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  mapRyytiEventsToCompanyNotice,
+  mapRyytiNotificationsToCompanyNotice,
   mapRyytiStructuredExtractToCompanyExtended,
   mapRyytiStructuredExtractToCompanyNoticeFallback,
   mapRyytiStructuredExtractToCompanyRepresent,
@@ -90,31 +90,35 @@ describe("tradeRegister mappers", () => {
     });
   });
 
-  describe("mapEventsToCompanyNotice", () => {
-    it("filters by business id and maps notice values", () => {
-      const result = mapRyytiEventsToCompanyNotice(
-        [
+  describe("mapNotificationsToCompanyNotice", () => {
+    it("maps notice values correctly from pending and handled notifications", () => {
+      const result = mapRyytiNotificationsToCompanyNotice({
+        pendingNotifications: [
           {
-            businessId: "1234567-8",
             notificationType: { code: "M" },
-            eventType: { code: "MV" },
             notificationRecordNumber: "2026/1",
             notificationArrivalTimestamp: "2026-01-02T00:00:00Z",
-            notificationRegisterTimestamp: "2026-01-03T00:00:00Z",
             notificationState: { code: "V" },
           },
+        ],
+        handledNotifications: [
           {
-            businessId: "7654321-0",
-            notificationType: { code: "X" },
+            notificationType: { code: "H" },
+            notificationRecordNumber: "2026/2",
+            notificationArrivalTimestamp: "2026-01-01T00:00:00Z",
+            notificationClosingTimestamp: "2026-01-05T00:00:00Z",
+            notificationState: { code: "R" },
           },
         ],
-        "1234567-8",
-      );
+      });
 
-      expect(result.notice.length).to.equal(1);
+      expect(result.notice.length).to.equal(2);
       expect(result.notice[0].type).to.equal("M");
       expect(result.notice[0].recordNumber).to.equal("2026/1");
       expect(result.notice[0].latestPhaseName).to.equal("V");
+      expect(result.notice[1].type).to.equal("H");
+      expect(result.notice[1].recordNumber).to.equal("2026/2");
+      expect(result.notice[1].latestPhaseName).to.equal("R");
     });
   });
 
