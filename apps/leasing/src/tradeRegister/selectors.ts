@@ -3,7 +3,8 @@ import type { Selector } from "types";
 export const getIsFetchingCompanyExtendedById: Selector<boolean, string> = (
   state: RootState,
   businessId: string,
-): boolean => state.tradeRegister.isFetchingCompanyExtendedById[businessId];
+): boolean =>
+  state.tradeRegister.isFetchingCompanyExtendedById[businessId] || false;
 export const getCompanyExtendedById: Selector<
   Record<string, any> | null | undefined,
   string
@@ -15,7 +16,8 @@ export const getCompanyExtendedById: Selector<
 export const getIsFetchingCompanyNoticeById: Selector<boolean, string> = (
   state: RootState,
   businessId: string,
-): boolean => state.tradeRegister.isFetchingCompanyNoticeById[businessId];
+): boolean =>
+  state.tradeRegister.isFetchingCompanyNoticeById[businessId] || false;
 export const getCompanyNoticeById: Selector<
   Record<string, any> | null | undefined,
   string
@@ -27,7 +29,8 @@ export const getCompanyNoticeById: Selector<
 export const getIsFetchingCompanyRepresentById: Selector<boolean, string> = (
   state: RootState,
   businessId: string,
-): boolean => state.tradeRegister.isFetchingCompanyRepresentById[businessId];
+): boolean =>
+  state.tradeRegister.isFetchingCompanyRepresentById[businessId] || false;
 export const getCompanyRepresentById: Selector<
   Record<string, any> | null | undefined,
   string
