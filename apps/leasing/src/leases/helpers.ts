@@ -65,6 +65,7 @@ import type {
 } from "./types";
 import type { CommentList } from "@/comments/types";
 import type {
+  ApiResponse,
   Attributes,
   LeafletFeature,
   LeafletGeoJson,
@@ -213,7 +214,7 @@ export const getContentLeaseIdentifier = (
 export const getContentLeaseListTenants = (
   lease: Lease,
   query: Record<string, any> = {},
-): Array<Record<string, any>> =>
+): Array<string> =>
   get(lease, "tenants", [])
     .map((item) =>
       get(item, "tenantcontact_set", []).find(
@@ -294,10 +295,10 @@ export const getContentLeaseListLease = (
  * @returns {Object[]}
  */
 export const getContentLeaseListResults = (
-  apiResponse: any,
+  apiResponse: ApiResponse<Lease>,
   query: Record<string, any>,
 ): Array<Record<string, any>> =>
-  getApiResponseResults(apiResponse).map((item) =>
+  getApiResponseResults(apiResponse).map((item: Lease) =>
     getContentLeaseListLease(item, query),
   );
 

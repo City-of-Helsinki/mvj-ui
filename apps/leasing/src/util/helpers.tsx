@@ -17,6 +17,7 @@ import type {
   SelectListOption,
 } from "@/types";
 import type { UsersPermissions } from "@/usersPermissions/types";
+import { isBoolean } from "lodash";
 
 /**
  * Compose page title
@@ -122,7 +123,7 @@ export const getSearchQuery = (filters: any): string => {
   forEach(filters, (filter: any, key) => {
     if (
       filter != null &&
-      (!isEmpty(filter) || isNumber(filter) || typeof "boolean")
+      (!isEmpty(filter) || isNumber(filter) || isBoolean(filter))
     ) {
       if (isArray(filter)) {
         const items = [];

@@ -143,7 +143,7 @@ export const rentCustomDateOptions = [
  * Default lease states value for lease list search
  * @const {string[]}
  */
-export const DEFAULT_LEASE_STATES: Array<Record<string, any>> = [];
+export const DEFAULT_LEASE_STATES: Array<string> = [];
 
 /**
  * Default only_active_leases value for lease list search
