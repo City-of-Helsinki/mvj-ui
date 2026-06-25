@@ -1,56 +1,84 @@
+@use "sass:math";
+@use "hds-design-tokens/lib/all" as hds;
+
+// HDS Recommendation for layout grid gutter
+$grid-gutter: hds.$spacing-m;
+
 .grid-row {
   display: flex;
   flex-flow: row wrap;
-  margin-left: -0.625rem;
-  margin-right: -0.625rem;
+  column-gap: $grid-gutter;
+  row-gap: $grid-gutter;
 }
 
 .grid-column {
   flex: 1 1 0px;
-  padding-left: 0.625rem;
-  padding-right: 0.625rem;
   min-width: 0;
 
   @media screen and (min-width: 0em) {
     @for $i from 1 through 12 {
       &.small-#{$i} {
-        flex: 0 0 (100% * ($i / 12));
-        max-width: (100% * ($i / 12));
+        $percent: math.percentage(math.div($i, 12));
+        flex: 0
+          0
+          calc(#{$percent} - (#{$grid-gutter} * #{1 - math.div($i, 12)}));
+        max-width: calc(
+          #{$percent} - (#{$grid-gutter} * #{1 - math.div($i, 12)})
+        );
       }
     }
     @for $i from 1 through 11 {
       &.offset-small-#{$i} {
-        margin-left: (100% * ($i / 12));
+        $percent: math.percentage(math.div($i, 12));
+        margin-left: calc(
+          #{$percent} + (#{$grid-gutter} * #{math.div($i, 12)})
+        );
       }
     }
   }
 
-  @media screen and (min-width: 40em) {
-    // Foundation medium breakpoint (640px)
+  @media screen and (min-width: hds.$breakpoint-m) {
+    // Migrated to HDS Medium breakpoint
     @for $i from 1 through 12 {
       &.medium-#{$i} {
-        flex: 0 0 (100% * ($i / 12));
-        max-width: (100% * ($i / 12));
+        $percent: math.percentage(math.div($i, 12));
+        flex: 0
+          0
+          calc(#{$percent} - (#{$grid-gutter} * #{1 - math.div($i, 12)}));
+        max-width: calc(
+          #{$percent} - (#{$grid-gutter} * #{1 - math.div($i, 12)})
+        );
       }
     }
     @for $i from 1 through 11 {
       &.offset-medium-#{$i} {
-        margin-left: (100% * ($i / 12));
+        $percent: math.percentage(math.div($i, 12));
+        margin-left: calc(
+          #{$percent} + (#{$grid-gutter} * #{math.div($i, 12)})
+        );
       }
     }
   }
 
-  @media screen and (min-width: 64em) {
-    // Foundation large breakpoint (1024px)
+  @media screen and (min-width: hds.$breakpoint-l) {
+    // Migrated to HDS Large breakpoint
     @for $i from 1 through 12 {
       &.large-#{$i} {
-        flex: 0 0 (100% * ($i / 12));
-        max-width: (100% * ($i / 12));
+        $percent: math.percentage(math.div($i, 12));
+        flex: 0
+          0
+          calc(#{$percent} - (#{$grid-gutter} * #{1 - math.div($i, 12)}));
+        max-width: calc(
+          #{$percent} - (#{$grid-gutter} * #{1 - math.div($i, 12)})
+        );
       }
     }
     @for $i from 1 through 11 {
       &.offset-large-#{$i} {
-        margin-left: (100% * ($i / 12));
+        $percent: math.percentage(math.div($i, 12));
+        margin-left: calc(
+          #{$percent} + (#{$grid-gutter} * #{math.div($i, 12)})
+        );
       }
     }
   }

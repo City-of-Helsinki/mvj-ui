@@ -3,19 +3,6 @@
 @use "foundation-sites/scss/foundation" as *;
 @use "./variables";
 
-@mixin mvj-container() {
-  @include grid-row();
-  padding: 0 1rem;
-}
-
-@mixin lightButton($background: #f7fcff) {
-  @include button(true);
-  background: $background;
-  border-color: color.adjust($background, $lightness: -5%);
-  color: $primary-color;
-  text-transform: uppercase;
-}
-
 @mixin focus() {
   &:focus {
     outline-color: variables.$blue;
@@ -31,21 +18,6 @@
     outline: 2px dotted variables.$blue;
     outline-offset: 0px;
     border: 1px solid variables.$medium-gray;
-  }
-}
-
-@mixin placeholder($color: variables.$light-gray) {
-  ::-webkit-input-placeholder {
-    color: $color;
-    font-weight: 300;
-  }
-  ::-moz-placeholder {
-    color: $color;
-    font-weight: 300;
-  }
-  :-ms-input-placeholder {
-    color: $color;
-    font-weight: 300;
   }
 }
 
@@ -122,8 +94,4 @@
 
 @mixin rotate($deg: 0deg) {
   @include transform(rotate($deg));
-}
-
-@mixin scale($ratio: 1) {
-  @include transform(scale($ratio));
 }

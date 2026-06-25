@@ -1,8 +1,6 @@
-import flowRight from "lodash/flowRight";
 import React from "react";
 import Button from "@/components/button/Button";
 import { reveal } from "@/foundation/reveal";
-import { Sizes } from "@/foundation/enums";
 
 interface TraceItem {
   file?: string;
@@ -26,19 +24,17 @@ const ApiErrorModal = ({
   isOpen,
 }: {
   data: ApiErrorData;
-  handleDismiss: Function;
+  handleDismiss: (...args: Array<any>) => any;
   isOpen: boolean;
 }) => (
   <div className="api-error-modal">
     {data ? <ApiErrorContent data={data} /> : null}
     <Button
-      className="api-error-modal__close"
+      className="api-error-modal__close button-large"
       disabled={!isOpen}
-      size={Sizes.LARGE}
       onClick={handleDismiss}
-    >
-      Dismiss
-    </Button>
+      text="Dismiss"
+    />
   </div>
 );
 
@@ -109,8 +105,6 @@ const ApiErrorContent = ({ data }: { data: ApiErrorData }) => {
   );
 };
 
-export default flowRight(
-  reveal({
-    name: "apiError",
-  }),
-)(ApiErrorModal);
+export default reveal({
+  name: "apiError",
+})(ApiErrorModal);
