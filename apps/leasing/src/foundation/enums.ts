@@ -136,17 +136,6 @@ export const CalloutSizes = {
 };
 
 /**
- * Reveal size enumerable.
- * @type {{TINY: string, SMALL: string, LARGE: string, FULL: string}}
- */
-export const RevealSizes = {
-  TINY: "tiny",
-  SMALL: "small",
-  LARGE: "large",
-  FULL: "full",
-};
-
-/**
  * Switch size enumerable.
  *
  * @type {{TINY: string, SMALL: string, LARGE: string}}
@@ -167,7 +156,6 @@ export const Sizes = {
   ...ButtonSizes,
   ...ButtonGroupSizes,
   ...CalloutSizes,
-  ...RevealSizes,
   ...SwitchSizes,
 };
 

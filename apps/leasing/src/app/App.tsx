@@ -4,8 +4,6 @@ import { withRouterLegacy } from "@/root/withRouterLegacy";
 import { useLocation, useNavigate } from "react-router";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
-import { Sizes } from "@/foundation/enums";
-import { revealContext } from "@/foundation/reveal";
 import { setNavigate } from "@/root/navigationService";
 import { ActionTypes, AppConsumer, AppProvider } from "@/app/AppContext";
 import ApiErrorModal from "@/api/ApiErrorModal";
@@ -47,7 +45,6 @@ type OwnProps = {
 type Props = OwnProps & {
   apiError?: ApiError;
   clearError: typeof clearError;
-  closeReveal: (...args: Array<any>) => any;
   linkUrl?: string;
   pageTitle: string;
   userActiveServiceUnit?: UserServiceUnit;
@@ -96,7 +93,6 @@ const App: React.FC<Props> = (props) => {
   };
 
   const handleDismissErrorModal = () => {
-    props.closeReveal("apiError");
     props.clearError();
   };
 
@@ -158,7 +154,6 @@ const App: React.FC<Props> = (props) => {
           return (
             <div className={appStyle}>
               <ApiErrorModal
-                size={Sizes.LARGE}
                 data={apiError}
                 isOpen={Boolean(apiError)}
                 handleDismiss={handleDismissErrorModal}
@@ -245,5 +240,4 @@ export default flowRight(
   connect(mapStateToProps, {
     clearError,
   }),
-  revealContext(),
 )(App) as React.ComponentType<OwnProps>;
