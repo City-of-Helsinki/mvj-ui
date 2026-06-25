@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import { Breakpoints, FloatTypes } from "./enums";
-import type { ComponentType } from "react";
 
 type Breakpoint = (typeof Breakpoints)[keyof typeof Breakpoints];
 type FloatValue = (typeof FloatTypes)[keyof typeof FloatTypes];
@@ -65,11 +64,4 @@ export function generalClassNames({
     "float-center": float === FloatTypes.CENTER,
     "float-right": float === FloatTypes.RIGHT,
   };
-}
-
-/**
- * Returns the display name for the given component.
- */
-export function getComponentDisplayName(component: ComponentType<any>): string {
-  return component.displayName || component.name || "Component";
 }
