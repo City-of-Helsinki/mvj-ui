@@ -1,6 +1,5 @@
 import React from "react";
-import Button from "@/components/button/Button";
-import { reveal } from "@/foundation/reveal";
+import { Dialog, Button, ButtonVariant } from "hds-react";
 
 interface TraceItem {
   file?: string;
@@ -27,15 +26,26 @@ const ApiErrorModal = ({
   handleDismiss: (...args: Array<any>) => any;
   isOpen: boolean;
 }) => (
-  <div className="api-error-modal">
-    {data ? <ApiErrorContent data={data} /> : null}
-    <Button
-      className="api-error-modal__close button-large"
-      disabled={!isOpen}
-      onClick={handleDismiss}
-      text="Dismiss"
+  <Dialog
+    id="api-error-modal"
+    isOpen={isOpen}
+    aria-labelledby="api-error-modal-title"
+    close={handleDismiss}
+    closeButtonLabelText="Sulje"
+  >
+    <Dialog.Header
+      id="api-error-modal-title"
+      title={`Server error ${data?.exception || ""}`}
     />
-  </div>
+    <Dialog.Content>
+      {data ? <ApiErrorContent data={data} /> : null}
+    </Dialog.Content>
+    <Dialog.ActionButtons>
+      <Button onClick={handleDismiss} variant={ButtonVariant.Secondary}>
+        Dismiss
+      </Button>
+    </Dialog.ActionButtons>
+  </Dialog>
 );
 
 const ApiErrorList = ({ errors }: ApiErrorData) => {
@@ -93,10 +103,7 @@ const ApiErrorStackTrace = ({ trace }: ApiErrorData) => (
 
 const ApiErrorContent = ({ data }: { data: ApiErrorData }) => {
   return (
-    <div className="api-error-modal__content">
-      <h2 className="api-error-modal__title">
-        Server error <small>{data.exception}</small>
-      </h2>
+    <div className="api-error-modal">
       <div className="api-error-modal__message">{data.message}</div>
       <div className="api-error-modal__source">{data.source}</div>
       {data.errors ? <ApiErrorList errors={data.errors} /> : null}
@@ -105,6 +112,4 @@ const ApiErrorContent = ({ data }: { data: ApiErrorData }) => {
   );
 };
 
-export default reveal({
-  name: "apiError",
-})(ApiErrorModal);
+export default ApiErrorModal;
