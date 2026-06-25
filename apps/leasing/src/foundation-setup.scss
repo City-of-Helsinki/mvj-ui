@@ -2,5 +2,62 @@
 // in `main.scss` the setup would need to be run after all other @use's
 @use "foundation-sites/scss/foundation" as *;
 
-@include foundation-everything(true);
-@include foundation-flex-grid;
+/* 
+  This file has been migrated from `@include foundation-everything(true);`
+  to specific includes, so that removing foundation-sites would be
+  easier at a later stage. Comments have been left for includes
+  that were observed not to be used, but left here just in case
+  some issues appear, as it would be easier to know what can be enabled.
+  See: https://get.foundation/sites/docs/sass.html for possible includes.
+*/
+
+// Selective Foundation components based on project usage
+@include foundation-global-styles;
+@include foundation-forms;
+@include foundation-typography;
+
+// Generic components
+// @include foundation-button; // No direct usage found
+// @include foundation-button-group; // No direct usage found
+// @include foundation-close-button; // No direct usage found
+// @include foundation-label; // No direct usage found
+// @include foundation-progress-bar; // No direct usage found
+// @include foundation-slider; // No direct usage found
+// @include foundation-switch; // No direct usage found
+@include foundation-table;
+
+// Basic components
+// @include foundation-badge; // No direct usage found
+// @include foundation-breadcrumbs; // No direct usage found
+// @include foundation-callout; // No direct usage found
+// @include foundation-card; // No direct usage found
+// @include foundation-dropdown; // No direct usage found
+@include foundation-pagination;
+// @include foundation-tooltip; // No direct usage found
+
+// Containers
+// @include foundation-accordion; // No direct usage found
+// @include foundation-media-object; // No direct usage found
+// @include foundation-orbit; // No direct usage found
+// @include foundation-responsive-embed; // No direct usage found
+// @include foundation-tabs; // No direct usage found
+// @include foundation-thumbnail; // No direct usage found
+
+// Menu-based containers
+// @include foundation-menu; // No direct usage found
+// @include foundation-menu-icon; // No direct usage found
+// @include foundation-accordion-menu; // No direct usage found
+// @include foundation-drilldown-menu; // No direct usage found
+// @include foundation-dropdown-menu; // No direct usage found
+
+// Layout components
+// @include foundation-off-canvas; // No direct usage found
+@include foundation-reveal;
+// @include foundation-sticky; // No direct usage found
+// @include foundation-title-bar; // No direct usage found
+// @include foundation-top-bar; // No direct usage found
+
+// Helpers
+// @include foundation-float-classes; // No direct usage found
+// @include foundation-flex-classes; // No direct usage found
+@include foundation-visibility-classes;
