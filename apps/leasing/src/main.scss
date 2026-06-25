@@ -84,8 +84,6 @@
 @use "areaSearch/components/map/single-area-search-map";
 @use "application/components/applicant-info-check";
 
-@use "foundation/styles" as *;
-
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
