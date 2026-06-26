@@ -5,7 +5,6 @@ import { Row, Column } from "@/components/grid/Grid";
 import debounce from "lodash/debounce";
 import isArray from "lodash/isArray";
 import isEmpty from "lodash/isEmpty";
-import FieldTypeSelect from "@/components/form/final-form/FieldTypeSelect";
 import SearchInputColumn from "@/components/search/SearchInputColumn";
 import SearchLabel from "@/components/search/SearchLabel";
 import SearchLabelColumn from "@/components/search/SearchLabelColumn";
@@ -82,7 +81,7 @@ import {
   getMethods as getLeaseMethods,
 } from "@/leases/selectors";
 import { getLessorList } from "@/lessor/selectors";
-import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
+import { getUserServiceUnits } from "@/usersPermissions/selectors";
 import {
   getServiceUnits,
   getIsFetching as getIsFetchingServiceUnits,
@@ -101,6 +100,8 @@ import {
   fetchAttributes as fetchUiDataAttributes,
   fetchUiDataList,
 } from "@/uiData/actions";
+import FieldTypeMultiSelect from "@/components/form/final-form/FieldTypeMultiSelect";
+import type { Option } from "@/components/multi-select/SelectItem";
 
 const VisualizationTypes = {
   MAP: "map",
@@ -123,7 +124,6 @@ const LeaseListPage: React.FC = () => {
   const hasFetchedLeases = useRef(false); // Check if search has been done yet
   const location = useLocation();
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
   const isFetching = useSelector(getIsFetching);
@@ -132,7 +132,7 @@ const LeaseListPage: React.FC = () => {
   const leases = useSelector(getLeasesList);
   const lessors = useSelector(getLessorList);
   const serviceUnits = useSelector(getServiceUnits);
-  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const userServiceUnits = useSelector(getUserServiceUnits);
 
   const isFetchingLeaseAttributes = useSelector(getIsFetchingLeaseAttributes);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
@@ -154,10 +154,10 @@ const LeaseListPage: React.FC = () => {
   const [visualizationType, setVisualizationType] = useState(
     VisualizationTypes.TABLE,
   );
-  const [serviceUnitOptions, setServiceUnitOptions] = useState<
-    Array<Record<string, any>>
-  >([]);
-  const [selectedServiceUnitOptionValue, setSelectedServiceUnitOptionValue] =
+  const [serviceUnitOptions, setServiceUnitOptions] = useState<Array<Option>>(
+    [],
+  );
+  const [selectedServiceUnitOptionValues, setSelectedServiceUnitOptionValues] =
     useState<Array<string | number>>([]);
 
   useEffect(() => {
@@ -187,10 +187,6 @@ const LeaseListPage: React.FC = () => {
         }),
       );
     }
-
-    setServiceUnitOptions(
-      getFieldOptions(leaseAttributes, "service_unit", true),
-    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -224,6 +220,27 @@ const LeaseListPage: React.FC = () => {
 
   useEffect(() => {
     const searchQuery = getUrlParams(location.search);
+    if (!userServiceUnits || userServiceUnits.length === 0) {
+      return;
+    }
+
+    // Update query on initialization to include user's service units
+    if (
+      searchQuery.service_unit === undefined &&
+      userServiceUnits?.length > 0 &&
+      !hasFetchedLeases.current
+    ) {
+      const updatedQuery = {
+        ...searchQuery,
+        service_unit: userServiceUnits.map((unit) => String(unit.id)),
+      };
+      navigate({
+        pathname: getRouteById(Routes.LEASES),
+        search: getSearchQuery(updatedQuery),
+      });
+      return;
+    }
+
     if (searchQuery.visualization === VisualizationTypes.MAP) {
       setVisualizationType(VisualizationTypes.MAP);
     } else {
@@ -305,16 +322,16 @@ const LeaseListPage: React.FC = () => {
       const initializeSearchForm = () => {
         const initialValues = { ...searchQuery };
         const onlyActiveLeases = getOnlyActiveLeasesValue(searchQuery);
-        const tenantContactTypes = isArray(searchQuery.tenantcontact_type)
-          ? searchQuery.tenantcontact_type
-          : searchQuery.tenantcontact_type
-            ? [searchQuery.tenantcontact_type]
-            : [];
+        const tenantContactTypes = [searchQuery.tenantcontact_type].flatMap(
+          (value) => value || [],
+        );
 
-        if (initialValues.service_unit === undefined) {
-          initialValues.service_unit = "";
-        } else {
-          setSelectedServiceUnitOptionValue(initialValues.service_unit);
+        if (searchQuery.service_unit) {
+          setSelectedServiceUnitOptionValues(
+            [searchQuery.service_unit]
+              .flatMap((unit) => unit ?? [])
+              .map(Number),
+          );
         }
 
         if (onlyActiveLeases != undefined) {
@@ -372,6 +389,7 @@ const LeaseListPage: React.FC = () => {
     const initializeSearch = () => {
       const searchQuery = getUrlParams(location.search);
 
+      setSearchFormValues();
       if (searchQuery.visualization === VisualizationTypes.MAP) {
         setVisualizationType(VisualizationTypes.MAP);
         searchByBBox();
@@ -388,7 +406,7 @@ const LeaseListPage: React.FC = () => {
     }
 
     searchByType();
-  }, [dispatch, location.search]);
+  }, [dispatch, location.search, navigate, userServiceUnits]);
 
   useEffect(() => {
     // Update service unit options if they have changed
@@ -398,7 +416,7 @@ const LeaseListPage: React.FC = () => {
         serviceUnitOptions.length
     ) {
       setServiceUnitOptions(
-        getFieldOptions(leaseAttributes, "service_unit", true),
+        getFieldOptions(leaseAttributes, "service_unit", false),
       );
     }
   }, [leaseAttributes, serviceUnitOptions.length]);
@@ -477,15 +495,26 @@ const LeaseListPage: React.FC = () => {
     });
   };
 
+  const debouncedServiceUnitSearch = useRef(
+    debounce(
+      (
+        values: Array<string | number>,
+        handleSearchChange: (query: Record<string, any>) => void,
+        locationSearch: string,
+      ) => {
+        // get other form values from query params
+        const searchQuery = getUrlParams(locationSearch);
+        handleSearchChange(
+          Object.assign(searchQuery, { service_unit: values }),
+        );
+      },
+      500,
+    ),
+  ).current;
+
   const handleServiceUnitChange = (values: Array<string | number>) => {
-    // get other form values from query params
-    const searchQuery = getUrlParams(location.search);
-    handleSearchChange(
-      Object.assign(searchQuery, {
-        service_unit: values,
-      }),
-    );
-    setSelectedServiceUnitOptionValue(values);
+    setSelectedServiceUnitOptionValues(values);
+    debouncedServiceUnitSearch(values, handleSearchChange, location.search);
   };
 
   const handleRowClick = (id) => {
@@ -664,19 +693,22 @@ const LeaseListPage: React.FC = () => {
         <SearchLabel>{LeaseFieldTitles.SERVICE_UNIT}</SearchLabel>
       </SearchLabelColumn>
       <SearchInputColumn>
-        <FieldTypeSelect
+        <FieldTypeMultiSelect
           autoBlur={false}
           disabled={false}
           displayError={false}
           input={{
+            name: "service_unit",
             onChange: handleServiceUnitChange,
             onBlur: () => {},
-            value: selectedServiceUnitOptionValue,
+            onFocus: () => {},
+            value: selectedServiceUnitOptionValues,
           }}
           isDirty={false}
           options={serviceUnitOptions}
           placeholder=""
           setRefForField={() => {}}
+          meta={undefined}
         />
       </SearchInputColumn>
     </SearchRow>
