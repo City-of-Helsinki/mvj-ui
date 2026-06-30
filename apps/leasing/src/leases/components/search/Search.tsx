@@ -119,22 +119,23 @@ const Search: React.FC<InjectedFormProps<any, Props> & Props> = (props) => {
 
   const isSearchBasicMode = useCallback(() => {
     const searchQuery = getUrlParams(searchParams);
-    // Ignore these fields when testing is search query length
-    delete searchQuery.page;
-    delete searchQuery.sort_key;
-    delete searchQuery.sort_order;
-    delete searchQuery.lease_state;
-    delete searchQuery.in_bbox;
-    delete searchQuery.visualization;
-    delete searchQuery.zoom;
-    delete searchQuery.intended_use;
-    delete searchQuery.service_unit;
-    const keys = Object.keys(searchQuery);
+    const ignoredKeys = [
+      "page",
+      "sort_key",
+      "sort_order",
+      "lease_state",
+      "in_bbox",
+      "visualization",
+      "zoom",
+      "intended_use",
+      "service_unit",
+    ];
 
-    if (
-      !keys.length ||
-      (keys.length === 1 && Object.hasOwn(searchQuery, "search"))
-    ) {
+    const keys = Object.keys(searchQuery).filter(
+      (key) => !ignoredKeys.includes(key),
+    );
+
+    if (!keys.length || (keys.length === 1 && "search" in searchQuery)) {
       return true;
     }
 
@@ -196,7 +197,7 @@ const Search: React.FC<InjectedFormProps<any, Props> & Props> = (props) => {
     if (isSearchInitialized && !isEqual(prevFormValues.current, formValues)) {
       const searchQuery = getUrlParams(searchParams);
       const addOnlyActiveLeases =
-        Object.hasOwn(searchQuery, "only_active_leases") ||
+        "only_active_leases" in searchQuery ||
         (prevFormValues.current &&
           prevFormValues.current.only_active_leases !==
             formValues.only_active_leases);
@@ -208,10 +209,7 @@ const Search: React.FC<InjectedFormProps<any, Props> & Props> = (props) => {
 
   const handleSubmit = () => {
     const searchQuery = getUrlParams(searchParams);
-    const addOnlyActiveLeases = Object.hasOwn(
-      searchQuery,
-      "only_active_leases",
-    );
+    const addOnlyActiveLeases = "only_active_leases" in searchQuery;
     search(addOnlyActiveLeases);
   };
 
