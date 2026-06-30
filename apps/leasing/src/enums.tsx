@@ -489,7 +489,6 @@ export const FormNames = {
   LEASE_NEW_COMMENT: "new-comment-form",
   LEASE_REFUND: "refund-form",
   LEASE_RENTS: "rents-form",
-  LEASE_SEARCH: "lease-search-form",
   LEASE_STEPPED_DISCOUNT: "lease-stepped-discount-form",
   LEASE_SUMMARY: "summary-form",
   LEASE_STATISTIC_REPORT: "lease-statistic-report-form",
