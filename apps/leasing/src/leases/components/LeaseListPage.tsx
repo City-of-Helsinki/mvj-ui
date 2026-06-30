@@ -734,7 +734,6 @@ const LeaseListPage: React.FC = () => {
         </Column>
         <Column small={12} large={8}>
           <Search
-            attributes={leaseAttributes}
             isSearchInitialized={isSearchInitialized}
             onSearch={handleSearchChange}
           />
