@@ -1,18 +1,20 @@
-import React, { useEffect, useCallback, useMemo, useRef } from "react";
+import React, {
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useLocation } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  withRouterLegacy,
-  type WithRouterProps,
-} from "@/root/withRouterLegacy";
-import { connect } from "react-redux";
-import {
-  clearFields,
   formValueSelector,
   getFormValues,
   reduxForm,
+  type InjectedFormProps,
 } from "redux-form";
 import { Row, Column } from "@/components/grid/Grid";
 import debounce from "lodash/debounce";
-import flowRight from "lodash/flowRight";
 import isEqual from "lodash/isEqual";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import SearchChangeTypeLink from "@/components/search/SearchChangeTypeLink";
@@ -38,65 +40,82 @@ import {
   getIsFetchingAttributes,
 } from "@/leases/selectors";
 import { getLessorList } from "@/lessor/selectors";
-import type { Attributes } from "types";
-import type { LessorList } from "@/lessor/types";
+
 type Props = {
-  anyTouched: boolean;
-  change: (...args: Array<any>) => any;
-  clearFields: (...args: Array<any>) => any;
-  districts: Array<Record<string, any>>;
-  fetchDistrictsByMunicipality: (...args: Array<any>) => any;
-  formValues: Record<string, any>;
-  handleSubmit: (...args: Array<any>) => any;
-  initialize: (...args: Array<any>) => any;
-  isFetchingAttributes: boolean;
   isSearchInitialized: boolean;
-  leaseAttributes: Attributes;
-  lessors: LessorList;
-  municipality: string;
-  onClear: (...args: Array<any>) => any;
   onSearch: (...args: Array<any>) => any;
 };
-type State = {
-  decisionMakerOptions: Array<Record<string, any>>;
-  intendedUseOptions: Array<Record<string, any>>;
-  isBasicSearch: boolean;
-  leaseAttributes: Attributes;
-  lessors: LessorList;
-  lessorOptions: Array<Record<string, any>>;
-  municipalityOptions: Array<Record<string, any>>;
-  tenantTypeOptions: Array<Record<string, any>>;
-  typeOptions: Array<Record<string, any>>;
-  serviceUnitOptions: Array<Record<string, any>>;
-};
 
-const Search: React.FC<Props & WithRouterProps> = (props) => {
-  const [state, setState] = React.useState<State>({
-    decisionMakerOptions: [],
-    intendedUseOptions: [],
-    isBasicSearch: true,
-    leaseAttributes: null,
-    lessors: [],
-    lessorOptions: [],
-    municipalityOptions: [],
-    tenantTypeOptions: [],
-    typeOptions: [],
-    serviceUnitOptions: [],
-  });
+const formName = FormNames.LEASE_SEARCH;
+const EMPTY_OBJECT = {};
+
+const Search: React.FC<InjectedFormProps<any, Props> & Props> = (props) => {
+  const location = useLocation();
+  const { search: searchParams } = location;
+  const dispatch = useDispatch();
+
   const {
-    change,
-    fetchDistrictsByMunicipality,
     isSearchInitialized,
-    leaseAttributes,
-    lessors,
-    municipality,
     onSearch,
-    formValues,
-    location: { search: searchParams },
     handleSubmit: reduxFormHandleSubmit,
-    districts,
-    isFetchingAttributes,
+    change,
   } = props;
+
+  const selector = formValueSelector(formName);
+  const municipality = useSelector((state: any) =>
+    selector(state, "municipality"),
+  );
+  const districts = useSelector((state: any) =>
+    getDistrictsByMunicipality(state, Number(municipality)),
+  );
+  const formValues = (useSelector((state: any) =>
+    getFormValues(formName)(state),
+  ) || EMPTY_OBJECT) as Record<string, any>;
+  const isFetchingAttributes = useSelector(getIsFetchingAttributes);
+  const leaseAttributes = useSelector(getLeaseAttributes);
+  const lessors = useSelector(getLessorList);
+
+  const [isBasicSearch, setIsBasicSearch] = useState<boolean>(true);
+
+  const firstUpdate = useRef(true);
+  const searchRef = useRef<(...args: Array<any>) => any>(() => {});
+  const prevFormValues = useRef(formValues);
+
+  const decisionMakerOptions = useMemo(
+    () =>
+      getFieldOptions(leaseAttributes, LeaseDecisionsFieldPaths.DECISION_MAKER),
+    [leaseAttributes],
+  );
+
+  const intendedUseOptions = useMemo(
+    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.INTENDED_USE),
+    [leaseAttributes],
+  );
+
+  const municipalityOptions = useMemo(
+    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.MUNICIPALITY),
+    [leaseAttributes],
+  );
+
+  const tenantTypeOptions = useMemo(
+    () =>
+      getFieldOptions(
+        leaseAttributes,
+        LeaseTenantContactSetFieldPaths.TYPE,
+        false,
+      ),
+    [leaseAttributes],
+  );
+
+  const typeOptions = useMemo(
+    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.TYPE),
+    [leaseAttributes],
+  );
+
+  const lessorOptions = useMemo(
+    () => addEmptyOption(getContactOptions(lessors)),
+    [lessors],
+  );
 
   const isSearchBasicMode = useCallback(() => {
     const searchQuery = getUrlParams(searchParams);
@@ -122,61 +141,6 @@ const Search: React.FC<Props & WithRouterProps> = (props) => {
     return false;
   }, [searchParams]);
 
-  useEffect(() => {
-    setState((prevState) => ({
-      ...prevState,
-      isBasicSearch: isSearchBasicMode(),
-    }));
-  }, [isSearchBasicMode]);
-
-  useEffect(() => {
-    setState((prevState) => ({
-      ...prevState,
-      decisionMakerOptions: getFieldOptions(
-        leaseAttributes,
-        LeaseDecisionsFieldPaths.DECISION_MAKER,
-      ),
-      intendedUseOptions: getFieldOptions(
-        leaseAttributes,
-        LeaseFieldPaths.INTENDED_USE,
-      ),
-      municipalityOptions: getFieldOptions(
-        leaseAttributes,
-        LeaseFieldPaths.MUNICIPALITY,
-      ),
-      tenantTypeOptions: getFieldOptions(
-        leaseAttributes,
-        LeaseTenantContactSetFieldPaths.TYPE,
-        false,
-      ),
-      typeOptions: getFieldOptions(leaseAttributes, LeaseFieldPaths.TYPE),
-    }));
-  }, [leaseAttributes]);
-
-  useEffect(() => {
-    setState((prevState) => ({
-      ...prevState,
-      lessorOptions: addEmptyOption(getContactOptions(lessors)),
-    }));
-  }, [lessors]);
-
-  const firstUpdate = useRef(true);
-  useEffect(() => {
-    if (firstUpdate.current) {
-      if (municipality) {
-        fetchDistrictsByMunicipality(municipality);
-      }
-      firstUpdate.current = false;
-      return;
-    }
-
-    if (municipality) {
-      fetchDistrictsByMunicipality(municipality);
-    }
-
-    change("district", "");
-  }, [municipality, fetchDistrictsByMunicipality, change]);
-
   const search = useCallback(
     (addOnlyActiveLeases: boolean) => {
       const newValues = { ...formValues };
@@ -190,11 +154,6 @@ const Search: React.FC<Props & WithRouterProps> = (props) => {
     [formValues, onSearch],
   );
 
-  const searchRef = useRef(search);
-  useEffect(() => {
-    searchRef.current = search;
-  }, [search]);
-
   const onSearchChange = useMemo(
     () =>
       debounce((addOnlyActiveLeases) => {
@@ -203,7 +162,36 @@ const Search: React.FC<Props & WithRouterProps> = (props) => {
     [],
   );
 
-  const prevFormValues = useRef(formValues);
+  useEffect(() => {
+    setIsBasicSearch(isSearchBasicMode());
+  }, [isSearchBasicMode]);
+
+  useEffect(() => {
+    searchRef.current = search;
+  }, [search]);
+
+  useEffect(() => {
+    return () => {
+      onSearchChange.cancel();
+    };
+  }, [onSearchChange]);
+
+  useEffect(() => {
+    if (firstUpdate.current) {
+      if (municipality) {
+        dispatch(fetchDistrictsByMunicipality(Number(municipality)));
+      }
+      firstUpdate.current = false;
+      return;
+    }
+
+    if (municipality) {
+      dispatch(fetchDistrictsByMunicipality(Number(municipality)));
+    }
+
+    change("district", "");
+  }, [municipality, change, dispatch]);
+
   useEffect(() => {
     if (isSearchInitialized && !isEqual(prevFormValues.current, formValues)) {
       const searchQuery = getUrlParams(searchParams);
@@ -228,10 +216,7 @@ const Search: React.FC<Props & WithRouterProps> = (props) => {
   };
 
   const toggleSearchType = () => {
-    setState((prevState) => ({
-      ...prevState,
-      isBasicSearch: !prevState.isBasicSearch,
-    }));
+    setIsBasicSearch((prevState) => !prevState);
   };
   const handleClear = () => {
     const query = {};
@@ -241,16 +226,6 @@ const Search: React.FC<Props & WithRouterProps> = (props) => {
     return formValues ? (formValues.tenant_name ? false : true) : true;
   };
 
-  const {
-    decisionMakerOptions,
-    intendedUseOptions,
-    isBasicSearch,
-    lessorOptions,
-    municipalityOptions,
-    tenantTypeOptions,
-    typeOptions,
-    serviceUnitOptions,
-  } = state;
   const districtOptions = getDistrictOptions(districts);
   const radioButtonsDisabled = formHasNoName();
   return (
@@ -879,28 +854,6 @@ const Search: React.FC<Props & WithRouterProps> = (props) => {
   );
 };
 
-const formName = FormNames.LEASE_SEARCH;
-const selector = formValueSelector(formName);
-export default flowRight(
-  withRouterLegacy,
-  connect(
-    (state) => {
-      const municipality = selector(state, "municipality");
-      return {
-        districts: getDistrictsByMunicipality(state, municipality),
-        formValues: getFormValues(formName)(state),
-        isFetchingAttributes: getIsFetchingAttributes(state),
-        leaseAttributes: getLeaseAttributes(state),
-        lessors: getLessorList(state),
-        municipality: municipality,
-      };
-    },
-    {
-      clearFields,
-      fetchDistrictsByMunicipality,
-    },
-  ),
-  reduxForm({
-    form: formName,
-  }),
-)(Search) as React.ComponentType;
+export default reduxForm<any, Props>({
+  form: formName,
+})(Search) as React.ComponentType<Props>;
