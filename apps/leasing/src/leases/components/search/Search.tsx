@@ -7,16 +7,23 @@ import React, {
 } from "react";
 import { useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm, useFormState } from "react-final-form";
+import { Field, useForm, useFormState } from "react-final-form";
 import debounce from "lodash/debounce";
 import isEqual from "lodash/isEqual";
 import FormField from "@/components/form/final-form/FormField";
+import {
+  DateInput,
+  Search as HdsSearch,
+  RadioButton,
+  Select,
+  SelectionGroup,
+  TextInput,
+  type SearchProps,
+} from "hds-react";
 import SearchChangeTypeLink from "@/components/search/SearchChangeTypeLink";
 import SearchClearLink from "@/components/search/SearchClearLink";
 import SearchContainer from "@/components/search/SearchContainer";
 import SearchInputColumn from "@/components/search/SearchInputColumn";
-import SearchLabel from "@/components/search/SearchLabel";
-import SearchLabelColumn from "@/components/search/SearchLabelColumn";
 import SearchRow from "@/components/search/SearchRow";
 import { Row, Column } from "@/components/grid/Grid";
 import { fetchDistrictsByMunicipality } from "@/district/actions";
@@ -94,7 +101,7 @@ const SearchFields = ({
   }, [values, isSearchInitialized, debouncedSearch]);
 
   const formHasNoName = () => {
-    return values ? (values.tenant_name ? false : true) : true;
+    return Boolean(!values?.tenant_name);
   };
 
   const districtOptions = getDistrictOptions(districts);
@@ -103,7 +110,7 @@ const SearchFields = ({
   return (
     <>
       <DistrictLoader municipality={municipality} />
-      <Row>
+      {/* <Row>
         <Column small={12}>
           <FormField
             autoBlur
@@ -117,6 +124,38 @@ const SearchFields = ({
             name="search"
           />
         </Column>
+      </Row> */}
+      <Row>
+        <Column small={12}>
+          <Field name="search">
+            {({
+              input: { value, onBlur, onChange, onFocus },
+              meta: { error, invalid },
+            }) => {
+              // TODO: useMemo
+              const searchTexts: SearchProps["texts"] = {
+                searchPlaceholder: "Hae hakusanalla",
+                error: error,
+                historyLabel: "Hakuhistoria",
+              };
+              return (
+                <HdsSearch
+                  historyId={"lease-search"}
+                  invalid={invalid}
+                  // value={value}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  onFocus={onFocus}
+                  onSend={(val) => {
+                    onChange(val);
+                  }}
+                  texts={searchTexts}
+                  visibleOptions={5.5}
+                />
+              );
+            }}
+          </Field>
+        </Column>
       </Row>
       {!isBasicSearch && (
         <>
@@ -124,96 +163,121 @@ const SearchFields = ({
             {/* First column */}
             <Column small={12} large={6}>
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Nimi</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Nimi",
-                      type: FieldTypes.STRING,
-                      read_only: false,
+                  <Field name="tenant_name">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      return (
+                        <TextInput
+                          id="tenant_name"
+                          label="Nimi"
+                          invalid={invalid}
+                          // value={value}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          onFocus={onFocus}
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="tenant_name"
-                  />
+                  </Field>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn></SearchLabelColumn>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disabled={radioButtonsDisabled}
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Kaikki",
-                      type: FieldTypes.RADIO_WITH_FIELD,
-                      read_only: false,
-                    }}
-                    invisibleLabel
-                    name="tenant_activity"
-                    overrideValues={{
-                      options: [
-                        {
-                          value: "",
-                          label: "Kaikki",
-                        },
-                      ],
-                    }}
-                  />
-                  <FormField
-                    autoBlur
-                    disabled={radioButtonsDisabled}
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Vain entiset asiakkaat",
-                      type: FieldTypes.RADIO_WITH_FIELD,
-                      read_only: false,
-                    }}
-                    invisibleLabel
-                    name="tenant_activity"
-                    overrideValues={{
-                      options: [
-                        {
-                          value: "past",
-                          label: "Vain entiset asiakkaat",
-                        },
-                      ],
-                    }}
-                  />
-                  <FormField
-                    autoBlur
-                    disabled={radioButtonsDisabled}
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Vain nykyiset asiakkaat",
-                      type: FieldTypes.RADIO_WITH_FIELD,
-                      read_only: false,
-                    }}
-                    invisibleLabel
-                    name="tenant_activity"
-                    overrideValues={{
-                      options: [
-                        {
-                          value: "active",
-                          label: "Vain nykyiset asiakkaat",
-                        },
-                      ],
-                    }}
-                  />
+                  <SelectionGroup label="Asiakkaan tila">
+                    <Field name="tenant_activity" type="radio">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <RadioButton
+                            id="tenant_activity-1"
+                            name="tenant_activity"
+                            value=""
+                            label="Kaikki asiakkaat"
+                            checked={value === ""}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            disabled={radioButtonsDisabled}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="tenant_activity">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <RadioButton
+                            id="tenant_activity-2"
+                            name="tenant_activity"
+                            value="past"
+                            label="Vain entiset asiakkaat"
+                            checked={value === "past"}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            disabled={radioButtonsDisabled}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="tenant_activity">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <RadioButton
+                            id="tenant_activity-3"
+                            name="tenant_activity"
+                            value="active"
+                            label="Vain nykyiset asiakkaat"
+                            checked={value === "active"}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            disabled={radioButtonsDisabled}
+                          />
+                        );
+                      }}
+                    </Field>
+                  </SelectionGroup>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Rooli</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
-                  <FormField
+                  <Field name="tenantcontact_type">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      return (
+                        <Select
+                          multiSelect
+                          texts={{
+                            label: "Asiakkaan rooli",
+                            placeholder: "Valitse rooli",
+                            language: "fi",
+                          }}
+                          options={tenantTypeOptions}
+                          onChange={(selectedOptions) =>
+                            onChange(
+                              selectedOptions.map((option) => option.value),
+                            )
+                          }
+                        />
+                      );
+                    }}
+                  </Field>
+                  {/* <FormField
                     autoBlur
                     disableDirty
                     fieldAttributes={{
@@ -227,52 +291,57 @@ const SearchFields = ({
                     overrideValues={{
                       options: tenantTypeOptions,
                     }}
-                  />
+                  /> */}
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Y-tunnus</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Y-tunnus",
-                      type: FieldTypes.STRING,
-                      read_only: false,
+                  <Field name="business_id">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      return (
+                        <TextInput
+                          id="business_id"
+                          label="Y-tunnus"
+                          invalid={invalid}
+                          // value={value}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          onFocus={onFocus}
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="business_id"
-                  />
+                  </Field>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Henkilötunnus</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Henkilötunnus",
-                      type: FieldTypes.STRING,
-                      read_only: false,
+                  <Field name="national_identification_number">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      return (
+                        <TextInput
+                          id="national_identification_number"
+                          label="Henkilötunnus"
+                          invalid={invalid}
+                          // value={value}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          onFocus={onFocus}
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="national_identification_number"
-                  />
+                  </Field>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Vuokranantaja</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
                   <FormField
                     autoBlur
@@ -292,9 +361,6 @@ const SearchFields = ({
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Vuokraustunnus</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
                   <Row>
                     <Column small={6}>
@@ -346,44 +412,52 @@ const SearchFields = ({
                       />
                     </Column>
                     <Column small={6}>
-                      <FormField
-                        autoBlur
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Juokseva numero",
-                          type: FieldTypes.STRING,
-                          read_only: false,
+                      <Field name="sequence">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <TextInput
+                              id="sequence"
+                              label="Juokseva numero"
+                              invalid={invalid}
+                              // value={value}
+                              onBlur={onBlur}
+                              onChange={onChange}
+                              onFocus={onFocus}
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="sequence"
-                      />
+                      </Field>
                     </Column>
                   </Row>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Kiinteistötunnus</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Kiinteistötunnus",
-                      type: FieldTypes.STRING,
-                      read_only: false,
+                  <Field name="property_identifier">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      return (
+                        <TextInput
+                          id="property_identifier"
+                          label="Kiinteistötunnus"
+                          invalid={invalid}
+                          // value={value}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          onFocus={onFocus}
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="property_identifier"
-                  />
+                  </Field>
                 </SearchInputColumn>
               </SearchRow>
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Geometria puuttuu</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
                   <FormField
                     autoBlur
@@ -410,77 +484,96 @@ const SearchFields = ({
             {/* Second column */}
             <Column small={12} large={6}>
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Alkupvm</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
                   <Row>
                     <Column small={6}>
-                      <FormField
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Vuokrauksen alkupvm alkaen",
-                          type: FieldTypes.DATE,
-                          read_only: false,
+                      <Field name="lease_start_date_start">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <DateInput
+                              helperText="Käytä muotoa P.K.VVVV"
+                              id="lease_start_date_start"
+                              initialMonth={new Date()}
+                              label="Vuokrauksen alkupvm alkaen"
+                              language="fi"
+                              onChange={onChange}
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="lease_start_date_start"
-                      />
+                      </Field>
                     </Column>
                     <Column small={6}>
-                      <FormField
-                        className="with-dash"
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Vuokrauksen alkupvm loppuen",
-                          type: FieldTypes.DATE,
-                          read_only: false,
+                      <Field name="lease_start_date_end">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <DateInput
+                              helperText="Käytä muotoa P.K.VVVV"
+                              id="lease_start_date_end"
+                              initialMonth={new Date()}
+                              label="Vuokrauksen alkupvm loppuen"
+                              language="fi"
+                              onChange={onChange}
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="lease_start_date_end"
-                      />
+                      </Field>
                     </Column>
                   </Row>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Loppupvm</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
                   <Row>
                     <Column small={6}>
-                      <FormField
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Vuokrauksen loppupvm alkaen",
-                          type: FieldTypes.DATE,
-                          read_only: false,
+                      <Field name="lease_end_date_start">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <DateInput
+                              helperText="Käytä muotoa P.K.VVVV"
+                              id="lease_end_date_start"
+                              initialMonth={new Date()}
+                              label="Vuokrauksen loppupvm alkaen"
+                              language="fi"
+                              onChange={onChange}
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="lease_end_date_start"
-                      />
+                      </Field>
                     </Column>
                     <Column small={6}>
-                      <FormField
-                        className="with-dash"
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Vuokrauksen loppupvm loppuen",
-                          type: FieldTypes.DATE,
-                          read_only: false,
+                      <Field name="lease_end_date_end">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <DateInput
+                              helperText="Käytä muotoa P.K.VVVV"
+                              id="lease_end_date_end"
+                              initialMonth={new Date()}
+                              label="Vuokrauksen loppupvm loppuen"
+                              language="fi"
+                              onChange={onChange}
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="lease_end_date_end"
-                      />
+                      </Field>
                     </Column>
                   </Row>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn></SearchLabelColumn>
                 <SearchInputColumn>
                   <Row>
                     <Column small={6}>
@@ -530,47 +623,52 @@ const SearchFields = ({
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Vuokrakohteen osoite</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Vuokrakohteen osoite",
-                      type: FieldTypes.STRING,
-                      read_only: false,
+                  <Field name="address">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      return (
+                        <TextInput
+                          id="address"
+                          label="Vuokrakohteen osoite"
+                          invalid={invalid}
+                          // value={value}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          onFocus={onFocus}
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="address"
-                  />
+                  </Field>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Sopimusnro</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Sopimusnro",
-                      type: FieldTypes.STRING,
-                      read_only: false,
+                  <Field name="contract_number">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      return (
+                        <TextInput
+                          id="contract_number"
+                          label="Sopimusnro"
+                          invalid={invalid}
+                          // value={value}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          onFocus={onFocus}
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="contract_number"
-                  />
+                  </Field>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Päätös</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
                   <Row>
                     <Column small={12}>
@@ -602,64 +700,77 @@ const SearchFields = ({
                       />
                     </Column>
                     <Column small={6}>
-                      <FormField
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Pykälä",
-                          type: FieldTypes.STRING,
-                          read_only: false,
+                      <Field name="decision_section">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <TextInput
+                              id="decision_section"
+                              label="Pykälä (§)"
+                              invalid={invalid}
+                              // value={value}
+                              onBlur={onBlur}
+                              onChange={onChange}
+                              onFocus={onFocus}
+                              // unit="§"
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        unit="§"
-                        name="decision_section"
-                      />
+                      </Field>
                     </Column>
                   </Row>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Diaarinro</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Diaarinro",
-                      type: FieldTypes.STRING,
-                      read_only: false,
+                  <Field name="reference_number">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      return (
+                        <TextInput
+                          id="reference_number"
+                          label="Diaarinro"
+                          invalid={invalid}
+                          // value={value}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          onFocus={onFocus}
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="reference_number"
-                  />
+                  </Field>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Laskunro</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Laskunro",
-                      type: FieldTypes.STRING,
-                      read_only: false,
+                  <Field name="invoice_number">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      return (
+                        <TextInput
+                          id="invoice_number"
+                          label="Laskunro"
+                          invalid={invalid}
+                          // value={value}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          onFocus={onFocus}
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="invoice_number"
-                  />
+                  </Field>
                 </SearchInputColumn>
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Vuokrauksen käyttötarkoitus</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
                   <FormField
                     autoBlur
@@ -684,9 +795,6 @@ const SearchFields = ({
               </SearchRow>
 
               <SearchRow>
-                <SearchLabelColumn>
-                  <SearchLabel>Omat vuokraukset</SearchLabel>
-                </SearchLabelColumn>
                 <SearchInputColumn>
                   <FormField
                     autoBlur

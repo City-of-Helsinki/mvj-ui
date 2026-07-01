@@ -747,7 +747,9 @@ const LeaseListPage: React.FC = () => {
                 />
               </Authorization>
             </Column>
-            <Column small={12} large={8}>
+          </Row>
+          <Row>
+            <Column small={12} large={12}>
               <Search
                 isSearchInitialized={isSearchInitialized}
                 onSearch={handleSearchChange}
