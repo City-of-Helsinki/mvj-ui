@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { initialize } from "redux-form";
 import { Row, Column } from "@/components/grid/Grid";
+import { Form } from "react-final-form";
 import debounce from "lodash/debounce";
 import isArray from "lodash/isArray";
 import isEmpty from "lodash/isEmpty";
@@ -159,6 +159,49 @@ const LeaseListPage: React.FC = () => {
   );
   const [selectedServiceUnitOptionValues, setSelectedServiceUnitOptionValues] =
     useState<Array<string | number>>([]);
+
+  const getOnlyActiveLeasesValue = (query: Record<string, any>) => {
+    return query.only_active_leases != undefined
+      ? query.only_active_leases
+      : query.search
+        ? undefined
+        : DEFAULT_ONLY_ACTIVE_LEASES;
+  };
+
+  const initialValues = useMemo(() => {
+    const searchQuery = getUrlParams(location.search);
+
+    const values: any = { ...searchQuery };
+    const onlyActiveLeases = getOnlyActiveLeasesValue(searchQuery);
+
+    const tenantContactTypes = [searchQuery.tenantcontact_type].flatMap(
+      (value) => value || [],
+    );
+
+    if (searchQuery.service_unit) {
+      setSelectedServiceUnitOptionValues(
+        [searchQuery.service_unit].flatMap((unit) => unit ?? []).map(Number),
+      );
+    }
+
+    if (onlyActiveLeases != undefined) {
+      values.only_active_leases = onlyActiveLeases;
+    }
+
+    if (tenantContactTypes.length) {
+      values.tenantcontact_type = tenantContactTypes;
+    }
+
+    delete values.page;
+    delete values.lease_state;
+    delete values.sort_key;
+    delete values.sort_order;
+    delete values.in_bbox;
+    delete values.visualization;
+    delete values.zoom;
+
+    return values;
+  }, [location.search]);
 
   useEffect(() => {
     setPageTitle("Vuokraukset");
@@ -319,38 +362,11 @@ const LeaseListPage: React.FC = () => {
       const page = searchQuery.page ? Number(searchQuery.page) : 1;
       const states = getLeaseStates(searchQuery);
 
-      const initializeSearchForm = () => {
-        const initialValues = { ...searchQuery };
-        const onlyActiveLeases = getOnlyActiveLeasesValue(searchQuery);
-        const tenantContactTypes = [searchQuery.tenantcontact_type].flatMap(
-          (value) => value || [],
+      if (searchQuery.service_unit) {
+        setSelectedServiceUnitOptionValues(
+          [searchQuery.service_unit].flatMap((unit) => unit ?? []).map(Number),
         );
-
-        if (searchQuery.service_unit) {
-          setSelectedServiceUnitOptionValues(
-            [searchQuery.service_unit]
-              .flatMap((unit) => unit ?? [])
-              .map(Number),
-          );
-        }
-
-        if (onlyActiveLeases != undefined) {
-          initialValues.only_active_leases = onlyActiveLeases;
-        }
-
-        if (tenantContactTypes.length) {
-          initialValues.tenantcontact_type = tenantContactTypes;
-        }
-
-        delete initialValues.page;
-        delete initialValues.lease_state;
-        delete initialValues.sort_key;
-        delete initialValues.sort_order;
-        delete initialValues.in_bbox;
-        delete initialValues.visualization;
-        delete initialValues.zoom;
-        dispatch(initialize(FormNames.LEASE_SEARCH, initialValues));
-      };
+      }
 
       setActivePage(page);
       setIsSearchInitialized(false);
@@ -362,7 +378,6 @@ const LeaseListPage: React.FC = () => {
         searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
       );
 
-      initializeSearchForm();
       setIsSearchInitialized(true);
     };
 
@@ -429,14 +444,6 @@ const LeaseListPage: React.FC = () => {
         : query.search || Object.hasOwn(query, "lease_state")
           ? []
           : DEFAULT_LEASE_STATES;
-  };
-
-  const getOnlyActiveLeasesValue = (query: Record<string, any>) => {
-    return query.only_active_leases != undefined
-      ? query.only_active_leases
-      : query.search
-        ? undefined
-        : DEFAULT_ONLY_ACTIVE_LEASES;
   };
 
   const showCreateLeaseModal = () => {
@@ -714,92 +721,101 @@ const LeaseListPage: React.FC = () => {
     </SearchRow>
   );
   return (
-    <PageContainer>
-      <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
-        <CreateLeaseModal
-          isOpen={isModalOpen}
-          onClose={hideCreateLeaseModal}
-          onSubmit={(data) => dispatch(createLease(data))}
-        />
-      </Authorization>
-      <Row>
-        <Column small={12} large={4}>
+    <Form
+      initialValues={initialValues}
+      onSubmit={(values) => handleSearchChange(values)}
+      enableReinitialize
+    >
+      {({ handleSubmit }) => (
+        <PageContainer>
           <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
-            <AddButtonSecondary
-              className="no-top-margin"
-              label={ButtonLabels.CREATE_LEASE_IDENTIFIER}
-              onClick={showCreateLeaseModal}
+            <CreateLeaseModal
+              isOpen={isModalOpen}
+              onClose={hideCreateLeaseModal}
+              onSubmit={(data) => dispatch(createLease(data))}
             />
           </Authorization>
-        </Column>
-        <Column small={12} large={8}>
-          <Search
-            attributes={leaseAttributes}
-            isSearchInitialized={isSearchInitialized}
-            onSearch={handleSearchChange}
-          />
-        </Column>
-      </Row>
+          <Row>
+            <Column small={12} large={4}>
+              <Authorization
+                allow={isMethodAllowed(leaseMethods, Methods.POST)}
+              >
+                <AddButtonSecondary
+                  className="no-top-margin"
+                  label={ButtonLabels.CREATE_LEASE_IDENTIFIER}
+                  onClick={showCreateLeaseModal}
+                />
+              </Authorization>
+            </Column>
+            <Column small={12} large={8}>
+              <Search
+                isSearchInitialized={isSearchInitialized}
+                onSearch={handleSearchChange}
+              />
+            </Column>
+          </Row>
 
-      <TableFilterWrapper
-        filterComponent={
-          <TableFilters
-            amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
-            filterOptions={leaseStateFilterOptions}
-            filterValue={leaseStates}
-            onFilterChange={handleLeaseStatesChange}
-            componentToRenderUnderTitle={serviceUnitFilter}
+          <TableFilterWrapper
+            filterComponent={
+              <TableFilters
+                amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
+                filterOptions={leaseStateFilterOptions}
+                filterValue={leaseStates}
+                onFilterChange={handleLeaseStatesChange}
+                componentToRenderUnderTitle={serviceUnitFilter}
+              />
+            }
+            visualizationComponent={
+              <VisualisationTypeWrapper>
+                <IconRadioButtons
+                  legend={"Kartta/taulukko"}
+                  onChange={handleVisualizationTypeChange}
+                  options={visualizationTypeOptions}
+                  radioName="visualization-type-radio"
+                  value={visualizationType}
+                />
+              </VisualisationTypeWrapper>
+            }
           />
-        }
-        visualizationComponent={
-          <VisualisationTypeWrapper>
-            <IconRadioButtons
-              legend={"Kartta/taulukko"}
-              onChange={handleVisualizationTypeChange}
-              options={visualizationTypeOptions}
-              radioName="visualization-type-radio"
-              value={visualizationType}
-            />
-          </VisualisationTypeWrapper>
-        }
-      />
 
-      <TableWrapper>
-        {isFetching && (
-          <LoaderWrapper className="relative-overlay-wrapper">
-            <Loader isLoading={true} />
-          </LoaderWrapper>
-        )}
-        {visualizationType === "table" && (
-          <>
-            <SortableTable
-              columns={columns}
-              data={leaseList}
-              listTable
-              onRowClick={handleRowClick}
-              onSortingChange={handleSortingChange}
-              serverSideSorting
-              showCollapseArrowColumn
-              sortable
-              sortKey={sortKey}
-              sortOrder={sortOrder}
-            />
-            <Pagination
-              activePage={activePage}
-              maxPage={maxPage}
-              onPageClick={(page) => handlePageClick(page)}
-            />
-          </>
-        )}
-        {visualizationType === "map" && (
-          <LeaseListMap
-            allowToEdit={false}
-            isLoading={isFetchingByBBox}
-            onViewportChanged={handleMapViewportChanged}
-          />
-        )}
-      </TableWrapper>
-    </PageContainer>
+          <TableWrapper>
+            {isFetching && (
+              <LoaderWrapper className="relative-overlay-wrapper">
+                <Loader isLoading={true} />
+              </LoaderWrapper>
+            )}
+            {visualizationType === "table" && (
+              <>
+                <SortableTable
+                  columns={columns}
+                  data={leaseList}
+                  listTable
+                  onRowClick={handleRowClick}
+                  onSortingChange={handleSortingChange}
+                  serverSideSorting
+                  showCollapseArrowColumn
+                  sortable
+                  sortKey={sortKey}
+                  sortOrder={sortOrder}
+                />
+                <Pagination
+                  activePage={activePage}
+                  maxPage={maxPage}
+                  onPageClick={(page) => handlePageClick(page)}
+                />
+              </>
+            )}
+            {visualizationType === "map" && (
+              <LeaseListMap
+                allowToEdit={false}
+                isLoading={isFetchingByBBox}
+                onViewportChanged={handleMapViewportChanged}
+              />
+            )}
+          </TableWrapper>
+        </PageContainer>
+      )}
+    </Form>
   );
 };
 
