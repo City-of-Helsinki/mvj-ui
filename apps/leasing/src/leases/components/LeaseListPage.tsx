@@ -154,11 +154,6 @@ const LeaseListPage: React.FC = () => {
   const [visualizationType, setVisualizationType] = useState(
     VisualizationTypes.TABLE,
   );
-  const [serviceUnitOptions, setServiceUnitOptions] = useState<Array<Option>>(
-    [],
-  );
-  const [selectedServiceUnitOptionValues, setSelectedServiceUnitOptionValues] =
-    useState<Array<string | number>>([]);
 
   const getOnlyActiveLeasesValue = (query: Record<string, any>) => {
     return query.only_active_leases != undefined
@@ -177,12 +172,6 @@ const LeaseListPage: React.FC = () => {
     const tenantContactTypes = [searchQuery.tenantcontact_type].flatMap(
       (value) => value || [],
     );
-
-    if (searchQuery.service_unit) {
-      setSelectedServiceUnitOptionValues(
-        [searchQuery.service_unit].flatMap((unit) => unit ?? []).map(Number),
-      );
-    }
 
     if (onlyActiveLeases != undefined) {
       values.only_active_leases = onlyActiveLeases;
@@ -362,12 +351,6 @@ const LeaseListPage: React.FC = () => {
       const page = searchQuery.page ? Number(searchQuery.page) : 1;
       const states = getLeaseStates(searchQuery);
 
-      if (searchQuery.service_unit) {
-        setSelectedServiceUnitOptionValues(
-          [searchQuery.service_unit].flatMap((unit) => unit ?? []).map(Number),
-        );
-      }
-
       setActivePage(page);
       setIsSearchInitialized(false);
       setLeaseStates(states);
@@ -423,18 +406,17 @@ const LeaseListPage: React.FC = () => {
     searchByType();
   }, [dispatch, location.search, navigate, userServiceUnits]);
 
-  useEffect(() => {
-    // Update service unit options if they have changed
-    if (
-      leaseAttributes?.service_unit &&
-      leaseAttributes?.service_unit?.choices.length !==
-        serviceUnitOptions.length
-    ) {
-      setServiceUnitOptions(
-        getFieldOptions(leaseAttributes, "service_unit", false),
-      );
-    }
-  }, [leaseAttributes, serviceUnitOptions.length]);
+  const serviceUnitOptions: Array<Option> = useMemo(
+    () => getFieldOptions(leaseAttributes, "service_unit", false),
+    [leaseAttributes],
+  );
+
+  const selectedServiceUnitOptionValues = useMemo<
+    Array<string | number>
+  >(() => {
+    const searchQuery = getUrlParams(location.search);
+    return [searchQuery.service_unit].flatMap((unit) => unit ?? []).map(Number);
+  }, [location.search]);
 
   const getLeaseStates = (query: Record<string, any>) => {
     return isArray(query.lease_state)
@@ -502,26 +484,9 @@ const LeaseListPage: React.FC = () => {
     });
   };
 
-  const debouncedServiceUnitSearch = useRef(
-    debounce(
-      (
-        values: Array<string | number>,
-        handleSearchChange: (query: Record<string, any>) => void,
-        locationSearch: string,
-      ) => {
-        // get other form values from query params
-        const searchQuery = getUrlParams(locationSearch);
-        handleSearchChange(
-          Object.assign(searchQuery, { service_unit: values }),
-        );
-      },
-      500,
-    ),
-  ).current;
-
   const handleServiceUnitChange = (values: Array<string | number>) => {
-    setSelectedServiceUnitOptionValues(values);
-    debouncedServiceUnitSearch(values, handleSearchChange, location.search);
+    const searchQuery = getUrlParams(location.search);
+    handleSearchChange({ ...searchQuery, service_unit: values }, true);
   };
 
   const handleRowClick = (id) => {

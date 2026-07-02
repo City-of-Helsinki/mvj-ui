@@ -100,6 +100,12 @@ const SearchFields = ({
     prevValues.current = values;
   }, [values, isSearchInitialized, debouncedSearch]);
 
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
   const formHasNoName = () => {
     return Boolean(!values?.tenant_name);
   };
@@ -142,7 +148,7 @@ const SearchFields = ({
                 <HdsSearch
                   historyId={"lease-search"}
                   invalid={invalid}
-                  // value={value}
+                  value={value || ""}
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
@@ -174,7 +180,7 @@ const SearchFields = ({
                           id="tenant_name"
                           label="Nimi"
                           invalid={invalid}
-                          // value={value}
+                          value={value || ""}
                           onBlur={onBlur}
                           onChange={onChange}
                           onFocus={onFocus}
@@ -267,6 +273,7 @@ const SearchFields = ({
                             placeholder: "Valitse rooli",
                             language: "fi",
                           }}
+                          value={value || []}
                           options={tenantTypeOptions}
                           onChange={(selectedOptions) =>
                             onChange(
@@ -307,7 +314,7 @@ const SearchFields = ({
                           id="business_id"
                           label="Y-tunnus"
                           invalid={invalid}
-                          // value={value}
+                          value={value || ""}
                           onBlur={onBlur}
                           onChange={onChange}
                           onFocus={onFocus}
@@ -330,7 +337,7 @@ const SearchFields = ({
                           id="national_identification_number"
                           label="Henkilötunnus"
                           invalid={invalid}
-                          // value={value}
+                          value={value || ""}
                           onBlur={onBlur}
                           onChange={onChange}
                           onFocus={onFocus}
@@ -422,7 +429,7 @@ const SearchFields = ({
                               id="sequence"
                               label="Juokseva numero"
                               invalid={invalid}
-                              // value={value}
+                              value={value || ""}
                               onBlur={onBlur}
                               onChange={onChange}
                               onFocus={onFocus}
@@ -447,7 +454,7 @@ const SearchFields = ({
                           id="property_identifier"
                           label="Kiinteistötunnus"
                           invalid={invalid}
-                          // value={value}
+                          value={value || ""}
                           onBlur={onBlur}
                           onChange={onChange}
                           onFocus={onFocus}
@@ -499,7 +506,10 @@ const SearchFields = ({
                               initialMonth={new Date()}
                               label="Vuokrauksen alkupvm alkaen"
                               language="fi"
-                              onChange={onChange}
+                              value={value || ""}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                              onChange={(nextValue) => onChange(nextValue)}
                             />
                           );
                         }}
@@ -518,7 +528,10 @@ const SearchFields = ({
                               initialMonth={new Date()}
                               label="Vuokrauksen alkupvm loppuen"
                               language="fi"
-                              onChange={onChange}
+                              value={value || ""}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                              onChange={(nextValue) => onChange(nextValue)}
                             />
                           );
                         }}
@@ -544,7 +557,10 @@ const SearchFields = ({
                               initialMonth={new Date()}
                               label="Vuokrauksen loppupvm alkaen"
                               language="fi"
-                              onChange={onChange}
+                              value={value || ""}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                              onChange={(nextValue) => onChange(nextValue)}
                             />
                           );
                         }}
@@ -563,7 +579,10 @@ const SearchFields = ({
                               initialMonth={new Date()}
                               label="Vuokrauksen loppupvm loppuen"
                               language="fi"
-                              onChange={onChange}
+                              value={value || ""}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                              onChange={(nextValue) => onChange(nextValue)}
                             />
                           );
                         }}
@@ -634,7 +653,7 @@ const SearchFields = ({
                           id="address"
                           label="Vuokrakohteen osoite"
                           invalid={invalid}
-                          // value={value}
+                          value={value || ""}
                           onBlur={onBlur}
                           onChange={onChange}
                           onFocus={onFocus}
@@ -657,7 +676,7 @@ const SearchFields = ({
                           id="contract_number"
                           label="Sopimusnro"
                           invalid={invalid}
-                          // value={value}
+                          value={value || ""}
                           onBlur={onBlur}
                           onChange={onChange}
                           onFocus={onFocus}
@@ -710,7 +729,7 @@ const SearchFields = ({
                               id="decision_section"
                               label="Pykälä (§)"
                               invalid={invalid}
-                              // value={value}
+                              value={value || ""}
                               onBlur={onBlur}
                               onChange={onChange}
                               onFocus={onFocus}
@@ -736,7 +755,7 @@ const SearchFields = ({
                           id="reference_number"
                           label="Diaarinro"
                           invalid={invalid}
-                          // value={value}
+                          value={value || ""}
                           onBlur={onBlur}
                           onChange={onChange}
                           onFocus={onFocus}
@@ -759,7 +778,7 @@ const SearchFields = ({
                           id="invoice_number"
                           label="Laskunro"
                           invalid={invalid}
-                          // value={value}
+                          value={value || ""}
                           onBlur={onBlur}
                           onChange={onChange}
                           onFocus={onFocus}
