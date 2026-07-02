@@ -19,6 +19,7 @@ import {
   TextInput,
   type SearchProps,
   type OptionInProps,
+  Fieldset,
 } from "hds-react";
 import SearchChangeTypeLink from "@/components/search/SearchChangeTypeLink";
 import SearchClearLink from "@/components/search/SearchClearLink";
@@ -91,12 +92,10 @@ const SearchFields = ({
     prevValues.current = values;
   }, [values, isSearchInitialized, onSearch]);
 
-  const formHasNoName = () => {
-    return Boolean(!values?.tenant_name);
-  };
-
-  const districtOptions = getDistrictOptions(districts) as Array<OptionInProps>;
-  const radioButtonsDisabled = formHasNoName();
+  const districtOptions = getDistrictOptions(
+    districts,
+    false,
+  ) as Array<OptionInProps>;
 
   return (
     <>
@@ -135,351 +134,378 @@ const SearchFields = ({
       </Row>
       {!isBasicSearch && (
         <>
-          <Row>
+          <Row
+            style={{
+              backgroundColor: "var(--color-white)",
+              padding: "0.5rem",
+            }}
+          >
             {/* First column */}
-            <Column small={12} large={6}>
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="tenant_name">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <TextInput
-                          id="tenant_name"
-                          label="Nimi"
-                          invalid={invalid}
-                          value={value || ""}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          onFocus={onFocus}
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <SelectionGroup label="Asiakkaan tila">
-                    <Field name="tenant_activity" key="tenant_activity-1">
-                      {({
-                        input: { value, onBlur, onChange, onFocus },
-                        meta: { error, invalid },
-                      }) => {
-                        return (
-                          <RadioButton
-                            id="tenant_activity-1"
-                            name="tenant_activity"
-                            value=""
-                            label="Kaikki asiakkaat"
-                            checked={value === ""}
-                            onChange={onChange}
-                            onBlur={onBlur}
-                            onFocus={onFocus}
-                            disabled={radioButtonsDisabled}
-                          />
-                        );
-                      }}
-                    </Field>
-                    <Field name="tenant_activity" key="tenant_activity-2">
-                      {({
-                        input: { value, onBlur, onChange, onFocus },
-                        meta: { error, invalid },
-                      }) => {
-                        return (
-                          <RadioButton
-                            id="tenant_activity-2"
-                            name="tenant_activity"
-                            value="past"
-                            label="Vain entiset asiakkaat"
-                            checked={value === "past"}
-                            onChange={onChange}
-                            onBlur={onBlur}
-                            onFocus={onFocus}
-                            disabled={radioButtonsDisabled}
-                          />
-                        );
-                      }}
-                    </Field>
-                    <Field name="tenant_activity" key="tenant_activity-3">
-                      {({
-                        input: { value, onBlur, onChange, onFocus },
-                        meta: { error, invalid },
-                      }) => {
-                        return (
-                          <RadioButton
-                            id="tenant_activity-3"
-                            name="tenant_activity"
-                            value="active"
-                            label="Vain nykyiset asiakkaat"
-                            checked={value === "active"}
-                            onChange={onChange}
-                            onBlur={onBlur}
-                            onFocus={onFocus}
-                            disabled={radioButtonsDisabled}
-                          />
-                        );
-                      }}
-                    </Field>
-                  </SelectionGroup>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="tenantcontact_type">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      const selectedOptions = tenantTypeOptions.filter(
-                        (option) =>
-                          (Array.isArray(value) ? value : [value]).some(
-                            (v) => v == option.value,
-                          ),
-                      );
-                      return (
-                        <Select
-                          id="tenantcontact_type"
-                          multiSelect
-                          texts={{
-                            label: "Asiakkaan rooli",
-                            placeholder: "Valitse rooli",
-                            language: "fi",
-                          }}
-                          value={selectedOptions}
-                          options={tenantTypeOptions}
-                          onChange={(selectedOptions) =>
-                            onChange(
-                              selectedOptions.map((option) => option.value),
-                            )
-                          }
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="business_id">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <TextInput
-                          id="business_id"
-                          label="Y-tunnus"
-                          invalid={invalid}
-                          value={value || ""}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          onFocus={onFocus}
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="national_identification_number">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <TextInput
-                          id="national_identification_number"
-                          label="Henkilötunnus"
-                          invalid={invalid}
-                          value={value || ""}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          onFocus={onFocus}
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="lessor">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      const selectedOptions = lessorOptions.filter((option) =>
-                        (Array.isArray(value) ? value : [value]).some(
-                          (v) => v == option.value,
-                        ),
-                      );
-                      return (
-                        <Select
-                          id="lessor"
-                          texts={{
-                            label: "Vuokranantaja",
-                            placeholder: "Valitse vuokranantaja",
-                            language: "fi",
-                          }}
-                          value={selectedOptions}
-                          options={lessorOptions}
-                          onChange={(selectedOptions) =>
-                            onChange(
-                              selectedOptions.map((option) => option.value),
-                            )
-                          }
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
+            <Column small={12} large={12}>
+              <Fieldset
+                heading=""
+                style={{
+                  backgroundColor: "var(--color-black-5)",
+                  padding: "0.5rem",
+                }}
+              >
+                <SearchRow>
                   <Row>
-                    <Column small={6}>
-                      <Field name="type">
+                    <Field name="tenant_name">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="tenant_name"
+                            label="Nimi"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="tenantcontact_type">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        const selectedOptions = tenantTypeOptions.filter(
+                          (option) =>
+                            (Array.isArray(value) ? value : [value]).some(
+                              (v) => v == option.value,
+                            ),
+                        );
+                        return (
+                          <Select
+                            id="tenantcontact_type"
+                            texts={{
+                              label: "Asiakkaan rooli",
+                              placeholder: "Valitse rooli",
+                              language: "fi",
+                            }}
+                            value={selectedOptions}
+                            options={tenantTypeOptions}
+                            onChange={(selectedOptions) =>
+                              onChange(
+                                selectedOptions.map((option) => option.value),
+                              )
+                            }
+                            clearable
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="business_id">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="business_id"
+                            label="Y-tunnus"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="national_identification_number">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="national_identification_number"
+                            label="Henkilötunnus"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                          />
+                        );
+                      }}
+                    </Field>
+                  </Row>
+                </SearchRow>
+                <SearchRow>
+                  <SearchInputColumn>
+                    <SelectionGroup
+                      label="Asiakkaan tila"
+                      direction="horizontal"
+                    >
+                      <Field name="tenant_activity" key="tenant_activity-1">
                         {({
                           input: { value, onBlur, onChange, onFocus },
                           meta: { error, invalid },
                         }) => {
-                          const selectedOption = typeOptions.filter(
-                            (option) => value == option.value,
-                          );
                           return (
-                            <Select
-                              id="type"
-                              texts={{
-                                label: "Tyyppi",
-                                placeholder: "Valitse tyyppi",
-                                language: "fi",
-                              }}
-                              value={selectedOption}
-                              options={typeOptions}
-                              onChange={(selectedOptions) =>
-                                onChange(
-                                  selectedOptions.map((option) => option.value),
-                                )
-                              }
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                    <Column small={6}>
-                      <Field name="municipality">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          const selectedOption = municipalityOptions.filter(
-                            (option) => value == option.value,
-                          );
-                          return (
-                            <Select
-                              id="municipality"
-                              texts={{
-                                label: "Kunta",
-                                placeholder: "Valitse kunta",
-                                language: "fi",
-                              }}
-                              value={selectedOption}
-                              options={municipalityOptions}
-                              onChange={(selectedOptions) =>
-                                onChange(
-                                  selectedOptions.map((option) => option.value),
-                                )
-                              }
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                    <Column small={6}>
-                      <Field name="district">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          const selectedOption = districtOptions.filter(
-                            (option) => value == option.value,
-                          );
-                          return (
-                            <Select
-                              id="district"
-                              texts={{
-                                label: "Kaupunginosa",
-                                placeholder: "Valitse kaupunginosa",
-                                language: "fi",
-                              }}
-                              value={selectedOption}
-                              options={districtOptions}
-                              onChange={(selectedOptions) =>
-                                onChange(
-                                  selectedOptions.map((option) => option.value),
-                                )
-                              }
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                    <Column small={6}>
-                      <Field name="sequence">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <TextInput
-                              id="sequence"
-                              label="Juokseva numero"
-                              invalid={invalid}
-                              value={value || ""}
-                              onBlur={onBlur}
+                            <RadioButton
+                              id="tenant_activity-1"
+                              name="tenant_activity"
+                              value=""
+                              label="Kaikki asiakkaat"
+                              checked={value === ""}
                               onChange={onChange}
+                              onBlur={onBlur}
                               onFocus={onFocus}
                             />
                           );
                         }}
                       </Field>
-                    </Column>
-                  </Row>
-                </SearchInputColumn>
-              </SearchRow>
-
+                      <Field name="tenant_activity" key="tenant_activity-2">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <RadioButton
+                              id="tenant_activity-2"
+                              name="tenant_activity"
+                              value="past"
+                              label="Vain entiset asiakkaat"
+                              checked={value === "past"}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                            />
+                          );
+                        }}
+                      </Field>
+                      <Field name="tenant_activity" key="tenant_activity-3">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <RadioButton
+                              id="tenant_activity-3"
+                              name="tenant_activity"
+                              value="active"
+                              label="Vain nykyiset asiakkaat"
+                              checked={value === "active"}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                            />
+                          );
+                        }}
+                      </Field>
+                    </SelectionGroup>
+                  </SearchInputColumn>
+                </SearchRow>
+              </Fieldset>
               <SearchRow>
-                <SearchInputColumn>
-                  <Field name="property_identifier">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <TextInput
-                          id="property_identifier"
-                          label="Kiinteistötunnus"
-                          invalid={invalid}
-                          value={value || ""}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          onFocus={onFocus}
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
+                {/* Empty row */}
+                &nbsp;
               </SearchRow>
+              <Fieldset
+                heading=""
+                style={{
+                  backgroundColor: "var(--color-black-5)",
+                  padding: "0.5rem",
+                }}
+              >
+                <SearchRow>
+                  <Row>
+                    <Field name="lessor">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        const selectedOptions = lessorOptions.filter((option) =>
+                          (Array.isArray(value) ? value : [value]).some(
+                            (v) => v == option.value,
+                          ),
+                        );
+                        return (
+                          <Select
+                            id="lessor"
+                            texts={{
+                              label: "Vuokranantaja",
+                              placeholder: "Valitse vuokranantaja",
+                              language: "fi",
+                            }}
+                            value={selectedOptions}
+                            options={lessorOptions}
+                            onChange={(selectedOptions) =>
+                              onChange(
+                                selectedOptions.map((option) => option.value),
+                              )
+                            }
+                            clearable
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="intended_use">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        const selectedOption = intendedUseOptions.filter(
+                          (option) => value == option.value,
+                        );
+                        return (
+                          <Select
+                            id="intended_use"
+                            texts={{
+                              label: "Vuokrauksen käyttötarkoitus",
+                              placeholder: "Valitse käyttötarkoitus",
+                              language: "fi",
+                            }}
+                            value={selectedOption}
+                            options={intendedUseOptions}
+                            onChange={(selectedOptions) =>
+                              onChange(
+                                selectedOptions.map((option) => option.value),
+                              )
+                            }
+                            clearable
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="address">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="address"
+                            label="Vuokrakohteen osoite"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                          />
+                        );
+                      }}
+                    </Field>
+                  </Row>
+                </SearchRow>
+
+                <SearchRow>
+                  <Row>
+                    <Field name="type">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        const selectedOption = typeOptions.filter(
+                          (option) => value == option.value,
+                        );
+                        return (
+                          <Select
+                            id="type"
+                            texts={{
+                              label: "Tyyppi",
+                              placeholder: "Valitse tyyppi",
+                              language: "fi",
+                            }}
+                            value={selectedOption}
+                            options={typeOptions}
+                            onChange={(selectedOptions) =>
+                              onChange(
+                                selectedOptions.map((option) => option.value),
+                              )
+                            }
+                            clearable
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="municipality">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        const selectedOption = municipalityOptions.filter(
+                          (option) => value == option.value,
+                        );
+                        return (
+                          <Select
+                            id="municipality"
+                            texts={{
+                              label: "Kunta",
+                              placeholder: "Valitse kunta",
+                              language: "fi",
+                            }}
+                            value={selectedOption}
+                            options={municipalityOptions}
+                            onChange={(selectedOptions) =>
+                              onChange(
+                                selectedOptions.map((option) => option.value),
+                              )
+                            }
+                            clearable
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="district">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        const selectedOption = districtOptions.filter(
+                          (option) => value == option.value,
+                        );
+                        return (
+                          <Select
+                            id="district"
+                            texts={{
+                              label: "Kaupunginosa",
+                              placeholder: "Valitse kaupunginosa",
+                              language: "fi",
+                            }}
+                            value={selectedOption}
+                            options={districtOptions}
+                            onChange={(selectedOptions) =>
+                              onChange(
+                                selectedOptions.map((option) => option.value),
+                              )
+                            }
+                            disabled={!municipality}
+                            clearable
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="sequence">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="sequence"
+                            label="Juokseva numero"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                          />
+                        );
+                      }}
+                    </Field>
+                  </Row>
+                </SearchRow>
+              </Fieldset>
+
               <SearchRow>
                 <SearchInputColumn>
                   <Field name="has_not_geometry">
@@ -503,367 +529,310 @@ const SearchFields = ({
                   </Field>
                 </SearchInputColumn>
               </SearchRow>
-            </Column>
 
-            {/* Second column */}
-            <Column small={12} large={6}>
-              <SearchRow>
-                <SearchInputColumn>
-                  <Row>
-                    <Column small={6}>
-                      <Field name="lease_start_date_start">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <DateInput
-                              helperText="Käytä muotoa P.K.VVVV"
-                              id="lease_start_date_start"
-                              initialMonth={new Date()}
-                              label="Vuokrauksen alkupvm alkaen"
-                              language="fi"
-                              value={value || ""}
-                              onBlur={onBlur}
-                              onFocus={onFocus}
-                              onChange={(nextValue) => onChange(nextValue)}
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                    <Column small={6}>
-                      <Field name="lease_start_date_end">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <DateInput
-                              helperText="Käytä muotoa P.K.VVVV"
-                              id="lease_start_date_end"
-                              initialMonth={new Date()}
-                              label="Vuokrauksen alkupvm loppuen"
-                              language="fi"
-                              value={value || ""}
-                              onBlur={onBlur}
-                              onFocus={onFocus}
-                              onChange={(nextValue) => onChange(nextValue)}
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                  </Row>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Row>
-                    <Column small={6}>
-                      <Field name="lease_end_date_start">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <DateInput
-                              helperText="Käytä muotoa P.K.VVVV"
-                              id="lease_end_date_start"
-                              initialMonth={new Date()}
-                              label="Vuokrauksen loppupvm alkaen"
-                              language="fi"
-                              value={value || ""}
-                              onBlur={onBlur}
-                              onFocus={onFocus}
-                              onChange={(nextValue) => onChange(nextValue)}
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                    <Column small={6}>
-                      <Field name="lease_end_date_end">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <DateInput
-                              helperText="Käytä muotoa P.K.VVVV"
-                              id="lease_end_date_end"
-                              initialMonth={new Date()}
-                              label="Vuokrauksen loppupvm loppuen"
-                              language="fi"
-                              value={value || ""}
-                              onBlur={onBlur}
-                              onFocus={onFocus}
-                              onChange={(nextValue) => onChange(nextValue)}
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                  </Row>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Row>
-                    <Column small={6}>
-                      <Field name="only_active_leases">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <Checkbox
-                              label="Voimassa"
-                              id="only_active_leases"
-                              checked={value === true || value === "true"}
-                              onBlur={onBlur}
-                              onFocus={onFocus}
-                              onChange={(event) =>
-                                onChange(
-                                  event.target.checked ? true : undefined,
-                                )
-                              }
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                    <Column small={6}>
-                      <Field name="only_expired_leases">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <Checkbox
-                              label="Päättyneet"
-                              id="only_expired_leases"
-                              checked={value === true || value === "true"}
-                              onBlur={onBlur}
-                              onFocus={onFocus}
-                              onChange={(event) =>
-                                onChange(
-                                  event.target.checked ? true : undefined,
-                                )
-                              }
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                  </Row>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="address">
+              <Fieldset
+                heading=""
+                style={{
+                  backgroundColor: "var(--color-black-5)",
+                  padding: "0.5rem",
+                }}
+              >
+                <SearchRow>
+                  <Field name="lease_start_date_start">
                     {({
                       input: { value, onBlur, onChange, onFocus },
                       meta: { error, invalid },
                     }) => {
                       return (
-                        <TextInput
-                          id="address"
-                          label="Vuokrakohteen osoite"
-                          invalid={invalid}
+                        <DateInput
+                          helperText="Käytä muotoa P.K.VVVV"
+                          id="lease_start_date_start"
+                          initialMonth={new Date()}
+                          label="Vuokrauksen alkupvm alkaen"
+                          language="fi"
                           value={value || ""}
                           onBlur={onBlur}
-                          onChange={onChange}
                           onFocus={onFocus}
+                          onChange={(nextValue) => onChange(nextValue)}
                         />
                       );
                     }}
                   </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="contract_number">
+                  <Field name="lease_start_date_end">
                     {({
                       input: { value, onBlur, onChange, onFocus },
                       meta: { error, invalid },
                     }) => {
                       return (
-                        <TextInput
-                          id="contract_number"
-                          label="Sopimusnro"
-                          invalid={invalid}
+                        <DateInput
+                          helperText="Käytä muotoa P.K.VVVV"
+                          id="lease_start_date_end"
+                          initialMonth={new Date()}
+                          label="Vuokrauksen alkupvm loppuen"
+                          language="fi"
                           value={value || ""}
                           onBlur={onBlur}
-                          onChange={onChange}
                           onFocus={onFocus}
+                          onChange={(nextValue) => onChange(nextValue)}
                         />
                       );
                     }}
                   </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Row>
-                    <Column small={12}>
-                      <Field name="decision_maker">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          const selectedOption = decisionMakerOptions.filter(
-                            (option) => value == option.value,
-                          );
-                          return (
-                            <Select
-                              id="decision_maker"
-                              texts={{
-                                label: "Päätöksen tekijä",
-                                placeholder: "Valitse päätöksen tekijä",
-                                language: "fi",
-                              }}
-                              value={selectedOption}
-                              options={decisionMakerOptions}
-                              onChange={(selectedOptions) =>
-                                onChange(
-                                  selectedOptions.map((option) => option.value),
-                                )
-                              }
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                    <Column small={6}>
-                      <Field name="decision_date">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <DateInput
-                              helperText="Käytä muotoa P.K.VVVV"
-                              id="decision_date"
-                              initialMonth={new Date()}
-                              label="Päätöspvm"
-                              language="fi"
-                              value={value || ""}
-                              onBlur={onBlur}
-                              onFocus={onFocus}
-                              onChange={(nextValue) => onChange(nextValue)}
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                    <Column small={6}>
-                      <Field name="decision_section">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <TextInput
-                              id="decision_section"
-                              label="Pykälä (§)"
-                              invalid={invalid}
-                              value={value || ""}
-                              onBlur={onBlur}
-                              onChange={onChange}
-                              onFocus={onFocus}
-                              // unit="§"
-                            />
-                          );
-                        }}
-                      </Field>
-                    </Column>
-                  </Row>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="reference_number">
+                  <Field name="lease_end_date_start">
                     {({
                       input: { value, onBlur, onChange, onFocus },
                       meta: { error, invalid },
                     }) => {
                       return (
-                        <TextInput
-                          id="reference_number"
-                          label="Diaarinro"
-                          invalid={invalid}
+                        <DateInput
+                          helperText="Käytä muotoa P.K.VVVV"
+                          id="lease_end_date_start"
+                          initialMonth={new Date()}
+                          label="Vuokrauksen loppupvm alkaen"
+                          language="fi"
                           value={value || ""}
                           onBlur={onBlur}
-                          onChange={onChange}
                           onFocus={onFocus}
+                          onChange={(nextValue) => onChange(nextValue)}
                         />
                       );
                     }}
                   </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="invoice_number">
+                  <Field name="lease_end_date_end">
                     {({
                       input: { value, onBlur, onChange, onFocus },
                       meta: { error, invalid },
                     }) => {
                       return (
-                        <TextInput
-                          id="invoice_number"
-                          label="Laskunro"
-                          invalid={invalid}
+                        <DateInput
+                          helperText="Käytä muotoa P.K.VVVV"
+                          id="lease_end_date_end"
+                          initialMonth={new Date()}
+                          label="Vuokrauksen loppupvm loppuen"
+                          language="fi"
                           value={value || ""}
                           onBlur={onBlur}
-                          onChange={onChange}
                           onFocus={onFocus}
+                          onChange={(nextValue) => onChange(nextValue)}
                         />
                       );
                     }}
                   </Field>
-                </SearchInputColumn>
-              </SearchRow>
+                </SearchRow>
 
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="intended_use">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      const selectedOption = intendedUseOptions.filter(
-                        (option) => value == option.value,
-                      );
-                      return (
-                        <Select
-                          id="intended_use"
-                          texts={{
-                            label: "Vuokrauksen käyttötarkoitus",
-                            placeholder: "Valitse käyttötarkoitus",
-                            language: "fi",
+                <SearchRow>
+                  <SearchInputColumn>
+                    <Row>
+                      <Column small={6}>
+                        <Field name="only_active_leases">
+                          {({
+                            input: { value, onBlur, onChange, onFocus },
+                            meta: { error, invalid },
+                          }) => {
+                            return (
+                              <Checkbox
+                                label="Voimassa"
+                                id="only_active_leases"
+                                checked={value === true || value === "true"}
+                                onBlur={onBlur}
+                                onFocus={onFocus}
+                                onChange={(event) =>
+                                  onChange(
+                                    event.target.checked ? true : undefined,
+                                  )
+                                }
+                              />
+                            );
                           }}
-                          value={selectedOption}
-                          options={intendedUseOptions}
-                          onChange={(selectedOptions) =>
-                            onChange(
-                              selectedOptions.map((option) => option.value),
-                            )
-                          }
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
+                        </Field>
+                        <Field name="only_expired_leases">
+                          {({
+                            input: { value, onBlur, onChange, onFocus },
+                            meta: { error, invalid },
+                          }) => {
+                            return (
+                              <Checkbox
+                                label="Päättyneet"
+                                id="only_expired_leases"
+                                checked={value === true || value === "true"}
+                                onBlur={onBlur}
+                                onFocus={onFocus}
+                                onChange={(event) =>
+                                  onChange(
+                                    event.target.checked ? true : undefined,
+                                  )
+                                }
+                              />
+                            );
+                          }}
+                        </Field>
+                      </Column>
+                    </Row>
+                  </SearchInputColumn>
+                  <SearchInputColumn>
+                    <Field name="property_identifier">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="property_identifier"
+                            label="Kiinteistötunnus"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                          />
+                        );
+                      }}
+                    </Field>
+                  </SearchInputColumn>
+                </SearchRow>
+              </Fieldset>
+              <SearchRow>
+                {/* Empty row */}
+                &nbsp;
               </SearchRow>
+              <Fieldset
+                heading=""
+                style={{
+                  backgroundColor: "var(--color-black-5)",
+                  padding: "0.5rem",
+                }}
+              >
+                <SearchRow>
+                  <Row>
+                    <Field name="decision_maker">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        const selectedOption = decisionMakerOptions.filter(
+                          (option) => value == option.value,
+                        );
+                        return (
+                          <Select
+                            id="decision_maker"
+                            texts={{
+                              label: "Päätöksen tekijä",
+                              placeholder: "Valitse päätöksen tekijä",
+                              language: "fi",
+                            }}
+                            value={selectedOption}
+                            options={decisionMakerOptions}
+                            onChange={(selectedOptions) =>
+                              onChange(
+                                selectedOptions.map((option) => option.value),
+                              )
+                            }
+                            clearable
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="decision_date">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <DateInput
+                            helperText="Käytä muotoa P.K.VVVV"
+                            id="decision_date"
+                            initialMonth={new Date()}
+                            label="Päätöspvm"
+                            language="fi"
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            onChange={(nextValue) => onChange(nextValue)}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="decision_section">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="decision_section"
+                            label="Pykälä (§)"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                            // unit="§"
+                          />
+                        );
+                      }}
+                    </Field>
+                  </Row>
+                </SearchRow>
+
+                <SearchRow>
+                  <Row>
+                    <Field name="reference_number">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="reference_number"
+                            label="Diaarinro"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="contract_number">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="contract_number"
+                            label="Sopimusnro"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="invoice_number">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="invoice_number"
+                            label="Laskunro"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                          />
+                        );
+                      }}
+                    </Field>
+                  </Row>
+                </SearchRow>
+              </Fieldset>
 
               <SearchRow>
                 <SearchInputColumn>
@@ -961,17 +930,21 @@ const Search: React.FC<Props> = (props) => {
 
   const decisionMakerOptions = useMemo(
     () =>
-      getFieldOptions(leaseAttributes, LeaseDecisionsFieldPaths.DECISION_MAKER),
+      getFieldOptions(
+        leaseAttributes,
+        LeaseDecisionsFieldPaths.DECISION_MAKER,
+        false,
+      ),
     [leaseAttributes],
   );
 
   const intendedUseOptions = useMemo(
-    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.INTENDED_USE),
+    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.INTENDED_USE, false),
     [leaseAttributes],
   );
 
   const municipalityOptions = useMemo(
-    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.MUNICIPALITY),
+    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.MUNICIPALITY, false),
     [leaseAttributes],
   );
 
@@ -986,14 +959,11 @@ const Search: React.FC<Props> = (props) => {
   );
 
   const typeOptions = useMemo(
-    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.TYPE),
+    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.TYPE, false),
     [leaseAttributes],
   );
 
-  const lessorOptions = useMemo(
-    () => addEmptyOption(getContactOptions(lessors)),
-    [lessors],
-  );
+  const lessorOptions = useMemo(() => getContactOptions(lessors), [lessors]);
 
   useEffect(() => {
     setIsBasicSearch(isSearchBasicMode());
