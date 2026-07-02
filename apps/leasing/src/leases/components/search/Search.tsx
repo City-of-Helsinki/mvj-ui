@@ -19,6 +19,7 @@ import {
   TextInput,
   type SearchProps,
   type OptionInProps,
+  Fieldset,
 } from "hds-react";
 import SearchChangeTypeLink from "@/components/search/SearchChangeTypeLink";
 import SearchClearLink from "@/components/search/SearchClearLink";
@@ -135,180 +136,193 @@ const SearchFields = ({
       </Row>
       {!isBasicSearch && (
         <>
-          <Row>
+          <Row
+            style={{
+              backgroundColor: "var(--color-white)",
+              padding: "0.5rem",
+            }}
+          >
             {/* First column */}
             <Column small={12} large={6}>
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="tenant_name">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <TextInput
-                          id="tenant_name"
-                          label="Nimi"
-                          invalid={invalid}
-                          value={value || ""}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          onFocus={onFocus}
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <SelectionGroup label="Asiakkaan tila">
-                    <Field name="tenant_activity" key="tenant_activity-1">
+              <Fieldset
+                heading=""
+                style={{
+                  backgroundColor: "var(--color-black-5)",
+                  padding: "0.5rem",
+                }}
+              >
+                <SearchRow>
+                  <SearchInputColumn>
+                    <Field name="tenant_name">
                       {({
                         input: { value, onBlur, onChange, onFocus },
                         meta: { error, invalid },
                       }) => {
                         return (
-                          <RadioButton
-                            id="tenant_activity-1"
-                            name="tenant_activity"
-                            value=""
-                            label="Kaikki asiakkaat"
-                            checked={value === ""}
-                            onChange={onChange}
+                          <TextInput
+                            id="tenant_name"
+                            label="Nimi"
+                            invalid={invalid}
+                            value={value || ""}
                             onBlur={onBlur}
+                            onChange={onChange}
                             onFocus={onFocus}
-                            disabled={radioButtonsDisabled}
                           />
                         );
                       }}
                     </Field>
-                    <Field name="tenant_activity" key="tenant_activity-2">
+                  </SearchInputColumn>
+                </SearchRow>
+
+                <SearchRow>
+                  <SearchInputColumn>
+                    <SelectionGroup label="Asiakkaan tila">
+                      <Field name="tenant_activity" key="tenant_activity-1">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <RadioButton
+                              id="tenant_activity-1"
+                              name="tenant_activity"
+                              value=""
+                              label="Kaikki asiakkaat"
+                              checked={value === ""}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                              disabled={radioButtonsDisabled}
+                            />
+                          );
+                        }}
+                      </Field>
+                      <Field name="tenant_activity" key="tenant_activity-2">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <RadioButton
+                              id="tenant_activity-2"
+                              name="tenant_activity"
+                              value="past"
+                              label="Vain entiset asiakkaat"
+                              checked={value === "past"}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                              disabled={radioButtonsDisabled}
+                            />
+                          );
+                        }}
+                      </Field>
+                      <Field name="tenant_activity" key="tenant_activity-3">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <RadioButton
+                              id="tenant_activity-3"
+                              name="tenant_activity"
+                              value="active"
+                              label="Vain nykyiset asiakkaat"
+                              checked={value === "active"}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                              disabled={radioButtonsDisabled}
+                            />
+                          );
+                        }}
+                      </Field>
+                    </SelectionGroup>
+                  </SearchInputColumn>
+                </SearchRow>
+
+                <SearchRow>
+                  <SearchInputColumn>
+                    <Field name="tenantcontact_type">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        const selectedOptions = tenantTypeOptions.filter(
+                          (option) =>
+                            (Array.isArray(value) ? value : [value]).some(
+                              (v) => v == option.value,
+                            ),
+                        );
+                        return (
+                          <Select
+                            id="tenantcontact_type"
+                            multiSelect
+                            texts={{
+                              label: "Asiakkaan rooli",
+                              placeholder: "Valitse rooli",
+                              language: "fi",
+                            }}
+                            value={selectedOptions}
+                            options={tenantTypeOptions}
+                            onChange={(selectedOptions) =>
+                              onChange(
+                                selectedOptions.map((option) => option.value),
+                              )
+                            }
+                          />
+                        );
+                      }}
+                    </Field>
+                  </SearchInputColumn>
+                </SearchRow>
+
+                <SearchRow>
+                  <SearchInputColumn>
+                    <Field name="business_id">
                       {({
                         input: { value, onBlur, onChange, onFocus },
                         meta: { error, invalid },
                       }) => {
                         return (
-                          <RadioButton
-                            id="tenant_activity-2"
-                            name="tenant_activity"
-                            value="past"
-                            label="Vain entiset asiakkaat"
-                            checked={value === "past"}
-                            onChange={onChange}
+                          <TextInput
+                            id="business_id"
+                            label="Y-tunnus"
+                            invalid={invalid}
+                            value={value || ""}
                             onBlur={onBlur}
+                            onChange={onChange}
                             onFocus={onFocus}
-                            disabled={radioButtonsDisabled}
                           />
                         );
                       }}
                     </Field>
-                    <Field name="tenant_activity" key="tenant_activity-3">
+                  </SearchInputColumn>
+                </SearchRow>
+
+                <SearchRow>
+                  <SearchInputColumn>
+                    <Field name="national_identification_number">
                       {({
                         input: { value, onBlur, onChange, onFocus },
                         meta: { error, invalid },
                       }) => {
                         return (
-                          <RadioButton
-                            id="tenant_activity-3"
-                            name="tenant_activity"
-                            value="active"
-                            label="Vain nykyiset asiakkaat"
-                            checked={value === "active"}
-                            onChange={onChange}
+                          <TextInput
+                            id="national_identification_number"
+                            label="Henkilötunnus"
+                            invalid={invalid}
+                            value={value || ""}
                             onBlur={onBlur}
+                            onChange={onChange}
                             onFocus={onFocus}
-                            disabled={radioButtonsDisabled}
                           />
                         );
                       }}
                     </Field>
-                  </SelectionGroup>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="tenantcontact_type">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      const selectedOptions = tenantTypeOptions.filter(
-                        (option) =>
-                          (Array.isArray(value) ? value : [value]).some(
-                            (v) => v == option.value,
-                          ),
-                      );
-                      return (
-                        <Select
-                          id="tenantcontact_type"
-                          multiSelect
-                          texts={{
-                            label: "Asiakkaan rooli",
-                            placeholder: "Valitse rooli",
-                            language: "fi",
-                          }}
-                          value={selectedOptions}
-                          options={tenantTypeOptions}
-                          onChange={(selectedOptions) =>
-                            onChange(
-                              selectedOptions.map((option) => option.value),
-                            )
-                          }
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="business_id">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <TextInput
-                          id="business_id"
-                          label="Y-tunnus"
-                          invalid={invalid}
-                          value={value || ""}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          onFocus={onFocus}
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="national_identification_number">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <TextInput
-                          id="national_identification_number"
-                          label="Henkilötunnus"
-                          invalid={invalid}
-                          value={value || ""}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          onFocus={onFocus}
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
-              </SearchRow>
+                  </SearchInputColumn>
+                </SearchRow>
+              </Fieldset>
 
               <SearchRow>
                 <SearchInputColumn>
