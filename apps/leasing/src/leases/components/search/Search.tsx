@@ -431,9 +431,11 @@ const SearchFields = ({
                         <Checkbox
                           label="Geometria puuttuu"
                           id="has_not_geometry"
-                          checked={value === "true"}
-                          onChange={(e) =>
-                            onChange(e.target.checked ? "true" : "false")
+                          checked={value === true || value === "true"}
+                          onBlur={onBlur}
+                          onFocus={onFocus}
+                          onChange={(event) =>
+                            onChange(event.target.checked ? true : undefined)
                           }
                         />
                       );
@@ -560,9 +562,13 @@ const SearchFields = ({
                             <Checkbox
                               label="Voimassa"
                               id="only_active_leases"
-                              checked={value === "true"}
-                              onChange={(e) =>
-                                onChange(e.target.checked ? "true" : "false")
+                              checked={value === true || value === "true"}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                              onChange={(event) =>
+                                onChange(
+                                  event.target.checked ? true : undefined,
+                                )
                               }
                             />
                           );
@@ -579,9 +585,13 @@ const SearchFields = ({
                             <Checkbox
                               label="Päättyneet"
                               id="only_expired_leases"
-                              checked={value === "true"}
-                              onChange={(e) =>
-                                onChange(e.target.checked ? "true" : "false")
+                              checked={value === true || value === "true"}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                              onChange={(event) =>
+                                onChange(
+                                  event.target.checked ? true : undefined,
+                                )
                               }
                             />
                           );
@@ -785,9 +795,11 @@ const SearchFields = ({
                         <Checkbox
                           label="Omat vuokraukset"
                           id="preparers_own_leases"
-                          checked={value === "true"}
-                          onChange={(e) =>
-                            onChange(e.target.checked ? "true" : "false")
+                          checked={value === true || value === "true"}
+                          onBlur={onBlur}
+                          onFocus={onFocus}
+                          onChange={(event) =>
+                            onChange(event.target.checked ? true : undefined)
                           }
                         />
                       );
