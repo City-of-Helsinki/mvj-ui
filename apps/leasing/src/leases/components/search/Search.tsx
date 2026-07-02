@@ -9,7 +9,6 @@ import { useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { Field, useForm, useFormState } from "react-final-form";
 import isEqual from "lodash/isEqual";
-import FormField from "@/components/form/final-form/FormField";
 import {
   Checkbox,
   DateInput,
@@ -19,6 +18,7 @@ import {
   SelectionGroup,
   TextInput,
   type SearchProps,
+  type OptionInProps,
 } from "hds-react";
 import SearchChangeTypeLink from "@/components/search/SearchChangeTypeLink";
 import SearchClearLink from "@/components/search/SearchClearLink";
@@ -27,7 +27,6 @@ import SearchInputColumn from "@/components/search/SearchInputColumn";
 import SearchRow from "@/components/search/SearchRow";
 import { Row, Column } from "@/components/grid/Grid";
 import { fetchDistrictsByMunicipality } from "@/district/actions";
-import { FieldTypes } from "@/enums";
 import {
   LeaseDecisionsFieldPaths,
   LeaseFieldPaths,
@@ -96,7 +95,7 @@ const SearchFields = ({
     return Boolean(!values?.tenant_name);
   };
 
-  const districtOptions = getDistrictOptions(districts);
+  const districtOptions = getDistrictOptions(districts) as Array<OptionInProps>;
   const radioButtonsDisabled = formHasNoName();
 
   return (
@@ -236,15 +235,22 @@ const SearchFields = ({
                       input: { value, onBlur, onChange, onFocus },
                       meta: { error, invalid },
                     }) => {
+                      const selectedOptions = tenantTypeOptions.filter(
+                        (option) =>
+                          (Array.isArray(value) ? value : [value]).some(
+                            (v) => v == option.value,
+                          ),
+                      );
                       return (
                         <Select
+                          id="tenantcontact_type"
                           multiSelect
                           texts={{
                             label: "Asiakkaan rooli",
                             placeholder: "Valitse rooli",
                             language: "fi",
                           }}
-                          value={value || []}
+                          value={selectedOptions}
                           options={tenantTypeOptions}
                           onChange={(selectedOptions) =>
                             onChange(
@@ -306,20 +312,35 @@ const SearchFields = ({
 
               <SearchRow>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Vuokranantaja",
-                      type: FieldTypes.CHOICE,
-                      read_only: false,
+                  <Field name="lessor">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      const selectedOptions = lessorOptions.filter((option) =>
+                        (Array.isArray(value) ? value : [value]).some(
+                          (v) => v == option.value,
+                        ),
+                      );
+                      return (
+                        <Select
+                          id="lessor"
+                          texts={{
+                            label: "Vuokranantaja",
+                            placeholder: "Valitse vuokranantaja",
+                            language: "fi",
+                          }}
+                          value={selectedOptions}
+                          options={lessorOptions}
+                          onChange={(selectedOptions) =>
+                            onChange(
+                              selectedOptions.map((option) => option.value),
+                            )
+                          }
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="lessor"
-                    overrideValues={{
-                      options: lessorOptions,
-                    }}
-                  />
+                  </Field>
                 </SearchInputColumn>
               </SearchRow>
 
@@ -327,52 +348,91 @@ const SearchFields = ({
                 <SearchInputColumn>
                   <Row>
                     <Column small={6}>
-                      <FormField
-                        autoBlur
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Tyyppi",
-                          type: FieldTypes.CHOICE,
-                          read_only: false,
+                      <Field name="type">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          const selectedOption = typeOptions.filter(
+                            (option) => value == option.value,
+                          );
+                          return (
+                            <Select
+                              id="type"
+                              texts={{
+                                label: "Tyyppi",
+                                placeholder: "Valitse tyyppi",
+                                language: "fi",
+                              }}
+                              value={selectedOption}
+                              options={typeOptions}
+                              onChange={(selectedOptions) =>
+                                onChange(
+                                  selectedOptions.map((option) => option.value),
+                                )
+                              }
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="type"
-                        overrideValues={{
-                          options: typeOptions,
-                        }}
-                      />
+                      </Field>
                     </Column>
                     <Column small={6}>
-                      <FormField
-                        autoBlur
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Kunta",
-                          type: FieldTypes.CHOICE,
-                          read_only: false,
+                      <Field name="municipality">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          const selectedOption = municipalityOptions.filter(
+                            (option) => value == option.value,
+                          );
+                          return (
+                            <Select
+                              id="municipality"
+                              texts={{
+                                label: "Kunta",
+                                placeholder: "Valitse kunta",
+                                language: "fi",
+                              }}
+                              value={selectedOption}
+                              options={municipalityOptions}
+                              onChange={(selectedOptions) =>
+                                onChange(
+                                  selectedOptions.map((option) => option.value),
+                                )
+                              }
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="municipality"
-                        overrideValues={{
-                          options: municipalityOptions,
-                        }}
-                      />
+                      </Field>
                     </Column>
                     <Column small={6}>
-                      <FormField
-                        autoBlur
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Kaupunginosa",
-                          type: FieldTypes.CHOICE,
-                          read_only: false,
+                      <Field name="district">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          const selectedOption = districtOptions.filter(
+                            (option) => value == option.value,
+                          );
+                          return (
+                            <Select
+                              id="district"
+                              texts={{
+                                label: "Kaupunginosa",
+                                placeholder: "Valitse kaupunginosa",
+                                language: "fi",
+                              }}
+                              value={selectedOption}
+                              options={districtOptions}
+                              onChange={(selectedOptions) =>
+                                onChange(
+                                  selectedOptions.map((option) => option.value),
+                                )
+                              }
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="district"
-                        overrideValues={{
-                          options: districtOptions,
-                        }}
-                      />
+                      </Field>
                     </Column>
                     <Column small={6}>
                       <Field name="sequence">
@@ -652,20 +712,33 @@ const SearchFields = ({
                 <SearchInputColumn>
                   <Row>
                     <Column small={12}>
-                      <FormField
-                        autoBlur
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Päätöksen tekijä",
-                          type: FieldTypes.CHOICE,
-                          read_only: false,
+                      <Field name="decision_maker">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          const selectedOption = decisionMakerOptions.filter(
+                            (option) => value == option.value,
+                          );
+                          return (
+                            <Select
+                              id="decision_maker"
+                              texts={{
+                                label: "Päätöksen tekijä",
+                                placeholder: "Valitse päätöksen tekijä",
+                                language: "fi",
+                              }}
+                              value={selectedOption}
+                              options={decisionMakerOptions}
+                              onChange={(selectedOptions) =>
+                                onChange(
+                                  selectedOptions.map((option) => option.value),
+                                )
+                              }
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="decision_maker"
-                        overrideValues={{
-                          options: decisionMakerOptions,
-                        }}
-                      />
+                      </Field>
                     </Column>
                     <Column small={6}>
                       <Field name="decision_date">
@@ -762,26 +835,34 @@ const SearchFields = ({
 
               <SearchRow>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Vuokrauksen käyttötarkoitus",
-                      type: FieldTypes.CHOICE,
-                      read_only: false,
+                  <Field name="intended_use">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      const selectedOption = intendedUseOptions.filter(
+                        (option) => value == option.value,
+                      );
+                      return (
+                        <Select
+                          id="intended_use"
+                          texts={{
+                            label: "Vuokrauksen käyttötarkoitus",
+                            placeholder: "Valitse käyttötarkoitus",
+                            language: "fi",
+                          }}
+                          value={selectedOption}
+                          options={intendedUseOptions}
+                          onChange={(selectedOptions) =>
+                            onChange(
+                              selectedOptions.map((option) => option.value),
+                            )
+                          }
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="intended_use"
-                    overrideValues={{
-                      options: intendedUseOptions,
-                    }}
-                  />
+                  </Field>
                 </SearchInputColumn>
-              </SearchRow>
-
-              <SearchRow>
-                {/* Empty row to align Omat Vuokraukset with Geometria Puuttuu */}
-                &nbsp;
               </SearchRow>
 
               <SearchRow>
