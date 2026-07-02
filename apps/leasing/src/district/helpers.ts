@@ -8,14 +8,23 @@ import type { SelectListOption } from "@/types";
  */
 export const getDistrictOptions = (
   districts: Array<Record<string, any>>,
+  addEmpty: boolean = true,
 ): Array<SelectListOption> => {
   const items = districts || [];
-  return addEmptyOption(
-    items.map((choice) => {
-      return {
-        value: choice.id,
-        label: `${choice.name} (${choice.identifier})`,
-      };
-    }),
-  );
+  if (addEmpty) {
+    return addEmptyOption(
+      items.map((choice) => {
+        return {
+          value: choice.id,
+          label: `${choice.name} (${choice.identifier})`,
+        };
+      }),
+    );
+  }
+  return items.map((choice) => {
+    return {
+      value: choice.id,
+      label: `${choice.name} (${choice.identifier})`,
+    };
+  });
 };
