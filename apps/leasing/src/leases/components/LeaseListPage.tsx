@@ -250,6 +250,29 @@ const LeaseListPage: React.FC = () => {
     }
   }, [dispatch, isFetchingLeaseAttributes, leaseAttributes, leaseMethods]);
 
+  const debouncedFetchLeases = useMemo(
+    () =>
+      debounce((searchQuery: Record<string, any>) => {
+        dispatch(fetchLeases(mapLeaseSearchFilters(searchQuery)));
+      }, 1000),
+    [dispatch],
+  );
+
+  const debouncedFetchLeasesByBBox = useMemo(
+    () =>
+      debounce((searchQuery: Record<string, any>) => {
+        dispatch(fetchLeasesByBBox(mapLeaseSearchFilters(searchQuery)));
+      }, 1000),
+    [dispatch],
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedFetchLeases.cancel();
+      debouncedFetchLeasesByBBox.cancel();
+    };
+  }, [debouncedFetchLeases, debouncedFetchLeasesByBBox]);
+
   useEffect(() => {
     const searchQuery = getUrlParams(location.search);
     if (!userServiceUnits || userServiceUnits.length === 0) {
@@ -279,7 +302,7 @@ const LeaseListPage: React.FC = () => {
       setVisualizationType(VisualizationTypes.TABLE);
     }
 
-    const search = () => {
+    const search = (isImmediate: boolean = false) => {
       const searchQuery = getUrlParams(location.search);
       const page = searchQuery.page ? Number(searchQuery.page) : 1;
       const leaseStates = getLeaseStates(searchQuery);
@@ -309,10 +332,15 @@ const LeaseListPage: React.FC = () => {
       delete searchQuery.in_bbox;
       delete searchQuery.visualization;
       delete searchQuery.zoom;
-      dispatch(fetchLeases(mapLeaseSearchFilters(searchQuery)));
+
+      if (isImmediate) {
+        dispatch(fetchLeases(mapLeaseSearchFilters(searchQuery)));
+      } else {
+        debouncedFetchLeases(searchQuery);
+      }
     };
 
-    const searchByBBox = () => {
+    const searchByBBox = (isImmediate: boolean = false) => {
       const searchQuery = getUrlParams(location.search);
       const leaseStates = getLeaseStates(searchQuery);
       const onlyActiveLeases = getOnlyActiveLeasesValue(searchQuery);
@@ -343,7 +371,12 @@ const LeaseListPage: React.FC = () => {
       delete searchQuery.zoom;
       delete searchQuery.sort_key;
       delete searchQuery.sort_order;
-      dispatch(fetchLeasesByBBox(mapLeaseSearchFilters(searchQuery)));
+
+      if (isImmediate) {
+        dispatch(fetchLeasesByBBox(mapLeaseSearchFilters(searchQuery)));
+      } else {
+        debouncedFetchLeasesByBBox(searchQuery);
+      }
     };
 
     const setSearchFormValues = () => {
@@ -390,9 +423,9 @@ const LeaseListPage: React.FC = () => {
       setSearchFormValues();
       if (searchQuery.visualization === VisualizationTypes.MAP) {
         setVisualizationType(VisualizationTypes.MAP);
-        searchByBBox();
+        searchByBBox(true);
       } else {
-        search();
+        search(true);
       }
     };
 
@@ -404,7 +437,14 @@ const LeaseListPage: React.FC = () => {
     }
 
     searchByType();
-  }, [dispatch, location.search, navigate, userServiceUnits]);
+  }, [
+    dispatch,
+    location.search,
+    navigate,
+    userServiceUnits,
+    debouncedFetchLeases,
+    debouncedFetchLeasesByBBox,
+  ]);
 
   const serviceUnitOptions: Array<Option> = useMemo(
     () => getFieldOptions(leaseAttributes, "service_unit", false),
