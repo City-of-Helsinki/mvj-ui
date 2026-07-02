@@ -8,7 +8,6 @@ import React, {
 import { useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { Field, useForm, useFormState } from "react-final-form";
-import debounce from "lodash/debounce";
 import isEqual from "lodash/isEqual";
 import FormField from "@/components/form/final-form/FormField";
 import {
@@ -86,26 +85,12 @@ const SearchFields = ({
 
   const prevValues = useRef(values);
 
-  const debouncedSearch = useMemo(
-    () =>
-      debounce((currentValues) => {
-        onSearch({ ...currentValues, page: undefined });
-      }, 1000),
-    [onSearch],
-  );
-
   useEffect(() => {
     if (isSearchInitialized && !isEqual(prevValues.current, values)) {
-      debouncedSearch(values);
+      onSearch({ ...values, page: undefined });
     }
     prevValues.current = values;
-  }, [values, isSearchInitialized, debouncedSearch]);
-
-  useEffect(() => {
-    return () => {
-      debouncedSearch.cancel();
-    };
-  }, [debouncedSearch]);
+  }, [values, isSearchInitialized, onSearch]);
 
   const formHasNoName = () => {
     return Boolean(!values?.tenant_name);
