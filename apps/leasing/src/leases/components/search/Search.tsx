@@ -12,6 +12,7 @@ import debounce from "lodash/debounce";
 import isEqual from "lodash/isEqual";
 import FormField from "@/components/form/final-form/FormField";
 import {
+  Checkbox,
   DateInput,
   Search as HdsSearch,
   RadioButton,
@@ -116,21 +117,6 @@ const SearchFields = ({
   return (
     <>
       <DistrictLoader municipality={municipality} />
-      {/* <Row>
-        <Column small={12}>
-          <FormField
-            autoBlur
-            disableDirty
-            fieldAttributes={{
-              label: "Hae hakusanalla",
-              type: FieldTypes.SEARCH,
-              read_only: false,
-            }}
-            invisibleLabel
-            name="search"
-          />
-        </Column>
-      </Row> */}
       <Row>
         <Column small={12}>
           <Field name="search">
@@ -194,7 +180,7 @@ const SearchFields = ({
               <SearchRow>
                 <SearchInputColumn>
                   <SelectionGroup label="Asiakkaan tila">
-                    <Field name="tenant_activity" type="radio">
+                    <Field name="tenant_activity" key="tenant_activity-1">
                       {({
                         input: { value, onBlur, onChange, onFocus },
                         meta: { error, invalid },
@@ -214,7 +200,7 @@ const SearchFields = ({
                         );
                       }}
                     </Field>
-                    <Field name="tenant_activity">
+                    <Field name="tenant_activity" key="tenant_activity-2">
                       {({
                         input: { value, onBlur, onChange, onFocus },
                         meta: { error, invalid },
@@ -234,7 +220,7 @@ const SearchFields = ({
                         );
                       }}
                     </Field>
-                    <Field name="tenant_activity">
+                    <Field name="tenant_activity" key="tenant_activity-3">
                       {({
                         input: { value, onBlur, onChange, onFocus },
                         meta: { error, invalid },
@@ -284,21 +270,6 @@ const SearchFields = ({
                       );
                     }}
                   </Field>
-                  {/* <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "",
-                      type: FieldTypes.MULTISELECT,
-                      read_only: false,
-                    }}
-                    invisibleLabel
-                    isLoading={isFetchingAttributes}
-                    name="tenantcontact_type"
-                    overrideValues={{
-                      options: tenantTypeOptions,
-                    }}
-                  /> */}
                 </SearchInputColumn>
               </SearchRow>
 
@@ -466,24 +437,23 @@ const SearchFields = ({
               </SearchRow>
               <SearchRow>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Geometria puuttuu",
-                      type: FieldTypes.CHECKBOX,
-                      read_only: false,
+                  <Field name="has_not_geometry">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      return (
+                        <Checkbox
+                          label="Geometria puuttuu"
+                          id="has_not_geometry"
+                          checked={value === "true"}
+                          onChange={(e) =>
+                            onChange(e.target.checked ? "true" : "false")
+                          }
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="has_not_geometry"
-                    overrideValues={{
-                      options: [
-                        {
-                          value: true,
-                        },
-                      ],
-                    }}
-                  />
+                  </Field>
                 </SearchInputColumn>
               </SearchRow>
             </Column>
@@ -596,46 +566,42 @@ const SearchFields = ({
                 <SearchInputColumn>
                   <Row>
                     <Column small={6}>
-                      <FormField
-                        autoBlur
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Voimassa",
-                          type: FieldTypes.CHECKBOX,
-                          read_only: false,
+                      <Field name="only_active_leases">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <Checkbox
+                              label="Voimassa"
+                              id="only_active_leases"
+                              checked={value === "true"}
+                              onChange={(e) =>
+                                onChange(e.target.checked ? "true" : "false")
+                              }
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="only_active_leases"
-                        overrideValues={{
-                          options: [
-                            {
-                              value: true,
-                              label: "Voimassa",
-                            },
-                          ],
-                        }}
-                      />
+                      </Field>
                     </Column>
                     <Column small={6}>
-                      <FormField
-                        autoBlur
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Päättyneet",
-                          type: FieldTypes.CHECKBOX,
-                          read_only: false,
+                      <Field name="only_expired_leases">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <Checkbox
+                              label="Päättyneet"
+                              id="only_expired_leases"
+                              checked={value === "true"}
+                              onChange={(e) =>
+                                onChange(e.target.checked ? "true" : "false")
+                              }
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="only_expired_leases"
-                        overrideValues={{
-                          options: [
-                            {
-                              value: true,
-                              label: "Päättyneet",
-                            },
-                          ],
-                        }}
-                      />
+                      </Field>
                     </Column>
                   </Row>
                 </SearchInputColumn>
@@ -707,16 +673,26 @@ const SearchFields = ({
                       />
                     </Column>
                     <Column small={6}>
-                      <FormField
-                        disableDirty
-                        fieldAttributes={{
-                          label: "Päätöspvm",
-                          type: FieldTypes.DATE,
-                          read_only: false,
+                      <Field name="decision_date">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <DateInput
+                              helperText="Käytä muotoa P.K.VVVV"
+                              id="decision_date"
+                              initialMonth={new Date()}
+                              label="Päätöspvm"
+                              language="fi"
+                              value={value || ""}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                              onChange={(nextValue) => onChange(nextValue)}
+                            />
+                          );
                         }}
-                        invisibleLabel
-                        name="decision_date"
-                      />
+                      </Field>
                     </Column>
                     <Column small={6}>
                       <Field name="decision_section">
@@ -815,24 +791,23 @@ const SearchFields = ({
 
               <SearchRow>
                 <SearchInputColumn>
-                  <FormField
-                    autoBlur
-                    disableDirty
-                    fieldAttributes={{
-                      label: "Omat vuokraukset",
-                      type: FieldTypes.CHECKBOX,
-                      read_only: false,
+                  <Field name="preparers_own_leases">
+                    {({
+                      input: { value, onBlur, onChange, onFocus },
+                      meta: { error, invalid },
+                    }) => {
+                      return (
+                        <Checkbox
+                          label="Omat vuokraukset"
+                          id="preparers_own_leases"
+                          checked={value === "true"}
+                          onChange={(e) =>
+                            onChange(e.target.checked ? "true" : "false")
+                          }
+                        />
+                      );
                     }}
-                    invisibleLabel
-                    name="preparers_own_leases"
-                    overrideValues={{
-                      options: [
-                        {
-                          value: true,
-                        },
-                      ],
-                    }}
-                  />
+                  </Field>
                 </SearchInputColumn>
               </SearchRow>
             </Column>
