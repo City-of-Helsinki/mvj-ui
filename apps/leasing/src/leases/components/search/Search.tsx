@@ -136,7 +136,23 @@ const SearchFields = ({
   return (
     <>
       <DistrictLoader municipality={municipality} />
-      <Row>
+      <Row
+        style={{
+          alignItems: "start",
+          backgroundColor: "var(--color-white)",
+          padding: "1rem 1rem 0 1rem",
+        }}
+      >
+        <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
+          <Button
+            variant={ButtonVariant.Supplementary}
+            iconStart={<IconPlusCircleFill />}
+            onClick={showCreateLeaseModal}
+          >
+            {ButtonLabels.CREATE_LEASE_IDENTIFIER}
+          </Button>
+        </Authorization>
+
         <Field name="search">
           {({
             input: { value, onBlur, onChange, onFocus },
@@ -161,23 +177,11 @@ const SearchFields = ({
           }}
         </Field>
         <Button
-          size={ButtonSize.Small}
           onClick={toggleSearchType}
           iconStart={isBasicSearch ? <IconAngleDown /> : <IconAngleUp />}
         >
           {isBasicSearch ? "Tarkennettu haku" : "Yksinkertainen haku"}
         </Button>
-
-        <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
-          <Button
-            variant={ButtonVariant.Supplementary}
-            size={ButtonSize.Small}
-            iconStart={<IconPlusCircleFill />}
-            onClick={showCreateLeaseModal}
-          >
-            {ButtonLabels.CREATE_LEASE_IDENTIFIER}
-          </Button>
-        </Authorization>
       </Row>
       {!isBasicSearch && (
         <>
@@ -878,7 +882,7 @@ const SearchFields = ({
                 </SearchRow>
               </Fieldset>
 
-              <SearchRow>
+              <SearchRow style={{ alignItems: "center" }}>
                 <Row>
                   <SelectionGroup label="Pikavalinnat" direction="horizontal">
                     <Field name="preparers_own_leases">
