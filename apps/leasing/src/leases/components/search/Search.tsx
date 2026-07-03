@@ -20,9 +20,19 @@ import {
   type SearchProps,
   type OptionInProps,
   Fieldset,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconPlusCircleFill,
+  IconAngleUp,
+  IconAngleDown,
+  IconTrash,
 } from "hds-react";
-import SearchChangeTypeLink from "@/components/search/SearchChangeTypeLink";
-import SearchClearLink from "@/components/search/SearchClearLink";
+import { isMethodAllowed } from "@/util/helpers";
+import { Methods } from "@/enums";
+import { getMethods as getLeaseMethods } from "@/leases/selectors";
+import Authorization from "@/components/authorization/Authorization";
+import { ButtonLabels } from "@/components/enums";
 import SearchContainer from "@/components/search/SearchContainer";
 import SearchInputColumn from "@/components/search/SearchInputColumn";
 import SearchRow from "@/components/search/SearchRow";
@@ -46,6 +56,7 @@ import { getLessorList } from "@/lessor/selectors";
 type Props = {
   isSearchInitialized: boolean;
   onSearch: (...args: Array<any>) => any;
+  showCreateLeaseModal: () => void;
 };
 
 type DistrictLoaderProps = {
@@ -54,6 +65,7 @@ type DistrictLoaderProps = {
 
 interface SearchFieldsProps {
   isBasicSearch: boolean;
+  setIsBasicSearch: React.Dispatch<React.SetStateAction<boolean>>;
   isFetchingAttributes: boolean;
   decisionMakerOptions: Array<any>;
   intendedUseOptions: Array<any>;
@@ -61,12 +73,18 @@ interface SearchFieldsProps {
   tenantTypeOptions: Array<any>;
   lessorOptions: Array<any>;
   typeOptions: Array<any>;
-  onSearch: (values: any) => void;
+  onSearch: (
+    formValues: Record<string, any>,
+    resetActivePage: boolean,
+    resetFilters: boolean,
+  ) => void;
   isSearchInitialized: boolean;
+  showCreateLeaseModal: () => void;
 }
 
 const SearchFields = ({
   isBasicSearch,
+  setIsBasicSearch,
   decisionMakerOptions,
   intendedUseOptions,
   municipalityOptions,
@@ -75,12 +93,14 @@ const SearchFields = ({
   typeOptions,
   onSearch,
   isSearchInitialized,
+  showCreateLeaseModal,
 }: SearchFieldsProps) => {
   const { values, dirty } = useFormState();
   const municipality = values.municipality;
   const districts = useSelector((state: any) =>
     getDistrictsByMunicipality(state, Number(municipality)),
   );
+  const leaseMethods = useSelector(getLeaseMethods);
 
   const prevValues = useRef(values);
 
@@ -88,7 +108,7 @@ const SearchFields = ({
     // Avoid URL/form synchronization feedback loops: only push search updates
     // for user-originated edits, not for value changes caused by reinitialize.
     if (isSearchInitialized && dirty && !isEqual(prevValues.current, values)) {
-      onSearch({ ...values, page: undefined });
+      onSearch({ ...values, page: undefined }, true, false);
     }
     prevValues.current = values;
   }, [values, dirty, isSearchInitialized, onSearch]);
@@ -105,36 +125,59 @@ const SearchFields = ({
     }),
     [],
   );
+  const toggleSearchType = () => {
+    setIsBasicSearch((prevState: boolean) => !prevState);
+  };
+
+  const handleClear = () => {
+    onSearch({}, true, true);
+  };
 
   return (
     <>
       <DistrictLoader municipality={municipality} />
       <Row>
-        <Column small={12}>
-          <Field name="search">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <HdsSearch
-                  historyId={"lease-search"}
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  onSend={(val) => {
-                    onChange(val);
-                  }}
-                  texts={searchTexts}
-                  visibleOptions={5.5}
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-        </Column>
+        <Field name="search">
+          {({
+            input: { value, onBlur, onChange, onFocus },
+            meta: { error, invalid },
+          }) => {
+            return (
+              <HdsSearch
+                historyId={"lease-search"}
+                invalid={invalid}
+                value={value || ""}
+                onBlur={onBlur}
+                onChange={onChange}
+                onFocus={onFocus}
+                onSend={(val) => {
+                  onChange(val);
+                }}
+                texts={searchTexts}
+                visibleOptions={5.5}
+                style={{ width: "100%" }}
+              />
+            );
+          }}
+        </Field>
+        <Button
+          size={ButtonSize.Small}
+          onClick={toggleSearchType}
+          iconStart={isBasicSearch ? <IconAngleDown /> : <IconAngleUp />}
+        >
+          {isBasicSearch ? "Tarkennettu haku" : "Yksinkertainen haku"}
+        </Button>
+
+        <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
+          <Button
+            variant={ButtonVariant.Supplementary}
+            size={ButtonSize.Small}
+            iconStart={<IconPlusCircleFill />}
+            onClick={showCreateLeaseModal}
+          >
+            {ButtonLabels.CREATE_LEASE_IDENTIFIER}
+          </Button>
+        </Authorization>
       </Row>
       {!isBasicSearch && (
         <>
@@ -878,6 +921,14 @@ const SearchFields = ({
                     </Field>
                   </SelectionGroup>
                 </Row>
+                <Button
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Small}
+                  iconEnd={<IconTrash />}
+                  onClick={handleClear}
+                >
+                  Tyhjennä haku
+                </Button>
               </SearchRow>
             </Column>
           </Row>
@@ -915,7 +966,7 @@ const Search: React.FC<Props> = (props) => {
   const location = useLocation();
   const { search: searchParams } = location;
 
-  const { isSearchInitialized, onSearch } = props;
+  const { isSearchInitialized, onSearch, showCreateLeaseModal } = props;
 
   const isSearchBasicMode = useCallback(() => {
     const searchQuery = getUrlParams(searchParams);
@@ -991,20 +1042,13 @@ const Search: React.FC<Props> = (props) => {
     setIsBasicSearch(isSearchBasicMode());
   }, [isSearchBasicMode]);
 
-  const toggleSearchType = () => {
-    setIsBasicSearch((prevState) => !prevState);
-  };
-
-  const handleClear = () => {
-    onSearch({}, true, true);
-  };
-
   return (
     <SearchContainer onSubmit={form.submit}>
       <SearchFields
         decisionMakerOptions={decisionMakerOptions}
         intendedUseOptions={intendedUseOptions}
         isBasicSearch={isBasicSearch}
+        setIsBasicSearch={setIsBasicSearch}
         isFetchingAttributes={isFetchingAttributes}
         isSearchInitialized={isSearchInitialized}
         lessorOptions={lessorOptions}
@@ -1012,17 +1056,8 @@ const Search: React.FC<Props> = (props) => {
         onSearch={onSearch}
         tenantTypeOptions={tenantTypeOptions}
         typeOptions={typeOptions}
+        showCreateLeaseModal={showCreateLeaseModal}
       />
-      <Row>
-        <Column small={6}>
-          <SearchChangeTypeLink onClick={toggleSearchType}>
-            {isBasicSearch ? "Tarkennettu haku" : "Yksinkertainen haku"}
-          </SearchChangeTypeLink>
-        </Column>
-        <Column small={6}>
-          <SearchClearLink onClick={handleClear}>Tyhjennä haku</SearchClearLink>
-        </Column>
-      </Row>
     </SearchContainer>
   );
 };
