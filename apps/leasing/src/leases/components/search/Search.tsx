@@ -35,7 +35,7 @@ import {
 } from "@/leases/enums";
 import { getContactOptions } from "@/contacts/helpers";
 import { getDistrictOptions } from "@/district/helpers";
-import { addEmptyOption, getFieldOptions, getUrlParams } from "@/util/helpers";
+import { getFieldOptions, getUrlParams } from "@/util/helpers";
 import { getDistrictsByMunicipality } from "@/district/selectors";
 import {
   getAttributes as getLeaseAttributes,
@@ -67,7 +67,6 @@ interface SearchFieldsProps {
 
 const SearchFields = ({
   isBasicSearch,
-  isFetchingAttributes,
   decisionMakerOptions,
   intendedUseOptions,
   municipalityOptions,
@@ -77,7 +76,7 @@ const SearchFields = ({
   onSearch,
   isSearchInitialized,
 }: SearchFieldsProps) => {
-  const { values } = useFormState();
+  const { values, dirty } = useFormState();
   const municipality = values.municipality;
   const districts = useSelector((state: any) =>
     getDistrictsByMunicipality(state, Number(municipality)),
@@ -86,16 +85,26 @@ const SearchFields = ({
   const prevValues = useRef(values);
 
   useEffect(() => {
-    if (isSearchInitialized && !isEqual(prevValues.current, values)) {
+    // Avoid URL/form synchronization feedback loops: only push search updates
+    // for user-originated edits, not for value changes caused by reinitialize.
+    if (isSearchInitialized && dirty && !isEqual(prevValues.current, values)) {
       onSearch({ ...values, page: undefined });
     }
     prevValues.current = values;
-  }, [values, isSearchInitialized, onSearch]);
+  }, [values, dirty, isSearchInitialized, onSearch]);
 
   const districtOptions = getDistrictOptions(
     districts,
     false,
   ) as Array<OptionInProps>;
+
+  const searchTexts: SearchProps["texts"] = useMemo(
+    () => ({
+      searchPlaceholder: "Hae hakusanalla",
+      historyLabel: "Hakuhistoria",
+    }),
+    [],
+  );
 
   return (
     <>
@@ -107,12 +116,6 @@ const SearchFields = ({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
             }) => {
-              // TODO: useMemo
-              const searchTexts: SearchProps["texts"] = {
-                searchPlaceholder: "Hae hakusanalla",
-                error: error,
-                historyLabel: "Hakuhistoria",
-              };
               return (
                 <HdsSearch
                   historyId={"lease-search"}
