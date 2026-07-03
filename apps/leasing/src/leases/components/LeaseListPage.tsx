@@ -9,7 +9,6 @@ import SearchInputColumn from "@/components/search/SearchInputColumn";
 import SearchLabel from "@/components/search/SearchLabel";
 import SearchLabelColumn from "@/components/search/SearchLabelColumn";
 import SearchRow from "@/components/search/SearchRow";
-import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import CreateLeaseModal from "./createLease/CreateLeaseModal";
@@ -47,7 +46,7 @@ import {
   BOUNDING_BOX_FOR_SEARCH_QUERY,
   leaseStateFilterOptions,
 } from "@/leases/constants";
-import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
+import { Methods, PermissionMissingTexts } from "@/enums";
 import {
   LeaseAreasFieldPaths,
   LeaseAreaAddressesFieldPaths,
@@ -87,7 +86,7 @@ import {
   getIsFetching as getIsFetchingServiceUnits,
 } from "@/serviceUnits/selectors";
 import type { Attributes } from "types";
-import { ButtonLabels } from "@/components/enums";
+
 import {
   getAttributes as getUiDataAttributes,
   getIsFetching as getIsFetchingUiData,
@@ -746,23 +745,11 @@ const LeaseListPage: React.FC = () => {
             />
           </Authorization>
           <Row>
-            <Column small={12} large={4}>
-              <Authorization
-                allow={isMethodAllowed(leaseMethods, Methods.POST)}
-              >
-                <AddButtonSecondary
-                  className="no-top-margin"
-                  label={ButtonLabels.CREATE_LEASE_IDENTIFIER}
-                  onClick={showCreateLeaseModal}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-          <Row>
             <Column small={12} large={12}>
               <Search
                 isSearchInitialized={isSearchInitialized}
                 onSearch={handleSearchChange}
+                showCreateLeaseModal={showCreateLeaseModal}
               />
             </Column>
           </Row>
