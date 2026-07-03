@@ -10,7 +10,7 @@ type Props = {
   componentToRenderUnderTitle?: JSX.Element;
 };
 
-const TableFilters = ({
+const TableFiltersLegacy = ({
   alignFiltersRight,
   amountText,
   filterOptions,
@@ -54,4 +54,4 @@ const TableFilters = ({
   );
 };
 
-export default TableFilters;
+export default TableFiltersLegacy;

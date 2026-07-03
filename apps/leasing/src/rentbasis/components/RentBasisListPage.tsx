@@ -17,7 +17,7 @@ import PageContainer from "@/components/content/PageContainer";
 import Pagination from "@/components/table/Pagination";
 import Search from "./search/Search";
 import SortableTable from "@/components/table/SortableTable";
-import TableFilters from "@/components/table/TableFilters";
+import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableWrapper from "@/components/table/TableWrapper";
 import { fetchRentBasisList, initializeRentBasis } from "@/rentbasis/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
@@ -380,7 +380,7 @@ class RentBasisListPage extends Component<Props & WithRouterProps, State> {
           </Column>
         </Row>
 
-        <TableFilters
+        <TableFiltersLegacy
           amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
           filterOptions={[]}
           filterValue={[]}

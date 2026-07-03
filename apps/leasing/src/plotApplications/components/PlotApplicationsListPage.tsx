@@ -21,7 +21,7 @@ import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import ExternalLink from "@/components/links/ExternalLink";
 import SortableTable from "@/components/table/SortableTable";
-import TableFilters from "@/components/table/TableFilters";
+import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableFilterWrapper from "@/components/table/TableFilterWrapper";
 import TableWrapper from "@/components/table/TableWrapper";
 import TableIcon from "@/components/icons/TableIcon";
@@ -538,7 +538,7 @@ class PlotApplicationsListPage extends PureComponent<
         </Row>
         <TableFilterWrapper
           filterComponent={
-            <TableFilters
+            <TableFiltersLegacy
               amountText={amountText}
               filterOptions={[]}
               filterValue={plotApplicationStates}
