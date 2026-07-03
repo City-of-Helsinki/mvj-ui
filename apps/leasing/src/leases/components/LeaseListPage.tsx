@@ -518,9 +518,14 @@ const LeaseListPage: React.FC = () => {
       delete searchQuery.lease_state;
     }
 
+    const nextSearch = getSearchQuery(searchQuery);
+    if (nextSearch === location.search) {
+      return;
+    }
+
     return navigate({
       pathname: getRouteById(Routes.LEASES),
-      search: getSearchQuery(searchQuery),
+      search: nextSearch,
     });
   };
 
