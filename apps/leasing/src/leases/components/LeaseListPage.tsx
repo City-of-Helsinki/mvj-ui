@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { Form } from "react-final-form";
+import { Field, Form } from "react-final-form";
 import debounce from "lodash/debounce";
 import isArray from "lodash/isArray";
 import isEmpty from "lodash/isEmpty";
@@ -12,20 +12,13 @@ import SearchRow from "@/components/search/SearchRow";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import CreateLeaseModal from "./createLease/CreateLeaseModal";
-import IconRadioButtons from "@/components/button/IconRadioButtons";
 import LeaseListMap from "@/leases/components/leaseSections/map/LeaseListMap";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
-import MapIcon from "@/components/icons/MapIcon";
 import PageContainer from "@/components/content/PageContainer";
 import Pagination from "@/components/table/Pagination";
 import Search from "./search/Search";
 import SortableTable from "@/components/table/SortableTable";
-import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
-import TableIcon from "@/components/icons/TableIcon";
-import TableFilterWrapper from "@/components/table/TableFilterWrapper";
-import TableWrapper from "@/components/table/TableWrapper";
-import VisualisationTypeWrapper from "@/components/table/VisualisationTypeWrapper";
 import { fetchAreaNoteList } from "@/areaNote/actions";
 import { fetchServiceUnits } from "@/serviceUnits/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
@@ -101,23 +94,12 @@ import {
 } from "@/uiData/actions";
 import FieldTypeMultiSelect from "@/components/form/final-form/FieldTypeMultiSelect";
 import type { Option } from "@/components/multi-select/SelectItem";
+import { IconMap, IconScrollContent, Select, Tabs } from "hds-react";
 
 const VisualizationTypes = {
   MAP: "map",
   TABLE: "table",
 };
-const visualizationTypeOptions = [
-  {
-    value: VisualizationTypes.TABLE,
-    label: "Taulukko",
-    icon: <TableIcon className="icon-medium" />,
-  },
-  {
-    value: VisualizationTypes.MAP,
-    label: "Kartta",
-    icon: <MapIcon className="icon-medium" />,
-  },
-];
 
 const LeaseListPage: React.FC = () => {
   const hasFetchedLeases = useRef(false); // Check if search has been done yet
@@ -162,26 +144,38 @@ const LeaseListPage: React.FC = () => {
         : DEFAULT_ONLY_ACTIVE_LEASES;
   };
 
+  const getLeaseStates = (query: Record<string, any>) => {
+    return isArray(query.lease_state)
+      ? query.lease_state
+      : query.lease_state
+        ? [query.lease_state]
+        : query.search || "lease_state" in query
+          ? []
+          : DEFAULT_LEASE_STATES;
+  };
+
   const initialValues = useMemo(() => {
     const searchQuery = getUrlParams(location.search);
 
     const values: any = { ...searchQuery };
-    const onlyActiveLeases = getOnlyActiveLeasesValue(searchQuery);
 
     const tenantContactTypes = [searchQuery.tenantcontact_type].flatMap(
       (value) => value || [],
     );
-
-    if (onlyActiveLeases != undefined) {
-      values.only_active_leases = onlyActiveLeases;
-    }
+    const serviceUnits = [searchQuery.service_unit].flatMap(
+      (value) => value || [],
+    );
 
     if (tenantContactTypes.length) {
       values.tenantcontact_type = tenantContactTypes;
     }
+    if (serviceUnits.length) {
+      values.service_unit = serviceUnits;
+    }
+
+    values.lease_state = getLeaseStates(searchQuery);
 
     delete values.page;
-    delete values.lease_state;
     delete values.sort_key;
     delete values.sort_order;
     delete values.in_bbox;
@@ -457,16 +451,6 @@ const LeaseListPage: React.FC = () => {
     return [searchQuery.service_unit].flatMap((unit) => unit ?? []).map(Number);
   }, [location.search]);
 
-  const getLeaseStates = (query: Record<string, any>) => {
-    return isArray(query.lease_state)
-      ? query.lease_state
-      : query.lease_state
-        ? [query.lease_state]
-        : query.search || Object.hasOwn(query, "lease_state")
-          ? []
-          : DEFAULT_LEASE_STATES;
-  };
-
   const showCreateLeaseModal = () => {
     setIsModalOpen(true);
   };
@@ -635,14 +619,6 @@ const LeaseListPage: React.FC = () => {
     return columns;
   };
 
-  const handleLeaseStatesChange = (values: Array<string>) => {
-    const searchQuery = getUrlParams(location.search);
-    delete searchQuery.page;
-    searchQuery.lease_state = values;
-    setLeaseStates(values);
-    handleSearchChange(searchQuery, true);
-  };
-
   const handleVisualizationTypeChange = (value: string) => {
     const searchQuery = getUrlParams(location.search);
     setVisualizationType(value);
@@ -754,37 +730,112 @@ const LeaseListPage: React.FC = () => {
             </Column>
           </Row>
 
-          <TableFilterWrapper
-            filterComponent={
-              <TableFiltersLegacy
-                amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
-                filterOptions={leaseStateFilterOptions}
-                filterValue={leaseStates}
-                onFilterChange={handleLeaseStatesChange}
-                componentToRenderUnderTitle={serviceUnitFilter}
-              />
+          <SearchRow style={{ marginTop: "50px" }}>
+            <Row>
+              <Field name="service_unit">
+                {({
+                  input: { value, onBlur, onChange, onFocus },
+                  meta: { error, invalid },
+                }) => {
+                  const selectedOptions = serviceUnitOptions.filter((option) =>
+                    (Array.isArray(value) ? value : [value]).some(
+                      (v) => v == option.value,
+                    ),
+                  );
+                  return (
+                    <Select
+                      id="service_unit"
+                      texts={{
+                        label: LeaseFieldTitles.SERVICE_UNIT,
+                        placeholder: "Valitse palvelukokonaisuus",
+                        language: "fi",
+                      }}
+                      value={selectedOptions}
+                      options={serviceUnitOptions}
+                      onChange={(selectedOptions) => {
+                        const values = selectedOptions.map(
+                          (option) => option.value,
+                        );
+                        onChange(values);
+                      }}
+                      style={{ width: "100%" }}
+                      multiSelect
+                    />
+                  );
+                }}
+              </Field>
+              <Field name="lease_state">
+                {({
+                  input: { value, onBlur, onChange, onFocus },
+                  meta: { error, invalid },
+                }) => {
+                  const selectedOptions = leaseStateFilterOptions.filter(
+                    (option) =>
+                      (Array.isArray(value) ? value : [value]).some(
+                        (v) => v == option.value,
+                      ),
+                  );
+                  return (
+                    <Select
+                      id="lease_state"
+                      texts={{
+                        label: "Vuokrauksen tyyppi",
+                        placeholder: "Valitse vuokrauksen tyyppi",
+                        language: "fi",
+                      }}
+                      value={selectedOptions}
+                      options={leaseStateFilterOptions}
+                      onChange={(selectedOptions) => {
+                        const values = selectedOptions.map(
+                          (option) => option.value,
+                        );
+                        onChange(values);
+                      }}
+                      style={{ width: "100%" }}
+                      multiSelect
+                    />
+                  );
+                }}
+              </Field>
+            </Row>
+          </SearchRow>
+          <Tabs
+            initiallyActiveTab={
+              visualizationType === VisualizationTypes.MAP ? 1 : 0
             }
-            visualizationComponent={
-              <VisualisationTypeWrapper>
-                <IconRadioButtons
-                  legend={"Kartta/taulukko"}
-                  onChange={handleVisualizationTypeChange}
-                  options={visualizationTypeOptions}
-                  radioName="visualization-type-radio"
-                  value={visualizationType}
-                />
-              </VisualisationTypeWrapper>
-            }
-          />
-
-          <TableWrapper>
-            {isFetching && (
-              <LoaderWrapper className="relative-overlay-wrapper">
-                <Loader isLoading={true} />
-              </LoaderWrapper>
-            )}
-            {visualizationType === "table" && (
+          >
+            <Tabs.TabList>
+              <Tabs.Tab
+                onClick={() =>
+                  handleVisualizationTypeChange(VisualizationTypes.TABLE)
+                }
+              >
+                <span>
+                  <IconScrollContent />
+                  &nbsp;Taulukko
+                </span>
+              </Tabs.Tab>
+              <Tabs.Tab
+                onClick={() =>
+                  handleVisualizationTypeChange(VisualizationTypes.MAP)
+                }
+              >
+                <span>
+                  <IconMap />
+                  &nbsp;Kartta
+                </span>
+              </Tabs.Tab>
+            </Tabs.TabList>
+            <Tabs.TabPanel>
               <>
+                {isFetching && (
+                  <LoaderWrapper className="relative-overlay-wrapper">
+                    <Loader isLoading={true} />
+                  </LoaderWrapper>
+                )}
+                <span>
+                  {isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
+                </span>
                 <SortableTable
                   columns={columns}
                   data={leaseList}
@@ -803,15 +854,15 @@ const LeaseListPage: React.FC = () => {
                   onPageClick={(page) => handlePageClick(page)}
                 />
               </>
-            )}
-            {visualizationType === "map" && (
+            </Tabs.TabPanel>
+            <Tabs.TabPanel>
               <LeaseListMap
                 allowToEdit={false}
                 isLoading={isFetchingByBBox}
                 onViewportChanged={handleMapViewportChanged}
               />
-            )}
-          </TableWrapper>
+            </Tabs.TabPanel>
+          </Tabs>
         </PageContainer>
       )}
     </Form>
