@@ -17,7 +17,7 @@ import PageContainer from "@/components/content/PageContainer";
 import Pagination from "@/components/table/Pagination";
 import Search from "./search/Search";
 import SortableTable from "@/components/table/SortableTable";
-import TableFilters from "@/components/table/TableFilters";
+import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableWrapper from "@/components/table/TableWrapper";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import {
@@ -446,7 +446,7 @@ class InfillDevelopmentListPage extends Component<
           </Column>
         </Row>
 
-        <TableFilters
+        <TableFiltersLegacy
           alignFiltersRight
           amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
           filterOptions={stateOptions}

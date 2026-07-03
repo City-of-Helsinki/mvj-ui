@@ -25,7 +25,7 @@ import { receiveTopNavigationSettings } from "@/components/topNavigation/actions
 import Search from "@/areaSearch/components/search/Search";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import SortableTable from "@/components/table/SortableTable";
-import TableFilters from "@/components/table/TableFilters";
+import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableFilterWrapper from "@/components/table/TableFilterWrapper";
 import TableWrapper from "@/components/table/TableWrapper";
 import IconRadioButtons from "@/components/button/IconRadioButtons";
@@ -801,7 +801,7 @@ class AreaSearchApplicationListPage extends PureComponent<
         {
           <TableFilterWrapper
             filterComponent={
-              <TableFilters
+              <TableFiltersLegacy
                 amountText={amountText}
                 filterOptions={stateOptions}
                 filterValue={selectedStates}

@@ -17,7 +17,7 @@ import Pagination from "@/components/table/Pagination";
 import RemoveButton from "@/components/form/RemoveButton";
 import Search from "@/leaseholdTransfer/components/search/Search";
 import SortableTable from "@/components/table/SortableTable";
-import TableFilters from "@/components/table/TableFilters";
+import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableWrapper from "@/components/table/TableWrapper";
 import {
   deleteLeaseholdTransferAndUpdateList,
@@ -439,7 +439,7 @@ class LeaseholdTransferListPage extends PureComponent<
                   />
                 </Column>
               </Row>
-              <TableFilters
+              <TableFiltersLegacy
                 amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
                 filterOptions={[]}
                 filterValue={[]}

@@ -17,7 +17,7 @@ import Pagination from "@/components/table/Pagination";
 import Search from "./Search";
 import ShowMore from "@/components/showMore/ShowMore";
 import SortableTable from "@/components/table/SortableTable";
-import TableFilters from "@/components/table/TableFilters";
+import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableWrapper from "@/components/table/TableWrapper";
 import {
   createInvoiceNoteAndFetchList,
@@ -408,7 +408,7 @@ class InvoiceNoteListPage extends PureComponent<
         <Row>
           <Column small={12} medium={6}></Column>
           <Column small={12} medium={6}>
-            <TableFilters
+            <TableFiltersLegacy
               amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
               filterOptions={[]}
               filterValue={[]}

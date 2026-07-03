@@ -21,7 +21,7 @@ import PageContainer from "@/components/content/PageContainer";
 import Pagination from "@/components/table/Pagination";
 import Search from "./search/Search";
 import SortableTable from "@/components/table/SortableTable";
-import TableFilters from "@/components/table/TableFilters";
+import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableIcon from "@/components/icons/TableIcon";
 import TableFilterWrapper from "@/components/table/TableFilterWrapper";
 import TableWrapper from "@/components/table/TableWrapper";
@@ -756,7 +756,7 @@ const LeaseListPage: React.FC = () => {
 
           <TableFilterWrapper
             filterComponent={
-              <TableFilters
+              <TableFiltersLegacy
                 amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
                 filterOptions={leaseStateFilterOptions}
                 filterValue={leaseStates}

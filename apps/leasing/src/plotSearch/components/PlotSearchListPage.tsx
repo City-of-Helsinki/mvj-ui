@@ -22,7 +22,7 @@ import { receiveTopNavigationSettings } from "@/components/topNavigation/actions
 import Search from "@/plotSearch/components/search/Search";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import SortableTable from "@/components/table/SortableTable";
-import TableFilters from "@/components/table/TableFilters";
+import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableFilterWrapper from "@/components/table/TableFilterWrapper";
 import TableWrapper from "@/components/table/TableWrapper";
 import TableIcon from "@/components/icons/TableIcon";
@@ -432,7 +432,7 @@ class PlotSearchListPage extends PureComponent<Props & WithRouterProps, State> {
 
         <TableFilterWrapper
           filterComponent={
-            <TableFilters
+            <TableFiltersLegacy
               amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
               filterOptions={plotSearchStateFilterOptions}
               filterValue={plotSearchStates}
