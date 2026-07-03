@@ -123,3 +123,14 @@ input::-webkit-contacts-auto-fill-button {
   position: absolute;
   right: 0;
 }
+
+/**
+ * HDS Tabs z-index fix
+ *
+ * HDS Tabs buttons have z-index: 100 by default, which can overlap with
+ * Select dropdowns that are placed above the tabs in the DOM.
+ */
+.hds-tabs__tab,
+[class*="Tabs-module_tab"] {
+  z-index: 1 !important;
+}
