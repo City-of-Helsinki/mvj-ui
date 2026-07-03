@@ -129,6 +129,7 @@ const SearchFields = ({
                   }}
                   texts={searchTexts}
                   visibleOptions={5.5}
+                  style={{ width: "100%" }}
                 />
               );
             }}
@@ -149,6 +150,7 @@ const SearchFields = ({
                 heading=""
                 style={{
                   backgroundColor: "var(--color-black-5)",
+                  marginBottom: "0.5rem",
                   padding: "0.5rem",
                 }}
               >
@@ -168,6 +170,7 @@ const SearchFields = ({
                             onBlur={onBlur}
                             onChange={onChange}
                             onFocus={onFocus}
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -199,6 +202,7 @@ const SearchFields = ({
                               )
                             }
                             clearable
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -217,6 +221,7 @@ const SearchFields = ({
                             onBlur={onBlur}
                             onChange={onChange}
                             onFocus={onFocus}
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -235,6 +240,7 @@ const SearchFields = ({
                             onBlur={onBlur}
                             onChange={onChange}
                             onFocus={onFocus}
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -246,6 +252,7 @@ const SearchFields = ({
                     <SelectionGroup
                       label="Asiakkaan tila"
                       direction="horizontal"
+                      style={{ width: "100%" }}
                     >
                       <Field name="tenant_activity" key="tenant_activity-1">
                         {({
@@ -308,14 +315,12 @@ const SearchFields = ({
                   </SearchInputColumn>
                 </SearchRow>
               </Fieldset>
-              <SearchRow>
-                {/* Empty row */}
-                &nbsp;
-              </SearchRow>
+
               <Fieldset
                 heading=""
                 style={{
                   backgroundColor: "var(--color-black-5)",
+                  marginBottom: "0.5rem",
                   padding: "0.5rem",
                 }}
               >
@@ -347,6 +352,7 @@ const SearchFields = ({
                               )
                             }
                             clearable
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -375,6 +381,7 @@ const SearchFields = ({
                               )
                             }
                             clearable
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -393,6 +400,7 @@ const SearchFields = ({
                             onBlur={onBlur}
                             onChange={onChange}
                             onFocus={onFocus}
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -426,6 +434,7 @@ const SearchFields = ({
                               )
                             }
                             clearable
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -454,6 +463,7 @@ const SearchFields = ({
                               )
                             }
                             clearable
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -483,6 +493,7 @@ const SearchFields = ({
                             }
                             disabled={!municipality}
                             clearable
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -501,6 +512,7 @@ const SearchFields = ({
                             onBlur={onBlur}
                             onChange={onChange}
                             onFocus={onFocus}
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -508,119 +520,101 @@ const SearchFields = ({
                   </Row>
                 </SearchRow>
               </Fieldset>
-
-              <SearchRow>
-                <SearchInputColumn>
-                  <Field name="has_not_geometry">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <Checkbox
-                          label="Geometria puuttuu"
-                          id="has_not_geometry"
-                          checked={value === true || value === "true"}
-                          onBlur={onBlur}
-                          onFocus={onFocus}
-                          onChange={(event) =>
-                            onChange(event.target.checked ? true : undefined)
-                          }
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
-              </SearchRow>
-
               <Fieldset
                 heading=""
                 style={{
                   backgroundColor: "var(--color-black-5)",
+                  marginBottom: "0.5rem",
                   padding: "0.5rem",
                 }}
               >
                 <SearchRow>
-                  <Field name="lease_start_date_start">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <DateInput
-                          helperText="Käytä muotoa P.K.VVVV"
-                          id="lease_start_date_start"
-                          initialMonth={new Date()}
-                          label="Vuokrauksen alkupvm alkaen"
-                          language="fi"
-                          value={value || ""}
-                          onBlur={onBlur}
-                          onFocus={onFocus}
-                          onChange={(nextValue) => onChange(nextValue)}
-                        />
-                      );
-                    }}
-                  </Field>
-                  <Field name="lease_start_date_end">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <DateInput
-                          helperText="Käytä muotoa P.K.VVVV"
-                          id="lease_start_date_end"
-                          initialMonth={new Date()}
-                          label="Vuokrauksen alkupvm loppuen"
-                          language="fi"
-                          value={value || ""}
-                          onBlur={onBlur}
-                          onFocus={onFocus}
-                          onChange={(nextValue) => onChange(nextValue)}
-                        />
-                      );
-                    }}
-                  </Field>
-                  <Field name="lease_end_date_start">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <DateInput
-                          helperText="Käytä muotoa P.K.VVVV"
-                          id="lease_end_date_start"
-                          initialMonth={new Date()}
-                          label="Vuokrauksen loppupvm alkaen"
-                          language="fi"
-                          value={value || ""}
-                          onBlur={onBlur}
-                          onFocus={onFocus}
-                          onChange={(nextValue) => onChange(nextValue)}
-                        />
-                      );
-                    }}
-                  </Field>
-                  <Field name="lease_end_date_end">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <DateInput
-                          helperText="Käytä muotoa P.K.VVVV"
-                          id="lease_end_date_end"
-                          initialMonth={new Date()}
-                          label="Vuokrauksen loppupvm loppuen"
-                          language="fi"
-                          value={value || ""}
-                          onBlur={onBlur}
-                          onFocus={onFocus}
-                          onChange={(nextValue) => onChange(nextValue)}
-                        />
-                      );
-                    }}
-                  </Field>
+                  <Row>
+                    <Field name="lease_start_date_start">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <DateInput
+                            helperText="Käytä muotoa P.K.VVVV"
+                            id="lease_start_date_start"
+                            initialMonth={new Date()}
+                            label="Vuokrauksen alkupvm alkaen"
+                            language="fi"
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            onChange={(nextValue) => onChange(nextValue)}
+                            style={{ width: "100%" }}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="lease_start_date_end">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <DateInput
+                            helperText="Käytä muotoa P.K.VVVV"
+                            id="lease_start_date_end"
+                            initialMonth={new Date()}
+                            label="Vuokrauksen alkupvm loppuen"
+                            language="fi"
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            onChange={(nextValue) => onChange(nextValue)}
+                            style={{ width: "100%" }}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="lease_end_date_start">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <DateInput
+                            helperText="Käytä muotoa P.K.VVVV"
+                            id="lease_end_date_start"
+                            initialMonth={new Date()}
+                            label="Vuokrauksen loppupvm alkaen"
+                            language="fi"
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            onChange={(nextValue) => onChange(nextValue)}
+                            style={{ width: "100%" }}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="lease_end_date_end">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <DateInput
+                            helperText="Käytä muotoa P.K.VVVV"
+                            id="lease_end_date_end"
+                            initialMonth={new Date()}
+                            label="Vuokrauksen loppupvm loppuen"
+                            language="fi"
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            onChange={(nextValue) => onChange(nextValue)}
+                            style={{ width: "100%" }}
+                          />
+                        );
+                      }}
+                    </Field>
+                  </Row>
                 </SearchRow>
 
                 <SearchRow>
@@ -687,6 +681,7 @@ const SearchFields = ({
                             onBlur={onBlur}
                             onChange={onChange}
                             onFocus={onFocus}
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -694,14 +689,12 @@ const SearchFields = ({
                   </SearchInputColumn>
                 </SearchRow>
               </Fieldset>
-              <SearchRow>
-                {/* Empty row */}
-                &nbsp;
-              </SearchRow>
+
               <Fieldset
                 heading=""
                 style={{
                   backgroundColor: "var(--color-black-5)",
+                  marginBottom: "0.5rem",
                   padding: "0.5rem",
                 }}
               >
@@ -731,6 +724,7 @@ const SearchFields = ({
                               )
                             }
                             clearable
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -751,6 +745,7 @@ const SearchFields = ({
                             onBlur={onBlur}
                             onFocus={onFocus}
                             onChange={(nextValue) => onChange(nextValue)}
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -769,7 +764,7 @@ const SearchFields = ({
                             onBlur={onBlur}
                             onChange={onChange}
                             onFocus={onFocus}
-                            // unit="§"
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -793,6 +788,7 @@ const SearchFields = ({
                             onBlur={onBlur}
                             onChange={onChange}
                             onFocus={onFocus}
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -811,6 +807,7 @@ const SearchFields = ({
                             onBlur={onBlur}
                             onChange={onChange}
                             onFocus={onFocus}
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -829,6 +826,7 @@ const SearchFields = ({
                             onBlur={onBlur}
                             onChange={onChange}
                             onFocus={onFocus}
+                            style={{ width: "100%" }}
                           />
                         );
                       }}
@@ -838,27 +836,48 @@ const SearchFields = ({
               </Fieldset>
 
               <SearchRow>
-                <SearchInputColumn>
-                  <Field name="preparers_own_leases">
-                    {({
-                      input: { value, onBlur, onChange, onFocus },
-                      meta: { error, invalid },
-                    }) => {
-                      return (
-                        <Checkbox
-                          label="Omat vuokraukset"
-                          id="preparers_own_leases"
-                          checked={value === true || value === "true"}
-                          onBlur={onBlur}
-                          onFocus={onFocus}
-                          onChange={(event) =>
-                            onChange(event.target.checked ? true : undefined)
-                          }
-                        />
-                      );
-                    }}
-                  </Field>
-                </SearchInputColumn>
+                <Row>
+                  <SelectionGroup label="Pikavalinnat" direction="horizontal">
+                    <Field name="preparers_own_leases">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <Checkbox
+                            label="Omat vuokraukset"
+                            id="preparers_own_leases"
+                            checked={value === true || value === "true"}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            onChange={(event) =>
+                              onChange(event.target.checked ? true : undefined)
+                            }
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="has_not_geometry">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <Checkbox
+                            label="Geometria puuttuu"
+                            id="has_not_geometry"
+                            checked={value === true || value === "true"}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            onChange={(event) =>
+                              onChange(event.target.checked ? true : undefined)
+                            }
+                          />
+                        );
+                      }}
+                    </Field>
+                  </SelectionGroup>
+                </Row>
               </SearchRow>
             </Column>
           </Row>
