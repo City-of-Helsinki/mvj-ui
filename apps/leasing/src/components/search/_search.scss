@@ -4,6 +4,15 @@
 .search {
   &__row {
     display: flex;
+
+    & > .grid-row {
+      flex: 1 1 0%;
+
+      & > :not(.grid-column) {
+        flex: 1 1 0%;
+        min-width: 0;
+      }
+    }
   }
 
   &__label-column {
