@@ -5,9 +5,6 @@ import { Field, Form } from "react-final-form";
 import debounce from "lodash/debounce";
 import isArray from "lodash/isArray";
 import isEmpty from "lodash/isEmpty";
-import SearchInputColumn from "@/components/search/SearchInputColumn";
-import SearchLabel from "@/components/search/SearchLabel";
-import SearchLabelColumn from "@/components/search/SearchLabelColumn";
 import SearchRow from "@/components/search/SearchRow";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -136,6 +133,11 @@ const LeaseListPage: React.FC = () => {
     VisualizationTypes.TABLE,
   );
 
+  const queryParams = useMemo(
+    () => getUrlParams(location.search),
+    [location.search],
+  );
+
   const getOnlyActiveLeasesValue = (query: Record<string, any>) => {
     return query.only_active_leases != undefined
       ? query.only_active_leases
@@ -155,14 +157,12 @@ const LeaseListPage: React.FC = () => {
   };
 
   const initialValues = useMemo(() => {
-    const searchQuery = getUrlParams(location.search);
+    const values: any = { ...queryParams };
 
-    const values: any = { ...searchQuery };
-
-    const tenantContactTypes = [searchQuery.tenantcontact_type].flatMap(
+    const tenantContactTypes = [queryParams.tenantcontact_type].flatMap(
       (value) => value || [],
     );
-    const serviceUnits = [searchQuery.service_unit].flatMap(
+    const serviceUnits = [queryParams.service_unit].flatMap(
       (value) => value || [],
     );
 
@@ -173,7 +173,7 @@ const LeaseListPage: React.FC = () => {
       values.service_unit = serviceUnits;
     }
 
-    values.lease_state = getLeaseStates(searchQuery);
+    values.lease_state = getLeaseStates(queryParams);
 
     delete values.page;
     delete values.sort_key;
@@ -183,7 +183,7 @@ const LeaseListPage: React.FC = () => {
     delete values.zoom;
 
     return values;
-  }, [location.search]);
+  }, [queryParams]);
 
   useEffect(() => {
     setPageTitle("Vuokraukset");
@@ -296,7 +296,7 @@ const LeaseListPage: React.FC = () => {
     }
 
     const search = (isImmediate: boolean = false) => {
-      const searchQuery = getUrlParams(location.search);
+      const searchQuery = { ...queryParams };
       const page = searchQuery.page ? Number(searchQuery.page) : 1;
       const leaseStates = getLeaseStates(searchQuery);
       const onlyActiveLeases = getOnlyActiveLeasesValue(searchQuery);
@@ -334,7 +334,7 @@ const LeaseListPage: React.FC = () => {
     };
 
     const searchByBBox = (isImmediate: boolean = false) => {
-      const searchQuery = getUrlParams(location.search);
+      const searchQuery = { ...queryParams };
       const leaseStates = getLeaseStates(searchQuery);
       const onlyActiveLeases = getOnlyActiveLeasesValue(searchQuery);
 
@@ -391,9 +391,8 @@ const LeaseListPage: React.FC = () => {
     };
 
     const searchByType = () => {
-      const searchQuery = getUrlParams(location.search);
       const currentVisualizationType =
-        searchQuery.visualization === VisualizationTypes.MAP
+        queryParams.visualization === VisualizationTypes.MAP
           ? VisualizationTypes.MAP
           : VisualizationTypes.TABLE;
 
@@ -405,16 +404,14 @@ const LeaseListPage: React.FC = () => {
           break;
 
         case VisualizationTypes.TABLE:
-          search();
+          search(isSortChanged);
           break;
       }
     };
 
     const initializeSearch = () => {
-      const searchQuery = getUrlParams(location.search);
-
       setSearchFormValues();
-      if (searchQuery.visualization === VisualizationTypes.MAP) {
+      if (queryParams.visualization === VisualizationTypes.MAP) {
         setVisualizationType(VisualizationTypes.MAP);
         searchByBBox(true);
       } else {
@@ -437,19 +434,13 @@ const LeaseListPage: React.FC = () => {
     userServiceUnits,
     debouncedFetchLeases,
     debouncedFetchLeasesByBBox,
+    queryParams,
   ]);
 
   const serviceUnitOptions: Array<Option> = useMemo(
     () => getFieldOptions(leaseAttributes, "service_unit", false),
     [leaseAttributes],
   );
-
-  const selectedServiceUnitOptionValues = useMemo<
-    Array<string | number>
-  >(() => {
-    const searchQuery = getUrlParams(location.search);
-    return [searchQuery.service_unit].flatMap((unit) => unit ?? []).map(Number);
-  }, [location.search]);
 
   const showCreateLeaseModal = () => {
     setIsModalOpen(true);
@@ -510,11 +501,6 @@ const LeaseListPage: React.FC = () => {
       pathname: getRouteById(Routes.LEASES),
       search: nextSearch,
     });
-  };
-
-  const handleServiceUnitChange = (values: Array<string | number>) => {
-    const searchQuery = getUrlParams(location.search);
-    handleSearchChange({ ...searchQuery, service_unit: values }, true);
   };
 
   const handleRowClick = (id) => {
@@ -647,22 +633,27 @@ const LeaseListPage: React.FC = () => {
     });
   };
 
-  const handleMapViewportChanged = debounce(
-    (mapOptions: Record<string, any>) => {
-      const searchQuery = getUrlParams(location.search);
-      searchQuery.in_bbox = mapOptions.bBox.split(",");
-      searchQuery.zoom = mapOptions.zoom;
-      return navigate({
-        pathname: getRouteById(Routes.LEASES),
-        search: getSearchQuery(searchQuery),
-      });
-    },
-    1000,
+  const handleMapViewportChanged = useMemo(
+    () =>
+      debounce((mapOptions: Record<string, any>) => {
+        const searchQuery = getUrlParams(location.search);
+        searchQuery.in_bbox = mapOptions.bBox.split(",");
+        searchQuery.zoom = mapOptions.zoom;
+        return navigate({
+          pathname: getRouteById(Routes.LEASES),
+          search: getSearchQuery(searchQuery),
+        });
+      }, 1000),
+    [location.search, navigate],
   );
-  const leaseList = getContentLeaseListResults(
-    leases,
-    getUrlParams(location.search),
-  );
+
+  useEffect(() => {
+    return () => {
+      handleMapViewportChanged.cancel();
+    };
+  }, [handleMapViewportChanged]);
+
+  const leaseList = getContentLeaseListResults(leases, queryParams);
   const count = getApiResponseCount(leases);
   const maxPage = getApiResponseMaxPage(leases, LIST_TABLE_PAGE_SIZE);
   const columns = getColumns();
@@ -679,32 +670,6 @@ const LeaseListPage: React.FC = () => {
         <AuthorizationError text={PermissionMissingTexts.LEASE} />
       </PageContainer>
     );
-  const serviceUnitFilter = (
-    <SearchRow>
-      <SearchLabelColumn>
-        <SearchLabel>{LeaseFieldTitles.SERVICE_UNIT}</SearchLabel>
-      </SearchLabelColumn>
-      <SearchInputColumn>
-        <FieldTypeMultiSelect
-          autoBlur={false}
-          disabled={false}
-          displayError={false}
-          input={{
-            name: "service_unit",
-            onChange: handleServiceUnitChange,
-            onBlur: () => {},
-            onFocus: () => {},
-            value: selectedServiceUnitOptionValues,
-          }}
-          isDirty={false}
-          options={serviceUnitOptions}
-          placeholder=""
-          setRefForField={() => {}}
-          meta={undefined}
-        />
-      </SearchInputColumn>
-    </SearchRow>
-  );
   return (
     <Form
       initialValues={initialValues}
@@ -734,8 +699,7 @@ const LeaseListPage: React.FC = () => {
             <Row>
               <Field name="service_unit">
                 {({
-                  input: { value, onBlur, onChange, onFocus },
-                  meta: { error, invalid },
+                  input: { value, onChange },
                 }) => {
                   const selectedOptions = serviceUnitOptions.filter((option) =>
                     (Array.isArray(value) ? value : [value]).some(
@@ -766,8 +730,7 @@ const LeaseListPage: React.FC = () => {
               </Field>
               <Field name="lease_state">
                 {({
-                  input: { value, onBlur, onChange, onFocus },
-                  meta: { error, invalid },
+                  input: { value, onChange },
                 }) => {
                   const selectedOptions = leaseStateFilterOptions.filter(
                     (option) =>
