@@ -15,7 +15,6 @@ import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import PageContainer from "@/components/content/PageContainer";
 import Pagination from "@/components/table/Pagination";
 import Search from "./search/Search";
-import SortableTable from "@/components/table/SortableTable";
 import { fetchAreaNoteList } from "@/areaNote/actions";
 import { fetchServiceUnits } from "@/serviceUnits/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
@@ -43,6 +42,7 @@ import {
   LeaseFieldPaths,
   LeaseFieldTitles,
   LeaseTenantsFieldPaths,
+  LeaseAreasFieldTitles,
 } from "@/leases/enums";
 import {
   getContentLeaseListResults,
@@ -89,9 +89,22 @@ import {
   fetchAttributes as fetchUiDataAttributes,
   fetchUiDataList,
 } from "@/uiData/actions";
-import FieldTypeMultiSelect from "@/components/form/final-form/FieldTypeMultiSelect";
 import type { Option } from "@/components/multi-select/SelectItem";
-import { IconMap, IconScrollContent, Select, Tabs } from "hds-react";
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconAngleDown,
+  IconAngleUp,
+  IconMap,
+  IconScrollContent,
+  Link,
+  Select,
+  Table,
+  type TableProps,
+  Tabs,
+} from "hds-react";
+import MultiItemCollapse from "@/components/table/MultiItemCollapse";
 
 const VisualizationTypes = {
   MAP: "map",
@@ -100,6 +113,9 @@ const VisualizationTypes = {
 
 const LeaseListPage: React.FC = () => {
   const hasFetchedLeases = useRef(false); // Check if search has been done yet
+  const previousSortRef = useRef<{ sortKey: string; sortOrder: string } | null>(
+    null,
+  );
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -122,13 +138,9 @@ const LeaseListPage: React.FC = () => {
   const uiDataList = useSelector(getUiDataList);
   const uiDataMethods = useSelector(getUiDataMethods);
 
-  const [activePage, setActivePage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [leaseStates, setLeaseStates] =
-    useState<Array<string>>(DEFAULT_LEASE_STATES);
   const [isSearchInitialized, setIsSearchInitialized] = useState(false);
-  const [sortKey, setSortKey] = useState(DEFAULT_SORT_KEY);
-  const [sortOrder, setSortOrder] = useState(DEFAULT_SORT_ORDER);
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
   const [visualizationType, setVisualizationType] = useState(
     VisualizationTypes.TABLE,
   );
@@ -137,6 +149,9 @@ const LeaseListPage: React.FC = () => {
     () => getUrlParams(location.search),
     [location.search],
   );
+  const sortKey = queryParams.sort_key || DEFAULT_SORT_KEY;
+  const sortOrder = queryParams.sort_order || DEFAULT_SORT_ORDER;
+  const activePage = queryParams.page ? Number(queryParams.page) : 1;
 
   const getOnlyActiveLeasesValue = (query: Record<string, any>) => {
     return query.only_active_leases != undefined
@@ -268,6 +283,17 @@ const LeaseListPage: React.FC = () => {
 
   useEffect(() => {
     const searchQuery = getUrlParams(location.search);
+    const currentSort = {
+      sortKey: searchQuery.sort_key || DEFAULT_SORT_KEY,
+      sortOrder: searchQuery.sort_order || DEFAULT_SORT_ORDER,
+    };
+    const isSortChanged =
+      !!previousSortRef.current &&
+      (previousSortRef.current.sortKey !== currentSort.sortKey ||
+        previousSortRef.current.sortOrder !== currentSort.sortOrder);
+
+    previousSortRef.current = currentSort;
+
     if (!userServiceUnits || userServiceUnits.length === 0) {
       return;
     }
@@ -373,20 +399,7 @@ const LeaseListPage: React.FC = () => {
     };
 
     const setSearchFormValues = () => {
-      const searchQuery = getUrlParams(location.search);
-      const page = searchQuery.page ? Number(searchQuery.page) : 1;
-      const states = getLeaseStates(searchQuery);
-
-      setActivePage(page);
       setIsSearchInitialized(false);
-      setLeaseStates(states);
-      setSortKey(
-        searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
-      );
-      setSortOrder(
-        searchQuery.sort_order ? searchQuery.sort_order : DEFAULT_SORT_ORDER,
-      );
-
       setIsSearchInitialized(true);
     };
 
@@ -483,12 +496,10 @@ const LeaseListPage: React.FC = () => {
     }
 
     if (resetActivePage) {
-      setActivePage(1);
       delete searchQuery.page;
     }
 
     if (resetFilters) {
-      setLeaseStates(DEFAULT_LEASE_STATES);
       delete searchQuery.lease_state;
     }
 
@@ -518,11 +529,81 @@ const LeaseListPage: React.FC = () => {
       delete searchQuery.page;
     }
 
-    setActivePage(page);
     return navigate({
       pathname: getRouteById(Routes.LEASES),
       search: getSearchQuery(searchQuery),
     });
+  };
+
+  const renderClickableCell = (
+    content: React.ReactNode,
+    rowId: number | string,
+  ) => {
+    return (
+      <button
+        className="lease-list-row-link"
+        type="button"
+        onClick={() => handleRowClick(rowId)}
+      >
+        {content}
+      </button>
+    );
+  };
+
+  const getLeaseDetailsHref = (rowId: number | string) => {
+    const search = location.search || "";
+    return `${getRouteById(Routes.LEASES)}/${rowId}${search}`;
+  };
+
+  const hasRowMultipleValues = (row: Record<string, any>): boolean => {
+    const getValueCount = (value: unknown): number => {
+      if (!isArray(value)) {
+        return 0;
+      }
+
+      return value.reduce(
+        (count, item) => count + (isArray(item) ? item.length : 1),
+        0,
+      );
+    };
+
+    return ["lease_area_identifiers", "addresses", "tenants"].some(
+      (key) => getValueCount(row[key]) > 1,
+    );
+  };
+
+  const toggleRowExpanded = (rowId: number | string) => {
+    const rowKey = String(rowId);
+    setExpandedRows((prev) => ({
+      ...prev,
+      [rowKey]: !prev[rowKey],
+    }));
+  };
+
+  const renderExpandToggle = (row: Record<string, any>) => {
+    if (!hasRowMultipleValues(row)) {
+      return null;
+    }
+
+    const isExpanded = !!expandedRows[String(row.id)];
+
+    return (
+      <Button
+        className="lease-list-expand-button"
+        aria-label={
+          isExpanded ? "Piilota rivin lisätiedot" : "Näytä rivin lisätiedot"
+        }
+        aria-expanded={isExpanded}
+        variant={ButtonVariant.Supplementary}
+        size={ButtonSize.Small}
+        onClick={() => {
+          toggleRowExpanded(row.id);
+        }}
+        iconStart={isExpanded ? <IconAngleUp /> : <IconAngleDown />}
+      >
+        &nbsp;
+      </Button>
+    );
   };
 
   const getColumns = () => {
@@ -531,12 +612,103 @@ const LeaseListPage: React.FC = () => {
       LeaseFieldPaths.STATE,
       false,
     );
-    const columns = [];
+    const columns: TableProps["cols"] = [];
+
+    const renderAddressValues = (value: unknown) => {
+      if (!isArray(value)) {
+        return value;
+      }
+
+      return (
+        <>
+          {value.map((item, index) => (
+            <React.Fragment key={`${String(item)}-${index}`}>
+              {item}
+              {index < value.length - 1 && <br />}
+            </React.Fragment>
+          ))}
+        </>
+      );
+    };
+
+    const getCollapseItems = (
+      columnKey: string,
+      rawValue: unknown,
+    ): unknown => {
+      // MultiItemCollapse is used generically for any array value.
+      // Only addresses need shape normalization because they may be nested
+      // as grouped values per lease area.
+      if (columnKey !== "addresses" || !isArray(rawValue)) {
+        return rawValue;
+      }
+
+      const grouped = rawValue
+        .filter((group) => isArray(group))
+        .map((group) => group.filter((address) => !!address));
+
+      if (!grouped.length) {
+        return rawValue;
+      }
+
+      // Preserve area-level grouping when there are multiple areas,
+      // but flatten a single area so each address can collapse individually.
+      return grouped.length === 1 ? grouped[0] : grouped;
+    };
+
+    const renderColumnContent = (
+      row: Record<string, any>,
+      columnKey: string,
+      valueTransform?: (
+        value: unknown,
+        rowData: Record<string, any>,
+      ) => unknown,
+    ) => {
+      const rawValue = row[columnKey];
+      const rowExpanded = !!expandedRows[String(row.id)];
+      const collapseItems = getCollapseItems(columnKey, rawValue);
+
+      if (isArray(collapseItems)) {
+        return (
+          <MultiItemCollapse
+            items={collapseItems}
+            itemRenderer={(value) => {
+              const transformedValue = valueTransform
+                ? valueTransform(value, row)
+                : value;
+              return transformedValue || "-";
+            }}
+            open={rowExpanded}
+            useTagForCount
+          />
+        );
+      }
+
+      const transformedValue = valueTransform
+        ? valueTransform(rawValue, row)
+        : rawValue;
+      return transformedValue || "-";
+    };
+
+    columns.push({
+      key: "_expand",
+      headerName: "",
+      isSortable: false,
+      transform: (row: Record<string, any>) => renderExpandToggle(row),
+    });
 
     if (isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.IDENTIFIER)) {
       columns.push({
         key: "identifier",
-        text: LeaseFieldTitles.IDENTIFIER,
+        headerName: LeaseFieldTitles.IDENTIFIER_SHORT,
+        isSortable: true,
+        transform: (row: Record<string, any>) => (
+          <Link
+            href={getLeaseDetailsHref(row.id)}
+            className="lease-list-identifier-link"
+          >
+            {row.identifier}
+          </Link>
+        ),
       });
     }
 
@@ -545,8 +717,13 @@ const LeaseListPage: React.FC = () => {
     ) {
       columns.push({
         key: "lease_area_identifiers",
-        text: "Vuokrakohde",
-        sortable: false,
+        headerName: LeaseAreasFieldTitles.LEASE_AREAS_SHORT,
+        isSortable: false,
+        transform: (row: Record<string, any>) =>
+          renderClickableCell(
+            renderColumnContent(row, "lease_area_identifiers"),
+            row.id,
+          ),
       });
     }
 
@@ -558,47 +735,78 @@ const LeaseListPage: React.FC = () => {
     ) {
       columns.push({
         key: "addresses",
-        text: "Osoite",
-        sortable: false,
+        headerName: LeaseFieldTitles.ADDRESS,
+        isSortable: false,
+        transform: (row: Record<string, any>) =>
+          renderClickableCell(
+            renderColumnContent(row, "addresses", (value) =>
+              renderAddressValues(value),
+            ),
+            row.id,
+          ),
       });
     }
 
     if (isFieldAllowedToRead(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)) {
       columns.push({
         key: "tenants",
-        text: "Vuokralainen",
-        sortable: false,
+        headerName: LeaseFieldTitles.TENANT,
+        isSortable: false,
+        transform: (row: Record<string, any>) =>
+          renderClickableCell(renderColumnContent(row, "tenants"), row.id),
       });
     }
 
     if (isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.LESSOR)) {
       columns.push({
         key: "lessor",
-        text: "Vuokranantaja",
+        headerName: LeaseFieldTitles.LESSOR,
+        isSortable: true,
+        transform: (row: Record<string, any>) =>
+          renderClickableCell(renderColumnContent(row, "lessor"), row.id),
       });
     }
 
     if (isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.STATE)) {
       columns.push({
         key: "state",
-        text: "Tyyppi",
-        renderer: (val) => getLabelOfOption(stateOptions, val),
+        headerName: LeaseFieldTitles.STATE,
+        isSortable: true,
+        transform: (row: Record<string, any>) =>
+          renderClickableCell(
+            renderColumnContent(row, "state", (value) =>
+              getLabelOfOption(stateOptions, value),
+            ),
+            row.id,
+          ),
       });
     }
 
     if (isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.START_DATE)) {
       columns.push({
         key: "start_date",
-        text: "Alkupvm",
-        renderer: (val) => formatDate(val),
+        headerName: LeaseFieldTitles.START_DATE,
+        isSortable: true,
+        transform: (row: Record<string, any>) =>
+          renderClickableCell(
+            renderColumnContent(row, "start_date", (value) =>
+              formatDate(value),
+            ),
+            row.id,
+          ),
       });
     }
 
     if (isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.END_DATE)) {
       columns.push({
         key: "end_date",
-        text: "Loppupvm",
-        renderer: (val) => formatDate(val),
+        headerName: LeaseFieldTitles.END_DATE,
+        isSortable: true,
+        transform: (row: Record<string, any>) =>
+          renderClickableCell(
+            renderColumnContent(row, "end_date", (value) => formatDate(value)),
+            row.id,
+          ),
       });
     }
 
@@ -620,13 +828,19 @@ const LeaseListPage: React.FC = () => {
       search: getSearchQuery(searchQuery),
     });
   };
-
-  const handleSortingChange = ({ sortKey, sortOrder }) => {
+  const handleSortingChange = (
+    order: "asc" | "desc",
+    colKey: string,
+    handleSort: () => void,
+  ): void => {
     const searchQuery = getUrlParams(location.search);
-    searchQuery.sort_key = sortKey;
-    searchQuery.sort_order = sortOrder;
-    setSortKey(sortKey);
-    setSortOrder(sortOrder);
+
+    handleSort();
+
+    searchQuery.sort_key = colKey;
+    searchQuery.sort_order = order;
+    delete searchQuery.page;
+
     return navigate({
       pathname: getRouteById(Routes.LEASES),
       search: getSearchQuery(searchQuery),
@@ -676,7 +890,7 @@ const LeaseListPage: React.FC = () => {
       onSubmit={(values) => handleSearchChange(values)}
       enableReinitialize
     >
-      {({ handleSubmit }) => (
+      {() => (
         <PageContainer>
           <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
             <CreateLeaseModal
@@ -698,9 +912,7 @@ const LeaseListPage: React.FC = () => {
           <SearchRow style={{ marginTop: "50px" }}>
             <Row>
               <Field name="service_unit">
-                {({
-                  input: { value, onChange },
-                }) => {
+                {({ input: { value, onChange } }) => {
                   const selectedOptions = serviceUnitOptions.filter((option) =>
                     (Array.isArray(value) ? value : [value]).some(
                       (v) => v == option.value,
@@ -729,9 +941,7 @@ const LeaseListPage: React.FC = () => {
                 }}
               </Field>
               <Field name="lease_state">
-                {({
-                  input: { value, onChange },
-                }) => {
+                {({ input: { value, onChange } }) => {
                   const selectedOptions = leaseStateFilterOptions.filter(
                     (option) =>
                       (Array.isArray(value) ? value : [value]).some(
@@ -799,17 +1009,20 @@ const LeaseListPage: React.FC = () => {
                 <span>
                   {isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
                 </span>
-                <SortableTable
-                  columns={columns}
-                  data={leaseList}
-                  listTable
-                  onRowClick={handleRowClick}
-                  onSortingChange={handleSortingChange}
-                  serverSideSorting
-                  showCollapseArrowColumn
-                  sortable
-                  sortKey={sortKey}
-                  sortOrder={sortOrder}
+                <Table
+                  ariaLabelSortButtonUnset="Not sorted"
+                  ariaLabelSortButtonAscending="Sorted in ascending order"
+                  ariaLabelSortButtonDescending="Sorted in descending order"
+                  id="lease-list-table"
+                  indexKey="id"
+                  renderIndexCol={false}
+                  cols={columns}
+                  rows={leaseList}
+                  onSort={handleSortingChange}
+                  initialSortingColumnKey={sortKey}
+                  initialSortingOrder={sortOrder as "asc" | "desc"}
+                  key={`${sortKey}-${sortOrder}`}
+                  dense
                 />
                 <Pagination
                   activePage={activePage}

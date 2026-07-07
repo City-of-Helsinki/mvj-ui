@@ -1,0 +1,57 @@
+@use "hds-design-tokens/lib/all" as hds;
+
+#lease-list-table tbody tr:hover td,
+#lease-list-table tbody tr:focus-within td {
+  background-color: hds.$color-bus-light;
+  transition: background-color 120ms ease-in-out;
+}
+
+#lease-list-table tbody td:has(.lease-list-row-link) {
+  padding: 0;
+}
+
+#lease-list-table .lease-list-row-link {
+  all: unset;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.4rem 0.6rem;
+}
+
+#lease-list-table .lease-list-row-link:focus-visible {
+  outline: 2px solid hds.$color-focus-outline;
+  outline-offset: -2px;
+}
+
+#lease-list-table .lease-list-identifier-link {
+  display: inline;
+  line-height: inherit;
+  margin-bottom: 0;
+}
+
+#lease-list-table .lease-list-expand-button {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+#lease-list-table .lease-list-expand-button:focus-visible {
+  outline: 2px solid hds.$color-focus-outline;
+  outline-offset: 1px;
+}
+
+#lease-list-table .lease-list-expand-icon {
+  width: 14px;
+  height: 14px;
+  transition: transform 120ms ease-in-out;
+}
+
+#lease-list-table .lease-list-expand-icon.is-open {
+  transform: rotate(90deg);
+}
