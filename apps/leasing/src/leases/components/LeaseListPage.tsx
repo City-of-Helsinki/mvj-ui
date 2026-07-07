@@ -12,7 +12,7 @@ import CreateLeaseModal from "./createLease/CreateLeaseModal";
 import LeaseListMap from "@/leases/components/leaseSections/map/LeaseListMap";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
-import PageContainer from "@/components/content/PageContainer";
+import PageContainerHDS from "@/components/content/PageContainerHDS";
 import Pagination from "@/components/table/Pagination";
 import Search from "./search/Search";
 import { fetchAreaNoteList } from "@/areaNote/actions";
@@ -873,16 +873,16 @@ const LeaseListPage: React.FC = () => {
   const columns = getColumns();
   if (isFetchingLeaseAttributes)
     return (
-      <PageContainer>
+      <PageContainerHDS>
         <Loader isLoading={true} />
-      </PageContainer>
+      </PageContainerHDS>
     );
   if (!leaseMethods) return null;
   if (!isMethodAllowed(leaseMethods, Methods.GET))
     return (
-      <PageContainer>
+      <PageContainerHDS>
         <AuthorizationError text={PermissionMissingTexts.LEASE} />
-      </PageContainer>
+      </PageContainerHDS>
     );
   return (
     <Form
@@ -891,7 +891,7 @@ const LeaseListPage: React.FC = () => {
       enableReinitialize
     >
       {() => (
-        <PageContainer className="foundation-form-reset">
+        <PageContainerHDS>
           <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
             <CreateLeaseModal
               isOpen={isModalOpen}
@@ -1042,7 +1042,7 @@ const LeaseListPage: React.FC = () => {
               />
             </Tabs.TabPanel>
           </Tabs>
-        </PageContainer>
+        </PageContainerHDS>
       )}
     </Form>
   );

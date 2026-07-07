@@ -1,0 +1,32 @@
+@use "foundation-sites/scss/foundation" as *;
+@use "../../styles/variables";
+
+.content-hds {
+  &__page-container {
+    font-family: variables.$font-family-source;
+    min-height: calc(100vh - 60px);
+    display: block;
+    width: 100%;
+    padding: rem-calc(20px 20 120px);
+
+    &.with-control-bar {
+      margin-top: 59px;
+    }
+
+    &.with-control-bar-and-tabs {
+      margin-top: 101px;
+    }
+
+    &.with-small-control-bar {
+      margin-top: 50px;
+    }
+
+    &.with-small-control-bar-and-tabs {
+      margin-top: 92px;
+    }
+
+    &.with-tabs {
+      margin-top: 42px;
+    }
+  }
+}
