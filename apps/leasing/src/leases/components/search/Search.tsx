@@ -82,6 +82,18 @@ interface SearchFieldsProps {
   showCreateLeaseModal: () => void;
 }
 
+const BASIC_MODE_IGNORED_QUERY_KEYS = new Set([
+  "page",
+  "sort_key",
+  "sort_order",
+  "lease_state",
+  "in_bbox",
+  "visualization",
+  "zoom",
+  "intended_use",
+  "service_unit",
+]);
+
 const SearchFields = ({
   isBasicSearch,
   setIsBasicSearch,
@@ -969,32 +981,17 @@ const DistrictLoader = ({ municipality }: DistrictLoaderProps) => {
 const Search: React.FC<Props> = (props) => {
   const location = useLocation();
   const { search: searchParams } = location;
+  const previousModeParamsRef = useRef<string | null>(null);
 
   const { isSearchInitialized, onSearch, showCreateLeaseModal } = props;
 
   const isSearchBasicMode = useCallback(() => {
     const searchQuery = getUrlParams(searchParams);
-    const ignoredKeys = [
-      "page",
-      "sort_key",
-      "sort_order",
-      "lease_state",
-      "in_bbox",
-      "visualization",
-      "zoom",
-      "intended_use",
-      "service_unit",
-    ];
-
     const keys = Object.keys(searchQuery).filter(
-      (key) => !ignoredKeys.includes(key),
+      (key) => !BASIC_MODE_IGNORED_QUERY_KEYS.has(key),
     );
 
-    if (!keys.length || (keys.length === 1 && "search" in searchQuery)) {
-      return true;
-    }
-
-    return false;
+    return !keys.length || (keys.length === 1 && keys[0] === "search");
   }, [searchParams]);
 
   const [isBasicSearch, setIsBasicSearch] =
@@ -1043,8 +1040,20 @@ const Search: React.FC<Props> = (props) => {
   const lessorOptions = useMemo(() => getContactOptions(lessors), [lessors]);
 
   useEffect(() => {
+    const searchQuery = getUrlParams(searchParams);
+    const modeAffectingKey = Object.keys(searchQuery)
+      .filter((key) => !BASIC_MODE_IGNORED_QUERY_KEYS.has(key))
+      .sort()
+      .map((key) => `${key}:${JSON.stringify(searchQuery[key])}`)
+      .join("|");
+
+    if (previousModeParamsRef.current === modeAffectingKey) {
+      return;
+    }
+
+    previousModeParamsRef.current = modeAffectingKey;
     setIsBasicSearch(isSearchBasicMode());
-  }, [isSearchBasicMode]);
+  }, [isSearchBasicMode, searchParams]);
 
   return (
     <SearchContainer onSubmit={form.submit}>
