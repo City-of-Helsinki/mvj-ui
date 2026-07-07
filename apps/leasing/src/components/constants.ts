@@ -11,10 +11,6 @@ export const RentCalculatorTypeOptions = [
     label: "Vuosi",
   },
   {
-    value: RentCalculatorTypes.RANGE,
-    label: "Aikaväli",
-  },
-  {
     value: RentCalculatorTypes.BILLING_PERIOD,
     label: "Laskutuskausi",
   },

@@ -112,59 +112,6 @@ const RentCalculatorForm: React.FC<Props> = ({
         },
       },
       {
-        value: RentCalculatorTypes.RANGE,
-        label: "Aikaväli",
-        labelStyles: {
-          minWidth: "115px",
-        },
-        field: (
-          <Row>
-            <Column small={6}>
-              <FormField
-                fieldAttributes={{
-                  label: "Alkupvm",
-                  type: "date",
-                  read_only: false,
-                }}
-                name="billing_start_date"
-                disabled={type !== RentCalculatorTypes.RANGE}
-                disableDirty
-                invisibleLabel
-              />
-            </Column>
-            <Column small={6}>
-              <FormField
-                className="with-dash"
-                fieldAttributes={{
-                  label: "Loppupvm",
-                  type: "date",
-                  read_only: false,
-                }}
-                name="billing_end_date"
-                disabled={type !== RentCalculatorTypes.RANGE}
-                disableDirty
-                invisibleLabel
-              />
-            </Column>
-          </Row>
-        ),
-        fieldStyles: {
-          width: "180px",
-        },
-        errorField: (
-          <ErrorField
-            showError={showErrors && !!errors.rangeErrors}
-            meta={{ error: errors.rangeErrors }}
-            style={{
-              marginTop: "-10px",
-            }}
-          />
-        ),
-        errorFieldStyles: {
-          width: "180px",
-        },
-      },
-      {
         value: RentCalculatorTypes.BILLING_PERIOD,
         label: "Laskutuskausi",
         labelStyles: {

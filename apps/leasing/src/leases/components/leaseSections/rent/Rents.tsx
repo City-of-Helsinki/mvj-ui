@@ -63,8 +63,6 @@ const Rents: React.FC = () => {
       initialValues: {
         type: RentCalculatorTypes.YEAR,
         year: currentYear,
-        billing_start_date: `${currentYear}-01-01`,
-        billing_end_date: `${currentYear}-12-31`,
       },
     }),
   );

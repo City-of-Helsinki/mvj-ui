@@ -74,8 +74,6 @@ const RentCalculator: React.FC<Props> = ({ formApi }) => {
   }, [formApi]);
 
   const billingPeriod = formValues.billing_period;
-  const endDate = formValues.billing_end_date;
-  const startDate = formValues.billing_start_date;
   const type: RentCalculatorType = formValues.type;
   const year = formValues.year;
 
@@ -152,11 +150,6 @@ const RentCalculator: React.FC<Props> = ({ formApi }) => {
         requestEndDate = tempEndDate;
         break;
       }
-
-      case RentCalculatorTypes.RANGE:
-        requestStartDate = startDate;
-        requestEndDate = endDate;
-        break;
 
       case RentCalculatorTypes.BILLING_PERIOD:
         if (billingPeriods.length > billingPeriod) {
