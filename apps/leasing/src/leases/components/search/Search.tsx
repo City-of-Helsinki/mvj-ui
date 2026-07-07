@@ -481,8 +481,8 @@ const SearchFields = ({
                           <Select
                             id="type"
                             texts={{
-                              label: "Tyyppi",
-                              placeholder: "Valitse tyyppi",
+                              label: "Laji",
+                              placeholder: "Valitse laji",
                               language: "fi",
                             }}
                             value={selectedOption}
