@@ -19,7 +19,6 @@ const RentForPeriod = ({ onRemove, rentForPeriod }: Props) => {
       case RentCalculatorTypes.YEAR:
         return `${getLabelOfOption(RentCalculatorTypeOptions, rentForPeriod.rentCalculatorType) || ""} ${new Date(rentForPeriod.start_date).getFullYear()}`;
 
-      case RentCalculatorTypes.RANGE:
       case RentCalculatorTypes.BILLING_PERIOD:
         return `${getLabelOfOption(RentCalculatorTypeOptions, rentForPeriod.rentCalculatorType) || ""} ${formatDateRange(rentForPeriod.start_date, rentForPeriod.end_date)}`;
     }

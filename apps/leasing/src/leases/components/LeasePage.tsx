@@ -801,8 +801,6 @@ const LeasePage: React.FC<Props> = (props) => {
     leaseRentCalculatorFormRef.current.initialize({
       type: RentCalculatorTypes.YEAR,
       year: currentYear,
-      billing_start_date: `${currentYear}-01-01`,
-      billing_end_date: `${currentYear}-12-31`,
     });
     initialize(FormNames.LEASE_BASIS_OF_RENTS, {
       basis_of_rents: getContentBasisOfRents(lease).filter(

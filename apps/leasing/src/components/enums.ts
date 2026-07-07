@@ -28,7 +28,6 @@ export const ButtonLabels = {
  */
 export const RentCalculatorTypes = {
   YEAR: "year",
-  RANGE: "range",
   BILLING_PERIOD: "billing_period",
 };
 
