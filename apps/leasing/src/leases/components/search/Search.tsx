@@ -868,10 +868,7 @@ const SearchFields = ({
                   </SearchRow>
                 </Fieldset>
 
-                <Fieldset
-                  heading=""
-                  className="lease-search-fieldset-group lease-search-fieldset-group__gap"
-                >
+                <Fieldset heading="" className="lease-search-fieldset-group">
                   <SearchRow style={{ alignItems: "center" }}>
                     <Row>
                       <SelectionGroup
