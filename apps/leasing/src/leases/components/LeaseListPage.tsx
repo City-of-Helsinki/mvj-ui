@@ -952,8 +952,8 @@ const LeaseListPage: React.FC = () => {
                     <Select
                       id="lease_state"
                       texts={{
-                        label: "Vuokrauksen tyyppi",
-                        placeholder: "Valitse vuokrauksen tyyppi",
+                        label: "Tyyppi",
+                        placeholder: "Valitse tyyppi",
                         language: "fi",
                       }}
                       value={selectedOptions}
