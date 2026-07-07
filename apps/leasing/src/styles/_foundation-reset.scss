@@ -1,0 +1,30 @@
+/*
+  Opt-in reset for Foundation form control defaults.
+  Use this wrapper around refactored HDS-based views to prevent
+  Foundation checkbox/radio/file rules from leaking in.
+*/
+.foundation-form-reset {
+  [type="checkbox"],
+  [type="radio"],
+  [type="file"] {
+    margin: 0;
+  }
+
+  [type="checkbox"] + label,
+  [type="radio"] + label {
+    display: inline;
+    vertical-align: inherit;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+
+  label > [type="checkbox"],
+  label > [type="radio"] {
+    margin-right: 0;
+  }
+
+  [type="file"] {
+    width: auto;
+  }
+}

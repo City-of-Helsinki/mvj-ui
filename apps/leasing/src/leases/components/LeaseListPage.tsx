@@ -891,7 +891,7 @@ const LeaseListPage: React.FC = () => {
       enableReinitialize
     >
       {() => (
-        <PageContainer>
+        <PageContainer className="foundation-form-reset">
           <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
             <CreateLeaseModal
               isOpen={isModalOpen}
