@@ -2239,7 +2239,6 @@ __metadata:
     "@tanstack/query-persist-client-core": "npm:5.91.19"
     "@tanstack/react-query": "npm:5.90.21"
     "@tanstack/react-query-persist-client": "npm:5.90.22"
-    hds-design-tokens: "npm:5.2.0"
   languageName: unknown
   linkType: soft
 
@@ -7290,6 +7289,7 @@ __metadata:
     final-form: "npm:5.0.0"
     final-form-arrays: "npm:4.0.0"
     globals: "npm:16.5.0"
+    hds-design-tokens: "npm:5.2.0"
     hds-react: "npm:5.2.0"
     jsdom: "npm:27.2.0"
     postcss: "npm:8.5.6"
