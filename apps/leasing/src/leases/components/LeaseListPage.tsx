@@ -910,7 +910,7 @@ const LeaseListPage: React.FC = () => {
           </Row>
 
           <SearchRow style={{ marginTop: "10px" }}>
-            <Row className="lease-search-row__advanced">
+            <Row>
               <Row className="lease-search-fieldset-group">
                 <Field name="service_unit">
                   {({ input: { value, onChange } }) => {
