@@ -909,67 +909,70 @@ const LeaseListPage: React.FC = () => {
             </Column>
           </Row>
 
-          <SearchRow style={{ marginTop: "50px" }}>
-            <Row>
-              <Field name="service_unit">
-                {({ input: { value, onChange } }) => {
-                  const selectedOptions = serviceUnitOptions.filter((option) =>
-                    (Array.isArray(value) ? value : [value]).some(
-                      (v) => v == option.value,
-                    ),
-                  );
-                  return (
-                    <Select
-                      id="service_unit"
-                      texts={{
-                        label: LeaseFieldTitles.SERVICE_UNIT,
-                        placeholder: "Valitse palvelukokonaisuus",
-                        language: "fi",
-                      }}
-                      value={selectedOptions}
-                      options={serviceUnitOptions}
-                      onChange={(selectedOptions) => {
-                        const values = selectedOptions.map(
-                          (option) => option.value,
-                        );
-                        onChange(values);
-                      }}
-                      style={{ width: "100%" }}
-                      multiSelect
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="lease_state">
-                {({ input: { value, onChange } }) => {
-                  const selectedOptions = leaseStateFilterOptions.filter(
-                    (option) =>
-                      (Array.isArray(value) ? value : [value]).some(
-                        (v) => v == option.value,
-                      ),
-                  );
-                  return (
-                    <Select
-                      id="lease_state"
-                      texts={{
-                        label: "Tyyppi",
-                        placeholder: "Valitse tyyppi",
-                        language: "fi",
-                      }}
-                      value={selectedOptions}
-                      options={leaseStateFilterOptions}
-                      onChange={(selectedOptions) => {
-                        const values = selectedOptions.map(
-                          (option) => option.value,
-                        );
-                        onChange(values);
-                      }}
-                      style={{ width: "100%" }}
-                      multiSelect
-                    />
-                  );
-                }}
-              </Field>
+          <SearchRow style={{ marginTop: "10px" }}>
+            <Row className="lease-search-row__advanced">
+              <Row className="lease-search-fieldset-group">
+                <Field name="service_unit">
+                  {({ input: { value, onChange } }) => {
+                    const selectedOptions = serviceUnitOptions.filter(
+                      (option) =>
+                        (Array.isArray(value) ? value : [value]).some(
+                          (v) => v == option.value,
+                        ),
+                    );
+                    return (
+                      <Select
+                        id="service_unit"
+                        texts={{
+                          label: LeaseFieldTitles.SERVICE_UNIT,
+                          placeholder: "Valitse palvelukokonaisuus",
+                          language: "fi",
+                        }}
+                        value={selectedOptions}
+                        options={serviceUnitOptions}
+                        onChange={(selectedOptions) => {
+                          const values = selectedOptions.map(
+                            (option) => option.value,
+                          );
+                          onChange(values);
+                        }}
+                        style={{ width: "100%" }}
+                        multiSelect
+                      />
+                    );
+                  }}
+                </Field>
+                <Field name="lease_state">
+                  {({ input: { value, onChange } }) => {
+                    const selectedOptions = leaseStateFilterOptions.filter(
+                      (option) =>
+                        (Array.isArray(value) ? value : [value]).some(
+                          (v) => v == option.value,
+                        ),
+                    );
+                    return (
+                      <Select
+                        id="lease_state"
+                        texts={{
+                          label: "Tyyppi",
+                          placeholder: "Valitse tyyppi",
+                          language: "fi",
+                        }}
+                        value={selectedOptions}
+                        options={leaseStateFilterOptions}
+                        onChange={(selectedOptions) => {
+                          const values = selectedOptions.map(
+                            (option) => option.value,
+                          );
+                          onChange(values);
+                        }}
+                        style={{ width: "100%" }}
+                        multiSelect
+                      />
+                    );
+                  }}
+                </Field>
+              </Row>
             </Row>
           </SearchRow>
           <Tabs

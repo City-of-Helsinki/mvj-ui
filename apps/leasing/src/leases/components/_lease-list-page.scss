@@ -1,5 +1,27 @@
 @use "hds-design-tokens/lib/all" as hds;
 
+$search-bg-color: hds.$color-white;
+
+.lease-search-row {
+  align-items: start;
+  background-color: $search-bg-color;
+  padding: 1rem 1rem 0 1rem;
+}
+
+.lease-search-row__advanced {
+  background-color: $search-bg-color;
+  padding: 0.5rem;
+}
+
+.lease-search-fieldset-group {
+  background-color: hds.$color-black-5;
+  padding: 0.5rem;
+
+  &__gap {
+    margin-bottom: 0.5rem;
+  }
+}
+
 #lease-list-table tbody tr:hover td,
 #lease-list-table tbody tr:focus-within td {
   background-color: hds.$color-bus-light;

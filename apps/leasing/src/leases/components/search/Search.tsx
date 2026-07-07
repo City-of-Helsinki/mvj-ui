@@ -148,13 +148,7 @@ const SearchFields = ({
   return (
     <>
       <DistrictLoader municipality={municipality} />
-      <Row
-        style={{
-          alignItems: "start",
-          backgroundColor: "var(--color-white)",
-          padding: "1rem 1rem 0 1rem",
-        }}
-      >
+      <Row className="lease-search-row">
         <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
           <Button
             variant={ButtonVariant.Supplementary}
@@ -197,21 +191,12 @@ const SearchFields = ({
       </Row>
       {!isBasicSearch && (
         <>
-          <Row
-            style={{
-              backgroundColor: "var(--color-white)",
-              padding: "0.5rem",
-            }}
-          >
+          <Row className="lease-search-row__advanced">
             {/* First column */}
             <Column small={12} large={12}>
               <Fieldset
                 heading=""
-                style={{
-                  backgroundColor: "var(--color-black-5)",
-                  marginBottom: "0.5rem",
-                  padding: "0.5rem",
-                }}
+                className="lease-search-fieldset-group lease-search-fieldset-group__gap"
               >
                 <SearchRow>
                   <Row>
@@ -411,11 +396,7 @@ const SearchFields = ({
               </Fieldset>
               <Fieldset
                 heading=""
-                style={{
-                  backgroundColor: "var(--color-black-5)",
-                  marginBottom: "0.5rem",
-                  padding: "0.5rem",
-                }}
+                className="lease-search-fieldset-group lease-search-fieldset-group__gap"
               >
                 <SearchRow>
                   <Row>
@@ -581,11 +562,7 @@ const SearchFields = ({
 
               <Fieldset
                 heading=""
-                style={{
-                  backgroundColor: "var(--color-black-5)",
-                  marginBottom: "0.5rem",
-                  padding: "0.5rem",
-                }}
+                className="lease-search-fieldset-group lease-search-fieldset-group__gap"
               >
                 <SearchRow>
                   <Row>
@@ -725,11 +702,7 @@ const SearchFields = ({
 
               <Fieldset
                 heading=""
-                style={{
-                  backgroundColor: "var(--color-black-5)",
-                  marginBottom: "0.5rem",
-                  padding: "0.5rem",
-                }}
+                className="lease-search-fieldset-group lease-search-fieldset-group__gap"
               >
                 <SearchRow>
                   <Row>
