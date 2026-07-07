@@ -250,20 +250,17 @@ export const getContentLeaseListAreaIdentifiers = (
  */
 export const getContentLeaseListLeaseAddresses = (
   lease: Lease,
-): Array<Record<string, any>> => {
-  const addresses = [];
+): Array<Array<string>> =>
   get(lease, "lease_areas", [])
     .filter((area) => !area.archived_at)
-    .forEach((area) => {
-      get(area, "addresses", []).forEach((address) => {
-        addresses.push(getFullAddress(address));
-      });
-    });
-  const sortedAddresses = addresses
-    .filter((address, index, self) => self.indexOf(address) == index)
-    .sort(sortStringAsc);
-  return sortedAddresses;
-};
+    .map((area) =>
+      get(area, "addresses", [])
+        .map((address) => getFullAddress(address))
+        .filter((address): address is string => !!address)
+        .filter((address, index, self) => self.indexOf(address) === index)
+        .sort(sortStringAsc),
+    )
+    .filter((areaAddresses) => areaAddresses.length > 0);
 
 /**
  * Get content lease list lease
