@@ -1,3 +1,5 @@
+@use "hds-design-tokens/lib/all" as hds;
+
 $font-family-helsinki-grotesk: "HelsinkiGrotesk", Arial, "Liberation Sans";
 $font-family-source: "HelsinkiGrotesk", Arial, "Liberation Sans";
 
@@ -12,7 +14,7 @@ $font-small: 0.875rem !default;
 $font-regular: 1rem !default;
 $font-large: 1.25rem !default;
 $font-xlarge: 1.5rem !default;
-$content-max-width: 1300px !default;
+$content-max-width: hds.$breakpoint-xxl !default;
 $semibold: 600;
 
 /// @type Map
