@@ -13,7 +13,6 @@ import LeaseListMap from "@/leases/components/leaseSections/map/LeaseListMap";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import PageContainerHDS from "@/components/content/PageContainerHDS";
-import Pagination from "@/components/table/Pagination";
 import Search from "./search/Search";
 import { fetchAreaNoteList } from "@/areaNote/actions";
 import { fetchServiceUnits } from "@/serviceUnits/actions";
@@ -99,6 +98,7 @@ import {
   IconMap,
   IconScrollContent,
   Link,
+  Pagination,
   Select,
   Table,
   type TableProps,
@@ -1028,9 +1028,16 @@ const LeaseListPage: React.FC = () => {
                   dense
                 />
                 <Pagination
-                  activePage={activePage}
-                  maxPage={maxPage}
-                  onPageClick={(page) => handlePageClick(page)}
+                  language="fi"
+                  onChange={(event, index) => {
+                    event.preventDefault();
+                    handlePageClick(index + 1);
+                  }}
+                  pageCount={maxPage || 1}
+                  pageHref={() => "#"}
+                  pageIndex={activePage - 1}
+                  paginationAriaLabel={`Sivuvalitsin, ${activePage} / ${maxPage}`}
+                  siblingCount={5}
                 />
               </>
             </Tabs.TabPanel>
