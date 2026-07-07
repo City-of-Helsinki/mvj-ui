@@ -438,6 +438,7 @@ export const LeaseFieldTitles = {
   HISTORY: "Historiapuu",
   HITAS: "Hitas",
   IDENTIFIER: "Vuokraustunnus",
+  IDENTIFIER_SHORT: "Tunnus",
   INFILL_DEVELOPMENT_COMPENSATIONS: "Täydennysrakentamiskorvaus",
   INTENDED_USE: "Vuokrauksen käyttötarkoitus",
   INTENDED_USE_NOTE: "Käyttötarkoituksen huomautus",
@@ -470,6 +471,7 @@ export const LeaseFieldTitles = {
   SUMMARY_STATISTICAL_INFO: "Tilastotiedot",
   SUPPORTIVE_HOUSING: "Erityisasunnot",
   TRANSFERABLE: "Siirto-oikeus",
+  TENANT: "Vuokralainen",
   TYPE: "Vuokrauksen laji",
 };
 
@@ -552,6 +554,7 @@ export const LeaseAreasFieldPaths = {
  */
 export const LeaseAreasFieldTitles = {
   LEASE_AREAS: "Vuokrakohde",
+  LEASE_AREAS_SHORT: "Kohde",
   ARCHIVED_AT: "Arkistoitu",
   ARCHIVED_DECISION: "Päätös",
   ARCHIVED_NOTE: "Huomautus",
