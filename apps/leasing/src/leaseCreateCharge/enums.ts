@@ -19,5 +19,6 @@ export const LeaseCreateChargeFieldPaths = {
 export const LeaseCreateChargeRowsFieldPaths = {
   ROWS: "rows",
   AMOUNT: "rows.child.children.amount",
+  INTENDED_USE: "rows.child.children.intended_use",
   RECEIVABLE_TYPE: "rows.child.children.receivable_type",
 };

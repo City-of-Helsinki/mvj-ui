@@ -358,6 +358,33 @@ export const getContentIntendedUse = (
 };
 
 /**
+ * Get intended use options from tenants
+ * @param {Object[]} tenants
+ * @returns {Object[]}
+ */
+export const getTenantIntendedUseOptions = (
+  tenants: Array<Record<string, any>>,
+): Array<SelectListOption> => {
+  const seen = new Set<any>();
+  const intendedUses =
+    tenants
+      ?.flatMap(
+        (tenant) =>
+          tenant.rent_shares?.map((share) => share.intended_use) || [],
+      )
+      .filter((intendedUse) => {
+        if (!intendedUse?.id || seen.has(intendedUse.id)) return false;
+        seen.add(intendedUse.id);
+        return true;
+      }) || [];
+
+  return intendedUses.map((use) => ({
+    value: use.id,
+    label: use.name,
+  }));
+};
+
+/**
  * Get content lease address
  * @param {Object} lease
  * @returns {string}

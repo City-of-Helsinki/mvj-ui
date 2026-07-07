@@ -32,7 +32,10 @@ import { RecipientOptions } from "@/leases/enums";
 import { receivableTypesFromAttributes } from "@/leaseCreateCharge/helpers";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { isInvoiceBillingPeriodRequired } from "@/invoices/helpers";
-import { getInvoiceRecipientOptions } from "@/leases/helpers";
+import {
+  getInvoiceRecipientOptions,
+  getTenantIntendedUseOptions,
+} from "@/leases/helpers";
 import { getUiDataCreateChargeKey } from "@/uiData/helpers";
 import {
   getFieldAttributes,
@@ -50,17 +53,19 @@ import {
   getReceivableTypes,
 } from "@/leaseCreateCharge/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes } from "types";
+import type { Attributes, SelectListOption } from "types";
 import type { Lease } from "@/leases/types";
 import Loader from "@/components/loader/Loader";
 type InvoiceRowsProps = {
   fields: any;
   useLeaseCreateChargeEndpoint: boolean;
+  intendedUseOptions: Array<SelectListOption>;
 };
 
 const InvoiceRows = ({
   fields,
   useLeaseCreateChargeEndpoint,
+  intendedUseOptions,
 }: InvoiceRowsProps): ReactElement => {
   const invoiceAttributes = useSelector(getInvoiceAttributes);
   const isCreateClicked = useSelector(getIsCreateClicked);
@@ -162,6 +167,26 @@ const InvoiceRows = ({
                       </FormTextTitle>
                     </Authorization>
                   </Column>
+                  {useLeaseCreateChargeEndpoint &&
+                    intendedUseOptions.length > 1 && (
+                      <Column small={3} large={2}>
+                        <Authorization
+                          allow={isFieldAllowedToEdit(
+                            leaseCreateChargeAttributes,
+                            LeaseCreateChargeRowsFieldPaths.INTENDED_USE,
+                          )}
+                        >
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={getUiDataCreateChargeKey(
+                              LeaseCreateChargeRowsFieldPaths.INTENDED_USE,
+                            )}
+                          >
+                            {InvoiceRowsFieldTitles.INTENDED_USE}
+                          </FormTextTitle>
+                        </Authorization>
+                      </Column>
+                    )}
                 </Row>
 
                 {fields.map((row, index) => {
@@ -228,7 +253,7 @@ const InvoiceRows = ({
                           )}
                         </Authorization>
                       </Column>
-                      <Column small={2} large={2}>
+                      <Column small={3} large={2}>
                         <Authorization
                           allow={
                             useLeaseCreateChargeEndpoint
@@ -264,6 +289,32 @@ const InvoiceRows = ({
                           />
                         </Authorization>
                       </Column>
+
+                      {useLeaseCreateChargeEndpoint &&
+                        intendedUseOptions.length > 1 && (
+                          <Column small={3} large={2}>
+                            <Authorization
+                              allow={isFieldAllowedToEdit(
+                                leaseCreateChargeAttributes,
+                                LeaseCreateChargeRowsFieldPaths.INTENDED_USE,
+                              )}
+                            >
+                              <FormField
+                                disableTouched={isCreateClicked}
+                                fieldAttributes={getFieldAttributes(
+                                  leaseCreateChargeAttributes,
+                                  LeaseCreateChargeRowsFieldPaths.INTENDED_USE,
+                                )}
+                                invisibleLabel
+                                name={`${row}.intended_use`}
+                                overrideValues={{
+                                  label: InvoiceRowsFieldTitles.INTENDED_USE,
+                                  options: intendedUseOptions,
+                                }}
+                              />
+                            </Authorization>
+                          </Column>
+                        )}
 
                       <Authorization
                         allow={
@@ -351,10 +402,19 @@ const NewInvoiceForm = ({ onClose, onSave, setRefForFirstField }: Props) => {
     onSave(values);
   };
 
-  const recipientOptions = getInvoiceRecipientOptions(
-    lease,
-    hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
-    hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
+  const recipientOptions = useMemo(
+    () =>
+      getInvoiceRecipientOptions(
+        lease,
+        hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
+        hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
+      ),
+    [lease, usersPermissions],
+  );
+
+  const intendedUseOptions = useMemo(
+    () => getTenantIntendedUseOptions(lease?.tenants),
+    [lease?.tenants],
   );
 
   return (
@@ -594,6 +654,7 @@ const NewInvoiceForm = ({ onClose, onSave, setRefForFirstField }: Props) => {
                       InvoiceRows({
                         ...fieldArrayProps,
                         useLeaseCreateChargeEndpoint,
+                        intendedUseOptions,
                       })
                     }
                   </FieldArray>
