@@ -215,176 +215,6 @@ const SearchFields = ({
               >
                 <SearchRow>
                   <Row>
-                    <Field name="tenant_name">
-                      {({
-                        input: { value, onBlur, onChange, onFocus },
-                        meta: { error, invalid },
-                      }) => {
-                        return (
-                          <TextInput
-                            id="tenant_name"
-                            label="Nimi"
-                            invalid={invalid}
-                            value={value || ""}
-                            onBlur={onBlur}
-                            onChange={onChange}
-                            onFocus={onFocus}
-                            style={{ width: "100%" }}
-                          />
-                        );
-                      }}
-                    </Field>
-                    <Field name="tenantcontact_type">
-                      {({
-                        input: { value, onBlur, onChange, onFocus },
-                        meta: { error, invalid },
-                      }) => {
-                        const selectedOptions = tenantTypeOptions.filter(
-                          (option) =>
-                            (Array.isArray(value) ? value : [value]).some(
-                              (v) => v == option.value,
-                            ),
-                        );
-                        return (
-                          <Select
-                            id="tenantcontact_type"
-                            texts={{
-                              label: "Asiakkaan rooli",
-                              placeholder: "Valitse rooli",
-                              language: "fi",
-                            }}
-                            value={selectedOptions}
-                            options={tenantTypeOptions}
-                            onChange={(selectedOptions) =>
-                              onChange(
-                                selectedOptions.map((option) => option.value),
-                              )
-                            }
-                            clearable
-                            style={{ width: "100%" }}
-                          />
-                        );
-                      }}
-                    </Field>
-                    <Field name="business_id">
-                      {({
-                        input: { value, onBlur, onChange, onFocus },
-                        meta: { error, invalid },
-                      }) => {
-                        return (
-                          <TextInput
-                            id="business_id"
-                            label="Y-tunnus"
-                            invalid={invalid}
-                            value={value || ""}
-                            onBlur={onBlur}
-                            onChange={onChange}
-                            onFocus={onFocus}
-                            style={{ width: "100%" }}
-                          />
-                        );
-                      }}
-                    </Field>
-                    <Field name="national_identification_number">
-                      {({
-                        input: { value, onBlur, onChange, onFocus },
-                        meta: { error, invalid },
-                      }) => {
-                        return (
-                          <TextInput
-                            id="national_identification_number"
-                            label="Henkilötunnus"
-                            invalid={invalid}
-                            value={value || ""}
-                            onBlur={onBlur}
-                            onChange={onChange}
-                            onFocus={onFocus}
-                            style={{ width: "100%" }}
-                          />
-                        );
-                      }}
-                    </Field>
-                  </Row>
-                </SearchRow>
-                <SearchRow>
-                  <SearchInputColumn>
-                    <SelectionGroup
-                      label="Asiakkaan tila"
-                      direction="horizontal"
-                      style={{ width: "100%" }}
-                    >
-                      <Field name="tenant_activity" key="tenant_activity-1">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <RadioButton
-                              id="tenant_activity-1"
-                              name="tenant_activity"
-                              value=""
-                              label="Kaikki asiakkaat"
-                              checked={value === ""}
-                              onChange={onChange}
-                              onBlur={onBlur}
-                              onFocus={onFocus}
-                            />
-                          );
-                        }}
-                      </Field>
-                      <Field name="tenant_activity" key="tenant_activity-2">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <RadioButton
-                              id="tenant_activity-2"
-                              name="tenant_activity"
-                              value="past"
-                              label="Vain entiset asiakkaat"
-                              checked={value === "past"}
-                              onChange={onChange}
-                              onBlur={onBlur}
-                              onFocus={onFocus}
-                            />
-                          );
-                        }}
-                      </Field>
-                      <Field name="tenant_activity" key="tenant_activity-3">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <RadioButton
-                              id="tenant_activity-3"
-                              name="tenant_activity"
-                              value="active"
-                              label="Vain nykyiset asiakkaat"
-                              checked={value === "active"}
-                              onChange={onChange}
-                              onBlur={onBlur}
-                              onFocus={onFocus}
-                            />
-                          );
-                        }}
-                      </Field>
-                    </SelectionGroup>
-                  </SearchInputColumn>
-                </SearchRow>
-              </Fieldset>
-
-              <Fieldset
-                heading=""
-                style={{
-                  backgroundColor: "var(--color-black-5)",
-                  marginBottom: "0.5rem",
-                  padding: "0.5rem",
-                }}
-              >
-                <SearchRow>
-                  <Row>
                     <Field name="lessor">
                       {({
                         input: { value, onBlur, onChange, onFocus },
@@ -759,80 +589,6 @@ const SearchFields = ({
               >
                 <SearchRow>
                   <Row>
-                    <Field name="decision_maker">
-                      {({
-                        input: { value, onBlur, onChange, onFocus },
-                        meta: { error, invalid },
-                      }) => {
-                        const selectedOption = decisionMakerOptions.filter(
-                          (option) => value == option.value,
-                        );
-                        return (
-                          <Select
-                            id="decision_maker"
-                            texts={{
-                              label: "Päätöksen tekijä",
-                              placeholder: "Valitse päätöksen tekijä",
-                              language: "fi",
-                            }}
-                            value={selectedOption}
-                            options={decisionMakerOptions}
-                            onChange={(selectedOptions) =>
-                              onChange(
-                                selectedOptions.map((option) => option.value),
-                              )
-                            }
-                            clearable
-                            style={{ width: "100%" }}
-                          />
-                        );
-                      }}
-                    </Field>
-                    <Field name="decision_date">
-                      {({
-                        input: { value, onBlur, onChange, onFocus },
-                        meta: { error, invalid },
-                      }) => {
-                        return (
-                          <DateInput
-                            helperText="Käytä muotoa P.K.VVVV"
-                            id="decision_date"
-                            initialMonth={new Date()}
-                            label="Päätöspvm"
-                            language="fi"
-                            value={value || ""}
-                            onBlur={onBlur}
-                            onFocus={onFocus}
-                            onChange={(nextValue) => onChange(nextValue)}
-                            style={{ width: "100%" }}
-                          />
-                        );
-                      }}
-                    </Field>
-                    <Field name="decision_section">
-                      {({
-                        input: { value, onBlur, onChange, onFocus },
-                        meta: { error, invalid },
-                      }) => {
-                        return (
-                          <TextInput
-                            id="decision_section"
-                            label="Pykälä (§)"
-                            invalid={invalid}
-                            value={value || ""}
-                            onBlur={onBlur}
-                            onChange={onChange}
-                            onFocus={onFocus}
-                            style={{ width: "100%" }}
-                          />
-                        );
-                      }}
-                    </Field>
-                  </Row>
-                </SearchRow>
-
-                <SearchRow>
-                  <Row>
                     <Field name="reference_number">
                       {({
                         input: { value, onBlur, onChange, onFocus },
@@ -891,6 +647,249 @@ const SearchFields = ({
                       }}
                     </Field>
                   </Row>
+                </SearchRow>
+                <SearchRow>
+                  <Row>
+                    <Field name="decision_maker">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        const selectedOption = decisionMakerOptions.filter(
+                          (option) => value == option.value,
+                        );
+                        return (
+                          <Select
+                            id="decision_maker"
+                            texts={{
+                              label: "Päätöksentekijä",
+                              placeholder: "Valitse päätöksentekijä",
+                              language: "fi",
+                            }}
+                            value={selectedOption}
+                            options={decisionMakerOptions}
+                            onChange={(selectedOptions) =>
+                              onChange(
+                                selectedOptions.map((option) => option.value),
+                              )
+                            }
+                            clearable
+                            style={{ width: "100%" }}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="decision_date">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <DateInput
+                            helperText="Käytä muotoa P.K.VVVV"
+                            id="decision_date"
+                            initialMonth={new Date()}
+                            label="Päätöspvm"
+                            language="fi"
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            onChange={(nextValue) => onChange(nextValue)}
+                            style={{ width: "100%" }}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="decision_section">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="decision_section"
+                            label="Pykälä (§)"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                            style={{ width: "100%" }}
+                          />
+                        );
+                      }}
+                    </Field>
+                  </Row>
+                </SearchRow>
+              </Fieldset>
+
+              <Fieldset
+                heading=""
+                style={{
+                  backgroundColor: "var(--color-black-5)",
+                  marginBottom: "0.5rem",
+                  padding: "0.5rem",
+                }}
+              >
+                <SearchRow>
+                  <Row>
+                    <Field name="tenant_name">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="tenant_name"
+                            label="Asiakkaan nimi"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                            style={{ width: "100%" }}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="tenantcontact_type">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        const selectedOptions = tenantTypeOptions.filter(
+                          (option) =>
+                            (Array.isArray(value) ? value : [value]).some(
+                              (v) => v == option.value,
+                            ),
+                        );
+                        return (
+                          <Select
+                            id="tenantcontact_type"
+                            texts={{
+                              label: "Asiakkaan rooli",
+                              placeholder: "Valitse rooli",
+                              language: "fi",
+                            }}
+                            value={selectedOptions}
+                            options={tenantTypeOptions}
+                            onChange={(selectedOptions) =>
+                              onChange(
+                                selectedOptions.map((option) => option.value),
+                              )
+                            }
+                            clearable
+                            style={{ width: "100%" }}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="business_id">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="business_id"
+                            label="Y-tunnus"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                            style={{ width: "100%" }}
+                          />
+                        );
+                      }}
+                    </Field>
+                    <Field name="national_identification_number">
+                      {({
+                        input: { value, onBlur, onChange, onFocus },
+                        meta: { error, invalid },
+                      }) => {
+                        return (
+                          <TextInput
+                            id="national_identification_number"
+                            label="Henkilötunnus"
+                            invalid={invalid}
+                            value={value || ""}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onFocus={onFocus}
+                            style={{ width: "100%" }}
+                          />
+                        );
+                      }}
+                    </Field>
+                  </Row>
+                </SearchRow>
+                <SearchRow>
+                  <SearchInputColumn>
+                    <SelectionGroup
+                      label="Asiakkaan tila"
+                      direction="horizontal"
+                      style={{ width: "100%" }}
+                    >
+                      <Field name="tenant_activity" key="tenant_activity-1">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <RadioButton
+                              id="tenant_activity-1"
+                              name="tenant_activity"
+                              value=""
+                              label="Kaikki asiakkaat"
+                              checked={value === ""}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                            />
+                          );
+                        }}
+                      </Field>
+                      <Field name="tenant_activity" key="tenant_activity-2">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <RadioButton
+                              id="tenant_activity-2"
+                              name="tenant_activity"
+                              value="past"
+                              label="Vain entiset asiakkaat"
+                              checked={value === "past"}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                            />
+                          );
+                        }}
+                      </Field>
+                      <Field name="tenant_activity" key="tenant_activity-3">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <RadioButton
+                              id="tenant_activity-3"
+                              name="tenant_activity"
+                              value="active"
+                              label="Vain nykyiset asiakkaat"
+                              checked={value === "active"}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              onFocus={onFocus}
+                            />
+                          );
+                        }}
+                      </Field>
+                    </SelectionGroup>
+                  </SearchInputColumn>
                 </SearchRow>
               </Fieldset>
 
