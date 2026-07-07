@@ -9,6 +9,10 @@
     width: 100%;
     padding: rem-calc(20px 20 120px);
 
+    &--white-background {
+      background-color: variables.$white;
+    }
+
     &.with-control-bar {
       margin-top: 59px;
     }

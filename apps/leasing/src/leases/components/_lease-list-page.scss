@@ -1,16 +1,8 @@
 @use "hds-design-tokens/lib/all" as hds;
 
-$search-bg-color: hds.$color-white;
-
 .lease-search-row {
   align-items: start;
-  background-color: $search-bg-color;
   padding: 1rem 1rem 0 1rem;
-}
-
-.lease-search-row__advanced {
-  background-color: $search-bg-color;
-  padding: 0.5rem;
 }
 
 .lease-search-fieldset-group {

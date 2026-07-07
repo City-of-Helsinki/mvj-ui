@@ -35,7 +35,11 @@ const PageContainerHDS: React.FC<Props> = ({
   return (
     <div
       ref={componentRef}
-      className={classNames("content-hds__page-container", className)}
+      className={classNames(
+        "content-hds__page-container",
+        "content-hds__page-container--white-background",
+        className,
+      )}
       style={{
         paddingTop: hasTabs ? 0 : null,
       }}
