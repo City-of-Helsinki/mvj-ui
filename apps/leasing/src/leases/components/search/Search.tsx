@@ -419,6 +419,7 @@ const SearchFields = ({
                               onFocus={onFocus}
                               onChange={(nextValue) => onChange(nextValue)}
                               style={{ width: "100%" }}
+                              disableConfirmation
                             />
                           );
                         }}
@@ -440,6 +441,7 @@ const SearchFields = ({
                               onFocus={onFocus}
                               onChange={(nextValue) => onChange(nextValue)}
                               style={{ width: "100%" }}
+                              disableConfirmation
                             />
                           );
                         }}
@@ -461,6 +463,7 @@ const SearchFields = ({
                               onFocus={onFocus}
                               onChange={(nextValue) => onChange(nextValue)}
                               style={{ width: "100%" }}
+                              disableConfirmation
                             />
                           );
                         }}
@@ -482,6 +485,7 @@ const SearchFields = ({
                               onFocus={onFocus}
                               onChange={(nextValue) => onChange(nextValue)}
                               style={{ width: "100%" }}
+                              disableConfirmation
                             />
                           );
                         }}
@@ -675,6 +679,7 @@ const SearchFields = ({
                               onFocus={onFocus}
                               onChange={(nextValue) => onChange(nextValue)}
                               style={{ width: "100%" }}
+                              disableConfirmation
                             />
                           );
                         }}
