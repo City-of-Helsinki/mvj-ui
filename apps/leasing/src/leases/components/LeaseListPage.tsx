@@ -969,6 +969,7 @@ const LeaseListPage: React.FC = () => {
                         }}
                         style={{ width: "100%" }}
                         multiSelect
+                        noTags
                       />
                     );
                   }}
