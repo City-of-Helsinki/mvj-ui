@@ -980,6 +980,17 @@ const Search: React.FC<Props> = (props) => {
 
   const [isBasicSearch, setIsBasicSearch] =
     useState<boolean>(isSearchBasicMode());
+  const [prevSearchParams, setPrevSearchParams] = useState(searchParams);
+
+  if (prevSearchParams !== searchParams) {
+    setPrevSearchParams(searchParams);
+
+    // Only auto-expand advanced search if there are advanced search parameters.
+    // Don't auto-collapse if they are removed.
+    if (!isSearchBasicMode()) {
+      setIsBasicSearch(false);
+    }
+  }
 
   const form = useForm();
   const isFetchingAttributes = useSelector(getIsFetchingAttributes);
@@ -1022,22 +1033,6 @@ const Search: React.FC<Props> = (props) => {
   );
 
   const lessorOptions = useMemo(() => getContactOptions(lessors), [lessors]);
-
-  useEffect(() => {
-    const searchQuery = getUrlParams(searchParams);
-    const modeAffectingKey = Object.keys(searchQuery)
-      .filter((key) => !BASIC_MODE_IGNORED_QUERY_KEYS.has(key))
-      .sort()
-      .map((key) => `${key}:${JSON.stringify(searchQuery[key])}`)
-      .join("|");
-
-    if (previousModeParamsRef.current === modeAffectingKey) {
-      return;
-    }
-
-    previousModeParamsRef.current = modeAffectingKey;
-    setIsBasicSearch(isSearchBasicMode());
-  }, [isSearchBasicMode, searchParams]);
 
   return (
     <SearchContainer onSubmit={form.submit}>
