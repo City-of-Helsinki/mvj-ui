@@ -28,9 +28,16 @@ import {
   IconAngleDown,
   IconTrash,
 } from "hds-react";
-import { isMethodAllowed } from "@/util/helpers";
+import type { SelectProps } from "hds-react/lib/components/dropdownComponents/select/types";
+import {
+  getFieldOptions,
+  getUrlParams,
+  isMethodAllowed,
+  toHdsOption,
+} from "@/util/helpers";
 import { Methods } from "@/enums";
 import { getMethods as getLeaseMethods } from "@/leases/selectors";
+import { useIntendedUses } from "@/intendedUse/useIntendedUses";
 import Authorization from "@/components/authorization/Authorization";
 import { ButtonLabels } from "@/components/enums";
 import SearchContainer from "@/components/search/SearchContainer";
@@ -45,13 +52,13 @@ import {
 } from "@/leases/enums";
 import { getContactOptions } from "@/contacts/helpers";
 import { getDistrictOptions } from "@/district/helpers";
-import { getFieldOptions, getUrlParams } from "@/util/helpers";
 import { getDistrictsByMunicipality } from "@/district/selectors";
 import {
   getAttributes as getLeaseAttributes,
   getIsFetchingAttributes,
 } from "@/leases/selectors";
 import { getLessorList } from "@/lessor/selectors";
+import type { SelectOptionHds } from "@/types";
 
 type Props = {
   isSearchInitialized: boolean;
@@ -67,12 +74,13 @@ interface SearchFieldsProps {
   isBasicSearch: boolean;
   setIsBasicSearch: React.Dispatch<React.SetStateAction<boolean>>;
   isFetchingAttributes: boolean;
-  decisionMakerOptions: Array<any>;
-  intendedUseOptions: Array<any>;
-  municipalityOptions: Array<any>;
-  tenantTypeOptions: Array<any>;
-  lessorOptions: Array<any>;
-  typeOptions: Array<any>;
+  isFetchingIntendedUses: boolean;
+  decisionMakerOptions: Array<SelectOptionHds>;
+  intendedUseGroupedOptions: SelectProps["groups"];
+  municipalityOptions: Array<SelectOptionHds>;
+  tenantTypeOptions: Array<SelectOptionHds>;
+  lessorOptions: Array<SelectOptionHds>;
+  typeOptions: Array<SelectOptionHds>;
   onSearch: (
     formValues: Record<string, any>,
     resetActivePage: boolean,
@@ -98,7 +106,8 @@ const SearchFields = ({
   isBasicSearch,
   setIsBasicSearch,
   decisionMakerOptions,
-  intendedUseOptions,
+  intendedUseGroupedOptions,
+  isFetchingIntendedUses,
   municipalityOptions,
   tenantTypeOptions,
   lessorOptions,
@@ -238,9 +247,14 @@ const SearchFields = ({
                           input: { value, onBlur, onChange, onFocus },
                           meta: { error, invalid },
                         }) => {
-                          const selectedOption = intendedUseOptions.filter(
-                            (option) => value == option.value,
-                          );
+                          const selectedOptions = intendedUseGroupedOptions
+                            .flatMap((group) => group.options)
+                            .filter((option) =>
+                              (Array.isArray(value) ? value : [value]).some(
+                                (v) => v == option.value,
+                              ),
+                            );
+
                           return (
                             <Select
                               id="intended_use"
@@ -249,14 +263,22 @@ const SearchFields = ({
                                 placeholder: "Valitse käyttötarkoitus",
                                 language: "fi",
                               }}
-                              value={selectedOption}
-                              options={intendedUseOptions}
+                              disabled={isFetchingIntendedUses}
+                              value={selectedOptions}
+                              groups={intendedUseGroupedOptions}
                               onChange={(selectedOptions) =>
                                 onChange(
                                   selectedOptions.map((option) => option.value),
                                 )
                               }
+                              multiSelect
+                              noTags
                               clearable
+                              filter={(option, filterStr) =>
+                                option.label
+                                  .toLowerCase()
+                                  .includes(filterStr.toLowerCase())
+                              }
                               style={{ width: "100%" }}
                             />
                           );
@@ -970,7 +992,6 @@ const DistrictLoader = ({ municipality }: DistrictLoaderProps) => {
 const Search: React.FC<Props> = (props) => {
   const location = useLocation();
   const { search: searchParams } = location;
-  const previousModeParamsRef = useRef<string | null>(null);
 
   const { isSearchInitialized, onSearch, showCreateLeaseModal } = props;
 
@@ -1001,6 +1022,7 @@ const Search: React.FC<Props> = (props) => {
   const isFetchingAttributes = useSelector(getIsFetchingAttributes);
   const leaseAttributes = useSelector(getLeaseAttributes);
   const lessors = useSelector(getLessorList);
+  const { intendedUseList, isFetchingIntendedUses } = useIntendedUses();
 
   const decisionMakerOptions = useMemo(
     () =>
@@ -1008,17 +1030,45 @@ const Search: React.FC<Props> = (props) => {
         leaseAttributes,
         LeaseDecisionsFieldPaths.DECISION_MAKER,
         false,
-      ),
+      ).map(toHdsOption),
     [leaseAttributes],
   );
 
-  const intendedUseOptions = useMemo(
-    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.INTENDED_USE, false),
-    [leaseAttributes],
-  );
+  const intendedUseGroupedOptions = useMemo(() => {
+    if (!Array.isArray(intendedUseList) || !intendedUseList?.length) {
+      return [];
+    }
+
+    const serviceUnits = Object.fromEntries(
+      getFieldOptions(leaseAttributes, LeaseFieldPaths.SERVICE_UNIT, false).map(
+        (opt) => [opt.value, opt.label],
+      ),
+    );
+
+    const intendedUsesByServiceUnit = Object.groupBy(
+      intendedUseList,
+      (item) => serviceUnits[item.service_unit] || "Muut",
+    );
+    // Note: This gets all IntendedUse's on purpose, even those that are not active (is_active=false).
+    // For now no reason to not allow filtering for inactive IntendedUse's has come up.
+    const groupedOptions = Object.entries(intendedUsesByServiceUnit).map(
+      ([label, options]) => ({
+        label,
+        options: options.map((item) => ({
+          label: item.name,
+          value: String(item.id),
+        })),
+      }),
+    );
+
+    return groupedOptions;
+  }, [intendedUseList, leaseAttributes]);
 
   const municipalityOptions = useMemo(
-    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.MUNICIPALITY, false),
+    () =>
+      getFieldOptions(leaseAttributes, LeaseFieldPaths.MUNICIPALITY, false).map(
+        toHdsOption,
+      ),
     [leaseAttributes],
   );
 
@@ -1028,25 +1078,32 @@ const Search: React.FC<Props> = (props) => {
         leaseAttributes,
         LeaseTenantContactSetFieldPaths.TYPE,
         false,
-      ),
+      ).map(toHdsOption),
     [leaseAttributes],
   );
 
   const typeOptions = useMemo(
-    () => getFieldOptions(leaseAttributes, LeaseFieldPaths.TYPE, false),
+    () =>
+      getFieldOptions(leaseAttributes, LeaseFieldPaths.TYPE, false).map(
+        toHdsOption,
+      ),
     [leaseAttributes],
   );
 
-  const lessorOptions = useMemo(() => getContactOptions(lessors), [lessors]);
+  const lessorOptions = useMemo(
+    () => getContactOptions(lessors),
+    [lessors],
+  ).map(toHdsOption);
 
   return (
     <SearchContainer onSubmit={form.submit}>
       <SearchFields
         decisionMakerOptions={decisionMakerOptions}
-        intendedUseOptions={intendedUseOptions}
+        intendedUseGroupedOptions={intendedUseGroupedOptions}
         isBasicSearch={isBasicSearch}
         setIsBasicSearch={setIsBasicSearch}
         isFetchingAttributes={isFetchingAttributes}
+        isFetchingIntendedUses={isFetchingIntendedUses}
         isSearchInitialized={isSearchInitialized}
         lessorOptions={lessorOptions}
         municipalityOptions={municipalityOptions}

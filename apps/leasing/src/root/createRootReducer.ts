@@ -23,6 +23,7 @@ import infillDevelopmentAttachmentReducer from "@/infillDevelopmentAttachment/re
 import invoiceReducer from "@/invoices/reducer";
 import invoiceNoteReducer from "@/invoiceNote/reducer";
 import invoiceSetReducer from "@/invoiceSets/reducer";
+import intendedUseReducer from "@/intendedUse/reducer";
 import leaseReducer from "@/leases/reducer";
 import oldDwellingsInHousingCompaniesPriceIndexReducer from "@/oldDwellingsInHousingCompaniesPriceIndex/reducer";
 import plotSearchReducer from "@/plotSearch/reducer";
@@ -71,6 +72,7 @@ export default (): Reducer<RootState> =>
     invoice: invoiceReducer,
     invoiceNote: invoiceNoteReducer,
     invoiceSet: invoiceSetReducer,
+    intendedUse: intendedUseReducer,
     lease: leaseReducer,
     plotSearch: plotSearchReducer,
     plotApplications: plotApplicationsReducer,
