@@ -15,6 +15,7 @@ import type {
   Attributes,
   Methods,
   SelectListOption,
+  SelectOptionHds,
 } from "@/types";
 import type { UsersPermissions } from "@/usersPermissions/types";
 import { isBoolean } from "lodash";
@@ -924,3 +925,8 @@ export const debounce = (func: (...args: any[]) => void, wait: number) => {
     timeout = setTimeout(() => func(...args), wait);
   };
 };
+
+export const toHdsOption = (option: SelectListOption): SelectOptionHds => ({
+  label: option.label,
+  value: String(option.value),
+});

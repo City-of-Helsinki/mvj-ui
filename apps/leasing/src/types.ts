@@ -8,6 +8,14 @@ export type SelectListOption = {
   value: string | number;
 };
 
+/**
+ * HDS Select option accepted type, does not accept `number`values like SelectListOption does.
+ */
+export type SelectOptionHds = {
+  label: string;
+  value: string;
+};
+
 export type Action<Type extends string, Payload> = {
   type: Type;
   payload: Payload;
