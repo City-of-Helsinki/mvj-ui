@@ -23,7 +23,7 @@
     "test:watch": "vitest watch"
   },
   "dependencies": {
-    "@sentry/react": "10.56.0",
+    "@sentry/react": "10.63.0",
     "final-form": "5.0.0",
     "final-form-arrays": "4.0.0",
     "hds-design-tokens": "5.2.0",
