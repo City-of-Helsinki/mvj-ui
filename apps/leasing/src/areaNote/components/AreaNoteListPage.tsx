@@ -6,8 +6,7 @@ import {
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
 import { initialize } from "redux-form";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import AreaNotesLayer from "./AreaNotesLayer";

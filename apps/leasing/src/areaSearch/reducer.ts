@@ -17,7 +17,7 @@ import type {
   SetAreaSearchAttachmentsAction,
 } from "@/areaSearch/types";
 import type { ApiResponse } from "types";
-import merge from "lodash/merge";
+import { merge } from "lodash-es";
 const attributesReducer: Reducer<Attributes> = handleActions(
   {
     ["mvj/areaSearch/RECEIVE_ATTRIBUTES"]: (

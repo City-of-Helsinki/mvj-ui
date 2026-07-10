@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
+import { get, isEmpty } from "lodash-es";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
 import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";

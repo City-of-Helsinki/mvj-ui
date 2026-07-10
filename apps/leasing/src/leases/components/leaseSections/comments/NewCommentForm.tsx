@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { formValueSelector, reduxForm } from "redux-form";
-import flowRight from "lodash/flowRight";
+import { flowRight } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";

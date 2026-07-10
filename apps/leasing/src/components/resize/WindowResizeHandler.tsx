@@ -1,5 +1,5 @@
 import React, { PureComponent, useEffect } from "react";
-import throttle from "lodash/throttle";
+import { throttle } from "lodash-es";
 import { isLargeScreen } from "@/util/helpers";
 export function withWindowResize(WrappedComponent: any) {
   type Props = Record<string, any>;

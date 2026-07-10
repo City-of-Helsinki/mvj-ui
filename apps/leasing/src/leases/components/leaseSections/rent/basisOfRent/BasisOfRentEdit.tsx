@@ -8,7 +8,7 @@ import {
   getFormValues,
 } from "redux-form";
 import { Row, Column } from "@/components/grid/Grid";
-import set from "lodash/set";
+import { set } from "lodash-es";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";

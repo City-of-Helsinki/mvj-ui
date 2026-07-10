@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import { orderBy } from "lodash";
+import { orderBy } from "lodash-es";
 import {
   getApplicationRelatedForm,
   getApplicationRelatedPlotSearch,

@@ -4,9 +4,7 @@ import {
   withRouterLegacy,
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
-import { groupBy } from "lodash/collection";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, groupBy, isEmpty } from "lodash-es";
 import {
   initialize,
   isDirty,

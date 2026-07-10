@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
+import { flowRight } from "lodash-es";
 import { fetchAttributes as fetchLeaseholdTransferAttributes } from "@/leaseholdTransfer/actions";
 import {
   getAttributes as getLeaseholdTransferAttributes,

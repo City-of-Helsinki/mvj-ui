@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
@@ -559,14 +559,18 @@ const ContactForm: React.FC<Props> = ({
                     ContactFieldPaths.IS_LESSOR,
                   )}
                 >
-              <>
-                <FormTextTitle
-                  uiDataKey={getUiDataContactKey(ContactFieldPaths.IS_LESSOR)}
-                >
-                  {ContactFieldTitles.IS_LESSOR}
-                </FormTextTitle>
-                <FormText>{initialValues.is_lessor ? "Kyllä" : "Ei"}</FormText>
-              </>
+                  <>
+                    <FormTextTitle
+                      uiDataKey={getUiDataContactKey(
+                        ContactFieldPaths.IS_LESSOR,
+                      )}
+                    >
+                      {ContactFieldTitles.IS_LESSOR}
+                    </FormTextTitle>
+                    <FormText>
+                      {initialValues.is_lessor ? "Kyllä" : "Ei"}
+                    </FormText>
+                  </>
                 </Authorization>
               </Column>
               <Column small={12} medium={6} large={4}>

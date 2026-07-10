@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { createForm } from "final-form";
 import type { FormApi } from "final-form";
 import arrayMutators from "final-form-arrays";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import EditInvoiceForm from "./forms/EditInvoiceForm";

@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import debounce from "lodash/debounce";
+import { debounce } from "lodash-es";
 import Button from "@/components/button/Button";
 import CheckboxInput from "@/components/inputs/CheckboxInput";
 import DualListBox from "react-dual-listbox";

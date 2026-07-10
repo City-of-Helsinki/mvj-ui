@@ -4,8 +4,7 @@ import {
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
 import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ErrorIcon from "@/components/icons/ErrorIcon";
 import GreenBox from "@/components/content/GreenBox";

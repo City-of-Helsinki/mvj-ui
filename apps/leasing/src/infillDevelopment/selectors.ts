@@ -1,4 +1,4 @@
-import get from "lodash/get";
+import { get } from "lodash-es";
 import type { Attributes, Methods, Selector } from "types";
 import type { RootState } from "@/root/types";
 import type { InfillDevelopment, InfillDevelopmentList } from "./types";

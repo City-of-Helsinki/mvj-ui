@@ -5,8 +5,7 @@ import {
 } from "@/root/withRouterLegacy";
 import { connect } from "react-redux";
 import { change, destroy, getFormValues, isDirty } from "redux-form";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ConfirmationModal from "@/components/modal/ConfirmationModal";

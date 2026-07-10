@@ -1,6 +1,5 @@
 import isPast from "date-fns/isPast";
-import forEach from "lodash/forEach";
-import get from "lodash/get";
+import { forEach, get } from "lodash-es";
 import { CreditInvoiceOptions } from "@/leases/enums";
 import { InvoiceState, InvoiceType, ReceivableTypes } from "./enums";
 import {

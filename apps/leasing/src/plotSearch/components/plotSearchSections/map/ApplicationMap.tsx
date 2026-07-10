@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import { fetchAreaNoteList } from "@/areaNote/actions";

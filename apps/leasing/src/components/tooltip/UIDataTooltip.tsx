@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddIcon from "@/components/icons/AddIcon";
 import Button from "@/components/button/Button";

@@ -17,7 +17,7 @@ import {
   personalIdentifierValidator,
   validateApplicationForm,
 } from "./formValidation";
-import { get } from "lodash/object";
+import { get } from "lodash-es";
 const baseState: ApplicationState = {
   attributes: null,
   methods: null,

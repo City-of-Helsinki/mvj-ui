@@ -1,8 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
+import { get, isEmpty } from "lodash-es";
 import FormText from "@/components/form/FormText";
 import { convertStrToDecimalNumber, formatNumber } from "@/util/helpers";
 import { getPenaltyInterestByInvoice } from "@/penaltyInterest/selectors";

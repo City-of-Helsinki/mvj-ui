@@ -4,8 +4,7 @@ import {
   withRouterLegacy,
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import { DEFAULT_ZOOM, MAP_COLORS } from "@/util/constants";
 import { getApiResponseResults, getUrlParams } from "@/util/helpers";

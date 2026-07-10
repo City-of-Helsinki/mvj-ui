@@ -1,5 +1,5 @@
 import React from "react";
-import { groupBy } from "lodash/collection";
+import { groupBy } from "lodash-es";
 import SortableTable from "@/components/table/SortableTable";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FieldTypes } from "@/enums";

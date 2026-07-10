@@ -6,8 +6,7 @@ import {
 } from "@/root/withRouterLegacy";
 import { initialize } from "redux-form";
 import { Row, Column } from "@/components/grid/Grid";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import Loader from "@/components/loader/Loader";

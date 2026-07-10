@@ -5,7 +5,7 @@ import {
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
 import { initialize } from "redux-form";
-import flowRight from "lodash/flowRight";
+import { flowRight } from "lodash-es";
 import { Row, Column } from "@/components/grid/Grid";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";

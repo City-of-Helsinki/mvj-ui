@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useCallback } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import flowRight from "lodash/flowRight";
-import isEqual from "lodash/isEqual";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty, isEqual } from "lodash-es";
 import { Form, Field, FormSpy } from "react-final-form";
 import FormField from "@/components/form/final-form/FormField";
 import SearchContainer from "@/components/search/SearchContainer";

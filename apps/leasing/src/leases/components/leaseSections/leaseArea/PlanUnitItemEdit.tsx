@@ -4,7 +4,7 @@ import { Row, Column } from "@/components/grid/Grid";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { useField } from "react-final-form";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";

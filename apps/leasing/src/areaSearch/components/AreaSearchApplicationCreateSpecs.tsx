@@ -8,8 +8,7 @@ import {
 } from "redux-form";
 import { connect } from "react-redux";
 import { Column, Row } from "@/components/grid/Grid";
-import get from "lodash/get";
-import { flowRight } from "lodash/util";
+import { flowRight, get } from "lodash-es";
 import Title from "@/components/content/Title";
 import { FieldTypes, FormNames } from "@/enums";
 import {

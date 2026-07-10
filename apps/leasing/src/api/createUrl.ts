@@ -1,4 +1,4 @@
-import isArray from "lodash/isArray";
+import { isArray } from "lodash-es";
 export const stringifyQuery = (query: Record<string, any>): string =>
   Object.keys(query)
     .map((key) => [key, query[key]].map((v) => encodeURIComponent(v)).join("="))

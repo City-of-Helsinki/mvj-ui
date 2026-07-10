@@ -1,6 +1,5 @@
 import React, { Fragment, PureComponent } from "react";
-import flowRight from "lodash/flowRight";
-import debounce from "lodash/debounce";
+import { debounce, flowRight } from "lodash-es";
 import { connect } from "react-redux";
 import {
   withRouterLegacy,

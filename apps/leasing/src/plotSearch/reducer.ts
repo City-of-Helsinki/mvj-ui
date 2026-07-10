@@ -1,4 +1,4 @@
-import merge from "lodash/merge";
+import { merge } from "lodash-es";
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
 import { FormNames } from "@/enums";

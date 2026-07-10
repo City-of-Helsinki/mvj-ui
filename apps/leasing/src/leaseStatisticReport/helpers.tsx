@@ -1,5 +1,5 @@
 import React from "react";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import format from "date-fns/format";
 import { formatDate, formatNumber } from "@/util/helpers";
 import { LeaseStatisticReportFormatOptions } from "@/leaseStatisticReport/enums";

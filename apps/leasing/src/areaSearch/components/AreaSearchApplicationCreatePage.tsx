@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { flowRight } from "lodash/util";
+import { flowRight } from "lodash-es";
 import { destroy, getFormValues, initialize, isDirty } from "redux-form";
 import {
   withRouterLegacy,

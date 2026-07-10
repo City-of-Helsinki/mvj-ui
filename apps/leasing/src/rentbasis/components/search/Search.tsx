@@ -6,10 +6,7 @@ import {
 import { connect } from "react-redux";
 import { getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "@/components/grid/Grid";
-import flowRight from "lodash/flowRight";
-import debounce from "lodash/debounce";
-import isEmpty from "lodash/isEmpty";
-import isEqual from "lodash/isEqual";
+import { debounce, isEmpty, isEqual, flowRight } from "lodash-es";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import SearchChangeTypeLink from "@/components/search/SearchChangeTypeLink";
 import SearchClearLink from "@/components/search/SearchClearLink";

@@ -1,7 +1,4 @@
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
-import { kebabCase } from "lodash/string";
-import { cloneDeep } from "lodash/lang";
+import { cloneDeep, get, isEmpty, kebabCase } from "lodash-es";
 import { formValueSelector } from "redux-form";
 import { getContentUser } from "@/users/helpers";
 import { removeSessionStorageItem } from "@/util/storage";

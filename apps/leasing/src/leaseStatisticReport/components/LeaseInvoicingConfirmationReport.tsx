@@ -1,8 +1,7 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import { TableSortOrder } from "@/enums";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import Loader from "@/components/loader/Loader";

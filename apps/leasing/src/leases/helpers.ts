@@ -1,9 +1,5 @@
-import forEach from "lodash/forEach";
-import get from "lodash/get";
+import { forEach, get, isArray, isEmpty, isEqual } from "lodash-es";
 import isPast from "date-fns/isPast";
-import isArray from "lodash/isArray";
-import isEmpty from "lodash/isEmpty";
-import isEqual from "lodash/isEqual";
 import {
   getSplittedDateRangesWithItems,
   sortByStartAndEndDateDesc,

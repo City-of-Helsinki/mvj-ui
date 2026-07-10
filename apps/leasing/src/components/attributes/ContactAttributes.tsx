@@ -1,6 +1,6 @@
 import React, { PureComponent, useEffect } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-import flowRight from "lodash/flowRight";
+import { flowRight } from "lodash-es";
 import { fetchAttributes as fetchContactAttributes } from "@/contacts/actions";
 import {
   getAttributes as getContactAttributes,

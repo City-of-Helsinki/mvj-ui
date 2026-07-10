@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams, useLocation } from "react-router";
 import { Form, FormSpy } from "react-final-form";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ConfirmationModal from "@/components/modal/ConfirmationModal";

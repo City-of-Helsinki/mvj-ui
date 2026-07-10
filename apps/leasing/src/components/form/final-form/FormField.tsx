@@ -2,7 +2,7 @@ import React, { createElement, useMemo } from "react";
 import { Field } from "react-final-form";
 import type { FieldRenderProps } from "react-final-form";
 import classNames from "classnames";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import ErrorBlock from "@/components/form/ErrorBlock";
 import ExternalLink from "@/components/links/ExternalLink";
 import FieldTypeAddress from "@/components/form/final-form/FieldTypeAddress";

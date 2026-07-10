@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import isArray from "lodash/isArray";
+import { isArray } from "lodash-es";
 import type { Reducer } from "@/types";
 import type {
   RentForPeriod,

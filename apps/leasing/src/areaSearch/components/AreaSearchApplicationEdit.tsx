@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
-import orderBy from "lodash/orderBy";
-import get from "lodash/get";
+import { flowRight, get, orderBy } from "lodash-es";
 import { Column, Row } from "@/components/grid/Grid";
 import { reduxForm, change, getFormValues } from "redux-form";
 import { getAttributes, getCurrentAreaSearch } from "@/areaSearch/selectors";
@@ -48,7 +46,11 @@ import {
   getIsPerformingFileOperation,
 } from "@/application/selectors";
 import { APPLICANT_SECTION_IDENTIFIER } from "@/application/constants";
-import type { Form, FormSection, SavedApplicationFormSection } from "@/application/types";
+import type {
+  Form,
+  FormSection,
+  SavedApplicationFormSection,
+} from "@/application/types";
 import type {
   AreaSearch,
   UploadedAreaSearchAttachmentMeta,
@@ -278,7 +280,11 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
       sectionIdentifier: FormSection["identifier"],
       answerSection: SavedApplicationFormSection,
     ) => {
-      const contact = getContactFromAnswerFields(contactType, sectionIdentifier, answerSection);
+      const contact = getContactFromAnswerFields(
+        contactType,
+        sectionIdentifier,
+        answerSection,
+      );
       initializeContactForm(contact);
       receiveContactModalSettings({
         field: null,
@@ -305,7 +311,10 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
               userActiveServiceUnit,
             } = this.props;
 
-            const handleOnSaveContact = async (values: Partial<Contact>, isValid: boolean) => {
+            const handleOnSaveContact = async (
+              values: Partial<Contact>,
+              isValid: boolean,
+            ) => {
               const { business_id, national_identification_number, type } =
                 values;
               receiveIsSaveClicked(true);

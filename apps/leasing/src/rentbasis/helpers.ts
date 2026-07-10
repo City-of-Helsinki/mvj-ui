@@ -1,6 +1,5 @@
-import get from "lodash/get";
+import { get, isEmpty } from "lodash-es";
 import { isDirty } from "redux-form";
-import isEmpty from "lodash/isEmpty";
 import { FormNames, TableSortOrder } from "@/enums";
 import { convertStrToDecimalNumber } from "@/util/helpers";
 import { getIsEditMode } from "@/rentbasis/selectors";

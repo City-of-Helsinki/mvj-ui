@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import debounce from "lodash/debounce";
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
+import { debounce, get, isEmpty } from "lodash-es";
 import classNames from "classnames";
 import SortableTableHeader from "./SortableTableHeader";
 import SortableTableGroup from "./SortableTableGroup";

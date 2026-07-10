@@ -2,11 +2,7 @@ import React from "react";
 import formatDateStr from "date-fns/format";
 import isFuture from "date-fns/isFuture";
 import isPast from "date-fns/isPast";
-import forEach from "lodash/forEach";
-import get from "lodash/get";
-import isArray from "lodash/isArray";
-import isEmpty from "lodash/isEmpty";
-import isNumber from "lodash/isNumber";
+import { forEach, get, isArray, isBoolean, isEmpty, isNumber } from "lodash-es";
 import { enqueueNotification } from "@/components/notification/notificationService";
 import { PAIKKATIETOPALVELU_URL } from "@/util/constants";
 import { Breakpoints } from "@/foundation/enums";
@@ -17,7 +13,6 @@ import type {
   SelectListOption,
 } from "@/types";
 import type { UsersPermissions } from "@/usersPermissions/types";
-import { isBoolean } from "lodash";
 
 /**
  * Compose page title

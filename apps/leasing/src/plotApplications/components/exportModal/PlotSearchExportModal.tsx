@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { flowRight } from "lodash/util";
+import { flowRight } from "lodash-es";
 import { change, formValueSelector, reduxForm } from "redux-form";
 import { connect } from "react-redux";
 import Modal from "@/components/modal/Modal";

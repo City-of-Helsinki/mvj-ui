@@ -1,6 +1,6 @@
 import React from "react";
 import { Column } from "@/components/grid/Grid";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import BasicInfo from "./BasicInfo";
 import Collapse from "@/components/collapse/Collapse";

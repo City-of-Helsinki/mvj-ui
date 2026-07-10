@@ -1,4 +1,4 @@
-import get from "lodash/get";
+import { get } from "lodash-es";
 import { isDirty } from "redux-form";
 import { FormNames, TableSortOrder } from "@/enums";
 import {

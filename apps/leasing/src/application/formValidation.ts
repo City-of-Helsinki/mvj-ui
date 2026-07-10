@@ -1,5 +1,5 @@
 import { parseISO } from "date-fns";
-import { get, set } from "lodash/object";
+import { get, set } from "lodash-es";
 import { CONTROL_SHARE_FIELD_IDENTIFIER } from "@/application/constants";
 const PERSONAL_IDENTIFIER_CHECK_CHAR_LIST = "0123456789ABCDEFHJKLMNPRSTUVWXY";
 // from the rightmost digit to the leftmost

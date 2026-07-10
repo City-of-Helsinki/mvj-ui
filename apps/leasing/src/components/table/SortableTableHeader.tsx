@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import kebabCase from "lodash/kebabCase";
+import { kebabCase } from "lodash-es";
 import {
   SortIconBoth,
   SortIconDesc,

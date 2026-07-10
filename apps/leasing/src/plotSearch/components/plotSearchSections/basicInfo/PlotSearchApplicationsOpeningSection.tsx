@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { FieldTypes, FormNames } from "@/enums";
 import { formValueSelector, reduxForm } from "redux-form";
 import { connect } from "react-redux";
-import { flowRight } from "lodash/util";
+import { flowRight, get } from "lodash-es";
 import type { RootState } from "@/root/types";
 import { Column, Row } from "@/components/grid/Grid";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
@@ -10,7 +10,6 @@ import {
   PlotApplicationOpeningRecordLabels,
   PlotApplicationOpeningRecordPaths,
 } from "@/plotApplications/enums";
-import { get } from "lodash/object";
 import { getAttributes } from "@/application/selectors";
 import type { Attributes } from "types";
 import Authorization from "@/components/authorization/Authorization";

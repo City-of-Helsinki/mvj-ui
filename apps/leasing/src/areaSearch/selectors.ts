@@ -1,4 +1,4 @@
-import get from "lodash/get";
+import { get } from "lodash-es";
 import type { ApiResponse, Attributes, Methods, Selector } from "types";
 import type { RootState } from "@/root/types";
 export const getAttributes: Selector<Attributes, void> = (

@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { getFormValues, reduxForm } from "redux-form";
 import { Column, Row } from "@/components/grid/Grid";
-import { get } from "lodash/object";
-import { flowRight } from "lodash/util";
+import { get, flowRight } from "lodash-es";
 import { connect } from "react-redux";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import type { RootState } from "@/root/types";

@@ -1,8 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, get, isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import FormText from "@/components/form/FormText";
 import GreenBox from "@/components/content/GreenBox";

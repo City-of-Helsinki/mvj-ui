@@ -1,4 +1,4 @@
-import get from "lodash/get";
+import { get } from "lodash-es";
 
 const BUSINESS_ID_REGEX = /^\d{7}-\d$/;
 

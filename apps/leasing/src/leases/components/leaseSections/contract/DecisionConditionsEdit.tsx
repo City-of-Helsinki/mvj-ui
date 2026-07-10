@@ -1,8 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
+import { get, isEmpty } from "lodash-es";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";

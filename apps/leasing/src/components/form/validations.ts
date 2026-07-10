@@ -1,5 +1,5 @@
 import isBefore from "date-fns/isBefore";
-import isArray from "lodash/isArray";
+import { isArray } from "lodash-es";
 import { isValidDate } from "@/util/date";
 import { isEmptyValue } from "@/util/helpers";
 
