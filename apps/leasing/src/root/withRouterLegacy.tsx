@@ -1,6 +1,12 @@
 import React from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import type { Location, Params, NavigateFunction } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  type Location,
+  type Params,
+  type NavigateFunction,
+} from "react-router";
 
 export type WithRouterProps = {
   location: Location;

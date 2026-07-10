@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form } from "react-final-form";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router";
 import { useContactAttributes } from "@/components/attributes/ContactAttributes";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
