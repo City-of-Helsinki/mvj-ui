@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { getFormValues, reduxForm } from "redux-form";
 import { Column, Row } from "@/components/grid/Grid";
-import get from "lodash/get";
-import flowRight from "lodash/flowRight";
+import { flowRight, get } from "lodash-es";
 import { connect } from "react-redux";
 import { FieldTypes, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";

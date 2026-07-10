@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect } from "react";
 import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import InfoIcon from "@/components/icons/InfoIcon";
 import GreenBox from "@/components/content/GreenBox";
 import Loader from "@/components/loader/Loader";

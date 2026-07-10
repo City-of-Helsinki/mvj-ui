@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import { Row, Column } from "@/components/grid/Grid";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";
 import Divider from "@/components/content/Divider";

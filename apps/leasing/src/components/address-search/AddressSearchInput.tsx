@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import classNames from "classnames";
-import capitalize from "lodash/capitalize";
-import debounce from "lodash/debounce";
+import { capitalize, debounce } from "lodash-es";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import { stringifyQuery } from "@/api/createUrl";

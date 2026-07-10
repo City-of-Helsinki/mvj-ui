@@ -1,7 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import IndexTable from "./IndexTable";
 import Loader from "@/components/loader/Loader";

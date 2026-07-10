@@ -19,7 +19,7 @@ import { UsersPermissions } from "@/usersPermissions/enums";
 import { hasPermissions, isFieldAllowedToEdit } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type InspectionsProps = {

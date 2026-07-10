@@ -1,5 +1,5 @@
 import React from "react";
-import flowRight from "lodash/flowRight";
+import { flowRight } from "lodash-es";
 import { connect } from "react-redux";
 import { getFormValues, reduxForm } from "redux-form";
 import { Column, Row } from "@/components/grid/Grid";

@@ -1,7 +1,7 @@
 import React, { createElement, Fragment, PureComponent } from "react";
 import { Field } from "redux-form";
 import classNames from "classnames";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import ErrorBlock from "@/components/form/ErrorBlock";
 import ExternalLink from "@/components/links/ExternalLink";
 import FieldTypeAddress from "@/components/form/FieldTypeAddressLegacy";

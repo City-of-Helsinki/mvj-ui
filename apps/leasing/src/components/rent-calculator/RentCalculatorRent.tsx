@@ -1,6 +1,6 @@
 import React from "react";
 import isAfter from "date-fns/isAfter";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import RentCalculatorExplanation from "./RentCalculatorExplanation";
 type Props = {
   rent: Record<string, any>;

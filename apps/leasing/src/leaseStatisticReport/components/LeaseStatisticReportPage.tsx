@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";
 import Divider from "@/components/content/Divider";

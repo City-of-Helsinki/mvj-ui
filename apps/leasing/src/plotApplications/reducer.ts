@@ -1,8 +1,7 @@
-import merge from "lodash/merge";
 import type { Action } from "redux";
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import { sortBy } from "lodash/collection";
+import { merge, sortBy } from "lodash-es";
 import { FormNames } from "@/enums";
 import type { Attributes, Reducer } from "types";
 import type {

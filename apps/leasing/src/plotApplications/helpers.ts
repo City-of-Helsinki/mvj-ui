@@ -1,5 +1,4 @@
-import get from "lodash/get";
-import _ from "lodash";
+import { get, transform, escapeRegExp } from "lodash-es";
 import { formValueSelector } from "redux-form";
 import { getApiResponseResults, getFieldAttributes } from "@/util/helpers";
 import createUrl from "@/api/createUrl";
@@ -188,11 +187,11 @@ export const reshapeSavedApplicationObject = (
     if (section.add_new_allowed) {
       parentResultNode.sections[section.identifier] = [];
 
-      const sectionAnswers = _.transform(
+      const sectionAnswers = transform(
         answersNode,
         (acc, item, key: string) => {
           const match = new RegExp(
-            `^${_.escapeRegExp(section.identifier)}\\[(\\d+)]$`,
+            `^${escapeRegExp(section.identifier)}\\[(\\d+)]$`,
           ).exec(key);
 
           if (!match) {

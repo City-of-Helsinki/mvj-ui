@@ -1,4 +1,4 @@
-import isArray from "lodash/isArray";
+import { isArray } from "lodash-es";
 import * as L from "leaflet";
 import "leaflet-draw";
 import type { LatLngBounds } from "leaflet";

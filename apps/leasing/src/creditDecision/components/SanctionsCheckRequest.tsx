@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import { IconAlertCircle, LoadingSpinner, StatusLabel } from "hds-react";
 
 import { SanctionsCheckText, SanctionsCheckType } from "@/creditDecision/enums";

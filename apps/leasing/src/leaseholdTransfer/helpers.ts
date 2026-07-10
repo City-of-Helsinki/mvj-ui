@@ -1,4 +1,4 @@
-import get from "lodash/get";
+import { get } from "lodash-es";
 import { LeaseholdTransferPartyTypes } from "@/leaseholdTransfer/enums";
 import { TableSortOrder } from "@/enums";
 import { getApiResponseResults } from "@/util/helpers";

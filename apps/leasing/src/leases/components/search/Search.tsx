@@ -8,7 +8,7 @@ import React, {
 import { useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { Field, useForm, useFormState } from "react-final-form";
-import isEqual from "lodash/isEqual";
+import { isEqual } from "lodash-es";
 import {
   Checkbox,
   DateInput,

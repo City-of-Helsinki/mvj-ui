@@ -1,9 +1,7 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import isEmpty from "lodash/isEmpty";
-import flowRight from "lodash/flowRight";
-import get from "lodash/get";
+import { flowRight, get, isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import Collapse from "@/components/collapse/Collapse";
 import ExternalLink from "@/components/links/ExternalLink";

@@ -1,5 +1,4 @@
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
+import { get, isEmpty } from "lodash-es";
 import type { RootState } from "@/root/types";
 import type { Attributes, Methods, Selector } from "types";
 import type { LeaseFormFlags, LeaseId, Lease, LeaseList } from "./types";

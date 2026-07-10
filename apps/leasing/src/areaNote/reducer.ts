@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import findIndex from "lodash/findIndex";
+import { findIndex } from "lodash-es";
 import type { Attributes, Methods, Reducer } from "types";
 import type {
   AreaNoteList,

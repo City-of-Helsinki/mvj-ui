@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { orderBy } from "lodash";
+import { orderBy } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { FormNames, ViewModes } from "@/enums";

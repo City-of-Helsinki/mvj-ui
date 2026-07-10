@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { Column, Row } from "@/components/grid/Grid";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import { change, FieldArray, formValueSelector } from "redux-form";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import InfoIcon from "@/components/icons/InfoIcon";

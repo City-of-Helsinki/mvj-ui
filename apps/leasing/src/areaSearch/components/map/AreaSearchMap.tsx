@@ -5,7 +5,7 @@ import { EditControl } from "react-leaflet-draw";
 // https://github.com/Leaflet/Leaflet.draw/issues/1026#issuecomment-986702652
 // @ts-ignore
 window.type = true;
-import throttle from "lodash/throttle";
+import { throttle } from "lodash-es";
 import classNames from "classnames";
 import MapContainer from "@/areaNote/components/MapContainer";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/util/constants";

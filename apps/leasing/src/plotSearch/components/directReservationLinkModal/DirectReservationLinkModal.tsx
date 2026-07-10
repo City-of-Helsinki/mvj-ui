@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { flowRight } from "lodash/util";
+import { flowRight } from "lodash-es";
 import { connect } from "react-redux";
 import {
   FieldArray,

@@ -1,8 +1,7 @@
 import React, { Fragment, PureComponent } from "react";
 import { Column, Row } from "@/components/grid/Grid";
-import flowRight from "lodash/flowRight";
+import { flowRight, get } from "lodash-es";
 import { connect } from "react-redux";
-import get from "lodash/get";
 import { FieldArray, getFormValues, reduxForm } from "redux-form";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import {

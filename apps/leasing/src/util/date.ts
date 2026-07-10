@@ -1,4 +1,4 @@
-import get from "lodash/get";
+import { get } from "lodash-es";
 import addDays from "date-fns/addDays";
 import format from "date-fns/format";
 import isAfter from "date-fns/isAfter";

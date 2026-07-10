@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import { receiveUsers, notFound } from "./actions";
 import { fetchUsers } from "./requests";
 import { receiveError } from "@/api/actions";

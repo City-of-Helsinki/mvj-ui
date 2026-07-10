@@ -6,8 +6,7 @@ import {
   withRouterLegacy,
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
-import flowRight from "lodash/flowRight";
-import isArray from "lodash/isArray";
+import { flowRight, isArray } from "lodash-es";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";

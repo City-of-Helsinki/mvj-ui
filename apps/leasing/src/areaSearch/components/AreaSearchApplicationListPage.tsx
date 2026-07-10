@@ -1,6 +1,5 @@
 import React, { Fragment, PureComponent } from "react";
-import flowRight from "lodash/flowRight";
-import isArray from "lodash/isArray";
+import { debounce, flowRight, isArray } from "lodash-es";
 import { connect } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
 import { formValueSelector, initialize, reduxForm } from "redux-form";
@@ -8,7 +7,6 @@ import {
   withRouterLegacy,
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
-import debounce from "lodash/debounce";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import {
   FieldTypes,

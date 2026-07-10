@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouterLegacy, WithRouterProps } from "@/root/withRouterLegacy";
 import { getFormValues, isDirty } from "redux-form";
-import flowRight from "lodash/flowRight";
+import { flowRight } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";
 import ControlButtonBar from "@/components/controlButtons/ControlButtonBar";

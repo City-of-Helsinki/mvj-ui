@@ -1,8 +1,7 @@
 import React, { PureComponent, Fragment } from "react";
 import { Column, Row } from "@/components/grid/Grid";
-import flowRight from "lodash/flowRight";
+import { flowRight, get } from "lodash-es";
 import { connect } from "react-redux";
-import get from "lodash/get";
 import {
   formatDate,
   getFieldOptions,

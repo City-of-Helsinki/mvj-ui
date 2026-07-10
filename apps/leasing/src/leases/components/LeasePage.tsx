@@ -11,9 +11,7 @@ import {
 import { createForm } from "final-form";
 import type { FormApi } from "final-form";
 import arrayMutators from "final-form-arrays";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
-import isEqual from "lodash/isEqual";
+import { flowRight, isEmpty, isEqual } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import CommentPanel from "./leaseSections/comments/CommentPanel";

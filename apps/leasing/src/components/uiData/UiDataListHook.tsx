@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import {
   fetchUiDataList,
   fetchAttributes as fetchUiDataAttributes,

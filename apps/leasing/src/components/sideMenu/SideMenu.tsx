@@ -5,8 +5,7 @@ import {
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
 import classnames from "classnames";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";

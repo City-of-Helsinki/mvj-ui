@@ -1,7 +1,6 @@
 import React, { PureComponent, KeyboardEventHandler } from "react";
 import classNames from "classnames";
-import get from "lodash/get";
-import isArray from "lodash/isArray";
+import { get, isArray } from "lodash-es";
 import AccordionIcon from "@/components/icons/AccordionIcon";
 import MultiItemCollapse from "./MultiItemCollapse";
 import type { Column } from "./SortableTable";

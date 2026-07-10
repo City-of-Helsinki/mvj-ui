@@ -6,10 +6,7 @@ import {
 import { connect } from "react-redux";
 import { formValueSelector, getFormValues, reduxForm } from "redux-form";
 import { Row, Column } from "@/components/grid/Grid";
-import debounce from "lodash/debounce";
-import flowRight from "lodash/flowRight";
-import isEqual from "lodash/isEqual";
-import isEmpty from "lodash/isEmpty";
+import { debounce, flowRight, isEmpty, isEqual } from "lodash-es";
 import { getUrlParams, getFieldOptions } from "@/util/helpers";
 import {
   getAttributes as getPlotSearchAttributes,

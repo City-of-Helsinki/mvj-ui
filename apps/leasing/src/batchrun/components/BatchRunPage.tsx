@@ -4,8 +4,7 @@ import {
   withRouterLegacy,
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";
 import Divider from "@/components/content/Divider";

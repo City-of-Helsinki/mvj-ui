@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
-import flowRight from "lodash/flowRight";
+import { flowRight } from "lodash-es";
 import { fetchLeaseInvoicingConfirmationReportAttributes } from "@/leaseStatisticReport/actions";
 import {
   getReportData,

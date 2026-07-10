@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
+import { get, isEmpty } from "lodash-es";
 import Collapse from "@/components/collapse/Collapse";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import FormText from "@/components/form/FormText";

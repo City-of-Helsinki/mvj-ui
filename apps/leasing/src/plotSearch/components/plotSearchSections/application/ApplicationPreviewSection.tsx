@@ -1,8 +1,7 @@
 import React, { Fragment, PureComponent } from "react";
 import { Row, Column } from "@/components/grid/Grid";
 import { reduxForm } from "redux-form";
-import flowRight from "lodash/flowRight";
-import get from "lodash/get";
+import { flowRight, get } from "lodash-es";
 import classNames from "classnames";
 import { connect } from "react-redux";
 import { FormNames } from "@/enums";

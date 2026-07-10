@@ -1,5 +1,4 @@
-import isArray from "lodash/isArray";
-import get from "lodash/get";
+import { get, isArray } from "lodash-es";
 import { formValueSelector, getFormValues } from "redux-form";
 import { FormNames, TableSortOrder } from "@/enums";
 import { APPLICANT_MAIN_IDENTIFIERS } from "@/application/constants";
@@ -285,7 +284,7 @@ export const getContactFromAnswerFields = (
       case name: {
         const business_name = get(
           answerFields,
-          'yrityksen-nimi',
+          "yrityksen-nimi",
           EMPTY_DEFAULT_FIELD,
         )?.value;
         if (business_name) {

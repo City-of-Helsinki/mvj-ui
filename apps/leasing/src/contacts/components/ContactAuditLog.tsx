@@ -1,6 +1,6 @@
 import React, { Fragment, PureComponent } from "react";
 import { connect } from "react-redux";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import AuditLogTable from "@/components/auditLog/AuditLogTable";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";

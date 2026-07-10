@@ -4,9 +4,7 @@ import {
   withRouterLegacy,
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
-import flowRight from "lodash/flowRight";
-import get from "lodash/get";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, get, isEmpty } from "lodash-es";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import InfillDevelopmentLeaseLayer from "./InfillDevelopmentLeaseLayer";

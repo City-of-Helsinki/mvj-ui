@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { Row, Column } from "@/components/grid/Grid";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
 import FormText from "@/components/form/FormText";

@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Column } from "@/components/grid/Grid";
 import isAfter from "date-fns/isAfter";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";

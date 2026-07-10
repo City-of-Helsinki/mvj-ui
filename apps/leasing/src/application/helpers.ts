@@ -1,5 +1,5 @@
 import { formValueSelector } from "redux-form";
-import _ from "lodash";
+import { each, pickBy } from "lodash-es";
 import { FormNames } from "@/enums";
 import {
   ApplicantInfoCheckExternalTypes,
@@ -460,7 +460,7 @@ export const prepareApplicationForSubmission = (
           case APPLICANT_SECTION_IDENTIFIER:
             section.forEach((applicant) => {
               const applicantType = applicant.metadata.applicantType;
-              applicant.sections = _.pickBy(
+              applicant.sections = pickBy(
                 structuredClone(applicant.sections),
                 (subsection, sectionIdentifier: string) =>
                   [
@@ -518,7 +518,7 @@ export const prepareApplicationForSubmission = (
     };
 
     const purgeUIFields = (node) => {
-      _.each(node, (section) => {
+      each(node, (section) => {
         if (section instanceof Array) {
           section.forEach((item) => {
             delete item.sectionRestrictions;

@@ -7,8 +7,7 @@ import {
   change,
 } from "redux-form";
 import { Row, Column } from "@/components/grid/Grid";
-import flowRight from "lodash/flowRight";
-import get from "lodash/get";
+import { flowRight, get, uniq } from "lodash-es";
 import classNames from "classnames";
 import { FieldArray } from "redux-form";
 import Button from "@/components/button/Button";
@@ -44,7 +43,6 @@ import {
   initializeSectionEditorCollapseStates,
   setSectionEditorCollapseState,
 } from "@/plotSearch/actions";
-import { uniq } from "lodash/array";
 import ErrorBlock from "@/components/form/ErrorBlock";
 type SectionFieldProps = {
   disabled: boolean;

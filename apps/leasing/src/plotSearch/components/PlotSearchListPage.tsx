@@ -1,5 +1,5 @@
 import React, { Fragment, PureComponent } from "react";
-import flowRight from "lodash/flowRight";
+import { flowRight } from "lodash-es";
 import { connect } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
 import { initialize } from "redux-form";

@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { formValueSelector, initialize, reduxForm } from "redux-form";
 import { connect } from "react-redux";
-import { flowRight } from "lodash/util";
+import { flowRight, padStart } from "lodash-es";
 import classNames from "classnames";
-import { padStart } from "lodash/string";
 import Modal from "@/components/modal/Modal";
 import ModalButtonWrapper from "@/components/modal/ModalButtonWrapper";
 import Button from "@/components/button/Button";

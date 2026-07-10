@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import ContactTemplate from "@/contacts/components/templates/ContactTemplate";
 import ExternalLink from "@/components/links/ExternalLink";

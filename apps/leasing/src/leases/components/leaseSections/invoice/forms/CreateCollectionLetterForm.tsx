@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import { Row, Column } from "@/components/grid/Grid";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import createUrl from "@/api/createUrl";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";

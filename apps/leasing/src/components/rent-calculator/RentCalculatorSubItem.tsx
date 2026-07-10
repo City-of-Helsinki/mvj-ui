@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Column } from "@/components/grid/Grid";
 import classNames from "classnames";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import FormText from "@/components/form/FormText";
 import { RentSubItemSubjectType } from "@/components/enums";
 import { formatDateRange, formatNumber } from "@/util/helpers";

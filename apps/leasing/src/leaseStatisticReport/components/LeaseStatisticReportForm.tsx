@@ -7,7 +7,7 @@ import {
   reduxForm,
 } from "redux-form";
 import { Row, Column } from "@/components/grid/Grid";
-import flowRight from "lodash/flowRight";
+import { flowRight } from "lodash-es";
 import Button from "@/components/button/Button";
 import { ButtonColors } from "@/components/enums";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";

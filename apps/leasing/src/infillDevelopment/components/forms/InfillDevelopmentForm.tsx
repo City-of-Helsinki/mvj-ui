@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FieldArray, reduxForm } from "redux-form";
 import { Row, Column } from "@/components/grid/Grid";
-import flowRight from "lodash/flowRight";
+import { flowRight } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import GreenBox from "@/components/content/GreenBox";

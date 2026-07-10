@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
 import { FieldArray } from "react-final-form-arrays";
-import isEmpty from "lodash/isEmpty";
+import { isEmpty } from "lodash-es";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import AddFileButton from "@/components/form/AddFileButton";

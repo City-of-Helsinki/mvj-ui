@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import Collapse from "@/components/collapse/Collapse";
 import ExternalLink from "@/components/links/ExternalLink";
 import FormText from "@/components/form/FormText";

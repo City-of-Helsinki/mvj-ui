@@ -4,8 +4,7 @@ import {
   withRouterLegacy,
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
-import flowRight from "lodash/flowRight";
-import isEmpty from "lodash/isEmpty";
+import { flowRight, isEmpty } from "lodash-es";
 import { initialize, isDirty, destroy, getFormValues } from "redux-form";
 import { FormNames } from "@/enums";
 import AuthorizationError from "@/components/authorization/AuthorizationError";

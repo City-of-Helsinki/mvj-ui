@@ -14,7 +14,7 @@ import {
   getIsCreateContactButtonVisible,
 } from "@/areaSearch/helpers";
 import type { HandleShowContactModal } from "@/areaSearch/types";
-import { isArray } from "lodash";
+import { isArray } from "lodash-es";
 
 type Props = {
   section: FormSection;

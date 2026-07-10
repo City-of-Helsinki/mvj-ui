@@ -33,7 +33,7 @@ import {
   isFieldAllowedToEdit,
   isFieldAllowedToRead,
 } from "@/util/helpers";
-import get from "lodash/get";
+import { get } from "lodash-es";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import {
   getAttributes,
