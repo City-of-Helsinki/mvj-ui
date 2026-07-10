@@ -198,7 +198,7 @@ class AreaSearchApplicationPage extends Component<Props, State> {
   };
   initializeInfoCheckForms = () => {
     const { initialize, applicantInfoChecks } = this.props;
-    let applicantInfoCheckFormNames = [];
+    const applicantInfoCheckFormNames = [];
     const applicantInfoChecksByApplicantId = groupBy(
       applicantInfoChecks,
       "entry",

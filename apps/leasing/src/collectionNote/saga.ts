@@ -26,12 +26,13 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields;
         const methods = bodyAsJson.methods;
         yield put(receiveAttributes(attributes));
         yield put(receiveMethods(methods));
         break;
+      }
 
       default:
         yield put(attributesNotFound());
@@ -118,7 +119,7 @@ function* deleteCollectionNoteSaga({
     } = yield call(deleteCollectionNote, payload.id);
 
     switch (statusCode) {
-      case 204:
+      case 204: {
         const currentNotes = yield select(
           getCollectionNotesByLease,
           payload.lease,
@@ -136,6 +137,7 @@ function* deleteCollectionNoteSaga({
           body: "Huomautus poistettu",
         });
         break;
+      }
 
       default:
         yield put(receiveError(new SubmissionError({ ...bodyAsJson })));

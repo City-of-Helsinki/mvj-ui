@@ -64,12 +64,13 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields;
         const methods = bodyAsJson.methods;
         yield put(receiveAttributes(attributes));
         yield put(receiveMethods(methods));
         break;
+      }
 
       default:
         yield put(attributesNotFound());
@@ -332,7 +333,7 @@ function* deleteLeaseSaga({ payload: leaseId }): Generator<any, any, any> {
     } = yield call(deleteLease, leaseId);
 
     switch (statusCode) {
-      case 204:
+      case 204: {
         const query = getUrlParams(location.search);
         // Remove page specific url parameters when moving to lease list page
         delete query.tab;
@@ -348,6 +349,7 @@ function* deleteLeaseSaga({ payload: leaseId }): Generator<any, any, any> {
           body: "Vuokraus poistettu",
         });
         break;
+      }
 
       case 400:
       case 401:
@@ -533,7 +535,7 @@ function* startInvoicingSaga({ payload: leaseId }): Generator<any, any, any> {
     } = yield call(startInvoicing, leaseId);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const currentLease = yield select(getCurrentLease);
         yield put(
           receiveSingleLease({
@@ -549,6 +551,7 @@ function* startInvoicingSaga({ payload: leaseId }): Generator<any, any, any> {
           body: "Laskutus käynnistetty",
         });
         break;
+      }
 
       default:
         yield put(notFound());
@@ -570,7 +573,7 @@ function* stopInvoicingSaga({ payload: leaseId }): Generator<any, any, any> {
     } = yield call(stopInvoicing, leaseId);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const currentLease = yield select(getCurrentLease);
         yield put(
           receiveSingleLease({
@@ -583,6 +586,7 @@ function* stopInvoicingSaga({ payload: leaseId }): Generator<any, any, any> {
           body: "Laskutus keskeytetty",
         });
         break;
+      }
 
       default:
         yield put(notFound());
@@ -606,7 +610,7 @@ function* setRentInfoCompleteSaga({
     } = yield call(setRentInfoComplete, leaseId);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const currentLease = yield select(getCurrentLease);
         yield put(
           receiveSingleLease({
@@ -619,6 +623,7 @@ function* setRentInfoCompleteSaga({
           body: "Vuokratiedot on merkattu olevan kunnossa",
         });
         break;
+      }
 
       default:
         yield put(notFound());
@@ -642,7 +647,7 @@ function* setRentInfoUncompleteSaga({
     } = yield call(setRentInfoUncomplete, leaseId);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const currentLease = yield select(getCurrentLease);
         yield put(
           receiveSingleLease({
@@ -655,6 +660,7 @@ function* setRentInfoUncompleteSaga({
           body: "Vuokratiedot on merkattu keskeneräisiksi",
         });
         break;
+      }
 
       default:
         yield put(notFound());

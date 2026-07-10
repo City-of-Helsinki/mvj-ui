@@ -205,7 +205,7 @@ class PlotApplicationPage extends Component<Props & WithRouterProps, State> {
       this.props;
     const { targetInfoCheckFormNames, applicantInfoCheckFormNames } =
       this.state;
-    let dirtyInfoCheckForms = {};
+    const dirtyInfoCheckForms = {};
     [...targetInfoCheckFormNames, ...applicantInfoCheckFormNames].forEach(
       (formName) => {
         if (isFormDirty(formName)) {
@@ -357,8 +357,8 @@ class PlotApplicationPage extends Component<Props & WithRouterProps, State> {
       targetInfoChecks,
       applicantInfoChecks,
     } = this.props;
-    let applicantInfoCheckFormNames = [];
-    let targetInfoCheckFormNames = [];
+    const applicantInfoCheckFormNames = [];
+    const targetInfoCheckFormNames = [];
     currentPlotApplication.targets.forEach((target) => {
       initialize(
         getTargetInfoCheckFormName(target),

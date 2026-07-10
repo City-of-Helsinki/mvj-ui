@@ -105,7 +105,7 @@ export const formatCoordsToLatLng = (
 
     if (crs !== undefined) {
       return (coords: Array<number>) => {
-        var point = L.point(coords[0], coords[1]);
+        const point = L.point(coords[0], coords[1]);
         return crs ? crs.projection.unproject(point) : null;
       };
     }

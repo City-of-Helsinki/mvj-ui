@@ -11,7 +11,7 @@ import { receiveError } from "@/api/actions";
 
 function* fetchUsersPermissionsSaga(): Generator<any, any, any> {
   try {
-    let {
+    const {
       response: { status: statusCode },
       bodyAsJson,
     } = yield call(fetchUsersPermissions);

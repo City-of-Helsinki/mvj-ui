@@ -450,7 +450,6 @@ export const transformCommittedFormSectionEditorData = (
   ): Record<string, any> => {
     const {
       // UI fields to be removed
-      // eslint-disable-next-line no-unused-vars
       auto_fill_identifier,
       auto_fill_choice_values,
       is_protected,
@@ -480,7 +479,6 @@ export const transformCommittedFormSectionEditorData = (
   ): any => {
     const {
       // UI fields to be removed
-      // eslint-disable-next-line no-unused-vars
       auto_fill_identifier,
       sort_order,
       is_protected,

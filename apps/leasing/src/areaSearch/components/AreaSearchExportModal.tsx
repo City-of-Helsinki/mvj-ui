@@ -61,7 +61,7 @@ class AreaSearchExportModal extends Component<Props> {
     let downloadUrl = "";
 
     switch (selectedMode) {
-      case ExportModes.APPLICATIONS_PDF:
+      case ExportModes.APPLICATIONS_PDF: {
         guideText = "Tulostus sisältää valitut hakemukset .pdf-muodossa.";
         const params: Record<string, string> = {
           ids: selectedSearchIds.join(","),
@@ -77,7 +77,7 @@ class AreaSearchExportModal extends Component<Props> {
 
         downloadUrl = createUrl("area_search_pdf/", params);
         break;
-
+      }
       case ExportModes.APPLICATIONS_XLS:
         guideText = "Tulostus sisältää valitut hakemukset .xls-muodossa.";
         downloadUrl = createUrl("area_search/get_answers_xlsx/", {

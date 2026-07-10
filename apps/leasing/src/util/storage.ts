@@ -125,7 +125,6 @@ const isJson = (value: any) => {
   try {
     JSON.parse(value);
   } catch (e) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return false;
   }
 

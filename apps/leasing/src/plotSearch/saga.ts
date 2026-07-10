@@ -90,12 +90,13 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = { ...bodyAsJson.fields };
         const methods = bodyAsJson.methods;
         yield put(receiveAttributes(attributes));
         yield put(receiveMethods(methods));
         break;
+      }
 
       default:
         yield put(attributesNotFound());
@@ -414,7 +415,7 @@ function* deletePlotSearchSaga({
     } = yield call(deletePlotSearch, id);
 
     switch (statusCode) {
-      case 204:
+      case 204: {
         const query = getUrlParams(location.search);
         // Remove page specific url parameters when moving to plotsearch list page
         delete query.tab;
@@ -427,6 +428,7 @@ function* deletePlotSearchSaga({
           body: "Tonttihaku poistettu",
         });
         break;
+      }
 
       case 400:
       case 401:
@@ -454,10 +456,11 @@ function* fetchPlanUnitAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchPlanUnitAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields;
         yield put(receivePlanUnitAttributes(attributes));
         break;
+      }
 
       default:
         yield put(planUnitAttributesNotFound());
@@ -519,10 +522,11 @@ function* fetchCustomDetailedPlanAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchCustomDetailedPlanAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields;
         yield put(receiveCustomDetailedPlanAttributes(attributes));
         break;
+      }
 
       default:
         yield put(customDetailedPlanAttributesNotFound());
@@ -586,10 +590,11 @@ function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
     } = yield call(fetchPlotSearchSubtypesRequest);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const subTypes = bodyAsJson.results;
         yield put(receivePlotSearchSubtype(subTypes));
         break;
+      }
 
       case 403:
         yield put(plotSearchSubtypesNotFound());
@@ -730,7 +735,7 @@ function* batchCreateReservationIdentifiersSaga({
 
           switch (statusCode) {
             case 200:
-            case 201:
+            case 201: {
               const {
                 response: { status: targetRelationEditStatusCode },
                 bodyAsJson: targetRelationEditBodyAsJson,
@@ -747,6 +752,7 @@ function* batchCreateReservationIdentifiersSaga({
               }
 
               break;
+            }
 
             default:
               console.error(bodyAsJson);

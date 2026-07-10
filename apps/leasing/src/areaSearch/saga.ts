@@ -55,12 +55,13 @@ function* fetchListAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAreaSearchListAttributesRequest);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = { ...bodyAsJson.fields };
         const methods = bodyAsJson.methods;
         yield put(receiveListAttributes(attributes));
         yield put(receiveListMethods(methods));
         break;
+      }
 
       default:
         yield put(listAttributesNotFound());
@@ -80,12 +81,13 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAreaSearchAttributesRequest);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = { ...bodyAsJson.fields };
         const methods = bodyAsJson.methods;
         yield put(receiveAttributes(attributes));
         yield put(receiveMethods(methods));
         break;
+      }
 
       default:
         yield put(attributesNotFound());

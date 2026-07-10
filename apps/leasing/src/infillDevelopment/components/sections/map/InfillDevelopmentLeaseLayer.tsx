@@ -36,7 +36,7 @@ class InfillDevelopmentLeaseLayer extends PureComponent<Props> {
     const { highlighted, leaseIdentifier } = this.props;
 
     if (highlighted) {
-      let popupContent = `<p class='title'><strong>${leaseIdentifier}</strong></p>`;
+      const popupContent = `<p class='title'><strong>${leaseIdentifier}</strong></p>`;
       this.component.leafletElement.bindPopup(popupContent);
 
       try {

@@ -34,12 +34,13 @@ function* fetchJobRunAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchJobRunAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields || {};
         const methods = bodyAsJson.methods || {};
         yield put(receiveJobRunAttributes(attributes));
         yield put(receiveJobRunMethods(methods));
         break;
+      }
 
       default:
         yield put(notFoundJobRunAttributes());
@@ -90,12 +91,13 @@ function* fetchJobRunLogEntryAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchJobRunLogEntryAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields || {};
         const methods = bodyAsJson.methods || {};
         yield put(receiveJobRunLogEntryAttributes(attributes));
         yield put(receiveJobRunLogEntryMethods(methods));
         break;
+      }
 
       default:
         yield put(notFoundJobRunLogEntryAttributes());
@@ -154,12 +156,13 @@ function* fetchScheduledJobAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchScheduledJobAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields || {};
         const methods = bodyAsJson.methods || {};
         yield put(receiveScheduledJobAttributes(attributes));
         yield put(receiveScheduledJobMethods(methods));
         break;
+      }
 
       default:
         yield put(notFoundScheduledJobAttributes());

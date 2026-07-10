@@ -277,10 +277,11 @@ function* fetchPlotSearchSubtypesSaga(): Generator<any, any, any> {
     } = yield call(fetchPlotSearchSubtypesRequest);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const subTypes = bodyAsJson.results;
         yield put(receivePlotSearchSubtypes(subTypes));
         break;
+      }
 
       case 403:
         yield put(plotSearchSubtypesNotFound());

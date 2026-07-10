@@ -36,7 +36,7 @@ describe("PenaltyInterest", () => {
             [invoice]: false,
           },
         };
-        let state = penaltyInterestReducer(
+        const state = penaltyInterestReducer(
           {},
           penaltyInterestNotFoundByInvoice(invoice),
         );

@@ -28,12 +28,13 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields;
         const methods = bodyAsJson.methods;
         yield put(receiveAttributes(attributes));
         yield put(receiveMethods(methods));
         break;
+      }
 
       default:
         yield put(attributesNotFound());
@@ -127,7 +128,7 @@ function* deleteCollectionCourtDecisionSaga({
     } = yield call(deleteCollectionCourtDecision, payload.id);
 
     switch (statusCode) {
-      case 204:
+      case 204: {
         const currentDecisions = yield select(
           getCollectionCourtDecisionsByLease,
           payload.lease,
@@ -145,6 +146,7 @@ function* deleteCollectionCourtDecisionSaga({
           body: "Käräjäoikeuden päätös poistettu",
         });
         break;
+      }
 
       default:
         yield put(receiveError(new SubmissionError({ ...bodyAsJson })));

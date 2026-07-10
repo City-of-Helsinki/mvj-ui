@@ -82,7 +82,7 @@ class ApplicantInfoCheckEdit extends Component<Props, State> {
       return null;
     }
 
-    let content = [];
+    const content = [];
     submissionErrors.map((infoCheckItem) => {
       try {
         if (infoCheckItem.error instanceof Array) {

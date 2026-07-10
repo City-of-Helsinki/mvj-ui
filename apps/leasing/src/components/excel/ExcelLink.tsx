@@ -55,10 +55,11 @@ class ExcelLink extends PureComponent<Props, State> {
         const response = await fetch(request);
 
         switch (response.status) {
-          case 200:
+          case 200: {
             const blob = await response.blob();
             saveAs(blob, filename);
             break;
+          }
 
           default:
             displayUIMessage(

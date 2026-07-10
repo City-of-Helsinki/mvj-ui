@@ -26,12 +26,13 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields;
         const methods = bodyAsJson.methods;
         yield put(receiveAttributes(attributes));
         yield put(receiveMethods(methods));
         break;
+      }
 
       default:
         yield put(attributesNotFound());
@@ -117,7 +118,7 @@ function* deleteCollectionLetterSaga({
     } = yield call(deleteCollectionLetter, payload.id);
 
     switch (statusCode) {
-      case 204:
+      case 204: {
         const currentLetters = yield select(
           getCollectionLettersByLease,
           payload.lease,
@@ -135,6 +136,7 @@ function* deleteCollectionLetterSaga({
           body: "Perintäkirje poistettu",
         });
         break;
+      }
 
       default:
         yield put(receiveError(new SubmissionError({ ...bodyAsJson })));

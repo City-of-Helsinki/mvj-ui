@@ -94,7 +94,7 @@ const ApplicationAnswersField = ({
 
                   break;
 
-                case "uploadfiles":
+                case "uploadfiles": {
                   // TODO: can this be cast in a cleaner way?
                   const files: Array<UploadedFileMeta> = displayValue as any;
                   displayValue =
@@ -113,7 +113,7 @@ const ApplicationAnswersField = ({
                       </ul>
                     ) : null;
                   break;
-
+                }
                 case "hidden":
                   break;
               }

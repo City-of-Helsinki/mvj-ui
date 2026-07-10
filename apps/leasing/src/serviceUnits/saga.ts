@@ -11,10 +11,11 @@ function* fetchServiceUnitsSaga(): Generator<any, any, any> {
     } = yield call(fetchServiceUnits);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const data = bodyAsJson.results;
         yield put(receiveServiceUnits(data));
         break;
+      }
 
       default:
         yield put(notFound());

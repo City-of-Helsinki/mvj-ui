@@ -11,10 +11,11 @@ function* fetchLeaseTypesSaga(): Generator<any, any, any> {
     } = yield call(fetchLeaseTypes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const { results } = bodyAsJson;
         yield put(receiveLeaseTypes(results));
         break;
+      }
 
       case 404:
       case 500:

@@ -11,10 +11,11 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields;
         yield put(receiveAttributes(attributes));
         break;
+      }
 
       default:
         yield put(attributesNotFound());

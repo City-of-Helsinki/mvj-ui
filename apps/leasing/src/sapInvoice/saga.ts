@@ -8,7 +8,7 @@ function* fetchSapInvoicesSaga({
   type: any,
 }): Generator<any, any, any> {
   try {
-    let {
+    const {
       response: { status: statusCode },
       bodyAsJson,
     } = yield call(fetchInvoices, { ...query, going_to_sap: true });
