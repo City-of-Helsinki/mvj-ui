@@ -160,7 +160,7 @@ class LeaseHistory extends PureComponent<Props, State> {
         });
       }
 
-      let leaseProps: {
+      const leaseProps: {
         key: string;
         id: Lease["id"];
         lease: Partial<Lease>;

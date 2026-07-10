@@ -264,7 +264,7 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
       });
     }
 
-    let leaseProps: {
+    const leaseProps: {
       key: string;
       id: Lease["id"];
       deleteId: number;

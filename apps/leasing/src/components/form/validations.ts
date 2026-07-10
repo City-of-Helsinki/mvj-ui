@@ -4,7 +4,7 @@ import { isValidDate } from "@/util/date";
 import { isEmptyValue } from "@/util/helpers";
 
 const decimalPlaces = (n) => {
-  let result = /^-?[0-9]+\.([0-9]+)$/.exec(n);
+  const result = /^-?[0-9]+\.([0-9]+)$/.exec(n);
   return result === null ? 0 : result[1].length;
 };
 

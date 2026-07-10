@@ -418,13 +418,11 @@ class FormFieldLegacy extends PureComponent<Props, State> {
 
   handleGenericNormalize: (arg0: any) => any = (value) => {
     const { fieldAttributes } = this.props;
-    // eslint-disable-next-line no-unused-vars
     const { fieldAttributes: _, ...rest } = this.state;
     return genericNormalizer(value, { ...fieldAttributes, ...rest });
   };
   handleGenericValidate: (arg0: any) => any = (value) => {
     const { fieldAttributes } = this.props;
-    // eslint-disable-next-line no-unused-vars
     const { fieldAttributes: _, ...rest } = this.state;
     return genericValidator(value, { ...fieldAttributes, ...rest });
   };

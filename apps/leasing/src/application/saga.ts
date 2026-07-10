@@ -55,13 +55,13 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAttributesRequest);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = { ...bodyAsJson.fields };
         const methods = bodyAsJson.methods;
         yield put(receiveAttributes(attributes));
         yield put(receiveMethods(methods));
         break;
-
+      }
       default:
         yield put(attributesNotFound());
     }
@@ -80,10 +80,11 @@ function* fetchApplicantInfoCheckAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchApplicantInfoCheckAttributesRequest);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = { ...bodyAsJson.fields };
         yield put(receiveApplicantInfoCheckAttributes(attributes));
         break;
+      }
 
       default:
         yield put(applicantInfoCheckAttributesNotFound());
@@ -126,10 +127,11 @@ function* fetchFormAttributesSaga({
     } = yield call(fetchFormAttributesRequest, id);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields;
         yield put(receiveFormAttributes(attributes));
         break;
+      }
 
       default:
         yield put(formAttributesNotFound());
@@ -150,12 +152,13 @@ export function* fetchAttachmentAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAttachmentAttributesRequest);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = { ...bodyAsJson.fields };
         const methods = bodyAsJson.methods;
         yield put(receiveAttachmentAttributes(attributes));
         yield put(receiveAttachmentMethods(methods));
         break;
+      }
 
       default:
         yield put(attachmentAttributesNotFound());

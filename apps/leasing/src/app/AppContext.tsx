@@ -12,7 +12,7 @@ const reducer = (state, action) => {
     case ActionTypes.HIDE_CONFIRMATION_MODAL:
       return { ...state, isConfirmationModalOpen: false };
 
-    case ActionTypes.SHOW_CONFIRMATION_MODAL:
+    case ActionTypes.SHOW_CONFIRMATION_MODAL: {
       const {
         confirmationFunction,
         confirmationModalButtonClassName,
@@ -29,6 +29,7 @@ const reducer = (state, action) => {
         confirmationModalTitle: confirmationModalTitle,
         isConfirmationModalOpen: true,
       };
+    }
   }
 };
 

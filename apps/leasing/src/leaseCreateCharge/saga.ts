@@ -16,10 +16,11 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields;
         yield put(receiveAttributes(attributes));
         break;
+      }
 
       default:
         yield put(attributesNotFound());
@@ -43,10 +44,11 @@ function* fetchReceivableTypesSaga(): Generator<any, any, any> {
     } = yield call(fetchReceivableTypes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const receivableTypes = bodyAsJson.results;
         yield put(receiveReceivableTypes(receivableTypes));
         break;
+      }
 
       default:
         yield put(receivableTypesNotFound());

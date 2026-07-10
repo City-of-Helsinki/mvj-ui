@@ -49,14 +49,15 @@ const FileDownloadButton = ({
       const response = await fetch(request);
 
       switch (response.status) {
-        case 200:
+        case 200: {
           const blob = await response.blob();
           const filename = getFileNameFromResponse(response);
           saveAs(blob, filename);
           onSuccess && onSuccess();
           break;
+        }
 
-        default:
+        default: {
           const errors = await response.json();
 
           if (errors && errors.detail) {
@@ -85,6 +86,7 @@ const FileDownloadButton = ({
 
           onFailure && onFailure();
           break;
+        }
       }
     } catch (e) {
       console.error(`Failed to download file with error ${e}`);

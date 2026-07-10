@@ -36,10 +36,11 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     } = yield call(fetchAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields;
         yield put(receiveAttributes(attributes));
         break;
+      }
 
       default:
         yield put(attributesNotFound());
@@ -134,12 +135,13 @@ function* fetchLeaseInvoicingConfirmationReportAttributesSaga(): Generator<
     } = yield call(fetchLeaseInvoicingConfirmationReportAttributes);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const attributes = bodyAsJson.fields;
         yield put(
           receiveLeaseInvoicingConfirmationReportAttributes(attributes),
         );
         break;
+      }
 
       default:
         yield put(leaseInvoicingConfirmationReportAttributesNotFound());

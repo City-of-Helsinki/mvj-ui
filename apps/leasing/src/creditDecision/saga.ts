@@ -95,7 +95,7 @@ function* fetchCreditDecisionByBusinessIdSaga({
     } = yield call(fetchCreditDecisionBusinessId, id);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const result = bodyAsJson[0];
         yield put(
           receiveCreditDecisionByBusinessId({
@@ -104,13 +104,15 @@ function* fetchCreditDecisionByBusinessIdSaga({
         );
         yield put(fetchHistoryByBusinessId(id));
         break;
+      }
 
-      case 400:
+      case 400: {
         // Cannot find business id or identity number
         const error = bodyAsJson;
         console.error('Failed to fetch with error "%s"', error.message);
         yield put(creditDecisionNotFoundByBusinessId(id));
         yield put(receiveError(error));
+      }
 
       default:
         console.error("Failed to fetch credit decision");
@@ -135,7 +137,7 @@ function* fetchCreditDecisionByContactIdSaga({
     } = yield call(fetchCreditDecisionContactId, id);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const result = bodyAsJson[0];
         yield put(
           receiveCreditDecisionByContactId({
@@ -144,13 +146,16 @@ function* fetchCreditDecisionByContactIdSaga({
         );
         yield put(fetchHistoryByContactId(id));
         break;
+      }
 
-      case 400:
+      case 400: {
         // Cannot find business id or identity number
         const error = bodyAsJson;
         console.error('Failed to fetch with error "%s"', error.message);
         yield put(creditDecisionNotFoundByContactId(id));
         yield put(receiveError(error));
+        break;
+      }
 
       default:
         console.error("Failed to fetch");
@@ -175,7 +180,7 @@ function* fetchCreditDecisionByNinSaga({
     } = yield call(fetchCreditDecisionNin, id);
 
     switch (statusCode) {
-      case 200:
+      case 200: {
         const result = bodyAsJson[0];
         yield put(
           receiveCreditDecisionByNin({
@@ -183,13 +188,16 @@ function* fetchCreditDecisionByNinSaga({
           }),
         );
         break;
+      }
 
-      case 400:
+      case 400: {
         // Cannot find business id or identity number
         const error = bodyAsJson;
         console.error('Failed to fetch with error "%s"', error.message);
         yield put(creditDecisionNotFoundByNin(id));
         yield put(receiveError(error));
+        break;
+      }
 
       default:
         console.error("Failed to fetch");

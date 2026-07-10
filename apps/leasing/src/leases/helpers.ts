@@ -505,7 +505,7 @@ export const sortRelatedLeasesFrom = (
   leases: Array<RelatedLeaseWrapper>,
 ): Array<RelatedLeaseWrapper> => {
   let current;
-  let leaseHistoryItemsFromSorted = [];
+  const leaseHistoryItemsFromSorted = [];
   leases.forEach((lease) => {
     if (lease.to_lease === lease.head) {
       leaseHistoryItemsFromSorted.push(lease);
@@ -626,7 +626,7 @@ export const getContentPlanUnits = (
 export const getContentCustomDetailedPlan = (
   area: LeaseArea,
 ): Record<string, any> => {
-  let customDetailedPlan = get(area, "custom_detailed_plan");
+  const customDetailedPlan = get(area, "custom_detailed_plan");
 
   if (!customDetailedPlan) {
     return null;
@@ -1703,7 +1703,7 @@ export const calculateBasisOfRentSubventionAmountCumulative = (
   discounted = discounted.toFixed(6);
 
   for (let i = 0; i <= index; i++) {
-    let lastTotal = discounted;
+    const lastTotal = discounted;
     discounted =
       discounted *
       ((100 -
@@ -2025,11 +2025,11 @@ export const hasSubventionValues = (
   subventionBasePercent: string | null | undefined,
   subventionGraduatedPercent: string | null | undefined,
 ): boolean => {
-  let msWithValues =
+  const msWithValues =
     managementSubventions?.filter(
       (subvention) => !!subvention.subvention_amount,
     ) || [];
-  let tsWithValues =
+  const tsWithValues =
     temporarySubventions?.filter(
       (subvention) => !!subvention.subvention_percent,
     ) || [];
@@ -3921,7 +3921,7 @@ export const getLeasesWithContractNumber = (
  * Destructures a nested lease object in a related lease.
  */
 export const restructureLease = (lease: RelatedLeaseWrapper) => {
-  let destructuredLease = lease.lease;
+  const destructuredLease = lease.lease;
   return {
     related_lease_id: lease.id,
     ...destructuredLease,
@@ -3938,8 +3938,8 @@ export const sortRelatedHistoryItems = (
   a: Record<string, any>,
   b: Record<string, any>,
 ): number => {
-  let aTime = a.startDate || a.receivedAt || null;
-  let bTime = b.startDate || b.receivedAt || null;
+  const aTime = a.startDate || a.receivedAt || null;
+  const bTime = b.startDate || b.receivedAt || null;
 
   if (aTime && bTime && aTime != bTime) {
     if (aTime < bTime) {
