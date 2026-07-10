@@ -1,7 +1,8 @@
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
+import { Link } from "react-router-dom";
 import flowRight from "lodash/flowRight";
 import get from "lodash/get";
 import Authorization from "@/components/authorization/Authorization";

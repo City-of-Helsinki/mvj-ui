@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate, Route, Routes as RouterRoutes } from "react-router-dom";
+import { Navigate, Route, Routes as RouterRoutes } from "react-router";
 import ErrorPage from "@/errorPage/ErrorPage";
 import App from "@/app/App";
 import AreaNoteListPage from "@/areaNote/components/AreaNoteListPage";

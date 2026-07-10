@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { LoginCallbackHandler, isHandlingLoginCallbackError } from "hds-react";
 import type { OidcClientError, User } from "hds-react";
 import { getRedirectUrlFromSessionStorage } from "@/util/storage";

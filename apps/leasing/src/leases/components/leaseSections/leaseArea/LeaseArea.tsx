@@ -1,7 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
+import { Link } from "react-router-dom";
 import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import Authorization from "@/components/authorization/Authorization";
