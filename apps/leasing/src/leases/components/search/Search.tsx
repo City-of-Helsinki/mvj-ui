@@ -100,6 +100,8 @@ const BASIC_MODE_IGNORED_QUERY_KEYS = new Set([
   "zoom",
   "intended_use",
   "service_unit",
+  "preparer",
+  "preparers_own_leases",
 ]);
 
 const SearchFields = ({
@@ -902,27 +904,6 @@ const SearchFields = ({
                         label="Pikavalinnat"
                         direction="horizontal"
                       >
-                        <Field name="preparers_own_leases">
-                          {({
-                            input: { value, onBlur, onChange, onFocus },
-                            meta: { error, invalid },
-                          }) => {
-                            return (
-                              <Checkbox
-                                label="Omat vuokraukset"
-                                id="preparers_own_leases"
-                                checked={value === true || value === "true"}
-                                onBlur={onBlur}
-                                onFocus={onFocus}
-                                onChange={(event) =>
-                                  onChange(
-                                    event.target.checked ? true : undefined,
-                                  )
-                                }
-                              />
-                            );
-                          }}
-                        </Field>
                         <Field name="has_not_geometry">
                           {({
                             input: { value, onBlur, onChange, onFocus },
