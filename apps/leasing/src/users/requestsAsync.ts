@@ -2,7 +2,9 @@ import createUrl from "@/api/createUrl";
 import callApiAsync from "@/api/callApiAsync";
 import { User } from "@/types";
 
-export const fetchUsers = async (query?: User): Promise<Array<User>> => {
+export const fetchUsers = async (
+  query?: Record<string, any>,
+): Promise<Array<User>> => {
   const {
     response: { status },
     bodyAsJson,
@@ -17,7 +19,9 @@ export const fetchUsers = async (query?: User): Promise<Array<User>> => {
       return [];
   }
 };
-export const fetchOfficers = async (query?: User): Promise<Array<User>> => {
+export const fetchOfficers = async (
+  query?: Record<string, any>,
+): Promise<Array<User>> => {
   const {
     response: { status },
     bodyAsJson,

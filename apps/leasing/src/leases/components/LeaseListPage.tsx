@@ -59,6 +59,7 @@ import {
   isMethodAllowed,
   setPageTitle,
 } from "@/util/helpers";
+import { getUserOptions } from "@/users/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import {
   getIsFetching,
@@ -74,8 +75,8 @@ import {
   getServiceUnits,
   getIsFetching as getIsFetchingServiceUnits,
 } from "@/serviceUnits/selectors";
+import { fetchOfficers } from "@/users/requestsAsync";
 import type { Attributes } from "types";
-
 import {
   getAttributes as getUiDataAttributes,
   getIsFetching as getIsFetchingUiData,
@@ -111,6 +112,11 @@ const VisualizationTypes = {
   TABLE: "table",
 };
 
+const PreparerOwnLeasesOption = {
+  label: "Omat vuokraukset",
+  value: "preparers_own_leases",
+};
+
 const LeaseListPage: React.FC = () => {
   const hasFetchedLeases = useRef(false); // Check if search has been done yet
   const previousSortRef = useRef<{ sortKey: string; sortOrder: string } | null>(
@@ -144,6 +150,7 @@ const LeaseListPage: React.FC = () => {
   const [visualizationType, setVisualizationType] = useState(
     VisualizationTypes.TABLE,
   );
+  const [preparerOptions, setPreparerOptions] = useState<Option[]>([]);
 
   const queryParams = useMemo(
     () => getUrlParams(location.search),
@@ -190,6 +197,11 @@ const LeaseListPage: React.FC = () => {
 
     values.lease_state = getLeaseStates(queryParams);
 
+    if (queryParams.preparers_own_leases) {
+      values.preparer = PreparerOwnLeasesOption.value;
+      delete values.preparers_own_leases;
+    }
+
     delete values.page;
     delete values.sort_key;
     delete values.sort_order;
@@ -227,6 +239,11 @@ const LeaseListPage: React.FC = () => {
         }),
       );
     }
+
+    fetchOfficers({ limit: 300 }).then((users) => {
+      const options = getUserOptions(users);
+      setPreparerOptions(options);
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -470,6 +487,11 @@ const LeaseListPage: React.FC = () => {
   ) => {
     const query = getUrlParams(location.search);
     const searchQuery = { ...formValues };
+
+    if (searchQuery.preparer === PreparerOwnLeasesOption.value) {
+      searchQuery.preparers_own_leases = true;
+      delete searchQuery.preparer;
+    }
 
     if (query.lease_state && !formValues.lease_state) {
       searchQuery.lease_state = query.lease_state;
@@ -972,6 +994,57 @@ const LeaseListPage: React.FC = () => {
                         multiSelect
                         noTags
                         clearable
+                      />
+                    );
+                  }}
+                </Field>
+                <Field name="preparer">
+                  {({ input: { value, onChange } }) => {
+                    // Combines "preparer" and "preparers_own_leases" into one select
+                    const preparers = [
+                      PreparerOwnLeasesOption,
+                      ...preparerOptions,
+                    ];
+
+                    const selectedOptions =
+                      value === PreparerOwnLeasesOption.value
+                        ? [PreparerOwnLeasesOption]
+                        : preparerOptions.filter((option) =>
+                            (Array.isArray(value) ? value : [value]).some(
+                              (v) => v == option.value,
+                            ),
+                          );
+                    return (
+                      <Select
+                        id="preparer"
+                        texts={{
+                          label: "Valmistelija",
+                          placeholder: "Valitse valmistelija",
+                          language: "fi",
+                        }}
+                        value={selectedOptions}
+                        options={preparers}
+                        filter={(option, filterStr) =>
+                          option.label
+                            .toLowerCase()
+                            .includes(filterStr.toLowerCase())
+                        }
+                        onChange={(selectedOptions) => {
+                          if (
+                            selectedOptions.some(
+                              (option) =>
+                                option.value === PreparerOwnLeasesOption.value,
+                            )
+                          ) {
+                            onChange(PreparerOwnLeasesOption.value);
+                          } else {
+                            onChange(
+                              selectedOptions.map((option) => option.value),
+                            );
+                          }
+                        }}
+                        clearable
+                        style={{ width: "100%" }}
                       />
                     );
                   }}
