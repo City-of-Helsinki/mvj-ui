@@ -351,6 +351,16 @@ const LeasePage: React.FC<Props> = (props) => {
     basisOfRentsFormValues,
     leaseId,
     isFormValidFlags,
+    isEditMode,
+    summaryFormState,
+    tenantsFormState,
+    constructabilityFormState,
+    contractsFormState,
+    decisionsFormState,
+    inspectionsFormState,
+    leaseAreasFormState,
+    rentsFormState,
+    rentCalculatorFormState,
   });
   currentValuesRef.current = {
     contractsFormValues,
@@ -361,6 +371,16 @@ const LeasePage: React.FC<Props> = (props) => {
     basisOfRentsFormValues,
     leaseId,
     isFormValidFlags,
+    isEditMode,
+    summaryFormState,
+    tenantsFormState,
+    constructabilityFormState,
+    contractsFormState,
+    decisionsFormState,
+    inspectionsFormState,
+    leaseAreasFormState,
+    rentsFormState,
+    rentCalculatorFormState,
   };
 
   const timerAutoSave = useRef<NodeJS.Timeout>();
@@ -673,6 +693,8 @@ const LeasePage: React.FC<Props> = (props) => {
   };
 
   const handleLeavePage = (e) => {
+    const { isEditMode } = currentValuesRef.current;
+
     if (isAnyFormDirty() && isEditMode) {
       const confirmationMessage = "";
       e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
@@ -937,6 +959,14 @@ const LeasePage: React.FC<Props> = (props) => {
       isFormValidFlags,
       isBasisOfRentsFormDirty,
       basisOfRentsFormValues,
+      summaryFormState,
+      tenantsFormState,
+      constructabilityFormState,
+      contractsFormState,
+      decisionsFormState,
+      inspectionsFormState,
+      leaseAreasFormState,
+      rentsFormState,
     } = currentValuesRef.current;
 
     let isDirty = false;
@@ -982,7 +1012,10 @@ const LeasePage: React.FC<Props> = (props) => {
     }
 
     if (leaseAreasFormState.dirty) {
-      setSessionStorageItem(FormNames.LEASE_AREAS, areasFormValues);
+      setSessionStorageItem(
+        FormNames.LEASE_AREAS,
+        leaseAreasFormRef.current.getState().values,
+      );
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.LEASE_AREAS);
@@ -1160,6 +1193,18 @@ const LeasePage: React.FC<Props> = (props) => {
   };
 
   const isAnyFormDirty = () => {
+    const {
+      isBasisOfRentsFormDirty,
+      summaryFormState,
+      tenantsFormState,
+      constructabilityFormState,
+      contractsFormState,
+      decisionsFormState,
+      inspectionsFormState,
+      leaseAreasFormState,
+      rentsFormState,
+    } = currentValuesRef.current;
+
     return (
       constructabilityFormState.dirty ||
       contractsFormState.dirty ||
