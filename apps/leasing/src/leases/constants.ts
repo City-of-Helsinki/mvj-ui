@@ -113,6 +113,49 @@ export const leaseStateFilterOptions = [
 ];
 
 /**
+ * Preparation status options for lease list table filter
+ * @const {[*]}
+ */
+export const preparationStateFilterOptions = [
+  {
+    value: "missing_lease_property",
+    label: "Vuokrakohde puuttuu",
+  },
+  {
+    value: "missing_lease_area_geometry",
+    label: "Vuokra-alueen geometria puuttuu",
+  },
+  {
+    value: "missing_tenant",
+    label: "Vuokralainen puuttuu",
+  },
+  {
+    value: "missing_rent",
+    label: "Vuokra puuttuu",
+  },
+  {
+    value: "missing_decision",
+    label: "Päätös puuttuu",
+  },
+  {
+    value: "missing_constructability",
+    label: "Rakentamiskelpoisuus puuttuu",
+  },
+  {
+    value: "contract_not_signed",
+    label: "Sopimusta ei allekirjoitettu",
+  },
+  {
+    value: "rent_not_marked_ready",
+    label: "Vuokraus ei merkitty valmiiksi",
+  },
+  {
+    value: "invoicing_not_started",
+    label: "Laskutus ei käynnistetty",
+  },
+];
+
+/**
  * Rent custom date options
  * @const {[*]}
  */

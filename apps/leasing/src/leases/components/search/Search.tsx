@@ -58,6 +58,7 @@ import {
   getIsFetchingAttributes,
 } from "@/leases/selectors";
 import { getLessorList } from "@/lessor/selectors";
+import { preparationStateFilterOptions } from "@/leases/constants";
 import type { SelectOptionHds } from "@/types";
 
 type Props = {
@@ -900,32 +901,38 @@ const SearchFields = ({
                 <Fieldset heading="" className="lease-search-fieldset-group">
                   <SearchRow style={{ alignItems: "center" }}>
                     <Row>
-                      <SelectionGroup
-                        label="Pikavalinnat"
-                        direction="horizontal"
-                      >
-                        <Field name="has_not_geometry">
-                          {({
-                            input: { value, onBlur, onChange, onFocus },
-                            meta: { error, invalid },
-                          }) => {
-                            return (
-                              <Checkbox
-                                label="Geometria puuttuu"
-                                id="has_not_geometry"
-                                checked={value === true || value === "true"}
-                                onBlur={onBlur}
-                                onFocus={onFocus}
-                                onChange={(event) =>
-                                  onChange(
-                                    event.target.checked ? true : undefined,
-                                  )
-                                }
-                              />
+                      <Field name="preparation_state">
+                        {({ input: { value, onChange } }) => {
+                          const selectedOptions =
+                            preparationStateFilterOptions.filter((option) =>
+                              (Array.isArray(value) ? value : [value]).some(
+                                (v) => v == option.value,
+                              ),
                             );
-                          }}
-                        </Field>
-                      </SelectionGroup>
+
+                          return (
+                            <Select
+                              id="preparation_state"
+                              texts={{
+                                label: "Valmistelu kesken",
+                                placeholder: "Valitse vaihe",
+                                language: "fi",
+                              }}
+                              value={selectedOptions}
+                              options={preparationStateFilterOptions}
+                              onChange={(selectedOptions) =>
+                                onChange(
+                                  selectedOptions.map((option) => option.value),
+                                )
+                              }
+                              multiSelect
+                              noTags
+                              clearable
+                              style={{ width: "100%" }}
+                            />
+                          );
+                        }}
+                      </Field>
                     </Row>
                     <Button
                       variant={ButtonVariant.Secondary}
