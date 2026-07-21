@@ -46,13 +46,16 @@ import {
   getUiDataList,
 } from "@/uiData/selectors";
 import type { Methods as MethodsType } from "types";
+import type { RentBasis } from "../types";
 
 const NewRentBasisPage: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const editedRentBasis = useSelector(getFormValues(FormNames.RENT_BASIS));
+  const editedRentBasis: RentBasis = useSelector(
+    getFormValues(FormNames.RENT_BASIS),
+  ) as RentBasis;
   const isFormValid = useSelector(getIsFormValid);
   const isSaveClicked = useSelector(getIsSaveClicked);
   const isSaving = useSelector(getIsSaving);

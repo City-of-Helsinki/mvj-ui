@@ -5,7 +5,12 @@ import { convertStrToDecimalNumber } from "@/util/helpers";
 import { getIsEditMode } from "@/rentbasis/selectors";
 import { removeSessionStorageItem } from "@/util/storage";
 import type { LeafletGeoJson } from "types";
-import type { RentBasis } from "./types";
+import type {
+  PropertyIdentifier,
+  RentBasis,
+  RentBasisDecision,
+  RentRate,
+} from "./types";
 import type { RootState } from "@/root/types";
 
 /**
@@ -13,9 +18,7 @@ import type { RootState } from "@/root/types";
  * @param {Object} rentBasis
  * @returns {Object[]}
  */
-const getContentRentRates = (
-  rentBasis: Record<string, any>,
-): Array<Record<string, any>> => {
+const getContentRentRates = (rentBasis: RentBasis): Array<RentRate> => {
   return get(rentBasis, "rent_rates", []).map((item) => {
     return {
       id: item.id,
@@ -33,8 +36,8 @@ const getContentRentRates = (
  * @returns {Object[]}
  */
 export const getContentPropertyIdentifiers = (
-  rentBasis: Record<string, any>,
-): Array<Record<string, any>> => {
+  rentBasis: RentBasis,
+): Array<PropertyIdentifier> => {
   return get(rentBasis, "property_identifiers", []).map((item) => {
     return {
       id: item.id,
@@ -49,8 +52,8 @@ export const getContentPropertyIdentifiers = (
  * @returns {Object[]}
  */
 const getContentDecisions = (
-  rentBasis: Record<string, any>,
-): Array<Record<string, any>> => {
+  rentBasis: RentBasis,
+): Array<RentBasisDecision> => {
   return get(rentBasis, "decisions", []).map((item) => {
     return {
       id: item.id,
@@ -67,9 +70,7 @@ const getContentDecisions = (
  * @param {Object} rentBasis
  * @returns {Object}
  */
-export const getContentRentBasis = (
-  content: Record<string, any>,
-): Record<string, any> => {
+export const getContentRentBasis = (content: RentBasis): RentBasis => {
   return {
     id: content.id,
     plot_type: get(content, "plot_type.id") || content.plot_type,
@@ -92,9 +93,7 @@ export const getContentRentBasis = (
  * @param {Object} rentBasis
  * @returns {Object[]}
  */
-const getContentCopiedRentRates = (
-  rentBasis: Record<string, any>,
-): Array<Record<string, any>> => {
+const getContentCopiedRentRates = (rentBasis: RentBasis): Array<RentRate> => {
   return get(rentBasis, "rent_rates", []).map((item) => {
     return {
       build_permission_type:
@@ -111,8 +110,8 @@ const getContentCopiedRentRates = (
  * @returns {Object[]}
  */
 const getCopyOfPropertyIdentifiers = (
-  rentBasis: Record<string, any>,
-): Array<Record<string, any>> => {
+  rentBasis: RentBasis,
+): Array<PropertyIdentifier> => {
   return get(rentBasis, "property_identifiers", []).map((item) => {
     return {
       identifier: item.identifier,
@@ -125,9 +124,7 @@ const getCopyOfPropertyIdentifiers = (
  * @param {Object} rentBasis
  * @returns {Object[]}
  */
-const getCopyOfDecisions = (
-  rentBasis: Record<string, any>,
-): Array<Record<string, any>> => {
+const getCopyOfDecisions = (rentBasis: RentBasis): Array<RentBasisDecision> => {
   return get(rentBasis, "decisions", []).map((item) => {
     return {
       reference_number: item.reference_number,
@@ -143,9 +140,7 @@ const getCopyOfDecisions = (
  * @param {Object} rentBasis
  * @returns {Object}
  */
-export const getCopyOfRentBasis = (
-  rentBasis: Record<string, any>,
-): Record<string, any> => {
+export const getCopyOfRentBasis = (rentBasis: RentBasis): RentBasis => {
   return {
     plot_type: get(rentBasis, "plot_type.id") || rentBasis.plot_type,
     start_date: rentBasis.start_date,
@@ -168,8 +163,8 @@ export const getCopyOfRentBasis = (
  * @returns {Object[]}
  */
 const getPayloadPropertyIdentifiers = (
-  rentBasis: Record<string, any>,
-): Array<Record<string, any>> => {
+  rentBasis: RentBasis,
+): Array<PropertyIdentifier> => {
   return get(rentBasis, "property_identifiers", []).map((item) => {
     return {
       id: item.id,
@@ -184,8 +179,8 @@ const getPayloadPropertyIdentifiers = (
  * @returns {Object[]}
  */
 const getPayloadDecisions = (
-  rentBasis: Record<string, any>,
-): Array<Record<string, any>> => {
+  rentBasis: RentBasis,
+): Array<RentBasisDecision> => {
   return get(rentBasis, "decisions", []).map((item) => {
     return {
       id: item.id,
@@ -202,9 +197,7 @@ const getPayloadDecisions = (
  * @param {Object} rentBasis
  * @returns {Object[]}
  */
-const getPayloadRentRates = (
-  rentBasis: Record<string, any>,
-): Array<Record<string, any>> => {
+const getPayloadRentRates = (rentBasis: RentBasis): Array<RentRate> => {
   return get(rentBasis, "rent_rates", []).map((item) => {
     return {
       id: item.id,
@@ -220,9 +213,7 @@ const getPayloadRentRates = (
  * @param {Object} rentBasis
  * @returns {Object}
  */
-export const getPayloadRentBasis = (
-  rentBasis: Record<string, any>,
-): Record<string, any> => {
+export const getPayloadRentBasis = (rentBasis: RentBasis): RentBasis => {
   return {
     id: rentBasis.id,
     plot_type: rentBasis.plot_type,

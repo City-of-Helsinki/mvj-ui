@@ -100,7 +100,7 @@ const RentBasisPage = () => {
 
   const editedRentBasis: RentBasis = useSelector(
     getFormValues(FormNames.RENT_BASIS),
-  );
+  ) as RentBasis;
   const isEditMode = useSelector(getIsEditMode);
   const isFetching = useSelector(getIsFetching);
   const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);

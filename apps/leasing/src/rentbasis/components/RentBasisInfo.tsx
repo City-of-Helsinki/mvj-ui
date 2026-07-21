@@ -7,7 +7,7 @@ import { isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getRentBasisAttributes } from "@/rentbasis/selectors";
 import type { Attributes } from "types";
 type Props = {
-  identifier: string | null | undefined;
+  identifier: string | number | null | undefined;
 };
 
 const RentBasisInfo = ({ identifier }: Props) => {
