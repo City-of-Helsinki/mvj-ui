@@ -126,8 +126,18 @@ const RentBasisListPage: React.FC = () => {
     dispatch(
       initializeRentBasis({
         decisions: [{}],
-        property_identifiers: [{}],
-        rent_rates: [{}],
+        property_identifiers: [
+          {
+            identifier: "",
+          },
+        ],
+        rent_rates: [
+          {
+            amount: null,
+            build_permission_type: null,
+          },
+        ],
+        plot_type: null,
       }),
     );
     return navigate({
