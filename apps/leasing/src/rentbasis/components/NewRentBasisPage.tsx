@@ -1,11 +1,8 @@
-import React, { Component } from "react";
-import {
-  withRouterLegacy,
-  type WithRouterProps,
-} from "@/root/withRouterLegacy";
-import { connect } from "react-redux";
-import { getFormValues, isDirty } from "redux-form";
-import { flowRight } from "lodash-es";
+import React, { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { getFormValues } from "redux-form";
+import { isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";
 import ControlButtonBar from "@/components/controlButtons/ControlButtonBar";
@@ -24,6 +21,11 @@ import {
   showEditMode,
 } from "@/rentbasis/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
+import { fetchAttributes as fetchRentBasisAttributes } from "@/rentbasis/actions";
+import {
+  fetchAttributes as fetchUiDataAttributes,
+  fetchUiDataList,
+} from "@/uiData/actions";
 import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
 import { getPayloadRentBasis } from "@/rentbasis/helpers";
 import { isMethodAllowed, setPageTitle } from "@/util/helpers";
@@ -32,166 +34,163 @@ import {
   getIsFormValid,
   getIsSaveClicked,
   getIsSaving,
+  getAttributes as getRentBasisAttributes,
+  getIsFetchingAttributes as getIsFetchingRentBasisAttributes,
+  getMethods as getRentBasisMethods,
 } from "@/rentbasis/selectors";
-import { withRentBasisAttributes } from "@/components/attributes/RentBasisAttributes";
-import { withUiDataList } from "@/components/uiData/UiDataListHOC";
+import {
+  getAttributes as getUiDataAttributes,
+  getIsFetching,
+  getIsFetchingAttributes as getIsFetchingUiDataAttributes,
+  getMethods as getUiDataMethods,
+  getUiDataList,
+} from "@/uiData/selectors";
 import type { Methods as MethodsType } from "types";
-import type { RootState } from "@/root/types";
-type Props = {
-  createRentBasis: (...args: Array<any>) => any;
-  editedRentBasis: Record<string, any>;
-  hideEditMode: (...args: Array<any>) => any;
-  isFetchingRentBasisAttributes: boolean;
-  isFormDirty: boolean;
-  isFormValid: boolean;
-  isSaveClicked: boolean;
-  isSaving: boolean;
-  receiveIsSaveClicked: (...args: Array<any>) => any;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-  rentBasisMethods: MethodsType;
-  showEditMode: (...args: Array<any>) => any;
-};
 
-class NewRentBasisPage extends Component<Props & WithRouterProps> {
-  componentDidMount() {
-    const { receiveIsSaveClicked, receiveTopNavigationSettings, showEditMode } =
-      this.props;
+const NewRentBasisPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const editedRentBasis = useSelector(getFormValues(FormNames.RENT_BASIS));
+  const isFormValid = useSelector(getIsFormValid);
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const isSaving = useSelector(getIsSaving);
+  const rentBasisAttributes = useSelector(getRentBasisAttributes);
+  const isFetchingRentBasisAttributes = useSelector(
+    getIsFetchingRentBasisAttributes,
+  );
+  const rentBasisMethods: MethodsType = useSelector(getRentBasisMethods);
+
+  const isFetchingUiDataAttributes = useSelector(getIsFetchingUiDataAttributes);
+  const isFetchingUiDataList = useSelector(getIsFetching);
+  const uiDataAttributes = useSelector(getUiDataAttributes);
+  const uiDataList = useSelector(getUiDataList);
+  const uiDataMethods = useSelector(getUiDataMethods);
+
+  useEffect(() => {
     setPageTitle("Uusi vuokrausperiaate");
-    receiveIsSaveClicked(false);
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.RENT_BASIS),
-      pageTitle: "Vuokrausperiaatteet",
-      showSearch: false,
-    });
-    showEditMode();
-    window.addEventListener("beforeunload", this.handleLeavePage);
-  }
+    dispatch(receiveIsSaveClicked(false));
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.RENT_BASIS),
+        pageTitle: "Vuokrausperiaatteet",
+        showSearch: false,
+      }),
+    );
+    dispatch(showEditMode());
 
-  componentWillUnmount() {
-    const { hideEditMode } = this.props;
-    hideEditMode();
-    window.removeEventListener("beforeunload", this.handleLeavePage);
-  }
+    return () => {
+      dispatch(hideEditMode());
+    };
+  }, [dispatch]);
 
-  handleLeavePage = (e) => {
-    const { isFormDirty } = this.props;
-
-    if (isFormDirty) {
-      const confirmationMessage = "";
-      e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-
-      return confirmationMessage; // Gecko, WebKit, Chrome <34
+  useEffect(() => {
+    if (
+      !isFetchingRentBasisAttributes &&
+      !rentBasisAttributes &&
+      !rentBasisMethods
+    ) {
+      dispatch(fetchRentBasisAttributes());
     }
-  };
-  handleBack = () => {
-    const {
-      navigate,
-      location: { search },
-    } = this.props;
+  }, [
+    dispatch,
+    isFetchingRentBasisAttributes,
+    rentBasisAttributes,
+    rentBasisMethods,
+  ]);
+
+  useEffect(() => {
+    if (!isFetchingUiDataAttributes && !uiDataAttributes && !uiDataMethods) {
+      dispatch(fetchUiDataAttributes());
+    }
+
+    if (!isFetchingUiDataList && isEmpty(uiDataList)) {
+      dispatch(
+        fetchUiDataList({
+          limit: 100000,
+        }),
+      );
+    }
+  }, [
+    dispatch,
+    isFetchingUiDataAttributes,
+    isFetchingUiDataList,
+    uiDataAttributes,
+    uiDataList,
+    uiDataMethods,
+  ]);
+
+  const handleBack = () => {
     return navigate({
       pathname: `${getRouteById(Routes.RENT_BASIS)}`,
-      search: search,
+      search: location.search,
     });
   };
-  cancelChanges = () => {
-    const { navigate } = this.props;
+
+  const cancelChanges = () => {
     return navigate({
       pathname: getRouteById(Routes.RENT_BASIS),
     });
   };
-  saveChanges = () => {
-    const {
-      createRentBasis,
-      editedRentBasis,
-      isFormValid,
-      receiveIsSaveClicked,
-    } = this.props;
-    receiveIsSaveClicked(true);
+
+  const saveChanges = () => {
+    dispatch(receiveIsSaveClicked(true));
 
     if (isFormValid) {
-      createRentBasis(getPayloadRentBasis(editedRentBasis));
+      dispatch(createRentBasis(getPayloadRentBasis(editedRentBasis)));
     }
   };
 
-  render() {
-    const {
-      isFormValid,
-      isFetchingRentBasisAttributes,
-      isSaveClicked,
-      isSaving,
-      rentBasisMethods,
-    } = this.props;
-    if (isFetchingRentBasisAttributes)
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    if (!rentBasisMethods) return null;
-    if (!isMethodAllowed(rentBasisMethods, Methods.POST))
-      return (
-        <PageContainer>
-          <AuthorizationError text={PermissionMissingTexts.GENERAL} />
-        </PageContainer>
-      );
+  if (isFetchingRentBasisAttributes)
     return (
-      <FullWidthContainer>
-        <PageNavigationWrapper>
-          <ControlButtonBar
-            buttonComponent={
-              <ControlButtons
-                allowEdit={isMethodAllowed(rentBasisMethods, Methods.POST)}
-                isCopyDisabled={true}
-                isEditMode={true}
-                isSaveDisabled={isSaveClicked && !isFormValid}
-                onCancel={this.cancelChanges}
-                onSave={this.saveChanges}
-                showCommentButton={false}
-                showCopyButton={true}
-              />
-            }
-            infoComponent={<h1>Uusi vuokrausperuste</h1>}
-            onBack={this.handleBack}
-          />
-        </PageNavigationWrapper>
-
-        <PageContainer className="with-small-control-bar">
-          {isSaving && (
-            <LoaderWrapper className="overlay-wrapper">
-              <Loader isLoading={isSaving} />
-            </LoaderWrapper>
-          )}
-
-          <ContentContainer>
-            <GreenBox className="no-margin">
-              <RentBasisForm isFocusedOnMount />
-            </GreenBox>
-          </ContentContainer>
-        </PageContainer>
-      </FullWidthContainer>
+      <PageContainer>
+        <Loader isLoading={true} />
+      </PageContainer>
     );
-  }
-}
+  if (!rentBasisMethods) return null;
+  if (!isMethodAllowed(rentBasisMethods, Methods.POST))
+    return (
+      <PageContainer>
+        <AuthorizationError text={PermissionMissingTexts.GENERAL} />
+      </PageContainer>
+    );
+  return (
+    <FullWidthContainer>
+      <PageNavigationWrapper>
+        <ControlButtonBar
+          buttonComponent={
+            <ControlButtons
+              allowEdit={isMethodAllowed(rentBasisMethods, Methods.POST)}
+              isCopyDisabled={true}
+              isEditMode={true}
+              isSaveDisabled={isSaveClicked && !isFormValid}
+              onCancel={cancelChanges}
+              onSave={saveChanges}
+              showCommentButton={false}
+              showCopyButton={true}
+            />
+          }
+          infoComponent={<h1>Uusi vuokrausperuste</h1>}
+          onBack={handleBack}
+        />
+      </PageNavigationWrapper>
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    editedRentBasis: getFormValues(FormNames.RENT_BASIS)(state),
-    isFormDirty: isDirty(FormNames.RENT_BASIS)(state),
-    isFormValid: getIsFormValid(state),
-    isSaveClicked: getIsSaveClicked(state),
-    isSaving: getIsSaving(state),
-  };
+      <PageContainer className="with-small-control-bar">
+        {isSaving && (
+          <LoaderWrapper className="overlay-wrapper">
+            <Loader isLoading={isSaving} />
+          </LoaderWrapper>
+        )}
+
+        <ContentContainer>
+          <GreenBox className="no-margin">
+            <RentBasisForm isFocusedOnMount />
+          </GreenBox>
+        </ContentContainer>
+      </PageContainer>
+    </FullWidthContainer>
+  );
 };
 
-export default flowRight(
-  withRentBasisAttributes,
-  withUiDataList,
-  withRouterLegacy,
-  connect(mapStateToProps, {
-    createRentBasis,
-    hideEditMode,
-    receiveIsSaveClicked,
-    receiveTopNavigationSettings,
-    showEditMode,
-  }),
-)(NewRentBasisPage);
+export default NewRentBasisPage;
