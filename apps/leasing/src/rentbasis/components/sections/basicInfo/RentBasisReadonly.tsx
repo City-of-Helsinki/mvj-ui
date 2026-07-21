@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
 import { get } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
@@ -35,10 +35,10 @@ import type { Attributes } from "types";
 import type { RentBasis } from "@/rentbasis/types";
 type Props = {
   rentBasis: RentBasis;
-  rentBasisAttributes: Attributes;
 };
 
-const RentBasisReadonly = ({ rentBasis, rentBasisAttributes }: Props) => {
+const RentBasisReadonly = ({ rentBasis }: Props) => {
+  const rentBasisAttributes: Attributes = useSelector(getRentBasisAttributes);
   const plotTypeOptions = getFieldOptions(
     rentBasisAttributes,
     RentBasisFieldPaths.PLOT_TYPE,
@@ -578,8 +578,4 @@ const RentBasisReadonly = ({ rentBasis, rentBasisAttributes }: Props) => {
   );
 };
 
-export default connect((state) => {
-  return {
-    rentBasisAttributes: getRentBasisAttributes(state),
-  };
-})(RentBasisReadonly);
+export default RentBasisReadonly;
