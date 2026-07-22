@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { getFormValues } from "redux-form";
+import { createForm } from "final-form";
+import arrayMutators from "final-form-arrays";
 import { isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";
@@ -17,21 +18,25 @@ import RentBasisForm from "./forms/RentBasisForm";
 import {
   createRentBasis,
   hideEditMode,
+  receiveIsFormDirty,
   receiveIsSaveClicked,
   showEditMode,
+  fetchAttributes as fetchRentBasisAttributes,
 } from "@/rentbasis/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
-import { fetchAttributes as fetchRentBasisAttributes } from "@/rentbasis/actions";
 import {
   fetchAttributes as fetchUiDataAttributes,
   fetchUiDataList,
 } from "@/uiData/actions";
-import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
+import { Methods, PermissionMissingTexts } from "@/enums";
 import { getPayloadRentBasis } from "@/rentbasis/helpers";
 import { isMethodAllowed, setPageTitle } from "@/util/helpers";
+import {
+  getSessionStorageItem,
+  removeSessionStorageItem,
+} from "@/util/storage";
 import { getRouteById, Routes } from "@/root/routes";
 import {
-  getIsFormValid,
   getIsSaveClicked,
   getIsSaving,
   getAttributes as getRentBasisAttributes,
@@ -47,16 +52,13 @@ import {
 } from "@/uiData/selectors";
 import type { Methods as MethodsType } from "types";
 import type { RentBasis } from "../types";
+import { validateRentBasisForm } from "../formValidators";
 
 const NewRentBasisPage: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const editedRentBasis: RentBasis = useSelector(
-    getFormValues(FormNames.RENT_BASIS),
-  ) as RentBasis;
-  const isFormValid = useSelector(getIsFormValid);
   const isSaveClicked = useSelector(getIsSaveClicked);
   const isSaving = useSelector(getIsSaving);
   const rentBasisAttributes = useSelector(getRentBasisAttributes);
@@ -70,6 +72,39 @@ const NewRentBasisPage: React.FC = () => {
   const uiDataAttributes = useSelector(getUiDataAttributes);
   const uiDataList = useSelector(getUiDataList);
   const uiDataMethods = useSelector(getUiDataMethods);
+  const [editedRentBasis, setEditedRentBasis] = useState<RentBasis>();
+
+  const rentBasisFormRef = useRef(
+    createForm({
+      onSubmit: () => {},
+      mutators: { ...arrayMutators },
+      validate: validateRentBasisForm,
+      initialValues: {
+        rent_rates: [{}],
+        decisions: [{}],
+        property_identifiers: [{}],
+      },
+    }),
+  );
+
+  useEffect(() => {
+    const unsubscribe = rentBasisFormRef.current.subscribe(
+      ({ values, dirty }) => {
+        setEditedRentBasis(values as RentBasis);
+        dispatch(receiveIsFormDirty(dirty));
+      },
+      { values: true, dirty: true },
+    );
+    return () => unsubscribe();
+  }, [dispatch]);
+
+  useEffect(() => {
+    const copiedData = getSessionStorageItem("rentBasisCopyData");
+    if (copiedData && !isEmpty(copiedData)) {
+      rentBasisFormRef.current.initialize(copiedData);
+      removeSessionStorageItem("rentBasisCopyData");
+    }
+  }, []);
 
   useEffect(() => {
     setPageTitle("Uusi vuokrausperiaate");
@@ -140,7 +175,7 @@ const NewRentBasisPage: React.FC = () => {
   const saveChanges = () => {
     dispatch(receiveIsSaveClicked(true));
 
-    if (isFormValid) {
+    if (rentBasisFormRef.current.getState().valid) {
       dispatch(createRentBasis(getPayloadRentBasis(editedRentBasis)));
     }
   };
@@ -167,7 +202,9 @@ const NewRentBasisPage: React.FC = () => {
               allowEdit={isMethodAllowed(rentBasisMethods, Methods.POST)}
               isCopyDisabled={true}
               isEditMode={true}
-              isSaveDisabled={isSaveClicked && !isFormValid}
+              isSaveDisabled={
+                isSaveClicked && !rentBasisFormRef.current.getState().valid
+              }
               onCancel={cancelChanges}
               onSave={saveChanges}
               showCommentButton={false}
@@ -188,7 +225,10 @@ const NewRentBasisPage: React.FC = () => {
 
         <ContentContainer>
           <GreenBox className="no-margin">
-            <RentBasisForm isFocusedOnMount />
+            <RentBasisForm
+              isFocusedOnMount
+              formApi={rentBasisFormRef.current}
+            />
           </GreenBox>
         </ContentContainer>
       </PageContainer>

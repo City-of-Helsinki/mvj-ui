@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { change, getFormValues, isDirty } from "redux-form";
+import { createForm } from "final-form";
+import arrayMutators from "final-form-arrays";
 import { isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -27,12 +28,12 @@ import {
   editRentBasis,
   fetchSingleRentBasis,
   hideEditMode,
-  initializeRentBasis,
+  receiveIsFormDirty,
   receiveIsSaveClicked,
   showEditMode,
+  fetchAttributes as fetchRentBasisAttributes,
 } from "@/rentbasis/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
-import { fetchAttributes as fetchRentBasisAttributes } from "@/rentbasis/actions";
 import {
   fetchAttributes as fetchUiDataAttributes,
   fetchUiDataList,
@@ -63,10 +64,13 @@ import { getRouteById, Routes } from "@/root/routes";
 import {
   getIsEditMode,
   getIsFetching,
-  getIsFormValid,
+  getIsFormDirty,
   getIsSaveClicked,
   getIsSaving,
   getRentBasis,
+  getAttributes as getRentBasisAttributes,
+  getIsFetchingAttributes as getIsFetchingRentBasisAttributes,
+  getMethods as getRentBasisMethods,
 } from "@/rentbasis/selectors";
 import {
   getIsFetching as getIsFetchingUsersPermissions,
@@ -80,34 +84,26 @@ import {
   getUiDataList,
 } from "@/uiData/selectors";
 import {
-  getAttributes as getRentBasisAttributes,
-  getIsFetchingAttributes as getIsFetchingRentBasisAttributes,
-  getMethods as getRentBasisMethods,
-} from "@/rentbasis/selectors";
-import {
   getSessionStorageItem,
   removeSessionStorageItem,
   setSessionStorageItem,
 } from "@/util/storage";
 import type { Attributes } from "types";
 import type { RentBasis } from "@/rentbasis/types";
+import { validateRentBasisForm } from "../formValidators";
 
-const RentBasisPage = () => {
+const RentBasisPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
 
-  const editedRentBasis: RentBasis = useSelector(
-    getFormValues(FormNames.RENT_BASIS),
-  ) as RentBasis;
   const isEditMode = useSelector(getIsEditMode);
   const isFetching = useSelector(getIsFetching);
   const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
-  const isFormDirty = useSelector(isDirty(FormNames.RENT_BASIS));
-  const isFormValid = useSelector(getIsFormValid);
   const isSaveClicked = useSelector(getIsSaveClicked);
   const isSaving = useSelector(getIsSaving);
+  const isFormDirty = useSelector(getIsFormDirty);
   const rentBasisData: RentBasis = useSelector(getRentBasis);
   const usersPermissions = useSelector(getUsersPermissions);
   const isFetchingRentBasisAttributes = useSelector(
@@ -123,6 +119,33 @@ const RentBasisPage = () => {
 
   const [activeTab, setActiveTab] = useState(0);
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
+  const [editedRentBasis, setEditedRentBasis] = useState<RentBasis>();
+
+  const rentBasisFormRef = useRef(
+    createForm({
+      onSubmit: () => {},
+      mutators: { ...arrayMutators },
+      validate: validateRentBasisForm,
+    }),
+  );
+
+  useEffect(() => {
+    const unsubscribe = rentBasisFormRef.current.subscribe(
+      ({ values, dirty }) => {
+        setEditedRentBasis(values as RentBasis);
+        dispatch(receiveIsFormDirty(dirty));
+      },
+      { values: true, dirty: true },
+    );
+    return () => unsubscribe();
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (rentBasisData && !isEmpty(rentBasisData)) {
+      const rentBasis = getContentRentBasis(rentBasisData);
+      rentBasisFormRef.current.initialize(rentBasis);
+    }
+  }, [rentBasisData]);
 
   const currentValuesRef = useRef({
     isFormDirty,
@@ -234,28 +257,28 @@ const RentBasisPage = () => {
 
   const restoreUnsavedChanges = () => {
     handleShowEditMode();
-
-    dispatch(initializeRentBasis(rentBasisData));
     setTimeout(() => {
       const storedFormValues = getSessionStorageItem(FormNames.RENT_BASIS);
 
       if (storedFormValues) {
-        bulkChange(FormNames.RENT_BASIS, storedFormValues);
+        bulkChange(storedFormValues);
       }
     }, 20);
     setIsRestoreModalOpen(false);
   };
 
-  const bulkChange = (formName: string, obj: Record<string, any>) => {
+  const bulkChange = (obj: Record<string, any>) => {
     const fields = Object.keys(obj);
-    fields.forEach((field) => {
-      dispatch(change(formName, field, obj[field]));
+    rentBasisFormRef.current.batch(() => {
+      fields.forEach((field) => {
+        rentBasisFormRef.current.change(field, obj[field]);
+      });
     });
   };
 
   const copyRentBasis = () => {
     const rentBasis = getCopyOfRentBasis(rentBasisData);
-    dispatch(initializeRentBasis(rentBasis));
+    setSessionStorageItem("rentBasisCopyData", rentBasis);
     return navigate({
       pathname: getRouteById(Routes.RENT_BASIS_NEW),
       search: location.search,
@@ -265,7 +288,7 @@ const RentBasisPage = () => {
   const saveChanges = () => {
     dispatch(receiveIsSaveClicked(true));
 
-    if (isFormValid) {
+    if (rentBasisFormRef.current.getState().valid) {
       dispatch(editRentBasis(getPayloadRentBasis(editedRentBasis)));
     }
   };
@@ -283,12 +306,12 @@ const RentBasisPage = () => {
   const cancelChanges = () => {
     dispatch(hideEditMode());
     stopAutoSaveTimer();
+    rentBasisFormRef.current.reset();
+    clearUnsavedChanges();
   };
 
   const handleShowEditMode = () => {
-    const rentBasis = getContentRentBasis(rentBasisData);
     dispatch(receiveIsSaveClicked(false));
-    dispatch(initializeRentBasis(rentBasis));
     dispatch(showEditMode());
     startAutoSaveTimer();
   };
@@ -324,7 +347,9 @@ const RentBasisPage = () => {
               allowEdit={isMethodAllowed(rentBasisMethods, Methods.PATCH)}
               isCopyDisabled={false}
               isEditMode={isEditMode}
-              isSaveDisabled={isSaveClicked && !isFormValid}
+              isSaveDisabled={
+                isSaveClicked && !rentBasisFormRef.current.getState().valid
+              }
               onCancel={cancelChanges}
               onCopy={copyRentBasis}
               onEdit={handleShowEditMode}
@@ -344,7 +369,8 @@ const RentBasisPage = () => {
               label: RentBasisFieldTitles.BASIC_INFO,
               allow: true,
               isDirty: isFormDirty,
-              hasError: isSaveClicked && !isFormValid,
+              hasError:
+                isSaveClicked && !rentBasisFormRef.current.getState().valid,
             },
             {
               label: RentBasisFieldTitles.MAP,
@@ -397,7 +423,7 @@ const RentBasisPage = () => {
                     <AuthorizationError text={PermissionMissingTexts.GENERAL} />
                   }
                 >
-                  <RentBasisEdit />
+                  <RentBasisEdit formApi={rentBasisFormRef.current} />
                 </Authorization>
               ) : (
                 <RentBasisReadonly rentBasis={rentBasis} />
