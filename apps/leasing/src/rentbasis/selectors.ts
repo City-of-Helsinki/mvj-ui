@@ -28,9 +28,6 @@ export const getRentBasisList: Selector<RentBasisList, void> = (
 export const getRentBasis: Selector<RentBasis, void> = (
   state: RootState,
 ): RentBasis => state.rentBasis.rentbasis;
-export const getRentBasisInitialValues: Selector<RentBasis, void> = (
+export const getIsFormDirty: Selector<boolean, void> = (
   state: RootState,
-): RentBasis => state.rentBasis.initialValues;
-export const getIsFormValid: Selector<boolean, void> = (
-  state: RootState,
-): boolean => state.rentBasis.isFormValid;
+): boolean => state.rentBasis.isFormDirty;

@@ -11,27 +11,21 @@ import {
   createRentBasis,
   editRentBasis,
   notFound,
-  initializeRentBasis,
   showEditMode,
   hideEditMode,
-  receiveFormValid,
   receiveIsSaveClicked,
+  receiveIsFormDirty,
 } from "./actions";
 import rentBasisReducer from "./reducer";
 import type { RentBasisState } from "./types";
 const defaultState: RentBasisState = {
   attributes: null,
-  initialValues: {
-    decisions: [{}],
-    property_identifiers: [{}],
-    rent_rates: [{}],
-  },
   isEditMode: false,
-  isFormValid: false,
   isFetching: false,
   isFetchingAttributes: false,
   isSaveClicked: false,
   isSaving: false,
+  isFormDirty: false,
   list: {},
   methods: null,
   rentbasis: {},
@@ -106,8 +100,8 @@ describe("Rent basis", () => {
       });
       it("should update single rent basis", () => {
         const dummyRentBasis = {
-          val1: "foo",
-          val2: "bar",
+          id: 1,
+          name: "foo",
         };
         const newState = { ...defaultState, rentbasis: dummyRentBasis };
         const state = rentBasisReducer(
@@ -132,15 +126,6 @@ describe("Rent basis", () => {
         state = rentBasisReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });
-      it("should update rent basis form initial values", () => {
-        const dummyRentBasis = {
-          val1: "foo",
-          val2: "bar",
-        };
-        const newState = { ...defaultState, initialValues: dummyRentBasis };
-        const state = rentBasisReducer({}, initializeRentBasis(dummyRentBasis));
-        expect(state).to.deep.equal(newState);
-      });
       it("should update isEditMode flag to true", () => {
         const newState = { ...defaultState, isEditMode: true };
         const state = rentBasisReducer({}, showEditMode());
@@ -152,14 +137,14 @@ describe("Rent basis", () => {
         state = rentBasisReducer(state, hideEditMode());
         expect(state).to.deep.equal(newState);
       });
-      it("should update isFormValid flag to true", () => {
-        const newState = { ...defaultState, isFormValid: true };
-        const state = rentBasisReducer({}, receiveFormValid(true));
-        expect(state).to.deep.equal(newState);
-      });
       it("should update isSaveClicked flag to true", () => {
         const newState = { ...defaultState, isSaveClicked: true };
         const state = rentBasisReducer({}, receiveIsSaveClicked(true));
+        expect(state).to.deep.equal(newState);
+      });
+      it("should update isFormDirty flag to true", () => {
+        const newState = { ...defaultState, isFormDirty: true };
+        const state = rentBasisReducer({}, receiveIsFormDirty(true));
         expect(state).to.deep.equal(newState);
       });
     });
