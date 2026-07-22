@@ -1,13 +1,12 @@
 import type { Action, Attributes, Methods } from "types";
 export type RentBasisState = {
   attributes: Attributes;
-  initialValues: RentBasis;
   isEditMode: boolean;
   isFetching: boolean;
   isFetchingAttributes: boolean;
-  isFormValid: boolean;
   isSaveClicked: boolean;
   isSaving: boolean;
+  isFormDirty: boolean;
   list: RentBasisList;
   methods: Methods;
   rentbasis: RentBasis;
@@ -64,5 +63,4 @@ export type RentBasisNotFoundAction = Action<string, void>;
 export type ReceiveIsSaveClickedAction = Action<string, boolean>;
 export type HideEditModeAction = Action<string, void>;
 export type ShowEditModeAction = Action<string, void>;
-export type ReceiveRentBasisInitialValuesAction = Action<string, RentBasis>;
-export type ReceiveFormValidAction = Action<string, boolean>;
+export type ReceiveIsFormDirtyAction = Action<string, boolean>;

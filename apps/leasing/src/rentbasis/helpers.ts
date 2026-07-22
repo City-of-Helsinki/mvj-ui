@@ -1,8 +1,7 @@
 import { get, isEmpty } from "lodash-es";
-import { isDirty } from "redux-form";
 import { FormNames, TableSortOrder } from "@/enums";
 import { convertStrToDecimalNumber } from "@/util/helpers";
-import { getIsEditMode } from "@/rentbasis/selectors";
+import { getIsEditMode, getIsFormDirty } from "@/rentbasis/selectors";
 import { removeSessionStorageItem } from "@/util/storage";
 import type { LeafletGeoJson } from "types";
 import type {
@@ -303,7 +302,8 @@ export const mapRentBasisSearchFilters = (
  */
 export const isRentBasisFormDirty = (state: RootState): boolean => {
   const isEditMode = getIsEditMode(state);
-  return isEditMode && isDirty(FormNames.RENT_BASIS)(state);
+  const isDirty = getIsFormDirty(state);
+  return isEditMode && isDirty;
 };
 
 /**

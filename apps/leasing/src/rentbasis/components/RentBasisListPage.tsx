@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { initialize } from "redux-form";
+import { createForm } from "final-form";
+import { Form } from "react-final-form";
 import { Row, Column } from "@/components/grid/Grid";
 import { useLocation, useNavigate } from "react-router";
-import { get } from "lodash-es";
+import { debounce, get } from "lodash-es";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -17,13 +18,12 @@ import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableWrapper from "@/components/table/TableWrapper";
 import {
   fetchRentBasisList,
-  initializeRentBasis,
   fetchAttributes as fetchRentBasisAttributes,
 } from "@/rentbasis/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER } from "@/rentbasis/constants";
-import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
+import { Methods, PermissionMissingTexts } from "@/enums";
 import {
   RentBasisFieldPaths,
   RentBasisPropertyIdentifiersFieldPaths,
@@ -73,6 +73,16 @@ const RentBasisListPage: React.FC = () => {
   const [sortKey, setSortKey] = useState(DEFAULT_SORT_KEY);
   const [sortOrder, setSortOrder] = useState(DEFAULT_SORT_ORDER);
 
+  const previousSortRef = useRef<{ sortKey: string; sortOrder: string } | null>(
+    null,
+  );
+
+  const searchFormRef = useRef(
+    createForm({
+      onSubmit: (values) => handleSearchChange(values, true),
+    }),
+  );
+
   useEffect(() => {
     setPageTitle("Vuokrausperiaatteet");
     dispatch(
@@ -100,46 +110,58 @@ const RentBasisListPage: React.FC = () => {
       delete initialValues.page;
       delete initialValues.sort_key;
       delete initialValues.sort_order;
-      dispatch(initialize(FormNames.RENT_BASIS_SEARCH, initialValues));
+      searchFormRef.current.initialize(initialValues);
       setIsSearchInitialized(true);
     };
 
     initializeSearchForm();
   }, [location.search, dispatch]);
 
+  const debouncedFetchRentBasisList = useMemo(
+    () =>
+      debounce((searchQuery: Record<string, any>) => {
+        dispatch(fetchRentBasisList(mapRentBasisSearchFilters(searchQuery)));
+      }, 1000),
+    [dispatch],
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedFetchRentBasisList.cancel();
+    };
+  }, [debouncedFetchRentBasisList]);
+
   useEffect(() => {
     const searchQuery = getUrlParams(location.search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
     delete searchQuery.page;
+
+    const currentSort = {
+      sortKey: searchQuery.sort_key || DEFAULT_SORT_KEY,
+      sortOrder: searchQuery.sort_order || DEFAULT_SORT_ORDER,
+    };
+    const isSortChanged =
+      !!previousSortRef.current &&
+      (previousSortRef.current.sortKey !== currentSort.sortKey ||
+        previousSortRef.current.sortOrder !== currentSort.sortOrder);
+    previousSortRef.current = currentSort;
 
     if (page > 1) {
       searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
-    searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
-    searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
-    dispatch(fetchRentBasisList(mapRentBasisSearchFilters(searchQuery)));
-  }, [location.search, dispatch]);
+    searchQuery.sort_key = currentSort.sortKey;
+    searchQuery.sort_order = currentSort.sortOrder;
+
+    if (isSortChanged) {
+      dispatch(fetchRentBasisList(mapRentBasisSearchFilters(searchQuery)));
+    } else {
+      debouncedFetchRentBasisList(searchQuery);
+    }
+  }, [location.search, dispatch, debouncedFetchRentBasisList]);
 
   const handleCreateButtonClick = () => {
-    dispatch(
-      initializeRentBasis({
-        decisions: [{}],
-        property_identifiers: [
-          {
-            identifier: "",
-          },
-        ],
-        rent_rates: [
-          {
-            amount: null,
-            build_permission_type: null,
-          },
-        ],
-        plot_type: null,
-      }),
-    );
     return navigate({
       pathname: getRouteById(Routes.RENT_BASIS_NEW),
       search: location.search,
@@ -287,60 +309,68 @@ const RentBasisListPage: React.FC = () => {
       </PageContainer>
     );
   return (
-    <PageContainer>
-      <Row>
-        <Column small={12} large={4}>
-          <Authorization
-            allow={isMethodAllowed(rentBasisMethods, Methods.POST)}
-          >
-            <AddButtonSecondary
-              className="no-top-margin"
-              label="Luo vuokrausperuste"
-              onClick={handleCreateButtonClick}
-            />
-          </Authorization>
-        </Column>
-        <Column small={12} large={8}>
-          <Search
-            isSearchInitialized={isSearchInitialized}
-            onSearch={handleSearchChange}
-            sortKey={sortKey}
-            sortOrder={sortOrder}
+    <Form
+      form={searchFormRef.current}
+      onSubmit={searchFormRef.current.submit}
+      enableReinitialize
+    >
+      {() => (
+        <PageContainer>
+          <Row>
+            <Column small={12} large={4}>
+              <Authorization
+                allow={isMethodAllowed(rentBasisMethods, Methods.POST)}
+              >
+                <AddButtonSecondary
+                  className="no-top-margin"
+                  label="Luo vuokrausperuste"
+                  onClick={handleCreateButtonClick}
+                />
+              </Authorization>
+            </Column>
+            <Column small={12} large={8}>
+              <Search
+                isSearchInitialized={isSearchInitialized}
+                onSearch={handleSearchChange}
+                sortKey={sortKey}
+                sortOrder={sortOrder}
+              />
+            </Column>
+          </Row>
+
+          <TableFiltersLegacy
+            amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
+            filterOptions={[]}
+            filterValue={[]}
           />
-        </Column>
-      </Row>
 
-      <TableFiltersLegacy
-        amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
-        filterOptions={[]}
-        filterValue={[]}
-      />
-
-      <TableWrapper>
-        {isFetching && (
-          <LoaderWrapper className="relative-overlay-wrapper">
-            <Loader isLoading={isFetching} />
-          </LoaderWrapper>
-        )}
-        <SortableTable
-          columns={columns}
-          data={rentBasisList}
-          listTable
-          onRowClick={handleRowClick}
-          onSortingChange={handleSortingChange}
-          serverSideSorting
-          showCollapseArrowColumn
-          sortable
-          sortKey={sortKey}
-          sortOrder={sortOrder}
-        />
-        <Pagination
-          activePage={activePage}
-          maxPage={maxPage}
-          onPageClick={(page) => handlePageClick(page)}
-        />
-      </TableWrapper>
-    </PageContainer>
+          <TableWrapper>
+            {isFetching && (
+              <LoaderWrapper className="relative-overlay-wrapper">
+                <Loader isLoading={isFetching} />
+              </LoaderWrapper>
+            )}
+            <SortableTable
+              columns={columns}
+              data={rentBasisList}
+              listTable
+              onRowClick={handleRowClick}
+              onSortingChange={handleSortingChange}
+              serverSideSorting
+              showCollapseArrowColumn
+              sortable
+              sortKey={sortKey}
+              sortOrder={sortOrder}
+            />
+            <Pagination
+              activePage={activePage}
+              maxPage={maxPage}
+              onPageClick={(page) => handlePageClick(page)}
+            />
+          </TableWrapper>
+        </PageContainer>
+      )}
+    </Form>
   );
 };
 
