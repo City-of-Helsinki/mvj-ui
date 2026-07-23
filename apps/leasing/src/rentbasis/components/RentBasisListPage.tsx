@@ -1,12 +1,10 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { initialize } from "redux-form";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createForm } from "final-form";
+import { Form } from "react-final-form";
 import { Row, Column } from "@/components/grid/Grid";
-import {
-  withRouterLegacy,
-  type WithRouterProps,
-} from "@/root/withRouterLegacy";
-import { flowRight, get } from "lodash-es";
+import { useLocation, useNavigate } from "react-router";
+import { debounce, get } from "lodash-es";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -18,11 +16,14 @@ import Search from "./search/Search";
 import SortableTable from "@/components/table/SortableTable";
 import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableWrapper from "@/components/table/TableWrapper";
-import { fetchRentBasisList, initializeRentBasis } from "@/rentbasis/actions";
+import {
+  fetchRentBasisList,
+  fetchAttributes as fetchRentBasisAttributes,
+} from "@/rentbasis/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER } from "@/rentbasis/constants";
-import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
+import { Methods, PermissionMissingTexts } from "@/enums";
 import {
   RentBasisFieldPaths,
   RentBasisPropertyIdentifiersFieldPaths,
@@ -43,185 +44,139 @@ import {
   setPageTitle,
 } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
-import { getIsFetching, getRentBasisList } from "@/rentbasis/selectors";
-import { withRentBasisAttributes } from "@/components/attributes/RentBasisAttributes";
-import type { Attributes, Methods as MethodsType } from "types";
+import {
+  getIsFetching,
+  getRentBasisList as getRentBasisListData,
+} from "@/rentbasis/selectors";
+import {
+  getAttributes as getRentBasisAttributes,
+  getIsFetchingAttributes as getIsFetchingRentBasisAttributes,
+  getMethods as getRentBasisMethods,
+} from "@/rentbasis/selectors";
 import type { RentBasisList } from "@/rentbasis/types";
-type Props = {
-  fetchRentBasisList: (...args: Array<any>) => any;
-  initialize: (...args: Array<any>) => any;
-  initializeRentBasis: (...args: Array<any>) => any;
-  isFetching: boolean;
-  isFetchingRentBasisAttributes: boolean;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-  rentBasisAttributes: Attributes;
-  // get via withRentBasisAttributes HOC
-  rentBasisMethods: MethodsType;
-  // get via withRentBasisAttributes HOC
-  rentBasisListData: RentBasisList;
-};
-type State = {
-  activePage: number;
-  isSearchInitialized: boolean;
-  sortKey: string;
-  sortOrder: string;
-};
 
-class RentBasisListPage extends Component<Props & WithRouterProps, State> {
-  _isMounted: boolean;
-  state = {
-    activePage: 1,
-    isSearchInitialized: false,
-    sortKey: DEFAULT_SORT_KEY,
-    sortOrder: DEFAULT_SORT_ORDER,
-  };
+const RentBasisListPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  componentDidMount() {
-    const { receiveTopNavigationSettings } = this.props;
+  const isFetching = useSelector(getIsFetching);
+  const rentBasisListData = useSelector(getRentBasisListData);
+  const isFetchingRentBasisAttributes = useSelector(
+    getIsFetchingRentBasisAttributes,
+  );
+  const rentBasisAttributes = useSelector(getRentBasisAttributes);
+  const rentBasisMethods = useSelector(getRentBasisMethods);
+
+  const [activePage, setActivePage] = useState(1);
+  const [isSearchInitialized, setIsSearchInitialized] = useState(false);
+  const [sortKey, setSortKey] = useState(DEFAULT_SORT_KEY);
+  const [sortOrder, setSortOrder] = useState(DEFAULT_SORT_ORDER);
+
+  const previousSortRef = useRef<{ sortKey: string; sortOrder: string } | null>(
+    null,
+  );
+
+  const searchFormRef = useRef(
+    createForm({
+      onSubmit: (values) => handleSearchChange(values, true),
+    }),
+  );
+
+  useEffect(() => {
     setPageTitle("Vuokrausperiaatteet");
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.RENT_BASIS),
-      pageTitle: "Vuokrausperiaatteet",
-      showSearch: false,
-    });
-    this.search();
-    this.setSearchFormValues();
-    window.addEventListener("popstate", this.handlePopState);
-    this._isMounted = true;
-  }
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.RENT_BASIS),
+        pageTitle: "Vuokrausperiaatteet",
+        showSearch: false,
+      }),
+    );
 
-  componentDidUpdate(prevProps) {
-    const {
-      location: { search: currentSearch },
-    } = this.props;
-    const {
-      location: { search: prevSearch },
-    } = prevProps;
-    const searchQuery = getUrlParams(currentSearch);
+    dispatch(fetchRentBasisAttributes());
+  }, [dispatch]);
 
-    if (currentSearch !== prevSearch) {
-      this.search();
-      delete searchQuery.sort_key;
-      delete searchQuery.sort_order;
-
-      if (!Object.keys(searchQuery).length) {
-        this.setSearchFormValues();
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("popstate", this.handlePopState);
-    this._isMounted = false;
-  }
-
-  handlePopState = () => {
-    this.setSearchFormValues();
-  };
-  setSearchFormValues = () => {
-    const {
-      location: { search },
-      initialize,
-    } = this.props;
-    const searchQuery = getUrlParams(search);
+  useEffect(() => {
+    const searchQuery = getUrlParams(location.search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
-    const setSearchFormReady = () => {
-      this.setState({
-        isSearchInitialized: true,
-      });
-    };
+    setActivePage(page);
+    setSortKey(searchQuery.sort_key || DEFAULT_SORT_KEY);
+    setSortOrder(searchQuery.sort_order || DEFAULT_SORT_ORDER);
+    setIsSearchInitialized(false);
 
-    const initializeSearchForm = async () => {
+    const initializeSearchForm = () => {
       const initialValues = { ...searchQuery };
       delete initialValues.page;
       delete initialValues.sort_key;
       delete initialValues.sort_order;
-      await initialize(FormNames.RENT_BASIS_SEARCH, initialValues);
+      searchFormRef.current.initialize(initialValues);
+      setIsSearchInitialized(true);
     };
 
-    this.setState(
-      {
-        activePage: page,
-        isSearchInitialized: false,
-        sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
-        sortOrder: searchQuery.sort_order
-          ? searchQuery.sort_order
-          : DEFAULT_SORT_ORDER,
-      },
-      async () => {
-        await initializeSearchForm();
+    initializeSearchForm();
+  }, [location.search, dispatch]);
 
-        if (this._isMounted) {
-          setSearchFormReady();
-        }
-      },
-    );
-  };
-  handleSearchChange = (query, resetActivePage: boolean = false) => {
-    const { navigate } = this.props;
+  const debouncedFetchRentBasisList = useMemo(
+    () =>
+      debounce((searchQuery: Record<string, any>) => {
+        dispatch(fetchRentBasisList(mapRentBasisSearchFilters(searchQuery)));
+      }, 1000),
+    [dispatch],
+  );
 
-    if (resetActivePage) {
-      this.setState({
-        activePage: 1,
-      });
-    }
+  useEffect(() => {
+    return () => {
+      debouncedFetchRentBasisList.cancel();
+    };
+  }, [debouncedFetchRentBasisList]);
 
-    return navigate({
-      pathname: getRouteById(Routes.RENT_BASIS),
-      search: getSearchQuery(query),
-    });
-  };
-  search = () => {
-    const {
-      fetchRentBasisList,
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
+  useEffect(() => {
+    const searchQuery = getUrlParams(location.search);
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
     delete searchQuery.page;
+
+    const currentSort = {
+      sortKey: searchQuery.sort_key || DEFAULT_SORT_KEY,
+      sortOrder: searchQuery.sort_order || DEFAULT_SORT_ORDER,
+    };
+    const isSortChanged =
+      !!previousSortRef.current &&
+      (previousSortRef.current.sortKey !== currentSort.sortKey ||
+        previousSortRef.current.sortOrder !== currentSort.sortOrder);
+    previousSortRef.current = currentSort;
 
     if (page > 1) {
       searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
 
     searchQuery.limit = LIST_TABLE_PAGE_SIZE;
-    searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
-    searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
-    fetchRentBasisList(mapRentBasisSearchFilters(searchQuery));
-  };
-  handleCreateButtonClick = () => {
-    const {
-      navigate,
-      initializeRentBasis,
-      location: { search },
-    } = this.props;
-    initializeRentBasis({
-      decisions: [{}],
-      property_identifiers: [{}],
-      rent_rates: [{}],
-    });
+    searchQuery.sort_key = currentSort.sortKey;
+    searchQuery.sort_order = currentSort.sortOrder;
+
+    if (isSortChanged) {
+      dispatch(fetchRentBasisList(mapRentBasisSearchFilters(searchQuery)));
+    } else {
+      debouncedFetchRentBasisList(searchQuery);
+    }
+  }, [location.search, dispatch, debouncedFetchRentBasisList]);
+
+  const handleCreateButtonClick = () => {
     return navigate({
       pathname: getRouteById(Routes.RENT_BASIS_NEW),
-      search: search,
+      search: location.search,
     });
   };
-  handleRowClick = (id) => {
-    const {
-      navigate,
-      location: { search },
-    } = this.props;
+
+  const handleRowClick = (id) => {
     return navigate({
       pathname: `${getRouteById(Routes.RENT_BASIS)}/${id}`,
-      search: search,
+      search: location.search,
     });
   };
-  handlePageClick = (page: number) => {
-    const {
-      navigate,
-      location: { search },
-    } = this.props;
-    const query = getUrlParams(search);
+
+  const handlePageClick = (page: number) => {
+    const query = getUrlParams(location.search);
 
     if (page > 1) {
       query.page = page;
@@ -229,15 +184,14 @@ class RentBasisListPage extends Component<Props & WithRouterProps, State> {
       delete query.page;
     }
 
-    this.setState({
-      activePage: page,
-    });
+    setActivePage(page);
     return navigate({
       pathname: getRouteById(Routes.RENT_BASIS),
       search: getSearchQuery(query),
     });
   };
-  getRentBasisList = (rentBasisList: RentBasisList) => {
+
+  const getRentBasisList = (rentBasisList: RentBasisList) => {
     const results = getApiResponseResults(rentBasisList);
     return results.map((item) => {
       return {
@@ -255,8 +209,8 @@ class RentBasisListPage extends Component<Props & WithRouterProps, State> {
       };
     });
   };
-  getColumns = () => {
-    const { rentBasisAttributes } = this.props;
+
+  const getColumns = () => {
     const columns = [];
     const buildPermissionTypeOptions = getFieldOptions(
       rentBasisAttributes,
@@ -313,122 +267,111 @@ class RentBasisListPage extends Component<Props & WithRouterProps, State> {
 
     return columns;
   };
-  handleSortingChange = ({ sortKey, sortOrder }) => {
-    const {
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    searchQuery.sort_key = sortKey;
-    searchQuery.sort_order = sortOrder;
-    this.setState({
-      sortKey,
-      sortOrder,
+
+  const handleSearchChange = (query, resetActivePage: boolean = false) => {
+    if (resetActivePage) {
+      setActivePage(1);
+    }
+
+    return navigate({
+      pathname: getRouteById(Routes.RENT_BASIS),
+      search: getSearchQuery(query),
     });
-    this.handleSearchChange(searchQuery);
   };
 
-  render() {
-    const {
-      isFetching,
-      isFetchingRentBasisAttributes,
-      rentBasisListData,
-      rentBasisMethods,
-    } = this.props;
-    const { activePage, isSearchInitialized, sortKey, sortOrder } = this.state;
-    const count = getApiResponseCount(rentBasisListData);
-    const rentBasisList = this.getRentBasisList(rentBasisListData);
-    const maxPage = getApiResponseMaxPage(
-      rentBasisListData,
-      LIST_TABLE_PAGE_SIZE,
-    );
-    const columns = this.getColumns();
-    if (isFetchingRentBasisAttributes)
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    if (!rentBasisMethods) return null;
-    if (!isMethodAllowed(rentBasisMethods, Methods.GET))
-      return (
-        <PageContainer>
-          <AuthorizationError text={PermissionMissingTexts.RENT_BASIS} />
-        </PageContainer>
-      );
+  const handleSortingChange = ({ sortKey, sortOrder }) => {
+    const searchQuery = getUrlParams(location.search);
+    searchQuery.sort_key = sortKey;
+    searchQuery.sort_order = sortOrder;
+    setSortKey(sortKey);
+    setSortOrder(sortOrder);
+    handleSearchChange(searchQuery);
+  };
+
+  const count = getApiResponseCount(rentBasisListData);
+  const rentBasisList = getRentBasisList(rentBasisListData);
+  const maxPage = getApiResponseMaxPage(
+    rentBasisListData,
+    LIST_TABLE_PAGE_SIZE,
+  );
+  const columns = getColumns();
+  if (isFetchingRentBasisAttributes)
     return (
       <PageContainer>
-        <Row>
-          <Column small={12} large={4}>
-            <Authorization
-              allow={isMethodAllowed(rentBasisMethods, Methods.POST)}
-            >
-              <AddButtonSecondary
-                className="no-top-margin"
-                label="Luo vuokrausperuste"
-                onClick={this.handleCreateButtonClick}
+        <Loader isLoading={true} />
+      </PageContainer>
+    );
+  if (!rentBasisMethods) return null;
+  if (!isMethodAllowed(rentBasisMethods, Methods.GET))
+    return (
+      <PageContainer>
+        <AuthorizationError text={PermissionMissingTexts.RENT_BASIS} />
+      </PageContainer>
+    );
+  return (
+    <Form
+      form={searchFormRef.current}
+      onSubmit={searchFormRef.current.submit}
+      enableReinitialize
+    >
+      {() => (
+        <PageContainer>
+          <Row>
+            <Column small={12} large={4}>
+              <Authorization
+                allow={isMethodAllowed(rentBasisMethods, Methods.POST)}
+              >
+                <AddButtonSecondary
+                  className="no-top-margin"
+                  label="Luo vuokrausperuste"
+                  onClick={handleCreateButtonClick}
+                />
+              </Authorization>
+            </Column>
+            <Column small={12} large={8}>
+              <Search
+                isSearchInitialized={isSearchInitialized}
+                onSearch={handleSearchChange}
+                sortKey={sortKey}
+                sortOrder={sortOrder}
               />
-            </Authorization>
-          </Column>
-          <Column small={12} large={8}>
-            <Search
-              isSearchInitialized={isSearchInitialized}
-              onSearch={this.handleSearchChange}
+            </Column>
+          </Row>
+
+          <TableFiltersLegacy
+            amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
+            filterOptions={[]}
+            filterValue={[]}
+          />
+
+          <TableWrapper>
+            {isFetching && (
+              <LoaderWrapper className="relative-overlay-wrapper">
+                <Loader isLoading={isFetching} />
+              </LoaderWrapper>
+            )}
+            <SortableTable
+              columns={columns}
+              data={rentBasisList}
+              listTable
+              onRowClick={handleRowClick}
+              onSortingChange={handleSortingChange}
+              serverSideSorting
+              showCollapseArrowColumn
+              sortable
               sortKey={sortKey}
               sortOrder={sortOrder}
             />
-          </Column>
-        </Row>
+            <Pagination
+              activePage={activePage}
+              maxPage={maxPage}
+              onPageClick={(page) => handlePageClick(page)}
+            />
+          </TableWrapper>
+        </PageContainer>
+      )}
+    </Form>
+  );
+};
 
-        <TableFiltersLegacy
-          amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
-          filterOptions={[]}
-          filterValue={[]}
-        />
-
-        <TableWrapper>
-          {isFetching && (
-            <LoaderWrapper className="relative-overlay-wrapper">
-              <Loader isLoading={isFetching} />
-            </LoaderWrapper>
-          )}
-          <SortableTable
-            columns={columns}
-            data={rentBasisList}
-            listTable
-            onRowClick={this.handleRowClick}
-            onSortingChange={this.handleSortingChange}
-            serverSideSorting
-            showCollapseArrowColumn
-            sortable
-            sortKey={sortKey}
-            sortOrder={sortOrder}
-          />
-          <Pagination
-            activePage={activePage}
-            maxPage={maxPage}
-            onPageClick={(page) => this.handlePageClick(page)}
-          />
-        </TableWrapper>
-      </PageContainer>
-    );
-  }
-}
-
-export default flowRight(
-  withRentBasisAttributes,
-  withRouterLegacy,
-  connect(
-    (state) => {
-      return {
-        isFetching: getIsFetching(state),
-        rentBasisListData: getRentBasisList(state),
-      };
-    },
-    {
-      fetchRentBasisList,
-      initialize,
-      initializeRentBasis,
-      receiveTopNavigationSettings,
-    },
-  ),
-)(RentBasisListPage);
+export default RentBasisListPage;

@@ -1,19 +1,19 @@
-import React, { Fragment, PureComponent, ReactNode } from "react";
-import { connect } from "react-redux";
-import { FieldArray, reduxForm } from "redux-form";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { Form } from "react-final-form";
+import { FormApi } from "final-form";
+import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
-import { flowRight } from "lodash-es";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
 import SubTitle from "@/components/content/SubTitle";
-import { receiveFormValid } from "@/rentbasis/actions";
-import { ConfirmationModalTexts, FieldTypes, FormNames } from "@/enums";
+import { ConfirmationModalTexts, FieldTypes } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import {
   RentBasisFieldPaths,
@@ -35,18 +35,15 @@ import {
   isFieldAllowedToRead,
   isFieldRequired,
 } from "@/util/helpers";
-import { validateRentBasisForm } from "@/rentbasis/formValidators";
 import {
   getAttributes as getRentBasisAttributes,
-  getIsFormValid,
   getIsSaveClicked,
-  getRentBasisInitialValues,
 } from "@/rentbasis/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { referenceNumber } from "@/components/form/validations";
 import type { Attributes } from "types";
-import type { RootState } from "@/root/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+
 type PropertyIdentifiersProps = {
   fields: any;
   isSaveClicked: boolean;
@@ -54,7 +51,7 @@ type PropertyIdentifiersProps = {
   usersPermissions: UsersPermissionsType;
 };
 
-const renderPropertyIdentifiers = ({
+const PropertyIdentifiers = ({
   fields,
   isSaveClicked,
   rentBasisAttributes,
@@ -66,9 +63,9 @@ const renderPropertyIdentifiers = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ dispatch: appDispatch }) => {
         return (
-          <Fragment>
+          <>
             <FormTextTitle
               required={isFieldRequired(
                 rentBasisAttributes,
@@ -96,7 +93,7 @@ const renderPropertyIdentifiers = ({
               !!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  appDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -122,7 +119,7 @@ const renderPropertyIdentifiers = ({
                               RentBasisPropertyIdentifiersFieldPaths.IDENTIFIER,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 rentBasisAttributes,
@@ -176,7 +173,7 @@ const renderPropertyIdentifiers = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -190,7 +187,7 @@ type DecisionsProps = {
   usersPermissions: UsersPermissionsType;
 };
 
-const renderDecisions = ({
+const Decisions = ({
   fields,
   isSaveClicked,
   rentBasisAttributes,
@@ -204,7 +201,7 @@ const renderDecisions = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             <SubTitle
               enableUiDataEdit
               uiDataKey={getUiDataRentBasisKey(
@@ -341,7 +338,7 @@ const renderDecisions = ({
                           RentBasisDecisionsFieldPaths.DECISION_MAKER,
                         )}
                       >
-                        <FormFieldLegacy
+                        <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={getFieldAttributes(
                             rentBasisAttributes,
@@ -362,7 +359,7 @@ const renderDecisions = ({
                           RentBasisDecisionsFieldPaths.DECISION_DATE,
                         )}
                       >
-                        <FormFieldLegacy
+                        <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={getFieldAttributes(
                             rentBasisAttributes,
@@ -383,7 +380,7 @@ const renderDecisions = ({
                           RentBasisDecisionsFieldPaths.SECTION,
                         )}
                       >
-                        <FormFieldLegacy
+                        <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={getFieldAttributes(
                             rentBasisAttributes,
@@ -407,7 +404,7 @@ const renderDecisions = ({
                               RentBasisDecisionsFieldPaths.REFERENCE_NUMBER,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 rentBasisAttributes,
@@ -456,7 +453,7 @@ const renderDecisions = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -471,7 +468,7 @@ type RentRatesProps = {
   usersPermissions: UsersPermissionsType;
 };
 
-const renderRentRates = ({
+const RentRates = ({
   areaUnitOptions,
   fields,
   isSaveClicked,
@@ -486,7 +483,7 @@ const renderRentRates = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             <SubTitle
               enableUiDataEdit
               uiDataKey={getUiDataRentBasisKey(
@@ -502,7 +499,7 @@ const renderRentRates = ({
             ) &&
               (!fields || !fields.length) && <FormText>Ei hintoja</FormText>}
             {fields && !!fields.length && (
-              <Fragment>
+              <>
                 <Row>
                   <Column small={3} large={2}>
                     <Authorization
@@ -601,7 +598,7 @@ const renderRentRates = ({
                             RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               rentBasisAttributes,
@@ -623,7 +620,7 @@ const renderRentRates = ({
                             RentBasisRentRatesFieldPaths.AMOUNT,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               rentBasisAttributes,
@@ -647,7 +644,7 @@ const renderRentRates = ({
                                 RentBasisRentRatesFieldPaths.AREA_UNIT,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   rentBasisAttributes,
@@ -682,7 +679,7 @@ const renderRentRates = ({
                     </Row>
                   );
                 })}
-              </Fragment>
+              </>
             )}
 
             <Authorization
@@ -697,7 +694,7 @@ const renderRentRates = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -705,386 +702,352 @@ const renderRentRates = ({
 };
 
 type Props = {
-  handleSubmit: (...args: Array<any>) => any;
-  initialValues: Record<string, any>;
+  formApi: FormApi;
   isFocusedOnMount?: boolean;
-  isFormValid: boolean;
-  isSaveClicked: boolean;
-  receiveFormValid: (...args: Array<any>) => any;
-  rentBasisAttributes: Attributes;
-  usersPermissions: UsersPermissionsType;
-  valid: boolean;
-};
-type State = {
-  areaUnitOptions: Array<Record<string, any>>;
-  indexOptions: Array<Record<string, any>>;
-  rentBasisAttributes: Attributes;
 };
 
-class RentBasisForm extends PureComponent<Props, State> {
-  firstField: any;
-  state = {
-    areaUnitOptions: [],
-    indexOptions: [],
-    rentBasisAttributes: null,
-  };
+const RentBasisForm = ({ formApi, isFocusedOnMount }: Props): ReactNode => {
+  const firstField = useRef<any>(null);
 
-  componentDidMount() {
-    const { isFocusedOnMount } = this.props;
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const rentBasisAttributes = useSelector(getRentBasisAttributes);
+  const usersPermissions = useSelector(getUsersPermissions);
 
+  const [areaUnitOptions, setAreaUnitOptions] = useState<
+    Array<Record<string, any>>
+  >([]);
+  const [indexOptions, setIndexOptions] = useState<Array<Record<string, any>>>(
+    [],
+  );
+
+  useEffect(() => {
     if (isFocusedOnMount) {
-      this.setFocusOnFirstField();
+      setFocusOnFirstField();
     }
-  }
+  }, [isFocusedOnMount]);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
-
-    if (props.rentBasisAttributes !== state.rentBasisAttributes) {
-      newState.rentBasisAttributes = props.rentBasisAttributes;
-      newState.areaUnitOptions = getFieldOptions(
-        props.rentBasisAttributes,
+  useEffect(() => {
+    setAreaUnitOptions(
+      getFieldOptions(
+        rentBasisAttributes,
         RentBasisRentRatesFieldPaths.AREA_UNIT,
         true,
         (option) =>
           !isEmptyValue(option.display_name)
             ? option.display_name.replaceAll(/\^2/g, "²")
             : option.display_name,
-      );
-      newState.indexOptions = getFieldOptions(
-        props.rentBasisAttributes,
-        RentBasisFieldPaths.INDEX,
-        true,
-      );
-    }
+      ),
+    );
+    setIndexOptions(
+      getFieldOptions(rentBasisAttributes, RentBasisFieldPaths.INDEX, true),
+    );
+  }, [rentBasisAttributes]);
 
-    return newState;
-  }
-
-  componentDidUpdate() {
-    const { isFormValid, receiveFormValid, valid } = this.props;
-
-    if (isFormValid !== valid) {
-      receiveFormValid(valid);
-    }
-  }
-
-  setRefForFirstField = (element: any) => {
-    this.firstField = element;
+  const setRefForFirstField = (element: any) => {
+    firstField.current = element;
   };
-  setFocusOnFirstField = () => {
-    this.firstField.focus();
+  const setFocusOnFirstField = () => {
+    firstField.current.focus();
   };
 
-  render() {
-    const {
-      handleSubmit,
-      isSaveClicked,
-      rentBasisAttributes,
-      usersPermissions,
-    } = this.props;
-    const { areaUnitOptions, indexOptions } = this.state;
-    return (
-      <form onSubmit={handleSubmit}>
-        <Row>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                rentBasisAttributes,
-                RentBasisFieldPaths.PLOT_TYPE,
-              )}
-            >
-              <FormFieldLegacy
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(
+  return (
+    <Form form={formApi} onSubmit={formApi.submit}>
+      {({ handleSubmit }) => (
+        <form onSubmit={handleSubmit}>
+          <Row>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToRead(
                   rentBasisAttributes,
                   RentBasisFieldPaths.PLOT_TYPE,
                 )}
-                name="plot_type"
-                setRefForField={this.setRefForFirstField}
-                overrideValues={{
-                  label: RentBasisFieldTitles.PLOT_TYPE,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.PLOT_TYPE)}
-              />
-            </Authorization>
-          </Column>
-          <Column small={3} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                rentBasisAttributes,
-                RentBasisFieldPaths.START_DATE,
-              )}
-            >
-              <FormFieldLegacy
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(
+              >
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    rentBasisAttributes,
+                    RentBasisFieldPaths.PLOT_TYPE,
+                  )}
+                  name="plot_type"
+                  setRefForField={setRefForFirstField}
+                  overrideValues={{
+                    label: RentBasisFieldTitles.PLOT_TYPE,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataRentBasisKey(
+                    RentBasisFieldPaths.PLOT_TYPE,
+                  )}
+                />
+              </Authorization>
+            </Column>
+            <Column small={3} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToRead(
                   rentBasisAttributes,
                   RentBasisFieldPaths.START_DATE,
                 )}
-                name="start_date"
-                overrideValues={{
-                  label: RentBasisFieldTitles.START_DATE,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataRentBasisKey(
-                  RentBasisFieldPaths.START_DATE,
-                )}
-              />
-            </Authorization>
-          </Column>
-          <Column small={3} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                rentBasisAttributes,
-                RentBasisFieldPaths.END_DATE,
-              )}
-            >
-              <FormFieldLegacy
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(
+              >
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    rentBasisAttributes,
+                    RentBasisFieldPaths.START_DATE,
+                  )}
+                  name="start_date"
+                  overrideValues={{
+                    label: RentBasisFieldTitles.START_DATE,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataRentBasisKey(
+                    RentBasisFieldPaths.START_DATE,
+                  )}
+                />
+              </Authorization>
+            </Column>
+            <Column small={3} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToRead(
                   rentBasisAttributes,
                   RentBasisFieldPaths.END_DATE,
                 )}
-                name="end_date"
-                overrideValues={{
-                  label: RentBasisFieldTitles.END_DATE,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.END_DATE)}
-              />
-            </Authorization>
-          </Column>
-        </Row>
-        <Row>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                rentBasisAttributes,
-                RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS,
-              )}
-            >
-              <FieldArray
-                component={renderPropertyIdentifiers}
-                name="property_identifiers"
-                isSaveClicked={isSaveClicked}
-                rentBasisAttributes={rentBasisAttributes}
-                usersPermissions={usersPermissions}
-              />
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                rentBasisAttributes,
-                RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER,
-              )}
-            >
-              <FormFieldLegacy
-                className="align-top"
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(
+              >
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    rentBasisAttributes,
+                    RentBasisFieldPaths.END_DATE,
+                  )}
+                  name="end_date"
+                  overrideValues={{
+                    label: RentBasisFieldTitles.END_DATE,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataRentBasisKey(
+                    RentBasisFieldPaths.END_DATE,
+                  )}
+                />
+              </Authorization>
+            </Column>
+          </Row>
+          <Row>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToRead(
+                  rentBasisAttributes,
+                  RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS,
+                )}
+              >
+                <FieldArray name="property_identifiers">
+                  {(fieldArrayProps) => (
+                    <PropertyIdentifiers
+                      {...fieldArrayProps}
+                      isSaveClicked={isSaveClicked}
+                      rentBasisAttributes={rentBasisAttributes}
+                      usersPermissions={usersPermissions}
+                    />
+                  )}
+                </FieldArray>
+              </Authorization>
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToRead(
                   rentBasisAttributes,
                   RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER,
                 )}
-                name="detailed_plan_identifier"
-                overrideValues={{
-                  label: RentBasisFieldTitles.DETAILED_PLAN_IDENTIFIER,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataRentBasisKey(
-                  RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER,
-                )}
-              />
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                rentBasisAttributes,
-                RentBasisFieldPaths.MANAGEMENT,
-              )}
-            >
-              <FormFieldLegacy
-                className="align-top"
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(
+              >
+                <FormField
+                  className="align-top"
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    rentBasisAttributes,
+                    RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER,
+                  )}
+                  name="detailed_plan_identifier"
+                  overrideValues={{
+                    label: RentBasisFieldTitles.DETAILED_PLAN_IDENTIFIER,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataRentBasisKey(
+                    RentBasisFieldPaths.DETAILED_PLAN_IDENTIFIER,
+                  )}
+                />
+              </Authorization>
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToRead(
                   rentBasisAttributes,
                   RentBasisFieldPaths.MANAGEMENT,
                 )}
-                name="management"
-                overrideValues={{
-                  label: RentBasisFieldTitles.MANAGEMENT,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataRentBasisKey(
-                  RentBasisFieldPaths.MANAGEMENT,
-                )}
-              />
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                rentBasisAttributes,
-                RentBasisFieldPaths.FINANCING,
-              )}
-            >
-              <FormFieldLegacy
-                className="align-top"
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(
+              >
+                <FormField
+                  className="align-top"
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    rentBasisAttributes,
+                    RentBasisFieldPaths.MANAGEMENT,
+                  )}
+                  name="management"
+                  overrideValues={{
+                    label: RentBasisFieldTitles.MANAGEMENT,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataRentBasisKey(
+                    RentBasisFieldPaths.MANAGEMENT,
+                  )}
+                />
+              </Authorization>
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToRead(
                   rentBasisAttributes,
                   RentBasisFieldPaths.FINANCING,
                 )}
-                name="financing"
-                overrideValues={{
-                  label: RentBasisFieldTitles.FINANCING,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.FINANCING)}
-              />
-            </Authorization>
-          </Column>
-        </Row>
-        <Row>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                rentBasisAttributes,
-                RentBasisFieldPaths.LEASE_RIGHTS_END_DATE,
-              )}
-            >
-              <FormFieldLegacy
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(
+              >
+                <FormField
+                  className="align-top"
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    rentBasisAttributes,
+                    RentBasisFieldPaths.FINANCING,
+                  )}
+                  name="financing"
+                  overrideValues={{
+                    label: RentBasisFieldTitles.FINANCING,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataRentBasisKey(
+                    RentBasisFieldPaths.FINANCING,
+                  )}
+                />
+              </Authorization>
+            </Column>
+          </Row>
+          <Row>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToRead(
                   rentBasisAttributes,
                   RentBasisFieldPaths.LEASE_RIGHTS_END_DATE,
                 )}
-                name="lease_rights_end_date"
-                overrideValues={{
-                  label: RentBasisFieldTitles.LEASE_RIGHTS_END_DATE,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataRentBasisKey(
-                  RentBasisFieldPaths.LEASE_RIGHTS_END_DATE,
-                )}
-              />
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                rentBasisAttributes,
-                RentBasisFieldPaths.INDEX,
-              )}
-            >
-              <FormFieldLegacy
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(
+              >
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    rentBasisAttributes,
+                    RentBasisFieldPaths.LEASE_RIGHTS_END_DATE,
+                  )}
+                  name="lease_rights_end_date"
+                  overrideValues={{
+                    label: RentBasisFieldTitles.LEASE_RIGHTS_END_DATE,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataRentBasisKey(
+                    RentBasisFieldPaths.LEASE_RIGHTS_END_DATE,
+                  )}
+                />
+              </Authorization>
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <Authorization
+                allow={isFieldAllowedToRead(
                   rentBasisAttributes,
                   RentBasisFieldPaths.INDEX,
                 )}
-                name="index"
-                overrideValues={{
-                  label: RentBasisFieldTitles.INDEX,
-                  options: indexOptions,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.INDEX)}
-              />
-            </Authorization>
-          </Column>
-        </Row>
-
-        <Authorization
-          allow={isFieldAllowedToRead(
-            rentBasisAttributes,
-            RentBasisDecisionsFieldPaths.DECISIONS,
-          )}
-        >
-          <Row>
-            <Column>
-              <FieldArray
-                component={renderDecisions}
-                name="decisions"
-                isSaveClicked={isSaveClicked}
-                rentBasisAttributes={rentBasisAttributes}
-                usersPermissions={usersPermissions}
-              />
+              >
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    rentBasisAttributes,
+                    RentBasisFieldPaths.INDEX,
+                  )}
+                  name="index"
+                  overrideValues={{
+                    label: RentBasisFieldTitles.INDEX,
+                    options: indexOptions,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.INDEX)}
+                />
+              </Authorization>
             </Column>
           </Row>
-        </Authorization>
 
-        <Authorization
-          allow={isFieldAllowedToRead(
-            rentBasisAttributes,
-            RentBasisRentRatesFieldPaths.RENT_RATES,
-          )}
-        >
-          <Row>
-            <Column>
-              <FieldArray
-                component={renderRentRates}
-                name="rent_rates"
-                areaUnitOptions={areaUnitOptions}
-                isSaveClicked={isSaveClicked}
-                rentBasisAttributes={rentBasisAttributes}
-                usersPermissions={usersPermissions}
-              />
-            </Column>
-          </Row>
-        </Authorization>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              rentBasisAttributes,
+              RentBasisDecisionsFieldPaths.DECISIONS,
+            )}
+          >
+            <Row>
+              <Column>
+                <FieldArray name="decisions">
+                  {(fieldArrayProps) => (
+                    <Decisions
+                      {...fieldArrayProps}
+                      isSaveClicked={isSaveClicked}
+                      rentBasisAttributes={rentBasisAttributes}
+                      usersPermissions={usersPermissions}
+                    />
+                  )}
+                </FieldArray>
+              </Column>
+            </Row>
+          </Authorization>
 
-        <Authorization
-          allow={isFieldAllowedToRead(
-            rentBasisAttributes,
-            RentBasisFieldPaths.NOTE,
-          )}
-        >
-          <Row>
-            <Column>
-              <FormFieldLegacy
-                disableTouched={isSaveClicked}
-                fieldAttributes={getFieldAttributes(
-                  rentBasisAttributes,
-                  RentBasisFieldPaths.NOTE,
-                )}
-                name="note"
-                overrideValues={{
-                  label: RentBasisFieldTitles.NOTE,
-                }}
-                enableUiDataEdit
-                uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.NOTE)}
-              />
-            </Column>
-          </Row>
-        </Authorization>
-      </form>
-    );
-  }
-}
+          <Authorization
+            allow={isFieldAllowedToRead(
+              rentBasisAttributes,
+              RentBasisRentRatesFieldPaths.RENT_RATES,
+            )}
+          >
+            <Row>
+              <Column>
+                <FieldArray name="rent_rates">
+                  {(fieldArrayProps) => (
+                    <RentRates
+                      {...fieldArrayProps}
+                      areaUnitOptions={areaUnitOptions}
+                      isSaveClicked={isSaveClicked}
+                      rentBasisAttributes={rentBasisAttributes}
+                      usersPermissions={usersPermissions}
+                    />
+                  )}
+                </FieldArray>
+              </Column>
+            </Row>
+          </Authorization>
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    initialValues: getRentBasisInitialValues(state),
-    isFormValid: getIsFormValid(state),
-    isSaveClicked: getIsSaveClicked(state),
-    rentBasisAttributes: getRentBasisAttributes(state),
-    usersPermissions: getUsersPermissions(state),
-  };
+          <Authorization
+            allow={isFieldAllowedToRead(
+              rentBasisAttributes,
+              RentBasisFieldPaths.NOTE,
+            )}
+          >
+            <Row>
+              <Column>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={getFieldAttributes(
+                    rentBasisAttributes,
+                    RentBasisFieldPaths.NOTE,
+                  )}
+                  name="note"
+                  overrideValues={{
+                    label: RentBasisFieldTitles.NOTE,
+                  }}
+                  enableUiDataEdit
+                  uiDataKey={getUiDataRentBasisKey(RentBasisFieldPaths.NOTE)}
+                />
+              </Column>
+            </Row>
+          </Authorization>
+        </form>
+      )}
+    </Form>
+  );
 };
 
-const formName = FormNames.RENT_BASIS;
-export default flowRight(
-  connect(mapStateToProps, {
-    receiveFormValid,
-  }),
-  reduxForm({
-    destroyOnUnmount: false,
-    form: formName,
-    enableReinitialize: true,
-    validate: validateRentBasisForm,
-  }),
-)(RentBasisForm) as React.ComponentType<any>;
+export default RentBasisForm;

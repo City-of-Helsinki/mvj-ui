@@ -7,10 +7,9 @@ import type {
   RentBasis,
   RentBasisList,
   ReceiveRentBasisListAction,
-  ReceiveRentBasisInitialValuesAction,
   ReceiveSingleRentBasisAction,
-  ReceiveFormValidAction,
   ReceiveIsSaveClickedAction,
+  ReceiveIsFormDirtyAction,
 } from "./types";
 const isEditModeReducer: Reducer<boolean> = handleActions(
   {
@@ -90,32 +89,6 @@ const rentBasisReducer: Reducer<RentBasis> = handleActions(
   },
   {},
 );
-const initialValuesReducer: Reducer<RentBasis> = handleActions(
-  {
-    ["mvj/rentbasis/INITIALIZE"]: (
-      state: RentBasis,
-      { payload: rentbasis }: ReceiveRentBasisInitialValuesAction,
-    ) => {
-      return rentbasis;
-    },
-  },
-  {
-    decisions: [{}],
-    property_identifiers: [{}],
-    rent_rates: [{}],
-  },
-);
-const isFormValidReducer: Reducer<boolean> = handleActions(
-  {
-    ["mvj/rentbasis/RECEIVE_FORM_VALID"]: (
-      state: boolean,
-      { payload: valid }: ReceiveFormValidAction,
-    ) => {
-      return valid;
-    },
-  },
-  false,
-);
 const isSaveClickedReducer: Reducer<boolean> = handleActions(
   {
     ["mvj/rentbasis/RECEIVE_SAVE_CLICKED"]: (
@@ -127,11 +100,20 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions(
   },
   false,
 );
+const isFormDirtyReducer: Reducer<boolean> = handleActions(
+  {
+    ["mvj/rentbasis/RECEIVE_FORM_DIRTY"]: (
+      state: boolean,
+      { payload: dirty }: ReceiveIsFormDirtyAction,
+    ) => {
+      return dirty;
+    },
+  },
+  false,
+);
 export default combineReducers<Record<string, any>, any>({
   attributes: attributesReducer,
-  initialValues: initialValuesReducer,
   isEditMode: isEditModeReducer,
-  isFormValid: isFormValidReducer,
   isFetching: isFetchingReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   isSaveClicked: isSaveClickedReducer,
@@ -139,4 +121,5 @@ export default combineReducers<Record<string, any>, any>({
   list: rentBasisListReducer,
   methods: methodsReducer,
   rentbasis: rentBasisReducer,
+  isFormDirty: isFormDirtyReducer,
 });

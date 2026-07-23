@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import Authorization from "@/components/authorization/Authorization";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import { RentBasisFieldPaths, RentBasisFieldTitles } from "@/rentbasis/enums";
@@ -7,11 +7,11 @@ import { isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getRentBasisAttributes } from "@/rentbasis/selectors";
 import type { Attributes } from "types";
 type Props = {
-  identifier: string | null | undefined;
-  rentBasisAttributes: Attributes;
+  identifier: string | number | null | undefined;
 };
 
-const RentBasisInfo = ({ identifier, rentBasisAttributes }: Props) => {
+const RentBasisInfo = ({ identifier }: Props) => {
+  const rentBasisAttributes: Attributes = useSelector(getRentBasisAttributes);
   if (!identifier) return null;
   return (
     <Authorization
@@ -25,8 +25,4 @@ const RentBasisInfo = ({ identifier, rentBasisAttributes }: Props) => {
   );
 };
 
-export default connect((state) => {
-  return {
-    rentBasisAttributes: getRentBasisAttributes(state),
-  };
-})(RentBasisInfo);
+export default RentBasisInfo;

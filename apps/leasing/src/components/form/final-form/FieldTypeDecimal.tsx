@@ -36,6 +36,8 @@ const FieldTypeDecimal = ({
   }, [value, innerValue]);
 
   const handleBlur = (e: React.SyntheticEvent<HTMLInputElement>) => {
+    const formattedNumber = formatDecimalNumber(e.currentTarget.value);
+    setInnerValue(formattedNumber);
     onBlur();
   };
 

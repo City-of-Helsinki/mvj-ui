@@ -17,9 +17,8 @@ import type {
   ReceiveIsSaveClickedAction,
   HideEditModeAction,
   ShowEditModeAction,
-  ReceiveRentBasisInitialValuesAction,
-  ReceiveFormValidAction,
   RentBasisNotFoundAction,
+  ReceiveIsFormDirtyAction,
 } from "./types";
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction("mvj/rentbasis/FETCH_ATTRIBUTES")();
@@ -51,10 +50,6 @@ export const editRentBasis = (rentbasis: RentBasis): EditRentBasisAction =>
   createAction("mvj/rentbasis/EDIT")(rentbasis);
 export const notFound = (): RentBasisNotFoundAction =>
   createAction("mvj/rentbasis/NOT_FOUND")();
-export const initializeRentBasis = (
-  rentbasis: RentBasis,
-): ReceiveRentBasisInitialValuesAction =>
-  createAction("mvj/rentbasis/INITIALIZE")(rentbasis);
 export const receiveIsSaveClicked = (
   isClicked: boolean,
 ): ReceiveIsSaveClickedAction =>
@@ -63,5 +58,5 @@ export const hideEditMode = (): HideEditModeAction =>
   createAction("mvj/rentbasis/HIDE_EDIT")();
 export const showEditMode = (): ShowEditModeAction =>
   createAction("mvj/rentbasis/SHOW_EDIT")();
-export const receiveFormValid = (valid: boolean): ReceiveFormValidAction =>
-  createAction("mvj/rentbasis/RECEIVE_FORM_VALID")(valid);
+export const receiveIsFormDirty = (dirty: boolean): ReceiveIsFormDirtyAction =>
+  createAction("mvj/rentbasis/RECEIVE_FORM_DIRTY")(dirty);
