@@ -1,5 +1,5 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   formValueSelector,
   destroy,
@@ -7,12 +7,10 @@ import {
   reduxForm,
 } from "redux-form";
 import { Row, Column } from "@/components/grid/Grid";
-import { flowRight } from "lodash-es";
 import Button from "@/components/button/Button";
 import { ButtonColors } from "@/components/enums";
 import FormFieldLegacy from "@/components/form/FormFieldLegacy";
 import { FieldTypes, FormNames } from "@/enums";
-import { withLeaseStatisticReportAttributes } from "@/components/attributes/LeaseStatisticReportAttributes";
 import Authorization from "@/components/authorization/Authorization";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
@@ -35,209 +33,194 @@ import {
   sendReportToMail,
   fetchOptions,
   setPayload,
+  fetchAttributes as fetchLeaseStatisticReportAttributes,
+  fetchReports,
 } from "@/leaseStatisticReport/actions";
 import {
   getAttributes as getLeaseStatisticReportAttributes,
   getOptions,
   getIsFetchingOptions,
+  getIsFetchingAttributes as getIsFetchingLeaseStatisticReportAttributes,
+  getReports,
+  getIsFetchingReports,
+  getIsFetchingReportData,
+  getIsSendingMail,
 } from "@/leaseStatisticReport/selectors";
 import type { Attributes, Reports } from "types";
-type Props = {
-  leaseStatisticReportAttributes: Attributes;
-  reportType: string;
-  reports: Reports;
-  isFetchingReports: boolean;
-  isFetchingReportData: boolean;
-  isSendingMail: boolean;
-  fetchReportData: (...args: Array<any>) => any;
-  setOptions: (...args: Array<any>) => any;
-  setPayload: (...args: Array<any>) => any;
-  sendReportToMail: (...args: Array<any>) => any;
-  fetchOptions: (...args: Array<any>) => any;
-  leaseType: string;
-  invoiceState: string;
-  options: Record<string, any>;
-  formValues: Record<string, any>;
-  isFetchingOptions: boolean;
-  destroy: (...args: Array<any>) => any;
-};
-type State = {};
 
-class LeaseStatisticReportForm extends PureComponent<Props, State> {
-  state = {
-    invoices: [],
-    invoiceOptions: [],
-    lease: {},
-    tenantOptions: [],
-  };
-  getReportData = () => {
-    const {
-      reportType,
-      reports,
-      formValues,
-      fetchReportData,
-      setOptions,
-      options,
-      setPayload,
-    } = this.props;
+const LeaseStatisticReportForm: React.FC = () => {
+  const dispatch = useDispatch();
+
+  const leaseStatisticReportAttributes: Attributes = useSelector(
+    getLeaseStatisticReportAttributes,
+  );
+  const reportType = useSelector((state) =>
+    formValueSelector(FormNames.LEASE_STATISTIC_REPORT)(state, "report_type"),
+  );
+  const options = useSelector(getOptions);
+  const isFetchingOptions = useSelector(getIsFetchingOptions);
+  const formValues = useSelector(
+    getFormValues(FormNames.LEASE_STATISTIC_REPORT),
+  );
+
+  const isFetchingLeaseStatisticReportAttributes = useSelector(
+    getIsFetchingLeaseStatisticReportAttributes,
+  );
+  const leaseStatisticReportMethods = useSelector((state) =>
+    formValueSelector(FormNames.LEASE_STATISTIC_REPORT)(
+      state,
+      "lease_statistic_report_methods",
+    ),
+  );
+  const isFetchingReports = useSelector(getIsFetchingReports);
+  const isFetchingReportData = useSelector(getIsFetchingReportData);
+  const isSendingMail = useSelector(getIsSendingMail);
+  const reports: Reports = useSelector(getReports);
+
+  useEffect(() => {
+    if (
+      !isFetchingLeaseStatisticReportAttributes &&
+      !leaseStatisticReportAttributes &&
+      !leaseStatisticReportMethods
+    ) {
+      dispatch(fetchLeaseStatisticReportAttributes());
+    }
+  }, [
+    dispatch,
+    isFetchingLeaseStatisticReportAttributes,
+    leaseStatisticReportAttributes,
+    leaseStatisticReportMethods,
+  ]);
+
+  useEffect(() => {
+    if (!isFetchingReports && !reports) {
+      dispatch(fetchReports());
+    }
+  }, [dispatch, isFetchingReports, reports]);
+
+  const getReportData = () => {
     const url = getReportUrl(reports, reportType);
     const query = getQueryParams(formValues);
     const payload = getPayload(query, url, reportType);
-    fetchReportData(payload);
-    setOptions(options);
-    setPayload(payload);
+    dispatch(fetchReportData(payload));
+    dispatch(setOptions(options));
+    dispatch(setPayload(payload));
   };
-  sendToMail = () => {
-    const { reportType, reports, sendReportToMail, formValues } = this.props;
+
+  const sendToMail = () => {
     const url = getReportUrl(reports, reportType);
     const query = getQueryParams(formValues);
     const payload = getPayload(query, url, reportType);
-    sendReportToMail(payload);
+    dispatch(sendReportToMail(payload));
   };
-  ReportTypeChanged = (value: any) => {
-    const { reports, fetchOptions } = this.props;
+
+  const ReportTypeChanged = (value: any) => {
     const url = getReportUrl(reports, value);
-    fetchOptions(url);
-    this.resetAllOtherFields();
-  };
-  resetAllOtherFields = () => {
-    const { destroy } = this.props;
-    const formName = FormNames.LEASE_STATISTIC_REPORT;
-    destroy(formName);
+    dispatch(fetchOptions(url));
+    resetAllOtherFields();
   };
 
-  render() {
-    const {
-      leaseStatisticReportAttributes,
-      reports,
-      isFetchingReports,
-      isFetchingReportData,
-      isSendingMail,
-      options,
-      isFetchingOptions,
-    } = this.props;
-    if (isFetchingReports)
-      return (
-        <LoaderWrapper>
-          <Loader isLoading={true} />
-        </LoaderWrapper>
-      );
-    const reportTypeOptions = getReportTypeOptions(reports);
-    const fields = getFields(options);
-    const isAsync = !!(options && options.is_async);
+  const resetAllOtherFields = () => {
+    dispatch(destroy(formName));
+  };
+
+  if (isFetchingReports)
     return (
-      <form>
-        <Row>
-          <Column small={12} large={12}>
-            <Row>
-              <Column large={3} medium={4} small={6}>
-                <Authorization
-                  allow={isFieldAllowedToEdit(
+      <LoaderWrapper>
+        <Loader isLoading={true} />
+      </LoaderWrapper>
+    );
+  const reportTypeOptions = getReportTypeOptions(reports);
+  const fields = getFields(options);
+  const isAsync = !!(options && options.is_async);
+  return (
+    <form>
+      <Row>
+        <Column small={12} large={12}>
+          <Row>
+            <Column large={3} medium={4} small={6}>
+              <Authorization
+                allow={isFieldAllowedToEdit(
+                  leaseStatisticReportAttributes,
+                  LeaseStatisticReportPaths.START_DATE,
+                )}
+              >
+                <FormFieldLegacy
+                  fieldAttributes={getFieldAttributes(
                     leaseStatisticReportAttributes,
                     LeaseStatisticReportPaths.START_DATE,
                   )}
-                >
-                  <FormFieldLegacy
-                    fieldAttributes={getFieldAttributes(
-                      leaseStatisticReportAttributes,
-                      LeaseStatisticReportPaths.START_DATE,
-                    )}
-                    disableDirty
-                    name="report_type"
-                    overrideValues={{
-                      fieldType: FieldTypes.CHOICE,
-                      label: LeaseStatisticReportTitles.REPORT_TYPE,
-                      options: reportTypeOptions,
-                    }}
-                    enableUiDataEdit
-                    onChange={this.ReportTypeChanged}
-                  />
-                </Authorization>
+                  disableDirty
+                  name="report_type"
+                  overrideValues={{
+                    fieldType: FieldTypes.CHOICE,
+                    label: LeaseStatisticReportTitles.REPORT_TYPE,
+                    options: reportTypeOptions,
+                  }}
+                  enableUiDataEdit
+                  onChange={ReportTypeChanged}
+                />
+              </Authorization>
+            </Column>
+            {isFetchingOptions && (
+              <LoaderWrapper>
+                <Loader isLoading={true} />
+              </LoaderWrapper>
+            )}
+            {fields &&
+              !isFetchingOptions &&
+              Object.entries(fields).map(([key, value], index) => {
+                return (
+                  <Column large={3} medium={4} small={6} key={index}>
+                    <FormFieldLegacy
+                      fieldAttributes={value}
+                      overrideValues={{
+                        fieldType: formatType(value),
+                      }}
+                      disableDirty
+                      name={key}
+                    />
+                  </Column>
+                );
+              })}
+            {!isAsync && fields && !isFetchingOptions && (
+              <Column
+                small={3}
+                style={{
+                  margin: "10px 0",
+                }}
+              >
+                <Button
+                  className={ButtonColors.SUCCESS}
+                  disabled={isFetchingReportData}
+                  text="Luo raportti"
+                  onClick={getReportData}
+                />
               </Column>
-              {isFetchingOptions && (
-                <LoaderWrapper>
-                  <Loader isLoading={true} />
-                </LoaderWrapper>
-              )}
-              {fields &&
-                !isFetchingOptions &&
-                Object.entries(fields).map(([key, value], index) => {
-                  return (
-                    <Column large={3} medium={4} small={6} key={index}>
-                      <FormFieldLegacy
-                        fieldAttributes={value}
-                        overrideValues={{
-                          fieldType: formatType(value),
-                        }}
-                        disableDirty
-                        name={key}
-                      />
-                    </Column>
-                  );
-                })}
-              {!isAsync && fields && !isFetchingOptions && (
-                <Column
-                  small={3}
-                  style={{
-                    margin: "10px 0",
-                  }}
-                >
-                  <Button
-                    className={ButtonColors.SUCCESS}
-                    disabled={isFetchingReportData}
-                    text="Luo raportti"
-                    onClick={this.getReportData}
-                  />
-                </Column>
-              )}
-              {isAsync && (
-                <Column
-                  small={3}
-                  style={{
-                    margin: "10px 0",
-                  }}
-                >
-                  <Button
-                    className={ButtonColors.SUCCESS}
-                    disabled={isSendingMail}
-                    text="Lähetä sähköpostiin"
-                    onClick={this.sendToMail}
-                  />
-                </Column>
-              )}
-            </Row>
-          </Column>
-        </Row>
-      </form>
-    );
-  }
-}
+            )}
+            {isAsync && (
+              <Column
+                small={3}
+                style={{
+                  margin: "10px 0",
+                }}
+              >
+                <Button
+                  className={ButtonColors.SUCCESS}
+                  disabled={isSendingMail}
+                  text="Lähetä sähköpostiin"
+                  onClick={sendToMail}
+                />
+              </Column>
+            )}
+          </Row>
+        </Column>
+      </Row>
+    </form>
+  );
+};
 
 const formName = FormNames.LEASE_STATISTIC_REPORT;
-const selector = formValueSelector(formName);
-export default flowRight(
-  withLeaseStatisticReportAttributes,
-  connect(
-    (state) => {
-      return {
-        leaseStatisticReportAttributes:
-          getLeaseStatisticReportAttributes(state),
-        reportType: selector(state, "report_type"),
-        options: getOptions(state),
-        isFetchingOptions: getIsFetchingOptions(state),
-        formValues: getFormValues(formName)(state),
-      };
-    },
-    {
-      fetchReportData,
-      setOptions,
-      sendReportToMail,
-      fetchOptions,
-      setPayload,
-      destroy,
-    },
-  ),
-  reduxForm({
-    form: formName,
-  }),
-)(LeaseStatisticReportForm) as React.ComponentType<any>;
+export default reduxForm({
+  form: formName,
+})(LeaseStatisticReportForm) as React.ComponentType<any>;
