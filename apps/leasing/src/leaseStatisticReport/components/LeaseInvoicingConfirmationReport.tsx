@@ -1,7 +1,6 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { flowRight, isEmpty } from "lodash-es";
 import { TableSortOrder } from "@/enums";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import Loader from "@/components/loader/Loader";
@@ -10,7 +9,6 @@ import SortableTable from "@/components/table/SortableTable";
 import FormText from "@/components/form/FormText";
 import ExcelLink from "@/components/excel/ExcelLink";
 import {
-  getApiResponseResults,
   hasPermissions,
   getLabelOfOption,
   sortNumberByKeyAsc,
@@ -29,65 +27,51 @@ import {
   getReportTypeOptions,
 } from "@/leaseStatisticReport/helpers";
 import {
-  getIsFetchingLeaseInvoicingConfirmationReport,
   getLeaseInvoicingConfirmationReport,
   getPayload,
+  getReportData,
+  getIsFetchingReportData,
+  getReportOptions,
+  getReports,
 } from "@/leaseStatisticReport/selectors";
-import type { Attributes, Reports } from "types";
-import type { LeaseInvoicingConfirmationReport as LeaseInvoicingConfirmationReportsType } from "@/leaseStatisticReport/types";
+import type { Reports } from "types";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { PermissionMissingTexts } from "@/enums";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-import { withLeaseInvoicingConfirmationReportAttributes } from "@/components/attributes/LeaseInvoicingConfirmationReportAttributes";
 import type { ReportOptions } from "@/leaseStatisticReport/types";
 
-type Props = {
-  isFetchingLeaseInvoicingConfirmationReportAttributes: boolean;
-  leaseInvoicingConfirmationReportAttributes: Attributes;
-  fetchLeaseInvoicingConfrimationReports: (...args: Array<any>) => any;
-  isFetchingLeaseInvoicingConfirmationReport: boolean;
-  leaseInvoicingConfirmationReportData: LeaseInvoicingConfirmationReportsType;
-  usersPermissions: UsersPermissionsType;
-  isFetchingReportData: boolean;
-  reportData: any;
-  reportOptions: ReportOptions;
-  payload: Record<string, any>;
-  reports: Reports;
-};
+const LeaseInvoicingConfirmationReport: React.FC = () => {
+  const leaseInvoicingConfirmationReportData = useSelector(
+    getLeaseInvoicingConfirmationReport,
+  );
+  const usersPermissions = useSelector(getUsersPermissions);
+  const payload = useSelector(getPayload);
 
-type State = {
-  leaseInvoicingConfirmationReport: Array<Record<string, any>>;
-  leaseInvoicingConfirmationReportData: LeaseInvoicingConfirmationReportsType;
-};
+  const reportData = useSelector(getReportData);
+  const isFetchingReportData = useSelector(getIsFetchingReportData);
+  const reportOptions: ReportOptions = useSelector(getReportOptions);
+  const reports: Reports = useSelector(getReports);
 
-class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
-  state = {
-    leaseInvoicingConfirmationReport: [],
-    leaseInvoicingConfirmationReportData: null,
-  };
+  const [
+    leaseInvoicingConfirmationReportDataState,
+    setLeaseInvoicingConfirmationReportDataState,
+  ] = useState(null);
 
-  componentDidMount() {}
-
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
-
+  useEffect(() => {
     if (
-      props.leaseInvoicingConfirmationReportData !==
-      state.leaseInvoicingConfirmationReportData
+      leaseInvoicingConfirmationReportData !==
+      leaseInvoicingConfirmationReportDataState
     ) {
-      newState.leaseInvoicingConfirmationReportData =
-        props.leaseInvoicingConfirmationReportData;
-      newState.leaseInvoicingConfirmationReport = getApiResponseResults(
-        props.leaseInvoicingConfirmationReportData,
+      setLeaseInvoicingConfirmationReportDataState(
+        leaseInvoicingConfirmationReportData,
       );
     }
+  }, [
+    leaseInvoicingConfirmationReportData,
+    leaseInvoicingConfirmationReportDataState,
+  ]);
 
-    return !isEmpty(newState) ? newState : null;
-  }
-
-  getColumns = () => {
-    const { reportOptions } = this.props;
+  const getColumns = () => {
     const columns = [];
     const outputFields = getOutputFields(reportOptions);
     outputFields.forEach((field) => {
@@ -137,80 +121,60 @@ class LeaseInvoicingConfirmationReport extends PureComponent<Props, State> {
     return columns;
   };
 
-  render() {
-    const {
-      usersPermissions,
-      isFetchingReportData,
-      reportData,
-      payload,
-      reports,
-      reportOptions,
-    } = this.props;
-    const dev = false;
-    const columns = this.getColumns();
-    const reportTypeOptions = getReportTypeOptions(reports);
-    const isSortable = !reportOptions.is_already_sorted;
-    if (isFetchingReportData)
-      return (
-        <LoaderWrapper>
-          <Loader isLoading={true} />
-        </LoaderWrapper>
-      );
-    if (
-      !hasPermissions(
-        usersPermissions,
-        UsersPermissions.VIEW_LEASE_INVOICING_CONFIRMATION_REPORT,
-      ) &&
-      dev
-    )
-      return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
+  const dev = false;
+  const columns = getColumns();
+  const reportTypeOptions = getReportTypeOptions(reports);
+  const isSortable = !reportOptions.is_already_sorted;
+  if (isFetchingReportData)
     return (
-      <Fragment>
-        <Row>
-          <Column
-            className={""}
-            style={{
-              margin: "0 0 10px 0",
-            }}
-          ></Column>
-          {payload && (
-            <ExcelLink
-              fileName="Raportti"
-              identifier={getLabelOfOption(
-                reportTypeOptions,
-                payload.report_type,
-              )}
-              url={payload.url}
-              query={payload.query}
-              label="VIE EXCELIIN"
-            />
-          )}
-        </Row>
-        <SortableTable
-          columns={columns}
-          data={reportData}
-          style={{
-            marginBottom: 10,
-          }}
-          defaultSortKey="lease_id"
-          defaultSortOrder={TableSortOrder.ASCENDING}
-          sortable={isSortable}
-        />
-      </Fragment>
+      <LoaderWrapper>
+        <Loader isLoading={true} />
+      </LoaderWrapper>
     );
-  }
-}
+  if (
+    !hasPermissions(
+      usersPermissions,
+      UsersPermissions.VIEW_LEASE_INVOICING_CONFIRMATION_REPORT,
+    ) &&
+    dev
+  )
+    return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
+  return (
+    <>
+      <Row>
+        <Column
+          className={""}
+          style={{
+            margin: "0 0 10px 0",
+          }}
+        >
+          <></>
+        </Column>
+        {payload && (
+          <ExcelLink
+            fileName="Raportti"
+            identifier={getLabelOfOption(
+              reportTypeOptions,
+              payload.report_type,
+            )}
+            url={payload.url}
+            query={payload.query}
+            label="VIE EXCELIIN"
+          />
+        )}
+      </Row>
+      <SortableTable
+        columns={columns}
+        data={reportData}
+        style={{
+          marginBottom: 10,
+        }}
+        defaultSortKey="lease_id"
+        defaultSortOrder={TableSortOrder.ASCENDING}
+        sortable={isSortable}
+      />
+    </>
+  );
+};
 
-export default flowRight(
-  withLeaseInvoicingConfirmationReportAttributes,
-  connect((state) => {
-    return {
-      isFetchingLeaseInvoicingConfirmationReport:
-        getIsFetchingLeaseInvoicingConfirmationReport(state),
-      leaseInvoicingConfirmationReportData:
-        getLeaseInvoicingConfirmationReport(state),
-      usersPermissions: getUsersPermissions(state),
-      payload: getPayload(state),
-    };
-  }),
-)(LeaseInvoicingConfirmationReport) as React.ComponentType<any>;
+export default LeaseInvoicingConfirmationReport;

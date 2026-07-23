@@ -94,9 +94,7 @@ export const noMailSent = (): NoMailSentAction =>
   createAction("mvj/leaseStatisticReport/NO_MAIL_SENT")();
 export const mailSent = (payload?: Record<string, any>): MailSentAction =>
   createAction("mvj/leaseStatisticReport/MAIL_SENT")(payload);
-export const fetchOptions = (
-  payload: Record<string, any>,
-): FetchOptionsAction =>
+export const fetchOptions = (payload: string): FetchOptionsAction =>
   createAction("mvj/leaseStatisticReport/FETCH_OPTIONS")(payload);
 export const receiveOptions = (
   payload: Record<string, any>,
