@@ -42,6 +42,7 @@ import {
   LeaseAreasFieldTitles,
 } from "@/leases/enums";
 import {
+  filterSelectedOptions,
   getContentLeaseListResults,
   mapLeaseSearchFilters,
 } from "@/leases/helpers";
@@ -185,12 +186,18 @@ const LeaseListPage: React.FC = () => {
     const serviceUnits = [queryParams.service_unit].flatMap(
       (value) => value || [],
     );
+    const municipalities = [queryParams.municipality].flatMap(
+      (value) => value || [],
+    );
 
     if (tenantContactTypes.length) {
       values.tenantcontact_type = tenantContactTypes;
     }
     if (serviceUnits.length) {
       values.service_unit = serviceUnits;
+    }
+    if (municipalities.length) {
+      values.municipality = municipalities;
     }
 
     values.lease_state = getLeaseStates(queryParams);
@@ -934,12 +941,6 @@ const LeaseListPage: React.FC = () => {
               <Row className="lease-search-fieldset-group">
                 <Field name="service_unit">
                   {({ input: { value, onChange } }) => {
-                    const selectedOptions = serviceUnitOptions.filter(
-                      (option) =>
-                        (Array.isArray(value) ? value : [value]).some(
-                          (v) => v == option.value,
-                        ),
-                    );
                     return (
                       <Select
                         id="service_unit"
@@ -948,7 +949,7 @@ const LeaseListPage: React.FC = () => {
                           placeholder: "Valitse palvelukokonaisuus",
                           language: "fi",
                         }}
-                        value={selectedOptions}
+                        value={filterSelectedOptions(value, serviceUnitOptions)}
                         options={serviceUnitOptions}
                         onChange={(selectedOptions) => {
                           const values = selectedOptions.map(

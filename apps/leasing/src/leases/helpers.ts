@@ -66,10 +66,12 @@ import type {
   LeafletFeature,
   LeafletGeoJson,
   SelectListOption,
+  SelectOptionHds,
 } from "types";
 import type { RootState } from "@/root/types";
 import type { LeaseList, DueDate } from "@/leases/types";
 import type { IndexPointFigureYearly } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
+import type { SelectProps } from "hds-react/lib/components/dropdownComponents/select/types";
 
 /**
  * Test is lease empty
@@ -4043,4 +4045,30 @@ const getPointFigureYearAndValueFromLease = (
     ) || null;
   if (!figure) return {};
   return { value: figure.value, year: figure.year };
+};
+
+export const filterSelectedOptions = (
+  inputValue: any,
+  options: Array<SelectOptionHds>,
+) => {
+  const selectedOptions = options.filter((option) =>
+    (Array.isArray(inputValue) ? inputValue : [inputValue]).some(
+      (v) => v == option.value,
+    ),
+  );
+  return selectedOptions;
+};
+
+export const filterSelectedGroupedOptions = (
+  inputValue: any,
+  optionGroup: SelectProps["groups"],
+) => {
+  const selectedOptions = optionGroup
+    .flatMap((group) => group.options)
+    .filter((option) =>
+      (Array.isArray(inputValue) ? inputValue : [inputValue]).some(
+        (v) => v == option.value,
+      ),
+    );
+  return selectedOptions;
 };
