@@ -52,6 +52,10 @@ import {
 } from "@/leases/enums";
 import { getContactOptions } from "@/contacts/helpers";
 import { getDistrictOptions } from "@/district/helpers";
+import {
+  filterSelectedGroupedOptions,
+  filterSelectedOptions,
+} from "@/leases/helpers";
 import { getDistrictsByMunicipality } from "@/district/selectors";
 import {
   getAttributes as getLeaseAttributes,
@@ -78,7 +82,7 @@ interface SearchFieldsProps {
   isFetchingIntendedUses: boolean;
   decisionMakerOptions: Array<SelectOptionHds>;
   intendedUseGroupedOptions: SelectProps["groups"];
-  municipalityOptions: Array<SelectOptionHds>;
+  municipalityGroupedOptions: SelectProps["groups"];
   tenantTypeOptions: Array<SelectOptionHds>;
   lessorOptions: Array<SelectOptionHds>;
   typeOptions: Array<SelectOptionHds>;
@@ -111,7 +115,7 @@ const SearchFields = ({
   decisionMakerOptions,
   intendedUseGroupedOptions,
   isFetchingIntendedUses,
-  municipalityOptions,
+  municipalityGroupedOptions,
   tenantTypeOptions,
   lessorOptions,
   typeOptions,
@@ -218,12 +222,6 @@ const SearchFields = ({
                           input: { value, onBlur, onChange, onFocus },
                           meta: { error, invalid },
                         }) => {
-                          const selectedOptions = lessorOptions.filter(
-                            (option) =>
-                              (Array.isArray(value) ? value : [value]).some(
-                                (v) => v == option.value,
-                              ),
-                          );
                           return (
                             <Select
                               id="lessor"
@@ -232,7 +230,10 @@ const SearchFields = ({
                                 placeholder: "Valitse vuokranantaja",
                                 language: "fi",
                               }}
-                              value={selectedOptions}
+                              value={filterSelectedOptions(
+                                value,
+                                lessorOptions,
+                              )}
                               options={lessorOptions}
                               onChange={(selectedOptions) =>
                                 onChange(
@@ -250,14 +251,6 @@ const SearchFields = ({
                           input: { value, onBlur, onChange, onFocus },
                           meta: { error, invalid },
                         }) => {
-                          const selectedOptions = intendedUseGroupedOptions
-                            .flatMap((group) => group.options)
-                            .filter((option) =>
-                              (Array.isArray(value) ? value : [value]).some(
-                                (v) => v == option.value,
-                              ),
-                            );
-
                           return (
                             <Select
                               id="intended_use"
@@ -267,7 +260,10 @@ const SearchFields = ({
                                 language: "fi",
                               }}
                               disabled={isFetchingIntendedUses}
-                              value={selectedOptions}
+                              value={filterSelectedGroupedOptions(
+                                value,
+                                intendedUseGroupedOptions,
+                              )}
                               groups={intendedUseGroupedOptions}
                               onChange={(selectedOptions) =>
                                 onChange(
@@ -345,9 +341,6 @@ const SearchFields = ({
                           input: { value, onBlur, onChange, onFocus },
                           meta: { error, invalid },
                         }) => {
-                          const selectedOption = municipalityOptions.filter(
-                            (option) => value == option.value,
-                          );
                           return (
                             <Select
                               id="municipality"
@@ -356,14 +349,19 @@ const SearchFields = ({
                                 placeholder: "Valitse kunta",
                                 language: "fi",
                               }}
-                              value={selectedOption}
-                              options={municipalityOptions}
+                              value={filterSelectedGroupedOptions(
+                                value,
+                                municipalityGroupedOptions,
+                              )}
+                              groups={municipalityGroupedOptions}
                               onChange={(selectedOptions) =>
                                 onChange(
                                   selectedOptions.map((option) => option.value),
                                 )
                               }
                               clearable
+                              multiSelect
+                              noTags
                               style={{ width: "100%" }}
                             />
                           );
@@ -392,7 +390,11 @@ const SearchFields = ({
                                   selectedOptions.map((option) => option.value),
                                 )
                               }
-                              disabled={!municipality}
+                              disabled={
+                                // Only allow district selection if one municipality is selected.
+                                // Fetching districts from multiple municipalities adds complexity and creates a confusing experience.
+                                !municipality || municipality.length !== 1
+                              }
                               clearable
                               style={{ width: "100%" }}
                             />
@@ -762,12 +764,6 @@ const SearchFields = ({
                           input: { value, onBlur, onChange, onFocus },
                           meta: { error, invalid },
                         }) => {
-                          const selectedOptions = tenantTypeOptions.filter(
-                            (option) =>
-                              (Array.isArray(value) ? value : [value]).some(
-                                (v) => v == option.value,
-                              ),
-                          );
                           return (
                             <Select
                               id="tenantcontact_type"
@@ -776,7 +772,10 @@ const SearchFields = ({
                                 placeholder: "Valitse rooli",
                                 language: "fi",
                               }}
-                              value={selectedOptions}
+                              value={filterSelectedOptions(
+                                value,
+                                tenantTypeOptions,
+                              )}
                               options={tenantTypeOptions}
                               onChange={(selectedOptions) =>
                                 onChange(
@@ -957,22 +956,25 @@ const DistrictLoader = ({ municipality }: DistrictLoaderProps) => {
   const form = useForm();
   const dispatch = useDispatch();
   const firstUpdate = useRef(true);
+  const prevValue = useRef(municipality);
 
   useEffect(() => {
-    if (firstUpdate.current) {
-      if (municipality) {
-        dispatch(fetchDistrictsByMunicipality(Number(municipality)));
-      }
-      firstUpdate.current = false;
+    // Avoids double fetching when changing the selected options.
+    if (isEqual(prevValue.current, municipality)) {
       return;
     }
+    prevValue.current = municipality;
 
-    if (municipality) {
+    if (municipality?.length === 1) {
       dispatch(fetchDistrictsByMunicipality(Number(municipality)));
     }
 
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
     form.change("district", "");
-  }, [municipality, dispatch, form]);
+  }, [dispatch, form, municipality]);
 
   return null;
 };
@@ -1060,6 +1062,26 @@ const Search: React.FC<Props> = (props) => {
     [leaseAttributes],
   );
 
+  const municipalityGroupedOptions = useMemo(() => {
+    const helsinki = municipalityOptions.filter((opt) =>
+      opt.label.toLocaleLowerCase().includes("helsinki"),
+    );
+    const others = municipalityOptions.filter(
+      (opt) => !opt.label.toLocaleLowerCase().includes("helsinki"),
+    );
+
+    return [
+      {
+        label: "Helsinki",
+        options: helsinki,
+      },
+      {
+        label: "Ulkokunnat",
+        options: others,
+      },
+    ];
+  }, [municipalityOptions]);
+
   const tenantTypeOptions = useMemo(
     () =>
       getFieldOptions(
@@ -1094,7 +1116,7 @@ const Search: React.FC<Props> = (props) => {
         isFetchingIntendedUses={isFetchingIntendedUses}
         isSearchInitialized={isSearchInitialized}
         lessorOptions={lessorOptions}
-        municipalityOptions={municipalityOptions}
+        municipalityGroupedOptions={municipalityGroupedOptions}
         onSearch={onSearch}
         tenantTypeOptions={tenantTypeOptions}
         typeOptions={typeOptions}
