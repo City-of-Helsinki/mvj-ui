@@ -52,7 +52,10 @@ import {
 } from "@/leases/enums";
 import { getContactOptions } from "@/contacts/helpers";
 import { getDistrictOptions } from "@/district/helpers";
-import { getDistrictsByMunicipality } from "@/district/selectors";
+import {
+  getDistrictsByMunicipality,
+  getIsFetching as getIsFetchingDistricts,
+} from "@/district/selectors";
 import {
   getAttributes as getLeaseAttributes,
   getIsFetchingAttributes,
@@ -123,6 +126,7 @@ const SearchFields = ({
   const districts = useSelector((state: any) =>
     getDistrictsByMunicipality(state, Number(municipality)),
   );
+  const isFetchingDistricts = useSelector(getIsFetchingDistricts);
   const leaseMethods = useSelector(getLeaseMethods);
 
   const prevValues = useRef(values);
@@ -158,7 +162,11 @@ const SearchFields = ({
 
   return (
     <>
-      <DistrictLoader municipality={municipality} />
+      <DistrictLoader
+        municipality={
+          Array.isArray(municipality) ? municipality[0] : municipality
+        }
+      />
       <Row className="lease-search-row">
         <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
           <Button
@@ -344,8 +352,11 @@ const SearchFields = ({
                           input: { value, onBlur, onChange, onFocus },
                           meta: { error, invalid },
                         }) => {
-                          const selectedOption = municipalityOptions.filter(
-                            (option) => value == option.value,
+                          const selectedOptions = municipalityOptions.filter(
+                            (option) =>
+                              (Array.isArray(value) ? value : [value]).some(
+                                (v) => v == option.value,
+                              ),
                           );
                           return (
                             <Select
@@ -355,14 +366,21 @@ const SearchFields = ({
                                 placeholder: "Valitse kunta",
                                 language: "fi",
                               }}
-                              value={selectedOption}
-                              options={municipalityOptions}
+                              value={selectedOptions}
+                              groups={[
+                                {
+                                  label: "Valitse kaikki",
+                                  options: municipalityOptions,
+                                },
+                              ]}
                               onChange={(selectedOptions) =>
                                 onChange(
                                   selectedOptions.map((option) => option.value),
                                 )
                               }
                               clearable
+                              multiSelect
+                              noTags
                               style={{ width: "100%" }}
                             />
                           );
@@ -381,7 +399,9 @@ const SearchFields = ({
                               id="district"
                               texts={{
                                 label: "Kaupunginosa",
-                                placeholder: "Valitse kaupunginosa",
+                                placeholder: isFetchingDistricts
+                                  ? "Ladataan..."
+                                  : "Valitse kaupunginosa",
                                 language: "fi",
                               }}
                               value={selectedOption}
@@ -391,7 +411,11 @@ const SearchFields = ({
                                   selectedOptions.map((option) => option.value),
                                 )
                               }
-                              disabled={!municipality}
+                              disabled={
+                                isFetchingDistricts ||
+                                !municipality ||
+                                municipality.length > 1
+                              }
                               clearable
                               style={{ width: "100%" }}
                             />
@@ -952,18 +976,14 @@ const DistrictLoader = ({ municipality }: DistrictLoaderProps) => {
   const firstUpdate = useRef(true);
 
   useEffect(() => {
-    if (firstUpdate.current) {
-      if (municipality) {
-        dispatch(fetchDistrictsByMunicipality(Number(municipality)));
-      }
-      firstUpdate.current = false;
-      return;
-    }
-
-    if (municipality) {
+    if (municipality && municipality.length === 1) {
       dispatch(fetchDistrictsByMunicipality(Number(municipality)));
     }
 
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
     form.change("district", "");
   }, [municipality, dispatch, form]);
 
