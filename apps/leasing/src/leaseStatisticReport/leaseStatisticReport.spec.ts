@@ -246,14 +246,14 @@ describe("Lease statistic", () => {
       });
       it("should update isFetchingOptions flag to true by fetchOptions", () => {
         const newState = { ...defaultState, isFetchingOptions: true };
-        const state = leaseStatisticReport({}, fetchOptions({ test: "test" }));
+        const state = leaseStatisticReport({}, fetchOptions("test"));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingOptions flag to false by optionsNotFound", () => {
         const newState = { ...defaultState, isFetchingOptions: false };
         let state: Record<string, any> = leaseStatisticReport(
           {},
-          fetchOptions({ test: "test" }),
+          fetchOptions("test"),
         );
         state = leaseStatisticReport(state, optionsNotFound());
         expect(state).to.deep.equal(newState);
