@@ -8,13 +8,13 @@ export type LeaseStatisticReportState = {
   isFetchingLeaseInvoicingConfirmationReport: boolean;
   reports: Reports;
   isFetchingReports: boolean;
-  reportData: Record<string, any>;
+  reportData: Record<string, any> | null;
   isFetchingReportData: boolean;
-  reportOptions: Record<string, any>;
+  reportOptions: Record<string, any> | null;
   isSendingMail: boolean;
-  options: Record<string, any>;
+  options: Record<string, any> | null;
   isFetchingOptions: boolean;
-  payload: Record<string, any>;
+  payload: string | null;
 };
 export type LeaseInvoicingConfirmationReport = ApiResponse;
 export type FetchAttributesAction = Action<string, void>;
@@ -61,8 +61,10 @@ export interface ReportOutputFieldInput {
   format: string;
   is_numeric: boolean;
 }
-export interface ReportOutputField
-  extends Omit<ReportOutputFieldInput, "is_numeric"> {
+export interface ReportOutputField extends Omit<
+  ReportOutputFieldInput,
+  "is_numeric"
+> {
   key: string;
   isNumeric: boolean;
 }

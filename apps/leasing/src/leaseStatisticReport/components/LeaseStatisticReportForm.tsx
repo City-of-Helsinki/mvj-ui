@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  formValueSelector,
-  destroy,
-  getFormValues,
-  reduxForm,
-} from "redux-form";
+import { Form } from "react-final-form";
+import { createForm } from "final-form";
 import { Row, Column } from "@/components/grid/Grid";
 import Button from "@/components/button/Button";
 import { ButtonColors } from "@/components/enums";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
-import { FieldTypes, FormNames } from "@/enums";
+import FormField from "@/components/form/final-form/FormField";
+import { FieldTypes } from "@/enums";
 import Authorization from "@/components/authorization/Authorization";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
@@ -54,28 +50,44 @@ const LeaseStatisticReportForm: React.FC = () => {
   const leaseStatisticReportAttributes: Attributes = useSelector(
     getLeaseStatisticReportAttributes,
   );
-  const reportType = useSelector((state) =>
-    formValueSelector(FormNames.LEASE_STATISTIC_REPORT)(state, "report_type"),
-  );
   const options = useSelector(getOptions);
   const isFetchingOptions = useSelector(getIsFetchingOptions);
-  const formValues = useSelector(
-    getFormValues(FormNames.LEASE_STATISTIC_REPORT),
-  );
-
   const isFetchingLeaseStatisticReportAttributes = useSelector(
     getIsFetchingLeaseStatisticReportAttributes,
-  );
-  const leaseStatisticReportMethods = useSelector((state) =>
-    formValueSelector(FormNames.LEASE_STATISTIC_REPORT)(
-      state,
-      "lease_statistic_report_methods",
-    ),
   );
   const isFetchingReports = useSelector(getIsFetchingReports);
   const isFetchingReportData = useSelector(getIsFetchingReportData);
   const isSendingMail = useSelector(getIsSendingMail);
   const reports: Reports = useSelector(getReports);
+
+  const formRef = useRef(
+    createForm({
+      onSubmit: () => {},
+      initialValues: {},
+    }),
+  );
+
+  const [formValues, setFormValues] = useState(
+    () => formRef.current.getState().values,
+  );
+  const reportType = useMemo(
+    () => formValues.report_type,
+    [formValues.report_type],
+  );
+  const leaseStatisticReportMethods = useMemo(
+    () => formValues.lease_statistic_report_methods,
+    [formValues.lease_statistic_report_methods],
+  );
+
+  useEffect(() => {
+    const unsubscribe = formRef.current.subscribe(
+      (state) => {
+        setFormValues(state.values);
+      },
+      { values: true },
+    );
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (
@@ -114,14 +126,16 @@ const LeaseStatisticReportForm: React.FC = () => {
     dispatch(sendReportToMail(payload));
   };
 
-  const ReportTypeChanged = (value: any) => {
-    const url = getReportUrl(reports, value);
+  const ReportTypeChanged = (reportType: any) => {
+    const url = getReportUrl(reports, reportType);
     dispatch(fetchOptions(url));
-    resetAllOtherFields();
+    resetAllOtherFields(reportType);
   };
 
-  const resetAllOtherFields = () => {
-    dispatch(destroy(formName));
+  const resetAllOtherFields = (reportType: any) => {
+    formRef.current.reset({
+      report_type: reportType,
+    });
   };
 
   if (isFetchingReports)
@@ -134,93 +148,94 @@ const LeaseStatisticReportForm: React.FC = () => {
   const fields = getFields(options);
   const isAsync = !!(options && options.is_async);
   return (
-    <form>
-      <Row>
-        <Column small={12} large={12}>
+    <Form form={formRef.current} onSubmit={formRef.current.submit}>
+      {() => (
+        <form>
           <Row>
-            <Column large={3} medium={4} small={6}>
-              <Authorization
-                allow={isFieldAllowedToEdit(
-                  leaseStatisticReportAttributes,
-                  LeaseStatisticReportPaths.START_DATE,
-                )}
-              >
-                <FormFieldLegacy
-                  fieldAttributes={getFieldAttributes(
-                    leaseStatisticReportAttributes,
-                    LeaseStatisticReportPaths.START_DATE,
-                  )}
-                  disableDirty
-                  name="report_type"
-                  overrideValues={{
-                    fieldType: FieldTypes.CHOICE,
-                    label: LeaseStatisticReportTitles.REPORT_TYPE,
-                    options: reportTypeOptions,
-                  }}
-                  enableUiDataEdit
-                  onChange={ReportTypeChanged}
-                />
-              </Authorization>
-            </Column>
-            {isFetchingOptions && (
-              <LoaderWrapper>
-                <Loader isLoading={true} />
-              </LoaderWrapper>
-            )}
-            {fields &&
-              !isFetchingOptions &&
-              Object.entries(fields).map(([key, value], index) => {
-                return (
-                  <Column large={3} medium={4} small={6} key={index}>
-                    <FormFieldLegacy
-                      fieldAttributes={value}
-                      overrideValues={{
-                        fieldType: formatType(value),
-                      }}
+            <Column small={12} large={12}>
+              <Row>
+                <Column large={3} medium={4} small={6}>
+                  <Authorization
+                    allow={isFieldAllowedToEdit(
+                      leaseStatisticReportAttributes,
+                      LeaseStatisticReportPaths.START_DATE,
+                    )}
+                  >
+                    <FormField
+                      fieldAttributes={getFieldAttributes(
+                        leaseStatisticReportAttributes,
+                        LeaseStatisticReportPaths.START_DATE,
+                      )}
                       disableDirty
-                      name={key}
+                      name="report_type"
+                      overrideValues={{
+                        fieldType: FieldTypes.CHOICE,
+                        label: LeaseStatisticReportTitles.REPORT_TYPE,
+                        options: reportTypeOptions,
+                      }}
+                      enableUiDataEdit
+                      onChange={ReportTypeChanged}
+                    />
+                  </Authorization>
+                </Column>
+                {isFetchingOptions && (
+                  <LoaderWrapper>
+                    <Loader isLoading={true} />
+                  </LoaderWrapper>
+                )}
+                {fields &&
+                  !isFetchingOptions &&
+                  Object.entries(fields).map(([key, value], index) => {
+                    return (
+                      <Column large={3} medium={4} small={6} key={index}>
+                        <FormField
+                          fieldAttributes={value}
+                          overrideValues={{
+                            fieldType: formatType(value),
+                          }}
+                          disableDirty
+                          name={key}
+                        />
+                      </Column>
+                    );
+                  })}
+                {!isAsync && fields && !isFetchingOptions && (
+                  <Column
+                    small={3}
+                    style={{
+                      margin: "10px 0",
+                    }}
+                  >
+                    <Button
+                      className={ButtonColors.SUCCESS}
+                      disabled={isFetchingReportData}
+                      text="Luo raportti"
+                      onClick={getReportData}
                     />
                   </Column>
-                );
-              })}
-            {!isAsync && fields && !isFetchingOptions && (
-              <Column
-                small={3}
-                style={{
-                  margin: "10px 0",
-                }}
-              >
-                <Button
-                  className={ButtonColors.SUCCESS}
-                  disabled={isFetchingReportData}
-                  text="Luo raportti"
-                  onClick={getReportData}
-                />
-              </Column>
-            )}
-            {isAsync && (
-              <Column
-                small={3}
-                style={{
-                  margin: "10px 0",
-                }}
-              >
-                <Button
-                  className={ButtonColors.SUCCESS}
-                  disabled={isSendingMail}
-                  text="Lähetä sähköpostiin"
-                  onClick={sendToMail}
-                />
-              </Column>
-            )}
+                )}
+                {isAsync && (
+                  <Column
+                    small={3}
+                    style={{
+                      margin: "10px 0",
+                    }}
+                  >
+                    <Button
+                      className={ButtonColors.SUCCESS}
+                      disabled={isSendingMail}
+                      text="Lähetä sähköpostiin"
+                      onClick={sendToMail}
+                    />
+                  </Column>
+                )}
+              </Row>
+            </Column>
           </Row>
-        </Column>
-      </Row>
-    </form>
+        </form>
+      )}
+    </Form>
   );
 };
 
-const formName = FormNames.LEASE_STATISTIC_REPORT;
-export default reduxForm({
-  form: formName,
-})(LeaseStatisticReportForm) as React.ComponentType<any>;
+export default LeaseStatisticReportForm;
