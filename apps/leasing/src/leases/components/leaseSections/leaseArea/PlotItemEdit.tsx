@@ -1,8 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { useLocation } from "react-router";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";

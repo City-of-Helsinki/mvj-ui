@@ -1,8 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { useLocation } from "react-router";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router";
 import { get, isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItemContainer from "@/components/content/BoxItemContainer";

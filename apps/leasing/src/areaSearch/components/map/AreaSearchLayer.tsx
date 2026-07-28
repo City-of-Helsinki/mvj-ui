@@ -1,7 +1,7 @@
 import React from "react";
 import { FeatureGroup, GeoJSON, Popup } from "react-leaflet";
 import { flowRight } from "lodash-es";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { getRouteById, Routes } from "@/root/routes";
 import type { Attributes, LeafletGeoJson } from "types";
 import { withAreaSearchAttributes } from "@/components/attributes/AreaSearchAttributes";

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import classNames from "classnames";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { IconMenuDots, IconSize } from "hds-react";
 import {
   withRouterLegacy,

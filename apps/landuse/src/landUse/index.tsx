@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as Sentry from "@sentry/react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 import { LoginProvider } from "hds-react";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";

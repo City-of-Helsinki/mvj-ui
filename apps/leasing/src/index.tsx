@@ -2,7 +2,7 @@ import React from "react";
 import * as Sentry from "@sentry/react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 import { LoginProvider } from "hds-react";
 import configureStore from "@/root/configureStore";
 import routes from "@/root/routes";
