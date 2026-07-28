@@ -3,9 +3,9 @@ import {
   fetchAttributes,
   attributesNotFound,
   receiveAttributes,
-  fetchLeaseInvoicingConfirmationReportAttributes,
-  leaseInvoicingConfirmationReportAttributesNotFound,
-  receiveLeaseInvoicingConfirmationReportAttributes,
+  fetchLeaseReportsResultsAttributes,
+  leaseReportsResultsAttributesNotFound,
+  receiveLeaseReportsResultsAttributes,
   fetchLeaseInvoicingConfrimationReports,
   notFoundLeaseInvoicingConfrimationReports,
   receiveLeaseInvoicingConfrimationReports,
@@ -29,10 +29,10 @@ import type { LeaseReportsState as LeaseReportsState } from "@/reports/types";
 const defaultState: LeaseReportsState = {
   attributes: null,
   isFetchingAttributes: false,
-  leaseInvoicingConfirmationReportAttributes: null,
-  isFetchingLeaseInvoicingConfirmationReportAttributes: false,
-  leaseInvoicingConfirmationReport: null,
-  isFetchingLeaseInvoicingConfirmationReport: false,
+  leaseReportsResultsAttributes: null,
+  isFetchingLeaseReportsResultsAttributes: false,
+  leaseReportsResults: null,
+  isFetchingLeaseReportsResults: false,
   reports: null,
   isFetchingReports: false,
   reportData: null,
@@ -68,50 +68,50 @@ describe("Lease reports", () => {
       const state = leaseReportsReducer({}, receiveAttributes(dummyAttributes));
       expect(state).to.deep.equal(newState);
     });
-    it("should update isFetchingLeaseInvoicingConfirmationReportAttributes flag to true by fetchLeaseInvoicingConfirmationReportAttributes", () => {
+    it("should update isFetchingLeaseReportsResultsAttributes flag to true by fetchLeaseReportsResultsAttributes", () => {
       const newState = {
         ...defaultState,
-        isFetchingLeaseInvoicingConfirmationReportAttributes: true,
+        isFetchingLeaseReportsResultsAttributes: true,
       };
       const state = leaseReportsReducer(
         {},
-        fetchLeaseInvoicingConfirmationReportAttributes(),
+        fetchLeaseReportsResultsAttributes(),
       );
       expect(state).to.deep.equal(newState);
     });
-    it("should update isFetchingLeaseInvoicingConfirmationReportAttributes flag to false by leaseInvoicingConfirmationReportAttributesNotFound", () => {
+    it("should update isFetchingLeaseReportsResultsAttributes flag to false by leaseReportsResultsAttributesNotFound", () => {
       const newState = {
         ...defaultState,
-        isFetchingLeaseInvoicingConfirmationReportAttributes: false,
+        isFetchingLeaseReportsResultsAttributes: false,
       };
       let state: Record<string, any> = leaseReportsReducer(
         {},
-        fetchLeaseInvoicingConfirmationReportAttributes(),
+        fetchLeaseReportsResultsAttributes(),
       );
       state = leaseReportsReducer(
         state,
-        leaseInvoicingConfirmationReportAttributesNotFound(),
+        leaseReportsResultsAttributesNotFound(),
       );
       expect(state).to.deep.equal(newState);
     });
-    it("should update LeaseInvoicingConfirmationReport attributes", () => {
+    it("should update LeaseReportsResults attributes", () => {
       const dummyAttributes = {
         foo: "bar",
       };
       const newState = {
         ...defaultState,
-        leaseInvoicingConfirmationReportAttributes: dummyAttributes,
+        leaseReportsResultsAttributes: dummyAttributes,
       };
       const state = leaseReportsReducer(
         {},
-        receiveLeaseInvoicingConfirmationReportAttributes(dummyAttributes),
+        receiveLeaseReportsResultsAttributes(dummyAttributes),
       );
       expect(state).to.deep.equal(newState);
     });
-    it("should update isFetchingLeaseInvoicingConfirmationReport flag to true when fetching LeaseInvoicingConfirmationReport", () => {
+    it("should update isFetchingLeaseReportsResults flag to true when fetching LeaseReportsResults", () => {
       const newState = {
         ...defaultState,
-        isFetchingLeaseInvoicingConfirmationReport: true,
+        isFetchingLeaseReportsResults: true,
       };
       const state = leaseReportsReducer(
         {},
@@ -119,10 +119,10 @@ describe("Lease reports", () => {
       );
       expect(state).to.deep.equal(newState);
     });
-    it("should update isFetchingLeaseInvoicingConfirmationReport flag to false by notFoundJobRuns", () => {
+    it("should update isFetchingLeaseReportsResults flag to false by notFoundJobRuns", () => {
       const newState = {
         ...defaultState,
-        isFetchingLeaseInvoicingConfirmationReport: false,
+        isFetchingLeaseReportsResults: false,
       };
       let state = leaseReportsReducer(
         {},
@@ -134,8 +134,8 @@ describe("Lease reports", () => {
       );
       expect(state).to.deep.equal(newState);
     });
-    it("should update LeaseInvoicingConfirmationReport", () => {
-      const dummyLeaseInvoicingConfirmationReport = {
+    it("should update LeaseReportsResults", () => {
+      const dummyLeaseReportsResults = {
         count: 0,
         next: null,
         previous: null,
@@ -143,14 +143,12 @@ describe("Lease reports", () => {
       };
       const newState = {
         ...defaultState,
-        isFetchingLeaseInvoicingConfirmationReport: false,
-        leaseInvoicingConfirmationReport: dummyLeaseInvoicingConfirmationReport,
+        isFetchingLeaseReportsResults: false,
+        leaseReportsResults: dummyLeaseReportsResults,
       };
       const state = leaseReportsReducer(
         {},
-        receiveLeaseInvoicingConfrimationReports(
-          dummyLeaseInvoicingConfirmationReport,
-        ),
+        receiveLeaseInvoicingConfrimationReports(dummyLeaseReportsResults),
       );
       expect(state).to.deep.equal(newState);
     });

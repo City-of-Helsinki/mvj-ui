@@ -2,10 +2,10 @@ import type { Action, Attributes, ApiResponse, Reports } from "@/types";
 export type LeaseReportsState = {
   attributes: Attributes;
   isFetchingAttributes: boolean;
-  leaseInvoicingConfirmationReportAttributes: Attributes;
-  isFetchingLeaseInvoicingConfirmationReportAttributes: boolean;
-  leaseInvoicingConfirmationReport: ApiResponse;
-  isFetchingLeaseInvoicingConfirmationReport: boolean;
+  leaseReportsResultsAttributes: Attributes;
+  isFetchingLeaseReportsResultsAttributes: boolean;
+  leaseReportsResults: ApiResponse;
+  isFetchingLeaseReportsResults: boolean;
   reports: Reports;
   isFetchingReports: boolean;
   reportData: Record<string, any> | null;
@@ -16,22 +16,16 @@ export type LeaseReportsState = {
   isFetchingOptions: boolean;
   payload: string | null;
 };
-export type LeaseInvoicingConfirmationReport = ApiResponse;
+export type LeaseReportsResults = ApiResponse;
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type AttributesNotFoundAction = Action<string, void>;
-export type FetchLeaseInvoicingConfirmationReportAttributesAction = Action<
-  string,
-  void
->;
-export type ReceiveLeaseInvoicingConfirmationReportAttributesAction = Action<
+export type FetchLeaseReportsResultsAttributesAction = Action<string, void>;
+export type ReceiveLeaseReportsResultsAttributesAction = Action<
   string,
   Attributes
 >;
-export type LeaseInvoicingConfirmationReportAttributesNotFoundAction = Action<
-  string,
-  void
->;
+export type LeaseReportsResultsAttributesNotFoundAction = Action<string, void>;
 export type FetchLeaseInvoicingConfrimationReportsAction = Action<string, void>;
 export type ReceiveLeaseInvoicingConfrimationReportsAction = Action<
   string,

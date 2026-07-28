@@ -4,9 +4,9 @@ import type {
   FetchAttributesAction,
   ReceiveAttributesAction,
   AttributesNotFoundAction,
-  FetchLeaseInvoicingConfirmationReportAttributesAction,
-  ReceiveLeaseInvoicingConfirmationReportAttributesAction,
-  LeaseInvoicingConfirmationReportAttributesNotFoundAction,
+  FetchLeaseReportsResultsAttributesAction,
+  ReceiveLeaseReportsResultsAttributesAction,
+  LeaseReportsResultsAttributesNotFoundAction,
   FetchLeaseInvoicingConfrimationReportsAction,
   NotFoundLeaseInvoicingConfrimationReportsAction,
   ReceiveLeaseInvoicingConfrimationReportsAction,
@@ -33,37 +33,31 @@ export const receiveAttributes = (
   createAction("mvj/reports/RECEIVE_ATTRIBUTES")(attributes);
 export const attributesNotFound = (): AttributesNotFoundAction =>
   createAction("mvj/reports/ATTRIBUTES_NOT_FOUND")();
-export const fetchLeaseInvoicingConfirmationReportAttributes =
-  (): FetchLeaseInvoicingConfirmationReportAttributesAction =>
-    createAction(
-      "mvj/reports/FETCH_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES",
-    )();
-export const receiveLeaseInvoicingConfirmationReportAttributes = (
+export const fetchLeaseReportsResultsAttributes =
+  (): FetchLeaseReportsResultsAttributesAction =>
+    createAction("mvj/reports/FETCH_LEASE_REPORTS_RESULTS_ATTRIBUTES")();
+export const receiveLeaseReportsResultsAttributes = (
   attributes: Attributes,
-): ReceiveLeaseInvoicingConfirmationReportAttributesAction =>
-  createAction(
-    "mvj/reports/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES",
-  )(attributes);
-export const leaseInvoicingConfirmationReportAttributesNotFound =
-  (): LeaseInvoicingConfirmationReportAttributesNotFoundAction =>
+): ReceiveLeaseReportsResultsAttributesAction =>
+  createAction("mvj/reports/RECEIVE_LEASE_REPORTS_RESULTS_ATTRIBUTES")(
+    attributes,
+  );
+export const leaseReportsResultsAttributesNotFound =
+  (): LeaseReportsResultsAttributesNotFoundAction =>
     createAction(
-      "mvj/reports/LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES_ATTRIBUTES_NOT_FOUND",
+      "mvj/reports/LEASE_REPORTS_RESULTS_ATTRIBUTES_ATTRIBUTES_NOT_FOUND",
     )();
 export const fetchLeaseInvoicingConfrimationReports = (
   query: Record<string, any>,
 ): FetchLeaseInvoicingConfrimationReportsAction =>
-  createAction("mvj/reports/FETCH_LEASE_INVOICING_CONFIRMATION_REPORTS")(query);
+  createAction("mvj/reports/FETCH_LEASE_REPORTS_RESULTSS")(query);
 export const receiveLeaseInvoicingConfrimationReports = (
   runs: Record<string, any>,
 ): ReceiveLeaseInvoicingConfrimationReportsAction =>
-  createAction("mvj/reports/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORTS")(
-    runs,
-  );
+  createAction("mvj/reports/RECEIVE_LEASE_REPORTS_RESULTSS")(runs);
 export const notFoundLeaseInvoicingConfrimationReports =
   (): NotFoundLeaseInvoicingConfrimationReportsAction =>
-    createAction(
-      "mvj/reports/NOT_FOUND_LEASE_INVOICING_CONFIRMATION_REPORTS",
-    )();
+    createAction("mvj/reports/NOT_FOUND_LEASE_REPORTS_RESULTSS")();
 export const fetchReports = (): FetchReportsAction =>
   createAction("mvj/reports/FETCH_REPORTS")();
 export const receiveReports = (reports: Reports): ReceiveReportsAction =>

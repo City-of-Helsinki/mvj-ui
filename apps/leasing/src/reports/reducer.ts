@@ -3,7 +3,7 @@ import { handleActions } from "redux-actions";
 import type { Attributes, Reducer, ApiResponse, Reports } from "@/types";
 import type {
   ReceiveAttributesAction,
-  ReceiveLeaseInvoicingConfirmationReportAttributesAction,
+  ReceiveLeaseReportsResultsAttributesAction,
   ReceiveLeaseInvoicingConfrimationReportsAction,
   ReceiveReportsAction,
   ReceiveReportDataAction,
@@ -30,53 +30,46 @@ const attributesReducer: Reducer<Attributes> = handleActions(
   },
   null,
 );
-const isFetchingLeaseInvoicingConfirmationReportAttributesReducer: Reducer<boolean> =
+const isFetchingLeaseReportsResultsAttributesReducer: Reducer<boolean> =
   handleActions(
     {
-      "mvj/reports/FETCH_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES": () =>
-        true,
-      "mvj/reports/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES":
-        () => false,
-      "mvj/reports/LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES_ATTRIBUTES_NOT_FOUND":
-        () => false,
+      "mvj/reports/FETCH_LEASE_REPORTS_RESULTS_ATTRIBUTES": () => true,
+      "mvj/reports/RECEIVE_LEASE_REPORTS_RESULTS_ATTRIBUTES": () => false,
+      "mvj/reports/LEASE_REPORTS_RESULTS_ATTRIBUTES_ATTRIBUTES_NOT_FOUND": () =>
+        false,
     },
     false,
   );
-const leaseInvoicingConfirmationReportAttributesReducer: Reducer<Attributes> =
-  handleActions(
-    {
-      ["mvj/reports/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES"]: (
-        state: Attributes,
-        {
-          payload: attributes,
-        }: ReceiveLeaseInvoicingConfirmationReportAttributesAction,
-      ) => {
-        return attributes;
-      },
+const leaseReportsResultsAttributesReducer: Reducer<Attributes> = handleActions(
+  {
+    ["mvj/reports/RECEIVE_LEASE_REPORTS_RESULTS_ATTRIBUTES"]: (
+      state: Attributes,
+      { payload: attributes }: ReceiveLeaseReportsResultsAttributesAction,
+    ) => {
+      return attributes;
     },
-    null,
-  );
-const isFetchingLeaseInvoicingConfirmationReportReducer: Reducer<boolean> =
-  handleActions(
-    {
-      "mvj/reports/FETCH_LEASE_INVOICING_CONFIRMATION_REPORTS": () => true,
-      "mvj/reports/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORTS": () => false,
-      "mvj/reports/NOT_FOUND_LEASE_INVOICING_CONFIRMATION_REPORTS": () => false,
+  },
+  null,
+);
+const isFetchingLeaseReportsResultsReducer: Reducer<boolean> = handleActions(
+  {
+    "mvj/reports/FETCH_LEASE_REPORTS_RESULTSS": () => true,
+    "mvj/reports/RECEIVE_LEASE_REPORTS_RESULTSS": () => false,
+    "mvj/reports/NOT_FOUND_LEASE_REPORTS_RESULTSS": () => false,
+  },
+  false,
+);
+const leaseReportsResultsReducer: Reducer<Attributes> = handleActions(
+  {
+    ["mvj/reports/RECEIVE_LEASE_REPORTS_RESULTSS"]: (
+      state: ApiResponse,
+      { payload }: ReceiveLeaseInvoicingConfrimationReportsAction,
+    ) => {
+      return payload;
     },
-    false,
-  );
-const leaseInvoicingConfirmationReportReducer: Reducer<Attributes> =
-  handleActions(
-    {
-      ["mvj/reports/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORTS"]: (
-        state: ApiResponse,
-        { payload }: ReceiveLeaseInvoicingConfrimationReportsAction,
-      ) => {
-        return payload;
-      },
-    },
-    null,
-  );
+  },
+  null,
+);
 const isFetchingReportsReducer: Reducer<boolean> = handleActions(
   {
     "mvj/reports/FETCH_REPORTS": () => true,
@@ -170,13 +163,11 @@ const optionsReducer: Reducer<Attributes> = handleActions(
 export default combineReducers<Record<string, any>, any>({
   attributes: attributesReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
-  leaseInvoicingConfirmationReportAttributes:
-    leaseInvoicingConfirmationReportAttributesReducer,
-  isFetchingLeaseInvoicingConfirmationReportAttributes:
-    isFetchingLeaseInvoicingConfirmationReportAttributesReducer,
-  isFetchingLeaseInvoicingConfirmationReport:
-    isFetchingLeaseInvoicingConfirmationReportReducer,
-  leaseInvoicingConfirmationReport: leaseInvoicingConfirmationReportReducer,
+  leaseReportsResultsAttributes: leaseReportsResultsAttributesReducer,
+  isFetchingLeaseReportsResultsAttributes:
+    isFetchingLeaseReportsResultsAttributesReducer,
+  isFetchingLeaseReportsResults: isFetchingLeaseReportsResultsReducer,
+  leaseReportsResults: leaseReportsResultsReducer,
   reports: reportsReducer,
   isFetchingReports: isFetchingReportsReducer,
   reportData: reportDataReducer,

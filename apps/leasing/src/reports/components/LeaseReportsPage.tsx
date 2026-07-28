@@ -13,7 +13,7 @@ import { hasPermissions, setPageTitle } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import { getReportTypeOptions } from "@/reports/helpers";
 import LeaseReportsForm from "@/reports/components/LeaseReportsForm";
-import LeaseInvoicingConfirmationReport from "@/reports/components/LeaseInvoicingConfirmationReport";
+import LeaseReportsResults from "@/reports/components/LeaseReportsResults";
 import {
   getIsFetching as getIsFetchingUsersPermissions,
   getUsersPermissions,
@@ -83,7 +83,7 @@ const LeaseReportsPage: React.FC = () => {
             >
               {getLabelOfOption(reportTypeOptions, payload.report_type)}
             </SubTitle>
-            <LeaseInvoicingConfirmationReport />
+            <LeaseReportsResults />
           </GreenBox>
         )}
       </ContentContainer>

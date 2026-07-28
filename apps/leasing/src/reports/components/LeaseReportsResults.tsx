@@ -27,7 +27,7 @@ import {
   getReportTypeOptions,
 } from "@/reports/helpers";
 import {
-  getLeaseInvoicingConfirmationReport,
+  getLeaseReportsResults,
   getPayload,
   getReportData,
   getIsFetchingReportData,
@@ -40,10 +40,8 @@ import { UsersPermissions } from "@/usersPermissions/enums";
 import { PermissionMissingTexts } from "@/enums";
 import type { ReportOptions } from "@/reports/types";
 
-const LeaseInvoicingConfirmationReport: React.FC = () => {
-  const leaseInvoicingConfirmationReportData = useSelector(
-    getLeaseInvoicingConfirmationReport,
-  );
+const LeaseReportsResults: React.FC = () => {
+  const leaseReportsResultsData = useSelector(getLeaseReportsResults);
   const usersPermissions = useSelector(getUsersPermissions);
   const payload = useSelector(getPayload);
 
@@ -52,24 +50,14 @@ const LeaseInvoicingConfirmationReport: React.FC = () => {
   const reportOptions: ReportOptions = useSelector(getReportOptions);
   const reports: Reports = useSelector(getReports);
 
-  const [
-    leaseInvoicingConfirmationReportDataState,
-    setLeaseInvoicingConfirmationReportDataState,
-  ] = useState(null);
+  const [leaseReportsResultsDataState, setLeaseReportsResultsDataState] =
+    useState(null);
 
   useEffect(() => {
-    if (
-      leaseInvoicingConfirmationReportData !==
-      leaseInvoicingConfirmationReportDataState
-    ) {
-      setLeaseInvoicingConfirmationReportDataState(
-        leaseInvoicingConfirmationReportData,
-      );
+    if (leaseReportsResultsData !== leaseReportsResultsDataState) {
+      setLeaseReportsResultsDataState(leaseReportsResultsData);
     }
-  }, [
-    leaseInvoicingConfirmationReportData,
-    leaseInvoicingConfirmationReportDataState,
-  ]);
+  }, [leaseReportsResultsData, leaseReportsResultsDataState]);
 
   const getColumns = () => {
     const columns = [];
@@ -129,10 +117,7 @@ const LeaseInvoicingConfirmationReport: React.FC = () => {
       </LoaderWrapper>
     );
   if (
-    !hasPermissions(
-      usersPermissions,
-      UsersPermissions.VIEW_LEASE_INVOICING_CONFIRMATION_REPORT,
-    ) &&
+    !hasPermissions(usersPermissions, UsersPermissions.VIEW_REPORTS_RESULTS) &&
     dev
   )
     return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
@@ -174,4 +159,4 @@ const LeaseInvoicingConfirmationReport: React.FC = () => {
   );
 };
 
-export default LeaseInvoicingConfirmationReport;
+export default LeaseReportsResults;
