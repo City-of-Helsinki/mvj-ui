@@ -3,8 +3,8 @@ import { SubmissionError } from "redux-form";
 import {
   receiveAttributes,
   attributesNotFound,
-  receiveLeaseInvoicingConfirmationReportAttributes,
-  leaseInvoicingConfirmationReportAttributesNotFound,
+  receiveLeaseReportsResultsAttributes,
+  leaseReportsResultsAttributesNotFound,
   receiveLeaseInvoicingConfrimationReports,
   notFoundLeaseInvoicingConfrimationReports,
   receiveReports,
@@ -18,7 +18,7 @@ import {
 } from "./actions";
 import {
   fetchAttributes,
-  fetchLeaseInvoicingConfirmationReportAttributes,
+  fetchLeaseReportsResultsAttributes,
   fetchLeaseInvoicingConfrimationReports,
   fetchReports,
   fetchReportData,
@@ -123,28 +123,22 @@ function* fetchReportDataSaga({
   }
 }
 
-function* fetchLeaseInvoicingConfirmationReportAttributesSaga(): Generator<
-  any,
-  any,
-  any
-> {
+function* fetchLeaseReportsResultsAttributesSaga(): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
       bodyAsJson,
-    } = yield call(fetchLeaseInvoicingConfirmationReportAttributes);
+    } = yield call(fetchLeaseReportsResultsAttributes);
 
     switch (statusCode) {
       case 200: {
         const attributes = bodyAsJson.fields;
-        yield put(
-          receiveLeaseInvoicingConfirmationReportAttributes(attributes),
-        );
+        yield put(receiveLeaseReportsResultsAttributes(attributes));
         break;
       }
 
       default:
-        yield put(leaseInvoicingConfirmationReportAttributesNotFound());
+        yield put(leaseReportsResultsAttributesNotFound());
         break;
     }
   } catch (error) {
@@ -152,7 +146,7 @@ function* fetchLeaseInvoicingConfirmationReportAttributesSaga(): Generator<
       'Failed to fetch lease report attributes with error "%s"',
       error,
     );
-    yield put(leaseInvoicingConfirmationReportAttributesNotFound());
+    yield put(leaseReportsResultsAttributesNotFound());
     yield put(receiveError(error));
   }
 }
@@ -277,11 +271,11 @@ export default function* (): Generator<any, any, any> {
       yield takeLatest("mvj/reports/FETCH_REPORT_DATA", fetchReportDataSaga);
       yield takeLatest("mvj/reports/FETCH_ATTRIBUTES", fetchAttributesSaga);
       yield takeLatest(
-        "mvj/reports/FETCH_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES",
-        fetchLeaseInvoicingConfirmationReportAttributesSaga,
+        "mvj/reports/FETCH_LEASE_REPORTS_RESULTS_ATTRIBUTES",
+        fetchLeaseReportsResultsAttributesSaga,
       );
       yield takeLatest(
-        "mvj/reports/FETCH_LEASE_INVOICING_CONFIRMATION_REPORTS",
+        "mvj/reports/FETCH_LEASE_REPORTS_RESULTSS",
         fetchLeaseInvoicingConfrimationReportsSaga,
       );
       yield takeLatest("mvj/reports/SEND_REPORT_TO_MAIL", sendReportToMailSaga);

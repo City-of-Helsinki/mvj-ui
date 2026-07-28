@@ -8,7 +8,7 @@ export const fetchAttributes = (): Generator<any, any, any> => {
     }),
   );
 };
-export const fetchLeaseInvoicingConfirmationReportAttributes = (): Generator<
+export const fetchLeaseReportsResultsAttributes = (): Generator<
   any,
   any,
   any
