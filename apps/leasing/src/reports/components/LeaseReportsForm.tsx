@@ -11,10 +11,7 @@ import Authorization from "@/components/authorization/Authorization";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import { getFieldAttributes, isFieldAllowedToEdit } from "@/util/helpers";
-import {
-  LeaseStatisticReportPaths,
-  LeaseStatisticReportTitles,
-} from "@/leaseStatisticReport/enums";
+import { LeaseReportsPaths, LeaseReportsTitles } from "@/reports/enums";
 import {
   getReportTypeOptions,
   getReportUrl,
@@ -22,38 +19,38 @@ import {
   getFields,
   getQueryParams,
   formatType,
-} from "@/leaseStatisticReport/helpers";
+} from "@/reports/helpers";
 import {
   fetchReportData,
   setOptions,
   sendReportToMail,
   fetchOptions,
   setPayload,
-  fetchAttributes as fetchLeaseStatisticReportAttributes,
+  fetchAttributes as fetchLeaseReportsAttributes,
   fetchReports,
-} from "@/leaseStatisticReport/actions";
+} from "@/reports/actions";
 import {
-  getAttributes as getLeaseStatisticReportAttributes,
+  getAttributes as getLeaseReportsAttributes,
   getOptions,
   getIsFetchingOptions,
-  getIsFetchingAttributes as getIsFetchingLeaseStatisticReportAttributes,
+  getIsFetchingAttributes as getIsFetchingLeaseReportsAttributes,
   getReports,
   getIsFetchingReports,
   getIsFetchingReportData,
   getIsSendingMail,
-} from "@/leaseStatisticReport/selectors";
+} from "@/reports/selectors";
 import type { Attributes, Reports } from "types";
 
-const LeaseStatisticReportForm: React.FC = () => {
+const LeaseReportsForm: React.FC = () => {
   const dispatch = useDispatch();
 
-  const leaseStatisticReportAttributes: Attributes = useSelector(
-    getLeaseStatisticReportAttributes,
+  const leaseReportsAttributes: Attributes = useSelector(
+    getLeaseReportsAttributes,
   );
   const options = useSelector(getOptions);
   const isFetchingOptions = useSelector(getIsFetchingOptions);
-  const isFetchingLeaseStatisticReportAttributes = useSelector(
-    getIsFetchingLeaseStatisticReportAttributes,
+  const isFetchingLeaseReportsAttributes = useSelector(
+    getIsFetchingLeaseReportsAttributes,
   );
   const isFetchingReports = useSelector(getIsFetchingReports);
   const isFetchingReportData = useSelector(getIsFetchingReportData);
@@ -74,9 +71,9 @@ const LeaseStatisticReportForm: React.FC = () => {
     () => formValues.report_type,
     [formValues.report_type],
   );
-  const leaseStatisticReportMethods = useMemo(
-    () => formValues.lease_statistic_report_methods,
-    [formValues.lease_statistic_report_methods],
+  const leaseReportsMethods = useMemo(
+    () => formValues.lease_reports_methods,
+    [formValues.lease_reports_methods],
   );
 
   useEffect(() => {
@@ -91,17 +88,17 @@ const LeaseStatisticReportForm: React.FC = () => {
 
   useEffect(() => {
     if (
-      !isFetchingLeaseStatisticReportAttributes &&
-      !leaseStatisticReportAttributes &&
-      !leaseStatisticReportMethods
+      !isFetchingLeaseReportsAttributes &&
+      !leaseReportsAttributes &&
+      !leaseReportsMethods
     ) {
-      dispatch(fetchLeaseStatisticReportAttributes());
+      dispatch(fetchLeaseReportsAttributes());
     }
   }, [
     dispatch,
-    isFetchingLeaseStatisticReportAttributes,
-    leaseStatisticReportAttributes,
-    leaseStatisticReportMethods,
+    isFetchingLeaseReportsAttributes,
+    leaseReportsAttributes,
+    leaseReportsMethods,
   ]);
 
   useEffect(() => {
@@ -157,20 +154,20 @@ const LeaseStatisticReportForm: React.FC = () => {
                 <Column large={3} medium={4} small={6}>
                   <Authorization
                     allow={isFieldAllowedToEdit(
-                      leaseStatisticReportAttributes,
-                      LeaseStatisticReportPaths.START_DATE,
+                      leaseReportsAttributes,
+                      LeaseReportsPaths.START_DATE,
                     )}
                   >
                     <FormField
                       fieldAttributes={getFieldAttributes(
-                        leaseStatisticReportAttributes,
-                        LeaseStatisticReportPaths.START_DATE,
+                        leaseReportsAttributes,
+                        LeaseReportsPaths.START_DATE,
                       )}
                       disableDirty
                       name="report_type"
                       overrideValues={{
                         fieldType: FieldTypes.CHOICE,
-                        label: LeaseStatisticReportTitles.REPORT_TYPE,
+                        label: LeaseReportsTitles.REPORT_TYPE,
                         options: reportTypeOptions,
                       }}
                       enableUiDataEdit
@@ -238,4 +235,4 @@ const LeaseStatisticReportForm: React.FC = () => {
   );
 };
 
-export default LeaseStatisticReportForm;
+export default LeaseReportsForm;

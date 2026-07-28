@@ -11,9 +11,9 @@ import { PermissionMissingTexts } from "@/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { hasPermissions, setPageTitle } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
-import { getReportTypeOptions } from "@/leaseStatisticReport/helpers";
-import LeaseStatisticReportForm from "./LeaseStatisticReportForm";
-import LeaseInvoicingConfirmationReport from "./LeaseInvoicingConfirmationReport";
+import { getReportTypeOptions } from "@/reports/helpers";
+import LeaseReportsForm from "@/reports/components/LeaseReportsForm";
+import LeaseInvoicingConfirmationReport from "@/reports/components/LeaseInvoicingConfirmationReport";
 import {
   getIsFetching as getIsFetchingUsersPermissions,
   getUsersPermissions,
@@ -25,11 +25,11 @@ import {
   getIsFetchingReportData,
   getPayload,
   getReports,
-} from "@/leaseStatisticReport/selectors";
-import { getReportData } from "@/leaseStatisticReport/selectors";
+} from "@/reports/selectors";
+import { getReportData } from "@/reports/selectors";
 import { getLabelOfOption } from "@/util/helpers";
 
-const LeaseStatisticReportPage: React.FC = () => {
+const LeaseReportsPage: React.FC = () => {
   const dispatch = useDispatch();
 
   const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
@@ -43,7 +43,7 @@ const LeaseStatisticReportPage: React.FC = () => {
     setPageTitle("Tilastot ja raportit");
     dispatch(
       receiveTopNavigationSettings({
-        linkUrl: getRouteById(Routes.LEASE_STATISTIC_REPORT),
+        linkUrl: getRouteById(Routes.LEASE_REPORTS),
         pageTitle: "Tilastot ja raportit",
         showSearch: false,
       }),
@@ -72,7 +72,7 @@ const LeaseStatisticReportPage: React.FC = () => {
         <h2>RAPORTIT</h2>
         <Divider />
         <GreenBox>
-          <LeaseStatisticReportForm />
+          <LeaseReportsForm />
         </GreenBox>
         {(!!reportData || isFetchingReportData) && (
           <GreenBox className="with-top-margin">
@@ -91,4 +91,4 @@ const LeaseStatisticReportPage: React.FC = () => {
   );
 };
 
-export default LeaseStatisticReportPage;
+export default LeaseReportsPage;

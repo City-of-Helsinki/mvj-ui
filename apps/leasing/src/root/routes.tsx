@@ -26,7 +26,7 @@ import PlotApplicationsPage from "@/plotApplications/components/PlotApplicationP
 import RentBasisListPage from "@/rentbasis/components/RentBasisListPage";
 import RentBasisPage from "@/rentbasis/components/RentBasisPage";
 import SapInvoicesListPage from "@/sapInvoice/components/SapInvoicesListPage";
-import LeaseStatisticReport from "@/leaseStatisticReport/components/LeaseStatisticReportPage";
+import LeaseReportsPage from "@/reports/components/LeaseReportsPage";
 import TradeRegisterSearchPage from "@/tradeRegister/components/TradeRegisterSearchPage";
 import PlotApplicationCreatePage from "@/plotApplications/components/PlotApplicationCreatePage";
 import AreaSearchApplicationListPage from "@/areaSearch/components/AreaSearchApplicationListPage";
@@ -58,7 +58,7 @@ export const Routes = {
   RENT_BASIS: "rent_basis",
   RENT_BASIS_NEW: "rent_basis_new",
   SAP_INVOICES: "sap_invoices",
-  LEASE_STATISTIC_REPORT: "lease_statistic_report",
+  LEASE_REPORTS: "reports",
   TRADE_REGISTER: "trade_register",
 };
 
@@ -89,7 +89,7 @@ export const getRouteById = (id: string): string => {
     [Routes.RENT_BASIS]: "/vuokrausperusteet",
     [Routes.RENT_BASIS_NEW]: "/uusivuokrausperuste",
     [Routes.SAP_INVOICES]: "/saplaskut",
-    [Routes.LEASE_STATISTIC_REPORT]: "/tilastoraportti",
+    [Routes.LEASE_REPORTS]: "/tilastoraportti",
     [Routes.TRADE_REGISTER]: "/kaupparekisteri",
   };
   return routes[id] ? routes[id] : "";
@@ -148,8 +148,8 @@ export default (
         element={<SapInvoicesListPage />}
       />
       <Route
-        path={getRouteById(Routes.LEASE_STATISTIC_REPORT)}
-        element={<LeaseStatisticReport />}
+        path={getRouteById(Routes.LEASE_REPORTS)}
+        element={<LeaseReportsPage />}
       />
       <Route
         path={getRouteById(Routes.LEASEHOLD_TRANSFER)}

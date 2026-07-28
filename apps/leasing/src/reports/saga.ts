@@ -48,7 +48,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
     }
   } catch (error) {
     console.error(
-      'Failed to fetch lease statistic report attributes with error "%s"',
+      'Failed to fetch lease report attributes with error "%s"',
       error,
     );
     yield put(attributesNotFound());
@@ -149,7 +149,7 @@ function* fetchLeaseInvoicingConfirmationReportAttributesSaga(): Generator<
     }
   } catch (error) {
     console.error(
-      'Failed to fetch lease statistic report attributes with error "%s"',
+      'Failed to fetch lease report attributes with error "%s"',
       error,
     );
     yield put(leaseInvoicingConfirmationReportAttributesNotFound());
@@ -273,34 +273,19 @@ function* fetchOptionsSaga({ payload, type: any }): Generator<any, any, any> {
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
+      yield takeLatest("mvj/reports/FETCH_REPORTS", fetchReportsSaga);
+      yield takeLatest("mvj/reports/FETCH_REPORT_DATA", fetchReportDataSaga);
+      yield takeLatest("mvj/reports/FETCH_ATTRIBUTES", fetchAttributesSaga);
       yield takeLatest(
-        "mvj/leaseStatisticReport/FETCH_REPORTS",
-        fetchReportsSaga,
-      );
-      yield takeLatest(
-        "mvj/leaseStatisticReport/FETCH_REPORT_DATA",
-        fetchReportDataSaga,
-      );
-      yield takeLatest(
-        "mvj/leaseStatisticReport/FETCH_ATTRIBUTES",
-        fetchAttributesSaga,
-      );
-      yield takeLatest(
-        "mvj/leaseStatisticReport/FETCH_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES",
+        "mvj/reports/FETCH_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES",
         fetchLeaseInvoicingConfirmationReportAttributesSaga,
       );
       yield takeLatest(
-        "mvj/leaseStatisticReport/FETCH_LEASE_INVOICING_CONFIRMATION_REPORTS",
+        "mvj/reports/FETCH_LEASE_INVOICING_CONFIRMATION_REPORTS",
         fetchLeaseInvoicingConfrimationReportsSaga,
       );
-      yield takeLatest(
-        "mvj/leaseStatisticReport/SEND_REPORT_TO_MAIL",
-        sendReportToMailSaga,
-      );
-      yield takeLatest(
-        "mvj/leaseStatisticReport/FETCH_OPTIONS",
-        fetchOptionsSaga,
-      );
+      yield takeLatest("mvj/reports/SEND_REPORT_TO_MAIL", sendReportToMailSaga);
+      yield takeLatest("mvj/reports/FETCH_OPTIONS", fetchOptionsSaga);
     }),
   ]);
 }

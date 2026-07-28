@@ -17,15 +17,15 @@ import {
   sortStringByKeyDesc,
 } from "@/util/helpers";
 import {
-  LeaseStatisticReportFieldLabels,
-  LeaseStatisticReportFormatOptions,
-} from "@/leaseStatisticReport/enums";
+  LeaseReportsFieldLabels,
+  LeaseReportsFormatOptions,
+} from "@/reports/enums";
 import {
   getDisplayName,
   getFormattedValue,
   getOutputFields,
   getReportTypeOptions,
-} from "@/leaseStatisticReport/helpers";
+} from "@/reports/helpers";
 import {
   getLeaseInvoicingConfirmationReport,
   getPayload,
@@ -33,12 +33,12 @@ import {
   getIsFetchingReportData,
   getReportOptions,
   getReports,
-} from "@/leaseStatisticReport/selectors";
+} from "@/reports/selectors";
 import type { Reports } from "types";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { PermissionMissingTexts } from "@/enums";
-import type { ReportOptions } from "@/leaseStatisticReport/types";
+import type { ReportOptions } from "@/reports/types";
 
 const LeaseInvoicingConfirmationReport: React.FC = () => {
   const leaseInvoicingConfirmationReportData = useSelector(
@@ -83,10 +83,7 @@ const LeaseInvoicingConfirmationReport: React.FC = () => {
           let outputValue = value || "-";
           let decimals: number | null | undefined;
 
-          if (
-            field.key ===
-            LeaseStatisticReportFieldLabels.SUBVENTION_EUROS_PER_YEAR
-          ) {
+          if (field.key === LeaseReportsFieldLabels.SUBVENTION_EUROS_PER_YEAR) {
             decimals = 3;
           }
 
@@ -95,8 +92,8 @@ const LeaseInvoicingConfirmationReport: React.FC = () => {
           } else if (field.format && value) {
             outputValue = getFormattedValue(field.format, value, decimals);
             isBold =
-              field.format === LeaseStatisticReportFormatOptions.BOLD ||
-              field.format === LeaseStatisticReportFormatOptions.BOLD_MONEY;
+              field.format === LeaseReportsFormatOptions.BOLD ||
+              field.format === LeaseReportsFormatOptions.BOLD_MONEY;
           }
 
           return (

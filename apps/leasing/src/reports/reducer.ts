@@ -13,15 +13,15 @@ import type {
 } from "./types";
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions(
   {
-    "mvj/leaseStatisticReport/FETCH_ATTRIBUTES": () => true,
-    "mvj/leaseStatisticReport/RECEIVE_ATTRIBUTES": () => false,
-    "mvj/leaseStatisticReport/ATTRIBUTES_NOT_FOUND": () => false,
+    "mvj/reports/FETCH_ATTRIBUTES": () => true,
+    "mvj/reports/RECEIVE_ATTRIBUTES": () => false,
+    "mvj/reports/ATTRIBUTES_NOT_FOUND": () => false,
   },
   false,
 );
 const attributesReducer: Reducer<Attributes> = handleActions(
   {
-    ["mvj/leaseStatisticReport/RECEIVE_ATTRIBUTES"]: (
+    ["mvj/reports/RECEIVE_ATTRIBUTES"]: (
       state: Attributes,
       { payload: attributes }: ReceiveAttributesAction,
     ) => {
@@ -33,11 +33,11 @@ const attributesReducer: Reducer<Attributes> = handleActions(
 const isFetchingLeaseInvoicingConfirmationReportAttributesReducer: Reducer<boolean> =
   handleActions(
     {
-      "mvj/leaseStatisticReport/FETCH_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES":
-        () => true,
-      "mvj/leaseStatisticReport/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES":
+      "mvj/reports/FETCH_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES": () =>
+        true,
+      "mvj/reports/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES":
         () => false,
-      "mvj/leaseStatisticReport/LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES_ATTRIBUTES_NOT_FOUND":
+      "mvj/reports/LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES_ATTRIBUTES_NOT_FOUND":
         () => false,
     },
     false,
@@ -45,54 +45,49 @@ const isFetchingLeaseInvoicingConfirmationReportAttributesReducer: Reducer<boole
 const leaseInvoicingConfirmationReportAttributesReducer: Reducer<Attributes> =
   handleActions(
     {
-      ["mvj/leaseStatisticReport/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES"]:
-        (
-          state: Attributes,
-          {
-            payload: attributes,
-          }: ReceiveLeaseInvoicingConfirmationReportAttributesAction,
-        ) => {
-          return attributes;
-        },
+      ["mvj/reports/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORT_ATTRIBUTES"]: (
+        state: Attributes,
+        {
+          payload: attributes,
+        }: ReceiveLeaseInvoicingConfirmationReportAttributesAction,
+      ) => {
+        return attributes;
+      },
     },
     null,
   );
 const isFetchingLeaseInvoicingConfirmationReportReducer: Reducer<boolean> =
   handleActions(
     {
-      "mvj/leaseStatisticReport/FETCH_LEASE_INVOICING_CONFIRMATION_REPORTS":
-        () => true,
-      "mvj/leaseStatisticReport/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORTS":
-        () => false,
-      "mvj/leaseStatisticReport/NOT_FOUND_LEASE_INVOICING_CONFIRMATION_REPORTS":
-        () => false,
+      "mvj/reports/FETCH_LEASE_INVOICING_CONFIRMATION_REPORTS": () => true,
+      "mvj/reports/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORTS": () => false,
+      "mvj/reports/NOT_FOUND_LEASE_INVOICING_CONFIRMATION_REPORTS": () => false,
     },
     false,
   );
 const leaseInvoicingConfirmationReportReducer: Reducer<Attributes> =
   handleActions(
     {
-      ["mvj/leaseStatisticReport/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORTS"]:
-        (
-          state: ApiResponse,
-          { payload }: ReceiveLeaseInvoicingConfrimationReportsAction,
-        ) => {
-          return payload;
-        },
+      ["mvj/reports/RECEIVE_LEASE_INVOICING_CONFIRMATION_REPORTS"]: (
+        state: ApiResponse,
+        { payload }: ReceiveLeaseInvoicingConfrimationReportsAction,
+      ) => {
+        return payload;
+      },
     },
     null,
   );
 const isFetchingReportsReducer: Reducer<boolean> = handleActions(
   {
-    "mvj/leaseStatisticReport/FETCH_REPORTS": () => true,
-    "mvj/leaseStatisticReport/RECEIVE_REPORTS": () => false,
-    "mvj/leaseStatisticReport/REPORTS_NOT_FOUND": () => false,
+    "mvj/reports/FETCH_REPORTS": () => true,
+    "mvj/reports/RECEIVE_REPORTS": () => false,
+    "mvj/reports/REPORTS_NOT_FOUND": () => false,
   },
   false,
 );
 const reportsReducer: Reducer<Attributes> = handleActions(
   {
-    ["mvj/leaseStatisticReport/RECEIVE_REPORTS"]: (
+    ["mvj/reports/RECEIVE_REPORTS"]: (
       state: Reports,
       { payload: reports }: ReceiveReportsAction,
     ) => {
@@ -103,15 +98,15 @@ const reportsReducer: Reducer<Attributes> = handleActions(
 );
 const isFetchingReportDataReducer: Reducer<boolean> = handleActions(
   {
-    "mvj/leaseStatisticReport/FETCH_REPORT_DATA": () => true,
-    "mvj/leaseStatisticReport/RECEIVE_REPORT_DATA": () => false,
-    "mvj/leaseStatisticReport/REPORT_DATA_NOT_FOUND": () => false,
+    "mvj/reports/FETCH_REPORT_DATA": () => true,
+    "mvj/reports/RECEIVE_REPORT_DATA": () => false,
+    "mvj/reports/REPORT_DATA_NOT_FOUND": () => false,
   },
   false,
 );
 const reportDataReducer: Reducer<Record<string, any>> = handleActions(
   {
-    ["mvj/leaseStatisticReport/RECEIVE_REPORT_DATA"]: (
+    ["mvj/reports/RECEIVE_REPORT_DATA"]: (
       state: Reports,
       { payload: reportData }: ReceiveReportDataAction,
     ) => {
@@ -123,7 +118,7 @@ const reportDataReducer: Reducer<Record<string, any>> = handleActions(
 const setOptionsReducer: Reducer<Record<string, any>> = handleActions(
   {
     // @ts-ignore: no overload mathces this call
-    ["mvj/leaseStatisticReport/SET_REPORT_OPTIONS"]: (
+    ["mvj/reports/SET_REPORT_OPTIONS"]: (
       state: Record<string, any>,
       { payload: options }: SetOptionsAction,
     ) => {
@@ -135,7 +130,7 @@ const setOptionsReducer: Reducer<Record<string, any>> = handleActions(
 const setPayloadReducer: Reducer<Record<string, any>> = handleActions(
   {
     // @ts-ignore: no overload mathces this call
-    ["mvj/leaseStatisticReport/SET_PAYLOAD"]: (
+    ["mvj/reports/SET_PAYLOAD"]: (
       state: Record<string, any>,
       { payload: payload }: SetPayloadAction,
     ) => {
@@ -146,24 +141,24 @@ const setPayloadReducer: Reducer<Record<string, any>> = handleActions(
 );
 const isSendingMailReducer: Reducer<boolean> = handleActions(
   {
-    "mvj/leaseStatisticReport/SEND_REPORT_TO_MAIL": () => true,
-    "mvj/leaseStatisticReport/NO_MAIL_SENT": () => false,
-    "mvj/leaseStatisticReport/MAIL_SENT": () => false,
+    "mvj/reports/SEND_REPORT_TO_MAIL": () => true,
+    "mvj/reports/NO_MAIL_SENT": () => false,
+    "mvj/reports/MAIL_SENT": () => false,
   },
   false,
 );
 const isFetchingOptionsReducer: Reducer<boolean> = handleActions(
   {
-    "mvj/leaseStatisticReport/FETCH_OPTIONS": () => true,
-    "mvj/leaseStatisticReport/RECEIVE_OPTIONS": () => false,
-    "mvj/leaseStatisticReport/OPTIONS_NOT_FOUND": () => false,
+    "mvj/reports/FETCH_OPTIONS": () => true,
+    "mvj/reports/RECEIVE_OPTIONS": () => false,
+    "mvj/reports/OPTIONS_NOT_FOUND": () => false,
   },
   false,
 );
 const optionsReducer: Reducer<Attributes> = handleActions(
   {
     // @ts-ignore: no overload mathces this call
-    ["mvj/leaseStatisticReport/RECEIVE_OPTIONS"]: (
+    ["mvj/reports/RECEIVE_OPTIONS"]: (
       state: Record<string, any>,
       { payload: options }: ReceiveOptionsAction,
     ) => {

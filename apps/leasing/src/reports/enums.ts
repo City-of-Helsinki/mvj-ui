@@ -3,7 +3,7 @@
  * @readonly
  * @enum {string}
  */
-export const LeaseStatisticReportPaths = {
+export const LeaseReportsPaths = {
   START_DATE: "lease",
   END_DATE: "lease",
   LEASE_STATE: "lease",
@@ -15,7 +15,7 @@ export const LeaseStatisticReportPaths = {
  * @readonly
  * @enum {string}
  */
-export const LeaseStatisticReportTitles = {
+export const LeaseReportsTitles = {
   LEASE_STATISTICS_REPORT: "Vuokrauksen tilastoraportti",
   REPORT_TYPE: "Raportti",
   START_DATE: "Alkupvm",
@@ -133,7 +133,7 @@ export const LeaseInvoicingReportTypes = {
  * @readonly
  * @enum {string}
  */
-export const LeaseStatisticReportFormatOptions = {
+export const LeaseReportsFormatOptions = {
   AREA: "area",
   BOLD: "bold",
   BOLD_MONEY: "bold_money",
@@ -149,7 +149,7 @@ export const LeaseStatisticReportFormatOptions = {
  * @readonly
  * @enum {string}
  */
-export const LeaseStatisticReportFieldLabels = {
+export const LeaseReportsFieldLabels = {
   LEASE_IDENTIFIER: "lease_identifier",
   SUBVENTION_EUROS_PER_YEAR: "subvention_euros_per_year",
 };

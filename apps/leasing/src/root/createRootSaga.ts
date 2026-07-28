@@ -25,7 +25,7 @@ import leaseAreaAttachmentSaga from "@/leaseAreaAttachment/saga";
 import leaseInspectionAttachmentSaga from "@/leaseInspectionAttachment/saga";
 import leaseCreateChargeSaga from "@/leaseCreateCharge/saga";
 import leaseholdTransferSaga from "@/leaseholdTransfer/saga";
-import leaseStatisticReportSaga from "@/leaseStatisticReport/saga";
+import leaseReportsSaga from "@/reports/saga";
 import leaseTypeSaga from "@/leaseType/saga";
 import lessorSaga from "@/lessor/saga";
 import oldDwellingsInHousingCompaniesPriceIndexSaga from "@/oldDwellingsInHousingCompaniesPriceIndex/saga";
@@ -74,7 +74,7 @@ export default () =>
       fork(leaseCreateChargeSaga),
       fork(leaseholdTransferSaga),
       fork(leaseInspectionAttachmentSaga),
-      fork(leaseStatisticReportSaga),
+      fork(leaseReportsSaga),
       fork(leaseTypeSaga),
       fork(lessorSaga),
       fork(oldDwellingsInHousingCompaniesPriceIndexSaga),

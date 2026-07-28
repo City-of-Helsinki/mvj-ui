@@ -2,7 +2,7 @@ import React from "react";
 import { get } from "lodash-es";
 import format from "date-fns/format";
 import { formatDate, formatNumber } from "@/util/helpers";
-import { LeaseStatisticReportFormatOptions } from "@/leaseStatisticReport/enums";
+import { LeaseReportsFormatOptions } from "@/reports/enums";
 import type { Reports, SelectListOption } from "@/types";
 import { FieldTypes } from "@/enums";
 import type { ReportOptions, ReportOutputField } from "./types";
@@ -90,20 +90,20 @@ export const getFormattedValue = (
   decimals: number | null | undefined = 2,
 ): string | React.JSX.Element => {
   switch (formatType) {
-    case LeaseStatisticReportFormatOptions.DATE:
+    case LeaseReportsFormatOptions.DATE:
       return formatDate(value, "dd.MM.yyyy");
 
-    case LeaseStatisticReportFormatOptions.MONEY:
-    case LeaseStatisticReportFormatOptions.BOLD_MONEY:
+    case LeaseReportsFormatOptions.MONEY:
+    case LeaseReportsFormatOptions.BOLD_MONEY:
       return `${formatNumber(value, decimals)} €`;
 
-    case LeaseStatisticReportFormatOptions.PERCENTAGE:
+    case LeaseReportsFormatOptions.PERCENTAGE:
       return `${formatNumber(value, decimals)} %`;
 
-    case LeaseStatisticReportFormatOptions.AREA:
+    case LeaseReportsFormatOptions.AREA:
       return `${formatNumber(value, decimals)} m²`;
 
-    case LeaseStatisticReportFormatOptions.URL: {
+    case LeaseReportsFormatOptions.URL: {
       if (typeof value === "object" && value !== null) {
         const { url, name } = value;
         return renderReportURL(url, name);
