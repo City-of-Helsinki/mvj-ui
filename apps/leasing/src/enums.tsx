@@ -491,7 +491,7 @@ export const FormNames = {
   LEASE_RENTS: "rents-form",
   LEASE_STEPPED_DISCOUNT: "lease-stepped-discount-form",
   LEASE_SUMMARY: "summary-form",
-  LEASE_STATISTIC_REPORT: "lease-statistic-report-form",
+  LEASE_REPORTS: "reports-form",
   LEASE_TENANTS: "tenants-form",
   LEASE_BASIS_OF_RENTS: "basis-of-rents-form",
   LEASE_RENT_CALCULATOR: "rent-calculator-form",

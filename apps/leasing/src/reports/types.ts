@@ -1,5 +1,5 @@
 import type { Action, Attributes, ApiResponse, Reports } from "@/types";
-export type LeaseStatisticReportState = {
+export type LeaseReportsState = {
   attributes: Attributes;
   isFetchingAttributes: boolean;
   leaseInvoicingConfirmationReportAttributes: Attributes;

@@ -15,7 +15,7 @@ import contactsReducer from "@/contacts/reducer";
 import contractFileReducer from "@/contractFile/reducer";
 import createCollectionLetterReducer from "@/createCollectionLetter/reducer";
 import creditDecisionReducer from "@/creditDecision/reducer";
-import leaseStatisticReportReducer from "@/leaseStatisticReport/reducer";
+import leaseReportsReducer from "@/reports/reducer";
 import districtsReducer from "@/district/reducer";
 import indexReducer from "@/index/reducer";
 import infillDevelopmentReducer from "@/infillDevelopment/reducer";
@@ -79,7 +79,7 @@ export default (): Reducer<RootState> =>
     application: applicationReducer,
     leaseCreateCharge: leaseCreateChargeReducer,
     leaseholdTransfer: leaseholdTransferReducer,
-    leaseStatisticReport: leaseStatisticReportReducer,
+    leaseReports: leaseReportsReducer,
     leaseType: leaseTypeReducer,
     lessor: lessorReducer,
     oldDwellingsInHousingCompaniesPriceIndex:

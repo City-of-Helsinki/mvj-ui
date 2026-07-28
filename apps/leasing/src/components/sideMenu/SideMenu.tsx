@@ -238,7 +238,7 @@ class SideMenu extends Component<Props & WithRouterProps, State> {
                   <li>
                     <Link
                       onClick={handleClick}
-                      to={getRouteById(Routes.LEASE_STATISTIC_REPORT)}
+                      to={getRouteById(Routes.LEASE_REPORTS)}
                     >
                       Tilastot ja raportit
                     </Link>
