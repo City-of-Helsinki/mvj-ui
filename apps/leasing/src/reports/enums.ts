@@ -110,25 +110,6 @@ export const LeaseInvoicingReportPaths = {
 };
 
 /**
- * Leaseinvoicing report types
- * @readonly
- * @enum {string}
- */
-export const LeaseInvoicingReportTypes = {
-  DECISION_CONDITIONS: "decision_conditions",
-  EXTRA_CITY_RENT: "extra_city_rent",
-  MONEY_COLLETERALS: "money_collaterals",
-  OPEN_INVOICES: "open_invoices",
-  INVOICE_PAYMENTS: "invoice_payments",
-  INVOICES_IN_PERIOD: "invoices_in_period",
-  LASKE_INVOICE_COUNT: "laske_invoice_count",
-  LEASE_COUNT: "lease_count",
-  LEASE_INVOICING_DISABLED: "lease_invoicing_disabled",
-  RENT_FORECAST: "rent_forecast",
-  LEASE_STATISTIC: "lease_statistic",
-};
-
-/**
  * Lease statistics report value format enumerable
  * @readonly
  * @enum {string}
