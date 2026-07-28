@@ -3,10 +3,6 @@ import { SubmissionError } from "redux-form";
 import {
   receiveAttributes,
   attributesNotFound,
-  receiveLeaseReportsResultsAttributes,
-  leaseReportsResultsAttributesNotFound,
-  receiveLeaseInvoicingConfrimationReports,
-  notFoundLeaseInvoicingConfrimationReports,
   receiveReports,
   reportsNotFound,
   receiveReportData,
@@ -18,8 +14,6 @@ import {
 } from "./actions";
 import {
   fetchAttributes,
-  fetchLeaseReportsResultsAttributes,
-  fetchLeaseInvoicingConfrimationReports,
   fetchReports,
   fetchReportData,
   sendReportToMail,
@@ -123,61 +117,6 @@ function* fetchReportDataSaga({
   }
 }
 
-function* fetchLeaseReportsResultsAttributesSaga(): Generator<any, any, any> {
-  try {
-    const {
-      response: { status: statusCode },
-      bodyAsJson,
-    } = yield call(fetchLeaseReportsResultsAttributes);
-
-    switch (statusCode) {
-      case 200: {
-        const attributes = bodyAsJson.fields;
-        yield put(receiveLeaseReportsResultsAttributes(attributes));
-        break;
-      }
-
-      default:
-        yield put(leaseReportsResultsAttributesNotFound());
-        break;
-    }
-  } catch (error) {
-    console.error(
-      'Failed to fetch lease report attributes with error "%s"',
-      error,
-    );
-    yield put(leaseReportsResultsAttributesNotFound());
-    yield put(receiveError(error));
-  }
-}
-
-function* fetchLeaseInvoicingConfrimationReportsSaga({
-  payload: query,
-  type: any,
-}): Generator<any, any, any> {
-  try {
-    const {
-      response: { status: statusCode },
-      bodyAsJson,
-    } = yield call(fetchLeaseInvoicingConfrimationReports, query);
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveLeaseInvoicingConfrimationReports(bodyAsJson));
-        break;
-
-      case 404:
-      case 500:
-        yield put(notFoundLeaseInvoicingConfrimationReports());
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch scheduled jobs with error "%s"', error);
-    yield put(notFoundLeaseInvoicingConfrimationReports());
-    yield put(receiveError(error));
-  }
-}
-
 function* sendReportToMailSaga({
   payload: query,
   type: any,
@@ -270,14 +209,6 @@ export default function* (): Generator<any, any, any> {
       yield takeLatest("mvj/reports/FETCH_REPORTS", fetchReportsSaga);
       yield takeLatest("mvj/reports/FETCH_REPORT_DATA", fetchReportDataSaga);
       yield takeLatest("mvj/reports/FETCH_ATTRIBUTES", fetchAttributesSaga);
-      yield takeLatest(
-        "mvj/reports/FETCH_LEASE_REPORTS_RESULTS_ATTRIBUTES",
-        fetchLeaseReportsResultsAttributesSaga,
-      );
-      yield takeLatest(
-        "mvj/reports/FETCH_LEASE_REPORTS_RESULTSS",
-        fetchLeaseInvoicingConfrimationReportsSaga,
-      );
       yield takeLatest("mvj/reports/SEND_REPORT_TO_MAIL", sendReportToMailSaga);
       yield takeLatest("mvj/reports/FETCH_OPTIONS", fetchOptionsSaga);
     }),

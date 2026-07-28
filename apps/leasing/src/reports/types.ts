@@ -2,10 +2,6 @@ import type { Action, Attributes, ApiResponse, Reports } from "@/types";
 export type LeaseReportsState = {
   attributes: Attributes;
   isFetchingAttributes: boolean;
-  leaseReportsResultsAttributes: Attributes;
-  isFetchingLeaseReportsResultsAttributes: boolean;
-  leaseReportsResults: ApiResponse;
-  isFetchingLeaseReportsResults: boolean;
   reports: Reports;
   isFetchingReports: boolean;
   reportData: Record<string, any> | null;
@@ -16,25 +12,9 @@ export type LeaseReportsState = {
   isFetchingOptions: boolean;
   payload: string | null;
 };
-export type LeaseReportsResults = ApiResponse;
 export type FetchAttributesAction = Action<string, void>;
 export type ReceiveAttributesAction = Action<string, Attributes>;
 export type AttributesNotFoundAction = Action<string, void>;
-export type FetchLeaseReportsResultsAttributesAction = Action<string, void>;
-export type ReceiveLeaseReportsResultsAttributesAction = Action<
-  string,
-  Attributes
->;
-export type LeaseReportsResultsAttributesNotFoundAction = Action<string, void>;
-export type FetchLeaseInvoicingConfrimationReportsAction = Action<string, void>;
-export type ReceiveLeaseInvoicingConfrimationReportsAction = Action<
-  string,
-  Record<string, any>
->;
-export type NotFoundLeaseInvoicingConfrimationReportsAction = Action<
-  string,
-  void
->;
 export type FetchReportsAction = Action<string, void>;
 export type ReceiveReportsAction = Action<string, Reports>;
 export type ReportsNotFoundAction = Action<string, void>;

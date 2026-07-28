@@ -7,20 +7,6 @@ export const getIsFetchingAttributes: Selector<boolean, void> = (
 export const getAttributes: Selector<Attributes, void> = (
   state: RootState,
 ): Attributes => state.leaseReports.attributes;
-export const getIsFetchingLeaseReportsResultsAttributes: Selector<
-  boolean,
-  void
-> = (state: RootState): boolean =>
-  state.leaseReports.isFetchingLeaseReportsResultsAttributes;
-export const getLeaseReportsResultsAttributes: Selector<Attributes, void> = (
-  state: RootState,
-): Attributes => state.leaseReports.leaseReportsResultsAttributes;
-export const getIsFetchingLeaseReportsResults: Selector<boolean, void> = (
-  state: RootState,
-): boolean => state.leaseReports.isFetchingLeaseReportsResults;
-export const getLeaseReportsResults: Selector<Attributes, void> = (
-  state: RootState,
-): Attributes => state.leaseReports.leaseReportsResults;
 export const getIsFetchingReports: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.leaseReports.isFetchingReports;
