@@ -16,7 +16,7 @@ import { LAND_USE_NEGOTIATION_PHASES } from "../../options";
 const mockNavigate = vi.fn();
 let mockLocationSearch = "";
 
-vi.mock("react-router-dom", () => ({
+vi.mock("react-router", () => ({
   useParams: () => ({ id: "LU-1" }),
   useLocation: () => ({ search: mockLocationSearch }),
   useNavigate: () => mockNavigate,

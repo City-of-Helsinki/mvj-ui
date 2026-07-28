@@ -1,6 +1,6 @@
 import React from "react";
 import { FeatureGroup, GeoJSON, Popup } from "react-leaflet";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { getRouteById, Routes } from "@/root/routes";
 import type { LeafletGeoJson } from "types";
 

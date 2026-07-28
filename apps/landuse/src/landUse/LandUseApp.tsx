@@ -4,7 +4,7 @@ import {
   Routes as RouterRoutes,
   Route,
   useLocation,
-} from "react-router-dom";
+} from "react-router";
 import { Footer, useOidcClient, useAuthenticatedUser } from "hds-react";
 import LoginPage from "@/landUse/auth/LoginPage";
 import { setRedirectUrlToSessionStorage } from "@/landUse/utils/storage";
