@@ -8,22 +8,6 @@ export const fetchAttributes = (): Generator<any, any, any> => {
     }),
   );
 };
-export const fetchLeaseReportsResultsAttributes = (): Generator<
-  any,
-  any,
-  any
-> => {
-  return callApi(
-    new Request(createUrl(`lease_create_collection_letter/`), {
-      method: "OPTIONS",
-    }),
-  );
-};
-export const fetchLeaseInvoicingConfrimationReports = (
-  params: Record<string, any> | null | undefined,
-): Generator<any, any, any> => {
-  return callApi(new Request(createUrl("scheduled_job/", params)));
-};
 export const fetchReports = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl("report/")));
 };

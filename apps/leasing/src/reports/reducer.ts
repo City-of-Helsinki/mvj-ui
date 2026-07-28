@@ -1,10 +1,8 @@
 import { combineReducers } from "redux";
 import { handleActions } from "redux-actions";
-import type { Attributes, Reducer, ApiResponse, Reports } from "@/types";
+import type { Attributes, Reducer, Reports } from "@/types";
 import type {
   ReceiveAttributesAction,
-  ReceiveLeaseReportsResultsAttributesAction,
-  ReceiveLeaseInvoicingConfrimationReportsAction,
   ReceiveReportsAction,
   ReceiveReportDataAction,
   SetOptionsAction,
@@ -26,46 +24,6 @@ const attributesReducer: Reducer<Attributes> = handleActions(
       { payload: attributes }: ReceiveAttributesAction,
     ) => {
       return attributes;
-    },
-  },
-  null,
-);
-const isFetchingLeaseReportsResultsAttributesReducer: Reducer<boolean> =
-  handleActions(
-    {
-      "mvj/reports/FETCH_LEASE_REPORTS_RESULTS_ATTRIBUTES": () => true,
-      "mvj/reports/RECEIVE_LEASE_REPORTS_RESULTS_ATTRIBUTES": () => false,
-      "mvj/reports/LEASE_REPORTS_RESULTS_ATTRIBUTES_ATTRIBUTES_NOT_FOUND": () =>
-        false,
-    },
-    false,
-  );
-const leaseReportsResultsAttributesReducer: Reducer<Attributes> = handleActions(
-  {
-    ["mvj/reports/RECEIVE_LEASE_REPORTS_RESULTS_ATTRIBUTES"]: (
-      state: Attributes,
-      { payload: attributes }: ReceiveLeaseReportsResultsAttributesAction,
-    ) => {
-      return attributes;
-    },
-  },
-  null,
-);
-const isFetchingLeaseReportsResultsReducer: Reducer<boolean> = handleActions(
-  {
-    "mvj/reports/FETCH_LEASE_REPORTS_RESULTSS": () => true,
-    "mvj/reports/RECEIVE_LEASE_REPORTS_RESULTSS": () => false,
-    "mvj/reports/NOT_FOUND_LEASE_REPORTS_RESULTSS": () => false,
-  },
-  false,
-);
-const leaseReportsResultsReducer: Reducer<Attributes> = handleActions(
-  {
-    ["mvj/reports/RECEIVE_LEASE_REPORTS_RESULTSS"]: (
-      state: ApiResponse,
-      { payload }: ReceiveLeaseInvoicingConfrimationReportsAction,
-    ) => {
-      return payload;
     },
   },
   null,
@@ -163,11 +121,6 @@ const optionsReducer: Reducer<Attributes> = handleActions(
 export default combineReducers<Record<string, any>, any>({
   attributes: attributesReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
-  leaseReportsResultsAttributes: leaseReportsResultsAttributesReducer,
-  isFetchingLeaseReportsResultsAttributes:
-    isFetchingLeaseReportsResultsAttributesReducer,
-  isFetchingLeaseReportsResults: isFetchingLeaseReportsResultsReducer,
-  leaseReportsResults: leaseReportsResultsReducer,
   reports: reportsReducer,
   isFetchingReports: isFetchingReportsReducer,
   reportData: reportDataReducer,

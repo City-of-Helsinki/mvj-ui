@@ -2,14 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
 import { TableSortOrder } from "@/enums";
-import AuthorizationError from "@/components/authorization/AuthorizationError";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import SortableTable from "@/components/table/SortableTable";
 import FormText from "@/components/form/FormText";
 import ExcelLink from "@/components/excel/ExcelLink";
 import {
-  hasPermissions,
   getLabelOfOption,
   sortNumberByKeyAsc,
   sortNumberByKeyDesc,
@@ -27,7 +25,6 @@ import {
   getReportTypeOptions,
 } from "@/reports/helpers";
 import {
-  getLeaseReportsResults,
   getPayload,
   getReportData,
   getIsFetchingReportData,
@@ -35,29 +32,15 @@ import {
   getReports,
 } from "@/reports/selectors";
 import type { Reports } from "types";
-import { getUsersPermissions } from "@/usersPermissions/selectors";
-import { UsersPermissions } from "@/usersPermissions/enums";
-import { PermissionMissingTexts } from "@/enums";
 import type { ReportOptions } from "@/reports/types";
 
 const LeaseReportsResults: React.FC = () => {
-  const leaseReportsResultsData = useSelector(getLeaseReportsResults);
-  const usersPermissions = useSelector(getUsersPermissions);
   const payload = useSelector(getPayload);
 
   const reportData = useSelector(getReportData);
   const isFetchingReportData = useSelector(getIsFetchingReportData);
   const reportOptions: ReportOptions = useSelector(getReportOptions);
   const reports: Reports = useSelector(getReports);
-
-  const [leaseReportsResultsDataState, setLeaseReportsResultsDataState] =
-    useState(null);
-
-  useEffect(() => {
-    if (leaseReportsResultsData !== leaseReportsResultsDataState) {
-      setLeaseReportsResultsDataState(leaseReportsResultsData);
-    }
-  }, [leaseReportsResultsData, leaseReportsResultsDataState]);
 
   const getColumns = () => {
     const columns = [];
@@ -106,7 +89,6 @@ const LeaseReportsResults: React.FC = () => {
     return columns;
   };
 
-  const dev = false;
   const columns = getColumns();
   const reportTypeOptions = getReportTypeOptions(reports);
   const isSortable = !reportOptions.is_already_sorted;
@@ -116,11 +98,6 @@ const LeaseReportsResults: React.FC = () => {
         <Loader isLoading={true} />
       </LoaderWrapper>
     );
-  if (
-    !hasPermissions(usersPermissions, UsersPermissions.VIEW_REPORTS_RESULTS) &&
-    dev
-  )
-    return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
   return (
     <>
       <Row>

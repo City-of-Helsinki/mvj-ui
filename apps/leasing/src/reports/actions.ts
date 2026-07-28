@@ -4,12 +4,6 @@ import type {
   FetchAttributesAction,
   ReceiveAttributesAction,
   AttributesNotFoundAction,
-  FetchLeaseReportsResultsAttributesAction,
-  ReceiveLeaseReportsResultsAttributesAction,
-  LeaseReportsResultsAttributesNotFoundAction,
-  FetchLeaseInvoicingConfrimationReportsAction,
-  NotFoundLeaseInvoicingConfrimationReportsAction,
-  ReceiveLeaseInvoicingConfrimationReportsAction,
   FetchReportsAction,
   ReceiveReportsAction,
   ReportsNotFoundAction,
@@ -33,31 +27,6 @@ export const receiveAttributes = (
   createAction("mvj/reports/RECEIVE_ATTRIBUTES")(attributes);
 export const attributesNotFound = (): AttributesNotFoundAction =>
   createAction("mvj/reports/ATTRIBUTES_NOT_FOUND")();
-export const fetchLeaseReportsResultsAttributes =
-  (): FetchLeaseReportsResultsAttributesAction =>
-    createAction("mvj/reports/FETCH_LEASE_REPORTS_RESULTS_ATTRIBUTES")();
-export const receiveLeaseReportsResultsAttributes = (
-  attributes: Attributes,
-): ReceiveLeaseReportsResultsAttributesAction =>
-  createAction("mvj/reports/RECEIVE_LEASE_REPORTS_RESULTS_ATTRIBUTES")(
-    attributes,
-  );
-export const leaseReportsResultsAttributesNotFound =
-  (): LeaseReportsResultsAttributesNotFoundAction =>
-    createAction(
-      "mvj/reports/LEASE_REPORTS_RESULTS_ATTRIBUTES_ATTRIBUTES_NOT_FOUND",
-    )();
-export const fetchLeaseInvoicingConfrimationReports = (
-  query: Record<string, any>,
-): FetchLeaseInvoicingConfrimationReportsAction =>
-  createAction("mvj/reports/FETCH_LEASE_REPORTS_RESULTSS")(query);
-export const receiveLeaseInvoicingConfrimationReports = (
-  runs: Record<string, any>,
-): ReceiveLeaseInvoicingConfrimationReportsAction =>
-  createAction("mvj/reports/RECEIVE_LEASE_REPORTS_RESULTSS")(runs);
-export const notFoundLeaseInvoicingConfrimationReports =
-  (): NotFoundLeaseInvoicingConfrimationReportsAction =>
-    createAction("mvj/reports/NOT_FOUND_LEASE_REPORTS_RESULTSS")();
 export const fetchReports = (): FetchReportsAction =>
   createAction("mvj/reports/FETCH_REPORTS")();
 export const receiveReports = (reports: Reports): ReceiveReportsAction =>
