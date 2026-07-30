@@ -1,7 +1,6 @@
 import { createAction } from "redux-actions";
 import type { Attributes, Methods } from "types";
 import type {
-  ClearFormValidFlagsAction,
   ClearFormDirtyFlagsAction,
   CopyDecisionToLeasesAction,
   CreateChargeAction,
@@ -30,7 +29,6 @@ import type {
   PatchLeaseInvoiceNotesAction,
   ReceiveAttributesAction,
   ReceiveCollapseStatesAction,
-  ReceiveFormValidFlagsAction,
   ReceiveFormDirtyFlagsAction,
   ReceiveIsSaveClickedAction,
   ReceiveIsCreateClickedAction,
@@ -136,12 +134,6 @@ export const hideCreateModal = (): HideCreateModalAction =>
   createAction("mvj/leases/HIDE_CREATE_MODAL")();
 export const showCreateModal = (): ShowCreateModalAction =>
   createAction("mvj/leases/SHOW_CREATE_MODAL")();
-export const receiveFormValidFlags = (
-  valid: LeaseFormFlags,
-): ReceiveFormValidFlagsAction =>
-  createAction("mvj/leases/RECEIVE_FORM_VALID_FLAGS")(valid);
-export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
-  createAction("mvj/leases/CLEAR_FORM_VALID_FLAGS")();
 export const receiveFormDirtyFlags = (
   dirty: LeaseFormFlags,
 ): ReceiveFormDirtyFlagsAction =>

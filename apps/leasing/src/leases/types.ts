@@ -24,7 +24,6 @@ export type LeaseState = {
   current: Lease;
   isAttachDecisionModalOpen: boolean;
   isCreateModalOpen: boolean;
-  isFormDirtyById: LeaseFormFlags;
   isFormValidById: LeaseFormFlags;
   isEditMode: boolean;
   isFetching: boolean;
@@ -130,30 +129,25 @@ export type LeaseArea = {
   plots: Array<Record<string, any>>; // TODO type for Plot
   plan_units: Array<Record<string, any>>; // TODO type for PlanUnit
   preconstruction_state:
-    | (typeof ConstructabilityState)[keyof typeof ConstructabilityState]
-    | null;
+    (typeof ConstructabilityState)[keyof typeof ConstructabilityState] | null;
   preconstruction_estimated_construction_readiness_moment: string | null;
   preconstruction_inspection_moment: string | null;
   demolition_state:
-    | (typeof ConstructabilityState)[keyof typeof ConstructabilityState]
-    | null;
+    (typeof ConstructabilityState)[keyof typeof ConstructabilityState] | null;
   polluted_land_state:
-    | (typeof ConstructabilityState)[keyof typeof ConstructabilityState]
-    | null;
+    (typeof ConstructabilityState)[keyof typeof ConstructabilityState] | null;
   polluted_land_rent_condition_state: string | null; // TODO enum type for PollutedLandRentConditionState
   polluted_land_rent_condition_date: string | null;
   polluted_land_planner: Record<string, any> | null; // TODO type for User as in backend
   polluted_land_projectwise_number: string | null;
   constructability_report_state:
-    | (typeof ConstructabilityState)[keyof typeof ConstructabilityState]
-    | null;
+    (typeof ConstructabilityState)[keyof typeof ConstructabilityState] | null;
   constructability_report_investigation_state: string | null; // TODO enum type for ConstructabilityReportInvestigationState
   constructability_report_signing_date: string | null;
   constructability_report_signer: string | null;
   constructability_descriptions: Array<Record<string, any>>; // TODO type for ConstructabilityDescription
   other_state:
-    | (typeof ConstructabilityState)[keyof typeof ConstructabilityState]
-    | null;
+    (typeof ConstructabilityState)[keyof typeof ConstructabilityState] | null;
   archived_decision: Record<string, any>; // TODO type for Decision
   archived_at: string | null;
   archived_note: string | null;
@@ -243,8 +237,7 @@ export type BasisOfRent = {
 };
 
 export type PeriodicRentAdjustmentType =
-  | "TASOTARKISTUS_20_20"
-  | "TASOTARKISTUS_20_10";
+  "TASOTARKISTUS_20_20" | "TASOTARKISTUS_20_10";
 
 export type LeaseFormName =
   | (typeof FormNames)["LEASE_CONSTRUCTABILITY"]
@@ -298,8 +291,6 @@ export type CopyDecisionToLeasesAction = Action<string, Record<string, any>>;
 export type HideAttachDecisionModalAction = Action<string, void>;
 export type ShowAttachDecisionModalAction = Action<string, void>;
 export type CreateChargeAction = Action<string, CreateChargePayload>;
-export type ReceiveFormValidFlagsAction = Action<string, LeaseFormFlags>;
-export type ClearFormValidFlagsAction = Action<string, void>;
 export type ReceiveFormDirtyFlagsAction = Action<string, LeaseFormFlags>;
 export type ClearFormDirtyFlagsAction = Action<string, void>;
 export type ReceiveCollapseStatesAction = Action<string, Record<string, any>>;

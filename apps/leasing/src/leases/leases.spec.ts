@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   attributesNotFound,
-  clearFormValidFlags,
   copyDecisionToLeases,
   createCharge,
   createLease,
@@ -23,7 +22,6 @@ import {
   patchLeaseInvoiceNotes,
   receiveAttributes,
   receiveCollapseStates,
-  receiveFormValidFlags,
   receiveIsSaveClicked,
   receiveLeaseById,
   receiveLeases,
@@ -67,17 +65,6 @@ const defaultState: LeaseState = {
     "rents-form": false,
     "summary-form": false,
     "tenants-form": false,
-  },
-  isFormValidById: {
-    "basis-of-rents-form": true,
-    "constructability-form": true,
-    "contracts-form": true,
-    "decisions-form": true,
-    "inspections-form": true,
-    "lease-areas-form": true,
-    "rents-form": true,
-    "summary-form": true,
-    "tenants-form": true,
   },
   isSaveClicked: false,
   isSaving: false,
@@ -270,38 +257,6 @@ describe("Leases", () => {
       it("should update isSaving flag to true when setting rent info uncomplete", () => {
         const newState = { ...defaultState, isSaving: true };
         const state = leasesReducer({}, setRentInfoUncomplete(1));
-        expect(state).to.deep.equal(newState);
-      });
-      it("should update isFormValidById value", () => {
-        const dummyFlags = {
-          "basis-of-rents-form": true,
-          "constructability-form": true,
-          "contracts-form": true,
-          "decisions-form": true,
-          "inspections-form": false,
-          "lease-areas-form": true,
-          "rents-form": true,
-          "summary-form": true,
-          "tenants-form": true,
-        };
-        const newState = { ...defaultState, isFormValidById: dummyFlags };
-        const state = leasesReducer({}, receiveFormValidFlags(dummyFlags));
-        expect(state).to.deep.equal(newState);
-      });
-      it("should clear isFormValidById value", () => {
-        const dummyFlags = {
-          "constructability-form": true,
-          "contracts-form": true,
-          "decisions-form": true,
-          "inspections-form": false,
-          "lease-areas-form": true,
-          "rents-form": true,
-          "summary-form": true,
-          "tenants-form": true,
-        };
-        const newState = { ...defaultState };
-        let state = leasesReducer({}, receiveFormValidFlags(dummyFlags));
-        state = leasesReducer(state, clearFormValidFlags());
         expect(state).to.deep.equal(newState);
       });
       it("should update isEditMode flag to true", () => {
