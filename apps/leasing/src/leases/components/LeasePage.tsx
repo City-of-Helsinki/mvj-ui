@@ -162,6 +162,7 @@ import {
   validateTenantForm,
 } from "../formValidators";
 import { validateRentCalculatorForm } from "@/components/formValidations";
+import { validateRentBasisForm } from "@/rentbasis/formValidators";
 
 type Props = {
   areasFormValues: Record<string, any>;
@@ -306,6 +307,10 @@ const LeasePage: React.FC<Props> = (props) => {
     dirty: false,
     valid: true,
   });
+  const [basisOfRentsFormState, setBasisOfRentsFormState] = useState({
+    dirty: false,
+    valid: true,
+  });
 
   useEffect(() => {
     dispatch(
@@ -316,7 +321,7 @@ const LeasePage: React.FC<Props> = (props) => {
         [FormNames.LEASE_INSPECTIONS]: inspectionsFormState.dirty,
         [FormNames.LEASE_AREAS]: leaseAreasFormState.dirty,
         [FormNames.LEASE_RENTS]: rentsFormState.dirty,
-        [FormNames.LEASE_BASIS_OF_RENTS]: isBasisOfRentsFormDirty,
+        [FormNames.LEASE_BASIS_OF_RENTS]: basisOfRentsFormState.dirty,
         [FormNames.LEASE_SUMMARY]: summaryFormState.dirty,
         [FormNames.LEASE_TENANTS]: tenantsFormState.dirty,
       }),
@@ -330,7 +335,7 @@ const LeasePage: React.FC<Props> = (props) => {
     leaseAreasFormState.dirty,
     summaryFormState.dirty,
     tenantsFormState.dirty,
-    isBasisOfRentsFormDirty,
+    basisOfRentsFormState.dirty,
     dispatch,
   ]);
 
@@ -347,8 +352,6 @@ const LeasePage: React.FC<Props> = (props) => {
     decisionsFormValues,
     inspectionsFormValues,
     areasFormValues,
-    isBasisOfRentsFormDirty,
-    basisOfRentsFormValues,
     leaseId,
     isFormValidFlags,
     isEditMode,
@@ -361,14 +364,13 @@ const LeasePage: React.FC<Props> = (props) => {
     leaseAreasFormState,
     rentsFormState,
     rentCalculatorFormState,
+    basisOfRentsFormState,
   });
   currentValuesRef.current = {
     contractsFormValues,
     decisionsFormValues,
     inspectionsFormValues,
     areasFormValues,
-    isBasisOfRentsFormDirty,
-    basisOfRentsFormValues,
     leaseId,
     isFormValidFlags,
     isEditMode,
@@ -381,6 +383,7 @@ const LeasePage: React.FC<Props> = (props) => {
     leaseAreasFormState,
     rentsFormState,
     rentCalculatorFormState,
+    basisOfRentsFormState,
   };
 
   const timerAutoSave = useRef<NodeJS.Timeout>();
@@ -544,6 +547,20 @@ const LeasePage: React.FC<Props> = (props) => {
         },
         { valid: true, values: true, initialValues: true },
       );
+    const unsubscribeLeaseBasisOfRentsForm =
+      leaseBasisOfRentsFormRef.current.subscribe(
+        (formState) => {
+          const isDirtyIncludingFieldArrays = !isEqual(
+            formState.values,
+            formState.initialValues,
+          );
+          setBasisOfRentsFormState({
+            dirty: isDirtyIncludingFieldArrays,
+            valid: formState.valid,
+          });
+        },
+        { valid: true, values: true, initialValues: true },
+      );
 
     return () => {
       if (pathname !== `${getRouteById(Routes.LEASES)}/${leaseId}`) {
@@ -567,6 +584,7 @@ const LeasePage: React.FC<Props> = (props) => {
       unsubscribeLeaseAreasForm();
       unsubscribeLeaseRentsForm();
       unsubscribeLeaseRentCalculatorForm();
+      unsubscribeLeaseBasisOfRentsForm();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -713,6 +731,7 @@ const LeasePage: React.FC<Props> = (props) => {
     setLeaseAreasFormState({ dirty: false, valid: true });
     setRentsFormState({ dirty: false, valid: true });
     setRentCalculatorFormState({ dirty: false, valid: true });
+    setBasisOfRentsFormState({ dirty: false, valid: true });
     receiveIsSaveClicked(false);
     dispatch(clearFormValidFlags());
     dispatch(clearFormDirtyFlags());
@@ -732,6 +751,7 @@ const LeasePage: React.FC<Props> = (props) => {
     leaseAreasFormRef.current.restart();
     leaseRentsFormRef.current.restart();
     leaseRentCalculatorFormRef.current.restart();
+    leaseBasisOfRentsFormRef.current.restart();
   };
 
   const summaryFormRef = useRef(
@@ -791,6 +811,13 @@ const LeasePage: React.FC<Props> = (props) => {
       mutators: { ...arrayMutators },
     }),
   );
+  const leaseBasisOfRentsFormRef = useRef(
+    createForm({
+      onSubmit: () => {},
+      validate: validateRentBasisForm,
+      mutators: { ...arrayMutators },
+    }),
+  );
 
   const initializeForms = (lease: Lease) => {
     const areas = getContentLeaseAreas(lease),
@@ -822,7 +849,7 @@ const LeasePage: React.FC<Props> = (props) => {
       type: RentCalculatorTypes.YEAR,
       year: currentYear,
     });
-    initialize(FormNames.LEASE_BASIS_OF_RENTS, {
+    leaseBasisOfRentsFormRef.current.initialize({
       basis_of_rents: getContentBasisOfRents(lease).filter(
         (item) => !item.archived_at,
       ),
@@ -899,8 +926,8 @@ const LeasePage: React.FC<Props> = (props) => {
     );
 
     if (storedBasisOfRentsFormValues) {
-      bulkChangeReduxForm(
-        FormNames.LEASE_BASIS_OF_RENTS,
+      bulkChange(
+        leaseBasisOfRentsFormRef.current,
         storedBasisOfRentsFormValues,
       );
     }
@@ -957,8 +984,6 @@ const LeasePage: React.FC<Props> = (props) => {
     const {
       leaseId,
       isFormValidFlags,
-      isBasisOfRentsFormDirty,
-      basisOfRentsFormValues,
       summaryFormState,
       tenantsFormState,
       constructabilityFormState,
@@ -967,6 +992,7 @@ const LeasePage: React.FC<Props> = (props) => {
       inspectionsFormState,
       leaseAreasFormState,
       rentsFormState,
+      basisOfRentsFormState,
     } = currentValuesRef.current;
 
     let isDirty = false;
@@ -1031,10 +1057,10 @@ const LeasePage: React.FC<Props> = (props) => {
       removeSessionStorageItem(FormNames.LEASE_RENTS);
     }
 
-    if (isBasisOfRentsFormDirty) {
+    if (basisOfRentsFormState.dirty) {
       setSessionStorageItem(
         FormNames.LEASE_BASIS_OF_RENTS,
-        basisOfRentsFormValues,
+        leaseBasisOfRentsFormRef.current.getState().values,
       );
       isDirty = true;
     } else {
@@ -1129,10 +1155,10 @@ const LeasePage: React.FC<Props> = (props) => {
         );
       }
 
-      if (isBasisOfRentsFormDirty) {
+      if (basisOfRentsFormState.dirty) {
         payload = addBasisOfRentsFormValuesToPayload(
           payload,
-          basisOfRentsFormValues,
+          leaseBasisOfRentsFormRef.current.getState().values,
           currentLease,
         );
       }
@@ -1163,7 +1189,7 @@ const LeasePage: React.FC<Props> = (props) => {
       inspectionsFormState.valid &&
       leaseAreasFormState.valid &&
       rentsFormState.valid &&
-      isBasisOfRentsFormValid &&
+      basisOfRentsFormState.valid &&
       summaryFormState.valid &&
       tenantsFormState.valid
     );
@@ -1194,7 +1220,7 @@ const LeasePage: React.FC<Props> = (props) => {
 
   const isAnyFormDirty = () => {
     const {
-      isBasisOfRentsFormDirty,
+      basisOfRentsFormState,
       summaryFormState,
       tenantsFormState,
       constructabilityFormState,
@@ -1212,7 +1238,7 @@ const LeasePage: React.FC<Props> = (props) => {
       inspectionsFormState.dirty ||
       leaseAreasFormState.dirty ||
       rentsFormState.dirty ||
-      isBasisOfRentsFormDirty ||
+      basisOfRentsFormState.dirty ||
       summaryFormState.dirty ||
       tenantsFormState.dirty
     );
@@ -1324,12 +1350,12 @@ const LeasePage: React.FC<Props> = (props) => {
                   leaseAttributes,
                   LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
                 ),
-              isDirty: rentsFormState.dirty || isBasisOfRentsFormDirty,
+              isDirty: rentsFormState.dirty || basisOfRentsFormState.dirty,
               hasError:
                 isSaveClicked &&
                 (!rentsFormState.valid ||
                   !rentCalculatorFormState.valid ||
-                  !isBasisOfRentsFormValid),
+                  !basisOfRentsFormState.valid),
             },
             {
               label: "Päätökset ja sopimukset",
@@ -1515,6 +1541,7 @@ const LeasePage: React.FC<Props> = (props) => {
                   <RentsEditMain
                     rentsFormApi={leaseRentsFormRef.current}
                     rentCalculatorFormApi={leaseRentCalculatorFormRef.current}
+                    basisOfRentsFormApi={leaseBasisOfRentsFormRef.current}
                   />
                 </Authorization>
               ) : (

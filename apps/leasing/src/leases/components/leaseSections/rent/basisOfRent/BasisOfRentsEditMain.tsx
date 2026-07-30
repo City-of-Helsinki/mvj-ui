@@ -1,5 +1,7 @@
-import React from "react";
-import { change, formValueSelector, FieldArray, reduxForm } from "redux-form";
+import React, { useEffect, useState } from "react";
+import { Form } from "react-final-form";
+import type { FormApi } from "final-form";
+import { FieldArray } from "react-final-form-arrays";
 import Authorization from "@/components/authorization/Authorization";
 import BasisOfRentsEdit from "./BasisOfRentsEdit";
 import Divider from "@/components/content/Divider";
@@ -13,99 +15,103 @@ import { isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { BasisOfRent } from "@/leases/types";
-import { useDispatch, useSelector } from "react-redux";
-import { FormNames } from "@/enums";
-import { validateRentBasisForm } from "@/rentbasis/formValidators";
+import { useSelector } from "react-redux";
 
-const formName = FormNames.LEASE_BASIS_OF_RENTS;
+type Props = {
+  formApi: FormApi;
+};
 
-type Props = {};
-
-const BasisOfRentsEditMain: React.FC<Props> = () => {
-  const dispatch = useDispatch();
-  const selector = formValueSelector(formName);
+const BasisOfRentsEditMain: React.FC<Props> = ({ formApi }) => {
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const editedActiveBasisOfRents: Array<BasisOfRent> = useSelector(
-    (state) => selector(state, "basis_of_rents") || [],
-  );
-  const editedArchivedBasisOfRents: Array<BasisOfRent> = useSelector(
-    (state) => selector(state, "basis_of_rents_archived") || [],
-  );
+
+  const [editedActiveBasisOfRents, setEditedActiveBasisOfRents] = useState<
+    Array<BasisOfRent>
+  >(() => formApi.getState().values?.basis_of_rents || []);
+  const [editedArchivedBasisOfRents, setEditedArchivedBasisOfRents] = useState<
+    Array<BasisOfRent>
+  >(() => formApi.getState().values?.basis_of_rents_archived || []);
+
+  useEffect(() => {
+    const unsubscribe = formApi.subscribe(
+      ({ values }) => {
+        setEditedActiveBasisOfRents(values.basis_of_rents || []);
+        setEditedArchivedBasisOfRents(values.basis_of_rents_archived || []);
+      },
+      { values: true },
+    );
+    return () => unsubscribe();
+  }, [formApi]);
+
   const handleArchive = (index: number, item: BasisOfRent) => {
-    dispatch(
-      change(
-        formName,
-        "basis_of_rents",
-        editedActiveBasisOfRents.filter((_, i) => i !== index),
-      ),
+    formApi.change(
+      "basis_of_rents",
+      editedActiveBasisOfRents.filter((_, i) => i !== index),
     );
-    dispatch(
-      change(formName, "basis_of_rents_archived", [
-        ...editedArchivedBasisOfRents,
-        { ...item, archived_at: new Date().toISOString() },
-      ]),
-    );
+    formApi.change("basis_of_rents_archived", [
+      ...editedArchivedBasisOfRents,
+      { ...item, archived_at: new Date().toISOString() },
+    ]);
   };
 
   const handleUnarchive = (index: number, item: BasisOfRent) => {
-    dispatch(
-      change(
-        formName,
-        "basis_of_rents_archived",
-        editedArchivedBasisOfRents.filter((_, i) => i !== index),
-      ),
+    formApi.change(
+      "basis_of_rents_archived",
+      editedArchivedBasisOfRents.filter((_, i) => i !== index),
     );
-    dispatch(
-      change(formName, "basis_of_rents", [
-        ...editedActiveBasisOfRents,
-        { ...item, archived_at: null },
-      ]),
-    );
+    formApi.change("basis_of_rents", [
+      ...editedActiveBasisOfRents,
+      { ...item, archived_at: null },
+    ]);
   };
 
   return (
-    <form>
-      <Authorization
-        allow={isFieldAllowedToRead(
-          leaseAttributes,
-          LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
-        )}
-      >
-        <>
-          <Title
-            enableUiDataEdit
-            uiDataKey={getUiDataLeaseKey(
+    <Form form={formApi} onSubmit={formApi.submit}>
+      {() => (
+        <form>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              leaseAttributes,
               LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
             )}
           >
-            {LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}
-          </Title>
-          <Divider />
-          <FieldArray
-            archived={false}
-            basisOfRents={editedActiveBasisOfRents}
-            component={BasisOfRentsEdit}
-            formName={formName}
-            name="basis_of_rents"
-            onArchive={handleArchive}
-          />
-
-          <FieldArray
-            archived={true}
-            basisOfRents={editedArchivedBasisOfRents}
-            component={BasisOfRentsEdit}
-            formName={formName}
-            name="basis_of_rents_archived"
-            onUnarchive={handleUnarchive}
-          />
-        </>
-      </Authorization>
-    </form>
+            <>
+              <Title
+                enableUiDataEdit
+                uiDataKey={getUiDataLeaseKey(
+                  LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS,
+                )}
+              >
+                {LeaseBasisOfRentsFieldTitles.BASIS_OF_RENTS}
+              </Title>
+              <Divider />
+              <FieldArray name="basis_of_rents">
+                {(fieldArrayProps) => (
+                  <BasisOfRentsEdit
+                    {...fieldArrayProps}
+                    archived={false}
+                    basisOfRents={editedActiveBasisOfRents}
+                    formApi={formApi}
+                    onArchive={handleArchive}
+                  />
+                )}
+              </FieldArray>
+              <FieldArray name="basis_of_rents_archived">
+                {(fieldArrayProps) => (
+                  <BasisOfRentsEdit
+                    {...fieldArrayProps}
+                    archived={true}
+                    basisOfRents={editedArchivedBasisOfRents}
+                    formApi={formApi}
+                    onUnarchive={handleUnarchive}
+                  />
+                )}
+              </FieldArray>
+            </>
+          </Authorization>
+        </form>
+      )}
+    </Form>
   );
 };
 
-export default reduxForm({
-  form: formName,
-  destroyOnUnmount: false,
-  validate: validateRentBasisForm,
-})(BasisOfRentsEditMain) as React.ComponentType;
+export default BasisOfRentsEditMain;

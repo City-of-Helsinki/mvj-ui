@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import type { FormApi } from "final-form";
 import { Row, Column } from "@/components/grid/Grid";
 import classNames from "classnames";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -29,7 +30,7 @@ type Props = {
   archived: boolean;
   basisOfRents: Array<BasisOfRent>;
   fields: any;
-  formName: string;
+  formApi: FormApi;
   onArchive?: (...args: Array<any>) => any;
   onUnarchive?: (...args: Array<any>) => any;
   showLockedAt?: boolean;
@@ -41,7 +42,7 @@ const BasisOfRentsEdit = ({
   archived,
   basisOfRents,
   fields,
-  formName,
+  formApi,
   onArchive,
   onUnarchive,
   showLockedAt,
@@ -202,7 +203,7 @@ const BasisOfRentsEdit = ({
                           archived={true}
                           areaUnitOptions={areaUnitOptions}
                           field={field}
-                          formName={formName}
+                          formApi={formApi}
                           indexOptions={indexOptions}
                           intendedUseOptions={intendedUseOptions}
                           managementTypeOptions={managementTypeOptions}
@@ -277,7 +278,7 @@ const BasisOfRentsEdit = ({
                         archived={false}
                         areaUnitOptions={areaUnitOptions}
                         field={field}
-                        formName={formName}
+                        formApi={formApi}
                         indexOptions={indexOptions}
                         intendedUseOptions={intendedUseOptions}
                         managementTypeOptions={managementTypeOptions}

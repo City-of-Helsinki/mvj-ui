@@ -1,9 +1,9 @@
 import React, { Fragment } from "react";
 import { useSelector } from "react-redux";
-import { formValueSelector } from "redux-form";
+import { useFieldValue } from "@/components/helpers";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import {
   isFieldAllowedToRead,
@@ -19,24 +19,19 @@ import { LeaseBasisOfRentsFieldPaths } from "@/leases/enums";
 import type { Attributes } from "types";
 import { mastCalculatorRent } from "@/leases/helpers";
 type Props = {
-  formName: string;
   parentField: string;
   index: number;
   fieldsDisabled: boolean;
 };
 
 const MastChildrenEdit: React.FC<Props> = ({
-  formName,
   parentField,
   index,
   fieldsDisabled,
 }) => {
   const isSaveClicked = useSelector(getIsSaveClicked);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const selector = formValueSelector(formName);
-  const area = useSelector((state) =>
-    selector(state, `${parentField}.children[${index}].area`),
-  );
+  const area = useFieldValue(`${parentField}.children[${index}].area`);
 
   const rent = mastCalculatorRent(index, area);
   return (
@@ -95,7 +90,7 @@ const MastChildrenEdit: React.FC<Props> = ({
               LeaseBasisOfRentsFieldPaths.AREA,
             )}
           >
-            <FormFieldLegacy
+            <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={getFieldAttributes(
                 leaseAttributes,
