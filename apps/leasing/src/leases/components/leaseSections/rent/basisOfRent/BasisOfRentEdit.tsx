@@ -1,14 +1,9 @@
 import React, { ReactElement, useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  change,
-  FieldArray,
-  formValueSelector,
-  initialize,
-  getFormValues,
-} from "redux-form";
+import { useSelector } from "react-redux";
+import type { FormApi } from "final-form";
+import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
-import { set } from "lodash-es";
+import { cloneDeep, get, set, unset } from "lodash-es";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -22,7 +17,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import BoxItem from "@/components/content/BoxItem";
 import CopyToClipboardButton from "@/components/form/CopyToClipboardButton";
 import Divider from "@/components/content/Divider";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
@@ -78,6 +73,7 @@ import {
   isFieldAllowedToRead,
   isFieldRequired,
 } from "@/util/helpers";
+import { useFieldValue } from "@/components/helpers";
 import {
   getAttributes as getLeaseAttributes,
   getCurrentLease,
@@ -90,7 +86,7 @@ type ManagementSubventionsProps = {
   currentAmountPerArea: number;
   disabled: boolean;
   fields: any;
-  formName: string;
+  formApi: FormApi;
   initialYearRent: number;
 };
 
@@ -98,7 +94,7 @@ const ManagementSubventions = ({
   currentAmountPerArea,
   disabled,
   fields,
-  formName,
+  formApi,
   initialYearRent,
 }: ManagementSubventionsProps): ReactElement => {
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
@@ -233,7 +229,7 @@ const ManagementSubventions = ({
                     currentAmountPerArea={currentAmountPerArea}
                     disabled={disabled}
                     field={field}
-                    formName={formName}
+                    formApi={formApi}
                     initialYearRent={initialYearRent}
                     onRemove={handleRemove}
                   />
@@ -267,7 +263,6 @@ const ManagementSubventions = ({
 type TemporarySubventionsProps = {
   disabled: boolean;
   fields: any;
-  formName: string;
   initialYearRent: number;
   managementSubventions: Record<string, any>;
   temporarySubventions: Record<string, any>;
@@ -276,7 +271,6 @@ type TemporarySubventionsProps = {
 const TemporarySubventions = ({
   disabled,
   fields,
-  formName,
   initialYearRent,
   managementSubventions,
   temporarySubventions,
@@ -397,7 +391,6 @@ const TemporarySubventions = ({
                     index={index}
                     disabled={disabled}
                     field={field}
-                    formName={formName}
                     initialYearRent={initialYearRent}
                     onRemove={handleRemove}
                     managementSubventions={managementSubventions}
@@ -431,19 +424,17 @@ const TemporarySubventions = ({
   );
 };
 
-type renderMastChildrenProps = {
-  formName: string;
+type MastChildrenProps = {
   parentField: string;
   fields: any;
   fieldsDisabled: boolean;
 };
 
 const MastChildren = ({
-  formName,
   fields,
   parentField,
   fieldsDisabled,
-}: renderMastChildrenProps): ReactElement => {
+}: MastChildrenProps): ReactElement => {
   return (
     <AppConsumer>
       {() => {
@@ -454,7 +445,6 @@ const MastChildren = ({
                 return (
                   <MastChildrenEdit
                     index={index}
-                    formName={formName}
                     key={index}
                     parentField={parentField}
                     fieldsDisabled={fieldsDisabled}
@@ -472,7 +462,7 @@ type Props = {
   archived: boolean;
   areaUnitOptions: Array<Record<string, any>>;
   field: string;
-  formName: string;
+  formApi: FormApi;
   indexOptions: Array<Record<string, any>>;
   intendedUseOptions: Array<Record<string, any>>;
   managementTypeOptions: Array<Record<string, any>>;
@@ -490,7 +480,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
   archived,
   areaUnitOptions,
   field,
-  formName,
+  formApi,
   indexOptions,
   intendedUseOptions,
   managementTypeOptions,
@@ -503,63 +493,40 @@ const BasisOfRentEdit: React.FC<Props> = ({
   subventionTypeOptions,
   totalDiscountedInitialYearRent,
 }) => {
-  const dispatch = useDispatch();
-  const selector = formValueSelector(formName);
-
   const currentLease = useSelector(getCurrentLease);
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const usersPermissions = useSelector(getUsersPermissions);
   const isSaveClicked = useSelector(getIsSaveClicked);
-
-  const formValues = useSelector(getFormValues(formName)) || {};
-  const amountPerArea = useSelector((state) =>
-    selector(state, `${field}.amount_per_area`),
+  const amountPerArea = useFieldValue(`${field}.amount_per_area`);
+  const currentAmountPerArea = useFieldValue(
+    `${field}.current_amount_per_area`,
   );
-  const currentAmountPerArea = useSelector((state) =>
-    selector(state, `${field}.current_amount_per_area`),
+  const area = useFieldValue(`${field}.area`);
+  const zone = useFieldValue(`${field}.zone`);
+  const areaUnit = useFieldValue(`${field}.area_unit`);
+  const calculatorType = useFieldValue(`${field}.type`);
+  const basisOfRent = useFieldValue(`${field}`) || {};
+  const id = useFieldValue(`${field}.id`);
+  const index = useFieldValue(`${field}.index`);
+  const children = useFieldValue(`${field}.children`);
+  const intendedUse = useFieldValue(`${field}.intended_use`);
+  const lockedAt = useFieldValue(`${field}.locked_at`);
+  const managementSubventions = useFieldValue(
+    `${field}.management_subventions`,
   );
-  const area = useSelector((state) => selector(state, `${field}.area`));
-  const zone = useSelector((state) => selector(state, `${field}.zone`));
-  const areaUnit = useSelector((state) =>
-    selector(state, `${field}.area_unit`),
+  const plansInspectedAt = useFieldValue(`${field}.plans_inspected_at`);
+  const price = useFieldValue(`${field}.amount_per_area`);
+  const profitMarginPercentage = useFieldValue(
+    `${field}.profit_margin_percentage`,
   );
-  const calculatorType = useSelector((state) =>
-    selector(state, `${field}.type`),
+  const subventionBasePercent = useFieldValue(
+    `${field}.subvention_base_percent`,
   );
-  const basisOfRent = useSelector((state) => selector(state, `${field}`) || {});
-  const id = useSelector((state) => selector(state, `${field}.id`));
-  const index = useSelector((state) => selector(state, `${field}.index`));
-  const children = useSelector((state) => selector(state, `${field}.children`));
-  const intendedUse = useSelector((state) =>
-    selector(state, `${field}.intended_use`),
+  const subventionGraduatedPercent = useFieldValue(
+    `${field}.subvention_graduated_percent`,
   );
-  const lockedAt = useSelector((state) =>
-    selector(state, `${field}.locked_at`),
-  );
-  const managementSubventions = useSelector((state) =>
-    selector(state, `${field}.management_subventions`),
-  );
-  const plansInspectedAt = useSelector((state) =>
-    selector(state, `${field}.plans_inspected_at`),
-  );
-  const price = useSelector((state) =>
-    selector(state, `${field}.amount_per_area`),
-  );
-  const profitMarginPercentage = useSelector((state) =>
-    selector(state, `${field}.profit_margin_percentage`),
-  );
-  const subventionBasePercent = useSelector((state) =>
-    selector(state, `${field}.subvention_base_percent`),
-  );
-  const subventionGraduatedPercent = useSelector((state) =>
-    selector(state, `${field}.subvention_graduated_percent`),
-  );
-  const subventionType = useSelector((state) =>
-    selector(state, `${field}.subvention_type`),
-  );
-  const temporarySubventions = useSelector((state) =>
-    selector(state, `${field}.temporary_subventions`),
-  );
+  const subventionType = useFieldValue(`${field}.subvention_type`);
+  const temporarySubventions = useFieldValue(`${field}.temporary_subventions`);
 
   const [showSubventions, setShowSubventions] = useState(
     () => !!subventionType || !!temporarySubventions?.length,
@@ -599,16 +566,14 @@ const BasisOfRentEdit: React.FC<Props> = ({
     if (!calculatorTypeValue) return;
 
     // Mutating values on purpose in order to avoid using change to mutate each field separately causing the form to become dirty
-    // `structuredClone` would be used otherwise, but it causes bugs to appear currently.
-    const newInitialValues = {
-      ...formValues,
-    };
+    const values = formApi.getState().values;
+    const newInitialValues = cloneDeep(get(values, field) ?? {});
 
     if (forceInitialization) {
       fieldsToClearOnTypeChange.forEach((fieldPath) => {
-        set(newInitialValues, fieldPath, undefined);
+        unset(newInitialValues, fieldPath);
       });
-      set(newInitialValues, `${field}.subvention_type`, null);
+      set(newInitialValues, "subvention_type", null);
     }
 
     switch (calculatorTypeValue) {
@@ -618,8 +583,8 @@ const BasisOfRentEdit: React.FC<Props> = ({
         }
 
         const areaDefaultValue = 0;
-        set(newInitialValues, `${field}.area`, areaDefaultValue);
-        set(newInitialValues, `${field}.children`, [
+        set(newInitialValues, "area", areaDefaultValue);
+        set(newInitialValues, "children", [
           { area: areaDefaultValue },
           { area: areaDefaultValue },
         ]);
@@ -633,11 +598,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
           indexValue,
         );
 
-        set(
-          newInitialValues,
-          `${field}.current_amount_per_area`,
-          currentAmountPerArea,
-        );
+        set(newInitialValues, "current_amount_per_area", currentAmountPerArea);
 
         // Calculate and set discounts, temporary subvention percents and
         // management subventions manually on initialization to avoid dirtying the form.
@@ -649,7 +610,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
         // and dispatches change() — creating a mismatch that marks the form as dirty.
         set(
           newInitialValues,
-          `${field}.discount_percentage`,
+          "discount_percentage",
           calculateBasisOfRentSubventionPercent(
             currentAmountPerArea,
             subventionType,
@@ -661,7 +622,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
         );
         set(
           newInitialValues,
-          `${field}.temporary_subvention_discount_percentage`,
+          "temporary_subvention_discount_percentage",
           formatNumber(
             calculateTemporarySubventionDiscountPercentage(
               temporarySubventions,
@@ -676,7 +637,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
             );
             set(
               newInitialValues,
-              `${field}.management_subventions[${index}].subvention_percent`,
+              `management_subventions[${index}].subvention_percent`,
               subventionPercent,
             );
           });
@@ -688,7 +649,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
           );
           set(
             newInitialValues,
-            `${field}.subvention_discount_percentage`,
+            "subvention_discount_percentage",
             releaseDiscountPct.toFixed(2),
           );
         } else if (
@@ -697,7 +658,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
         ) {
           set(
             newInitialValues,
-            `${field}.subvention_discount_percentage`,
+            "subvention_discount_percentage",
             managementSubventions[0].subvention_percent,
           );
         }
@@ -710,8 +671,8 @@ const BasisOfRentEdit: React.FC<Props> = ({
     }
 
     // Ensure the calculator type is updated, then the form doesnt end up initialized with new form values for the _previous_ type.
-    set(newInitialValues, `${field}.type`, calculatorTypeValue);
-    dispatch(initialize(formName, newInitialValues));
+    set(newInitialValues, "type", calculatorTypeValue);
+    formApi.mutators.rebaseField(field, newInitialValues);
   };
 
   useEffect(() => {
@@ -729,14 +690,11 @@ const BasisOfRentEdit: React.FC<Props> = ({
   const calculateTotalTemporarySubventionPercent = useCallback(() => {
     const temporarySubventionDiscountPercentage =
       calculateTemporarySubventionDiscountPercentage(temporarySubventions);
-    dispatch(
-      change(
-        formName,
-        `${field}.temporary_subvention_discount_percentage`,
-        formatNumber(temporarySubventionDiscountPercentage),
-      ),
+    formApi.change(
+      `${field}.temporary_subvention_discount_percentage`,
+      formatNumber(temporarySubventionDiscountPercentage),
     );
-  }, [dispatch, formName, field, temporarySubventions]);
+  }, [temporarySubventions, formApi, field]);
 
   const calculateTotalSubventionPercent = useCallback(() => {
     return calculateBasisOfRentSubventionPercent(
@@ -757,41 +715,34 @@ const BasisOfRentEdit: React.FC<Props> = ({
   ]);
 
   const changeDiscounts = useCallback(() => {
-    dispatch(
-      change(
-        formName,
+    formApi.batch(() => {
+      formApi.change(
         `${field}.discount_percentage`,
         calculateTotalSubventionPercent(),
-      ),
-    );
+      );
 
-    if (subventionType === SubventionTypes.RE_LEASE) {
-      const releaseDiscountPercent = getReLeaseDiscountPercent();
-      dispatch(
-        change(
-          formName,
+      if (subventionType === SubventionTypes.RE_LEASE) {
+        const releaseDiscountPercent = getReLeaseDiscountPercent();
+
+        formApi.mutators.rebaseField(
           `${field}.subvention_discount_percentage`,
           releaseDiscountPercent.toFixed(2),
-        ),
-      );
-    }
-
-    if (subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
-      if (managementSubventions && managementSubventions[0]) {
-        dispatch(
-          change(
-            formName,
-            `${field}.subvention_discount_percentage`,
-            managementSubventions[0].subvention_percent,
-          ),
         );
       }
-    }
 
-    calculateTotalTemporarySubventionPercent();
+      if (subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
+        if (managementSubventions && managementSubventions[0]) {
+          formApi.mutators.rebaseField(
+            `${field}.subvention_discount_percentage`,
+            managementSubventions[0].subvention_percent,
+          );
+        }
+      }
+
+      calculateTotalTemporarySubventionPercent();
+    });
   }, [
-    dispatch,
-    formName,
+    formApi,
     field,
     calculateTotalSubventionPercent,
     subventionType,
@@ -971,7 +922,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
     setShowSubventions(true);
   };
   const removeSubventions = () => {
-    dispatch(change(formName, `${field}.subvention_type`, null));
+    formApi.change(`${field}.subvention_type`, null);
 
     if (!temporarySubventions?.length) {
       setShowSubventions(false);
@@ -995,23 +946,17 @@ const BasisOfRentEdit: React.FC<Props> = ({
       },
       indexValue,
     );
-    dispatch(
-      change(
-        formName,
-        `${field}.current_amount_per_area`,
-        currentAmountPerArea,
-      ),
-    );
+    formApi.change(`${field}.current_amount_per_area`, currentAmountPerArea);
   };
 
   // LEASE & LEASE2022: Yksikköhinta (ind)
   const onChangeCurrentAmountPerArea = (value: any) => {
     if (calculatorType === CalculatorTypes.LEASE2022) {
-      dispatch(change(formName, `${field}.amount_per_area`, value));
+      formApi.change(`${field}.amount_per_area`, value);
     } else {
       const indexValue = getBasisOfRentIndexValue(basisOfRent, indexOptions);
       const amountPerArea = calculateAmountFromValue(value, indexValue);
-      dispatch(change(formName, `${field}.amount_per_area`, amountPerArea));
+      formApi.change(`${field}.amount_per_area`, amountPerArea);
     }
   };
 
@@ -1028,13 +973,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
         basisOfRent,
         indexValue,
       );
-      dispatch(
-        change(
-          formName,
-          `${field}.current_amount_per_area`,
-          currentAmountPerArea,
-        ),
-      );
+      formApi.change(`${field}.current_amount_per_area`, currentAmountPerArea);
     }
   };
 
@@ -1158,7 +1097,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
             {LeaseBasisOfRentsFieldTitles.UNIT_PRICE}
           </FormTextTitle>
         )}
-        <FormFieldLegacy
+        <FormField
           disableTouched={isSaveClicked}
           onChange={onChangeCurrentAmountPerArea}
           fieldAttributes={{
@@ -1190,7 +1129,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
         LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE,
       )}
     >
-      <FormFieldLegacy
+      <FormField
         disableTouched={isSaveClicked}
         fieldAttributes={
           savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -1273,7 +1212,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
         LeaseBasisOfRentsFieldPaths.INDEX,
       )}
     >
-      <FormFieldLegacy
+      <FormField
         disableTouched={isSaveClicked}
         fieldAttributes={{
           ...getFieldAttributes(
@@ -1383,7 +1322,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
           >
             <Column small={6} medium={4} large={2}>
               {/* Mark disabled for existing values, prevents stale values leaking between form types. */}
-              <FormFieldLegacy
+              <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={getFieldAttributes(
                   leaseAttributes,
@@ -1409,7 +1348,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                   LeaseBasisOfRentsFieldPaths.INTENDED_USE,
                 )}
               >
-                <FormFieldLegacy
+                <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={
                     savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -1494,7 +1433,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                           LeaseBasisOfRentsFieldPaths.AREA,
                         )}
                       >
-                        <FormFieldLegacy
+                        <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={
                             savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -1526,7 +1465,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                           LeaseBasisOfRentsFieldPaths.AREA_UNIT,
                         )}
                       >
-                        <FormFieldLegacy
+                        <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={
                             savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -1603,7 +1542,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                               LeaseBasisOfRentsFieldPaths.AREA,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={getFieldAttributes(
                                 leaseAttributes,
@@ -1643,7 +1582,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                               LeaseBasisOfRentsFieldPaths.AREA,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={
                                 savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -1731,7 +1670,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                                 )}
                               >
                                 {
-                                  <FormFieldLegacy
+                                  <FormField
                                     disableTouched={isSaveClicked}
                                     fieldAttributes={getFieldAttributes(
                                       leaseAttributes,
@@ -1773,7 +1712,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                                   LeaseBasisOfRentsFieldPaths.AREA,
                                 )}
                               >
-                                <FormFieldLegacy
+                                <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={getFieldAttributes(
                                     leaseAttributes,
@@ -1842,13 +1781,15 @@ const BasisOfRentEdit: React.FC<Props> = ({
                           {() => {
                             return (
                               <Column large={6} medium={9} small={12}>
-                                <FieldArray
-                                  component={MastChildren}
-                                  name={`${field}.children`}
-                                  formName={formName}
-                                  parentField={field}
-                                  fieldsDisabled={isLocked}
-                                />
+                                <FieldArray name={`${field}.children`}>
+                                  {(fieldArrayProps) => (
+                                    <MastChildren
+                                      {...fieldArrayProps}
+                                      parentField={field}
+                                      fieldsDisabled={isLocked}
+                                    />
+                                  )}
+                                </FieldArray>
                               </Column>
                             );
                           }}
@@ -1874,7 +1815,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                               LeaseBasisOfRentsFieldPaths.AREA,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={
                                 savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -2027,7 +1968,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                               LeaseBasisOfRentsFieldPaths.INDEX,
                             )}
                           >
-                            <FormFieldLegacy
+                            <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={
                                 savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -2170,7 +2111,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                           LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA,
                         )}
                       >
-                        <FormFieldLegacy
+                        <FormField
                           onChange={onChangeAmountPerArea}
                           disableTouched={isSaveClicked}
                           fieldAttributes={
@@ -2204,7 +2145,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                           LeaseBasisOfRentsFieldPaths.AREA_UNIT,
                         )}
                       >
-                        <FormFieldLegacy
+                        <FormField
                           className="with-slash"
                           disableTouched={isSaveClicked}
                           fieldAttributes={
@@ -2284,7 +2225,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                       LeaseBasisOfRentsFieldPaths.AREA_UNIT,
                     )}
                   >
-                    <FormFieldLegacy
+                    <FormField
                       className="with-slash"
                       disableTouched={isSaveClicked}
                       fieldAttributes={
@@ -2341,7 +2282,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                     LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={
                       savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -2407,7 +2348,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                     LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
                   )}
                 >
-                  <FormFieldLegacy
+                  <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={
                       savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -2446,14 +2387,14 @@ const BasisOfRentEdit: React.FC<Props> = ({
         {(calculatorType === CalculatorTypes.LEASE ||
           calculatorType === CalculatorTypes.LEASE2022) && (
           <Row>
-            <Column small={6} medium={4} large={2} hidden>
+            <Column small={6} medium={4} large={2}>
               <Authorization
                 allow={isFieldAllowedToRead(
                   leaseAttributes,
                   LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE,
                 )}
               >
-                <FormFieldLegacy
+                <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={{
                     label: "Lopullinen alennusprosentti",
@@ -2778,7 +2719,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                           LeaseBasisOfRentsFieldPaths.INDEX,
                         )}
                       >
-                        <FormFieldLegacy
+                        <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={
                             savedBasisOfRent && !!savedBasisOfRent.locked_at
@@ -2877,7 +2818,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                     </Authorization>
                   }
                 >
-                  <FormFieldLegacy
+                  <FormField
                     className="with-top-padding"
                     disableTouched={isSaveClicked}
                     fieldAttributes={
@@ -2932,7 +2873,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                   </Authorization>
                 }
               >
-                <FormFieldLegacy
+                <FormField
                   className="with-top-padding"
                   disableTouched={isSaveClicked}
                   fieldAttributes={{
@@ -3012,7 +2953,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                             LeaseBasisOfRentsFieldPaths.SUBVENTION_TYPE,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={{
                               ...getFieldAttributes(
@@ -3056,13 +2997,18 @@ const BasisOfRentEdit: React.FC<Props> = ({
                               }
                             </SubTitle>
                             <FieldArray
-                              component={ManagementSubventions}
-                              disabled={isLocked}
-                              formName={formName}
-                              initialYearRent={initialYearRent}
-                              currentAmountPerArea={currentAmountPerArea}
                               name={`${field}.management_subventions`}
-                            />
+                            >
+                              {(fieldArrayProps) => (
+                                <ManagementSubventions
+                                  {...fieldArrayProps}
+                                  disabled={isLocked}
+                                  formApi={formApi}
+                                  initialYearRent={initialYearRent}
+                                  currentAmountPerArea={currentAmountPerArea}
+                                />
+                              )}
+                            </FieldArray>
                           </>
                         </Authorization>
                       )}
@@ -3077,7 +3023,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                                 LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   leaseAttributes,
@@ -3104,7 +3050,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                                 LeaseBasisOfRentsFieldPaths.SUBVENTION_BASE_PERCENT,
                               )}
                             >
-                              <FormFieldLegacy
+                              <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={getFieldAttributes(
                                   leaseAttributes,
@@ -3192,15 +3138,17 @@ const BasisOfRentEdit: React.FC<Props> = ({
                             BasisOfRentTemporarySubventionsFieldTitles.TEMPORARY_SUBVENTIONS
                           }
                         </SubTitle>
-                        <FieldArray
-                          component={TemporarySubventions}
-                          disabled={isLocked}
-                          formName={formName}
-                          initialYearRent={initialYearRent}
-                          name={`${field}.temporary_subventions`}
-                          managementSubventions={managementSubventions}
-                          temporarySubventions={temporarySubventions}
-                        />
+                        <FieldArray name={`${field}.temporary_subventions`}>
+                          {(fieldArrayProps) => (
+                            <TemporarySubventions
+                              {...fieldArrayProps}
+                              disabled={isLocked}
+                              initialYearRent={initialYearRent}
+                              managementSubventions={managementSubventions}
+                              temporarySubventions={temporarySubventions}
+                            />
+                          )}
+                        </FieldArray>
                       </>
                     </Authorization>
 

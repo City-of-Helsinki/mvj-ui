@@ -1,10 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { formValueSelector } from "redux-form";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import RemoveButton from "@/components/form/RemoveButton";
 import {
@@ -19,6 +18,7 @@ import {
   isFieldAllowedToRead,
   getFieldAttributes,
 } from "@/util/helpers";
+import { useFieldValue } from "@/components/helpers";
 import {
   getAttributes as getLeaseAttributes,
   getIsSaveClicked,
@@ -28,7 +28,6 @@ import type { Attributes } from "types";
 type Props = {
   disabled: boolean;
   field: any;
-  formName: string;
   initialYearRent: number;
   onRemove: (...args: Array<any>) => any;
   managementSubventions: any;
@@ -39,7 +38,6 @@ type Props = {
 const BasisOfRentTemporarySubventionEdit: React.FC<Props> = ({
   disabled,
   field,
-  formName,
   initialYearRent,
   onRemove,
   managementSubventions,
@@ -50,10 +48,7 @@ const BasisOfRentTemporarySubventionEdit: React.FC<Props> = ({
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const usersPermissions = useSelector(getUsersPermissions);
 
-  const selector = formValueSelector(formName);
-  const subventionPercent = useSelector((state) =>
-    selector(state, `${field}.subvention_percent`),
-  );
+  const subventionPercent = useFieldValue(`${field}.subvention_percent`);
 
   const subventionAmount = calculateBasisOfRentSubventionAmountCumulative(
     initialYearRent,
@@ -72,7 +67,7 @@ const BasisOfRentTemporarySubventionEdit: React.FC<Props> = ({
             BasisOfRentTemporarySubventionsFieldPaths.DESCRIPTION,
           )}
         >
-          <FormFieldLegacy
+          <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               leaseAttributes,
@@ -94,7 +89,7 @@ const BasisOfRentTemporarySubventionEdit: React.FC<Props> = ({
             BasisOfRentTemporarySubventionsFieldPaths.SUBVENTION_PERCENT,
           )}
         >
-          <FormFieldLegacy
+          <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={getFieldAttributes(
               leaseAttributes,

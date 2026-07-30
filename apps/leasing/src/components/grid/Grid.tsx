@@ -18,7 +18,7 @@ export const Row = memo(({ children, className, style }: RowProps) => {
 Row.displayName = "Row";
 
 interface ColumnProps {
-  children: ReactNode;
+  children?: ReactNode;
   small?: number;
   medium?: number;
   large?: number;

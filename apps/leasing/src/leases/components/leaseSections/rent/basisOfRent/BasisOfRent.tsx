@@ -1316,7 +1316,7 @@ const BasisOfRent = ({
         {(calculatorType === CalculatorTypes.LEASE ||
           calculatorType === CalculatorTypes.LEASE2022) && (
           <Row>
-            <Column small={6} medium={4} large={2} hidden>
+            <Column small={6} medium={4} large={2}>
               <Authorization
                 allow={isFieldAllowedToRead(
                   leaseAttributes,
