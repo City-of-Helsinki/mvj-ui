@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+import arrayMutators from "final-form-arrays";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import BasisOfRentCalculatorForm from "./BasisOfRentCalculatorForm";
 import ContentContainer from "@/components/content/ContentContainer";
@@ -16,6 +17,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getAttributes, getIsFetchingAttributes } from "@/leases/selectors";
 import { fetchAttributes } from "@/leases/actions";
+import { createForm, setIn } from "final-form";
+import { validateRentBasisForm } from "@/rentbasis/formValidators";
 
 const BasisOfRentCalculatorPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -23,6 +26,28 @@ const BasisOfRentCalculatorPage: React.FC = () => {
   const leaseAttributes = useSelector(getAttributes);
   const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
   const usersPermissions = useSelector(getUsersPermissions);
+
+  const leaseBasisOfRentsFormRef = useRef(
+    createForm({
+      onSubmit: () => {},
+      validate: validateRentBasisForm,
+      initialValues: {
+        basis_of_rents: [{}],
+      },
+      mutators: {
+        ...arrayMutators,
+        // Mutator to re-initialize one fieldArray object without re-initializing the whole form.
+        rebaseField: ([name, value]: [string, unknown], state: any) => {
+          state.formState.values = setIn(state.formState.values, name, value);
+          state.formState.initialValues = setIn(
+            state.formState.initialValues ?? {},
+            name,
+            value,
+          );
+        },
+      },
+    }),
+  );
 
   useEffect(() => {
     setPageTitle("Vuokralaskuri");
@@ -56,11 +81,7 @@ const BasisOfRentCalculatorPage: React.FC = () => {
   return (
     <PageContainer hasTabs>
       <ContentContainer>
-        <BasisOfRentCalculatorForm
-          initialValues={{
-            basis_of_rents: [{}],
-          }}
-        />
+        <BasisOfRentCalculatorForm formApi={leaseBasisOfRentsFormRef.current} />
       </ContentContainer>
     </PageContainer>
   );
