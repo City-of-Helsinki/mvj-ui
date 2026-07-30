@@ -8,7 +8,7 @@ import {
   initialize,
   isDirty,
 } from "redux-form";
-import { createForm } from "final-form";
+import { createForm, setIn } from "final-form";
 import type { FormApi } from "final-form";
 import arrayMutators from "final-form-arrays";
 import { flowRight, isEmpty, isEqual } from "lodash-es";
@@ -815,7 +815,18 @@ const LeasePage: React.FC<Props> = (props) => {
     createForm({
       onSubmit: () => {},
       validate: validateRentBasisForm,
-      mutators: { ...arrayMutators },
+      mutators: {
+        ...arrayMutators,
+        // Mutator to re-initialize one fieldArray object without re-initializing the whole form.
+        rebaseField: ([name, value]: [string, unknown], state: any) => {
+          state.formState.values = setIn(state.formState.values, name, value);
+          state.formState.initialValues = setIn(
+            state.formState.initialValues ?? {},
+            name,
+            value,
+          );
+        },
+      },
     }),
   );
 

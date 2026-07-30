@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import type { FormApi } from "final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
-import { set } from "lodash-es";
+import { cloneDeep, get, set, unset } from "lodash-es";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -566,16 +566,14 @@ const BasisOfRentEdit: React.FC<Props> = ({
     if (!calculatorTypeValue) return;
 
     // Mutating values on purpose in order to avoid using change to mutate each field separately causing the form to become dirty
-    // `structuredClone` would be used otherwise, but it causes bugs to appear currently.
-    const newInitialValues = {
-      ...formApi.getState().values,
-    };
+    const values = formApi.getState().values;
+    const newInitialValues = cloneDeep(get(values, field) ?? {});
 
     if (forceInitialization) {
       fieldsToClearOnTypeChange.forEach((fieldPath) => {
-        set(newInitialValues, fieldPath, undefined);
+        unset(newInitialValues, fieldPath);
       });
-      set(newInitialValues, `${field}.subvention_type`, null);
+      set(newInitialValues, "subvention_type", null);
     }
 
     switch (calculatorTypeValue) {
@@ -585,8 +583,8 @@ const BasisOfRentEdit: React.FC<Props> = ({
         }
 
         const areaDefaultValue = 0;
-        set(newInitialValues, `${field}.area`, areaDefaultValue);
-        set(newInitialValues, `${field}.children`, [
+        set(newInitialValues, "area", areaDefaultValue);
+        set(newInitialValues, "children", [
           { area: areaDefaultValue },
           { area: areaDefaultValue },
         ]);
@@ -600,11 +598,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
           indexValue,
         );
 
-        set(
-          newInitialValues,
-          `${field}.current_amount_per_area`,
-          currentAmountPerArea,
-        );
+        set(newInitialValues, "current_amount_per_area", currentAmountPerArea);
 
         // Calculate and set discounts, temporary subvention percents and
         // management subventions manually on initialization to avoid dirtying the form.
@@ -616,7 +610,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
         // and dispatches change() — creating a mismatch that marks the form as dirty.
         set(
           newInitialValues,
-          `${field}.discount_percentage`,
+          "discount_percentage",
           calculateBasisOfRentSubventionPercent(
             currentAmountPerArea,
             subventionType,
@@ -628,7 +622,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
         );
         set(
           newInitialValues,
-          `${field}.temporary_subvention_discount_percentage`,
+          "temporary_subvention_discount_percentage",
           formatNumber(
             calculateTemporarySubventionDiscountPercentage(
               temporarySubventions,
@@ -643,7 +637,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
             );
             set(
               newInitialValues,
-              `${field}.management_subventions[${index}].subvention_percent`,
+              `management_subventions[${index}].subvention_percent`,
               subventionPercent,
             );
           });
@@ -655,7 +649,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
           );
           set(
             newInitialValues,
-            `${field}.subvention_discount_percentage`,
+            "subvention_discount_percentage",
             releaseDiscountPct.toFixed(2),
           );
         } else if (
@@ -664,7 +658,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
         ) {
           set(
             newInitialValues,
-            `${field}.subvention_discount_percentage`,
+            "subvention_discount_percentage",
             managementSubventions[0].subvention_percent,
           );
         }
@@ -677,8 +671,8 @@ const BasisOfRentEdit: React.FC<Props> = ({
     }
 
     // Ensure the calculator type is updated, then the form doesnt end up initialized with new form values for the _previous_ type.
-    set(newInitialValues, `${field}.type`, calculatorTypeValue);
-    formApi.initialize(newInitialValues);
+    set(newInitialValues, "type", calculatorTypeValue);
+    formApi.mutators.rebaseField(field, newInitialValues);
   };
 
   useEffect(() => {
@@ -721,29 +715,32 @@ const BasisOfRentEdit: React.FC<Props> = ({
   ]);
 
   const changeDiscounts = useCallback(() => {
-    formApi.change(
-      `${field}.discount_percentage`,
-      calculateTotalSubventionPercent(),
-    );
-
-    if (subventionType === SubventionTypes.RE_LEASE) {
-      const releaseDiscountPercent = getReLeaseDiscountPercent();
+    formApi.batch(() => {
       formApi.change(
-        `${field}.subvention_discount_percentage`,
-        releaseDiscountPercent.toFixed(2),
+        `${field}.discount_percentage`,
+        calculateTotalSubventionPercent(),
       );
-    }
 
-    if (subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
-      if (managementSubventions && managementSubventions[0]) {
-        formApi.change(
+      if (subventionType === SubventionTypes.RE_LEASE) {
+        const releaseDiscountPercent = getReLeaseDiscountPercent();
+
+        formApi.mutators.rebaseField(
           `${field}.subvention_discount_percentage`,
-          managementSubventions[0].subvention_percent,
+          releaseDiscountPercent.toFixed(2),
         );
       }
-    }
 
-    calculateTotalTemporarySubventionPercent();
+      if (subventionType === SubventionTypes.FORM_OF_MANAGEMENT) {
+        if (managementSubventions && managementSubventions[0]) {
+          formApi.mutators.rebaseField(
+            `${field}.subvention_discount_percentage`,
+            managementSubventions[0].subvention_percent,
+          );
+        }
+      }
+
+      calculateTotalTemporarySubventionPercent();
+    });
   }, [
     formApi,
     field,
