@@ -30,13 +30,6 @@ export const getIsFetchingById: Selector<boolean, LeaseId> = (
 export const getIsFetchingAttributes: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.lease.isFetchingAttributes;
-export const getIsFormValidById: Selector<boolean, string> = (
-  state: RootState,
-  id: string,
-): boolean => state.lease.isFormValidById[id];
-export const getIsFormValidFlags: Selector<LeaseFormFlags, void> = (
-  state: RootState,
-): LeaseFormFlags => state.lease.isFormValidById;
 export const getIsFormDirtyFlags: Selector<LeaseFormFlags, void> = (
   state: RootState,
 ): LeaseFormFlags => state.lease.isFormDirtyById;

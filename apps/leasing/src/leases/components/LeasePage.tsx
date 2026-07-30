@@ -1,17 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router";
-import {
-  change as reduxFormChange,
-  destroy,
-  getFormValues,
-  initialize,
-  isDirty,
-} from "redux-form";
 import { createForm, setIn } from "final-form";
 import type { FormApi } from "final-form";
 import arrayMutators from "final-form-arrays";
-import { flowRight, isEmpty, isEqual } from "lodash-es";
+import { isEmpty, isEqual } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import CommentPanel from "./leaseSections/comments/CommentPanel";
@@ -43,20 +36,25 @@ import TabPane from "@/components/tabs/TabPane";
 import TabContent from "@/components/tabs/TabContent";
 import TenantsEdit from "./leaseSections/tenant/TenantsEdit";
 import Tenants from "./leaseSections/tenant/Tenants";
-import { fetchCommentsByLease } from "@/comments/actions";
-import { fetchInvoicesByLease } from "@/invoices/actions";
+import {
+  fetchCommentsByLease,
+  fetchAttributes as fetchCommentAttributes,
+} from "@/comments/actions";
+import {
+  fetchInvoicesByLease,
+  fetchAttributes as fetchInvoiceAttributes,
+} from "@/invoices/actions";
 import {
   clearFormDirtyFlags,
-  clearFormValidFlags,
   deleteLease,
   fetchSingleLease,
   hideEditMode,
   patchLease,
   receiveFormDirtyFlags,
   receiveSingleLease,
-  receiveFormValidFlags,
   receiveIsSaveClicked,
   showEditMode,
+  fetchAttributes as fetchLeaseAttributes,
 } from "@/leases/actions";
 import { fetchLeaseTypes } from "@/leaseType/actions";
 import { clearPreviewInvoices } from "@/previewInvoices/actions";
@@ -116,16 +114,27 @@ import {
 } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import { getLoggedInUser } from "@/auth/selectors";
-import { getCommentsByLease } from "@/comments/selectors";
-import { getInvoicesByLease } from "@/invoices/selectors";
+import {
+  getCommentsByLease,
+  getAttributes as getCommentAttributes,
+  getIsFetchingAttributes as getIsFetchingCommentAttributes,
+  getMethods as getCommentMethods,
+} from "@/comments/selectors";
+import {
+  getInvoicesByLease,
+  getAttributes as getInvoiceAttributes,
+  getIsFetchingAttributes as getIsFetchingInvoiceAttributes,
+  getMethods as getInvoiceMethods,
+} from "@/invoices/selectors";
 import {
   getCurrentLease,
   getIsEditMode,
   getIsFetching,
-  getIsFormValidById,
-  getIsFormValidFlags,
   getIsSaveClicked,
   getIsSaving,
+  getAttributes as getLeaseAttributes,
+  getIsFetchingAttributes as getIsFetchingLeaseAttributes,
+  getMethods as getLeaseMethods,
 } from "@/leases/selectors";
 import { getLeaseTypeList } from "@/leaseType/selectors";
 import { getVats } from "@/vat/selectors";
@@ -135,19 +144,16 @@ import {
   setSessionStorageItem,
 } from "@/util/storage";
 import { getCurrentYear } from "@/util/date";
-import { withLeasePageAttributes } from "@/components/attributes/LeasePageAttributes";
-import { withUiDataList } from "@/components/uiData/UiDataListHOC";
-import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
+import {
+  getUserActiveServiceUnit,
+  getIsFetching as getIsFetchingUsersPermissions,
+  getUsersPermissions,
+} from "@/usersPermissions/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { CommentList } from "@/comments/types";
 import type { InvoiceList } from "@/invoices/types";
 import type { Lease } from "@/leases/types";
-import type { LeaseTypeList } from "@/leaseType/types";
-import type {
-  UsersPermissions as UsersPermissionsType,
-  UserServiceUnit,
-} from "@/usersPermissions/types";
-import type { VatList } from "@/vat/types";
+import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import {
   getOldDwellingsInHousingCompaniesPriceIndex,
   getIsFetching as getIsFetchingOldDwellingsInHousingCompaniesPriceIndex,
@@ -155,7 +161,17 @@ import {
 import { getIsFetchingReceivableTypes } from "@/leaseCreateCharge/selectors";
 import { fetchReceivableTypes } from "@/leaseCreateCharge/actions";
 import { fetchOldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/actions";
-import { OldDwellingsInHousingCompaniesPriceIndex } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
+import {
+  fetchAttributes as fetchUiDataAttributes,
+  fetchUiDataList,
+} from "@/uiData/actions";
+import {
+  getAttributes as getUiDataAttributes,
+  getIsFetching as getIsFetchingUiDataList,
+  getIsFetchingAttributes as getIsFetchingUiDataAttributes,
+  getMethods as getUiDataMethods,
+  getUiDataList,
+} from "@/uiData/selectors";
 import {
   validateContractForm,
   validateSummaryForm,
@@ -164,113 +180,57 @@ import {
 import { validateRentCalculatorForm } from "@/components/formValidations";
 import { validateRentBasisForm } from "@/rentbasis/formValidators";
 
-type Props = {
-  areasFormValues: Record<string, any>;
-  reduxFormChange: typeof reduxFormChange;
-  clearPreviewInvoices: (...args: Array<any>) => any;
-  commentMethods: MethodsType;
-  // get via withLeasePageAttributes HOC
-  contractsFormValues: Record<string, any>;
-  constructabilityFormValues: Record<string, any>;
-  currentLease: Lease;
-  decisionsFormValues: Record<string, any>;
-  deleteLease: (...args: Array<any>) => any;
-  destroy: (...args: Array<any>) => any;
-  fetchCommentsByLease: (...args: Array<any>) => any;
-  fetchInvoicesByLease: (...args: Array<any>) => any;
-  fetchLeaseTypes: (...args: Array<any>) => any;
-  fetchSingleLease: (...args: Array<any>) => any;
-  fetchOldDwellingsInHousingCompaniesPriceIndex: (...args: Array<any>) => any;
-  fetchReceivableTypes: (...args: Array<any>) => any;
-  fetchVats: (...args: Array<any>) => any;
-  hideEditMode: (...args: Array<any>) => any;
-  initialize: (...args: Array<any>) => any;
-  inspectionsFormValues: Record<string, any>;
-  isEditMode: boolean;
-  isFetching: boolean;
-  isFetchingLeasePageAttributes: boolean;
-  isFetchingReceivableTypes: boolean;
-  isFetchingOldDwellingsInHousingCompaniesPriceIndex: boolean;
-  // get via withLeasePageAttributes HOC
-  isFormValidFlags: Record<string, any>;
-  isBasisOfRentsFormDirty: boolean;
-  isBasisOfRentsFormValid: boolean;
-  isSaving: boolean;
-  isSaveClicked: boolean;
-  leaseAttributes: Attributes;
-  leaseMethods: MethodsType;
-  leaseTypeList: LeaseTypeList;
-  loggedUser: Record<string, any>;
-  oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndex | null;
-  patchLease: (...args: Array<any>) => any;
-  receiveSingleLease: (...args: Array<any>) => any;
-  receiveIsSaveClicked: (...args: Array<any>) => any;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-  basisOfRentsFormValues: Record<string, any>;
-  showEditMode: (...args: Array<any>) => any;
-  tenantsFormValues: Record<string, any>;
-  userActiveServiceUnit: UserServiceUnit;
-  usersPermissions: UsersPermissionsType;
-  vats: VatList;
-};
-
-const LeasePage: React.FC<Props> = (props) => {
-  const {
-    areasFormValues,
-    reduxFormChange,
-    clearPreviewInvoices,
-    commentMethods,
-    contractsFormValues,
-    constructabilityFormValues,
-    currentLease,
-    decisionsFormValues,
-    deleteLease,
-    destroy,
-    fetchCommentsByLease,
-    fetchInvoicesByLease,
-    fetchLeaseTypes,
-    fetchSingleLease,
-    fetchOldDwellingsInHousingCompaniesPriceIndex,
-    fetchReceivableTypes,
-    fetchVats,
-    hideEditMode,
-    initialize,
-    inspectionsFormValues,
-    isEditMode,
-    isFetching,
-    isFetchingLeasePageAttributes,
-    isFetchingReceivableTypes,
-    isFetchingOldDwellingsInHousingCompaniesPriceIndex,
-    isFormValidFlags,
-    isBasisOfRentsFormDirty,
-    isBasisOfRentsFormValid,
-    isSaving,
-    isSaveClicked,
-    leaseAttributes,
-    leaseMethods,
-    leaseTypeList,
-    loggedUser,
-    oldDwellingsInHousingCompaniesPriceIndex,
-    patchLease,
-    receiveSingleLease,
-    receiveIsSaveClicked,
-    receiveTopNavigationSettings,
-    basisOfRentsFormValues,
-    showEditMode,
-    userActiveServiceUnit,
-    usersPermissions,
-    vats,
-  } = props;
-
+const LeasePage: React.FC = () => {
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
   const params = useParams();
   const location = useLocation();
+
+  const commentAttributes: Attributes = useSelector(getCommentAttributes);
+  const commentMethods: MethodsType = useSelector(getCommentMethods);
+  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
+  const invoiceMethods: MethodsType = useSelector(getInvoiceMethods);
+  const isFetchingCommentAttributes = useSelector(
+    getIsFetchingCommentAttributes,
+  );
+  const isFetchingInvoiceAttributes = useSelector(
+    getIsFetchingInvoiceAttributes,
+  );
+  const isFetchingLeaseAttributes = useSelector(getIsFetchingLeaseAttributes);
+  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
+  const isFetchingReceivableTypes = useSelector(getIsFetchingReceivableTypes);
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const leaseMethods: MethodsType = useSelector(getLeaseMethods);
+  const usersPermissions = useSelector(getUsersPermissions);
+
+  const isFetchingUiDataAttributes = useSelector(getIsFetchingUiDataAttributes);
+  const isFetchingUiDataList = useSelector(getIsFetchingUiDataList);
+  const uiDataAttributes = useSelector(getUiDataAttributes);
+  const uiDataList = useSelector(getUiDataList);
+  const uiDataMethods: MethodsType = useSelector(getUiDataMethods);
+
+  const currentLease = useSelector(getCurrentLease);
+  const isEditMode = useSelector(getIsEditMode);
+  const isFetchingOldDwellingsInHousingCompaniesPriceIndex = useSelector(
+    getIsFetchingOldDwellingsInHousingCompaniesPriceIndex,
+  );
+  const oldDwellingsInHousingCompaniesPriceIndex = useSelector(
+    getOldDwellingsInHousingCompaniesPriceIndex,
+  );
+  const isSaving = useSelector(getIsSaving);
+  const isFetching = useSelector(getIsFetching);
+  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseTypeList = useSelector(getLeaseTypeList);
+  const loggedUser = useSelector(getLoggedInUser);
+  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const vats = useSelector(getVats);
+
   const { search, pathname } = location;
   const { leaseId } = params;
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = useState(false);
+  const [isFetchingLeasePageAttributes, setIsFetchingLeasePageAttributes] =
+    useState(false);
   const [summaryFormState, setSummaryFormState] = useState({
     dirty: false,
     valid: true,
@@ -313,6 +273,66 @@ const LeasePage: React.FC<Props> = (props) => {
   });
 
   useEffect(() => {
+    if (!isFetchingCommentAttributes && !commentAttributes && !commentMethods) {
+      dispatch(fetchCommentAttributes());
+    }
+
+    if (!isFetchingInvoiceAttributes && !invoiceAttributes && !invoiceMethods) {
+      dispatch(fetchInvoiceAttributes());
+    }
+
+    if (!isFetchingLeaseAttributes && !leaseAttributes && !leaseMethods) {
+      dispatch(fetchLeaseAttributes());
+    }
+  }, [
+    isFetchingCommentAttributes,
+    commentAttributes,
+    commentMethods,
+    isFetchingInvoiceAttributes,
+    invoiceAttributes,
+    invoiceMethods,
+    isFetchingLeaseAttributes,
+    leaseAttributes,
+    leaseMethods,
+    dispatch,
+  ]);
+
+  useEffect(() => {
+    if (!isFetchingUiDataAttributes && !uiDataAttributes && !uiDataMethods) {
+      dispatch(fetchUiDataAttributes());
+    }
+
+    if (!isFetchingUiDataList && isEmpty(uiDataList)) {
+      dispatch(
+        fetchUiDataList({
+          limit: 100000,
+        }),
+      );
+    }
+  }, [
+    isFetchingUiDataAttributes,
+    uiDataAttributes,
+    uiDataMethods,
+    isFetchingUiDataList,
+    uiDataList,
+    dispatch,
+  ]);
+
+  useEffect(() => {
+    const isFetching =
+      isFetchingCommentAttributes ||
+      isFetchingInvoiceAttributes ||
+      isFetchingLeaseAttributes ||
+      isFetchingUsersPermissions;
+    setIsFetchingLeasePageAttributes(isFetching);
+  }, [
+    isFetchingCommentAttributes,
+    isFetchingInvoiceAttributes,
+    isFetchingLeaseAttributes,
+    isFetchingUsersPermissions,
+  ]);
+
+  useEffect(() => {
     dispatch(
       receiveFormDirtyFlags({
         [FormNames.LEASE_CONSTRUCTABILITY]: constructabilityFormState.dirty,
@@ -348,12 +368,7 @@ const LeasePage: React.FC<Props> = (props) => {
 
   // Preventing stale values for `setInterval` and `saveUnsavedChanges`
   const currentValuesRef = useRef({
-    contractsFormValues,
-    decisionsFormValues,
-    inspectionsFormValues,
-    areasFormValues,
     leaseId,
-    isFormValidFlags,
     isEditMode,
     summaryFormState,
     tenantsFormState,
@@ -367,12 +382,7 @@ const LeasePage: React.FC<Props> = (props) => {
     basisOfRentsFormState,
   });
   currentValuesRef.current = {
-    contractsFormValues,
-    decisionsFormValues,
-    inspectionsFormValues,
-    areasFormValues,
     leaseId,
-    isFormValidFlags,
     isEditMode,
     summaryFormState,
     tenantsFormState,
@@ -408,20 +418,22 @@ const LeasePage: React.FC<Props> = (props) => {
   );
 
   useEffect(() => {
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.LEASES),
-      pageTitle: "Vuokraukset",
-      showSearch: true,
-    });
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.LEASES),
+        pageTitle: "Vuokraukset",
+        showSearch: true,
+      }),
+    );
 
     if (
       !isFetchingOldDwellingsInHousingCompaniesPriceIndex &&
       !oldDwellingsInHousingCompaniesPriceIndex
     ) {
-      fetchOldDwellingsInHousingCompaniesPriceIndex();
+      dispatch(fetchOldDwellingsInHousingCompaniesPriceIndex());
     }
 
-    hideEditMode();
+    dispatch(hideEditMode());
     window.addEventListener("beforeunload", handleLeavePage);
 
     //isEqual is used as a comparator to ensure that dirty state is properly evaluated for field arrays.
@@ -568,11 +580,10 @@ const LeasePage: React.FC<Props> = (props) => {
       }
 
       stopAutoSaveTimer();
-      clearPreviewInvoices();
+      dispatch(clearPreviewInvoices());
       // Clear current lease
-      receiveSingleLease({});
-      destroy(FormNames.RENT_CALCULATOR);
-      hideEditMode();
+      dispatch(receiveSingleLease({} as Lease));
+      dispatch(hideEditMode());
       window.removeEventListener("beforeunload", handleLeavePage);
 
       unsubscribeSummaryForm();
@@ -602,8 +613,8 @@ const LeasePage: React.FC<Props> = (props) => {
     prevUsersPermissionsRef.current = null;
 
     requestedForLeaseRef.current[key] = requestedForLeaseRef.current[key] || {};
-    fetchSingleLease(leaseId);
-  }, [fetchSingleLease, leaseId]);
+    dispatch(fetchSingleLease(Number(leaseId)));
+  }, [dispatch, leaseId]);
 
   useEffect(() => {
     // Fetch related lease data
@@ -627,7 +638,7 @@ const LeasePage: React.FC<Props> = (props) => {
     ) {
       requested.comments = true;
 
-      fetchCommentsByLease(leaseId);
+      dispatch(fetchCommentsByLease(Number(leaseId)));
     }
 
     if (
@@ -635,7 +646,8 @@ const LeasePage: React.FC<Props> = (props) => {
       (invoices === undefined || invoices === null) &&
       !requested.invoices
     ) {
-      fetchInvoicesByLease(leaseId);
+      requested.invoices = true;
+      dispatch(fetchInvoicesByLease(Number(leaseId)));
     }
 
     if (
@@ -644,7 +656,7 @@ const LeasePage: React.FC<Props> = (props) => {
       !requested.leaseTypes
     ) {
       requested.leaseTypes = true;
-      fetchLeaseTypes();
+      dispatch(fetchLeaseTypes());
     }
 
     if (
@@ -653,21 +665,18 @@ const LeasePage: React.FC<Props> = (props) => {
       !requested.vats
     ) {
       requested.vats = true;
-      fetchVats();
+      dispatch(fetchVats());
     }
 
     prevUsersPermissionsRef.current = usersPermissions;
   }, [
-    fetchCommentsByLease,
-    fetchInvoicesByLease,
-    fetchLeaseTypes,
-    fetchVats,
     leaseId,
     usersPermissions,
     comments,
     invoices,
     leaseTypeList,
     vats,
+    dispatch,
   ]);
 
   useEffect(() => {
@@ -676,10 +685,10 @@ const LeasePage: React.FC<Props> = (props) => {
       setPageTitle(pageTitle);
 
       if (currentLease?.service_unit) {
-        fetchReceivableTypes();
+        dispatch(fetchReceivableTypes());
       }
     }
-  }, [currentLease, fetchReceivableTypes]);
+  }, [currentLease, dispatch]);
 
   useEffect(() => {
     if (!isEmpty(currentLease)) {
@@ -732,12 +741,11 @@ const LeasePage: React.FC<Props> = (props) => {
     setRentsFormState({ dirty: false, valid: true });
     setRentCalculatorFormState({ dirty: false, valid: true });
     setBasisOfRentsFormState({ dirty: false, valid: true });
-    receiveIsSaveClicked(false);
-    dispatch(clearFormValidFlags());
+    dispatch(receiveIsSaveClicked(false));
     dispatch(clearFormDirtyFlags());
     destroyAllForms();
     initializeForms(currentLease);
-    showEditMode();
+    dispatch(showEditMode());
     startAutoSaveTimer();
   };
 
@@ -882,8 +890,7 @@ const LeasePage: React.FC<Props> = (props) => {
 
   const restoreUnsavedChanges = () => {
     destroyAllForms();
-    dispatch(clearFormValidFlags());
-    showEditMode();
+    dispatch(showEditMode());
     initializeForms(currentLease);
     const storedAreasFormValues = getSessionStorageItem(FormNames.LEASE_AREAS);
 
@@ -959,21 +966,8 @@ const LeasePage: React.FC<Props> = (props) => {
       bulkChange(leaseTenantFormRef.current, storedTenantsFormValues);
     }
 
-    const storedFormValidity = getSessionStorageItem("leaseValidity");
-
-    if (storedFormValidity) {
-      dispatch(receiveFormValidFlags(storedFormValidity));
-    }
-
     startAutoSaveTimer();
     setIsRestoreModalOpen(false);
-  };
-
-  const bulkChangeReduxForm = (formName: string, obj: Record<string, any>) => {
-    const fields = Object.keys(obj);
-    fields.forEach((field) => {
-      reduxFormChange(formName, field, obj[field]);
-    });
   };
 
   const bulkChange = (form: FormApi, obj: Record<string, any>) => {
@@ -994,7 +988,6 @@ const LeasePage: React.FC<Props> = (props) => {
     // Get values from ref to avoid stale values due to setInterval
     const {
       leaseId,
-      isFormValidFlags,
       summaryFormState,
       tenantsFormState,
       constructabilityFormState,
@@ -1100,14 +1093,13 @@ const LeasePage: React.FC<Props> = (props) => {
 
     if (isDirty) {
       setSessionStorageItem("leaseId", leaseId);
-      setSessionStorageItem("leaseValidity", isFormValidFlags);
     } else {
       removeSessionStorageItem("leaseId");
       removeSessionStorageItem("leaseValidity");
     }
   };
   const cancelChanges = () => {
-    hideEditMode();
+    dispatch(hideEditMode());
     stopAutoSaveTimer();
     dispatch(clearFormDirtyFlags());
     clearUnsavedChanges();
@@ -1115,7 +1107,7 @@ const LeasePage: React.FC<Props> = (props) => {
 
   const saveChanges = () => {
     const areFormsValid = validateForms();
-    receiveIsSaveClicked(true);
+    dispatch(receiveIsSaveClicked(true));
 
     if (areFormsValid) {
       let payload: Record<string, any> = {
@@ -1188,7 +1180,7 @@ const LeasePage: React.FC<Props> = (props) => {
         );
       }
 
-      patchLease(payload);
+      dispatch(patchLease(payload as Lease));
       cancelChanges();
     }
   };
@@ -1255,7 +1247,7 @@ const LeasePage: React.FC<Props> = (props) => {
     );
   };
   const handleDelete = () => {
-    deleteLease(leaseId);
+    dispatch(deleteLease(Number(leaseId)));
   };
 
   const areFormsValid = validateForms();
@@ -1704,66 +1696,4 @@ const LeasePage: React.FC<Props> = (props) => {
   );
 };
 
-export default flowRight(
-  withLeasePageAttributes,
-  withUiDataList,
-  connect(
-    (state, props: Props) => {
-      return {
-        areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
-        constructabilityFormValues: getFormValues(
-          FormNames.LEASE_CONSTRUCTABILITY,
-        )(state),
-        contractsFormValues: getFormValues(FormNames.LEASE_CONTRACTS)(state),
-        currentLease: getCurrentLease(state),
-        decisionsFormValues: getFormValues(FormNames.LEASE_DECISIONS)(state),
-        inspectionsFormValues: getFormValues(FormNames.LEASE_INSPECTIONS)(
-          state,
-        ),
-        isEditMode: getIsEditMode(state),
-        isFormValidFlags: getIsFormValidFlags(state),
-        isFetchingOldDwellingsInHousingCompaniesPriceIndex:
-          getIsFetchingOldDwellingsInHousingCompaniesPriceIndex(state),
-        isFetchingReceivableTypes: getIsFetchingReceivableTypes(state),
-        isSaving: getIsSaving(state),
-        isFetching: getIsFetching(state),
-        isSaveClicked: getIsSaveClicked(state),
-        leaseTypeList: getLeaseTypeList(state),
-        isBasisOfRentsFormDirty: isDirty(FormNames.LEASE_BASIS_OF_RENTS)(state),
-        isBasisOfRentsFormValid: getIsFormValidById(
-          state,
-          FormNames.LEASE_BASIS_OF_RENTS,
-        ),
-        basisOfRentsFormValues: getFormValues(FormNames.LEASE_BASIS_OF_RENTS)(
-          state,
-        ),
-        loggedUser: getLoggedInUser(state),
-        oldDwellingsInHousingCompaniesPriceIndex:
-          getOldDwellingsInHousingCompaniesPriceIndex(state),
-        tenantsFormValues: getFormValues(FormNames.LEASE_TENANTS)(state),
-        userActiveServiceUnit: getUserActiveServiceUnit(state),
-        vats: getVats(state),
-      };
-    },
-    {
-      reduxFormChange,
-      clearPreviewInvoices,
-      deleteLease,
-      destroy,
-      fetchCommentsByLease,
-      fetchInvoicesByLease,
-      fetchLeaseTypes,
-      fetchOldDwellingsInHousingCompaniesPriceIndex,
-      fetchSingleLease,
-      fetchReceivableTypes,
-      fetchVats,
-      hideEditMode,
-      initialize,
-      patchLease,
-      receiveIsSaveClicked,
-      receiveSingleLease,
-      receiveTopNavigationSettings,
-      showEditMode,
-    },
-  ),
-)(LeasePage);
+export default LeasePage;
