@@ -23,7 +23,7 @@ import {
 } from "./actions";
 import useAuth from "./useAuth";
 import { setRedirectUrlToSessionStorage } from "@/util/storage";
-import configureStore from "@/root/configureStore";
+import store from "@/root/store";
 import * as selectors from "@/auth/selectors";
 
 vi.mock("@/index", () => {
@@ -97,7 +97,7 @@ describe("useAuth", () => {
   };
 
   beforeEach(() => {
-    mockStore = configureStore();
+    mockStore = store;
   });
 
   afterEach(() => {

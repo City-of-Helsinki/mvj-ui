@@ -1,6 +1,6 @@
 import format from "date-fns/format";
 import { get, isEmpty } from "lodash-es";
-import { store } from "@/index";
+import store from "@/root/store";
 import {
   RentAdjustmentAmountTypes,
   RentCycles,

@@ -10,13 +10,14 @@ import {
 } from "@/leases/requestsAsync";
 import { getLabelOfOption, getFieldOptions } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
-import { store } from "@/index";
+import store from "@/root/store";
 import {
   LeaseFieldPaths,
   LeaseHistoryItemTypes,
   LeaseHistoryContentTypes,
 } from "@/leases/enums";
 import type { UserServiceUnit } from "@/usersPermissions/types";
+
 type Props = {
   disabled?: boolean;
   name: string;

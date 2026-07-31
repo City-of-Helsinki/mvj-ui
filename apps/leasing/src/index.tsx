@@ -4,11 +4,9 @@ import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router";
 import { LoginProvider } from "hds-react";
-import configureStore from "@/root/configureStore";
+import store from "@/root/store";
 import routes from "@/root/routes";
 import { loginProviderProperties } from "@/auth/constants";
-
-export const store = configureStore();
 
 const container = document.getElementById("root");
 const root = createRoot(container);

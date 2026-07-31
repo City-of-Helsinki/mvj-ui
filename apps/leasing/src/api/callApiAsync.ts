@@ -1,4 +1,4 @@
-import { store } from "@/index";
+import store from "@/root/store";
 import { getApiToken } from "@/auth/selectors";
 import { UI_ACCEPT_LANGUAGE_VALUE } from "@/api/constants";
 import type { ApiSyncResponse } from "./types";

@@ -9,6 +9,7 @@
         "start": "vite --config ./vite.config.js"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "2.12.0",
         "classnames": "2.5.1",
         "copy-to-clipboard": "3.3.3",
         "date-fns": "2.30.0",
