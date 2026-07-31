@@ -15,7 +15,7 @@ import {
   APPLICANT_TYPE_FIELD_IDENTIFIER,
   TARGET_SECTION_IDENTIFIER,
 } from "@/application/constants";
-import { store } from "@/index";
+import store from "@/root/store";
 import { displayUIMessage } from "@/util/helpers";
 import type { PlotSearch } from "@/plotSearch/types";
 import type { RootState } from "@/root/types";

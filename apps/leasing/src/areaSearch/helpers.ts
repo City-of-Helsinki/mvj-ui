@@ -3,7 +3,7 @@ import { formValueSelector, getFormValues } from "redux-form";
 import { FormNames, TableSortOrder } from "@/enums";
 import { APPLICANT_MAIN_IDENTIFIERS } from "@/application/constants";
 import { getUserFullName } from "@/users/helpers";
-import { store } from "@/index";
+import store from "@/root/store";
 import { getCurrentAreaSearch } from "@/areaSearch/selectors";
 import { prepareApplicationForSubmission } from "@/application/helpers";
 import type { LeafletFeature, LeafletGeoJson } from "types";
@@ -355,8 +355,7 @@ export const getIsCreateContactButtonVisible = (
 export const getIsConditionallyHiddenSection = (
   section: FormSection,
   answerSection:
-    | SavedApplicationFormSection
-    | Array<SavedApplicationFormSection>,
+    SavedApplicationFormSection | Array<SavedApplicationFormSection>,
 ): boolean => {
   if (isArray(answerSection)) {
     return false;

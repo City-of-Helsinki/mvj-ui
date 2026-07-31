@@ -2,7 +2,7 @@ import { isContactFormDirty } from "@/contacts/helpers";
 import { isInfillDevelopmentFormDirty } from "@/infillDevelopment/helpers";
 import { isAnyLeaseFormDirty } from "@/leases/helpers";
 import { isRentBasisFormDirty } from "@/rentbasis/helpers";
-import { store } from "@/index";
+import store from "@/root/store";
 
 /**
  * Test has any page dirty forms

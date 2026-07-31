@@ -1,7 +1,7 @@
 import callApi from "@/api/callApi";
 import callApiPaginated from "@/api/callApiPaginated";
 import createUrl from "@/api/createUrl";
-import { store } from "@/index";
+import store from "@/root/store";
 import { getCurrentLease } from "@/leases/selectors";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(

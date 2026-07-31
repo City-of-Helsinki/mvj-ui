@@ -2,7 +2,7 @@ import { get, transform, escapeRegExp } from "lodash-es";
 import { formValueSelector } from "redux-form";
 import { getApiResponseResults, getFieldAttributes } from "@/util/helpers";
 import createUrl from "@/api/createUrl";
-import { store } from "@/index";
+import store from "@/root/store";
 import { FormNames } from "@/enums";
 import { getCurrentEditorTargets } from "@/plotApplications/selectors";
 import {
