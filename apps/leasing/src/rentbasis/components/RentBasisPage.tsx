@@ -32,7 +32,7 @@ import {
   receiveIsSaveClicked,
   showEditMode,
   fetchAttributes as fetchRentBasisAttributes,
-} from "@/rentbasis/actions";
+} from "@/rentbasis/slice";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import {
   fetchAttributes as fetchUiDataAttributes,

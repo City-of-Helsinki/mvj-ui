@@ -19,7 +19,7 @@ import TableWrapper from "@/components/table/TableWrapper";
 import {
   fetchRentBasisList,
   fetchAttributes as fetchRentBasisAttributes,
-} from "@/rentbasis/actions";
+} from "@/rentbasis/slice";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import { DEFAULT_SORT_KEY, DEFAULT_SORT_ORDER } from "@/rentbasis/constants";

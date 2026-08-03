@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
+import rentBasisReducer, {
   receiveAttributes,
   receiveMethods,
   fetchAttributes,
@@ -15,8 +15,7 @@ import {
   hideEditMode,
   receiveIsSaveClicked,
   receiveIsFormDirty,
-} from "./actions";
-import rentBasisReducer from "./reducer";
+} from "./slice";
 import type { RentBasisState } from "./types";
 const defaultState: RentBasisState = {
   attributes: null,
@@ -40,7 +39,10 @@ describe("Rent basis", () => {
           val2: "bar",
         };
         const newState = { ...defaultState, attributes: dummyAttributes };
-        const state = rentBasisReducer({}, receiveAttributes(dummyAttributes));
+        const state = rentBasisReducer(
+          defaultState,
+          receiveAttributes(dummyAttributes),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update methods", () => {
@@ -49,23 +51,26 @@ describe("Rent basis", () => {
           val2: "bar",
         };
         const newState = { ...defaultState, methods: dummyMethods };
-        const state = rentBasisReducer({}, receiveMethods(dummyMethods));
+        const state = rentBasisReducer(
+          defaultState,
+          receiveMethods(dummyMethods),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingAttributes flag to true when fetching attributes", () => {
         const newState = { ...defaultState, isFetchingAttributes: true };
-        const state = rentBasisReducer({}, fetchAttributes());
+        const state = rentBasisReducer(defaultState, fetchAttributes());
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingAttributes flag to false by attributesNotFound", () => {
         const newState = { ...defaultState, isFetchingAttributes: false };
-        let state = rentBasisReducer({}, fetchAttributes());
+        let state = rentBasisReducer(defaultState, fetchAttributes());
         state = rentBasisReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to true when fetching rent basis list", () => {
         const newState = { ...defaultState, isFetching: true };
-        const state = rentBasisReducer({}, fetchRentBasisList({}));
+        const state = rentBasisReducer(defaultState, fetchRentBasisList({}));
         expect(state).to.deep.equal(newState);
       });
       it("should update rent basis list", () => {
@@ -86,7 +91,7 @@ describe("Rent basis", () => {
           },
         };
         const state = rentBasisReducer(
-          {},
+          defaultState,
           receiveRentBasisList({
             results: dummyRentBasisList,
           }),
@@ -95,7 +100,7 @@ describe("Rent basis", () => {
       });
       it("should update isFetching flag to true when fetching single rent basis", () => {
         const newState = { ...defaultState, isFetching: true };
-        const state = rentBasisReducer({}, fetchSingleRentBasis(1));
+        const state = rentBasisReducer(defaultState, fetchSingleRentBasis(1));
         expect(state).to.deep.equal(newState);
       });
       it("should update single rent basis", () => {
@@ -105,46 +110,49 @@ describe("Rent basis", () => {
         };
         const newState = { ...defaultState, rentbasis: dummyRentBasis };
         const state = rentBasisReducer(
-          {},
+          defaultState,
           receiveSingleRentBasis(dummyRentBasis),
         );
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true when creating new rent basis", () => {
         const newState = { ...defaultState, isSaving: true };
-        const state = rentBasisReducer({}, createRentBasis({}));
+        const state = rentBasisReducer(defaultState, createRentBasis({}));
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true when editing existing rent basis", () => {
         const newState = { ...defaultState, isSaving: true };
-        const state = rentBasisReducer({}, editRentBasis({}));
+        const state = rentBasisReducer(defaultState, editRentBasis({}));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to false by notFound", () => {
         const newState = { ...defaultState, isFetching: false };
-        let state = rentBasisReducer({}, fetchRentBasisList({}));
+        let state = rentBasisReducer(defaultState, fetchRentBasisList({}));
         state = rentBasisReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });
       it("should update isEditMode flag to true", () => {
         const newState = { ...defaultState, isEditMode: true };
-        const state = rentBasisReducer({}, showEditMode());
+        const state = rentBasisReducer(defaultState, showEditMode());
         expect(state).to.deep.equal(newState);
       });
       it("should update isEditMode flag to false", () => {
         const newState = { ...defaultState, isEditMode: false };
-        let state = rentBasisReducer({}, showEditMode());
+        let state = rentBasisReducer(defaultState, showEditMode());
         state = rentBasisReducer(state, hideEditMode());
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaveClicked flag to true", () => {
         const newState = { ...defaultState, isSaveClicked: true };
-        const state = rentBasisReducer({}, receiveIsSaveClicked(true));
+        const state = rentBasisReducer(
+          defaultState,
+          receiveIsSaveClicked(true),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFormDirty flag to true", () => {
         const newState = { ...defaultState, isFormDirty: true };
-        const state = rentBasisReducer({}, receiveIsFormDirty(true));
+        const state = rentBasisReducer(defaultState, receiveIsFormDirty(true));
         expect(state).to.deep.equal(newState);
       });
     });
