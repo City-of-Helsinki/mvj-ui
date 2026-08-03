@@ -1,6 +1,8 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { navigateTo } from "@/root/navigationService";
+import { receiveError } from "@/api/actions";
+import { displayUIMessage } from "@/util/helpers";
 import {
   hideEditMode,
   attributesNotFound,
@@ -9,9 +11,12 @@ import {
   receiveMethods,
   receiveRentBasisList,
   receiveSingleRentBasis,
-} from "./actions";
-import { receiveError } from "@/api/actions";
-import { displayUIMessage } from "@/util/helpers";
+  fetchAttributes as fetchAttributesAction,
+  fetchRentBasisList as fetchRentBasisListAction,
+  createRentBasis as createRentBasisAction,
+  editRentBasis as editRentBasisAction,
+  fetchSingleRentBasis as fetchSingleRentBasisAction,
+} from "./slice";
 import {
   createRentBasis,
   editRentBasis,
@@ -52,8 +57,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchRentBasisListSaga({
   payload: query,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchRentBasisListAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -79,8 +83,7 @@ function* fetchRentBasisListSaga({
 
 function* fetchSingleRentBasisSaga({
   payload: id,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchSingleRentBasisAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -110,8 +113,7 @@ function* fetchSingleRentBasisSaga({
 
 function* createRentBasisSaga({
   payload: rentBasis,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof createRentBasisAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -149,8 +151,7 @@ function* createRentBasisSaga({
 
 function* editRentBasisSaga({
   payload: rentBasis,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof editRentBasisAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -189,11 +190,14 @@ function* editRentBasisSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
-      yield takeLatest("mvj/rentbasis/FETCH_ATTRIBUTES", fetchAttributesSaga);
-      yield takeLatest("mvj/rentbasis/FETCH_ALL", fetchRentBasisListSaga);
-      yield takeLatest("mvj/rentbasis/CREATE", createRentBasisSaga);
-      yield takeLatest("mvj/rentbasis/EDIT", editRentBasisSaga);
-      yield takeLatest("mvj/rentbasis/FETCH_SINGLE", fetchSingleRentBasisSaga);
+      yield takeLatest(fetchAttributesAction.type, fetchAttributesSaga);
+      yield takeLatest(fetchRentBasisListAction.type, fetchRentBasisListSaga);
+      yield takeLatest(createRentBasisAction.type, createRentBasisSaga);
+      yield takeLatest(editRentBasisAction.type, editRentBasisSaga);
+      yield takeLatest(
+        fetchSingleRentBasisAction.type,
+        fetchSingleRentBasisSaga,
+      );
     }),
   ]);
 }
