@@ -29,14 +29,19 @@ import {
   LeaseCreateChargeRowsFieldPaths,
 } from "@/leaseCreateCharge/enums";
 import { RecipientOptions } from "@/leases/enums";
+import { shareBasisOptions } from "@/leases/constants";
 import { receivableTypesFromAttributes } from "@/leaseCreateCharge/helpers";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { isInvoiceBillingPeriodRequired } from "@/invoices/helpers";
-import { getInvoiceRecipientOptions } from "@/leases/helpers";
+import {
+  getContentTenants,
+  getInvoiceRecipientOptions,
+} from "@/leases/helpers";
 import { getUiDataCreateChargeKey } from "@/uiData/helpers";
 import {
   getFieldAttributes,
   hasPermissions,
+  isArchived,
   isFieldAllowedToEdit,
   isFieldRequired,
 } from "@/util/helpers";
@@ -56,11 +61,13 @@ import Loader from "@/components/loader/Loader";
 type InvoiceRowsProps = {
   fields: any;
   useLeaseCreateChargeEndpoint: boolean;
+  isSplittableByTenantShare: boolean;
 };
 
 const InvoiceRows = ({
   fields,
   useLeaseCreateChargeEndpoint,
+  isSplittableByTenantShare,
 }: InvoiceRowsProps): ReactElement => {
   const invoiceAttributes = useSelector(getInvoiceAttributes);
   const isCreateClicked = useSelector(getIsCreateClicked);
@@ -70,7 +77,9 @@ const InvoiceRows = ({
   const receivableTypes = useSelector(getReceivableTypes);
 
   const handleAdd = () => {
-    fields.push({});
+    fields.push(
+      isSplittableByTenantShare ? { share_basis: "tenant_share" } : {},
+    );
   };
 
   return (
@@ -162,6 +171,26 @@ const InvoiceRows = ({
                       </FormTextTitle>
                     </Authorization>
                   </Column>
+                  {useLeaseCreateChargeEndpoint &&
+                    isSplittableByTenantShare && (
+                      <Column small={3} large={2}>
+                        <Authorization
+                          allow={isFieldAllowedToEdit(
+                            leaseCreateChargeAttributes,
+                            LeaseCreateChargeRowsFieldPaths.SHARE_BASIS,
+                          )}
+                        >
+                          <FormTextTitle
+                            enableUiDataEdit
+                            uiDataKey={getUiDataCreateChargeKey(
+                              LeaseCreateChargeRowsFieldPaths.SHARE_BASIS,
+                            )}
+                          >
+                            {InvoiceRowsFieldTitles.SHARE_BASIS}
+                          </FormTextTitle>
+                        </Authorization>
+                      </Column>
+                    )}
                 </Row>
 
                 {fields.map((row, index) => {
@@ -228,7 +257,7 @@ const InvoiceRows = ({
                           )}
                         </Authorization>
                       </Column>
-                      <Column small={2} large={2}>
+                      <Column small={3} large={2}>
                         <Authorization
                           allow={
                             useLeaseCreateChargeEndpoint
@@ -264,6 +293,32 @@ const InvoiceRows = ({
                           />
                         </Authorization>
                       </Column>
+
+                      {useLeaseCreateChargeEndpoint &&
+                        isSplittableByTenantShare && (
+                          <Column small={3} large={2}>
+                            <Authorization
+                              allow={isFieldAllowedToEdit(
+                                leaseCreateChargeAttributes,
+                                LeaseCreateChargeRowsFieldPaths.SHARE_BASIS,
+                              )}
+                            >
+                              <FormField
+                                disableTouched={isCreateClicked}
+                                fieldAttributes={getFieldAttributes(
+                                  leaseCreateChargeAttributes,
+                                  LeaseCreateChargeRowsFieldPaths.SHARE_BASIS,
+                                )}
+                                invisibleLabel
+                                name={`${row}.share_basis`}
+                                overrideValues={{
+                                  label: InvoiceRowsFieldTitles.SHARE_BASIS,
+                                  options: shareBasisOptions,
+                                }}
+                              />
+                            </Authorization>
+                          </Column>
+                        )}
 
                       <Authorization
                         allow={
@@ -336,14 +391,24 @@ const NewInvoiceForm = ({ onClose, onSave, setRefForFirstField }: Props) => {
   const usersPermissions = useSelector(getUsersPermissions);
   const dispatch = useDispatch();
 
+  const isSplittableByTenantShare = useMemo(() => {
+    const activeTenants = getContentTenants(lease).filter(
+      (tenant) => !isArchived(tenant.tenant),
+    );
+    return (
+      activeTenants.length > 1 &&
+      activeTenants.some((tenant) => tenant.rent_shares?.length)
+    );
+  }, [lease]);
+
   const initialValues = useMemo(
     () => ({
       recipient: hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE)
         ? RecipientOptions.ALL
         : undefined,
-      rows: [{}],
+      rows: [isSplittableByTenantShare ? { share_basis: "tenant_share" } : {}],
     }),
-    [usersPermissions],
+    [isSplittableByTenantShare, usersPermissions],
   );
 
   const handleSave = (values: any) => {
@@ -351,10 +416,14 @@ const NewInvoiceForm = ({ onClose, onSave, setRefForFirstField }: Props) => {
     onSave(values);
   };
 
-  const recipientOptions = getInvoiceRecipientOptions(
-    lease,
-    hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
-    hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
+  const recipientOptions = useMemo(
+    () =>
+      getInvoiceRecipientOptions(
+        lease,
+        hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
+        hasPermissions(usersPermissions, UsersPermissions.ADD_INVOICE),
+      ),
+    [lease, usersPermissions],
   );
 
   return (
@@ -594,6 +663,7 @@ const NewInvoiceForm = ({ onClose, onSave, setRefForFirstField }: Props) => {
                       InvoiceRows({
                         ...fieldArrayProps,
                         useLeaseCreateChargeEndpoint,
+                        isSplittableByTenantShare,
                       })
                     }
                   </FieldArray>
