@@ -26,12 +26,8 @@ const FieldTypeTime = ({
     }
   };
 
-  const handleSelect = (val: any) => {
-    onChange(val);
-  };
-
-  const handleChange = (val: any) => {
-    onChange(val);
+  const handleChange = (value: Date | null) => {
+    onChange(value?.toISOString() ?? null);
   };
 
   return (
@@ -56,7 +52,6 @@ const FieldTypeTime = ({
         showYearDropdown
         dropdownMode="select"
         onChange={handleChange}
-        onSelect={handleSelect}
         placeholderText={placeholder}
         showTimeInput
       />
