@@ -2514,7 +2514,7 @@ __metadata:
     proj4: "npm:2.21.0"
     proj4leaflet: "npm:1.0.2"
     react-datepicker: "npm:8.10.0"
-    react-dual-listbox: "npm:6.0.3"
+    react-dual-listbox: "npm:6.1.0"
     react-leaflet: "npm:2.8.0"
     react-leaflet-draw: "npm:0.19.0"
     react-leaflet-fullscreen: "npm:1.0.2"
@@ -8511,16 +8511,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dual-listbox@npm:6.0.3":
-  version: 6.0.3
-  resolution: "react-dual-listbox@npm:6.0.3"
+"react-dual-listbox@npm:6.1.0":
+  version: 6.1.0
+  resolution: "react-dual-listbox@npm:6.1.0"
   dependencies:
     classnames: "npm:^2.2.5"
     lodash: "npm:^4.17.21"
     prop-types: "npm:^15.5.8"
   peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: 10c0/30f65eee5a90232ba5fa988c0a9aee71c4146a7917458f58f16058278df3f7e3c138c41532e9efa6e786d232c75b65ea2fd1c23e2097941bc2a60ca764deb9e0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/64e61d183cf7af203a004117c84bce287dea76cf3dedb16895bff4f68f663dd36962d846b443e692b4619cae58861d00276d790f3b78ccb6b1d7edbb1b2d17d3
   languageName: node
   linkType: hard
 
