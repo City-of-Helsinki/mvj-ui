@@ -196,6 +196,7 @@ export const InvoiceRowsFieldTitles = {
   BILLING_PERIOD_END_DATE: "Laskutuskauden loppupvm",
   BILLING_PERIOD_START_DATE: "Laskutuskauden alkupvm",
   DESCRIPTION: "Selite",
+  SHARE_BASIS: "Laskuosuuden jakaja",
   RECEIVABLE_TYPE: "Saamislaji",
   TENANT: "Vuokralainen",
 };

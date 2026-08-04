@@ -78,6 +78,20 @@ export const oneTimeRentDueDateTypeOptions = [
 ];
 
 /**
+ * Share basis options for manual invoice creation
+ */
+export const shareBasisOptions = [
+  {
+    label: "Laskutusosuus",
+    value: "tenant_share",
+  },
+  {
+    label: "Hallintaosuus",
+    value: "rent_share",
+  },
+];
+
+/**
  * Lease state options for lease list table filter
  * @const {[*]}
  */

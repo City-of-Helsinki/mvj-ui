@@ -12,6 +12,7 @@ const getPayloadLeaseCreateChargeRows = (
   return get(invoice, "rows", []).map((row) => ({
     receivable_type: row.receivable_type,
     amount: convertStrToDecimalNumber(row.amount),
+    share_basis: row.share_basis,
   }));
 };
 
