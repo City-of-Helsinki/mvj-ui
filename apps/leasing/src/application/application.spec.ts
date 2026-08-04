@@ -16,8 +16,23 @@ import {
   personalIdentifierValidator,
   validateApplicationForm,
 } from "./formValidation";
+import { getFieldChoicesSorted } from "./helpers";
+import { APPLICANT_TYPE_FIELD_IDENTIFIER } from "./constants";
 import { get } from "lodash-es";
 describe("Application", () => {
+  describe("getFieldChoicesSorted", () => {
+    it("sorts applicant types without mutating the source choices", () => {
+      const choices = [{ value: "2" }, { value: "1" }];
+
+      const sortedChoices = getFieldChoicesSorted(
+        { identifier: APPLICANT_TYPE_FIELD_IDENTIFIER } as any,
+        choices as any,
+      );
+
+      expect(sortedChoices.map(({ value }) => value)).to.deep.equal(["1", "2"]);
+      expect(choices.map(({ value }) => value)).to.deep.equal(["2", "1"]);
+    });
+  });
   describe("Reducer", () => {
     describe("applicationReducer", () => {
       it("should update isFetchingAttributes flag to true", () => {

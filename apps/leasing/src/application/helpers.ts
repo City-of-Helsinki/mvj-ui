@@ -551,7 +551,7 @@ export const getFieldChoicesSorted = (
   choices: FormFieldChoice[],
 ): FormFieldChoice[] => {
   if (field.identifier === APPLICANT_TYPE_FIELD_IDENTIFIER) {
-    return choices.sort(
+    return [...choices].sort(
       (a: FormFieldChoice, b: FormFieldChoice): number =>
         parseInt(a.value) - parseInt(b.value) || 0,
     );
