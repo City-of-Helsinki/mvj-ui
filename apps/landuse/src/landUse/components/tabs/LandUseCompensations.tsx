@@ -8,7 +8,6 @@ import {
   IconAngleUp,
   IconPlusCircleFill,
   IconSize,
-  NumberInput,
   Select,
   TextArea,
   TextInput,
@@ -18,7 +17,6 @@ import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import {
-  getFieldTextValue,
   normalizeMultiSelectValue,
   normalizeSelectValue,
   readOnlyTextValue,
@@ -76,6 +74,26 @@ interface LandUseCompensationsProps {
   form: FormApi<LandUseCompensationsFormValues>;
   isEditMode: boolean;
 }
+
+interface MaankayttokorvausYhteensaSyncProps {
+  form: FormApi<LandUseCompensationsFormValues>;
+  yhteensa: number;
+  currentValue: string;
+}
+
+/** Keep the maankayttokorvausYhteensa field in sync with the calculated total */
+const MaankayttokorvausYhteensaSync: React.FC<
+  MaankayttokorvausYhteensaSyncProps
+> = ({ form, yhteensa, currentValue }) => {
+  useEffect(() => {
+    const yhteensaStr = yhteensa.toString();
+    if (currentValue !== yhteensaStr) {
+      form.change("maankayttokorvausYhteensa", yhteensaStr);
+    }
+  }, [form, yhteensa, currentValue]);
+
+  return null;
+};
 
 const getRowFieldPath = (
   siteId: string,
@@ -436,14 +454,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           (parseLandUseNumericValue(values.maakorvaus) ?? 0) +
           (parseLandUseNumericValue(values.muuKorvaus) ?? 0);
 
-        // Update the yhteensa field in the form whenever component values change
-        useEffect(() => {
-          const yhteensaStr = yhteensa.toString();
-          if (values.maankayttokorvausYhteensa !== yhteensaStr) {
-            form.change("maankayttokorvausYhteensa", yhteensaStr);
-          }
-        }, [yhteensa, values.maankayttokorvausYhteensa]);
-
         const handleAddSite = () => {
           if (!isEditMode) {
             return;
@@ -503,6 +513,11 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
 
         return (
           <form onSubmit={handleSubmit}>
+            <MaankayttokorvausYhteensaSync
+              form={form}
+              yhteensa={yhteensa}
+              currentValue={values.maankayttokorvausYhteensa}
+            />
             <div className="landuse-detail__content">
               <h1>Korvaukset</h1>
               <h2>Maankäyttökorvaus</h2>
