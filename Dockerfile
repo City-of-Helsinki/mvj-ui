@@ -34,7 +34,7 @@ COPY --chown=default:root . /app
 RUN yarn build
 
 # =============================
-FROM registry.access.redhat.com/ubi9/nginx-120 AS production
+FROM registry.access.redhat.com/ubi9/nginx-126 AS production
 # =============================
 
 USER root
