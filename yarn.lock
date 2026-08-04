@@ -2515,7 +2515,7 @@ __metadata:
     lodash-es: "npm:4.18.1"
     proj4: "npm:2.21.0"
     proj4leaflet: "npm:1.0.2"
-    react-datepicker: "npm:8.8.0"
+    react-datepicker: "npm:8.10.0"
     react-dual-listbox: "npm:6.0.3"
     react-leaflet: "npm:2.8.0"
     react-leaflet-draw: "npm:0.19.0"
@@ -8532,9 +8532,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-datepicker@npm:8.8.0":
-  version: 8.8.0
-  resolution: "react-datepicker@npm:8.8.0"
+"react-datepicker@npm:8.10.0":
+  version: 8.10.0
+  resolution: "react-datepicker@npm:8.10.0"
   dependencies:
     "@floating-ui/react": "npm:^0.27.15"
     clsx: "npm:^2.1.1"
@@ -8542,7 +8542,7 @@ __metadata:
   peerDependencies:
     react: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
     react-dom: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
-  checksum: 10c0/741c533a7b063df9291b195f24f4b54c3b95615cc5a2295c8608fc5ce4c8af19df3b03316e3653ab19cbc9145265796dfb1ab91cf357c450460ac850952853a8
+  checksum: 10c0/f232ee9ebcaf86ede8e98d4dcfadaa7b84e78df414af2529eea6b933df03409ea229dbbc94c823e2e8d5fa6a89d11e665e51bede49ab62faa1ace9a12b53f3e6
   languageName: node
   linkType: hard
 
