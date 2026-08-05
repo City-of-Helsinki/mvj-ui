@@ -15,6 +15,7 @@ import {
   fetchCollectionNotesByLease,
   createCollectionNote,
   deleteCollectionNote,
+  patchCollectionNote,
 } from "./requests";
 import { getCollectionNotesByLease } from "./selectors";
 
@@ -149,6 +150,35 @@ function* deleteCollectionNoteSaga({
   }
 }
 
+function* editCollectionNoteSaga({
+  payload,
+  type: any,
+}): Generator<any, any, any> {
+  try {
+    const {
+      response: { status: statusCode },
+      bodyAsJson,
+    } = yield call(patchCollectionNote, payload);
+
+    switch (statusCode) {
+      case 200:
+        yield put(fetchCollectionNotesByLeaseAction(payload.lease));
+        displayUIMessage({
+          title: "",
+          body: "Huomautus tallennettu",
+        });
+        break;
+
+      default:
+        yield put(receiveError(new SubmissionError({ ...bodyAsJson })));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit collection note with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
@@ -162,6 +192,7 @@ export default function* (): Generator<any, any, any> {
       );
       yield takeLatest("mvj/collectionNote/CREATE", createCollectionNoteSaga);
       yield takeLatest("mvj/collectionNote/DELETE", deleteCollectionNoteSaga);
+      yield takeLatest("mvj/collectionNote/EDIT", editCollectionNoteSaga);
     }),
   ]);
 }

@@ -5,13 +5,14 @@ import type {
   ReceiveAttributesAction,
   ReceiveMethodsAction,
   CollectionNoteAttributesNotFoundAction,
-  CreateCollectionNotePayload,
+  CollectionNotePayload,
   DeleteCollectionNotePayload,
   FetchCollectionNotesByLeaseAction,
   ReceiveCollectionNotesByLeaseAction,
   CollectionNotesNotFoundByLeaseAction,
   CreateCollectionNoteAction,
   DeleteCollectionNoteAction,
+  EditCollectionNoteAction,
 } from "./types";
 import type { LeaseId } from "@/leases/types";
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -37,10 +38,13 @@ export const notFoundByLease = (
 ): CollectionNotesNotFoundByLeaseAction =>
   createAction("mvj/collectionNote/NOT_FOUND_BY_LEASE")(lease);
 export const createCollectionNote = (
-  payload: CreateCollectionNotePayload,
+  payload: CollectionNotePayload,
 ): CreateCollectionNoteAction =>
   createAction("mvj/collectionNote/CREATE")(payload);
 export const deleteCollectionNote = (
   payload: DeleteCollectionNotePayload,
 ): DeleteCollectionNoteAction =>
   createAction("mvj/collectionNote/DELETE")(payload);
+export const editCollectionNote = (
+  payload: CollectionNotePayload,
+): EditCollectionNoteAction => createAction("mvj/collectionNote/EDIT")(payload);

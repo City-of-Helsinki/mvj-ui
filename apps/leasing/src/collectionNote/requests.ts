@@ -1,6 +1,6 @@
 import callApi from "@/api/callApi";
 import createUrl from "@/api/createUrl";
-import type { CollectionNoteId } from "./types";
+import type { CollectionNoteId, CollectionNotePayload } from "./types";
 import type { LeaseId } from "@/leases/types";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(
@@ -17,9 +17,9 @@ export const fetchCollectionNotesByLease = (
   );
 };
 export const createCollectionNote = (
-  note: string,
+  payload: CollectionNotePayload,
 ): Generator<any, any, any> => {
-  const body = JSON.stringify(note);
+  const body = JSON.stringify(payload);
   return callApi(
     new Request(createUrl(`collection_note/`), {
       method: "POST",
@@ -33,6 +33,19 @@ export const deleteCollectionNote = (
   return callApi(
     new Request(createUrl(`collection_note/${id}/`), {
       method: "DELETE",
+    }),
+  );
+};
+
+export const patchCollectionNote = (
+  payload: CollectionNotePayload,
+): Generator<any, any, any> => {
+  const { id, ...data } = payload;
+  const body = JSON.stringify(data);
+  return callApi(
+    new Request(createUrl(`collection_note/${id}/`), {
+      method: "PATCH",
+      body,
     }),
   );
 };
