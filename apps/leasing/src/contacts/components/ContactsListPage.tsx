@@ -1,23 +1,21 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router";
 import {
-  withRouterLegacy,
-  type WithRouterProps,
-} from "@/root/withRouterLegacy";
-import { initialize } from "redux-form";
-import { flowRight } from "lodash-es";
-import { Row, Column } from "@/components/grid/Grid";
-import AddButtonSecondary from "@/components/form/AddButtonSecondary";
-import Authorization from "@/components/authorization/Authorization";
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconAngleDown,
+  IconAngleUp,
+  Pagination,
+  Table,
+  type TableProps,
+} from "hds-react";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
-import PageContainer from "@/components/content/PageContainer";
-import Pagination from "@/components/table/Pagination";
+import PageContainerHDS from "@/components/content/PageContainerHDS";
 import Search from "./search/Search";
-import SortableTable from "@/components/table/SortableTable";
-import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
-import TableWrapper from "@/components/table/TableWrapper";
 import { fetchContacts, initializeContactForm } from "@/contacts/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
@@ -42,270 +40,231 @@ import {
 } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import { getContactList, getIsFetching } from "@/contacts/selectors";
-import { withContactAttributes } from "@/components/attributes/ContactAttributes";
+import { useContactAttributes } from "@/components/attributes/ContactAttributes";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
-import type {
-  ContactList,
-  ContactRow,
-  ContactsActiveLease,
-} from "@/contacts/types";
-import type { Attributes, Methods as MethodsType } from "types";
-import type { RootState } from "@/root/types";
-import type { UserServiceUnit } from "@/usersPermissions/types";
-type Props = {
-  contactAttributes: Attributes;
-  contactList: ContactList;
-  contactMethods: MethodsType;
-  fetchContacts: (...args: Array<any>) => any;
-  initializeContactForm: (...args: Array<any>) => any;
-  initialize: (...args: Array<any>) => any;
-  isFetching: boolean;
-  isFetchingContactAttributes: boolean;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-  userActiveServiceUnit: UserServiceUnit;
-};
-type State = {
-  activePage: number;
-  contactAttributes: Attributes;
-  contactList: ContactList;
-  contacts: Array<Record<string, any>>;
-  count: number;
-  isSearchInitialized: boolean;
-  maxPage: number;
-  sortKey: string;
-  sortOrder: string;
-  typeOptions: Array<Record<string, any>>;
+import type { Contact, ContactId, ContactsActiveLease } from "@/contacts/types";
+import MultiItemCollapse from "@/components/table/MultiItemCollapse";
+
+const sortLeasesByIdentifier = (
+  leases: ContactsActiveLease[],
+): ContactsActiveLease[] => {
+  return [...leases].sort((a, b) =>
+    a.lease_identifier.localeCompare(b.lease_identifier),
+  );
 };
 
-class ContactListPage extends Component<Props & WithRouterProps, State> {
-  _isMounted: boolean;
-  _hasFetchedContacts: boolean;
-  state = {
-    activePage: 1,
-    contactAttributes: null,
-    contactList: {},
-    contacts: [],
-    count: 0,
-    isSearchInitialized: false,
-    maxPage: 0,
-    sortKey: DEFAULT_SORT_KEY,
-    sortOrder: DEFAULT_SORT_ORDER,
-    typeOptions: [],
-    userActiveServiceUnit: undefined,
-  };
+const hasRowMultipleValues = (row: Contact): boolean => {
+  return row.contacts_active_leases && row.contacts_active_leases.length > 1;
+};
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+const ContactListPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    if (props.contactAttributes !== state.contactAttributes) {
-      newState.contactAttributes = props.contactAttributes;
-      newState.typeOptions = getFieldOptions(
-        props.contactAttributes,
-        ContactFieldPaths.TYPE,
-      );
-    }
+  const { contactAttributes, contactMethods, isFetchingContactAttributes } =
+    useContactAttributes();
+  const contactList = useSelector(getContactList);
+  const isFetching = useSelector(getIsFetching);
+  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
 
-    if (props.contactList !== state.contactList) {
-      newState.contactList = props.contactList;
-      newState.count = getApiResponseCount(props.contactList);
-      newState.contacts = getApiResponseResults(props.contactList);
-      newState.maxPage = getApiResponseMaxPage(
-        props.contactList,
-        LIST_TABLE_PAGE_SIZE,
-      );
-    }
+  const queryParams = useMemo(
+    () => getUrlParams(location.search),
+    [location.search],
+  );
+  const sortKey = queryParams.sort_key || DEFAULT_SORT_KEY;
+  const sortOrder = queryParams.sort_order || DEFAULT_SORT_ORDER;
+  const activePage = queryParams.page ? Number(queryParams.page) : 1;
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
 
-    return newState;
-  }
+  const count = getApiResponseCount(contactList);
+  const contacts = getApiResponseResults(contactList);
+  const maxPage = getApiResponseMaxPage(contactList, LIST_TABLE_PAGE_SIZE);
 
-  componentDidMount() {
-    const { receiveTopNavigationSettings, userActiveServiceUnit } = this.props;
+  const typeOptions = useMemo(
+    () => getFieldOptions(contactAttributes, ContactFieldPaths.TYPE),
+    [contactAttributes],
+  );
+
+  useEffect(() => {
     setPageTitle("Asiakkaat");
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.CONTACTS),
-      pageTitle: "Asiakkaat",
-      showSearch: false,
-    });
-    window.addEventListener("popstate", this.handlePopState);
-    this._isMounted = true;
-    if (userActiveServiceUnit) {
-      this.setSearchFormValues();
-      this.search();
-      this._hasFetchedContacts = true;
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      location: { search: currentSearch },
-      userActiveServiceUnit,
-    } = this.props;
-    const {
-      location: { search: prevSearch },
-      userActiveServiceUnit: prevUserActiveServiceUnit,
-    } = prevProps;
-    const searchQuery = getUrlParams(currentSearch);
-
-    const handleSearch = () => {
-      this.setSearchFormValues();
-      this.search();
-    };
-
-    if (userActiveServiceUnit) {
-      if (!this._hasFetchedContacts) {
-        // No search has been done yet
-        handleSearch();
-        this._hasFetchedContacts = true;
-      } else if (
-        userActiveServiceUnit !== prevUserActiveServiceUnit &&
-        !currentSearch.includes("service_unit")
-      ) {
-        // Search again after changing user active service unit only if not explicitly setting the service unit filter
-        handleSearch();
-      }
-    }
-
-    if (currentSearch !== prevSearch) {
-      this.search();
-      // Ignore these two from searchquery length check
-      delete searchQuery.sort_key;
-      delete searchQuery.sort_order;
-
-      if (!Object.keys(searchQuery).length) {
-        this.setSearchFormValues();
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("popstate", this.handlePopState);
-    this._isMounted = false;
-    this._hasFetchedContacts = false;
-  }
-
-  handlePopState = () => {
-    this.setSearchFormValues();
-  };
-  setSearchFormValues = () => {
-    const {
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
-
-    const setSearchFormReady = () => {
-      this.setState({
-        isSearchInitialized: true,
-      });
-    };
-
-    this.setState(
-      {
-        activePage: page,
-        isSearchInitialized: false,
-        sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
-        sortOrder: searchQuery.sort_order
-          ? searchQuery.sort_order
-          : DEFAULT_SORT_ORDER,
-      },
-      async () => {
-        if (this._isMounted) {
-          setSearchFormReady();
-        }
-      },
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.CONTACTS),
+        pageTitle: "Asiakkaat",
+        showSearch: false,
+      }),
     );
-  };
-  handleCreateButtonClick = () => {
-    const { initializeContactForm } = this.props;
-    const {
-      navigate,
-      location: { search },
-    } = this.props;
-    initializeContactForm({});
-    return navigate({
-      pathname: getRouteById(Routes.CONTACT_NEW),
-      search: search,
-    });
-  };
-  handleSearchChange = (query: any, resetActivePage: boolean = false) => {
-    const { navigate } = this.props;
+  }, [dispatch]);
 
-    if (resetActivePage) {
-      this.setState({
-        activePage: 1,
-      });
+  useEffect(() => {
+    if (!userActiveServiceUnit) return;
+
+    const search = () => {
+      const searchQuery = { ...queryParams };
+      const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+      if (page > 1) {
+        searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
+      }
+
+      searchQuery.limit = LIST_TABLE_PAGE_SIZE;
+      delete searchQuery.page;
+      searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
+      searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
+
+      if (searchQuery.service_unit === undefined) {
+        searchQuery.service_unit = "";
+      }
+
+      dispatch(fetchContacts(mapContactSearchFilters(searchQuery)));
+    };
+
+    search();
+  }, [dispatch, location.search, userActiveServiceUnit, queryParams]);
+
+  const handleSearchChange = (
+    query: Record<string, any>,
+    resetActivePage: boolean = false,
+  ) => {
+    const searchQuery = { ...query };
+    if (!resetActivePage && queryParams.page) {
+      searchQuery.page = queryParams.page;
     }
-
-    return navigate({
+    navigate({
       pathname: getRouteById(Routes.CONTACTS),
-      search: getSearchQuery(query),
+      search: getSearchQuery(searchQuery),
     });
   };
 
-  search = () => {
-    const {
-      fetchContacts,
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
-
-    if (page > 1) {
-      searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
-    }
-
-    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
-    delete searchQuery.page;
-    searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
-    searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
-
-    if (searchQuery.service_unit === undefined) {
-      searchQuery.service_unit = "";
-    }
-
-    fetchContacts(mapContactSearchFilters(searchQuery));
+  const handleCreateButtonClick = () => {
+    dispatch(initializeContactForm({}));
+    navigate({
+      pathname: getRouteById(Routes.CONTACT_NEW),
+      search: location.search,
+    });
   };
-  handleRowClick = (id) => {
-    const {
-      navigate,
-      location: { search },
-    } = this.props;
-    return navigate({
+
+  const handleRowClick = (id: number | string) => {
+    navigate({
       pathname: `${getRouteById(Routes.CONTACTS)}/${id}`,
-      search: search,
+      search: location.search,
     });
   };
-  handlePageClick = (page: number) => {
-    const {
-      navigate,
-      location: { search },
-    } = this.props;
-    const query = getUrlParams(search);
 
+  const handlePageClick = (page: number) => {
+    const query = getUrlParams(location.search);
     if (page > 1) {
       query.page = page;
     } else {
       delete query.page;
     }
-
-    this.setState({
-      activePage: page,
-    });
-    return navigate({
+    navigate({
       pathname: getRouteById(Routes.CONTACTS),
       search: getSearchQuery(query),
     });
   };
-  getColumns = () => {
-    const { contactAttributes } = this.props;
-    const { typeOptions } = this.state;
-    const columns = [];
+
+  const handleSortingChange = (
+    order: "asc" | "desc",
+    colKey: string,
+    handleSort: () => void,
+  ): void => {
+    const searchQuery = getUrlParams(location.search);
+
+    handleSort();
+
+    searchQuery.sort_key = colKey;
+    searchQuery.sort_order = order;
+    delete searchQuery.page;
+
+    navigate({
+      pathname: getRouteById(Routes.CONTACTS),
+      search: getSearchQuery(searchQuery),
+    });
+  };
+
+  const renderClickableCell = (
+    content: React.ReactNode,
+    rowId: number | string,
+  ) => (
+    <button
+      className="contact-list-row-link"
+      type="button"
+      onClick={() => handleRowClick(rowId)}
+    >
+      {content}
+    </button>
+  );
+
+  const toggleRowExpanded = (rowId: ContactId) => {
+    const rowKey = String(rowId);
+    setExpandedRows((prev) => ({
+      ...prev,
+      [rowKey]: !prev[rowKey],
+    }));
+  };
+
+  const renderExpandToggle = (row: Contact) => {
+    if (!hasRowMultipleValues(row)) {
+      return null;
+    }
+    const isExpanded = !!expandedRows[String(row.id)];
+
+    return (
+      <Button
+        className="contact-list-expand-button"
+        aria-label={
+          isExpanded ? "Piilota rivin lisätiedot" : "Näytä rivin lisätiedot"
+        }
+        aria-expanded={isExpanded}
+        variant={ButtonVariant.Supplementary}
+        size={ButtonSize.Small}
+        onClick={() => {
+          toggleRowExpanded(row.id);
+        }}
+        iconStart={isExpanded ? <IconAngleUp /> : <IconAngleDown />}
+      >
+        &nbsp;
+      </Button>
+    );
+  };
+
+  const columns = useMemo(() => {
+    const cols: TableProps["cols"] = [];
+
+    const renderMultiItemColumnContent = (
+      row: Contact,
+      columnKey: string,
+      valueTransform?: (value: unknown) => unknown,
+    ) => {
+      const items = row[columnKey];
+      const isExpanded = !!expandedRows[String(row.id)];
+      const sortedItems =
+        Array.isArray(items) && columnKey === "contacts_active_leases"
+          ? sortLeasesByIdentifier(items)
+          : items;
+
+      return (
+        <MultiItemCollapse
+          items={sortedItems}
+          itemRenderer={valueTransform}
+          open={isExpanded}
+          useTagForCount
+        />
+      );
+    };
 
     if (isFieldAllowedToRead(contactAttributes, ContactFieldPaths.TYPE)) {
-      columns.push({
+      cols.push({
         key: "type",
-        text: ContactFieldTitles.TYPE,
-        renderer: (val) => getLabelOfOption(typeOptions, val),
+        headerName: ContactFieldTitles.TYPE,
+        isSortable: true,
+        transform: (row: Contact) =>
+          renderClickableCell(
+            getLabelOfOption(typeOptions, row.type) || "-",
+            row.id,
+          ),
       });
     }
 
@@ -314,176 +273,143 @@ class ContactListPage extends Component<Props & WithRouterProps, State> {
       isFieldAllowedToRead(contactAttributes, ContactFieldPaths.LAST_NAME) ||
       isFieldAllowedToRead(contactAttributes, ContactFieldPaths.NAME)
     ) {
-      columns.push({
+      cols.push({
         key: "names",
-        text: "Nimi",
-        renderer: (val, row) => getContactFullName(row),
+        headerName: "Nimi",
+        isSortable: true,
+        transform: (row: Contact) =>
+          renderClickableCell(getContactFullName(row) || "-", row.id),
       });
     }
 
     if (
       isFieldAllowedToRead(contactAttributes, ContactFieldPaths.BUSINESS_ID)
     ) {
-      columns.push({
+      cols.push({
         key: "business_id",
-        text: ContactFieldTitles.BUSINESS_ID,
+        headerName: ContactFieldTitles.BUSINESS_ID,
+        isSortable: true,
+        transform: (row: Contact) =>
+          renderClickableCell(row.business_id || "-", row.id),
       });
     }
 
     if (isFieldAllowedToRead(contactAttributes, ContactFieldPaths.ID)) {
-      columns.push({
+      cols.push({
         key: "id",
-        text: ContactFieldTitles.ID,
-        sortable: false,
+        headerName: ContactFieldTitles.ID,
+        isSortable: false,
+        transform: (row: Contact) => renderClickableCell(row.id, row.id),
       });
     }
 
     if (
       isFieldAllowedToRead(contactAttributes, ContactFieldPaths.SERVICE_UNIT)
     ) {
-      columns.push({
-        key: "service_unit.name",
-        text: ContactFieldTitles.SERVICE_UNIT,
-        sortable: false,
+      cols.push({
+        key: "service_unit",
+        headerName: ContactFieldTitles.SERVICE_UNIT,
+        isSortable: false,
+        transform: (row: Contact) =>
+          renderClickableCell(row.service_unit?.name || "-", row.id),
       });
     }
 
     if (
       isFieldAllowedToRead(contactAttributes, ContactFieldPaths.ACTIVE_LEASES)
     ) {
-      columns.push({
+      cols.push({
         key: "contacts_active_leases",
-        text: ContactFieldTitles.ACTIVE_LEASES,
-        renderer: (_val: ContactsActiveLease, row: ContactRow) =>
-          (row.contacts_active_leases || [])
-            .map((activeLease) => activeLease.lease_identifier)
-            .join(", ") || "",
-        sortable: false,
+        headerName: ContactFieldTitles.ACTIVE_LEASES,
+        isSortable: false,
+        transform: (row: Contact) =>
+          renderClickableCell(
+            renderMultiItemColumnContent(
+              row,
+              "contacts_active_leases",
+              (lease: ContactsActiveLease) => lease.lease_identifier,
+            ),
+            row.id,
+          ),
       });
     }
 
-    return columns;
-  };
-  handleSortingChange = ({ sortKey, sortOrder }) => {
-    const {
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    searchQuery.sort_key = sortKey;
-    searchQuery.sort_order = sortOrder;
-    this.setState({
-      sortKey,
-      sortOrder,
+    // Column for the expand/collapse button for rows with multiple values.
+    cols.push({
+      key: "expand",
+      headerName: "",
+      isSortable: false,
+      transform: (row: Contact) => renderExpandToggle(row),
     });
-    this.handleSearchChange(searchQuery);
-  };
 
-  render() {
-    const {
-      contactMethods,
-      isFetching,
-      isFetchingContactAttributes,
-      userActiveServiceUnit,
-    } = this.props;
-    const {
-      activePage,
-      contacts,
-      count,
-      isSearchInitialized,
-      maxPage,
-      sortKey,
-      sortOrder,
-    } = this.state;
-    const columns = this.getColumns();
-    if (isFetchingContactAttributes)
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    if (!contactMethods) return null;
-    if (!isMethodAllowed(contactMethods, Methods.GET))
-      return (
-        <PageContainer>
-          <AuthorizationError text={PermissionMissingTexts.CONTACT} />
-        </PageContainer>
-      );
+    return cols;
+    // Exhaustive deps includes functions that are recreated on every render,
+    // which would cause unnecessary re-renders of the table.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contactAttributes, typeOptions, expandedRows]);
+
+  if (isFetchingContactAttributes)
     return (
-      <PageContainer>
-        <Row>
-          <Column small={12} large={4}>
-            <Authorization
-              allow={isMethodAllowed(contactMethods, Methods.POST)}
-            >
-              <AddButtonSecondary
-                className="no-top-margin"
-                label="Luo asiakas"
-                onClick={this.handleCreateButtonClick}
-              />
-            </Authorization>
-          </Column>
-          <Column small={12} large={8}>
-            {userActiveServiceUnit && (
-              <Search
-                isSearchInitialized={isSearchInitialized}
-                onSearch={this.handleSearchChange}
-                sortKey={sortKey}
-                sortOrder={sortOrder}
-              />
-            )}
-
-            <TableFiltersLegacy
-              amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
-              filterOptions={[]}
-              filterValue={[]}
-            />
-          </Column>
-        </Row>
-
-        <TableWrapper>
-          {isFetching && (
-            <LoaderWrapper className="relative-overlay-wrapper">
-              <Loader isLoading={isFetching} />
-            </LoaderWrapper>
-          )}
-          <SortableTable
-            columns={columns}
-            data={contacts}
-            listTable
-            onRowClick={this.handleRowClick}
-            onSortingChange={this.handleSortingChange}
-            serverSideSorting
-            sortable
-            sortKey={sortKey}
-            sortOrder={sortOrder}
-          />
-          <Pagination
-            activePage={activePage}
-            maxPage={maxPage}
-            onPageClick={this.handlePageClick}
-          />
-        </TableWrapper>
-      </PageContainer>
+      <PageContainerHDS>
+        <Loader isLoading={true} />
+      </PageContainerHDS>
     );
-  }
-}
 
-export default flowRight(
-  withContactAttributes,
-  withRouterLegacy,
-  connect(
-    (state: RootState) => {
-      return {
-        contactList: getContactList(state),
-        isFetching: getIsFetching(state),
-        userActiveServiceUnit: getUserActiveServiceUnit(state),
-      };
-    },
-    {
-      fetchContacts,
-      initialize,
-      initializeContactForm,
-      receiveTopNavigationSettings,
-    },
-  ),
-)(ContactListPage);
+  if (!contactMethods) return null;
+
+  if (!isMethodAllowed(contactMethods, Methods.GET))
+    return (
+      <PageContainerHDS>
+        <AuthorizationError text={PermissionMissingTexts.CONTACT} />
+      </PageContainerHDS>
+    );
+
+  return (
+    <PageContainerHDS>
+      <Search
+        isSearchInitialized={!!userActiveServiceUnit}
+        onSearch={handleSearchChange}
+        sortKey={sortKey}
+        sortOrder={sortOrder}
+        allowCreate={isMethodAllowed(contactMethods, Methods.POST)}
+        onCreateContact={handleCreateButtonClick}
+      />
+
+      {isFetching && (
+        <LoaderWrapper className="relative-overlay-wrapper">
+          <Loader isLoading={true} />
+        </LoaderWrapper>
+      )}
+      <span>{isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}</span>
+      <Table
+        ariaLabelSortButtonUnset="Not sorted"
+        ariaLabelSortButtonAscending="Sorted in ascending order"
+        ariaLabelSortButtonDescending="Sorted in descending order"
+        id="contact-list-table"
+        indexKey="id"
+        renderIndexCol={true}
+        cols={columns}
+        rows={contacts}
+        onSort={handleSortingChange}
+        initialSortingColumnKey={sortKey}
+        initialSortingOrder={sortOrder as "asc" | "desc"}
+        key={`${sortKey}-${sortOrder}`}
+        dense
+      />
+      <Pagination
+        language="fi"
+        onChange={(event, index) => {
+          event.preventDefault();
+          handlePageClick(index + 1);
+        }}
+        pageCount={maxPage || 1}
+        pageHref={() => "#"}
+        pageIndex={activePage - 1}
+        paginationAriaLabel={`Sivuvalitsin, ${activePage} / ${maxPage}`}
+        siblingCount={5}
+      />
+    </PageContainerHDS>
+  );
+};
+
+export default ContactListPage;
