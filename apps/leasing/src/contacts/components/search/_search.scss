@@ -1,23 +1,53 @@
-.inline-search-fields {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: stretch;
+@use "hds-design-tokens/lib/all" as hds;
 
-  .contact-search-dropdown {
-    flex-basis: 275px;
+.background-color-light-grey {
+  background-color: hds.$color-black-5;
+}
+.contact-search-container {
+  gap: 1rem;
+  padding: 0 0.5rem 0.5rem 0.5rem;
+
+  &__vertical_center {
+    display: flex;
+    align-items: center;
   }
+}
 
-  .select-input {
-    .select-input__control {
-      height: 1.875rem;
-      background: transparent;
-      border-right: 0;
-    }
+#contact-list-table tbody tr:hover td,
+#contact-list-table tbody tr:focus-within td {
+  background-color: hds.$color-bus-light;
+  transition: background-color 120ms ease-in-out;
+}
 
-    .select-input__indicators {
-      bottom: 0;
-      height: auto;
-    }
-  }
+#contact-list-table tbody td {
+  // Maintains text alignment for rows with multi-line expandable content.
+  vertical-align: top;
+  // More compact table rows, and uninterrupted clickability horizontally.
+  padding: 0.3rem 0;
+}
+
+#contact-list-table tbody td:first-child {
+  // Small padding for the first table column.
+  padding-left: 0.6rem;
+}
+
+#contact-list-table .contact-list-row-link {
+  all: unset;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  // More compact table rows, and uninterrupted clickability horizontally.
+  padding: 0.3rem 0;
+}
+
+#contact-list-table .contact-list-row-link:focus-visible {
+  outline: 2px solid hds.$color-focus-outline;
+  outline-offset: -2px;
+}
+
+.contact-list-expand-button {
+  // More compact table rows with expandable content.
+  padding: 0;
 }

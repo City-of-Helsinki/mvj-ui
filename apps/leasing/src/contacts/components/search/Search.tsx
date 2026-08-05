@@ -1,191 +1,273 @@
-import React, { useEffect, useRef, useCallback, useMemo } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router";
+import { Field, Form, useFormState } from "react-final-form";
+import { debounce, isEmpty } from "lodash-es";
+import {
+  Checkbox,
+  Button,
+  ButtonVariant,
+  IconPlusCircleFill,
+  Search as HdsSearch,
+  Select,
+  TextInput,
+  type SearchProps,
+} from "hds-react";
 import { Row, Column } from "@/components/grid/Grid";
-import { debounce, flowRight, isEmpty, isEqual } from "lodash-es";
-import { Form, FormSpy } from "react-final-form";
-import FormField from "@/components/form/final-form/FormField";
-import SearchClearLink from "@/components/search/SearchClearLink";
-import SearchContainer from "@/components/search/SearchContainer";
-import { FieldTypes } from "@/enums";
+import Authorization from "@/components/authorization/Authorization";
+import SearchRow from "@/components/search/SearchRow";
 import { fetchServiceUnits } from "@/serviceUnits/actions";
 import {
   getServiceUnits,
   getIsFetching as getIsFetchingServiceUnits,
 } from "@/serviceUnits/selectors";
-import type { ServiceUnit, ServiceUnits } from "@/serviceUnits/types";
-import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
+import { ContactFieldTitles } from "@/contacts/enums";
+import { filterSelectedOptions } from "@/leases/helpers";
+import { getUrlParams } from "@/util/helpers";
+import type { SelectOptionHds } from "@/types";
 
 type Props = {
-  formValues: Record<string, any>;
-  fetchServiceUnits: (...args: Array<any>) => any;
-  isFetchingServiceUnits: boolean;
   isSearchInitialized: boolean;
-  onSearch: (...args: Array<any>) => any;
-  serviceUnits: ServiceUnits;
-  sortKey: string | null | undefined;
-  sortOrder: string | null | undefined;
-  userActiveServiceUnit: ServiceUnit;
+  onSearch: (query: Record<string, any>, resetActivePage: boolean) => void;
+  sortKey: string;
+  sortOrder: string;
+  allowCreate: boolean;
+  onCreateContact: () => void;
+};
+
+const SearchFormFields: React.FC<{
+  isSearchInitialized: boolean;
+  onSearch: (query: Record<string, any>, resetActivePage: boolean) => void;
+  sortKey: string;
+  sortOrder: string;
+  serviceUnitOptions: SelectOptionHds[];
+  allowCreate: boolean;
+  onCreateContact: () => void;
+}> = ({
+  isSearchInitialized,
+  onSearch,
+  sortKey,
+  sortOrder,
+  serviceUnitOptions,
+  allowCreate,
+  onCreateContact,
+}) => {
+  const { values, dirty } = useFormState();
+
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((vals: Record<string, any>) => {
+        const newValues = { ...vals };
+        if (sortKey) {
+          newValues.sort_key = sortKey;
+          newValues.sort_order = sortOrder;
+        }
+        onSearch(newValues, true);
+      }, 1000),
+    [onSearch, sortKey, sortOrder],
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    if (isSearchInitialized && dirty) {
+      debouncedSearch(values);
+    }
+  }, [values, dirty, isSearchInitialized, debouncedSearch]);
+
+  const searchTexts: SearchProps["texts"] = useMemo(
+    () => ({
+      searchPlaceholder: "Hae hakusanalla",
+      historyLabel: "Hakuhistoria",
+    }),
+    [],
+  );
+
+  return (
+    <>
+      <Row className="contact-search-container">
+        <Column small={12} large={2}>
+          <Authorization allow={allowCreate}>
+            <Button
+              variant={ButtonVariant.Supplementary}
+              iconStart={<IconPlusCircleFill />}
+              onClick={onCreateContact}
+            >
+              Luo asiakas
+            </Button>
+          </Authorization>
+        </Column>
+        <Column small={12} large={10}>
+          <Field name="search">
+            {({
+              input: { value, onChange, onBlur, onFocus },
+              meta: { invalid },
+            }) => (
+              <HdsSearch
+                historyId="contact-search"
+                invalid={invalid}
+                value={value || ""}
+                onBlur={onBlur}
+                onChange={onChange}
+                onFocus={onFocus}
+                onSend={(val) => {
+                  onChange(val);
+                }}
+                texts={searchTexts}
+                visibleOptions={5.5}
+                style={{ width: "100%" }}
+              />
+            )}
+          </Field>
+        </Column>
+      </Row>
+
+      <SearchRow>
+        <Row className="contact-search-container background-color-light-grey">
+          <Column small={6} large={4}>
+            <Field name="service_unit">
+              {({ input: { value, onChange } }) => (
+                <Select
+                  id="contact_service_unit"
+                  texts={{
+                    label: ContactFieldTitles.SERVICE_UNIT,
+                    placeholder: "Valitse palvelukokonaisuus",
+                    language: "fi",
+                  }}
+                  value={filterSelectedOptions(value, serviceUnitOptions)}
+                  options={serviceUnitOptions}
+                  onChange={(selectedOptions) => {
+                    onChange(selectedOptions.map((option) => option.value));
+                  }}
+                  style={{ width: "100%" }}
+                  multiSelect
+                  noTags
+                  clearable
+                />
+              )}
+            </Field>
+          </Column>
+          <Column small={6} large={2}>
+            <Field name="lease">
+              {({ input: { value, onChange, onBlur, onFocus } }) => (
+                <TextInput
+                  id="contact_lease"
+                  label="Vuokraustunnus"
+                  value={value || ""}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  onFocus={onFocus}
+                  style={{ width: "100%" }}
+                />
+              )}
+            </Field>
+          </Column>
+          <Column
+            small={6}
+            large={2}
+            className="contact-search-container__vertical_center"
+          >
+            <Field name="is_tenant">
+              {({ input: { value, onChange } }) => (
+                <Checkbox
+                  id="contact_is_tenant"
+                  label="Vain vuokralaiset"
+                  checked={value === true || value === "true"}
+                  onChange={(event) =>
+                    onChange(event.target.checked ? true : undefined)
+                  }
+                />
+              )}
+            </Field>
+          </Column>
+          <Column
+            small={6}
+            large={2}
+            className="contact-search-container__vertical_center"
+          >
+            <Field name="is_active">
+              {({ input: { value, onChange } }) => (
+                <Checkbox
+                  id="contact_is_active"
+                  label="Vain aktiiviset asiakkaat"
+                  checked={value === true || value === "true"}
+                  onChange={(event) =>
+                    onChange(event.target.checked ? true : undefined)
+                  }
+                />
+              )}
+            </Field>
+          </Column>
+        </Row>
+      </SearchRow>
+    </>
+  );
 };
 
 const Search: React.FC<Props> = ({
-  formValues,
-  fetchServiceUnits,
-  isFetchingServiceUnits,
   isSearchInitialized,
   onSearch,
-  serviceUnits,
   sortKey,
   sortOrder,
-  userActiveServiceUnit,
+  allowCreate,
+  onCreateContact,
 }) => {
-  const isMounted = useRef(true);
-  const prevFormValues = useRef(formValues);
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const serviceUnits = useSelector(getServiceUnits);
+  const isFetchingServiceUnits = useSelector(getIsFetchingServiceUnits);
 
   useEffect(() => {
     if (!isFetchingServiceUnits && isEmpty(serviceUnits)) {
-      fetchServiceUnits();
+      dispatch(fetchServiceUnits());
     }
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, [fetchServiceUnits, isFetchingServiceUnits, serviceUnits]);
+  }, [dispatch, isFetchingServiceUnits, serviceUnits]);
 
-  const search = useCallback(
-    (values: Record<string, any>) => {
-      const newValues = { ...values };
-      if (sortKey) {
-        newValues.sort_key = sortKey;
-        newValues.sort_order = sortOrder;
-      }
-      onSearch(newValues, true);
-    },
-    [onSearch, sortKey, sortOrder],
-  );
-
-  // debounce search
-  const debouncedSearch = useMemo(
-    () =>
-      debounce((values: Record<string, any>) => {
-        if (!isMounted.current) return;
-        search(values);
-      }, 1000),
-    [search],
-  );
-
-  // Track form values for search triggering
-  const handleFormChange = useCallback(
-    (values: Record<string, any>) => {
-      if (isSearchInitialized && !isEqual(prevFormValues.current, values)) {
-        debouncedSearch(values);
-      }
-      prevFormValues.current = values;
-    },
-    [isSearchInitialized, debouncedSearch],
-  );
-
-  const handleClear = useCallback(
-    (form: any) => {
-      const query: any = {};
-      if (sortKey || sortOrder) {
-        query.sort_key = sortKey;
-        query.sort_order = sortOrder;
-      }
-      form.reset();
-      onSearch(query, true);
-    },
-    [onSearch, sortKey, sortOrder],
-  );
-
-  const getServiceUnitOptions = useCallback((): Array<Record<string, any>> => {
-    const options = [
-      {
-        id: "",
-        value: "",
-        label: "",
-      },
-    ];
-    serviceUnits.map((serviceUnit) => {
-      options.push({
-        id: serviceUnit.id.toString(),
-        value: serviceUnit.id.toString(),
-        label: serviceUnit.name,
-      });
-    });
-    return options;
+  const serviceUnitOptions: SelectOptionHds[] = useMemo(() => {
+    if (!serviceUnits?.length) return [];
+    return serviceUnits.map((unit) => ({
+      label: unit.name,
+      value: String(unit.id),
+    }));
   }, [serviceUnits]);
 
-  if (!serviceUnits.length) {
-    return null;
-  }
+  const initialValues = useMemo(() => {
+    const queryParams = getUrlParams(location.search);
+    const values: any = { ...queryParams };
+    const serviceUnit = [queryParams.service_unit].flatMap((v) => v || []);
+    if (serviceUnit.length) {
+      values.service_unit = serviceUnit;
+    }
+    // E.g. to avoid staying on previous page number after searching with new query.
+    delete values.page;
+    delete values.sort_key;
+    delete values.sort_order;
+    return values;
+  }, [location.search]);
 
   return (
     <Form
-      onSubmit={search}
-      initialValues={{ service_unit: userActiveServiceUnit?.id }} // <-- use initialValues from props
-      subscription={{}}
-      render={({ handleSubmit, form }) => (
-        <SearchContainer onSubmit={handleSubmit}>
-          <Row>
-            <Column large={12}>
-              <div className="inline-search-fields">
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{
-                    label: "Palvelukokonaisuus",
-                    type: FieldTypes.CHOICE,
-                    read_only: false,
-                  }}
-                  name="service_unit"
-                  overrideValues={{
-                    options: getServiceUnitOptions(),
-                  }}
-                  className="contact-search-dropdown"
-                />
-                <FormField
-                  disableDirty
-                  fieldAttributes={{
-                    label: "Hae hakusanalla",
-                    type: FieldTypes.SEARCH,
-                    read_only: false,
-                  }}
-                  invisibleLabel
-                  name="search"
-                />
-              </div>
-            </Column>
-          </Row>
-          <Row>
-            <Column small={12}>
-              <SearchClearLink onClick={() => handleClear(form)}>
-                Tyhjennä haku
-              </SearchClearLink>
-            </Column>
-          </Row>
-          <input type="submit" style={{ display: "none" }} />
-          <FormSpy
-            subscription={{ values: true }}
-            onChange={({ values }) => handleFormChange(values)}
-          />
-        </SearchContainer>
+      initialValues={initialValues}
+      onSubmit={(values) => onSearch(values, true)}
+      enableReinitialize
+    >
+      {() => (
+        <SearchFormFields
+          isSearchInitialized={isSearchInitialized}
+          onSearch={onSearch}
+          sortKey={sortKey}
+          sortOrder={sortOrder}
+          serviceUnitOptions={serviceUnitOptions}
+          allowCreate={allowCreate}
+          onCreateContact={onCreateContact}
+        />
       )}
-    />
+    </Form>
   );
 };
 
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        formValues: {}, // Not needed with final-form, but kept for compatibility
-        isFetchingServiceUnits: getIsFetchingServiceUnits(state),
-        serviceUnits: getServiceUnits(state),
-        userActiveServiceUnit: getUserActiveServiceUnit(state),
-      };
-    },
-    {
-      fetchServiceUnits,
-    },
-  ),
-)(Search) as React.ComponentType<any>;
+export default Search;

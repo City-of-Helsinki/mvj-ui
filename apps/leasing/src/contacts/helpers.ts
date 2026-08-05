@@ -1,5 +1,6 @@
 import { isDirty } from "redux-form";
 import { FormNames, TableSortOrder } from "@/enums";
+import type { Contact } from "@/contacts/types";
 import { ContactTypes } from "./enums";
 import { getIsEditMode } from "@/contacts/selectors";
 import { removeSessionStorageItem } from "@/util/storage";
@@ -11,7 +12,7 @@ import { SelectListOption } from "@/types";
  * @returns {string}
  */
 export const getContactFullName = (
-  contact: Record<string, any> | null | undefined,
+  contact: Contact | null | undefined,
 ): string => {
   if (!contact || !contact.type) return "";
   return contact.type === ContactTypes.PERSON
@@ -46,9 +47,7 @@ export const getContactBusinessIdError = (
  * @param {Object} contact
  * @returns {Object}
  */
-export const getContentContact = (
-  contact: Record<string, any>,
-): Record<string, any> => {
+export const getContentContact = (contact: Contact): Record<string, any> => {
   return {
     id: contact.id,
     value: contact.id,
@@ -67,7 +66,6 @@ export const getContentContact = (
     language: contact.language,
     national_identification_number: contact.national_identification_number,
     address_protection: contact.address_protection,
-    customer_number: contact.customer_number,
     sap_customer_number: contact.sap_customer_number,
     electronic_billing_address: contact.electronic_billing_address,
     partner_code: contact.partner_code,
@@ -82,9 +80,7 @@ export const getContentContact = (
  * @param {Object[]} contacts
  * @returns {Object[]}
  */
-export const getContactOptions = (
-  contacts: Array<Record<string, any>>,
-): Array<SelectListOption> =>
+export const getContactOptions = (contacts: Contact[]): SelectListOption[] =>
   contacts && contacts.length
     ? contacts.map((contact) => ({
         value: contact.id,

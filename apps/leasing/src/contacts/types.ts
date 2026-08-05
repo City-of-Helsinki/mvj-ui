@@ -19,7 +19,12 @@ export type ContactState = {
 export type ContactExistsResponse = {
   exists: boolean;
 };
+export type ContactsActiveLease = {
+  lease_id: number;
+  lease_identifier: string;
+};
 export type Contact = {
+  id: ContactId;
   service_unit: ServiceUnit;
   type: (typeof ContactTypes)[keyof typeof ContactTypes];
   business_id?: string;
@@ -30,6 +35,8 @@ export type Contact = {
   note?: string;
   national_identification_number?: string;
   name?: string;
+  last_name: string;
+  first_name: string;
   care_of?: string;
   address?: string;
   postal_code?: string;
@@ -39,6 +46,7 @@ export type Contact = {
   email?: string;
   is_lessor?: boolean;
   address_protection?: boolean;
+  contacts_active_leases?: ContactsActiveLease[];
 };
 export type ContactId = number;
 export type ContactList = any;
@@ -67,11 +75,4 @@ export type ReceiveContactModalSettingsAction = Action<
   string,
   ContactModalSettings
 >;
-export type ContactsActiveLease = {
-  lease_id: number;
-  lease_identifier: string;
-};
-export type ContactRow = {
-  contacts_active_leases?: Array<ContactsActiveLease>;
-};
 export type SetTabDirtyFunction = (tabId: number, isDirty: boolean) => void;
