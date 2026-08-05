@@ -1,4 +1,3 @@
-import React from "react";
 import formatDateStr from "date-fns/format";
 import isFuture from "date-fns/isFuture";
 import isPast from "date-fns/isPast";
