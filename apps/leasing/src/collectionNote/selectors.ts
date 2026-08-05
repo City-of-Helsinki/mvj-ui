@@ -1,5 +1,6 @@
 import type { Attributes, Methods, Selector } from "@/types";
 import type { LeaseId } from "@/leases/types";
+import type { CollectionNote } from "./types";
 import type { RootState } from "@/root/types";
 export const getAttributes: Selector<Attributes, void> = (
   state: RootState,
@@ -11,9 +12,9 @@ export const getIsFetchingAttributes: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.collectionNote.isFetchingAttributes;
 export const getCollectionNotesByLease: Selector<
-  Array<Record<string, any>>,
+  Array<CollectionNote>,
   LeaseId
-> = (state: RootState, lease: LeaseId): Array<Record<string, any>> =>
+> = (state: RootState, lease: LeaseId): Array<CollectionNote> =>
   state.collectionNote.byLease[lease];
 export const getIsFetchingByLease: Selector<boolean, LeaseId> = (
   state: RootState,

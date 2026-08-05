@@ -32,6 +32,12 @@ import {
   startInvoicing as startInvoicingForLease,
   stopInvoicing as stopInvoicingForLease,
 } from "@/leases/actions";
+import { fetchAttributes as fetchCollectionCourtDecisionAttributes } from "@/collectionCourtDecision/actions";
+import { fetchAttributes as fetchCollectionLetterAttributes } from "@/collectionLetter/actions";
+import { fetchAttributes as fetchCollectionNoteAttributes } from "@/collectionNote/actions";
+import { fetchAttributes as fetchCreateCollectionLetterAttributes } from "@/createCollectionLetter/actions";
+import { fetchAttributes as fetchInvoiceNoteAttributes } from "@/invoiceNote/actions";
+import { fetchAttributes as fetchLeaseCreateChargeAttributes } from "@/leaseCreateCharge/actions";
 import {
   ConfirmationModalTexts,
   PermissionMissingTexts,
@@ -63,9 +69,6 @@ import {
   getUserActiveServiceUnit,
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
-import type { Attributes } from "types";
-import type { Lease } from "@/leases/types";
-
 import {
   getAttributes as getCollectionCourtDecisionAttributes,
   getIsFetchingAttributes as getIsFetchingCollectionCourtDecisionAttributes,
@@ -90,12 +93,8 @@ import {
   getAttributes as getLeaseCreateChargeAttributes,
   getIsFetchingAttributes as getIsFetchingLeaseCreateChargeAttributes,
 } from "@/leaseCreateCharge/selectors";
-import { fetchAttributes as fetchCollectionCourtDecisionAttributes } from "@/collectionCourtDecision/actions";
-import { fetchAttributes as fetchCollectionLetterAttributes } from "@/collectionLetter/actions";
-import { fetchAttributes as fetchCollectionNoteAttributes } from "@/collectionNote/actions";
-import { fetchAttributes as fetchCreateCollectionLetterAttributes } from "@/createCollectionLetter/actions";
-import { fetchAttributes as fetchInvoiceNoteAttributes } from "@/invoiceNote/actions";
-import { fetchAttributes as fetchLeaseCreateChargeAttributes } from "@/leaseCreateCharge/actions";
+import type { Attributes } from "types";
+import type { Lease } from "@/leases/types";
 
 const Invoices: React.FC = () => {
   const currentLease: Lease = useSelector(getCurrentLease);
