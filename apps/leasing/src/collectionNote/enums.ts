@@ -10,6 +10,11 @@ export const CollectionNoteFieldPaths = {
   NOTE: "note",
   USER: "user",
   COLLECTION_STAGE: "collection_stage",
+  INVOICES: "invoices",
+  SENT_DATE: "sent_date",
+  INSPECTION_DATE: "inspection_date",
+  POSTPONE_DATE: "postpone_date",
+  ENTIRE_LEASE: "entire_lease",
 };
 
 /**
@@ -23,4 +28,10 @@ export const CollectionNoteFieldTitles = {
   NOTE: "Huomautus",
   USER: "Lisääjä",
   COLLECTION_STAGE: "Perintävaihe",
+  INVOICES: "Laskut",
+  INVOICE: "Lasku",
+  SENT_DATE: "Lähetyspäivämäärä",
+  INSPECTION_DATE: "Valvontapäivämäärä",
+  POSTPONE_DATE: "Maksun lykkäyspäivämäärä",
+  ENTIRE_LEASE: "Koko vuokraus",
 };

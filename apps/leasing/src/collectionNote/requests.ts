@@ -1,6 +1,6 @@
 import callApi from "@/api/callApi";
 import createUrl from "@/api/createUrl";
-import type { CollectionNoteId } from "./types";
+import type { CollectionNoteId, CreateCollectionNotePayload } from "./types";
 import type { LeaseId } from "@/leases/types";
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(
@@ -17,9 +17,9 @@ export const fetchCollectionNotesByLease = (
   );
 };
 export const createCollectionNote = (
-  note: string,
+  payload: CreateCollectionNotePayload,
 ): Generator<any, any, any> => {
-  const body = JSON.stringify(note);
+  const body = JSON.stringify(payload);
   return callApi(
     new Request(createUrl(`collection_note/`), {
       method: "POST",

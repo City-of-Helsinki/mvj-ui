@@ -1,5 +1,6 @@
 import type { Action, Attributes, Methods } from "types";
 import type { LeaseId } from "@/leases/types";
+import type { InvoiceId } from "@/invoices/types";
 export type CollectionNoteId = number;
 export type CollectionNoteState = {
   attributes: Attributes;
@@ -12,6 +13,11 @@ export type CreateCollectionNotePayload = {
   lease: LeaseId;
   note: string;
   collection_stage: string;
+  invoices?: Array<InvoiceId>;
+  sent_date?: string;
+  inspection_date?: string;
+  postpone_date?: string;
+  entire_lease?: boolean;
 };
 export type DeleteCollectionNotePayload = {
   id: CollectionNoteId;

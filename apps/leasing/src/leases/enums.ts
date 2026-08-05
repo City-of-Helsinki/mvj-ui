@@ -1808,3 +1808,22 @@ export const oldDwellingsInHousingCompaniesPriceIndexTypeOptions = {
   TASOTARKISTUS_20_20: "TASOTARKISTUS_20_20",
   TASOTARKISTUS_20_10: "TASOTARKISTUS_20_10",
 };
+
+/**
+ * Collection note stage enumerable.
+ */
+export const CollectionStageOptions = {
+  RISK_OF_DEMOLITION: "risk_of_demolition",
+  RISK_OF_DEMOLITION_AND_LITIGATION: "risk_of_demolition_and_litigation",
+  RISK_OF_LITIGATION: "risk_of_litigation",
+  RISK_OF_TERMINATION_AND_LITIGATION: "risk_of_termination_and_litigation",
+  SIMPLE_PAYMENT_REMINDER: "simple_payment_reminder",
+  PAYMENT_DEMAND: "payment_demand",
+  PAYMENT_DEFERRAL: "payment_deferral",
+  CONTRACT_CHANGE: "contract_change",
+  BANKRUPTCY_OR_REORGANIZATION: "bankruptcy_or_reorganization",
+  DISTRAINT: "distraint",
+  DISTRAINT_NOTICE: "distraint_notice",
+  NOTICE: "notice",
+  COMPLAINT_OR_OTHER_OBSTRUCTION: "complaint_or_other_obstruction",
+};
