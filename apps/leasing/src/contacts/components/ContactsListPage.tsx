@@ -323,13 +323,10 @@ const ContactListPage: React.FC = () => {
         headerName: ContactFieldTitles.ACTIVE_LEASES,
         isSortable: false,
         transform: (row: Contact) =>
-          renderClickableCell(
-            renderMultiItemColumnContent(
-              row,
-              "contacts_active_leases",
-              (lease: ContactsActiveLease) => lease.lease_identifier,
-            ),
-            row.id,
+          renderMultiItemColumnContent(
+            row,
+            "contacts_active_leases",
+            (lease: ContactsActiveLease) => lease.lease_identifier,
           ),
       });
     }
