@@ -92,41 +92,6 @@ export const shareBasisOptions = [
 ];
 
 /**
- * Lease state options for lease list table filter
- * @const {[*]}
- */
-export const leaseStateFilterOptions = [
-  {
-    value: "lease",
-    label: "Vuokraus",
-  },
-  {
-    value: "short_term_lease",
-    label: "Lyhytaikainen vuokraus",
-  },
-  {
-    value: "long_term_lease",
-    label: "Pitkäaikainen vuokraus",
-  },
-  {
-    value: "reservation",
-    label: "Varaus",
-  },
-  {
-    value: "rya",
-    label: "RYA",
-  },
-  {
-    value: "permission",
-    label: "Lupa",
-  },
-  {
-    value: "preliminary",
-    label: "Esisopimus",
-  },
-];
-
-/**
  * Preparation status options for lease list table filter
  * @const {[*]}
  */

@@ -30,7 +30,6 @@ import {
   DEFAULT_SORT_ORDER,
   MAX_ZOOM_LEVEL_TO_FETCH_LEASES,
   BOUNDING_BOX_FOR_SEARCH_QUERY,
-  leaseStateFilterOptions,
 } from "@/leases/constants";
 import { Methods, PermissionMissingTexts } from "@/enums";
 import {
@@ -474,6 +473,11 @@ const LeaseListPage: React.FC = () => {
 
   const serviceUnitOptions: Array<Option> = useMemo(
     () => getFieldOptions(leaseAttributes, "service_unit", false),
+    [leaseAttributes],
+  );
+
+  const leaseStateOptions: Array<Option> = useMemo(
+    () => getFieldOptions(leaseAttributes, "state", false),
     [leaseAttributes],
   );
 
@@ -967,11 +971,10 @@ const LeaseListPage: React.FC = () => {
                 </Field>
                 <Field name="lease_state">
                   {({ input: { value, onChange } }) => {
-                    const selectedOptions = leaseStateFilterOptions.filter(
-                      (option) =>
-                        (Array.isArray(value) ? value : [value]).some(
-                          (v) => v == option.value,
-                        ),
+                    const selectedOptions = leaseStateOptions.filter((option) =>
+                      (Array.isArray(value) ? value : [value]).some(
+                        (v) => v == option.value,
+                      ),
                     );
                     return (
                       <Select
@@ -982,7 +985,7 @@ const LeaseListPage: React.FC = () => {
                           language: "fi",
                         }}
                         value={selectedOptions}
-                        options={leaseStateFilterOptions}
+                        options={leaseStateOptions}
                         onChange={(selectedOptions) => {
                           const values = selectedOptions.map(
                             (option) => option.value,
