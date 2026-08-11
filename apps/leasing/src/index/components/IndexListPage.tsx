@@ -1,6 +1,6 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import { flowRight, isEmpty } from "lodash-es";
+import React, { memo, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import IndexTable from "./IndexTable";
 import Loader from "@/components/loader/Loader";
@@ -17,94 +17,51 @@ import {
   getIsFetching as getIsFetchingUsersPermissions,
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
-import type { IndexList } from "@/index/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type Props = {
-  fetchIndexList: (...args: Array<any>) => any;
-  indexList: IndexList;
-  isFetching: boolean;
-  isFetchingUsersPermissions: boolean;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
-};
-type State = {
-  indexList: any[];
-  yearlyIndexes: Array<Record<string, any>>;
-};
 
-class IndexListPage extends PureComponent<Props, State> {
-  state = {
-    indexList: [],
-    yearlyIndexes: [],
-  };
+const IndexListPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const indexList = useSelector(getIndexList);
+  const isFetching = useSelector(getIsFetching);
+  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
+  const usersPermissions = useSelector(getUsersPermissions);
 
-  componentDidMount() {
-    const { fetchIndexList, receiveTopNavigationSettings } = this.props;
+  useEffect(() => {
     setPageTitle("Elinkustannusindeksit");
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.INDEX),
-      pageTitle: "Elinkustannusindeksit",
-      showSearch: false,
-    });
-    fetchIndexList({
-      limit: 10000,
-    });
-  }
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.INDEX),
+        pageTitle: "Elinkustannusindeksit",
+        showSearch: false,
+      }),
+    );
+    dispatch(
+      fetchIndexList({
+        limit: 10000,
+      }),
+    );
+  }, [dispatch]);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const yearlyIndexes = getContentYearlyIndexes(indexList);
 
-    if (props.indexList !== state.indexList) {
-      newState.indexList = props.indexList;
-      newState.yearlyIndexes = getContentYearlyIndexes(props.indexList);
-    }
-
-    return !isEmpty(newState) ? newState : null;
-  }
-
-  render() {
-    const {
-      indexList,
-      isFetching,
-      isFetchingUsersPermissions,
-      usersPermissions,
-    } = this.props;
-    const { yearlyIndexes } = this.state;
-    if (isFetching || isFetchingUsersPermissions)
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    if (isEmpty(UsersPermissions)) return null;
-    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX))
-      return (
-        <PageContainer>
-          <AuthorizationError text={PermissionMissingTexts.INDEX} />
-        </PageContainer>
-      );
-    getContentYearlyIndexes(indexList);
+  if (isFetching || isFetchingUsersPermissions)
     return (
       <PageContainer>
-        <IndexTable yearlyIndexes={yearlyIndexes} />
+        <Loader isLoading={true} />
       </PageContainer>
     );
-  }
-}
+  if (isEmpty(usersPermissions)) return null;
+  if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INDEX))
+    return (
+      <PageContainer>
+        <AuthorizationError text={PermissionMissingTexts.INDEX} />
+      </PageContainer>
+    );
 
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        indexList: getIndexList(state),
-        isFetching: getIsFetching(state),
-        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      fetchIndexList,
-      receiveTopNavigationSettings,
-    },
-  ),
-)(IndexListPage);
+  return (
+    <PageContainer>
+      <IndexTable yearlyIndexes={yearlyIndexes} />
+    </PageContainer>
+  );
+};
+
+export default memo(IndexListPage);
