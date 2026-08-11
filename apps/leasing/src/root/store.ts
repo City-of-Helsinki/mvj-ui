@@ -10,9 +10,10 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       thunk: false,
-      // TODO: RTK highly recommends not disabling serializableCheck.
-      // Currently disabled to avoid console from filling up with warnings.
-      serializableCheck: false,
+      serializableCheck: {
+        // File objects from file inputs are non-serializable
+        ignoredActionPaths: ["payload.file"],
+      },
     }).concat(sagaMiddleware),
   devTools: import.meta.env.DEV,
 });

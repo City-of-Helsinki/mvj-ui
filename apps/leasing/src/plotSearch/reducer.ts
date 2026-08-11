@@ -101,7 +101,7 @@ const planUnitAttributesReducer: Reducer<Attributes> = handleActions(
       state: Attributes,
       { payload: attributes }: ReceiveAttributesAction,
     ) => {
-      return merge(state, attributes);
+      return merge({}, state, attributes);
     },
   },
   null,
@@ -112,7 +112,7 @@ const planUnitReducer: Reducer<PlanUnit> = handleActions(
       state: PlanUnit,
       { payload: planUnit }: ReceiveSinglePlotSearchAction,
     ) => {
-      return merge(state, planUnit);
+      return merge({}, state, planUnit);
     },
     ["mvj/plotSearch/NULL_PLAN_UNITS"]: () => ({}),
   },
@@ -124,7 +124,7 @@ const customDetailedPlanAttributesReducer: Reducer<Attributes> = handleActions(
       state: Attributes,
       { payload: attributes }: ReceiveAttributesAction,
     ) => {
-      return merge(state, attributes);
+      return merge({}, state, attributes);
     },
   },
   null,
@@ -135,7 +135,7 @@ const customDetailedPlanReducer: Reducer<CustomDetailedPlan> = handleActions(
       state: CustomDetailedPlan,
       { payload: customDetailedPlan }: ReceiveSingleCustomDetailedPlanAction,
     ) => {
-      return merge(state, customDetailedPlan);
+      return merge({}, state, customDetailedPlan);
     },
     ["mvj/plotSearch/NULL_CUSTOM_DETAILED_PLANS"]: () => null,
   },
@@ -220,7 +220,7 @@ const collapseStatesReducer: Reducer<Record<string, any>> = handleActions(
       state: Record<string, any>,
       { payload: states }: ReceiveCollapseStatesAction,
     ) => {
-      return merge(state, states);
+      return merge({}, state, states);
     },
   },
   {},

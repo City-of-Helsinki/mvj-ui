@@ -106,7 +106,7 @@ const collapseStatesReducer: Reducer<Record<string, any>> = handleActions(
       state: Record<string, any>,
       { payload: states }: ReceiveCollapseStatesAction,
     ) => {
-      return merge(state, states);
+      return merge({}, state, states);
     },
   },
   {},
