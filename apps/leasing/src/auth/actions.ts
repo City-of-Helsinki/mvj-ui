@@ -8,6 +8,6 @@ export const receiveApiToken = (
   token: Record<string, any>,
 ): ReceiveApiTokenAction => createAction("mvj/auth/RECEIVE_API_TOKEN")(token);
 export const userFound = (user: User): Action<string> =>
-  createAction("mvj/auth/USER_FOUND")(user);
+  createAction("mvj/auth/USER_FOUND")({ ...user });
 export const clearUser = (): Action<string> =>
   createAction("mvj/auth/CLEAR_USER")();
