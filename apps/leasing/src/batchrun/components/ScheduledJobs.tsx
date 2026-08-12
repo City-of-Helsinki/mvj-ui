@@ -1,13 +1,16 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import { flowRight, get, isEmpty } from "lodash-es";
+import React, { memo, useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { get } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import FormText from "@/components/form/FormText";
 import GreenBox from "@/components/content/GreenBox";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import SortableTable from "@/components/table/SortableTable";
-import { fetchScheduledJobs } from "@/batchrun/actions";
+import {
+  fetchScheduledJobAttributes,
+  fetchScheduledJobs,
+} from "@/batchrun/actions";
 import { PermissionMissingTexts } from "@/enums";
 import {
   ScheduledJobFieldPaths,
@@ -22,54 +25,57 @@ import {
   isFieldAllowedToRead,
 } from "@/util/helpers";
 import {
+  getIsFetchingScheduledJobAttributes,
   getIsFetchingScheduledJobs,
+  getScheduledJobAttributes,
+  getScheduledJobMethods,
   getScheduledJobs,
 } from "@/batchrun/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import { withBatchrunScheduledJobTabAttributes } from "@/components/attributes/BatchrunScheduledJobsTabAttributes";
-import type { Attributes } from "types";
-import type { ScheduledJobs as ScheduledJobsType } from "@/batchrun/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type Props = {
-  batchrunScheduledJobAttributes: Attributes;
-  fetchScheduledJobs: (...args: Array<any>) => any;
-  isFetchingBatchrunScheduledJobAttributes: boolean;
-  isFetchingScheduledJobs: boolean;
-  scheduledJobsData: ScheduledJobsType;
-  usersPermissions: UsersPermissionsType;
-};
-type State = {
-  scheduledJobs: Array<Record<string, any>>;
-  scheduledJobsData: ScheduledJobsType;
-};
 
-class ScheduledJobs extends PureComponent<Props, State> {
-  state = {
-    scheduledJobs: [],
-    scheduledJobsData: null,
-  };
+const ScheduledJobs: React.FC = () => {
+  const dispatch = useDispatch();
 
-  componentDidMount() {
-    const { fetchScheduledJobs } = this.props;
-    fetchScheduledJobs({
-      limit: 10000,
-    });
-  }
+  const batchrunScheduledJobAttributes = useSelector(getScheduledJobAttributes);
+  const batchrunScheduledJobMethods = useSelector(getScheduledJobMethods);
+  const isFetchingBatchrunScheduledJobAttributes = useSelector(
+    getIsFetchingScheduledJobAttributes,
+  );
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const isFetchingScheduledJobs = useSelector(getIsFetchingScheduledJobs);
+  const scheduledJobsData = useSelector(getScheduledJobs);
+  const usersPermissions = useSelector(getUsersPermissions);
 
-    if (props.scheduledJobsData !== state.scheduledJobsData) {
-      newState.scheduledJobsData = props.scheduledJobsData;
-      newState.scheduledJobs = getApiResponseResults(props.scheduledJobsData);
+  useEffect(() => {
+    if (
+      !isFetchingBatchrunScheduledJobAttributes &&
+      !batchrunScheduledJobAttributes &&
+      !batchrunScheduledJobMethods
+    ) {
+      dispatch(fetchScheduledJobAttributes());
     }
+  }, [
+    batchrunScheduledJobAttributes,
+    batchrunScheduledJobMethods,
+    dispatch,
+    isFetchingBatchrunScheduledJobAttributes,
+  ]);
 
-    return !isEmpty(newState) ? newState : null;
-  }
+  useEffect(() => {
+    dispatch(
+      fetchScheduledJobs({
+        limit: 10000,
+      }),
+    );
+  }, [dispatch]);
 
-  getColumns = () => {
-    const { batchrunScheduledJobAttributes } = this.props;
-    const columns = [];
+  const scheduledJobs = useMemo(
+    () => getApiResponseResults(scheduledJobsData),
+    [scheduledJobsData],
+  );
+
+  const columns = useMemo(() => {
+    const nextColumns = [];
 
     if (
       isFieldAllowedToRead(
@@ -77,7 +83,7 @@ class ScheduledJobs extends PureComponent<Props, State> {
         ScheduledJobFieldPaths.ID,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: ScheduledJobFieldPaths.ID,
         text: ScheduledJobFieldTitles.ID,
       });
@@ -89,7 +95,7 @@ class ScheduledJobs extends PureComponent<Props, State> {
         ScheduledJobFieldPaths.ENABLED,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: ScheduledJobFieldPaths.ENABLED,
         text: ScheduledJobFieldTitles.ENABLED,
         renderer: (val) =>
@@ -124,7 +130,7 @@ class ScheduledJobs extends PureComponent<Props, State> {
         ScheduledJobFieldPaths.YEARS,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: ScheduledJobFieldPaths.YEARS,
         text: ScheduledJobFieldTitles.YEARS,
       });
@@ -136,7 +142,7 @@ class ScheduledJobs extends PureComponent<Props, State> {
         ScheduledJobFieldPaths.MONTHS,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: ScheduledJobFieldPaths.MONTHS,
         text: ScheduledJobFieldTitles.MONTHS,
       });
@@ -148,7 +154,7 @@ class ScheduledJobs extends PureComponent<Props, State> {
         ScheduledJobFieldPaths.DAYS_OF_MONTH,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: ScheduledJobFieldPaths.DAYS_OF_MONTH,
         text: ScheduledJobFieldTitles.DAYS_OF_MONTH,
       });
@@ -160,7 +166,7 @@ class ScheduledJobs extends PureComponent<Props, State> {
         ScheduledJobFieldPaths.WEEKDAYS,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: ScheduledJobFieldPaths.WEEKDAYS,
         text: ScheduledJobFieldTitles.WEEKDAYS,
       });
@@ -172,7 +178,7 @@ class ScheduledJobs extends PureComponent<Props, State> {
         ScheduledJobFieldPaths.HOURS,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: ScheduledJobFieldPaths.HOURS,
         text: ScheduledJobFieldTitles.HOURS,
       });
@@ -184,7 +190,7 @@ class ScheduledJobs extends PureComponent<Props, State> {
         ScheduledJobFieldPaths.MINUTES,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: ScheduledJobFieldPaths.MINUTES,
         text: ScheduledJobFieldTitles.MINUTES,
       });
@@ -196,10 +202,10 @@ class ScheduledJobs extends PureComponent<Props, State> {
         ScheduledJobJobFieldPaths.NAME,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: "job.name",
         text: ScheduledJobJobFieldTitles.NAME,
-        renderer: (val, row) => (
+        renderer: (_val, row) => (
           <abbr title={get(row, "job.comment") || undefined}>
             {get(row, "job.name", "-")}
           </abbr>
@@ -213,57 +219,38 @@ class ScheduledJobs extends PureComponent<Props, State> {
         ScheduledJobFieldPaths.COMMENT,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: ScheduledJobFieldPaths.COMMENT,
         text: ScheduledJobFieldTitles.COMMENT,
       });
     }
 
-    return columns;
-  };
+    return nextColumns;
+  }, [batchrunScheduledJobAttributes]);
 
-  render() {
-    const {
-      isFetchingBatchrunScheduledJobAttributes,
-      isFetchingScheduledJobs,
-      usersPermissions,
-    } = this.props;
-    const { scheduledJobs } = this.state;
-    const columns = this.getColumns();
-    if (isFetchingBatchrunScheduledJobAttributes || isFetchingScheduledJobs)
-      return (
-        <LoaderWrapper>
-          <Loader isLoading={true} />
-        </LoaderWrapper>
-      );
-    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_JOB))
-      return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
+  if (isFetchingBatchrunScheduledJobAttributes || isFetchingScheduledJobs) {
     return (
-      <GreenBox>
-        <SortableTable
-          columns={columns}
-          data={scheduledJobs}
-          style={{
-            marginBottom: 10,
-          }}
-        />
-      </GreenBox>
+      <LoaderWrapper>
+        <Loader isLoading={true} />
+      </LoaderWrapper>
     );
   }
-}
 
-export default flowRight(
-  withBatchrunScheduledJobTabAttributes,
-  connect(
-    (state) => {
-      return {
-        isFetchingScheduledJobs: getIsFetchingScheduledJobs(state),
-        scheduledJobsData: getScheduledJobs(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      fetchScheduledJobs,
-    },
-  ),
-)(ScheduledJobs) as React.ComponentType<any>;
+  if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_JOB)) {
+    return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
+  }
+
+  return (
+    <GreenBox>
+      <SortableTable
+        columns={columns}
+        data={scheduledJobs}
+        style={{
+          marginBottom: 10,
+        }}
+      />
+    </GreenBox>
+  );
+};
+
+export default memo(ScheduledJobs);

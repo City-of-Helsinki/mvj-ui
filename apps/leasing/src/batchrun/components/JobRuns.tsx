@@ -1,10 +1,5 @@
-import React, { PureComponent } from "react";
-import {
-  withRouterLegacy,
-  type WithRouterProps,
-} from "@/root/withRouterLegacy";
-import { connect } from "react-redux";
-import { flowRight, isEmpty } from "lodash-es";
+import React, { memo, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ErrorIcon from "@/components/icons/ErrorIcon";
 import GreenBox from "@/components/content/GreenBox";
@@ -15,7 +10,11 @@ import Pagination from "@/components/table/Pagination";
 import SortableTable from "@/components/table/SortableTable";
 import SuccessIcon from "@/components/icons/SuccessIcon";
 import TableAndPanelWrapper from "@/components/table/TableAndPanelWrapper";
-import { fetchJobRuns } from "@/batchrun/actions";
+import {
+  fetchJobRunAttributes,
+  fetchJobRunLogEntryAttributes,
+  fetchJobRuns,
+} from "@/batchrun/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import { PermissionMissingTexts } from "@/enums";
 import {
@@ -27,80 +26,101 @@ import {
 import { UsersPermissions } from "@/usersPermissions/enums";
 import {
   formatDate,
-  getApiResponseCount,
   getApiResponseMaxPage,
   getApiResponseResults,
   hasPermissions,
   isFieldAllowedToRead,
 } from "@/util/helpers";
 import {
+  getIsFetchingJobRunAttributes,
+  getIsFetchingJobRunLogEntryAttributes,
   getIsFetchingJobRuns,
   getJobRunAttributes,
+  getJobRunLogEntryAttributes,
+  getJobRunLogEntryMethods,
+  getJobRunMethods,
   getJobRuns,
 } from "@/batchrun/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import { withBatchrunJobRunTabAttributes } from "@/components/attributes/BatchrunJobRunsTabAttributes";
 import type { Attributes } from "types";
 import type { JobRuns as JobRunsType } from "@/batchrun/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type Props = {
-  fetchJobRuns: (...args: Array<any>) => any;
-  isFetchingBatchrunJobRunsTabAttributes: boolean;
-  isFetchingJobRuns: boolean;
-  jobRunAttributes: Attributes;
-  jobRunsData: JobRunsType;
-  usersPermissions: UsersPermissionsType;
-};
-type State = {
-  activePage: number;
-  count: number;
-  isPanelOpen: boolean;
-  jobRunsData: JobRunsType;
-  jobRuns: Array<Record<string, any>>;
-  maxPage: number;
-  openedRow: Record<string, any> | null | undefined;
-};
 
-class JobRuns extends PureComponent<Props & WithRouterProps, State> {
-  state = {
-    activePage: 1,
-    count: 0,
-    isPanelOpen: false,
-    jobRunsData: null,
-    jobRuns: [],
-    maxPage: 1,
-    openedRow: null,
-  };
+const JobRuns: React.FC = () => {
+  const dispatch = useDispatch();
+  const [activePage, setActivePage] = useState(1);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [openedRow, setOpenedRow] = useState<Record<string, any> | null>(null);
 
-  componentDidMount() {
-    const { fetchJobRuns } = this.props;
-    fetchJobRuns({
-      limit: LIST_TABLE_PAGE_SIZE,
-    });
-  }
+  const isFetchingBatchrunJobRunAttributes = useSelector(
+    getIsFetchingJobRunAttributes,
+  );
+  const isFetchingBatchrunJobRunLogEntryAttributes = useSelector(
+    getIsFetchingJobRunLogEntryAttributes,
+  );
+  const batchrunJobRunAttributes = useSelector(getJobRunAttributes);
+  const batchrunJobRunMethods = useSelector(getJobRunMethods);
+  const batchrunJobRunLogEntryAttributes = useSelector(
+    getJobRunLogEntryAttributes,
+  );
+  const batchrunJobRunLogEntryMethods = useSelector(getJobRunLogEntryMethods);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const isFetchingJobRuns = useSelector(getIsFetchingJobRuns);
+  const jobRunAttributes: Attributes = useSelector(getJobRunAttributes);
+  const jobRunsData: JobRunsType = useSelector(getJobRuns);
+  const usersPermissions = useSelector(getUsersPermissions);
 
-    if (props.jobRunsData !== state.jobRunsData) {
-      newState.jobRunsData = props.jobRunsData;
-      newState.count = getApiResponseCount(props.jobRunsData);
-      newState.maxPage = getApiResponseMaxPage(
-        props.jobRunsData,
-        LIST_TABLE_PAGE_SIZE,
-      );
-      newState.jobRuns = getApiResponseResults(props.jobRunsData);
+  const isFetchingBatchrunJobRunsTabAttributes =
+    isFetchingBatchrunJobRunAttributes ||
+    isFetchingBatchrunJobRunLogEntryAttributes;
+
+  useEffect(() => {
+    if (
+      !isFetchingBatchrunJobRunAttributes &&
+      !batchrunJobRunAttributes &&
+      !batchrunJobRunMethods
+    ) {
+      dispatch(fetchJobRunAttributes());
     }
 
-    return !isEmpty(newState) ? newState : null;
-  }
+    if (
+      !isFetchingBatchrunJobRunLogEntryAttributes &&
+      !batchrunJobRunLogEntryAttributes &&
+      !batchrunJobRunLogEntryMethods
+    ) {
+      dispatch(fetchJobRunLogEntryAttributes());
+    }
+  }, [
+    batchrunJobRunAttributes,
+    batchrunJobRunLogEntryAttributes,
+    batchrunJobRunLogEntryMethods,
+    batchrunJobRunMethods,
+    dispatch,
+    isFetchingBatchrunJobRunAttributes,
+    isFetchingBatchrunJobRunLogEntryAttributes,
+  ]);
 
-  getColumns = () => {
-    const { jobRunAttributes } = this.props;
-    const columns = [];
+  useEffect(() => {
+    dispatch(
+      fetchJobRuns({
+        limit: LIST_TABLE_PAGE_SIZE,
+      }),
+    );
+  }, [dispatch]);
+
+  const jobRuns = useMemo(
+    () => getApiResponseResults(jobRunsData),
+    [jobRunsData],
+  );
+  const maxPage = useMemo(
+    () => getApiResponseMaxPage(jobRunsData, LIST_TABLE_PAGE_SIZE),
+    [jobRunsData],
+  );
+
+  const columns = useMemo(() => {
+    const tableColumns = [];
 
     if (isFieldAllowedToRead(jobRunAttributes, JobRunFieldPaths.EXIT_CODE)) {
-      columns.push({
+      tableColumns.push({
         key: JobRunFieldPaths.EXIT_CODE,
         text: JobRunFieldTitles.EXIT_CODE,
         renderer: (val) =>
@@ -116,7 +136,7 @@ class JobRuns extends PureComponent<Props & WithRouterProps, State> {
     }
 
     if (isFieldAllowedToRead(jobRunAttributes, JobRunFieldPaths.STARTED_AT)) {
-      columns.push({
+      tableColumns.push({
         key: JobRunFieldPaths.STARTED_AT,
         text: JobRunFieldTitles.STARTED_AT,
         renderer: (val) => formatDate(val, "dd.MM.yyyy H:mm:ss"),
@@ -124,7 +144,7 @@ class JobRuns extends PureComponent<Props & WithRouterProps, State> {
     }
 
     if (isFieldAllowedToRead(jobRunAttributes, JobRunFieldPaths.STOPPED_AT)) {
-      columns.push({
+      tableColumns.push({
         key: JobRunFieldPaths.STOPPED_AT,
         text: JobRunFieldTitles.STOPPED_AT,
         renderer: (val) => formatDate(val, "dd.MM.yyyy H:mm:ss"),
@@ -132,122 +152,91 @@ class JobRuns extends PureComponent<Props & WithRouterProps, State> {
     }
 
     if (isFieldAllowedToRead(jobRunAttributes, JobRunJobFieldPaths.NAME)) {
-      columns.push({
+      tableColumns.push({
         key: "job.name",
         text: JobRunJobFieldTitles.NAME,
       });
     }
 
     if (isFieldAllowedToRead(jobRunAttributes, JobRunJobFieldPaths.COMMENT)) {
-      columns.push({
+      tableColumns.push({
         key: "job.comment",
         text: JobRunJobFieldTitles.COMMENT,
       });
     }
 
-    return columns;
-  };
-  handleRowClick = (id: number, row: Record<string, any>) => {
-    this.setState({
-      isPanelOpen: true,
-      openedRow: row,
-    });
-  };
-  handlePanelClose = () => {
-    this.setState({
-      isPanelOpen: false,
-    });
-  };
-  handlePanelClosed = () => {
-    this.setState({
-      openedRow: null,
-    });
-  };
-  handlePageClick = (page: number) => {
-    this.setState(
-      {
-        activePage: page,
-      },
-      () => {
-        const { fetchJobRuns } = this.props;
-        const query: any = {
-          limit: LIST_TABLE_PAGE_SIZE,
-        };
+    return tableColumns;
+  }, [jobRunAttributes]);
 
-        if (page > 1) {
-          query.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
-        }
-
-        fetchJobRuns(query);
-      },
-    );
+  const handleRowClick = (_id: number, row: Record<string, any>) => {
+    setIsPanelOpen(true);
+    setOpenedRow(row);
   };
 
-  render() {
-    const {
-      isFetchingBatchrunJobRunsTabAttributes,
-      isFetchingJobRuns,
-      jobRunsData,
-      usersPermissions,
-    } = this.props;
-    const { activePage, isPanelOpen, jobRuns, maxPage, openedRow } = this.state;
-    const columns = this.getColumns();
-    if (
-      isFetchingBatchrunJobRunsTabAttributes ||
-      (!jobRunsData && isFetchingJobRuns)
-    )
-      return (
-        <LoaderWrapper>
-          <Loader isLoading={true} />
-        </LoaderWrapper>
-      );
-    if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN))
-      return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
+  const handlePanelClose = () => {
+    setIsPanelOpen(false);
+  };
+
+  const handlePanelClosed = () => {
+    setOpenedRow(null);
+  };
+
+  const handlePageClick = (page: number) => {
+    setActivePage(page);
+    const query: any = {
+      limit: LIST_TABLE_PAGE_SIZE,
+    };
+
+    if (page > 1) {
+      query.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
+    }
+
+    dispatch(fetchJobRuns(query));
+  };
+
+  if (
+    isFetchingBatchrunJobRunsTabAttributes ||
+    (!jobRunsData && isFetchingJobRuns)
+  ) {
     return (
-      <GreenBox>
-        <TableAndPanelWrapper
-          hasData={!!jobRuns.length}
-          isPanelOpen={isPanelOpen}
-          onPanelClosed={this.handlePanelClosed}
-          panelComponent={
-            <JobRunLogEntryPanel
-              onClose={this.handlePanelClose}
-              runId={openedRow ? openedRow.id : null}
-            />
-          }
-          tableComponent={
-            <SortableTable
-              columns={columns}
-              data={jobRuns}
-              selectedRow={openedRow}
-              onRowClick={this.handleRowClick}
-            />
-          }
-        />
-        <Pagination
-          activePage={activePage}
-          maxPage={maxPage}
-          onPageClick={(page) => this.handlePageClick(page)}
-        />
-      </GreenBox>
+      <LoaderWrapper>
+        <Loader isLoading={true} />
+      </LoaderWrapper>
     );
   }
-}
 
-export default flowRight(
-  withRouterLegacy,
-  withBatchrunJobRunTabAttributes,
-  connect(
-    (state) => {
-      return {
-        isFetchingJobRuns: getIsFetchingJobRuns(state),
-        jobRunAttributes: getJobRunAttributes(state),
-        jobRunsData: getJobRuns(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      fetchJobRuns,
-    },
-  ),
-)(JobRuns) as React.ComponentType<any>;
+  if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_JOBRUN)) {
+    return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
+  }
+
+  return (
+    <GreenBox>
+      <TableAndPanelWrapper
+        hasData={!!jobRuns.length}
+        isPanelOpen={isPanelOpen}
+        onPanelClosed={handlePanelClosed}
+        panelComponent={
+          <JobRunLogEntryPanel
+            onClose={handlePanelClose}
+            runId={openedRow ? openedRow.id : null}
+          />
+        }
+        tableComponent={
+          <SortableTable
+            columns={columns}
+            data={jobRuns}
+            selectedRow={openedRow}
+            onRowClick={handleRowClick}
+          />
+        }
+      />
+      <Pagination
+        activePage={activePage}
+        maxPage={maxPage}
+        onPageClick={(page) => handlePageClick(page)}
+      />
+    </GreenBox>
+  );
+};
+
+export default memo(JobRuns);
