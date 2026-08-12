@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useCallback } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useRef, useCallback, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { flowRight, isEmpty, isEqual } from "lodash-es";
+import { isEmpty, isEqual } from "lodash-es";
 import { Form, Field, FormSpy } from "react-final-form";
 import FormField from "@/components/form/final-form/FormField";
 import SearchContainer from "@/components/search/SearchContainer";
@@ -14,38 +14,31 @@ import {
 import type { ServiceUnits } from "@/serviceUnits/types";
 
 type Props = {
-  fetchServiceUnits: (...args: Array<any>) => any;
-  isFetchingServiceUnits: boolean;
   isSearchInitialized: boolean;
   onSearch: (...args: Array<any>) => any;
-  serviceUnits: ServiceUnits;
   sortKey: string | null | undefined;
   sortOrder: string | null | undefined;
   initialValues?: Record<string, any>;
 };
 
 const Search: React.FC<Props> = ({
-  fetchServiceUnits,
-  isFetchingServiceUnits,
   isSearchInitialized,
   onSearch,
-  serviceUnits,
   sortKey,
   sortOrder,
   initialValues,
 }) => {
-  const isMounted = useRef(true);
+  const dispatch = useDispatch();
+  const isFetchingServiceUnits = useSelector(getIsFetchingServiceUnits);
+  const serviceUnits: ServiceUnits = useSelector(getServiceUnits);
+
   const prevFormValues = useRef(initialValues || {});
 
   useEffect(() => {
     if (!isFetchingServiceUnits && isEmpty(serviceUnits)) {
-      fetchServiceUnits();
+      dispatch(fetchServiceUnits());
     }
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, [fetchServiceUnits, isFetchingServiceUnits, serviceUnits]);
+  }, [dispatch, isFetchingServiceUnits, serviceUnits]);
 
   const search = useCallback(
     (values: Record<string, any>) => {
@@ -59,15 +52,15 @@ const Search: React.FC<Props> = ({
     [onSearch, sortKey, sortOrder],
   );
 
-  const getServiceUnitOptions = useCallback((): Array<Record<string, any>> => {
-    const options = [
+  const serviceUnitOptions = useMemo((): Array<Record<string, any>> => {
+    const options: Array<Record<string, any>> = [
       {
         id: "",
         value: "",
         label: "",
       },
     ];
-    serviceUnits.map((serviceUnit) => {
+    serviceUnits.forEach((serviceUnit) => {
       options.push({
         id: serviceUnit.id.toString(),
         value: serviceUnit.id.toString(),
@@ -113,7 +106,7 @@ const Search: React.FC<Props> = ({
                     }}
                     name="service_unit"
                     overrideValues={{
-                      options: getServiceUnitOptions(),
+                      options: serviceUnitOptions,
                     }}
                     className="contact-search-dropdown"
                   />
@@ -131,16 +124,4 @@ const Search: React.FC<Props> = ({
   );
 };
 
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        isFetchingServiceUnits: getIsFetchingServiceUnits(state),
-        serviceUnits: getServiceUnits(state),
-      };
-    },
-    {
-      fetchServiceUnits,
-    },
-  ),
-)(Search) as React.ComponentType<any>;
+export default Search;
