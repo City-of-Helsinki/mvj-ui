@@ -18,7 +18,6 @@ type State = {
 };
 
 class TableAndPanelWrapper extends PureComponent<Props, State> {
-  panel: any;
   table: any;
   state = {
     tableHeight: null,
@@ -29,9 +28,6 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
   panelResizeObserver: ResizeObserver | null = null;
   panelWrapper: HTMLDivElement | null = null;
 
-  setPanelRef = (el: any) => {
-    this.panel = el;
-  };
   setTableRef = (el: any) => {
     this.table = el;
   };
@@ -190,9 +186,7 @@ class TableAndPanelWrapper extends PureComponent<Props, State> {
             },
           )}
         >
-          {cloneElement(panelComponent, {
-            ref: this.setPanelRef,
-          })}
+          {cloneElement(panelComponent)}
         </div>
       </div>
     );
