@@ -1,6 +1,6 @@
 import React from "react";
-import { connect } from "react-redux";
-import { flowRight, isEmpty } from "lodash-es";
+import { useSelector } from "react-redux";
+import { isEmpty } from "lodash-es";
 import { IconAlertCircle, LoadingSpinner, StatusLabel } from "hds-react";
 
 import { SanctionsCheckText, SanctionsCheckType } from "@/creditDecision/enums";
@@ -14,15 +14,10 @@ import createUrl from "@/api/createUrl";
 import FileDownloadButtonHDS from "@/components/file/FileDownloadButtonHDS";
 
 type Props = {
-  sanctionsType: SanctionsCheckType;
-  businessId: string;
-  firstName: string;
-  lastName: string;
-  fetchSanctionsCheckByBusinessId: (...args: Array<any>) => any;
-  fetchSanctionsCheckByName: (...args: Array<any>) => any;
-  isFetchingUsersPermissions: boolean;
-  result: Record<string, any> | null | undefined;
-  usersPermissions: any;
+  sanctionsType?: SanctionsCheckType;
+  businessId?: string;
+  firstName?: string;
+  lastName?: string;
   formErrors: Record<string, any>;
 };
 
@@ -31,10 +26,11 @@ const SanctionsCheckRequest: React.FC<Props> = ({
   businessId,
   firstName,
   lastName,
-  isFetchingUsersPermissions,
-  usersPermissions,
   formErrors,
 }) => {
+  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
+  const usersPermissions = useSelector(getUsersPermissions);
+
   if (isFetchingUsersPermissions) return <LoadingSpinner />;
   if (isEmpty(usersPermissions)) return null;
   if (
@@ -74,11 +70,15 @@ const SanctionsCheckRequest: React.FC<Props> = ({
   const getFileUrl = (sanctionsType: Props["sanctionsType"]) => {
     const url = new URL(createUrl(`send_sanctions_inquiry/`));
     if (sanctionsType === SanctionsCheckType.COMPANY) {
-      url.searchParams.append("business_id", businessId);
+      if (businessId) {
+        url.searchParams.append("business_id", businessId);
+      }
     }
     if (sanctionsType === SanctionsCheckType.PERSON) {
       firstName && url.searchParams.append("first_name", firstName);
-      url.searchParams.append("last_name", lastName);
+      if (lastName) {
+        url.searchParams.append("last_name", lastName);
+      }
     }
     return url.toString();
   };
@@ -103,11 +103,4 @@ const SanctionsCheckRequest: React.FC<Props> = ({
   );
 };
 
-export default flowRight(
-  connect((state) => {
-    return {
-      isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-      usersPermissions: getUsersPermissions(state),
-    };
-  }),
-)(SanctionsCheckRequest);
+export default SanctionsCheckRequest;

@@ -3,7 +3,7 @@ import { Fieldset, SelectionGroup, RadioButton } from "hds-react";
 import { SanctionsCheckType } from "@/creditDecision/enums";
 import SanctionsCheckTemplate from "@/creditDecision/components/SanctionsCheckTemplate";
 
-export const SanctionsCheckForm = () => {
+export const SanctionsCheckForm: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<SanctionsCheckType>();
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedItem(event.target.value as SanctionsCheckType);

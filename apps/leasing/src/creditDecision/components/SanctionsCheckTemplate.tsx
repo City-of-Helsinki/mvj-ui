@@ -5,17 +5,17 @@ import SanctionsCheckRequest from "@/creditDecision/components/SanctionsCheckReq
 import { SanctionsCheckType } from "@/creditDecision/enums";
 
 type Props = {
-  sanctionsType: SanctionsCheckType;
+  sanctionsType?: SanctionsCheckType;
 };
 
-const SanctionsCheckTemplate = ({ sanctionsType }: Props) => {
+const SanctionsCheckTemplate: React.FC<Props> = ({ sanctionsType }) => {
   const [businessId, setBusinessId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [formErrors, setFormErrors] = React.useState({});
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-  const validateCompany = ({ businessId }) => {
-    const errors = {};
+  const validateCompany = ({ businessId }: { businessId: string }) => {
+    const errors: Record<string, string> = {};
     if (!businessId) {
       errors["businessId"] = "Y-tunnus on pakollinen";
     } else if (businessId.length < 9) {
@@ -25,8 +25,8 @@ const SanctionsCheckTemplate = ({ sanctionsType }: Props) => {
     setFormErrors(errors);
   };
 
-  const validatePerson = ({ lastName }) => {
-    const errors = {};
+  const validatePerson = ({ lastName }: { lastName: string }) => {
+    const errors: Record<string, string> = {};
     if (!lastName) {
       errors["lastName"] = "Sukunimi on pakollinen kenttä.";
     }
