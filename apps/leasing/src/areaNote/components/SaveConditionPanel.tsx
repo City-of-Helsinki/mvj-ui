@@ -1,5 +1,11 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import { useSelector } from "react-redux";
 import classNames from "classnames";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -12,8 +18,8 @@ import { ButtonColors } from "@/components/enums";
 import { isMethodAllowed } from "@/util/helpers";
 import { getMethods as getAreaNoteMethods } from "@/areaNote/selectors";
 import type { Methods as MethodsType } from "types";
+
 type Props = {
-  areaNoteMethods: MethodsType;
   disableDelete: boolean;
   disableSave: boolean;
   isNew: boolean;
@@ -23,62 +29,61 @@ type Props = {
   onEdit: (...args: Array<any>) => any;
   show: boolean;
 };
-type State = {
-  note: string;
+
+export type SaveConditionPanelHandle = {
+  setNoteField: (note: string) => void;
 };
 
-class SaveConditionPanel extends Component<Props, State> {
-  firstField: any;
-  state = {
-    note: "",
-  };
-
-  componentDidUpdate(prevProps: Props) {
-    if (!prevProps.show && this.props.show) {
-      this.firstField.focus();
-    }
-  }
-
-  setFirstFieldRef = (element: any) => {
-    this.firstField = element;
-  };
-  setNoteField = (note: string) => {
-    this.setState({
-      note: note,
-    });
-  };
-  handleFieldChange = (e: any) => {
-    this.setState({
-      note: e.target.value,
-    });
-  };
-  handleCreate = () => {
-    const { onCreate } = this.props;
-    const { note } = this.state;
-    onCreate(note);
-  };
-  handleEdit = () => {
-    const { onEdit } = this.props;
-    const { note } = this.state;
-    onEdit(note);
-  };
-
-  render() {
-    const {
-      areaNoteMethods,
+const SaveConditionPanel = forwardRef<SaveConditionPanelHandle, Props>(
+  (
+    {
       disableDelete,
       disableSave,
       isNew,
       onCancel,
+      onCreate,
       onDelete,
+      onEdit,
       show,
-    } = this.props;
-    const { note } = this.state;
+    },
+    ref,
+  ) => {
+    const areaNoteMethods: MethodsType = useSelector(getAreaNoteMethods);
+    const [note, setNote] = useState("");
+    const firstFieldRef = useRef<any>(null);
+    const prevShowRef = useRef(show);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        setNoteField: (nextNote: string) => {
+          setNote(nextNote);
+        },
+      }),
+      [],
+    );
+
+    useEffect(() => {
+      if (!prevShowRef.current && show) {
+        firstFieldRef.current?.focus?.();
+      }
+
+      prevShowRef.current = show;
+    }, [show]);
+
+    const handleCreate = () => {
+      onCreate(note);
+    };
+
+    const handleEdit = () => {
+      onEdit(note);
+    };
+
     return (
       <AppConsumer>
         {({ dispatch }) => {
           const handleDelete = () => {
-            dispatch({
+            dispatch?.({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 onDelete();
@@ -117,10 +122,12 @@ class SaveConditionPanel extends Component<Props, State> {
                     <TextAreaInput
                       className="no-margin"
                       id="area-note__comment"
-                      onChange={this.handleFieldChange}
+                      onChange={(e: any) => setNote(e.target.value)}
                       placeholder="Kirjoita huomautus"
                       rows={4}
-                      setRefForField={this.setFirstFieldRef}
+                      setRefForField={(element: any) => {
+                        firstFieldRef.current = element;
+                      }}
                       value={note}
                     />
                   </Column>
@@ -152,7 +159,7 @@ class SaveConditionPanel extends Component<Props, State> {
                           <Button
                             className={ButtonColors.SUCCESS}
                             disabled={disableSave}
-                            onClick={this.handleCreate}
+                            onClick={handleCreate}
                             text="Luo muistettava ehto"
                           />
                         </Authorization>
@@ -166,7 +173,7 @@ class SaveConditionPanel extends Component<Props, State> {
                           <Button
                             className={ButtonColors.SUCCESS}
                             disabled={disableSave}
-                            onClick={this.handleEdit}
+                            onClick={handleEdit}
                             text="Tallenna"
                           />
                         </Authorization>
@@ -180,18 +187,9 @@ class SaveConditionPanel extends Component<Props, State> {
         }}
       </AppConsumer>
     );
-  }
-}
+  },
+);
 
-export default connect(
-  (state) => {
-    return {
-      areaNoteMethods: getAreaNoteMethods(state),
-    };
-  },
-  null,
-  null,
-  {
-    forwardRef: true,
-  },
-)(SaveConditionPanel);
+SaveConditionPanel.displayName = "SaveConditionPanel";
+
+export default SaveConditionPanel;
