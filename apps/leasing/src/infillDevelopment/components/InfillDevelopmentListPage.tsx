@@ -1,12 +1,8 @@
-import React, { Component } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { connect } from "react-redux";
-import { initialize } from "redux-form";
-import {
-  withRouterLegacy,
-  type WithRouterProps,
-} from "@/root/withRouterLegacy";
-import { flowRight, isArray } from "lodash-es";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router";
+import { isArray } from "lodash-es";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -14,12 +10,13 @@ import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import PageContainer from "@/components/content/PageContainer";
 import Pagination from "@/components/table/Pagination";
-import Search from "./search/Search";
+import Search from "@/infillDevelopment/components/search/Search";
 import SortableTable from "@/components/table/SortableTable";
 import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableWrapper from "@/components/table/TableWrapper";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import {
+  fetchAttributes as fetchInfillDevelopmentAttributes,
   fetchInfillDevelopments,
   receiveFormInitialValues,
 } from "@/infillDevelopment/actions";
@@ -28,7 +25,7 @@ import {
   DEFAULT_SORT_KEY,
   DEFAULT_SORT_ORDER,
 } from "@/infillDevelopment/constants";
-import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
+import { Methods, PermissionMissingTexts } from "@/enums";
 import {
   InfillDevelopmentCompensationFieldPaths,
   InfillDevelopmentCompensationLeasesFieldPaths,
@@ -50,289 +47,203 @@ import {
 } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import {
+  getAttributes as getInfillDevelopmentAttributes,
   getInfillDevelopments,
   getIsFetching,
+  getIsFetchingAttributes as getIsFetchingInfillDevelopmentAttributes,
+  getMethods as getInfillDevelopmentMethods,
 } from "@/infillDevelopment/selectors";
-import { withInfillDevelopmentListPageAttributes } from "@/components/attributes/InfillDevelopmentListPageAttributes";
-import type { Attributes, Methods as MethodsType } from "types";
-import type { InfillDevelopmentList } from "@/infillDevelopment/types";
-type Props = {
-  fetchInfillDevelopments: (...args: Array<any>) => any;
-  infillDevelopmentAttributes: Attributes;
-  // get via withInfillDevelopmentListPageAttributes HOC
-  infillDevelopmentMethods: MethodsType;
-  // get via withInfillDevelopmentListPageAttributes HOC
-  infillDevelopmentList: InfillDevelopmentList;
-  initialize: (...args: Array<any>) => any;
-  isFetching: boolean;
-  isFetchingInfillDevelopmentAttributes: boolean;
-  receiveFormInitialValues: (...args: Array<any>) => any;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-};
-type State = {
-  activePage: number;
-  count: number;
-  infillDevelopmentAttributes: Attributes;
-  infillDevelopments: Array<Record<string, any>>;
-  infillDevelopmentList: InfillDevelopmentList;
-  isSearchInitialized: boolean;
-  maxPage: number;
-  selectedStates: Array<string>;
-  sortKey: string;
-  sortOrder: string;
-  stateOptions: Array<Record<string, any>>;
-};
 
-class InfillDevelopmentListPage extends Component<
-  Props & WithRouterProps,
-  State
-> {
-  _isMounted: boolean;
-  state = {
-    activePage: 1,
-    count: 0,
-    infillDevelopmentAttributes: null,
-    infillDevelopments: [],
-    infillDevelopmentList: {},
-    isSearchInitialized: false,
-    maxPage: 1,
-    selectedStates: [],
-    sortKey: DEFAULT_SORT_KEY,
-    sortOrder: DEFAULT_SORT_ORDER,
-    stateOptions: [],
-  };
+const InfillDevelopmentListPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  componentDidMount() {
-    const { receiveTopNavigationSettings } = this.props;
-    setPageTitle("Täydennysrakentamiskorvaukset");
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),
-      pageTitle: "Täydennysrakentamiskorvaukset",
-      showSearch: false,
-    });
-    this.search();
-    this.setSearchFormValues();
-    window.addEventListener("popstate", this.handlePopState);
-    this._isMounted = true;
-  }
+  const infillDevelopmentAttributes = useSelector(
+    getInfillDevelopmentAttributes,
+  );
+  const infillDevelopmentMethods = useSelector(getInfillDevelopmentMethods);
+  const infillDevelopmentList = useSelector(getInfillDevelopments);
+  const isFetching = useSelector(getIsFetching);
+  const isFetchingInfillDevelopmentAttributes = useSelector(
+    getIsFetchingInfillDevelopmentAttributes,
+  );
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const searchQuery = useMemo(
+    () => getUrlParams(location.search),
+    [location.search],
+  );
 
-    if (
-      props.infillDevelopmentAttributes !== state.infillDevelopmentAttributes
-    ) {
-      newState.infillDevelopmentAttributes = props.infillDevelopmentAttributes;
-      newState.stateOptions = getFieldOptions(
-        props.infillDevelopmentAttributes,
-        InfillDevelopmentCompensationFieldPaths.STATE,
-        false,
-      );
-    }
+  const activePage = searchQuery.page ? Number(searchQuery.page) : 1;
+  const sortKey = searchQuery.sort_key
+    ? searchQuery.sort_key
+    : DEFAULT_SORT_KEY;
+  const sortOrder = searchQuery.sort_order
+    ? searchQuery.sort_order
+    : DEFAULT_SORT_ORDER;
 
-    if (props.infillDevelopmentList !== state.infillDevelopmentList) {
-      newState.infillDevelopmentList = props.infillDevelopmentList;
-      newState.count = getApiResponseCount(props.infillDevelopmentList);
-      newState.infillDevelopments = getContentInfillDevelopmentListResults(
-        props.infillDevelopmentList,
-      );
-      newState.maxPage = getApiResponseMaxPage(
-        props.infillDevelopmentList,
-        LIST_TABLE_PAGE_SIZE,
-      );
-    }
+  const [selectedStates, setSelectedStates] = useState<Array<string>>([]);
 
-    return newState;
-  }
-
-  componentDidUpdate = (prevProps) => {
-    const {
-      location: { search: currentSearch },
-    } = this.props;
-    const {
-      location: { search: prevSearch },
-    } = prevProps;
-    const searchQuery = getUrlParams(currentSearch);
-
-    if (currentSearch !== prevSearch) {
-      this.search();
-      delete searchQuery.sort_key;
-      delete searchQuery.sort_order;
-
-      if (!Object.keys(searchQuery).length) {
-        this.setSearchFormValues();
-      }
-    }
-  };
-
-  componentWillUnmount() {
-    window.removeEventListener("popstate", this.handlePopState);
-    this._isMounted = false;
-  }
-
-  handlePopState = () => {
-    this.setSearchFormValues();
-  };
-  setSearchFormValues = () => {
-    const {
-      location: { search },
-      initialize,
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+  useEffect(() => {
     const states = isArray(searchQuery.state)
       ? searchQuery.state
       : searchQuery.state
         ? [searchQuery.state]
         : [];
+    setSelectedStates(states);
+  }, [searchQuery.state]);
 
-    const setSearchFormReady = () => {
-      this.setState({
-        isSearchInitialized: true,
-      });
-    };
-
-    const initializeSearchForm = async () => {
-      const initialValues = { ...searchQuery };
-      delete initialValues.page;
-      delete initialValues.lease_state;
-      delete initialValues.sort_key;
-      delete initialValues.sort_order;
-      await initialize(FormNames.INFILL_DEVELOPMENT_SEARCH, initialValues);
-    };
-
-    this.setState(
-      {
-        activePage: page,
-        isSearchInitialized: false,
-        selectedStates: states,
-        sortKey: searchQuery.sort_key ? searchQuery.sort_key : DEFAULT_SORT_KEY,
-        sortOrder: searchQuery.sort_order
-          ? searchQuery.sort_order
-          : DEFAULT_SORT_ORDER,
-      },
-      async () => {
-        await initializeSearchForm();
-
-        if (this._isMounted) {
-          setSearchFormReady();
-        }
-      },
+  const stateOptions = useMemo(() => {
+    return getFieldOptions(
+      infillDevelopmentAttributes,
+      InfillDevelopmentCompensationFieldPaths.STATE,
+      false,
     );
-  };
-  handleCreateButtonClick = () => {
-    const {
-      navigate,
-      location: { search },
-      receiveFormInitialValues,
-    } = this.props;
-    receiveFormInitialValues({});
+  }, [infillDevelopmentAttributes]);
+
+  const searchInitialValues = useMemo(() => {
+    const initialValues = { ...searchQuery };
+    delete initialValues.page;
+    delete initialValues.lease_state;
+    delete initialValues.sort_key;
+    delete initialValues.sort_order;
+    return initialValues;
+  }, [searchQuery]);
+
+  const count = useMemo(
+    () => getApiResponseCount(infillDevelopmentList),
+    [infillDevelopmentList],
+  );
+  const infillDevelopments = useMemo(
+    () => getContentInfillDevelopmentListResults(infillDevelopmentList),
+    [infillDevelopmentList],
+  );
+  const maxPage = useMemo(
+    () => getApiResponseMaxPage(infillDevelopmentList, LIST_TABLE_PAGE_SIZE),
+    [infillDevelopmentList],
+  );
+
+  useEffect(() => {
+    setPageTitle("Täydennysrakentamiskorvaukset");
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.INFILL_DEVELOPMENTS),
+        pageTitle: "Täydennysrakentamiskorvaukset",
+        showSearch: false,
+      }),
+    );
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!isFetchingInfillDevelopmentAttributes && !infillDevelopmentMethods) {
+      dispatch(fetchInfillDevelopmentAttributes());
+    }
+  }, [
+    dispatch,
+    infillDevelopmentMethods,
+    isFetchingInfillDevelopmentAttributes,
+  ]);
+
+  const search = useCallback(() => {
+    const query = { ...searchQuery };
+    const page = query.page ? Number(query.page) : 1;
+    delete query.page;
+
+    if (page > 1) {
+      query.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
+    }
+
+    query.limit = LIST_TABLE_PAGE_SIZE;
+    query.sort_key = query.sort_key || DEFAULT_SORT_KEY;
+    query.sort_order = query.sort_order || DEFAULT_SORT_ORDER;
+    dispatch(fetchInfillDevelopments(mapInfillDevelopmentSearchFilters(query)));
+  }, [dispatch, searchQuery]);
+
+  useEffect(() => {
+    search();
+  }, [search]);
+
+  const handleCreateButtonClick = useCallback(() => {
+    dispatch(receiveFormInitialValues({}));
     return navigate({
       pathname: getRouteById(Routes.INFILL_DEVELOPMENT_NEW),
-      search: search,
+      search: location.search,
     });
-  };
-  handleSearchChange = (
-    query: Record<string, any>,
-    resetActivePage: boolean = false,
-    resetFilters: boolean = false,
-  ) => {
-    const { navigate } = this.props;
+  }, [dispatch, location.search, navigate]);
 
-    if (resetActivePage) {
-      this.setState({
-        activePage: 1,
+  const handleSearchChange = useCallback(
+    (
+      query: Record<string, any>,
+      resetActivePage: boolean = false,
+      resetFilters: boolean = false,
+    ) => {
+      if (resetActivePage) {
+        delete query.page;
+      }
+
+      if (resetFilters) {
+        setSelectedStates([]);
+      }
+
+      return navigate({
+        pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
+        search: getSearchQuery(query),
       });
-    }
+    },
+    [navigate],
+  );
 
-    if (resetFilters) {
-      this.setState({
-        selectedStates: [],
+  const handleRowClick = useCallback(
+    (id: number) => {
+      return navigate({
+        pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${id}`,
+        search: location.search,
       });
-    }
+    },
+    [location.search, navigate],
+  );
 
-    return navigate({
-      pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
-      search: getSearchQuery(query),
-    });
-  };
-  search = () => {
-    const {
-      fetchInfillDevelopments,
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
-    delete searchQuery.page;
+  const handlePageClick = useCallback(
+    (page: number) => {
+      const query = getUrlParams(location.search);
 
-    if (page > 1) {
-      searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
-    }
+      if (page > 1) {
+        query.page = page;
+      } else {
+        query.page = undefined;
+      }
 
-    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
-    searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
-    searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
-    fetchInfillDevelopments(mapInfillDevelopmentSearchFilters(searchQuery));
-  };
-  handleRowClick = (id) => {
-    const {
-      navigate,
-      location: { search },
-    } = this.props;
-    return navigate({
-      pathname: `${getRouteById(Routes.INFILL_DEVELOPMENTS)}/${id}`,
-      search: search,
-    });
-  };
-  handlePageClick = (page: number) => {
-    const {
-      navigate,
-      location: { search },
-    } = this.props;
-    const query = getUrlParams(search);
+      return navigate({
+        pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
+        search: getSearchQuery(query),
+      });
+    },
+    [location.search, navigate],
+  );
 
-    if (page > 1) {
-      query.page = page;
-    } else {
-      query.page = undefined;
-    }
+  const handleSelectedStatesChange = useCallback(
+    (states: Array<string>) => {
+      const query = getUrlParams(location.search);
+      delete query.page;
+      query.state = states;
+      setSelectedStates(states);
+      handleSearchChange(query, true);
+    },
+    [handleSearchChange, location.search],
+  );
 
-    this.setState({
-      activePage: page,
-    });
-    return navigate({
-      pathname: getRouteById(Routes.INFILL_DEVELOPMENTS),
-      search: getSearchQuery(query),
-    });
-  };
-  handleSelectedStatesChange = (states: Array<string>) => {
-    const {
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    delete searchQuery.page;
-    searchQuery.state = states;
-    this.setState({
-      selectedStates: states,
-    });
-    this.handleSearchChange(searchQuery, true);
-  };
-  handleSortingChange = ({ sortKey, sortOrder }) => {
-    const {
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    searchQuery.sort_key = sortKey;
-    searchQuery.sort_order = sortOrder;
-    this.setState({
-      sortKey,
-      sortOrder,
-    });
-    this.handleSearchChange(searchQuery);
-  };
-  getColumns = () => {
-    const { infillDevelopmentAttributes, stateOptions } = this.state;
-    const columns = [];
+  const handleSortingChange = useCallback(
+    ({ sortKey, sortOrder }) => {
+      const query = getUrlParams(location.search);
+      query.sort_key = sortKey;
+      query.sort_order = sortOrder;
+      handleSearchChange(query);
+    },
+    [handleSearchChange, location.search],
+  );
+
+  const columns = useMemo(() => {
+    const nextColumns = [];
 
     if (
       isFieldAllowedToRead(
@@ -340,7 +251,7 @@ class InfillDevelopmentListPage extends Component<
         InfillDevelopmentCompensationFieldPaths.NAME,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: "name",
         text: "Hankkeen nimi",
       });
@@ -352,7 +263,7 @@ class InfillDevelopmentListPage extends Component<
         InfillDevelopmentCompensationFieldPaths.DETAILED_PLAN_IDENTIFIER,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: "detailed_plan_identifier",
         text: "Asemakaavan nro",
       });
@@ -364,7 +275,7 @@ class InfillDevelopmentListPage extends Component<
         InfillDevelopmentCompensationLeasesFieldPaths.INFILL_DEVELOPMENT_COMPENSATION_LEASES,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: "leaseIdentifiers",
         text: "Vuokraustunnus",
         sortable: false,
@@ -377,126 +288,89 @@ class InfillDevelopmentListPage extends Component<
         InfillDevelopmentCompensationFieldPaths.STATE,
       )
     ) {
-      columns.push({
+      nextColumns.push({
         key: "state",
         text: "Neuvotteluvaihe",
         renderer: (val) => getLabelOfOption(stateOptions, val) || "-",
       });
     }
 
-    return columns;
-  };
+    return nextColumns;
+  }, [infillDevelopmentAttributes, stateOptions]);
 
-  render() {
-    const {
-      infillDevelopmentMethods,
-      isFetching,
-      isFetchingInfillDevelopmentAttributes,
-    } = this.props;
-    const {
-      activePage,
-      count,
-      infillDevelopments,
-      isSearchInitialized,
-      maxPage,
-      selectedStates,
-      sortKey,
-      sortOrder,
-      stateOptions,
-    } = this.state;
-    const columns = this.getColumns();
-    if (isFetchingInfillDevelopmentAttributes)
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    if (!infillDevelopmentMethods) return null;
-    if (!isMethodAllowed(infillDevelopmentMethods, Methods.GET))
-      return (
-        <PageContainer>
-          <AuthorizationError
-            text={PermissionMissingTexts.INFILL_DEVELOPMENT}
-          />
-        </PageContainer>
-      );
+  if (isFetchingInfillDevelopmentAttributes)
     return (
       <PageContainer>
-        <Row>
-          <Column small={12} large={4}>
-            <Authorization
-              allow={isMethodAllowed(infillDevelopmentMethods, Methods.POST)}
-            >
-              <AddButtonSecondary
-                className="no-top-margin"
-                label="Luo täydennysrakentamiskorvaus"
-                onClick={this.handleCreateButtonClick}
-              />
-            </Authorization>
-          </Column>
-          <Column small={12} large={8}>
-            <Search
-              isSearchInitialized={isSearchInitialized}
-              onSearch={this.handleSearchChange}
-              sortKey={sortKey}
-              sortOrder={sortOrder}
-              states={selectedStates}
-            />
-          </Column>
-        </Row>
-
-        <TableFiltersLegacy
-          alignFiltersRight
-          amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
-          filterOptions={stateOptions}
-          filterValue={selectedStates}
-          onFilterChange={this.handleSelectedStatesChange}
-        />
-
-        <TableWrapper>
-          {isFetching && (
-            <LoaderWrapper className="relative-overlay-wrapper">
-              <Loader isLoading={isFetching} />
-            </LoaderWrapper>
-          )}
-          <SortableTable
-            columns={columns}
-            data={infillDevelopments}
-            listTable
-            onRowClick={this.handleRowClick}
-            onSortingChange={this.handleSortingChange}
-            serverSideSorting
-            showCollapseArrowColumn
-            sortable
-            sortKey={sortKey}
-            sortOrder={sortOrder}
-          />
-          <Pagination
-            activePage={activePage}
-            maxPage={maxPage}
-            onPageClick={this.handlePageClick}
-          />
-        </TableWrapper>
+        <Loader isLoading={true} />
       </PageContainer>
     );
-  }
-}
+  if (!infillDevelopmentMethods) return null;
+  if (!isMethodAllowed(infillDevelopmentMethods, Methods.GET))
+    return (
+      <PageContainer>
+        <AuthorizationError text={PermissionMissingTexts.INFILL_DEVELOPMENT} />
+      </PageContainer>
+    );
 
-export default flowRight(
-  withInfillDevelopmentListPageAttributes,
-  withRouterLegacy,
-  connect(
-    (state) => {
-      return {
-        infillDevelopmentList: getInfillDevelopments(state),
-        isFetching: getIsFetching(state),
-      };
-    },
-    {
-      fetchInfillDevelopments,
-      initialize,
-      receiveFormInitialValues,
-      receiveTopNavigationSettings,
-    },
-  ),
-)(InfillDevelopmentListPage);
+  return (
+    <PageContainer>
+      <Row>
+        <Column small={12} large={4}>
+          <Authorization
+            allow={isMethodAllowed(infillDevelopmentMethods, Methods.POST)}
+          >
+            <AddButtonSecondary
+              className="no-top-margin"
+              label="Luo täydennysrakentamiskorvaus"
+              onClick={handleCreateButtonClick}
+            />
+          </Authorization>
+        </Column>
+        <Column small={12} large={8}>
+          <Search
+            initialValues={searchInitialValues}
+            onSearch={handleSearchChange}
+            sortKey={sortKey}
+            sortOrder={sortOrder}
+            states={selectedStates}
+          />
+        </Column>
+      </Row>
+
+      <TableFiltersLegacy
+        alignFiltersRight
+        amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
+        filterOptions={stateOptions}
+        filterValue={selectedStates}
+        onFilterChange={handleSelectedStatesChange}
+      />
+
+      <TableWrapper>
+        {isFetching && (
+          <LoaderWrapper className="relative-overlay-wrapper">
+            <Loader isLoading={isFetching} />
+          </LoaderWrapper>
+        )}
+        <SortableTable
+          columns={columns}
+          data={infillDevelopments}
+          listTable
+          onRowClick={handleRowClick}
+          onSortingChange={handleSortingChange}
+          serverSideSorting
+          showCollapseArrowColumn
+          sortable
+          sortKey={sortKey}
+          sortOrder={sortOrder}
+        />
+        <Pagination
+          activePage={activePage}
+          maxPage={maxPage}
+          onPageClick={handlePageClick}
+        />
+      </TableWrapper>
+    </PageContainer>
+  );
+};
+
+export default InfillDevelopmentListPage;

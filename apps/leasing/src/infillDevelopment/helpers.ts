@@ -1,5 +1,4 @@
 import { get } from "lodash-es";
-import { isDirty } from "redux-form";
 import { FormNames, TableSortOrder } from "@/enums";
 import {
   getContentLeaseIdentifier,
@@ -10,7 +9,7 @@ import {
   convertStrToDecimalNumber,
   getApiResponseResults,
 } from "@/util/helpers";
-import { getIsEditMode } from "@/infillDevelopment/selectors";
+import { getIsEditMode, getIsFormDirty } from "@/infillDevelopment/selectors";
 import { removeSessionStorageItem } from "@/util/storage";
 import {
   getContentLeaseAreasFeatures,
@@ -398,7 +397,7 @@ export const mapInfillDevelopmentSearchFilters = (
  */
 export const isInfillDevelopmentFormDirty = (state: RootState): boolean => {
   const isEditMode = getIsEditMode(state);
-  return isEditMode && isDirty(FormNames.INFILL_DEVELOPMENT)(state);
+  return isEditMode && getIsFormDirty(state);
 };
 
 /**

@@ -1,8 +1,8 @@
-import React, { Fragment, PureComponent, ReactElement } from "react";
-import { connect } from "react-redux";
-import { FieldArray, formValueSelector } from "redux-form";
+import React, { ReactElement, useCallback, useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
-import { flowRight, get, isEmpty } from "lodash-es";
+import { get, isEmpty } from "lodash-es";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import AddFileButton from "@/components/form/AddFileButton";
@@ -11,7 +11,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import Collapse from "@/components/collapse/Collapse";
 import ExternalLink from "@/components/links/ExternalLink";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import FormField from "@/components/form/final-form/FormField";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import ListItem from "@/components/content/ListItem";
@@ -95,6 +95,7 @@ import type {
   UsersPermissions as UsersPermissionsType,
   UserServiceUnit,
 } from "@/usersPermissions/types";
+import type { RootState } from "@/root/types";
 type DecisionsProps = {
   fields: any;
   infillDevelopmentAttributes: Attributes;
@@ -116,7 +117,7 @@ const renderDecisions = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             <SubTitle
               enableUiDataEdit
               uiDataKey={getUiDataInfillDevelopmentKey(
@@ -132,7 +133,7 @@ const renderDecisions = ({
             ) &&
               (!fields || !fields.length) && <FormText>Ei päätöksiä</FormText>}
             {!!fields && !!fields.length && (
-              <Fragment>
+              <>
                 <Row>
                   <Column small={3} large={2}>
                     <Authorization
@@ -256,7 +257,7 @@ const renderDecisions = ({
                             InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -278,7 +279,7 @@ const renderDecisions = ({
                             InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_DATE,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -300,7 +301,7 @@ const renderDecisions = ({
                             InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -323,7 +324,7 @@ const renderDecisions = ({
                             InfillDevelopmentCompensationLeaseDecisionsFieldPaths.REFERENCE_NUMBER,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -357,7 +358,7 @@ const renderDecisions = ({
                     </Row>
                   );
                 })}
-              </Fragment>
+              </>
             )}
 
             <Authorization
@@ -372,7 +373,7 @@ const renderDecisions = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -398,7 +399,7 @@ const renderIntendedUses = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             <SubTitle
               enableUiDataEdit
               uiDataKey={getUiDataInfillDevelopmentKey(
@@ -418,7 +419,7 @@ const renderIntendedUses = ({
                 <FormText>Ei käyttötarkoituksia</FormText>
               )}
             {!!fields && !!fields.length && (
-              <Fragment>
+              <>
                 <Row>
                   <Column small={3} large={2}>
                     <Authorization
@@ -522,7 +523,7 @@ const renderIntendedUses = ({
                             InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -544,7 +545,7 @@ const renderIntendedUses = ({
                             InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -567,7 +568,7 @@ const renderIntendedUses = ({
                             InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2,
                           )}
                         >
-                          <FormFieldLegacy
+                          <FormField
                             disableTouched={isSaveClicked}
                             fieldAttributes={getFieldAttributes(
                               infillDevelopmentAttributes,
@@ -600,7 +601,7 @@ const renderIntendedUses = ({
                     </Row>
                   );
                 })}
-              </Fragment>
+              </>
             )}
 
             <Authorization
@@ -618,7 +619,7 @@ const renderIntendedUses = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
@@ -626,98 +627,105 @@ const renderIntendedUses = ({
 };
 
 type Props = {
-  collapseState: boolean;
   compensationInvestment: number | null | undefined;
-  createInfillDevelopmentAttachment: (...args: Array<any>) => any;
-  deleteInfillDevelopmentAttachment: (...args: Array<any>) => any;
-  fetchLeaseById: (...args: Array<any>) => any;
+  fields?: any;
   field: string;
-  infillDevelopmentAttachmentAttributes: Attributes;
-  infillDevelopmentAttachmentMethods: MethodsType;
-  infillDevelopmentAttributes: Attributes;
-  isFetching: boolean;
+  index?: number;
   isSaveClicked: boolean;
-  lease: Lease;
-  leaseAttributes: Attributes;
   leaseId: LeaseId;
   infillDevelopment: Record<string, any>;
   infillDevelopmentCompensationLeaseId: number;
   leaseFieldValue: Record<string, any>;
   monetaryCompensation: number | null | undefined;
   onRemove: (...args: Array<any>) => any;
-  receiveCollapseStates: (...args: Array<any>) => any;
-  userActiveServiceUnit: UserServiceUnit;
-  usersPermissions: UsersPermissionsType;
 };
-type State = {
-  identifier: string | null | undefined;
-  lease: Lease;
-  planUnits: Array<Record<string, any>>;
-  plots: Array<Record<string, any>>;
-  tenants: Array<Record<string, any>>;
-};
+const LeaseItemEdit = (props: Props) => {
+  const {
+    compensationInvestment,
+    field,
+    infillDevelopment,
+    infillDevelopmentCompensationLeaseId,
+    isSaveClicked,
+    leaseFieldValue,
+    monetaryCompensation,
+    onRemove,
+    leaseId,
+  } = props;
 
-class LeaseItemEdit extends PureComponent<Props, State> {
-  state = {
-    identifier: null,
-    lease: {},
-    planUnits: [],
-    plots: [],
-    tenants: [],
-  };
+  const dispatch = useDispatch();
 
-  componentDidMount() {
-    const { fetchLeaseById, leaseFieldValue, lease } = this.props;
+  const collapseState = useSelector((state: RootState) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.EDIT}.${FormNames.INFILL_DEVELOPMENT}.${infillDevelopmentCompensationLeaseId}`,
+    ),
+  );
+  const infillDevelopmentAttachmentAttributes: Attributes = useSelector(
+    getInfillDevelopmentAttachmentAttributes,
+  );
+  const infillDevelopmentAttachmentMethods: MethodsType = useSelector(
+    getInfillDevelopmentAttachmentMethods,
+  );
+  const infillDevelopmentAttributes: Attributes = useSelector(
+    getInfillDevelopmentAttributes,
+  );
+  const isFetching = useSelector((state: RootState) =>
+    getIsFetchingById(state, leaseId),
+  );
+  const lease: Lease = useSelector((state: RootState) =>
+    getLeaseById(state, leaseId),
+  );
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const userActiveServiceUnit: UserServiceUnit = useSelector(
+    getUserActiveServiceUnit,
+  );
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
 
+  useEffect(() => {
     if (isEmpty(lease) && !isEmpty(leaseFieldValue)) {
-      fetchLeaseById(leaseFieldValue.value);
+      dispatch(fetchLeaseById(leaseFieldValue.value));
     }
-  }
+  }, [dispatch, lease, leaseFieldValue]);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const identifier = useMemo(() => getContentLeaseIdentifier(lease), [lease]);
+  const planUnits = useMemo(() => {
+    const leaseAreas = getContentLeaseAreas(lease).filter(
+      (area) => !area.archived_at,
+    );
+    const nextPlanUnits: Array<Record<string, any>> = [];
+    leaseAreas.forEach((area) => {
+      nextPlanUnits.push(...get(area, "plan_units_current", []));
+    });
+    return nextPlanUnits;
+  }, [lease]);
+  const plots = useMemo(() => {
+    const leaseAreas = getContentLeaseAreas(lease).filter(
+      (area) => !area.archived_at,
+    );
+    const nextPlots: Array<Record<string, any>> = [];
+    leaseAreas.forEach((area) => {
+      nextPlots.push(...get(area, "plots_current", []));
+    });
+    return nextPlots;
+  }, [lease]);
+  const tenants = useMemo(() => {
+    return getContentTenants(lease).filter((tenant) =>
+      isActive(get(tenant, "tenant")),
+    );
+  }, [lease]);
 
-    if (props.lease !== state.lease) {
-      const leaseAreas = getContentLeaseAreas(props.lease).filter(
-        (area) => !area.archived_at,
-      );
-      const planUnits = [];
-      const plots = [];
-      leaseAreas.forEach((area) => {
-        planUnits.push(...get(area, "plan_units_current", []));
-      });
-      leaseAreas.forEach((area) => {
-        plots.push(...get(area, "plots_current", []));
-      });
-      newState.lease = props.lease;
-      newState.identifier = getContentLeaseIdentifier(props.lease);
-      newState.planUnits = planUnits;
-      newState.plots = plots;
-      newState.tenants = getContentTenants(props.lease).filter((tenant) =>
-        isActive(get(tenant, "tenant")),
-      );
-    }
+  const attachments = useMemo(() => {
+    return get(infillDevelopment, `${field}.attachments`, []);
+  }, [field, infillDevelopment]);
 
-    return newState;
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.leaseFieldValue !== this.props.leaseFieldValue) {
-      const { fetchLeaseById, lease, leaseFieldValue } = this.props;
-
-      if (isEmpty(lease) && !isEmpty(leaseFieldValue)) {
-        fetchLeaseById(leaseFieldValue.value);
-      }
-    }
-  }
-
-  getTotalCompensation = () => {
-    const { compensationInvestment, monetaryCompensation } = this.props;
+  const totalCompensation = useMemo(() => {
     const formatedCompensationInvestment = convertStrToDecimalNumber(
       compensationInvestment,
     );
     const formatedMonetaryCompensation =
       convertStrToDecimalNumber(monetaryCompensation);
+
     return (
       (formatedCompensationInvestment && !isNaN(formatedCompensationInvestment)
         ? formatedCompensationInvestment
@@ -726,757 +734,695 @@ class LeaseItemEdit extends PureComponent<Props, State> {
         ? formatedMonetaryCompensation
         : 0)
     );
-  };
-  handleFileChange = (e) => {
-    const {
-      createInfillDevelopmentAttachment,
-      infillDevelopment,
-      infillDevelopmentCompensationLeaseId,
-    } = this.props;
-    createInfillDevelopmentAttachment({
-      id: infillDevelopment.id,
-      data: {
-        infill_development_compensation_lease:
-          infillDevelopmentCompensationLeaseId,
-      },
-      file: e.target.files[0],
-    });
-  };
-  handleDeleteInfillDevelopmentFile = (fileId: number) => {
-    const { deleteInfillDevelopmentAttachment, infillDevelopment } = this.props;
-    deleteInfillDevelopmentAttachment({
-      id: infillDevelopment.id,
-      fileId,
-    });
-  };
-  handleCollapseToggle = (val: boolean) => {
-    const { infillDevelopmentCompensationLeaseId, receiveCollapseStates } =
-      this.props;
+  }, [compensationInvestment, monetaryCompensation]);
 
-    if (!infillDevelopmentCompensationLeaseId) {
-      return;
-    }
+  const handleFileChange = useCallback(
+    (e) => {
+      dispatch(
+        createInfillDevelopmentAttachment({
+          id: infillDevelopment.id,
+          data: {
+            infill_development_compensation_lease:
+              infillDevelopmentCompensationLeaseId,
+          },
+          file: e.target.files[0],
+        }),
+      );
+    },
+    [dispatch, infillDevelopment, infillDevelopmentCompensationLeaseId],
+  );
 
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.INFILL_DEVELOPMENT]: {
-          [infillDevelopmentCompensationLeaseId]: val,
-        },
-      },
-    });
-  };
+  const handleDeleteInfillDevelopmentFile = useCallback(
+    (fileId: number) => {
+      dispatch(
+        deleteInfillDevelopmentAttachment({
+          id: infillDevelopment.id,
+          fileId,
+        }),
+      );
+    },
+    [dispatch, infillDevelopment],
+  );
 
-  render() {
-    const {
-      collapseState,
-      field,
-      infillDevelopment,
-      infillDevelopmentAttachmentAttributes,
-      infillDevelopmentAttachmentMethods,
-      infillDevelopmentAttributes,
-      infillDevelopmentCompensationLeaseId,
-      isFetching,
-      isSaveClicked,
-      leaseAttributes,
-      leaseId,
-      onRemove,
-      userActiveServiceUnit,
-      usersPermissions,
-    } = this.props;
-    const { identifier, planUnits, plots, tenants } = this.state;
-    const attachments = get(infillDevelopment, `${field}.attachments`, []);
-    const totalCompensation = this.getTotalCompensation();
-    return (
-      <Collapse
-        className="collapse__secondary"
-        defaultOpen={collapseState !== undefined ? collapseState : true}
-        headerTitle={isFetching ? "Ladataan..." : identifier || "-"}
-        onRemove={
-          hasPermissions(
-            usersPermissions,
-            UsersPermissions.DELETE_INFILLDEVELOPMENTCOMPENSATIONLEASE,
-          )
-            ? onRemove
-            : null
-        }
-        onToggle={this.handleCollapseToggle}
-      >
-        <BoxContentWrapper>
-          <Row>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+  const handleCollapseToggle = useCallback(
+    (val: boolean) => {
+      if (!infillDevelopmentCompensationLeaseId) {
+        return;
+      }
+
+      dispatch(
+        receiveCollapseStates({
+          [ViewModes.EDIT]: {
+            [FormNames.INFILL_DEVELOPMENT]: {
+              [infillDevelopmentCompensationLeaseId]: val,
+            },
+          },
+        }),
+      );
+    },
+    [dispatch, infillDevelopmentCompensationLeaseId],
+  );
+
+  return (
+    <Collapse
+      className="collapse__secondary"
+      defaultOpen={collapseState !== undefined ? collapseState : true}
+      headerTitle={isFetching ? "Ladataan..." : identifier || "-"}
+      onRemove={
+        hasPermissions(
+          usersPermissions,
+          UsersPermissions.DELETE_INFILLDEVELOPMENTCOMPENSATIONLEASE,
+        )
+          ? onRemove
+          : null
+      }
+      onToggle={handleCollapseToggle}
+    >
+      <BoxContentWrapper>
+        <Row>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                infillDevelopmentAttributes,
+                InfillDevelopmentCompensationLeasesFieldPaths.LEASE,
+              )}
+            >
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   infillDevelopmentAttributes,
                   InfillDevelopmentCompensationLeasesFieldPaths.LEASE,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.LEASE,
-                  )}
-                  name={`${field}.lease`}
-                  overrideValues={{
-                    fieldType: FieldTypes.LEASE,
-                    label: InfillDevelopmentCompensationLeasesFieldTitles.LEASE,
-                  }}
-                  serviceUnit={userActiveServiceUnit}
+                name={`${field}.lease`}
+                overrideValues={{
+                  fieldType: FieldTypes.LEASE,
+                  label: InfillDevelopmentCompensationLeasesFieldTitles.LEASE,
+                }}
+                serviceUnit={userActiveServiceUnit}
+                enableUiDataEdit
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.LEASE,
+                )}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                leaseAttributes,
+                LeaseTenantsFieldPaths.TENANTS,
+              )}
+            >
+              <>
+                <FormTextTitle
                   enableUiDataEdit
                   uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.LEASE,
+                    LeaseTenantsFieldPaths.TENANTS,
                   )}
-                />
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
-                  leaseAttributes,
-                  LeaseTenantsFieldPaths.TENANTS,
+                >
+                  Vuokralainen
+                </FormTextTitle>
+
+                {isFetching && <FormText>Ladataan...</FormText>}
+                {!isFetching && !tenants.length && <FormText>-</FormText>}
+                {!isFetching && !!tenants.length && (
+                  <ListItems>
+                    {tenants.map((tenant) => (
+                      <ListItem key={tenant.id}>
+                        <ExternalLink
+                          className="no-margin"
+                          href={`${getRouteById(Routes.CONTACTS)}/${get(tenant, "tenant.contact.id")}`}
+                          text={getContactFullName(
+                            get(tenant, "tenant.contact"),
+                          )}
+                        />
+                      </ListItem>
+                    ))}
+                  </ListItems>
                 )}
-              >
-                <>
-                  <FormTextTitle
-                    enableUiDataEdit
-                    uiDataKey={getUiDataInfillDevelopmentKey(
-                      LeaseTenantsFieldPaths.TENANTS,
-                    )}
-                  >
-                    Vuokralainen
-                  </FormTextTitle>
-
-                  {isFetching && <FormText>Ladataan...</FormText>}
-                  {!isFetching && !tenants.length && <FormText>-</FormText>}
-                  {!isFetching && !!tenants.length && (
-                    <ListItems>
-                      {tenants.map((tenant) => (
-                        <ListItem key={tenant.id}>
-                          <ExternalLink
-                            className="no-margin"
-                            href={`${getRouteById(Routes.CONTACTS)}/${get(tenant, "tenant.contact.id")}`}
-                            text={getContactFullName(
-                              get(tenant, "tenant.contact"),
-                            )}
-                          />
-                        </ListItem>
-                      ))}
-                    </ListItems>
+              </>
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                leaseAttributes,
+                LeasePlotsFieldPaths.PLOTS,
+              )}
+            >
+              <>
+                <FormTextTitle
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(
+                    LeasePlotsFieldPaths.PLOTS,
                   )}
-                </>
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
-                  leaseAttributes,
-                  LeasePlotsFieldPaths.PLOTS,
+                >
+                  Kiinteistö
+                </FormTextTitle>
+
+                {isFetching && <FormText>Ladataan...</FormText>}
+                {!isFetching && !plots.length && <FormText>-</FormText>}
+                {!isFetching && !!plots.length && (
+                  <ListItems>
+                    {plots.map((plot, index) => (
+                      <ListItem key={index}>{plot.identifier || "-"}</ListItem>
+                    ))}
+                  </ListItems>
                 )}
-              >
-                <>
-                  <FormTextTitle
-                    enableUiDataEdit
-                    uiDataKey={getUiDataInfillDevelopmentKey(
-                      LeasePlotsFieldPaths.PLOTS,
-                    )}
-                  >
-                    Kiinteistö
-                  </FormTextTitle>
-
-                  {isFetching && <FormText>Ladataan...</FormText>}
-                  {!isFetching && !plots.length && <FormText>-</FormText>}
-                  {!isFetching && !!plots.length && (
-                    <ListItems>
-                      {plots.map((plot, index) => (
-                        <ListItem key={index}>
-                          {plot.identifier || "-"}
-                        </ListItem>
-                      ))}
-                    </ListItems>
+              </>
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                leaseAttributes,
+                LeasePlanUnitsFieldPaths.PLAN_UNITS,
+              )}
+            >
+              <>
+                <FormTextTitle
+                  enableUiDataEdit
+                  uiDataKey={getUiDataInfillDevelopmentKey(
+                    LeasePlanUnitsFieldPaths.PLAN_UNITS,
                   )}
-                </>
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
-                  leaseAttributes,
-                  LeasePlanUnitsFieldPaths.PLAN_UNITS,
+                >
+                  Kaavayksikkö
+                </FormTextTitle>
+
+                {isFetching && <FormText>Ladataan...</FormText>}
+                {!isFetching && !planUnits.length && <FormText>-</FormText>}
+                {!isFetching && !!planUnits.length && (
+                  <ListItems>
+                    {planUnits.map((planUnit, index) => (
+                      <ListItem key={index}>
+                        {planUnit.identifier || "-"}
+                      </ListItem>
+                    ))}
+                  </ListItems>
                 )}
-              >
-                <>
-                  <FormTextTitle
-                    enableUiDataEdit
-                    uiDataKey={getUiDataInfillDevelopmentKey(
-                      LeasePlanUnitsFieldPaths.PLAN_UNITS,
-                    )}
-                  >
-                    Kaavayksikkö
-                  </FormTextTitle>
-
-                  {isFetching && <FormText>Ladataan...</FormText>}
-                  {!isFetching && !planUnits.length && <FormText>-</FormText>}
-                  {!isFetching && !!planUnits.length && (
-                    <ListItems>
-                      {planUnits.map((planUnit, index) => (
-                        <ListItem key={index}>
-                          {planUnit.identifier || "-"}
-                        </ListItem>
-                      ))}
-                    </ListItems>
-                  )}
-                </>
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
-                  infillDevelopmentAttributes,
-                  InfillDevelopmentCompensationLeasesFieldPaths.LEASE,
+              </>
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                infillDevelopmentAttributes,
+                InfillDevelopmentCompensationLeasesFieldPaths.LEASE,
+              )}
+            >
+              <>
+                {isFetching && <FormText>Ladataan...</FormText>}
+                {!isFetching && !leaseId && <FormText>-</FormText>}
+                {!isFetching && leaseId && (
+                  <ExternalLink
+                    href={`${getRouteById(Routes.LEASES)}/${leaseId}?tab=7`}
+                    text="Karttalinkki"
+                  />
                 )}
-              >
-                <>
-                  {isFetching && <FormText>Ladataan...</FormText>}
-                  {!isFetching && !leaseId && <FormText>-</FormText>}
-                  {!isFetching && leaseId && (
-                    <ExternalLink
-                      href={`${getRouteById(Routes.LEASES)}/${leaseId}?tab=7`}
-                      text="Karttalinkki"
-                    />
-                  )}
-                </>
-              </Authorization>
-            </Column>
-          </Row>
+              </>
+            </Authorization>
+          </Column>
+        </Row>
 
-          <Authorization
-            allow={isFieldAllowedToRead(
-              infillDevelopmentAttributes,
-              InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISIONS,
-            )}
-          >
-            <FieldArray
-              component={renderDecisions}
-              infillDevelopmentAttributes={infillDevelopmentAttributes}
-              isSaveClicked={isSaveClicked}
-              name={`${field}.decisions`}
-              usersPermissions={usersPermissions}
-            />
-          </Authorization>
+        <Authorization
+          allow={isFieldAllowedToRead(
+            infillDevelopmentAttributes,
+            InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISIONS,
+          )}
+        >
+          <FieldArray
+            component={renderDecisions}
+            infillDevelopmentAttributes={infillDevelopmentAttributes}
+            isSaveClicked={isSaveClicked}
+            name={`${field}.decisions`}
+            usersPermissions={usersPermissions}
+          />
+        </Authorization>
 
-          <Authorization
-            allow={isFieldAllowedToRead(
-              infillDevelopmentAttributes,
-              InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USES,
-            )}
-          >
-            <FieldArray
-              component={renderIntendedUses}
-              infillDevelopmentAttributes={infillDevelopmentAttributes}
-              isSaveClicked={isSaveClicked}
-              name={`${field}.intended_uses`}
-              usersPermissions={usersPermissions}
-            />
-          </Authorization>
+        <Authorization
+          allow={isFieldAllowedToRead(
+            infillDevelopmentAttributes,
+            InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USES,
+          )}
+        >
+          <FieldArray
+            component={renderIntendedUses}
+            infillDevelopmentAttributes={infillDevelopmentAttributes}
+            isSaveClicked={isSaveClicked}
+            name={`${field}.intended_uses`}
+            usersPermissions={usersPermissions}
+          />
+        </Authorization>
 
-          <Row>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+        <Row>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                infillDevelopmentAttributes,
+                InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
+              )}
+            >
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   infillDevelopmentAttributes,
                   InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
-                  )}
-                  name={`${field}.monetary_compensation_amount`}
-                  unit="€"
-                  overrideValues={{
-                    label:
-                      InfillDevelopmentCompensationLeasesFieldTitles.MONETARY_COMPENSATION_AMOUNT,
-                  }}
-                  enableUiDataEdit
-                  tooltipStyle={{
-                    right: 12,
-                  }}
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.monetary_compensation_amount`}
+                unit="€"
+                overrideValues={{
+                  label:
+                    InfillDevelopmentCompensationLeasesFieldTitles.MONETARY_COMPENSATION_AMOUNT,
+                }}
+                enableUiDataEdit
+                tooltipStyle={{
+                  right: 12,
+                }}
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
+                )}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                infillDevelopmentAttributes,
+                InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
+              )}
+            >
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   infillDevelopmentAttributes,
                   InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
-                  )}
-                  name={`${field}.compensation_investment_amount`}
-                  unit="€"
-                  overrideValues={{
-                    label:
-                      InfillDevelopmentCompensationLeasesFieldTitles.COMPENSATION_INVESTMENT_AMOUNT,
-                  }}
+                name={`${field}.compensation_investment_amount`}
+                unit="€"
+                overrideValues={{
+                  label:
+                    InfillDevelopmentCompensationLeasesFieldTitles.COMPENSATION_INVESTMENT_AMOUNT,
+                }}
+                enableUiDataEdit
+                tooltipStyle={{
+                  right: 12,
+                }}
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
+                )}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={
+                isFieldAllowedToRead(
+                  infillDevelopmentAttributes,
+                  InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
+                ) ||
+                isFieldAllowedToRead(
+                  infillDevelopmentAttributes,
+                  InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
+                )
+              }
+            >
+              <>
+                <FormTextTitle
                   enableUiDataEdit
-                  tooltipStyle={{
-                    right: 12,
-                  }}
                   uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
+                    InfillDevelopmentCompensationLeasesFieldPaths.TOTAL_COMPENSATION,
                   )}
-                />
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={
-                  isFieldAllowedToRead(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
-                  ) ||
-                  isFieldAllowedToRead(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
-                  )
-                }
-              >
-                <>
-                  <FormTextTitle
-                    enableUiDataEdit
-                    uiDataKey={getUiDataInfillDevelopmentKey(
-                      InfillDevelopmentCompensationLeasesFieldPaths.TOTAL_COMPENSATION,
-                    )}
-                  >
-                    {
-                      InfillDevelopmentCompensationLeasesFieldTitles.TOTAL_COMPENSATION
-                    }
-                  </FormTextTitle>
-                  <FormText>{`${formatNumber(totalCompensation)} €`}</FormText>
-                </>
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                >
+                  {
+                    InfillDevelopmentCompensationLeasesFieldTitles.TOTAL_COMPENSATION
+                  }
+                </FormTextTitle>
+                <FormText>{`${formatNumber(totalCompensation)} €`}</FormText>
+              </>
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                infillDevelopmentAttributes,
+                InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE,
+              )}
+            >
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   infillDevelopmentAttributes,
                   InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE,
-                  )}
-                  name={`${field}.increase_in_value`}
-                  unit="€"
-                  overrideValues={{
-                    label:
-                      InfillDevelopmentCompensationLeasesFieldTitles.INCREASE_IN_VALUE,
-                  }}
-                  enableUiDataEdit
-                  tooltipStyle={{
-                    right: 12,
-                  }}
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.increase_in_value`}
+                unit="€"
+                overrideValues={{
+                  label:
+                    InfillDevelopmentCompensationLeasesFieldTitles.INCREASE_IN_VALUE,
+                }}
+                enableUiDataEdit
+                tooltipStyle={{
+                  right: 12,
+                }}
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE,
+                )}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                infillDevelopmentAttributes,
+                InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE,
+              )}
+            >
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   infillDevelopmentAttributes,
                   InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE,
-                  )}
-                  name={`${field}.part_of_the_increase_in_value`}
-                  unit="€"
-                  overrideValues={{
-                    label:
-                      InfillDevelopmentCompensationLeasesFieldTitles.PART_OF_THE_INCREASE_IN_VALUE,
-                  }}
-                  enableUiDataEdit
-                  tooltipStyle={{
-                    right: 12,
-                  }}
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.part_of_the_increase_in_value`}
+                unit="€"
+                overrideValues={{
+                  label:
+                    InfillDevelopmentCompensationLeasesFieldTitles.PART_OF_THE_INCREASE_IN_VALUE,
+                }}
+                enableUiDataEdit
+                tooltipStyle={{
+                  right: 12,
+                }}
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE,
+                )}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                infillDevelopmentAttributes,
+                InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT,
+              )}
+            >
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   infillDevelopmentAttributes,
                   InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT,
-                  )}
-                  name={`${field}.discount_in_rent`}
-                  unit="€"
-                  overrideValues={{
-                    label:
-                      InfillDevelopmentCompensationLeasesFieldTitles.DISCOUNT_IN_RENT,
-                  }}
-                  enableUiDataEdit
-                  tooltipStyle={{
-                    right: 12,
-                  }}
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT,
-                  )}
-                />
-              </Authorization>
-            </Column>
-          </Row>
-          <Row>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.discount_in_rent`}
+                unit="€"
+                overrideValues={{
+                  label:
+                    InfillDevelopmentCompensationLeasesFieldTitles.DISCOUNT_IN_RENT,
+                }}
+                enableUiDataEdit
+                tooltipStyle={{
+                  right: 12,
+                }}
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT,
+                )}
+              />
+            </Authorization>
+          </Column>
+        </Row>
+        <Row>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                infillDevelopmentAttributes,
+                InfillDevelopmentCompensationLeasesFieldPaths.YEAR,
+              )}
+            >
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   infillDevelopmentAttributes,
                   InfillDevelopmentCompensationLeasesFieldPaths.YEAR,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.YEAR,
-                  )}
-                  name={`${field}.year`}
-                  overrideValues={{
-                    label: InfillDevelopmentCompensationLeasesFieldTitles.YEAR,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.YEAR,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.year`}
+                overrideValues={{
+                  label: InfillDevelopmentCompensationLeasesFieldTitles.YEAR,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.YEAR,
+                )}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                infillDevelopmentAttributes,
+                InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE,
+              )}
+            >
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   infillDevelopmentAttributes,
                   InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE,
-                  )}
-                  name={`${field}.sent_to_sap_date`}
-                  overrideValues={{
-                    label:
-                      InfillDevelopmentCompensationLeasesFieldTitles.SENT_TO_SAP_DATE,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE,
-                  )}
-                />
-              </Authorization>
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Authorization
-                allow={isFieldAllowedToRead(
+                name={`${field}.sent_to_sap_date`}
+                overrideValues={{
+                  label:
+                    InfillDevelopmentCompensationLeasesFieldTitles.SENT_TO_SAP_DATE,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE,
+                )}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToRead(
+                infillDevelopmentAttributes,
+                InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE,
+              )}
+            >
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
                   infillDevelopmentAttributes,
                   InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE,
                 )}
-              >
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE,
-                  )}
-                  name={`${field}.paid_date`}
-                  overrideValues={{
-                    label:
-                      InfillDevelopmentCompensationLeasesFieldTitles.PAID_DATE,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE,
-                  )}
-                />
-              </Authorization>
-            </Column>
-          </Row>
+                name={`${field}.paid_date`}
+                overrideValues={{
+                  label:
+                    InfillDevelopmentCompensationLeasesFieldTitles.PAID_DATE,
+                }}
+                enableUiDataEdit
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE,
+                )}
+              />
+            </Authorization>
+          </Column>
+        </Row>
 
-          <Authorization
-            allow={isMethodAllowed(
-              infillDevelopmentAttachmentMethods,
-              Methods.GET,
-            )}
-          >
-            {!!infillDevelopmentCompensationLeaseId && (
-              <AppConsumer>
-                {({ dispatch }) => {
-                  return (
-                    <Fragment>
-                      <SubTitle
-                        enableUiDataEdit
-                        uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
-                          InfillDevelopmentCompensationAttachmentFieldPaths.ATTACHMENTS,
-                        )}
-                      >
-                        {
-                          InfillDevelopmentCompensationAttachmentFieldTitles.ATTACHMENTS
-                        }
-                      </SubTitle>
+        <Authorization
+          allow={isMethodAllowed(
+            infillDevelopmentAttachmentMethods,
+            Methods.GET,
+          )}
+        >
+          {!!infillDevelopmentCompensationLeaseId && (
+            <AppConsumer>
+              {({ dispatch }) => {
+                return (
+                  <>
+                    <SubTitle
+                      enableUiDataEdit
+                      uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
+                        InfillDevelopmentCompensationAttachmentFieldPaths.ATTACHMENTS,
+                      )}
+                    >
+                      {
+                        InfillDevelopmentCompensationAttachmentFieldTitles.ATTACHMENTS
+                      }
+                    </SubTitle>
 
-                      {!!attachments && !!attachments.length && (
-                        <Fragment>
-                          <Row>
-                            <Column small={3} large={4}>
-                              <Authorization
-                                allow={isFieldAllowedToRead(
-                                  infillDevelopmentAttachmentAttributes,
-                                  InfillDevelopmentCompensationAttachmentFieldPaths.FILE,
-                                )}
-                              >
-                                <FormTextTitle
-                                  enableUiDataEdit
-                                  uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
-                                    InfillDevelopmentCompensationAttachmentFieldPaths.FILE,
-                                  )}
-                                >
-                                  {
-                                    InfillDevelopmentCompensationAttachmentFieldTitles.FILE
-                                  }
-                                </FormTextTitle>
-                              </Authorization>
-                            </Column>
-                            <Column small={3} large={2}>
-                              <Authorization
-                                allow={isFieldAllowedToRead(
-                                  infillDevelopmentAttachmentAttributes,
-                                  InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT,
-                                )}
-                              >
-                                <FormTextTitle
-                                  enableUiDataEdit
-                                  uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
-                                    InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT,
-                                  )}
-                                >
-                                  {
-                                    InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADED_AT
-                                  }
-                                </FormTextTitle>
-                              </Authorization>
-                            </Column>
-                            <Column small={3} large={2}>
+                    {!!attachments && !!attachments.length && (
+                      <>
+                        <Row>
+                          <Column small={3} large={4}>
+                            <Authorization
+                              allow={isFieldAllowedToRead(
+                                infillDevelopmentAttachmentAttributes,
+                                InfillDevelopmentCompensationAttachmentFieldPaths.FILE,
+                              )}
+                            >
                               <FormTextTitle
                                 enableUiDataEdit
                                 uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
-                                  InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADER,
+                                  InfillDevelopmentCompensationAttachmentFieldPaths.FILE,
                                 )}
                               >
                                 {
-                                  InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADER
+                                  InfillDevelopmentCompensationAttachmentFieldTitles.FILE
                                 }
                               </FormTextTitle>
-                            </Column>
-                          </Row>
-                          {attachments.map((file, index) => {
-                            const handleRemove = () => {
-                              dispatch({
-                                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                                confirmationFunction: () => {
-                                  this.handleDeleteInfillDevelopmentFile(
-                                    file.id,
-                                  );
-                                },
-                                confirmationModalButtonClassName:
-                                  ButtonColors.ALERT,
-                                confirmationModalButtonText:
-                                  ConfirmationModalTexts.DELETE_ATTACHMENT
-                                    .BUTTON,
-                                confirmationModalLabel:
-                                  ConfirmationModalTexts.DELETE_ATTACHMENT
-                                    .LABEL,
-                                confirmationModalTitle:
-                                  ConfirmationModalTexts.DELETE_ATTACHMENT
-                                    .TITLE,
-                              });
-                            };
+                            </Authorization>
+                          </Column>
+                          <Column small={3} large={2}>
+                            <Authorization
+                              allow={isFieldAllowedToRead(
+                                infillDevelopmentAttachmentAttributes,
+                                InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT,
+                              )}
+                            >
+                              <FormTextTitle
+                                enableUiDataEdit
+                                uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
+                                  InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT,
+                                )}
+                              >
+                                {
+                                  InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADED_AT
+                                }
+                              </FormTextTitle>
+                            </Authorization>
+                          </Column>
+                          <Column small={3} large={2}>
+                            <FormTextTitle
+                              enableUiDataEdit
+                              uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
+                                InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADER,
+                              )}
+                            >
+                              {
+                                InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADER
+                              }
+                            </FormTextTitle>
+                          </Column>
+                        </Row>
+                        {attachments.map((file, index) => {
+                          const handleRemove = () => {
+                            dispatch({
+                              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                              confirmationFunction: () => {
+                                handleDeleteInfillDevelopmentFile(file.id);
+                              },
+                              confirmationModalButtonClassName:
+                                ButtonColors.ALERT,
+                              confirmationModalButtonText:
+                                ConfirmationModalTexts.DELETE_ATTACHMENT.BUTTON,
+                              confirmationModalLabel:
+                                ConfirmationModalTexts.DELETE_ATTACHMENT.LABEL,
+                              confirmationModalTitle:
+                                ConfirmationModalTexts.DELETE_ATTACHMENT.TITLE,
+                            });
+                          };
 
-                            return (
-                              <Row key={index}>
-                                <Column small={3} large={4}>
-                                  <Authorization
-                                    allow={isFieldAllowedToRead(
-                                      infillDevelopmentAttachmentAttributes,
-                                      InfillDevelopmentCompensationAttachmentFieldPaths.FILE,
-                                    )}
-                                  >
-                                    <FileDownloadLink
-                                      fileUrl={file.file}
-                                      label={file.filename}
-                                    />
-                                  </Authorization>
-                                </Column>
-                                <Column small={3} large={2}>
-                                  <Authorization
-                                    allow={isFieldAllowedToRead(
-                                      infillDevelopmentAttachmentAttributes,
-                                      InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT,
-                                    )}
-                                  >
-                                    <FormText>
-                                      {formatDate(file.uploaded_at) || "-"}
-                                    </FormText>
-                                  </Authorization>
-                                </Column>
-                                <Column small={3} large={2}>
+                          return (
+                            <Row key={index}>
+                              <Column small={3} large={4}>
+                                <Authorization
+                                  allow={isFieldAllowedToRead(
+                                    infillDevelopmentAttachmentAttributes,
+                                    InfillDevelopmentCompensationAttachmentFieldPaths.FILE,
+                                  )}
+                                >
+                                  <FileDownloadLink
+                                    fileUrl={file.file}
+                                    label={file.filename}
+                                  />
+                                </Authorization>
+                              </Column>
+                              <Column small={3} large={2}>
+                                <Authorization
+                                  allow={isFieldAllowedToRead(
+                                    infillDevelopmentAttachmentAttributes,
+                                    InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT,
+                                  )}
+                                >
                                   <FormText>
-                                    {getUserFullName(file.uploader) || "-"}
+                                    {formatDate(file.uploaded_at) || "-"}
                                   </FormText>
-                                </Column>
-                                <Column small={3} large={2}>
-                                  <Authorization
-                                    allow={isMethodAllowed(
-                                      infillDevelopmentAttachmentMethods,
-                                      Methods.DELETE,
-                                    )}
-                                  >
-                                    <RemoveButton
-                                      className="third-level"
-                                      onClick={handleRemove}
-                                      style={{
-                                        right: 12,
-                                      }}
-                                      title="Poista liitetiedosto"
-                                    />
-                                  </Authorization>
-                                </Column>
-                              </Row>
-                            );
-                          })}
-                        </Fragment>
+                                </Authorization>
+                              </Column>
+                              <Column small={3} large={2}>
+                                <FormText>
+                                  {getUserFullName(file.uploader) || "-"}
+                                </FormText>
+                              </Column>
+                              <Column small={3} large={2}>
+                                <Authorization
+                                  allow={isMethodAllowed(
+                                    infillDevelopmentAttachmentMethods,
+                                    Methods.DELETE,
+                                  )}
+                                >
+                                  <RemoveButton
+                                    className="third-level"
+                                    onClick={handleRemove}
+                                    style={{
+                                      right: 12,
+                                    }}
+                                    title="Poista liitetiedosto"
+                                  />
+                                </Authorization>
+                              </Column>
+                            </Row>
+                          );
+                        })}
+                      </>
+                    )}
+
+                    <Authorization
+                      allow={isMethodAllowed(
+                        infillDevelopmentAttachmentMethods,
+                        Methods.POST,
                       )}
+                    >
+                      <AddFileButton
+                        label="Lisää tiedosto"
+                        name={`${infillDevelopmentCompensationLeaseId}`}
+                        onChange={handleFileChange}
+                      />
+                    </Authorization>
+                  </>
+                );
+              }}
+            </AppConsumer>
+          )}
+        </Authorization>
 
-                      <Authorization
-                        allow={isMethodAllowed(
-                          infillDevelopmentAttachmentMethods,
-                          Methods.POST,
-                        )}
-                      >
-                        <AddFileButton
-                          label="Lisää tiedosto"
-                          name={`${infillDevelopmentCompensationLeaseId}`}
-                          onChange={this.handleFileChange}
-                        />
-                      </Authorization>
-                    </Fragment>
-                  );
+        <Authorization
+          allow={isFieldAllowedToRead(
+            infillDevelopmentAttributes,
+            InfillDevelopmentCompensationLeasesFieldPaths.NOTE,
+          )}
+        >
+          <Row>
+            <Column>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(
+                  infillDevelopmentAttributes,
+                  InfillDevelopmentCompensationLeasesFieldPaths.NOTE,
+                )}
+                name={`${field}.note`}
+                overrideValues={{
+                  label: InfillDevelopmentCompensationLeasesFieldTitles.NOTE,
                 }}
-              </AppConsumer>
-            )}
-          </Authorization>
+                enableUiDataEdit
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.NOTE,
+                )}
+              />
+            </Column>
+          </Row>
+        </Authorization>
+      </BoxContentWrapper>
+    </Collapse>
+  );
+};
 
-          <Authorization
-            allow={isFieldAllowedToRead(
-              infillDevelopmentAttributes,
-              InfillDevelopmentCompensationLeasesFieldPaths.NOTE,
-            )}
-          >
-            <Row>
-              <Column>
-                <FormFieldLegacy
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={getFieldAttributes(
-                    infillDevelopmentAttributes,
-                    InfillDevelopmentCompensationLeasesFieldPaths.NOTE,
-                  )}
-                  name={`${field}.note`}
-                  overrideValues={{
-                    label: InfillDevelopmentCompensationLeasesFieldTitles.NOTE,
-                  }}
-                  enableUiDataEdit
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.NOTE,
-                  )}
-                />
-              </Column>
-            </Row>
-          </Authorization>
-        </BoxContentWrapper>
-      </Collapse>
-    );
-  }
-}
-
-const selector = formValueSelector(FormNames.INFILL_DEVELOPMENT);
-export default flowRight(
-  connect(
-    (state, props: Props) => {
-      const { field } = props;
-      const leaseFieldValue = selector(state, `${field}.lease`);
-      const lease = selector(state, `${field}.lease.value`);
-      const leaseId = selector(state, `${field}.id`);
-      return {
-        collapseState: getCollapseStateByKey(
-          state,
-          `${ViewModes.EDIT}.${FormNames.INFILL_DEVELOPMENT}.${leaseId}`,
-        ),
-        compensationInvestment: selector(
-          state,
-          `${field}.compensation_investment_amount`,
-        ),
-        infillDevelopmentAttachmentAttributes:
-          getInfillDevelopmentAttachmentAttributes(state),
-        infillDevelopmentAttachmentMethods:
-          getInfillDevelopmentAttachmentMethods(state),
-        infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
-        infillDevelopmentCompensationLeaseId: leaseId,
-        isFetching: getIsFetchingById(state, lease),
-        lease: getLeaseById(state, lease),
-        leaseAttributes: getLeaseAttributes(state),
-        leaseId: lease,
-        leaseFieldValue: leaseFieldValue,
-        monetaryCompensation: selector(
-          state,
-          `${field}.monetary_compensation_amount`,
-        ),
-        userActiveServiceUnit: getUserActiveServiceUnit(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      createInfillDevelopmentAttachment,
-      deleteInfillDevelopmentAttachment,
-      fetchLeaseById,
-      receiveCollapseStates,
-    },
-  ),
-)(LeaseItemEdit);
+export default LeaseItemEdit;

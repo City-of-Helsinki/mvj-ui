@@ -467,7 +467,6 @@ export const FormNames = {
   CONTACT_SEARCH: "contact-search-form",
   CREDIT_DECISION_SEARCH: "credit-info-search-form",
   INFILL_DEVELOPMENT: "infill-development-form",
-  INFILL_DEVELOPMENT_SEARCH: "infill-development-search-form",
   INVOICE_NOTE_CREATE: "create-invoice-note-form",
   INVOICE_NOTE_SEARCH: "invoice-note-search-form",
   INVOICE_SIMULATOR: "invoice-simulator-form",
