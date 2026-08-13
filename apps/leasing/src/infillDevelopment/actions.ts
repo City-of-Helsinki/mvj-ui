@@ -18,6 +18,7 @@ import type {
   HideEditModeAction,
   ShowEditModeAction,
   ReceiveIsSaveClickedAction,
+  ReceiveIsFormDirtyAction,
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
   ReceiveFormInitialValuesAction,
@@ -74,6 +75,8 @@ export const receiveIsSaveClicked = (
   isClicked: boolean,
 ): ReceiveIsSaveClickedAction =>
   createAction("mvj/infillDevelopment/RECEIVE_SAVE_CLICKED")(isClicked);
+export const receiveIsFormDirty = (dirty: boolean): ReceiveIsFormDirtyAction =>
+  createAction("mvj/infillDevelopment/RECEIVE_IS_FORM_DIRTY")(dirty);
 export const receiveFormValidFlags = (
   valid: Record<string, any>,
 ): ReceiveFormValidFlagsAction =>

@@ -1,5 +1,7 @@
-import React, { Fragment, ReactElement } from "react";
-import { connect } from "react-redux";
+import React, { ReactElement } from "react";
+import { useSelector } from "react-redux";
+import { useFormState } from "react-final-form";
+import { get } from "lodash-es";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -17,15 +19,21 @@ type Props = {
   fields: any;
   infillDevelopment: InfillDevelopment;
   isSaveClicked: boolean;
-  usersPermissions: UsersPermissionsType;
 };
 
 const LeaseItemsEdit = ({
   fields,
   infillDevelopment,
   isSaveClicked,
-  usersPermissions,
 }: Props): ReactElement => {
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
+  const { values } = useFormState({
+    subscription: {
+      values: true,
+    },
+  });
+
   const handleAdd = () => {
     fields.push({});
   };
@@ -34,7 +42,7 @@ const LeaseItemsEdit = ({
     <AppConsumer>
       {({ dispatch }) => {
         return (
-          <Fragment>
+          <>
             {!hasPermissions(
               usersPermissions,
               UsersPermissions.ADD_INFILLDEVELOPMENTCOMPENSATIONLEASE,
@@ -67,11 +75,25 @@ const LeaseItemsEdit = ({
                 return (
                   <LeaseItemEdit
                     key={index}
+                    compensationInvestment={get(
+                      values,
+                      `${lease}.compensation_investment_amount`,
+                    )}
                     field={lease}
                     fields={fields}
                     infillDevelopment={infillDevelopment}
+                    infillDevelopmentCompensationLeaseId={get(
+                      values,
+                      `${lease}.id`,
+                    )}
                     index={index}
                     isSaveClicked={isSaveClicked}
+                    leaseFieldValue={get(values, `${lease}.lease`) || {}}
+                    leaseId={get(values, `${lease}.lease.value`)}
+                    monetaryCompensation={get(
+                      values,
+                      `${lease}.monetary_compensation_amount`,
+                    )}
                     onRemove={handleRemove}
                   />
                 );
@@ -92,15 +114,11 @@ const LeaseItemsEdit = ({
                 </Column>
               </Row>
             </Authorization>
-          </Fragment>
+          </>
         );
       }}
     </AppConsumer>
   );
 };
 
-export default connect((state) => {
-  return {
-    usersPermissions: getUsersPermissions(state),
-  };
-})(LeaseItemsEdit);
+export default LeaseItemsEdit;

@@ -32,6 +32,9 @@ export const getFormInitialValues: Selector<InfillDevelopment, void> = (
 export const getIsSaveClicked: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.infillDevelopment.isSaveClicked;
+export const getIsFormDirty: Selector<boolean, void> = (
+  state: RootState,
+): boolean => state.infillDevelopment.isFormDirty;
 export const getIsFormValidById: Selector<boolean, string> = (
   state: RootState,
   id: string,

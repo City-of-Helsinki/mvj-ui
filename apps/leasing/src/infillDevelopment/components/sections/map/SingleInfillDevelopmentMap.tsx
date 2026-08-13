@@ -1,10 +1,7 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
-import {
-  withRouterLegacy,
-  type WithRouterProps,
-} from "@/root/withRouterLegacy";
-import { flowRight, get, isEmpty } from "lodash-es";
+import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router";
+import { get, isEmpty } from "lodash-es";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import InfillDevelopmentLeaseLayer from "./InfillDevelopmentLeaseLayer";
@@ -39,187 +36,129 @@ import type { AreaNoteList } from "@/areaNote/types";
 import type { InfillDevelopment } from "@/infillDevelopment/types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-type Props = {
-  allLeases: Array<Lease>;
-  areaNotes: AreaNoteList;
-  currentInfillDevelopment: InfillDevelopment;
-  fetchAreaNoteList: (...args: Array<any>) => any;
-  fetchLeaseById: (...args: Array<any>) => any;
-  isFetchingAllLeases: Array<boolean>;
-  leaseAttributes: Attributes;
-  usersPermissions: UsersPermissionsType;
-};
-type State = {
-  areaLocationOptions: Array<Record<string, any>>;
-  areaTypeOptions: Array<Record<string, any>>;
-  bounds: Array<Record<string, any>> | null | undefined;
-  center: Array<number> | null | undefined;
-  currentInfillDevelopment: InfillDevelopment;
-  infillDevelopmentLeases: Array<Record<string, any>>;
-  isLoading: boolean;
-  layers: Array<Record<string, any>>;
-  leaseAttributes: Attributes;
-  planUnitIntendedUseOptions: Array<Record<string, any>>;
-  planUnitStateOptions: Array<Record<string, any>>;
-  planUnitTypeOptions: Array<Record<string, any>>;
-  plotDivisionStateOptions: Array<Record<string, any>>;
-  plotTypeOptions: Array<Record<string, any>>;
-};
+const SingleInfillDevelopmentMap: React.FC = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
 
-class SingleInfillDevelopmentMap extends PureComponent<
-  Props & WithRouterProps,
-  State
-> {
-  state = {
-    areaLocationOptions: [],
-    areaTypeOptions: [],
-    bounds: undefined,
-    center: undefined,
-    currentInfillDevelopment: {},
-    infillDevelopmentLeases: [],
-    isLoading: false,
-    layers: [],
-    leaseAttributes: null,
-    planUnitIntendedUseOptions: [],
-    planUnitStateOptions: [],
-    planUnitTypeOptions: [],
-    plotDivisionStateOptions: [],
-    plotTypeOptions: [],
-  };
+  const allLeases: Array<Lease> = useSelector(getAllLeases);
+  const areaNotes: AreaNoteList = useSelector(getAreaNoteList);
+  const currentInfillDevelopment: InfillDevelopment = useSelector(
+    getCurrentInfillDevelopment,
+  );
+  const isFetchingAllLeases: Array<boolean> = useSelector(
+    getIsFetchingAllLeases,
+  );
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const usersPermissions: UsersPermissionsType =
+    useSelector(getUsersPermissions);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const [bounds, setBounds] = useState<any>();
+  const [center, setCenter] = useState<any>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [layers, setLayers] = useState<Array<Record<string, any>>>([]);
 
-    if (props.currentInfillDevelopment !== state.currentInfillDevelopment) {
-      newState.currentInfillDevelopment = props.currentInfillDevelopment;
-      newState.infillDevelopmentLeases = get(
-        props.currentInfillDevelopment,
+  const infillDevelopmentLeases = useMemo(
+    () =>
+      get(
+        currentInfillDevelopment,
         "infill_development_compensation_leases",
         [],
-      );
-    }
+      ),
+    [currentInfillDevelopment],
+  );
 
-    if (props.leaseAttributes !== state.leaseAttributes) {
-      newState.leaseAttributes = props.leaseAttributes;
-      newState.areaLocationOptions = getFieldOptions(
-        props.leaseAttributes,
-        LeaseAreasFieldPaths.TYPE,
-      );
-      newState.plotTypeOptions = getFieldOptions(
-        props.leaseAttributes,
-        LeasePlotsFieldPaths.TYPE,
-      );
-      newState.plotDivisionStateOptions = getFieldOptions(
-        props.leaseAttributes,
+  const areaLocationOptions = useMemo(
+    () => getFieldOptions(leaseAttributes, LeaseAreasFieldPaths.TYPE),
+    [leaseAttributes],
+  );
+
+  const areaTypeOptions = useMemo(() => [], []);
+
+  const plotTypeOptions = useMemo(
+    () => getFieldOptions(leaseAttributes, LeasePlotsFieldPaths.TYPE),
+    [leaseAttributes],
+  );
+
+  const plotDivisionStateOptions = useMemo(
+    () =>
+      getFieldOptions(
+        leaseAttributes,
         LeasePlanUnitsFieldPaths.PLOT_DIVISION_STATE,
-      );
-      newState.planUnitTypeOptions = getFieldOptions(
-        props.leaseAttributes,
-        LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE,
-      );
-      newState.planUnitStateOptions = getFieldOptions(
-        props.leaseAttributes,
+      ),
+    [leaseAttributes],
+  );
+
+  const planUnitTypeOptions = useMemo(
+    () =>
+      getFieldOptions(leaseAttributes, LeasePlanUnitsFieldPaths.PLAN_UNIT_TYPE),
+    [leaseAttributes],
+  );
+
+  const planUnitStateOptions = useMemo(
+    () =>
+      getFieldOptions(
+        leaseAttributes,
         LeasePlanUnitsFieldPaths.PLAN_UNIT_STATE,
-      );
-      newState.planUnitIntendedUseOptions = getFieldOptions(
-        props.leaseAttributes,
+      ),
+    [leaseAttributes],
+  );
+
+  const planUnitIntendedUseOptions = useMemo(
+    () =>
+      getFieldOptions(
+        leaseAttributes,
         LeasePlanUnitsFieldPaths.PLAN_UNIT_INTENDED_USE,
-      );
-    }
+      ),
+    [leaseAttributes],
+  );
 
-    return newState;
-  }
-
-  componentDidMount() {
-    const { fetchAreaNoteList, usersPermissions } = this.props;
-
+  useEffect(() => {
     if (hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE)) {
-      fetchAreaNoteList({});
+      dispatch(fetchAreaNoteList({}));
     }
+  }, [dispatch, usersPermissions]);
 
-    this.fetchLeasesOrUpdateLayers();
-  }
-
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if (
-      prevProps.allLeases !== this.props.allLeases ||
-      prevProps.areaNotes !== this.props.areaNotes ||
-      prevState.infillDevelopmentLeases !== this.state.infillDevelopmentLeases
-    ) {
-      this.fetchLeasesOrUpdateLayers();
-    }
-  }
-
-  fetchLeasesOrUpdateLayers = () => {
-    const { infillDevelopmentLeases } = this.state;
-    const { allLeases, fetchLeaseById, isFetchingAllLeases } = this.props;
+  useEffect(() => {
     let allFetched = true;
+
     infillDevelopmentLeases.forEach((lease) => {
       const leaseId = lease.lease.id;
       const leaseData = allLeases[leaseId];
 
       if (isEmpty(leaseData)) {
         if (!isFetchingAllLeases[leaseId]) {
-          fetchLeaseById(leaseId);
+          dispatch(fetchLeaseById(leaseId));
         }
 
         allFetched = false;
       }
     });
 
-    if (allFetched) {
-      this.setMapCenterAndBounds();
-      this.setInfillDevelopmentLayers();
-      this.setState({
-        isLoading: false,
-      });
-    } else {
-      this.setState({
-        isLoading: true,
-      });
+    if (!allFetched) {
+      setIsLoading(true);
+      return;
     }
-  };
-  setMapCenterAndBounds = () => {
+
     const coordinates = [];
-    const { allLeases } = this.props;
-    const { infillDevelopmentLeases } = this.state;
     infillDevelopmentLeases.forEach((lease) => {
       const leaseId = lease.lease.id;
       const leaseData = allLeases[leaseId];
       coordinates.push(...getLeaseCoordinates(leaseData));
     });
-    this.setState({
-      // @ts-ignore: expected array but getBoundsFromCoordinates returns Record
-      bounds: coordinates.length
-        ? getBoundsFromCoordinates(coordinates)
-        : undefined,
-      center: coordinates.length
-        ? getCenterFromCoordinates(coordinates)
-        : undefined,
-    });
-  };
-  setInfillDevelopmentLayers = () => {
-    const {
-      allLeases,
-      areaNotes,
-      location: { search },
-      usersPermissions,
-    } = this.props;
-    const query = getUrlParams(search);
-    const {
-      areaLocationOptions,
-      areaTypeOptions,
-      infillDevelopmentLeases,
-      planUnitIntendedUseOptions,
-      planUnitStateOptions,
-      planUnitTypeOptions,
-      plotDivisionStateOptions,
-      plotTypeOptions,
-    } = this.state;
-    const layers = infillDevelopmentLeases.map((lease, index) => {
+
+    setBounds(
+      coordinates.length ? getBoundsFromCoordinates(coordinates) : undefined,
+    );
+    setCenter(
+      coordinates.length ? getCenterFromCoordinates(coordinates) : undefined,
+    );
+
+    const query = getUrlParams(location.search);
+    const nextLayers = infillDevelopmentLeases.map((lease, index) => {
       const leaseId = lease.lease.id;
       const leaseData = allLeases[leaseId];
       const identifier = getContentLeaseIdentifier(leaseData);
+
       return {
         checked: true,
         component: (
@@ -242,10 +181,11 @@ class SingleInfillDevelopmentMap extends PureComponent<
         name: identifier,
       };
     });
+
     {
       hasPermissions(usersPermissions, UsersPermissions.VIEW_AREANOTE) &&
         !isEmpty(areaNotes) &&
-        layers.push({
+        nextLayers.push({
           checked: false,
           component: (
             <AreaNotesLayer
@@ -257,47 +197,41 @@ class SingleInfillDevelopmentMap extends PureComponent<
           name: "Muistettavat ehdot",
         });
     }
-    this.setState({
-      layers: layers,
-    });
-  };
 
-  render() {
-    const { bounds, center, isLoading, layers } = this.state;
-    return (
-      <Fragment>
-        {isLoading && (
-          <LoaderWrapper className="relative-overlay-wrapper">
-            <Loader isLoading={isLoading} />
-          </LoaderWrapper>
-        )}
-        <AreaNotesEditMap
-          allowToEdit={false}
-          bounds={bounds}
-          center={center}
-          overlayLayers={layers}
-        />
-      </Fragment>
-    );
-  }
-}
+    setLayers(nextLayers);
+    setIsLoading(false);
+  }, [
+    allLeases,
+    areaLocationOptions,
+    areaNotes,
+    areaTypeOptions,
+    dispatch,
+    infillDevelopmentLeases,
+    isFetchingAllLeases,
+    location.search,
+    planUnitIntendedUseOptions,
+    planUnitStateOptions,
+    planUnitTypeOptions,
+    plotDivisionStateOptions,
+    plotTypeOptions,
+    usersPermissions,
+  ]);
 
-export default flowRight(
-  withRouterLegacy,
-  connect(
-    (state) => {
-      return {
-        allLeases: getAllLeases(state),
-        areaNotes: getAreaNoteList(state),
-        currentInfillDevelopment: getCurrentInfillDevelopment(state),
-        isFetchingAllLeases: getIsFetchingAllLeases(state),
-        leaseAttributes: getLeaseAttributes(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      fetchAreaNoteList,
-      fetchLeaseById,
-    },
-  ),
-)(SingleInfillDevelopmentMap) as React.ComponentType<any>;
+  return (
+    <>
+      {isLoading && (
+        <LoaderWrapper className="relative-overlay-wrapper">
+          <Loader isLoading={isLoading} />
+        </LoaderWrapper>
+      )}
+      <AreaNotesEditMap
+        allowToEdit={false}
+        bounds={bounds}
+        center={center}
+        overlayLayers={layers}
+      />
+    </>
+  );
+};
+
+export default SingleInfillDevelopmentMap;

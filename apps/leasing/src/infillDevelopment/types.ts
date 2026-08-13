@@ -5,6 +5,7 @@ export type InfillDevelopmentState = {
   current: InfillDevelopment;
   initialValues: InfillDevelopment;
   isFormValidById: Record<string, any>;
+  isFormDirty: boolean;
   isEditMode: boolean;
   isFetching: boolean;
   isFetchingAttributes: boolean;
@@ -42,6 +43,7 @@ export type InfillDevelopmentNotFoundAction = Action<string, void>;
 export type HideEditModeAction = Action<string, void>;
 export type ShowEditModeAction = Action<string, void>;
 export type ReceiveIsSaveClickedAction = Action<string, boolean>;
+export type ReceiveIsFormDirtyAction = Action<string, boolean>;
 export type ReceiveFormValidFlagsAction = Action<string, Record<string, any>>;
 export type ClearFormValidFlagsAction = Action<string, void>;
 export type ReceiveFormInitialValuesAction = Action<string, InfillDevelopment>;

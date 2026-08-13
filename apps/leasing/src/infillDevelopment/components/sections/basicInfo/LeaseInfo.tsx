@@ -1,8 +1,8 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
 import { useLocation, Link } from "react-router";
-import { flowRight, get } from "lodash-es";
+import { get } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import ExternalLink from "@/components/links/ExternalLink";
 import FormText from "@/components/form/FormText";
@@ -32,8 +32,6 @@ import type { Attributes } from "types";
 import type { LeaseId } from "@/leases/types";
 type Props = {
   identifier: string | null | undefined;
-  infillDevelopmentAttributes: Attributes;
-  leaseAttributes: Attributes;
   leaseId: LeaseId;
   planUnits: Array<Record<string, any>>;
   plots: Array<Record<string, any>>;
@@ -42,13 +40,15 @@ type Props = {
 
 const LeaseInfo = ({
   identifier,
-  infillDevelopmentAttributes,
-  leaseAttributes,
   leaseId,
   planUnits,
   plots,
   tenants,
 }: Props) => {
+  const infillDevelopmentAttributes: Attributes = useSelector(
+    getInfillDevelopmentAttributes,
+  );
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const location = useLocation();
   const getMapLinkUrl = () => {
     const { pathname, search } = location;
@@ -59,7 +59,7 @@ const LeaseInfo = ({
 
   const mapLinkUrl = getMapLinkUrl();
   return (
-    <Fragment>
+    <>
       <Row>
         <Column small={6} medium={4} large={2}>
           <Authorization
@@ -183,15 +183,8 @@ const LeaseInfo = ({
           </Authorization>
         </Column>
       </Row>
-    </Fragment>
+    </>
   );
 };
 
-export default flowRight(
-  connect((state) => {
-    return {
-      infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
-      leaseAttributes: getLeaseAttributes(state),
-    };
-  }),
-)(LeaseInfo) as React.ComponentType<any>;
+export default LeaseInfo;

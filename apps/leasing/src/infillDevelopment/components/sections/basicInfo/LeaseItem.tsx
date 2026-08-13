@@ -1,7 +1,7 @@
-import React, { Fragment, PureComponent } from "react";
-import { connect } from "react-redux";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { flowRight, get, isEmpty } from "lodash-es";
+import { get, isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
 import Collapse from "@/components/collapse/Collapse";
 import ExternalLink from "@/components/links/ExternalLink";
@@ -66,184 +66,244 @@ import {
 } from "@/leases/selectors";
 import type { Attributes, Methods as MethodsType } from "types";
 import type { Lease, LeaseId } from "@/leases/types";
+import type { RootState } from "@/root/types";
 type Props = {
-  collapseState: boolean;
-  fetchLeaseById: (...args: Array<any>) => any;
   id: number;
-  infillDevelopmentAttachmentAttributes: Attributes;
-  infillDevelopmentAttachmentMethods: MethodsType;
-  infillDevelopmentAttributes: Attributes;
-  isFetching: boolean;
-  lease: Lease;
-  leaseAttributes: Attributes;
   leaseId: LeaseId;
   leaseData: Record<string, any>;
-  receiveCollapseStates: (...args: Array<any>) => any;
 };
-type State = {
-  decisionMakerOptions: Array<Record<string, any>>;
-  identifier: string | null | undefined;
-  infillDevelopmentAttributes: Attributes;
-  intendedUseOptions: Array<Record<string, any>>;
-  lease: Lease;
-  planUnits: Array<Record<string, any>>;
-  plots: Array<Record<string, any>>;
-  tenants: Array<Record<string, any>>;
-};
+const LeaseItem = ({ id, leaseData, leaseId }: Props) => {
+  const dispatch = useDispatch();
 
-class LeaseItem extends PureComponent<Props, State> {
-  state = {
-    decisionMakerOptions: [],
-    identifier: null,
-    infillDevelopmentAttributes: null,
-    intendedUseOptions: [],
-    lease: {},
-    planUnits: [],
-    plots: [],
-    tenants: [],
-  };
+  const collapseState = useSelector((state: RootState) =>
+    getCollapseStateByKey(
+      state,
+      `${ViewModes.READONLY}.${FormNames.INFILL_DEVELOPMENT}.${id}`,
+    ),
+  );
+  const infillDevelopmentAttachmentAttributes: Attributes = useSelector(
+    getInfillDevelopmentAttachmentAttributes,
+  );
+  const infillDevelopmentAttachmentMethods: MethodsType = useSelector(
+    getInfillDevelopmentAttachmentMethods,
+  );
+  const infillDevelopmentAttributes: Attributes = useSelector(
+    getInfillDevelopmentAttributes,
+  );
+  const isFetching = useSelector((state: RootState) =>
+    getIsFetchingById(state, leaseId),
+  );
+  const lease: Lease = useSelector((state: RootState) =>
+    getLeaseById(state, leaseId),
+  );
+  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
-
-    if (
-      props.infillDevelopmentAttributes !== state.infillDevelopmentAttributes
-    ) {
-      newState.infillDevelopmentAttributes = props.infillDevelopmentAttributes;
-      newState.decisionMakerOptions = getFieldOptions(
-        props.infillDevelopmentAttributes,
-        InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER,
-      );
-      newState.intendedUseOptions = getFieldOptions(
-        props.infillDevelopmentAttributes,
-        InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE,
-      );
-    }
-
-    if (props.lease !== state.lease) {
-      const leaseAreas = getContentLeaseAreas(props.lease).filter(
-        (area) => !area.archived_at,
-      );
-      const planUnits = [];
-      const plots = [];
-      leaseAreas.forEach((area) => {
-        planUnits.push(...get(area, "plan_units_current", []));
-      });
-      leaseAreas.forEach((area) => {
-        plots.push(...get(area, "plots_current", []));
-      });
-      newState.lease = props.lease;
-      newState.identifier = getContentLeaseIdentifier(props.lease);
-      newState.planUnits = planUnits;
-      newState.plots = plots;
-      newState.tenants = getContentTenants(props.lease).filter((tenant) =>
-        isActive(get(tenant, "tenant")),
-      );
-    }
-
-    return newState;
-  }
-
-  componentDidMount() {
-    const { fetchLeaseById, lease, leaseId } = this.props;
-
+  useEffect(() => {
     if (isEmpty(lease)) {
-      fetchLeaseById(leaseId);
+      dispatch(fetchLeaseById(leaseId));
     }
-  }
+  }, [dispatch, lease, leaseId]);
 
-  handleCollapseToggle = (val: boolean) => {
-    const { id, receiveCollapseStates } = this.props;
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        [FormNames.INFILL_DEVELOPMENT]: {
-          [id]: val,
-        },
-      },
-    });
-  };
-  getTotalCompensation = (lease: Record<string, any>) => {
-    const monetaryCompensation = Number(
-        get(lease, "monetary_compensation_amount"),
+  const decisionMakerOptions = useMemo(
+    () =>
+      getFieldOptions(
+        infillDevelopmentAttributes,
+        InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER,
       ),
-      compensationInvestment = Number(
-        get(lease, "compensation_investment_amount"),
+    [infillDevelopmentAttributes],
+  );
+
+  const intendedUseOptions = useMemo(
+    () =>
+      getFieldOptions(
+        infillDevelopmentAttributes,
+        InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE,
+      ),
+    [infillDevelopmentAttributes],
+  );
+
+  const identifier = useMemo(() => getContentLeaseIdentifier(lease), [lease]);
+
+  const planUnits = useMemo(() => {
+    const leaseAreas = getContentLeaseAreas(lease).filter(
+      (area) => !area.archived_at,
+    );
+    const nextPlanUnits: Array<Record<string, any>> = [];
+
+    leaseAreas.forEach((area) => {
+      nextPlanUnits.push(...get(area, "plan_units_current", []));
+    });
+
+    return nextPlanUnits;
+  }, [lease]);
+
+  const plots = useMemo(() => {
+    const leaseAreas = getContentLeaseAreas(lease).filter(
+      (area) => !area.archived_at,
+    );
+    const nextPlots: Array<Record<string, any>> = [];
+
+    leaseAreas.forEach((area) => {
+      nextPlots.push(...get(area, "plots_current", []));
+    });
+
+    return nextPlots;
+  }, [lease]);
+
+  const tenants = useMemo(
+    () =>
+      getContentTenants(lease).filter((tenant) =>
+        isActive(get(tenant, "tenant")),
+      ),
+    [lease],
+  );
+
+  const handleCollapseToggle = useCallback(
+    (val: boolean) => {
+      dispatch(
+        receiveCollapseStates({
+          [ViewModes.READONLY]: {
+            [FormNames.INFILL_DEVELOPMENT]: {
+              [id]: val,
+            },
+          },
+        }),
       );
-    return monetaryCompensation + compensationInvestment;
-  };
+    },
+    [dispatch, id],
+  );
 
-  render() {
-    const {
-      collapseState,
-      infillDevelopmentAttachmentAttributes,
-      infillDevelopmentAttachmentMethods,
-      infillDevelopmentAttributes,
-      isFetching,
-      leaseAttributes,
-      leaseData,
-      leaseId,
-    } = this.props;
-    const {
-      decisionMakerOptions,
-      identifier,
-      intendedUseOptions,
-      planUnits,
-      plots,
-      tenants,
-    } = this.state;
-    const intendedUses = get(leaseData, "intended_uses", []),
-      decisions = get(leaseData, "decisions", []),
-      attachments = get(leaseData, "attachments", []),
-      totalCompensation = this.getTotalCompensation(leaseData);
-    return (
-      <Collapse
-        className="collapse__secondary"
-        defaultOpen={collapseState !== undefined ? collapseState : true}
-        headerTitle={
-          <Authorization
-            allow={isFieldAllowedToRead(
-              leaseAttributes,
-              LeaseFieldPaths.IDENTIFIER,
-            )}
-          >
-            {identifier || "-"}
-          </Authorization>
-        }
-        onToggle={this.handleCollapseToggle}
-      >
-        {isFetching ? (
-          <LoaderWrapper>
-            <Loader isLoading={isFetching} />
-          </LoaderWrapper>
-        ) : (
-          <LeaseInfo
-            identifier={identifier}
-            leaseId={leaseId}
-            planUnits={planUnits}
-            plots={plots}
-            tenants={tenants}
-          />
-        )}
+  const intendedUses = get(leaseData, "intended_uses", []);
+  const decisions = get(leaseData, "decisions", []);
+  const attachments = get(leaseData, "attachments", []);
+  const totalCompensation =
+    Number(get(leaseData, "monetary_compensation_amount")) +
+    Number(get(leaseData, "compensation_investment_amount"));
 
+  return (
+    <Collapse
+      className="collapse__secondary"
+      defaultOpen={collapseState !== undefined ? collapseState : true}
+      headerTitle={
         <Authorization
           allow={isFieldAllowedToRead(
-            infillDevelopmentAttributes,
-            InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISIONS,
+            leaseAttributes,
+            LeaseFieldPaths.IDENTIFIER,
           )}
         >
-          <>
-            <SubTitle
-              uiDataKey={getUiDataInfillDevelopmentKey(
-                InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISIONS,
-              )}
-            >
-              {InfillDevelopmentCompensationLeaseDecisionsFieldTitles.DECISIONS}
-            </SubTitle>
+          {identifier || "-"}
+        </Authorization>
+      }
+      onToggle={handleCollapseToggle}
+    >
+      {isFetching ? (
+        <LoaderWrapper>
+          <Loader isLoading={isFetching} />
+        </LoaderWrapper>
+      ) : (
+        <LeaseInfo
+          identifier={identifier}
+          leaseId={leaseId}
+          planUnits={planUnits}
+          plots={plots}
+          tenants={tenants}
+        />
+      )}
 
-            {!decisions.length && <FormText>Ei päätöksiä</FormText>}
-            {!!decisions.length && (
-              <ListItems>
-                <Row>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          infillDevelopmentAttributes,
+          InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISIONS,
+        )}
+      >
+        <>
+          <SubTitle
+            uiDataKey={getUiDataInfillDevelopmentKey(
+              InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISIONS,
+            )}
+          >
+            {InfillDevelopmentCompensationLeaseDecisionsFieldTitles.DECISIONS}
+          </SubTitle>
+
+          {!decisions.length && <FormText>Ei päätöksiä</FormText>}
+          {!!decisions.length && (
+            <ListItems>
+              <Row>
+                <Column small={3} large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      infillDevelopmentAttributes,
+                      InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataInfillDevelopmentKey(
+                        InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER,
+                      )}
+                    >
+                      {
+                        InfillDevelopmentCompensationLeaseDecisionsFieldTitles.DECISION_MAKER
+                      }
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      infillDevelopmentAttributes,
+                      InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_DATE,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataInfillDevelopmentKey(
+                        InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_DATE,
+                      )}
+                    >
+                      {
+                        InfillDevelopmentCompensationLeaseDecisionsFieldTitles.DECISION_DATE
+                      }
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      infillDevelopmentAttributes,
+                      InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataInfillDevelopmentKey(
+                        InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION,
+                      )}
+                    >
+                      {
+                        InfillDevelopmentCompensationLeaseDecisionsFieldTitles.SECTION
+                      }
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      infillDevelopmentAttributes,
+                      InfillDevelopmentCompensationLeaseDecisionsFieldPaths.REFERENCE_NUMBER,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataInfillDevelopmentKey(
+                        InfillDevelopmentCompensationLeaseDecisionsFieldPaths.REFERENCE_NUMBER,
+                      )}
+                    >
+                      {
+                        InfillDevelopmentCompensationLeaseDecisionsFieldTitles.REFERENCE_NUMBER
+                      }
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+              </Row>
+              {decisions.map((decision, index) => (
+                <Row key={index}>
                   <Column small={3} large={2}>
                     <Authorization
                       allow={isFieldAllowedToRead(
@@ -251,15 +311,12 @@ class LeaseItem extends PureComponent<Props, State> {
                         InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataInfillDevelopmentKey(
-                          InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER,
-                        )}
-                      >
-                        {
-                          InfillDevelopmentCompensationLeaseDecisionsFieldTitles.DECISION_MAKER
-                        }
-                      </FormTextTitle>
+                      <ListItem>
+                        {getLabelOfOption(
+                          decisionMakerOptions,
+                          decision.decision_maker,
+                        ) || "-"}
+                      </ListItem>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
@@ -269,15 +326,9 @@ class LeaseItem extends PureComponent<Props, State> {
                         InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_DATE,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataInfillDevelopmentKey(
-                          InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_DATE,
-                        )}
-                      >
-                        {
-                          InfillDevelopmentCompensationLeaseDecisionsFieldTitles.DECISION_DATE
-                        }
-                      </FormTextTitle>
+                      <ListItem>
+                        {formatDate(decision.decision_date) || "-"}
+                      </ListItem>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
@@ -287,15 +338,9 @@ class LeaseItem extends PureComponent<Props, State> {
                         InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataInfillDevelopmentKey(
-                          InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION,
-                        )}
-                      >
-                        {
-                          InfillDevelopmentCompensationLeaseDecisionsFieldTitles.SECTION
-                        }
-                      </FormTextTitle>
+                      <ListItem>
+                        {decision.section ? `${decision.section} §` : "-"}
+                      </ListItem>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
@@ -305,109 +350,106 @@ class LeaseItem extends PureComponent<Props, State> {
                         InfillDevelopmentCompensationLeaseDecisionsFieldPaths.REFERENCE_NUMBER,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataInfillDevelopmentKey(
-                          InfillDevelopmentCompensationLeaseDecisionsFieldPaths.REFERENCE_NUMBER,
-                        )}
-                      >
-                        {
-                          InfillDevelopmentCompensationLeaseDecisionsFieldTitles.REFERENCE_NUMBER
-                        }
-                      </FormTextTitle>
+                      {decision.reference_number ? (
+                        <ListItem>
+                          <ExternalLink
+                            className="no-margin"
+                            href={getReferenceNumberLink(
+                              decision.reference_number,
+                            )}
+                            text={decision.reference_number}
+                          />
+                        </ListItem>
+                      ) : (
+                        <ListItem>-</ListItem>
+                      )}
                     </Authorization>
                   </Column>
                 </Row>
-                {decisions.map((decision, index) => (
-                  <Row key={index}>
-                    <Column small={3} large={2}>
-                      <Authorization
-                        allow={isFieldAllowedToRead(
-                          infillDevelopmentAttributes,
-                          InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_MAKER,
-                        )}
-                      >
-                        <ListItem>
-                          {getLabelOfOption(
-                            decisionMakerOptions,
-                            decision.decision_maker,
-                          ) || "-"}
-                        </ListItem>
-                      </Authorization>
-                    </Column>
-                    <Column small={3} large={2}>
-                      <Authorization
-                        allow={isFieldAllowedToRead(
-                          infillDevelopmentAttributes,
-                          InfillDevelopmentCompensationLeaseDecisionsFieldPaths.DECISION_DATE,
-                        )}
-                      >
-                        <ListItem>
-                          {formatDate(decision.decision_date) || "-"}
-                        </ListItem>
-                      </Authorization>
-                    </Column>
-                    <Column small={3} large={2}>
-                      <Authorization
-                        allow={isFieldAllowedToRead(
-                          infillDevelopmentAttributes,
-                          InfillDevelopmentCompensationLeaseDecisionsFieldPaths.SECTION,
-                        )}
-                      >
-                        <ListItem>
-                          {decision.section ? `${decision.section} §` : "-"}
-                        </ListItem>
-                      </Authorization>
-                    </Column>
-                    <Column small={3} large={2}>
-                      <Authorization
-                        allow={isFieldAllowedToRead(
-                          infillDevelopmentAttributes,
-                          InfillDevelopmentCompensationLeaseDecisionsFieldPaths.REFERENCE_NUMBER,
-                        )}
-                      >
-                        {decision.reference_number ? (
-                          <ListItem>
-                            <ExternalLink
-                              className="no-margin"
-                              href={getReferenceNumberLink(
-                                decision.reference_number,
-                              )}
-                              text={decision.reference_number}
-                            />
-                          </ListItem>
-                        ) : (
-                          <ListItem>-</ListItem>
-                        )}
-                      </Authorization>
-                    </Column>
-                  </Row>
-                ))}
-              </ListItems>
-            )}
-          </>
-        </Authorization>
-
-        <Authorization
-          allow={isFieldAllowedToRead(
-            infillDevelopmentAttributes,
-            InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USES,
+              ))}
+            </ListItems>
           )}
-        >
-          <>
-            <SubTitle
-              uiDataKey={getUiDataInfillDevelopmentKey(
-                InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USES,
-              )}
-            >
-              {
-                InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.INTENDED_USES
-              }
-            </SubTitle>
+        </>
+      </Authorization>
 
-            {!intendedUses.length && <FormText>Ei käyttötarkoituksia</FormText>}
-            {!!intendedUses.length && (
-              <ListItems>
-                <Row>
+      <Authorization
+        allow={isFieldAllowedToRead(
+          infillDevelopmentAttributes,
+          InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USES,
+        )}
+      >
+        <>
+          <SubTitle
+            uiDataKey={getUiDataInfillDevelopmentKey(
+              InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USES,
+            )}
+          >
+            {
+              InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.INTENDED_USES
+            }
+          </SubTitle>
+
+          {!intendedUses.length && <FormText>Ei käyttötarkoituksia</FormText>}
+          {!!intendedUses.length && (
+            <ListItems>
+              <Row>
+                <Column small={3} large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      infillDevelopmentAttributes,
+                      InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataInfillDevelopmentKey(
+                        InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE,
+                      )}
+                    >
+                      {
+                        InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.INTENDED_USE
+                      }
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      infillDevelopmentAttributes,
+                      InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataInfillDevelopmentKey(
+                        InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2,
+                      )}
+                    >
+                      {
+                        InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.FLOOR_M2
+                      }
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      infillDevelopmentAttributes,
+                      InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataInfillDevelopmentKey(
+                        InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2,
+                      )}
+                    >
+                      {
+                        InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.AMOUNT_PER_FLOOR_M2
+                      }
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+              </Row>
+              {intendedUses.map((intendedUse, index) => (
+                <Row key={index}>
                   <Column small={3} large={2}>
                     <Authorization
                       allow={isFieldAllowedToRead(
@@ -415,15 +457,12 @@ class LeaseItem extends PureComponent<Props, State> {
                         InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataInfillDevelopmentKey(
-                          InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE,
-                        )}
-                      >
-                        {
-                          InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.INTENDED_USE
-                        }
-                      </FormTextTitle>
+                      <ListItem>
+                        {getLabelOfOption(
+                          intendedUseOptions,
+                          intendedUse.intended_use,
+                        ) || "-"}
+                      </ListItem>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
@@ -433,15 +472,11 @@ class LeaseItem extends PureComponent<Props, State> {
                         InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataInfillDevelopmentKey(
-                          InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2,
-                        )}
-                      >
-                        {
-                          InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.FLOOR_M2
-                        }
-                      </FormTextTitle>
+                      <ListItem>
+                        {intendedUse.floor_m2
+                          ? `${formatNumber(intendedUse.floor_m2)} k-m²`
+                          : "-"}
+                      </ListItem>
                     </Authorization>
                   </Column>
                   <Column small={3} large={2}>
@@ -451,439 +486,359 @@ class LeaseItem extends PureComponent<Props, State> {
                         InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataInfillDevelopmentKey(
-                          InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2,
-                        )}
-                      >
-                        {
-                          InfillDevelopmentCompensationLeaseIntendedUsesFieldTitles.AMOUNT_PER_FLOOR_M2
-                        }
-                      </FormTextTitle>
+                      <ListItem>
+                        {intendedUse.amount_per_floor_m2
+                          ? `${formatNumber(intendedUse.amount_per_floor_m2)} €/k-m²`
+                          : "-"}
+                      </ListItem>
                     </Authorization>
                   </Column>
                 </Row>
-                {intendedUses.map((intendedUse, index) => (
-                  <Row key={index}>
-                    <Column small={3} large={2}>
-                      <Authorization
-                        allow={isFieldAllowedToRead(
-                          infillDevelopmentAttributes,
-                          InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.INTENDED_USE,
-                        )}
-                      >
-                        <ListItem>
-                          {getLabelOfOption(
-                            intendedUseOptions,
-                            intendedUse.intended_use,
-                          ) || "-"}
-                        </ListItem>
-                      </Authorization>
-                    </Column>
-                    <Column small={3} large={2}>
-                      <Authorization
-                        allow={isFieldAllowedToRead(
-                          infillDevelopmentAttributes,
-                          InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.FLOOR_M2,
-                        )}
-                      >
-                        <ListItem>
-                          {intendedUse.floor_m2
-                            ? `${formatNumber(intendedUse.floor_m2)} k-m²`
-                            : "-"}
-                        </ListItem>
-                      </Authorization>
-                    </Column>
-                    <Column small={3} large={2}>
-                      <Authorization
-                        allow={isFieldAllowedToRead(
-                          infillDevelopmentAttributes,
-                          InfillDevelopmentCompensationLeaseIntendedUsesFieldPaths.AMOUNT_PER_FLOOR_M2,
-                        )}
-                      >
-                        <ListItem>
-                          {intendedUse.amount_per_floor_m2
-                            ? `${formatNumber(intendedUse.amount_per_floor_m2)} €/k-m²`
-                            : "-"}
-                        </ListItem>
-                      </Authorization>
-                    </Column>
-                  </Row>
-                ))}
-              </ListItems>
-            )}
-          </>
-        </Authorization>
+              ))}
+            </ListItems>
+          )}
+        </>
+      </Authorization>
 
-        <Row>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              infillDevelopmentAttributes,
+              InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
+            )}
+          >
+            <>
+              <FormTextTitle
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
+                )}
+              >
+                {
+                  InfillDevelopmentCompensationLeasesFieldTitles.MONETARY_COMPENSATION_AMOUNT
+                }
+              </FormTextTitle>
+              <FormText>
+                {!isEmptyValue(leaseData.monetary_compensation_amount)
+                  ? `${formatNumber(leaseData.monetary_compensation_amount)} €`
+                  : "-"}
+              </FormText>
+            </>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              infillDevelopmentAttributes,
+              InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
+            )}
+          >
+            <>
+              <FormTextTitle
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
+                )}
+              >
+                {
+                  InfillDevelopmentCompensationLeasesFieldTitles.COMPENSATION_INVESTMENT_AMOUNT
+                }
+              </FormTextTitle>
+              <FormText>
+                {!isEmptyValue(leaseData.compensation_investment_amount)
+                  ? `${formatNumber(leaseData.compensation_investment_amount)} €`
+                  : "-"}
+              </FormText>
+            </>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={
+              isFieldAllowedToRead(
                 infillDevelopmentAttributes,
                 InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
-              )}
-            >
-              <>
-                <FormTextTitle
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
-                  )}
-                >
-                  {
-                    InfillDevelopmentCompensationLeasesFieldTitles.MONETARY_COMPENSATION_AMOUNT
-                  }
-                </FormTextTitle>
-                <FormText>
-                  {!isEmptyValue(leaseData.monetary_compensation_amount)
-                    ? `${formatNumber(leaseData.monetary_compensation_amount)} €`
-                    : "-"}
-                </FormText>
-              </>
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
+              ) ||
+              isFieldAllowedToRead(
                 infillDevelopmentAttributes,
                 InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
-              )}
-            >
-              <>
-                <FormTextTitle
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
-                  )}
-                >
-                  {
-                    InfillDevelopmentCompensationLeasesFieldTitles.COMPENSATION_INVESTMENT_AMOUNT
-                  }
-                </FormTextTitle>
-                <FormText>
-                  {!isEmptyValue(leaseData.compensation_investment_amount)
-                    ? `${formatNumber(leaseData.compensation_investment_amount)} €`
-                    : "-"}
-                </FormText>
-              </>
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={
-                isFieldAllowedToRead(
-                  infillDevelopmentAttributes,
-                  InfillDevelopmentCompensationLeasesFieldPaths.MONETARY_COMPENSATION_AMOUNT,
-                ) ||
-                isFieldAllowedToRead(
-                  infillDevelopmentAttributes,
-                  InfillDevelopmentCompensationLeasesFieldPaths.COMPENSATION_INVESTMENT_AMOUNT,
-                )
-              }
-            >
-              <>
-                <FormTextTitle
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.TOTAL_COMPENSATION,
-                  )}
-                >
-                  {
-                    InfillDevelopmentCompensationLeasesFieldTitles.TOTAL_COMPENSATION
-                  }
-                </FormTextTitle>
-                <FormText>{`${formatNumber(totalCompensation)} €`}</FormText>
-              </>
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                infillDevelopmentAttributes,
-                InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE,
-              )}
-            >
-              <>
-                <FormTextTitle
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE,
-                  )}
-                >
-                  {
-                    InfillDevelopmentCompensationLeasesFieldTitles.INCREASE_IN_VALUE
-                  }
-                </FormTextTitle>
-                <FormText>
-                  {!isEmptyValue(leaseData.increase_in_value)
-                    ? `${formatNumber(leaseData.increase_in_value)} €`
-                    : "-"}
-                </FormText>
-              </>
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                infillDevelopmentAttributes,
-                InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE,
-              )}
-            >
-              <>
-                <FormTextTitle
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE,
-                  )}
-                >
-                  {
-                    InfillDevelopmentCompensationLeasesFieldTitles.PART_OF_THE_INCREASE_IN_VALUE
-                  }
-                </FormTextTitle>
-                <FormText>
-                  {!isEmptyValue(leaseData.part_of_the_increase_in_value)
-                    ? `${formatNumber(leaseData.part_of_the_increase_in_value)} €`
-                    : "-"}
-                </FormText>
-              </>
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                infillDevelopmentAttributes,
-                InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT,
-              )}
-            >
-              <>
-                <FormTextTitle
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT,
-                  )}
-                >
-                  {
-                    InfillDevelopmentCompensationLeasesFieldTitles.DISCOUNT_IN_RENT
-                  }
-                </FormTextTitle>
-                <FormText>
-                  {!isEmptyValue(leaseData.discount_in_rent)
-                    ? `${formatNumber(leaseData.discount_in_rent)} €`
-                    : "-"}
-                </FormText>
-              </>
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                infillDevelopmentAttributes,
-                InfillDevelopmentCompensationLeasesFieldPaths.YEAR,
-              )}
-            >
-              <>
-                <FormTextTitle
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.YEAR,
-                  )}
-                >
-                  {InfillDevelopmentCompensationLeasesFieldTitles.YEAR}
-                </FormTextTitle>
-                <FormText>{leaseData.year || "-"}</FormText>
-              </>
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                infillDevelopmentAttributes,
-                InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE,
-              )}
-            >
-              <>
-                <FormTextTitle
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE,
-                  )}
-                >
-                  {
-                    InfillDevelopmentCompensationLeasesFieldTitles.SENT_TO_SAP_DATE
-                  }
-                </FormTextTitle>
-                <FormText>
-                  {formatDate(leaseData.sent_to_sap_date) || "-"}
-                </FormText>
-              </>
-            </Authorization>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <Authorization
-              allow={isFieldAllowedToRead(
-                infillDevelopmentAttributes,
-                InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE,
-              )}
-            >
-              <>
-                <FormTextTitle
-                  uiDataKey={getUiDataInfillDevelopmentKey(
-                    InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE,
-                  )}
-                >
-                  {InfillDevelopmentCompensationLeasesFieldTitles.PAID_DATE}
-                </FormTextTitle>
-                <FormText>{formatDate(leaseData.paid_date) || "-"}</FormText>
-              </>
-            </Authorization>
-          </Column>
-        </Row>
+              )
+            }
+          >
+            <>
+              <FormTextTitle
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.TOTAL_COMPENSATION,
+                )}
+              >
+                {
+                  InfillDevelopmentCompensationLeasesFieldTitles.TOTAL_COMPENSATION
+                }
+              </FormTextTitle>
+              <FormText>{`${formatNumber(totalCompensation)} €`}</FormText>
+            </>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              infillDevelopmentAttributes,
+              InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE,
+            )}
+          >
+            <>
+              <FormTextTitle
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.INCREASE_IN_VALUE,
+                )}
+              >
+                {
+                  InfillDevelopmentCompensationLeasesFieldTitles.INCREASE_IN_VALUE
+                }
+              </FormTextTitle>
+              <FormText>
+                {!isEmptyValue(leaseData.increase_in_value)
+                  ? `${formatNumber(leaseData.increase_in_value)} €`
+                  : "-"}
+              </FormText>
+            </>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              infillDevelopmentAttributes,
+              InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE,
+            )}
+          >
+            <>
+              <FormTextTitle
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.PART_OF_THE_INCREASE_IN_VALUE,
+                )}
+              >
+                {
+                  InfillDevelopmentCompensationLeasesFieldTitles.PART_OF_THE_INCREASE_IN_VALUE
+                }
+              </FormTextTitle>
+              <FormText>
+                {!isEmptyValue(leaseData.part_of_the_increase_in_value)
+                  ? `${formatNumber(leaseData.part_of_the_increase_in_value)} €`
+                  : "-"}
+              </FormText>
+            </>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              infillDevelopmentAttributes,
+              InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT,
+            )}
+          >
+            <>
+              <FormTextTitle
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.DISCOUNT_IN_RENT,
+                )}
+              >
+                {
+                  InfillDevelopmentCompensationLeasesFieldTitles.DISCOUNT_IN_RENT
+                }
+              </FormTextTitle>
+              <FormText>
+                {!isEmptyValue(leaseData.discount_in_rent)
+                  ? `${formatNumber(leaseData.discount_in_rent)} €`
+                  : "-"}
+              </FormText>
+            </>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              infillDevelopmentAttributes,
+              InfillDevelopmentCompensationLeasesFieldPaths.YEAR,
+            )}
+          >
+            <>
+              <FormTextTitle
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.YEAR,
+                )}
+              >
+                {InfillDevelopmentCompensationLeasesFieldTitles.YEAR}
+              </FormTextTitle>
+              <FormText>{leaseData.year || "-"}</FormText>
+            </>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              infillDevelopmentAttributes,
+              InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE,
+            )}
+          >
+            <>
+              <FormTextTitle
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.SENT_TO_SAP_DATE,
+                )}
+              >
+                {
+                  InfillDevelopmentCompensationLeasesFieldTitles.SENT_TO_SAP_DATE
+                }
+              </FormTextTitle>
+              <FormText>
+                {formatDate(leaseData.sent_to_sap_date) || "-"}
+              </FormText>
+            </>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              infillDevelopmentAttributes,
+              InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE,
+            )}
+          >
+            <>
+              <FormTextTitle
+                uiDataKey={getUiDataInfillDevelopmentKey(
+                  InfillDevelopmentCompensationLeasesFieldPaths.PAID_DATE,
+                )}
+              >
+                {InfillDevelopmentCompensationLeasesFieldTitles.PAID_DATE}
+              </FormTextTitle>
+              <FormText>{formatDate(leaseData.paid_date) || "-"}</FormText>
+            </>
+          </Authorization>
+        </Column>
+      </Row>
 
-        <Authorization
-          allow={isMethodAllowed(
-            infillDevelopmentAttachmentMethods,
-            Methods.GET,
-          )}
-        >
-          <>
-            <SubTitle
-              uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
-                InfillDevelopmentCompensationAttachmentFieldPaths.ATTACHMENTS,
-              )}
-            >
-              {InfillDevelopmentCompensationAttachmentFieldTitles.ATTACHMENTS}
-            </SubTitle>
+      <Authorization
+        allow={isMethodAllowed(infillDevelopmentAttachmentMethods, Methods.GET)}
+      >
+        <>
+          <SubTitle
+            uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
+              InfillDevelopmentCompensationAttachmentFieldPaths.ATTACHMENTS,
+            )}
+          >
+            {InfillDevelopmentCompensationAttachmentFieldTitles.ATTACHMENTS}
+          </SubTitle>
 
-            {!attachments.length && <FormText>Ei liitetiedostoja</FormText>}
-            {!!attachments.length && (
-              <Fragment>
-                <Row>
-                  <Column small={3} large={4}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        infillDevelopmentAttachmentAttributes,
+          {!attachments.length && <FormText>Ei liitetiedostoja</FormText>}
+          {!!attachments.length && (
+            <>
+              <Row>
+                <Column small={3} large={4}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      infillDevelopmentAttachmentAttributes,
+                      InfillDevelopmentCompensationAttachmentFieldPaths.FILE,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
                         InfillDevelopmentCompensationAttachmentFieldPaths.FILE,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
-                          InfillDevelopmentCompensationAttachmentFieldPaths.FILE,
-                        )}
-                      >
-                        {
-                          InfillDevelopmentCompensationAttachmentFieldTitles.FILE
-                        }
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column small={3} large={2}>
-                    <Authorization
-                      allow={isFieldAllowedToRead(
-                        infillDevelopmentAttachmentAttributes,
+                      {InfillDevelopmentCompensationAttachmentFieldTitles.FILE}
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <Authorization
+                    allow={isFieldAllowedToRead(
+                      infillDevelopmentAttachmentAttributes,
+                      InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT,
+                    )}
+                  >
+                    <FormTextTitle
+                      uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
                         InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT,
                       )}
                     >
-                      <FormTextTitle
-                        uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
+                      {
+                        InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADED_AT
+                      }
+                    </FormTextTitle>
+                  </Authorization>
+                </Column>
+                <Column small={3} large={2}>
+                  <FormTextTitle
+                    uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
+                      InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADER,
+                    )}
+                  >
+                    {
+                      InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADER
+                    }
+                  </FormTextTitle>
+                </Column>
+              </Row>
+
+              {attachments.map((file, index) => {
+                return (
+                  <Row key={index}>
+                    <Column small={3} large={4}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          infillDevelopmentAttachmentAttributes,
+                          InfillDevelopmentCompensationAttachmentFieldPaths.FILE,
+                        )}
+                      >
+                        <FileDownloadLink
+                          fileUrl={file.file}
+                          label={file.filename}
+                        />
+                      </Authorization>
+                    </Column>
+                    <Column small={3} large={2}>
+                      <Authorization
+                        allow={isFieldAllowedToRead(
+                          infillDevelopmentAttachmentAttributes,
                           InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT,
                         )}
                       >
-                        {
-                          InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADED_AT
-                        }
-                      </FormTextTitle>
-                    </Authorization>
-                  </Column>
-                  <Column small={3} large={2}>
-                    <FormTextTitle
-                      uiDataKey={getUiDataInfillDevelopmentAttachmentKey(
-                        InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADER,
-                      )}
-                    >
-                      {
-                        InfillDevelopmentCompensationAttachmentFieldTitles.UPLOADER
-                      }
-                    </FormTextTitle>
-                  </Column>
-                </Row>
-
-                {attachments.map((file, index) => {
-                  return (
-                    <Row key={index}>
-                      <Column small={3} large={4}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            infillDevelopmentAttachmentAttributes,
-                            InfillDevelopmentCompensationAttachmentFieldPaths.FILE,
-                          )}
-                        >
-                          <FileDownloadLink
-                            fileUrl={file.file}
-                            label={file.filename}
-                          />
-                        </Authorization>
-                      </Column>
-                      <Column small={3} large={2}>
-                        <Authorization
-                          allow={isFieldAllowedToRead(
-                            infillDevelopmentAttachmentAttributes,
-                            InfillDevelopmentCompensationAttachmentFieldPaths.UPLOADED_AT,
-                          )}
-                        >
-                          <FormText>
-                            {formatDate(file.uploaded_at) || "-"}
-                          </FormText>
-                        </Authorization>
-                      </Column>
-                      <Column small={3} large={2}>
                         <FormText>
-                          {getUserFullName(file.uploader) || "-"}
+                          {formatDate(file.uploaded_at) || "-"}
                         </FormText>
-                      </Column>
-                    </Row>
-                  );
-                })}
-              </Fragment>
-            )}
-          </>
-        </Authorization>
-
-        <Authorization
-          allow={isFieldAllowedToRead(
-            infillDevelopmentAttributes,
-            InfillDevelopmentCompensationLeasesFieldPaths.NOTE,
+                      </Authorization>
+                    </Column>
+                    <Column small={3} large={2}>
+                      <FormText>
+                        {getUserFullName(file.uploader) || "-"}
+                      </FormText>
+                    </Column>
+                  </Row>
+                );
+              })}
+            </>
           )}
-        >
-          <Row>
-            <Column>
-              <FormTextTitle
-                uiDataKey={InfillDevelopmentCompensationLeasesFieldPaths.NOTE}
-              >
-                {InfillDevelopmentCompensationLeasesFieldTitles.NOTE}
-              </FormTextTitle>
-              <FormText>{leaseData.note || "-"}</FormText>
-            </Column>
-          </Row>
-        </Authorization>
-      </Collapse>
-    );
-  }
-}
+        </>
+      </Authorization>
 
-export default flowRight(
-  connect(
-    (state, props: Props) => {
-      const id = props.id;
-      return {
-        collapseState: getCollapseStateByKey(
-          state,
-          `${ViewModes.READONLY}.${FormNames.INFILL_DEVELOPMENT}.${id}`,
-        ),
-        infillDevelopmentAttachmentAttributes:
-          getInfillDevelopmentAttachmentAttributes(state),
-        infillDevelopmentAttachmentMethods:
-          getInfillDevelopmentAttachmentMethods(state),
-        infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
-        isFetching: getIsFetchingById(state, props.leaseId),
-        lease: getLeaseById(state, props.leaseId),
-        leaseAttributes: getLeaseAttributes(state),
-      };
-    },
-    {
-      fetchLeaseById,
-      receiveCollapseStates,
-    },
-  ),
-)(LeaseItem);
+      <Authorization
+        allow={isFieldAllowedToRead(
+          infillDevelopmentAttributes,
+          InfillDevelopmentCompensationLeasesFieldPaths.NOTE,
+        )}
+      >
+        <Row>
+          <Column>
+            <FormTextTitle
+              uiDataKey={InfillDevelopmentCompensationLeasesFieldPaths.NOTE}
+            >
+              {InfillDevelopmentCompensationLeasesFieldTitles.NOTE}
+            </FormTextTitle>
+            <FormText>{leaseData.note || "-"}</FormText>
+          </Column>
+        </Row>
+      </Authorization>
+    </Collapse>
+  );
+};
+
+export default LeaseItem;

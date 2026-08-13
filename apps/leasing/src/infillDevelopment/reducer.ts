@@ -117,6 +117,17 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions(
   },
   false,
 );
+const isFormDirtyReducer: Reducer<boolean> = handleActions(
+  {
+    ["mvj/infillDevelopment/RECEIVE_IS_FORM_DIRTY"]: (
+      state: boolean,
+      { payload: dirty }: Record<string, any>,
+    ) => {
+      return dirty;
+    },
+  },
+  false,
+);
 const isFormValidByIdReducer: Reducer<Record<string, any>> = handleActions(
   {
     ["mvj/infillDevelopment/RECEIVE_FORM_VALID_FLAGS"]: (
@@ -151,6 +162,7 @@ export default combineReducers<Record<string, any>, any>({
   collapseStates: collapseStatesReducer,
   current: currentInfillDevelopmentReducer,
   initialValues: initialValuesReducer,
+  isFormDirty: isFormDirtyReducer,
   isFormValidById: isFormValidByIdReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
