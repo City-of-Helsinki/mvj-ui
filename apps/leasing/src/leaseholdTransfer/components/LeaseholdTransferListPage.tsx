@@ -1,12 +1,7 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import {
-  withRouterLegacy,
-  type WithRouterProps,
-} from "@/root/withRouterLegacy";
-import { initialize } from "redux-form";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router";
 import { Row, Column } from "@/components/grid/Grid";
-import { flowRight, isEmpty } from "lodash-es";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import Loader from "@/components/loader/Loader";
@@ -20,6 +15,7 @@ import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableWrapper from "@/components/table/TableWrapper";
 import {
   deleteLeaseholdTransferAndUpdateList,
+  fetchAttributes as fetchLeaseholdTransferAttributes,
   fetchLeaseholdTransferList,
 } from "@/leaseholdTransfer/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
@@ -30,7 +26,6 @@ import {
 } from "@/leaseholdTransfer/constants";
 import {
   ConfirmationModalTexts,
-  FormNames,
   Methods,
   PermissionMissingTexts,
 } from "@/enums";
@@ -55,441 +50,340 @@ import {
 } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import {
+  getAttributes as getLeaseholdTransferAttributes,
   getIsFetching,
+  getIsFetchingAttributes as getIsFetchingLeaseholdTransferAttributes,
   getLeaseholdTransferList,
+  getMethods as getLeaseholdTransferMethods,
 } from "@/leaseholdTransfer/selectors";
-import { withLeaseholdTransferAttributes } from "@/components/attributes/LeaseholdTransferAttributes";
-import type { Attributes, Methods as MethodsType } from "types";
-import type { LeaseholdTransferList } from "@/leaseholdTransfer/types";
-type Props = {
-  deleteLeaseholdTransferAndUpdateList: (...args: Array<any>) => any;
-  fetchLeaseholdTransferList: (...args: Array<any>) => any;
-  initialize: (...args: Array<any>) => any;
-  isFetching: boolean;
-  isFetchingLeaseholdTransferAttributes: boolean;
-  leaseholdTransferAttributes: Attributes;
-  leaseholdTransferList: LeaseholdTransferList;
-  leaseholdTransferMethods: MethodsType;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-};
-type State = {
-  activePage: number;
-  count: number;
-  isSearchInitialized: boolean;
-  leaseholdTransferList: LeaseholdTransferList;
-  leaseholdTransfers: Array<Record<string, any>>;
-  maxPage: number;
-  sortKey: string;
-  sortOrder: string;
-};
+import type { Attributes } from "types";
 
-class LeaseholdTransferListPage extends PureComponent<
-  Props & WithRouterProps,
-  State
-> {
-  _isMounted: boolean;
-  state = {
-    activePage: 1,
-    count: 0,
-    isSearchInitialized: false,
-    leaseholdTransferList: {},
-    leaseholdTransfers: [],
-    maxPage: 0,
-    sortKey: DEFAULT_SORT_KEY,
-    sortOrder: DEFAULT_SORT_ORDER,
-  };
+const LeaseholdTransferListPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  componentDidMount() {
-    const { receiveTopNavigationSettings } = this.props;
+  const isFetching = useSelector(getIsFetching);
+  const leaseholdTransferList = useSelector(getLeaseholdTransferList);
+  const isFetchingLeaseholdTransferAttributes = useSelector(
+    getIsFetchingLeaseholdTransferAttributes,
+  );
+  const leaseholdTransferAttributes = useSelector(
+    getLeaseholdTransferAttributes,
+  );
+  const leaseholdTransferMethods = useSelector(getLeaseholdTransferMethods);
+
+  const searchQuery = useMemo(
+    () => getUrlParams(location.search),
+    [location.search],
+  );
+
+  const activePage = searchQuery.page ? Number(searchQuery.page) : 1;
+  const sortKey = searchQuery.sort_key || DEFAULT_SORT_KEY;
+  const sortOrder = searchQuery.sort_order || DEFAULT_SORT_ORDER;
+
+  const searchFormInitialValues = useMemo(() => {
+    const initialValues = { ...searchQuery };
+    delete initialValues.page;
+    delete initialValues.sort_key;
+    delete initialValues.sort_order;
+
+    return initialValues;
+  }, [searchQuery]);
+
+  const count = useMemo(
+    () => getApiResponseCount(leaseholdTransferList),
+    [leaseholdTransferList],
+  );
+  const leaseholdTransfers = useMemo(
+    () => getContentLeaseholdTransfers(leaseholdTransferList),
+    [leaseholdTransferList],
+  );
+  const maxPage = useMemo(
+    () => getApiResponseMaxPage(leaseholdTransferList, LIST_TABLE_PAGE_SIZE),
+    [leaseholdTransferList],
+  );
+
+  useEffect(() => {
     setPageTitle("Vuokraoikeuden siirrot");
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.LEASEHOLD_TRANSFER),
-      pageTitle: "Vuokraoikeuden siirrot",
-      showSearch: false,
-    });
-    this.search();
-    this.setSearchFormValues();
-    window.addEventListener("popstate", this.handlePopState);
-    this._isMounted = true;
-  }
-
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
-
-    if (props.leaseholdTransferList !== state.leaseholdTransferList) {
-      newState.leaseholdTransferList = props.leaseholdTransferList;
-      newState.count = getApiResponseCount(props.leaseholdTransferList);
-      newState.leaseholdTransfers = getContentLeaseholdTransfers(
-        props.leaseholdTransferList,
-      );
-      newState.maxPage = getApiResponseMaxPage(
-        props.leaseholdTransferList,
-        LIST_TABLE_PAGE_SIZE,
-      );
-    }
-
-    return !isEmpty(newState) ? newState : null;
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      location: { search: currentSearch },
-    } = this.props;
-    const {
-      location: { search: prevSearch },
-    } = prevProps;
-    const searchQuery = getUrlParams(currentSearch);
-
-    if (currentSearch !== prevSearch) {
-      this.search();
-      delete searchQuery.sort_key;
-      delete searchQuery.sort_order;
-
-      if (!Object.keys(searchQuery).length) {
-        this.setSearchFormValues();
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("popstate", this.handlePopState);
-    this._isMounted = false;
-  }
-
-  handlePopState = () => {
-    this.setSearchFormValues();
-  };
-  setSearchFormValues = () => {
-    const {
-      location: { search },
-      initialize,
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
-
-    const setSearchFormReady = () => {
-      this.setState({
-        isSearchInitialized: true,
-      });
-    };
-
-    const initializeSearchForm = async () => {
-      const initialValues = { ...searchQuery };
-      delete initialValues.page;
-      delete initialValues.sort_key;
-      delete initialValues.sort_order;
-      await initialize(FormNames.LEASEHOLD_TRANSFER_SEARCH, initialValues);
-    };
-
-    this.setState(
-      {
-        activePage: page,
-        isSearchInitialized: false,
-        sortKey: searchQuery.sort_key || DEFAULT_SORT_KEY,
-        sortOrder: searchQuery.sort_order || DEFAULT_SORT_ORDER,
-      },
-      async () => {
-        await initializeSearchForm();
-
-        if (this._isMounted) {
-          setSearchFormReady();
-        }
-      },
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.LEASEHOLD_TRANSFER),
+        pageTitle: "Vuokraoikeuden siirrot",
+        showSearch: false,
+      }),
     );
-  };
-  getSearchQuery = () => {
-    const {
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (
+      !isFetchingLeaseholdTransferAttributes &&
+      !leaseholdTransferAttributes &&
+      !leaseholdTransferMethods
+    ) {
+      dispatch(fetchLeaseholdTransferAttributes());
+    }
+  }, [
+    dispatch,
+    isFetchingLeaseholdTransferAttributes,
+    leaseholdTransferAttributes,
+    leaseholdTransferMethods,
+  ]);
+
+  const getMappedSearchQuery = useCallback(() => {
+    const query = { ...searchQuery };
+    const page = query.page ? Number(query.page) : 1;
 
     if (page > 1) {
-      searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
+      query.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
 
-    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
-    delete searchQuery.page;
-    searchQuery.sort_key = searchQuery.sort_key || DEFAULT_SORT_KEY;
-    searchQuery.sort_order = searchQuery.sort_order || DEFAULT_SORT_ORDER;
-    return mapLeaseholdTransferSearchFilters(searchQuery);
-  };
-  search = () => {
-    const { fetchLeaseholdTransferList } = this.props;
-    const searchQuery = this.getSearchQuery();
-    fetchLeaseholdTransferList(searchQuery);
-  };
-  handleSearchChange = (query: any, resetActivePage: boolean = false) => {
-    const { navigate } = this.props;
+    query.limit = LIST_TABLE_PAGE_SIZE;
+    delete query.page;
+    query.sort_key = query.sort_key || DEFAULT_SORT_KEY;
+    query.sort_order = query.sort_order || DEFAULT_SORT_ORDER;
 
-    if (resetActivePage) {
-      this.setState({
-        activePage: 1,
+    return mapLeaseholdTransferSearchFilters(query);
+  }, [searchQuery]);
+
+  const search = useCallback(() => {
+    dispatch(fetchLeaseholdTransferList(getMappedSearchQuery()));
+  }, [dispatch, getMappedSearchQuery]);
+
+  useEffect(() => {
+    search();
+  }, [search]);
+
+  const handleSearchChange = useCallback(
+    (query: Record<string, any>, resetActivePage: boolean = false) => {
+      const nextQuery = { ...query };
+
+      if (resetActivePage) {
+        delete nextQuery.page;
+      }
+
+      return navigate({
+        pathname: getRouteById(Routes.LEASEHOLD_TRANSFER),
+        search: getSearchQuery(nextQuery),
       });
-    }
+    },
+    [navigate],
+  );
 
-    return navigate({
-      pathname: getRouteById(Routes.LEASEHOLD_TRANSFER),
-      search: getSearchQuery(query),
-    });
-  };
-  handleSortingChange = ({ sortKey, sortOrder }) => {
-    const {
-      location: { search },
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    searchQuery.sort_key = sortKey;
-    searchQuery.sort_order = sortOrder;
-    this.setState({
-      sortKey,
-      sortOrder,
-    });
-    this.handleSearchChange(searchQuery);
-  };
-  handlePageClick = (page: number) => {
-    const {
-      navigate,
-      location: { search },
-    } = this.props;
-    const query = getUrlParams(search);
+  const handleSortingChange = useCallback(
+    ({ sortKey, sortOrder }) => {
+      const query = {
+        ...searchQuery,
+        sort_key: sortKey,
+        sort_order: sortOrder,
+      };
 
-    if (page > 1) {
-      query.page = page;
-    } else {
-      delete query.page;
-    }
+      handleSearchChange(query);
+    },
+    [handleSearchChange, searchQuery],
+  );
 
-    this.setState({
-      activePage: page,
-    });
-    return navigate({
-      pathname: getRouteById(Routes.LEASEHOLD_TRANSFER),
-      search: getSearchQuery(query),
-    });
-  };
+  const handlePageClick = useCallback(
+    (page: number) => {
+      const query = { ...searchQuery };
 
-  render() {
-    const {
-      deleteLeaseholdTransferAndUpdateList,
-      isFetching,
-      isFetchingLeaseholdTransferAttributes,
-      leaseholdTransferMethods,
-    } = this.props;
-    const {
-      activePage,
-      count,
-      isSearchInitialized,
-      leaseholdTransfers,
-      maxPage,
-      sortKey,
-      sortOrder,
-    } = this.state;
-    if (isFetchingLeaseholdTransferAttributes)
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    if (!leaseholdTransferMethods) return null;
-    if (!isMethodAllowed(leaseholdTransferMethods, Methods.GET))
-      return (
-        <PageContainer>
-          <AuthorizationError
-            text={PermissionMissingTexts.LEASEHOLD_TRANSFER}
-          />
-        </PageContainer>
-      );
+      if (page > 1) {
+        query.page = page;
+      } else {
+        delete query.page;
+      }
+
+      return navigate({
+        pathname: getRouteById(Routes.LEASEHOLD_TRANSFER),
+        search: getSearchQuery(query),
+      });
+    },
+    [navigate, searchQuery],
+  );
+
+  if (isFetchingLeaseholdTransferAttributes)
     return (
-      <AppConsumer>
-        {({ dispatch }) => {
-          const handleDelete = (id: number) => {
-            dispatch({
-              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-              confirmationFunction: () => {
-                const searchQuery = this.getSearchQuery();
+      <PageContainer>
+        <Loader isLoading={true} />
+      </PageContainer>
+    );
+  if (!leaseholdTransferMethods) return null;
+  if (!isMethodAllowed(leaseholdTransferMethods, Methods.GET))
+    return (
+      <PageContainer>
+        <AuthorizationError text={PermissionMissingTexts.LEASEHOLD_TRANSFER} />
+      </PageContainer>
+    );
+
+  return (
+    <AppConsumer>
+      {({ dispatch: appDispatch }) => {
+        const handleDelete = (id: number) => {
+          appDispatch?.({
+            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+            confirmationFunction: () => {
+              const mappedSearchQuery = getMappedSearchQuery();
+              dispatch(
                 deleteLeaseholdTransferAndUpdateList({
                   id,
-                  searchQuery,
-                });
-              },
-              confirmationModalButtonClassName: ButtonColors.ALERT,
-              confirmationModalButtonText:
-                ConfirmationModalTexts.DELETE_LEASEHOLD_TRASFER.BUTTON,
-              confirmationModalLabel:
-                ConfirmationModalTexts.DELETE_LEASEHOLD_TRASFER.LABEL,
-              confirmationModalTitle:
-                ConfirmationModalTexts.DELETE_LEASEHOLD_TRASFER.TITLE,
-            });
-          };
+                  searchQuery: mappedSearchQuery,
+                }),
+              );
+            },
+            confirmationModalButtonClassName: ButtonColors.ALERT,
+            confirmationModalButtonText:
+              ConfirmationModalTexts.DELETE_LEASEHOLD_TRASFER.BUTTON,
+            confirmationModalLabel:
+              ConfirmationModalTexts.DELETE_LEASEHOLD_TRASFER.LABEL,
+            confirmationModalTitle:
+              ConfirmationModalTexts.DELETE_LEASEHOLD_TRASFER.TITLE,
+          });
+        };
 
-          const getColumns = () => {
-            const { leaseholdTransferAttributes, leaseholdTransferMethods } =
-              this.props;
-            const columns = [];
+        const columns = [];
 
-            if (
-              isFieldAllowedToRead(
-                leaseholdTransferAttributes,
-                LeaseholdTransferFieldPaths.PROPERTIES,
-              )
-            ) {
-              columns.push({
-                key: "properties",
-                text: LeaseholdTransferFieldTitles.PROPERTIES,
-                sortable: false,
-              });
-            }
+        if (
+          isFieldAllowedToRead(
+            leaseholdTransferAttributes as Attributes,
+            LeaseholdTransferFieldPaths.PROPERTIES,
+          )
+        ) {
+          columns.push({
+            key: "properties",
+            text: LeaseholdTransferFieldTitles.PROPERTIES,
+            sortable: false,
+          });
+        }
 
-            if (
-              isFieldAllowedToRead(
-                leaseholdTransferAttributes,
-                LeaseholdTransferFieldPaths.INSTITUTION_IDENTIFIER,
-              )
-            ) {
-              columns.push({
-                key: "institution_identifier",
-                text: LeaseholdTransferFieldTitles.INSTITUTION_IDENTIFIER,
-              });
-            }
+        if (
+          isFieldAllowedToRead(
+            leaseholdTransferAttributes as Attributes,
+            LeaseholdTransferFieldPaths.INSTITUTION_IDENTIFIER,
+          )
+        ) {
+          columns.push({
+            key: "institution_identifier",
+            text: LeaseholdTransferFieldTitles.INSTITUTION_IDENTIFIER,
+          });
+        }
 
-            if (
-              isFieldAllowedToRead(
-                leaseholdTransferAttributes,
-                LeaseholdTransferFieldPaths.DECISION_DATE,
-              )
-            ) {
-              columns.push({
-                key: "decision_date",
-                text: LeaseholdTransferFieldTitles.DECISION_DATE,
-                renderer: (val) => formatDate(val),
-              });
-            }
+        if (
+          isFieldAllowedToRead(
+            leaseholdTransferAttributes as Attributes,
+            LeaseholdTransferFieldPaths.DECISION_DATE,
+          )
+        ) {
+          columns.push({
+            key: "decision_date",
+            text: LeaseholdTransferFieldTitles.DECISION_DATE,
+            renderer: (val) => formatDate(val),
+          });
+        }
 
-            if (
-              isFieldAllowedToRead(
-                leaseholdTransferAttributes,
-                LeaseholdTransferFieldPaths.PARTIES,
-              )
-            ) {
-              columns.push({
-                key: "conveyors",
-                text: LeaseholdTransferFieldTitles.CONVEYORS,
-                renderer: (val) => val.name,
-                sortable: false,
-              });
-            }
+        if (
+          isFieldAllowedToRead(
+            leaseholdTransferAttributes as Attributes,
+            LeaseholdTransferFieldPaths.PARTIES,
+          )
+        ) {
+          columns.push({
+            key: "conveyors",
+            text: LeaseholdTransferFieldTitles.CONVEYORS,
+            renderer: (val) => val.name,
+            sortable: false,
+          });
+        }
 
-            if (
-              isFieldAllowedToRead(
-                leaseholdTransferAttributes,
-                LeaseholdTransferFieldPaths.PARTIES,
-              )
-            ) {
-              columns.push({
-                key: "acquirers",
-                text: LeaseholdTransferFieldTitles.ACQUIRERS,
-                renderer: (val) => val.name,
-                sortable: false,
-              });
-            }
+        if (
+          isFieldAllowedToRead(
+            leaseholdTransferAttributes as Attributes,
+            LeaseholdTransferFieldPaths.PARTIES,
+          )
+        ) {
+          columns.push({
+            key: "acquirers",
+            text: LeaseholdTransferFieldTitles.ACQUIRERS,
+            renderer: (val) => val.name,
+            sortable: false,
+          });
+        }
 
-            if (
-              isFieldAllowedToRead(
-                leaseholdTransferAttributes,
-                LeaseholdTransferFieldPaths.DELETED,
-              )
-            ) {
-              columns.push({
-                key: "deleted",
-                text: LeaseholdTransferFieldTitles.DELETED,
-                renderer: (val) => formatDate(val),
-                sortable: false,
-              });
-            }
+        if (
+          isFieldAllowedToRead(
+            leaseholdTransferAttributes as Attributes,
+            LeaseholdTransferFieldPaths.DELETED,
+          )
+        ) {
+          columns.push({
+            key: "deleted",
+            text: LeaseholdTransferFieldTitles.DELETED,
+            renderer: (val) => formatDate(val),
+            sortable: false,
+          });
+        }
 
-            if (isMethodAllowed(leaseholdTransferMethods, Methods.DELETE)) {
-              columns.push({
-                key: "id",
-                text: "",
-                renderer: (val) => (
-                  <RemoveButton
-                    className="third-level"
-                    onClick={() => handleDelete(val)}
-                    title="Poista vuokraoikeuden siirto"
-                  />
-                ),
-                sortable: false,
-              });
-            }
-
-            return columns;
-          };
-
-          return (
-            <PageContainer>
-              <Row>
-                <Column small={12} large={4}></Column>
-                <Column small={12} large={8}>
-                  <Search
-                    isSearchInitialized={isSearchInitialized}
-                    onSearch={this.handleSearchChange}
-                    sortKey={sortKey}
-                    sortOrder={sortOrder}
-                  />
-                </Column>
-              </Row>
-              <TableFiltersLegacy
-                amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
-                filterOptions={[]}
-                filterValue={[]}
+        if (isMethodAllowed(leaseholdTransferMethods, Methods.DELETE)) {
+          columns.push({
+            key: "id",
+            text: "",
+            renderer: (val) => (
+              <RemoveButton
+                className="third-level"
+                onClick={() => handleDelete(val)}
+                title="Poista vuokraoikeuden siirto"
               />
+            ),
+            sortable: false,
+          });
+        }
 
-              <TableWrapper>
-                {isFetching && (
-                  <LoaderWrapper className="relative-overlay-wrapper">
-                    <Loader isLoading={isFetching} />
-                  </LoaderWrapper>
-                )}
-                <SortableTable
-                  columns={getColumns()}
-                  data={leaseholdTransfers}
-                  listTable
-                  onSortingChange={this.handleSortingChange}
-                  serverSideSorting
-                  showCollapseArrowColumn
-                  sortable
+        return (
+          <PageContainer>
+            <Row>
+              <Column small={12} large={4}></Column>
+              <Column small={12} large={8}>
+                <Search
+                  onSearch={handleSearchChange}
                   sortKey={sortKey}
                   sortOrder={sortOrder}
+                  initialValues={searchFormInitialValues}
                 />
-                <Pagination
-                  activePage={activePage}
-                  maxPage={maxPage}
-                  onPageClick={this.handlePageClick}
-                />
-              </TableWrapper>
-            </PageContainer>
-          );
-        }}
-      </AppConsumer>
-    );
-  }
-}
+              </Column>
+            </Row>
+            <TableFiltersLegacy
+              amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
+              filterOptions={[]}
+              filterValue={[]}
+            />
 
-export default flowRight(
-  withLeaseholdTransferAttributes,
-  withRouterLegacy,
-  connect(
-    (state) => {
-      return {
-        isFetching: getIsFetching(state),
-        leaseholdTransferList: getLeaseholdTransferList(state),
-      };
-    },
-    {
-      deleteLeaseholdTransferAndUpdateList,
-      fetchLeaseholdTransferList,
-      initialize,
-      receiveTopNavigationSettings,
-    },
-  ),
-)(LeaseholdTransferListPage);
+            <TableWrapper>
+              {isFetching && (
+                <LoaderWrapper className="relative-overlay-wrapper">
+                  <Loader isLoading={isFetching} />
+                </LoaderWrapper>
+              )}
+              <SortableTable
+                columns={columns}
+                data={leaseholdTransfers}
+                listTable
+                onSortingChange={handleSortingChange}
+                serverSideSorting
+                showCollapseArrowColumn
+                sortable
+                sortKey={sortKey}
+                sortOrder={sortOrder}
+              />
+              <Pagination
+                activePage={activePage}
+                maxPage={maxPage}
+                onPageClick={handlePageClick}
+              />
+            </TableWrapper>
+          </PageContainer>
+        );
+      }}
+    </AppConsumer>
+  );
+};
+
+export default LeaseholdTransferListPage;
