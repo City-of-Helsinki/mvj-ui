@@ -72,9 +72,9 @@ const Search: React.FC<Props> = ({
       query.sort_key = sortKey;
       query.sort_order = sortOrder;
     }
-
+    debouncedSearch.cancel();
     onSearch(query, true);
-  }, [onSearch, sortKey, sortOrder]);
+  }, [onSearch, sortKey, sortOrder, debouncedSearch]);
 
   return (
     <Form
