@@ -1,25 +1,24 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import { initialize } from "redux-form";
-import { withRouterLegacy, WithRouterProps } from "@/root/withRouterLegacy";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router";
 import { Row, Column } from "@/components/grid/Grid";
-import { flowRight, isEmpty } from "lodash-es";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
-import CreateInvoiceNoteModal from "./CreateInvoiceNoteModal";
+import CreateInvoiceNoteModal from "@/invoiceNote/components/CreateInvoiceNoteModal";
 import ExternalLink from "@/components/links/ExternalLink";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import PageContainer from "@/components/content/PageContainer";
 import Pagination from "@/components/table/Pagination";
-import Search from "./Search";
+import Search from "@/invoiceNote/components/Search";
 import ShowMore from "@/components/showMore/ShowMore";
 import SortableTable from "@/components/table/SortableTable";
 import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableWrapper from "@/components/table/TableWrapper";
 import {
   createInvoiceNoteAndFetchList,
+  fetchAttributes as fetchInvoiceNoteAttributes,
   fetchInvoiceNoteList,
   hideCreateInvoiceNoteModal,
   receiveInvoiceNoteList,
@@ -27,7 +26,7 @@ import {
 } from "@/invoiceNote/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
-import { FormNames, Methods, PermissionMissingTexts } from "@/enums";
+import { Methods, PermissionMissingTexts } from "@/enums";
 import {
   InvoiceNoteFieldPaths,
   InvoiceNoteFieldTitles,
@@ -36,8 +35,8 @@ import { getContentLeaseIdentifier } from "@/leases/helpers";
 import {
   formatDate,
   getApiResponseCount,
-  getApiResponseResults,
   getApiResponseMaxPage,
+  getApiResponseResults,
   getSearchQuery,
   getUrlParams,
   isFieldAllowedToRead,
@@ -45,15 +44,15 @@ import {
 } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import {
+  getAttributes as getInvoiceNoteAttributes,
   getInvoiceNoteList,
   getIsCreateModalOpen,
   getIsFetching,
+  getIsFetchingAttributes as getIsFetchingInvoiceNoteAttributes,
+  getMethods as getInvoiceNoteMethods,
 } from "@/invoiceNote/selectors";
-import { withInvoiceNoteAttributes } from "@/components/attributes/InvoiceNoteAttributes";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
-import type { Attributes, Methods as MethodsType } from "types";
-import type { InvoiceNoteList } from "@/invoiceNote/types";
-import type { UserServiceUnit } from "@/usersPermissions/types";
+import type { Attributes } from "types";
 
 const getColumns = (invoiceNoteAttributes: Attributes) => {
   const columns = [];
@@ -116,106 +115,119 @@ const getColumns = (invoiceNoteAttributes: Attributes) => {
   return columns;
 };
 
-type Props = {
-  createInvoiceNoteAndFetchList: (...args: Array<any>) => any;
-  fetchInvoiceNoteList: (...args: Array<any>) => any;
-  hideCreateInvoiceNoteModal: (...args: Array<any>) => any;
-  initialize: (...args: Array<any>) => any;
-  invoiceNoteAttributes: Attributes;
-  invoiceNoteList: InvoiceNoteList;
-  invoiceNoteMethods: MethodsType;
-  isCreateModalOpen: boolean;
-  isFetching: boolean;
-  isFetchingInvoiceNoteAttributes: boolean;
-  receiveInvoiceNoteList: (...args: Array<any>) => any;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-  showCreateInvoiceNoteModal: (...args: Array<any>) => any;
-  userActiveServiceUnit: UserServiceUnit;
-};
-type State = {
-  activePage: number;
-  columns: Array<Record<string, any>>;
-  count: number;
-  invoiceNoteAttributes: Attributes;
-  invoiceNoteList: InvoiceNoteList;
-  invoiceNotes: Array<Record<string, any>>;
-  isSearchInitialized: boolean;
-  maxPage: number;
-};
+const InvoiceNoteListPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-class InvoiceNoteListPage extends PureComponent<
-  Props & WithRouterProps,
-  State
-> {
-  _isMounted: boolean;
-  _hasFetchedInvoiceNotes: boolean;
-  state = {
-    activePage: 1,
-    columns: [],
-    count: 0,
-    invoiceNoteAttributes: null,
-    invoiceNoteList: {},
-    invoiceNotes: [],
-    isSearchInitialized: false,
-    maxPage: 0,
-  };
+  const invoiceNoteAttributes = useSelector(getInvoiceNoteAttributes);
+  const invoiceNoteMethods = useSelector(getInvoiceNoteMethods);
+  const isFetchingInvoiceNoteAttributes = useSelector(
+    getIsFetchingInvoiceNoteAttributes,
+  );
+  const invoiceNoteList = useSelector(getInvoiceNoteList);
+  const isCreateModalOpen = useSelector(getIsCreateModalOpen);
+  const isFetching = useSelector(getIsFetching);
+  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
 
-  componentDidMount() {
-    const { receiveTopNavigationSettings } = this.props;
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.INVOICE_NOTES),
-      pageTitle: "Laskujen tiedotteet",
-      showSearch: false,
-    });
-    this._isMounted = true;
-  }
+  const hasFetchedInvoiceNotesRef = useRef(false);
+  const prevSearchRef = useRef(location.search);
+  const prevUserActiveServiceUnitRef = useRef(userActiveServiceUnit);
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    const newState: any = {};
+  const searchQuery = useMemo(
+    () => getUrlParams(location.search),
+    [location.search],
+  );
+  const activePage = searchQuery.page ? Number(searchQuery.page) : 1;
+  const searchInitialValues = useMemo(() => {
+    const initialValues = { ...searchQuery };
 
-    if (props.invoiceNoteAttributes !== state.invoiceNoteAttributes) {
-      newState.invoiceNoteAttributes = props.invoiceNoteAttributes;
-      newState.columns = getColumns(props.invoiceNoteAttributes);
+    if (initialValues.service_unit === undefined && userActiveServiceUnit) {
+      initialValues.service_unit = userActiveServiceUnit.id;
     }
 
-    if (props.invoiceNoteList !== state.invoiceNoteList) {
-      newState.invoiceNoteList = props.invoiceNoteList;
-      newState.count = getApiResponseCount(props.invoiceNoteList);
-      newState.invoiceNotes = getApiResponseResults(props.invoiceNoteList);
-      newState.maxPage = getApiResponseMaxPage(
-        props.invoiceNoteList,
-        LIST_TABLE_PAGE_SIZE,
-      );
+    delete initialValues.page;
+
+    return initialValues;
+  }, [searchQuery, userActiveServiceUnit]);
+
+  const columns = useMemo(() => {
+    return invoiceNoteAttributes ? getColumns(invoiceNoteAttributes) : [];
+  }, [invoiceNoteAttributes]);
+
+  const count = useMemo(
+    () => getApiResponseCount(invoiceNoteList),
+    [invoiceNoteList],
+  );
+  const invoiceNotes = useMemo(
+    () => getApiResponseResults(invoiceNoteList),
+    [invoiceNoteList],
+  );
+  const maxPage = useMemo(
+    () => getApiResponseMaxPage(invoiceNoteList, LIST_TABLE_PAGE_SIZE),
+    [invoiceNoteList],
+  );
+
+  useEffect(() => {
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.INVOICE_NOTES),
+        pageTitle: "Laskujen tiedotteet",
+        showSearch: false,
+      }),
+    );
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (
+      !isFetchingInvoiceNoteAttributes &&
+      !invoiceNoteMethods &&
+      !invoiceNoteAttributes
+    ) {
+      dispatch(fetchInvoiceNoteAttributes());
+    }
+  }, [
+    dispatch,
+    invoiceNoteAttributes,
+    invoiceNoteMethods,
+    isFetchingInvoiceNoteAttributes,
+  ]);
+
+  const search = useCallback(() => {
+    const query = { ...searchQuery };
+    const page = query.page ? Number(query.page) : 1;
+
+    if (page > 1) {
+      query.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
 
-    return !isEmpty(newState) ? newState : null;
-  }
+    query.limit = LIST_TABLE_PAGE_SIZE;
+    delete query.page;
 
-  componentDidUpdate(prevProps) {
-    const {
-      location: { search: currentSearch },
-      userActiveServiceUnit,
-    } = this.props;
-    const {
-      location: { search: prevSearch },
-      userActiveServiceUnit: prevUserActiveServiceUnit,
-    } = prevProps;
+    if (query.service_unit === undefined && userActiveServiceUnit) {
+      query.service_unit = userActiveServiceUnit.id;
+    }
+
+    dispatch(fetchInvoiceNoteList(query));
+  }, [dispatch, searchQuery, userActiveServiceUnit]);
+
+  useEffect(() => {
+    const currentSearch = location.search;
+    const prevSearch = prevSearchRef.current;
+    const prevUserActiveServiceUnit = prevUserActiveServiceUnitRef.current;
 
     const handleSearch = () => {
-      this.setSearchValues();
-      this.search();
+      search();
     };
 
     if (userActiveServiceUnit) {
-      if (!this._hasFetchedInvoiceNotes) {
-        // No search has been done yet
+      if (!hasFetchedInvoiceNotesRef.current) {
         handleSearch();
-        this._hasFetchedInvoiceNotes = true;
+        hasFetchedInvoiceNotesRef.current = true;
       } else if (
         userActiveServiceUnit !== prevUserActiveServiceUnit &&
         !currentSearch.includes("service_unit")
       ) {
-        // Search again after changing user active service unit only if not explicitly setting the service unit filter
         handleSearch();
       }
     }
@@ -223,242 +235,142 @@ class InvoiceNoteListPage extends PureComponent<
     if (currentSearch !== prevSearch) {
       handleSearch();
     }
-  }
 
-  componentWillUnmount() {
-    const { receiveInvoiceNoteList } = this.props;
-    // Clear invoice note list
-    receiveInvoiceNoteList({});
-    this._isMounted = false;
-    this._hasFetchedInvoiceNotes = false;
-  }
+    prevSearchRef.current = currentSearch;
+    prevUserActiveServiceUnitRef.current = userActiveServiceUnit;
+  }, [location.search, search, userActiveServiceUnit]);
 
-  setSearchValues = () => {
-    const {
-      location: { search },
-      initialize,
-      userActiveServiceUnit,
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
-
-    const setSearchFormReady = () => {
-      this.setState({
-        isSearchInitialized: true,
-      });
+  useEffect(() => {
+    return () => {
+      dispatch(receiveInvoiceNoteList({}));
+      hasFetchedInvoiceNotesRef.current = false;
     };
+  }, [dispatch]);
 
-    const initializeSearchForm = async () => {
-      const initialValues = { ...searchQuery };
+  const handleSearchChange = useCallback(
+    (query: Record<string, any>) => {
+      return navigate({
+        pathname: getRouteById(Routes.INVOICE_NOTES),
+        search: getSearchQuery(query),
+      });
+    },
+    [navigate],
+  );
 
-      if (initialValues.service_unit === undefined && userActiveServiceUnit) {
-        initialValues.service_unit = userActiveServiceUnit.id;
+  const handlePageClick = useCallback(
+    (page: number) => {
+      const query = { ...searchQuery };
+
+      if (page > 1) {
+        query.page = page;
+      } else {
+        delete query.page;
       }
 
-      delete initialValues.page;
-      initialize(FormNames.INVOICE_NOTE_SEARCH, initialValues);
-    };
+      return navigate({
+        pathname: getRouteById(Routes.INVOICE_NOTES),
+        search: getSearchQuery(query),
+      });
+    },
+    [navigate, searchQuery],
+  );
 
-    this.setState(
-      {
-        isSearchInitialized: false,
-        activePage: page,
-      },
-      async () => {
-        await initializeSearchForm();
+  const handleHideCreateInvoiceNoteModal = useCallback(() => {
+    dispatch(hideCreateInvoiceNoteModal());
+  }, [dispatch]);
 
-        if (this._isMounted) {
-          setSearchFormReady();
-        }
-      },
-    );
-  };
-  search = () => {
-    const {
-      fetchInvoiceNoteList,
-      location: { search },
-      userActiveServiceUnit,
-    } = this.props;
-    const searchQuery = getUrlParams(search);
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+  const handleShowCreateInvoiceNoteModal = useCallback(() => {
+    dispatch(showCreateInvoiceNoteModal());
+  }, [dispatch]);
 
-    if (page > 1) {
-      searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
-    }
-
-    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
-    delete searchQuery.page;
-
-    if (searchQuery.service_unit === undefined && userActiveServiceUnit) {
-      searchQuery.service_unit = userActiveServiceUnit.id;
-    }
-
-    fetchInvoiceNoteList(searchQuery);
-  };
-  handleSearchChange = (query: any) => {
-    const { navigate } = this.props;
-    return navigate({
-      pathname: getRouteById(Routes.INVOICE_NOTES),
-      search: getSearchQuery(query),
-    });
-  };
-  handlePageClick = (page: number) => {
-    const {
-      navigate,
-      location: { search },
-    } = this.props;
-    const query = getUrlParams(search);
-
-    if (page > 1) {
-      query.page = page;
-    } else {
-      delete query.page;
-    }
-
-    this.setState({
-      activePage: page,
-    });
-    return navigate({
-      pathname: getRouteById(Routes.INVOICE_NOTES),
-      search: getSearchQuery(query),
-    });
-  };
-  hideCreateInvoiceNoteModal = () => {
-    const { hideCreateInvoiceNoteModal } = this.props;
-    hideCreateInvoiceNoteModal();
-  };
-  showCreateInvoiceNoteModal = () => {
-    const { showCreateInvoiceNoteModal } = this.props;
-    showCreateInvoiceNoteModal();
-  };
-  createInvoiceNote = (data: Record<string, any>) => {
-    const {
-      createInvoiceNoteAndFetchList,
-      location: { search },
-    } = this.props;
-    const query = getUrlParams(search);
-    createInvoiceNoteAndFetchList({
-      data,
-      query,
-    });
-  };
-
-  render() {
-    const {
-      invoiceNoteMethods,
-      isCreateModalOpen,
-      isFetching,
-      isFetchingInvoiceNoteAttributes,
-      userActiveServiceUnit,
-    } = this.props;
-    const {
-      activePage,
-      columns,
-      count,
-      invoiceNotes,
-      isSearchInitialized,
-      maxPage,
-    } = this.state;
-    if (isFetchingInvoiceNoteAttributes)
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
+  const createInvoiceNote = useCallback(
+    (data: Record<string, any>) => {
+      const query = getUrlParams(location.search);
+      dispatch(
+        createInvoiceNoteAndFetchList({
+          data,
+          query,
+        }),
       );
-    if (!invoiceNoteMethods) return null;
-    if (!isMethodAllowed(invoiceNoteMethods, Methods.GET))
-      return (
-        <PageContainer>
-          <AuthorizationError text={PermissionMissingTexts.INVOICE_NOTE} />
-        </PageContainer>
-      );
+    },
+    [dispatch, location.search],
+  );
+
+  if (isFetchingInvoiceNoteAttributes)
     return (
       <PageContainer>
-        <Authorization
-          allow={isMethodAllowed(invoiceNoteMethods, Methods.POST)}
-        >
-          <CreateInvoiceNoteModal
-            isOpen={isCreateModalOpen}
-            onClose={this.hideCreateInvoiceNoteModal}
-            onSubmit={this.createInvoiceNote}
-          />
-        </Authorization>
-        <Row>
-          <Column small={12} large={8}>
-            <Authorization
-              allow={isMethodAllowed(invoiceNoteMethods, Methods.POST)}
-            >
-              <AddButtonSecondary
-                className="no-top-margin"
-                label="Luo tiedote"
-                onClick={this.showCreateInvoiceNoteModal}
-              />
-            </Authorization>
-          </Column>
-          <Column small={12} large={4}>
-            {userActiveServiceUnit && (
-              <Search
-                isSearchInitialized={isSearchInitialized}
-                onSearch={this.handleSearchChange}
-              />
-            )}
-          </Column>
-        </Row>
-        <Row>
-          <Column small={12} medium={6}></Column>
-          <Column small={12} medium={6}>
-            <TableFiltersLegacy
-              amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
-              filterOptions={[]}
-              filterValue={[]}
-            />
-          </Column>
-        </Row>
-
-        <TableWrapper>
-          {isFetching && (
-            <LoaderWrapper className="relative-overlay-wrapper">
-              <Loader isLoading={isFetching} />
-            </LoaderWrapper>
-          )}
-
-          <SortableTable
-            columns={columns}
-            data={invoiceNotes}
-            listTable
-            sortable={false}
-          />
-          <Pagination
-            activePage={activePage}
-            maxPage={maxPage}
-            onPageClick={this.handlePageClick}
-          />
-        </TableWrapper>
+        <Loader isLoading={true} />
       </PageContainer>
     );
-  }
-}
+  if (!invoiceNoteMethods) return null;
+  if (!isMethodAllowed(invoiceNoteMethods, Methods.GET))
+    return (
+      <PageContainer>
+        <AuthorizationError text={PermissionMissingTexts.INVOICE_NOTE} />
+      </PageContainer>
+    );
+  return (
+    <PageContainer>
+      <Authorization allow={isMethodAllowed(invoiceNoteMethods, Methods.POST)}>
+        <CreateInvoiceNoteModal
+          isOpen={isCreateModalOpen}
+          onClose={handleHideCreateInvoiceNoteModal}
+          onSubmit={createInvoiceNote}
+        />
+      </Authorization>
+      <Row>
+        <Column small={12} large={8}>
+          <Authorization
+            allow={isMethodAllowed(invoiceNoteMethods, Methods.POST)}
+          >
+            <AddButtonSecondary
+              className="no-top-margin"
+              label="Luo tiedote"
+              onClick={handleShowCreateInvoiceNoteModal}
+            />
+          </Authorization>
+        </Column>
+        <Column small={12} large={4}>
+          {userActiveServiceUnit && (
+            <Search
+              onSearch={handleSearchChange}
+              initialValues={searchInitialValues}
+            />
+          )}
+        </Column>
+      </Row>
+      <Row>
+        <Column small={12} medium={6}></Column>
+        <Column small={12} medium={6}>
+          <TableFiltersLegacy
+            amountText={isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
+            filterOptions={[]}
+            filterValue={[]}
+          />
+        </Column>
+      </Row>
 
-export default flowRight(
-  withInvoiceNoteAttributes,
-  withRouterLegacy,
-  connect(
-    (state) => {
-      return {
-        invoiceNoteList: getInvoiceNoteList(state),
-        isCreateModalOpen: getIsCreateModalOpen(state),
-        isFetching: getIsFetching(state),
-        userActiveServiceUnit: getUserActiveServiceUnit(state),
-      };
-    },
-    {
-      createInvoiceNoteAndFetchList,
-      fetchInvoiceNoteList,
-      hideCreateInvoiceNoteModal,
-      receiveInvoiceNoteList,
-      receiveTopNavigationSettings,
-      showCreateInvoiceNoteModal,
-      initialize,
-    },
-  ),
-)(InvoiceNoteListPage);
+      <TableWrapper>
+        {isFetching && (
+          <LoaderWrapper className="relative-overlay-wrapper">
+            <Loader isLoading={isFetching} />
+          </LoaderWrapper>
+        )}
+
+        <SortableTable
+          columns={columns}
+          data={invoiceNotes}
+          listTable
+          sortable={false}
+        />
+        <Pagination
+          activePage={activePage}
+          maxPage={maxPage}
+          onPageClick={handlePageClick}
+        />
+      </TableWrapper>
+    </PageContainer>
+  );
+};
+
+export default InvoiceNoteListPage;
