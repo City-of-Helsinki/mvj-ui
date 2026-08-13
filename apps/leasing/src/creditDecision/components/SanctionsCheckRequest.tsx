@@ -76,9 +76,7 @@ const SanctionsCheckRequest: React.FC<Props> = ({
     }
     if (sanctionsType === SanctionsCheckType.PERSON) {
       firstName && url.searchParams.append("first_name", firstName);
-      if (lastName) {
-        url.searchParams.append("last_name", lastName);
-      }
+      lastName && url.searchParams.append("last_name", lastName);
     }
     return url.toString();
   };
