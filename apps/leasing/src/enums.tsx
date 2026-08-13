@@ -460,7 +460,6 @@ export const FieldTypes = {
  * @enum {string}
  */
 export const FormNames = {
-  AREA_NOTE_SEARCH: "area-note-search-form",
   AREA_SEARCH_SEARCH: "area-search-search-form",
   BASIS_OF_RENT_CALCULATOR: "basis-of-rent-calculator-form",
   CONTACT: "contact-form",
