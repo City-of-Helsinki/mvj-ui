@@ -17,6 +17,7 @@ import {
   receiveFormValidFlags,
   clearFormValidFlags,
   receiveIsSaveClicked,
+  receiveIsFormDirty,
   receiveCollapseStates,
 } from "./actions";
 import infillDevelopmentReducer from "./reducer";
@@ -29,6 +30,7 @@ const defaultState: InfillDevelopmentState = {
   isEditMode: false,
   isFetching: false,
   isFetchingAttributes: false,
+  isFormDirty: false,
   isFormValidById: {
     "infill-development-form": true,
   },
@@ -193,6 +195,12 @@ describe("Infill development", () => {
         const newState = { ...defaultState };
         newState.isSaveClicked = true;
         const state = infillDevelopmentReducer({}, receiveIsSaveClicked(true));
+        expect(state).to.deep.equal(newState);
+      });
+      it("should update isFormDirty", () => {
+        const newState = { ...defaultState };
+        newState.isFormDirty = true;
+        const state = infillDevelopmentReducer({}, receiveIsFormDirty(true));
         expect(state).to.deep.equal(newState);
       });
       it("should update collapseStates", () => {
