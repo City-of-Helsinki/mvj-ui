@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from "react";
-import { connect } from "react-redux";
-import { flowRight, isEmpty } from "lodash-es";
+import { useDispatch, useSelector } from "react-redux";
+import { isEmpty } from "lodash-es";
 import InfoIcon from "@/components/icons/InfoIcon";
 import GreenBox from "@/components/content/GreenBox";
 import Loader from "@/components/loader/Loader";
@@ -24,36 +24,46 @@ import {
 type Props = {
   businessId?: string;
   contactId?: string;
-  history: Record<string, any> | null | undefined;
-  isFetchingHistory: boolean;
-  fetchHistoryByBusinessId: (...args: Array<any>) => any;
-  fetchHistoryByContactId: (...args: Array<any>) => any;
 };
 
-const CreditDecisionHistory: React.FC<Props> = ({
-  businessId,
-  contactId,
-  history,
-  isFetchingHistory,
-  fetchHistoryByBusinessId,
-  fetchHistoryByContactId,
-}) => {
+const CreditDecisionHistory: React.FC<Props> = ({ businessId, contactId }) => {
+  const dispatch = useDispatch();
+
+  const history = useSelector((state) => {
+    if (contactId) {
+      return getHistoryByContactId(state, contactId);
+    }
+
+    if (businessId) {
+      return getHistoryByBusinessId(state, businessId);
+    }
+
+    return undefined;
+  });
+
+  const isFetchingHistory = useSelector((state) => {
+    if (contactId) {
+      return getIsFetchingHistoryByContactId(state, contactId);
+    }
+
+    if (businessId) {
+      return getIsFetchingHistoryByBusinessId(state, businessId);
+    }
+
+    return false;
+  });
+
   useEffect(() => {
     if (!contactId && !businessId) return;
+
     if (history === undefined) {
       if (contactId) {
-        fetchHistoryByContactId(contactId);
-      } else {
-        fetchHistoryByBusinessId(businessId);
+        dispatch(fetchHistoryByContactId(contactId));
+      } else if (businessId) {
+        dispatch(fetchHistoryByBusinessId(businessId));
       }
     }
-  }, [
-    businessId,
-    contactId,
-    history,
-    fetchHistoryByBusinessId,
-    fetchHistoryByContactId,
-  ]);
+  }, [businessId, contactId, dispatch, history]);
 
   if (history === undefined && !isFetchingHistory) return null;
 
@@ -124,21 +134,4 @@ const CreditDecisionHistory: React.FC<Props> = ({
   );
 };
 
-export default flowRight(
-  connect(
-    (state, props: Props) => {
-      return {
-        history: props.contactId
-          ? getHistoryByContactId(state, props.contactId)
-          : getHistoryByBusinessId(state, props.businessId),
-        isFetchingHistory: props.contactId
-          ? getIsFetchingHistoryByContactId(state, props.contactId)
-          : getIsFetchingHistoryByBusinessId(state, props.businessId),
-      };
-    },
-    {
-      fetchHistoryByContactId,
-      fetchHistoryByBusinessId,
-    },
-  ),
-)(CreditDecisionHistory);
+export default CreditDecisionHistory;

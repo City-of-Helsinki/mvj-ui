@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { Form, Field } from "react-final-form";
+import React from "react";
+import { Form } from "react-final-form";
 import Button from "@/components/button/Button";
 import FormField from "@/components/form/final-form/FormField";
 import GreenBox from "@/components/content/GreenBox";
@@ -39,37 +39,33 @@ const SearchForm: React.FC<Props> = ({ onSearch, initialValues }) => {
                 <SearchLabel>{SearchLabels.CONTACT_TYPE}</SearchLabel>
               </SearchLabelColumn>
               <SearchInputColumn>
-                <Field name="contact_type">
-                  {({ input }) => (
-                    <FormField
-                      {...input}
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{
-                        label: SearchLabels.CONTACT_TYPE,
-                        type: FieldTypes.CHOICE,
-                        read_only: false,
-                      }}
-                      invisibleLabel
-                      overrideValues={{
-                        options: [
-                          {
-                            value: ContactTypes.BUSINESS,
-                            label: CreditDecisionText.BUSINESS_TITLE,
-                          },
-                          {
-                            value: ContactTypes.PERSON,
-                            label: CreditDecisionText.PERSON_TITLE,
-                          },
-                        ],
-                      }}
-                    />
-                  )}
-                </Field>
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: SearchLabels.CONTACT_TYPE,
+                    type: FieldTypes.CHOICE,
+                    read_only: false,
+                  }}
+                  name="contact_type"
+                  invisibleLabel
+                  overrideValues={{
+                    options: [
+                      {
+                        value: ContactTypes.BUSINESS,
+                        label: CreditDecisionText.BUSINESS_TITLE,
+                      },
+                      {
+                        value: ContactTypes.PERSON,
+                        label: CreditDecisionText.PERSON_TITLE,
+                      },
+                    ],
+                  }}
+                />
               </SearchInputColumn>
             </SearchRow>
             {values?.contact_type && (
-              <Fragment>
+              <>
                 <SearchRow
                   style={{
                     marginBottom: 15,
@@ -88,24 +84,20 @@ const SearchForm: React.FC<Props> = ({ onSearch, initialValues }) => {
                     </SearchLabel>
                   </SearchLabelColumn>
                   <SearchInputColumn>
-                    <Field name="keyword">
-                      {({ input }) => (
-                        <FormField
-                          {...input}
-                          autoBlur
-                          disableDirty
-                          fieldAttributes={{
-                            label:
-                              values.contact_type === ContactTypes.PERSON
-                                ? SearchLabels.BUSINESS_ID
-                                : SearchLabels.NIN,
-                            type: FieldTypes.STRING,
-                            read_only: false,
-                          }}
-                          invisibleLabel
-                        />
-                      )}
-                    </Field>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label:
+                          values.contact_type === ContactTypes.BUSINESS
+                            ? SearchLabels.BUSINESS_ID
+                            : SearchLabels.NIN,
+                        type: FieldTypes.STRING,
+                        read_only: false,
+                      }}
+                      name="keyword"
+                      invisibleLabel
+                    />
                   </SearchInputColumn>
                 </SearchRow>
                 <Button
@@ -117,7 +109,7 @@ const SearchForm: React.FC<Props> = ({ onSearch, initialValues }) => {
                     marginBottom: "1em",
                   }}
                 />
-              </Fragment>
+              </>
             )}
           </form>
         )}
@@ -126,4 +118,4 @@ const SearchForm: React.FC<Props> = ({ onSearch, initialValues }) => {
   );
 };
 
-export default SearchForm as React.ComponentType<any>;
+export default SearchForm;

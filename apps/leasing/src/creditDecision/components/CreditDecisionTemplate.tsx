@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import CreditDecisionRequest from "@/creditDecision/components/CreditDecisionRequest";
 import CreditDecisionHistory from "@/creditDecision/components/CreditDecisionHistory";
 import { ContactTypes } from "@/contacts/enums";
@@ -9,13 +9,13 @@ type Props = {
   nin?: string;
 };
 
-const CreditDecisionTemplate = ({
+const CreditDecisionTemplate: React.FC<Props> = ({
   businessId,
   contactId,
   contactType,
   nin,
-}: Props) => (
-  <Fragment>
+}) => (
+  <>
     <CreditDecisionRequest
       contactType={contactType}
       contactId={contactId}
@@ -26,7 +26,7 @@ const CreditDecisionTemplate = ({
     {contactType !== ContactTypes.PERSON && (
       <CreditDecisionHistory contactId={contactId} businessId={businessId} />
     )}
-  </Fragment>
+  </>
 );
 
 export default CreditDecisionTemplate;
