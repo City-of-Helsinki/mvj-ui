@@ -1,7 +1,6 @@
 import React from "react";
 import classNames from "classnames";
 import type { FieldComponentProps } from "@/components/form/final-form/FormField";
-import { Field } from "redux-form";
 
 const FieldTypeTextArea = ({
   autoBlur,
