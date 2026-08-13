@@ -1,62 +1,72 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import { getFormValues, reduxForm } from "redux-form";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { debounce, flowRight, isEqual } from "lodash-es";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import { debounce, isEqual } from "lodash-es";
+import { Form, FormSpy } from "react-final-form";
+import FormField from "@/components/form/final-form/FormField";
 import SearchClearLink from "@/components/search/SearchClearLink";
 import SearchContainer from "@/components/search/SearchContainer";
-import { FieldTypes, FormNames } from "@/enums";
+import { FieldTypes } from "@/enums";
+
 type Props = {
-  formValues: Record<string, any>;
-  handleSubmit: (...args: Array<any>) => any;
-  initialize: (...args: Array<any>) => any;
-  isSearchInitialized: boolean;
   onSearch: (...args: Array<any>) => any;
   sortKey: string | null | undefined;
   sortOrder: string | null | undefined;
+  initialValues?: Record<string, any>;
 };
 
-class Search extends PureComponent<Props> {
-  _isMounted: boolean;
+const Search: React.FC<Props> = ({
+  onSearch,
+  sortKey,
+  sortOrder,
+  initialValues,
+}) => {
+  const prevFormValues = useRef(initialValues || {});
 
-  componentDidMount() {
-    this._isMounted = true;
-  }
+  useEffect(() => {
+    prevFormValues.current = initialValues || {};
+  }, [initialValues]);
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
+  const search = useCallback(
+    (values: Record<string, any>) => {
+      const newValues = { ...values };
 
-  componentDidUpdate(prevProps: Record<string, any>) {
-    const { isSearchInitialized } = this.props;
+      if (sortKey) {
+        newValues.sort_key = sortKey;
+        newValues.sort_order = sortOrder;
+      }
 
-    if (
-      isSearchInitialized &&
-      !isEqual(prevProps.formValues, this.props.formValues)
-    ) {
-      this.onSearchChange();
-    }
-  }
+      onSearch(newValues, true);
+    },
+    [onSearch, sortKey, sortOrder],
+  );
 
-  onSearchChange = debounce(() => {
-    if (!this._isMounted) return;
-    this.search();
-  }, 1000);
-  search = () => {
-    const { formValues, onSearch, sortKey, sortOrder } = this.props;
-    const newValues = { ...formValues };
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((values: Record<string, any>) => {
+        search(values);
+      }, 1000),
+    [search],
+  );
 
-    if (sortKey) {
-      newValues.sort_key = sortKey;
-      newValues.sort_order = sortOrder;
-    }
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
-    onSearch(newValues, true);
-  };
-  handleClear = () => {
-    const { onSearch, sortKey, sortOrder } = this.props;
-    const query: any = {};
+  const handleFormChange = useCallback(
+    (values: Record<string, any>) => {
+      if (!isEqual(prevFormValues.current, values)) {
+        debouncedSearch(values);
+      }
+
+      prevFormValues.current = values;
+    },
+    [debouncedSearch],
+  );
+
+  const handleClear = useCallback(() => {
+    const query: Record<string, any> = {};
 
     if (sortKey || sortOrder) {
       query.sort_key = sortKey;
@@ -64,69 +74,67 @@ class Search extends PureComponent<Props> {
     }
 
     onSearch(query, true);
-  };
+  }, [onSearch, sortKey, sortOrder]);
 
-  render() {
-    const { handleSubmit } = this.props;
-    return (
-      <SearchContainer onSubmit={handleSubmit(this.search)}>
-        <Row>
-          <Column large={12}>
-            <FormFieldLegacy
-              disableDirty
-              fieldAttributes={{
-                label: "Hae hakusanalla",
-                type: FieldTypes.SEARCH,
-                read_only: false,
-              }}
-              invisibleLabel
-              name="search"
-            />
-          </Column>
-        </Row>
-        <Row>
-          <Column small={12} medium={6}>
-            <FormFieldLegacy
-              autoBlur
-              disableDirty
-              fieldAttributes={{
-                label: "Näytä poistetut",
-                type: FieldTypes.CHECKBOX,
-                read_only: false,
-              }}
-              invisibleLabel
-              name="with_deleted"
-              overrideValues={{
-                options: [
-                  {
-                    value: true,
-                    label: "Näytä poistetut",
-                  },
-                ],
-              }}
-            />
-          </Column>
-        </Row>
-        <Row>
-          <Column small={12}>
-            <SearchClearLink onClick={this.handleClear}>
-              Tyhjennä haku
-            </SearchClearLink>
-          </Column>
-        </Row>
-      </SearchContainer>
-    );
-  }
-}
+  return (
+    <Form
+      onSubmit={search}
+      initialValues={initialValues}
+      subscription={{}}
+      render={({ handleSubmit }) => (
+        <SearchContainer onSubmit={handleSubmit}>
+          <Row>
+            <Column large={12}>
+              <FormField
+                disableDirty
+                fieldAttributes={{
+                  label: "Hae hakusanalla",
+                  type: FieldTypes.SEARCH,
+                  read_only: false,
+                }}
+                invisibleLabel
+                name="search"
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column small={12} medium={6}>
+              <FormField
+                autoBlur
+                disableDirty
+                fieldAttributes={{
+                  label: "Näytä poistetut",
+                  type: FieldTypes.CHECKBOX,
+                  read_only: false,
+                }}
+                invisibleLabel
+                name="with_deleted"
+                overrideValues={{
+                  options: [
+                    {
+                      value: true,
+                      label: "Näytä poistetut",
+                    },
+                  ],
+                }}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column small={12}>
+              <SearchClearLink onClick={handleClear}>
+                Tyhjennä haku
+              </SearchClearLink>
+            </Column>
+          </Row>
+          <FormSpy
+            subscription={{ values: true }}
+            onChange={({ values }) => handleFormChange(values)}
+          />
+        </SearchContainer>
+      )}
+    />
+  );
+};
 
-const formName = FormNames.LEASEHOLD_TRANSFER_SEARCH;
-export default flowRight(
-  connect((state) => {
-    return {
-      formValues: getFormValues(formName)(state),
-    };
-  }),
-  reduxForm({
-    form: formName,
-  }),
-)(Search) as React.ComponentType<any>;
+export default Search;
