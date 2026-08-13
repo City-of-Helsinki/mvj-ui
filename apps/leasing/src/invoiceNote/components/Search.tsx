@@ -1,66 +1,48 @@
-import React, { PureComponent } from "react";
-import { connect } from "react-redux";
-import { getFormValues, reduxForm } from "redux-form";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { flowRight, isEmpty, isEqual } from "lodash-es";
-import FormFieldLegacy from "@/components/form/FormFieldLegacy";
+import { isEmpty, isEqual } from "lodash-es";
+import { Form, FormSpy } from "react-final-form";
+import FormField from "@/components/form/final-form/FormField";
 import SearchContainer from "@/components/search/SearchContainer";
-import { FieldTypes, FormNames } from "@/enums";
+import { FieldTypes } from "@/enums";
 import { fetchServiceUnits } from "@/serviceUnits/actions";
 import {
   getServiceUnits,
   getIsFetching as getIsFetchingServiceUnits,
 } from "@/serviceUnits/selectors";
 import type { ServiceUnits } from "@/serviceUnits/types";
+
 type Props = {
-  formValues: Record<string, any>;
-  fetchServiceUnits: (...args: Array<any>) => any;
-  handleSubmit: (...args: Array<any>) => any;
-  isFetchingServiceUnits: boolean;
-  isSearchInitialized: boolean;
   onSearch: (...args: Array<any>) => any;
-  serviceUnits: ServiceUnits;
+  initialValues?: Record<string, any>;
 };
 
-class Search extends PureComponent<Props> {
-  _isMounted: boolean;
+const Search: React.FC<Props> = ({ onSearch, initialValues }) => {
+  const dispatch = useDispatch();
+  const isFetchingServiceUnits = useSelector(getIsFetchingServiceUnits);
+  const serviceUnits: ServiceUnits = useSelector(getServiceUnits);
+  const prevFormValues = useRef(initialValues || {});
 
-  componentDidMount() {
-    const { fetchServiceUnits, isFetchingServiceUnits, serviceUnits } =
-      this.props;
+  useEffect(() => {
+    prevFormValues.current = initialValues || {};
+  }, [initialValues]);
 
+  useEffect(() => {
     if (!isFetchingServiceUnits && isEmpty(serviceUnits)) {
-      fetchServiceUnits();
+      dispatch(fetchServiceUnits());
     }
+  }, [dispatch, isFetchingServiceUnits, serviceUnits]);
 
-    this._isMounted = true;
-  }
+  const search = useCallback(
+    (values: Record<string, any>) => {
+      const newValues = { ...values };
+      onSearch(newValues, true);
+    },
+    [onSearch],
+  );
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  componentDidUpdate(prevProps: Record<string, any>) {
-    const { isSearchInitialized } = this.props;
-
-    if (
-      isSearchInitialized &&
-      !isEqual(prevProps.formValues, this.props.formValues)
-    ) {
-      this.onSearchChange();
-    }
-  }
-
-  onSearchChange = () => {
-    if (!this._isMounted) return;
-    this.search();
-  };
-  search = () => {
-    const { formValues, onSearch } = this.props;
-    const newValues = { ...formValues };
-    onSearch(newValues, true);
-  };
-  getServiceUnitOptions = (): Array<Record<string, any>> => {
+  const serviceUnitOptions = useMemo((): Array<Record<string, any>> => {
     const options = [
       {
         id: "",
@@ -68,63 +50,63 @@ class Search extends PureComponent<Props> {
         label: "",
       },
     ];
-    this.props.serviceUnits.map((serviceUnit) => {
+
+    serviceUnits.forEach((serviceUnit) => {
       options.push({
-        id: serviceUnit.id,
-        value: serviceUnit.id,
+        id: serviceUnit.id.toString(),
+        value: serviceUnit.id.toString(),
         label: serviceUnit.name,
       });
     });
+
     return options;
-  };
+  }, [serviceUnits]);
 
-  render() {
-    const { handleSubmit, serviceUnits } = this.props;
+  if (!serviceUnits.length) {
+    return null;
+  }
 
-    if (!serviceUnits.length) {
-      return null;
+  const handleFormChange = (values: Record<string, any>) => {
+    if (!isEqual(prevFormValues.current, values)) {
+      search(values);
     }
 
-    return (
-      <SearchContainer onSubmit={handleSubmit(this.search)}>
-        <Row>
-          <Column large={12}>
-            <FormFieldLegacy
-              autoBlur
-              disableDirty
-              fieldAttributes={{
-                label: "Palvelukokonaisuus",
-                type: FieldTypes.CHOICE,
-                read_only: false,
-              }}
-              name="service_unit"
-              overrideValues={{
-                options: this.getServiceUnitOptions(),
-              }}
-              className="contact-search-dropdown"
-            />
-          </Column>
-        </Row>
-      </SearchContainer>
-    );
-  }
-}
+    prevFormValues.current = values;
+  };
 
-const formName = FormNames.INVOICE_NOTE_SEARCH;
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        formValues: getFormValues(formName)(state),
-        isFetchingServiceUnits: getIsFetchingServiceUnits(state),
-        serviceUnits: getServiceUnits(state),
-      };
-    },
-    {
-      fetchServiceUnits,
-    },
-  ),
-  reduxForm({
-    form: formName,
-  }),
-)(Search) as React.ComponentType<any>;
+  return (
+    <Form
+      onSubmit={search}
+      initialValues={initialValues}
+      subscription={{}}
+      render={({ handleSubmit }) => (
+        <SearchContainer onSubmit={handleSubmit}>
+          <Row>
+            <Column large={12}>
+              <FormField
+                autoBlur
+                disableDirty
+                fieldAttributes={{
+                  label: "Palvelukokonaisuus",
+                  type: FieldTypes.CHOICE,
+                  read_only: false,
+                }}
+                name="service_unit"
+                overrideValues={{
+                  options: serviceUnitOptions,
+                }}
+                className="contact-search-dropdown"
+              />
+            </Column>
+          </Row>
+          <FormSpy
+            subscription={{ values: true }}
+            onChange={({ values }) => handleFormChange(values)}
+          />
+        </SearchContainer>
+      )}
+    />
+  );
+};
+
+export default Search;
