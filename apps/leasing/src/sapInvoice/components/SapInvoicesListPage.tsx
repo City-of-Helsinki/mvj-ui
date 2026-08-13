@@ -307,7 +307,6 @@ const SapInvoicesListPage: React.FC = () => {
         <Column small={12} large={4}>
           {userActiveServiceUnit && (
             <Search
-              isSearchInitialized={true}
               onSearch={handleSearchChange}
               sortKey={sortKey}
               sortOrder={sortOrder}
