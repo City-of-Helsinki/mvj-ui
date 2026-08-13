@@ -14,7 +14,6 @@ import {
 import type { ServiceUnits } from "@/serviceUnits/types";
 
 type Props = {
-  isSearchInitialized: boolean;
   onSearch: (...args: Array<any>) => any;
   sortKey: string | null | undefined;
   sortOrder: string | null | undefined;
@@ -22,7 +21,6 @@ type Props = {
 };
 
 const Search: React.FC<Props> = ({
-  isSearchInitialized,
   onSearch,
   sortKey,
   sortOrder,
@@ -33,6 +31,10 @@ const Search: React.FC<Props> = ({
   const serviceUnits: ServiceUnits = useSelector(getServiceUnits);
 
   const prevFormValues = useRef(initialValues || {});
+
+  useEffect(() => {
+    prevFormValues.current = initialValues || {};
+  }, [initialValues]);
 
   useEffect(() => {
     if (!isFetchingServiceUnits && isEmpty(serviceUnits)) {
@@ -72,12 +74,12 @@ const Search: React.FC<Props> = ({
 
   const handleFormChange = useCallback(
     (values: Record<string, any>) => {
-      if (isSearchInitialized && !isEqual(prevFormValues.current, values)) {
+      if (!isEqual(prevFormValues.current, values)) {
         search(values);
       }
       prevFormValues.current = values;
     },
-    [isSearchInitialized, search],
+    [search],
   );
 
   if (!serviceUnits.length) {
