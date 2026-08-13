@@ -1,7 +1,7 @@
-import React, { Fragment, useEffect, useState, useCallback } from "react";
-import { connect } from "react-redux";
+import React, { Fragment, useEffect, useMemo, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router";
-import { flowRight, isEmpty } from "lodash-es";
+import { isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";
 import Divider from "@/components/content/Divider";
@@ -26,62 +26,39 @@ import {
   getIsFetching as getIsFetchingUsersPermissions,
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 
-type Props = {
-  isFetchingUsersPermissions: boolean;
-  receiveTopNavigationSettings: (...args: Array<any>) => any;
-  usersPermissions: UsersPermissionsType;
-};
-
-const CreditDecisionSearchPage: React.FC<Props> = ({
-  isFetchingUsersPermissions,
-  receiveTopNavigationSettings,
-  usersPermissions,
-}) => {
+const CreditDecisionSearchPage: React.FC = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const [contactType, setContactType] = useState<string>("");
-  const [keyword, setKeyword] = useState<string>("");
-  const [searchFormInitialValues, setSearchFormInitialValues] = useState<
-    Record<string, any>
-  >({});
+
+  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
+  const usersPermissions = useSelector(getUsersPermissions);
+
+  const query = useMemo(() => getUrlParams(location.search), [location.search]);
+  const contactType = query.contact_type || "";
+  const keyword = query.keyword || "";
+  const searchFormInitialValues = useMemo(
+    () => ({
+      contact_type: contactType,
+      keyword: keyword,
+    }),
+    [contactType, keyword],
+  );
 
   useEffect(() => {
-    const query = getUrlParams(location.search);
     setPageTitle("Asiakastieto");
-    receiveTopNavigationSettings({
-      linkUrl: getRouteById(Routes.CREDIT_DECISION),
-      pageTitle: "Asiakastieto",
-      showSearch: false,
-    });
-
-    setContactType(query.contact_type || "");
-    setKeyword(query.keyword || "");
-    setSearchFormInitialValues({
-      contact_type: query.contact_type || "",
-      keyword: query.keyword || "",
-    });
-  }, [location.search, receiveTopNavigationSettings]);
-
-  useEffect(() => {
-    const query = getUrlParams(location.search);
-    setContactType(query.contact_type || "");
-    setKeyword(query.keyword || "");
-    setSearchFormInitialValues({
-      contact_type: query.contact_type || "",
-      keyword: query.keyword || "",
-    });
-  }, [location.search]);
+    dispatch(
+      receiveTopNavigationSettings({
+        linkUrl: getRouteById(Routes.CREDIT_DECISION),
+        pageTitle: "Asiakastieto",
+        showSearch: false,
+      }),
+    );
+  }, [dispatch]);
 
   const handleSearchChange = useCallback(
     (query) => {
-      setContactType(query.contact_type);
-      setKeyword(query.keyword);
-      setSearchFormInitialValues({
-        contact_type: query.contact_type,
-        keyword: query.keyword,
-      });
       navigate({
         pathname: getRouteById(Routes.CREDIT_DECISION),
         search: getSearchQuery(query),
@@ -153,16 +130,4 @@ const CreditDecisionSearchPage: React.FC<Props> = ({
   );
 };
 
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        isFetchingUsersPermissions: getIsFetchingUsersPermissions(state),
-        usersPermissions: getUsersPermissions(state),
-      };
-    },
-    {
-      receiveTopNavigationSettings,
-    },
-  ),
-)(CreditDecisionSearchPage) as React.FC;
+export default CreditDecisionSearchPage;
