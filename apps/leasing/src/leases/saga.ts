@@ -272,40 +272,6 @@ function* createLeaseSaga({ payload }): Generator<any, any, any> {
   }
 }
 
-function* createLeaseAndUpdateCurrentLeaseSaga({
-  payload: lease,
-}): Generator<any, any, any> {
-  try {
-    const currentLease = lease.relate_to;
-    const {
-      response: { status: statusCode },
-      bodyAsJson,
-    } = yield call(createLease, lease);
-
-    switch (statusCode) {
-      case 201:
-        yield put(hideCreateModal());
-        yield put(receiveIsSaveClicked(false));
-        yield put(
-          fetchSingleLeaseAfterEdit({
-            leaseId: currentLease,
-            successMessage: "Vuokraus luotu",
-          }),
-        );
-        break;
-
-      default:
-        yield put(notFound());
-        yield put(receiveError(new Error(bodyAsJson)));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to create lease with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
 function* deleteLeaseSaga({ payload: leaseId }): Generator<any, any, any> {
   try {
     const {
@@ -749,10 +715,6 @@ export default function* (): Generator<any, any, any> {
       );
       yield takeEvery("mvj/leases/FETCH_BY_ID", fetchLeaseByIdSaga);
       yield takeLatest("mvj/leases/CREATE", createLeaseSaga);
-      yield takeLatest(
-        "mvj/leases/CREATE_AND_UPDATE",
-        createLeaseAndUpdateCurrentLeaseSaga,
-      );
       yield takeLatest("mvj/leases/DELETE", deleteLeaseSaga);
       yield takeLatest("mvj/leases/PATCH", patchLeaseSaga);
       yield takeLatest(
