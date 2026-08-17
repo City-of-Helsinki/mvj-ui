@@ -125,6 +125,18 @@ export const setRentInfoUncomplete = (
     ),
   );
 };
+export const fetchLeasesForContactAttributes = (): Generator<any, any, any> => {
+  return callApi(
+    new Request(createUrl("leases_for_contact/"), {
+      method: "OPTIONS",
+    }),
+  );
+};
+export const fetchLeasesForContact = (
+  params: Record<string, any> | null | undefined,
+): Generator<any, any, any> => {
+  return callApi(new Request(createUrl("leases_for_contact/", params)));
+};
 export const sendEmail = (
   payload: SendEmailPayload,
 ): Generator<any, any, any> => {

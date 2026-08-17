@@ -55,6 +55,8 @@ const defaultState: LeaseState = {
   isFetchingByBBox: false,
   isFetchingAttributes: false,
   isFetchingById: {},
+  isFetchingLeasesForContact: false,
+  isFetchingLeasesForContactAttributes: false,
   isFormDirtyById: {
     "basis-of-rents-form": false,
     "constructability-form": false,
@@ -68,6 +70,8 @@ const defaultState: LeaseState = {
   },
   isSaveClicked: false,
   isSaving: false,
+  leasesForContact: null,
+  leasesForContactAttributes: null,
   list: null,
   listByBBox: null,
   methods: null,

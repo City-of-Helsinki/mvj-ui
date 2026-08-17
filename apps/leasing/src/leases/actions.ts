@@ -46,9 +46,14 @@ import type {
   ShowEditModeAction,
   StartInvoicingAction,
   StopInvoicingAction,
+  FetchLeasesForContactAction,
   FetchLeasesForContractNumberAction,
+  FetchLeasesForContactAttributesAction,
   LeaseFormFlags,
+  ReceiveLeasesForContactAction,
   ReceiveLeasesForContractNumbersAction,
+  ReceiveLeasesForContactAttributesAction,
+  LeasesForContactAttributesNotFoundAction,
   CreateLease,
 } from "./types";
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -163,3 +168,21 @@ export const receiveLeasesForContractNumbers = (
   leases: LeaseList,
 ): ReceiveLeasesForContractNumbersAction =>
   createAction("mvj/leases/RECEIVE_LEASES_FOR_CONTRACT_NUMBERS")(leases);
+export const fetchLeasesForContactAttributes =
+  (): FetchLeasesForContactAttributesAction =>
+    createAction("mvj/leases/FETCH_LEASES_FOR_CONTACT_ATTRIBUTES")();
+export const receiveLeasesForContactAttributes = (
+  attributes: Attributes,
+): ReceiveLeasesForContactAttributesAction =>
+  createAction("mvj/leases/RECEIVE_LEASES_FOR_CONTACT_ATTRIBUTES")(attributes);
+export const leasesForContactAttributesNotFound =
+  (): LeasesForContactAttributesNotFoundAction =>
+    createAction("mvj/leases/LEASES_FOR_CONTACT_ATTRIBUTES_NOT_FOUND")();
+export const fetchLeasesForContact = (
+  params: Record<string, any>,
+): FetchLeasesForContactAction =>
+  createAction("mvj/leases/FETCH_LEASES_FOR_CONTACT")(params);
+export const receiveLeasesForContact = (
+  leases: LeaseList,
+): ReceiveLeasesForContactAction =>
+  createAction("mvj/leases/RECEIVE_LEASES_FOR_CONTACT")(leases);

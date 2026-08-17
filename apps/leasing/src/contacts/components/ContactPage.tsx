@@ -9,6 +9,7 @@ import ConfirmationModal from "@/components/modal/ConfirmationModal";
 import ContactAuditLog from "./ContactAuditLog";
 import ContactEdit from "./ContactEdit";
 import ContactReadonly from "./ContactReadonly";
+import ContactLeaseTable from "./ContactLeaseTable";
 import ContentContainer from "@/components/content/ContentContainer";
 import ControlButtonBar from "@/components/controlButtons/ControlButtonBar";
 import ControlButtons from "@/components/controlButtons/ControlButtons";
@@ -508,6 +509,7 @@ const ContactPageContent: React.FC<{
           ) : (
             <ContactReadonly contact={contact} />
           )}
+          <ContactLeaseTable contact={contact} />
         </ContentContainer>
       </TabPane>
 

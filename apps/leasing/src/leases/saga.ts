@@ -28,6 +28,9 @@ import {
   receiveSingleLease,
   receiveLeaseById,
   receiveLeasesForContractNumbers,
+  receiveLeasesForContact,
+  receiveLeasesForContactAttributes,
+  leasesForContactAttributesNotFound,
 } from "./actions";
 import { receiveError } from "@/api/actions";
 import {
@@ -44,6 +47,8 @@ import {
   deleteLease,
   fetchAttributes,
   fetchLeases,
+  fetchLeasesForContact,
+  fetchLeasesForContactAttributes,
   fetchSingleLease,
   patchLease,
   sendEmail,
@@ -742,7 +747,56 @@ function* copyDecisionToLeasesSaga({ payload }): Generator<any, any, any> {
     yield put(receiveError(error));
   }
 }
+function* fetchLeasesForContactAttributesSaga(): Generator<any, any, any> {
+  try {
+    const {
+      response: { status: statusCode },
+      bodyAsJson,
+    } = yield call(fetchLeasesForContactAttributes);
 
+    switch (statusCode) {
+      case 200:
+        yield put(receiveLeasesForContactAttributes(bodyAsJson.fields));
+        break;
+
+      default:
+        yield put(leasesForContactAttributesNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error(
+      'Failed to fetch leases for contact attributes with error "%s"',
+      error,
+    );
+    yield put(leasesForContactAttributesNotFound());
+    yield put(receiveError(error));
+  }
+}
+function* fetchLeasesForContactSaga({
+  payload: query,
+}): Generator<any, any, any> {
+  try {
+    const {
+      response: { status: statusCode },
+      bodyAsJson,
+    } = yield call(fetchLeasesForContact, query);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveLeasesForContact(bodyAsJson));
+        break;
+
+      case 404:
+      case 500:
+        yield put(notFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch leases for contact with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
 function* fetchLeasesForContractNumbersSaga({
   payload: query,
 }): Generator<any, any, any> {
@@ -811,6 +865,14 @@ export default function* (): Generator<any, any, any> {
       yield takeLatest(
         "mvj/leases/FETCH_LEASES_FOR_CONTRACT_NUMBERS",
         fetchLeasesForContractNumbersSaga,
+      );
+      yield takeLatest(
+        "mvj/leases/FETCH_LEASES_FOR_CONTACT",
+        fetchLeasesForContactSaga,
+      );
+      yield takeLatest(
+        "mvj/leases/FETCH_LEASES_FOR_CONTACT_ATTRIBUTES",
+        fetchLeasesForContactAttributesSaga,
       );
     }),
   ]);
