@@ -65,7 +65,6 @@ const isSavingReducer: Reducer<boolean> = handleActions(
   {
     "mvj/leases/DELETE": () => true,
     "mvj/leases/PATCH": () => true,
-    "mvj/leases/CREATE_AND_UPDATE": () => true,
     "mvj/leases/PATCH_INVOICE_NOTES": () => true,
     "mvj/leases/START_INVOICING": () => true,
     "mvj/leases/STOP_INVOICING": () => true,

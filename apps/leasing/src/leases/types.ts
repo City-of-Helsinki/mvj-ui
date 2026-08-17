@@ -266,7 +266,6 @@ export type ReceiveSingleLeaseAction = Action<string, Lease>;
 export type FetchLeaseByIdAction = Action<string, LeaseId>;
 export type ReceiveLeaseByIdAction = Action<string, Lease>;
 export type CreateLeaseAction = Action<string, Lease>;
-export type CreateLeaseAndUpdateCurrentLeaseAction = Action<string, Lease>;
 export type DeleteLeaseAction = Action<string, LeaseId>;
 export type PatchLeaseAction = Action<string, Lease>;
 export type PatchLeaseInvoiceNotesAction = Action<string, Lease>;

@@ -4,7 +4,6 @@ import {
   copyDecisionToLeases,
   createCharge,
   createLease,
-  createLeaseAndUpdateCurrentLease,
   deleteLease,
   fetchAttributes,
   fetchLeaseById,
@@ -195,17 +194,6 @@ describe("Leases", () => {
         };
         const newState = { ...defaultState, isFetching: true };
         const state = leasesReducer({}, createLease(dummyLease));
-        expect(state).to.deep.equal(newState);
-      });
-      it("should update isSaving flag to true when creating new lease and updating current lease", () => {
-        const dummyLease = {
-          foo: "bar",
-        };
-        const newState = { ...defaultState, isSaving: true };
-        const state = leasesReducer(
-          {},
-          createLeaseAndUpdateCurrentLease(dummyLease),
-        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true when editing lease", () => {

@@ -6,7 +6,6 @@ import type {
   CreateChargeAction,
   CreateChargePayload,
   CreateLeaseAction,
-  CreateLeaseAndUpdateCurrentLeaseAction,
   DeleteLeaseAction,
   FetchAttributesAction,
   FetchLeaseByIdAction,
@@ -84,10 +83,6 @@ export const receiveLeaseById = (lease: Lease): ReceiveLeaseByIdAction =>
   createAction("mvj/leases/RECEIVE_BY_ID")(lease);
 export const createLease = (lease: CreateLease): CreateLeaseAction =>
   createAction("mvj/leases/CREATE")(lease);
-export const createLeaseAndUpdateCurrentLease = (
-  lease: Lease,
-): CreateLeaseAndUpdateCurrentLeaseAction =>
-  createAction("mvj/leases/CREATE_AND_UPDATE")(lease);
 export const deleteLease = (leaseId: LeaseId): DeleteLeaseAction =>
   createAction("mvj/leases/DELETE")(leaseId);
 export const patchLease = (lease: Lease): PatchLeaseAction =>
