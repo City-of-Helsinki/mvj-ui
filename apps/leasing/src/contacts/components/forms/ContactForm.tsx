@@ -28,7 +28,7 @@ import { getAttributes, getIsSaveClicked } from "@/contacts/selectors";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 
 import type { FormApi } from "final-form";
-import type { Contact, ContactsActiveLease } from "@/contacts/types";
+import type { Contact } from "@/contacts/types";
 
 type Props = {
   initialValues?: Partial<Contact>;
@@ -645,31 +645,6 @@ const ContactForm: React.FC<Props> = ({
                     enableUiDataEdit
                     uiDataKey={getUiDataContactKey(ContactFieldPaths.NOTE)}
                   />
-                </Authorization>
-              </Column>
-            </Row>
-            <Row>
-              <Column small={12} medium={6} large={4}>
-                <Authorization
-                  allow={isFieldAllowedToRead(
-                    attributes,
-                    ContactFieldPaths.ACTIVE_LEASES,
-                  )}
-                >
-                  <>
-                    <FormTextTitle
-                      uiDataKey={getUiDataContactKey(
-                        ContactFieldPaths.ACTIVE_LEASES,
-                      )}
-                    >
-                      {ContactFieldTitles.ACTIVE_LEASES}
-                    </FormTextTitle>
-                    <FormText>
-                      {(initialValues.contacts_active_leases || [])
-                        .map((val: ContactsActiveLease) => val.lease_identifier)
-                        .join(", ") || "-"}
-                    </FormText>
-                  </>
                 </Authorization>
               </Column>
             </Row>

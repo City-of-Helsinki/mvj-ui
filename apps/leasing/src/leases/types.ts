@@ -38,6 +38,10 @@ export type LeaseState = {
   methods: Methods;
   leasesForContractNumbers: LeaseList;
   isFetchingLeasesForContractNumbers: boolean;
+  leasesForContact: LeaseList;
+  isFetchingLeasesForContact: boolean;
+  leasesForContactAttributes: Attributes;
+  isFetchingLeasesForContactAttributes: boolean;
 };
 export type Lease = {
   id: number;
@@ -296,6 +300,14 @@ export type FetchLeasesForContractNumberAction = Action<
   Record<string, any>
 >;
 export type ReceiveLeasesForContractNumbersAction = Action<string, LeaseList>;
+export type FetchLeasesForContactAction = Action<string, Record<string, any>>;
+export type ReceiveLeasesForContactAction = Action<string, LeaseList>;
+export type FetchLeasesForContactAttributesAction = Action<string, void>;
+export type ReceiveLeasesForContactAttributesAction = Action<
+  string,
+  Attributes
+>;
+export type LeasesForContactAttributesNotFoundAction = Action<string, void>;
 export type DueDate = {
   id: number;
   day: number;
