@@ -2,17 +2,23 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveError } from "@/api/actions";
 import { fetchSingleLeaseAfterEdit } from "@/leases/actions";
-import { displayUIMessage } from "@/util/helpers";
 import {
   createRelatedLease,
   createRelatedPlotApplication,
   deleteReleatedLease,
   deleteRelatedPlotApplication,
 } from "./requests";
+import type {
+  CreateRelatedLeasePayload,
+  CreateRelatedPlotApplicationPayload,
+  DeleteRelatedLeasePayload,
+  DeleteRelatedPlotApplicationPayload,
+} from "./types";
 
 function* createReleatedLeaseSaga({
   payload,
-  type: any,
+}: {
+  payload: CreateRelatedLeasePayload;
 }): Generator<any, any, any> {
   try {
     const {
@@ -25,13 +31,7 @@ function* createReleatedLeaseSaga({
         yield put(
           fetchSingleLeaseAfterEdit({
             leaseId: payload.from_lease,
-            callbackFunctions: [
-              () =>
-                displayUIMessage({
-                  title: "",
-                  body: "Vuokraustunnusten välinen liitos luotu",
-                }),
-            ],
+            successMessage: "Vuokraustunnusten välinen liitos luotu",
           }),
         );
         break;
@@ -48,7 +48,8 @@ function* createReleatedLeaseSaga({
 
 function* deleteReleatedLeaseSaga({
   payload,
-  type: any,
+}: {
+  payload: DeleteRelatedLeasePayload;
 }): Generator<any, any, any> {
   try {
     const {
@@ -61,13 +62,7 @@ function* deleteReleatedLeaseSaga({
         yield put(
           fetchSingleLeaseAfterEdit({
             leaseId: payload.leaseId,
-            callbackFunctions: [
-              () =>
-                displayUIMessage({
-                  title: "",
-                  body: "Vuokraustunnusten välinen liitos poistettu",
-                }),
-            ],
+            successMessage: "Vuokraustunnusten välinen liitos poistettu",
           }),
         );
         break;
@@ -84,7 +79,8 @@ function* deleteReleatedLeaseSaga({
 
 function* createRelatedPlotApplicationSaga({
   payload,
-  type: any,
+}: {
+  payload: CreateRelatedPlotApplicationPayload;
 }): Generator<any, any, any> {
   try {
     const {
@@ -97,13 +93,7 @@ function* createRelatedPlotApplicationSaga({
         yield put(
           fetchSingleLeaseAfterEdit({
             leaseId: payload.lease,
-            callbackFunctions: [
-              () =>
-                displayUIMessage({
-                  title: "",
-                  body: "Liitos luotu",
-                }),
-            ],
+            successMessage: "Liitos luotu",
           }),
         );
         break;
@@ -114,7 +104,7 @@ function* createRelatedPlotApplicationSaga({
     }
   } catch (error) {
     console.error(
-      'Failed to delete related plot application with error "%s"',
+      'Failed to create related plot application with error "%s"',
       error,
     );
     yield put(receiveError(error));
@@ -123,7 +113,8 @@ function* createRelatedPlotApplicationSaga({
 
 function* deleteRelatedPlotApplicationSaga({
   payload,
-  type: string,
+}: {
+  payload: DeleteRelatedPlotApplicationPayload;
 }): Generator<any, any, any> {
   try {
     const {
@@ -136,13 +127,7 @@ function* deleteRelatedPlotApplicationSaga({
         yield put(
           fetchSingleLeaseAfterEdit({
             leaseId: payload.leaseId,
-            callbackFunctions: [
-              () =>
-                displayUIMessage({
-                  title: "",
-                  body: "Liitos poistettu",
-                }),
-            ],
+            successMessage: "Liitos poistettu",
           }),
         );
         break;

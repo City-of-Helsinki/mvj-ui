@@ -53,6 +53,7 @@ import {
   setRentInfoUncomplete,
 } from "./requests";
 import { getCurrentLease } from "./selectors";
+import type { SendEmailPayload } from "./types";
 import { editSingleAreaSearchRequest } from "@/areaSearch/requests";
 import { AreaSearchState } from "@/plotSearch/enums";
 
@@ -161,7 +162,6 @@ function* fetchSingleLeaseSaga({ payload: id }): Generator<any, any, any> {
 
 function* fetchSingleLeaseAfterEditSaga({ payload }): Generator<any, any, any> {
   try {
-    const callbackFunctions = payload.callbackFunctions;
     const {
       response: { status: statusCode },
       bodyAsJson,
@@ -170,22 +170,9 @@ function* fetchSingleLeaseAfterEditSaga({ payload }): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
-
-        if (callbackFunctions) {
-          for (let i = 0; i < callbackFunctions.length; i++) {
-            switch (typeof callbackFunctions[i]) {
-              case "function":
-                // Functions
-                callbackFunctions[i]();
-                break;
-
-              case "object":
-                // Redux saga functions
-                yield put(callbackFunctions[i]);
-            }
-          }
+        if (payload.successMessage) {
+          displayUIMessage({ title: "", body: payload.successMessage });
         }
-
         break;
 
       case 404:
@@ -297,18 +284,12 @@ function* createLeaseAndUpdateCurrentLeaseSaga({
 
     switch (statusCode) {
       case 201:
+        yield put(hideCreateModal());
+        yield put(receiveIsSaveClicked(false));
         yield put(
           fetchSingleLeaseAfterEdit({
             leaseId: currentLease,
-            callbackFunctions: [
-              hideCreateModal(),
-              receiveIsSaveClicked(false),
-              () =>
-                displayUIMessage({
-                  title: "",
-                  body: "Vuokraus luotu",
-                }),
-            ],
+            successMessage: "Vuokraus luotu",
           }),
         );
         break;
@@ -378,18 +359,12 @@ function* patchLeaseSaga({ payload: lease }): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
+        yield put(hideEditMode());
+        yield put(receiveIsSaveClicked(false));
         yield put(
           fetchSingleLeaseAfterEdit({
             leaseId: lease.id,
-            callbackFunctions: [
-              hideEditMode(),
-              receiveIsSaveClicked(false),
-              () =>
-                displayUIMessage({
-                  title: "",
-                  body: "Vuokraus tallennettu",
-                }),
-            ],
+            successMessage: "Vuokraus tallennettu",
           }),
         );
         break;
@@ -429,18 +404,12 @@ function* patchLeaseInvoiceNotesSaga({
 
     switch (statusCode) {
       case 200:
+        yield put(hideEditMode());
+        yield put(receiveIsSaveClicked(false));
         yield put(
           fetchSingleLeaseAfterEdit({
             leaseId: lease.id,
-            callbackFunctions: [
-              hideEditMode(),
-              receiveIsSaveClicked(false),
-              () =>
-                displayUIMessage({
-                  title: "",
-                  body: "Laskujen tiedotteet tallennettu",
-                }),
-            ],
+            successMessage: "Laskujen tiedotteet tallennettu",
           }),
         );
         break;
@@ -480,7 +449,11 @@ function* patchLeaseInvoiceNotesSaga({
   }
 }
 
-function* sendEmailSaga({ payload }): Generator<any, any, any> {
+function* sendEmailSaga({
+  payload,
+}: {
+  payload: SendEmailPayload;
+}): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -492,13 +465,7 @@ function* sendEmailSaga({ payload }): Generator<any, any, any> {
         yield put(
           fetchSingleLeaseAfterEdit({
             leaseId: payload.lease,
-            callbackFunctions: [
-              () =>
-                displayUIMessage({
-                  title: "",
-                  body: "Sähköposti lähetetty",
-                }),
-            ],
+            successMessage: "Sähköposti lähetetty",
           }),
         );
         break;
