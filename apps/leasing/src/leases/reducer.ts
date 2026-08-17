@@ -18,7 +18,9 @@ import type {
   ReceiveIsSaveClickedAction,
   ReceiveIsCreateClickedAction,
   ReceiveCollapseStatesAction,
+  ReceiveLeasesForContactAction,
   ReceiveLeasesForContractNumbersAction,
+  ReceiveLeasesForContactAttributesAction,
   LeaseFormFlags,
 } from "@/leases/types";
 const isAttachDecisionModalOpenReducer: Reducer<boolean> = handleActions(
@@ -261,6 +263,45 @@ const isFetchingLeasesForContractNumbersReducer: Reducer<boolean> =
     },
     false,
   );
+const leasesForContactAttributesReducer: Reducer<Attributes> = handleActions(
+  {
+    ["mvj/leases/RECEIVE_LEASES_FOR_CONTACT_ATTRIBUTES"]: (
+      state: Attributes,
+      { payload: attributes }: ReceiveLeasesForContactAttributesAction,
+    ) => {
+      return attributes;
+    },
+  },
+  null,
+);
+const isFetchingLeasesForContactAttributesReducer: Reducer<boolean> =
+  handleActions(
+    {
+      "mvj/leases/FETCH_LEASES_FOR_CONTACT_ATTRIBUTES": () => true,
+      "mvj/leases/RECEIVE_LEASES_FOR_CONTACT_ATTRIBUTES": () => false,
+      "mvj/leases/LEASES_FOR_CONTACT_ATTRIBUTES_NOT_FOUND": () => false,
+    },
+    false,
+  );
+const leasesForContactReducer: Reducer<LeaseList> = handleActions(
+  {
+    ["mvj/leases/RECEIVE_LEASES_FOR_CONTACT"]: (
+      state: LeaseList,
+      { payload: leases }: ReceiveLeasesForContactAction,
+    ) => {
+      return leases;
+    },
+  },
+  null,
+);
+const isFetchingLeasesForContactReducer: Reducer<boolean> = handleActions(
+  {
+    "mvj/leases/FETCH_LEASES_FOR_CONTACT": () => true,
+    "mvj/leases/RECEIVE_LEASES_FOR_CONTACT": () => false,
+    "mvj/leases/NOT_FOUND": () => false,
+  },
+  false,
+);
 export default combineReducers<Record<string, any>, any>({
   attributes: attributesReducer,
   byId: byIdReducer,
@@ -282,4 +323,9 @@ export default combineReducers<Record<string, any>, any>({
   methods: methodsReducer,
   leasesForContractNumbers: leasesForContractNumbersReducer,
   isFetchingLeasesForContractNumbers: isFetchingLeasesForContractNumbersReducer,
+  leasesForContact: leasesForContactReducer,
+  isFetchingLeasesForContact: isFetchingLeasesForContactReducer,
+  leasesForContactAttributes: leasesForContactAttributesReducer,
+  isFetchingLeasesForContactAttributes:
+    isFetchingLeasesForContactAttributesReducer,
 });

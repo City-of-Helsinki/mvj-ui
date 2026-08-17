@@ -38,6 +38,10 @@ import {
   fetchLeasesForContractNumber,
   receiveLeasesForContractNumbers,
   receiveIsCreateClicked,
+  fetchLeasesForContact,
+  receiveLeasesForContact,
+  fetchLeasesForContactAttributes,
+  receiveLeasesForContactAttributes,
 } from "./actions";
 import leasesReducer from "./reducer";
 import type { LeaseState } from "./types";
@@ -54,6 +58,8 @@ const defaultState: LeaseState = {
   isFetchingByBBox: false,
   isFetchingAttributes: false,
   isFetchingById: {},
+  isFetchingLeasesForContact: false,
+  isFetchingLeasesForContactAttributes: false,
   isFormDirtyById: {
     "basis-of-rents-form": false,
     "constructability-form": false,
@@ -67,6 +73,8 @@ const defaultState: LeaseState = {
   },
   isSaveClicked: false,
   isSaving: false,
+  leasesForContact: null,
+  leasesForContactAttributes: null,
   list: null,
   listByBBox: null,
   methods: null,
@@ -393,6 +401,49 @@ describe("Leases", () => {
           receiveCollapseStates({
             foo2: "bar2",
           }),
+        );
+        expect(state).to.deep.equal(newState);
+      });
+      it("should update isFetchingLeasesForContact flag to true when fetching leases for contact", () => {
+        const newState = {
+          ...defaultState,
+          isFetchingLeasesForContact: true,
+        };
+        const state = leasesReducer({}, fetchLeasesForContact({ test: "" }));
+        expect(state).to.deep.equal(newState);
+      });
+      it("should update leasesForContact", () => {
+        const dummyLeaseList = {
+          count: 0,
+          next: null,
+          previous: null,
+          results: [],
+        };
+        const newState = { ...defaultState };
+        newState.leasesForContact = dummyLeaseList;
+        const state = leasesReducer(
+          {},
+          receiveLeasesForContact(dummyLeaseList),
+        );
+        expect(state).to.deep.equal(newState);
+      });
+      it("should update isFetchingLeasesForContactAttributes flag to true when fetching leases for contact attributes", () => {
+        const newState = {
+          ...defaultState,
+          isFetchingLeasesForContactAttributes: true,
+        };
+        const state = leasesReducer({}, fetchLeasesForContactAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+      it("should update leasesForContactAttributes", () => {
+        const dummyAttributes = {
+          foo: "bar",
+        };
+        const newState = { ...defaultState };
+        newState.leasesForContactAttributes = dummyAttributes;
+        const state = leasesReducer(
+          {},
+          receiveLeasesForContactAttributes(dummyAttributes),
         );
         expect(state).to.deep.equal(newState);
       });
