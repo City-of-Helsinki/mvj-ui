@@ -168,9 +168,7 @@ export type CreateChargePayload = {
 };
 export type FetchSingleLeaseAfterEditPayload = {
   leaseId: LeaseId;
-  callbackFunctions?: Array<
-    Record<string, any> | ((...args: Array<any>) => any)
-  >;
+  successMessage?: string;
 };
 export type CreateLeasePayload = Partial<
   Pick<Lease, "type" | "state" | "reference_number" | "application_metadata">

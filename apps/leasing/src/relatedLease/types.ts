@@ -6,16 +6,16 @@ export type CreateRelatedLeasePayload = {
 };
 export type DeleteRelatedLeasePayload = {
   id: number;
-  leaseId: number;
+  leaseId: LeaseId;
 };
 export type CreateRelatedPlotApplicationPayload = {
   object_id: number;
   content_type_model: number;
-  lease: number;
+  lease: LeaseId;
 };
 export type DeleteRelatedPlotApplicationPayload = {
   id: number;
-  leaseId: number;
+  leaseId: LeaseId;
 };
 export type CreateRelatedLeaseAction = Action<
   string,

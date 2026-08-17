@@ -2,15 +2,19 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { fetchSingleLeaseAfterEdit } from "@/leases/actions";
 import { receiveError } from "@/api/actions";
-import { displayUIMessage } from "@/util/helpers";
 import {
   createLeaseAreaAttachment,
   deleteLeaseAreaAttachment,
 } from "./requests";
+import type {
+  CreateLeaseAreaAttachmentPayload,
+  DeleteLeaseAreaAttachmentPayload,
+} from "./types";
 
 function* createLeaseAreaAttachmentSaga({
   payload,
-  type: any,
+}: {
+  payload: CreateLeaseAreaAttachmentPayload;
 }): Generator<any, any, any> {
   try {
     const {
@@ -23,13 +27,7 @@ function* createLeaseAreaAttachmentSaga({
         yield put(
           fetchSingleLeaseAfterEdit({
             leaseId: payload.lease,
-            callbackFunctions: [
-              () =>
-                displayUIMessage({
-                  title: "",
-                  body: "Tiedosto lisätty",
-                }),
-            ],
+            successMessage: "Tiedosto lisätty",
           }),
         );
         break;
@@ -46,7 +44,8 @@ function* createLeaseAreaAttachmentSaga({
 
 function* deleteLeaseAreaAttachmentSaga({
   payload,
-  type: any,
+}: {
+  payload: DeleteLeaseAreaAttachmentPayload;
 }): Generator<any, any, any> {
   try {
     const {
@@ -59,13 +58,7 @@ function* deleteLeaseAreaAttachmentSaga({
         yield put(
           fetchSingleLeaseAfterEdit({
             leaseId: payload.lease,
-            callbackFunctions: [
-              () =>
-                displayUIMessage({
-                  title: "",
-                  body: "Tiedosto poistettu",
-                }),
-            ],
+            successMessage: "Tiedosto poistettu",
           }),
         );
         break;
