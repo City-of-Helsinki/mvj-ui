@@ -36,7 +36,6 @@ import { TENANT_CONTACT_TYPE_LABELS } from "../constants";
 
 import type { Attributes } from "@/types";
 import type { Contact } from "@/contacts/types";
-import type { TableProps } from "hds-react";
 
 const joinContactRoles = (roles: string[]): string => {
   if (!roles || roles.length === 0) {
