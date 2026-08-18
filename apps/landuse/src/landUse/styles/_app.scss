@@ -12,6 +12,12 @@ body {
   background-color: hds.$color-white;
   min-height: 100vh;
   padding: 0;
+
+  // Make input labels bold
+  label,
+  legend {
+    font-weight: 700;
+  }
 }
 
 .full-width {
@@ -37,9 +43,3 @@ body {
 [class*="table_hds-table-container"] {
   overflow-x: visible;
 }
-
-// [class*="Accordion"] {
-// background-color: whitesmoke;
-// padding: hds.$spacing-xs;
-// margin-bottom: hds.$spacing-s;
-// }
