@@ -44,6 +44,7 @@ const isSavingReducer: Reducer<boolean> = handleActions(
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions(
   {
     "mvj/contacts/FETCH_ATTRIBUTES": () => true,
+    "mvj/contacts/RECEIVE_ATTRIBUTES": () => false,
     "mvj/contacts/RECEIVE_METHODS": () => false,
     "mvj/contacts/ATTRIBUTES_NOT_FOUND": () => false,
   },
