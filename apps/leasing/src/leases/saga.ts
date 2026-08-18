@@ -105,6 +105,10 @@ function* fetchLeasesSaga({ payload: query }): Generator<any, any, any> {
       case 500:
         yield put(notFound());
         break;
+
+      default:
+        yield put(notFound());
+        break;
     }
   } catch (error) {
     console.error('Failed to fetch leases with error "%s"', error);
