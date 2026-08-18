@@ -1,6 +1,7 @@
-import { Link, Table } from "hds-react";
-import React, { useEffect, useMemo, useState } from "react";
+import { Link, Pagination, Table } from "hds-react";
+import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router";
 
 import GreenBox from "@/components/content/GreenBox";
 import PageContainerHDS from "@/components/content/PageContainerHDS";
@@ -21,7 +22,15 @@ import {
   getLeasesForContactAttributes,
 } from "@/leases/selectors";
 import { getRouteById, Routes } from "@/root/routes";
-import { isFieldAllowedToRead } from "@/util/helpers";
+import {
+  getApiResponseCount,
+  getApiResponseMaxPage,
+  getApiResponseResults,
+  getSearchQuery,
+  getUrlParams,
+  isFieldAllowedToRead,
+} from "@/util/helpers";
+import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 
 import { TENANT_CONTACT_TYPE_LABELS } from "../constants";
 
@@ -45,7 +54,7 @@ const sortContactRoles = (roles: string[]): string[] => {
     TenantContactType.BILLING,
     TenantContactType.CONTACT,
   ];
-  return roles.sort(
+  return [...roles].sort(
     (a, b) =>
       (typeOrder.indexOf(a) + 1 || Infinity) -
       (typeOrder.indexOf(b) + 1 || Infinity),
@@ -61,6 +70,9 @@ type ContactLease = {
   has_overdue_invoices: boolean;
 };
 
+const DEFAULT_SORT_KEY = "lease_id";
+const DEFAULT_SORT_ORDER = "asc";
+
 type Props = {
   contact: Contact;
 };
@@ -70,8 +82,9 @@ const getLeaseDetailsHref = (rowId: number | string) => {
 };
 
 const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
-  const [sortKey, setSortKey] = useState<string>("id");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const isFetchingAttributes = useSelector(
     getIsFetchingLeasesForContactAttributes,
@@ -80,7 +93,14 @@ const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
   const isFetchingLeases = useSelector(getIsFetchingLeasesForContact);
   const leasesForContact = useSelector(getLeasesForContact);
 
-  const dispatch = useDispatch();
+  const queryParams = useMemo(
+    () => getUrlParams(location.search),
+    [location.search],
+  );
+  const sortKey = queryParams.sort_key || DEFAULT_SORT_KEY;
+  const sortOrder = (queryParams.sort_order || DEFAULT_SORT_ORDER) as
+    "asc" | "desc";
+  const activePage = queryParams.page ? Number(queryParams.page) : 1;
 
   useEffect(() => {
     if (!attributes && !isFetchingAttributes) {
@@ -89,26 +109,44 @@ const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
   }, [dispatch, attributes, isFetchingAttributes]);
 
   useEffect(() => {
-    dispatch(fetchLeasesForContact({ contact: contact.id, limit: 10000 }));
-  }, [dispatch, contact.id]);
+    const offset = (activePage - 1) * LIST_TABLE_PAGE_SIZE;
+    dispatch(
+      fetchLeasesForContact({
+        contact: contact.id,
+        limit: LIST_TABLE_PAGE_SIZE,
+        offset: offset,
+      }),
+    );
+  }, [dispatch, contact.id, activePage]);
 
   const handleSortingChange = (
     order: "asc" | "desc",
     columnKey: string,
     handleSort: () => void,
   ): void => {
-    setSortKey(columnKey);
-    setSortOrder(order);
+    const searchQuery = getUrlParams(location.search);
+
     handleSort();
+
+    searchQuery.sort_key = columnKey;
+    searchQuery.sort_order = order;
+    delete searchQuery.page;
+
+    navigate({
+      pathname: location.pathname,
+      search: getSearchQuery(searchQuery),
+    });
   };
 
   const tableColumns = useMemo(() => {
-    const cols: TableProps["cols"] = [];
     if (
-      attributes &&
-      isFieldAllowedToRead(attributes, LeaseFieldPaths.IDENTIFIER)
+      !attributes ||
+      !isFieldAllowedToRead(attributes, LeaseFieldPaths.IDENTIFIER)
     ) {
-      cols.push({
+      return [];
+    }
+    return [
+      {
         key: "lease_identifier",
         headerName: LeaseFieldTitles.IDENTIFIER,
         isSortable: true,
@@ -120,47 +158,50 @@ const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
             {row.lease_identifier}
           </Link>
         ),
-      });
-    }
-    cols.push({
-      key: "is_active",
-      headerName: "Vuokraus voimassa",
-      isSortable: true,
-      transform: ({ is_active }: { is_active: boolean }) =>
-        is_active ? "Kyllä" : "-",
-    });
-    cols.push({
-      key: "roles",
-      headerName: "Rooli",
-      isSortable: true,
-    });
-    cols.push({
-      key: "contact_role_active",
-      headerName: "Rooli voimassa",
-      isSortable: true,
-      transform: ({ contact_role_active }: { contact_role_active: boolean }) =>
-        contact_role_active ? "Kyllä" : "-",
-    });
-    cols.push({
-      key: "has_overdue_invoices",
-      headerName: "Vuokrarästejä",
-      isSortable: true,
-      transform: ({
-        has_overdue_invoices,
-      }: {
-        has_overdue_invoices: boolean;
-      }) =>
-        has_overdue_invoices ? (
-          <strong style={{ color: "var(--color-error)" }}>Kyllä</strong>
-        ) : (
-          "-"
-        ),
-    });
-    return cols;
+      },
+      {
+        key: "is_active",
+        headerName: "Vuokraus voimassa",
+        isSortable: true,
+        transform: ({ is_active }: { is_active: boolean }) =>
+          is_active ? "Kyllä" : "-",
+      },
+      {
+        key: "roles",
+        headerName: "Rooli",
+        isSortable: true,
+      },
+      {
+        key: "contact_role_active",
+        headerName: "Rooli voimassa",
+        isSortable: true,
+        transform: ({
+          contact_role_active,
+        }: {
+          contact_role_active: boolean;
+        }) => (contact_role_active ? "Kyllä" : "-"),
+      },
+      {
+        key: "has_overdue_invoices",
+        headerName: "Vuokrarästejä",
+        isSortable: true,
+        transform: ({
+          has_overdue_invoices,
+        }: {
+          has_overdue_invoices: boolean;
+        }) =>
+          has_overdue_invoices ? (
+            <strong style={{ color: "var(--color-error)" }}>Kyllä</strong>
+          ) : (
+            "-"
+          ),
+      },
+    ];
   }, [attributes]);
 
   const tableRows = useMemo(() => {
-    const leases: ContactLease[] = leasesForContact?.results ?? [];
+    const leases: ContactLease[] =
+      getApiResponseResults(leasesForContact) ?? [];
     return leases.map((lease) => ({
       lease_id: lease.id,
       lease_identifier: lease.identifier.identifier,
@@ -171,6 +212,22 @@ const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
     }));
   }, [leasesForContact]);
 
+  const count = getApiResponseCount(leasesForContact);
+  const maxPage = getApiResponseMaxPage(leasesForContact, LIST_TABLE_PAGE_SIZE);
+
+  const handlePageClick = (page: number) => {
+    const query = getUrlParams(location.search);
+    if (page > 1) {
+      query.page = page;
+    } else {
+      delete query.page;
+    }
+    navigate({
+      pathname: location.pathname,
+      search: getSearchQuery(query),
+    });
+  };
+
   if (isFetchingAttributes || !attributes || isFetchingLeases)
     return (
       <PageContainerHDS>
@@ -180,6 +237,7 @@ const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
 
   return (
     <GreenBox>
+      <span>{isFetchingLeases ? "Ladataan..." : `Löytyi ${count} kpl`}</span>
       <Table
         ariaLabelSortButtonUnset="Ei järjestetty"
         ariaLabelSortButtonAscending="Järjestä nousevasti"
@@ -194,6 +252,18 @@ const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
         initialSortingOrder={sortOrder}
         key={`${sortKey}-${sortOrder}`}
         dense
+      />
+      <Pagination
+        language="fi"
+        onChange={(event, index) => {
+          event.preventDefault();
+          handlePageClick(index + 1);
+        }}
+        pageCount={maxPage || 1}
+        pageHref={() => "#"}
+        pageIndex={activePage - 1}
+        paginationAriaLabel={`Sivuvalitsin, ${activePage} / ${maxPage}`}
+        siblingCount={5}
       />
     </GreenBox>
   );
