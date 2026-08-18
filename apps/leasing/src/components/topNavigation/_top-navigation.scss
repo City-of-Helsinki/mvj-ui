@@ -11,7 +11,7 @@
   align-items: center;
   justify-content: space-between;
   height: rem-calc(60px);
-  font-family: variables.$font-family-helsinki-grotesk;
+  font-family: variables.$font-family-source;
   font-weight: 600;
   font-size: rem-calc(20px);
   padding: 0 rem-calc(20px);
@@ -49,7 +49,7 @@
       padding: 0 rem-calc(20px);
       line-height: rem-calc(60px);
       background-color: variables.$blue;
-      font-family: variables.$font-family-helsinki-grotesk;
+      font-family: variables.$font-family-source;
       font-weight: 600;
       outline-offset: -2px !important;
       cursor: pointer;
@@ -106,7 +106,7 @@
         color: variables.$blue;
         font-weight: variables.$semibold;
         font-size: rem-calc(16px);
-        font-family: variables.$font-family-helsinki-grotesk;
+        font-family: variables.$font-family-source;
         margin: 0;
         cursor: pointer;
 

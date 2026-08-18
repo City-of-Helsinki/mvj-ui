@@ -1,7 +1,6 @@
 @use "hds-design-tokens/lib/all" as hds;
 
-$font-family-helsinki-grotesk: "HelsinkiGrotesk", Arial, "Liberation Sans";
-$font-family-source: "HelsinkiGrotesk", Arial, "Liberation Sans";
+$font-family-source: hds.$font-default;
 
 /// @type Font
 $body-font-family: $font-family-source;
