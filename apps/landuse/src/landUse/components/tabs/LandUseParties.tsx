@@ -8,6 +8,7 @@ import {
   ButtonVariant,
   IconPlusCircleFill,
   Fieldset,
+  StepByStep,
 } from "hds-react";
 import { Form, Field } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
@@ -15,7 +16,6 @@ import { FormApi } from "final-form";
 import {
   getFieldTextValue,
   normalizeSelectValue,
-  readOnlyTextValue,
   getOptionsDisplayValue,
 } from "../../utils/fieldUtils";
 import { createEmptyPartyEntry } from "../../api/landUseFormValues";
@@ -553,373 +553,415 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                             </div>
                           )}
 
-                          <h3>Sopimusosapuoli</h3>
-                          <Fieldset heading="" className="full-width">
-                            <div className="landuse-grid">
-                              <div className="landuse-grid__column-3">
-                                <Field
-                                  name={`${fieldName}.party.details.partyRole`}
-                                >
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <Select
-                                        id={`party-${index}-role`}
-                                        texts={{
-                                          label: "Rooli",
-                                          placeholder: "Valitse rooli",
-                                        }}
-                                        options={partyRoleOptions}
-                                        value={normalizeSelectValue(
-                                          input.value,
-                                        )}
-                                        onChange={(selected) =>
-                                          handleSelectChange(
-                                            selected,
-                                            input.onChange,
-                                          )
-                                        }
-                                        required
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`party-${index}-role`}
-                                        label="Rooli"
-                                        value={getOptionsDisplayValue(
-                                          input.value,
-                                          partyRoleOptions,
-                                        )}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
-
-                              <div className="landuse-grid__column-3">
-                                <Field
-                                  name={`${fieldName}.party.details.partyType`}
-                                >
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <Select
-                                        id={`party-${index}-type`}
-                                        texts={{
-                                          label: "Asiakastyyppi",
-                                          placeholder: "Valitse asiakastyyppi",
-                                        }}
-                                        options={partyTypeOptions}
-                                        value={normalizeSelectValue(
-                                          input.value,
-                                        )}
-                                        onChange={(selected) =>
-                                          handleSelectChange(
-                                            selected,
-                                            input.onChange,
-                                          )
-                                        }
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`party-${index}-type`}
-                                        label="Asiakastyyppi"
-                                        value={getOptionsDisplayValue(
-                                          input.value,
-                                          partyTypeOptions,
-                                        )}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
-
-                              {partyEntry?.party?.details?.partyType ===
-                                "yritys" && (
-                                <CompanyPartyForm
-                                  fieldPrefix={`${fieldName}.party.details`}
-                                  idPrefix={`party-${index}`}
-                                  isEditMode={isEditMode}
-                                />
-                              )}
-                              {partyEntry?.party?.details?.partyType ===
-                                "yksityishenkilo" && (
-                                <PersonPartyForm
-                                  fieldPrefix={`${fieldName}.party.details`}
-                                  idPrefix={`party-${index}`}
-                                  isEditMode={isEditMode}
-                                />
-                              )}
-                            </div>
-                          </Fieldset>
-
-                          <h3>Yhteyshenkilöt/neuvottelijat</h3>
-                          <Fieldset heading="" className="full-width">
-                            <FieldArray<ContactPerson>
-                              name={`${fieldName}.contactPersons`}
-                            >
-                              {({ fields: contactPersonFields }) => (
-                                <>
-                                  {contactPersonFields.map(
-                                    (contactPersonFieldName, contactIndex) => (
-                                      <div
-                                        className="landuse-grid"
-                                        key={contactPersonFieldName}
-                                      >
-                                        <div className="landuse-grid__column-3">
-                                          <Field
-                                            name={`${contactPersonFieldName}.name`}
-                                          >
-                                            {({ input }) => (
-                                              <TextInput
-                                                id={`party-${index}-contact-${contactIndex}-name`}
-                                                label="Nimi"
-                                                value={getFieldTextValue(
-                                                  isEditMode,
-                                                  input.value,
-                                                )}
-                                                onChange={input.onChange}
-                                                readOnly={!isEditMode}
-                                                placeholder="Placeholder"
-                                              />
-                                            )}
-                                          </Field>
-                                        </div>
-
-                                        <div className="landuse-grid__column-3">
-                                          <Field
-                                            name={`${contactPersonFieldName}.phone`}
-                                          >
-                                            {({ input }) => (
-                                              <TextInput
-                                                id={`party-${index}-contact-${contactIndex}-phone`}
-                                                label="Puhelinnumero"
-                                                value={getFieldTextValue(
-                                                  isEditMode,
-                                                  input.value,
-                                                )}
-                                                onChange={input.onChange}
-                                                readOnly={!isEditMode}
-                                                placeholder="Placeholder"
-                                              />
-                                            )}
-                                          </Field>
-                                        </div>
-
-                                        <div className="landuse-grid__column-3">
-                                          <Field
-                                            name={`${contactPersonFieldName}.email`}
-                                          >
-                                            {({ input }) => (
-                                              <TextInput
-                                                id={`party-${index}-contact-${contactIndex}-email`}
-                                                label="Sähköposti"
-                                                value={getFieldTextValue(
-                                                  isEditMode,
-                                                  input.value,
-                                                )}
-                                                onChange={input.onChange}
-                                                readOnly={!isEditMode}
-                                                placeholder="Placeholder"
-                                              />
-                                            )}
-                                          </Field>
-                                        </div>
-
-                                        <div className="landuse-grid__column-3">
-                                          {isEditMode ? (
-                                            <ConfirmDeleteButton
-                                              id={`party-${index}-contact-${contactIndex}-delete`}
-                                              buttonLabel="Poista yhteyshenkilö"
-                                              buttonAriaLabel={`Poista yhteyshenkilö ${contactIndex + 1}`}
-                                              buttonVariant={
-                                                ButtonVariant.Supplementary
-                                              }
-                                              onConfirm={() =>
-                                                contactPersonFields.remove(
-                                                  contactIndex,
-                                                )
-                                              }
-                                              dialogTitle="Poista yhteyshenkilö"
-                                              dialogContent={`Haluatko varmasti poistaa yhteyshenkilön ${partyEntry.contactPersons[contactIndex]?.name?.trim() ?? ""}?`}
-                                            />
-                                          ) : null}
-                                        </div>
-                                      </div>
-                                    ),
-                                  )}
-
-                                  {isEditMode && (
+                          <StepByStep
+                            numberedList
+                            steps={[
+                              {
+                                title: "Sopimusosapuoli",
+                                key: "contract-party",
+                                description: (
+                                  <Fieldset heading="" className="full-width">
                                     <div className="landuse-grid">
                                       <div className="landuse-grid__column-3">
-                                        <Button
-                                          className="landuse-detail__add-button"
-                                          variant={ButtonVariant.Supplementary}
-                                          iconStart={<IconPlusCircleFill />}
-                                          type="button"
-                                          onClick={() =>
-                                            contactPersonFields.push({
-                                              name: undefined,
-                                              phone: "",
-                                              email: "",
-                                            })
-                                          }
+                                        <Field
+                                          name={`${fieldName}.party.details.partyRole`}
                                         >
-                                          Lisää yhteyshenkilö
-                                        </Button>
+                                          {({ input }) =>
+                                            isEditMode ? (
+                                              <Select
+                                                id={`party-${index}-role`}
+                                                texts={{
+                                                  label: "Rooli",
+                                                  placeholder: "Valitse rooli",
+                                                }}
+                                                options={partyRoleOptions}
+                                                value={normalizeSelectValue(
+                                                  input.value,
+                                                )}
+                                                onChange={(selected) =>
+                                                  handleSelectChange(
+                                                    selected,
+                                                    input.onChange,
+                                                  )
+                                                }
+                                                required
+                                              />
+                                            ) : (
+                                              <TextInput
+                                                id={`party-${index}-role`}
+                                                label="Rooli"
+                                                value={getOptionsDisplayValue(
+                                                  input.value,
+                                                  partyRoleOptions,
+                                                )}
+                                                readOnly
+                                              />
+                                            )
+                                          }
+                                        </Field>
+                                      </div>
+
+                                      <div className="landuse-grid__column-3">
+                                        <Field
+                                          name={`${fieldName}.party.details.partyType`}
+                                        >
+                                          {({ input }) =>
+                                            isEditMode ? (
+                                              <Select
+                                                id={`party-${index}-type`}
+                                                texts={{
+                                                  label: "Asiakastyyppi",
+                                                  placeholder:
+                                                    "Valitse asiakastyyppi",
+                                                }}
+                                                options={partyTypeOptions}
+                                                value={normalizeSelectValue(
+                                                  input.value,
+                                                )}
+                                                onChange={(selected) =>
+                                                  handleSelectChange(
+                                                    selected,
+                                                    input.onChange,
+                                                  )
+                                                }
+                                              />
+                                            ) : (
+                                              <TextInput
+                                                id={`party-${index}-type`}
+                                                label="Asiakastyyppi"
+                                                value={getOptionsDisplayValue(
+                                                  input.value,
+                                                  partyTypeOptions,
+                                                )}
+                                                readOnly
+                                              />
+                                            )
+                                          }
+                                        </Field>
+                                      </div>
+
+                                      {partyEntry?.party?.details?.partyType ===
+                                        "yritys" && (
+                                        <CompanyPartyForm
+                                          fieldPrefix={`${fieldName}.party.details`}
+                                          idPrefix={`party-${index}`}
+                                          isEditMode={isEditMode}
+                                        />
+                                      )}
+                                      {partyEntry?.party?.details?.partyType ===
+                                        "yksityishenkilo" && (
+                                        <PersonPartyForm
+                                          fieldPrefix={`${fieldName}.party.details`}
+                                          idPrefix={`party-${index}`}
+                                          isEditMode={isEditMode}
+                                        />
+                                      )}
+                                    </div>
+                                  </Fieldset>
+                                ),
+                              },
+                              {
+                                title: "Yhteyshenkilöt/neuvottelijat",
+                                key: "contact-persons",
+                                description: (
+                                  <Fieldset heading="" className="full-width">
+                                    <FieldArray<ContactPerson>
+                                      name={`${fieldName}.contactPersons`}
+                                    >
+                                      {({ fields: contactPersonFields }) => (
+                                        <>
+                                          {contactPersonFields.map(
+                                            (
+                                              contactPersonFieldName,
+                                              contactIndex,
+                                            ) => (
+                                              <div
+                                                className="landuse-grid"
+                                                key={contactPersonFieldName}
+                                              >
+                                                <div className="landuse-grid__column-3">
+                                                  <Field
+                                                    name={`${contactPersonFieldName}.name`}
+                                                  >
+                                                    {({ input }) => (
+                                                      <TextInput
+                                                        id={`party-${index}-contact-${contactIndex}-name`}
+                                                        label="Nimi"
+                                                        value={getFieldTextValue(
+                                                          isEditMode,
+                                                          input.value,
+                                                        )}
+                                                        onChange={
+                                                          input.onChange
+                                                        }
+                                                        readOnly={!isEditMode}
+                                                        placeholder="Placeholder"
+                                                      />
+                                                    )}
+                                                  </Field>
+                                                </div>
+
+                                                <div className="landuse-grid__column-3">
+                                                  <Field
+                                                    name={`${contactPersonFieldName}.phone`}
+                                                  >
+                                                    {({ input }) => (
+                                                      <TextInput
+                                                        id={`party-${index}-contact-${contactIndex}-phone`}
+                                                        label="Puhelinnumero"
+                                                        value={getFieldTextValue(
+                                                          isEditMode,
+                                                          input.value,
+                                                        )}
+                                                        onChange={
+                                                          input.onChange
+                                                        }
+                                                        readOnly={!isEditMode}
+                                                        placeholder="Placeholder"
+                                                      />
+                                                    )}
+                                                  </Field>
+                                                </div>
+
+                                                <div className="landuse-grid__column-3">
+                                                  <Field
+                                                    name={`${contactPersonFieldName}.email`}
+                                                  >
+                                                    {({ input }) => (
+                                                      <TextInput
+                                                        id={`party-${index}-contact-${contactIndex}-email`}
+                                                        label="Sähköposti"
+                                                        value={getFieldTextValue(
+                                                          isEditMode,
+                                                          input.value,
+                                                        )}
+                                                        onChange={
+                                                          input.onChange
+                                                        }
+                                                        readOnly={!isEditMode}
+                                                        placeholder="Placeholder"
+                                                      />
+                                                    )}
+                                                  </Field>
+                                                </div>
+
+                                                <div className="landuse-grid__column-3">
+                                                  {isEditMode ? (
+                                                    <ConfirmDeleteButton
+                                                      id={`party-${index}-contact-${contactIndex}-delete`}
+                                                      buttonLabel="Poista yhteyshenkilö"
+                                                      buttonAriaLabel={`Poista yhteyshenkilö ${contactIndex + 1}`}
+                                                      buttonVariant={
+                                                        ButtonVariant.Supplementary
+                                                      }
+                                                      onConfirm={() =>
+                                                        contactPersonFields.remove(
+                                                          contactIndex,
+                                                        )
+                                                      }
+                                                      dialogTitle="Poista yhteyshenkilö"
+                                                      dialogContent={`Haluatko varmasti poistaa yhteyshenkilön ${partyEntry.contactPersons[contactIndex]?.name?.trim() ?? ""}?`}
+                                                    />
+                                                  ) : null}
+                                                </div>
+                                              </div>
+                                            ),
+                                          )}
+
+                                          {isEditMode && (
+                                            <div className="landuse-grid">
+                                              <div className="landuse-grid__column-3">
+                                                <Button
+                                                  className="landuse-detail__add-button"
+                                                  variant={
+                                                    ButtonVariant.Supplementary
+                                                  }
+                                                  iconStart={
+                                                    <IconPlusCircleFill />
+                                                  }
+                                                  type="button"
+                                                  onClick={() =>
+                                                    contactPersonFields.push({
+                                                      name: undefined,
+                                                      phone: "",
+                                                      email: "",
+                                                    })
+                                                  }
+                                                >
+                                                  Lisää yhteyshenkilö
+                                                </Button>
+                                              </div>
+                                            </div>
+                                          )}
+                                        </>
+                                      )}
+                                    </FieldArray>
+                                  </Fieldset>
+                                ),
+                              },
+                              {
+                                title: "Laskutustiedot",
+                                key: "billing-details",
+                                description: (
+                                  <Fieldset heading="" className="full-width">
+                                    <div className="landuse-grid">
+                                      <div className="landuse-grid__column-3">
+                                        <Field
+                                          name={`${fieldName}.billingDetails.ovtCode`}
+                                        >
+                                          {({ input }) => (
+                                            <TextInput
+                                              id={`party-${index}-billing-ovt-code`}
+                                              label="Ovt-tunnus"
+                                              value={getFieldTextValue(
+                                                isEditMode,
+                                                input.value,
+                                              )}
+                                              onChange={input.onChange}
+                                              readOnly={!isEditMode}
+                                              placeholder="Placeholder"
+                                            />
+                                          )}
+                                        </Field>
+                                      </div>
+
+                                      <div className="landuse-grid__column-3">
+                                        <Field
+                                          name={`${fieldName}.billingDetails.sapCustomerNumber`}
+                                        >
+                                          {({ input }) => (
+                                            <TextInput
+                                              id={`party-${index}-billing-sap-customer-number`}
+                                              label="SAP-asiakasnumero"
+                                              value={getFieldTextValue(
+                                                isEditMode,
+                                                input.value,
+                                              )}
+                                              onChange={input.onChange}
+                                              readOnly={!isEditMode}
+                                              placeholder="Placeholder"
+                                            />
+                                          )}
+                                        </Field>
+                                      </div>
+
+                                      <div className="landuse-grid__column-3">
+                                        <Field
+                                          name={`${fieldName}.billingDetails.reference`}
+                                        >
+                                          {({ input }) => (
+                                            <TextInput
+                                              id={`party-${index}-billing-reference`}
+                                              label="Asiakkaan viite"
+                                              value={getFieldTextValue(
+                                                isEditMode,
+                                                input.value,
+                                              )}
+                                              onChange={input.onChange}
+                                              readOnly={!isEditMode}
+                                              placeholder="Placeholder"
+                                            />
+                                          )}
+                                        </Field>
                                       </div>
                                     </div>
-                                  )}
-                                </>
-                              )}
-                            </FieldArray>
-                          </Fieldset>
+                                  </Fieldset>
+                                ),
+                              },
+                              {
+                                title: "Laskunsaaja",
+                                key: "invoice-recipient",
+                                description: (
+                                  <>
+                                    <Fieldset heading="" className="full-width">
+                                      <div className="landuse-grid">
+                                        <div className="landuse-grid__column-3">
+                                          <Field
+                                            name={`${fieldName}.invoiceRecipient.details.partyType`}
+                                          >
+                                            {({ input }) =>
+                                              isEditMode ? (
+                                                <Select
+                                                  id={`party-${index}-invoice-type`}
+                                                  texts={{
+                                                    label: "Asiakastyyppi",
+                                                    placeholder:
+                                                      "Valitse asiakastyyppi",
+                                                  }}
+                                                  options={partyTypeOptions}
+                                                  value={normalizeSelectValue(
+                                                    input.value,
+                                                  )}
+                                                  onChange={(selected) =>
+                                                    handleSelectChange(
+                                                      selected,
+                                                      input.onChange,
+                                                    )
+                                                  }
+                                                />
+                                              ) : (
+                                                <TextInput
+                                                  id={`party-${index}-invoice-type`}
+                                                  label="Asiakastyyppi"
+                                                  value={getOptionsDisplayValue(
+                                                    input.value,
+                                                    partyTypeOptions,
+                                                  )}
+                                                  readOnly
+                                                />
+                                              )
+                                            }
+                                          </Field>
+                                        </div>
 
-                          <h3>Laskutustiedot</h3>
-                          <Fieldset heading="" className="full-width">
-                            <div className="landuse-grid">
-                              <div className="landuse-grid__column-3">
-                                <Field
-                                  name={`${fieldName}.billingDetails.ovtCode`}
-                                >
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`party-${index}-billing-ovt-code`}
-                                      label="Ovt-tunnus"
-                                      value={getFieldTextValue(
-                                        isEditMode,
-                                        input.value,
-                                      )}
-                                      onChange={input.onChange}
-                                      readOnly={!isEditMode}
-                                      placeholder="Placeholder"
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-
-                              <div className="landuse-grid__column-3">
-                                <Field
-                                  name={`${fieldName}.billingDetails.sapCustomerNumber`}
-                                >
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`party-${index}-billing-sap-customer-number`}
-                                      label="SAP-asiakasnumero"
-                                      value={getFieldTextValue(
-                                        isEditMode,
-                                        input.value,
-                                      )}
-                                      onChange={input.onChange}
-                                      readOnly={!isEditMode}
-                                      placeholder="Placeholder"
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-
-                              <div className="landuse-grid__column-3">
-                                <Field
-                                  name={`${fieldName}.billingDetails.reference`}
-                                >
-                                  {({ input }) => (
-                                    <TextInput
-                                      id={`party-${index}-billing-reference`}
-                                      label="Asiakkaan viite"
-                                      value={getFieldTextValue(
-                                        isEditMode,
-                                        input.value,
-                                      )}
-                                      onChange={input.onChange}
-                                      readOnly={!isEditMode}
-                                      placeholder="Placeholder"
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-                            </div>
-                          </Fieldset>
-
-                          <h3>Laskunsaaja</h3>
-                          <Fieldset heading="" className="full-width">
-                            <div className="landuse-grid">
-                              <div className="landuse-grid__column-3">
-                                <Field
-                                  name={`${fieldName}.invoiceRecipient.details.partyType`}
-                                >
-                                  {({ input }) =>
-                                    isEditMode ? (
-                                      <Select
-                                        id={`party-${index}-invoice-type`}
-                                        texts={{
-                                          label: "Asiakastyyppi",
-                                          placeholder: "Valitse asiakastyyppi",
-                                        }}
-                                        options={partyTypeOptions}
-                                        value={normalizeSelectValue(
-                                          input.value,
+                                        {partyEntry?.invoiceRecipient?.details
+                                          ?.partyType === "yritys" && (
+                                          <CompanyPartyForm
+                                            fieldPrefix={`${fieldName}.invoiceRecipient.details`}
+                                            idPrefix={`party-${index}-invoice`}
+                                            isEditMode={isEditMode}
+                                          />
                                         )}
-                                        onChange={(selected) =>
-                                          handleSelectChange(
-                                            selected,
-                                            input.onChange,
-                                          )
-                                        }
-                                      />
-                                    ) : (
-                                      <TextInput
-                                        id={`party-${index}-invoice-type`}
-                                        label="Asiakastyyppi"
-                                        value={getOptionsDisplayValue(
-                                          input.value,
-                                          partyTypeOptions,
+                                        {partyEntry?.invoiceRecipient?.details
+                                          ?.partyType === "yksityishenkilo" && (
+                                          <PersonPartyForm
+                                            fieldPrefix={`${fieldName}.invoiceRecipient.details`}
+                                            idPrefix={`party-${index}-invoice`}
+                                            isEditMode={isEditMode}
+                                          />
                                         )}
-                                        readOnly
-                                      />
-                                    )
-                                  }
-                                </Field>
-                              </div>
+                                      </div>
+                                    </Fieldset>
 
-                              {partyEntry?.invoiceRecipient?.details
-                                ?.partyType === "yritys" && (
-                                <CompanyPartyForm
-                                  fieldPrefix={`${fieldName}.invoiceRecipient.details`}
-                                  idPrefix={`party-${index}-invoice`}
-                                  isEditMode={isEditMode}
-                                />
-                              )}
-                              {partyEntry?.invoiceRecipient?.details
-                                ?.partyType === "yksityishenkilo" && (
-                                <PersonPartyForm
-                                  fieldPrefix={`${fieldName}.invoiceRecipient.details`}
-                                  idPrefix={`party-${index}-invoice`}
-                                  isEditMode={isEditMode}
-                                />
-                              )}
-                            </div>
-                          </Fieldset>
-
-                          <div className="landuse-detail__delete-button-row">
-                            {isEditMode && partyEntry.invoiceRecipient ? (
-                              <ConfirmDeleteButton
-                                id={`party-${index}-invoice-delete`}
-                                buttonLabel="Poista laskunsaaja"
-                                buttonAriaLabel={`Poista laskunsaaja`}
-                                buttonVariant={ButtonVariant.Supplementary}
-                                onConfirm={() =>
-                                  partyEntry.invoiceRecipient &&
-                                  fields.update(index, {
-                                    ...partyEntry,
-                                    invoiceRecipient: undefined,
-                                  })
-                                }
-                                dialogTitle="Poista laskunsaaja"
-                                dialogContent={
-                                  "Haluatko varmasti poistaa laskunsaajan?"
-                                }
-                              />
-                            ) : null}
-                          </div>
+                                    <div className="landuse-detail__delete-button-row">
+                                      {isEditMode &&
+                                      partyEntry.invoiceRecipient ? (
+                                        <ConfirmDeleteButton
+                                          id={`party-${index}-invoice-delete`}
+                                          buttonLabel="Poista laskunsaaja"
+                                          buttonAriaLabel={`Poista laskunsaaja`}
+                                          buttonVariant={
+                                            ButtonVariant.Supplementary
+                                          }
+                                          onConfirm={() =>
+                                            partyEntry.invoiceRecipient &&
+                                            fields.update(index, {
+                                              ...partyEntry,
+                                              invoiceRecipient: undefined,
+                                            })
+                                          }
+                                          dialogTitle="Poista laskunsaaja"
+                                          dialogContent={
+                                            "Haluatko varmasti poistaa laskunsaajan?"
+                                          }
+                                        />
+                                      ) : null}
+                                    </div>
+                                  </>
+                                ),
+                              },
+                            ]}
+                          />
                         </Accordion>
                       );
                     })}
