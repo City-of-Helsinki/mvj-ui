@@ -1,21 +1,14 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
-import {
-  Breadcrumb,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanel,
-  Button,
-  ButtonVariant,
-  IconCheckCircle,
-  IconCross,
-  IconPen,
-  IconTrash,
-  IconAlertCircle,
-  IconError,
-  IconSize,
-} from "hds-react";
+import { Breadcrumb } from "hds-react";
+import { SideNavigation, HEADING_TAGS_TO_SHOW_IN_TOC } from "./SideNavigation";
+import type { SideNavigationTab, TocEntry } from "./SideNavigation";
 import { createForm } from "final-form";
 import arrayMutators from "final-form-arrays";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -72,10 +65,7 @@ import {
   updateParties,
   updateSummary,
 } from "../api/landUseApi";
-import {
-  LAND_USE_INVOICE_ITEM_TYPES,
-  LAND_USE_NEGOTIATION_PHASES,
-} from "../options";
+import { LAND_USE_INVOICE_ITEM_TYPES } from "../options";
 import { parseLandUseNumericValueOrZero } from "../utils/number";
 import { DEFAULT_KOROTUSKERROIN } from "../constants";
 
@@ -213,6 +203,9 @@ const LandUseDetailPage: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
   const [korkoResults, setKorkoResults] = useState<KorkoResult[]>([]);
+  const [tocEntries, setTocEntries] = useState<TocEntry[]>([]);
+  const [activeTocId, setActiveTocId] = useState<string | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
   /** Form state tracking for each tab.
@@ -796,6 +789,59 @@ const LandUseDetailPage: React.FC = () => {
     setActiveTab(tabIndex);
   }, []);
 
+  // Build the table of contents from the active tab's headings.
+  // Only the active tab is mounted, so this re-runs whenever the tab or its
+  // rendered content changes.
+  useEffect(() => {
+    const content = contentRef.current;
+    if (!content) {
+      setTocEntries([]);
+      return;
+    }
+
+    const headingToShowInToc = HEADING_TAGS_TO_SHOW_IN_TOC.join(", ");
+    const headings = Array.from(content.querySelectorAll(headingToShowInToc));
+    const entries: TocEntry[] = headings.map((heading, index) => {
+      if (!heading.id) {
+        heading.id = `landuse-heading-${activeTab}-${index}`;
+      }
+      const headingLevel = parseInt(
+        heading.tagName?.toLowerCase().replace("h", "") ?? "1",
+        10,
+      );
+      return {
+        id: heading.id,
+        text: heading.textContent?.trim() ?? "",
+        level: headingLevel,
+      };
+    });
+
+    setTocEntries(entries);
+    // TODO set active toc id based on scroll position
+    setActiveTocId(entries[0]?.id ?? null);
+  }, [activeTab, isEditMode]);
+
+  const handleTocClick = useCallback((id: string) => {
+    const target = document.getElementById(id);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      setActiveTocId(id);
+    }
+  }, []);
+
+  const sideNavigationTabs: SideNavigationTab[] = TABS_CONFIG.map(
+    (tabConfig) => {
+      const formState = tabConfig.formKey
+        ? formStates[tabConfig.formKey]
+        : null;
+      return {
+        label: tabConfig.label,
+        isDirty: formState?.dirty ?? false,
+        hasError: isSaveClicked && formState ? !formState.valid : false,
+      };
+    },
+  );
+
   if (isAgreementMissing) {
     return (
       <LandUseNotFoundPage
@@ -809,100 +855,26 @@ const LandUseDetailPage: React.FC = () => {
     (site) => site.amVelvoite === true,
   );
 
-  // Render tab label with status icons
-  const renderTabLabel = (tabConfig: TabConfig, tabIndex: number) => {
-    const formKey = tabConfig.formKey;
-    const formState = formKey ? formStates[formKey] : null;
+  const activeParties =
+    ((partiesFormApi.getState().values as LandUsePartiesFormValues)?.parties ??
+      partiesQuery.data?.parties) ||
+    [];
 
-    return (
-      <span className="landuse-detail__tab-label">
-        {tabConfig.label}
-        {formState?.dirty && (
-          <IconAlertCircle
-            size={IconSize.Small}
-            className="landuse-detail__tab-icon landuse-detail__tab-icon--dirty"
-            aria-label="Tallentamattomia muutoksia"
-          />
-        )}
-        {isSaveClicked && formState && !formState.valid && (
-          <IconError
-            size={IconSize.Small}
-            className="landuse-detail__tab-icon landuse-detail__tab-icon--error"
-            aria-label="Lomakkeessa on virheitä"
-          />
-        )}
-      </span>
-    );
-  };
-
-  return (
-    <div className="landuse-detail">
-      <Breadcrumb
-        aria-label="Breadcrumb"
-        list={[
-          { title: "Maanvuokrausjärjestelmä", path: "/" },
-          { title: "Maankäyttösopimukset", path: "/maankayttosopimukset" },
-          { title: agreementId, path: "" },
-        ]}
-      />
-
-      <div className="landuse-detail__header">
-        <h1 className="landuse-detail__title">{identifier}</h1>
-        <div className="landuse-detail__actions">
-          {isEditMode ? (
-            <>
-              <Button
-                variant={ButtonVariant.Secondary}
-                onClick={handleDiscardClick}
-                iconStart={<IconCross />}
-              >
-                Hylkää muutokset
-              </Button>
-              <Button
-                variant={ButtonVariant.Primary}
-                onClick={handleSaveClick}
-                iconStart={<IconCheckCircle />}
-              >
-                Tallenna
-              </Button>
-            </>
-          ) : (
-            <Button
-              variant={ButtonVariant.Primary}
-              onClick={handleEditClick}
-              iconStart={<IconPen />}
-            >
-              Muokkaa
-            </Button>
-          )}
-        </div>
-      </div>
-
-      <Tabs initiallyActiveTab={activeTab}>
-        <TabList>
-          {TABS_CONFIG.map((tabConfig, index) => (
-            <Tab key={tabConfig.label} onClick={() => handleTabClick(index)}>
-              {renderTabLabel(tabConfig, index)}
-            </Tab>
-          ))}
-        </TabList>
-
-        <TabPanel>
-          <LandUseSummary form={summaryFormApi} isEditMode={isEditMode} />
-        </TabPanel>
-
-        <TabPanel>
-          <LandUseParties form={partiesFormApi} isEditMode={isEditMode} />
-        </TabPanel>
-
-        <TabPanel>
+  const renderActiveTabPanel = () => {
+    switch (activeTab) {
+      case 0:
+        return <LandUseSummary form={summaryFormApi} isEditMode={isEditMode} />;
+      case 1:
+        return <LandUseParties form={partiesFormApi} isEditMode={isEditMode} />;
+      case 2:
+        return (
           <LandUseCompensations
             form={compensationsFormApi}
             isEditMode={isEditMode}
           />
-        </TabPanel>
-
-        <TabPanel>
+        );
+      case 3:
+        return (
           <LandUseCollaterals
             form={collateralsFormApi}
             isEditMode={isEditMode}
@@ -923,22 +895,17 @@ const LandUseDetailPage: React.FC = () => {
               )
             }
           />
-        </TabPanel>
-
-        <TabPanel>
+        );
+      case 4:
+        return (
           <LandUseDecisions
             form={decisionsFormApi}
             isEditMode={isEditMode}
-            parties={
-              ((partiesFormApi.getState().values as LandUsePartiesFormValues)
-                ?.parties ??
-                partiesQuery.data?.parties) ||
-              []
-            }
+            parties={activeParties}
           />
-        </TabPanel>
-
-        <TabPanel>
+        );
+      case 5:
+        return (
           <LandUseMonitoring
             form={monitoringFormApi}
             isEditMode={isEditMode}
@@ -948,7 +915,11 @@ const LandUseDetailPage: React.FC = () => {
               compensationsQuery.data?.perustietotaulukkoRowsBySiteId ?? {}
             }
             korotuskerroin={
-              collateralsQuery.data?.korotuskerroin ?? DEFAULT_KOROTUSKERROIN
+              collateralsQuery.data?.korotuskerroin != null
+                ? parseLandUseNumericValueOrZero(
+                    collateralsQuery.data.korotuskerroin,
+                  )
+                : DEFAULT_KOROTUSKERROIN
             }
             maankayttokorvausYhteensa={
               parseLandUseNumericValueOrZero(
@@ -966,18 +937,13 @@ const LandUseDetailPage: React.FC = () => {
             }
             onSetTabDirty={handleSetTabDirty}
           />
-        </TabPanel>
-
-        <TabPanel>
+        );
+      case 6:
+        return (
           <LandUseInvoicing
             form={invoicingFormApi}
             isEditMode={isEditMode}
-            parties={
-              ((partiesFormApi.getState().values as LandUsePartiesFormValues)
-                ?.parties ??
-                partiesQuery.data?.parties) ||
-              []
-            }
+            parties={activeParties}
             agreements={
               ((
                 decisionsFormApi.getState().values as LandUseDecisionsFormValues
@@ -1001,18 +967,49 @@ const LandUseDetailPage: React.FC = () => {
             korkoResults={korkoResults}
             setKorkoResults={setKorkoResults}
           />
-        </TabPanel>
-
-        <TabPanel>
-          <LandUseMap form={mapFormApi} isEditMode={isEditMode} />
-        </TabPanel>
-
-        <TabPanel>
-          <div className="landuse-detail__content">
-            <p>Muutoshistoria</p>
+        );
+      case 7:
+        return <LandUseMap form={mapFormApi} isEditMode={isEditMode} />;
+      case 8:
+        return (
+          <div>
+            <h1>Muutoshistoria</h1>
           </div>
-        </TabPanel>
-      </Tabs>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="landuse-detail">
+      <div className="landuse-detail__body">
+        <SideNavigation
+          title={agreementId}
+          tabs={sideNavigationTabs}
+          activeTab={activeTab}
+          onTabClick={handleTabClick}
+          tocEntries={tocEntries}
+          activeTocId={activeTocId}
+          onTocClick={handleTocClick}
+          isEditMode={isEditMode}
+          onEditClick={handleEditClick}
+          onSaveClick={handleSaveClick}
+          onDiscardClick={handleDiscardClick}
+        />
+
+        <div>
+          <Breadcrumb
+            aria-label="Breadcrumb"
+            list={[
+              { title: "Maanvuokrausjärjestelmä", path: "/" },
+              { title: "Maankäyttösopimukset", path: "/maankayttosopimukset" },
+              { title: agreementId, path: "" },
+            ]}
+          />
+          <div ref={contentRef}>{renderActiveTabPanel()}</div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,0 +1,150 @@
+// ============================================================================
+// Detail page – vertical sidebar navigation
+// ============================================================================
+// Left-hand rail replacing the horizontal HDS TabList. The TOC list is
+// nested under the active tab as an indented sub-list.
+// ============================================================================
+@use "hds-design-tokens/lib/all" as hds;
+@use "variables" as *;
+@use "mixins" as *;
+
+$sidebar-width: 260px;
+
+// Row wrapper that places the sidebar next to the tab content.
+// The min-height ensures the sticky context is maintained for tall content.
+.landuse-detail__body {
+  display: flex;
+  align-items: flex-start;
+  gap: hds.$spacing-m;
+  min-height: 100vh;
+}
+
+.landuse-detail__sidebar {
+  flex: 0 0 $sidebar-width;
+  width: $sidebar-width;
+
+  // Scrolls with the page until its top reaches the viewport top, then sticks
+  // for the rest of the scroll. Use box-sizing to include padding in the
+  // viewport height so buttons don't overflow the bottom.
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  max-height: 100vh;
+  box-sizing: border-box;
+
+  padding: hds.$spacing-s;
+  border-right: 1px solid hds.$color-black-20;
+}
+
+.landuse-detail__sidebar-section {
+  // Border between sidebar sections.
+  padding: hds.$spacing-2-xs 0;
+  border-bottom: 1px solid hds.$color-black-20;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.landuse-detail__sidebar-title {
+  > h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+}
+
+.landuse-detail__sidebar-actions {
+  @include flex-col(hds.$spacing-xs);
+  margin-top: auto;
+}
+
+.landuse-detail__sidebar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  @include flex-col(hds.$spacing-3-xs);
+}
+
+// -- Tab buttons -------------------------------------------------------------
+
+.landuse-detail__sidebar-tab {
+  @include flex-row-center(hds.$spacing-2-xs);
+  justify-content: space-between;
+  width: 100%;
+  padding: hds.$spacing-3-xs hds.$spacing-xs;
+  border: none;
+  border-left: 3px solid transparent;
+  background: transparent;
+  color: hds.$color-black-90;
+  font-size: hds.$fontsize-body-m;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background-color: hds.$color-black-5;
+  }
+
+  &--active {
+    border-left-color: hds.$color-coat-of-arms;
+    background-color: hds.$color-black-5;
+    font-weight: 500;
+  }
+}
+
+.landuse-detail__sidebar-tab-label {
+  flex: 1 1 auto;
+}
+
+// -- Table of contents list nested under active tab ---------------------------
+
+.landuse-detail__sidebar-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  @include flex-col(hds.$spacing-3-xs);
+  position: relative;
+
+  // Vertical connector line from tab to first TOC item
+  &::before {
+    content: "";
+    position: absolute;
+    left: hds.$spacing-xs;
+    top: 0;
+    bottom: 1rem;
+    width: 2px;
+    background-color: hds.$color-black-20;
+  }
+}
+
+.landuse-detail__sidebar-toc-item {
+  display: block;
+  width: 100%;
+  padding: hds.$spacing-2-xs hds.$spacing-m;
+  border: none;
+  background: transparent;
+  color: hds.$color-black-70;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    color: hds.$color-black-90;
+    text-decoration: underline;
+  }
+
+  &--active {
+    color: hds.$color-coat-of-arms;
+    font-weight: 500;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: calc(hds.$spacing-m - 0.75rem);
+    top: 50%;
+    width: 8px;
+    height: 2px;
+    background-color: hds.$color-black-20;
+  }
+}
