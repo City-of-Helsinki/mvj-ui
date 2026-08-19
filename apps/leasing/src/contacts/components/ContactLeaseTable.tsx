@@ -229,13 +229,14 @@ const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
 
   if (isFetchingAttributes || !attributes || isFetchingLeases)
     return (
-      <PageContainerHDS>
+      <GreenBox className="with-top-margin">
         <Loader isLoading={true} />
-      </PageContainerHDS>
+      </GreenBox>
     );
 
   return (
-    <GreenBox>
+    <GreenBox className="with-top-margin">
+      <h3>Asiakkaan vuokraukset</h3>
       <span>{isFetchingLeases ? "Ladataan..." : `Löytyi ${count} kpl`}</span>
       <Table
         ariaLabelSortButtonUnset="Ei järjestetty"
