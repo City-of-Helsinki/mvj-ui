@@ -10,6 +10,7 @@
 //   _header.scss             – Top navigation & user menu
 //   _list.scss               – List page
 //   _detail-base.scss        – Detail page: layout, grids, sections, tabs, ...
+//   _detail-sidebar.scss     – Detail page: vertical sidebar navigation
 //   _detail-monitoring.scss  – Monitoring tab (large enough to stay separate)
 //
 // Rules for adding new styles:
@@ -26,4 +27,5 @@
 @use "styles/list";
 @use "styles/grid";
 @use "styles/detail-base";
+@use "styles/detail-sidebar";
 @use "styles/detail-monitoring";

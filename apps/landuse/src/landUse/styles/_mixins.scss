@@ -31,7 +31,7 @@
 @mixin page-container {
   max-width: 1440px;
   margin: 0 auto;
-  padding: hds.$spacing-m;
+  padding: 0 hds.$spacing-m;
   background-color: hds.$color-white;
   min-height: 100vh;
 }
