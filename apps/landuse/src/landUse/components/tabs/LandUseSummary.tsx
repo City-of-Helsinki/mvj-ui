@@ -10,6 +10,7 @@ import {
   IconPlusCircleFill,
   Fieldset,
   DateInput,
+  StepByStep,
 } from "hds-react";
 import { Form, Field } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
@@ -20,6 +21,7 @@ import {
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
 import { getAsemakaavat } from "../../api/landUseApi";
+import { useTocEntries } from "../../hooks/useTableOfContents";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import {
   type AsemakaavaListItem,
@@ -75,6 +77,27 @@ const maankayttosopimusTypeOptions = [
   },
 ];
 
+const SUMMARY_STEP_KEYS = {
+  general: "yleiset-tiedot",
+  asemakaava: "asemakaavatiedot",
+  kohteet: "suunnittelun-kohteet",
+  osoitteet: "osoitteet",
+  valmistelijat: "valmistelijat",
+} as const;
+
+const SUMMARY_STEPS = [
+  { key: SUMMARY_STEP_KEYS.general, title: "Yleiset tiedot" },
+  { key: SUMMARY_STEP_KEYS.asemakaava, title: "Asemakaavatiedot" },
+  {
+    key: SUMMARY_STEP_KEYS.kohteet,
+    title: "Suunnittelun perusteena olevat kohteet",
+  },
+  { key: SUMMARY_STEP_KEYS.osoitteet, title: "Osoitteet" },
+  { key: SUMMARY_STEP_KEYS.valmistelijat, title: "Valmistelijat" },
+] as const;
+
+const getSummaryStepId = (key: string): string => `summary-step-${key}`;
+
 const kohdeSelectFilter = (
   option: { label: string },
   filterStr: string,
@@ -96,6 +119,18 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
   isEditMode,
 }) => {
   const [asemakaavat, setAsemakaavat] = useState<AsemakaavaListItem[]>([]);
+
+  const tocEntries = useMemo(
+    () =>
+      SUMMARY_STEPS.map((step) => ({
+        id: getSummaryStepId(step.key),
+        text: step.title,
+        level: 2,
+      })),
+    [],
+  );
+
+  useTocEntries(tocEntries);
 
   useEffect(() => {
     let isMounted = true;
@@ -164,349 +199,23 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
         <form onSubmit={handleSubmit}>
           <div className="landuse-detail__content">
             <h1>Perustiedot</h1>
-            <h2>Yleiset tiedot</h2>
-
-            <Fieldset heading="" className="full-width">
-              <div className="landuse-grid">
-                <div className="landuse-grid__column-3">
-                  <Field name="maankayttosopimusType">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <Select
-                          id="summary-maankayttosopimus-type"
-                          options={maankayttosopimusTypeOptions}
-                          value={normalizeSelectValue(input.value)}
-                          onChange={(selectedOptions) =>
-                            handleSelectChange(selectedOptions, input.onChange)
-                          }
-                          texts={{
-                            label: "Maankäyttösopimuksen tyyppi",
-                            placeholder: "Valitse",
-                          }}
-                          disabled={!isEditMode}
-                        />
-                      ) : (
-                        <TextInput
-                          id="summary-maankayttosopimus-type"
-                          label="Maankäyttösopimuksen tyyppi"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
-                </div>
-
-                <div className="landuse-grid__column-3">
-                  <Field name="kaupunginosa">
-                    {({ input }) => (
-                      <TextInput
-                        id="summary-kaupunginosa"
-                        label="Kaupunginosa"
-                        value={readOnlyTextValue(input.value)}
-                        readOnly
-                      />
-                    )}
-                  </Field>
-                </div>
-
-                <div className="landuse-grid__column-3">
-                  <Field name="edistamisalue">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <SelectionGroup label="Edistämisalue">
-                          <Checkbox
-                            id="summary-edistamisalue"
-                            label="Kyllä"
-                            checked={Boolean(input.value)}
-                            onChange={(event) =>
-                              input.onChange(event.currentTarget.checked)
-                            }
-                            disabled={!isEditMode}
-                          />
-                        </SelectionGroup>
-                      ) : (
-                        <TextInput
-                          id="summary-edistamisalue"
-                          label="Edistämisalue"
-                          value={input.value ? "Kyllä" : "Ei"}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
-                </div>
-
-                <div className="landuse-grid__column-3">
-                  <Field name="tila">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <Select
-                          id="summary-tila"
-                          options={landUseNegotiationPhaseOptions}
-                          value={normalizeSelectValue(input.value)}
-                          onChange={(selectedOptions) =>
-                            handleSelectChange(selectedOptions, input.onChange)
-                          }
-                          texts={{
-                            label: "Maankäyttösopimuksen tila",
-                            placeholder: "Valitse",
-                          }}
-                          disabled={!isEditMode}
-                        />
-                      ) : (
-                        <TextInput
-                          id="summary-tila"
-                          label="Maankäyttösopimuksen tila"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
-                </div>
-
-                <div className="landuse-grid__column-3">
-                  <Field name="arvioituEsittelyvuosi">
-                    {({ input }) => (
-                      <TextInput
-                        id="arvioitu-esittelyvuosi"
-                        label="Arvioitu esittelyvuosi"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly={!isEditMode}
-                      />
-                    )}
-                  </Field>
-                </div>
-
-                <div className="landuse-grid__column-3">
-                  <Field name="arvioituMaksuvuosi">
-                    {({ input }) => (
-                      <TextInput
-                        id="arvioitu-maksuvuosi"
-                        label="Arvioitu maksuvuosi"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly={!isEditMode}
-                      />
-                    )}
-                  </Field>
-                </div>
-
-                <div className="landuse-grid__column-3">
-                  <div className="landuse-detail__field-group">
-                    <Field name="sisaltaaAmVelvoitteita">
-                      {({ input }) =>
-                        isEditMode ? (
-                          <SelectionGroup label="Sisältää AM-velvoitteita">
-                            <RadioButton
-                              id="am-velvoitteet-kylla"
-                              label="Kyllä"
-                              checked={input.value === "kyllä"}
-                              onChange={() => input.onChange("kyllä")}
-                              disabled={!isEditMode}
-                            />
-                            <RadioButton
-                              id="am-velvoitteet-ei"
-                              label="Ei"
-                              checked={input.value === "ei"}
-                              onChange={() => input.onChange("ei")}
-                              disabled={!isEditMode}
-                            />
-                          </SelectionGroup>
-                        ) : (
-                          <TextInput
-                            id="am-velvoitteet"
-                            label="Sisältää AM-velvoitteita"
-                            value={readOnlyTextValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
-                    </Field>
-                  </div>
-                </div>
-
-                <div className="landuse-grid__column-3">
-                  <Field name="velvoitteidenMaaraika">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <DateInput
-                          id="velvoitteiden-maaraika"
-                          label="Velvoitteiden määräaika"
-                          value={input.value}
-                          onChange={input.onChange}
-                          placeholder="DD.MM.YYYY"
-                          disabled={!isEditMode}
-                          language="fi"
-                        />
-                      ) : (
-                        <TextInput
-                          id="velvoitteiden-maaraika"
-                          label="Velvoitteiden määräaika"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
-                </div>
-
-                <div className="landuse-grid__column-3">
-                  <Field name="toimivaltainenPaattaja">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <Select
-                          id="toimivaltainen-paattaja"
-                          options={landUseDecisionMakerOptions}
-                          value={normalizeSelectValue(input.value)}
-                          onChange={(selectedOptions) =>
-                            handleSelectChange(selectedOptions, input.onChange)
-                          }
-                          texts={{
-                            label: "Toimivaltainen päättäjä",
-                            placeholder: "Valitse",
-                          }}
-                          disabled={!isEditMode}
-                        />
-                      ) : (
-                        <TextInput
-                          id="toimivaltainen-paattaja"
-                          label="Toimivaltainen päättäjä"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
-                </div>
-              </div>
-            </Fieldset>
-
-            {/* Asemakaavat Section */}
-            <h2>Asemakaavatiedot</h2>
-            <Fieldset heading="" className="full-width">
-              <div className="landuse-grid">
-                <div className="landuse-grid__column-3">
-                  <Field name="asemakaavanNumero">
-                    {({ input }) =>
-                      isEditMode ? (
-                        <Select
-                          id="asemakaavan-numero"
-                          options={asemakaavaNumberOptions}
-                          value={normalizeSelectValue(input.value)}
-                          onChange={handleAsemakaavaNumberChange}
-                          filter={kohdeSelectFilter}
-                          texts={{
-                            label: "Asemakaavan numero",
-                            placeholder: "Valitse",
-                          }}
-                          disabled={!isEditMode}
-                        />
-                      ) : (
-                        <TextInput
-                          id="asemakaavan-numero"
-                          label="Asemakaavan numero"
-                          value={readOnlyTextValue(input.value)}
-                          readOnly
-                        />
-                      )
-                    }
-                  </Field>
-                </div>
-
-                <div className="landuse-grid__column-3">
-                  <Field name="asemakaavanKasittelyvaihe">
-                    {({ input }) => (
-                      <TextInput
-                        id="asemakaavan-kasittelyvaihe"
-                        label="Asemakaavan käsittelyvaihe"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly
-                      />
-                    )}
-                  </Field>
-                </div>
-
-                <div className="landuse-grid__column-3">
-                  <Field name="vahvistamisHyvaksymisPvm">
-                    {({ input }) => (
-                      <TextInput
-                        id="vahvistamis-hyvaksymis-pvm"
-                        label="Vahvistamis/hyväksymispäivä"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly
-                      />
-                    )}
-                  </Field>
-                </div>
-                <div className="landuse-grid__column-3">
-                  <Field name="asemakaavanLainvoimaisuusPvm">
-                    {({ input }) => (
-                      <TextInput
-                        id="asemakaavan-lainvoimaisuus-pvm"
-                        label="Lainvoimaisuuspäivä"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly
-                      />
-                    )}
-                  </Field>
-                </div>
-                <div className="landuse-grid__column-3">
-                  <Field name="asemakaavanHyvaksyjä">
-                    {({ input }) => (
-                      <TextInput
-                        id="asemakaavan-hyvaksyja"
-                        label="Asemakaavan hyväksyjä"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly
-                      />
-                    )}
-                  </Field>
-                </div>
-
-                <div className="landuse-grid__column-3">
-                  <Field name="asemakaavanDiaarinumero">
-                    {({ input }) => (
-                      <TextInput
-                        id="asemakaavan-diaarinumero"
-                        label="Asemakaavan diaarinumero"
-                        value={getFieldTextValue(isEditMode, input.value)}
-                        onChange={input.onChange}
-                        readOnly
-                      />
-                    )}
-                  </Field>
-                </div>
-              </div>
-            </Fieldset>
-            <h2>Suunnittelun perusteena olevat kohteet</h2>
-            <Fieldset heading="" className="full-width">
-              <FieldArray<KohdeEntry> name="suunnittelunPerusteenaOlevatKohteet">
-                {({ fields }) => (
-                  <>
-                    {!fields.length && !isEditMode ? (
-                      <div className="landuse-grid__column-3">
-                        <p>Ei kohteita</p>
-                      </div>
-                    ) : (
-                      fields.map((name, index) => (
-                        <div
-                          key={name}
-                          className="landuse-grid landuse-grid__bottom-margin"
-                        >
+            <StepByStep
+              numberedList
+              steps={[
+                {
+                  title: SUMMARY_STEPS[0].title,
+                  key: SUMMARY_STEP_KEYS.general,
+                  description: (
+                    <div id={getSummaryStepId(SUMMARY_STEP_KEYS.general)}>
+                      <Fieldset heading="" className="full-width">
+                        <div className="landuse-grid">
                           <div className="landuse-grid__column-3">
-                            <Field name={`${name}.value`}>
+                            <Field name="maankayttosopimusType">
                               {({ input }) =>
                                 isEditMode ? (
                                   <Select
-                                    id={`suunnittelun-kohde-${index}`}
-                                    options={landUseKohdeSelectOptions}
+                                    id="summary-maankayttosopimus-type"
+                                    options={maankayttosopimusTypeOptions}
                                     value={normalizeSelectValue(input.value)}
                                     onChange={(selectedOptions) =>
                                       handleSelectChange(
@@ -514,17 +223,16 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                         input.onChange,
                                       )
                                     }
-                                    filter={kohdeSelectFilter}
                                     texts={{
-                                      label: `Kohde ${index + 1}`,
+                                      label: "Maankäyttösopimuksen tyyppi",
                                       placeholder: "Valitse",
                                     }}
                                     disabled={!isEditMode}
                                   />
                                 ) : (
                                   <TextInput
-                                    id={`suunnittelun-kohde-${index}`}
-                                    label={`Kohde ${index + 1}`}
+                                    id="summary-maankayttosopimus-type"
+                                    label="Maankäyttösopimuksen tyyppi"
                                     value={readOnlyTextValue(input.value)}
                                     readOnly
                                   />
@@ -533,210 +241,139 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                             </Field>
                           </div>
 
-                          {isEditMode && (
-                            <div className="landuse-grid__column-3">
-                              <ConfirmDeleteButton
-                                id={`summary-kohde-delete-${index}`}
-                                buttonVariant={ButtonVariant.Supplementary}
-                                buttonStyle={{ width: "fit-content" }}
-                                onConfirm={() => fields.remove(index)}
-                                dialogTitle="Poista kohde"
-                                dialogContent={`Haluatko varmasti poistaa kohteen ${values.suunnittelunPerusteenaOlevatKohteet?.[index]?.value?.trim() ?? ""}?`}
-                              />
-                            </div>
-                          )}
-                          {isEditMode ? (
-                            <>
-                              <div className="landuse-grid__column-3" />
-                              <div className="landuse-grid__column-3" />
-                            </>
-                          ) : (
-                            <>
-                              <div className="landuse-grid__column-3" />
-                              <div className="landuse-grid__column-3" />
-                              <div className="landuse-grid__column-3" />
-                            </>
-                          )}
-                        </div>
-                      ))
-                    )}
-
-                    {isEditMode && (
-                      <div className="landuse-grid__column-3">
-                        <Button
-                          className="landuse-detail__add-button"
-                          variant={ButtonVariant.Supplementary}
-                          iconStart={<IconPlusCircleFill />}
-                          onClick={() => fields.push({ value: undefined })}
-                        >
-                          Lisää kohde
-                        </Button>
-                      </div>
-                    )}
-                  </>
-                )}
-              </FieldArray>
-            </Fieldset>
-
-            {/* Osoitteet Section */}
-            <h2>Osoitteet</h2>
-            <Fieldset heading="" className="full-width">
-              <div className="landuse-grid">
-                <FieldArray<OsoiteEntry> name="osoitteet">
-                  {({ fields }) => (
-                    <>
-                      {!fields.length && !isEditMode ? (
-                        <div className="landuse-grid__column-3">
-                          <p>Ei osoitteita</p>
-                        </div>
-                      ) : (
-                        fields.map((name, index) => (
-                          <React.Fragment key={name}>
-                            <div className="landuse-grid__column-3">
-                              <Field name={`${name}.katuosoite`}>
-                                {({ input }) => (
-                                  <TextInput
-                                    id={`katuosoite-${index}`}
-                                    label="Katuosoite"
-                                    value={getFieldTextValue(
-                                      isEditMode,
-                                      input.value,
-                                    )}
-                                    onChange={input.onChange}
-                                    readOnly={!isEditMode}
-                                  />
-                                )}
-                              </Field>
-                            </div>
-
-                            <div className="landuse-grid__column-3">
-                              <Field name={`${name}.postinumero`}>
-                                {({ input }) => (
-                                  <TextInput
-                                    id={`postinumero-${index}`}
-                                    label="Postinumero"
-                                    value={getFieldTextValue(
-                                      isEditMode,
-                                      input.value,
-                                    )}
-                                    onChange={input.onChange}
-                                    readOnly={!isEditMode}
-                                  />
-                                )}
-                              </Field>
-                            </div>
-
-                            <div className="landuse-grid__column-3">
-                              <Field name={`${name}.kaupunki`}>
-                                {({ input }) => (
-                                  <TextInput
-                                    id={`kaupunki-${index}`}
-                                    label="Kaupunki"
-                                    value={getFieldTextValue(
-                                      isEditMode,
-                                      input.value,
-                                    )}
-                                    onChange={input.onChange}
-                                    readOnly={!isEditMode}
-                                  />
-                                )}
-                              </Field>
-                            </div>
-
-                            {isEditMode && (
-                              <div
-                                className="landuse-grid__column-3"
-                                style={{ justifyContent: "flex-end" }}
-                              >
-                                <ConfirmDeleteButton
-                                  id={`summary-osoite-delete-${index}`}
-                                  buttonVariant={ButtonVariant.Supplementary}
-                                  buttonStyle={{ width: "fit-content" }}
-                                  onConfirm={() => fields.remove(index)}
-                                  dialogTitle="Poista osoite"
-                                  dialogContent={`Haluatko varmasti poistaa osoitteen ${values.osoitteet?.[index]?.katuosoite?.trim() ?? ""}?`}
+                          <div className="landuse-grid__column-3">
+                            <Field name="kaupunginosa">
+                              {({ input }) => (
+                                <TextInput
+                                  id="summary-kaupunginosa"
+                                  label="Kaupunginosa"
+                                  value={readOnlyTextValue(input.value)}
+                                  readOnly
                                 />
-                              </div>
-                            )}
-                          </React.Fragment>
-                        ))
-                      )}
+                              )}
+                            </Field>
+                          </div>
 
-                      {isEditMode && (
-                        <div className="landuse-grid__column-3">
-                          <Button
-                            className="landuse-detail__add-button"
-                            variant={ButtonVariant.Supplementary}
-                            iconStart={<IconPlusCircleFill />}
-                            onClick={() =>
-                              fields.push({
-                                katuosoite: "",
-                                postinumero: "",
-                                kaupunki: "",
-                              })
-                            }
-                          >
-                            Lisää osoite
-                          </Button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </FieldArray>
-              </div>
-            </Fieldset>
-
-            {/* Valmistelija Section */}
-            <h2>Valmistelijat</h2>
-            <Fieldset heading="" className="full-width">
-              <div className="landuse-grid">
-                <FieldArray<ValmistelijaEntry> name="valmistelijat">
-                  {({ fields }) => (
-                    <>
-                      {!fields.length && !isEditMode ? (
-                        <div className="landuse-grid__column-3">
-                          <p>Ei valmistelijoita</p>
-                        </div>
-                      ) : (
-                        fields.map((name, index) => (
-                          <React.Fragment key={name}>
-                            <div className="landuse-grid__column-3">
-                              <Field name={`${name}.value`}>
-                                {({ input }) =>
-                                  isEditMode ? (
-                                    <Select
-                                      id={`valmistelija-${index}`}
-                                      options={[
-                                        {
-                                          label: "Valmistelija 1",
-                                          value: "valmistelija1",
-                                        },
-                                        {
-                                          label: "Valmistelija 2",
-                                          value: "valmistelija2",
-                                        },
-                                        {
-                                          label: "Valmistelija 3",
-                                          value: "valmistelija3",
-                                        },
-                                      ]}
-                                      value={normalizeSelectValue(input.value)}
-                                      onChange={(selectedOptions) =>
-                                        handleSelectChange(
-                                          selectedOptions,
-                                          input.onChange,
+                          <div className="landuse-grid__column-3">
+                            <Field name="edistamisalue">
+                              {({ input }) =>
+                                isEditMode ? (
+                                  <SelectionGroup label="Edistämisalue">
+                                    <Checkbox
+                                      id="summary-edistamisalue"
+                                      label="Kyllä"
+                                      checked={Boolean(input.value)}
+                                      onChange={(event) =>
+                                        input.onChange(
+                                          event.currentTarget.checked,
                                         )
                                       }
-                                      texts={{
-                                        label: "Valmistelija",
-                                        placeholder: "Valitse",
-                                      }}
                                       disabled={!isEditMode}
                                     />
+                                  </SelectionGroup>
+                                ) : (
+                                  <TextInput
+                                    id="summary-edistamisalue"
+                                    label="Edistämisalue"
+                                    value={input.value ? "Kyllä" : "Ei"}
+                                    readOnly
+                                  />
+                                )
+                              }
+                            </Field>
+                          </div>
+
+                          <div className="landuse-grid__column-3">
+                            <Field name="tila">
+                              {({ input }) =>
+                                isEditMode ? (
+                                  <Select
+                                    id="summary-tila"
+                                    options={landUseNegotiationPhaseOptions}
+                                    value={normalizeSelectValue(input.value)}
+                                    onChange={(selectedOptions) =>
+                                      handleSelectChange(
+                                        selectedOptions,
+                                        input.onChange,
+                                      )
+                                    }
+                                    texts={{
+                                      label: "Maankäyttösopimuksen tila",
+                                      placeholder: "Valitse",
+                                    }}
+                                    disabled={!isEditMode}
+                                  />
+                                ) : (
+                                  <TextInput
+                                    id="summary-tila"
+                                    label="Maankäyttösopimuksen tila"
+                                    value={readOnlyTextValue(input.value)}
+                                    readOnly
+                                  />
+                                )
+                              }
+                            </Field>
+                          </div>
+
+                          <div className="landuse-grid__column-3">
+                            <Field name="arvioituEsittelyvuosi">
+                              {({ input }) => (
+                                <TextInput
+                                  id="arvioitu-esittelyvuosi"
+                                  label="Arvioitu esittelyvuosi"
+                                  value={getFieldTextValue(
+                                    isEditMode,
+                                    input.value,
+                                  )}
+                                  onChange={input.onChange}
+                                  readOnly={!isEditMode}
+                                />
+                              )}
+                            </Field>
+                          </div>
+
+                          <div className="landuse-grid__column-3">
+                            <Field name="arvioituMaksuvuosi">
+                              {({ input }) => (
+                                <TextInput
+                                  id="arvioitu-maksuvuosi"
+                                  label="Arvioitu maksuvuosi"
+                                  value={getFieldTextValue(
+                                    isEditMode,
+                                    input.value,
+                                  )}
+                                  onChange={input.onChange}
+                                  readOnly={!isEditMode}
+                                />
+                              )}
+                            </Field>
+                          </div>
+
+                          <div className="landuse-grid__column-3">
+                            <div className="landuse-detail__field-group">
+                              <Field name="sisaltaaAmVelvoitteita">
+                                {({ input }) =>
+                                  isEditMode ? (
+                                    <SelectionGroup label="Sisältää AM-velvoitteita">
+                                      <RadioButton
+                                        id="am-velvoitteet-kylla"
+                                        label="Kyllä"
+                                        checked={input.value === "kyllä"}
+                                        onChange={() => input.onChange("kyllä")}
+                                        disabled={!isEditMode}
+                                      />
+                                      <RadioButton
+                                        id="am-velvoitteet-ei"
+                                        label="Ei"
+                                        checked={input.value === "ei"}
+                                        onChange={() => input.onChange("ei")}
+                                        disabled={!isEditMode}
+                                      />
+                                    </SelectionGroup>
                                   ) : (
                                     <TextInput
-                                      id={`valmistelija-${index}`}
-                                      label="Valmistelija"
+                                      id="am-velvoitteet"
+                                      label="Sisältää AM-velvoitteita"
                                       value={readOnlyTextValue(input.value)}
                                       readOnly
                                     />
@@ -744,47 +381,538 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 }
                               </Field>
                             </div>
+                          </div>
 
-                            {isEditMode && (
-                              <div
-                                className="landuse-grid__column-3"
-                                style={{ justifyContent: "flex-end" }}
-                              >
-                                <ConfirmDeleteButton
-                                  id={`summary-valmistelija-delete-${index}`}
-                                  buttonVariant={ButtonVariant.Supplementary}
-                                  buttonStyle={{ width: "fit-content" }}
-                                  disabled={fields.length === 1}
-                                  onConfirm={() => fields.remove(index)}
-                                  dialogTitle="Poista valmistelija"
-                                  dialogContent={`Haluatko varmasti poistaa valmistelijan ${values.valmistelijat?.[index]?.value?.trim() ?? ""}?`}
-                                />
-                              </div>
-                            )}
-                          </React.Fragment>
-                        ))
-                      )}
+                          <div className="landuse-grid__column-3">
+                            <Field name="velvoitteidenMaaraika">
+                              {({ input }) =>
+                                isEditMode ? (
+                                  <DateInput
+                                    id="velvoitteiden-maaraika"
+                                    label="Velvoitteiden määräaika"
+                                    value={input.value}
+                                    onChange={input.onChange}
+                                    placeholder="DD.MM.YYYY"
+                                    disabled={!isEditMode}
+                                    language="fi"
+                                  />
+                                ) : (
+                                  <TextInput
+                                    id="velvoitteiden-maaraika"
+                                    label="Velvoitteiden määräaika"
+                                    value={readOnlyTextValue(input.value)}
+                                    readOnly
+                                  />
+                                )
+                              }
+                            </Field>
+                          </div>
 
-                      {isEditMode && (
-                        <div
-                          className="landuse-grid__column-3"
-                          style={{ justifyContent: "flex-end" }}
-                        >
-                          <Button
-                            className="landuse-detail__add-button"
-                            variant={ButtonVariant.Supplementary}
-                            iconStart={<IconPlusCircleFill />}
-                            onClick={() => fields.push({ value: undefined })}
-                          >
-                            Lisää valmistelija
-                          </Button>
+                          <div className="landuse-grid__column-3">
+                            <Field name="toimivaltainenPaattaja">
+                              {({ input }) =>
+                                isEditMode ? (
+                                  <Select
+                                    id="toimivaltainen-paattaja"
+                                    options={landUseDecisionMakerOptions}
+                                    value={normalizeSelectValue(input.value)}
+                                    onChange={(selectedOptions) =>
+                                      handleSelectChange(
+                                        selectedOptions,
+                                        input.onChange,
+                                      )
+                                    }
+                                    texts={{
+                                      label: "Toimivaltainen päättäjä",
+                                      placeholder: "Valitse",
+                                    }}
+                                    disabled={!isEditMode}
+                                  />
+                                ) : (
+                                  <TextInput
+                                    id="toimivaltainen-paattaja"
+                                    label="Toimivaltainen päättäjä"
+                                    value={readOnlyTextValue(input.value)}
+                                    readOnly
+                                  />
+                                )
+                              }
+                            </Field>
+                          </div>
                         </div>
-                      )}
-                    </>
-                  )}
-                </FieldArray>
-              </div>
-            </Fieldset>
+                      </Fieldset>
+                    </div>
+                  ),
+                },
+                {
+                  title: SUMMARY_STEPS[1].title,
+                  key: SUMMARY_STEP_KEYS.asemakaava,
+                  description: (
+                    <div id={getSummaryStepId(SUMMARY_STEP_KEYS.asemakaava)}>
+                      <Fieldset heading="" className="full-width">
+                        <div className="landuse-grid">
+                          <div className="landuse-grid__column-3">
+                            <Field name="asemakaavanNumero">
+                              {({ input }) =>
+                                isEditMode ? (
+                                  <Select
+                                    id="asemakaavan-numero"
+                                    options={asemakaavaNumberOptions}
+                                    value={normalizeSelectValue(input.value)}
+                                    onChange={handleAsemakaavaNumberChange}
+                                    filter={kohdeSelectFilter}
+                                    texts={{
+                                      label: "Asemakaavan numero",
+                                      placeholder: "Valitse",
+                                    }}
+                                    disabled={!isEditMode}
+                                  />
+                                ) : (
+                                  <TextInput
+                                    id="asemakaavan-numero"
+                                    label="Asemakaavan numero"
+                                    value={readOnlyTextValue(input.value)}
+                                    readOnly
+                                  />
+                                )
+                              }
+                            </Field>
+                          </div>
+
+                          <div className="landuse-grid__column-3">
+                            <Field name="asemakaavanKasittelyvaihe">
+                              {({ input }) => (
+                                <TextInput
+                                  id="asemakaavan-kasittelyvaihe"
+                                  label="Asemakaavan käsittelyvaihe"
+                                  value={getFieldTextValue(
+                                    isEditMode,
+                                    input.value,
+                                  )}
+                                  onChange={input.onChange}
+                                  readOnly
+                                />
+                              )}
+                            </Field>
+                          </div>
+
+                          <div className="landuse-grid__column-3">
+                            <Field name="vahvistamisHyvaksymisPvm">
+                              {({ input }) => (
+                                <TextInput
+                                  id="vahvistamis-hyvaksymis-pvm"
+                                  label="Vahvistamis/hyväksymispäivä"
+                                  value={getFieldTextValue(
+                                    isEditMode,
+                                    input.value,
+                                  )}
+                                  onChange={input.onChange}
+                                  readOnly
+                                />
+                              )}
+                            </Field>
+                          </div>
+                          <div className="landuse-grid__column-3">
+                            <Field name="asemakaavanLainvoimaisuusPvm">
+                              {({ input }) => (
+                                <TextInput
+                                  id="asemakaavan-lainvoimaisuus-pvm"
+                                  label="Lainvoimaisuuspäivä"
+                                  value={getFieldTextValue(
+                                    isEditMode,
+                                    input.value,
+                                  )}
+                                  onChange={input.onChange}
+                                  readOnly
+                                />
+                              )}
+                            </Field>
+                          </div>
+                          <div className="landuse-grid__column-3">
+                            <Field name="asemakaavanHyvaksyjä">
+                              {({ input }) => (
+                                <TextInput
+                                  id="asemakaavan-hyvaksyja"
+                                  label="Asemakaavan hyväksyjä"
+                                  value={getFieldTextValue(
+                                    isEditMode,
+                                    input.value,
+                                  )}
+                                  onChange={input.onChange}
+                                  readOnly
+                                />
+                              )}
+                            </Field>
+                          </div>
+
+                          <div className="landuse-grid__column-3">
+                            <Field name="asemakaavanDiaarinumero">
+                              {({ input }) => (
+                                <TextInput
+                                  id="asemakaavan-diaarinumero"
+                                  label="Asemakaavan diaarinumero"
+                                  value={getFieldTextValue(
+                                    isEditMode,
+                                    input.value,
+                                  )}
+                                  onChange={input.onChange}
+                                  readOnly
+                                />
+                              )}
+                            </Field>
+                          </div>
+                        </div>
+                      </Fieldset>
+                    </div>
+                  ),
+                },
+                {
+                  title: SUMMARY_STEPS[2].title,
+                  key: SUMMARY_STEP_KEYS.kohteet,
+                  description: (
+                    <div id={getSummaryStepId(SUMMARY_STEP_KEYS.kohteet)}>
+                      <Fieldset heading="" className="full-width">
+                        <FieldArray<KohdeEntry> name="suunnittelunPerusteenaOlevatKohteet">
+                          {({ fields }) => (
+                            <>
+                              {!fields.length && !isEditMode ? (
+                                <div className="landuse-grid__column-3">
+                                  <p>Ei kohteita</p>
+                                </div>
+                              ) : (
+                                fields.map((name, index) => (
+                                  <div
+                                    key={name}
+                                    className="landuse-grid landuse-grid__bottom-margin"
+                                  >
+                                    <div className="landuse-grid__column-3">
+                                      <Field name={`${name}.value`}>
+                                        {({ input }) =>
+                                          isEditMode ? (
+                                            <Select
+                                              id={`suunnittelun-kohde-${index}`}
+                                              options={
+                                                landUseKohdeSelectOptions
+                                              }
+                                              value={normalizeSelectValue(
+                                                input.value,
+                                              )}
+                                              onChange={(selectedOptions) =>
+                                                handleSelectChange(
+                                                  selectedOptions,
+                                                  input.onChange,
+                                                )
+                                              }
+                                              filter={kohdeSelectFilter}
+                                              texts={{
+                                                label: `Kohde ${index + 1}`,
+                                                placeholder: "Valitse",
+                                              }}
+                                              disabled={!isEditMode}
+                                            />
+                                          ) : (
+                                            <TextInput
+                                              id={`suunnittelun-kohde-${index}`}
+                                              label={`Kohde ${index + 1}`}
+                                              value={readOnlyTextValue(
+                                                input.value,
+                                              )}
+                                              readOnly
+                                            />
+                                          )
+                                        }
+                                      </Field>
+                                    </div>
+
+                                    {isEditMode && (
+                                      <div className="landuse-grid__column-3">
+                                        <ConfirmDeleteButton
+                                          id={`summary-kohde-delete-${index}`}
+                                          buttonVariant={
+                                            ButtonVariant.Supplementary
+                                          }
+                                          buttonStyle={{ width: "fit-content" }}
+                                          onConfirm={() => fields.remove(index)}
+                                          dialogTitle="Poista kohde"
+                                          dialogContent={`Haluatko varmasti poistaa kohteen ${values.suunnittelunPerusteenaOlevatKohteet?.[index]?.value?.trim() ?? ""}?`}
+                                        />
+                                      </div>
+                                    )}
+                                    {isEditMode ? (
+                                      <>
+                                        <div className="landuse-grid__column-3" />
+                                        <div className="landuse-grid__column-3" />
+                                      </>
+                                    ) : (
+                                      <>
+                                        <div className="landuse-grid__column-3" />
+                                        <div className="landuse-grid__column-3" />
+                                        <div className="landuse-grid__column-3" />
+                                      </>
+                                    )}
+                                  </div>
+                                ))
+                              )}
+
+                              {isEditMode && (
+                                <div className="landuse-grid__column-3">
+                                  <Button
+                                    className="landuse-detail__add-button"
+                                    variant={ButtonVariant.Supplementary}
+                                    iconStart={<IconPlusCircleFill />}
+                                    onClick={() =>
+                                      fields.push({ value: undefined })
+                                    }
+                                  >
+                                    Lisää kohde
+                                  </Button>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </FieldArray>
+                      </Fieldset>
+                    </div>
+                  ),
+                },
+                {
+                  title: SUMMARY_STEPS[3].title,
+                  key: SUMMARY_STEP_KEYS.osoitteet,
+                  description: (
+                    <div id={getSummaryStepId(SUMMARY_STEP_KEYS.osoitteet)}>
+                      <Fieldset heading="" className="full-width">
+                        <div className="landuse-grid">
+                          <FieldArray<OsoiteEntry> name="osoitteet">
+                            {({ fields }) => (
+                              <>
+                                {!fields.length && !isEditMode ? (
+                                  <div className="landuse-grid__column-3">
+                                    <p>Ei osoitteita</p>
+                                  </div>
+                                ) : (
+                                  fields.map((name, index) => (
+                                    <React.Fragment key={name}>
+                                      <div className="landuse-grid__column-3">
+                                        <Field name={`${name}.katuosoite`}>
+                                          {({ input }) => (
+                                            <TextInput
+                                              id={`katuosoite-${index}`}
+                                              label="Katuosoite"
+                                              value={getFieldTextValue(
+                                                isEditMode,
+                                                input.value,
+                                              )}
+                                              onChange={input.onChange}
+                                              readOnly={!isEditMode}
+                                            />
+                                          )}
+                                        </Field>
+                                      </div>
+
+                                      <div className="landuse-grid__column-3">
+                                        <Field name={`${name}.postinumero`}>
+                                          {({ input }) => (
+                                            <TextInput
+                                              id={`postinumero-${index}`}
+                                              label="Postinumero"
+                                              value={getFieldTextValue(
+                                                isEditMode,
+                                                input.value,
+                                              )}
+                                              onChange={input.onChange}
+                                              readOnly={!isEditMode}
+                                            />
+                                          )}
+                                        </Field>
+                                      </div>
+
+                                      <div className="landuse-grid__column-3">
+                                        <Field name={`${name}.kaupunki`}>
+                                          {({ input }) => (
+                                            <TextInput
+                                              id={`kaupunki-${index}`}
+                                              label="Kaupunki"
+                                              value={getFieldTextValue(
+                                                isEditMode,
+                                                input.value,
+                                              )}
+                                              onChange={input.onChange}
+                                              readOnly={!isEditMode}
+                                            />
+                                          )}
+                                        </Field>
+                                      </div>
+
+                                      {isEditMode && (
+                                        <div
+                                          className="landuse-grid__column-3"
+                                          style={{ justifyContent: "flex-end" }}
+                                        >
+                                          <ConfirmDeleteButton
+                                            id={`summary-osoite-delete-${index}`}
+                                            buttonVariant={
+                                              ButtonVariant.Supplementary
+                                            }
+                                            buttonStyle={{
+                                              width: "fit-content",
+                                            }}
+                                            onConfirm={() =>
+                                              fields.remove(index)
+                                            }
+                                            dialogTitle="Poista osoite"
+                                            dialogContent={`Haluatko varmasti poistaa osoitteen ${values.osoitteet?.[index]?.katuosoite?.trim() ?? ""}?`}
+                                          />
+                                        </div>
+                                      )}
+                                    </React.Fragment>
+                                  ))
+                                )}
+
+                                {isEditMode && (
+                                  <div className="landuse-grid__column-3">
+                                    <Button
+                                      className="landuse-detail__add-button"
+                                      variant={ButtonVariant.Supplementary}
+                                      iconStart={<IconPlusCircleFill />}
+                                      onClick={() =>
+                                        fields.push({
+                                          katuosoite: "",
+                                          postinumero: "",
+                                          kaupunki: "",
+                                        })
+                                      }
+                                    >
+                                      Lisää osoite
+                                    </Button>
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </FieldArray>
+                        </div>
+                      </Fieldset>
+                    </div>
+                  ),
+                },
+                {
+                  title: SUMMARY_STEPS[4].title,
+                  key: SUMMARY_STEP_KEYS.valmistelijat,
+                  description: (
+                    <div id={getSummaryStepId(SUMMARY_STEP_KEYS.valmistelijat)}>
+                      <Fieldset heading="" className="full-width">
+                        <div className="landuse-grid">
+                          <FieldArray<ValmistelijaEntry> name="valmistelijat">
+                            {({ fields }) => (
+                              <>
+                                {!fields.length && !isEditMode ? (
+                                  <div className="landuse-grid__column-3">
+                                    <p>Ei valmistelijoita</p>
+                                  </div>
+                                ) : (
+                                  fields.map((name, index) => (
+                                    <React.Fragment key={name}>
+                                      <div className="landuse-grid__column-3">
+                                        <Field name={`${name}.value`}>
+                                          {({ input }) =>
+                                            isEditMode ? (
+                                              <Select
+                                                id={`valmistelija-${index}`}
+                                                options={[
+                                                  {
+                                                    label: "Valmistelija 1",
+                                                    value: "valmistelija1",
+                                                  },
+                                                  {
+                                                    label: "Valmistelija 2",
+                                                    value: "valmistelija2",
+                                                  },
+                                                  {
+                                                    label: "Valmistelija 3",
+                                                    value: "valmistelija3",
+                                                  },
+                                                ]}
+                                                value={normalizeSelectValue(
+                                                  input.value,
+                                                )}
+                                                onChange={(selectedOptions) =>
+                                                  handleSelectChange(
+                                                    selectedOptions,
+                                                    input.onChange,
+                                                  )
+                                                }
+                                                texts={{
+                                                  label: "Valmistelija",
+                                                  placeholder: "Valitse",
+                                                }}
+                                                disabled={!isEditMode}
+                                              />
+                                            ) : (
+                                              <TextInput
+                                                id={`valmistelija-${index}`}
+                                                label="Valmistelija"
+                                                value={readOnlyTextValue(
+                                                  input.value,
+                                                )}
+                                                readOnly
+                                              />
+                                            )
+                                          }
+                                        </Field>
+                                      </div>
+
+                                      {isEditMode && (
+                                        <div
+                                          className="landuse-grid__column-3"
+                                          style={{ justifyContent: "flex-end" }}
+                                        >
+                                          <ConfirmDeleteButton
+                                            id={`summary-valmistelija-delete-${index}`}
+                                            buttonVariant={
+                                              ButtonVariant.Supplementary
+                                            }
+                                            buttonStyle={{
+                                              width: "fit-content",
+                                            }}
+                                            disabled={fields.length === 1}
+                                            onConfirm={() =>
+                                              fields.remove(index)
+                                            }
+                                            dialogTitle="Poista valmistelija"
+                                            dialogContent={`Haluatko varmasti poistaa valmistelijan ${values.valmistelijat?.[index]?.value?.trim() ?? ""}?`}
+                                          />
+                                        </div>
+                                      )}
+                                    </React.Fragment>
+                                  ))
+                                )}
+
+                                {isEditMode && (
+                                  <div
+                                    className="landuse-grid__column-3"
+                                    style={{ justifyContent: "flex-end" }}
+                                  >
+                                    <Button
+                                      className="landuse-detail__add-button"
+                                      variant={ButtonVariant.Supplementary}
+                                      iconStart={<IconPlusCircleFill />}
+                                      onClick={() =>
+                                        fields.push({ value: undefined })
+                                      }
+                                    >
+                                      Lisää valmistelija
+                                    </Button>
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </FieldArray>
+                        </div>
+                      </Fieldset>
+                    </div>
+                  ),
+                },
+              ]}
+            />
           </div>
         </form>
       )}

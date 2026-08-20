@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   TextInput,
   TextArea,
@@ -18,6 +18,7 @@ import {
   getOptionsDisplayValue,
 } from "../../utils/fieldUtils";
 import { createEmptyPartyEntry } from "../../api/landUseFormValues";
+import { useTocEntries } from "../../hooks/useTableOfContents";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import {
   partyRoleOptions,
@@ -495,11 +496,39 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
   </div>
 );
 
+const getPartyHeadingId = (index: number): string => `party-heading-${index}`;
+
+const getPartyName = (partyEntry: PartyEntry | undefined): string =>
+  partyEntry?.party?.details?.name?.trim() || "Uusi osapuoli";
+
 export const LandUseParties: React.FC<LandUsePartiesProps> = ({
   form,
   isEditMode,
 }) => {
   const newlyAddedIndexRef = useRef<number | null>(null);
+  const [parties, setParties] = useState<PartyEntry[]>(
+    () => form.getState().values.parties ?? [],
+  );
+
+  useEffect(
+    () =>
+      form.subscribe((state) => setParties(state.values.parties ?? []), {
+        values: true,
+      }),
+    [form],
+  );
+
+  const tocEntries = useMemo(
+    () =>
+      parties.map((party, index) => ({
+        id: getPartyHeadingId(index),
+        text: getPartyName(party),
+        level: 2,
+      })),
+    [parties],
+  );
+
+  useTocEntries(tocEntries);
 
   return (
     <Form<LandUsePartiesFormValues>
@@ -516,9 +545,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                   <>
                     {fields.map((fieldName, index) => {
                       const partyEntry = values?.parties?.[index];
-                      const partyName =
-                        partyEntry?.party?.details?.name?.trim() ||
-                        "Uusi osapuoli";
+                      const partyName = getPartyName(partyEntry);
 
                       return (
                         <div
@@ -526,7 +553,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                           key={`${fieldName}-${index}`}
                         >
                           <div className="landuse-detail__heading-with-delete">
-                            <h2>{partyName}</h2>
+                            <h2 id={getPartyHeadingId(index)}>{partyName}</h2>
                             {isEditMode && (
                               <ConfirmDeleteButton
                                 id={`party-${index}-delete`}

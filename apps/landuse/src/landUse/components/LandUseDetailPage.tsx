@@ -7,8 +7,9 @@ import React, {
 } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Breadcrumb } from "hds-react";
-import { SideNavigation, HEADING_TAGS_TO_SHOW_IN_TOC } from "./SideNavigation";
+import { SideNavigation } from "./SideNavigation";
 import type { SideNavigationTab, SectionEntry } from "./SideNavigation";
+import { TableOfContentsProvider } from "../hooks/useTableOfContents";
 import { createForm } from "final-form";
 import arrayMutators from "final-form-arrays";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -796,36 +797,11 @@ const LandUseDetailPage: React.FC = () => {
     setActiveTab(tabIndex);
   }, []);
 
-  // Build the table of contents from the active tab's headings.
-  // Only the active tab is mounted, so this re-runs whenever the tab or its
-  // rendered content changes.
+  // Reset the active section highlight whenever the mounted tab changes.
+  // Tabs publish their own entries through the table-of-contents context.
   useEffect(() => {
-    const content = contentRef.current;
-    if (!content) {
-      setSectionEntries([]);
-      return;
-    }
-
-    const headingToShowInToc = HEADING_TAGS_TO_SHOW_IN_TOC.join(", ");
-    const headings = Array.from(content.querySelectorAll(headingToShowInToc));
-    const entries: SectionEntry[] = headings.map((heading, index) => {
-      if (!heading.id) {
-        heading.id = `landuse-heading-${activeTab}-${index}`;
-      }
-      const headingLevel = parseInt(
-        heading.tagName?.toLowerCase().replace("h", "") ?? "1",
-        10,
-      );
-      return {
-        id: heading.id,
-        text: heading.textContent?.trim() ?? "",
-        level: headingLevel,
-      };
-    });
-
-    setSectionEntries(entries);
-    setActiveSectionId(entries[0]?.id ?? null);
-  }, [activeTab, isEditMode]);
+    setActiveSectionId(null);
+  }, [activeTab]);
 
   const handleTocClick = useCallback((id: string) => {
     const target = document.getElementById(id);
@@ -1013,7 +989,9 @@ const LandUseDetailPage: React.FC = () => {
               { title: agreementId, path: "" },
             ]}
           />
-          <div ref={contentRef}>{renderActiveTabPanel()}</div>
+          <TableOfContentsProvider setEntries={setSectionEntries}>
+            <div ref={contentRef}>{renderActiveTabPanel()}</div>
+          </TableOfContentsProvider>
         </div>
       </div>
     </div>
