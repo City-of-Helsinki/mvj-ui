@@ -8,7 +8,6 @@ import {
   IconAngleUp,
   IconPlusCircleFill,
   IconSize,
-  NumberInput,
   Select,
   TextArea,
   TextInput,
@@ -18,7 +17,6 @@ import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
 import {
-  getFieldTextValue,
   normalizeMultiSelectValue,
   normalizeSelectValue,
   readOnlyTextValue,

@@ -164,6 +164,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
         <form onSubmit={handleSubmit}>
           <div className="landuse-detail__content">
             <h1>Perustiedot</h1>
+            <h2>Yleiset tiedot</h2>
 
             <Fieldset heading="" className="full-width">
               <div className="landuse-grid">
