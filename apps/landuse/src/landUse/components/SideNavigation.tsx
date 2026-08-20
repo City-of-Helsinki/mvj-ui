@@ -16,10 +16,9 @@ export interface SideNavigationTab {
   hasError?: boolean;
 }
 
-export interface TocEntry {
+export interface SectionEntry {
   id: string;
   text: string;
-  /** Heading level */
   level: number;
 }
 
@@ -28,7 +27,7 @@ interface SideNavigationProps {
   tabs: SideNavigationTab[];
   activeTab: number;
   onTabClick: (tabIndex: number) => void;
-  tocEntries: TocEntry[];
+  tocEntries: SectionEntry[];
   activeTocId: string | null;
   onTocClick: (id: string) => void;
   isEditMode: boolean;

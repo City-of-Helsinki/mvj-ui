@@ -8,7 +8,7 @@ import React, {
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Breadcrumb } from "hds-react";
 import { SideNavigation, HEADING_TAGS_TO_SHOW_IN_TOC } from "./SideNavigation";
-import type { SideNavigationTab, TocEntry } from "./SideNavigation";
+import type { SideNavigationTab, SectionEntry } from "./SideNavigation";
 import { createForm } from "final-form";
 import arrayMutators from "final-form-arrays";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -68,6 +68,7 @@ import {
 import { LAND_USE_INVOICE_ITEM_TYPES } from "../options";
 import { parseLandUseNumericValueOrZero } from "../utils/number";
 import { DEFAULT_KOROTUSKERROIN } from "../constants";
+import { useCalculateActivePageSection } from "../hooks/useCalculateActivePageSection";
 
 interface FormState {
   dirty: boolean;
@@ -203,10 +204,16 @@ const LandUseDetailPage: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
   const [korkoResults, setKorkoResults] = useState<KorkoResult[]>([]);
-  const [tocEntries, setTocEntries] = useState<TocEntry[]>([]);
-  const [activeTocId, setActiveTocId] = useState<string | null>(null);
+  const [sectionEntries, setSectionEntries] = useState<SectionEntry[]>([]);
+  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
+
+  useCalculateActivePageSection(
+    contentRef,
+    sectionEntries.map((entry) => entry.id),
+    setActiveSectionId,
+  );
 
   /** Form state tracking for each tab.
    * Is necessary, because react-final-form's FormApi's dirty state is unreliable:
@@ -795,13 +802,13 @@ const LandUseDetailPage: React.FC = () => {
   useEffect(() => {
     const content = contentRef.current;
     if (!content) {
-      setTocEntries([]);
+      setSectionEntries([]);
       return;
     }
 
     const headingToShowInToc = HEADING_TAGS_TO_SHOW_IN_TOC.join(", ");
     const headings = Array.from(content.querySelectorAll(headingToShowInToc));
-    const entries: TocEntry[] = headings.map((heading, index) => {
+    const entries: SectionEntry[] = headings.map((heading, index) => {
       if (!heading.id) {
         heading.id = `landuse-heading-${activeTab}-${index}`;
       }
@@ -816,16 +823,15 @@ const LandUseDetailPage: React.FC = () => {
       };
     });
 
-    setTocEntries(entries);
-    // TODO set active toc id based on scroll position
-    setActiveTocId(entries[0]?.id ?? null);
+    setSectionEntries(entries);
+    setActiveSectionId(entries[0]?.id ?? null);
   }, [activeTab, isEditMode]);
 
   const handleTocClick = useCallback((id: string) => {
     const target = document.getElementById(id);
     if (target) {
       target.scrollIntoView({ behavior: "smooth", block: "start" });
-      setActiveTocId(id);
+      setActiveSectionId(id);
     }
   }, []);
 
@@ -989,8 +995,8 @@ const LandUseDetailPage: React.FC = () => {
           tabs={sideNavigationTabs}
           activeTab={activeTab}
           onTabClick={handleTabClick}
-          tocEntries={tocEntries}
-          activeTocId={activeTocId}
+          tocEntries={sectionEntries}
+          activeTocId={activeSectionId}
           onTocClick={handleTocClick}
           isEditMode={isEditMode}
           onEditClick={handleEditClick}
