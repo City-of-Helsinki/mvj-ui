@@ -62,6 +62,27 @@
   background-color: hds.$color-black-5;
 }
 
+.landuse-detail__heading-with-delete {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    justify-self: flex-start;
+    flex-shrink: 3;
+  }
+
+  button {
+    margin-left: hds.$spacing-s;
+    justify-self: flex-end;
+  }
+}
+
 // -- Tab label / icons -------------------------------------------------------
 
 .landuse-detail__tab-label {
