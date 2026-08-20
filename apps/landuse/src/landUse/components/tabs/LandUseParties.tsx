@@ -3,7 +3,6 @@ import {
   TextInput,
   TextArea,
   Select,
-  Accordion,
   Button,
   ButtonVariant,
   IconPlusCircleFill,
@@ -507,20 +506,6 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
       form={form}
       onSubmit={() => {}}
       render={({ handleSubmit, values }) => {
-        const partiesCount = values?.parties?.length ?? 0;
-
-        const shouldOpenAccordion = (index: number): boolean => {
-          // When there are multiple parties, initially open none of the Accordions
-          // When there is only one party, initially open its Accordion
-          // When creating a new party, open its Accordion
-
-          if (newlyAddedIndexRef.current === index) {
-            newlyAddedIndexRef.current = null;
-            return true;
-          }
-          return partiesCount === 1;
-        };
-
         return (
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
@@ -536,13 +521,13 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                         "Uusi osapuoli";
 
                       return (
-                        <Accordion
-                          key={fieldName}
-                          heading={partyName}
-                          initiallyOpen={shouldOpenAccordion(index)}
+                        <div
+                          className="landuse-detail__party-entry"
+                          key={`${fieldName}-${index}`}
                         >
-                          {isEditMode && (
-                            <div className="landuse-detail__delete-button-row">
+                          <div className="landuse-detail__heading-with-delete">
+                            <h2>{partyName}</h2>
+                            {isEditMode && (
                               <ConfirmDeleteButton
                                 id={`party-${index}-delete`}
                                 buttonLabel="Poista osapuoli"
@@ -550,8 +535,8 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                 dialogTitle="Poista osapuoli"
                                 dialogContent={`Haluatko varmasti poistaa osapuolen ${partyName?.trim() ?? ""}?`}
                               />
-                            </div>
-                          )}
+                            )}
+                          </div>
 
                           <StepByStep
                             numberedList
@@ -963,7 +948,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                               },
                             ]}
                           />
-                        </Accordion>
+                        </div>
                       );
                     })}
 
