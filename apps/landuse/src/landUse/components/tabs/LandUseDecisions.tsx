@@ -1066,71 +1066,80 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                           key: "agreement-guarantees",
                           description: (
                             <Fieldset heading="" className="full-width">
-                              {(agreement.vakuudet ?? []).map(
-                                (vakuus, vakuusIndex) => {
-                                  const vakuusName = `${agreementName}.vakuudet.${vakuusIndex}`;
-                                  const savedVakuus = (form.getState()
-                                    .initialValues?.agreements?.[agreementIndex]
-                                    ?.vakuudet ?? [])[vakuusIndex];
-                                  const isVakuusLocked = Boolean(
-                                    savedVakuus?.palautettuPvm,
-                                  );
-                                  return (
-                                    <div
-                                      className="landuse-detail__decisions-vakuus-block landuse-grid__bottom-separator"
-                                      key={`${vakuusName}-${vakuusIndex}`}
-                                    >
-                                      <h4>
-                                        Vakuus: {vakuus.tyyppi ?? ""}
-                                        {isVakuusLocked &&
-                                          ` (palautettu ${savedVakuus?.palautettuPvm})`}
-                                      </h4>
-                                      {/* NOTE! Hidden field for vakuuden tyyppi for form data. */}
-                                      <Field name={`${vakuusName}.tyyppi`}>
-                                        {({ input }) => (
-                                          <TextInput
-                                            id={`vakuus-tyyppi-${agreementIndex}-${vakuusIndex}`}
-                                            label=""
-                                            value={readOnlyTextValue(
-                                              input.value,
+                              {(agreement.vakuudet ?? []).length > 0 && (
+                                <StepByStep
+                                  numberedList
+                                  steps={(agreement.vakuudet ?? []).map(
+                                    (vakuus, vakuusIndex) => {
+                                      const vakuusName = `${agreementName}.vakuudet.${vakuusIndex}`;
+                                      const savedVakuus = (form.getState()
+                                        .initialValues?.agreements?.[
+                                        agreementIndex
+                                      ]?.vakuudet ?? [])[vakuusIndex];
+                                      const isVakuusLocked = Boolean(
+                                        savedVakuus?.palautettuPvm,
+                                      );
+                                      return {
+                                        title: `Vakuus: ${vakuus.tyyppi ?? ""}${
+                                          isVakuusLocked
+                                            ? ` (palautettu ${savedVakuus?.palautettuPvm})`
+                                            : ""
+                                        }`,
+                                        key: `vakuus-${vakuusIndex}`,
+                                        description: (
+                                          <div className="landuse-detail__decisions-vakuus-block">
+                                            {/* NOTE! Hidden field for vakuuden tyyppi for form data. */}
+                                            <Field
+                                              name={`${vakuusName}.tyyppi`}
+                                            >
+                                              {({ input }) => (
+                                                <TextInput
+                                                  id={`vakuus-tyyppi-${agreementIndex}-${vakuusIndex}`}
+                                                  label=""
+                                                  value={readOnlyTextValue(
+                                                    input.value,
+                                                  )}
+                                                  readOnly
+                                                  hidden
+                                                />
+                                              )}
+                                            </Field>
+
+                                            <CollateralFormByType
+                                              type={
+                                                vakuus.tyyppi as
+                                                  | LandUseGuaranteeType
+                                                  | undefined
+                                              }
+                                              namePrefix={vakuusName}
+                                              isEditMode={
+                                                isEditMode && !isVakuusLocked
+                                              }
+                                              partyOptions={partyOptions}
+                                            />
+
+                                            {isEditMode && !isVakuusLocked && (
+                                              <div className="landuse-detail__delete-button-row">
+                                                <ConfirmDeleteButton
+                                                  id={`vakuus-delete-${agreementIndex}-${vakuusIndex}`}
+                                                  buttonLabel="Poista vakuus"
+                                                  onConfirm={() => {
+                                                    form.mutators.remove(
+                                                      `agreements.${agreementIndex}.vakuudet`,
+                                                      vakuusIndex,
+                                                    );
+                                                  }}
+                                                  dialogTitle="Poista vakuus"
+                                                  dialogContent="Haluatko varmasti poistaa vakuuden?"
+                                                />
+                                              </div>
                                             )}
-                                            readOnly
-                                            hidden
-                                          />
-                                        )}
-                                      </Field>
-
-                                      <CollateralFormByType
-                                        type={
-                                          vakuus.tyyppi as
-                                            LandUseGuaranteeType | undefined
-                                        }
-                                        namePrefix={vakuusName}
-                                        isEditMode={
-                                          isEditMode && !isVakuusLocked
-                                        }
-                                        partyOptions={partyOptions}
-                                      />
-
-                                      {isEditMode && !isVakuusLocked && (
-                                        <div className="landuse-detail__delete-button-row">
-                                          <ConfirmDeleteButton
-                                            id={`vakuus-delete-${agreementIndex}-${vakuusIndex}`}
-                                            buttonLabel="Poista vakuus"
-                                            onConfirm={() => {
-                                              form.mutators.remove(
-                                                `agreements.${agreementIndex}.vakuudet`,
-                                                vakuusIndex,
-                                              );
-                                            }}
-                                            dialogTitle="Poista vakuus"
-                                            dialogContent="Haluatko varmasti poistaa vakuuden?"
-                                          />
-                                        </div>
-                                      )}
-                                    </div>
-                                  );
-                                },
+                                          </div>
+                                        ),
+                                      };
+                                    },
+                                  )}
+                                />
                               )}
 
                               {isEditMode && (
