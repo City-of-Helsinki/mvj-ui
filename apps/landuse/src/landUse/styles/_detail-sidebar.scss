@@ -10,15 +10,6 @@
 
 $sidebar-width: 260px;
 
-// Row wrapper that places the sidebar next to the tab content.
-// The min-height ensures the sticky context is maintained for tall content.
-.landuse-detail__body {
-  display: flex;
-  align-items: flex-start;
-  gap: hds.$spacing-m;
-  min-height: 100vh;
-}
-
 .landuse-detail__sidebar {
   flex: 0 0 $sidebar-width;
   width: $sidebar-width;

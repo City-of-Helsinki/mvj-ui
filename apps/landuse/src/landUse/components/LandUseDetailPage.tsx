@@ -980,7 +980,7 @@ const LandUseDetailPage: React.FC = () => {
           onDiscardClick={handleDiscardClick}
         />
 
-        <div>
+        <div className="landuse-detail__main">
           <Breadcrumb
             aria-label="Breadcrumb"
             list={[
