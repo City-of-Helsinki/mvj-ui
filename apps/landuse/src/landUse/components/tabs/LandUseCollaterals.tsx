@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Fieldset,
   IconAngleLeft,
@@ -28,6 +28,7 @@ import {
 } from "../../utils/vakuustarve";
 import { DEFAULT_KOROTUSKERROIN } from "../../constants";
 import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
+import { useTocEntries } from "../../hooks/useTableOfContents";
 
 export interface LandUseCollateralsFormValues {
   korotuskerroin?: string | number;
@@ -69,6 +70,11 @@ const formatSiteHallintamuoto = (
 const getKorotuskerroinValue = (value: string | number | undefined): number =>
   parseLandUseNumericValue(value) ?? DEFAULT_KOROTUSKERROIN;
 
+const COLLATERALS_VAKUUSLASKURI_HEADING_ID =
+  "collaterals-section-vakuuslaskuri";
+const COLLATERALS_KOKONAISVAKUUSTARVE_HEADING_ID =
+  "collaterals-section-kokonaisvakuustarve";
+
 export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   form,
   isEditMode,
@@ -77,6 +83,24 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   compensationsRowsBySiteId,
   maankayttokorvausYhteensa,
 }) => {
+  const tocEntries = useMemo(
+    () => [
+      {
+        id: COLLATERALS_VAKUUSLASKURI_HEADING_ID,
+        text: "Vakuuslaskuri",
+        level: 2,
+      },
+      {
+        id: COLLATERALS_KOKONAISVAKUUSTARVE_HEADING_ID,
+        text: "Kokonaisvakuustarve",
+        level: 2,
+      },
+    ],
+    [],
+  );
+
+  useTocEntries(tocEntries);
+
   return (
     <Form<LandUseCollateralsFormValues>
       form={form}
@@ -207,7 +231,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             <div className="landuse-detail__content">
               <h1>Vakuustarve</h1>
 
-              <h2>Vakuuslaskuri</h2>
+              <h2 id={COLLATERALS_VAKUUSLASKURI_HEADING_ID}>Vakuuslaskuri</h2>
               <Fieldset
                 heading=""
                 className="landuse-detail__fieldset--with-margin"
@@ -260,7 +284,9 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                 </div>
               </Fieldset>
 
-              <h2>Kokonaisvakuustarve</h2>
+              <h2 id={COLLATERALS_KOKONAISVAKUUSTARVE_HEADING_ID}>
+                Kokonaisvakuustarve
+              </h2>
               <Fieldset
                 heading=""
                 className="landuse-detail__fieldset--with-margin"
