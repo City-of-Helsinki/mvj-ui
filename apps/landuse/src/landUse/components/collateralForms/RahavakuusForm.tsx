@@ -10,7 +10,7 @@ export const RahavakuusForm: React.FC<CollateralFormProps> = ({
 }) => (
   <>
     <div className="landuse-grid landuse-grid__bottom-margin">
-      <div className="landuse-grid__column-3">
+      <div className="landuse-grid__column-6">
         <CollateralTextField
           namePrefix={namePrefix}
           fieldName="antajanNimi"
@@ -20,7 +20,7 @@ export const RahavakuusForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-grid__column-3">
+      <div className="landuse-grid__column-6">
         <CollateralTextField
           namePrefix={namePrefix}
           fieldName="antajanYTunnus"
@@ -30,7 +30,7 @@ export const RahavakuusForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-grid__column-3">
+      <div className="landuse-grid__column-6">
         <CollateralTextField
           namePrefix={namePrefix}
           fieldName="antajanHenkilotunnus"
@@ -40,7 +40,7 @@ export const RahavakuusForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-grid__column-3">
+      <div className="landuse-grid__column-6">
         <CollateralTextField
           namePrefix={namePrefix}
           fieldName="tilinumero"
@@ -50,7 +50,7 @@ export const RahavakuusForm: React.FC<CollateralFormProps> = ({
         />
       </div>
 
-      <div className="landuse-grid__column-3">
+      <div className="landuse-grid__column-6">
         <CollateralDateField
           namePrefix={namePrefix}
           fieldName="maksettuPvm"

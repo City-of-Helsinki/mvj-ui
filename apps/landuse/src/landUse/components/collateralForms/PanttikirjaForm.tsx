@@ -55,7 +55,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
               <>
                 {fields.map((fieldName, index) => (
                   <React.Fragment key={fieldName}>
-                    <div className="landuse-grid__column-3">
+                    <div className="landuse-grid__column-6">
                       <Field name={fieldName}>
                         {({ input }) => (
                           <TextInput
@@ -72,7 +72,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
                         )}
                       </Field>
                     </div>
-                    <div className="landuse-grid__column-9">
+                    <div className="landuse-grid__column-6 landuse-grid__column--align-center">
                       {isEditMode && (
                         <ConfirmDeleteButton
                           id={`${namePrefix.replace(/\./g, "-")}-kiinteistotunnus-delete-${index}`}
@@ -103,7 +103,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
           </FieldArray>
         )}
         {target === "Laitos" && (
-          <div className="landuse-grid__column-3">
+          <div className="landuse-grid__column-6">
             <CollateralTextField
               namePrefix={namePrefix}
               fieldName="laitostunnus"
@@ -116,7 +116,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
       </div>
 
       <div className="landuse-grid landuse-grid__bottom-margin">
-        <div className="landuse-grid__column-3">
+        <div className="landuse-grid__column-6">
           <CollateralSelectField
             namePrefix={namePrefix}
             fieldName="vakuusasiakirjanLaji"
@@ -127,7 +127,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
           />
         </div>
 
-        <div className="landuse-grid__column-3">
+        <div className="landuse-grid__column-6">
           <CollateralTextField
             namePrefix={namePrefix}
             fieldName="panttikirjanNumero"
@@ -137,7 +137,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
           />
         </div>
 
-        <div className="landuse-grid__column-3">
+        <div className="landuse-grid__column-6">
           <CollateralDateField
             namePrefix={namePrefix}
             fieldName="panttikirjanPaivays"
