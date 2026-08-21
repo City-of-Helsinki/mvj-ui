@@ -230,5 +230,51 @@ describe("Contacts", () => {
         expect(state).to.deep.equal(newState);
       });
     });
+
+    describe("Edge cases with empty or null values", () => {
+      it("should handle null attributes", () => {
+        const state = contactReducer({}, receiveAttributes(null));
+        expect(state.attributes).to.be.null;
+      });
+
+      it("should handle empty contact list", () => {
+        const state = contactReducer({}, receiveContacts({ results: [] }));
+        expect(state.list.results).to.have.lengthOf(0);
+      });
+    });
+
+    describe("State transitions", () => {
+      it("should transition from fetching to received attributes state", () => {
+        let state = contactReducer({}, fetchAttributes());
+        expect(state.isFetchingAttributes).to.be.true;
+
+        state = contactReducer(state, receiveAttributes({ test: "data" }));
+        expect(state.isFetchingAttributes).to.be.false;
+        expect(state.attributes).to.not.be.null;
+      });
+
+      it("should handle complete modal lifecycle", () => {
+        let state = contactReducer({}, showContactModal());
+        expect(state.isContactModalOpen).to.be.true;
+
+        state = contactReducer(
+          state,
+          receiveContactModalSettings({ foo: "bar" }),
+        );
+        expect(state.contactModalSettings).to.not.be.null;
+
+        state = contactReducer(state, hideContactModal());
+        expect(state.isContactModalOpen).to.be.false;
+      });
+
+      it("should handle contact form validation flow", () => {
+        const dummyContact = { id: 1, name: "Test" };
+        let state = contactReducer({}, initializeContactForm(dummyContact));
+        expect(state.initialContactFormValues).to.deep.equal(dummyContact);
+
+        state = contactReducer(state, receiveContactFormValid(true));
+        expect(state.isContactFormValid).to.be.true;
+      });
+    });
   });
 });

@@ -88,6 +88,20 @@ export const getLeasesForContractNumbers: Selector<LeaseList, void> = (
 export const getIsFetchingLeasesForContractNumbers: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.lease.isFetchingLeasesForContractNumbers;
+export const getLeasesForContactAttributes: Selector<Attributes, void> = (
+  state: RootState,
+): Attributes => state.lease.leasesForContactAttributes;
+export const getIsFetchingLeasesForContactAttributes: Selector<
+  boolean,
+  void
+> = (state: RootState): boolean =>
+  state.lease.isFetchingLeasesForContactAttributes;
+export const getLeasesForContact: Selector<LeaseList, void> = (
+  state: RootState,
+): LeaseList => state.lease.leasesForContact;
+export const getIsFetchingLeasesForContact: Selector<boolean, void> = (
+  state: RootState,
+): boolean => state.lease.isFetchingLeasesForContact;
 
 // Selectors for lease properties
 export const getCurrentLeaseStartDate: Selector<string, void> = (

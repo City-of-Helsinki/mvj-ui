@@ -3822,6 +3822,35 @@ export const mapLeaseSearchFilters = (
 };
 
 /**
+ * Map leases for contact search filters for API
+ * @param {Object} query
+ * @returns {Object}
+ */
+export const mapLeasesForContactSearchFilters = (
+  query: Record<string, any>,
+): Record<string, any> => {
+  const searchQuery = { ...query };
+  const orderingBySortKey: Record<string, string> = {
+    lease_identifier: "lease_identifier",
+    roles: "contact_roles",
+  };
+
+  if (searchQuery.sort_key) {
+    const orderingKey =
+      orderingBySortKey[searchQuery.sort_key] || searchQuery.sort_key;
+    searchQuery.ordering =
+      searchQuery.sort_order === TableSortOrder.DESCENDING
+        ? `-${orderingKey}`
+        : orderingKey;
+
+    delete searchQuery.sort_key;
+    delete searchQuery.sort_order;
+  }
+
+  return searchQuery;
+};
+
+/**
  * calculate mast rent
  * @param {number} index
  * @param {string} area
