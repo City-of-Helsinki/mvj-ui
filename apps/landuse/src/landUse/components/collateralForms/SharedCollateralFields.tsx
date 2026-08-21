@@ -36,7 +36,7 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
   partyOptions,
 }) => (
   <>
-    <div className="landuse-grid__column-3">
+    <div className="landuse-grid__column-6">
       <Field name={`${namePrefix}.osapuolet`}>
         {({ input }) =>
           isEditMode ? (
@@ -67,7 +67,7 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
       </Field>
     </div>
 
-    <div className="landuse-grid__column-3">
+    <div className="landuse-grid__column-6">
       <CollateralRadioField
         namePrefix={namePrefix}
         fieldName="vierasvelkapanttaus"
@@ -78,7 +78,7 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
       />
     </div>
 
-    <div className="landuse-grid__column-3">
+    <div className="landuse-grid__column-6">
       <CollateralDateField
         namePrefix={namePrefix}
         fieldName="alkupvm"
@@ -88,7 +88,7 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
       />
     </div>
 
-    <div className="landuse-grid__column-3">
+    <div className="landuse-grid__column-6">
       <CollateralDateField
         namePrefix={namePrefix}
         fieldName="loppupvm"
@@ -98,7 +98,7 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
       />
     </div>
 
-    <div className="landuse-grid__column-3">
+    <div className="landuse-grid__column-6">
       <CollateralEuroField
         namePrefix={namePrefix}
         fieldName="maara"
@@ -108,7 +108,7 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
       />
     </div>
 
-    <div className="landuse-grid__column-3">
+    <div className="landuse-grid__column-6">
       <CollateralDateField
         namePrefix={namePrefix}
         fieldName="palautettuPvm"
