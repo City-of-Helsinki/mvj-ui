@@ -15,6 +15,7 @@ import {
   LeaseFieldTitles,
   TenantContactType,
 } from "@/leases/enums";
+import { mapLeasesForContactSearchFilters } from "@/leases/helpers";
 import {
   getIsFetchingLeasesForContact,
   getIsFetchingLeasesForContactAttributes,
@@ -69,7 +70,7 @@ type ContactLease = {
   has_overdue_invoices: boolean;
 };
 
-const DEFAULT_SORT_KEY = "lease_id";
+const DEFAULT_SORT_KEY = "lease_identifier";
 const DEFAULT_SORT_ORDER = "asc";
 
 type Props = {
@@ -110,13 +111,17 @@ const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
   useEffect(() => {
     const offset = (activePage - 1) * LIST_TABLE_PAGE_SIZE;
     dispatch(
-      fetchLeasesForContact({
+      fetchLeasesForContact(
+        mapLeasesForContactSearchFilters({
         contact: contact.id,
         limit: LIST_TABLE_PAGE_SIZE,
         offset: offset,
+sort_key: sortKey,
+          sort_order: sortOrder,
       }),
+),
     );
-  }, [dispatch, contact.id, activePage]);
+  }, [dispatch, contact.id, activePage, sortKey, sortOrder]);
 
   const handleSortingChange = (
     order: "asc" | "desc",
