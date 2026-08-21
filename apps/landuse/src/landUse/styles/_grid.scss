@@ -36,3 +36,25 @@
 .landuse-grid__bottom-margin {
   margin-bottom: hds.$spacing-m;
 }
+
+.landuse-grid__bottom-separator:not(:last-of-type) {
+  padding-bottom: hds.$spacing-m;
+  margin-bottom: hds.$spacing-m;
+  border-bottom: 1px solid hds.$color-black-90;
+}
+
+// Aligns column content (e.g. ConfirmDeleteButton) with the input fields in
+// adjacent columns, whose labels push their controls down.
+.landuse-grid__column--align-bottom {
+  display: flex;
+  align-items: flex-end;
+}
+
+.landuse-grid__column--align-center {
+  display: flex;
+  align-items: center;
+}
+
+.landuse-grid__column--justify-end {
+  justify-content: flex-end;
+}
