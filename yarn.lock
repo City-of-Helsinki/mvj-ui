@@ -2466,6 +2466,7 @@ __metadata:
     "@tanstack/query-persist-client-core": "npm:5.101.2"
     "@tanstack/react-query": "npm:5.101.2"
     "@tanstack/react-query-persist-client": "npm:5.101.2"
+    final-form-calculate: "npm:2.0.0"
   languageName: unknown
   linkType: soft
 
@@ -6012,6 +6013,15 @@ __metadata:
   peerDependencies:
     final-form: ^5.0.0
   checksum: 10c0/0f183c74fe16742f2e088d3c592700300d54c1a19fa59418545eed9316944dcc0dec5f376dfec1758033233954bd243c9c1039d9a22a474ed828c83fee52d701
+  languageName: node
+  linkType: hard
+
+"final-form-calculate@npm:2.0.0":
+  version: 2.0.0
+  resolution: "final-form-calculate@npm:2.0.0"
+  peerDependencies:
+    final-form: ">=5.0.0"
+  checksum: 10c0/7013d939cfbcbd3bc7fe324e5ca5cd39b1c0823a571be912064a9527fe6321a412f030f798a18a8afff6b3d0394684ea9ece02eab3fcdef84efcc1a949075417
   languageName: node
   linkType: hard
 

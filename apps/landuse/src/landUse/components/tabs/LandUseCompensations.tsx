@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useMemo } from "react";
 import {
   Button,
   ButtonSize,
@@ -9,13 +9,14 @@ import {
   IconPlusCircleFill,
   IconSize,
   Select,
+  StepByStep,
   TextArea,
   TextInput,
   ToggleButton,
 } from "hds-react";
-import { Form } from "react-final-form";
-import { Field } from "react-final-form";
-import { FormApi } from "final-form";
+import { Form, Field } from "react-final-form";
+import { FormApi, Decorator } from "final-form";
+import createDecorator from "final-form-calculate";
 import {
   normalizeMultiSelectValue,
   normalizeSelectValue,
@@ -30,6 +31,7 @@ import {
   parseNumber,
 } from "../../utils/number";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
+import { useTocEntries } from "../../hooks/useTableOfContents";
 import {
   INITIAL_KORVAUSKYNNYS_EURO,
   INITIAL_KORVAUS_PERCENTAGE,
@@ -75,10 +77,104 @@ interface LandUseCompensationsProps {
   isEditMode: boolean;
 }
 
+const COMPENSATION_STEP_KEYS = {
+  maankayttokorvaus: "maankayttokorvaus",
+  laskelma: "laskelma",
+  laskuri: "laskuri",
+  yleisetAlueet: "yleiset-alueet",
+} as const;
+
+const COMPENSATION_STEPS = [
+  {
+    key: COMPENSATION_STEP_KEYS.maankayttokorvaus,
+    title: "Maankäyttökorvaus",
+  },
+  {
+    key: COMPENSATION_STEP_KEYS.laskelma,
+    title: "Maankäyttökorvauksen laskelma",
+  },
+  {
+    key: COMPENSATION_STEP_KEYS.laskuri,
+    title: "Maankäyttökorvauksen laskuri",
+  },
+  {
+    key: COMPENSATION_STEP_KEYS.yleisetAlueet,
+    title: "Korvauksetta luovutettavat yleiset alueet",
+  },
+] as const;
+
+const getCompensationStepId = (key: string): string =>
+  `compensations-step-${key}`;
+
+const KOHTEET_SECTION_ID = "compensations-section-kohteet";
+
 const getRowFieldPath = (
   siteId: string,
   field: keyof PerustietotaulukkoRowValues,
 ): string => `perustietotaulukkoRowsBySiteId.${siteId}.${field}`;
+
+const calculateMaankayttokorvausYhteensa = (
+  values: Partial<LandUseCompensationsFormValues>,
+): string =>
+  (
+    (parseLandUseNumericValue(values.rahakorvaus) ?? 0) +
+    (parseLandUseNumericValue(values.maakorvaus) ?? 0) +
+    (parseLandUseNumericValue(values.muuKorvaus) ?? 0)
+  ).toString();
+
+// Recalculates the derived "Yhteensä" field so its value is stored in and
+// saved with the form whenever any of its source fields change.
+const maankayttokorvausYhteensaDecorator = createDecorator({
+  field: /^(rahakorvaus|maakorvaus|muuKorvaus)$/,
+  updates: {
+    maankayttokorvausYhteensa: (_value, allValues) =>
+      calculateMaankayttokorvausYhteensa(
+        allValues as Partial<LandUseCompensationsFormValues>,
+      ),
+  },
+}) as Decorator<LandUseCompensationsFormValues>;
+
+const calculateSitesSumma = (
+  values: Partial<LandUseCompensationsFormValues>,
+): number => {
+  const sites = values.sites ?? [];
+  const rowsBySiteId = values.perustietotaulukkoRowsBySiteId ?? {};
+
+  return sites.reduce((sum, site) => {
+    const kerrosala = parseNumber(site.kem2);
+    const yksikkohinta = parseNumber(rowsBySiteId[site.id]?.yksikkohinta);
+    return sum + kerrosala * yksikkohinta;
+  }, 0);
+};
+
+const calculateMaankayttokorvaus = (
+  values: Partial<LandUseCompensationsFormValues>,
+): number => {
+  const arvonnousu =
+    calculateSitesSumma(values) -
+    parseNumber(values.kaavaehdotustaEdeltavaArvo);
+  const korvauskynnys = parseNumber(values.korvauskynnys);
+  const purkuTaiMuuVahennys = parseNumber(values.purkuTaiMuuVahennys);
+  const korvausprosentti = parseNumber(values.korvausprosentti);
+
+  return (
+    (arvonnousu - korvauskynnys + purkuTaiMuuVahennys) *
+    (korvausprosentti / 100)
+  );
+};
+
+// Recalculates the derived "Maankäyttökorvaus" field so its value is stored in
+// and saved with the form whenever any of its source fields change.
+const maankayttokorvausDecorator = createDecorator({
+  field:
+    /^(sites|perustietotaulukkoRowsBySiteId|kaavaehdotustaEdeltavaArvo|korvauskynnys|purkuTaiMuuVahennys|korvausprosentti).*/,
+  updates: {
+    maankayttokorvaus: (_value, allValues) =>
+      calculateMaankayttokorvaus(
+        allValues as Partial<LandUseCompensationsFormValues>,
+      ).toString(),
+  },
+}) as Decorator<LandUseCompensationsFormValues>;
 
 const createEstateMapLink = (kohteenTunnus: string): string =>
   `https://kartta.hel.fi/?RegFormEstate=${encodeURIComponent(kohteenTunnus)}`;
@@ -422,25 +518,31 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
 }) => {
   const [openSiteId, setOpenSiteId] = React.useState<string | null>(null);
 
+  const tocEntries = useMemo(
+    () => [
+      ...COMPENSATION_STEPS.map((step) => ({
+        id: getCompensationStepId(step.key),
+        text: step.title,
+        level: 2,
+      })),
+      { id: KOHTEET_SECTION_ID, text: "Kohteet", level: 2 },
+    ],
+    [],
+  );
+
+  useTocEntries(tocEntries);
+
   return (
     <Form<LandUseCompensationsFormValues>
       form={form}
       onSubmit={() => {}}
+      decorators={[
+        maankayttokorvausYhteensaDecorator,
+        maankayttokorvausDecorator,
+      ]}
       render={({ handleSubmit, values }) => {
         const sites = values.sites ?? [];
         const rowsBySiteId = values.perustietotaulukkoRowsBySiteId ?? {};
-        const yhteensa =
-          (parseLandUseNumericValue(values.rahakorvaus) ?? 0) +
-          (parseLandUseNumericValue(values.maakorvaus) ?? 0) +
-          (parseLandUseNumericValue(values.muuKorvaus) ?? 0);
-
-        // Update the yhteensa field in the form whenever component values change
-        useEffect(() => {
-          const yhteensaStr = yhteensa.toString();
-          if (values.maankayttokorvausYhteensa !== yhteensaStr) {
-            form.change("maankayttokorvausYhteensa", yhteensaStr);
-          }
-        }, [yhteensa, values.maankayttokorvausYhteensa]);
 
         const handleAddSite = () => {
           if (!isEditMode) {
@@ -499,411 +601,453 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           { pintaAlaM2: 0, kem2: 0, summa: 0 },
         );
 
+        const maankayttokorvausStep = (
+          <Fieldset heading="" className="full-width">
+            <div className="landuse-grid landuse-grid__bottom-margin">
+              <div className="landuse-grid__column-6">
+                <Field name="rahakorvaus">
+                  {({ input, meta }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-rahakorvaus"
+                      label="Rahakorvaus"
+                      isEditMode={isEditMode}
+                      value={input.value}
+                      unit="€"
+                      onChange={input.onChange}
+                      errorText={meta.error}
+                      invalid={Boolean(meta.error)}
+                    />
+                  )}
+                </Field>
+              </div>
+
+              <div className="landuse-grid__column-6">
+                <Field name="maakorvaus">
+                  {({ input, meta }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-maakorvaus"
+                      label="Maakorvaus"
+                      isEditMode={isEditMode}
+                      value={input.value}
+                      unit="€"
+                      onChange={input.onChange}
+                      errorText={meta.error}
+                      invalid={Boolean(meta.error)}
+                    />
+                  )}
+                </Field>
+              </div>
+
+              <div className="landuse-grid__column-6">
+                <Field name="muuKorvaus">
+                  {({ input, meta }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-muu-korvaus"
+                      label="Muu"
+                      isEditMode={isEditMode}
+                      value={input.value}
+                      unit="€"
+                      onChange={input.onChange}
+                      errorText={meta.error}
+                      invalid={Boolean(meta.error)}
+                    />
+                  )}
+                </Field>
+              </div>
+            </div>
+            <div className="landuse-grid landuse-grid__bottom-margin">
+              <div className="landuse-grid__column-6">
+                <Field name="maankayttokorvausYhteensa">
+                  {({ input, meta }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-maankayttokorvaus-yhteensa"
+                      label="Yhteensä"
+                      isEditMode={false}
+                      value={input.value}
+                      unit="€"
+                      onChange={input.onChange}
+                      errorText={meta.error}
+                      invalid={Boolean(meta.error)}
+                    />
+                  )}
+                </Field>
+              </div>
+            </div>
+            <div className="landuse-grid">
+              <div className="landuse-grid__column-6">
+                <Field name="maakorvausSelite">
+                  {({ input }) =>
+                    isEditMode ? (
+                      <TextArea
+                        id="landuse-compensations-maakorvaus-selite"
+                        label="Maakorvaus selite"
+                        value={input.value ?? ""}
+                        onChange={input.onChange}
+                      />
+                    ) : (
+                      <TextInput
+                        id="landuse-compensations-maakorvaus-selite"
+                        label="Maakorvaus selite"
+                        value={readOnlyTextValue(input.value)}
+                        readOnly
+                      />
+                    )
+                  }
+                </Field>
+              </div>
+
+              <div className="landuse-grid__column-6">
+                <Field name="muuSelite">
+                  {({ input }) =>
+                    isEditMode ? (
+                      <TextArea
+                        id="landuse-compensations-muu-selite"
+                        label="Muu selite"
+                        value={input.value ?? ""}
+                        onChange={input.onChange}
+                      />
+                    ) : (
+                      <TextInput
+                        id="landuse-compensations-muu-selite"
+                        label="Muu selite"
+                        value={readOnlyTextValue(input.value)}
+                        readOnly
+                      />
+                    )
+                  }
+                </Field>
+              </div>
+            </div>
+          </Fieldset>
+        );
+
+        const laskelmaStep = (
+          <Fieldset heading="" className="full-width">
+            <h3>Luonnos</h3>
+            {isEditMode && (
+              <Button
+                type="button"
+                variant={ButtonVariant.Supplementary}
+                iconStart={<IconPlusCircleFill />}
+              >
+                Lisää tiedosto
+              </Button>
+            )}
+            <h3>Kaavaehdotusta edeltävä arvo</h3>
+            <div className="landuse-grid landuse-grid__bottom-margin">
+              <div className="landuse-grid__column-6">
+                <Field name="kaavaehdotustaEdeltavaArvo">
+                  {({ input }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-kaavaehdotusta-edeltava-arvo"
+                      label="Edeltävä arvo"
+                      isEditMode={isEditMode}
+                      value={input.value}
+                      unit="€"
+                      onChange={input.onChange}
+                      errorText={input.error}
+                      invalid={Boolean(input.error)}
+                    />
+                  )}
+                </Field>
+              </div>
+            </div>
+            <h3>Kaavaehdotuksen mukainen arvo</h3>
+            <div className="landuse-grid">
+              <div className="landuse-grid__column-6">
+                <Field name="perushinta">
+                  {({ input }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-perushinta"
+                      label="Perushinta"
+                      isEditMode={isEditMode}
+                      value={input.value}
+                      unit="€/kem²"
+                      onChange={input.onChange}
+                      errorText={input.error}
+                      invalid={Boolean(input.error)}
+                    />
+                  )}
+                </Field>
+              </div>
+            </div>
+          </Fieldset>
+        );
+
+        const laskuriStep = (
+          <Fieldset heading="" className="full-width">
+            <div className="landuse-grid">
+              <div className="landuse-grid__column-1 math-operator-xl">(</div>
+              <div className="landuse-grid__column-2">
+                <NumericDecimalInput
+                  id="landuse-compensations-arvonnousu"
+                  label="Arvonnousu"
+                  value={
+                    totals.summa -
+                    parseNumber(values.kaavaehdotustaEdeltavaArvo)
+                  }
+                  isEditMode={false}
+                  unit="€"
+                />
+              </div>
+              <div className="landuse-grid__column-1 math-operator-xl">-</div>
+              <div className="landuse-grid__column-2">
+                <Field
+                  name="korvauskynnys"
+                  initialValue={INITIAL_KORVAUSKYNNYS_EURO}
+                  validate={(value) =>
+                    // TODO collect validators to central place
+                    value <= 0
+                      ? "Korvauskynnys ei saa olla negatiivinen"
+                      : undefined
+                  }
+                >
+                  {({ input, meta }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-korvauskynnys"
+                      label="Korvauskynnys"
+                      isEditMode={isEditMode}
+                      value={input.value}
+                      unit="€"
+                      onChange={input.onChange}
+                      errorText={meta.error}
+                      invalid={Boolean(meta.error)}
+                    />
+                  )}
+                </Field>
+              </div>
+              <div className="landuse-grid__column-1 math-operator-xl">+</div>
+              <div className="landuse-grid__column-2">
+                <Field name="purkuTaiMuuVahennys">
+                  {({ input }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-purku-tai-muu-vahennys"
+                      label="Purkuvähennys"
+                      isEditMode={isEditMode}
+                      value={input.value}
+                      unit="€"
+                      onChange={input.onChange}
+                    />
+                  )}
+                </Field>
+              </div>
+              <div className="landuse-grid__column-1 math-operator-xl">) *</div>
+              <div className="landuse-grid__column-2">
+                <Field
+                  name="korvausprosentti"
+                  initialValue={INITIAL_KORVAUS_PERCENTAGE}
+                >
+                  {({ input }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-korvausprosentti"
+                      label="Korvausprosentti %"
+                      isEditMode={isEditMode}
+                      value={input.value}
+                      unit="%"
+                      onChange={input.onChange}
+                    />
+                  )}
+                </Field>
+              </div>
+              <div className="landuse-grid__column-1 math-operator-xl">=</div>
+              <div className="landuse-grid__column-2">
+                <Field name="maankayttokorvaus">
+                  {({ input }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-maankayttokorvaus"
+                      label="Maankäyttökorvaus"
+                      value={input.value}
+                      unit="€"
+                      isEditMode={false}
+                    />
+                  )}
+                </Field>
+              </div>
+            </div>
+          </Fieldset>
+        );
+
+        const yleisetAlueetStep = (
+          <Fieldset heading="" className="full-width">
+            <div className="landuse-grid">
+              <div className="landuse-grid__column-6">
+                <Field name="yleisetAlueetNeliot">
+                  {({ input }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-yleiset-alueet-neliot"
+                      label="Neliöt"
+                      isEditMode={isEditMode}
+                      unit="m²"
+                      value={input.value}
+                      onChange={input.onChange}
+                      errorText={input.error}
+                      invalid={Boolean(input.error)}
+                    />
+                  )}
+                </Field>
+              </div>
+
+              <div className="landuse-grid__column-6">
+                <Field name="yleisetAlueetHankinnanArvo">
+                  {({ input }) => (
+                    <NumericDecimalInput
+                      id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
+                      label="Hankinnan arvo (€)"
+                      isEditMode={isEditMode}
+                      value={input.value}
+                      unit="€"
+                      onChange={input.onChange}
+                      errorText={input.error}
+                      invalid={Boolean(input.error)}
+                    />
+                  )}
+                </Field>
+              </div>
+            </div>
+          </Fieldset>
+        );
+
         return (
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
               <h1>Korvaukset</h1>
-              <h2>Maankäyttökorvaus</h2>
-              <Fieldset
-                heading=""
-                className="landuse-detail__fieldset--with-margin"
-              >
-                <div className="landuse-grid">
-                  <div className="landuse-grid__column-3">
-                    <Field name="rahakorvaus">
-                      {({ input, meta }) => (
-                        <NumericDecimalInput
-                          id="landuse-compensations-rahakorvaus"
-                          label="Rahakorvaus"
-                          isEditMode={isEditMode}
-                          value={input.value}
-                          unit="€"
-                          onChange={input.onChange}
-                          errorText={meta.error}
-                          invalid={Boolean(meta.error)}
-                        />
-                      )}
-                    </Field>
-                  </div>
 
-                  <div className="landuse-grid__column-3">
-                    <Field name="maakorvaus">
-                      {({ input, meta }) => (
-                        <NumericDecimalInput
-                          id="landuse-compensations-maakorvaus"
-                          label="Maakorvaus"
-                          isEditMode={isEditMode}
-                          value={input.value}
-                          unit="€"
-                          onChange={input.onChange}
-                          errorText={meta.error}
-                          invalid={Boolean(meta.error)}
-                        />
-                      )}
-                    </Field>
-                  </div>
+              <StepByStep
+                numberedList
+                steps={[
+                  {
+                    title: COMPENSATION_STEPS[0].title,
+                    key: COMPENSATION_STEP_KEYS.maankayttokorvaus,
+                    description: (
+                      <div
+                        id={getCompensationStepId(
+                          COMPENSATION_STEP_KEYS.maankayttokorvaus,
+                        )}
+                      >
+                        {maankayttokorvausStep}
+                      </div>
+                    ),
+                  },
+                  {
+                    title: COMPENSATION_STEPS[1].title,
+                    key: COMPENSATION_STEP_KEYS.laskelma,
+                    description: (
+                      <div
+                        id={getCompensationStepId(
+                          COMPENSATION_STEP_KEYS.laskelma,
+                        )}
+                      >
+                        {laskelmaStep}
+                      </div>
+                    ),
+                  },
+                  {
+                    title: COMPENSATION_STEPS[2].title,
+                    key: COMPENSATION_STEP_KEYS.laskuri,
+                    description: (
+                      <div
+                        id={getCompensationStepId(
+                          COMPENSATION_STEP_KEYS.laskuri,
+                        )}
+                      >
+                        {laskuriStep}
+                      </div>
+                    ),
+                  },
+                  {
+                    title: COMPENSATION_STEPS[3].title,
+                    key: COMPENSATION_STEP_KEYS.yleisetAlueet,
+                    description: (
+                      <div
+                        id={getCompensationStepId(
+                          COMPENSATION_STEP_KEYS.yleisetAlueet,
+                        )}
+                      >
+                        {yleisetAlueetStep}
+                      </div>
+                    ),
+                  },
+                ]}
+              />
 
-                  <div className="landuse-grid__column-3">
-                    <Field name="muuKorvaus">
-                      {({ input, meta }) => (
-                        <NumericDecimalInput
-                          id="landuse-compensations-muu-korvaus"
-                          label="Muu"
-                          isEditMode={isEditMode}
-                          value={input.value}
-                          unit="€"
-                          onChange={input.onChange}
-                          errorText={meta.error}
-                          invalid={Boolean(meta.error)}
-                        />
-                      )}
-                    </Field>
-                  </div>
+              <h2 id={KOHTEET_SECTION_ID}>Kohteet</h2>
 
-                  <div className="landuse-grid__column-3">
-                    <Field name="maankayttokorvausYhteensa">
-                      {({ input, meta }) => (
-                        <NumericDecimalInput
-                          id="landuse-compensations-maankayttokorvaus-yhteensa"
-                          label="Yhteensä"
-                          isEditMode={false}
-                          value={input.value}
-                          unit="€"
-                          onChange={input.onChange}
-                          errorText={meta.error}
-                          invalid={Boolean(meta.error)}
-                        />
-                      )}
-                    </Field>
-                  </div>
-
-                  <div className="landuse-grid__column-6">
-                    <Field name="maakorvausSelite">
-                      {({ input }) =>
-                        isEditMode ? (
-                          <TextArea
-                            id="landuse-compensations-maakorvaus-selite"
-                            label="Maakorvaus selite"
-                            value={input.value ?? ""}
-                            onChange={input.onChange}
-                          />
-                        ) : (
-                          <TextInput
-                            id="landuse-compensations-maakorvaus-selite"
-                            label="Maakorvaus selite"
-                            value={readOnlyTextValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
-                    </Field>
-                  </div>
-
-                  <div className="landuse-grid__column-6">
-                    <Field name="muuSelite">
-                      {({ input }) =>
-                        isEditMode ? (
-                          <TextArea
-                            id="landuse-compensations-muu-selite"
-                            label="Muu selite"
-                            value={input.value ?? ""}
-                            onChange={input.onChange}
-                          />
-                        ) : (
-                          <TextInput
-                            id="landuse-compensations-muu-selite"
-                            label="Muu selite"
-                            value={readOnlyTextValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
-                    </Field>
-                  </div>
-                </div>
-              </Fieldset>
-              <h2>Maankäyttökorvauksen laskelma</h2>
-              <h3>Luonnos</h3>
-              <Fieldset
-                heading=""
-                className="landuse-detail__fieldset--with-margin"
-              >
-                {isEditMode && (
-                  <Button
-                    type="button"
-                    variant={ButtonVariant.Supplementary}
-                    iconStart={<IconPlusCircleFill />}
-                  >
-                    Lisää tiedosto
-                  </Button>
-                )}
-              </Fieldset>
-              <h3>Kaavaehdotusta edeltävä arvo</h3>
-              <Fieldset heading="" className="">
-                <div className="landuse-grid">
-                  <div className="landuse-grid__column-3">
-                    <Field name="kaavaehdotustaEdeltavaArvo">
-                      {({ input }) => (
-                        <NumericDecimalInput
-                          id="landuse-compensations-kaavaehdotusta-edeltava-arvo"
-                          label="Edeltävä arvo"
-                          isEditMode={isEditMode}
-                          value={input.value}
-                          unit="€"
-                          onChange={input.onChange}
-                          errorText={input.error}
-                          invalid={Boolean(input.error)}
-                        />
-                      )}
-                    </Field>
-                  </div>
-                </div>
-              </Fieldset>
-              <h3>Kaavaehdotuksen mukainen arvo</h3>
-              <Fieldset
-                heading=""
-                className="landuse-detail__fieldset--with-margin"
-              >
-                <div className="landuse-grid">
-                  <div className="landuse-grid__column-3">
-                    <Field name="perushinta">
-                      {({ input }) => (
-                        <NumericDecimalInput
-                          id="landuse-compensations-perushinta"
-                          label="Perushinta"
-                          isEditMode={isEditMode}
-                          value={input.value}
-                          unit="€/kem²"
-                          onChange={input.onChange}
-                          errorText={input.error}
-                          invalid={Boolean(input.error)}
-                        />
-                      )}
-                    </Field>
-                  </div>
-                </div>
-              </Fieldset>
-              <Fieldset
-                heading=""
-                className="landuse-detail__fieldset--with-margin"
-              >
-                <div className="landuse-detail__sites-table-wrapper">
-                  <table className="landuse-compensations-table">
-                    <thead>
-                      <tr>
-                        <th className="landuse-compensations-table__toggle-cell" />
-                        <th>Kohde</th>
-                        <th>Käyttötarkoitus</th>
-                        <th>Hallintamuoto</th>
-                        <th>Suojeltu</th>
-                        <th>Pinta-ala</th>
-                        <th>Kerrosala</th>
-                        <th>Yksikköhinta</th>
-                        <th>Summa</th>
-                        <th>AM-velvoite</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sites.map((site, index) => (
-                        <SiteRow
-                          key={site.id}
-                          site={site}
-                          siteIndex={index}
-                          rowValues={rowsBySiteId[site.id]}
-                          isEditMode={isEditMode}
-                          onRemove={handleRemoveSite}
-                          onToggle={handleToggleSite}
-                          isOpen={site.id === openSiteId}
-                          colCount={10}
-                        />
-                      ))}
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <td />
-                        <td>
-                          <strong>Yhteensä</strong>
-                        </td>
-                        <td />
-                        <td />
-                        <td />
-                        <td>
-                          <strong>
-                            {formatLandUseNumericValueWithUnit(
-                              totals.pintaAlaM2,
-                              "m²",
-                            )}
-                          </strong>
-                        </td>
-                        <td>
-                          <strong>
-                            {formatLandUseNumericValueWithUnit(
-                              totals.kem2,
-                              "kem²",
-                            )}
-                          </strong>
-                        </td>
-                        <td />
-                        <td>
-                          <strong>
-                            {formatLandUseEuroValue(totals.summa)}
-                          </strong>
-                        </td>
-                        <td />
-                      </tr>
-                    </tfoot>
-                  </table>
-                  <div>
-                    <Button
-                      type="button"
-                      variant={ButtonVariant.Supplementary}
-                      iconStart={<IconPlusCircleFill />}
-                      disabled={!isEditMode}
-                      onClick={handleAddSite}
-                    >
-                      Lisää kohde
-                    </Button>
-                  </div>
-                </div>
-              </Fieldset>
-
-              <h3>Maankäyttökorvauksen laskuri</h3>
-              <Fieldset heading="">
-                <div className="landuse-flexbox-horizontal">
-                  <span className="math-operator-xl">(</span>
-                  <NumericDecimalInput
-                    id="landuse-compensations-arvonnousu"
-                    label="Arvonnousu"
-                    value={
-                      totals.summa -
-                      parseNumber(values.kaavaehdotustaEdeltavaArvo)
-                    }
-                    isEditMode={false}
-                    unit="€"
-                  />
-                  <span className="math-operator-xl">-</span>
-                  <Field
-                    name="korvauskynnys"
-                    initialValue={INITIAL_KORVAUSKYNNYS_EURO}
-                    validate={(value) =>
-                      // TODO collect validators to central place
-                      value <= 0
-                        ? "Korvauskynnys ei saa olla negatiivinen"
-                        : undefined
-                    }
-                  >
-                    {({ input, meta }) => (
-                      <NumericDecimalInput
-                        id="landuse-compensations-korvauskynnys"
-                        label="Korvauskynnys"
+              <div className="landuse-compensations-table-scroll">
+                <table className="landuse-compensations-table">
+                  <thead>
+                    <tr>
+                      <th className="landuse-compensations-table__toggle-cell" />
+                      <th>Kohde</th>
+                      <th>Käyttötarkoitus</th>
+                      <th>Hallintamuoto</th>
+                      <th>Suojeltu</th>
+                      <th>Pinta-ala</th>
+                      <th>Kerrosala</th>
+                      <th>Yksikköhinta</th>
+                      <th>Summa</th>
+                      <th>AM-velvoite</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sites.map((site, index) => (
+                      <SiteRow
+                        key={site.id}
+                        site={site}
+                        siteIndex={index}
+                        rowValues={rowsBySiteId[site.id]}
                         isEditMode={isEditMode}
-                        value={input.value}
-                        unit="€"
-                        onChange={input.onChange}
-                        errorText={meta.error}
-                        invalid={Boolean(meta.error)}
+                        onRemove={handleRemoveSite}
+                        onToggle={handleToggleSite}
+                        isOpen={site.id === openSiteId}
+                        colCount={10}
                       />
-                    )}
-                  </Field>
-                  <span className="math-operator-xl">+</span>
-                  <Field name="purkuTaiMuuVahennys">
-                    {({ input }) => (
-                      <NumericDecimalInput
-                        id="landuse-compensations-purku-tai-muu-vahennys"
-                        label="Purkuvähennys"
-                        isEditMode={isEditMode}
-                        value={input.value}
-                        unit="€"
-                        onChange={input.onChange}
-                      />
-                    )}
-                  </Field>
-                  <span className="math-operator-xl">) *</span>
-                  <Field
-                    name="korvausprosentti"
-                    initialValue={INITIAL_KORVAUS_PERCENTAGE}
-                  >
-                    {({ input }) => (
-                      <NumericDecimalInput
-                        id="landuse-compensations-korvausprosentti"
-                        label="Korvausprosentti %"
-                        isEditMode={isEditMode}
-                        value={input.value}
-                        unit="%"
-                        onChange={input.onChange}
-                      />
-                    )}
-                  </Field>
-                  <span className="math-operator-xl"> = </span>
-                  <Field name="maankayttokorvaus">
-                    {() => {
-                      const arvonnousu =
-                        totals.summa -
-                        parseNumber(values.kaavaehdotustaEdeltavaArvo);
-                      const korvauskynnys = parseNumber(values.korvauskynnys);
-                      const purkuTaiMuuVahennys = parseNumber(
-                        values.purkuTaiMuuVahennys,
-                      );
-                      const korvausprosentti = parseNumber(
-                        values.korvausprosentti,
-                      );
-
-                      const maankayttokorvaus =
-                        (arvonnousu - korvauskynnys + purkuTaiMuuVahennys) *
-                        (korvausprosentti / 100);
-
-                      return (
-                        <NumericDecimalInput
-                          id="landuse-compensations-maankayttokorvaus"
-                          label="Maankäyttökorvaus"
-                          value={maankayttokorvaus}
-                          unit="€"
-                          isEditMode={false}
-                        />
-                      );
-                    }}
-                  </Field>
-                </div>
-              </Fieldset>
-
-              <h3>Korvauksetta luovutettavat yleiset alueet</h3>
-              <Fieldset heading="">
-                <div className="landuse-grid">
-                  <div className="landuse-grid__column-3">
-                    <Field name="yleisetAlueetNeliot">
-                      {({ input }) => (
-                        <NumericDecimalInput
-                          id="landuse-compensations-yleiset-alueet-neliot"
-                          label="Neliöt"
-                          isEditMode={isEditMode}
-                          unit="m²"
-                          value={input.value}
-                          onChange={input.onChange}
-                          errorText={input.error}
-                          invalid={Boolean(input.error)}
-                        />
-                      )}
-                    </Field>
-                  </div>
-
-                  <div className="landuse-grid__column-3">
-                    <Field name="yleisetAlueetHankinnanArvo">
-                      {({ input }) => (
-                        <NumericDecimalInput
-                          id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
-                          label="Hankinnan arvo (€)"
-                          isEditMode={isEditMode}
-                          value={input.value}
-                          unit="€"
-                          onChange={input.onChange}
-                          errorText={input.error}
-                          invalid={Boolean(input.error)}
-                        />
-                      )}
-                    </Field>
-                  </div>
-                </div>
-              </Fieldset>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td />
+                      <td>
+                        <strong>Yhteensä</strong>
+                      </td>
+                      <td />
+                      <td />
+                      <td />
+                      <td>
+                        <strong>
+                          {formatLandUseNumericValueWithUnit(
+                            totals.pintaAlaM2,
+                            "m²",
+                          )}
+                        </strong>
+                      </td>
+                      <td>
+                        <strong>
+                          {formatLandUseNumericValueWithUnit(
+                            totals.kem2,
+                            "kem²",
+                          )}
+                        </strong>
+                      </td>
+                      <td />
+                      <td>
+                        <strong>{formatLandUseEuroValue(totals.summa)}</strong>
+                      </td>
+                      <td />
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <div>
+                <Button
+                  type="button"
+                  variant={ButtonVariant.Supplementary}
+                  iconStart={<IconPlusCircleFill />}
+                  disabled={!isEditMode}
+                  onClick={handleAddSite}
+                >
+                  Lisää kohde
+                </Button>
+              </div>
             </div>
           </form>
         );

@@ -20,15 +20,21 @@
   border-radius: $radius-sm;
 }
 
-.landuse-detail__actions {
-  @include flex-row-center(hds.$spacing-xs);
-  flex-wrap: wrap;
+// Row wrapper that places the sidebar next to the tab content.
+// The min-height ensures the sticky context is maintained for tall content.
+.landuse-detail__body {
+  display: flex;
+  align-items: flex-start;
+  gap: hds.$spacing-m;
+  min-height: 100vh;
+}
 
-  button {
-    display: inline-flex;
-    align-items: center;
-    gap: hds.$spacing-2-xs;
-  }
+// Content column next to the sidebar. min-width: 0 lets this flex item shrink
+// below its content's intrinsic width, so a wide table can scroll internally
+// instead of stretching the whole page.
+.landuse-detail__main {
+  flex: 1;
+  min-width: 0;
 }
 
 .landuse-detail__content {
@@ -41,7 +47,7 @@
 
 .landuse-flexbox-horizontal {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: hds.$spacing-m;
 }
 // -- Section / field primitives ----------------------------------------------
@@ -127,6 +133,11 @@
 }
 
 // -- Perustietotaulukko expandable table -------------------------------------
+
+.landuse-compensations-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 .landuse-compensations-table {
   @include table-base;
