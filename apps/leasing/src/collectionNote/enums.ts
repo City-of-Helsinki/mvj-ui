@@ -29,7 +29,6 @@ export const CollectionNoteFieldTitles = {
   USER: "Lisääjä",
   COLLECTION_STAGE: "Perintävaihe",
   INVOICES: "Laskut",
-  INVOICE: "Lasku",
   SENT_DATE: "Lähetyspäivämäärä",
   INSPECTION_DATE: "Valvontapäivämäärä",
   POSTPONE_DATE: "Maksun lykkäyspäivämäärä",

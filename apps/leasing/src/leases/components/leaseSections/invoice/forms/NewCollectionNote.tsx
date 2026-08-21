@@ -15,12 +15,10 @@ import {
 import {
   getFieldAttributes,
   getFieldOptions,
-  getLabelOfOption,
   hasPermissions,
   isFieldAllowedToRead,
 } from "@/util/helpers";
 import { getAttributes as getCollectionNoteAttributes } from "@/collectionNote/selectors";
-import type { Attributes } from "types";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getInvoicesByLease } from "@/invoices/selectors";
 import { FieldTypes } from "@/enums";
@@ -29,6 +27,9 @@ import { CollectionStageOptions } from "@/leases/enums";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import { InvoiceFieldPaths, InvoiceState } from "@/invoices/enums";
 import { getAttributes as getInvoiceAttributes } from "@/invoices/selectors";
+import { getInvoiceLabel } from "@/collectionNote/helpers";
+
+import type { Attributes } from "types";
 
 const stagesWithSentDateField = [
   CollectionStageOptions.RISK_OF_DEMOLITION,
@@ -62,6 +63,17 @@ const NewCollectionNote: React.FC<Props> = ({ onSave }) => {
   );
   const collectionStage = useFieldValue("collection_stage");
 
+  const handleCollectionStageChange = () => {
+    // Resets fields which might not exist on another type of note
+    form.batch(() => {
+      form.change("invoices", undefined);
+      form.change("sent_date", undefined);
+      form.change("inspection_date", undefined);
+      form.change("postpone_date", undefined);
+      form.change("entire_lease", undefined);
+    });
+  };
+
   const sortedInvoices = useMemo(() => {
     if (!availableInvoices) return [];
     //Sort by due date descending and prioritize open invoices first
@@ -93,33 +105,11 @@ const NewCollectionNote: React.FC<Props> = ({ onSave }) => {
     setIsAddingNote(false);
   };
 
-  const handleCollectionStageChange = () => {
-    // Resets fields which might not exist on another type of note
-    form.batch(() => {
-      if (collectionStage !== CollectionStageOptions.PAYMENT_DEFERRAL) {
-        form.change("invoices", undefined);
-      }
-      form.change("sent_date", undefined);
-      form.change("inspection_date", undefined);
-      form.change("postpone_date", undefined);
-      form.change("entire_lease", undefined);
-    });
-  };
-
-  const getInvoiceLabel = (invoice) => {
-    // console.log("invoice", invoice);
-    //invoice.state ("open")
-    //invoice.type ("charge")
-    const invoiceStringTODO = `${getLabelOfOption(stateOptions, invoice.state)} -  ${invoice.number ? invoice.number : "-"} - ${invoice.due_date} - ${invoice.total_amount} €`;
-
-    return invoiceStringTODO;
-  };
-
   return (
     <>
       {isAddingNote && (
         <>
-          <Row>
+          <Row style={{ marginTop: "1rem" }}>
             <Column small={3}>
               <Authorization
                 allow={isFieldAllowedToRead(
@@ -136,8 +126,8 @@ const NewCollectionNote: React.FC<Props> = ({ onSave }) => {
                   overrideValues={{
                     label: CollectionNoteFieldTitles.COLLECTION_STAGE,
                     required: true,
-                    onChange: handleCollectionStageChange,
                   }}
+                  onChange={handleCollectionStageChange}
                 />
               </Authorization>
             </Column>
@@ -147,25 +137,23 @@ const NewCollectionNote: React.FC<Props> = ({ onSave }) => {
               <Row>
                 <Column small={3}>
                   <Authorization
-                    allow={hasPermissions(
-                      usersPermissions,
-                      UsersPermissions.VIEW_INVOICE, // TODO: Is this the correct permission?
+                    allow={isFieldAllowedToRead(
+                      collectionNoteAttributes,
+                      CollectionNoteFieldPaths.INVOICES,
                     )}
                   >
                     <FormField
+                      // Key forces re-validation on collection stage change
+                      key={collectionStage}
                       fieldAttributes={getFieldAttributes(
                         collectionNoteAttributes,
                         CollectionNoteFieldPaths.INVOICES,
                       )}
                       name="invoices"
                       overrideValues={{
-                        label:
-                          collectionStage ===
-                          CollectionStageOptions.PAYMENT_DEFERRAL
-                            ? CollectionNoteFieldTitles.INVOICE
-                            : CollectionNoteFieldTitles.INVOICES,
+                        label: CollectionNoteFieldTitles.INVOICES,
                         options: sortedInvoices.map((invoice) => ({
-                          label: getInvoiceLabel(invoice),
+                          label: getInvoiceLabel(invoice, stateOptions),
                           value: invoice.id,
                         })),
                         required:
@@ -272,7 +260,6 @@ const NewCollectionNote: React.FC<Props> = ({ onSave }) => {
                     )}
                   >
                     <FormField
-                      disableDirty
                       fieldAttributes={{
                         ...getFieldAttributes(
                           collectionNoteAttributes,
@@ -298,7 +285,7 @@ const NewCollectionNote: React.FC<Props> = ({ onSave }) => {
             />
             <Button
               className={ButtonColors.SUCCESS}
-              disabled={!valid || !collectionStage} //TODO isn't handled correctly. Sometimes valid when changing collection stage.
+              disabled={!valid}
               onClick={handleSave}
               text="Tallenna"
             />
@@ -312,7 +299,11 @@ const NewCollectionNote: React.FC<Props> = ({ onSave }) => {
         )}
       >
         {!isAddingNote && (
-          <AddButtonThird label="Lisää huomautus" onClick={handleAdd} />
+          <AddButtonThird
+            label="Lisää huomautus"
+            onClick={handleAdd}
+            style={{ marginTop: "1rem" }}
+          />
         )}
       </Authorization>
     </>

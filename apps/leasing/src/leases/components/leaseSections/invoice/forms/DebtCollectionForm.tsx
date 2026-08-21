@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Form, useForm } from "react-final-form";
+import { Form } from "react-final-form";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
@@ -12,13 +12,12 @@ import BoxItemContainer from "@/components/content/BoxItemContainer";
 import CollectionCourtDecisionPanel from "../CollectionCourtDecisionPanel";
 import DecisionLink from "@/components/links/DecisionLink";
 import NewCollectionNote from "./NewCollectionNote";
-import CollectionNotes from "@/collectionNote/collectionNote";
+import CollectionNotes from "@/collectionNote/components/CollectionNotes";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
-import ShowMore from "@/components/showMore/ShowMore";
 import SubTitle from "@/components/content/SubTitle";
 import {
   deleteCollectionCourtDecision,
@@ -36,7 +35,7 @@ import {
   deleteCollectionNote,
 } from "@/collectionNote/actions";
 import { getPayloadCollectionNote } from "@/collectionNote/helpers";
-import { ConfirmationModalTexts, FormNames } from "@/enums";
+import { ConfirmationModalTexts } from "@/enums";
 import {
   CollectionCourtDecisionFieldPaths,
   CollectionCourtDecisionFieldTitles,
@@ -45,10 +44,6 @@ import {
   CollectionLetterFieldPaths,
   CollectionLetterFieldTitles,
 } from "@/collectionLetter/enums";
-import {
-  CollectionNoteFieldPaths,
-  CollectionNoteFieldTitles,
-} from "@/collectionNote/enums";
 import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import {
@@ -63,16 +58,12 @@ import {
 import {
   getUiDataCollectionCourtDecisionKey,
   getUiDataCollectionLetterKey,
-  getUiDataCollectionNoteKey,
   getUiDataLeaseKey,
 } from "@/uiData/helpers";
 import {
   formatDate,
-  getFieldOptions,
-  getLabelOfOption,
   hasPermissions,
   isFieldAllowedToRead,
-  isFieldRequired,
   sortStringByKeyAsc,
 } from "@/util/helpers";
 import {
@@ -84,7 +75,6 @@ import {
   getAttributes as getCollectionLetterAttributes,
   getCollectionLettersByLease,
 } from "@/collectionLetter/selectors";
-import { getAttributes as getCollectionNoteAttributes } from "@/collectionNote/selectors";
 import { getCollectionNotesByLease } from "@/collectionNote/selectors";
 import {
   getAttributes as getLeaseAttributes,
@@ -95,13 +85,13 @@ import {
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
 import { useWindowResize } from "@/components/resize/WindowResizeHandler";
+
 import type { Attributes } from "types";
 import type { CollectionCourtDecisionId } from "@/collectionCourtDecision/types";
-import type { CollectionNoteId } from "@/collectionNote/types";
+import type { CollectionNote, CollectionNoteId } from "@/collectionNote/types";
 import type { CollectionLetterId } from "@/collectionLetter/types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-import { getInvoicesByLease } from "@/invoices/selectors";
 
 const DebtCollectionForm: React.FC = () => {
   const activeServiceUnit = useSelector(getUserActiveServiceUnit);
@@ -120,9 +110,6 @@ const DebtCollectionForm: React.FC = () => {
   const collectionLetters = useSelector((state) =>
     getCollectionLettersByLease(state, currentLease.id),
   );
-  const collectionNoteAttributes: Attributes = useSelector(
-    getCollectionNoteAttributes,
-  );
   const collectionNotes = useSelector((state) =>
     getCollectionNotesByLease(state, currentLease.id),
   );
@@ -132,9 +119,6 @@ const DebtCollectionForm: React.FC = () => {
   const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
   const usersPermissions: UsersPermissionsType =
     useSelector(getUsersPermissions);
-  const invoices = useSelector((state) =>
-    getInvoicesByLease(state, currentLease.id),
-  );
 
   const [sortedCollectionCourtDecisions, setSortedCollectionCourtDecisions] =
     useState<Array<Record<string, any>>>([]);
@@ -142,7 +126,7 @@ const DebtCollectionForm: React.FC = () => {
     Array<Record<string, any>>
   >([]);
   const [sortedCollectionNotes, setSortedCollectionNotes] = useState<
-    Array<Record<string, any>>
+    Array<CollectionNote>
   >([]);
 
   const debtCollectionDecisions = useMemo(
@@ -886,15 +870,21 @@ const DebtCollectionForm: React.FC = () => {
                 </Column>
               </Row>
             </Authorization>
-            <CollectionNotes
-              sortedCollectionNotes={sortedCollectionNotes}
-              invoices={invoices}
-              appDispatch={appDispatch}
-              handleDeleteCollectionNote={handleDeleteCollectionNote}
-              isServiceUnitSameAsActiveServiceUnit={
-                isServiceUnitSameAsActiveServiceUnit
-              }
-            />
+            <Authorization
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.VIEW_COLLECTIONNOTE,
+              )}
+            >
+              <CollectionNotes
+                collectionNotes={sortedCollectionNotes}
+                handleDeleteCollectionNote={handleDeleteCollectionNote}
+                isServiceUnitSameAsActiveServiceUnit={
+                  isServiceUnitSameAsActiveServiceUnit
+                }
+                appDispatch={appDispatch}
+              />
+            </Authorization>
             <Authorization
               allow={
                 hasPermissions(

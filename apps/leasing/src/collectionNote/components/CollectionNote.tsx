@@ -1,22 +1,24 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes } from "@/app/AppContext";
 import Authorization from "@/components/authorization/Authorization";
-import BoxItem from "@/components/content/BoxItem";
-import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
+import BoxItemContainer from "@/components/content/BoxItemContainer";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
-import RemoveButton from "@/components/form/RemoveButton";
 import ShowMore from "@/components/showMore/ShowMore";
-import { ConfirmationModalTexts } from "@/enums";
+import Collapse from "@/components/collapse/Collapse";
 import {
   CollectionNoteFieldPaths,
   CollectionNoteFieldTitles,
 } from "@/collectionNote/enums";
-import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
+import { InvoiceFieldPaths } from "@/invoices/enums";
 import { CollectionStageOptions } from "@/leases/enums";
+import { getAttributes as getInvoiceAttributes } from "@/invoices/selectors";
+import { getAttributes as getCollectionNoteAttributes } from "@/collectionNote/selectors";
+import { getUsersPermissions } from "@/usersPermissions/selectors";
+import { getInvoicesByLease } from "@/invoices/selectors";
+import { getCurrentLease } from "@/leases/selectors";
 import { getUserFullName } from "@/users/helpers";
 import { getUiDataCollectionNoteKey } from "@/uiData/helpers";
 import {
@@ -26,95 +28,111 @@ import {
   hasPermissions,
   isFieldAllowedToRead,
 } from "@/util/helpers";
-import { getAttributes as getCollectionNoteAttributes } from "@/collectionNote/selectors";
-import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Attributes } from "types";
+import { getInvoiceLabel } from "../helpers";
 
-const notesWithSentDateField = [
-  CollectionStageOptions.RISK_OF_DEMOLITION,
-  CollectionStageOptions.RISK_OF_DEMOLITION_AND_LITIGATION,
-  CollectionStageOptions.RISK_OF_LITIGATION,
-  CollectionStageOptions.RISK_OF_TERMINATION_AND_LITIGATION,
-  CollectionStageOptions.SIMPLE_PAYMENT_REMINDER,
-  CollectionStageOptions.PAYMENT_DEMAND,
-  CollectionStageOptions.BANKRUPTCY_OR_REORGANIZATION,
-  CollectionStageOptions.DISTRAINT,
-  CollectionStageOptions.DISTRAINT_NOTICE,
-  CollectionStageOptions.NOTICE,
-  CollectionStageOptions.COMPLAINT_OR_OTHER_OBSTRUCTION,
-];
+import type { Attributes } from "types";
+import type { CollectionNote } from "../types";
 
 type Props = {
-  note: Record<string, any>;
-  invoices: Array<Record<string, any>>;
-  appDispatch: (...args: Array<any>) => any;
-  handleDeleteCollectionNote: (...args: Array<any>) => any;
+  note: CollectionNote;
+  handleRemove: (...args: Array<any>) => any;
   isServiceUnitSameAsActiveServiceUnit: () => boolean;
 };
 
 const CollectionNoteItem: React.FC<Props> = ({
   note,
-  invoices,
-  appDispatch,
-  handleDeleteCollectionNote,
+  handleRemove,
   isServiceUnitSameAsActiveServiceUnit,
 }) => {
   const collectionNoteAttributes: Attributes = useSelector(
     getCollectionNoteAttributes,
   );
   const usersPermissions = useSelector(getUsersPermissions);
-
+  const currentLease = useSelector(getCurrentLease);
+  const leaseInvoices = useSelector((state) =>
+    getInvoicesByLease(state, currentLease.id),
+  );
+  const invoiceAttributes = useSelector(getInvoiceAttributes);
   const stageOptions = getFieldOptions(
     collectionNoteAttributes,
     CollectionNoteFieldPaths.COLLECTION_STAGE,
   );
+  const stateOptions = getFieldOptions(
+    invoiceAttributes,
+    InvoiceFieldPaths.STATE,
+  );
 
-  const invoiceNumbers = note.invoices
-    ? note.invoices.map((invoiceId) => {
-        const match = invoices.find((inv) => inv.id === invoiceId);
-        return match ? match.number : "-";
-      })
-    : [];
+  const [noteCollapseState, setNoteCollapseState] = useState<boolean>(true);
+  const [invoicesCollapseState, setInvoicesCollapseState] =
+    useState<boolean>(true);
 
-  const hasSentDate = notesWithSentDateField.includes(note.collection_stage);
-  const isPaymentDeferral =
-    note.collection_stage === CollectionStageOptions.PAYMENT_DEFERRAL;
-  const isContractChange =
-    note.collection_stage === CollectionStageOptions.CONTRACT_CHANGE;
+  const invoices = useMemo(() => {
+    return leaseInvoices.filter((invoice) =>
+      note.invoices.includes(invoice.id),
+    );
+  }, [note.invoices, leaseInvoices]);
 
-  const handleRemove = () => {
-    appDispatch({
-      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-      confirmationFunction: () => {
-        handleDeleteCollectionNote(note.id);
-      },
-      confirmationModalButtonClassName: ButtonColors.ALERT,
-      confirmationModalButtonText: ConfirmationModalTexts.DELETE_NOTE.BUTTON,
-      confirmationModalLabel: ConfirmationModalTexts.DELETE_NOTE.LABEL,
-      confirmationModalTitle: ConfirmationModalTexts.DELETE_NOTE.TITLE,
-    });
+  const handleNoteCollapseToggle = (val: boolean) => {
+    setNoteCollapseState(val);
+  };
+
+  const handleInvoicesCollapseToggle = (val: boolean) => {
+    setInvoicesCollapseState(val);
   };
 
   return (
-    <BoxItem>
-      <Authorization
-        allow={
-          hasPermissions(
-            usersPermissions,
-            UsersPermissions.DELETE_COLLECTIONNOTE,
-          ) && isServiceUnitSameAsActiveServiceUnit()
-        }
-      >
-        <div className="position-topright">
-          <RemoveButton
-            className="third-level"
-            onClick={handleRemove}
-            style={{ height: "unset" }}
-            title="Poista huomautus"
-          />
-        </div>
-      </Authorization>
-
+    <Collapse
+      className="collapse__secondary"
+      defaultOpen={noteCollapseState}
+      headerTitle={
+        <>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              collectionNoteAttributes,
+              CollectionNoteFieldPaths.COLLECTION_STAGE,
+            )}
+          >
+            <>{`${getLabelOfOption(stageOptions, note.collection_stage)} `}</>
+          </Authorization>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              collectionNoteAttributes,
+              CollectionNoteFieldPaths.SENT_DATE,
+            )}
+          >
+            <>{formatDate(note.sent_date)}</>
+          </Authorization>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              collectionNoteAttributes,
+              CollectionNoteFieldPaths.INSPECTION_DATE,
+            )}
+          >
+            <>{formatDate(note.inspection_date)}</>
+          </Authorization>
+          <Authorization
+            allow={isFieldAllowedToRead(
+              collectionNoteAttributes,
+              CollectionNoteFieldPaths.POSTPONE_DATE,
+            )}
+          >
+            <>{formatDate(note.postpone_date)}</>
+          </Authorization>
+        </>
+      }
+      onToggle={handleNoteCollapseToggle}
+      uiDataKey={getUiDataCollectionNoteKey(
+        CollectionNoteFieldPaths.COLLECTION_NOTES,
+      )}
+      onRemove={
+        hasPermissions(
+          usersPermissions,
+          UsersPermissions.DELETE_COLLECTIONNOTE,
+        ) && isServiceUnitSameAsActiveServiceUnit()
+          ? handleRemove
+          : null
+      }
+    >
       <Row>
         <Column small={6} medium={4} large={3}>
           <Authorization
@@ -139,30 +157,7 @@ const CollectionNoteItem: React.FC<Props> = ({
           </Authorization>
         </Column>
 
-        <Column small={6} medium={4} large={3}>
-          <Authorization
-            allow={isFieldAllowedToRead(
-              collectionNoteAttributes,
-              CollectionNoteFieldPaths.INVOICES,
-            )}
-          >
-            <>
-              <FormTextTitle
-                enableUiDataEdit
-                uiDataKey={getUiDataCollectionNoteKey(
-                  CollectionNoteFieldPaths.INVOICES,
-                )}
-              >
-                {isPaymentDeferral
-                  ? CollectionNoteFieldTitles.INVOICE
-                  : CollectionNoteFieldTitles.INVOICES}
-              </FormTextTitle>
-              <FormText>{invoiceNumbers.join(", ") || "-"}</FormText>
-            </>
-          </Authorization>
-        </Column>
-
-        {hasSentDate && (
+        {note.sent_date && (
           <Column small={6} medium={4} large={3}>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -185,7 +180,7 @@ const CollectionNoteItem: React.FC<Props> = ({
           </Column>
         )}
 
-        {isPaymentDeferral && (
+        {note.collection_stage === CollectionStageOptions.PAYMENT_DEFERRAL && (
           <Column small={6} medium={4} large={3}>
             <Authorization
               allow={isFieldAllowedToRead(
@@ -208,7 +203,7 @@ const CollectionNoteItem: React.FC<Props> = ({
           </Column>
         )}
 
-        {isContractChange && (
+        {note.collection_stage === CollectionStageOptions.CONTRACT_CHANGE && (
           <>
             <Column small={6} medium={4} large={3}>
               <Authorization
@@ -281,16 +276,59 @@ const CollectionNoteItem: React.FC<Props> = ({
         </Column>
 
         <Column small={6} medium={4} large={3}>
-          {/* TODO: verify CollectionNoteFieldPaths.USER attribute when added to API */}
           <FormTextTitle
             enableUiDataEdit
-            uiDataKey={getUiDataCollectionNoteKey(CollectionNoteFieldPaths.USER)}
+            uiDataKey={getUiDataCollectionNoteKey(
+              CollectionNoteFieldPaths.USER,
+            )}
           >
             {CollectionNoteFieldTitles.USER}
           </FormTextTitle>
           <FormText>{getUserFullName(note.user) || "-"}</FormText>
         </Column>
       </Row>
+
+      <Authorization
+        allow={isFieldAllowedToRead(
+          collectionNoteAttributes,
+          CollectionNoteFieldPaths.INVOICES,
+        )}
+      >
+        {invoices.length > 0 && (
+          <>
+            <FormTextTitle
+              enableUiDataEdit
+              uiDataKey={getUiDataCollectionNoteKey(
+                CollectionNoteFieldPaths.INVOICES,
+              )}
+            >
+              {CollectionNoteFieldTitles.INVOICES}
+            </FormTextTitle>
+            <Collapse
+              className="collapse__third"
+              defaultOpen={invoicesCollapseState}
+              headerTitle={`${CollectionNoteFieldTitles.INVOICES}  (${invoices.length})`}
+              onToggle={handleInvoicesCollapseToggle}
+              uiDataKey={getUiDataCollectionNoteKey(
+                CollectionNoteFieldPaths.INVOICES,
+              )}
+            >
+              <BoxItemContainer>
+                {invoices &&
+                  invoices.filter(Boolean).map((invoice) => (
+                    <Row key={invoice.id}>
+                      <Column small={12}>
+                        <FormText>
+                          {getInvoiceLabel(invoice, stateOptions)}
+                        </FormText>
+                      </Column>
+                    </Row>
+                  ))}
+              </BoxItemContainer>
+            </Collapse>
+          </>
+        )}
+      </Authorization>
 
       {note.note && (
         <Row>
@@ -316,7 +354,7 @@ const CollectionNoteItem: React.FC<Props> = ({
           </Column>
         </Row>
       )}
-    </BoxItem>
+    </Collapse>
   );
 };
 

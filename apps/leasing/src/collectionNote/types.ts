@@ -9,9 +9,22 @@ export type CollectionNoteState = {
   isFetchingByLease: Record<string, any>;
   methods: Methods;
 };
+export type CollectionNote = {
+  id: CollectionNoteId;
+  lease: LeaseId;
+  note?: string;
+  user: Record<string, any>;
+  modified_at: string;
+  collection_stage: string;
+  invoices?: Array<InvoiceId>;
+  sent_date?: string;
+  inspection_date?: string;
+  postpone_date?: string;
+  entire_lease?: boolean;
+};
 export type CreateCollectionNotePayload = {
   lease: LeaseId;
-  note: string;
+  note?: string;
   collection_stage: string;
   invoices?: Array<InvoiceId>;
   sent_date?: string;
