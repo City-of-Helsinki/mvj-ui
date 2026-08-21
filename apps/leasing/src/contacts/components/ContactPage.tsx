@@ -19,6 +19,7 @@ import FullWidthContainer from "@/components/content/FullWidthContainer";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import PageContainer from "@/components/content/PageContainer";
+import PageContainerHds from "@/components/content/PageContainerHDS";
 import PageNavigationWrapper from "@/components/content/PageNavigationWrapper";
 import Tabs from "@/components/tabs/Tabs";
 import TabPane from "@/components/tabs/TabPane";
@@ -343,18 +344,18 @@ const ContactPageView: React.FC<{
 
   if (isFetching) {
     return (
-      <PageContainer>
+      <PageContainerHds>
         <Loader isLoading={true} />
-      </PageContainer>
+      </PageContainerHds>
     );
   }
 
   if (!contactMethods) return null;
   if (!isMethodAllowed(contactMethods, Methods.GET))
     return (
-      <PageContainer>
+      <PageContainerHds>
         <AuthorizationError text={PermissionMissingTexts.CONTACT} />
-      </PageContainer>
+      </PageContainerHds>
     );
 
   return (
