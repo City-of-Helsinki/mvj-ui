@@ -941,117 +941,115 @@ const LeaseListPage: React.FC = () => {
           </Row>
 
           <SearchRow style={{ marginTop: "10px" }}>
-            <Row>
-              <Row className="lease-search-fieldset-group">
-                <Field name="service_unit">
-                  {({ input: { value, onChange } }) => {
-                    return (
-                      <Select
-                        id="service_unit"
-                        texts={{
-                          label: LeaseFieldTitles.SERVICE_UNIT,
-                          placeholder: "Valitse palvelukokonaisuus",
-                          language: "fi",
-                        }}
-                        value={filterSelectedOptions(value, serviceUnitOptions)}
-                        options={serviceUnitOptions}
-                        onChange={(selectedOptions) => {
-                          const values = selectedOptions.map(
-                            (option) => option.value,
-                          );
-                          onChange(values);
-                        }}
-                        style={{ width: "100%" }}
-                        multiSelect
-                        noTags
-                        clearable
-                      />
-                    );
-                  }}
-                </Field>
-                <Field name="lease_state">
-                  {({ input: { value, onChange } }) => {
-                    const selectedOptions = leaseStateOptions.filter((option) =>
-                      (Array.isArray(value) ? value : [value]).some(
-                        (v) => v == option.value,
-                      ),
-                    );
-                    return (
-                      <Select
-                        id="lease_state"
-                        texts={{
-                          label: "Tyyppi",
-                          placeholder: "Valitse tyyppi",
-                          language: "fi",
-                        }}
-                        value={selectedOptions}
-                        options={leaseStateOptions}
-                        onChange={(selectedOptions) => {
-                          const values = selectedOptions.map(
-                            (option) => option.value,
-                          );
-                          onChange(values);
-                        }}
-                        style={{ width: "100%" }}
-                        multiSelect
-                        noTags
-                        clearable
-                      />
-                    );
-                  }}
-                </Field>
-                <Field name="preparer">
-                  {({ input: { value, onChange } }) => {
-                    // Combines "preparer" and "preparers_own_leases" into one select
-                    const preparers = [
-                      PreparerOwnLeasesOption,
-                      ...preparerOptions,
-                    ];
+            <Row className="lease-search-fieldset-group">
+              <Field name="service_unit">
+                {({ input: { value, onChange } }) => {
+                  return (
+                    <Select
+                      id="service_unit"
+                      texts={{
+                        label: LeaseFieldTitles.SERVICE_UNIT,
+                        placeholder: "Valitse palvelukokonaisuus",
+                        language: "fi",
+                      }}
+                      value={filterSelectedOptions(value, serviceUnitOptions)}
+                      options={serviceUnitOptions}
+                      onChange={(selectedOptions) => {
+                        const values = selectedOptions.map(
+                          (option) => option.value,
+                        );
+                        onChange(values);
+                      }}
+                      style={{ width: "100%" }}
+                      multiSelect
+                      noTags
+                      clearable
+                    />
+                  );
+                }}
+              </Field>
+              <Field name="lease_state">
+                {({ input: { value, onChange } }) => {
+                  const selectedOptions = leaseStateOptions.filter((option) =>
+                    (Array.isArray(value) ? value : [value]).some(
+                      (v) => v == option.value,
+                    ),
+                  );
+                  return (
+                    <Select
+                      id="lease_state"
+                      texts={{
+                        label: "Tyyppi",
+                        placeholder: "Valitse tyyppi",
+                        language: "fi",
+                      }}
+                      value={selectedOptions}
+                      options={leaseStateOptions}
+                      onChange={(selectedOptions) => {
+                        const values = selectedOptions.map(
+                          (option) => option.value,
+                        );
+                        onChange(values);
+                      }}
+                      style={{ width: "100%" }}
+                      multiSelect
+                      noTags
+                      clearable
+                    />
+                  );
+                }}
+              </Field>
+              <Field name="preparer">
+                {({ input: { value, onChange } }) => {
+                  // Combines "preparer" and "preparers_own_leases" into one select
+                  const preparers = [
+                    PreparerOwnLeasesOption,
+                    ...preparerOptions,
+                  ];
 
-                    const selectedOptions =
-                      value === PreparerOwnLeasesOption.value
-                        ? [PreparerOwnLeasesOption]
-                        : preparerOptions.filter((option) =>
-                            (Array.isArray(value) ? value : [value]).some(
-                              (v) => v == option.value,
-                            ),
+                  const selectedOptions =
+                    value === PreparerOwnLeasesOption.value
+                      ? [PreparerOwnLeasesOption]
+                      : preparerOptions.filter((option) =>
+                          (Array.isArray(value) ? value : [value]).some(
+                            (v) => v == option.value,
+                          ),
+                        );
+                  return (
+                    <Select
+                      id="preparer"
+                      texts={{
+                        label: "Valmistelija",
+                        placeholder: "Valitse valmistelija",
+                        language: "fi",
+                      }}
+                      value={selectedOptions}
+                      options={preparers}
+                      filter={(option, filterStr) =>
+                        option.label
+                          .toLowerCase()
+                          .includes(filterStr.toLowerCase())
+                      }
+                      onChange={(selectedOptions) => {
+                        if (
+                          selectedOptions.some(
+                            (option) =>
+                              option.value === PreparerOwnLeasesOption.value,
+                          )
+                        ) {
+                          onChange(PreparerOwnLeasesOption.value);
+                        } else {
+                          onChange(
+                            selectedOptions.map((option) => option.value),
                           );
-                    return (
-                      <Select
-                        id="preparer"
-                        texts={{
-                          label: "Valmistelija",
-                          placeholder: "Valitse valmistelija",
-                          language: "fi",
-                        }}
-                        value={selectedOptions}
-                        options={preparers}
-                        filter={(option, filterStr) =>
-                          option.label
-                            .toLowerCase()
-                            .includes(filterStr.toLowerCase())
                         }
-                        onChange={(selectedOptions) => {
-                          if (
-                            selectedOptions.some(
-                              (option) =>
-                                option.value === PreparerOwnLeasesOption.value,
-                            )
-                          ) {
-                            onChange(PreparerOwnLeasesOption.value);
-                          } else {
-                            onChange(
-                              selectedOptions.map((option) => option.value),
-                            );
-                          }
-                        }}
-                        clearable
-                        style={{ width: "100%" }}
-                      />
-                    );
-                  }}
-                </Field>
-              </Row>
+                      }}
+                      clearable
+                      style={{ width: "100%" }}
+                    />
+                  );
+                }}
+              </Field>
             </Row>
           </SearchRow>
           <Tabs
