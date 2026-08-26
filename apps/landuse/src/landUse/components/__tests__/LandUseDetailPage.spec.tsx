@@ -126,6 +126,32 @@ vi.mock("../tabs/LandUseMonitoring", () => ({
   ),
 }));
 
+vi.mock("../tabs/LandUseContracts", () => ({
+  LandUseContracts: ({
+    form,
+    isEditMode,
+  }: {
+    form: any;
+    isEditMode: boolean;
+  }) => (
+    <Form
+      form={form}
+      onSubmit={() => {}}
+      render={() => (
+        <Field name="contractsField">
+          {({ input }) => (
+            <input
+              aria-label="contracts-input"
+              {...input}
+              disabled={!isEditMode}
+            />
+          )}
+        </Field>
+      )}
+    />
+  ),
+}));
+
 vi.mock("../tabs/LandUseDecisions", () => ({
   LandUseDecisions: ({
     form,
@@ -325,6 +351,7 @@ vi.mock("../../api/landUseApi", () => ({
   getCompensations: vi.fn(),
   getMonitoring: vi.fn(),
   getDecisions: vi.fn(),
+  getContracts: vi.fn(),
   getInvoicing: vi.fn(),
   getMap: vi.fn(),
   getCollaterals: vi.fn(),
@@ -333,6 +360,7 @@ vi.mock("../../api/landUseApi", () => ({
   updateCompensations: vi.fn(),
   updateMonitoring: vi.fn(),
   updateDecisions: vi.fn(),
+  updateContracts: vi.fn(),
   updateInvoicing: vi.fn(),
   updateMap: vi.fn(),
   updateCollaterals: vi.fn(),
@@ -356,6 +384,7 @@ describe("LandUseDetailPage", () => {
     vi.mocked(landUseApi.getCollaterals).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getMonitoring).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getDecisions).mockResolvedValue({} as any);
+    vi.mocked(landUseApi.getContracts).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getInvoicing).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getMap).mockResolvedValue({} as any);
 
@@ -375,6 +404,9 @@ describe("LandUseDetailPage", () => {
       async (_agreementId, values) => values as any,
     );
     vi.mocked(landUseApi.updateDecisions).mockImplementation(
+      async (_agreementId, values) => values as any,
+    );
+    vi.mocked(landUseApi.updateContracts).mockImplementation(
       async (_agreementId, values) => values as any,
     );
     vi.mocked(landUseApi.updateInvoicing).mockImplementation(

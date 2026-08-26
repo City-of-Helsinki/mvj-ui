@@ -34,6 +34,10 @@ import {
   type LandUseMonitoringFormValues,
 } from "./tabs/LandUseMonitoring";
 import {
+  LandUseContracts,
+  type LandUseContractsFormValues,
+} from "./tabs/LandUseContracts";
+import {
   LandUseDecisions,
   type LandUseDecisionsFormValues,
 } from "./tabs/LandUseDecisions";
@@ -48,6 +52,7 @@ import type { KorkoResult } from "./invoicing/KorkoCalculator";
 import { LandUseMap, type LandUseMapFormValues } from "./tabs/LandUseMap";
 import LandUseNotFoundPage from "../../landUse/components/LandUseNotFoundPage";
 import {
+  getContracts,
   getCompensations,
   getCollaterals,
   getDecisions,
@@ -58,6 +63,7 @@ import {
   getParties,
   getSummary,
   updateCompensations,
+  updateContracts,
   updateCollaterals,
   updateDecisions,
   updateInvoicing,
@@ -83,6 +89,7 @@ export type FormKey =
   | "collaterals"
   | "monitoring"
   | "decisions"
+  | "contracts"
   | "invoicing"
   | "map"
   | "history";
@@ -120,10 +127,16 @@ const TABS_CONFIG: TabConfig[] = [
     formKey: "collaterals",
   },
   {
-    label: "Päätökset ja sopimukset",
+    label: "Päätökset",
     queryKey: "decisions",
     hasForm: true,
     formKey: "decisions",
+  },
+  {
+    label: "Sopimukset ja vakuudet",
+    queryKey: "contracts",
+    hasForm: true,
+    formKey: "contracts",
   },
   {
     label: "Valvonta",
@@ -230,6 +243,7 @@ const LandUseDetailPage: React.FC = () => {
     collaterals: { ...initialFormState },
     monitoring: { ...initialFormState },
     decisions: { ...initialFormState },
+    contracts: { ...initialFormState },
     invoicing: { ...initialFormState },
     map: { ...initialFormState },
   });
@@ -304,6 +318,13 @@ const LandUseDetailPage: React.FC = () => {
   const decisionsQuery = useQuery({
     queryKey: ["land-use", agreementId, "decisions"],
     queryFn: () => getDecisions(agreementId),
+    enabled: canLoadAgreementData,
+    refetchOnWindowFocus: false,
+  });
+
+  const contractsQuery = useQuery({
+    queryKey: ["land-use", agreementId, "contracts"],
+    queryFn: () => getContracts(agreementId),
     enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
@@ -389,6 +410,17 @@ const LandUseDetailPage: React.FC = () => {
     [],
   );
 
+  const contractsFormApi = useMemo(
+    () =>
+      createForm<LandUseContractsFormValues>({
+        onSubmit: (values) => {
+          console.log("Contracts form submitted:", values);
+        },
+        mutators: { ...arrayMutators },
+      }),
+    [],
+  );
+
   const invoicingFormApi = useMemo(
     () =>
       createForm<LandUseInvoicingFormValues>({
@@ -420,6 +452,7 @@ const LandUseDetailPage: React.FC = () => {
       collaterals: collateralsFormApi,
       monitoring: monitoringFormApi,
       decisions: decisionsFormApi,
+      contracts: contractsFormApi,
       invoicing: invoicingFormApi,
       map: mapFormApi,
     }),
@@ -430,6 +463,7 @@ const LandUseDetailPage: React.FC = () => {
       collateralsFormApi,
       monitoringFormApi,
       decisionsFormApi,
+      contractsFormApi,
       invoicingFormApi,
       mapFormApi,
     ],
@@ -523,6 +557,17 @@ const LandUseDetailPage: React.FC = () => {
     decisionsFormApi,
     decisionsQuery.data,
     decisionsQuery.dataUpdatedAt,
+    agreementId,
+  ]);
+
+  useEffect(() => {
+    if (contractsQuery.data) {
+      contractsFormApi.initialize(contractsQuery.data);
+    }
+  }, [
+    contractsFormApi,
+    contractsQuery.data,
+    contractsQuery.dataUpdatedAt,
     agreementId,
   ]);
 
@@ -636,6 +681,14 @@ const LandUseDetailPage: React.FC = () => {
     },
   });
 
+  const contractsMutation = useMutation({
+    mutationFn: (values: LandUseContractsFormValues) =>
+      updateContracts(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "contracts"], data);
+    },
+  });
+
   const invoicingMutation = useMutation({
     mutationFn: (values: LandUseInvoicingFormValues) =>
       updateInvoicing(agreementId, values),
@@ -716,6 +769,13 @@ const LandUseDetailPage: React.FC = () => {
           mutations.push(
             decisionsMutation.mutateAsync(
               state.values as LandUseDecisionsFormValues,
+            ),
+          );
+          break;
+        case "contracts":
+          mutations.push(
+            contractsMutation.mutateAsync(
+              state.values as LandUseContractsFormValues,
             ),
           );
           break;
@@ -888,6 +948,14 @@ const LandUseDetailPage: React.FC = () => {
         );
       case 5:
         return (
+          <LandUseContracts
+            form={contractsFormApi}
+            isEditMode={isEditMode}
+            parties={activeParties}
+          />
+        );
+      case 6:
+        return (
           <LandUseMonitoring
             form={monitoringFormApi}
             isEditMode={isEditMode}
@@ -920,17 +988,16 @@ const LandUseDetailPage: React.FC = () => {
             onSetTabDirty={handleSetTabDirty}
           />
         );
-      case 6:
+      case 7:
         return (
           <LandUseInvoicing
             form={invoicingFormApi}
             isEditMode={isEditMode}
             parties={activeParties}
-            agreements={
-              ((
-                decisionsFormApi.getState().values as LandUseDecisionsFormValues
-              )?.agreements ??
-                decisionsQuery.data?.agreements) ||
+            contracts={
+              (contractsFormApi.getState().values as LandUseContractsFormValues)
+                ?.contracts ??
+              contractsQuery.data?.contracts ??
               []
             }
             asemakaavanNumero={
@@ -950,9 +1017,9 @@ const LandUseDetailPage: React.FC = () => {
             setKorkoResults={setKorkoResults}
           />
         );
-      case 7:
-        return <LandUseMap form={mapFormApi} isEditMode={isEditMode} />;
       case 8:
+        return <LandUseMap form={mapFormApi} isEditMode={isEditMode} />;
+      case 9:
         return (
           <div>
             <h1>Muutoshistoria</h1>

@@ -35,7 +35,7 @@ import {
 } from "../../options";
 import { formatLandUseEuroDisplayValue } from "../../utils/number";
 import type { PartyEntry } from "./LandUseParties";
-import type { LandUseDecisionsFormValues } from "./LandUseDecisions";
+import type { LandUseContractsFormValues } from "./LandUseContracts";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import {
   KorkoCalculator,
@@ -43,8 +43,8 @@ import {
 } from "../invoicing/KorkoCalculator";
 import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
 
-type AgreementItem = NonNullable<
-  LandUseDecisionsFormValues["agreements"]
+type ContractItem = NonNullable<
+  LandUseContractsFormValues["contracts"]
 >[number];
 
 interface AgreementOption extends SelectOption {
@@ -92,7 +92,7 @@ interface LandUseInvoicingProps {
   form: FormApi<LandUseInvoicingFormValues>;
   isEditMode: boolean;
   parties: PartyEntry[];
-  agreements: AgreementItem[];
+  contracts: ContractItem[];
   asemakaavanNumero: AsemakaavaListItem["asemakaavanNumero"];
   asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
   agreementIdentifier: string;
@@ -155,10 +155,10 @@ const createInvoiceRecipientOptions = (parties: PartyEntry[]): SelectOption[] =>
     value: String(index),
   }));
 
-const createInvoiceAgreementOptions = (
-  agreements: AgreementItem[],
+const createInvoiceContractOptions = (
+  contracts: ContractItem[],
 ): AgreementOption[] =>
-  agreements.map((agreement, index) => {
+  contracts.map((agreement, index) => {
     const contractType = agreement.sopimuksenTyyppi?.trim();
     const contractNumber = agreement.sopimusnumero?.trim() ?? "";
     const parts = [contractType, contractNumber].filter(
@@ -1288,7 +1288,7 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
   form,
   isEditMode,
   parties,
-  agreements,
+  contracts,
   asemakaavanNumero,
   asemakaavanLainvoimaisuusPvm,
   agreementIdentifier,
@@ -1303,16 +1303,16 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
     [parties],
   );
   const agreementOptions = React.useMemo(
-    () => createInvoiceAgreementOptions(agreements ?? []),
-    [agreements],
+    () => createInvoiceContractOptions(contracts ?? []),
+    [contracts],
   );
 
   const handleBulkCreate = (values: BulkCreateFormValues) => {
     const total = parseInt(values.installmentTotal, 10);
     if (!total || total <= 0) return;
 
-    const selectedAgreement = agreements[Number(values.contractIndex)];
-    const signedDate = selectedAgreement?.allekirjoituspvm ?? "";
+    const selectedContract = contracts[Number(values.contractIndex)];
+    const signedDate = selectedContract?.allekirjoituspvm ?? "";
     const sopimusnumero =
       agreementOptions.find((o) => o.value === values.contractIndex)
         ?.sopimusnumero ?? "";
@@ -1350,8 +1350,7 @@ export const LandUseInvoicing: React.FC<LandUseInvoicingProps> = ({
           const existingInvoices =
             (
               form.getState().initialValues as
-                | LandUseInvoicingFormValues
-                | undefined
+                LandUseInvoicingFormValues | undefined
             )?.invoices ?? [];
 
           const handleAddInvoice = (

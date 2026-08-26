@@ -3,6 +3,7 @@ import type {
   LandUseCompensationsFormValues,
   LandUseSite,
 } from "../components/tabs/LandUseCompensations";
+import type { LandUseContractsFormValues } from "../components/tabs/LandUseContracts";
 import type { LandUseDecisionsFormValues } from "../components/tabs/LandUseDecisions";
 import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoicing";
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
@@ -97,6 +98,7 @@ export interface LandUseAgreementMockTabs {
   collaterals: LandUseCollateralsFormValues;
   monitoring: LandUseMonitoringFormValues;
   decisions: LandUseDecisionsFormValues;
+  contracts: LandUseContractsFormValues;
   invoicing: LandUseInvoicingFormValues;
   map: LandUseMapFormValues;
 }
@@ -157,7 +159,10 @@ const ma113Decisions: LandUseDecisionsFormValues = {
       ],
     },
   ],
-  agreements: [
+};
+
+const ma113Agreements: LandUseContractsFormValues = {
+  contracts: [
     {
       title: "Sopimus 1",
       sopimuksenTyyppi: "Maankäyttösopimus",
@@ -309,6 +314,7 @@ export const mockLandUseTabStore: Record<string, LandUseAgreementMockTabs> = {
     collaterals: ma113Collaterals,
     monitoring: ma113Monitoring,
     decisions: ma113Decisions,
+    contracts: ma113Agreements,
     invoicing: ma113Invoicing,
     map: ma113Map,
   },
