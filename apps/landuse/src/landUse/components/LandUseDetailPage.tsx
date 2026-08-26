@@ -863,6 +863,7 @@ const LandUseDetailPage: React.FC = () => {
 
   const handleTabClick = useCallback((tabIndex: number) => {
     setActiveTab(tabIndex);
+    window.scrollTo({ top: 0, left: 0 });
   }, []);
 
   // Reset the active section highlight whenever the mounted tab changes.
