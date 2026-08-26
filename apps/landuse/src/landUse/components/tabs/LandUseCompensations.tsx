@@ -1,4 +1,10 @@
-import React, { useMemo } from "react";
+import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
+import {
+  INITIAL_KORVAUSKYNNYS_EURO,
+  INITIAL_KORVAUS_PERCENTAGE,
+} from "@/landUse/constants";
+import { Decorator, FormApi } from "final-form";
+import createDecorator from "final-form-calculate";
 import {
   Button,
   ButtonSize,
@@ -14,16 +20,16 @@ import {
   TextInput,
   ToggleButton,
 } from "hds-react";
-import { Form, Field } from "react-final-form";
-import { FormApi, Decorator } from "final-form";
-import createDecorator from "final-form-calculate";
+import React, { useMemo } from "react";
+import { Field, Form } from "react-final-form";
+import { useTocEntries } from "../../hooks/useTableOfContents";
+import { landUseCompensationSelectOptions } from "../../options";
 import {
   normalizeMultiSelectValue,
   normalizeSelectValue,
   readOnlyTextValue,
   type SelectOption,
 } from "../../utils/fieldUtils";
-import { landUseCompensationSelectOptions } from "../../options";
 import {
   formatLandUseEuroValue,
   formatLandUseNumericValueWithUnit,
@@ -31,12 +37,6 @@ import {
   parseNumber,
 } from "../../utils/number";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
-import { useTocEntries } from "../../hooks/useTableOfContents";
-import {
-  INITIAL_KORVAUSKYNNYS_EURO,
-  INITIAL_KORVAUS_PERCENTAGE,
-} from "@/landUse/constants";
-import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
 
 export interface LandUseSite {
   id: string;

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
+import { FormApi } from "final-form";
 import {
   Button,
   ButtonSize,
@@ -15,33 +16,32 @@ import {
   Select,
   TextInput,
 } from "hds-react";
+import React, { useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
-import { FormApi } from "final-form";
 import {
-  getFieldTextValue,
-  normalizeSelectValue,
-  readOnlyTextValue,
-  getOptionsDisplayValue,
-  type SelectOption,
-} from "../../utils/fieldUtils";
-import {
-  landUseInvoiceTypeSelectOptions,
-  LAND_USE_INVOICE_TYPES,
-  type LandUseInvoiceType,
   AsemakaavaListItem,
   LAND_USE_INVOICE_ITEM_TYPES,
+  LAND_USE_INVOICE_TYPES,
   landUseInvoiceItemTypeSelectOptions,
+  landUseInvoiceTypeSelectOptions,
+  type LandUseInvoiceType,
 } from "../../options";
+import {
+  getFieldTextValue,
+  getOptionsDisplayValue,
+  normalizeSelectValue,
+  readOnlyTextValue,
+  type SelectOption,
+} from "../../utils/fieldUtils";
 import { formatLandUseEuroDisplayValue } from "../../utils/number";
-import type { PartyEntry } from "./LandUseParties";
-import type { LandUseContractsFormValues } from "./LandUseContracts";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import {
   KorkoCalculator,
   type KorkoResult,
 } from "../invoicing/KorkoCalculator";
-import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
+import type { LandUseContractsFormValues } from "./LandUseContracts";
+import type { PartyEntry } from "./LandUseParties";
 
 type ContractItem = NonNullable<
   LandUseContractsFormValues["contracts"]

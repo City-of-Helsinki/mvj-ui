@@ -1,42 +1,57 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createForm } from "final-form";
+import arrayMutators from "final-form-arrays";
+import { Breadcrumb } from "hds-react";
 import React, {
-  useState,
+  useCallback,
   useEffect,
   useMemo,
-  useCallback,
   useRef,
+  useState,
 } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { Breadcrumb } from "hds-react";
-import { SideNavigation } from "./SideNavigation";
-import type { SideNavigationTab, SectionEntry } from "./SideNavigation";
+import LandUseNotFoundPage from "../../landUse/components/LandUseNotFoundPage";
+import {
+  getCollaterals,
+  getCompensations,
+  getContracts,
+  getDecisions,
+  getInvoicing,
+  getLandUseList,
+  getMap,
+  getMonitoring,
+  getParties,
+  getSummary,
+  updateCollaterals,
+  updateCompensations,
+  updateContracts,
+  updateDecisions,
+  updateInvoicing,
+  updateMap,
+  updateMonitoring,
+  updateParties,
+  updateSummary,
+} from "../api/landUseApi";
+import { DEFAULT_KOROTUSKERROIN } from "../constants";
+import { useCalculateActivePageSection } from "../hooks/useCalculateActivePageSection";
 import {
   getTocScrollTarget,
   TableOfContentsProvider,
 } from "../hooks/useTableOfContents";
-import { createForm } from "final-form";
-import arrayMutators from "final-form-arrays";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  LandUseSummary,
-  type LandUseSummaryFormValues,
-} from "./tabs/LandUseSummary";
-import {
-  LandUseParties,
-  type LandUsePartiesFormValues,
-} from "./tabs/LandUseParties";
-import {
-  calculateMaankayttokorvausYhteensa,
-  LandUseCompensations,
-  type LandUseCompensationsFormValues,
-} from "./tabs/LandUseCompensations";
+import { LAND_USE_INVOICE_ITEM_TYPES } from "../options";
+import { parseLandUseNumericValueOrZero } from "../utils/number";
+import type { KorkoResult } from "./invoicing/KorkoCalculator";
+import type { SectionEntry, SideNavigationTab } from "./SideNavigation";
+import { SideNavigation } from "./SideNavigation";
 import {
   LandUseCollaterals,
   type LandUseCollateralsFormValues,
 } from "./tabs/LandUseCollaterals";
 import {
-  LandUseMonitoring,
-  type LandUseMonitoringFormValues,
-} from "./tabs/LandUseMonitoring";
+  calculateMaankayttokorvausYhteensa,
+  LandUseCompensations,
+  type LandUseCompensationsFormValues,
+} from "./tabs/LandUseCompensations";
 import {
   LandUseContracts,
   type LandUseContractsFormValues,
@@ -52,34 +67,19 @@ import {
   LandUseInvoicing,
   type LandUseInvoicingFormValues,
 } from "./tabs/LandUseInvoicing";
-import type { KorkoResult } from "./invoicing/KorkoCalculator";
 import { LandUseMap, type LandUseMapFormValues } from "./tabs/LandUseMap";
-import LandUseNotFoundPage from "../../landUse/components/LandUseNotFoundPage";
 import {
-  getContracts,
-  getCompensations,
-  getCollaterals,
-  getDecisions,
-  getInvoicing,
-  getLandUseList,
-  getMap,
-  getMonitoring,
-  getParties,
-  getSummary,
-  updateCompensations,
-  updateContracts,
-  updateCollaterals,
-  updateDecisions,
-  updateInvoicing,
-  updateMap,
-  updateMonitoring,
-  updateParties,
-  updateSummary,
-} from "../api/landUseApi";
-import { LAND_USE_INVOICE_ITEM_TYPES } from "../options";
-import { parseLandUseNumericValueOrZero } from "../utils/number";
-import { DEFAULT_KOROTUSKERROIN } from "../constants";
-import { useCalculateActivePageSection } from "../hooks/useCalculateActivePageSection";
+  LandUseMonitoring,
+  type LandUseMonitoringFormValues,
+} from "./tabs/LandUseMonitoring";
+import {
+  LandUseParties,
+  type LandUsePartiesFormValues,
+} from "./tabs/LandUseParties";
+import {
+  LandUseSummary,
+  type LandUseSummaryFormValues,
+} from "./tabs/LandUseSummary";
 
 interface FormState {
   dirty: boolean;
