@@ -111,14 +111,12 @@ const COMPENSATION_STEPS = [
 const getCompensationStepId = (key: string): string =>
   `compensations-step-${key}`;
 
-const KOHTEET_SECTION_ID = "compensations-section-kohteet";
-
 const getRowFieldPath = (
   siteId: string,
   field: keyof PerustietotaulukkoRowValues,
 ): string => `perustietotaulukkoRowsBySiteId.${siteId}.${field}`;
 
-const calculateMaankayttokorvausYhteensa = (
+export const calculateMaankayttokorvausYhteensa = (
   values: Partial<LandUseCompensationsFormValues>,
 ): string =>
   (
@@ -129,13 +127,15 @@ const calculateMaankayttokorvausYhteensa = (
 
 // Recalculates the derived "Yhteensä" field so its value is stored in and
 // saved with the form whenever any of its source fields change.
-const maankayttokorvausYhteensaDecorator = createDecorator({
+export const maankayttokorvausYhteensaDecorator = createDecorator({
   field: /^(rahakorvaus|maakorvaus|muuKorvaus)$/,
   updates: {
-    maankayttokorvausYhteensa: (_value, allValues) =>
-      calculateMaankayttokorvausYhteensa(
-        allValues as Partial<LandUseCompensationsFormValues>,
-      ),
+    maankayttokorvausYhteensa: (_value, allValues, previousValues) =>
+      previousValues === undefined
+        ? allValues.maankayttokorvausYhteensa
+        : calculateMaankayttokorvausYhteensa(
+            allValues as Partial<LandUseCompensationsFormValues>,
+          ),
   },
 }) as Decorator<LandUseCompensationsFormValues>;
 
@@ -174,10 +174,12 @@ const maankayttokorvausDecorator = createDecorator({
   field:
     /^(sites|perustietotaulukkoRowsBySiteId|kaavaehdotustaEdeltavaArvo|korvauskynnys|purkuTaiMuuVahennys|korvausprosentti).*/,
   updates: {
-    maankayttokorvaus: (_value, allValues) =>
-      calculateMaankayttokorvaus(
-        allValues as Partial<LandUseCompensationsFormValues>,
-      ).toString(),
+    maankayttokorvaus: (_value, allValues, previousValues) =>
+      previousValues === undefined
+        ? allValues.maankayttokorvaus
+        : calculateMaankayttokorvaus(
+            allValues as Partial<LandUseCompensationsFormValues>,
+          ).toString(),
   },
 }) as Decorator<LandUseCompensationsFormValues>;
 
@@ -528,7 +530,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
         text: step.title,
         level: 2,
       })),
-      { id: KOHTEET_SECTION_ID, text: "Kohteet", level: 2 },
     ],
     [],
   );

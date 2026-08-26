@@ -22,6 +22,7 @@ import {
   type LandUsePartiesFormValues,
 } from "./tabs/LandUseParties";
 import {
+  calculateMaankayttokorvausYhteensa,
   LandUseCompensations,
   type LandUseCompensationsFormValues,
 } from "./tabs/LandUseCompensations";
@@ -518,7 +519,14 @@ const LandUseDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (compensationsQuery.data) {
-      compensationsFormApi.initialize(compensationsQuery.data);
+      compensationsFormApi.initialize({
+        ...compensationsQuery.data,
+        // Initializing the calculated value here is necessary to avoid
+        // dirtying the initial form state.
+        maankayttokorvausYhteensa: calculateMaankayttokorvausYhteensa(
+          compensationsQuery.data,
+        ),
+      });
     }
   }, [
     compensationsFormApi,
