@@ -130,12 +130,14 @@ export const calculateMaankayttokorvausYhteensa = (
 export const maankayttokorvausYhteensaDecorator = createDecorator({
   field: /^(rahakorvaus|maakorvaus|muuKorvaus)$/,
   updates: {
-    maankayttokorvausYhteensa: (_value, allValues, previousValues) =>
+    maankayttokorvausYhteensa: (
+      _value,
+      allValues: Partial<LandUseCompensationsFormValues>,
+      previousValues: Partial<LandUseCompensationsFormValues> | undefined,
+    ) =>
       previousValues === undefined
         ? allValues.maankayttokorvausYhteensa
-        : calculateMaankayttokorvausYhteensa(
-            allValues as Partial<LandUseCompensationsFormValues>,
-          ),
+        : calculateMaankayttokorvausYhteensa(allValues),
   },
 }) as Decorator<LandUseCompensationsFormValues>;
 
@@ -174,12 +176,14 @@ const maankayttokorvausDecorator = createDecorator({
   field:
     /^(sites|perustietotaulukkoRowsBySiteId|kaavaehdotustaEdeltavaArvo|korvauskynnys|purkuTaiMuuVahennys|korvausprosentti).*/,
   updates: {
-    maankayttokorvaus: (_value, allValues, previousValues) =>
+    maankayttokorvaus: (
+      _value,
+      allValues: Partial<LandUseCompensationsFormValues>,
+      previousValues: Partial<LandUseCompensationsFormValues> | undefined,
+    ) =>
       previousValues === undefined
         ? allValues.maankayttokorvaus
-        : calculateMaankayttokorvaus(
-            allValues as Partial<LandUseCompensationsFormValues>,
-          ).toString(),
+        : calculateMaankayttokorvaus(allValues).toString(),
   },
 }) as Decorator<LandUseCompensationsFormValues>;
 
