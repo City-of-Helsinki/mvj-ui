@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
   ButtonVariant,
@@ -24,6 +24,7 @@ import {
   normalizeSelectValue,
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
+import { useTocEntries } from "../../hooks/useTableOfContents";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import type { PartyEntry } from "./LandUseParties";
 
@@ -98,10 +99,37 @@ const getDecisionHeadingText = (decision: DecisionItem): string => {
   return parts.join(" ") || "Päätös";
 };
 
+const getDecisionHeadingId = (index: number): string =>
+  `decision-heading-${index}`;
+
 export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
   form,
   isEditMode,
 }) => {
+  const [decisions, setDecisions] = useState<DecisionItem[]>(
+    () => form.getState().values.decisions ?? [],
+  );
+
+  useEffect(
+    () =>
+      form.subscribe((state) => setDecisions(state.values.decisions ?? []), {
+        values: true,
+      }),
+    [form],
+  );
+
+  const tocEntries = useMemo(
+    () =>
+      decisions.map((decision, index) => ({
+        id: getDecisionHeadingId(index),
+        text: getDecisionHeadingText(decision),
+        level: 2,
+      })),
+    [decisions],
+  );
+
+  useTocEntries(tocEntries);
+
   return (
     <Form<LandUseDecisionsFormValues>
       form={form}
@@ -124,7 +152,9 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                     key={`decision-${decisionIndex}`}
                   >
                     <div className="landuse-detail__heading-with-delete">
-                      <h3>{getDecisionHeadingText(decision)}</h3>
+                      <h2 id={getDecisionHeadingId(decisionIndex)}>
+                        {getDecisionHeadingText(decision)}
+                      </h2>
                       {isEditMode && (
                         <ConfirmDeleteButton
                           id={`decision-delete-${decisionIndex}`}
