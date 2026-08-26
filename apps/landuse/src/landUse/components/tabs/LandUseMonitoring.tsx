@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Button,
   ButtonVariant,
@@ -15,35 +15,37 @@ import {
   IconSize,
   NumberInput,
   Select,
+  StepByStep,
   Table,
   TextInput,
 } from "hds-react";
 import { Form } from "react-final-form";
 import { Field } from "react-final-form";
 import { FormApi } from "final-form";
-import type { FormKey } from "../LandUseDetailPage";
+import type { FormKey } from "@/landUse/components/LandUseDetailPage";
 import {
   filterOptionsByValues,
   normalizeSelectValue,
-} from "../../utils/fieldUtils";
-import { landUseCompensationSelectOptions } from "../../options";
-import type { LandUseSite } from "./LandUseCompensations";
-import { INITIAL_SAKKOKERROIN } from "../../constants";
+} from "@/landUse/utils/fieldUtils";
+import { landUseCompensationSelectOptions } from "@/landUse/options";
+import type { LandUseSite } from "@/landUse/components/tabs/LandUseCompensations";
+import { INITIAL_SAKKOKERROIN } from "@/landUse/constants";
 import {
   formatLandUseEuroDisplayValue,
   formatLandUseEuroValue,
   formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
   parseNumber,
-} from "../../utils/number";
+} from "@/landUse/utils/number";
 import {
   calculateHintaero,
   calculateSopimussakko,
   calculateToteuttamatta,
   calculateVakuustarve,
   getVakuustarveKerroinPercent,
-} from "../../utils/vakuustarve";
-import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
+} from "@/landUse/utils/vakuustarve";
+import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
+import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 
 interface PerustietotaulukkoRowValues {
   yksikkohinta: string;
@@ -107,6 +109,34 @@ interface LandUseMonitoringProps {
   maankayttokorvausYhteensa?: number;
   onSetTabDirty?: (formKey: FormKey) => void;
 }
+
+const MONITORING_STEP_KEYS = {
+  toteumat: "toteumat",
+  vakuudenVapauttaminen: "vakuuden-vapauttaminen",
+  jaljellaOlevaVakuustarve: "jaljella-oleva-vakuustarve",
+  sakko: "sakko",
+} as const;
+
+const MONITORING_STEPS = [
+  {
+    key: MONITORING_STEP_KEYS.toteumat,
+    title: "Toteumat",
+  },
+  {
+    key: MONITORING_STEP_KEYS.vakuudenVapauttaminen,
+    title: "Vakuuden vapauttaminen",
+  },
+  {
+    key: MONITORING_STEP_KEYS.jaljellaOlevaVakuustarve,
+    title: "Jäljellä oleva vakuustarve",
+  },
+  {
+    key: MONITORING_STEP_KEYS.sakko,
+    title: "Sakko",
+  },
+] as const;
+
+const getMonitoringStepId = (key: string): string => `monitoring-step-${key}`;
 
 const handleSelectChange = (
   selectedOptions: { label: string; value: string }[],
@@ -187,6 +217,18 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
   maankayttokorvausYhteensa,
   onSetTabDirty,
 }) => {
+  const tocEntries = useMemo(
+    () =>
+      MONITORING_STEPS.map((step) => ({
+        id: getMonitoringStepId(step.key),
+        text: step.title,
+        level: 2,
+      })),
+    [],
+  );
+
+  useTocEntries(tocEntries);
+
   const [selectedSiteId, setSelectedSiteId] = React.useState<string | null>(
     null,
   );
@@ -809,120 +851,170 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
               <div className="landuse-detail__content">
                 <h1>Valvonta</h1>
 
-                <Fieldset
-                  heading=""
-                  className="landuse-detail__fieldset--with-margin"
-                >
-                  <div className="landuse-detail__table-wrapper">
-                    <Table
-                      className="landuse-detail__table landuse-detail__monitoring-table"
-                      cols={monitoringPerustaulukkoCols}
-                      indexKey="id"
-                      renderIndexCol={false}
-                      rows={monitoringPerustaulukkoRows}
-                      variant="light"
-                    />
-                  </div>
-                </Fieldset>
+                <StepByStep
+                  numberedList
+                  steps={[
+                    {
+                      title: MONITORING_STEPS[0].title,
+                      key: MONITORING_STEP_KEYS.toteumat,
+                      description: (
+                        <div
+                          id={getMonitoringStepId(
+                            MONITORING_STEP_KEYS.toteumat,
+                          )}
+                        >
+                          <Fieldset
+                            heading=""
+                            className="landuse-detail__fieldset--with-margin"
+                          >
+                            <div className="landuse-detail__table-wrapper">
+                              <Table
+                                className="landuse-detail__table landuse-detail__monitoring-table"
+                                cols={monitoringPerustaulukkoCols}
+                                indexKey="id"
+                                renderIndexCol={false}
+                                rows={monitoringPerustaulukkoRows}
+                                variant="light"
+                              />
+                            </div>
+                          </Fieldset>
+                        </div>
+                      ),
+                    },
+                    {
+                      title: MONITORING_STEPS[1].title,
+                      key: MONITORING_STEP_KEYS.vakuudenVapauttaminen,
+                      description: (
+                        <div
+                          id={getMonitoringStepId(
+                            MONITORING_STEP_KEYS.vakuudenVapauttaminen,
+                          )}
+                        >
+                          <Fieldset
+                            heading=""
+                            className="landuse-detail__fieldset--with-margin"
+                          >
+                            <div className="landuse-detail__collaterals-increase-factor-field">
+                              <TextInput
+                                id="monitoring-vapauttaminen-perushinta"
+                                label="Perushinta"
+                                value={formatLandUseEuroDisplayValue(
+                                  perushinta,
+                                )}
+                                readOnly
+                              />
+                            </div>
 
-                <h2>Vakuuden vapauttaminen</h2>
-                <Fieldset
-                  heading=""
-                  className="landuse-detail__fieldset--with-margin"
-                >
-                  <div className="landuse-detail__collaterals-increase-factor-field">
-                    <TextInput
-                      id="monitoring-vapauttaminen-perushinta"
-                      label="Perushinta"
-                      value={formatLandUseEuroDisplayValue(perushinta)}
-                      readOnly
-                    />
-                  </div>
+                            <div className="landuse-detail__table-wrapper">
+                              <Table
+                                className="landuse-detail__table landuse-detail__monitoring-table"
+                                cols={monitoringVapauttaminenCols}
+                                indexKey="id"
+                                renderIndexCol={false}
+                                rows={monitoringVapauttaminenRows}
+                                variant="light"
+                              />
+                            </div>
+                          </Fieldset>
+                        </div>
+                      ),
+                    },
+                    {
+                      title: MONITORING_STEPS[2].title,
+                      key: MONITORING_STEP_KEYS.jaljellaOlevaVakuustarve,
+                      description: (
+                        <div
+                          id={getMonitoringStepId(
+                            MONITORING_STEP_KEYS.jaljellaOlevaVakuustarve,
+                          )}
+                        >
+                          <Fieldset
+                            heading=""
+                            className="landuse-detail__fieldset--with-margin"
+                          >
+                            <div className="landuse-grid">
+                              <TextInput
+                                id="monitoring-sopimuksen-mukainen"
+                                label="Maankäyttökorvaus"
+                                value={formatLandUseEuroValue(
+                                  sopimuksenMukainenValue,
+                                )}
+                                readOnly
+                                style={
+                                  remainingCollateralSeparatorDirection ===
+                                  "left"
+                                    ? {
+                                        border:
+                                          "4px solid var(--color-success)",
+                                        padding: "var(--spacing-2-xs)",
+                                      }
+                                    : {
+                                        padding: "var(--spacing-2-xs)",
+                                      }
+                                }
+                              />
 
-                  <div className="landuse-detail__table-wrapper">
-                    <Table
-                      className="landuse-detail__table landuse-detail__monitoring-table"
-                      cols={monitoringVapauttaminenCols}
-                      indexKey="id"
-                      renderIndexCol={false}
-                      rows={monitoringVapauttaminenRows}
-                      variant="light"
-                    />
-                  </div>
-                </Fieldset>
+                              <span
+                                className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${remainingCollateralSeparatorDirection}`}
+                                aria-hidden="true"
+                              >
+                                {remainingCollateralSeparatorDirection ===
+                                "right" ? (
+                                  <IconAngleLeft size={IconSize.ExtraLarge} />
+                                ) : (
+                                  <IconAngleRight size={IconSize.ExtraLarge} />
+                                )}
+                              </span>
 
-                <h2>Jäljellä oleva vakuustarve</h2>
-                <Fieldset
-                  heading=""
-                  className="landuse-detail__fieldset--with-margin"
-                >
-                  <div className="landuse-grid">
-                    <div className="landuse-grid__column-2">
-                      <TextInput
-                        id="monitoring-sopimuksen-mukainen"
-                        label="Maankäyttökorvaus"
-                        value={formatLandUseEuroValue(sopimuksenMukainenValue)}
-                        readOnly
-                        style={
-                          remainingCollateralSeparatorDirection === "left"
-                            ? {
-                                border: "4px solid var(--color-success)",
-                                padding: "var(--spacing-2-xs)",
-                              }
-                            : {
-                                padding: "var(--spacing-2-xs)",
-                              }
-                        }
-                      />
-                    </div>
-
-                    <div className="landuse-grid__column-1">
-                      <span
-                        className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${remainingCollateralSeparatorDirection}`}
-                        aria-hidden="true"
-                      >
-                        {remainingCollateralSeparatorDirection === "right" ? (
-                          <IconAngleLeft size={IconSize.ExtraLarge} />
-                        ) : (
-                          <IconAngleRight size={IconSize.ExtraLarge} />
-                        )}
-                      </span>
-                    </div>
-
-                    <div className="landuse-grid__column-2">
-                      <TextInput
-                        id="collaterals-saantelyn-mukainen"
-                        label="Asumismuotoehdot"
-                        value={formatLandUseEuroValue(saantelynMukainenValue)}
-                        readOnly
-                        style={
-                          remainingCollateralSeparatorDirection === "right"
-                            ? {
-                                border: "4px solid var(--color-success)",
-                                padding: "var(--spacing-2-xs)",
-                              }
-                            : {
-                                padding: "var(--spacing-2-xs)",
-                              }
-                        }
-                      />
-                    </div>
-                  </div>
-                </Fieldset>
-
-                <h2>Sakko</h2>
-                <Fieldset heading="">
-                  <div className="landuse-detail__table-wrapper">
-                    <Table
-                      className="landuse-detail__table landuse-detail__monitoring-table"
-                      cols={monitoringSakkoCols}
-                      indexKey="id"
-                      renderIndexCol={false}
-                      rows={monitoringSakkoTableRows}
-                      variant="light"
-                    />
-                  </div>
-                </Fieldset>
+                              <TextInput
+                                id="collaterals-saantelyn-mukainen"
+                                label="Asumismuotoehdot"
+                                value={formatLandUseEuroValue(
+                                  saantelynMukainenValue,
+                                )}
+                                readOnly
+                                style={
+                                  remainingCollateralSeparatorDirection ===
+                                  "right"
+                                    ? {
+                                        border:
+                                          "4px solid var(--color-success)",
+                                        padding: "var(--spacing-2-xs)",
+                                      }
+                                    : {
+                                        padding: "var(--spacing-2-xs)",
+                                      }
+                                }
+                              />
+                            </div>
+                          </Fieldset>
+                        </div>
+                      ),
+                    },
+                    {
+                      title: MONITORING_STEPS[3].title,
+                      key: MONITORING_STEP_KEYS.sakko,
+                      description: (
+                        <div
+                          id={getMonitoringStepId(MONITORING_STEP_KEYS.sakko)}
+                        >
+                          <Fieldset heading="">
+                            <div className="landuse-detail__table-wrapper">
+                              <Table
+                                className="landuse-detail__table landuse-detail__monitoring-table"
+                                cols={monitoringSakkoCols}
+                                indexKey="id"
+                                renderIndexCol={false}
+                                rows={monitoringSakkoTableRows}
+                                variant="light"
+                              />
+                            </div>
+                          </Fieldset>
+                        </div>
+                      ),
+                    },
+                  ]}
+                />
               </div>
             </form>
 
