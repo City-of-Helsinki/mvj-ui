@@ -578,7 +578,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
               <tr className="landuse-compensations-table__detail-row">
                 <td colSpan={10}>
                   <div
-                    className="landuse-compensations-table__detail-content landuse-compensations-table__detail-content--overflow-visible"
+                    className="landuse-compensations-table__detail-content"
                     aria-label={`Laskun ${invoice.invoiceNumber || index + 1} tiedot`}
                   >
                     <div className="landuse-grid landuse-grid__bottom-margin">
