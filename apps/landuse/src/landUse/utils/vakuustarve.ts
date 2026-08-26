@@ -1,6 +1,8 @@
 import { LandUseSite } from "../components/tabs/LandUseCompensations";
 import { parseLandUseNumericValue } from "./number";
 
+export const MINIMUM_HINTAERO = 250;
+
 export const getVakuustarveKerroinPercent = (sopimussakko: number): number => {
   if (sopimussakko <= 500) {
     return 100;
@@ -21,7 +23,6 @@ export const calculateHintaero = (
   perushinta: string | undefined,
   yksikkohinta: string | undefined,
 ): number | null => {
-  const MINIMUM_HINTAERO = 250;
   const perushintaValue = parseLandUseNumericValue(perushinta);
   const yksikkohintaValue = parseLandUseNumericValue(yksikkohinta);
 

@@ -25,6 +25,7 @@ import {
   calculateSopimussakko,
   calculateVakuustarve,
   getVakuustarveKerroinPercent,
+  MINIMUM_HINTAERO,
 } from "../../utils/vakuustarve";
 import { DEFAULT_KOROTUSKERROIN } from "../../constants";
 import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
@@ -87,7 +88,7 @@ const COLLATERAL_STEPS = [
   },
   {
     key: COLLATERAL_STEP_KEYS.vakuustarvekerroin,
-    title: "Vakuustarvekertoimen määräytyminen",
+    title: "Vakuustarpeen laskentaperusteet",
   },
 ] as const;
 
@@ -175,9 +176,6 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           { key: "kohteenTunnus", headerName: "Kohteen tunnus" },
           { key: "hallintamuoto", headerName: "Hallintamuoto" },
           { key: "kem2", headerName: "Kerrosala" },
-          { key: "hintaero", headerName: "Hintaero" },
-          { key: "sopimussakko", headerName: "Sopimussakko" },
-          { key: "kerroin", headerName: "Kerroin" },
           { key: "vakuustarve", headerName: "Vakuustarve" },
         ];
 
@@ -187,9 +185,6 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             kohteenTunnus: row.kohteenTunnus,
             hallintamuoto: row.hallintamuoto || "-",
             kem2: row.kem2 || "-",
-            hintaero: row.hintaero,
-            sopimussakko: row.sopimussakko,
-            kerroin: row.kerroin,
             vakuustarve: row.vakuustarve,
           }),
         );
@@ -211,29 +206,29 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               : "equal";
 
         const collateralsInfoCols = [
-          { key: "sopimussakko", headerName: "Sopimussakko" },
+          { key: "hintaero", headerName: "Hintaero * Korotuskerroin" },
           { key: "vakuustarvekerroin", headerName: "Vakuustarvekerroin" },
         ];
 
         const collateralsInfoRows = [
           {
             id: "info-1",
-            sopimussakko: "0 € / kem² - 500 € / kem²",
+            hintaero: "0 € / kem² - 500 € / kem²",
             vakuustarvekerroin: "100 %",
           },
           {
             id: "info-2",
-            sopimussakko: "501 € / kem² - 1000 € / kem²",
+            hintaero: "501 € / kem² - 1000 € / kem²",
             vakuustarvekerroin: "80 %",
           },
           {
             id: "info-3",
-            sopimussakko: "1001 € / kem² - 1500 € / kem²",
+            hintaero: "1001 € / kem² - 1500 € / kem²",
             vakuustarvekerroin: "70 %",
           },
           {
             id: "info-4",
-            sopimussakko: "1501 € / kem² -",
+            hintaero: "1501 € / kem² -",
             vakuustarvekerroin: "60 %",
           },
         ];
@@ -380,13 +375,27 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                           COLLATERAL_STEP_KEYS.vakuustarvekerroin,
                         )}
                       >
-                        <div className="landuse-detail__monitoring-info-layout">
+                        <div>
                           <p>
-                            Korotettu vakuustarve määräytyy sopimussakon
-                            mukaisesti alla olevien rajojen mukaan.
+                            Vakuustarve kullekin kohteelle lasketaan kaavalla:
+                          </p>
+                          <pre>
+                            <strong>
+                              Vakuustarve = Kerrosala * Korotuskerroin *
+                              Hintaero * Vakuustarvekerroin
+                            </strong>
+                          </pre>
+                          <p>Hintaero on suurempi seuraavista:</p>
+                          <pre>
+                            <strong>
+                              {`(Perushinta - Yksikköhinta), tai ${MINIMUM_HINTAERO}`}
+                            </strong>
+                          </pre>
+                          <p>
+                            Vakuustarvekerroin määräytyy hintaeron ja
+                            korotuskertoimen mukaisesti:
                           </p>
                           <Table
-                            className="landuse-detail__table landuse-detail__monitoring-info-table"
                             cols={collateralsInfoCols}
                             indexKey="id"
                             renderIndexCol={false}

@@ -53,34 +53,6 @@
   }
 }
 
-// -- Info layout -------------------------------------------------------------
-
-.landuse-detail__monitoring-info-layout {
-  display: grid;
-  grid-template-columns: minmax(260px, 1fr) minmax(320px, 1fr);
-  gap: hds.$spacing-m;
-
-  p {
-    margin: 0;
-  }
-
-  @include respond-to(laptop) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.landuse-detail__monitoring-info-title {
-  font-weight: 600;
-  margin-bottom: hds.$spacing-2-xs !important;
-}
-
-.landuse-detail__monitoring-info-table {
-  th,
-  td {
-    padding: hds.$spacing-2-xs hds.$spacing-xs;
-  }
-}
-
 // -- Actions & KEM2 badge ---------------------------------------------------
 
 .landuse-detail__monitoring-actions-cell {
