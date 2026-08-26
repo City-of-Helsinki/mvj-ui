@@ -852,7 +852,6 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                 <h1>Valvonta</h1>
 
                 <StepByStep
-                  numberedList
                   steps={[
                     {
                       title: MONITORING_STEPS[0].title,

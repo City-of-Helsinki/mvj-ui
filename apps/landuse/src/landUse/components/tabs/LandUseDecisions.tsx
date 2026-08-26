@@ -177,7 +177,6 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                     </div>
 
                     <StepByStep
-                      numberedList
                       steps={[
                         {
                           title: "Päätöksen tiedot",
