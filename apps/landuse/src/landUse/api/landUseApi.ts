@@ -1,5 +1,6 @@
 import type { LandUseCompensationsFormValues } from "../components/tabs/LandUseCompensations";
 import type { LandUseCollateralsFormValues } from "../components/tabs/LandUseCollaterals";
+import type { LandUseContractsFormValues } from "../components/tabs/LandUseContracts";
 import type { LandUseDecisionsFormValues } from "../components/tabs/LandUseDecisions";
 import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoicing";
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
@@ -168,6 +169,19 @@ export const updateDecisions = async (
   values: LandUseDecisionsFormValues,
 ): Promise<LandUseDecisionsFormValues> => {
   await setAgreementTab(agreementId, "decisions", values);
+  return values;
+};
+
+export const getContracts = async (
+  agreementId: string,
+): Promise<LandUseContractsFormValues | null> =>
+  getAgreementTab<LandUseContractsFormValues>(agreementId, "contracts");
+
+export const updateContracts = async (
+  agreementId: string,
+  values: LandUseContractsFormValues,
+): Promise<LandUseContractsFormValues> => {
+  await setAgreementTab(agreementId, "contracts", values);
   return values;
 };
 

@@ -5,6 +5,7 @@ export const LAND_USE_TAB_KEYS = [
   "collaterals",
   "monitoring",
   "decisions",
+  "contracts",
   "invoicing",
   "map",
 ] as const;
