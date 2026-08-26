@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
   ButtonVariant,
@@ -24,6 +24,7 @@ import {
   normalizeSelectValue,
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
+import { useTocEntries } from "../../hooks/useTableOfContents";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import { CollateralFormByType, type Guarantee } from "../collateralForms";
 import type { PartyEntry } from "./LandUseParties";
@@ -113,11 +114,38 @@ const getContractHeadingText = (contract: ContractItem): string => {
   return parts.join(" ") || "Sopimus";
 };
 
+const getContractHeadingId = (index: number): string =>
+  `contract-heading-${index}`;
+
 export const LandUseContracts: React.FC<LandUseContractsProps> = ({
   form,
   isEditMode,
   parties,
 }) => {
+  const [contracts, setContracts] = useState<ContractItem[]>(
+    () => form.getState().values.contracts ?? [],
+  );
+
+  useEffect(
+    () =>
+      form.subscribe((state) => setContracts(state.values.contracts ?? []), {
+        values: true,
+      }),
+    [form],
+  );
+
+  const tocEntries = useMemo(
+    () =>
+      contracts.map((contract, index) => ({
+        id: getContractHeadingId(index),
+        text: getContractHeadingText(contract),
+        level: 2,
+      })),
+    [contracts],
+  );
+
+  useTocEntries(tocEntries);
+
   const partyOptions = parties.map((entry) => ({
     label: entry.party.details.name,
     value: entry.party.details.name,
@@ -154,7 +182,9 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                     key={`contract-${contractIndex}`}
                   >
                     <div className="landuse-detail__heading-with-delete">
-                      <h3>{getContractHeadingText(contract)}</h3>
+                      <h2 id={getContractHeadingId(contractIndex)}>
+                        {getContractHeadingText(contract)}
+                      </h2>
                       {isEditMode && (
                         <ConfirmDeleteButton
                           id={`contract-delete-${contractIndex}`}
