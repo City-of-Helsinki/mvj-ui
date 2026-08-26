@@ -15,6 +15,18 @@ interface TableOfContentsContextValue {
 const TableOfContentsContext =
   createContext<TableOfContentsContextValue | null>(null);
 
+// HDS applies a build-specific suffix to this CSS module class.
+const STEP_BY_STEP_ITEM_SELECTOR =
+  'li[class*="hds-step-by-step__step-item"]';
+
+/**
+ * Explicit TOC targets inside StepByStep descriptions sit below their visible
+ * step titles. Scroll the enclosing step into view so the title is not hidden
+ * above the viewport; other targets are used as-is.
+ */
+export const getTocScrollTarget = (target: HTMLElement): HTMLElement =>
+  target.closest<HTMLElement>(STEP_BY_STEP_ITEM_SELECTOR) ?? target;
+
 /**
  * Exposes a setter so the currently mounted tab can publish its table of
  * contents. Tabs derive their own entries via the hooks below, so neither the
