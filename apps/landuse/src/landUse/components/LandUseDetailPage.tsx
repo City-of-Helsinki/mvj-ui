@@ -9,7 +9,10 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { Breadcrumb } from "hds-react";
 import { SideNavigation } from "./SideNavigation";
 import type { SideNavigationTab, SectionEntry } from "./SideNavigation";
-import { TableOfContentsProvider } from "../hooks/useTableOfContents";
+import {
+  getTocScrollTarget,
+  TableOfContentsProvider,
+} from "../hooks/useTableOfContents";
 import { createForm } from "final-form";
 import arrayMutators from "final-form-arrays";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -875,7 +878,10 @@ const LandUseDetailPage: React.FC = () => {
   const handleTocClick = useCallback((id: string) => {
     const target = document.getElementById(id);
     if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      getTocScrollTarget(target).scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
       setActiveSectionId(id);
     }
   }, []);
