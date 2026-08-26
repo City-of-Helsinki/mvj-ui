@@ -9,6 +9,7 @@ import {
 } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Form, Field } from "react-final-form";
+import createDecorator from "final-form-calculate";
 import LandUseDetailPage from "../LandUseDetailPage";
 import * as landUseApi from "../../api/landUseApi";
 import { LAND_USE_NEGOTIATION_PHASES } from "../../options";
@@ -49,29 +50,60 @@ vi.mock("../tabs/LandUseSummary", () => ({
 }));
 
 vi.mock("../tabs/LandUseCompensations", () => ({
+  calculateMaankayttokorvausYhteensa: (values: Record<string, string>) =>
+    (
+      Number(values.rahakorvaus ?? 0) +
+      Number(values.maakorvaus ?? 0) +
+      Number(values.muuKorvaus ?? 0)
+    ).toString(),
   LandUseCompensations: ({
     form,
     isEditMode,
   }: {
     form: any;
     isEditMode: boolean;
-  }) => (
-    <Form
-      form={form}
-      onSubmit={() => {}}
-      render={() => (
-        <Field name="compensationsField">
-          {({ input }) => (
-            <input
-              aria-label="compensations-input"
-              {...input}
-              disabled={!isEditMode}
+  }) => {
+    const decorator = createDecorator({
+      field: /^(rahakorvaus|maakorvaus|muuKorvaus)$/,
+      updates: {
+        maankayttokorvausYhteensa: (_value, allValues) =>
+          (
+            Number(allValues.rahakorvaus ?? 0) +
+            Number(allValues.maakorvaus ?? 0) +
+            Number(allValues.muuKorvaus ?? 0)
+          ).toString(),
+      },
+    });
+
+    return (
+      <Form
+        form={form}
+        onSubmit={() => {}}
+        decorators={[decorator]}
+        render={() => (
+          <>
+            <Field name="compensationsField">
+              {({ input }) => (
+                <input
+                  aria-label="compensations-input"
+                  {...input}
+                  disabled={!isEditMode}
+                />
+              )}
+            </Field>
+            <Field name="rahakorvaus" component="input" type="hidden" />
+            <Field name="maakorvaus" component="input" type="hidden" />
+            <Field name="muuKorvaus" component="input" type="hidden" />
+            <Field
+              name="maankayttokorvausYhteensa"
+              component="input"
+              type="hidden"
             />
-          )}
-        </Field>
-      )}
-    />
-  ),
+          </>
+        )}
+      />
+    );
+  },
 }));
 
 vi.mock("../tabs/LandUseParties", () => ({
@@ -380,7 +412,12 @@ describe("LandUseDetailPage", () => {
       { identifier: "LU-1" },
     ] as any);
     vi.mocked(landUseApi.getParties).mockResolvedValue({} as any);
-    vi.mocked(landUseApi.getCompensations).mockResolvedValue({} as any);
+    vi.mocked(landUseApi.getCompensations).mockResolvedValue({
+      rahakorvaus: "100",
+      maakorvaus: "200",
+      muuKorvaus: "300",
+      maankayttokorvausYhteensa: "stale-value",
+    } as any);
     vi.mocked(landUseApi.getCollaterals).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getMonitoring).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getDecisions).mockResolvedValue({} as any);
@@ -480,6 +517,39 @@ describe("LandUseDetailPage", () => {
       "LU-1",
       expect.objectContaining({ compensationsField: "compensations-updated" }),
     );
+  });
+
+  it("does not dirty compensations when its calculated total initializes", async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <LandUseDetailPage />
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(landUseApi.getCompensations).toHaveBeenCalled();
+    });
+
+    fireEvent.click(screen.getByRole("tab", { name: /Korvaukset/i }));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("compensations-input")).toBeDefined();
+    });
+
+    fireEvent.click(screen.getByRole("tab", { name: /Perustiedot/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Muokkaa" }));
+    fireEvent.click(screen.getByRole("button", { name: "Tallenna" }));
+
+    await waitFor(() => {
+      expect(landUseApi.updateCompensations).not.toHaveBeenCalled();
+    });
   });
 
   it("opens the tab from query parameter on initial render", async () => {
