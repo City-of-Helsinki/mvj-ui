@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { FormApi } from "final-form";
 import {
   Button,
   ButtonVariant,
@@ -10,9 +10,9 @@ import {
   TextArea,
   TextInput,
 } from "hds-react";
-import { Form } from "react-final-form";
-import { Field } from "react-final-form";
-import { FormApi } from "final-form";
+import React, { useEffect, useMemo, useState } from "react";
+import { Field, Form } from "react-final-form";
+import { useTocEntries } from "../../hooks/useTableOfContents";
 import {
   landUseAgreementTypeOptions,
   landUseDecisionTypeOptions,
@@ -24,7 +24,6 @@ import {
   normalizeSelectValue,
   readOnlyTextValue,
 } from "../../utils/fieldUtils";
-import { useTocEntries } from "../../hooks/useTableOfContents";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import { CollateralFormByType, type Guarantee } from "../collateralForms";
 import type { PartyEntry } from "./LandUseParties";

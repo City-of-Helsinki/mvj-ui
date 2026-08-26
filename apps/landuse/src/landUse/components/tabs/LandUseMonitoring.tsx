@@ -1,35 +1,13 @@
-import React, { useMemo } from "react";
-import {
-  Button,
-  ButtonVariant,
-  Dialog,
-  Fieldset,
-  IconArrowBottomRight,
-  IconAngleLeft,
-  IconAngleRight,
-  IconAlertCircle,
-  IconCheck,
-  IconPen,
-  IconPlusCircleFill,
-  IconSitemap,
-  IconSize,
-  NumberInput,
-  Select,
-  StepByStep,
-  Table,
-  TextInput,
-} from "hds-react";
-import { Form } from "react-final-form";
-import { Field } from "react-final-form";
-import { FormApi } from "final-form";
+import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 import type { FormKey } from "@/landUse/components/LandUseDetailPage";
+import type { LandUseSite } from "@/landUse/components/tabs/LandUseCompensations";
+import { INITIAL_SAKKOKERROIN } from "@/landUse/constants";
+import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
+import { landUseCompensationSelectOptions } from "@/landUse/options";
 import {
   filterOptionsByValues,
   normalizeSelectValue,
 } from "@/landUse/utils/fieldUtils";
-import { landUseCompensationSelectOptions } from "@/landUse/options";
-import type { LandUseSite } from "@/landUse/components/tabs/LandUseCompensations";
-import { INITIAL_SAKKOKERROIN } from "@/landUse/constants";
 import {
   formatLandUseEuroDisplayValue,
   formatLandUseEuroValue,
@@ -44,8 +22,29 @@ import {
   calculateVakuustarve,
   getVakuustarveKerroinPercent,
 } from "@/landUse/utils/vakuustarve";
-import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
-import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
+import { FormApi } from "final-form";
+import {
+  Button,
+  ButtonVariant,
+  Dialog,
+  Fieldset,
+  IconAlertCircle,
+  IconAngleLeft,
+  IconAngleRight,
+  IconArrowBottomRight,
+  IconCheck,
+  IconPen,
+  IconPlusCircleFill,
+  IconSitemap,
+  IconSize,
+  NumberInput,
+  Select,
+  StepByStep,
+  Table,
+  TextInput,
+} from "hds-react";
+import React, { useMemo } from "react";
+import { Field, Form } from "react-final-form";
 
 interface PerustietotaulukkoRowValues {
   yksikkohinta: string;

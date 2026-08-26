@@ -1,34 +1,34 @@
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  TextInput,
-  RadioButton,
-  SelectionGroup,
-  Checkbox,
-  Select,
-  Button,
-  ButtonVariant,
-  IconPlusCircleFill,
-  Fieldset,
-  DateInput,
-  StepByStep,
-} from "hds-react";
-import { Form, Field } from "react-final-form";
-import { FieldArray } from "react-final-form-arrays";
 import { FormApi } from "final-form";
 import {
-  getFieldTextValue,
-  normalizeSelectValue,
-  readOnlyTextValue,
-} from "../../utils/fieldUtils";
+  Button,
+  ButtonVariant,
+  Checkbox,
+  DateInput,
+  Fieldset,
+  IconPlusCircleFill,
+  RadioButton,
+  Select,
+  SelectionGroup,
+  StepByStep,
+  TextInput,
+} from "hds-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Field, Form } from "react-final-form";
+import { FieldArray } from "react-final-form-arrays";
 import { getAsemakaavat } from "../../api/landUseApi";
 import { useTocEntries } from "../../hooks/useTableOfContents";
-import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import {
   type AsemakaavaListItem,
   landUseDecisionMakerOptions,
   landUseKohdeSelectOptions,
   landUseNegotiationPhaseOptions,
 } from "../../options";
+import {
+  getFieldTextValue,
+  normalizeSelectValue,
+  readOnlyTextValue,
+} from "../../utils/fieldUtils";
+import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 
 interface ValmistelijaEntry {
   value: string | undefined;

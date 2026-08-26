@@ -1,21 +1,22 @@
-import React, { useMemo } from "react";
+import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
+import { FormApi } from "final-form";
 import {
   Fieldset,
   IconAngleLeft,
   IconAngleRight,
+  IconSize,
   NumberInput,
   StepByStep,
   Table,
   TextInput,
-  IconSize,
 } from "hds-react";
-import { Form } from "react-final-form";
-import { Field } from "react-final-form";
-import { FormApi } from "final-form";
-import type { LandUseSite } from "./LandUseCompensations";
+import React, { useMemo } from "react";
+import { Field, Form } from "react-final-form";
+import { DEFAULT_KOROTUSKERROIN } from "../../constants";
+import { useTocEntries } from "../../hooks/useTableOfContents";
 import {
-  formatLandUseEuroValue,
   formatLandUseDecimalValue,
+  formatLandUseEuroValue,
   formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
 } from "../../utils/number";
@@ -27,9 +28,7 @@ import {
   getVakuustarveKerroinPercent,
   MINIMUM_HINTAERO,
 } from "../../utils/vakuustarve";
-import { DEFAULT_KOROTUSKERROIN } from "../../constants";
-import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
-import { useTocEntries } from "../../hooks/useTableOfContents";
+import type { LandUseSite } from "./LandUseCompensations";
 
 export interface LandUseCollateralsFormValues {
   korotuskerroin?: string | number;

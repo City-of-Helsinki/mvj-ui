@@ -1,31 +1,31 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  TextInput,
-  TextArea,
-  Select,
-  Button,
-  ButtonVariant,
-  IconPlusCircleFill,
-  Fieldset,
-  StepByStep,
-} from "hds-react";
-import { Form, Field } from "react-final-form";
-import { FieldArray } from "react-final-form-arrays";
 import { FormApi } from "final-form";
 import {
-  getFieldTextValue,
-  normalizeSelectValue,
-  getOptionsDisplayValue,
-} from "../../utils/fieldUtils";
+  Button,
+  ButtonVariant,
+  Fieldset,
+  IconPlusCircleFill,
+  Select,
+  StepByStep,
+  TextArea,
+  TextInput,
+} from "hds-react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Field, Form } from "react-final-form";
+import { FieldArray } from "react-final-form-arrays";
 import { createEmptyPartyEntry } from "../../api/landUseFormValues";
 import { useTocEntries } from "../../hooks/useTableOfContents";
-import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import {
+  countryOptions,
+  languageOptions,
   partyRoleOptions,
   partyTypeOptions,
-  languageOptions,
-  countryOptions,
 } from "../../options";
+import {
+  getFieldTextValue,
+  getOptionsDisplayValue,
+  normalizeSelectValue,
+} from "../../utils/fieldUtils";
+import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 export interface BasePartyDetails {
   partyRole: string | undefined;
   partyType: string | undefined;
