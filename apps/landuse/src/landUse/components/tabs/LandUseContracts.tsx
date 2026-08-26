@@ -107,11 +107,7 @@ const createNewContract = (): ContractItem => ({
 });
 
 const getContractHeadingText = (contract: ContractItem): string => {
-  const parts = [contract.sopimuksenTyyppi, contract.sopimusnumero]
-    .map((part) => part?.trim())
-    .filter((part): part is string => Boolean(part));
-
-  return parts.join(" ") || "Sopimus";
+  return contract.sopimusnumero ?? "Sopimus";
 };
 
 const getContractHeadingId = (index: number): string =>
