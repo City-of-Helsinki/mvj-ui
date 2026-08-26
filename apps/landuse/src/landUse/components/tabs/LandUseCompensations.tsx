@@ -80,6 +80,7 @@ interface LandUseCompensationsProps {
 const COMPENSATION_STEP_KEYS = {
   maankayttokorvaus: "maankayttokorvaus",
   laskelma: "laskelma",
+  kohteet: "kohteet",
   laskuri: "laskuri",
   yleisetAlueet: "yleiset-alueet",
 } as const;
@@ -92,6 +93,10 @@ const COMPENSATION_STEPS = [
   {
     key: COMPENSATION_STEP_KEYS.laskelma,
     title: "Maankäyttökorvauksen laskelma",
+  },
+  {
+    key: COMPENSATION_STEP_KEYS.kohteet,
+    title: "Kohteet",
   },
   {
     key: COMPENSATION_STEP_KEYS.laskuri,
@@ -298,10 +303,8 @@ const SiteRow: React.FC<SiteRowProps> = ({
             ? site.hallintamuoto.join(", ")
             : "-"}
         </td>
-        <td>{site.suojeltu ?? "-"}</td>
         <td>{formatLandUseNumericValueWithUnit(pintaAlaM2, "m²")}</td>
         <td>{formatLandUseNumericValueWithUnit(kerrosala, "kem²")}</td>
-        <td>{formatLandUseNumericValueWithUnit(yksikkohinta, "€/kem²")}</td>
         <td>{formatLandUseEuroValue(summa)}</td>
         <td>{site.amVelvoite ? "Kyllä" : "Ei"}</td>
       </tr>
@@ -313,7 +316,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
               aria-label={`Kohteen ${site.kohteenTunnus} tiedot`}
             >
               <div className="landuse-grid">
-                <div className="landuse-grid__column-3">
+                <div className="landuse-grid__column-4">
                   <Field name={`sites.${siteIndex}.kohteenTunnus`}>
                     {({ input }) =>
                       !isEditMode ? (
@@ -335,7 +338,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-grid__column-3">
+                <div className="landuse-grid__column-4">
                   <Field name={`sites.${siteIndex}.kayttotarkoitus`}>
                     {({ input }) =>
                       !isEditMode ? (
@@ -363,7 +366,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-grid__column-3">
+                <div className="landuse-grid__column-4">
                   <Field name={`sites.${siteIndex}.hallintamuoto`}>
                     {({ input }) =>
                       !isEditMode ? (
@@ -399,7 +402,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-grid__column-3">
+                <div className="landuse-grid__column-4">
                   <Field name={`sites.${siteIndex}.suojeltu`}>
                     {({ input }) =>
                       !isEditMode ? (
@@ -427,7 +430,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-grid__column-3">
+                <div className="landuse-grid__column-4">
                   <Field name={`sites.${siteIndex}.pintaAlaM2`}>
                     {({ input }) => (
                       <NumericDecimalInput
@@ -441,7 +444,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-grid__column-3">
+                <div className="landuse-grid__column-4">
                   <Field name={`sites.${siteIndex}.kem2`}>
                     {({ input }) => (
                       <NumericDecimalInput
@@ -455,7 +458,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-grid__column-3">
+                <div className="landuse-grid__column-4">
                   <Field name={getRowFieldPath(site.id, "yksikkohinta")}>
                     {({ input }) => (
                       <NumericDecimalInput
@@ -469,7 +472,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                   </Field>
                 </div>
 
-                <div className="landuse-grid__column-3">
+                <div className="landuse-grid__column-4">
                   <Field name={`sites.${siteIndex}.amVelvoite`}>
                     {({ input }) =>
                       !isEditMode ? (
@@ -774,6 +777,80 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           </Fieldset>
         );
 
+        const kohteetStep = (
+          <>
+            <div className="landuse-compensations-table-scroll">
+              <table className="landuse-compensations-table">
+                <thead>
+                  <tr>
+                    <th className="landuse-compensations-table__toggle-cell" />
+                    <th>Kohde</th>
+                    <th>Käyttötarkoitus</th>
+                    <th>Hallintamuoto</th>
+                    <th>Pinta-ala</th>
+                    <th>Kerrosala</th>
+                    <th>Summa</th>
+                    <th>Velvoite</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sites.map((site, index) => (
+                    <SiteRow
+                      key={site.id}
+                      site={site}
+                      siteIndex={index}
+                      rowValues={rowsBySiteId[site.id]}
+                      isEditMode={isEditMode}
+                      onRemove={handleRemoveSite}
+                      onToggle={handleToggleSite}
+                      isOpen={site.id === openSiteId}
+                      colCount={10}
+                    />
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td />
+                    <td>
+                      <strong>Yhteensä</strong>
+                    </td>
+                    <td />
+                    <td />
+                    <td>
+                      <strong>
+                        {formatLandUseNumericValueWithUnit(
+                          totals.pintaAlaM2,
+                          "m²",
+                        )}
+                      </strong>
+                    </td>
+                    <td>
+                      <strong>
+                        {formatLandUseNumericValueWithUnit(totals.kem2, "kem²")}
+                      </strong>
+                    </td>
+                    <td>
+                      <strong>{formatLandUseEuroValue(totals.summa)}</strong>
+                    </td>
+                    <td />
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <div>
+              <Button
+                type="button"
+                variant={ButtonVariant.Supplementary}
+                iconStart={<IconPlusCircleFill />}
+                disabled={!isEditMode}
+                onClick={handleAddSite}
+              >
+                Lisää kohde
+              </Button>
+            </div>
+          </>
+        );
+
         const laskuriStep = (
           <Fieldset heading="" className="full-width">
             <div className="landuse-grid">
@@ -943,6 +1020,19 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   },
                   {
                     title: COMPENSATION_STEPS[2].title,
+                    key: COMPENSATION_STEP_KEYS.kohteet,
+                    description: (
+                      <div
+                        id={getCompensationStepId(
+                          COMPENSATION_STEP_KEYS.kohteet,
+                        )}
+                      >
+                        {kohteetStep}
+                      </div>
+                    ),
+                  },
+                  {
+                    title: COMPENSATION_STEPS[3].title,
                     key: COMPENSATION_STEP_KEYS.laskuri,
                     description: (
                       <div
@@ -955,7 +1045,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                     ),
                   },
                   {
-                    title: COMPENSATION_STEPS[3].title,
+                    title: COMPENSATION_STEPS[4].title,
                     key: COMPENSATION_STEP_KEYS.yleisetAlueet,
                     description: (
                       <div
@@ -969,85 +1059,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   },
                 ]}
               />
-
-              <h2 id={KOHTEET_SECTION_ID}>Kohteet</h2>
-
-              <div className="landuse-compensations-table-scroll">
-                <table className="landuse-compensations-table">
-                  <thead>
-                    <tr>
-                      <th className="landuse-compensations-table__toggle-cell" />
-                      <th>Kohde</th>
-                      <th>Käyttötarkoitus</th>
-                      <th>Hallintamuoto</th>
-                      <th>Suojeltu</th>
-                      <th>Pinta-ala</th>
-                      <th>Kerrosala</th>
-                      <th>Yksikköhinta</th>
-                      <th>Summa</th>
-                      <th>AM-velvoite</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sites.map((site, index) => (
-                      <SiteRow
-                        key={site.id}
-                        site={site}
-                        siteIndex={index}
-                        rowValues={rowsBySiteId[site.id]}
-                        isEditMode={isEditMode}
-                        onRemove={handleRemoveSite}
-                        onToggle={handleToggleSite}
-                        isOpen={site.id === openSiteId}
-                        colCount={10}
-                      />
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td />
-                      <td>
-                        <strong>Yhteensä</strong>
-                      </td>
-                      <td />
-                      <td />
-                      <td />
-                      <td>
-                        <strong>
-                          {formatLandUseNumericValueWithUnit(
-                            totals.pintaAlaM2,
-                            "m²",
-                          )}
-                        </strong>
-                      </td>
-                      <td>
-                        <strong>
-                          {formatLandUseNumericValueWithUnit(
-                            totals.kem2,
-                            "kem²",
-                          )}
-                        </strong>
-                      </td>
-                      <td />
-                      <td>
-                        <strong>{formatLandUseEuroValue(totals.summa)}</strong>
-                      </td>
-                      <td />
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-              <div>
-                <Button
-                  type="button"
-                  variant={ButtonVariant.Supplementary}
-                  iconStart={<IconPlusCircleFill />}
-                  disabled={!isEditMode}
-                  onClick={handleAddSite}
-                >
-                  Lisää kohde
-                </Button>
-              </div>
             </div>
           </form>
         );
