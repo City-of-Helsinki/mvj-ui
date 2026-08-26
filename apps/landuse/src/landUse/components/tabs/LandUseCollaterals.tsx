@@ -4,7 +4,7 @@ import {
   IconAngleLeft,
   IconAngleRight,
   NumberInput,
-  Notification,
+  StepByStep,
   Table,
   TextInput,
   IconSize,
@@ -70,10 +70,28 @@ const formatSiteHallintamuoto = (
 const getKorotuskerroinValue = (value: string | number | undefined): number =>
   parseLandUseNumericValue(value) ?? DEFAULT_KOROTUSKERROIN;
 
-const COLLATERALS_VAKUUSLASKURI_HEADING_ID =
-  "collaterals-section-vakuuslaskuri";
-const COLLATERALS_KOKONAISVAKUUSTARVE_HEADING_ID =
-  "collaterals-section-kokonaisvakuustarve";
+const COLLATERAL_STEP_KEYS = {
+  vakuuslaskuri: "vakuuslaskuri",
+  kokonaisvakuustarve: "kokonaisvakuustarve",
+  vakuustarvekerroin: "vakuustarvekerroin",
+} as const;
+
+const COLLATERAL_STEPS = [
+  {
+    key: COLLATERAL_STEP_KEYS.vakuuslaskuri,
+    title: "Vakuuslaskuri",
+  },
+  {
+    key: COLLATERAL_STEP_KEYS.kokonaisvakuustarve,
+    title: "Kokonaisvakuustarve",
+  },
+  {
+    key: COLLATERAL_STEP_KEYS.vakuustarvekerroin,
+    title: "Vakuustarvekertoimen määräytyminen",
+  },
+] as const;
+
+const getCollateralStepId = (key: string): string => `collaterals-step-${key}`;
 
 export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   form,
@@ -84,18 +102,12 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   maankayttokorvausYhteensa,
 }) => {
   const tocEntries = useMemo(
-    () => [
-      {
-        id: COLLATERALS_VAKUUSLASKURI_HEADING_ID,
-        text: "Vakuuslaskuri",
+    () =>
+      COLLATERAL_STEPS.map((step) => ({
+        id: getCollateralStepId(step.key),
+        text: step.title,
         level: 2,
-      },
-      {
-        id: COLLATERALS_KOKONAISVAKUUSTARVE_HEADING_ID,
-        text: "Kokonaisvakuustarve",
-        level: 2,
-      },
-    ],
+      })),
     [],
   );
 
@@ -231,144 +243,162 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
             <div className="landuse-detail__content">
               <h1>Vakuustarve</h1>
 
-              <h2 id={COLLATERALS_VAKUUSLASKURI_HEADING_ID}>Vakuuslaskuri</h2>
-              <Fieldset
-                heading=""
-                className="landuse-detail__fieldset--with-margin"
-              >
-                <div className="landuse-grid">
-                  <div className="landuse-grid__column-3">
-                    <Field name="korotuskerroin">
-                      {({ input }) => {
-                        const korotuskerroinValue = getKorotuskerroinValue(
-                          input.value,
-                        );
+              <StepByStep
+                numberedList
+                steps={[
+                  {
+                    title: COLLATERAL_STEPS[0].title,
+                    key: COLLATERAL_STEP_KEYS.vakuuslaskuri,
+                    description: (
+                      <div
+                        id={getCollateralStepId(
+                          COLLATERAL_STEP_KEYS.vakuuslaskuri,
+                        )}
+                      >
+                        <Fieldset
+                          heading=""
+                          className="landuse-detail__fieldset--with-margin"
+                        >
+                          <div className="landuse-grid">
+                            <div className="landuse-grid__column-3">
+                              <Field name="korotuskerroin">
+                                {({ input }) => {
+                                  const korotuskerroinValue =
+                                    getKorotuskerroinValue(input.value);
 
-                        return (
-                          <>
-                            {isEditMode ? (
-                              <NumberInput
-                                id="collaterals-korotuskerroin"
-                                label="Korotuskerroin"
-                                min={1}
-                                max={2}
-                                step={0.05}
-                                value={korotuskerroinValue}
-                                onChange={input.onChange}
-                              />
-                            ) : (
-                              <TextInput
-                                id="collaterals-korotuskerroin"
-                                label="Korotuskerroin"
-                                value={formatLandUseDecimalValue(
-                                  korotuskerroinValue,
-                                )}
-                                readOnly
-                              />
-                            )}
-                          </>
-                        );
-                      }}
-                    </Field>
-                  </div>
-                </div>
-                <div className="landuse-detail__table-wrapper">
-                  <Table
-                    className="landuse-detail__table landuse-detail__monitoring-table"
-                    cols={collateralsVakuuslaskuriCols}
-                    indexKey="id"
-                    renderIndexCol={false}
-                    rows={collateralsVakuuslaskuriTableRows}
-                    variant="light"
-                  />
-                </div>
-              </Fieldset>
-
-              <h2 id={COLLATERALS_KOKONAISVAKUUSTARVE_HEADING_ID}>
-                Kokonaisvakuustarve
-              </h2>
-              <Fieldset
-                heading=""
-                className="landuse-detail__fieldset--with-margin"
-              >
-                <div className="landuse-grid">
-                  <div className="landuse-grid__column-2">
-                    <NumericDecimalInput
-                      id="collaterals-sopimuksen-mukainen"
-                      label="Maankäyttökorvaus"
-                      value={sopimuksenMukainenValue}
-                      isEditMode={false}
-                      unit="€"
-                      style={
-                        totalCollateralSeparatorDirection === "left"
-                          ? {
-                              border: "4px solid var(--color-success)",
-                              padding: "var(--spacing-2-xs)",
-                            }
-                          : {
-                              padding: "var(--spacing-2-xs)",
-                            }
-                      }
-                    />
-                  </div>
-
-                  <div className="landuse-grid__column-1">
-                    <span
-                      className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${totalCollateralSeparatorDirection}`}
-                      aria-hidden="true"
-                    >
-                      {totalCollateralSeparatorDirection === "right" ? (
-                        <IconAngleLeft size={IconSize.ExtraLarge} />
-                      ) : (
-                        <IconAngleRight size={IconSize.ExtraLarge} />
-                      )}
-                    </span>
-                  </div>
-
-                  <div className="landuse-grid__column-2">
-                    <NumericDecimalInput
-                      id="collaterals-saantelyn-mukainen"
-                      label="Asumismuotoehdot"
-                      value={saantelynMukainenValue}
-                      isEditMode={false}
-                      unit="€"
-                      style={
-                        totalCollateralSeparatorDirection === "right"
-                          ? {
-                              border: "4px solid var(--color-success)",
-                              padding: "var(--spacing-2-xs)",
-                            }
-                          : {
-                              padding: "var(--spacing-2-xs)",
-                            }
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="landuse-detail__notification-info-wrapper">
-                  <Notification
-                    type="info"
-                    position="inline"
-                    label="Vakuustarvekertoimen määräytyminen"
-                  >
-                    <div className="landuse-detail__monitoring-info-layout">
-                      <p>
-                        Korotettu vakuustarve määräytyy sopimussakon mukaisesti
-                        alla olevien rajojen mukaan.
-                      </p>
-                      <Table
-                        className="landuse-detail__table landuse-detail__monitoring-info-table"
-                        cols={collateralsInfoCols}
-                        indexKey="id"
-                        renderIndexCol={false}
-                        rows={collateralsInfoRows}
-                        variant="light"
-                      />
-                    </div>
-                  </Notification>
-                </div>
-              </Fieldset>
+                                  return (
+                                    <>
+                                      {isEditMode ? (
+                                        <NumberInput
+                                          id="collaterals-korotuskerroin"
+                                          label="Korotuskerroin"
+                                          min={1}
+                                          max={2}
+                                          step={0.05}
+                                          value={korotuskerroinValue}
+                                          onChange={input.onChange}
+                                        />
+                                      ) : (
+                                        <TextInput
+                                          id="collaterals-korotuskerroin"
+                                          label="Korotuskerroin"
+                                          value={formatLandUseDecimalValue(
+                                            korotuskerroinValue,
+                                          )}
+                                          readOnly
+                                        />
+                                      )}
+                                    </>
+                                  );
+                                }}
+                              </Field>
+                            </div>
+                          </div>
+                          <div className="landuse-detail__table-wrapper">
+                            <Table
+                              className="landuse-detail__table landuse-detail__monitoring-table"
+                              cols={collateralsVakuuslaskuriCols}
+                              indexKey="id"
+                              renderIndexCol={false}
+                              rows={collateralsVakuuslaskuriTableRows}
+                              variant="light"
+                            />
+                          </div>
+                        </Fieldset>
+                      </div>
+                    ),
+                  },
+                  {
+                    title: COLLATERAL_STEPS[1].title,
+                    key: COLLATERAL_STEP_KEYS.kokonaisvakuustarve,
+                    description: (
+                      <div
+                        id={getCollateralStepId(
+                          COLLATERAL_STEP_KEYS.kokonaisvakuustarve,
+                        )}
+                      >
+                        <Fieldset
+                          heading=""
+                          className="landuse-detail__fieldset--with-margin"
+                        >
+                          <div className="landuse-grid">
+                            <NumericDecimalInput
+                              id="collaterals-sopimuksen-mukainen"
+                              label="Maankäyttökorvaus"
+                              value={sopimuksenMukainenValue}
+                              isEditMode={false}
+                              unit="€"
+                              style={
+                                totalCollateralSeparatorDirection === "left"
+                                  ? {
+                                      border: "4px solid var(--color-success)",
+                                      padding: "var(--spacing-2-xs)",
+                                    }
+                                  : {
+                                      padding: "var(--spacing-2-xs)",
+                                    }
+                              }
+                            />
+                            <span
+                              className={`landuse-detail__monitoring-collateral-separator landuse-detail__monitoring-collateral-separator--${totalCollateralSeparatorDirection}`}
+                              aria-hidden="true"
+                            >
+                              {totalCollateralSeparatorDirection === "right" ? (
+                                <IconAngleLeft size={IconSize.ExtraLarge} />
+                              ) : (
+                                <IconAngleRight size={IconSize.ExtraLarge} />
+                              )}
+                            </span>
+                            <NumericDecimalInput
+                              id="collaterals-saantelyn-mukainen"
+                              label="Asumismuotoehdot"
+                              value={saantelynMukainenValue}
+                              isEditMode={false}
+                              unit="€"
+                              style={
+                                totalCollateralSeparatorDirection === "right"
+                                  ? {
+                                      border: "4px solid var(--color-success)",
+                                      padding: "var(--spacing-2-xs)",
+                                    }
+                                  : {
+                                      padding: "var(--spacing-2-xs)",
+                                    }
+                              }
+                            />
+                          </div>
+                        </Fieldset>
+                      </div>
+                    ),
+                  },
+                  {
+                    title: COLLATERAL_STEPS[2].title,
+                    key: COLLATERAL_STEP_KEYS.vakuustarvekerroin,
+                    description: (
+                      <div
+                        id={getCollateralStepId(
+                          COLLATERAL_STEP_KEYS.vakuustarvekerroin,
+                        )}
+                      >
+                        <div className="landuse-detail__monitoring-info-layout">
+                          <p>
+                            Korotettu vakuustarve määräytyy sopimussakon
+                            mukaisesti alla olevien rajojen mukaan.
+                          </p>
+                          <Table
+                            className="landuse-detail__table landuse-detail__monitoring-info-table"
+                            cols={collateralsInfoCols}
+                            indexKey="id"
+                            renderIndexCol={false}
+                            rows={collateralsInfoRows}
+                            variant="light"
+                          />
+                        </div>
+                      </div>
+                    ),
+                  },
+                ]}
+              />
             </div>
           </form>
         );
