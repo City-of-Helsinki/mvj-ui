@@ -200,7 +200,6 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
           <div className="landuse-detail__content">
             <h1>Perustiedot</h1>
             <StepByStep
-              numberedList
               steps={[
                 {
                   title: SUMMARY_STEPS[0].title,

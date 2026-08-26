@@ -566,7 +566,6 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                           </div>
 
                           <StepByStep
-                            numberedList
                             steps={[
                               {
                                 title: "Sopimusosapuoli",

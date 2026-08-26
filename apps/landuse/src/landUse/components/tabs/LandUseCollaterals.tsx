@@ -239,7 +239,6 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
               <h1>Vakuustarve</h1>
 
               <StepByStep
-                numberedList
                 steps={[
                   {
                     title: COLLATERAL_STEPS[0].title,

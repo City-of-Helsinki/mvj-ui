@@ -995,7 +995,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
               <h1>Korvaukset</h1>
 
               <StepByStep
-                numberedList
                 steps={[
                   {
                     title: COMPENSATION_STEPS[0].title,

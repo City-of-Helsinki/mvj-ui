@@ -204,7 +204,6 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                     </div>
 
                     <StepByStep
-                      numberedList
                       steps={[
                         {
                           title: "Sopimuksen tiedot",
