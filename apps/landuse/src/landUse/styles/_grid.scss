@@ -33,6 +33,10 @@
   @include responsive-grid(12);
 }
 
+.landuse-grid--compact-spacing {
+  @include responsive-grid(12, hds.$spacing-2-xs);
+}
+
 .landuse-grid__bottom-margin {
   margin-bottom: hds.$spacing-m;
 }

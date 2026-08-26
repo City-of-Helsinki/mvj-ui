@@ -321,7 +321,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
               className="landuse-compensations-table__detail-content"
               aria-label={`Kohteen ${site.kohteenTunnus} tiedot`}
             >
-              <div className="landuse-grid">
+              <div className="landuse-grid--compact-spacing">
                 <div className="landuse-grid__column-4">
                   <Field name={`sites.${siteIndex}.kohteenTunnus`}>
                     {({ input }) =>
