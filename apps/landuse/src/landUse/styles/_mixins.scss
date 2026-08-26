@@ -55,7 +55,7 @@
 
 // -- Responsive grid ---------------------------------------------------------
 // The 4→2→1 column pattern used throughout detail pages.
-@mixin responsive-grid($cols: 12, $gap: hds.$spacing-m) {
+@mixin responsive-grid($cols: 12, $gap: hds.$spacing-2-xs) {
   display: grid;
   grid-template-columns: repeat($cols, 1fr);
   gap: $gap;
