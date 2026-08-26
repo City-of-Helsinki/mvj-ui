@@ -307,8 +307,9 @@
   @include toolbar;
 }
 
-.landuse-detail__decisions-vakuus-block {
-  margin-bottom: hds.$spacing-m;
+.landuse-detail__nested-stepbystep {
+  padding: hds.$spacing-m;
+  background-color: hds.$color-silver-light;
 }
 
 .landuse-detail__decisions-add-vakuus-row {

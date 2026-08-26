@@ -684,7 +684,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                         }`,
                                         key: `vakuus-${vakuusIndex}`,
                                         description: (
-                                          <div className="landuse-detail__decisions-vakuus-block">
+                                          <div className="landuse-detail__nested-stepbystep ">
                                             {/* NOTE! Hidden field for vakuuden tyyppi for form data. */}
                                             <Field
                                               name={`${vakuusName}.tyyppi`}
