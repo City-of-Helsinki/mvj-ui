@@ -30,7 +30,10 @@ import {
   toHdsOption,
 } from "@/util/helpers";
 import { Methods } from "@/enums";
-import { getMethods as getLeaseMethods } from "@/leases/selectors";
+import {
+  getMethods as getLeaseMethods,
+  getAttributes as getLeaseAttributes,
+} from "@/leases/selectors";
 import { useIntendedUses } from "@/intendedUse/useIntendedUses";
 import Authorization from "@/components/authorization/Authorization";
 import { ButtonLabels } from "@/components/enums";
@@ -52,7 +55,6 @@ import {
   filterSelectedOptions,
 } from "@/leases/helpers";
 import { getDistrictsByMunicipality } from "@/district/selectors";
-import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { getLessorList } from "@/lessor/selectors";
 import { preparationStateFilterOptions } from "@/leases/constants";
 import useLocalStorageState from "@/util/useLocalStorageState";
