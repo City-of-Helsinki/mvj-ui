@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Column } from "@/components/grid/Grid";
-import { Field, Form } from "react-final-form";
+import { Form } from "react-final-form";
 import { debounce, isArray, isEmpty } from "lodash-es";
-import SearchRow from "@/components/search/SearchRow";
+
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import CreateLeaseModal from "./createLease/CreateLeaseModal";
@@ -41,7 +41,6 @@ import {
   LeaseAreasFieldTitles,
 } from "@/leases/enums";
 import {
-  filterSelectedOptions,
   getContentLeaseListResults,
   mapLeaseSearchFilters,
 } from "@/leases/helpers";
@@ -57,7 +56,6 @@ import {
   isMethodAllowed,
   setPageTitle,
 } from "@/util/helpers";
-import { getUserOptions } from "@/users/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import {
   getIsFetching,
@@ -73,7 +71,6 @@ import {
   getServiceUnits,
   getIsFetching as getIsFetchingServiceUnits,
 } from "@/serviceUnits/selectors";
-import { fetchOfficers } from "@/users/requestsAsync";
 import type { Attributes } from "types";
 import {
   getAttributes as getUiDataAttributes,
@@ -87,7 +84,6 @@ import {
   fetchAttributes as fetchUiDataAttributes,
   fetchUiDataList,
 } from "@/uiData/actions";
-import type { Option } from "@/components/multi-select/SelectItem";
 import {
   Button,
   ButtonSize,
@@ -98,7 +94,6 @@ import {
   IconScrollContent,
   Link,
   Pagination,
-  Select,
   Table,
   type TableProps,
   Tabs,
@@ -148,7 +143,6 @@ const LeaseListPage: React.FC = () => {
   const [visualizationType, setVisualizationType] = useState(
     VisualizationTypes.TABLE,
   );
-  const [preparerOptions, setPreparerOptions] = useState<Option[]>([]);
 
   const queryParams = useMemo(
     () => getUrlParams(location.search),
@@ -243,11 +237,6 @@ const LeaseListPage: React.FC = () => {
         }),
       );
     }
-
-    fetchOfficers({ limit: 300 }).then((users) => {
-      const options = getUserOptions(users);
-      setPreparerOptions(options);
-    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -470,16 +459,6 @@ const LeaseListPage: React.FC = () => {
     debouncedFetchLeasesByBBox,
     queryParams,
   ]);
-
-  const serviceUnitOptions: Array<Option> = useMemo(
-    () => getFieldOptions(leaseAttributes, "service_unit", false),
-    [leaseAttributes],
-  );
-
-  const leaseStateOptions: Array<Option> = useMemo(
-    () => getFieldOptions(leaseAttributes, "state", false),
-    [leaseAttributes],
-  );
 
   const showCreateLeaseModal = () => {
     setIsModalOpen(true);
@@ -902,6 +881,7 @@ const LeaseListPage: React.FC = () => {
   const count = getApiResponseCount(leases);
   const maxPage = getApiResponseMaxPage(leases, LIST_TABLE_PAGE_SIZE);
   const columns = getColumns();
+
   if (isFetchingLeaseAttributes)
     return (
       <PageContainerHDS>
@@ -939,119 +919,6 @@ const LeaseListPage: React.FC = () => {
               />
             </Column>
           </Row>
-
-          <SearchRow style={{ marginTop: "10px" }}>
-            <Row className="lease-search-fieldset-group">
-              <Field name="service_unit">
-                {({ input: { value, onChange } }) => {
-                  return (
-                    <Select
-                      id="service_unit"
-                      texts={{
-                        label: LeaseFieldTitles.SERVICE_UNIT,
-                        placeholder: "Valitse palvelukokonaisuus",
-                        language: "fi",
-                      }}
-                      value={filterSelectedOptions(value, serviceUnitOptions)}
-                      options={serviceUnitOptions}
-                      onChange={(selectedOptions) => {
-                        const values = selectedOptions.map(
-                          (option) => option.value,
-                        );
-                        onChange(values);
-                      }}
-                      style={{ width: "100%" }}
-                      multiSelect
-                      noTags
-                      clearable
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="lease_state">
-                {({ input: { value, onChange } }) => {
-                  const selectedOptions = leaseStateOptions.filter((option) =>
-                    (Array.isArray(value) ? value : [value]).some(
-                      (v) => v == option.value,
-                    ),
-                  );
-                  return (
-                    <Select
-                      id="lease_state"
-                      texts={{
-                        label: "Tyyppi",
-                        placeholder: "Valitse tyyppi",
-                        language: "fi",
-                      }}
-                      value={selectedOptions}
-                      options={leaseStateOptions}
-                      onChange={(selectedOptions) => {
-                        const values = selectedOptions.map(
-                          (option) => option.value,
-                        );
-                        onChange(values);
-                      }}
-                      style={{ width: "100%" }}
-                      multiSelect
-                      noTags
-                      clearable
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="preparer">
-                {({ input: { value, onChange } }) => {
-                  // Combines "preparer" and "preparers_own_leases" into one select
-                  const preparers = [
-                    PreparerOwnLeasesOption,
-                    ...preparerOptions,
-                  ];
-
-                  const selectedOptions =
-                    value === PreparerOwnLeasesOption.value
-                      ? [PreparerOwnLeasesOption]
-                      : preparerOptions.filter((option) =>
-                          (Array.isArray(value) ? value : [value]).some(
-                            (v) => v == option.value,
-                          ),
-                        );
-                  return (
-                    <Select
-                      id="preparer"
-                      texts={{
-                        label: "Valmistelija",
-                        placeholder: "Valitse valmistelija",
-                        language: "fi",
-                      }}
-                      value={selectedOptions}
-                      options={preparers}
-                      filter={(option, filterStr) =>
-                        option.label
-                          .toLowerCase()
-                          .includes(filterStr.toLowerCase())
-                      }
-                      onChange={(selectedOptions) => {
-                        if (
-                          selectedOptions.some(
-                            (option) =>
-                              option.value === PreparerOwnLeasesOption.value,
-                          )
-                        ) {
-                          onChange(PreparerOwnLeasesOption.value);
-                        } else {
-                          onChange(
-                            selectedOptions.map((option) => option.value),
-                          );
-                        }
-                      }}
-                      clearable
-                      style={{ width: "100%" }}
-                    />
-                  );
-                }}
-              </Field>
-            </Row>
-          </SearchRow>
           <Tabs
             initiallyActiveTab={
               visualizationType === VisualizationTypes.MAP ? 1 : 0
