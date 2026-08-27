@@ -309,11 +309,23 @@ const Search: React.FC<Props> = ({
     );
   const [prevSearchParams, setPrevSearchParams] = useState(searchParams);
 
+  // Merge URL-derived sections into the current visibility from localStorage.
+  // Practically means that if user opens a link that has a queryparam, this
+  // queryparams section will be opened even if it is not open according to localStorage.
+  const mergedVisibleSections = useMemo(() => {
+    const merged = { ...visibleSections };
+    (Object.keys(sectionsFromParams) as Array<SearchSectionKey>).forEach(
+      (key) => {
+        if (sectionsFromParams[key]) merged[key] = true;
+      },
+    );
+    return merged;
+  }, [visibleSections, sectionsFromParams]);
+
   if (prevSearchParams !== searchParams) {
     setPrevSearchParams(searchParams);
 
-    // Auto-open sections that gained active params. Don't auto-close sections
-    // when their params are removed, so the user keeps their chosen layout.
+    // Persist newly-opened sections back to localStorage.
     setVisibleSections((prev) => {
       const merged = { ...prev };
       (Object.keys(sectionsFromParams) as Array<SearchSectionKey>).forEach(
@@ -325,7 +337,7 @@ const Search: React.FC<Props> = ({
     });
   }
 
-  const anySectionVisible = Object.values(visibleSections).some(Boolean);
+  const anySectionVisible = Object.values(mergedVisibleSections).some(Boolean);
 
   const sectionTarget = (
     <Fieldset
@@ -1121,13 +1133,15 @@ const Search: React.FC<Props> = ({
             id={`lease-search-toggle-${key}`}
             size={ButtonSize.Small}
             variant={
-              visibleSections[key]
+              mergedVisibleSections[key]
                 ? ButtonVariant.Primary
                 : ButtonVariant.Supplementary
             }
-            aria-pressed={visibleSections[key]}
+            aria-pressed={mergedVisibleSections[key]}
             onClick={() => toggleSection(key)}
-            iconStart={visibleSections[key] ? <IconEye /> : <IconEyeCrossed />}
+            iconStart={
+              mergedVisibleSections[key] ? <IconEye /> : <IconEyeCrossed />
+            }
           >
             {label}
           </Button>
@@ -1143,11 +1157,11 @@ const Search: React.FC<Props> = ({
                 heading="Tarkennettu haku"
                 className="lease-search-advanced-section"
               >
-                {visibleSections.target && sectionTarget}
-                {visibleSections.dates && sectionDates}
-                {visibleSections.decision && sectionDecision}
-                {visibleSections.tenant && sectionTenant}
-                {visibleSections.preparation && sectionPreparation}
+                {mergedVisibleSections.target && sectionTarget}
+                {mergedVisibleSections.dates && sectionDates}
+                {mergedVisibleSections.decision && sectionDecision}
+                {mergedVisibleSections.tenant && sectionTenant}
+                {mergedVisibleSections.preparation && sectionPreparation}
               </Fieldset>
             </Column>
           </Row>
