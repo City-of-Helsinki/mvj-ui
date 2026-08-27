@@ -204,6 +204,15 @@ const SearchFields = ({
         >
           {isBasicSearch ? "Tarkennettu haku" : "Yksinkertainen haku"}
         </Button>
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Small}
+          iconEnd={<IconTrash />}
+          onClick={handleClear}
+          style={{ marginLeft: "auto" }}
+        >
+          Tyhjennä haku
+        </Button>
       </Row>
       {!isBasicSearch && (
         <>
@@ -933,14 +942,6 @@ const SearchFields = ({
                         }}
                       </Field>
                     </Row>
-                    <Button
-                      variant={ButtonVariant.Secondary}
-                      size={ButtonSize.Small}
-                      iconEnd={<IconTrash />}
-                      onClick={handleClear}
-                    >
-                      Tyhjennä haku
-                    </Button>
                   </SearchRow>
                 </Fieldset>
               </Fieldset>
