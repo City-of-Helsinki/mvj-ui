@@ -124,7 +124,7 @@ type SearchSectionKey = keyof typeof SECTIONS;
 
 type SearchSectionVisibility = Record<SearchSectionKey, boolean>;
 
-const BASIC_MODE_IGNORED_QUERY_KEYS = new Set([
+const NON_SECTION_QUERY_KEYS = new Set([
   "page",
   "sort_key",
   "sort_order",
@@ -132,7 +132,6 @@ const BASIC_MODE_IGNORED_QUERY_KEYS = new Set([
   "in_bbox",
   "visualization",
   "zoom",
-  "intended_use",
   "service_unit",
   "preparer",
   "preparers_own_leases",
@@ -290,7 +289,7 @@ const Search: React.FC<Props> = ({
     const searchQuery = getUrlParams(searchParams);
     const activeKeys = new Set(
       Object.keys(searchQuery).filter(
-        (key) => !BASIC_MODE_IGNORED_QUERY_KEYS.has(key) && key !== "search",
+        (key) => !NON_SECTION_QUERY_KEYS.has(key) && key !== "search",
       ),
     );
     return (Object.keys(SECTIONS) as Array<SearchSectionKey>).reduce(
