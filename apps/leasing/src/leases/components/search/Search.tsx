@@ -27,6 +27,7 @@ import {
   IconAngleUp,
   IconAngleDown,
   IconTrash,
+  IconMinus,
 } from "hds-react";
 import type { SelectProps } from "hds-react/lib/components/dropdownComponents/select/types";
 import {
@@ -311,6 +312,26 @@ const SearchFields = ({
                           );
                         }}
                       </Field>
+
+                      <Field name="property_identifier">
+                        {({
+                          input: { value, onBlur, onChange, onFocus },
+                          meta: { error, invalid },
+                        }) => {
+                          return (
+                            <TextInput
+                              id="property_identifier"
+                              label="Kiinteistötunnus"
+                              invalid={invalid}
+                              value={value || ""}
+                              onBlur={onBlur}
+                              onChange={onChange}
+                              onFocus={onFocus}
+                              style={{ width: "100%" }}
+                            />
+                          );
+                        }}
+                      </Field>
                     </Row>
                   </SearchRow>
 
@@ -410,6 +431,15 @@ const SearchFields = ({
                           );
                         }}
                       </Field>
+                      <IconMinus
+                        style={{
+                          alignSelf: "flex-end",
+                          marginBottom: "24px",
+                          marginLeft: "-0.9rem",
+                          marginRight: "-0.9rem",
+                          maxWidth: "20px",
+                        }}
+                      />
                       <Field name="sequence">
                         {({
                           input: { value, onBlur, onChange, onFocus },
@@ -418,13 +448,13 @@ const SearchFields = ({
                           return (
                             <TextInput
                               id="sequence"
-                              label="Juokseva numero"
+                              label="Tunnus"
                               invalid={invalid}
                               value={value || ""}
                               onBlur={onBlur}
                               onChange={onChange}
                               onFocus={onFocus}
-                              style={{ width: "100%" }}
+                              style={{ maxWidth: "120px" }}
                             />
                           );
                         }}
@@ -577,27 +607,6 @@ const SearchFields = ({
                           </Field>
                         </Column>
                       </Row>
-                    </SearchInputColumn>
-                    <SearchInputColumn>
-                      <Field name="property_identifier">
-                        {({
-                          input: { value, onBlur, onChange, onFocus },
-                          meta: { error, invalid },
-                        }) => {
-                          return (
-                            <TextInput
-                              id="property_identifier"
-                              label="Kiinteistötunnus"
-                              invalid={invalid}
-                              value={value || ""}
-                              onBlur={onBlur}
-                              onChange={onChange}
-                              onFocus={onFocus}
-                              style={{ width: "100%" }}
-                            />
-                          );
-                        }}
-                      </Field>
                     </SearchInputColumn>
                   </SearchRow>
                 </Fieldset>
