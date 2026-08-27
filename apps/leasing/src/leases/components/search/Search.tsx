@@ -100,6 +100,7 @@ const SECTIONS = {
       "decision_section",
       "reference_number",
       "contract_number",
+      "institution_identifier",
       "invoice_number",
     ],
   },
@@ -806,6 +807,25 @@ const Search: React.FC<Props> = ({
                 <TextInput
                   id="contract_number"
                   label="Sopimusnro"
+                  invalid={invalid}
+                  value={value || ""}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  onFocus={onFocus}
+                  style={{ width: "100%" }}
+                />
+              );
+            }}
+          </Field>
+          <Field name="institution_identifier">
+            {({
+              input: { value, onBlur, onChange, onFocus },
+              meta: { error, invalid },
+            }) => {
+              return (
+                <TextInput
+                  id="institution_identifier"
+                  label="Laitostunnus"
                   invalid={invalid}
                   value={value || ""}
                   onBlur={onBlur}
