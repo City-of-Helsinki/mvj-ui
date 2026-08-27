@@ -873,7 +873,7 @@ const LeaseListPage: React.FC = () => {
     searchQuery.sort_order = order;
     delete searchQuery.page;
 
-    return navigate({
+    navigate({
       pathname: getRouteById(Routes.LEASES),
       search: getSearchQuery(searchQuery),
     });
