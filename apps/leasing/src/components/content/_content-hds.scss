@@ -3,7 +3,6 @@
 
 .content-hds {
   &__page-container {
-    font-family: variables.$font-family-source;
     min-height: calc(100vh - 60px);
     display: block;
     width: 100%;
@@ -33,4 +32,12 @@
       margin-top: 42px;
     }
   }
+}
+
+.content-container-hds {
+  position: relative;
+  width: 100%;
+  background-color: variables.$white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.07);
+  padding: rem-calc(15px);
 }

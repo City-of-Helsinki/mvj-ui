@@ -37,7 +37,6 @@ const PageContainerHDS: React.FC<Props> = ({
       ref={componentRef}
       className={classNames(
         "content-hds__page-container",
-        "content-hds__page-container--white-background",
         "foundation-form-reset",
         className,
       )}

@@ -15,6 +15,7 @@ import AuthorizationError from "@/components/authorization/AuthorizationError";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import PageContainerHDS from "@/components/content/PageContainerHDS";
+import ContentContainerHds from "@/components/content/ContentContainerHds";
 import Search from "./search/Search";
 import { fetchContacts, initializeContactForm } from "@/contacts/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
@@ -363,48 +364,50 @@ const ContactListPage: React.FC = () => {
 
   return (
     <PageContainerHDS>
-      <Search
-        isSearchInitialized={!!userActiveServiceUnit}
-        onSearch={handleSearchChange}
-        sortKey={sortKey}
-        sortOrder={sortOrder}
-        allowCreate={isMethodAllowed(contactMethods, Methods.POST)}
-        onCreateContact={handleCreateButtonClick}
-      />
+      <ContentContainerHds>
+        <Search
+          isSearchInitialized={!!userActiveServiceUnit}
+          onSearch={handleSearchChange}
+          sortKey={sortKey}
+          sortOrder={sortOrder}
+          allowCreate={isMethodAllowed(contactMethods, Methods.POST)}
+          onCreateContact={handleCreateButtonClick}
+        />
 
-      {isFetching && (
-        <LoaderWrapper className="relative-overlay-wrapper">
-          <Loader isLoading={true} />
-        </LoaderWrapper>
-      )}
-      <span>{isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}</span>
-      <Table
-        ariaLabelSortButtonUnset="Not sorted"
-        ariaLabelSortButtonAscending="Sorted in ascending order"
-        ariaLabelSortButtonDescending="Sorted in descending order"
-        id="contact-list-table"
-        indexKey="id"
-        renderIndexCol={true}
-        cols={columns}
-        rows={contacts}
-        onSort={handleSortingChange}
-        initialSortingColumnKey={sortKey}
-        initialSortingOrder={sortOrder as "asc" | "desc"}
-        key={`${sortKey}-${sortOrder}`}
-        dense
-      />
-      <Pagination
-        language="fi"
-        onChange={(event, index) => {
-          event.preventDefault();
-          handlePageClick(index + 1);
-        }}
-        pageCount={maxPage || 1}
-        pageHref={() => "#"}
-        pageIndex={activePage - 1}
-        paginationAriaLabel={`Sivuvalitsin, ${activePage} / ${maxPage}`}
-        siblingCount={5}
-      />
+        {isFetching && (
+          <LoaderWrapper className="relative-overlay-wrapper">
+            <Loader isLoading={true} />
+          </LoaderWrapper>
+        )}
+        <span>{isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}</span>
+        <Table
+          ariaLabelSortButtonUnset="Not sorted"
+          ariaLabelSortButtonAscending="Sorted in ascending order"
+          ariaLabelSortButtonDescending="Sorted in descending order"
+          id="contact-list-table"
+          indexKey="id"
+          renderIndexCol={true}
+          cols={columns}
+          rows={contacts}
+          onSort={handleSortingChange}
+          initialSortingColumnKey={sortKey}
+          initialSortingOrder={sortOrder as "asc" | "desc"}
+          key={`${sortKey}-${sortOrder}`}
+          dense
+        />
+        <Pagination
+          language="fi"
+          onChange={(event, index) => {
+            event.preventDefault();
+            handlePageClick(index + 1);
+          }}
+          pageCount={maxPage || 1}
+          pageHref={() => "#"}
+          pageIndex={activePage - 1}
+          paginationAriaLabel={`Sivuvalitsin, ${activePage} / ${maxPage}`}
+          siblingCount={5}
+        />
+      </ContentContainerHds>
     </PageContainerHDS>
   );
 };

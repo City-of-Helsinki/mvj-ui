@@ -10,6 +10,7 @@ import CreateLeaseModal from "./createLease/CreateLeaseModal";
 import LeaseListMap from "@/leases/components/leaseSections/map/LeaseListMap";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
+import ContentContainerHds from "@/components/content/ContentContainerHds";
 import PageContainerHDS from "@/components/content/PageContainerHDS";
 import Search from "./search/Search";
 import { fetchAreaNoteList } from "@/areaNote/actions";
@@ -923,211 +924,218 @@ const LeaseListPage: React.FC = () => {
     >
       {() => (
         <PageContainerHDS>
-          <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
-            <CreateLeaseModal
-              isOpen={isModalOpen}
-              onClose={hideCreateLeaseModal}
-              onSubmit={(data) => dispatch(createLease(data))}
-            />
-          </Authorization>
-          <Row>
-            <Column small={12} large={12}>
-              <Search
-                isSearchInitialized={isSearchInitialized}
-                onSearch={handleSearchChange}
-                showCreateLeaseModal={showCreateLeaseModal}
+          <ContentContainerHds>
+            <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
+              <CreateLeaseModal
+                isOpen={isModalOpen}
+                onClose={hideCreateLeaseModal}
+                onSubmit={(data) => dispatch(createLease(data))}
               />
-            </Column>
-          </Row>
-
-          <SearchRow style={{ marginTop: "10px" }}>
+            </Authorization>
             <Row>
-              <Row className="lease-search-fieldset-group">
-                <Field name="service_unit">
-                  {({ input: { value, onChange } }) => {
-                    return (
-                      <Select
-                        id="service_unit"
-                        texts={{
-                          label: LeaseFieldTitles.SERVICE_UNIT,
-                          placeholder: "Valitse palvelukokonaisuus",
-                          language: "fi",
-                        }}
-                        value={filterSelectedOptions(value, serviceUnitOptions)}
-                        options={serviceUnitOptions}
-                        onChange={(selectedOptions) => {
-                          const values = selectedOptions.map(
-                            (option) => option.value,
-                          );
-                          onChange(values);
-                        }}
-                        style={{ width: "100%" }}
-                        multiSelect
-                        noTags
-                        clearable
-                      />
-                    );
-                  }}
-                </Field>
-                <Field name="lease_state">
-                  {({ input: { value, onChange } }) => {
-                    const selectedOptions = leaseStateOptions.filter((option) =>
-                      (Array.isArray(value) ? value : [value]).some(
-                        (v) => v == option.value,
-                      ),
-                    );
-                    return (
-                      <Select
-                        id="lease_state"
-                        texts={{
-                          label: "Tyyppi",
-                          placeholder: "Valitse tyyppi",
-                          language: "fi",
-                        }}
-                        value={selectedOptions}
-                        options={leaseStateOptions}
-                        onChange={(selectedOptions) => {
-                          const values = selectedOptions.map(
-                            (option) => option.value,
-                          );
-                          onChange(values);
-                        }}
-                        style={{ width: "100%" }}
-                        multiSelect
-                        noTags
-                        clearable
-                      />
-                    );
-                  }}
-                </Field>
-                <Field name="preparer">
-                  {({ input: { value, onChange } }) => {
-                    // Combines "preparer" and "preparers_own_leases" into one select
-                    const preparers = [
-                      PreparerOwnLeasesOption,
-                      ...preparerOptions,
-                    ];
-
-                    const selectedOptions =
-                      value === PreparerOwnLeasesOption.value
-                        ? [PreparerOwnLeasesOption]
-                        : preparerOptions.filter((option) =>
-                            (Array.isArray(value) ? value : [value]).some(
-                              (v) => v == option.value,
-                            ),
-                          );
-                    return (
-                      <Select
-                        id="preparer"
-                        texts={{
-                          label: "Valmistelija",
-                          placeholder: "Valitse valmistelija",
-                          language: "fi",
-                        }}
-                        value={selectedOptions}
-                        options={preparers}
-                        filter={(option, filterStr) =>
-                          option.label
-                            .toLowerCase()
-                            .includes(filterStr.toLowerCase())
-                        }
-                        onChange={(selectedOptions) => {
-                          if (
-                            selectedOptions.some(
-                              (option) =>
-                                option.value === PreparerOwnLeasesOption.value,
-                            )
-                          ) {
-                            onChange(PreparerOwnLeasesOption.value);
-                          } else {
-                            onChange(
-                              selectedOptions.map((option) => option.value),
-                            );
-                          }
-                        }}
-                        clearable
-                        style={{ width: "100%" }}
-                      />
-                    );
-                  }}
-                </Field>
-              </Row>
+              <Column small={12} large={12}>
+                <Search
+                  isSearchInitialized={isSearchInitialized}
+                  onSearch={handleSearchChange}
+                  showCreateLeaseModal={showCreateLeaseModal}
+                />
+              </Column>
             </Row>
-          </SearchRow>
-          <Tabs
-            initiallyActiveTab={
-              visualizationType === VisualizationTypes.MAP ? 1 : 0
-            }
-          >
-            <Tabs.TabList>
-              <Tabs.Tab
-                onClick={() =>
-                  handleVisualizationTypeChange(VisualizationTypes.TABLE)
-                }
-              >
-                <span>
-                  <IconScrollContent />
-                  &nbsp;Taulukko
-                </span>
-              </Tabs.Tab>
-              <Tabs.Tab
-                onClick={() =>
-                  handleVisualizationTypeChange(VisualizationTypes.MAP)
-                }
-              >
-                <span>
-                  <IconMap />
-                  &nbsp;Kartta
-                </span>
-              </Tabs.Tab>
-            </Tabs.TabList>
-            <Tabs.TabPanel>
-              <>
-                {isFetching && (
-                  <LoaderWrapper className="relative-overlay-wrapper">
-                    <Loader isLoading={true} />
-                  </LoaderWrapper>
-                )}
-                <span>
-                  {isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
-                </span>
-                <Table
-                  ariaLabelSortButtonUnset="Not sorted"
-                  ariaLabelSortButtonAscending="Sorted in ascending order"
-                  ariaLabelSortButtonDescending="Sorted in descending order"
-                  id="lease-list-table"
-                  indexKey="id"
-                  renderIndexCol={false}
-                  cols={columns}
-                  rows={leaseList}
-                  onSort={handleSortingChange}
-                  initialSortingColumnKey={sortKey}
-                  initialSortingOrder={sortOrder as "asc" | "desc"}
-                  key={`${sortKey}-${sortOrder}`}
-                  dense
+
+            <SearchRow style={{ marginTop: "10px" }}>
+              <Row>
+                <Row className="lease-search-fieldset-group">
+                  <Field name="service_unit">
+                    {({ input: { value, onChange } }) => {
+                      return (
+                        <Select
+                          id="service_unit"
+                          texts={{
+                            label: LeaseFieldTitles.SERVICE_UNIT,
+                            placeholder: "Valitse palvelukokonaisuus",
+                            language: "fi",
+                          }}
+                          value={filterSelectedOptions(
+                            value,
+                            serviceUnitOptions,
+                          )}
+                          options={serviceUnitOptions}
+                          onChange={(selectedOptions) => {
+                            const values = selectedOptions.map(
+                              (option) => option.value,
+                            );
+                            onChange(values);
+                          }}
+                          style={{ width: "100%" }}
+                          multiSelect
+                          noTags
+                          clearable
+                        />
+                      );
+                    }}
+                  </Field>
+                  <Field name="lease_state">
+                    {({ input: { value, onChange } }) => {
+                      const selectedOptions = leaseStateOptions.filter(
+                        (option) =>
+                          (Array.isArray(value) ? value : [value]).some(
+                            (v) => v == option.value,
+                          ),
+                      );
+                      return (
+                        <Select
+                          id="lease_state"
+                          texts={{
+                            label: "Tyyppi",
+                            placeholder: "Valitse tyyppi",
+                            language: "fi",
+                          }}
+                          value={selectedOptions}
+                          options={leaseStateOptions}
+                          onChange={(selectedOptions) => {
+                            const values = selectedOptions.map(
+                              (option) => option.value,
+                            );
+                            onChange(values);
+                          }}
+                          style={{ width: "100%" }}
+                          multiSelect
+                          noTags
+                          clearable
+                        />
+                      );
+                    }}
+                  </Field>
+                  <Field name="preparer">
+                    {({ input: { value, onChange } }) => {
+                      // Combines "preparer" and "preparers_own_leases" into one select
+                      const preparers = [
+                        PreparerOwnLeasesOption,
+                        ...preparerOptions,
+                      ];
+
+                      const selectedOptions =
+                        value === PreparerOwnLeasesOption.value
+                          ? [PreparerOwnLeasesOption]
+                          : preparerOptions.filter((option) =>
+                              (Array.isArray(value) ? value : [value]).some(
+                                (v) => v == option.value,
+                              ),
+                            );
+                      return (
+                        <Select
+                          id="preparer"
+                          texts={{
+                            label: "Valmistelija",
+                            placeholder: "Valitse valmistelija",
+                            language: "fi",
+                          }}
+                          value={selectedOptions}
+                          options={preparers}
+                          filter={(option, filterStr) =>
+                            option.label
+                              .toLowerCase()
+                              .includes(filterStr.toLowerCase())
+                          }
+                          onChange={(selectedOptions) => {
+                            if (
+                              selectedOptions.some(
+                                (option) =>
+                                  option.value ===
+                                  PreparerOwnLeasesOption.value,
+                              )
+                            ) {
+                              onChange(PreparerOwnLeasesOption.value);
+                            } else {
+                              onChange(
+                                selectedOptions.map((option) => option.value),
+                              );
+                            }
+                          }}
+                          clearable
+                          style={{ width: "100%" }}
+                        />
+                      );
+                    }}
+                  </Field>
+                </Row>
+              </Row>
+            </SearchRow>
+            <Tabs
+              initiallyActiveTab={
+                visualizationType === VisualizationTypes.MAP ? 1 : 0
+              }
+            >
+              <Tabs.TabList>
+                <Tabs.Tab
+                  onClick={() =>
+                    handleVisualizationTypeChange(VisualizationTypes.TABLE)
+                  }
+                >
+                  <span>
+                    <IconScrollContent />
+                    &nbsp;Taulukko
+                  </span>
+                </Tabs.Tab>
+                <Tabs.Tab
+                  onClick={() =>
+                    handleVisualizationTypeChange(VisualizationTypes.MAP)
+                  }
+                >
+                  <span>
+                    <IconMap />
+                    &nbsp;Kartta
+                  </span>
+                </Tabs.Tab>
+              </Tabs.TabList>
+              <Tabs.TabPanel>
+                <>
+                  {isFetching && (
+                    <LoaderWrapper className="relative-overlay-wrapper">
+                      <Loader isLoading={true} />
+                    </LoaderWrapper>
+                  )}
+                  <span>
+                    {isFetching ? "Ladataan..." : `Löytyi ${count} kpl`}
+                  </span>
+                  <Table
+                    ariaLabelSortButtonUnset="Not sorted"
+                    ariaLabelSortButtonAscending="Sorted in ascending order"
+                    ariaLabelSortButtonDescending="Sorted in descending order"
+                    id="lease-list-table"
+                    indexKey="id"
+                    renderIndexCol={false}
+                    cols={columns}
+                    rows={leaseList}
+                    onSort={handleSortingChange}
+                    initialSortingColumnKey={sortKey}
+                    initialSortingOrder={sortOrder as "asc" | "desc"}
+                    key={`${sortKey}-${sortOrder}`}
+                    dense
+                  />
+                  <Pagination
+                    language="fi"
+                    onChange={(event, index) => {
+                      event.preventDefault();
+                      handlePageClick(index + 1);
+                    }}
+                    pageCount={maxPage || 1}
+                    pageHref={() => "#"}
+                    pageIndex={activePage - 1}
+                    paginationAriaLabel={`Sivuvalitsin, ${activePage} / ${maxPage}`}
+                    siblingCount={5}
+                  />
+                </>
+              </Tabs.TabPanel>
+              <Tabs.TabPanel>
+                <LeaseListMap
+                  allowToEdit={false}
+                  isLoading={isFetchingByBBox}
+                  onViewportChanged={handleMapViewportChanged}
                 />
-                <Pagination
-                  language="fi"
-                  onChange={(event, index) => {
-                    event.preventDefault();
-                    handlePageClick(index + 1);
-                  }}
-                  pageCount={maxPage || 1}
-                  pageHref={() => "#"}
-                  pageIndex={activePage - 1}
-                  paginationAriaLabel={`Sivuvalitsin, ${activePage} / ${maxPage}`}
-                  siblingCount={5}
-                />
-              </>
-            </Tabs.TabPanel>
-            <Tabs.TabPanel>
-              <LeaseListMap
-                allowToEdit={false}
-                isLoading={isFetchingByBBox}
-                onViewportChanged={handleMapViewportChanged}
-              />
-            </Tabs.TabPanel>
-          </Tabs>
+              </Tabs.TabPanel>
+            </Tabs>
+          </ContentContainerHds>
         </PageContainerHDS>
       )}
     </Form>
