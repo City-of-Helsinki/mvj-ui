@@ -247,6 +247,7 @@ function* createLeaseSaga({ payload }): Generator<any, any, any> {
         );
         yield put(receiveIsSaveClicked(false));
         yield put(hideEditMode());
+        yield put(hideCreateModal());
         displayUIMessage({
           title: "",
           body: "Vuokraus luotu",
