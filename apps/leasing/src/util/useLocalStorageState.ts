@@ -1,4 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { getStorageItem, setStorageItem } from "./storage";
 
 /**
@@ -8,11 +14,10 @@ import { getStorageItem, setStorageItem } from "./storage";
 const useLocalStorageState = <T>(
   key: string,
   defaultValue: T,
-): [T, React.Dispatch<React.SetStateAction<T>>] => {
+): [T, Dispatch<SetStateAction<T>>] => {
   const [state, setState] = useState<T>(() => {
     try {
       const stored = getStorageItem(key);
-      // getStorageItem already JSON.parses the value
       return stored !== null && stored !== ""
         ? (stored as unknown as T)
         : defaultValue;
@@ -22,16 +27,11 @@ const useLocalStorageState = <T>(
   });
 
   useEffect(() => {
-    try {
-      // setStorageItem JSON.stringifies non-string values internally
-      setStorageItem(key, state);
-    } catch {
-      // Ignore write failures (e.g. private browsing storage quota).
-    }
+    setStorageItem(key, state);
   }, [key, state]);
 
   const setStateStable = useCallback(
-    (value: React.SetStateAction<T>) => setState(value),
+    (value: SetStateAction<T>) => setState(value),
     [],
   );
 
