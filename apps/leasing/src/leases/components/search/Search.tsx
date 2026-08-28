@@ -6,18 +6,17 @@ import { isEqual } from "lodash-es";
 import {
   Checkbox,
   DateInput,
-  Search as HdsSearch,
   RadioButton,
   Select,
   SelectionGroup,
   TextInput,
-  type SearchProps,
   type OptionInProps,
   Fieldset,
   Button,
   ButtonSize,
   ButtonVariant,
   IconPlusCircleFill,
+  IconSearch,
   IconTrash,
   IconMinus,
   IconEye,
@@ -180,13 +179,6 @@ const Search: React.FC<Props> = ({
     false,
   ) as Array<OptionInProps>;
 
-  const searchTexts: SearchProps["texts"] = useMemo(
-    () => ({
-      searchPlaceholder: "Hae hakusanalla",
-      historyLabel: "Hakuhistoria",
-    }),
-    [],
-  );
   const toggleSection = (key: SearchSectionKey) => {
     setVisibleSections((prev) => {
       const next = { ...prev, [key]: !prev[key] };
@@ -1121,24 +1113,22 @@ const Search: React.FC<Props> = ({
           {({
             input: { value, onBlur, onChange, onFocus },
             meta: { error, invalid },
-          }) => {
-            return (
-              <HdsSearch
-                historyId={"lease-search"}
-                invalid={invalid}
-                value={value || ""}
-                onBlur={onBlur}
-                onChange={onChange}
-                onFocus={onFocus}
-                onSend={(val) => {
-                  onChange(val);
-                }}
-                texts={searchTexts}
-                visibleOptions={5.5}
-                style={{ width: "100%" }}
-              />
-            );
-          }}
+          }) => (
+            <TextInput
+              id="search"
+              label=""
+              hideLabel
+              placeholder="Hae hakusanalla"
+              invalid={invalid}
+              value={value || ""}
+              onBlur={onBlur}
+              onChange={onChange}
+              onFocus={onFocus}
+              buttonIcon={<IconSearch aria-hidden />}
+              buttonAriaLabel="Hae"
+              onButtonClick={form.submit}
+            />
+          )}
         </Field>
         <Button
           variant={ButtonVariant.Secondary}
