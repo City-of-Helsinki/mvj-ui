@@ -23,6 +23,7 @@ import {
   IconEye,
   IconEyeCrossed,
 } from "hds-react";
+
 import {
   getFieldOptions,
   getUrlParams,
@@ -58,6 +59,15 @@ import { getDistrictsByMunicipality } from "@/district/selectors";
 import { getLessorList } from "@/lessor/selectors";
 import { preparationStateFilterOptions } from "@/leases/constants";
 import useLocalStorageState from "@/util/useLocalStorageState";
+import type { Option } from "@/components/multi-select/SelectItem";
+import { LeaseFieldTitles } from "@/leases/enums";
+import { fetchOfficers } from "@/users/requestsAsync";
+import { getUserOptions } from "@/users/helpers";
+
+const PreparerOwnLeasesOption = {
+  label: "Omat vuokraukset",
+  value: "preparers_own_leases",
+};
 
 type Props = {
   isSearchInitialized: boolean;
@@ -286,6 +296,24 @@ const Search: React.FC<Props> = ({
     () => getContactOptions(lessors),
     [lessors],
   ).map(toHdsOption);
+
+
+  const serviceUnitOptions: Array<Option> = useMemo(
+    () => getFieldOptions(leaseAttributes, "service_unit", false),
+    [leaseAttributes],
+  );
+
+  const leaseStateOptions: Array<Option> = useMemo(
+    () => getFieldOptions(leaseAttributes, "state", false),
+    [leaseAttributes],
+  );
+
+  const [preparerOptions, setPreparerOptions] = useState<Option[]>([]);
+  useEffect(() => {
+    fetchOfficers({ limit: 300 }).then((users) => {
+      setPreparerOptions(getUserOptions(users));
+    });
+  }, []);
 
   const sectionsFromParams = useMemo((): SearchSectionVisibility => {
     const searchQuery = getUrlParams(searchParams);
@@ -1167,6 +1195,106 @@ const Search: React.FC<Props> = ({
           </Row>
         </>
       )}
+
+      <SearchRow>
+        <Row className="lease-search-fieldset-group">
+          <Field name="service_unit">
+            {({ input: { value, onChange } }) => (
+              <Select
+                id="service_unit"
+                texts={{
+                  label: LeaseFieldTitles.SERVICE_UNIT,
+                  placeholder: "Valitse palvelukokonaisuus",
+                  language: "fi",
+                }}
+                value={filterSelectedOptions(value, serviceUnitOptions)}
+                options={serviceUnitOptions}
+                onChange={(selectedOptions) =>
+                  onChange(selectedOptions.map((option) => option.value))
+                }
+                style={{ width: "100%" }}
+                multiSelect
+                noTags
+                clearable
+              />
+            )}
+          </Field>
+          <Field name="lease_state">
+            {({ input: { value, onChange } }) => {
+              const selected = leaseStateOptions.filter((option) =>
+                (Array.isArray(value) ? value : [value]).some(
+                  (v) => v == option.value,
+                ),
+              );
+              return (
+                <Select
+                  id="lease_state"
+                  texts={{
+                    label: "Tyyppi",
+                    placeholder: "Valitse tyyppi",
+                    language: "fi",
+                  }}
+                  value={selected}
+                  options={leaseStateOptions}
+                  onChange={(selectedOptions) =>
+                    onChange(selectedOptions.map((option) => option.value))
+                  }
+                  style={{ width: "100%" }}
+                  multiSelect
+                  noTags
+                  clearable
+                />
+              );
+            }}
+          </Field>
+          <Field name="preparer">
+            {({ input: { value, onChange } }) => {
+              // Combines "preparer" and "preparers_own_leases" into one select
+              const allPreparers = [
+                PreparerOwnLeasesOption,
+                ...preparerOptions,
+              ];
+              const selected =
+                value === PreparerOwnLeasesOption.value
+                  ? [PreparerOwnLeasesOption]
+                  : preparerOptions.filter((option) =>
+                      (Array.isArray(value) ? value : [value]).some(
+                        (v) => v == option.value,
+                      ),
+                    );
+              return (
+                <Select
+                  id="preparer"
+                  texts={{
+                    label: "Valmistelija",
+                    placeholder: "Valitse valmistelija",
+                    language: "fi",
+                  }}
+                  value={selected}
+                  options={allPreparers}
+                  filter={(option, filterStr) =>
+                    option.label.toLowerCase().includes(filterStr.toLowerCase())
+                  }
+                  onChange={(selectedOptions) => {
+                    if (
+                      selectedOptions.some(
+                        (option) =>
+                          option.value === PreparerOwnLeasesOption.value,
+                      )
+                    ) {
+                      onChange(PreparerOwnLeasesOption.value);
+                    } else {
+                      onChange(selectedOptions.map((option) => option.value));
+                    }
+                  }}
+                  clearable
+                  style={{ width: "100%" }}
+                />
+              );
+            }}
+          </Field>
+        </Row>
+      </SearchRow>
     </SearchContainer>
   );
 };
