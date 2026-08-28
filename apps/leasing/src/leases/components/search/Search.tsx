@@ -59,7 +59,6 @@ import { getDistrictsByMunicipality } from "@/district/selectors";
 import { getLessorList } from "@/lessor/selectors";
 import { preparationStateFilterOptions } from "@/leases/constants";
 import useLocalStorageState from "@/util/useLocalStorageState";
-import type { Option } from "@/components/multi-select/SelectItem";
 import { LeaseFieldTitles } from "@/leases/enums";
 import { fetchOfficers } from "@/users/requestsAsync";
 import { getUserOptions } from "@/users/helpers";
@@ -297,21 +296,23 @@ const Search: React.FC<Props> = ({
     [lessors],
   ).map(toHdsOption);
 
-
-  const serviceUnitOptions: Array<Option> = useMemo(
-    () => getFieldOptions(leaseAttributes, "service_unit", false),
+  const serviceUnitOptions = useMemo(
+    () =>
+      getFieldOptions(leaseAttributes, "service_unit", false).map(toHdsOption),
     [leaseAttributes],
   );
 
-  const leaseStateOptions: Array<Option> = useMemo(
-    () => getFieldOptions(leaseAttributes, "state", false),
+  const leaseStateOptions = useMemo(
+    () => getFieldOptions(leaseAttributes, "state", false).map(toHdsOption),
     [leaseAttributes],
   );
 
-  const [preparerOptions, setPreparerOptions] = useState<Option[]>([]);
+  const [preparerOptions, setPreparerOptions] = useState<Array<OptionInProps>>(
+    [],
+  );
   useEffect(() => {
     fetchOfficers({ limit: 300 }).then((users) => {
-      setPreparerOptions(getUserOptions(users));
+      setPreparerOptions(getUserOptions(users).map(toHdsOption));
     });
   }, []);
 
