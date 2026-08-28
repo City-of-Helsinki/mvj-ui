@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { Field, useForm, useFormState } from "react-final-form";
@@ -308,7 +308,19 @@ const Search: React.FC<Props> = ({
       "lease-search-visible-sections",
       sectionsFromParams,
     );
-  const [prevSearchParams, setPrevSearchParams] = useState(searchParams);
+
+  // Persist newly-opened sections back to localStorage when searchParams changes.
+  useEffect(() => {
+    setVisibleSections((prev) => {
+      const merged = { ...prev };
+      (Object.keys(sectionsFromParams) as Array<SearchSectionKey>).forEach(
+        (key) => {
+          if (sectionsFromParams[key]) merged[key] = true;
+        },
+      );
+      return isEqual(merged, prev) ? prev : merged;
+    });
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Merge URL-derived sections into the current visibility from localStorage.
   // Practically means that if user opens a link that has a queryparam, this
@@ -322,21 +334,6 @@ const Search: React.FC<Props> = ({
     );
     return merged;
   }, [visibleSections, sectionsFromParams]);
-
-  if (prevSearchParams !== searchParams) {
-    setPrevSearchParams(searchParams);
-
-    // Persist newly-opened sections back to localStorage.
-    setVisibleSections((prev) => {
-      const merged = { ...prev };
-      (Object.keys(sectionsFromParams) as Array<SearchSectionKey>).forEach(
-        (key) => {
-          if (sectionsFromParams[key]) merged[key] = true;
-        },
-      );
-      return isEqual(merged, prev) ? prev : merged;
-    });
-  }
 
   const anySectionVisible = Object.values(mergedVisibleSections).some(Boolean);
 
@@ -536,6 +533,8 @@ const Search: React.FC<Props> = ({
             }}
           </Field>
           <IconMinus
+            aria-hidden="true"
+            focusable="false"
             style={{
               alignSelf: "flex-end",
               marginBottom: "24px",
