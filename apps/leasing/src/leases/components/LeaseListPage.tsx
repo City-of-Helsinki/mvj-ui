@@ -318,10 +318,13 @@ const LeaseListPage: React.FC = () => {
         ...searchQuery,
         service_unit: userServiceUnits.map((unit) => String(unit.id)),
       };
-      navigate({
-        pathname: getRouteById(Routes.LEASES),
-        search: getSearchQuery(updatedQuery),
-      });
+      navigate(
+        {
+          pathname: getRouteById(Routes.LEASES),
+          search: getSearchQuery(updatedQuery),
+        },
+        { replace: true },
+      );
       return;
     }
 
@@ -518,10 +521,10 @@ const LeaseListPage: React.FC = () => {
       return;
     }
 
-    return navigate({
-      pathname: getRouteById(Routes.LEASES),
-      search: nextSearch,
-    });
+    return navigate(
+      { pathname: getRouteById(Routes.LEASES), search: nextSearch },
+      { replace: true },
+    );
   };
 
   const handleRowClick = (id) => {
