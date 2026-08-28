@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Row, Column } from "@/components/grid/Grid";
 import { useDispatch, useSelector } from "react-redux";
-import { ActionTypes } from "@/app/AppContext";
+import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import CreateLeaseModal from "@/leases/components/createLease/CreateLeaseModal";
@@ -149,24 +149,6 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
     );
   };
 
-  const handleCreateLeaseModalSubmit = (payload: Record<string, any>) => {
-    if (hasAnyDirtyForms) {
-      dispatch({
-        type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-        confirmationFunction: () => {
-          handleLeaseCreate(payload);
-        },
-        confirmationModalButtonClassName: ButtonColors.ALERT,
-        confirmationModalButtonText:
-          ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
-        confirmationModalLabel: ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
-        confirmationModalTitle: ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
-      });
-    } else {
-      handleLeaseCreate(payload);
-    }
-  };
-
   const renderLeaseWithPlotSearchesAndApplications = (lease, active) => {
     const historyItems = [];
 
@@ -302,76 +284,103 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
   };
 
   return (
-    <div className="summary__related-leases">
-      <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
-        <CreateLeaseModal
-          allowToChangeRelateTo={false}
-          isOpen={isCreateModalOpen}
-          onClose={hideCreateLeaseModal}
-          onSubmit={handleCreateLeaseModalSubmit}
-        />
-      </Authorization>
-      <TitleH3
-        enableUiDataEdit
-        uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HISTORY)}
-      >
-        {LeaseFieldTitles.HISTORY}
-      </TitleH3>
-
-      <Authorization
-        allow={hasPermissions(
-          usersPermissions,
-          UsersPermissions.ADD_LEASE_HISTORY_ITEM,
-        )}
-      >
-        <div className="summary__related-leases_input-wrapper">
-          <FormFieldLabel
-            htmlFor="related-lease"
-            enableUiDataEdit
-            uiDataKey={getUiDataRelatedLeaseKey(RelatedLeasePaths.TO_LEASE)}
-          >
-            Liitä vuokratunnukseen
-          </FormFieldLabel>
-          <Row>
-            <Column>
-              <LeaseSelectInput
-                disabled={!!newLease}
-                name="related-lease"
-                onChange={handleHistoryItemCreate}
-                leaseHistoryItems={leaseHistoryItemsAll}
-                serviceUnit={serviceUnit}
-                value={newLease}
+    <AppConsumer>
+      {({ dispatch: appDispatch }) => {
+        const handleCreateLeaseModalSubmit = (payload: Record<string, any>) => {
+          if (hasAnyDirtyForms) {
+            appDispatch({
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
+                handleLeaseCreate(payload);
+              },
+              confirmationModalButtonClassName: ButtonColors.ALERT,
+              confirmationModalButtonText:
+                ConfirmationModalTexts.CANCEL_CHANGES.BUTTON,
+              confirmationModalLabel:
+                ConfirmationModalTexts.CANCEL_CHANGES.LABEL,
+              confirmationModalTitle:
+                ConfirmationModalTexts.CANCEL_CHANGES.TITLE,
+            });
+          } else {
+            handleLeaseCreate(payload);
+          }
+        };
+        return (
+          <div className="summary__related-leases">
+            <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
+              <CreateLeaseModal
+                allowToChangeRelateTo={false}
+                isOpen={isCreateModalOpen}
+                onClose={hideCreateLeaseModal}
+                onSubmit={handleCreateLeaseModalSubmit}
               />
-            </Column>
-          </Row>
-        </div>
-      </Authorization>
-      <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
-        <AddButtonSecondary
-          className="no-top-margin"
-          label={ButtonLabels.CREATE_LEASE_IDENTIFIER}
-          onClick={showCreateLeaseModal}
-        />
-      </Authorization>
+            </Authorization>
+            <TitleH3
+              enableUiDataEdit
+              uiDataKey={getUiDataLeaseKey(LeaseFieldPaths.HISTORY)}
+            >
+              {LeaseFieldTitles.HISTORY}
+            </TitleH3>
 
-      <div className="summary__related-leases_items">
-        <div className="summary__related-leases_items_border-left" />
-        {!!relatedLeasesTo &&
-          !!relatedLeasesTo.length &&
-          relatedLeasesTo
-            .map(restructureLease)
-            .map(renderLeaseWithPlotSearchesAndApplications)}
+            <Authorization
+              allow={hasPermissions(
+                usersPermissions,
+                UsersPermissions.ADD_LEASE_HISTORY_ITEM,
+              )}
+            >
+              <div className="summary__related-leases_input-wrapper">
+                <FormFieldLabel
+                  htmlFor="related-lease"
+                  enableUiDataEdit
+                  uiDataKey={getUiDataRelatedLeaseKey(
+                    RelatedLeasePaths.TO_LEASE,
+                  )}
+                >
+                  Liitä vuokratunnukseen
+                </FormFieldLabel>
+                <Row>
+                  <Column>
+                    <LeaseSelectInput
+                      disabled={!!newLease}
+                      name="related-lease"
+                      onChange={handleHistoryItemCreate}
+                      leaseHistoryItems={leaseHistoryItemsAll}
+                      serviceUnit={serviceUnit}
+                      value={newLease}
+                    />
+                  </Column>
+                </Row>
+              </div>
+            </Authorization>
+            <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
+              <AddButtonSecondary
+                className="no-top-margin"
+                label={ButtonLabels.CREATE_LEASE_IDENTIFIER}
+                onClick={showCreateLeaseModal}
+              />
+            </Authorization>
 
-        {!!currentLease &&
-          renderLeaseWithPlotSearchesAndApplications(currentLease, true)}
+            <div className="summary__related-leases_items">
+              <div className="summary__related-leases_items_border-left" />
+              {!!relatedLeasesTo &&
+                !!relatedLeasesTo.length &&
+                relatedLeasesTo
+                  .map(restructureLease)
+                  .map(renderLeaseWithPlotSearchesAndApplications)}
 
-        {!!relatedLeasesFrom &&
-          !!relatedLeasesFrom.length &&
-          relatedLeasesFrom
-            .map(restructureLease)
-            .map(renderLeaseWithPlotSearchesAndApplications)}
-      </div>
-    </div>
+              {!!currentLease &&
+                renderLeaseWithPlotSearchesAndApplications(currentLease, true)}
+
+              {!!relatedLeasesFrom &&
+                !!relatedLeasesFrom.length &&
+                relatedLeasesFrom
+                  .map(restructureLease)
+                  .map(renderLeaseWithPlotSearchesAndApplications)}
+            </div>
+          </div>
+        );
+      }}
+    </AppConsumer>
   );
 };
 
