@@ -10,15 +10,14 @@ import ContactAuditLog from "./ContactAuditLog";
 import ContactEdit from "./ContactEdit";
 import ContactReadonly from "./ContactReadonly";
 import ContactLeaseTable from "./ContactLeaseTable";
-import ContentContainer from "@/components/content/ContentContainer";
+import ContentContainerHds from "@/components/content/ContentContainerHds";
 import ControlButtonBar from "@/components/controlButtons/ControlButtonBar";
 import ControlButtons from "@/components/controlButtons/ControlButtons";
 import CreditDecisionTemplate from "@/creditDecision/components/CreditDecisionTemplate";
 import Divider from "@/components/content/Divider";
-import FullWidthContainer from "@/components/content/FullWidthContainer";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
-import PageContainer from "@/components/content/PageContainer";
+import PageContainerHds from "@/components/content/PageContainerHDS";
 import PageNavigationWrapper from "@/components/content/PageNavigationWrapper";
 import Tabs from "@/components/tabs/Tabs";
 import TabPane from "@/components/tabs/TabPane";
@@ -60,7 +59,6 @@ import {
 import { getRouteById, Routes } from "@/root/routes";
 import {
   getCurrentContact,
-  getIsContactFormValid,
   getIsEditMode,
   getIsFetching,
   getIsSaveClicked,
@@ -343,22 +341,22 @@ const ContactPageView: React.FC<{
 
   if (isFetching) {
     return (
-      <PageContainer>
+      <PageContainerHds>
         <Loader isLoading={true} />
-      </PageContainer>
+      </PageContainerHds>
     );
   }
 
   if (!contactMethods) return null;
   if (!isMethodAllowed(contactMethods, Methods.GET))
     return (
-      <PageContainer>
+      <PageContainerHds>
         <AuthorizationError text={PermissionMissingTexts.CONTACT} />
-      </PageContainer>
+      </PageContainerHds>
     );
 
   return (
-    <FullWidthContainer>
+    <>
       <PageNavigationWrapper>
         <ControlButtonBar
           buttonComponent={
@@ -430,7 +428,7 @@ const ContactPageView: React.FC<{
           onTabClick={handleTabClick}
         />
       </PageNavigationWrapper>
-      <PageContainer className="with-small-control-bar-and-tabs" hasTabs>
+      <PageContainerHds className="with-small-control-bar-and-tabs" hasTabs>
         {isSaving && (
           <LoaderWrapper className="overlay-wrapper">
             <Loader isLoading={isSaving} />
@@ -458,8 +456,8 @@ const ContactPageView: React.FC<{
           contactMethods={contactMethods}
           usersPermissions={usersPermissions}
         ></ContactPageContent>
-      </PageContainer>
-    </FullWidthContainer>
+      </PageContainerHds>
+    </>
   );
 };
 
@@ -485,7 +483,7 @@ const ContactPageContent: React.FC<{
   return (
     <TabContent active={activeTab}>
       <TabPane>
-        <ContentContainer>
+        <ContentContainerHds>
           <Title
             enableUiDataEdit={isEditMode}
             uiDataKey={getUiDataContactKey(ContactFieldPaths.BASIC_INFO)}
@@ -510,11 +508,11 @@ const ContactPageContent: React.FC<{
             <ContactReadonly contact={contact} />
           )}
           <ContactLeaseTable contact={contact} />
-        </ContentContainer>
+        </ContentContainerHds>
       </TabPane>
 
       <TabPane>
-        <ContentContainer>
+        <ContentContainerHds>
           <Authorization
             allow={hasPermissions(
               usersPermissions,
@@ -539,11 +537,11 @@ const ContactPageContent: React.FC<{
               </>
             )}
           </Authorization>
-        </ContentContainer>
+        </ContentContainerHds>
       </TabPane>
 
       <TabPane>
-        <ContentContainer>
+        <ContentContainerHds>
           <Authorization
             allow={hasPermissions(
               usersPermissions,
@@ -569,11 +567,11 @@ const ContactPageContent: React.FC<{
               />
             </>
           </Authorization>
-        </ContentContainer>
+        </ContentContainerHds>
       </TabPane>
 
       <TabPane>
-        <ContentContainer>
+        <ContentContainerHds>
           <Authorization
             allow={hasPermissions(
               usersPermissions,
@@ -594,7 +592,7 @@ const ContactPageContent: React.FC<{
               <ContactAuditLog contactId={contactId} />
             </>
           </Authorization>
-        </ContentContainer>
+        </ContentContainerHds>
       </TabPane>
     </TabContent>
   );

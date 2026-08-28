@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 
 import GreenBox from "@/components/content/GreenBox";
-import PageContainerHDS from "@/components/content/PageContainerHDS";
 import Loader from "@/components/loader/Loader";
+import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import {
   fetchLeasesForContact,
   fetchLeasesForContactAttributes,
@@ -113,13 +113,13 @@ const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
     dispatch(
       fetchLeasesForContact(
         mapLeasesForContactSearchFilters({
-        contact: contact.id,
-        limit: LIST_TABLE_PAGE_SIZE,
-        offset: offset,
-sort_key: sortKey,
+          contact: contact.id,
+          limit: LIST_TABLE_PAGE_SIZE,
+          offset: offset,
+          sort_key: sortKey,
           sort_order: sortOrder,
-      }),
-),
+        }),
+      ),
     );
   }, [dispatch, contact.id, activePage, sortKey, sortOrder]);
 
@@ -234,9 +234,9 @@ sort_key: sortKey,
 
   if (isFetchingAttributes || !attributes || isFetchingLeases)
     return (
-      <GreenBox className="with-top-margin">
+      <LoaderWrapper className="relative-overlay-wrapper">
         <Loader isLoading={true} />
-      </GreenBox>
+      </LoaderWrapper>
     );
 
   return (
