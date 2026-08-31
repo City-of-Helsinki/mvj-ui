@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import classNames from "classnames";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import FormText from "@/components/form/FormText";
@@ -20,11 +20,11 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 
 const InvoiceSimulator: React.FC = () => {
-  const currentLease = useSelector(getCurrentLease);
-  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
-  const isFetching = useSelector(getIsFetching);
-  const previewInvoices = useSelector(getPreviewInvoices);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const currentLease = useAppSelector(getCurrentLease);
+  const invoiceAttributes: Attributes = useAppSelector(getInvoiceAttributes);
+  const isFetching = useAppSelector(getIsFetching);
+  const previewInvoices = useAppSelector(getPreviewInvoices);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const [billingPeriods, setBillingPeriods] = useState<Array<
     Record<string, any>
@@ -35,7 +35,7 @@ const InvoiceSimulator: React.FC = () => {
     Array<Record<string, any>>
   >([]);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setInvoiceReceivableTypeOptions(

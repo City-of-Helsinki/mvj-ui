@@ -1,5 +1,5 @@
 import React, { Fragment, ReactElement } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
@@ -410,18 +410,20 @@ const TenantItemEdit: React.FC<Props> = ({
   shareNumerator,
   shareDenominator,
 }) => {
-  const dispatch = useDispatch();
-  const attributes = useSelector(getAttributes);
-  const collapseState = useSelector((state) =>
+  const dispatch = useAppDispatch();
+  const attributes = useAppSelector(getAttributes);
+  const collapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.tenants.${tenantId}`,
     ),
   );
-  const contactMethods = useSelector(getContactMethods);
-  const errors = useSelector((state) => getErrorsByFormName(state, formName));
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const contactMethods = useAppSelector(getContactMethods);
+  const errors = useAppSelector((state) =>
+    getErrorsByFormName(state, formName),
+  );
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const usersPermissions = useAppSelector(getUsersPermissions);
   const getTenantById = (id: number) => {
     return id ? tenants.find((tenant) => tenant.id === id) : {};
   };

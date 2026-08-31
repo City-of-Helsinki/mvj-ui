@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { useLocation, Link } from "react-router";
 import { get, isEmpty } from "lodash-es";
@@ -49,10 +49,10 @@ type Props = {
 const LeaseArea: React.FC<Props> = ({ area }: Props) => {
   const location = useLocation();
 
-  const attributes: Attributes = useSelector(getAttributes);
-  const isEditMode = useSelector(getIsEditMode);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const isEditMode = useAppSelector(getIsEditMode);
 
-  const planUnitsContractCollapseState = useSelector((state) =>
+  const planUnitsContractCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${
@@ -60,7 +60,7 @@ const LeaseArea: React.FC<Props> = ({ area }: Props) => {
       }.plan_units_contract`,
     ),
   );
-  const planUnitsCurrentCollapseState = useSelector((state) =>
+  const planUnitsCurrentCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${
@@ -68,7 +68,7 @@ const LeaseArea: React.FC<Props> = ({ area }: Props) => {
       }.plan_units_current`,
     ),
   );
-  const plotsContractCollapseState = useSelector((state) =>
+  const plotsContractCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${
@@ -76,7 +76,7 @@ const LeaseArea: React.FC<Props> = ({ area }: Props) => {
       }.plots_contract`,
     ),
   );
-  const plotsCurrentCollapseState = useSelector((state) =>
+  const plotsCurrentCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${
@@ -84,7 +84,7 @@ const LeaseArea: React.FC<Props> = ({ area }: Props) => {
       }.plots_current`,
     ),
   );
-  const customDetailedPlanCollapseState = useSelector((state) =>
+  const customDetailedPlanCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${isEditMode ? ViewModes.EDIT : ViewModes.READONLY}.${formName}.${
@@ -92,7 +92,7 @@ const LeaseArea: React.FC<Props> = ({ area }: Props) => {
       }.custom_detailed_plan`,
     ),
   );
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleCollapseToggle = (key: string, val: boolean) => {
     const mode: string = isEditMode ? ViewModes.EDIT : ViewModes.READONLY;

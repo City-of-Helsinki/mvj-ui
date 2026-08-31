@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { isEmpty } from "lodash-es";
 import { IconAlertCircle, LoadingSpinner, StatusLabel } from "hds-react";
 
@@ -28,8 +28,10 @@ const SanctionsCheckRequest: React.FC<Props> = ({
   lastName,
   formErrors,
 }) => {
-  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isFetchingUsersPermissions = useAppSelector(
+    getIsFetchingUsersPermissions,
+  );
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   if (isFetchingUsersPermissions) return <LoadingSpinner />;
   if (isEmpty(usersPermissions)) return null;

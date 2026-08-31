@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { createForm, setIn } from "final-form";
 import type { FormApi } from "final-form";
@@ -181,49 +181,57 @@ import { validateRentCalculatorForm } from "@/components/formValidations";
 import { validateRentBasisForm } from "@/rentbasis/formValidators";
 
 const LeasePage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const params = useParams();
   const location = useLocation();
 
-  const commentAttributes: Attributes = useSelector(getCommentAttributes);
-  const commentMethods: MethodsType = useSelector(getCommentMethods);
-  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
-  const invoiceMethods: MethodsType = useSelector(getInvoiceMethods);
-  const isFetchingCommentAttributes = useSelector(
+  const commentAttributes: Attributes = useAppSelector(getCommentAttributes);
+  const commentMethods: MethodsType = useAppSelector(getCommentMethods);
+  const invoiceAttributes: Attributes = useAppSelector(getInvoiceAttributes);
+  const invoiceMethods: MethodsType = useAppSelector(getInvoiceMethods);
+  const isFetchingCommentAttributes = useAppSelector(
     getIsFetchingCommentAttributes,
   );
-  const isFetchingInvoiceAttributes = useSelector(
+  const isFetchingInvoiceAttributes = useAppSelector(
     getIsFetchingInvoiceAttributes,
   );
-  const isFetchingLeaseAttributes = useSelector(getIsFetchingLeaseAttributes);
-  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
-  const isFetchingReceivableTypes = useSelector(getIsFetchingReceivableTypes);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const leaseMethods: MethodsType = useSelector(getLeaseMethods);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isFetchingLeaseAttributes = useAppSelector(
+    getIsFetchingLeaseAttributes,
+  );
+  const isFetchingUsersPermissions = useAppSelector(
+    getIsFetchingUsersPermissions,
+  );
+  const isFetchingReceivableTypes = useAppSelector(
+    getIsFetchingReceivableTypes,
+  );
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const leaseMethods: MethodsType = useAppSelector(getLeaseMethods);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
-  const isFetchingUiDataAttributes = useSelector(getIsFetchingUiDataAttributes);
-  const isFetchingUiDataList = useSelector(getIsFetchingUiDataList);
-  const uiDataAttributes = useSelector(getUiDataAttributes);
-  const uiDataList = useSelector(getUiDataList);
-  const uiDataMethods: MethodsType = useSelector(getUiDataMethods);
+  const isFetchingUiDataAttributes = useAppSelector(
+    getIsFetchingUiDataAttributes,
+  );
+  const isFetchingUiDataList = useAppSelector(getIsFetchingUiDataList);
+  const uiDataAttributes = useAppSelector(getUiDataAttributes);
+  const uiDataList = useAppSelector(getUiDataList);
+  const uiDataMethods: MethodsType = useAppSelector(getUiDataMethods);
 
-  const currentLease = useSelector(getCurrentLease);
-  const isEditMode = useSelector(getIsEditMode);
-  const isFetchingOldDwellingsInHousingCompaniesPriceIndex = useSelector(
+  const currentLease = useAppSelector(getCurrentLease);
+  const isEditMode = useAppSelector(getIsEditMode);
+  const isFetchingOldDwellingsInHousingCompaniesPriceIndex = useAppSelector(
     getIsFetchingOldDwellingsInHousingCompaniesPriceIndex,
   );
-  const oldDwellingsInHousingCompaniesPriceIndex = useSelector(
+  const oldDwellingsInHousingCompaniesPriceIndex = useAppSelector(
     getOldDwellingsInHousingCompaniesPriceIndex,
   );
-  const isSaving = useSelector(getIsSaving);
-  const isFetching = useSelector(getIsFetching);
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseTypeList = useSelector(getLeaseTypeList);
-  const loggedUser = useSelector(getLoggedInUser);
-  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
-  const vats = useSelector(getVats);
+  const isSaving = useAppSelector(getIsSaving);
+  const isFetching = useAppSelector(getIsFetching);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseTypeList = useAppSelector(getLeaseTypeList);
+  const loggedUser = useAppSelector(getLoggedInUser);
+  const userActiveServiceUnit = useAppSelector(getUserActiveServiceUnit);
+  const vats = useAppSelector(getVats);
 
   const { search, pathname } = location;
   const { leaseId } = params;
@@ -359,10 +367,10 @@ const LeasePage: React.FC = () => {
     dispatch,
   ]);
 
-  const comments: CommentList = useSelector((state) =>
+  const comments: CommentList = useAppSelector((state) =>
     getCommentsByLease(state, Number(leaseId)),
   );
-  const invoices: InvoiceList = useSelector((state) =>
+  const invoices: InvoiceList = useAppSelector((state) =>
     getInvoicesByLease(state, Number(leaseId)),
   );
 

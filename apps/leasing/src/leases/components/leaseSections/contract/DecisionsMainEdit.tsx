@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import Authorization from "@/components/authorization/Authorization";
 import ContractsEdit from "./ContractsEdit";
 import DecisionsEdit from "./DecisionsEdit";
@@ -31,7 +31,7 @@ const DecisionsMainEdit: React.FC<Props> = ({
   contractFormApi,
   inspectionsFormApi,
 }) => {
-  const attributes: Attributes = useSelector(getAttributes);
+  const attributes: Attributes = useAppSelector(getAttributes);
 
   return (
     <>

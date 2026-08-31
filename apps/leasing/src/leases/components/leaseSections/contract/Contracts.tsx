@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import ContractFileModal from "./ContractFileModal";
 import ContractItem from "./ContractItem";
 import FormText from "@/components/form/FormText";
@@ -10,8 +10,8 @@ import { getAttributes, getCurrentLease } from "@/leases/selectors";
 import type { Attributes } from "types";
 
 const Contracts: React.FC = () => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const currentLease = useSelector(getCurrentLease);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const currentLease = useAppSelector(getCurrentLease);
 
   const [contractId, setContractId] = React.useState<number>(-1);
   const [showContractModal, setShowContractModal] =

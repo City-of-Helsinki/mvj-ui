@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import Authorization from "@/components/authorization/Authorization";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import { RentBasisFieldPaths, RentBasisFieldTitles } from "@/rentbasis/enums";
@@ -11,7 +11,9 @@ type Props = {
 };
 
 const RentBasisInfo = ({ identifier }: Props) => {
-  const rentBasisAttributes: Attributes = useSelector(getRentBasisAttributes);
+  const rentBasisAttributes: Attributes = useAppSelector(
+    getRentBasisAttributes,
+  );
   if (!identifier) return null;
   return (
     <Authorization

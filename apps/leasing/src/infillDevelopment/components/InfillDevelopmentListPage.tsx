@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation, useNavigate } from "react-router";
 import { isArray } from "lodash-es";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -55,17 +55,17 @@ import {
 } from "@/infillDevelopment/selectors";
 
 const InfillDevelopmentListPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const infillDevelopmentAttributes = useSelector(
+  const infillDevelopmentAttributes = useAppSelector(
     getInfillDevelopmentAttributes,
   );
-  const infillDevelopmentMethods = useSelector(getInfillDevelopmentMethods);
-  const infillDevelopmentList = useSelector(getInfillDevelopments);
-  const isFetching = useSelector(getIsFetching);
-  const isFetchingInfillDevelopmentAttributes = useSelector(
+  const infillDevelopmentMethods = useAppSelector(getInfillDevelopmentMethods);
+  const infillDevelopmentList = useAppSelector(getInfillDevelopments);
+  const isFetching = useAppSelector(getIsFetching);
+  const isFetchingInfillDevelopmentAttributes = useAppSelector(
     getIsFetchingInfillDevelopmentAttributes,
   );
 

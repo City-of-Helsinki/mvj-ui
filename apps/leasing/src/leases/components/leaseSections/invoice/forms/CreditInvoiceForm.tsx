@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
@@ -50,10 +50,10 @@ const CreditInvoiceForm = ({
   onSave,
   setRefForFirstField,
 }: Props) => {
-  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
-  const isCreditClicked = useSelector(getIsCreditClicked);
+  const invoiceAttributes: Attributes = useAppSelector(getInvoiceAttributes);
+  const isCreditClicked = useAppSelector(getIsCreditClicked);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleSave = (values: any) => {
     dispatch(receiveIsCreditClicked(true));

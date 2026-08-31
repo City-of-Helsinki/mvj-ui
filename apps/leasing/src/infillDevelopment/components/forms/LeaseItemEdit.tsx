@@ -1,5 +1,5 @@
 import React, { ReactElement, useCallback, useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
@@ -652,35 +652,35 @@ const LeaseItemEdit = (props: Props) => {
     leaseId,
   } = props;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const collapseState = useSelector((state: RootState) =>
+  const collapseState = useAppSelector((state: RootState) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${FormNames.INFILL_DEVELOPMENT}.${infillDevelopmentCompensationLeaseId}`,
     ),
   );
-  const infillDevelopmentAttachmentAttributes: Attributes = useSelector(
+  const infillDevelopmentAttachmentAttributes: Attributes = useAppSelector(
     getInfillDevelopmentAttachmentAttributes,
   );
-  const infillDevelopmentAttachmentMethods: MethodsType = useSelector(
+  const infillDevelopmentAttachmentMethods: MethodsType = useAppSelector(
     getInfillDevelopmentAttachmentMethods,
   );
-  const infillDevelopmentAttributes: Attributes = useSelector(
+  const infillDevelopmentAttributes: Attributes = useAppSelector(
     getInfillDevelopmentAttributes,
   );
-  const isFetching = useSelector((state: RootState) =>
+  const isFetching = useAppSelector((state: RootState) =>
     getIsFetchingById(state, leaseId),
   );
-  const lease: Lease = useSelector((state: RootState) =>
+  const lease: Lease = useAppSelector((state: RootState) =>
     getLeaseById(state, leaseId),
   );
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const userActiveServiceUnit: UserServiceUnit = useSelector(
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const userActiveServiceUnit: UserServiceUnit = useAppSelector(
     getUserActiveServiceUnit,
   );
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   useEffect(() => {
     if (isEmpty(lease) && !isEmpty(leaseFieldValue)) {

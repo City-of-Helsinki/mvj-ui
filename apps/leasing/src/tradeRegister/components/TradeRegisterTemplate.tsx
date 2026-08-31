@@ -1,5 +1,5 @@
 import React, { useEffect, memo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import CompanyExtended from "@/tradeRegister/components/CompanyExtended";
 import CompanyNotice from "@/tradeRegister/components/CompanyNotice";
 import CompanyRepresent from "@/tradeRegister/components/CompanyRepresent";
@@ -27,24 +27,24 @@ type Props = {
 };
 
 const TradeRegisterTemplate = ({ businessId }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const companyExtended = useSelector((state: RootState) =>
+  const companyExtended = useAppSelector((state: RootState) =>
     getCompanyExtendedById(state, businessId),
   );
-  const companyNotice = useSelector((state: RootState) =>
+  const companyNotice = useAppSelector((state: RootState) =>
     getCompanyNoticeById(state, businessId),
   );
-  const companyRepresent = useSelector((state: RootState) =>
+  const companyRepresent = useAppSelector((state: RootState) =>
     getCompanyRepresentById(state, businessId),
   );
-  const isFetchingCompanyExtended = useSelector((state: RootState) =>
+  const isFetchingCompanyExtended = useAppSelector((state: RootState) =>
     getIsFetchingCompanyExtendedById(state, businessId),
   );
-  const isFetchingCompanyNotice = useSelector((state: RootState) =>
+  const isFetchingCompanyNotice = useAppSelector((state: RootState) =>
     getIsFetchingCompanyNoticeById(state, businessId),
   );
-  const isFetchingCompanyRepresent = useSelector((state: RootState) =>
+  const isFetchingCompanyRepresent = useAppSelector((state: RootState) =>
     getIsFetchingCompanyRepresentById(state, businessId),
   );
 

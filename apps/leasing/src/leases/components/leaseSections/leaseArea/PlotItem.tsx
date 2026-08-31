@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { useLocation, Link } from "react-router";
 import { Row, Column } from "@/components/grid/Grid";
 import { isEmpty } from "lodash-es";
@@ -33,7 +33,7 @@ type Props = {
 };
 
 const PlotItem: React.FC<Props> = ({ areaArchived, plot }) => {
-  const attributes: Attributes = useSelector(getAttributes);
+  const attributes: Attributes = useAppSelector(getAttributes);
 
   const location = useLocation();
   const getMapLinkUrl = () => {

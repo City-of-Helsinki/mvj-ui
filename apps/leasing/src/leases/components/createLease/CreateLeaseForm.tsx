@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Form } from "react-final-form";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
@@ -78,12 +78,12 @@ const FormContent: React.FC<{
   allowToChangeRelateTo,
   setRefForFirstField,
 }) => {
-  const dispatch = useDispatch();
-  const districts = useSelector((state) =>
+  const dispatch = useAppDispatch();
+  const districts = useAppSelector((state) =>
     getDistrictsByMunicipality(state, parseInt(values.municipality)),
   );
   const districtOptions = getDistrictOptions(districts);
-  const isCreateClicked = useSelector(getIsCreateClicked);
+  const isCreateClicked = useAppSelector(getIsCreateClicked);
 
   useEffect(() => {
     if (prevMunicipalityRef.current === null) {
@@ -343,9 +343,9 @@ const CreateLeaseForm: React.FC<Props> = ({
   onSubmit,
   setRefForFirstField,
 }) => {
-  const leaseAttributes = useSelector(getLeaseAttributes);
-  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
-  const isFetchingDistricts = useSelector(getIsFetchingDistricts);
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
+  const userActiveServiceUnit = useAppSelector(getUserActiveServiceUnit);
+  const isFetchingDistricts = useAppSelector(getIsFetchingDistricts);
 
   const prevMunicipalityRef = useRef(null);
 

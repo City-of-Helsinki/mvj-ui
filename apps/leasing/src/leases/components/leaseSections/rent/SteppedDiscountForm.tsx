@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import FormField from "@/components/form/final-form/FormField";
@@ -17,8 +17,8 @@ import type { Attributes } from "types";
 import { getDecisionOptions } from "@/leases/helpers";
 
 const SteppedDiscountForm: React.FC = () => {
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const decisionOptions = getDecisionOptions(useSelector(getCurrentLease));
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const decisionOptions = getDecisionOptions(useAppSelector(getCurrentLease));
 
   return (
     <div>

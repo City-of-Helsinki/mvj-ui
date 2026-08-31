@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { GeoJSON } from "react-leaflet";
 import { initializeAreaNote, showEditMode } from "@/areaNote/actions";
 import { Methods } from "@/enums";
@@ -27,9 +27,9 @@ const AreaNotesLayer: React.FC<Props> = ({
   areaNotes,
   defaultAreaNote,
 }) => {
-  const dispatch = useDispatch();
-  const areaNoteMethods: MethodsType = useSelector(getAreaNoteMethods);
-  const isEditMode = useSelector(getIsEditMode);
+  const dispatch = useAppDispatch();
+  const areaNoteMethods: MethodsType = useAppSelector(getAreaNoteMethods);
+  const isEditMode = useAppSelector(getIsEditMode);
 
   const areaNotesGeoJson = useMemo(() => {
     return convertAreaNoteListToGeoJson(areaNotes);

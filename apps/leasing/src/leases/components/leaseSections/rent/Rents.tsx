@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import Authorization from "@/components/authorization/Authorization";
 import BasisOfRents from "./basisOfRent/BasisOfRents";
 import Divider from "@/components/content/Divider";
@@ -45,9 +45,9 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 
 const Rents: React.FC = () => {
-  const currentLease = useSelector(getCurrentLease);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const currentLease = useAppSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const rentsAll = getContentRents(currentLease);
   const rents = rentsAll.filter((rent) => !isArchived(rent));

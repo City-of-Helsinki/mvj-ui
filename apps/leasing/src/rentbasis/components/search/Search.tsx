@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { useForm, useFormState } from "react-final-form";
 import { isEqual } from "lodash-es";
 import { Row, Column } from "@/components/grid/Grid";
@@ -203,7 +203,9 @@ const Search: React.FC<Props> = ({
 }) => {
   const form = useForm();
 
-  const rentBasisAttributes: Attributes = useSelector(getRentBasisAttributes);
+  const rentBasisAttributes: Attributes = useAppSelector(
+    getRentBasisAttributes,
+  );
 
   const decisionMakerOptions = useMemo(
     () =>

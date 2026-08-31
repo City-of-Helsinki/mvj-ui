@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import Button from "@/components/button/Button";
 import FileDownloadLink from "@/components/file/FileDownloadLink";
@@ -24,12 +24,14 @@ type Props = {
 };
 
 const ContractFileModal: React.FC<Props> = ({ contractId, onClose, open }) => {
-  const files = useSelector((state) => getContractFilesById(state, contractId));
-  const isFetching = useSelector((state) =>
+  const files = useAppSelector((state) =>
+    getContractFilesById(state, contractId),
+  );
+  const isFetching = useAppSelector((state) =>
     getIsFetchingById(state, contractId),
   );
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (open && !files) {

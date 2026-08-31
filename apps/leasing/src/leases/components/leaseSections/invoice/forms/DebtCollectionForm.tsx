@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Form } from "react-final-form";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -94,31 +94,31 @@ import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 
 const DebtCollectionForm: React.FC = () => {
-  const activeServiceUnit = useSelector(getUserActiveServiceUnit);
+  const activeServiceUnit = useAppSelector(getUserActiveServiceUnit);
   const largeScreen = useWindowResize();
-  const dispatch = useDispatch();
-  const currentLease: Lease = useSelector(getCurrentLease);
-  const collectionCourtDecisions = useSelector((state) =>
+  const dispatch = useAppDispatch();
+  const currentLease: Lease = useAppSelector(getCurrentLease);
+  const collectionCourtDecisions = useAppSelector((state) =>
     getCollectionCourtDecisionsByLease(state, currentLease.id),
   );
-  const collectionCourtDecisionAttributes: Attributes = useSelector(
+  const collectionCourtDecisionAttributes: Attributes = useAppSelector(
     getCollectionCourtDecisionAttributes,
   );
-  const collectionLetterAttributes: Attributes = useSelector(
+  const collectionLetterAttributes: Attributes = useAppSelector(
     getCollectionLetterAttributes,
   );
-  const collectionLetters = useSelector((state) =>
+  const collectionLetters = useAppSelector((state) =>
     getCollectionLettersByLease(state, currentLease.id),
   );
-  const collectionNotes = useSelector((state) =>
+  const collectionNotes = useAppSelector((state) =>
     getCollectionNotesByLease(state, currentLease.id),
   );
-  const isCollectionCourtDecisionPanelOpen = useSelector(
+  const isCollectionCourtDecisionPanelOpen = useAppSelector(
     getIsCollectionCourtDecisionPanelOpen,
   );
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const [sortedCollectionCourtDecisions, setSortedCollectionCourtDecisions] =
     useState<Array<Record<string, any>>>([]);

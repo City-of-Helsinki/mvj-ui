@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation, useNavigate } from "react-router";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -59,19 +59,19 @@ import {
 import type { Attributes } from "types";
 
 const LeaseholdTransferListPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isFetching = useSelector(getIsFetching);
-  const leaseholdTransferList = useSelector(getLeaseholdTransferList);
-  const isFetchingLeaseholdTransferAttributes = useSelector(
+  const isFetching = useAppSelector(getIsFetching);
+  const leaseholdTransferList = useAppSelector(getLeaseholdTransferList);
+  const isFetchingLeaseholdTransferAttributes = useAppSelector(
     getIsFetchingLeaseholdTransferAttributes,
   );
-  const leaseholdTransferAttributes = useSelector(
+  const leaseholdTransferAttributes = useAppSelector(
     getLeaseholdTransferAttributes,
   );
-  const leaseholdTransferMethods = useSelector(getLeaseholdTransferMethods);
+  const leaseholdTransferMethods = useAppSelector(getLeaseholdTransferMethods);
 
   const searchQuery = useMemo(
     () => getUrlParams(location.search),

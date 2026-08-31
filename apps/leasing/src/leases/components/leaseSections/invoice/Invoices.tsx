@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -97,40 +97,40 @@ import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 
 const Invoices: React.FC = () => {
-  const currentLease: Lease = useSelector(getCurrentLease);
-  const collectionCourtDecisions = useSelector((state) =>
+  const currentLease: Lease = useAppSelector(getCurrentLease);
+  const collectionCourtDecisions = useAppSelector((state) =>
     getCollectionCourtDecisionsByLease(state, currentLease.id),
   );
-  const collectionLetters = useSelector((state) =>
+  const collectionLetters = useAppSelector((state) =>
     getCollectionLettersByLease(state, currentLease.id),
   );
-  const collectionNotes = useSelector((state) =>
+  const collectionNotes = useAppSelector((state) =>
     getCollectionNotesByLease(state, currentLease.id),
   );
-  const invoiceSets = useSelector((state) =>
+  const invoiceSets = useAppSelector((state) =>
     getInvoiceSetsByLease(state, currentLease.id),
   );
-  const invoicesCollapseState = useSelector((state) =>
+  const invoicesCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.invoices`),
   );
-  const invoiceNotesCollapseState = useSelector((state) =>
+  const invoiceNotesCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.invoices.invoice_notes`,
     ),
   );
-  const invoiceToCredit = useSelector(getInvoiceToCredit);
+  const invoiceToCredit = useAppSelector(getInvoiceToCredit);
 
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const previewInvoicesCollapseState = useSelector((state) =>
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const previewInvoicesCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.invoices.preview_invoices`,
     ),
   );
-  const usersPermissions = useSelector(getUsersPermissions);
-  const activeServiceUnit = useSelector(getUserActiveServiceUnit);
-  const dispatch = useDispatch();
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const activeServiceUnit = useAppSelector(getUserActiveServiceUnit);
+  const dispatch = useAppDispatch();
 
   const isServiceUnitSameAsActiveServiceUnit = () => {
     return activeServiceUnit?.id === currentLease?.service_unit?.id;
@@ -149,35 +149,35 @@ const Invoices: React.FC = () => {
     setIsFetchingLeaseInvoiceTabAttributes,
   ] = useState<boolean>(false);
 
-  const collectionCourtDecisionAttributes = useSelector(
+  const collectionCourtDecisionAttributes = useAppSelector(
     getCollectionCourtDecisionAttributes,
   );
-  const collectionLetterAttributes = useSelector(getCollectionLetterAttributes);
-  const collectionNoteAttributes = useSelector(getCollectionNoteAttributes);
-  const createCollectionLetterAttributes = useSelector(
+  const collectionLetterAttributes = useAppSelector(getCollectionLetterAttributes);
+  const collectionNoteAttributes = useAppSelector(getCollectionNoteAttributes);
+  const createCollectionLetterAttributes = useAppSelector(
     getCreateCollectionLetterAttributes,
   );
-  const invoiceNoteAttributes = useSelector(getInvoiceNoteAttributes);
-  const isFetchingCollectionCourtDecisionAttributes = useSelector(
+  const invoiceNoteAttributes = useAppSelector(getInvoiceNoteAttributes);
+  const isFetchingCollectionCourtDecisionAttributes = useAppSelector(
     getIsFetchingCollectionCourtDecisionAttributes,
   );
-  const isFetchingCollectionLetterAttributes = useSelector(
+  const isFetchingCollectionLetterAttributes = useAppSelector(
     getIsFetchingCollectionLetterAttributes,
   );
-  const isFetchingCollectionNoteAttributes = useSelector(
+  const isFetchingCollectionNoteAttributes = useAppSelector(
     getIsFetchingCollectionNoteAttributes,
   );
-  const isFetchingCreateCollectionLetterAttributes = useSelector(
+  const isFetchingCreateCollectionLetterAttributes = useAppSelector(
     getIsFetchingCreateCollectionLetterAttributes,
   );
-  const isFetchingInvoiceNoteAttributes = useSelector(
+  const isFetchingInvoiceNoteAttributes = useAppSelector(
     getIsFetchingInvoiceNoteAttributes,
   );
-  const isFetchingLeaseCreateChargeAttributes = useSelector(
+  const isFetchingLeaseCreateChargeAttributes = useAppSelector(
     getIsFetchingLeaseCreateChargeAttributes,
   );
 
-  const leaseCreateChargeAttributes = useSelector(
+  const leaseCreateChargeAttributes = useAppSelector(
     getLeaseCreateChargeAttributes,
   );
 

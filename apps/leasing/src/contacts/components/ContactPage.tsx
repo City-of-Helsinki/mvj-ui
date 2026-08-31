@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useNavigate, useParams, useLocation } from "react-router";
 import { Form, FormSpy } from "react-final-form";
 import { isEmpty } from "lodash-es";
@@ -87,7 +87,7 @@ const ContactPageView: React.FC<{
   const navigate = useNavigate();
   const params = useParams();
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { contactMethods } = useContactAttributes();
 
   const [activeTab, setActiveTab] = useState(0);
@@ -101,13 +101,13 @@ const ContactPageView: React.FC<{
   const prevContactRef = useRef<Contact | null>(null);
   const prevEditModeRef = useRef<boolean | null>(null);
 
-  const isSaving = useSelector(getIsSaving);
+  const isSaving = useAppSelector(getIsSaving);
   const isContactFormValid = form?.getState()?.valid;
-  const isEditMode = useSelector(getIsEditMode);
-  const isFetching = useSelector(getIsFetching);
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const usersPermissions = useSelector(getUsersPermissions);
-  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const isEditMode = useAppSelector(getIsEditMode);
+  const isFetching = useAppSelector(getIsFetching);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const userActiveServiceUnit = useAppSelector(getUserActiveServiceUnit);
 
   const contactId = params.contactId;
 
@@ -601,8 +601,8 @@ const ContactPageContent: React.FC<{
 const ContactPage: React.FC = () => {
   // Fetch ui data and attributes if needed
   useUiDataList();
-  const dispatch = useDispatch();
-  const contact = useSelector(getCurrentContact);
+  const dispatch = useAppDispatch();
+  const contact = useAppSelector(getCurrentContact);
 
   const handleFormSubmit = useCallback(
     (values: Contact) => {

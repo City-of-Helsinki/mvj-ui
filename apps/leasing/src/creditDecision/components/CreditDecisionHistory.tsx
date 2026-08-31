@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { isEmpty } from "lodash-es";
 import InfoIcon from "@/components/icons/InfoIcon";
 import GreenBox from "@/components/content/GreenBox";
@@ -27,9 +27,9 @@ type Props = {
 };
 
 const CreditDecisionHistory: React.FC<Props> = ({ businessId, contactId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const history = useSelector((state) => {
+  const history = useAppSelector((state) => {
     if (contactId) {
       return getHistoryByContactId(state, contactId);
     }
@@ -41,7 +41,7 @@ const CreditDecisionHistory: React.FC<Props> = ({ businessId, contactId }) => {
     return undefined;
   });
 
-  const isFetchingHistory = useSelector((state) => {
+  const isFetchingHistory = useAppSelector((state) => {
     if (contactId) {
       return getIsFetchingHistoryByContactId(state, contactId);
     }

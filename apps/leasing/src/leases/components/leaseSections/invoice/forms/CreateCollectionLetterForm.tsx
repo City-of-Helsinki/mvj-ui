@@ -1,6 +1,6 @@
 import React, { ReactElement, useMemo } from "react";
 import arrayMutators from "final-form-arrays";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import { Row, Column } from "@/components/grid/Grid";
@@ -172,13 +172,13 @@ const getInvoiceOptions = (invoices: Array<Record<string, any>>) =>
     : [];
 
 const CreateCollectionLetterForm: React.FC = () => {
-  const createCollectionLetterAttributes = useSelector(
+  const createCollectionLetterAttributes = useAppSelector(
     getCreateCollectionLetterAttributes,
   );
-  const invoices = useSelector((state) =>
+  const invoices = useAppSelector((state) =>
     getInvoicesByLease(state, getCurrentLease(state).id),
   );
-  const lease = useSelector(getCurrentLease);
+  const lease = useAppSelector(getCurrentLease);
 
   const invoiceOptions = useMemo(() => getInvoiceOptions(invoices), [invoices]);
   const tenantOptions = useMemo(() => getInvoiceTenantOptions(lease), [lease]);

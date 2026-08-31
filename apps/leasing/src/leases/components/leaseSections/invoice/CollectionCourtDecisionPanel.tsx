@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
@@ -35,10 +35,10 @@ const CollectionCourtDecisionPanel: React.FC<Props> = ({
   onSave,
   valid,
 }) => {
-  const collectionCourtDecisionAttributes: Attributes = useSelector(
+  const collectionCourtDecisionAttributes: Attributes = useAppSelector(
     getCollectionCourtDecisionAttributes,
   );
-  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
 
   const { input: decisionDate } = useField("decision_date");
   const { input: note } = useField("note");

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import ConstructabilityItem from "./ConstructabilityItem";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
@@ -14,8 +14,8 @@ import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 
 const Constructability: React.FC = () => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const currentLease: Lease = useSelector(getCurrentLease);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const currentLease: Lease = useAppSelector(getCurrentLease);
 
   const [areas, setAreas] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);

@@ -1,5 +1,5 @@
 import React, { ReactElement, useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import type { FormApi } from "final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
@@ -97,8 +97,8 @@ const ManagementSubventions = ({
   formApi,
   initialYearRent,
 }: ManagementSubventionsProps): ReactElement => {
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const handleAdd = () => {
     fields.push({});
@@ -275,8 +275,8 @@ const TemporarySubventions = ({
   managementSubventions,
   temporarySubventions,
 }: TemporarySubventionsProps): ReactElement => {
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const handleAdd = () => {
     fields.push({});
@@ -493,10 +493,10 @@ const BasisOfRentEdit: React.FC<Props> = ({
   subventionTypeOptions,
   totalDiscountedInitialYearRent,
 }) => {
-  const currentLease = useSelector(getCurrentLease);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
-  const isSaveClicked = useSelector(getIsSaveClicked);
+  const currentLease = useAppSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
   const amountPerArea = useFieldValue(`${field}.amount_per_area`);
   const currentAmountPerArea = useFieldValue(
     `${field}.current_amount_per_area`,

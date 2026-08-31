@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
@@ -626,10 +626,10 @@ const CollateralEdit: React.FC<Props> = ({
   onRemove,
   collateralType,
 }) => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
   return (
     <BoxItem>
       <BoxContentWrapper>

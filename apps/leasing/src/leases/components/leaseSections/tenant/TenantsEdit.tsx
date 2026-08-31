@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
 import { FieldArray } from "react-final-form-arrays";
@@ -200,17 +200,17 @@ type Props = {
 
 const TenantsEdit: React.FC<Props> = ({ formApi }) => {
   const { change } = formApi;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { contactMethods, isFetchingContactAttributes } =
     useContactAttributes();
-  const contactModalSettings = useSelector(getContactModalSettings);
-  const currentLease = useSelector(getCurrentLease);
-  const isContactModalOpen = useSelector(getIsContactModalOpen);
-  const isFetchingContact = useSelector(getIsFetchingContact);
-  const leaseAttributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
-  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const contactModalSettings = useAppSelector(getContactModalSettings);
+  const currentLease = useAppSelector(getCurrentLease);
+  const isContactModalOpen = useAppSelector(getIsContactModalOpen);
+  const isFetchingContact = useAppSelector(getIsFetchingContact);
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const userActiveServiceUnit = useAppSelector(getUserActiveServiceUnit);
 
   useEffect(() => {
     dispatch(hideContactModal());

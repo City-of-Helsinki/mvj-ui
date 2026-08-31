@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
 import { FieldArray } from "react-final-form-arrays";
@@ -37,10 +37,10 @@ const InfillDevelopmentForm = ({
   isFocusedOnMount,
 }: Props) => {
   const firstField = useRef<any>(null);
-  const infillDevelopmentAttributes: Attributes = useSelector(
+  const infillDevelopmentAttributes: Attributes = useAppSelector(
     getInfillDevelopmentAttributes,
   );
-  const isSaveClicked = useSelector(getIsSaveClicked);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
 
   useEffect(() => {
     if (isFocusedOnMount && firstField.current) {

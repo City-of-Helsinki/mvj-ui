@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
@@ -9,11 +9,7 @@ import FormFieldLabel from "@/components/form/FormFieldLabel";
 import LeaseSelectInput from "@/components/inputs/LeaseSelectInput";
 import LeaseHistoryItem from "./LeaseHistoryItem";
 import TitleH3 from "@/components/content/TitleH3";
-import {
-  createLease,
-  hideCreateModal,
-  showCreateModal,
-} from "@/leases/actions";
+import { createLease, hideCreateModal, showCreateModal } from "@/leases/slice";
 import {
   createReleatedLease,
   deleteReleatedLease,
@@ -61,14 +57,14 @@ type Props = {
 const LeaseHistoryEdit: React.FC<Props> = (props) => {
   const { serviceUnit } = props;
 
-  const currentLease = useSelector(getCurrentLease);
-  const isCreateModalOpen = useSelector(getIsCreateModalOpen);
-  const hasAnyDirtyForms = useSelector(isAnyLeaseFormDirty);
-  const leaseAttributes = useSelector(getLeaseAttributes);
-  const leaseMethods = useSelector(getLeaseMethods);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const currentLease = useAppSelector(getCurrentLease);
+  const isCreateModalOpen = useAppSelector(getIsCreateModalOpen);
+  const hasAnyDirtyForms = useAppSelector(isAnyLeaseFormDirty);
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
+  const leaseMethods = useAppSelector(getLeaseMethods);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [newLease, setNewLease] = useState<Record<string, any> | null>(null);
   const stateOptions = useMemo(() => {
     return getFieldOptions(leaseAttributes, LeaseFieldPaths.STATE);

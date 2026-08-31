@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { useLocation, Link } from "react-router";
 import { get } from "lodash-es";
@@ -45,10 +45,10 @@ const LeaseInfo = ({
   plots,
   tenants,
 }: Props) => {
-  const infillDevelopmentAttributes: Attributes = useSelector(
+  const infillDevelopmentAttributes: Attributes = useAppSelector(
     getInfillDevelopmentAttributes,
   );
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
   const location = useLocation();
   const getMapLinkUrl = () => {
     const { pathname, search } = location;

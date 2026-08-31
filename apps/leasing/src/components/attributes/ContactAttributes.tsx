@@ -1,5 +1,6 @@
 import React, { PureComponent, useEffect } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { connect } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { flowRight } from "lodash-es";
 import { fetchAttributes as fetchContactAttributes } from "@/contacts/actions";
 import {
@@ -10,11 +11,11 @@ import {
 import type { Attributes, Methods } from "types";
 
 export function useContactAttributes() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const contactAttributes = useSelector(getContactAttributes);
-  const contactMethods = useSelector(getContactMethods);
-  const isFetchingContactAttributes = useSelector(
+  const contactAttributes = useAppSelector(getContactAttributes);
+  const contactMethods = useAppSelector(getContactMethods);
+  const isFetchingContactAttributes = useAppSelector(
     getIsFetchingContactAttributes,
   );
 

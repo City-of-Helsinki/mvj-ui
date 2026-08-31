@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get } from "lodash-es";
 import BoxItem from "@/components/content/BoxItem";
@@ -32,19 +32,19 @@ type Props = {
 };
 
 const CompanyNotice = ({ businessId }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const largeScreen = useWindowResize();
 
-  const companyNotice = useSelector((state: RootState) =>
+  const companyNotice = useAppSelector((state: RootState) =>
     getCompanyNoticeById(state, businessId),
   );
-  const companyNoticeCollapseState = useSelector((state: RootState) =>
+  const companyNoticeCollapseState = useAppSelector((state: RootState) =>
     getCollapseStateByKey(
       state,
       `${CollapseStatePaths.COMPANY_NOTICE}.${businessId}`,
     ),
   );
-  const isFetchingCompanyNotice = useSelector((state: RootState) =>
+  const isFetchingCompanyNotice = useAppSelector((state: RootState) =>
     getIsFetchingCompanyNoticeById(state, businessId),
   );
 

@@ -1,6 +1,6 @@
 import { Link, Pagination, Table } from "hds-react";
 import React, { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation, useNavigate } from "react-router";
 
 import GreenBox from "@/components/content/GreenBox";
@@ -82,16 +82,16 @@ const getLeaseDetailsHref = (rowId: number | string) => {
 };
 
 const ContactLeaseTable: React.FC<Props> = ({ contact }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isFetchingAttributes = useSelector(
+  const isFetchingAttributes = useAppSelector(
     getIsFetchingLeasesForContactAttributes,
   );
-  const attributes: Attributes = useSelector(getLeasesForContactAttributes);
-  const isFetchingLeases = useSelector(getIsFetchingLeasesForContact);
-  const leasesForContact = useSelector(getLeasesForContact);
+  const attributes: Attributes = useAppSelector(getLeasesForContactAttributes);
+  const isFetchingLeases = useAppSelector(getIsFetchingLeasesForContact);
+  const leasesForContact = useAppSelector(getLeasesForContact);
 
   const queryParams = useMemo(
     () => getUrlParams(location.search),

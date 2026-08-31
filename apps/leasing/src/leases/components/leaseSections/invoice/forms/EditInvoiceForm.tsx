@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
@@ -63,8 +63,8 @@ type PaymentsProps = {
   relativeTo: any;
 };
 const Payments = ({ fields, relativeTo }: PaymentsProps): ReactElement => {
-  const attributes = useSelector(getInvoiceAttributes);
-  const isEditClicked = useSelector(getIsEditClicked);
+  const attributes = useAppSelector(getInvoiceAttributes);
+  const isEditClicked = useAppSelector(getIsEditClicked);
 
   const handleAdd = () => fields.push({});
 
@@ -246,12 +246,12 @@ const EditInvoiceForm: React.FC<Props> = ({
   onInvoiceLinkClick,
   relativeTo,
 }: Props) => {
-  const currentLease: Lease = useSelector(getCurrentLease);
-  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
-  const isEditClicked = useSelector(getIsEditClicked);
+  const currentLease: Lease = useAppSelector(getCurrentLease);
+  const invoiceAttributes: Attributes = useAppSelector(getInvoiceAttributes);
+  const isEditClicked = useAppSelector(getIsEditClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
-  const dispatch = useDispatch();
+    useAppSelector(getUsersPermissions);
+  const dispatch = useAppDispatch();
 
   const rows = invoice ? invoice.rows : undefined;
 
@@ -314,10 +314,10 @@ const EditInvoiceForm: React.FC<Props> = ({
   const shouldShowOldInvoiceInfo = () => {
     return Boolean(
       invoice &&
-        (invoice.payment_notification_date ||
-          invoice.collection_charge ||
-          invoice.payment_notification_catalog_date ||
-          invoice.delivery_method),
+      (invoice.payment_notification_date ||
+        invoice.collection_charge ||
+        invoice.payment_notification_catalog_date ||
+        invoice.delivery_method),
     );
   };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/root/hooks";
 import Select from "react-select";
 import FormFieldLabel from "@/components/form/FormFieldLabel";
 import DropdownIndicator from "@/components/inputs/DropdownIndicator";
@@ -19,7 +19,7 @@ const UserServiceUnitSelectInput: React.FC<Props> = ({
   userServiceUnits,
   userActiveServiceUnit,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleChange = (val: any) => {
     const selected = userServiceUnits.find((u) => u.id === val?.value);

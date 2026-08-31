@@ -1,6 +1,6 @@
 import React, { ReactElement, useCallback, useEffect, useRef } from "react";
 import { FieldArray } from "react-final-form-arrays";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
@@ -348,10 +348,10 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
   const subventionType = useFieldValue(`${field}.subvention_type`);
   const temporarySubventions = useFieldValue(`${field}.temporary_subventions`);
   const type = useFieldValue(`${field}.type`);
-  const currentLease = useSelector(getCurrentLease);
-  const leaseAttributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
-  const isSaveClicked = useSelector(getIsSaveClicked);
+  const currentLease = useAppSelector(getCurrentLease);
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
 
   const calculateTotalSubventionPercent = useCallback(() => {
     return calculateRentAdjustmentSubventionPercentCumulative(

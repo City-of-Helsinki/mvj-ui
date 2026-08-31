@@ -22,7 +22,7 @@ import {
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 type Props = {
   fixedInitialYearRents: Array<Record<string, any>>;
 };
@@ -31,7 +31,7 @@ const FixedInitialYearRentsEdit: React.FC<Props> = ({
   fixedInitialYearRents,
 }) => {
   const largeScreen = useWindowResize();
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   const [intendedUseOptions, setIntendedUseOptions] = useState([]);
 

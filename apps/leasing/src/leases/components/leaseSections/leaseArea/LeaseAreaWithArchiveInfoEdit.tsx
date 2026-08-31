@@ -1,5 +1,5 @@
 import React, { ReactElement, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import Collapse from "@/components/collapse/Collapse";
@@ -68,7 +68,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
   onRemove,
   onUnarchive,
 }: Props): ReactElement => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const {
     input: { value: areaId },
@@ -77,21 +77,21 @@ const LeaseAreaWithArchiveInfoEdit = ({
     input: { value: archivedAt },
   } = useField(`${field}.archived_at`, { subscription: { value: true } });
 
-  const areaCollapseState = useSelector((state) =>
+  const areaCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${areaId}.area`,
     ),
   );
 
-  const attributes: Attributes = useSelector(getAttributes);
-  const currentLease: Lease = useSelector(getCurrentLease);
-  const errors = useSelector((state) =>
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const currentLease: Lease = useAppSelector(getCurrentLease);
+  const errors = useAppSelector((state) =>
     getErrorsByFormName(state, FormNames.LEASE_AREAS),
   );
-  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
   const decisionOptions = getDecisionOptions(currentLease);
 
   const handleArchive = () => {

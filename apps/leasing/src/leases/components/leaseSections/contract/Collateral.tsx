@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
 import FormText from "@/components/form/FormText";
@@ -529,7 +529,7 @@ type Props = {
 
 const Collateral = ({ collateral, typeOptions }: Props) => {
   const collateralType = collateral.type;
-  const attributes: Attributes = useSelector(getAttributes);
+  const attributes: Attributes = useAppSelector(getAttributes);
   return (
     <BoxItem className="no-border-on-first-child no-border-on-last-child">
       {!collateralType && (

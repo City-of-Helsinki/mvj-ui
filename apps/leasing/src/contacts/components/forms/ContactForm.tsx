@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
@@ -44,9 +44,9 @@ const ContactForm: React.FC<Props> = ({
   // First input to focus reference
   const firstInputRef = useRef(null);
 
-  const attributes = useSelector(getAttributes);
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const attributes = useAppSelector(getAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const userActiveServiceUnit = useAppSelector(getUserActiveServiceUnit);
 
   const formValues = formApi?.getState().values || initialValues || {};
 

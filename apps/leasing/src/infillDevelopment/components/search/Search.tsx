@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { useLocation } from "react-router";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { debounce, isEqual } from "lodash-es";
 import { Form, FormSpy } from "react-final-form";
@@ -40,7 +40,7 @@ const Search: React.FC<Props> = ({
   states,
 }) => {
   const location = useLocation();
-  const infillDevelopmentAttributes: Attributes = useSelector(
+  const infillDevelopmentAttributes: Attributes = useAppSelector(
     getInfillDevelopmentAttributes,
   );
 

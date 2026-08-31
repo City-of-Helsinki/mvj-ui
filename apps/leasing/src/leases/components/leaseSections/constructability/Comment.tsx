@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import classNames from "classnames";
 import Authorization from "@/components/authorization/Authorization";
@@ -22,7 +22,7 @@ type Props = {
 };
 
 const Comment: React.FC<Props> = ({ className, comment }: Props) => {
-  const leaseAttributes = useSelector(getLeaseAttributes);
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
   return (
     <BoxItem className={classNames("no-border-on-last-child", className)}>
       <Row>

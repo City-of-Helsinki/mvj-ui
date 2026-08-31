@@ -58,7 +58,7 @@ import {
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { BasisOfRent } from "@/leases/types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 type Props = {
   areaUnitOptions: Array<Record<string, any>>;
   basisOfRent: BasisOfRent;
@@ -120,7 +120,7 @@ const BasisOfRent = ({
   subventionTypeOptions,
   totalDiscountedInitialYearRent,
 }: Props) => {
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   const getAreaText = (amount: string | null | undefined) => {
     if (isEmptyValue(amount)) return "-";

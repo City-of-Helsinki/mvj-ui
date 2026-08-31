@@ -9,7 +9,7 @@ import { Methods } from "@/enums";
 import { isMethodAllowed } from "@/util/helpers";
 import { useContactAttributes } from "@/components/attributes/ContactAttributes";
 import type { FormApi } from "final-form";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import type { ServiceUnit } from "@/serviceUnits/types";
 import { getInitialContactFormValues } from "../selectors";
@@ -39,9 +39,9 @@ const ContactModal = ({
   serviceUnit,
 }: Props) => {
   const { contactMethods } = useContactAttributes();
-  const initialContactFormValues = useSelector(getInitialContactFormValues);
+  const initialContactFormValues = useAppSelector(getInitialContactFormValues);
 
-  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const userActiveServiceUnit = useAppSelector(getUserActiveServiceUnit);
 
   const handleSubmit = (values: any, form: FormApi) => {
     const isValid = form?.getState().valid;
