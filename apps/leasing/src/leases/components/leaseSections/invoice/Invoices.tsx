@@ -26,7 +26,7 @@ import {
   receiveInvoiceToCredit,
   receiveIsCreateInvoicePanelOpen,
   receiveIsCreditInvoicePanelOpen,
-} from "@/invoices/actions";
+} from "@/invoices/slice";
 import {
   receiveCollapseStates,
   startInvoicing as startInvoicingForLease,
@@ -95,6 +95,7 @@ import {
 } from "@/leaseCreateCharge/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
+import type { Invoice } from "@/invoices/types";
 
 const Invoices: React.FC = () => {
   const currentLease: Lease = useAppSelector(getCurrentLease);
@@ -152,7 +153,9 @@ const Invoices: React.FC = () => {
   const collectionCourtDecisionAttributes = useAppSelector(
     getCollectionCourtDecisionAttributes,
   );
-  const collectionLetterAttributes = useAppSelector(getCollectionLetterAttributes);
+  const collectionLetterAttributes = useAppSelector(
+    getCollectionLetterAttributes,
+  );
   const collectionNoteAttributes = useAppSelector(getCollectionNoteAttributes);
   const createCollectionLetterAttributes = useAppSelector(
     getCreateCollectionLetterAttributes,
@@ -335,7 +338,7 @@ const Invoices: React.FC = () => {
     handleCollapseToggle("preview_invoices", val);
   };
 
-  const handleInvoiceToCreditChange = (val: string) => {
+  const handleInvoiceToCreditChange = (val: Invoice | null) => {
     dispatch(receiveInvoiceToCredit(val));
   };
 

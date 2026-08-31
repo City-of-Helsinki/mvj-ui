@@ -8,7 +8,7 @@ import InvoicePanel from "./InvoicePanel";
 import SingleRadioInput from "@/components/inputs/SingleRadioInput";
 import SortableTable, { Column } from "@/components/table/SortableTable";
 import TableAndPanelWrapper from "@/components/table/TableAndPanelWrapper";
-import { clearPatchedInvoice, patchInvoice } from "@/invoices/actions";
+import { clearPatchedInvoice, patchInvoice } from "@/invoices/slice";
 import { FormNames, KeyCodes, TableSortOrder } from "@/enums";
 import {
   InvoiceFieldPaths,
@@ -57,8 +57,8 @@ import type { UsersPermissions as UsersPermissionsType } from "@/usersPermission
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import Loader from "@/components/loader/Loader";
 type Props = {
-  invoiceToCredit: Record<string, any> | null | undefined;
-  onInvoiceToCreditChange: (...args: Array<any>) => any;
+  invoiceToCredit: Invoice | null | undefined;
+  onInvoiceToCreditChange: (invoice: Invoice | null) => void;
 };
 
 const InvoiceTableAndPanel: React.FC<Props> = ({
