@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import CopyToClipboardButton from "@/components/form/CopyToClipboardButton";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
@@ -31,14 +31,14 @@ type Props = {
 
 const JobRunLogEntryPanel = (props: Props) => {
   const { onClose, runId } = props;
-  const dispatch = useDispatch();
-  const isFetcingJobLogEntries = useSelector((state) =>
+  const dispatch = useAppDispatch();
+  const isFetcingJobLogEntries = useAppSelector((state) =>
     getIsFetchingJobRunLogEntriesByRun(state, runId || 0),
   );
-  const jobRunLogEntryAttributes: Attributes = useSelector(
+  const jobRunLogEntryAttributes: Attributes = useAppSelector(
     getJobRunLogEntryAttributes,
   );
-  const jobRunLogEntriesData: ApiResponse = useSelector((state) =>
+  const jobRunLogEntriesData: ApiResponse = useAppSelector((state) =>
     getJobRunLogEntriesByRun(state, runId || 0),
   );
   const previousRunIdRef = useRef<number | null | undefined>(runId);

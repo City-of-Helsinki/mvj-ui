@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import addMonths from "date-fns/addMonths";
 import format from "date-fns/format";
@@ -40,10 +40,10 @@ type Props = {
 };
 
 const RentAdjustmentsEdit: React.FC<Props> = ({ fields }) => {
-  const currentLease = useSelector(getCurrentLease);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const currentLease = useAppSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const amountTypeOptions = getFieldOptions(
     leaseAttributes,

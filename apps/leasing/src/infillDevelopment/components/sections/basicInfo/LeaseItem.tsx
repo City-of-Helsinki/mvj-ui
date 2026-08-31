@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
@@ -73,30 +73,30 @@ type Props = {
   leaseData: Record<string, any>;
 };
 const LeaseItem = ({ id, leaseData, leaseId }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const collapseState = useSelector((state: RootState) =>
+  const collapseState = useAppSelector((state: RootState) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${FormNames.INFILL_DEVELOPMENT}.${id}`,
     ),
   );
-  const infillDevelopmentAttachmentAttributes: Attributes = useSelector(
+  const infillDevelopmentAttachmentAttributes: Attributes = useAppSelector(
     getInfillDevelopmentAttachmentAttributes,
   );
-  const infillDevelopmentAttachmentMethods: MethodsType = useSelector(
+  const infillDevelopmentAttachmentMethods: MethodsType = useAppSelector(
     getInfillDevelopmentAttachmentMethods,
   );
-  const infillDevelopmentAttributes: Attributes = useSelector(
+  const infillDevelopmentAttributes: Attributes = useAppSelector(
     getInfillDevelopmentAttributes,
   );
-  const isFetching = useSelector((state: RootState) =>
+  const isFetching = useAppSelector((state: RootState) =>
     getIsFetchingById(state, leaseId),
   );
-  const lease: Lease = useSelector((state: RootState) =>
+  const lease: Lease = useAppSelector((state: RootState) =>
     getLeaseById(state, leaseId),
   );
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   useEffect(() => {
     if (isEmpty(lease)) {

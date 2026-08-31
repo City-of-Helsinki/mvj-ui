@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
@@ -53,24 +53,26 @@ const DecisionItemEdit: React.FC<Props> = ({
   onRemove,
   decisionId,
 }) => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const currentLease: Lease = useSelector(getCurrentLease);
-  const isSaveClicked = useSelector(getIsSaveClicked);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const currentLease: Lease = useAppSelector(getCurrentLease);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const errors = useSelector((state) => getErrorsByFormName(state, formName));
+  const errors = useAppSelector((state) =>
+    getErrorsByFormName(state, formName),
+  );
 
-  const conditionsCollapseState = useSelector((state) =>
+  const conditionsCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${decisionId}.conditions`,
     ),
   );
 
-  const decisionCollapseState = useSelector((state) =>
+  const decisionCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${decisionId}.decision`,

@@ -24,7 +24,7 @@ import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { BasisOfRent } from "@/leases/types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 type Props = {
   addButtonClass?: string;
   archived: boolean;
@@ -48,8 +48,8 @@ const BasisOfRentsEdit = ({
   showLockedAt,
   showPlansInspectedAt,
 }: Props) => {
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const [areaUnitOptions, setAreaUnitOptions] = useState([]);
   const [intendedUseOptions, setIntendedUseOptions] = useState([]);

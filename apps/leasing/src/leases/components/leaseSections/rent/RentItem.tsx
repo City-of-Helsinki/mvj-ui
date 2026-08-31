@@ -46,7 +46,7 @@ import {
 import type { Attributes } from "types";
 import OldDwellingsInHousingCompaniesPriceIndexView from "./OldDwellingsInHousingCompaniesPriceIndex";
 import { isATypedLease } from "@/leases/helpers";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 
 const formName = FormNames.LEASE_RENTS;
 type Props = {
@@ -55,56 +55,56 @@ type Props = {
 };
 
 const RentItem = ({ rent, rents }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const id = rent.id;
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const leaseTypeIdentifier = useSelector(getCurrentLeaseTypeIdentifier);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const leaseTypeIdentifier = useAppSelector(getCurrentLeaseTypeIdentifier);
 
-  const contractRentsCollapseState = useSelector((state) =>
+  const contractRentsCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${id}.contract_rents`,
     ),
   );
-  const equalizedRentsCollapseState = useSelector((state) =>
+  const equalizedRentsCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${id}.equalized_rents`,
     ),
   );
-  const oldDwellingsInHousingCompaniesPriceIndexCollapseState = useSelector(
+  const oldDwellingsInHousingCompaniesPriceIndexCollapseState = useAppSelector(
     (state) =>
       getCollapseStateByKey(
         state,
         `${ViewModes.READONLY}.${formName}.${id}.old_dwellings_in_housing_companies_price_index`,
       ),
   );
-  const fixedInitialYearRentsCollapseState = useSelector((state) =>
+  const fixedInitialYearRentsCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${id}.fixed_initial_year_rents`,
     ),
   );
-  const indexAdjustedRentsCollapseState = useSelector((state) =>
+  const indexAdjustedRentsCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${id}.index_adjusted_rents`,
     ),
   );
-  const payableRentsCollapseState = useSelector((state) =>
+  const payableRentsCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${id}.payable_rents`,
     ),
   );
-  const rentCollapseState = useSelector((state) =>
+  const rentCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${id}.rent`,
     ),
   );
-  const rentAdjustmentsCollapseState = useSelector((state) =>
+  const rentAdjustmentsCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${id}.rent_adjustments`,

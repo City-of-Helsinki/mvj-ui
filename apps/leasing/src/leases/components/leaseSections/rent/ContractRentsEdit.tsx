@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -21,7 +21,7 @@ type Props = {
 
 const ContractRentsEdit = ({ fields, rentField, rentType }: Props) => {
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const handleAdd = () => {
     fields.push({

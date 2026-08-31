@@ -10,7 +10,7 @@ import { formatDateRange } from "@/util/helpers";
 import { getCurrentLease } from "@/leases/selectors";
 import { getBillingPeriodsByLease } from "@/billingPeriods/selectors";
 import type { BillingPeriodList } from "@/billingPeriods/types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 type Props = {
   formApi: FormApi;
   onSubmit: (...args: Array<any>) => any;
@@ -36,8 +36,8 @@ const RentCalculatorForm: React.FC<Props> = ({
   showErrors,
   errors = {},
 }) => {
-  const currentLease = useSelector(getCurrentLease);
-  const billingPeriods: BillingPeriodList = useSelector((state) =>
+  const currentLease = useAppSelector(getCurrentLease);
+  const billingPeriods: BillingPeriodList = useAppSelector((state) =>
     getBillingPeriodsByLease(state, currentLease.id),
   );
   const billingPeriodOptions = useMemo(

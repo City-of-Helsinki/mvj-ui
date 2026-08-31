@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import DecisionItem from "./DecisionItem";
 import FormText from "@/components/form/FormText";
 import {
@@ -12,8 +12,8 @@ import { getAttributes, getCurrentLease } from "@/leases/selectors";
 import type { Attributes } from "types";
 
 const Decisions: React.FC = () => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const currentLease = useSelector(getCurrentLease);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const currentLease = useAppSelector(getCurrentLease);
   const conditionTypeOptions = getFieldOptions(
     attributes,
     LeaseDecisionConditionsFieldPaths.TYPE,

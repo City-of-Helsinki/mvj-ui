@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
@@ -50,15 +50,15 @@ const CollectionNoteItem: React.FC<Props> = ({
   isServiceUnitSameAsActiveServiceUnit,
 }) => {
   const largeScreen = useWindowResize();
-  const collectionNoteAttributes: Attributes = useSelector(
+  const collectionNoteAttributes: Attributes = useAppSelector(
     getCollectionNoteAttributes,
   );
-  const usersPermissions = useSelector(getUsersPermissions);
-  const currentLease = useSelector(getCurrentLease);
-  const leaseInvoices = useSelector((state) =>
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const currentLease = useAppSelector(getCurrentLease);
+  const leaseInvoices = useAppSelector((state) =>
     getInvoicesByLease(state, currentLease.id),
   );
-  const invoiceAttributes = useSelector(getInvoiceAttributes);
+  const invoiceAttributes = useAppSelector(getInvoiceAttributes);
   const stageOptions = getFieldOptions(
     collectionNoteAttributes,
     CollectionNoteFieldPaths.COLLECTION_STAGE,

@@ -34,7 +34,7 @@ import {
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { useForm } from "react-final-form";
 import { useFieldValue } from "@/components/helpers";
 type Props = {
@@ -47,9 +47,9 @@ type Props = {
 
 const ContractRentEdit = ({ field, onRemove, rentType, showRemove }: Props) => {
   const form = useForm();
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
   const largeScreen = useWindowResize();
 
   const contractRent = useFieldValue(field);

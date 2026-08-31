@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
@@ -53,11 +53,11 @@ const InspectionItemEdit: React.FC<Props> = ({
   onRemove,
   inspectionId,
 }) => {
-  const currentLease = useSelector(getCurrentLease);
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
-  const dispatch = useDispatch();
+  const currentLease = useAppSelector(getCurrentLease);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const dispatch = useAppDispatch();
 
   const handleAddInspectionAttachment = (e: any) => {
     if (!inspectionId) return;

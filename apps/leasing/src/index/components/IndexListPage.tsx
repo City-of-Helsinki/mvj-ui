@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import IndexTable from "./IndexTable";
@@ -19,11 +19,13 @@ import {
 } from "@/usersPermissions/selectors";
 
 const IndexListPage: React.FC = () => {
-  const dispatch = useDispatch();
-  const indexList = useSelector(getIndexList);
-  const isFetching = useSelector(getIsFetching);
-  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const dispatch = useAppDispatch();
+  const indexList = useAppSelector(getIndexList);
+  const isFetching = useAppSelector(getIsFetching);
+  const isFetchingUsersPermissions = useAppSelector(
+    getIsFetchingUsersPermissions,
+  );
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   useEffect(() => {
     setPageTitle("Elinkustannusindeksit");

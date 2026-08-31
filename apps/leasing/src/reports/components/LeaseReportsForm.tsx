@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Form } from "react-final-form";
 import { createForm } from "final-form";
 import { Row, Column } from "@/components/grid/Grid";
@@ -42,20 +42,20 @@ import {
 import type { Attributes, Reports } from "types";
 
 const LeaseReportsForm: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const leaseReportsAttributes: Attributes = useSelector(
+  const leaseReportsAttributes: Attributes = useAppSelector(
     getLeaseReportsAttributes,
   );
-  const options = useSelector(getOptions);
-  const isFetchingOptions = useSelector(getIsFetchingOptions);
-  const isFetchingLeaseReportsAttributes = useSelector(
+  const options = useAppSelector(getOptions);
+  const isFetchingOptions = useAppSelector(getIsFetchingOptions);
+  const isFetchingLeaseReportsAttributes = useAppSelector(
     getIsFetchingLeaseReportsAttributes,
   );
-  const isFetchingReports = useSelector(getIsFetchingReports);
-  const isFetchingReportData = useSelector(getIsFetchingReportData);
-  const isSendingMail = useSelector(getIsSendingMail);
-  const reports: Reports = useSelector(getReports);
+  const isFetchingReports = useAppSelector(getIsFetchingReports);
+  const isFetchingReportData = useAppSelector(getIsFetchingReportData);
+  const isSendingMail = useAppSelector(getIsSendingMail);
+  const reports: Reports = useAppSelector(getReports);
 
   const formRef = useRef(
     createForm({

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";
@@ -30,14 +30,16 @@ import { getReportData } from "@/reports/selectors";
 import { getLabelOfOption } from "@/util/helpers";
 
 const LeaseReportsPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
-  const usersPermissions = useSelector(getUsersPermissions);
-  const reportData = useSelector(getReportData);
-  const isFetchingReportData = useSelector(getIsFetchingReportData);
-  const payload = useSelector(getPayload);
-  const reports: Reports = useSelector(getReports);
+  const isFetchingUsersPermissions = useAppSelector(
+    getIsFetchingUsersPermissions,
+  );
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const reportData = useAppSelector(getReportData);
+  const isFetchingReportData = useAppSelector(getIsFetchingReportData);
+  const payload = useAppSelector(getPayload);
+  const reports: Reports = useAppSelector(getReports);
 
   useEffect(() => {
     setPageTitle("Tilastot ja raportit");

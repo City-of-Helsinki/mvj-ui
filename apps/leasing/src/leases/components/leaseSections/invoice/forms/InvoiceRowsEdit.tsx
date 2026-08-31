@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
@@ -45,8 +45,8 @@ const InvoiceRowsEdit = ({
   tenantOptions,
   rows,
 }: Props): ReactElement => {
-  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
-  const receivableTypes = useSelector(getReceivableTypes);
+  const invoiceAttributes: Attributes = useAppSelector(getInvoiceAttributes);
+  const receivableTypes = useAppSelector(getReceivableTypes);
 
   const handleAdd = () => {
     fields.push({});

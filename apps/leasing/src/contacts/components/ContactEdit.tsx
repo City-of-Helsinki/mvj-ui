@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { FormSpy } from "react-final-form";
 
 import ContactForm from "@/contacts/components/forms/ContactForm";
@@ -15,7 +15,7 @@ const ContactEdit: React.FC<{
   tabId: number;
   setTabDirty: SetTabDirtyFunction;
 }> = ({ form, tabId, setTabDirty }) => {
-  const contact = useSelector(getCurrentContact);
+  const contact = useAppSelector(getCurrentContact);
   const formValues = form ? form.getState().values : null;
   const initialValues = formValues || contact;
 

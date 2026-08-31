@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import Collapse from "@/components/collapse/Collapse";
@@ -53,45 +53,45 @@ const ConstructabilityItem: React.FC<Props> = ({
   pollutedLandRentConditionStateOptions,
   typeOptions,
 }: Props) => {
-  const areaCollapseState = useSelector((state) =>
+  const areaCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${area.id}.area`,
     ),
   );
-  const preconstructionCollapseState = useSelector((state) =>
+  const preconstructionCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${area.id}.preconstruction`,
     ),
   );
-  const demolitionCollapseState = useSelector((state) =>
+  const demolitionCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${area.id}.demolition`,
     ),
   );
-  const pollutedLandCollapseState = useSelector((state) =>
+  const pollutedLandCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${area.id}.polluted_land`,
     ),
   );
-  const constructabilityReportCollapseState = useSelector((state) =>
+  const constructabilityReportCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${area.id}.constructability_report`,
     ),
   );
-  const otherCollapseState = useSelector((state) =>
+  const otherCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${area.id}.other`,
     ),
   );
 
-  const attributes: Attributes = useSelector(getAttributes);
-  const dispatch = useDispatch();
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const dispatch = useAppDispatch();
 
   const handleCollapseToggle = (key: string, val: boolean) => {
     dispatch(

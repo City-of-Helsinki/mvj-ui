@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation } from "react-router";
 import { get, isEmpty } from "lodash-es";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
@@ -37,20 +37,20 @@ import type { InfillDevelopment } from "@/infillDevelopment/types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 const SingleInfillDevelopmentMap: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
 
-  const allLeases: Array<Lease> = useSelector(getAllLeases);
-  const areaNotes: AreaNoteList = useSelector(getAreaNoteList);
-  const currentInfillDevelopment: InfillDevelopment = useSelector(
+  const allLeases: Array<Lease> = useAppSelector(getAllLeases);
+  const areaNotes: AreaNoteList = useAppSelector(getAreaNoteList);
+  const currentInfillDevelopment: InfillDevelopment = useAppSelector(
     getCurrentInfillDevelopment,
   );
-  const isFetchingAllLeases: Array<boolean> = useSelector(
+  const isFetchingAllLeases: Array<boolean> = useAppSelector(
     getIsFetchingAllLeases,
   );
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const [bounds, setBounds] = useState<any>();
   const [center, setCenter] = useState<any>();

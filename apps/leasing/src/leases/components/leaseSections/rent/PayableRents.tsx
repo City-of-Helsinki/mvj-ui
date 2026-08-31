@@ -15,13 +15,13 @@ import {
 } from "@/util/helpers";
 import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 type Props = {
   payableRents: Array<Record<string, any>>;
 };
 
 const PayableRents = ({ payableRents }: Props) => {
-  const leaseAttributes: Attributes = useSelector(getAttributes);
+  const leaseAttributes: Attributes = useAppSelector(getAttributes);
   const getColumns = () => {
     const columns = [];
 

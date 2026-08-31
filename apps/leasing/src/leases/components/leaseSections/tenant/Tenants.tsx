@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
 import Loader from "@/components/loader/Loader";
@@ -20,7 +20,7 @@ import { useContactAttributes } from "@/components/attributes/ContactAttributes"
 
 const Tenants: React.FC = () => {
   const { isFetchingContactAttributes } = useContactAttributes();
-  const currentLease = useSelector(getCurrentLease);
+  const currentLease = useAppSelector(getCurrentLease);
   const tenantsAll = getContentTenants(currentLease);
   const tenants = tenantsAll.filter((tenant) => !isArchived(tenant.tenant));
   const tenantsArchived = tenantsAll.filter((tenant) =>

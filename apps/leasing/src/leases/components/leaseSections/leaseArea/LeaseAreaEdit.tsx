@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { useLocation, Link } from "react-router";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -91,10 +91,10 @@ const PlanUnits = ({
   isMasterData, // This flag tells us whether we rendering master data
   isActive,
 }: PlanUnitsProps): ReactElement => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const handleAdd = () => {
     fields.push({
@@ -226,10 +226,10 @@ const Plots = ({
     });
   };
 
-  const attributes: Attributes = useSelector(getAttributes);
-  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const handleCollapseToggle = (val: boolean) => {
     onCollapseToggle(val);
@@ -325,10 +325,10 @@ type AddressProps = {
 };
 
 const Address = ({ formApi, field, onRemove }: AddressProps) => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const handleAddressChange = (details: Record<string, any>) => {
     formApi.change(`${field}.postal_code`, details.postalCode);
@@ -451,9 +451,9 @@ type AddressesProps = {
 };
 
 const AddressItems = ({ formApi, fields }: AddressesProps): ReactElement => {
-  const attributes: Attributes = useSelector(getAttributes);
+  const attributes: Attributes = useAppSelector(getAttributes);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const handleAdd = () => {
     fields.push({});
@@ -623,12 +623,14 @@ const LeaseAreaEdit: React.FC<Props> = ({
   savedArea,
   isActive,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const attributes = useSelector(getAttributes);
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const usersPermissions = useSelector(getUsersPermissions);
-  const errors = useSelector((state) => getErrorsByFormName(state, formName));
+  const attributes = useAppSelector(getAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const errors = useAppSelector((state) =>
+    getErrorsByFormName(state, formName),
+  );
   const location = useLocation();
 
   const geometry = savedArea?.geometry;
@@ -639,31 +641,31 @@ const LeaseAreaEdit: React.FC<Props> = ({
     subscription: { value: true },
   });
 
-  const planUnitsContractCollapseState = useSelector((state) =>
+  const planUnitsContractCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${areaId}.plan_units_contract`,
     ),
   );
-  const planUnitsCurrentCollapseState = useSelector((state) =>
+  const planUnitsCurrentCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${areaId}.plan_units_current`,
     ),
   );
-  const plotsContractCollapseState = useSelector((state) =>
+  const plotsContractCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${areaId}.plots_contract`,
     ),
   );
-  const plotsCurrentCollapseState = useSelector((state) =>
+  const plotsCurrentCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${areaId}.plots_current`,
     ),
   );
-  const customDetailedPlanCollapseState = useSelector((state) =>
+  const customDetailedPlanCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${areaId}.custom_detailed_plan`,

@@ -1,7 +1,7 @@
 import React from "react";
 import { useRef, useEffect } from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import FormText from "@/components/form/FormText";
@@ -32,8 +32,8 @@ const ArchiveAreaModal: React.FC<Props> = ({
   open,
   valid,
 }) => {
-  const attributes = useSelector(getAttributes);
-  const currentLease = useSelector(getCurrentLease);
+  const attributes = useAppSelector(getAttributes);
+  const currentLease = useAppSelector(getCurrentLease);
   const decisionOptions = getDecisionOptions(currentLease);
 
   const archivedDecision = formApi.getFieldState("archived_decision")?.value;

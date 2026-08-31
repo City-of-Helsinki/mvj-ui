@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
@@ -77,7 +77,7 @@ const getRentById = (rents: Array<Record<string, any>>, id: number) => {
 };
 
 const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const form = useForm();
   const rentId = useFieldValue(`${field}.id`);
   const contractRents = useFieldValue(`${field}.contract_rents`);
@@ -91,17 +91,19 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
   );
   const rentAdjustments = useFieldValue(`${field}.rent_adjustments`);
   const rentType = useFieldValue(`${field}.type`);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
-  const errors = useSelector((state) => getErrorsByFormName(state, formName));
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const leaseTypeIdentifier = useSelector(getCurrentLeaseTypeIdentifier);
-  const oldDwellingsInHousingCompaniesPriceIndex = useSelector(
+  const errors = useAppSelector((state) =>
+    getErrorsByFormName(state, formName),
+  );
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const leaseTypeIdentifier = useAppSelector(getCurrentLeaseTypeIdentifier);
+  const oldDwellingsInHousingCompaniesPriceIndex = useAppSelector(
     getOldDwellingsInHousingCompaniesPriceIndex,
   );
 
-  const rentCollapseState = useSelector((state) =>
+  const rentCollapseState = useAppSelector((state) =>
     rentId
       ? getCollapseStateByKey(
           state,
@@ -110,7 +112,7 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
       : undefined,
   );
 
-  const contractRentsCollapseState = useSelector((state) =>
+  const contractRentsCollapseState = useAppSelector((state) =>
     rentId
       ? getCollapseStateByKey(
           state,
@@ -119,7 +121,7 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
       : undefined,
   );
 
-  const fixedInitialYearRentsCollapseState = useSelector((state) =>
+  const fixedInitialYearRentsCollapseState = useAppSelector((state) =>
     rentId
       ? getCollapseStateByKey(
           state,
@@ -128,7 +130,7 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
       : undefined,
   );
 
-  const indexAdjustedRentsCollapseState = useSelector((state) =>
+  const indexAdjustedRentsCollapseState = useAppSelector((state) =>
     rentId
       ? getCollapseStateByKey(
           state,
@@ -137,7 +139,7 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
       : undefined,
   );
 
-  const payableRentsCollapseState = useSelector((state) =>
+  const payableRentsCollapseState = useAppSelector((state) =>
     rentId
       ? getCollapseStateByKey(
           state,
@@ -146,7 +148,7 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
       : undefined,
   );
 
-  const rentAdjustmentsCollapseState = useSelector((state) =>
+  const rentAdjustmentsCollapseState = useAppSelector((state) =>
     rentId
       ? getCollapseStateByKey(
           state,
@@ -155,7 +157,7 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
       : undefined,
   );
 
-  const oldDwellingsInHousingCompaniesPriceIndexCollapseState = useSelector(
+  const oldDwellingsInHousingCompaniesPriceIndexCollapseState = useAppSelector(
     (state) =>
       rentId
         ? getCollapseStateByKey(
@@ -165,7 +167,7 @@ const RentItemEdit: React.FC<Props> = ({ field, index, onRemove, rents }) => {
         : undefined,
   );
 
-  const equalizedRentsCollapseState = useSelector((state) =>
+  const equalizedRentsCollapseState = useAppSelector((state) =>
     rentId
       ? getCollapseStateByKey(
           state,

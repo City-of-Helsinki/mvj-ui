@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
@@ -115,8 +115,8 @@ const ContractsEdit: React.FC<Props> = ({ formApi }) => {
   const [showContractModal, setShowContractModal] =
     React.useState<boolean>(false);
 
-  const currentLease = useSelector(getCurrentLease);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const currentLease = useAppSelector(getCurrentLease);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   useEffect(() => {
     if (currentLease) {

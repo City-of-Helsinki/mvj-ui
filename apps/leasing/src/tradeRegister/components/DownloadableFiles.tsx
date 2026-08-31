@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import type { RootState } from "@/root/types";
 import Collapse from "@/components/collapse/Collapse";
@@ -22,18 +22,18 @@ type Props = {
 };
 
 const DownloadableFiles = ({ businessId }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const companyExtended = useSelector((state: RootState) =>
+  const companyExtended = useAppSelector((state: RootState) =>
     getCompanyExtendedById(state, businessId),
   );
-  const downloadableFilesCollapseState = useSelector((state: RootState) =>
+  const downloadableFilesCollapseState = useAppSelector((state: RootState) =>
     getCollapseStateByKey(
       state,
       `${CollapseStatePaths.DOWNLOADABLE_FILES}.${businessId}`,
     ),
   );
-  const isFetchingCompanyExtended = useSelector((state: RootState) =>
+  const isFetchingCompanyExtended = useAppSelector((state: RootState) =>
     getIsFetchingCompanyExtendedById(state, businessId),
   );
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { isEmpty, isEqual } from "lodash-es";
 import { Form, FormSpy } from "react-final-form";
@@ -19,9 +19,9 @@ type Props = {
 };
 
 const Search: React.FC<Props> = ({ onSearch, initialValues }) => {
-  const dispatch = useDispatch();
-  const isFetchingServiceUnits = useSelector(getIsFetchingServiceUnits);
-  const serviceUnits: ServiceUnits = useSelector(getServiceUnits);
+  const dispatch = useAppDispatch();
+  const isFetchingServiceUnits = useAppSelector(getIsFetchingServiceUnits);
+  const serviceUnits: ServiceUnits = useAppSelector(getServiceUnits);
   const prevFormValues = useRef(initialValues || {});
 
   useEffect(() => {

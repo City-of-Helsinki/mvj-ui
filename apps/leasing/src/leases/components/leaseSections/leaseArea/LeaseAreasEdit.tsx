@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -65,7 +65,7 @@ const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
   formApi,
 }) => {
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const handleAdd = useCallback(() => {
     fields.push({
@@ -194,10 +194,10 @@ const mergeIntoContractItems = (
 };
 
 const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
-  const currentLease: Lease = useSelector(getCurrentLease);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const currentLease: Lease = useAppSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const { activeAreas, archivedAreas, areasSum } = useMemo(() => {
     if (!currentLease) {

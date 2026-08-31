@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import arrayMutators from "final-form-arrays";
@@ -46,7 +46,7 @@ type ReadOnlyProps = {
 };
 
 const InvoiceNotesReadOnly = ({ invoiceNotes }: ReadOnlyProps) => {
-  const invoiceNoteAttributes: Attributes = useSelector(
+  const invoiceNoteAttributes: Attributes = useAppSelector(
     getInvoiceNoteAttributes,
   );
 
@@ -142,8 +142,8 @@ type EditProps = {
 };
 
 const InvoiceNotesEdit = ({ fields }: EditProps): ReactElement => {
-  const invoiceNoteAttributes = useSelector(getInvoiceNoteAttributes);
-  const invoiceNoteMethods = useSelector(getInvoiceNoteMethods);
+  const invoiceNoteAttributes = useAppSelector(getInvoiceNoteAttributes);
+  const invoiceNoteMethods = useAppSelector(getInvoiceNoteMethods);
 
   const handleAdd = () => {
     fields.push({});
@@ -319,15 +319,15 @@ type Props = {
 };
 
 const InvoiceNotes: React.FC<Props> = ({ invoiceNotes }) => {
-  const currentLease = useSelector(getCurrentLease);
-  const invoiceNoteMethods = useSelector(getInvoiceNoteMethods);
-  const activeServiceUnit = useSelector(getUserActiveServiceUnit);
+  const currentLease = useAppSelector(getCurrentLease);
+  const invoiceNoteMethods = useAppSelector(getInvoiceNoteMethods);
+  const activeServiceUnit = useAppSelector(getUserActiveServiceUnit);
 
   const isServiceUnitSameAsActiveServiceUnit = () => {
     return activeServiceUnit?.id === currentLease?.service_unit?.id;
   };
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleSave = (values: any) => {
     const editedInvoiceNotes = values.invoice_notes || [];

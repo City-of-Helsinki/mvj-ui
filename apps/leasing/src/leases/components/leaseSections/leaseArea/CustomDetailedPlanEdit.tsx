@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -61,10 +61,10 @@ const UsageDistributions = ({
       usage_distributions: [{}],
     });
   };
-  const attributes: Attributes = useSelector(getAttributes);
-  const isSaveClicked = useSelector(getIsSaveClicked);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   useEffect(() => {
     if (
@@ -256,10 +256,10 @@ const InfoLinks = ({
       info_links: [{}],
     });
   };
-  const attributes: Attributes = useSelector(getAttributes);
-  const isSaveClicked = useSelector(getIsSaveClicked);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   return (
     <AppConsumer>
@@ -423,11 +423,13 @@ type Props = {
 };
 
 const CustomDetailedPlanEdit: React.FC<Props> = ({ field, onRemove }) => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
-  const errors = useSelector((state) => getErrorsByFormName(state, formName));
+    useAppSelector(getUsersPermissions);
+  const errors = useAppSelector((state) =>
+    getErrorsByFormName(state, formName),
+  );
 
   return (
     <BoxContentWrapper>

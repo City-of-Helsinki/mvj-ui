@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -50,9 +50,9 @@ const DecisionConditionsEdit: React.FC<Props> = ({
   isSaveClicked,
   onCollapseToggle,
 }) => {
-  const attributes: Attributes = useSelector(getAttributes);
+  const attributes: Attributes = useAppSelector(getAttributes);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
   const largeScreen = useWindowResize();
 
   const handleCollapseToggle = (val: boolean) => {

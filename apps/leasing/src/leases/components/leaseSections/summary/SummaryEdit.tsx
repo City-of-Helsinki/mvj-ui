@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { Form } from "react-final-form";
 import { get, isEmpty } from "lodash-es";
@@ -56,18 +56,18 @@ type Props = {
 const SummaryEdit: React.FC<Props> = ({ formApi }: Props) => {
   const formName = FormNames.LEASE_SUMMARY;
 
-  const attributes: Attributes = useSelector(getAttributes);
-  const currentLease = useSelector(getCurrentLease);
-  const collapseStateBasic = useSelector((state) =>
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const currentLease = useAppSelector(getCurrentLease);
+  const collapseStateBasic = useAppSelector((state) =>
     getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.basic`),
   );
-  const collapseStateStatistical = useSelector((state) =>
+  const collapseStateStatistical = useAppSelector((state) =>
     getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.statistical`),
   );
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const receiveCollapseStates = (
     states: Parameters<typeof receiveCollapseStatesAction>[0],
   ) => dispatch(receiveCollapseStatesAction(states));

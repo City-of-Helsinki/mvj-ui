@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { useLocation, Link } from "react-router";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
@@ -44,10 +44,10 @@ const PlotItemsEdit: React.FC<Props> = ({
   plotsData,
   plotId,
 }) => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const location = useLocation();
 

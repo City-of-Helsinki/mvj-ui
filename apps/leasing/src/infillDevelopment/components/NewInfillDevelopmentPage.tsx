@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createForm, type FormApi } from "final-form";
 import arrayMutators from "final-form-arrays";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation, useNavigate } from "react-router";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainer from "@/components/content/ContentContainer";
@@ -55,7 +55,7 @@ import type { RootState } from "@/root/types";
 const NewInfillDevelopmentPage = () => {
   useUiDataList();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const formApiRef = useRef<FormApi<any>>(
@@ -65,31 +65,33 @@ const NewInfillDevelopmentPage = () => {
     }),
   );
   const formValuesRef = useRef<Record<string, any>>({});
-  const infillDevelopmentAttributes = useSelector(
+  const infillDevelopmentAttributes = useAppSelector(
     getInfillDevelopmentAttributes,
   );
-  const infillDevelopmentMethods = useSelector(getInfillDevelopmentMethods);
-  const isFetchingInfillDevelopmentAttributes = useSelector(
+  const infillDevelopmentMethods = useAppSelector(getInfillDevelopmentMethods);
+  const isFetchingInfillDevelopmentAttributes = useAppSelector(
     getIsFetchingInfillDevelopmentAttributes,
   );
-  const infillDevelopmentAttachmentAttributes = useSelector(
+  const infillDevelopmentAttachmentAttributes = useAppSelector(
     getInfillDevelopmentAttachmentAttributes,
   );
-  const infillDevelopmentAttachmentMethods = useSelector(
+  const infillDevelopmentAttachmentMethods = useAppSelector(
     getInfillDevelopmentAttachmentMethods,
   );
-  const isFetchingInfillDevelopmentAttachmentAttributes = useSelector(
+  const isFetchingInfillDevelopmentAttachmentAttributes = useAppSelector(
     getIsFetchingInfillDevelopmentAttachmentAttributes,
   );
-  const leaseAttributes = useSelector(getLeaseAttributes);
-  const leaseMethods = useSelector(getLeaseMethods);
-  const isFetchingLeaseAttributes = useSelector(getIsFetchingLeaseAttributes);
-  const initialValues = useSelector(getFormInitialValues);
-  const isFormValid = useSelector((state: RootState) =>
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
+  const leaseMethods = useAppSelector(getLeaseMethods);
+  const isFetchingLeaseAttributes = useAppSelector(
+    getIsFetchingLeaseAttributes,
+  );
+  const initialValues = useAppSelector(getFormInitialValues);
+  const isFormValid = useAppSelector((state: RootState) =>
     getIsFormValidById(state, FormNames.INFILL_DEVELOPMENT),
   );
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const isSaving = useSelector(getIsSaving);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const isSaving = useAppSelector(getIsSaving);
   const [isFormDirty, setIsFormDirty] = useState(false);
 
   const isFetchingInfillDevelopmentPageAttributes =

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation } from "react-router";
 import { Field, Form, useFormState } from "react-final-form";
 import { debounce, isEmpty } from "lodash-es";
@@ -216,10 +216,10 @@ const Search: React.FC<Props> = ({
   allowCreate,
   onCreateContact,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
-  const serviceUnits = useSelector(getServiceUnits);
-  const isFetchingServiceUnits = useSelector(getIsFetchingServiceUnits);
+  const serviceUnits = useAppSelector(getServiceUnits);
+  const isFetchingServiceUnits = useAppSelector(getIsFetchingServiceUnits);
 
   useEffect(() => {
     if (!isFetchingServiceUnits && isEmpty(serviceUnits)) {
