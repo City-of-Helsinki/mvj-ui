@@ -20,7 +20,7 @@ import districtsReducer from "@/district/reducer";
 import indexReducer from "@/index/reducer";
 import infillDevelopmentReducer from "@/infillDevelopment/reducer";
 import infillDevelopmentAttachmentReducer from "@/infillDevelopmentAttachment/reducer";
-import invoiceReducer from "@/invoices/reducer";
+import invoiceReducer from "@/invoices/slice";
 import invoiceNoteReducer from "@/invoiceNote/reducer";
 import invoiceSetReducer from "@/invoiceSets/reducer";
 import intendedUseReducer from "@/intendedUse/reducer";

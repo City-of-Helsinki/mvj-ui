@@ -1,6 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import {
+  fetchAttributes as fetchAttributesAction,
   fetchInvoicesByLease,
   receiveAttributes,
   receiveMethods,
@@ -14,7 +15,12 @@ import {
   notFound,
   receiveIsCreateClicked,
   receiveIsCreditClicked,
-} from "./actions";
+  createInvoice as createInvoiceAction,
+  creditInvoice as creditInvoiceAction,
+  patchInvoice as patchInvoiceAction,
+  exportInvoiceToLaskeAndUpdateList as exportInvoiceToLaskeAndUpdateListAction,
+  deleteInvoice as deleteInvoiceAction,
+} from "./slice";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
 import {
@@ -288,16 +294,16 @@ function* deleteInvoiceSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
-      yield takeLatest("mvj/invoices/FETCH_ATTRIBUTES", fetchAttributesSaga);
-      yield takeLatest("mvj/invoices/FETCH_BY_LEASE", fetchInvoicesByLeaseSaga);
-      yield takeLatest("mvj/invoices/CREATE", createInvoiceSaga);
-      yield takeLatest("mvj/invoices/CREDIT_INVOICE", creditInvoiceSaga);
-      yield takeLatest("mvj/invoices/PATCH", patchInvoiceSaga);
+      yield takeLatest(fetchAttributesAction, fetchAttributesSaga);
+      yield takeLatest(fetchInvoicesByLease, fetchInvoicesByLeaseSaga);
+      yield takeLatest(createInvoiceAction, createInvoiceSaga);
+      yield takeLatest(creditInvoiceAction, creditInvoiceSaga);
+      yield takeLatest(patchInvoiceAction, patchInvoiceSaga);
       yield takeLatest(
-        "mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE",
+        exportInvoiceToLaskeAndUpdateListAction,
         exportInvoiceToLaskeAndUpdateListSaga,
       );
-      yield takeLatest("mvj/invoices/DELETE", deleteInvoiceSaga);
+      yield takeLatest(deleteInvoiceAction, deleteInvoiceSaga);
     }),
   ]);
 }

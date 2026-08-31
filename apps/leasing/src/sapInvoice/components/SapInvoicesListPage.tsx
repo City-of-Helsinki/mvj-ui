@@ -14,7 +14,7 @@ import SortableTable, {
 } from "@/components/table/SortableTable";
 import TableFiltersLegacy from "@/components/table/TableFiltersLegacy";
 import TableWrapper from "@/components/table/TableWrapper";
-import { fetchAttributes as fetchInvoiceAttributes } from "@/invoices/actions";
+import { fetchAttributes as fetchInvoiceAttributes } from "@/invoices/slice";
 import { fetchSapInvoices } from "@/sapInvoice/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";

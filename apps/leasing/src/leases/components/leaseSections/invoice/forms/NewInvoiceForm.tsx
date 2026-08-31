@@ -15,7 +15,7 @@ import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
 import SubTitle from "@/components/content/SubTitle";
 import WhiteBox from "@/components/content/WhiteBox";
-import { receiveIsCreateClicked } from "@/invoices/actions";
+import { receiveIsCreateClicked } from "@/invoices/slice";
 import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import {

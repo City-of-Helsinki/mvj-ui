@@ -15,7 +15,7 @@ import {
   receiveIsCreateInvoicePanelOpen,
   receiveIsCreditClicked,
   receiveIsCreditInvoicePanelOpen,
-} from "@/invoices/actions";
+} from "@/invoices/slice";
 import { creditInvoiceSet } from "@/invoiceSets/actions";
 import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";

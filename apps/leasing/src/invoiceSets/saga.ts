@@ -4,7 +4,7 @@ import {
   fetchInvoicesByLease,
   receiveInvoiceToCredit,
   receiveIsCreditInvoicePanelOpen,
-} from "@/invoices/actions";
+} from "@/invoices/slice";
 import {
   fetchInvoiceSetsByLease as fetchInvoiceSetsByLeaseAction,
   notFound,

@@ -16,7 +16,7 @@ import InvoiceRowsEdit from "./InvoiceRowsEdit";
 import RemoveButton from "@/components/form/RemoveButton";
 import SendupButton from "@/components/button/SendupButton";
 import SubTitle from "@/components/content/SubTitle";
-import { exportInvoiceToLaskeAndUpdateList } from "@/invoices/actions";
+import { exportInvoiceToLaskeAndUpdateList } from "@/invoices/slice";
 import { ConfirmationModalTexts, FieldTypes } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import {

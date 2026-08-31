@@ -8,7 +8,7 @@ import CloseButton from "@/components/button/CloseButton";
 import FormField from "@/components/form/final-form/FormField";
 import { Form } from "react-final-form";
 import WhiteBox from "@/components/content/WhiteBox";
-import { receiveIsCreditClicked } from "@/invoices/actions";
+import { receiveIsCreditClicked } from "@/invoices/slice";
 import {
   CreditInvoiceOptions,
   CreditInvoiceSetOptions,

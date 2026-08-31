@@ -56,7 +56,7 @@ import {
   fetchInvoicesByLease,
   receiveIsCreateClicked,
   receiveIsCreateInvoicePanelOpen,
-} from "@/invoices/actions";
+} from "@/invoices/slice";
 import { fetchInvoiceSetsByLease } from "@/invoiceSets/actions";
 import { displayUIMessage, getSearchQuery, getUrlParams } from "@/util/helpers";
 import {
