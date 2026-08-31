@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { get } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import FormText from "@/components/form/FormText";
@@ -34,17 +34,19 @@ import {
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 
 const ScheduledJobs: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const batchrunScheduledJobAttributes = useSelector(getScheduledJobAttributes);
-  const batchrunScheduledJobMethods = useSelector(getScheduledJobMethods);
-  const isFetchingBatchrunScheduledJobAttributes = useSelector(
+  const batchrunScheduledJobAttributes = useAppSelector(
+    getScheduledJobAttributes,
+  );
+  const batchrunScheduledJobMethods = useAppSelector(getScheduledJobMethods);
+  const isFetchingBatchrunScheduledJobAttributes = useAppSelector(
     getIsFetchingScheduledJobAttributes,
   );
 
-  const isFetchingScheduledJobs = useSelector(getIsFetchingScheduledJobs);
-  const scheduledJobsData = useSelector(getScheduledJobs);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isFetchingScheduledJobs = useAppSelector(getIsFetchingScheduledJobs);
+  const scheduledJobsData = useAppSelector(getScheduledJobs);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   useEffect(() => {
     if (

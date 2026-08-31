@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
@@ -39,9 +39,9 @@ type Props = {
 
 const FixedInitialYearRentsEdit = ({ fields }: Props) => {
   const largeScreen = useWindowResize();
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const handleAdd = () => {
     fields.push({});

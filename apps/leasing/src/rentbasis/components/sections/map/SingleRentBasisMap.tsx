@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { isEmpty } from "lodash-es";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
@@ -29,12 +29,14 @@ import type { Attributes, LeafletGeoJson } from "types";
 import type { LatLngBounds } from "leaflet";
 
 const SingleRentBasisMap: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const areaNotes = useSelector(getAreaNoteList);
-  const rentBasis = useSelector(getRentBasis);
-  const rentBasisAttributes: Attributes = useSelector(getRentBasisAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const areaNotes = useAppSelector(getAreaNoteList);
+  const rentBasis = useAppSelector(getRentBasis);
+  const rentBasisAttributes: Attributes = useAppSelector(
+    getRentBasisAttributes,
+  );
+  const usersPermissions = useAppSelector(getUsersPermissions);
   const [bounds, setBounds] = useState<LatLngBounds>();
   const [center, setCenter] = useState<[number, number]>();
 

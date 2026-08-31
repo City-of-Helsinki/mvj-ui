@@ -2,7 +2,7 @@ import { Column, Row } from "@/components/grid/Grid";
 import { debounce, isArray, isEmpty } from "lodash-es";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Form } from "react-final-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 
 import { fetchAreaNoteList } from "@/areaNote/actions";
 import Authorization from "@/components/authorization/Authorization";
@@ -118,25 +118,29 @@ const LeaseListPage: React.FC = () => {
   );
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const isFetching = useSelector(getIsFetching);
-  const isFetchingByBBox = useSelector(getIsFetchingByBBox);
-  const isFetchingServiceUnits = useSelector(getIsFetchingServiceUnits);
-  const leases = useSelector(getLeasesList);
-  const lessors = useSelector(getLessorList);
-  const serviceUnits = useSelector(getServiceUnits);
-  const userServiceUnits = useSelector(getUserServiceUnits);
+  const isFetching = useAppSelector(getIsFetching);
+  const isFetchingByBBox = useAppSelector(getIsFetchingByBBox);
+  const isFetchingServiceUnits = useAppSelector(getIsFetchingServiceUnits);
+  const leases = useAppSelector(getLeasesList);
+  const lessors = useAppSelector(getLessorList);
+  const serviceUnits = useAppSelector(getServiceUnits);
+  const userServiceUnits = useAppSelector(getUserServiceUnits);
 
-  const isFetchingLeaseAttributes = useSelector(getIsFetchingLeaseAttributes);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const leaseMethods = useSelector(getLeaseMethods);
+  const isFetchingLeaseAttributes = useAppSelector(
+    getIsFetchingLeaseAttributes,
+  );
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const leaseMethods = useAppSelector(getLeaseMethods);
 
-  const isFetchingUiDataAttributes = useSelector(getIsFetchingUiDataAttributes);
-  const isFetchingUiDataList = useSelector(getIsFetchingUiData);
-  const uiDataAttributes = useSelector(getUiDataAttributes);
-  const uiDataList = useSelector(getUiDataList);
-  const uiDataMethods = useSelector(getUiDataMethods);
+  const isFetchingUiDataAttributes = useAppSelector(
+    getIsFetchingUiDataAttributes,
+  );
+  const isFetchingUiDataList = useAppSelector(getIsFetchingUiData);
+  const uiDataAttributes = useAppSelector(getUiDataAttributes);
+  const uiDataList = useAppSelector(getUiDataList);
+  const uiDataMethods = useAppSelector(getUiDataMethods);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSearchInitialized, setIsSearchInitialized] = useState(false);

@@ -20,11 +20,11 @@ import {
 } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 
 const BasisOfRents = () => {
-  const currentLease: Lease = useSelector(getCurrentLease);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const currentLease: Lease = useAppSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   const [areaUnitOptions, setAreaUnitOptions] = useState([]);
   const [basisOfRents, setBasisOfRents] = useState([]);

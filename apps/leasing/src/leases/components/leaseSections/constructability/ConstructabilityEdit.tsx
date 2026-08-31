@@ -1,5 +1,5 @@
 import React, { useState, ReactElement, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import { FormApi } from "final-form";
@@ -85,11 +85,13 @@ type Props = {
 };
 
 const ConstructabilityEdit: React.FC<Props> = ({ formApi }) => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const currentLease: Lease = useSelector(getCurrentLease);
-  const errors = useSelector((state) => getErrorsByFormName(state, formName));
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const currentLease: Lease = useAppSelector(getCurrentLease);
+  const errors = useAppSelector((state) =>
+    getErrorsByFormName(state, formName),
+  );
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const [constructabilityStateOptions, setConstructabilityStateOptions] =
     useState([]);

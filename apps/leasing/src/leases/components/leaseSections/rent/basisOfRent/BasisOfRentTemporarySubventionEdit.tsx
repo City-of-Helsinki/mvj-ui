@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
@@ -44,9 +44,9 @@ const BasisOfRentTemporarySubventionEdit: React.FC<Props> = ({
   temporarySubventions,
   index,
 }) => {
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const subventionPercent = useFieldValue(`${field}.subvention_percent`);
 

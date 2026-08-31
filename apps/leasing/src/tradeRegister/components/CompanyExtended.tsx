@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get } from "lodash-es";
 import Collapse from "@/components/collapse/Collapse";
@@ -37,30 +37,30 @@ type Props = {
 };
 
 const CompanyExtended = ({ businessId }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const companyExtended = useSelector((state: RootState) =>
+  const companyExtended = useAppSelector((state: RootState) =>
     getCompanyExtendedById(state, businessId),
   );
-  const companyExtendedCollapseState = useSelector((state: RootState) =>
+  const companyExtendedCollapseState = useAppSelector((state: RootState) =>
     getCollapseStateByKey(
       state,
       `${CollapseStatePaths.COMPANY_EXTENDED}.${businessId}`,
     ),
   );
-  const companyNameCollapseState = useSelector((state: RootState) =>
+  const companyNameCollapseState = useAppSelector((state: RootState) =>
     getCollapseStateByKey(
       state,
       `${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldTitles.COMPANY_NAME}.${businessId}`,
     ),
   );
-  const contactInformationCollapseState = useSelector((state: RootState) =>
+  const contactInformationCollapseState = useAppSelector((state: RootState) =>
     getCollapseStateByKey(
       state,
       `${CollapseStatePaths.COMPANY_EXTENDED}.${CompanyExtendedFieldTitles.CONTACT_INFORMATION}.${businessId}`,
     ),
   );
-  const isFetchingCompanyExtended = useSelector((state: RootState) =>
+  const isFetchingCompanyExtended = useAppSelector((state: RootState) =>
     getIsFetchingCompanyExtendedById(state, businessId),
   );
 

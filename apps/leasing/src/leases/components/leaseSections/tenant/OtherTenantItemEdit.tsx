@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import classNames from "classnames";
 import { get, isEmpty } from "lodash-es";
 import AddButtonThird from "@/components/form/AddButtonThird";
@@ -66,18 +66,20 @@ const OtherTenantItemEdit = ({
   serviceUnit,
   tenant,
 }: Props) => {
-  const dispatch = useDispatch();
-  const attributes = useSelector(getAttributes);
-  const collapseState = useSelector((state) =>
+  const dispatch = useAppDispatch();
+  const attributes = useAppSelector(getAttributes);
+  const collapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.others.${tenant.id}`,
     ),
   );
-  const contactMethods = useSelector(getContactMethods);
-  const errors = useSelector((state) => getErrorsByFormName(state, formName));
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const contactMethods = useAppSelector(getContactMethods);
+  const errors = useAppSelector((state) =>
+    getErrorsByFormName(state, formName),
+  );
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const usersPermissions = useAppSelector(getUsersPermissions);
   const tenantId = tenant?.id;
 
   const getOtherTenantById = (id: number) => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import FormText from "@/components/form/FormText";
@@ -24,15 +24,15 @@ import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 
 const SendEmail: React.FC = () => {
-  const currentLease: Lease = useSelector(getCurrentLease);
-  const loggedUser: Record<string, any> = useSelector(getLoggedInUser);
+  const currentLease: Lease = useAppSelector(getCurrentLease);
+  const loggedUser: Record<string, any> = useAppSelector(getLoggedInUser);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const [emailLogs, setEmailLogs] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setEmailLogs(getContentEmailLogs(currentLease));

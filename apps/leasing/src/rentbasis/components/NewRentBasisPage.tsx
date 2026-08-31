@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { createForm } from "final-form";
 import arrayMutators from "final-form-arrays";
 import { isEmpty } from "lodash-es";
@@ -55,23 +55,25 @@ import type { RentBasis } from "../types";
 import { validateRentBasisForm } from "../formValidators";
 
 const NewRentBasisPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const isSaving = useSelector(getIsSaving);
-  const rentBasisAttributes = useSelector(getRentBasisAttributes);
-  const isFetchingRentBasisAttributes = useSelector(
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const isSaving = useAppSelector(getIsSaving);
+  const rentBasisAttributes = useAppSelector(getRentBasisAttributes);
+  const isFetchingRentBasisAttributes = useAppSelector(
     getIsFetchingRentBasisAttributes,
   );
-  const rentBasisMethods: MethodsType = useSelector(getRentBasisMethods);
+  const rentBasisMethods: MethodsType = useAppSelector(getRentBasisMethods);
 
-  const isFetchingUiDataAttributes = useSelector(getIsFetchingUiDataAttributes);
-  const isFetchingUiDataList = useSelector(getIsFetching);
-  const uiDataAttributes = useSelector(getUiDataAttributes);
-  const uiDataList = useSelector(getUiDataList);
-  const uiDataMethods = useSelector(getUiDataMethods);
+  const isFetchingUiDataAttributes = useAppSelector(
+    getIsFetchingUiDataAttributes,
+  );
+  const isFetchingUiDataList = useAppSelector(getIsFetching);
+  const uiDataAttributes = useAppSelector(getUiDataAttributes);
+  const uiDataList = useAppSelector(getUiDataList);
+  const uiDataMethods = useAppSelector(getUiDataMethods);
   const [editedRentBasis, setEditedRentBasis] = useState<RentBasis>();
 
   const rentBasisFormRef = useRef(

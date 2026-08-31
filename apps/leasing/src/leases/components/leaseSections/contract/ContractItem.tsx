@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
@@ -48,31 +48,31 @@ const ContractItem: React.FC<Props> = ({
   onShowContractFileModal,
   typeOptions,
 }: Props) => {
-  const collateralsCollapseState = useSelector((state) =>
+  const collateralsCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${contract.id}.collaterals`,
     ),
   );
 
-  const contractCollapseState = useSelector((state) =>
+  const contractCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${contract.id}.contract`,
     ),
   );
 
-  const contractChangesCollapseState = useSelector((state) =>
+  const contractChangesCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${contract.id}.contract_changes`,
     ),
   );
 
-  const attributes: Attributes = useSelector(getAttributes);
-  const currentLease = useSelector(getCurrentLease);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const currentLease = useAppSelector(getCurrentLease);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleCollapseToggle = (val: boolean, field: string) => {
     dispatch(

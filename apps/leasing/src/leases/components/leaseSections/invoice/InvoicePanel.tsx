@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { createForm } from "final-form";
 import type { FormApi } from "final-form";
 import arrayMutators from "final-form-arrays";
@@ -38,14 +38,14 @@ type Props = {
 
 const InvoicePanel = forwardRef<any, Props>(
   ({ invoice, onClose, onInvoiceLinkClick, onSave }, ref) => {
-    const currentLease = useSelector(getCurrentLease);
-    const invoiceMethods: MethodsType = useSelector(getInvoiceMethods);
-    const invoices = useSelector((state) =>
+    const currentLease = useAppSelector(getCurrentLease);
+    const invoiceMethods: MethodsType = useAppSelector(getInvoiceMethods);
+    const invoices = useAppSelector((state) =>
       getInvoicesByLease(state, currentLease.id),
     );
-    const isEditClicked = useSelector(getIsEditClicked);
-    const activeServiceUnit = useSelector(getUserActiveServiceUnit);
-    const dispatch = useDispatch();
+    const isEditClicked = useAppSelector(getIsEditClicked);
+    const activeServiceUnit = useAppSelector(getUserActiveServiceUnit);
+    const dispatch = useAppDispatch();
 
     const invoiceFormRef = useRef<FormApi>(
       createForm({

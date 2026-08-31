@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import Loader from "@/components/loader/Loader";
 import { Row, Column } from "@/components/grid/Grid";
@@ -40,9 +40,9 @@ const CollectionNotes: React.FC<CollectionNotesProps> = ({
   isServiceUnitSameAsActiveServiceUnit,
   appDispatch,
 }) => {
-  const dispatch = useDispatch();
-  const currentLease = useSelector(getCurrentLease);
-  const isFetchingByLease = useSelector((state) =>
+  const dispatch = useAppDispatch();
+  const currentLease = useAppSelector(getCurrentLease);
+  const isFetchingByLease = useAppSelector((state) =>
     getIsFetchingByLease(state, currentLease?.id),
   );
   const [editingNoteId, setEditingNoteId] = useState<CollectionNoteId | null>(

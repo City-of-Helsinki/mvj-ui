@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
@@ -40,7 +40,7 @@ const CollectionLetterInvoiceRow: React.FC<Props> = ({
   showDeleteButton,
 }) => {
   const formState = useFormState();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const currentInvoiceId = get(formState.values, `${field}.invoice`);
 
@@ -53,13 +53,13 @@ const CollectionLetterInvoiceRow: React.FC<Props> = ({
     `${field}.collection_charge`,
     "0",
   );
-  const isFetching: boolean = useSelector((state) =>
+  const isFetching: boolean = useAppSelector((state) =>
     getIsFetchingByInvoice(state, currentInvoiceId),
   );
-  const penaltyInterest = useSelector((state) =>
+  const penaltyInterest = useAppSelector((state) =>
     getPenaltyInterestByInvoice(state, currentInvoiceId),
   );
-  const usersPermissions = useSelector(getUsersPermissions);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   useEffect(() => {
     if (

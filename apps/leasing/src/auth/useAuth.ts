@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import {
   useApiTokens,
   useOidcClient,
@@ -23,13 +23,13 @@ import { apiTokenKeyName } from "@/auth/constants";
 const useAuth = () => {
   const { login: oidcLogin, logout: oidcLogout } = useOidcClient();
   const authenticatedUser = useAuthenticatedUser();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [apiTokensClientSignal, apiTokensClientSignalReset] =
     useApiTokensClientTracking();
   const { getStoredApiTokens } = useApiTokens();
 
-  const reduxUser = useSelector(getLoggedInUser);
-  const reduxApiToken = useSelector(getApiToken);
+  const reduxUser = useAppSelector(getLoggedInUser);
+  const reduxApiToken = useAppSelector(getApiToken);
 
   // Sync user updates
   useEffect(() => {

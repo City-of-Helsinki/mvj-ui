@@ -45,7 +45,7 @@ import type { DueDate, ReceivableType } from "@/leases/types";
 import type { LeaseTypeList } from "@/leaseType/types";
 import type { ServiceUnit } from "@/serviceUnits/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { useFieldValue } from "@/components/helpers";
 
 type DueDatesProps = {
@@ -54,10 +54,10 @@ type DueDatesProps = {
 };
 
 const DueDates = ({ dueDates, fields }: DueDatesProps): ReactElement => {
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
   const handleAdd = () => {
     fields.push({});
@@ -202,8 +202,8 @@ const DueDates = ({ dueDates, fields }: DueDatesProps): ReactElement => {
 type BasicInfoEmptyProps = { field: string };
 
 const BasicInfoEmpty = ({ field }: BasicInfoEmptyProps) => {
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   return (
     <Authorization
@@ -248,8 +248,8 @@ const BasicInfoIndexOrManual = ({
   const cycle = useFieldValue(`${field}.cycle`);
   const dueDates = useFieldValue(`${field}.due_dates`) || [];
   const dueDatesType = useFieldValue(`${field}.due_dates_type`);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const isSaveClicked = useSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
 
   return (
     <>
@@ -572,8 +572,8 @@ const BasicInfoIndexOrManual = ({
 type BasicInfoOneTimeProps = { field: string };
 
 const BasicInfoOneTime = ({ field }: BasicInfoOneTimeProps) => {
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   return (
     <>
@@ -708,8 +708,8 @@ const BasicInfoFixed = ({
 }: BasicInfoFixedProps) => {
   const dueDates = useFieldValue(`${field}.due_dates`) || [];
   const dueDatesType = useFieldValue(`${field}.due_dates_type`);
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   return (
     <>
@@ -926,8 +926,8 @@ const BasicInfoFixed = ({
 type BasicInfoFreeProps = { field: string };
 
 const BasicInfoFree = ({ field }: BasicInfoFreeProps) => {
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   return (
     <>
@@ -1051,13 +1051,13 @@ type Props = {
 };
 
 const BasicInfoEdit = ({ field, rentType }: Props) => {
-  const currentLease = useSelector(getCurrentLease);
-  const leaseTypes: LeaseTypeList = useSelector(getLeaseTypeList);
+  const currentLease = useAppSelector(getCurrentLease);
+  const leaseTypes: LeaseTypeList = useAppSelector(getLeaseTypeList);
   const dueDatesPerYear = useFieldValue(`${field}.due_dates_per_year`);
   const dueDatesType = useFieldValue(`${field}.due_dates_type`);
 
   const receivableTypes: Array<ReceivableType> =
-    useSelector(getReceivableTypes);
+    useAppSelector(getReceivableTypes);
 
   const getYearlyDueDates = () => {
     const leaseTypeId = get(currentLease, "type.id");

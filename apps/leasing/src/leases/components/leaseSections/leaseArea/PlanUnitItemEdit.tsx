@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { useLocation, Link } from "react-router";
 import { useField } from "react-final-form";
@@ -34,10 +34,10 @@ type Props = {
 };
 
 const PlanUnitItemEdit: React.FC<Props> = ({ field, onRemove }) => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const isSaveClicked: boolean = useSelector(getIsSaveClicked);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const isSaveClicked: boolean = useAppSelector(getIsSaveClicked);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
   const location = useLocation();
 
   const {

@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
@@ -45,8 +45,8 @@ type Props = {
 };
 
 const RentAdjustments: React.FC<Props> = ({ rentAdjustments }) => {
-  const currentLease = useSelector(getCurrentLease);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const currentLease = useAppSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   const decisionOptions = getDecisionOptions(currentLease),
     typeOptions = getFieldOptions(

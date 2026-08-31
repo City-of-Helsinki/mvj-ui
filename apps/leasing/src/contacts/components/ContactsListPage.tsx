@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation, useNavigate } from "react-router";
 import {
   Button,
@@ -59,15 +59,15 @@ const hasRowMultipleValues = (row: Contact): boolean => {
 };
 
 const ContactListPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
   const { contactAttributes, contactMethods, isFetchingContactAttributes } =
     useContactAttributes();
-  const contactList = useSelector(getContactList);
-  const isFetching = useSelector(getIsFetching);
-  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const contactList = useAppSelector(getContactList);
+  const isFetching = useAppSelector(getIsFetching);
+  const userActiveServiceUnit = useAppSelector(getUserActiveServiceUnit);
 
   const queryParams = useMemo(
     () => getUrlParams(location.search),

@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import classNames from "classnames";
 import { Row, Column } from "@/components/grid/Grid";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
@@ -48,7 +48,7 @@ const SaveConditionPanel = forwardRef<SaveConditionPanelHandle, Props>(
     },
     ref,
   ) => {
-    const areaNoteMethods: MethodsType = useSelector(getAreaNoteMethods);
+    const areaNoteMethods: MethodsType = useAppSelector(getAreaNoteMethods);
     const [note, setNote] = useState("");
     const firstFieldRef = useRef<any>(null);
     const prevShowRef = useRef(show);

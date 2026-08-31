@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { createForm } from "final-form";
 import arrayMutators from "final-form-arrays";
 import { isEmpty } from "lodash-es";
@@ -93,29 +93,35 @@ import type { RentBasis } from "@/rentbasis/types";
 import { validateRentBasisForm } from "../formValidators";
 
 const RentBasisPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
 
-  const isEditMode = useSelector(getIsEditMode);
-  const isFetching = useSelector(getIsFetching);
-  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const isSaving = useSelector(getIsSaving);
-  const isFormDirty = useSelector(getIsFormDirty);
-  const rentBasisData: RentBasis = useSelector(getRentBasis);
-  const usersPermissions = useSelector(getUsersPermissions);
-  const isFetchingRentBasisAttributes = useSelector(
+  const isEditMode = useAppSelector(getIsEditMode);
+  const isFetching = useAppSelector(getIsFetching);
+  const isFetchingUsersPermissions = useAppSelector(
+    getIsFetchingUsersPermissions,
+  );
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const isSaving = useAppSelector(getIsSaving);
+  const isFormDirty = useAppSelector(getIsFormDirty);
+  const rentBasisData: RentBasis = useAppSelector(getRentBasis);
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const isFetchingRentBasisAttributes = useAppSelector(
     getIsFetchingRentBasisAttributes,
   );
-  const rentBasisAttributes: Attributes = useSelector(getRentBasisAttributes);
-  const rentBasisMethods = useSelector(getRentBasisMethods);
-  const isFetchingUiDataAttributes = useSelector(getIsFetchingUiDataAttributes);
-  const uiDataAttributes: Attributes = useSelector(getUiDataAttributes);
-  const uiDataMethods = useSelector(getUiDataMethods);
-  const isFetchingUiDataList = useSelector(getIsFetchingUiData);
-  const uiDataList = useSelector(getUiDataList);
+  const rentBasisAttributes: Attributes = useAppSelector(
+    getRentBasisAttributes,
+  );
+  const rentBasisMethods = useAppSelector(getRentBasisMethods);
+  const isFetchingUiDataAttributes = useAppSelector(
+    getIsFetchingUiDataAttributes,
+  );
+  const uiDataAttributes: Attributes = useAppSelector(getUiDataAttributes);
+  const uiDataMethods = useAppSelector(getUiDataMethods);
+  const isFetchingUiDataList = useAppSelector(getIsFetchingUiData);
+  const uiDataList = useAppSelector(getUiDataList);
 
   const [activeTab, setActiveTab] = useState(0);
   const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);

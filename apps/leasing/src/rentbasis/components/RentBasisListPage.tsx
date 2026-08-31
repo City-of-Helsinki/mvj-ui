@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { createForm } from "final-form";
 import { Form } from "react-final-form";
 import { Row, Column } from "@/components/grid/Grid";
@@ -54,17 +54,17 @@ import {
 import type { RentBasisList } from "@/rentbasis/types";
 
 const RentBasisListPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isFetching = useSelector(getIsFetching);
-  const rentBasisListData = useSelector(getRentBasisListData);
-  const isFetchingRentBasisAttributes = useSelector(
+  const isFetching = useAppSelector(getIsFetching);
+  const rentBasisListData = useAppSelector(getRentBasisListData);
+  const isFetchingRentBasisAttributes = useAppSelector(
     getIsFetchingRentBasisAttributes,
   );
-  const rentBasisAttributes = useSelector(getRentBasisAttributes);
-  const rentBasisMethods = useSelector(getRentBasisMethods);
+  const rentBasisAttributes = useAppSelector(getRentBasisAttributes);
+  const rentBasisMethods = useAppSelector(getRentBasisMethods);
 
   const [activePage, setActivePage] = useState(1);
   const [isSearchInitialized, setIsSearchInitialized] = useState(false);

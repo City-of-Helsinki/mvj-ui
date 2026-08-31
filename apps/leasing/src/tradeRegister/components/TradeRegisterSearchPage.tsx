@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation, useNavigate } from "react-router";
 import { Row, Column } from "@/components/grid/Grid";
 import { isEmpty } from "lodash-es";
@@ -29,12 +29,12 @@ import type { RootState } from "@/root/types";
 const TradeRegisterSearchPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const isFetchingUsersPermissions = useSelector((state: RootState) =>
+  const isFetchingUsersPermissions = useAppSelector((state: RootState) =>
     getIsFetchingUsersPermissions(state),
   );
-  const usersPermissions = useSelector((state: RootState) =>
+  const usersPermissions = useAppSelector((state: RootState) =>
     getUsersPermissions(state),
   );
 

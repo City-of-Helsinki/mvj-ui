@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation, useNavigate } from "react-router";
 import { Row, Column } from "@/components/grid/Grid";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -133,18 +133,18 @@ const getColumns = (invoiceAttributes: Attributes): Array<TableColumn> => {
 };
 
 const SapInvoicesListPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const invoiceAttributes = useSelector(getInvoiceAttributes);
-  const invoiceMethods = useSelector(getInvoiceMethods);
-  const isFetchingInvoiceAttributes = useSelector(
+  const invoiceAttributes = useAppSelector(getInvoiceAttributes);
+  const invoiceMethods = useAppSelector(getInvoiceMethods);
+  const isFetchingInvoiceAttributes = useAppSelector(
     getIsFetchingInvoiceAttributes,
   );
-  const isFetching = useSelector(getIsFetching);
-  const sapInvoiceList = useSelector(getSapInvoiceList);
-  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const isFetching = useAppSelector(getIsFetching);
+  const sapInvoiceList = useAppSelector(getSapInvoiceList);
+  const userActiveServiceUnit = useAppSelector(getUserActiveServiceUnit);
 
   const searchQuery = useMemo(
     () => getUrlParams(location.search),

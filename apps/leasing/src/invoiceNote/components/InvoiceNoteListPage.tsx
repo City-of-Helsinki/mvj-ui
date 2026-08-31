@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation, useNavigate } from "react-router";
 import { Row, Column } from "@/components/grid/Grid";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -116,19 +116,19 @@ const getColumns = (invoiceNoteAttributes: Attributes) => {
 };
 
 const InvoiceNoteListPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const invoiceNoteAttributes = useSelector(getInvoiceNoteAttributes);
-  const invoiceNoteMethods = useSelector(getInvoiceNoteMethods);
-  const isFetchingInvoiceNoteAttributes = useSelector(
+  const invoiceNoteAttributes = useAppSelector(getInvoiceNoteAttributes);
+  const invoiceNoteMethods = useAppSelector(getInvoiceNoteMethods);
+  const isFetchingInvoiceNoteAttributes = useAppSelector(
     getIsFetchingInvoiceNoteAttributes,
   );
-  const invoiceNoteList = useSelector(getInvoiceNoteList);
-  const isCreateModalOpen = useSelector(getIsCreateModalOpen);
-  const isFetching = useSelector(getIsFetching);
-  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const invoiceNoteList = useAppSelector(getInvoiceNoteList);
+  const isCreateModalOpen = useAppSelector(getIsCreateModalOpen);
+  const isFetching = useAppSelector(getIsFetching);
+  const userActiveServiceUnit = useAppSelector(getUserActiveServiceUnit);
 
   const hasFetchedInvoiceNotesRef = useRef(false);
   const prevSearchRef = useRef(location.search);

@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import BoxItem from "@/components/content/BoxItem";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import FormText from "@/components/form/FormText";
@@ -14,8 +14,8 @@ import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 
 const Inspections: React.FC = () => {
-  const currentLease: Lease = useSelector(getCurrentLease);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const currentLease: Lease = useAppSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   const inspections = getContentInspections(currentLease);
 

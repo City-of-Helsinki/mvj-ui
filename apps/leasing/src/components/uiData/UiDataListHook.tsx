@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { isEmpty } from "lodash-es";
 import {
   fetchUiDataList,
@@ -14,13 +14,15 @@ import {
 } from "@/uiData/selectors";
 
 export function useUiDataList() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const uiDataAttributes = useSelector(getUiDataAttributes);
-  const uiDataMethods = useSelector(getUiDataMethods);
-  const uiDataList = useSelector(getUiDataList);
-  const isFetchingUiDataAttributes = useSelector(getIsFetchingUiDataAttributes);
-  const isFetchingUiDataList = useSelector(getIsFetching);
+  const uiDataAttributes = useAppSelector(getUiDataAttributes);
+  const uiDataMethods = useAppSelector(getUiDataMethods);
+  const uiDataList = useAppSelector(getUiDataList);
+  const isFetchingUiDataAttributes = useAppSelector(
+    getIsFetchingUiDataAttributes,
+  );
+  const isFetchingUiDataList = useAppSelector(getIsFetching);
 
   useEffect(() => {
     if (!isFetchingUiDataAttributes && !uiDataAttributes && !uiDataMethods) {

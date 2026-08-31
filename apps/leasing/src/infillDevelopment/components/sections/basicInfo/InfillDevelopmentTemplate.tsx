@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
@@ -33,7 +33,7 @@ type Props = {
 };
 
 const InfillDevelopmentTemplate = ({ infillDevelopment }: Props) => {
-  const infillDevelopmentAttributes: Attributes = useSelector(
+  const infillDevelopmentAttributes: Attributes = useAppSelector(
     getInfillDevelopmentAttributes,
   );
   const leases = get(

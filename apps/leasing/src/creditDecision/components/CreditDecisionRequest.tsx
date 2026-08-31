@@ -1,5 +1,5 @@
 import React, { Fragment, useCallback, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
@@ -48,13 +48,15 @@ const CreditDecisionRequest: React.FC<Props> = ({
   contactType,
   nin,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [hasRequested, setHasRequested] = useState(false);
 
-  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isFetchingUsersPermissions = useAppSelector(
+    getIsFetchingUsersPermissions,
+  );
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
-  const result = useSelector((state) => {
+  const result = useAppSelector((state) => {
     if (contactId) {
       return getCreditDecisionByContactId(state, contactId);
     }
@@ -70,7 +72,7 @@ const CreditDecisionRequest: React.FC<Props> = ({
     return undefined;
   });
 
-  const isFetchingResult = useSelector((state) => {
+  const isFetchingResult = useAppSelector((state) => {
     if (contactId) {
       return getIsFetchingCreditDecisionByContactId(state, contactId);
     }

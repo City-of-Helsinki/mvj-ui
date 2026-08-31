@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Form } from "react-final-form";
 import { FormApi } from "final-form";
 import { FieldArray } from "react-final-form-arrays";
@@ -709,9 +709,9 @@ type Props = {
 const RentBasisForm = ({ formApi, isFocusedOnMount }: Props): ReactNode => {
   const firstField = useRef<any>(null);
 
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const rentBasisAttributes = useSelector(getRentBasisAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const rentBasisAttributes = useAppSelector(getRentBasisAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const [areaUnitOptions, setAreaUnitOptions] = useState<
     Array<Record<string, any>>

@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import Authorization from "@/components/authorization/Authorization";
 import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
@@ -20,8 +20,8 @@ import type { Lease } from "@/leases/types";
 type Props = {};
 
 const LeaseAreas: React.FC<Props> = () => {
-  const attributes: Attributes = useSelector(getAttributes);
-  const currentLease: Lease = useSelector(getCurrentLease);
+  const attributes: Attributes = useAppSelector(getAttributes);
+  const currentLease: Lease = useAppSelector(getCurrentLease);
 
   const areas = getContentLeaseAreas(currentLease);
   const activeAreas = areas.filter((area) => !area.archived_at);

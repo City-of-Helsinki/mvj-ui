@@ -10,11 +10,11 @@ import {
 import type { Attributes, Methods } from "types";
 
 export function useContactAttributes() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const contactAttributes = useSelector(getContactAttributes);
-  const contactMethods = useSelector(getContactMethods);
-  const isFetchingContactAttributes = useSelector(
+  const contactAttributes = useAppSelector(getContactAttributes);
+  const contactMethods = useAppSelector(getContactMethods);
+  const isFetchingContactAttributes = useAppSelector(
     getIsFetchingContactAttributes,
   );
 

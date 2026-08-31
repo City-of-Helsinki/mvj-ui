@@ -4,7 +4,7 @@ import {
   getCurrentLeaseStartDate,
   getAttributes as getLeaseAttributes,
 } from "@/leases/selectors";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import type { PeriodicRentAdjustmentType } from "@/leases/types";
 import type { OldDwellingsInHousingCompaniesPriceIndex as OldDwellingsInHousingCompaniesPriceIndexProps } from "@/oldDwellingsInHousingCompaniesPriceIndex/types";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
@@ -41,9 +41,9 @@ const OldDwellingsInHousingCompaniesPriceIndexEdit: React.FC<Props> = ({
   startPriceIndexPointFigureYear,
   field,
 }) => {
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseStartDate = useSelector(getCurrentLeaseStartDate);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseStartDate = useAppSelector(getCurrentLeaseStartDate);
 
   const { point_figures: pointFigures, source_table_label: sourceTableLabel } =
     oldDwellingsInHousingCompaniesPriceIndex || {};

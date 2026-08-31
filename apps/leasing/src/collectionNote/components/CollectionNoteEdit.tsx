@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Form } from "react-final-form";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
@@ -48,14 +48,14 @@ const CollectionNoteEdit: React.FC<Props> = ({
   onCancel,
   onDelete,
 }) => {
-  const collectionNoteAttributes: Attributes = useSelector(
+  const collectionNoteAttributes: Attributes = useAppSelector(
     getCollectionNoteAttributes,
   );
-  const currentLease = useSelector(getCurrentLease);
-  const availableInvoices = useSelector((state) =>
+  const currentLease = useAppSelector(getCurrentLease);
+  const availableInvoices = useAppSelector((state) =>
     getInvoicesByLease(state, currentLease?.id),
   );
-  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
+  const invoiceAttributes: Attributes = useAppSelector(getInvoiceAttributes);
   const stateOptions = getFieldOptions(
     invoiceAttributes,
     InvoiceFieldPaths.STATE,

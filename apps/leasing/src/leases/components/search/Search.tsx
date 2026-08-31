@@ -20,7 +20,7 @@ import {
 import { isEqual } from "lodash-es";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Field, useForm, useFormState } from "react-final-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation } from "react-router";
 
 import Authorization from "@/components/authorization/Authorization";
@@ -158,10 +158,10 @@ const Search: React.FC<Props> = ({
   const form = useForm();
   const { values, dirty } = useFormState();
   const municipality = values.municipality;
-  const districts = useSelector((state: any) =>
+  const districts = useAppSelector((state: any) =>
     getDistrictsByMunicipality(state, Number(municipality)),
   );
-  const leaseMethods = useSelector(getLeaseMethods);
+  const leaseMethods = useAppSelector(getLeaseMethods);
 
   const prevValues = useRef(values);
 
@@ -204,8 +204,8 @@ const Search: React.FC<Props> = ({
     form.submit();
   };
 
-  const leaseAttributes = useSelector(getLeaseAttributes);
-  const lessors = useSelector(getLessorList) as Array<Contact>;
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
+  const lessors = useAppSelector(getLessorList) as Array<Contact>;
   const { intendedUseList, isFetchingIntendedUses } = useIntendedUses();
 
   const decisionMakerOptions = useMemo(
@@ -1300,7 +1300,7 @@ const Search: React.FC<Props> = ({
 
 const DistrictLoader = ({ municipality }: DistrictLoaderProps) => {
   const form = useForm();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const firstUpdate = useRef(true);
   const prevValue = useRef(municipality);
 

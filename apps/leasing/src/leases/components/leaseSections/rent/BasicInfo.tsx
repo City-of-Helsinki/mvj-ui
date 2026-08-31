@@ -27,7 +27,7 @@ import {
   getAttributes as getLeaseAttributes,
 } from "@/leases/selectors";
 import type { Attributes } from "types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 
 type Props = {
   rent: Record<string, any>;
@@ -35,8 +35,8 @@ type Props = {
 };
 
 const BasicInfoIndexOrManual = ({ rent }: Props) => {
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const serviceUnit = useSelector(getCurrentLease).service_unit;
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const serviceUnit = useAppSelector(getCurrentLease).service_unit;
 
   const areOldInfoVisible = () => {
     return (
@@ -506,7 +506,7 @@ const BasicInfoIndexOrManual = ({ rent }: Props) => {
 };
 
 const BasicInfoOneTime = ({ rent }: Props) => {
-  const leaseAttributes = useSelector(getLeaseAttributes);
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
   const typeOptions = getFieldOptions(
     leaseAttributes,
     LeaseRentsFieldPaths.TYPE,
@@ -609,8 +609,8 @@ const BasicInfoOneTime = ({ rent }: Props) => {
 };
 
 const BasicInfoFixed = ({ rent }: Props) => {
-  const leaseAttributes = useSelector(getLeaseAttributes);
-  const serviceUnit = useSelector(getCurrentLease).service_unit;
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
+  const serviceUnit = useAppSelector(getCurrentLease).service_unit;
   const dueDatesTypeOptions = getFieldOptions(
     leaseAttributes,
     LeaseRentsFieldPaths.DUE_DATES_TYPE,
@@ -826,7 +826,7 @@ const BasicInfoFixed = ({ rent }: Props) => {
 };
 
 const BasicInfoFree = ({ rent }: Props) => {
-  const leaseAttributes = useSelector(getLeaseAttributes);
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
   const typeOptions = getFieldOptions(
     leaseAttributes,
     LeaseRentsFieldPaths.TYPE,

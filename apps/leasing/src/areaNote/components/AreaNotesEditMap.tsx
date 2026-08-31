@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import L from "leaflet";
 import { FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
@@ -58,9 +58,9 @@ const AreaNotesEditMap: React.FC<Props> = ({
   zoom,
   zoomLevelWarningText,
 }) => {
-  const dispatch = useDispatch();
-  const initialValues = useSelector(getInitialAreaNote);
-  const isEditMode = useSelector(getIsEditMode);
+  const dispatch = useAppDispatch();
+  const initialValues = useAppSelector(getInitialAreaNote);
+  const isEditMode = useAppSelector(getIsEditMode);
 
   const featureGroupRef = useRef<Record<string, any> | null>(null);
   const saveConditionPanelRef = useRef<SaveConditionPanelHandle | null>(null);

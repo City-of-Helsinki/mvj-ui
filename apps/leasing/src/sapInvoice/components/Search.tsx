@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useCallback, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { isEmpty, isEqual } from "lodash-es";
 import { Form, Field, FormSpy } from "react-final-form";
@@ -26,9 +26,9 @@ const Search: React.FC<Props> = ({
   sortOrder,
   initialValues,
 }) => {
-  const dispatch = useDispatch();
-  const isFetchingServiceUnits = useSelector(getIsFetchingServiceUnits);
-  const serviceUnits: ServiceUnits = useSelector(getServiceUnits);
+  const dispatch = useAppDispatch();
+  const isFetchingServiceUnits = useAppSelector(getIsFetchingServiceUnits);
+  const serviceUnits: ServiceUnits = useAppSelector(getServiceUnits);
 
   const prevFormValues = useRef(initialValues || {});
 

@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import AddButton from "@/components/form/AddButton";
 import Authorization from "@/components/authorization/Authorization";
@@ -45,22 +45,22 @@ type Props = {
 };
 
 const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
-  const currentLease: Lease = useSelector(getCurrentLease);
-  const isCreateInvoicePanelOpen = useSelector(getIsCreateInvoicePanelOpen);
-  const isCreditInvoicePanelOpen = useSelector(getIsCreditInvoicePanelOpen);
+  const currentLease: Lease = useAppSelector(getCurrentLease);
+  const isCreateInvoicePanelOpen = useAppSelector(getIsCreateInvoicePanelOpen);
+  const isCreditInvoicePanelOpen = useAppSelector(getIsCreditInvoicePanelOpen);
   const isInvoicingEnabled = currentLease
     ? !!currentLease.invoicing_enabled_at
     : null;
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
-  const activeServiceUnit = useSelector(getUserActiveServiceUnit);
+    useAppSelector(getUsersPermissions);
+  const activeServiceUnit = useAppSelector(getUserActiveServiceUnit);
 
   const creditPanel = useRef<HTMLDivElement | null>(null);
   const creditPanelFirstField = useRef<HTMLElement | null>(null);
   const createPanel = useRef<HTMLDivElement | null>(null);
   const createPanelFirstField = useRef<HTMLElement | null>(null);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const isServiceUnitSameAsActiveServiceUnit = () => {
     return activeServiceUnit?.id === currentLease?.service_unit?.id;

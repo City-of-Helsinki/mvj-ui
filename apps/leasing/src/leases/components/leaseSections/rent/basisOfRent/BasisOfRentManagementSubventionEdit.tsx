@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import type { FormApi } from "final-form";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
@@ -47,9 +47,9 @@ const BasisOfRentManagementSubventionEdit: React.FC<Props> = ({
   initialYearRent,
   onRemove,
 }) => {
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const subventionAmount = useFieldValue(`${field}.subvention_amount`);
   const previousCurrentAmountPerAreaRef = useRef<number>(currentAmountPerArea);

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import type { FormApi } from "final-form";
 import { Row, Column } from "@/components/grid/Grid";
 import Button from "@/components/button/Button";
@@ -45,16 +45,16 @@ type Props = {
 };
 
 const RentCalculator: React.FC<Props> = ({ formApi }) => {
-  const dispatch = useDispatch();
-  const currentLease = useSelector(getCurrentLease);
-  const saveClicked = useSelector(getIsSaveClicked);
-  const usersPermissions = useSelector(getUsersPermissions);
-  const fetching = useSelector(getIsFetching);
-  const isEditMode = useSelector(getIsEditMode);
-  const billingPeriods = useSelector((state) =>
+  const dispatch = useAppDispatch();
+  const currentLease = useAppSelector(getCurrentLease);
+  const saveClicked = useAppSelector(getIsSaveClicked);
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const fetching = useAppSelector(getIsFetching);
+  const isEditMode = useAppSelector(getIsEditMode);
+  const billingPeriods = useAppSelector((state) =>
     getBillingPeriodsByLease(state, currentLease.id),
   );
-  const rentForPeriodArray = useSelector((state) =>
+  const rentForPeriodArray = useAppSelector((state) =>
     getRentForPeriodArrayByLease(state, currentLease.id),
   );
   const [formValues, setFormValues] = useState(() => formApi.getState().values);

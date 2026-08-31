@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ErrorIcon from "@/components/icons/ErrorIcon";
 import GreenBox from "@/components/content/GreenBox";
@@ -46,28 +46,30 @@ import type { Attributes } from "types";
 import type { JobRuns as JobRunsType } from "@/batchrun/types";
 
 const JobRuns: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [activePage, setActivePage] = useState(1);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [openedRow, setOpenedRow] = useState<Record<string, any> | null>(null);
 
-  const isFetchingBatchrunJobRunAttributes = useSelector(
+  const isFetchingBatchrunJobRunAttributes = useAppSelector(
     getIsFetchingJobRunAttributes,
   );
-  const isFetchingBatchrunJobRunLogEntryAttributes = useSelector(
+  const isFetchingBatchrunJobRunLogEntryAttributes = useAppSelector(
     getIsFetchingJobRunLogEntryAttributes,
   );
-  const batchrunJobRunAttributes = useSelector(getJobRunAttributes);
-  const batchrunJobRunMethods = useSelector(getJobRunMethods);
-  const batchrunJobRunLogEntryAttributes = useSelector(
+  const batchrunJobRunAttributes = useAppSelector(getJobRunAttributes);
+  const batchrunJobRunMethods = useAppSelector(getJobRunMethods);
+  const batchrunJobRunLogEntryAttributes = useAppSelector(
     getJobRunLogEntryAttributes,
   );
-  const batchrunJobRunLogEntryMethods = useSelector(getJobRunLogEntryMethods);
+  const batchrunJobRunLogEntryMethods = useAppSelector(
+    getJobRunLogEntryMethods,
+  );
 
-  const isFetchingJobRuns = useSelector(getIsFetchingJobRuns);
-  const jobRunAttributes: Attributes = useSelector(getJobRunAttributes);
-  const jobRunsData: JobRunsType = useSelector(getJobRuns);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isFetchingJobRuns = useAppSelector(getIsFetchingJobRuns);
+  const jobRunAttributes: Attributes = useAppSelector(getJobRunAttributes);
+  const jobRunsData: JobRunsType = useAppSelector(getJobRuns);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const isFetchingBatchrunJobRunsTabAttributes =
     isFetchingBatchrunJobRunAttributes ||

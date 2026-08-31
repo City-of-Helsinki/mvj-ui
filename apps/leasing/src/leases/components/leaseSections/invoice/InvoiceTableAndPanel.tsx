@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { initialize } from "redux-form";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import FormText from "@/components/form/FormText";
@@ -65,20 +65,20 @@ const InvoiceTableAndPanel: React.FC<Props> = ({
   invoiceToCredit,
   onInvoiceToCreditChange,
 }) => {
-  const currentLease = useSelector(getCurrentLease);
-  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
-  const invoiceListData: InvoiceList | null | undefined = useSelector((state) =>
-    getInvoicesByLease(state, currentLease.id),
+  const currentLease = useAppSelector(getCurrentLease);
+  const invoiceAttributes: Attributes = useAppSelector(getInvoiceAttributes);
+  const invoiceListData: InvoiceList | null | undefined = useAppSelector(
+    (state) => getInvoicesByLease(state, currentLease.id),
   );
-  const invoiceSets: InvoiceSetList | null | undefined = useSelector((state) =>
-    getInvoiceSetsByLease(state, currentLease.id),
+  const invoiceSets: InvoiceSetList | null | undefined = useAppSelector(
+    (state) => getInvoiceSetsByLease(state, currentLease.id),
   );
   const patchedInvoice: Invoice | null | undefined =
-    useSelector(getPatchedInvoice);
+    useAppSelector(getPatchedInvoice);
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const tableAndPanelWrapper = useRef<TableAndPanelWrapper>(null);
 

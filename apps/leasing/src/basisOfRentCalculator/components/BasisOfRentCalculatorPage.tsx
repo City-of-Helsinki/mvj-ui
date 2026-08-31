@@ -14,18 +14,20 @@ import {
   getIsFetching as getIsFetchingUsersPermissions,
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { getAttributes, getIsFetchingAttributes } from "@/leases/selectors";
 import { fetchAttributes } from "@/leases/actions";
 import { createForm, setIn } from "final-form";
 import { validateRentBasisForm } from "@/rentbasis/formValidators";
 
 const BasisOfRentCalculatorPage: React.FC = () => {
-  const dispatch = useDispatch();
-  const isFetchingLeaseAttributes = useSelector(getIsFetchingAttributes);
-  const leaseAttributes = useSelector(getAttributes);
-  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const dispatch = useAppDispatch();
+  const isFetchingLeaseAttributes = useAppSelector(getIsFetchingAttributes);
+  const leaseAttributes = useAppSelector(getAttributes);
+  const isFetchingUsersPermissions = useAppSelector(
+    getIsFetchingUsersPermissions,
+  );
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const leaseBasisOfRentsFormRef = useRef(
     createForm({

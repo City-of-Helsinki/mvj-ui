@@ -16,7 +16,7 @@ import {
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { formatDate } from "@/util/helpers";
 import { getReviewDays, getPointFigureFormText } from "@/leases/helpers";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 
 type Props = {
   oldDwellingsInHousingCompaniesPriceIndex: OldDwellingsInHousingCompaniesPriceIndexProps;
@@ -31,7 +31,7 @@ const OldDwellingsInHousingCompaniesPriceIndexView: React.FC<Props> = ({
   startPriceIndexPointFigureValue,
   startPriceIndexPointFigureYear,
 }) => {
-  const leaseStartDate = useSelector(getCurrentLeaseStartDate);
+  const leaseStartDate = useAppSelector(getCurrentLeaseStartDate);
 
   const { point_figures: pointFigures, source_table_label: sourceTableLabel } =
     oldDwellingsInHousingCompaniesPriceIndex || {};

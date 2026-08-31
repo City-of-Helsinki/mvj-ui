@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get } from "lodash-es";
 import BoxItem from "@/components/content/BoxItem";
@@ -156,38 +156,38 @@ type Props = {
 };
 
 const CompanyRepresent = ({ businessId }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const companyRepresent = useSelector((state: RootState) =>
+  const companyRepresent = useAppSelector((state: RootState) =>
     getCompanyRepresentById(state, businessId),
   );
-  const companyRepresentCollapseState = useSelector((state: RootState) =>
+  const companyRepresentCollapseState = useAppSelector((state: RootState) =>
     getCollapseStateByKey(
       state,
       `${CollapseStatePaths.COMPANY_REPRESENT}.${businessId}`,
     ),
   );
-  const companyRepresentBodyCollapseState = useSelector((state: RootState) =>
+  const companyRepresentBodyCollapseState = useAppSelector((state: RootState) =>
     getCollapseStateByKey(
       state,
       `${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.BODY}.${businessId}`,
     ),
   );
-  const companyRepresentLegalRepresentationCollapseState = useSelector(
+  const companyRepresentLegalRepresentationCollapseState = useAppSelector(
     (state: RootState) =>
       getCollapseStateByKey(
         state,
         `${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.LEGAL_REPRESENTATION}.${businessId}`,
       ),
   );
-  const companyRepresentRepresentationCollapseState = useSelector(
+  const companyRepresentRepresentationCollapseState = useAppSelector(
     (state: RootState) =>
       getCollapseStateByKey(
         state,
         `${CollapseStatePaths.COMPANY_REPRESENT}.${CompanyRepresentFieldPaths.REPRESENTATION}.${businessId}`,
       ),
   );
-  const isFetchingCompanyRepresent = useSelector((state: RootState) =>
+  const isFetchingCompanyRepresent = useAppSelector((state: RootState) =>
     getIsFetchingCompanyRepresentById(state, businessId),
   );
 

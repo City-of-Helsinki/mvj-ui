@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import type { FormApi } from "final-form";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
 import { setRentInfoComplete, setRentInfoUncomplete } from "@/leases/actions";
@@ -20,8 +20,8 @@ const RentsEditMain: React.FC<Props> = ({
   rentCalculatorFormApi,
   basisOfRentsFormApi,
 }) => {
-  const dispatch = useDispatch();
-  const currentLease = useSelector(getCurrentLease);
+  const dispatch = useAppDispatch();
+  const currentLease = useAppSelector(getCurrentLease);
 
   const handleRentInfoComplete = () => {
     dispatch(setRentInfoComplete(currentLease.id));

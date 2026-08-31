@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
@@ -41,18 +41,18 @@ const DecisionItem: React.FC<Props> = ({
   decision,
   typeOptions,
 }) => {
-  const attributes: Attributes = useSelector(getAttributes);
+  const attributes: Attributes = useAppSelector(getAttributes);
 
   const largeScreen = useWindowResize();
 
-  const conditionsCollapseState = useSelector((state) =>
+  const conditionsCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${decision.id}.conditions`,
     ),
   );
 
-  const decisionCollapseState = useSelector((state) =>
+  const decisionCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${formName}.${decision.id}.decision`,

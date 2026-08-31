@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { useLocation, Link } from "react-router";
 import { Row, Column } from "@/components/grid/Grid";
 import { isEmpty } from "lodash-es";
@@ -39,7 +39,7 @@ type OwnProps = {
 
 const PlanUnitItem: React.FC<OwnProps> = ({ areaArchived, planUnit }) => {
   const location = useLocation();
-  const attributes: Attributes = useSelector(getAttributes);
+  const attributes: Attributes = useAppSelector(getAttributes);
 
   const getMapLinkUrl = () => {
     const { pathname, search } = location;

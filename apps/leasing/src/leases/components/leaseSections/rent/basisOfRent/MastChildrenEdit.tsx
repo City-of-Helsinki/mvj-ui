@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { useFieldValue } from "@/components/helpers";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
@@ -29,8 +29,8 @@ const MastChildrenEdit: React.FC<Props> = ({
   index,
   fieldsDisabled,
 }) => {
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
   const area = useFieldValue(`${parentField}.children[${index}].area`);
 
   const rent = mastCalculatorRent(index, area);

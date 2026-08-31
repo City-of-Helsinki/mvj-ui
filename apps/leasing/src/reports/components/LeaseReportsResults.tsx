@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { TableSortOrder } from "@/enums";
 import Loader from "@/components/loader/Loader";
@@ -35,12 +35,12 @@ import type { Reports } from "types";
 import type { ReportOptions } from "@/reports/types";
 
 const LeaseReportsResults: React.FC = () => {
-  const payload = useSelector(getPayload);
+  const payload = useAppSelector(getPayload);
 
-  const reportData = useSelector(getReportData);
-  const isFetchingReportData = useSelector(getIsFetchingReportData);
-  const reportOptions: ReportOptions = useSelector(getReportOptions);
-  const reports: Reports = useSelector(getReports);
+  const reportData = useAppSelector(getReportData);
+  const isFetchingReportData = useAppSelector(getIsFetchingReportData);
+  const reportOptions: ReportOptions = useAppSelector(getReportOptions);
+  const reports: Reports = useAppSelector(getReports);
 
   const getColumns = () => {
     const columns = [];

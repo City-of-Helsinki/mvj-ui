@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
 import FormText from "@/components/form/FormText";
@@ -14,7 +14,7 @@ type Props = {
 const CollectionLetterTotalRow = ({ fields, selectedInvoices }: Props) => {
   const formState = useFormState();
 
-  const penaltyInterestArray: Array<Record<string, any>> = useSelector(
+  const penaltyInterestArray: Array<Record<string, any>> = useAppSelector(
     (state) => {
       const penaltyInterests = [];
       fields.forEach((field) => {

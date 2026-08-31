@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
@@ -132,9 +132,9 @@ type Props = {
 };
 
 const InspectionsEdit: React.FC<Props> = ({ formApi }) => {
-  const usersPermissions = useSelector(getUsersPermissions);
-  const leaseAttributes = useSelector(getLeaseAttributes);
-  const user = useSelector(getLoggedInUser);
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const leaseAttributes = useAppSelector(getLeaseAttributes);
+  const user = useAppSelector(getLoggedInUser);
 
   return (
     <Form form={formApi} onSubmit={formApi.submit}>

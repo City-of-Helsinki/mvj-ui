@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { fetchIntendedUse } from "./actions";
 import { getIntendedUseList, getIsFetching } from "./selectors";
 import type { IntendedUseList } from "./types";
@@ -8,9 +8,9 @@ export const useIntendedUses = (): {
   intendedUseList: IntendedUseList;
   isFetchingIntendedUses: boolean;
 } => {
-  const dispatch = useDispatch();
-  const intendedUseList = useSelector(getIntendedUseList);
-  const isFetchingIntendedUses = useSelector(getIsFetching);
+  const dispatch = useAppDispatch();
+  const intendedUseList = useAppSelector(getIntendedUseList);
+  const isFetchingIntendedUses = useAppSelector(getIsFetching);
 
   useEffect(() => {
     // Only fetch if we don't have data and aren't already fetching

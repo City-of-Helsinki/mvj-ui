@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useMemo, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useNavigate, useLocation } from "react-router";
 import { isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -28,12 +28,14 @@ import {
 } from "@/usersPermissions/selectors";
 
 const CreditDecisionSearchPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isFetchingUsersPermissions = useAppSelector(
+    getIsFetchingUsersPermissions,
+  );
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const query = useMemo(() => getUrlParams(location.search), [location.search]);
   const contactType = query.contact_type || "";

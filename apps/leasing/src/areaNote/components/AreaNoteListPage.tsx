@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo } from "react";
 import { Row, Column } from "@/components/grid/Grid";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation, useNavigate } from "react-router";
 import { isEmpty } from "lodash-es";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -66,15 +66,15 @@ const getOverlayLayers = (
 };
 
 const AreaNoteListPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const areaNotes = useSelector(getAreaNoteList);
-  const isEditMode = useSelector(getIsEditMode);
-  const isFetching = useSelector(getIsFetching);
-  const areaNoteMethods = useSelector(getAreaNoteMethods);
-  const isFetchingAreaNoteAttributes = useSelector(
+  const areaNotes = useAppSelector(getAreaNoteList);
+  const isEditMode = useAppSelector(getIsEditMode);
+  const isFetching = useAppSelector(getIsFetching);
+  const areaNoteMethods = useAppSelector(getAreaNoteMethods);
+  const isFetchingAreaNoteAttributes = useAppSelector(
     getIsFetchingAreaNoteAttributes,
   );
 

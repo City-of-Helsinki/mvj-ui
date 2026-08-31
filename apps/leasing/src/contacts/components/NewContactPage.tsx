@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Form } from "react-final-form";
 import { useNavigate, useLocation } from "react-router";
 import { useContactAttributes } from "@/components/attributes/ContactAttributes";
@@ -47,11 +47,11 @@ const NewContactPage: React.FC = () => {
   useUiDataList();
   const { contactMethods } = useContactAttributes();
   const formApiRef = useRef<FormApi<Contact, Partial<Contact>> | null>(null);
-  const dispatch = useDispatch();
-  const initialContactFormValues = useSelector(getInitialContactFormValues);
-  const isFetchingContactAttributes = useSelector(getIsFetchingAttributes);
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const userActiveServiceUnit = useSelector(getUserActiveServiceUnit);
+  const dispatch = useAppDispatch();
+  const initialContactFormValues = useAppSelector(getInitialContactFormValues);
+  const isFetchingContactAttributes = useAppSelector(getIsFetchingAttributes);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const userActiveServiceUnit = useAppSelector(getUserActiveServiceUnit);
   const navigate = useNavigate();
   const location = useLocation();
   const [formState, setFormState] = useState<{

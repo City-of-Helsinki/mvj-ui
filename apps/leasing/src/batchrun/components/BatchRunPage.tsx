@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useNavigate, useLocation } from "react-router";
 import { isEmpty } from "lodash-es";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
@@ -31,7 +31,7 @@ import {
 } from "@/usersPermissions/selectors";
 
 const BatchJobsPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const { search } = location;
@@ -39,8 +39,10 @@ const BatchJobsPage: React.FC = () => {
   const parsedTab = Number(tab);
   const activeTab = tab != null && !Number.isNaN(parsedTab) ? parsedTab : 0;
 
-  const isFetchingUsersPermissions = useSelector(getIsFetchingUsersPermissions);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const isFetchingUsersPermissions = useAppSelector(
+    getIsFetchingUsersPermissions,
+  );
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   useEffect(() => {
     setPageTitle("Eräajot");

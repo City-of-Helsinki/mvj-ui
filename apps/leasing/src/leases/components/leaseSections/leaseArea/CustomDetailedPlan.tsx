@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItem from "@/components/content/BoxItem";
@@ -33,7 +33,7 @@ type OwnProps = {
 const CustomDetailedPlan: React.FC<OwnProps> = ({
   customDetailedPlan,
 }: OwnProps) => {
-  const attributes: Attributes = useSelector(getAttributes);
+  const attributes: Attributes = useAppSelector(getAttributes);
 
   const stateOptions = getFieldOptions(
     attributes,

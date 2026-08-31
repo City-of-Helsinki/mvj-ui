@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { useFormState } from "react-final-form";
 import { get } from "lodash-es";
 import { Row, Column } from "@/components/grid/Grid";
@@ -27,7 +27,7 @@ const LeaseItemsEdit = ({
   isSaveClicked,
 }: Props): ReactElement => {
   const usersPermissions: UsersPermissionsType =
-    useSelector(getUsersPermissions);
+    useAppSelector(getUsersPermissions);
   const { values } = useFormState({
     subscription: {
       values: true,

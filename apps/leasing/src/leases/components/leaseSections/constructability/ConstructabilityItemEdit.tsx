@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { FieldArray } from "react-final-form-arrays";
 import { isEmpty } from "lodash-es";
@@ -413,44 +413,44 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
   typeOptions,
   usersPermissions,
 }: Props) => {
-  const areaCollapseState = useSelector((state) =>
+  const areaCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${savedArea.id}.area`,
     ),
   );
-  const constructabilityReportCollapseState = useSelector((state) =>
+  const constructabilityReportCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${savedArea.id}.constructability_report`,
     ),
   );
-  const demolitionCollapseState = useSelector((state) =>
+  const demolitionCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${savedArea.id}.demolition`,
     ),
   );
-  const otherCollapseState = useSelector((state) =>
+  const otherCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${savedArea.id}.other`,
     ),
   );
-  const pollutedLandCollapseState = useSelector((state) =>
+  const pollutedLandCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${savedArea.id}.polluted_land`,
     ),
   );
-  const preconstructionCollapseState = useSelector((state) =>
+  const preconstructionCollapseState = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.EDIT}.${formName}.${savedArea.id}.preconstruction`,
     ),
   );
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleCollapseToggle = (key: string, val: boolean) => {
     if (!savedArea.id) return;

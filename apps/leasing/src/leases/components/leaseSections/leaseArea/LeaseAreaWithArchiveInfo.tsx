@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
@@ -37,16 +37,16 @@ const LeaseAreaWithArchiveInfo: React.FC<Props> = ({
   area,
   decisionOptions,
 }: Props) => {
-  const attributes: Attributes = useSelector(getAttributes);
+  const attributes: Attributes = useAppSelector(getAttributes);
 
-  const areaCollapseState: boolean = useSelector((state) =>
+  const areaCollapseState: boolean = useAppSelector((state) =>
     getCollapseStateByKey(
       state,
       `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${area.id}.area`,
     ),
   );
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleAreaCollapseToggle = (val: boolean) => {
     dispatch(

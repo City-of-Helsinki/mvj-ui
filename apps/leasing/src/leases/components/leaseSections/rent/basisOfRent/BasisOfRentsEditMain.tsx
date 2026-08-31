@@ -15,14 +15,14 @@ import { isFieldAllowedToRead } from "@/util/helpers";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
 import type { BasisOfRent } from "@/leases/types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 
 type Props = {
   formApi: FormApi;
 };
 
 const BasisOfRentsEditMain: React.FC<Props> = ({ formApi }) => {
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   const [editedActiveBasisOfRents, setEditedActiveBasisOfRents] = useState<
     Array<BasisOfRent>

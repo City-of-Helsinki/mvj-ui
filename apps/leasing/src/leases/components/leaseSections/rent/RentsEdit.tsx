@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Field, Form } from "react-final-form";
 import type { FormApi } from "final-form";
@@ -85,7 +85,7 @@ type RentsProps = {
 };
 
 const Rents: React.FC<RentsProps> = ({ archived, fields, rents }) => {
-  const usersPermissions = useSelector(getUsersPermissions);
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const handleAdd = () => {
     fields.push({
@@ -178,9 +178,9 @@ const RentsEdit: React.FC<Props> = ({
   handleSetRentInfoComplete,
   handleSetRentInfoUncomplete,
 }) => {
-  const currentLease = useSelector(getCurrentLease);
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const currentLease = useAppSelector(getCurrentLease);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
+  const usersPermissions = useAppSelector(getUsersPermissions);
   const isRentInfoComplete = Boolean(currentLease?.rent_info_completed_at);
 
   const [rents, setRents] = useState([]);

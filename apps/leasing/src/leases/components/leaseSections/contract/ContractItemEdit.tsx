@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
@@ -535,23 +535,25 @@ const ContractItemEdit: React.FC<Props> = ({
   savedContracts,
   contract,
 }) => {
-  const errors = useSelector((state) => getErrorsByFormName(state, formName));
-  const isFetchingLeasesForContractNumbers = useSelector((state) =>
+  const errors = useAppSelector((state) =>
+    getErrorsByFormName(state, formName),
+  );
+  const isFetchingLeasesForContractNumbers = useAppSelector((state) =>
     getIsFetchingLeasesForContractNumbers(state),
   );
-  const leasesForContractNumbers = useSelector((state) =>
+  const leasesForContractNumbers = useAppSelector((state) =>
     getLeasesForContractNumbers(state),
   );
-  const attributes = useSelector(getAttributes);
-  const currentLease = useSelector(getCurrentLease);
-  const isSaveClicked = useSelector(getIsSaveClicked);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const attributes = useAppSelector(getAttributes);
+  const currentLease = useAppSelector(getCurrentLease);
+  const isSaveClicked = useAppSelector(getIsSaveClicked);
+  const usersPermissions = useAppSelector(getUsersPermissions);
   const contractId = contract?.id;
   const contractNumber = contract?.contract_number;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const collateralsCollapseState = useSelector(
+  const collateralsCollapseState = useAppSelector(
     (state) =>
       contractId &&
       getCollapseStateByKey(
@@ -560,7 +562,7 @@ const ContractItemEdit: React.FC<Props> = ({
       ),
   );
 
-  const contractCollapseState = useSelector(
+  const contractCollapseState = useAppSelector(
     (state) =>
       contractId &&
       getCollapseStateByKey(
@@ -569,7 +571,7 @@ const ContractItemEdit: React.FC<Props> = ({
       ),
   );
 
-  const contractChangesCollapseState = useSelector(
+  const contractChangesCollapseState = useAppSelector(
     (state) =>
       contractId &&
       getCollapseStateByKey(

@@ -11,14 +11,14 @@ import {
 } from "@/components/helpers";
 import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 type Props = {
   level?: number;
   subItem: Record<string, any>;
 };
 
 const RentCalculatorSubItem = ({ level = 1, subItem }: Props) => {
-  const attributes: Attributes = useSelector(getAttributes);
+  const attributes: Attributes = useAppSelector(getAttributes);
   const subjectType = get(subItem, "subject.subject_type");
   const description = getRentSubItemDescription(subItem, attributes);
   const dates = get(subItem, "date_ranges");

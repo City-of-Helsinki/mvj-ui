@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get } from "lodash-es";
 import Authorization from "@/components/authorization/Authorization";
@@ -38,7 +38,9 @@ type Props = {
 };
 
 const RentBasisReadonly = ({ rentBasis }: Props) => {
-  const rentBasisAttributes: Attributes = useSelector(getRentBasisAttributes);
+  const rentBasisAttributes: Attributes = useAppSelector(
+    getRentBasisAttributes,
+  );
   const plotTypeOptions = getFieldOptions(
     rentBasisAttributes,
     RentBasisFieldPaths.PLOT_TYPE,

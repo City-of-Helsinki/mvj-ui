@@ -23,7 +23,7 @@ import {
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { useWindowResize } from "@/components/resize/WindowResizeHandler";
 import type { Attributes } from "types";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 type Props = {
   contractRents: Array<Record<string, any>>;
   rentType: string;
@@ -31,7 +31,7 @@ type Props = {
 
 const ContractRents = ({ contractRents, rentType }: Props) => {
   const largeScreen = useWindowResize();
-  const leaseAttributes: Attributes = useSelector(getLeaseAttributes);
+  const leaseAttributes: Attributes = useAppSelector(getLeaseAttributes);
 
   const [amountPeriodOptions, setAmountPeriodOptions] = useState([]);
   const [baseAmountPeriodOptions, setBaseAmountPeriodOptions] = useState([]);

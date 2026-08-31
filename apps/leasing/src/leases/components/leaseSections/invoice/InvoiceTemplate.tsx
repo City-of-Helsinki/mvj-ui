@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import Authorization from "@/components/authorization/Authorization";
@@ -49,7 +49,7 @@ const InvoiceTemplate = ({
   onInvoiceLinkClick,
   relativeTo,
 }: Props) => {
-  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
+  const invoiceAttributes: Attributes = useAppSelector(getInvoiceAttributes);
 
   const handleCreditedInvoiceClick = () => {
     onInvoiceLinkClick(invoice ? invoice.credited_invoice : 0);
@@ -74,10 +74,10 @@ const InvoiceTemplate = ({
   const shouldShowOldInvoiceInfo = () => {
     return Boolean(
       invoice &&
-        (invoice.payment_notification_date ||
-          invoice.collection_charge ||
-          invoice.payment_notification_catalog_date ||
-          invoice.delivery_method),
+      (invoice.payment_notification_date ||
+        invoice.collection_charge ||
+        invoice.payment_notification_catalog_date ||
+        invoice.delivery_method),
     );
   };
 

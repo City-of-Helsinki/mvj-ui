@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import Authorization from "@/components/authorization/Authorization";
 import Contracts from "./Contracts";
 import Decisions from "./Decisions";
@@ -20,7 +20,7 @@ import { getAttributes } from "@/leases/selectors";
 import type { Attributes } from "types";
 
 const DecisionsMain: React.FC = () => {
-  const attributes: Attributes = useSelector(getAttributes);
+  const attributes: Attributes = useAppSelector(getAttributes);
 
   return (
     <>

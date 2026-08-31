@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Form } from "react-final-form";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import Button from "@/components/button/Button";
 import FormField from "@/components/form/final-form/FormField";
@@ -29,8 +29,8 @@ const CreateInvoiceNoteModal: React.FC<Props> = ({
   onClose,
   onSubmit,
 }) => {
-  const invoiceNoteAttributes: Attributes = useSelector(getAttributes);
-  const userActiveServiceUnit: UserServiceUnit = useSelector(
+  const invoiceNoteAttributes: Attributes = useAppSelector(getAttributes);
+  const userActiveServiceUnit: UserServiceUnit = useAppSelector(
     getUserActiveServiceUnit,
   );
 

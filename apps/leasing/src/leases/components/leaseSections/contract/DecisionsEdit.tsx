@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
@@ -102,15 +102,17 @@ type Props = {
 };
 
 const DecisionsEdit: React.FC<Props> = ({ formApi }) => {
-  const currentLease = useSelector(getCurrentLease);
-  const isAttachDecisionModalOpen = useSelector(getIsAttachDecisionModalOpen);
-  const usersPermissions = useSelector(getUsersPermissions);
+  const currentLease = useAppSelector(getCurrentLease);
+  const isAttachDecisionModalOpen = useAppSelector(
+    getIsAttachDecisionModalOpen,
+  );
+  const usersPermissions = useAppSelector(getUsersPermissions);
 
   const [decisionToAttach, setDecisionToAttach] = useState<
     number | null | undefined
   >(null);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(hideAttachDecisionModal());

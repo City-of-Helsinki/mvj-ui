@@ -1,5 +1,5 @@
 import React, { ReactElement, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
@@ -69,12 +69,12 @@ const InvoiceRows = ({
   useLeaseCreateChargeEndpoint,
   isSplittableByTenantShare,
 }: InvoiceRowsProps): ReactElement => {
-  const invoiceAttributes = useSelector(getInvoiceAttributes);
-  const isCreateClicked = useSelector(getIsCreateClicked);
-  const leaseCreateChargeAttributes = useSelector(
+  const invoiceAttributes = useAppSelector(getInvoiceAttributes);
+  const isCreateClicked = useAppSelector(getIsCreateClicked);
+  const leaseCreateChargeAttributes = useAppSelector(
     getLeaseCreateChargeAttributes,
   );
-  const receivableTypes = useSelector(getReceivableTypes);
+  const receivableTypes = useAppSelector(getReceivableTypes);
 
   const handleAdd = () => {
     fields.push(
@@ -382,14 +382,14 @@ type Props = {
 };
 
 const NewInvoiceForm = ({ onClose, onSave, setRefForFirstField }: Props) => {
-  const invoiceAttributes: Attributes = useSelector(getInvoiceAttributes);
-  const isCreateClicked = useSelector(getIsCreateClicked);
-  const lease: Lease = useSelector(getCurrentLease);
-  const leaseCreateChargeAttributes: Attributes = useSelector(
+  const invoiceAttributes: Attributes = useAppSelector(getInvoiceAttributes);
+  const isCreateClicked = useAppSelector(getIsCreateClicked);
+  const lease: Lease = useAppSelector(getCurrentLease);
+  const leaseCreateChargeAttributes: Attributes = useAppSelector(
     getLeaseCreateChargeAttributes,
   );
-  const usersPermissions = useSelector(getUsersPermissions);
-  const dispatch = useDispatch();
+  const usersPermissions = useAppSelector(getUsersPermissions);
+  const dispatch = useAppDispatch();
 
   const isSplittableByTenantShare = useMemo(() => {
     const activeTenants = getContentTenants(lease).filter(
