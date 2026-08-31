@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveError } from "@/api/actions";
-import { fetchSingleLeaseAfterEdit } from "@/leases/actions";
+import { fetchSingleLeaseAfterEdit } from "@/leases/slice";
 import {
   createRelatedLease,
   createRelatedPlotApplication,

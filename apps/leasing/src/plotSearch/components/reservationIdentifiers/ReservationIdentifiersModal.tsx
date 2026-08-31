@@ -18,7 +18,7 @@ import type { PlotSearch } from "@/plotSearch/types";
 import EditButton from "@/components/form/EditButton";
 import CreateLeaseForm from "@/leases/components/createLease/CreateLeaseForm";
 import { FieldTypes, FormNames } from "@/enums";
-import { fetchAttributes as fetchLeaseAttributes } from "@/leases/actions";
+import { fetchAttributes as fetchLeaseAttributes } from "@/leases/slice";
 import { getAttributes as getLeaseAttributes } from "@/leases/selectors";
 import { LeaseFieldPaths, LeaseState } from "@/leases/enums";
 import SubTitle from "@/components/content/SubTitle";

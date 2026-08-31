@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
+import leasesReducer, {
   attributesNotFound,
   copyDecisionToLeases,
   createCharge,
@@ -35,52 +35,20 @@ import {
   showEditMode,
   startInvoicing,
   stopInvoicing,
-  fetchLeasesForContractNumber,
+  fetchLeasesForContractNumbers,
   receiveLeasesForContractNumbers,
   receiveIsCreateClicked,
   fetchLeasesForContact,
   receiveLeasesForContact,
   fetchLeasesForContactAttributes,
   receiveLeasesForContactAttributes,
-} from "./actions";
-import leasesReducer from "./reducer";
-import type { LeaseState } from "./types";
-const defaultState: LeaseState = {
-  attributes: null,
-  byId: {},
-  collapseStates: {},
-  current: {},
-  isAttachDecisionModalOpen: false,
-  isCreateClicked: false,
-  isCreateModalOpen: false,
-  isEditMode: false,
-  isFetching: false,
-  isFetchingByBBox: false,
-  isFetchingAttributes: false,
-  isFetchingById: {},
-  isFetchingLeasesForContact: false,
-  isFetchingLeasesForContactAttributes: false,
-  isFormDirtyById: {
-    "basis-of-rents-form": false,
-    "constructability-form": false,
-    "contracts-form": false,
-    "decisions-form": false,
-    "inspections-form": false,
-    "lease-areas-form": false,
-    "rents-form": false,
-    "summary-form": false,
-    "tenants-form": false,
-  },
-  isSaveClicked: false,
-  isSaving: false,
-  leasesForContact: null,
-  leasesForContactAttributes: null,
-  list: null,
-  listByBBox: null,
-  methods: null,
-  leasesForContractNumbers: null,
-  isFetchingLeasesForContractNumbers: false,
-};
+  initialState,
+} from "./slice";
+import type { Lease } from "./types";
+
+const dummyLease: Lease = {
+  foo: "bar",
+} as unknown as Lease;
 
 describe("Leases", () => {
   describe("Reducer", () => {
@@ -89,8 +57,11 @@ describe("Leases", () => {
         const dummyAttributes = {
           foo: "bar",
         };
-        const newState = { ...defaultState, attributes: dummyAttributes };
-        const state = leasesReducer({}, receiveAttributes(dummyAttributes));
+        const newState = { ...initialState, attributes: dummyAttributes };
+        const state = leasesReducer(
+          initialState,
+          receiveAttributes(dummyAttributes),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update methods", () => {
@@ -103,18 +74,18 @@ describe("Leases", () => {
           OPTIONS: true,
           PUT: true,
         };
-        const newState = { ...defaultState, methods: dummyMethods };
-        const state = leasesReducer({}, receiveMethods(dummyMethods));
+        const newState = { ...initialState, methods: dummyMethods };
+        const state = leasesReducer(initialState, receiveMethods(dummyMethods));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingAttributes flag to true when fetching attributes", () => {
-        const newState = { ...defaultState, isFetchingAttributes: true };
-        const state = leasesReducer({}, fetchAttributes());
+        const newState = { ...initialState, isFetchingAttributes: true };
+        const state = leasesReducer(initialState, fetchAttributes());
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingAttributes flag to false by attributesNotFound", () => {
-        const newState = { ...defaultState, isFetchingAttributes: false };
-        let state = leasesReducer({}, fetchAttributes());
+        const newState = { ...initialState, isFetchingAttributes: false };
+        let state = leasesReducer(initialState, fetchAttributes());
         state = leasesReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
@@ -125,9 +96,12 @@ describe("Leases", () => {
           previous: null,
           results: [],
         };
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.list = dummyLeaseList;
-        const state = leasesReducer({}, receiveLeases(dummyLeaseList));
+        const state = leasesReducer(
+          initialState,
+          receiveLeases(dummyLeaseList),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update listByBBox", () => {
@@ -137,79 +111,82 @@ describe("Leases", () => {
           previous: null,
           results: [],
         };
-        const newState = { ...defaultState, listByBBox: dummyLeaseList };
-        const state = leasesReducer({}, receiveLeasesByBBox(dummyLeaseList));
+        const newState = { ...initialState, listByBBox: dummyLeaseList };
+        const state = leasesReducer(
+          initialState,
+          receiveLeasesByBBox(dummyLeaseList),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to true when fetching leases", () => {
-        const newState = { ...defaultState, isFetching: true };
-        const state = leasesReducer({}, fetchLeases({ test: "" }));
+        const newState = { ...initialState, isFetching: true };
+        const state = leasesReducer(initialState, fetchLeases({ test: "" }));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingByBBox flag to true when fetching leases by bbox", () => {
-        const newState = { ...defaultState, isFetchingByBBox: true };
-        const state = leasesReducer({}, fetchLeasesByBBox({ test: "" }));
+        const newState = { ...initialState, isFetchingByBBox: true };
+        const state = leasesReducer(
+          initialState,
+          fetchLeasesByBBox({ test: "" }),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true when sending email", () => {
-        const newState = { ...defaultState, isSaving: true };
+        const newState = { ...initialState, isSaving: true };
         const dummyPayload = {
           type: "constructability",
           lease: 1,
           recipients: [31, 3],
           text: "Testimeili",
         };
-        const state = leasesReducer({}, sendEmail(dummyPayload));
+        const state = leasesReducer(initialState, sendEmail(dummyPayload));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to false by notFound", () => {
-        const newState = { ...defaultState, isFetching: false };
-        let state = leasesReducer({}, fetchLeases({ test: "" }));
-        state = leasesReducer({}, notFound());
+        const newState = { ...initialState, isFetching: false };
+        let state = leasesReducer(initialState, fetchLeases({ test: "" }));
+        state = leasesReducer(initialState, notFound());
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingByBBox flag to false by notFoundByBBox", () => {
-        const newState = { ...defaultState, isFetching: false };
-        let state = leasesReducer({}, fetchLeasesByBBox({ test: "" }));
-        state = leasesReducer({}, notFoundByBBox());
+        const newState = { ...initialState, isFetching: false };
+        let state = leasesReducer(
+          initialState,
+          fetchLeasesByBBox({ test: "" }),
+        );
+        state = leasesReducer(initialState, notFoundByBBox());
         expect(state).to.deep.equal(newState);
       });
       it("should update current lease", () => {
-        const dummyLease = {
-          foo: "bar",
-        };
-        const newState = { ...defaultState, current: dummyLease };
-        const state = leasesReducer({}, receiveSingleLease(dummyLease));
+        const newState = { ...initialState, current: dummyLease };
+        const state = leasesReducer(
+          initialState,
+          receiveSingleLease(dummyLease),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to true when fetching single lease", () => {
-        const newState = { ...defaultState, isFetching: true };
-        const state = leasesReducer({}, fetchSingleLease(1));
+        const newState = { ...initialState, isFetching: true };
+        const state = leasesReducer(initialState, fetchSingleLease(1));
         expect(state).to.deep.equal(newState);
       });
       it("fetchSingleLeaseAfterEdit function should not change isFetcihng flag", () => {
         const state = leasesReducer(
-          {},
+          initialState,
           fetchSingleLeaseAfterEdit({
             leaseId: 1,
           }),
         );
-        expect(state).to.deep.equal(defaultState);
+        expect(state).to.deep.equal(initialState);
       });
       it("should update isFetching flag to true when creating new lease", () => {
-        const dummyLease = {
-          foo: "bar",
-        };
-        const newState = { ...defaultState, isFetching: true };
-        const state = leasesReducer({}, createLease(dummyLease));
+        const newState = { ...initialState, isFetching: true };
+        const state = leasesReducer(initialState, createLease(dummyLease));
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true when editing lease", () => {
-        const dummyLease = {
-          foo: "bar",
-        };
-        const newState = { ...defaultState, isSaving: true };
-        const state = leasesReducer({}, patchLease(dummyLease));
+        const newState = { ...initialState, isSaving: true };
+        const state = leasesReducer(initialState, patchLease(dummyLease));
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true when editing lease invoice notes", () => {
@@ -220,105 +197,108 @@ describe("Leases", () => {
             },
           ],
         };
-        const newState = { ...defaultState, isSaving: true };
-        const state = leasesReducer({}, patchLeaseInvoiceNotes(dummyLease));
+        const newState = { ...initialState, isSaving: true };
+        const state = leasesReducer(
+          initialState,
+          patchLeaseInvoiceNotes(dummyLease),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true deleting lease", () => {
         const dummyLease = 1;
-        const newState = { ...defaultState, isSaving: true };
-        const state = leasesReducer({}, deleteLease(dummyLease));
+        const newState = { ...initialState, isSaving: true };
+        const state = leasesReducer(initialState, deleteLease(dummyLease));
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true by copyDecisionToLeases", () => {
-        const newState = { ...defaultState, isSaving: true };
-        const state = leasesReducer({}, copyDecisionToLeases({ test: 1 }));
+        const newState = { ...initialState, isSaving: true };
+        const state = leasesReducer(
+          initialState,
+          copyDecisionToLeases({ test: 1 }),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true when starting invoicing", () => {
-        const newState = { ...defaultState, isSaving: true };
-        const state = leasesReducer({}, startInvoicing(1));
+        const newState = { ...initialState, isSaving: true };
+        const state = leasesReducer(initialState, startInvoicing(1));
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true when stoping invoicing", () => {
-        const newState = { ...defaultState, isSaving: true };
-        const state = leasesReducer({}, stopInvoicing(1));
+        const newState = { ...initialState, isSaving: true };
+        const state = leasesReducer(initialState, stopInvoicing(1));
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true when setting rent info complete", () => {
-        const newState = { ...defaultState, isSaving: true };
-        const state = leasesReducer({}, setRentInfoComplete(1));
+        const newState = { ...initialState, isSaving: true };
+        const state = leasesReducer(initialState, setRentInfoComplete(1));
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaving flag to true when setting rent info uncomplete", () => {
-        const newState = { ...defaultState, isSaving: true };
-        const state = leasesReducer({}, setRentInfoUncomplete(1));
+        const newState = { ...initialState, isSaving: true };
+        const state = leasesReducer(initialState, setRentInfoUncomplete(1));
         expect(state).to.deep.equal(newState);
       });
       it("should update isEditMode flag to true", () => {
-        const newState = { ...defaultState, isEditMode: true };
-        const state = leasesReducer({}, showEditMode());
+        const newState = { ...initialState, isEditMode: true };
+        const state = leasesReducer(initialState, showEditMode());
         expect(state).to.deep.equal(newState);
       });
       it("should update isEditMode flag to false", () => {
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.isEditMode = false;
-        let state = leasesReducer({}, showEditMode());
-        state = leasesReducer({}, hideEditMode());
+        let state = leasesReducer(initialState, showEditMode());
+        state = leasesReducer(initialState, hideEditMode());
         expect(state).to.deep.equal(newState);
       });
       it("should update isAttachDecisionModalOpen flag to true", () => {
-        const newState = { ...defaultState, isAttachDecisionModalOpen: true };
-        const state = leasesReducer({}, showAttachDecisionModal());
+        const newState = { ...initialState, isAttachDecisionModalOpen: true };
+        const state = leasesReducer(initialState, showAttachDecisionModal());
         expect(state).to.deep.equal(newState);
       });
       it("should update isAttachDecisionModalOpen flag to false", () => {
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.isAttachDecisionModalOpen = false;
-        let state = leasesReducer({}, showAttachDecisionModal());
-        state = leasesReducer({}, hideAttachDecisionModal());
+        let state = leasesReducer(initialState, showAttachDecisionModal());
+        state = leasesReducer(initialState, hideAttachDecisionModal());
         expect(state).to.deep.equal(newState);
       });
       it("should update isCreateModalOpen flag to true", () => {
-        const newState = { ...defaultState, isCreateModalOpen: true };
-        const state = leasesReducer({}, showCreateModal());
+        const newState = { ...initialState, isCreateModalOpen: true };
+        const state = leasesReducer(initialState, showCreateModal());
         expect(state).to.deep.equal(newState);
       });
       it("should update isCreateModalOpen flag to false", () => {
-        const newState = { ...defaultState, isCreateModalOpen: false };
-        let state = leasesReducer({}, showCreateModal());
-        state = leasesReducer({}, hideCreateModal());
+        const newState = { ...initialState, isCreateModalOpen: false };
+        let state = leasesReducer(initialState, showCreateModal());
+        state = leasesReducer(initialState, hideCreateModal());
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingById flag to true when fetching lease by id", () => {
         const leaseId = 1;
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingById: {
             [leaseId]: true,
           },
         };
-        const state = leasesReducer({}, fetchLeaseById(leaseId));
+        const state = leasesReducer(initialState, fetchLeaseById(leaseId));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingById flag to false by notFoundByLease", () => {
         const leaseId = 1;
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingById: {
             [leaseId]: false,
           },
         };
-        const state = leasesReducer({}, notFoundById(leaseId));
+        const state = leasesReducer(initialState, notFoundById(leaseId));
         expect(state).to.deep.equal(newState);
       });
       it("should update leaseById when receiving lease by id", () => {
         const leaseId = 1;
-        const dummyLease = {
-          foo: "bar",
-        };
         const newState = {
-          ...defaultState,
+          ...initialState,
           byId: {
             [leaseId]: dummyLease,
           },
@@ -327,7 +307,7 @@ describe("Leases", () => {
           },
         };
         const state = leasesReducer(
-          {},
+          initialState,
           receiveLeaseById({
             leaseId: leaseId,
             lease: dummyLease,
@@ -336,21 +316,21 @@ describe("Leases", () => {
         expect(state).to.deep.equal(newState);
       });
       it("should update isSaveClicked", () => {
-        const newState = { ...defaultState, isSaveClicked: true };
-        const state = leasesReducer({}, receiveIsSaveClicked(true));
+        const newState = { ...initialState, isSaveClicked: true };
+        const state = leasesReducer(initialState, receiveIsSaveClicked(true));
         expect(state).to.deep.equal(newState);
       });
       it("should update isCreateClicked", () => {
-        const newState = { ...defaultState, isCreateClicked: true };
-        const state = leasesReducer({}, receiveIsCreateClicked(true));
+        const newState = { ...initialState, isCreateClicked: true };
+        const state = leasesReducer(initialState, receiveIsCreateClicked(true));
         expect(state).to.deep.equal(newState);
       });
       it("createCharge should not change state", () => {
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         const state = leasesReducer(
-          {},
+          initialState,
           createCharge({
-            data: {},
+            data: initialState,
             leaseId: 1,
           }),
         );
@@ -358,12 +338,12 @@ describe("Leases", () => {
       });
       it("should update isFetchingLeasesForContractNumbers flag to true when fetching leases for contract numbers", () => {
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingLeasesForContractNumbers: true,
         };
         const state = leasesReducer(
-          {},
-          fetchLeasesForContractNumber({ test: "" }),
+          initialState,
+          fetchLeasesForContractNumbers({ test: "" }),
         );
         expect(state).to.deep.equal(newState);
       });
@@ -374,24 +354,24 @@ describe("Leases", () => {
           previous: null,
           results: [],
         };
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.leasesForContractNumbers = dummyLeaseList;
         const state = leasesReducer(
-          {},
+          initialState,
           receiveLeasesForContractNumbers(dummyLeaseList),
         );
         expect(state).to.deep.equal(newState);
       });
       it("should update collapseStates", () => {
         const newState = {
-          ...defaultState,
+          ...initialState,
           collapseStates: {
             foo: "bar",
             foo2: "bar2",
           },
         };
         let state = leasesReducer(
-          {},
+          initialState,
           receiveCollapseStates({
             foo: "bar",
           }),
@@ -406,10 +386,13 @@ describe("Leases", () => {
       });
       it("should update isFetchingLeasesForContact flag to true when fetching leases for contact", () => {
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingLeasesForContact: true,
         };
-        const state = leasesReducer({}, fetchLeasesForContact({ test: "" }));
+        const state = leasesReducer(
+          initialState,
+          fetchLeasesForContact({ test: "" }),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update leasesForContact", () => {
@@ -419,30 +402,33 @@ describe("Leases", () => {
           previous: null,
           results: [],
         };
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.leasesForContact = dummyLeaseList;
         const state = leasesReducer(
-          {},
+          initialState,
           receiveLeasesForContact(dummyLeaseList),
         );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingLeasesForContactAttributes flag to true when fetching leases for contact attributes", () => {
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingLeasesForContactAttributes: true,
         };
-        const state = leasesReducer({}, fetchLeasesForContactAttributes());
+        const state = leasesReducer(
+          initialState,
+          fetchLeasesForContactAttributes(),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update leasesForContactAttributes", () => {
         const dummyAttributes = {
           foo: "bar",
         };
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.leasesForContactAttributes = dummyAttributes;
         const state = leasesReducer(
-          {},
+          initialState,
           receiveLeasesForContactAttributes(dummyAttributes),
         );
         expect(state).to.deep.equal(newState);

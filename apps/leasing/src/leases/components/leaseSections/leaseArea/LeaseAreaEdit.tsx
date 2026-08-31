@@ -17,7 +17,7 @@ import PlanUnitItemEdit from "./PlanUnitItemEdit";
 import PlotItemEdit from "./PlotItemEdit";
 import RemoveButton from "@/components/form/RemoveButton";
 import SubTitle from "@/components/content/SubTitle";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import {
   ConfirmationModalTexts,
   FieldTypes,

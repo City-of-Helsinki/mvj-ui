@@ -19,7 +19,7 @@ import {
   fetchAttributes as fetchLeaseAttributes,
   fetchLeases,
   fetchLeasesByBBox,
-} from "@/leases/actions";
+} from "@/leases/slice";
 import LeaseListMap from "@/leases/components/leaseSections/map/LeaseListMap";
 import {
   BOUNDING_BOX_FOR_SEARCH_QUERY,

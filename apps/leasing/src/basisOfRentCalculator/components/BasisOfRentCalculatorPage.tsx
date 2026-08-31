@@ -16,7 +16,7 @@ import {
 } from "@/usersPermissions/selectors";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { getAttributes, getIsFetchingAttributes } from "@/leases/selectors";
-import { fetchAttributes } from "@/leases/actions";
+import { fetchAttributes } from "@/leases/slice";
 import { createForm, setIn } from "final-form";
 import { validateRentBasisForm } from "@/rentbasis/formValidators";
 

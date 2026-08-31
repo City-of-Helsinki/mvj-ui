@@ -31,7 +31,26 @@ import {
   receiveLeasesForContact,
   receiveLeasesForContactAttributes,
   leasesForContactAttributesNotFound,
-} from "./actions";
+  fetchAttributes as fetchAttributesAction,
+  fetchLeases as fetchLeasesAction,
+  fetchLeasesByBBox as fetchLeasesByBBoxAction,
+  fetchSingleLease as fetchSingleLeaseAction,
+  fetchLeaseById as fetchLeaseByIdAction,
+  createLease as createLeaseAction,
+  deleteLease as deleteLeaseAction,
+  patchLease as patchLeaseAction,
+  patchLeaseInvoiceNotes as patchLeaseInvoiceNotesAction,
+  sendEmail as sendEmailAction,
+  startInvoicing as startInvoicingAction,
+  stopInvoicing as stopInvoicingAction,
+  setRentInfoComplete as setRentInfoCompleteAction,
+  setRentInfoUncomplete as setRentInfoUncompleteAction,
+  createCharge as createChargeAction,
+  copyDecisionToLeases as copyDecisionToLeasesAction,
+  fetchLeasesForContractNumbers as fetchLeasesForContractNumbersAction,
+  fetchLeasesForContact as fetchLeasesForContactAction,
+  fetchLeasesForContactAttributes as fetchLeasesForContactAttributesAction,
+} from "./slice";
 import { receiveError } from "@/api/actions";
 import {
   fetchInvoicesByLease,
@@ -764,48 +783,36 @@ function* fetchLeasesForContractNumbersSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
-      yield takeLatest("mvj/leases/FETCH_ATTRIBUTES", fetchAttributesSaga);
-      yield takeLatest("mvj/leases/FETCH_ALL", fetchLeasesSaga);
-      yield takeLatest("mvj/leases/FETCH_BY_BBOX", fetchLeasesByBBoxSaga);
-      yield takeLatest("mvj/leases/FETCH_SINGLE", fetchSingleLeaseSaga);
+      yield takeLatest(fetchAttributesAction, fetchAttributesSaga);
+      yield takeLatest(fetchLeasesAction, fetchLeasesSaga);
+      yield takeLatest(fetchLeasesByBBoxAction, fetchLeasesByBBoxSaga);
+      yield takeLatest(fetchSingleLeaseAction, fetchSingleLeaseSaga);
       yield takeLatest(
-        "mvj/leases/FETCH_SINGLE_AFTER_EDIT",
+        fetchSingleLeaseAfterEdit,
         fetchSingleLeaseAfterEditSaga,
       );
-      yield takeEvery("mvj/leases/FETCH_BY_ID", fetchLeaseByIdSaga);
-      yield takeLatest("mvj/leases/CREATE", createLeaseSaga);
-      yield takeLatest("mvj/leases/DELETE", deleteLeaseSaga);
-      yield takeLatest("mvj/leases/PATCH", patchLeaseSaga);
+      yield takeEvery(fetchLeaseByIdAction, fetchLeaseByIdSaga);
+      yield takeLatest(createLeaseAction, createLeaseSaga);
+      yield takeLatest(deleteLeaseAction, deleteLeaseSaga);
+      yield takeLatest(patchLeaseAction, patchLeaseSaga);
       yield takeLatest(
-        "mvj/leases/PATCH_INVOICE_NOTES",
+        patchLeaseInvoiceNotesAction,
         patchLeaseInvoiceNotesSaga,
       );
-      yield takeLatest("mvj/leases/SEND_EMAIL", sendEmailSaga);
-      yield takeLatest("mvj/leases/START_INVOICING", startInvoicingSaga);
-      yield takeLatest("mvj/leases/STOP_INVOICING", stopInvoicingSaga);
+      yield takeLatest(sendEmailAction, sendEmailSaga);
+      yield takeLatest(startInvoicingAction, startInvoicingSaga);
+      yield takeLatest(stopInvoicingAction, stopInvoicingSaga);
+      yield takeLatest(setRentInfoCompleteAction, setRentInfoCompleteSaga);
+      yield takeLatest(setRentInfoUncompleteAction, setRentInfoUncompleteSaga);
+      yield takeLatest(createChargeAction, createChargeSaga);
+      yield takeLatest(copyDecisionToLeasesAction, copyDecisionToLeasesSaga);
       yield takeLatest(
-        "mvj/leases/SET_RENT_INFO_COMPLETE",
-        setRentInfoCompleteSaga,
-      );
-      yield takeLatest(
-        "mvj/leases/SET_RENT_INFO_UNCOMPLETE",
-        setRentInfoUncompleteSaga,
-      );
-      yield takeLatest("mvj/leases/CREATE_CHARGE", createChargeSaga);
-      yield takeLatest(
-        "mvj/leases/COPY_DECISION_TO_LEASES",
-        copyDecisionToLeasesSaga,
-      );
-      yield takeLatest(
-        "mvj/leases/FETCH_LEASES_FOR_CONTRACT_NUMBERS",
+        fetchLeasesForContractNumbersAction,
         fetchLeasesForContractNumbersSaga,
       );
+      yield takeLatest(fetchLeasesForContactAction, fetchLeasesForContactSaga);
       yield takeLatest(
-        "mvj/leases/FETCH_LEASES_FOR_CONTACT",
-        fetchLeasesForContactSaga,
-      );
-      yield takeLatest(
-        "mvj/leases/FETCH_LEASES_FOR_CONTACT_ATTRIBUTES",
+        fetchLeasesForContactAttributesAction,
         fetchLeasesForContactAttributesSaga,
       );
     }),

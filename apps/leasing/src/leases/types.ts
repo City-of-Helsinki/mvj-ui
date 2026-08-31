@@ -24,7 +24,7 @@ export type LeaseState = {
   current: Lease;
   isAttachDecisionModalOpen: boolean;
   isCreateModalOpen: boolean;
-  isFormValidById: LeaseFormFlags;
+  isFormDirtyById: LeaseFormFlags;
   isEditMode: boolean;
   isFetching: boolean;
   isFetchingByBBox: boolean;
@@ -254,60 +254,6 @@ export type LeaseFormName =
 
 export type LeaseFormFlags = Partial<Record<LeaseFormName, boolean>>;
 
-export type FetchAttributesAction = Action<string, void>;
-export type ReceiveAttributesAction = Action<string, Attributes>;
-export type ReceiveMethodsAction = Action<string, Methods>;
-export type FetchLeasesAction = Action<string, Record<string, any>>;
-export type FetchLeasesByBBoxAction = Action<string, Record<string, any>>;
-export type ReceiveLeasesAction = Action<string, LeaseList>;
-export type ReceiveLeasesByBBoxAction = Action<string, LeaseList>;
-export type FetchSingleLeaseAction = Action<string, LeaseId>;
-export type FetchSingleLeaseAfterEditAction = Action<
-  string,
-  FetchSingleLeaseAfterEditPayload
->;
-export type ReceiveSingleLeaseAction = Action<string, Lease>;
-export type FetchLeaseByIdAction = Action<string, LeaseId>;
-export type ReceiveLeaseByIdAction = Action<string, Lease>;
-export type CreateLeaseAction = Action<string, Lease>;
-export type DeleteLeaseAction = Action<string, LeaseId>;
-export type PatchLeaseAction = Action<string, Lease>;
-export type PatchLeaseInvoiceNotesAction = Action<string, Lease>;
-export type StartInvoicingAction = Action<string, LeaseId>;
-export type StopInvoicingAction = Action<string, LeaseId>;
-export type SetRentInfoCompleteAction = Action<string, LeaseId>;
-export type SetRentInfoUncompleteAction = Action<string, LeaseId>;
-export type LeaseAttributesNotFoundAction = Action<string, void>;
-export type LeaseNotFoundAction = Action<string, void>;
-export type NotFoundByBBoxAction = Action<string, void>;
-export type LeaseNotFoundByIdAction = Action<string, LeaseId>;
-export type SendEmailAction = Action<string, SendEmailPayload>;
-export type HideEditModeAction = Action<string, void>;
-export type ShowEditModeAction = Action<string, void>;
-export type HideCreateModalAction = Action<string, void>;
-export type ShowCreateModalAction = Action<string, void>;
-export type ReceiveIsSaveClickedAction = Action<string, boolean>;
-export type ReceiveIsCreateClickedAction = Action<string, boolean>;
-export type CopyDecisionToLeasesAction = Action<string, Record<string, any>>;
-export type HideAttachDecisionModalAction = Action<string, void>;
-export type ShowAttachDecisionModalAction = Action<string, void>;
-export type CreateChargeAction = Action<string, CreateChargePayload>;
-export type ReceiveFormDirtyFlagsAction = Action<string, LeaseFormFlags>;
-export type ClearFormDirtyFlagsAction = Action<string, void>;
-export type ReceiveCollapseStatesAction = Action<string, Record<string, any>>;
-export type FetchLeasesForContractNumberAction = Action<
-  string,
-  Record<string, any>
->;
-export type ReceiveLeasesForContractNumbersAction = Action<string, LeaseList>;
-export type FetchLeasesForContactAction = Action<string, Record<string, any>>;
-export type ReceiveLeasesForContactAction = Action<string, LeaseList>;
-export type FetchLeasesForContactAttributesAction = Action<string, void>;
-export type ReceiveLeasesForContactAttributesAction = Action<
-  string,
-  Attributes
->;
-export type LeasesForContactAttributesNotFoundAction = Action<string, void>;
 export type DueDate = {
   id: number;
   day: number;

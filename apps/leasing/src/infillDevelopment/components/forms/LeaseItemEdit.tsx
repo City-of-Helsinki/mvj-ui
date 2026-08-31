@@ -23,7 +23,7 @@ import {
   createInfillDevelopmentAttachment,
   deleteInfillDevelopmentAttachment,
 } from "@/infillDevelopmentAttachment/actions";
-import { fetchLeaseById } from "@/leases/actions";
+import { fetchLeaseById } from "@/leases/slice";
 import {
   ConfirmationModalTexts,
   FieldTypes,

@@ -31,7 +31,7 @@ import {
   receiveCollapseStates,
   startInvoicing as startInvoicingForLease,
   stopInvoicing as stopInvoicingForLease,
-} from "@/leases/actions";
+} from "@/leases/slice";
 import { fetchAttributes as fetchCollectionCourtDecisionAttributes } from "@/collectionCourtDecision/actions";
 import { fetchAttributes as fetchCollectionLetterAttributes } from "@/collectionLetter/actions";
 import { fetchAttributes as fetchCollectionNoteAttributes } from "@/collectionNote/actions";

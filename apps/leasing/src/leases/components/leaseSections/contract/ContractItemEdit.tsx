@@ -21,8 +21,8 @@ import KtjLink from "@/components/ktj/KtjLink";
 import RemoveButton from "@/components/form/RemoveButton";
 import {
   receiveCollapseStates,
-  fetchLeasesForContractNumber,
-} from "@/leases/actions";
+  fetchLeasesForContractNumbers,
+} from "@/leases/slice";
 import {
   ConfirmationModalTexts,
   FieldTypes,
@@ -586,7 +586,7 @@ const ContractItemEdit: React.FC<Props> = ({
       (!contract || contractNumber !== contract.contract_number)
     ) {
       dispatch(
-        fetchLeasesForContractNumber({
+        fetchLeasesForContractNumbers({
           contract_number: contractNumber,
         }),
       );
@@ -605,15 +605,17 @@ const ContractItemEdit: React.FC<Props> = ({
 
   const handleCollapseToggle = (val: boolean, field: string) => {
     if (!contractId) return;
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.LEASE_CONTRACTS]: {
-          [contractId]: {
-            [field]: val,
+    dispatch(
+      receiveCollapseStates({
+        [ViewModes.EDIT]: {
+          [FormNames.LEASE_CONTRACTS]: {
+            [contractId]: {
+              [field]: val,
+            },
           },
         },
-      },
-    });
+      }),
+    );
   };
 
   const handleCollateralsCollapseToggle = (val: boolean) => {

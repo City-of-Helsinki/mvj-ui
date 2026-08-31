@@ -21,7 +21,7 @@ import {
   receiveIsSaveClicked,
   showContactModal,
 } from "@/contacts/actions";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import { FieldTypes, FormNames, Methods, ViewModes } from "@/enums";
 import {
   LeaseTenantContactSetFieldPaths,

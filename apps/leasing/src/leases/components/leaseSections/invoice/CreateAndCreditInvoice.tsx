@@ -6,7 +6,7 @@ import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import CreditInvoiceForm from "./forms/CreditInvoiceForm";
 import NewInvoiceForm from "./forms/NewInvoiceForm";
-import { createCharge } from "@/leases/actions";
+import { createCharge } from "@/leases/slice";
 import {
   createInvoice,
   creditInvoice,

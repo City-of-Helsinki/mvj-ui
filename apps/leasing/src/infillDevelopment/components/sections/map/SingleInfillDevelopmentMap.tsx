@@ -8,7 +8,7 @@ import InfillDevelopmentLeaseLayer from "./InfillDevelopmentLeaseLayer";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import { fetchAreaNoteList } from "@/areaNote/actions";
-import { fetchLeaseById } from "@/leases/actions";
+import { fetchLeaseById } from "@/leases/slice";
 import { MAP_COLORS } from "@/util/constants";
 import {
   LeaseAreasFieldPaths,

@@ -88,7 +88,7 @@ import {
   getIsFetchingAttributes as getIsFetchingInfillDevelopmentAttachmentAttributes,
   getMethods as getInfillDevelopmentAttachmentMethods,
 } from "@/infillDevelopmentAttachment/selectors";
-import { fetchAttributes as fetchLeaseAttributes } from "@/leases/actions";
+import { fetchAttributes as fetchLeaseAttributes } from "@/leases/slice";
 import {
   getAttributes as getLeaseAttributes,
   getIsFetchingAttributes as getIsFetchingLeaseAttributes,

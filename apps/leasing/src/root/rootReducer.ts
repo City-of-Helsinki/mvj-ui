@@ -24,7 +24,7 @@ import invoiceReducer from "@/invoices/reducer";
 import invoiceNoteReducer from "@/invoiceNote/reducer";
 import invoiceSetReducer from "@/invoiceSets/reducer";
 import intendedUseReducer from "@/intendedUse/reducer";
-import leaseReducer from "@/leases/reducer";
+import leaseReducer from "@/leases/slice";
 import oldDwellingsInHousingCompaniesPriceIndexReducer from "@/oldDwellingsInHousingCompaniesPriceIndex/reducer";
 import plotSearchReducer from "@/plotSearch/reducer";
 import plotApplicationsReducer from "@/plotApplications/reducer";

@@ -9,7 +9,7 @@ import ExternalLink from "@/components/links/ExternalLink";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import ShowMore from "@/components/showMore/ShowMore";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import { FormNames, ViewModes } from "@/enums";
 import {
   LeaseDecisionConditionsFieldPaths,

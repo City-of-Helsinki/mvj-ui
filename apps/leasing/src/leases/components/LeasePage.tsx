@@ -55,7 +55,7 @@ import {
   receiveIsSaveClicked,
   showEditMode,
   fetchAttributes as fetchLeaseAttributes,
-} from "@/leases/actions";
+} from "@/leases/slice";
 import { fetchLeaseTypes } from "@/leaseType/actions";
 import { clearPreviewInvoices } from "@/previewInvoices/actions";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";

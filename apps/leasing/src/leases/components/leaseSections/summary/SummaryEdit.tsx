@@ -16,7 +16,7 @@ import LeaseHistoryEdit from "./LeaseHistoryEdit";
 import SummaryLeaseInfo from "./SummaryLeaseInfo";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
-import { receiveCollapseStates as receiveCollapseStatesAction } from "@/leases/actions";
+import { receiveCollapseStates as receiveCollapseStatesAction } from "@/leases/slice";
 import { FieldTypes, FormNames, ViewModes } from "@/enums";
 import {
   LeaseContractsFieldPaths,

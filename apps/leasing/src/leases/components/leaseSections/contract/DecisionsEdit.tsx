@@ -14,7 +14,7 @@ import {
   copyDecisionToLeases,
   hideAttachDecisionModal,
   showAttachDecisionModal,
-} from "@/leases/actions";
+} from "@/leases/slice";
 import { ConfirmationModalTexts, FormNames } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";

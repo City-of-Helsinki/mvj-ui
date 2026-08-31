@@ -15,7 +15,7 @@ import ShowMore from "@/components/showMore/ShowMore";
 import SummaryLeaseInfo from "./SummaryLeaseInfo";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import { FormNames, ViewModes } from "@/enums";
 import {
   LeaseContractsFieldPaths,

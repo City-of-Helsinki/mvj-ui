@@ -9,7 +9,7 @@ import Divider from "@/components/content/Divider";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import LeaseArea from "./LeaseArea";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import { FormNames, ViewModes } from "@/enums";
 import {
   LeaseAreaAddressesFieldPaths,
