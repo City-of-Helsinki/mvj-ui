@@ -65,7 +65,7 @@ import CreateLeaseModal from "@/leases/components/createLease/CreateLeaseModal";
 import {
   createLease,
   fetchAttributes as fetchLeaseAttributes,
-} from "@/leases/actions";
+} from "@/leases/slice";
 import {
   getAttributes as getLeaseAttributes,
   getIsFetchingAttributes as getIsFetchingLeaseAttributes,

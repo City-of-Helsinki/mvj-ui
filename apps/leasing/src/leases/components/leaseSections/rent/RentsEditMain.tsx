@@ -2,7 +2,7 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import type { FormApi } from "final-form";
 import { ActionTypes, AppConsumer } from "@/app/AppContext";
-import { setRentInfoComplete, setRentInfoUncomplete } from "@/leases/actions";
+import { setRentInfoComplete, setRentInfoUncomplete } from "@/leases/slice";
 import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { getCurrentLease } from "@/leases/selectors";

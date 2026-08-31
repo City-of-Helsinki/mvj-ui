@@ -12,7 +12,7 @@ import DecisionLink from "@/components/links/DecisionLink";
 import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import KtjLink from "@/components/ktj/KtjLink";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import { FormNames, ViewModes } from "@/enums";
 import {
   LeaseContractChangesFieldPaths,

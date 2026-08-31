@@ -13,7 +13,7 @@ import FormWrapper from "@/components/form/FormWrapper";
 import FormWrapperLeft from "@/components/form/FormWrapperLeft";
 import FormWrapperRight from "@/components/form/FormWrapperRight";
 import SubTitle from "@/components/content/SubTitle";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import { FormNames, ViewModes } from "@/enums";
 import {
   LeaseTenantContactSetFieldPaths,

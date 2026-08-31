@@ -18,7 +18,7 @@ import FormTextTitle from "@/components/form/FormTextTitle";
 import RemoveButton from "@/components/form/RemoveButton";
 import StatusIndicator from "./StatusIndicator";
 import SubTitle from "@/components/content/SubTitle";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import {
   createLeaseAreaAttachment,
   deleteLeaseAreaAttachment,

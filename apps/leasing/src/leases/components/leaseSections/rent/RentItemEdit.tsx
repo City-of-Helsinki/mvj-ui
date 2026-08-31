@@ -14,7 +14,7 @@ import FixedInitialYearRentsEdit from "./FixedInitialYearRentsEdit";
 import IndexAdjustedRents from "./IndexAdjustedRents";
 import PayableRents from "./PayableRents";
 import RentAdjustmentsEdit from "./RentAdjustmentsEdit";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import { FormNames, ViewModes } from "@/enums";
 import {
   ContractRentPeriods,

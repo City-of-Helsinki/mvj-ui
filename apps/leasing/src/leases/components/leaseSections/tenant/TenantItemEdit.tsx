@@ -28,7 +28,7 @@ import {
   receiveIsSaveClicked,
   showContactModal,
 } from "@/contacts/actions";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import { ButtonColors } from "@/components/enums";
 import {
   ConfirmationModalTexts,

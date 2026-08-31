@@ -8,7 +8,7 @@ import BoxContentWrapper from "@/components/content/BoxContentWrapper";
 import Collapse from "@/components/collapse/Collapse";
 import DecisionConditionsEdit from "./DecisionConditionsEdit";
 import FormField from "@/components/form/final-form/FormField";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import { FieldTypes, FormNames, ViewModes } from "@/enums";
 import {
   LeaseDecisionConditionsFieldPaths,

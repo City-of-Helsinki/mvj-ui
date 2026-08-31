@@ -7,7 +7,7 @@ import Collapse from "@/components/collapse/Collapse";
 import CollapseHeaderSubtitle from "@/components/collapse/CollapseHeaderSubtitle";
 import OtherTenantItem from "./OtherTenantItem";
 import TenantItem from "./TenantItem";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import {
   LeaseTenantsFieldPaths,
   LeaseTenantsFieldTitles,
