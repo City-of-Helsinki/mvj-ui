@@ -1,50 +1,75 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Row, Column } from "@/components/grid/Grid";
-import { Form } from "react-final-form";
+import { Column, Row } from "@/components/grid/Grid";
 import { debounce, isArray, isEmpty } from "lodash-es";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Form } from "react-final-form";
+import { useDispatch, useSelector } from "react-redux";
 
+import { fetchAreaNoteList } from "@/areaNote/actions";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
-import CreateLeaseModal from "./createLease/CreateLeaseModal";
-import LeaseListMap from "@/leases/components/leaseSections/map/LeaseListMap";
-import Loader from "@/components/loader/Loader";
-import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import ContentContainerHds from "@/components/content/ContentContainerHds";
 import PageContainerHDS from "@/components/content/PageContainerHDS";
-import Search from "./search/Search";
-import { fetchAreaNoteList } from "@/areaNote/actions";
-import { fetchServiceUnits } from "@/serviceUnits/actions";
+import Loader from "@/components/loader/Loader";
+import LoaderWrapper from "@/components/loader/LoaderWrapper";
+import MultiItemCollapse from "@/components/table/MultiItemCollapse";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
+import { Methods, PermissionMissingTexts } from "@/enums";
 import {
   createLease,
+  fetchAttributes as fetchLeaseAttributes,
   fetchLeases,
   fetchLeasesByBBox,
-  fetchAttributes as fetchLeaseAttributes,
 } from "@/leases/actions";
-import { fetchLessors } from "@/lessor/actions";
-import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
+import LeaseListMap from "@/leases/components/leaseSections/map/LeaseListMap";
 import {
+  BOUNDING_BOX_FOR_SEARCH_QUERY,
   DEFAULT_LEASE_STATES,
   DEFAULT_ONLY_ACTIVE_LEASES,
   DEFAULT_SORT_KEY,
   DEFAULT_SORT_ORDER,
   MAX_ZOOM_LEVEL_TO_FETCH_LEASES,
-  BOUNDING_BOX_FOR_SEARCH_QUERY,
 } from "@/leases/constants";
-import { Methods, PermissionMissingTexts } from "@/enums";
 import {
-  LeaseAreasFieldPaths,
   LeaseAreaAddressesFieldPaths,
+  LeaseAreasFieldPaths,
+  LeaseAreasFieldTitles,
   LeaseFieldPaths,
   LeaseFieldTitles,
   LeaseTenantsFieldPaths,
-  LeaseAreasFieldTitles,
 } from "@/leases/enums";
 import {
   getContentLeaseListResults,
   mapLeaseSearchFilters,
 } from "@/leases/helpers";
+import {
+  getIsFetching,
+  getIsFetchingByBBox,
+  getIsFetchingAttributes as getIsFetchingLeaseAttributes,
+  getAttributes as getLeaseAttributes,
+  getMethods as getLeaseMethods,
+  getLeasesList,
+} from "@/leases/selectors";
+import { fetchLessors } from "@/lessor/actions";
+import { getLessorList } from "@/lessor/selectors";
+import { getRouteById, Routes } from "@/root/routes";
+import { fetchServiceUnits } from "@/serviceUnits/actions";
+import {
+  getIsFetching as getIsFetchingServiceUnits,
+  getServiceUnits,
+} from "@/serviceUnits/selectors";
+import {
+  fetchAttributes as fetchUiDataAttributes,
+  fetchUiDataList,
+} from "@/uiData/actions";
+import {
+  getIsFetching as getIsFetchingUiData,
+  getIsFetchingAttributes as getIsFetchingUiDataAttributes,
+  getAttributes as getUiDataAttributes,
+  getUiDataList,
+  getMethods as getUiDataMethods,
+} from "@/uiData/selectors";
+import { getUserServiceUnits } from "@/usersPermissions/selectors";
+import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import {
   formatDate,
   getApiResponseCount,
@@ -57,34 +82,6 @@ import {
   isMethodAllowed,
   setPageTitle,
 } from "@/util/helpers";
-import { getRouteById, Routes } from "@/root/routes";
-import {
-  getIsFetching,
-  getIsFetchingByBBox,
-  getLeasesList,
-  getAttributes as getLeaseAttributes,
-  getIsFetchingAttributes as getIsFetchingLeaseAttributes,
-  getMethods as getLeaseMethods,
-} from "@/leases/selectors";
-import { getLessorList } from "@/lessor/selectors";
-import { getUserServiceUnits } from "@/usersPermissions/selectors";
-import {
-  getServiceUnits,
-  getIsFetching as getIsFetchingServiceUnits,
-} from "@/serviceUnits/selectors";
-import type { Attributes } from "types";
-import {
-  getAttributes as getUiDataAttributes,
-  getIsFetching as getIsFetchingUiData,
-  getIsFetchingAttributes as getIsFetchingUiDataAttributes,
-  getMethods as getUiDataMethods,
-  getUiDataList,
-} from "@/uiData/selectors";
-import { useLocation, useNavigate } from "react-router";
-import {
-  fetchAttributes as fetchUiDataAttributes,
-  fetchUiDataList,
-} from "@/uiData/actions";
 import {
   Button,
   ButtonSize,
@@ -99,7 +96,10 @@ import {
   type TableProps,
   Tabs,
 } from "hds-react";
-import MultiItemCollapse from "@/components/table/MultiItemCollapse";
+import { useLocation, useNavigate } from "react-router";
+import type { Attributes } from "types";
+import CreateLeaseModal from "./createLease/CreateLeaseModal";
+import Search from "./search/Search";
 
 const VisualizationTypes = {
   MAP: "map",
