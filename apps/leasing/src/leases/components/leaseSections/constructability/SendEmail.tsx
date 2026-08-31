@@ -7,7 +7,7 @@ import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import ListItem from "@/components/content/ListItem";
 import SendEmailModal from "./SendEmailModal";
-import { sendEmail } from "@/leases/actions";
+import { sendEmail } from "@/leases/slice";
 import { ButtonColors } from "@/components/enums";
 import { SendEmailTypes } from "@/leases/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";

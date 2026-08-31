@@ -15,7 +15,7 @@ import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import SubTitle from "@/components/content/SubTitle";
 import { receiveCollapseStates } from "@/infillDevelopment/actions";
-import { fetchLeaseById } from "@/leases/actions";
+import { fetchLeaseById } from "@/leases/slice";
 import { FormNames, Methods, ViewModes } from "@/enums";
 import {
   InfillDevelopmentCompensationLeasesFieldPaths,

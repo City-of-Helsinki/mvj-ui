@@ -16,7 +16,7 @@ import FormTextTitle from "@/components/form/FormTextTitle";
 import ListItem from "@/components/content/ListItem";
 import ListItems from "@/components/content/ListItems";
 import RemoveButton from "@/components/form/RemoveButton";
-import { patchLeaseInvoiceNotes } from "@/leases/actions";
+import { patchLeaseInvoiceNotes } from "@/leases/slice";
 import {
   ConfirmationModalTexts,
   FieldTypes,

@@ -10,7 +10,7 @@ import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import StatusIndicator from "./StatusIndicator";
 import SubTitle from "@/components/content/SubTitle";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import { FormNames, ViewModes } from "@/enums";
 import {
   LeaseAreaAddressesFieldPaths,

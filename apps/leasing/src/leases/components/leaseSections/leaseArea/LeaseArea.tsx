@@ -13,7 +13,7 @@ import ListItems from "@/components/content/ListItems";
 import PlanUnitItem from "./PlanUnitItem";
 import PlotItem from "./PlotItem";
 import SubTitle from "@/components/content/SubTitle";
-import { receiveCollapseStates } from "@/leases/actions";
+import { receiveCollapseStates } from "@/leases/slice";
 import { FormNames, ViewModes } from "@/enums";
 import {
   LeaseAreaAddressesFieldPaths,

@@ -9,7 +9,7 @@ import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import {
   fetchLeasesForContact,
   fetchLeasesForContactAttributes,
-} from "@/leases/actions";
+} from "@/leases/slice";
 import {
   LeaseFieldPaths,
   LeaseFieldTitles,
