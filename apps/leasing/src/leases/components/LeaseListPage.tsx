@@ -484,10 +484,6 @@ const LeaseListPage: React.FC = () => {
       delete searchQuery.preparer;
     }
 
-    if (query.search && !formValues.search) {
-      searchQuery.search = query.search;
-    }
-
     if (query.lease_state && !formValues.lease_state) {
       searchQuery.lease_state = query.lease_state;
     }
