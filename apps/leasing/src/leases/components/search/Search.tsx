@@ -1,66 +1,66 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
-import { Field, useForm, useFormState } from "react-final-form";
-import { isEqual } from "lodash-es";
 import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
   Checkbox,
   DateInput,
+  Fieldset,
+  IconEye,
+  IconEyeCrossed,
+  IconMinus,
+  IconPlusCircleFill,
+  IconSearch,
+  IconTrash,
   RadioButton,
   Select,
   SelectionGroup,
   TextInput,
   type OptionInProps,
-  Fieldset,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  IconPlusCircleFill,
-  IconSearch,
-  IconTrash,
-  IconMinus,
-  IconEye,
-  IconEyeCrossed,
 } from "hds-react";
+import { isEqual } from "lodash-es";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Field, useForm, useFormState } from "react-final-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router";
 
+import Authorization from "@/components/authorization/Authorization";
+import { ButtonLabels } from "@/components/enums";
+import { Column, Row } from "@/components/grid/Grid";
+import SearchContainer from "@/components/search/SearchContainer";
+import SearchInputColumn from "@/components/search/SearchInputColumn";
+import SearchRow from "@/components/search/SearchRow";
+import { getContactOptions } from "@/contacts/helpers";
+import type { Contact } from "@/contacts/types";
+import { fetchDistrictsByMunicipality } from "@/district/actions";
+import { getDistrictOptions } from "@/district/helpers";
+import { getDistrictsByMunicipality } from "@/district/selectors";
+import { Methods } from "@/enums";
+import { useIntendedUses } from "@/intendedUse/useIntendedUses";
+import { preparationStateFilterOptions } from "@/leases/constants";
+import {
+  LeaseDecisionsFieldPaths,
+  LeaseFieldPaths,
+  LeaseFieldTitles,
+  LeaseTenantContactSetFieldPaths,
+} from "@/leases/enums";
+import {
+  filterSelectedGroupedOptions,
+  filterSelectedOptions,
+} from "@/leases/helpers";
+import {
+  getAttributes as getLeaseAttributes,
+  getMethods as getLeaseMethods,
+} from "@/leases/selectors";
+import { getLessorList } from "@/lessor/selectors";
+import { getUserOptions } from "@/users/helpers";
+import { fetchOfficers } from "@/users/requestsAsync";
 import {
   getFieldOptions,
   getUrlParams,
   isMethodAllowed,
   toHdsOption,
 } from "@/util/helpers";
-import { Methods } from "@/enums";
-import {
-  getMethods as getLeaseMethods,
-  getAttributes as getLeaseAttributes,
-} from "@/leases/selectors";
-import { useIntendedUses } from "@/intendedUse/useIntendedUses";
-import Authorization from "@/components/authorization/Authorization";
-import { ButtonLabels } from "@/components/enums";
-import SearchContainer from "@/components/search/SearchContainer";
-import SearchInputColumn from "@/components/search/SearchInputColumn";
-import SearchRow from "@/components/search/SearchRow";
-import { Row, Column } from "@/components/grid/Grid";
-import { fetchDistrictsByMunicipality } from "@/district/actions";
-import {
-  LeaseDecisionsFieldPaths,
-  LeaseFieldPaths,
-  LeaseTenantContactSetFieldPaths,
-} from "@/leases/enums";
-import { getContactOptions } from "@/contacts/helpers";
-import type { Contact } from "@/contacts/types";
-import { getDistrictOptions } from "@/district/helpers";
-import {
-  filterSelectedGroupedOptions,
-  filterSelectedOptions,
-} from "@/leases/helpers";
-import { getDistrictsByMunicipality } from "@/district/selectors";
-import { getLessorList } from "@/lessor/selectors";
-import { preparationStateFilterOptions } from "@/leases/constants";
 import useLocalStorageState from "@/util/useLocalStorageState";
-import { LeaseFieldTitles } from "@/leases/enums";
-import { fetchOfficers } from "@/users/requestsAsync";
-import { getUserOptions } from "@/users/helpers";
 
 const PreparerOwnLeasesOption = {
   label: "Omat vuokraukset",
