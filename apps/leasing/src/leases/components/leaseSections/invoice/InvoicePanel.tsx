@@ -15,7 +15,7 @@ import Button from "@/components/button/Button";
 import EditInvoiceForm from "./forms/EditInvoiceForm";
 import InvoiceTemplate from "./InvoiceTemplate";
 import TablePanelContainer from "@/components/table/TablePanelContainer";
-import { receiveIsEditClicked } from "@/invoices/actions";
+import { receiveIsEditClicked } from "@/invoices/slice";
 import { Methods } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { isMethodAllowed } from "@/util/helpers";

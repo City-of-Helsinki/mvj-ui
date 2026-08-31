@@ -1,6 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import {
+  fetchAttributes as fetchAttributesAction,
   fetchInvoicesByLease,
   receiveAttributes,
   receiveMethods,
@@ -14,7 +15,12 @@ import {
   notFound,
   receiveIsCreateClicked,
   receiveIsCreditClicked,
-} from "./actions";
+  createInvoice as createInvoiceAction,
+  creditInvoice as creditInvoiceAction,
+  patchInvoice as patchInvoiceAction,
+  exportInvoiceToLaskeAndUpdateList as exportInvoiceToLaskeAndUpdateListAction,
+  deleteInvoice as deleteInvoiceAction,
+} from "./slice";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
 import {
@@ -56,8 +62,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchInvoicesByLeaseSaga({
   payload: leaseId,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchInvoicesByLease>): Generator<any, any, any> {
   try {
     let {
       response: { status: statusCode },
@@ -101,8 +106,7 @@ function* fetchInvoicesByLeaseSaga({
 
 function* createInvoiceSaga({
   payload: invoice,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof createInvoiceAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -140,8 +144,7 @@ function* createInvoiceSaga({
 
 function* creditInvoiceSaga({
   payload: { creditData, invoiceId, lease },
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof creditInvoiceAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -176,8 +179,7 @@ function* creditInvoiceSaga({
 
 function* patchInvoiceSaga({
   payload: invoice,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof patchInvoiceAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -233,8 +235,11 @@ function* patchInvoiceSaga({
 
 function* exportInvoiceToLaskeAndUpdateListSaga({
   payload: { id, lease },
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof exportInvoiceToLaskeAndUpdateListAction>): Generator<
+  any,
+  any,
+  any
+> {
   try {
     const {
       response: { status: statusCode },
@@ -260,8 +265,7 @@ function* exportInvoiceToLaskeAndUpdateListSaga({
 
 function* deleteInvoiceSaga({
   payload: invoice,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof deleteInvoiceAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -288,16 +292,16 @@ function* deleteInvoiceSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
-      yield takeLatest("mvj/invoices/FETCH_ATTRIBUTES", fetchAttributesSaga);
-      yield takeLatest("mvj/invoices/FETCH_BY_LEASE", fetchInvoicesByLeaseSaga);
-      yield takeLatest("mvj/invoices/CREATE", createInvoiceSaga);
-      yield takeLatest("mvj/invoices/CREDIT_INVOICE", creditInvoiceSaga);
-      yield takeLatest("mvj/invoices/PATCH", patchInvoiceSaga);
+      yield takeLatest(fetchAttributesAction, fetchAttributesSaga);
+      yield takeLatest(fetchInvoicesByLease, fetchInvoicesByLeaseSaga);
+      yield takeLatest(createInvoiceAction, createInvoiceSaga);
+      yield takeLatest(creditInvoiceAction, creditInvoiceSaga);
+      yield takeLatest(patchInvoiceAction, patchInvoiceSaga);
       yield takeLatest(
-        "mvj/invoices/EXPORT_TO_LASKE_AND_UPDATE",
+        exportInvoiceToLaskeAndUpdateListAction,
         exportInvoiceToLaskeAndUpdateListSaga,
       );
-      yield takeLatest("mvj/invoices/DELETE", deleteInvoiceSaga);
+      yield takeLatest(deleteInvoiceAction, deleteInvoiceSaga);
     }),
   ]);
 }

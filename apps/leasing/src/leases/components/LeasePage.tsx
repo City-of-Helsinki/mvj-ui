@@ -43,7 +43,7 @@ import {
 import {
   fetchInvoicesByLease,
   fetchAttributes as fetchInvoiceAttributes,
-} from "@/invoices/actions";
+} from "@/invoices/slice";
 import {
   clearFormDirtyFlags,
   deleteLease,
