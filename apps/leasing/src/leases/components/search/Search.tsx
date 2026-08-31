@@ -199,6 +199,11 @@ const Search: React.FC<Props> = ({
     onSearch({}, true, true);
   };
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    form.submit();
+  };
+
   const leaseAttributes = useSelector(getLeaseAttributes);
   const lessors = useSelector(getLessorList) as Array<Contact>;
   const { intendedUseList, isFetchingIntendedUses } = useIntendedUses();
@@ -1096,7 +1101,7 @@ const Search: React.FC<Props> = ({
   );
 
   return (
-    <SearchContainer onSubmit={form.submit}>
+    <SearchContainer onSubmit={handleSubmit}>
       <DistrictLoader municipality={municipality} />
       <Row className="lease-search-row">
         <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
