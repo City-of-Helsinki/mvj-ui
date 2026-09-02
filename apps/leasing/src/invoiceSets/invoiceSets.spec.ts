@@ -1,16 +1,11 @@
 import { describe, expect, it } from "vitest";
-import {
+import invoiceSetsReducer, {
   receiveInvoiceSetsByLease,
   fetchInvoiceSetsByLease,
   notFound,
   creditInvoiceSet,
-} from "./actions";
-import invoiceSetsReducer from "./reducer";
-import type { InvoiceSetState } from "./types";
-const defaultState: InvoiceSetState = {
-  byLease: {},
-  isFetching: false,
-};
+  initialState,
+} from "./slice";
 
 describe("Invoice sets", () => {
   describe("Reducer", () => {
@@ -24,13 +19,13 @@ describe("Invoice sets", () => {
           },
         ];
         const newState = {
-          ...defaultState,
+          ...initialState,
           byLease: {
             [leaseId]: dummyInvoiceSets,
           },
         };
         const state = invoiceSetsReducer(
-          {},
+          initialState,
           receiveInvoiceSetsByLease({
             leaseId: leaseId,
             invoiceSets: dummyInvoiceSets,
@@ -39,19 +34,25 @@ describe("Invoice sets", () => {
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to true when fetching invoice sets", () => {
-        const newState = { ...defaultState, isFetching: true };
-        const state = invoiceSetsReducer({}, fetchInvoiceSetsByLease(1));
+        const newState = { ...initialState, isFetching: true };
+        const state = invoiceSetsReducer(
+          initialState,
+          fetchInvoiceSetsByLease(1),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to false by notFound", () => {
-        const newState = { ...defaultState, isFetching: false };
-        let state = invoiceSetsReducer({}, fetchInvoiceSetsByLease(1));
+        const newState = { ...initialState, isFetching: false };
+        let state = invoiceSetsReducer(
+          initialState,
+          fetchInvoiceSetsByLease(1),
+        );
         state = invoiceSetsReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });
       it("creditInvoiceSet should not change state", () => {
-        const state = invoiceSetsReducer({}, creditInvoiceSet({}));
-        expect(state).to.deep.equal(defaultState);
+        const state = invoiceSetsReducer(initialState, creditInvoiceSet({}));
+        expect(state).to.deep.equal(initialState);
       });
     });
   });

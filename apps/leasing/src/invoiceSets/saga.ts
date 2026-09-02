@@ -9,7 +9,8 @@ import {
   fetchInvoiceSetsByLease as fetchInvoiceSetsByLeaseAction,
   notFound,
   receiveInvoiceSetsByLease,
-} from "./actions";
+  creditInvoiceSet as creditInvoiceSetAction,
+} from "./slice";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
 import { creditInvoiceSet, fetchInvoiceSetsByLease } from "./requests";
@@ -88,13 +89,10 @@ export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
       yield takeLatest(
-        "mvj/invoiceSets/FETCH_BY_LEASE",
+        fetchInvoiceSetsByLeaseAction,
         fetchInvoiceSetsByLeaseSaga,
       );
-      yield takeLatest(
-        "mvj/invoiceSets/CREDIT_INVOICESET",
-        creditInvoiceSetSaga,
-      );
+      yield takeLatest(creditInvoiceSetAction, creditInvoiceSetSaga);
     }),
   ]);
 }
