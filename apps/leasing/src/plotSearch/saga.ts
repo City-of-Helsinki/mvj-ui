@@ -52,7 +52,7 @@ import {
   plotSearchRelatedApplicationsNotFound,
   fetchPlotSearchRelatedApplications,
 } from "@/plotSearch/actions";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { getRouteById, Routes } from "@/root/routes";
 import {
   fetchAttributes,

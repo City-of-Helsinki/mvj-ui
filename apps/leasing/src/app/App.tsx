@@ -14,7 +14,7 @@ import LoginPage from "@/auth/components/LoginPage";
 import SideMenu from "@/components/sideMenu/SideMenu";
 import TopNavigation from "@/components/topNavigation/TopNavigation";
 import { Routes, getRouteById } from "@/root/routes";
-import { clearError } from "@/api/actions";
+import { clearError } from "@/api/slice";
 import { getError } from "@/api/selectors";
 import { getLoggedInUser } from "@/auth/selectors";
 import {

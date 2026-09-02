@@ -4,7 +4,7 @@ import {
   receiveOldDwellingsInHousingCompaniesPriceIndex,
 } from "./actions";
 import { fetchOldDwellingsInHousingCompaniesPriceIndex } from "./requests";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { FETCH_ACTION_STRING } from "./constants";
 
 function* fetchOldDwellingsInHousingCompaniesPriceIndexSaga(): Generator<

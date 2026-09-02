@@ -1,5 +1,5 @@
 import { createAction } from "redux-actions";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import type {
   UserGroups,
   UsersPermissions,
@@ -12,7 +12,6 @@ import type {
   SetUserActiveServiceUnitAction,
   NotFoundAction,
 } from "./types";
-import type { ReceiveErrorAction } from "@/api/types";
 
 export const fetchUsersPermissions = (): FetchUsersPermissionsAction =>
   createAction("mvj/usersPermissions/FETCH_ALL")();
@@ -30,7 +29,7 @@ export const receiveUserServiceUnits = (
   createAction("mvj/usersPermissions/RECEIVE_SERVICE_UNITS")(serviceUnits);
 export const setUserActiveServiceUnit = (
   activeServiceUnit: UserServiceUnit,
-): SetUserActiveServiceUnitAction | ReceiveErrorAction => {
+): SetUserActiveServiceUnitAction | ReturnType<typeof receiveError> => {
   if (!activeServiceUnit) {
     return receiveError(
       new Error(

@@ -5,7 +5,7 @@ import {
   receiveReceivableTypes,
   receivableTypesNotFound,
 } from "./actions";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { fetchAttributes, fetchReceivableTypes } from "./requests";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {

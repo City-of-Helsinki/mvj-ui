@@ -5,7 +5,7 @@ import {
   receiveRentForPeriodByLease,
 } from "./actions";
 import { fetchRentForPeriod } from "./requests";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 
 function* fetchRentForPeriodSaga({
   payload,

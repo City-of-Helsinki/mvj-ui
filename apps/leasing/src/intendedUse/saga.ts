@@ -2,7 +2,7 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import get from "lodash/get";
 import callApi from "@/api/callApi";
 import { receiveIntendedUse, intendedUseNotFound } from "@/intendedUse/actions";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { fetchIntendedUse } from "@/intendedUse/requests";
 
 function* fetchIntendedUseSaga(): Generator<any, any, any> {

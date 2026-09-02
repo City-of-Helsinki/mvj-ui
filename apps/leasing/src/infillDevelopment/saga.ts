@@ -12,7 +12,7 @@ import {
   receiveInfillDevelopments,
   receiveSingleInfillDevelopment,
 } from "./actions";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { displayUIMessage } from "@/util/helpers";
 import {
   createInfillDevelopment,

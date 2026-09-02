@@ -51,7 +51,7 @@ import {
   fetchLeasesForContact as fetchLeasesForContactAction,
   fetchLeasesForContactAttributes as fetchLeasesForContactAttributesAction,
 } from "./slice";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import {
   fetchInvoicesByLease,
   receiveIsCreateClicked,

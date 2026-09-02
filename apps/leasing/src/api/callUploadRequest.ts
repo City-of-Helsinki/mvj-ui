@@ -1,5 +1,5 @@
 import { call, put, select } from "redux-saga/effects";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { getApiToken } from "@/auth/selectors";
 import { UI_ACCEPT_LANGUAGE_VALUE } from "@/api/constants";
 

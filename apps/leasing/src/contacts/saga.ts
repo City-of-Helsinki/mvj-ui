@@ -12,7 +12,7 @@ import {
   notFound,
 } from "./actions";
 import { navigateTo } from "@/root/navigationService";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { displayUIMessage } from "@/util/helpers";
 import {
   createContact,

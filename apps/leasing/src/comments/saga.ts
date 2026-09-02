@@ -10,7 +10,7 @@ import {
   receiveCommentsByLease,
   receiveIsSaveClicked,
 } from "./actions";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { FormNames } from "@/enums";
 import { displayUIMessage } from "@/util/helpers";
 import {

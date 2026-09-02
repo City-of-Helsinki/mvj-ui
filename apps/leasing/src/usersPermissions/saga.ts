@@ -7,7 +7,7 @@ import {
   notFound,
 } from "./actions";
 import { fetchUsersPermissions } from "./requests";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 
 function* fetchUsersPermissionsSaga(): Generator<any, any, any> {
   try {
