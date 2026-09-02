@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { receiveError, clearError } from "./actions";
-import apiReducer from "./reducer";
-import type { ApiState } from "./types";
-const defaultState: ApiState = {
-  error: null,
-};
+import apiReducer, { receiveError, clearError, initialState } from "./slice";
 
 describe("API", () => {
   describe("Reducer", () => {
@@ -13,16 +8,16 @@ describe("API", () => {
         const dummyError = {
           error: "test",
         };
-        const newState = { ...defaultState, error: dummyError };
-        const state = apiReducer({}, receiveError(dummyError));
+        const newState = { ...initialState, error: dummyError };
+        const state = apiReducer(initialState, receiveError(dummyError));
         expect(state).to.deep.equal(newState);
       });
       it("should clear error", () => {
         const dummyError = {
           error: "test",
         };
-        const newState = { ...defaultState, error: null };
-        let state = apiReducer({}, receiveError(dummyError));
+        const newState = { ...initialState, error: null };
+        let state = apiReducer(initialState, receiveError(dummyError));
         state = apiReducer(state, clearError());
         expect(state).to.deep.equal(newState);
       });

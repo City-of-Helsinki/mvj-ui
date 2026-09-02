@@ -274,10 +274,10 @@ function* editPlotSearchSaga({
           yield put(editForm(form));
           const result = yield take([
             "mvj/plotSearch/RECEIVE_FORM",
-            "mvj/api/RECEIVE_ERROR",
+            receiveError.type,
           ]);
 
-          if (result.type === "mvj/api/RECEIVE_ERROR") {
+          if (result.type === receiveError.type) {
             yield receiveIsSaveClicked(false);
             break;
           }
