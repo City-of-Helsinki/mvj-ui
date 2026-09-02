@@ -22,7 +22,7 @@ import infillDevelopmentReducer from "@/infillDevelopment/reducer";
 import infillDevelopmentAttachmentReducer from "@/infillDevelopmentAttachment/reducer";
 import invoiceReducer from "@/invoices/slice";
 import invoiceNoteReducer from "@/invoiceNote/reducer";
-import invoiceSetReducer from "@/invoiceSets/reducer";
+import invoiceSetReducer from "@/invoiceSets/slice";
 import intendedUseReducer from "@/intendedUse/reducer";
 import leaseReducer from "@/leases/slice";
 import oldDwellingsInHousingCompaniesPriceIndexReducer from "@/oldDwellingsInHousingCompaniesPriceIndex/reducer";

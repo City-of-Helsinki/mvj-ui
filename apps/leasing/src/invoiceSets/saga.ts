@@ -9,15 +9,15 @@ import {
   fetchInvoiceSetsByLease as fetchInvoiceSetsByLeaseAction,
   notFound,
   receiveInvoiceSetsByLease,
-} from "./actions";
+  creditInvoiceSet as creditInvoiceSetAction,
+} from "./slice";
 import { receiveError } from "@/api/actions";
 import { displayUIMessage } from "@/util/helpers";
 import { creditInvoiceSet, fetchInvoiceSetsByLease } from "./requests";
 
 function* fetchInvoiceSetsByLeaseSaga({
   payload: leaseId,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchInvoiceSetsByLeaseAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -51,8 +51,7 @@ function* fetchInvoiceSetsByLeaseSaga({
 
 function* creditInvoiceSetSaga({
   payload: { creditData, invoiceSetId, lease },
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof creditInvoiceSetAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -88,13 +87,10 @@ export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
       yield takeLatest(
-        "mvj/invoiceSets/FETCH_BY_LEASE",
+        fetchInvoiceSetsByLeaseAction,
         fetchInvoiceSetsByLeaseSaga,
       );
-      yield takeLatest(
-        "mvj/invoiceSets/CREDIT_INVOICESET",
-        creditInvoiceSetSaga,
-      );
+      yield takeLatest(creditInvoiceSetAction, creditInvoiceSetSaga);
     }),
   ]);
 }
