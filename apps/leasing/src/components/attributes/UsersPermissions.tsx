@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { flowRight, isEmpty } from "lodash-es";
-import { fetchUsersPermissions } from "@/usersPermissions/actions";
+import { fetchUsersPermissions } from "@/usersPermissions/slice";
 import {
   getUsersPermissions,
   getIsFetching as getIsFetchingUsersPermissions,
