@@ -4,7 +4,7 @@ import Select from "react-select";
 import FormFieldLabel from "@/components/form/FormFieldLabel";
 import DropdownIndicator from "@/components/inputs/DropdownIndicator";
 import LoadingIndicator from "@/components/inputs/SelectLoadingIndicator";
-import { setUserActiveServiceUnit } from "@/usersPermissions/actions";
+import { setUserActiveServiceUnit } from "@/usersPermissions/slice";
 import type {
   UserServiceUnit,
   UserServiceUnits,

@@ -43,7 +43,7 @@ import topNavigationReducer from "@/components/topNavigation/reducer";
 import tradeRegisterReducer from "@/tradeRegister/reducer";
 import uiDataReducer from "@/uiData/reducer";
 import usersReducer from "@/users/reducer";
-import usersPermissionsReducer from "@/usersPermissions/reducer";
+import usersPermissionsReducer from "@/usersPermissions/slice";
 import vatReducer from "@/vat/reducer";
 export default combineReducers({
   api: apiReducer,
