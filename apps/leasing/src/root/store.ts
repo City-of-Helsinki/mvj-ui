@@ -13,6 +13,9 @@ const store = configureStore({
       serializableCheck: {
         // File objects from file inputs are non-serializable
         ignoredActionPaths: ["payload.file"],
+        //Ignore http error objects, as they're not serializable.
+        ignoredActions: ["mvj/api/receiveError"],
+        ignoredPaths: ["api.error"],
       },
     }).concat(sagaMiddleware),
   devTools: import.meta.env.DEV,
