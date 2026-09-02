@@ -21,7 +21,7 @@ import WarningField from "@/components/form/WarningField";
 import { fetchCollectionCourtDecisionsByLease } from "@/collectionCourtDecision/actions";
 import { fetchCollectionLettersByLease } from "@/collectionLetter/actions";
 import { fetchCollectionNotesByLease } from "@/collectionNote/actions";
-import { fetchInvoiceSetsByLease } from "@/invoiceSets/actions";
+import { fetchInvoiceSetsByLease } from "@/invoiceSets/slice";
 import {
   receiveInvoiceToCredit,
   receiveIsCreateInvoicePanelOpen,
