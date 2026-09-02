@@ -21,7 +21,7 @@ import {
   exportInvoiceToLaskeAndUpdateList as exportInvoiceToLaskeAndUpdateListAction,
   deleteInvoice as deleteInvoiceAction,
 } from "./slice";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { displayUIMessage } from "@/util/helpers";
 import {
   exportInvoiceToLaske,

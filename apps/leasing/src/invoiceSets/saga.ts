@@ -11,7 +11,7 @@ import {
   receiveInvoiceSetsByLease,
   creditInvoiceSet as creditInvoiceSetAction,
 } from "./slice";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { displayUIMessage } from "@/util/helpers";
 import { creditInvoiceSet, fetchInvoiceSetsByLease } from "./requests";
 

@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import {
   notFoundJobRuns,
   notFoundJobRunAttributes,

@@ -27,7 +27,7 @@ import {
   receiveMethods,
   receivePendingUploads,
 } from "@/application/actions";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import {
   deleteUploadRequest,
   fetchApplicantInfoCheckAttributesRequest,

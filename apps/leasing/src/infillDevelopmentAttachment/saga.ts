@@ -6,7 +6,7 @@ import {
   receiveMethods,
 } from "./actions";
 import { fetchSingleInfillDevelopment } from "@/infillDevelopment/actions";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { displayUIMessage } from "@/util/helpers";
 import {
   fetchAttributes,

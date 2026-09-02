@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { notFound, receiveVats } from "./actions";
 import { fetchVats } from "./requests";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 
 function* fetchVatsSaga(): Generator<any, any, any> {
   try {

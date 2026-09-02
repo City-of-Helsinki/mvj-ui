@@ -1,6 +1,6 @@
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import {
   attributesNotFound,
   receiveAttributes,

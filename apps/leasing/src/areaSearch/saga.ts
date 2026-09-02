@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { navigateTo } from "@/root/navigationService";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import {
   receiveAttributes,
   receiveMethods,
