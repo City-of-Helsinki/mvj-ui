@@ -40,7 +40,7 @@ import {
   targetInfoCheckMeetingMemoUploadFailed,
   targetInfoChecksForPlotSearchNotFound,
 } from "@/plotApplications/actions";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import {
   createMeetingMemoRequest,
   createOpeningRecordRequest,

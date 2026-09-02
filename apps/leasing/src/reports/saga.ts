@@ -19,7 +19,7 @@ import {
   sendReportToMail,
   fetchOptions,
 } from "./requests";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { displayUIMessage } from "@/util/helpers";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {

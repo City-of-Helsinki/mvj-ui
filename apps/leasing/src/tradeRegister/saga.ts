@@ -7,7 +7,7 @@ import {
   takeLatest,
   delay,
 } from "redux-saga/effects";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import {
   receiveTradeRegisterCompanyExtendedById,
   companyExtendedNotFoundById,

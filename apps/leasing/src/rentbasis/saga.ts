@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { navigateTo } from "@/root/navigationService";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { displayUIMessage } from "@/util/helpers";
 import {
   hideEditMode,

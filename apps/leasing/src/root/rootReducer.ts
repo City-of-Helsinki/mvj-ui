@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { reducer as formReducer } from "redux-form";
-import apiReducer from "@/api/reducer";
+import apiReducer from "@/api/slice";
 import areaNoteReducer from "@/areaNote/reducer";
 import areaSearchReducer from "@/areaSearch/reducer";
 import auditLogReducer from "@/auditLog/reducer";

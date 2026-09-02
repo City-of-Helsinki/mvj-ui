@@ -3,7 +3,7 @@ import {
   receivePenaltyInterestByInvoice,
   penaltyInterestNotFoundByInvoice,
 } from "./actions";
-import { receiveError } from "@/api/actions";
+import { receiveError } from "@/api/slice";
 import { fetchPenaltyInterestByInvoice } from "./requests";
 
 function* fetchPenaltyInterestByInvoiceSaga({
