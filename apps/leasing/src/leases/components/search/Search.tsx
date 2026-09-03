@@ -335,7 +335,12 @@ const Search: React.FC<Props> = ({
   // Persist newly-opened sections back to localStorage when searchParams changes.
   useEffect(() => {
     setVisibleSections((prev) => {
-      const merged = { ...prev };
+      // Filter out any sections from the previous state that no longer exist in SECTIONS.
+      const validSectionsFromState = Object.fromEntries(
+        Object.entries(prev).filter(([key]) => key in SECTIONS),
+      ) as SearchSectionVisibility;
+
+      const merged = { ...validSectionsFromState };
       (Object.keys(sectionsFromParams) as Array<SearchSectionKey>).forEach(
         (key) => {
           if (sectionsFromParams[key]) merged[key] = true;
