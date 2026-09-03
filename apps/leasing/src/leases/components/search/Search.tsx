@@ -1177,10 +1177,7 @@ const Search: React.FC<Props> = ({
           <Row>
             {/* First column */}
             <Column small={12} large={12}>
-              <Fieldset
-                heading="Tarkennettu haku"
-                className="lease-search-advanced-section"
-              >
+              <Fieldset heading="" className="lease-search-advanced-section">
                 {mergedVisibleSections.target && sectionTarget}
                 {mergedVisibleSections.dates && sectionDates}
                 {mergedVisibleSections.decision && sectionDecision}
@@ -1191,7 +1188,7 @@ const Search: React.FC<Props> = ({
           </Row>
         </>
       )}
-      <Fieldset heading="Perushaku">
+      <Fieldset heading="">
         <SearchRow>
           <Row className="lease-search-fieldset-group">
             <Field name="service_unit">
