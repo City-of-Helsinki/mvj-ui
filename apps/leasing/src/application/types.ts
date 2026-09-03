@@ -1,12 +1,12 @@
-import type { Action, Attributes, Methods } from "types";
+import type { Attributes, Methods } from "types";
 export type ApplicationState = {
   attributes: Attributes;
-  methods: Record<string, any>;
+  methods: Methods;
   isFetchingAttributes: boolean;
   isFetchingApplicantInfoCheckAttributes: boolean;
   applicantInfoCheckAttributes: Attributes;
   isFetchingFormAttributes: boolean;
-  formAttributes: Record<string, any>;
+  formAttributes: Attributes;
   fieldTypeMapping: Record<number, string>;
   attachmentAttributes: Attributes;
   attachmentMethods: Methods;
@@ -89,6 +89,11 @@ export type UploadAttachmentPayload = {
   callback?: (path: string, fileData: UploadedFileMeta) => void;
   path: string;
 };
+export type DeleteAttachmentPayload = {
+  id: number;
+  answer?: number | null;
+  callback?: () => void;
+};
 export type UploadedFileMeta = {
   id: number;
   attachment: string;
@@ -124,44 +129,12 @@ export type SavedApplicationFormSection = {
   metadata?: Record<string, unknown>;
 };
 export type PlotApplicationFormValue =
-  | string
-  | Array<string>
-  | Array<UploadedFileMeta>
-  | boolean;
-export type FetchAttributesAction = Action<string, void>;
-export type ReceiveAttributesAction = Action<string, Attributes>;
-export type ReceiveMethodsAction = Action<string, Methods>;
-export type AttributesNotFoundAction = Action<string, void>;
-export type FetchApplicantInfoCheckAttributesAction = Action<string, void>;
-export type ReceiveApplicantInfoCheckAttributesAction = Action<
-  string,
-  Attributes
->;
-export type ApplicantInfoCheckAttributesNotFoundAction = Action<string, void>;
-export type ReceiveUpdatedTargetInfoCheckItemAction = Action<
-  string,
-  Record<string, any>
->;
-export type ReceiveUpdatedApplicantInfoCheckItemAction = Action<
-  string,
-  Record<string, any>
->;
-export type FetchFormAttributesAction = Action<string, Record<string, any>>;
-export type FormAttributesNotFoundAction = Action<string, void>;
-export type ReceiveFormAttributesAction = Action<string, Attributes>;
-export type FetchAttachmentAttributesAction = Action<string, void>;
-export type ReceiveAttachmentAttributesAction = Action<string, Attributes>;
-export type ReceiveAttachmentMethodsAction = Action<string, Methods>;
-export type AttachmentAttributesNotFoundAction = Action<string, void>;
-export type FetchApplicationRelatedAttachmentsAction = Action<string, void>;
-export type ReceiveApplicationRelatedAttachmentsAction = Action<
-  string,
-  Record<string, any>
->;
-export type ApplicationRelatedAttachmentsNotFoundAction = Action<string, void>;
-export type DeleteUploadAction = Action<string, Record<string, any>>;
-export type UploadFileAction = Action<string, UploadAttachmentPayload>;
-export type FetchPendingUploadsAction = Action<string, void>;
-export type ReceivePendingUploadsAction = Action<string, Record<string, any>>;
-export type PendingUploadsNotFoundAction = Action<string, void>;
-export type ReceiveFileOperationFinishedAction = Action<string, void>;
+  string | Array<string> | Array<UploadedFileMeta> | boolean;
+export type ApplicantInfoCheckItemPayload = {
+  id: number;
+  data: Record<string, any>;
+};
+export type TargetInfoCheckItemPayload = {
+  targetForm: string;
+  data: Record<string, any>;
+};

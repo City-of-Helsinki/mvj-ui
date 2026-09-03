@@ -96,7 +96,7 @@ import { FIELDS_LOCKED_FOR_EDITING } from "@/plotSearch/constants";
 import PlotSearchExportModal from "@/plotApplications/components/exportModal/PlotSearchExportModal";
 import ReservationIdentifiersModal from "@/plotSearch/components/reservationIdentifiers/ReservationIdentifiersModal";
 import DirectReservationLinkModal from "@/plotSearch/components/directReservationLinkModal/DirectReservationLinkModal";
-import { fetchAttributes as fetchApplicationAttributes } from "@/application/actions";
+import { fetchAttributes as fetchApplicationAttributes } from "@/application/slice";
 import { getIsFetchingAttributes as getIsFetchingApplicationAttributes } from "@/application/selectors";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import type { Attributes, Methods as MethodType } from "types";

@@ -10,9 +10,9 @@ export const getIsFetchingAttributes: Selector<boolean, void> = (
   state: RootState,
 ): boolean => state.application.isFetchingAttributes;
 export const getIsFetchingApplicantInfoCheckAttributes: Selector<
-  Attributes,
+  boolean,
   void
-> = (state: RootState): Attributes =>
+> = (state: RootState): boolean =>
   state.application.isFetchingApplicantInfoCheckAttributes;
 export const getApplicantInfoCheckAttributes: Selector<Attributes, void> = (
   state: RootState,

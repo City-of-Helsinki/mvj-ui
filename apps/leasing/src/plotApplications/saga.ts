@@ -62,7 +62,7 @@ import {
   fetchFormAttributes,
   receiveUpdatedApplicantInfoCheckItem,
   receiveUpdatedTargetInfoCheckItem,
-} from "@/application/actions";
+} from "@/application/slice";
 import {
   createApplicationRequest,
   editApplicationRequest,

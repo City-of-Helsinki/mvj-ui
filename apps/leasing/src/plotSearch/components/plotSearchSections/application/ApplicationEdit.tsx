@@ -37,7 +37,7 @@ import {
   getFormAttributes,
   getIsFetchingFormAttributes,
 } from "@/application/selectors";
-import { fetchFormAttributes } from "@/application/actions";
+import { fetchFormAttributes } from "@/application/slice";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import type { Attributes } from "types";
 import type { PlotSearch } from "@/plotSearch/types";

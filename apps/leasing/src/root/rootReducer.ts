@@ -28,7 +28,7 @@ import leaseReducer from "@/leases/slice";
 import oldDwellingsInHousingCompaniesPriceIndexReducer from "@/oldDwellingsInHousingCompaniesPriceIndex/reducer";
 import plotSearchReducer from "@/plotSearch/reducer";
 import plotApplicationsReducer from "@/plotApplications/reducer";
-import applicationReducer from "@/application/reducer";
+import applicationReducer from "@/application/slice";
 import leaseCreateChargeReducer from "@/leaseCreateCharge/reducer";
 import leaseholdTransferReducer from "@/leaseholdTransfer/reducer";
 import leaseTypeReducer from "@/leaseType/reducer";
