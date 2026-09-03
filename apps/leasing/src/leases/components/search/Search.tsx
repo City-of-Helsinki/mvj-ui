@@ -51,6 +51,7 @@ import {
   getAttributes as getLeaseAttributes,
   getMethods as getLeaseMethods,
 } from "@/leases/selectors";
+import { getUserServiceUnits } from "@/usersPermissions/selectors";
 import { getLessorList } from "@/lessor/selectors";
 import { getUserOptions } from "@/users/helpers";
 import { fetchOfficers } from "@/users/requestsAsync";
@@ -159,6 +160,7 @@ const Search: React.FC<Props> = ({
     getDistrictsByMunicipality(state, Number(municipality)),
   );
   const leaseMethods = useSelector(getLeaseMethods);
+  const userServiceUnits = useSelector(getUserServiceUnits);
 
   const prevValues = useRef(values);
 
@@ -215,35 +217,57 @@ const Search: React.FC<Props> = ({
     [leaseAttributes],
   );
 
+  const serviceUnitOptions = useMemo(() => {
+    const userServiceUnitOrder = new Map(
+      userServiceUnits.map((unit, index) => [String(unit.id), index]),
+    );
+
+    return getFieldOptions(leaseAttributes, "service_unit", false)
+      .map(toHdsOption)
+      .sort((first, second) => {
+        const firstOrder =
+          userServiceUnitOrder.get(String(first.value)) ?? Number.MAX_VALUE;
+        const secondOrder =
+          userServiceUnitOrder.get(String(second.value)) ?? Number.MAX_VALUE;
+        return firstOrder - secondOrder;
+      });
+  }, [leaseAttributes, userServiceUnits]);
+
   const intendedUseGroupedOptions = useMemo(() => {
     if (!Array.isArray(intendedUseList) || !intendedUseList?.length) {
       return [];
     }
 
-    const serviceUnits = Object.fromEntries(
-      getFieldOptions(leaseAttributes, LeaseFieldPaths.SERVICE_UNIT, false).map(
-        (opt) => [opt.value, opt.label],
-      ),
+    const allServiceUnits = Object.fromEntries(
+      serviceUnitOptions.map((option) => [option.value, option.label]),
+    );
+    const serviceUnitOrder = new Map(
+      serviceUnitOptions.map((option, index) => [option.label, index]),
     );
 
     const intendedUsesByServiceUnit = Object.groupBy(
       intendedUseList,
-      (item) => serviceUnits[item.service_unit] || "Muut",
+      (item) => allServiceUnits[item.service_unit] || "Muut",
     );
     // Note: This gets all IntendedUse's on purpose, even those that are not active (is_active=false).
     // For now no reason to not allow filtering for inactive IntendedUse's has come up.
-    const groupedOptions = Object.entries(intendedUsesByServiceUnit).map(
-      ([label, options]) => ({
+    const groupedOptions = Object.entries(intendedUsesByServiceUnit)
+      .sort(([firstLabel], [secondLabel]) => {
+        const firstOrder = serviceUnitOrder.get(firstLabel) ?? Number.MAX_VALUE;
+        const secondOrder =
+          serviceUnitOrder.get(secondLabel) ?? Number.MAX_VALUE;
+        return firstOrder - secondOrder;
+      })
+      .map(([label, options]) => ({
         label,
         options: options.map((item) => ({
           label: item.name,
           value: String(item.id),
         })),
-      }),
-    );
+      }));
 
     return groupedOptions;
-  }, [intendedUseList, leaseAttributes]);
+  }, [intendedUseList, serviceUnitOptions]);
 
   const municipalityOptions = useMemo(
     () =>
@@ -289,12 +313,6 @@ const Search: React.FC<Props> = ({
     () => getContactOptions(lessors),
     [lessors],
   ).map(toHdsOption);
-
-  const serviceUnitOptions = useMemo(
-    () =>
-      getFieldOptions(leaseAttributes, "service_unit", false).map(toHdsOption),
-    [leaseAttributes],
-  );
 
   const leaseStateOptions = useMemo(
     () => getFieldOptions(leaseAttributes, "state", false).map(toHdsOption),
