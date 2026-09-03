@@ -195,7 +195,9 @@ const Search: React.FC<Props> = ({
   };
 
   const handleClear = () => {
-    onSearch({}, true, true);
+    // Exception: persist the user's chosen service units in the form, because
+    // they are likely to be reused frequently and clearing them would be inconvenient.
+    onSearch({ service_unit: values.service_unit }, true, true);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
