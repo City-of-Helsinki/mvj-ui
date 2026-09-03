@@ -38,7 +38,7 @@ import {
   uploadAreaSearchAttachmentRequest,
 } from "@/areaSearch/requests";
 import { editApplicantInfoCheckItemRequest } from "@/plotApplications/requests";
-import { receiveUpdatedApplicantInfoCheckItem } from "@/application/actions";
+import { receiveUpdatedApplicantInfoCheckItem } from "@/application/slice";
 import { displayUIMessage } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import { createApplicationRequest } from "@/application/requests";

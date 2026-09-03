@@ -80,7 +80,7 @@ import {
 import { createLease } from "@/leases/requests";
 import { RelationTypes } from "@/leases/enums";
 import { fetchLeaseTypes } from "@/leaseType/requests";
-import { fetchFormAttributes } from "@/application/actions";
+import { fetchFormAttributes } from "@/application/slice";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {

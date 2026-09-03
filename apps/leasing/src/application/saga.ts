@@ -26,7 +26,15 @@ import {
   receiveFormAttributes,
   receiveMethods,
   receivePendingUploads,
-} from "@/application/actions";
+  fetchAttributes,
+  fetchApplicantInfoCheckAttributes,
+  receiveUpdatedTargetInfoCheckItem,
+  fetchFormAttributes,
+  fetchAttachmentAttributes,
+  uploadAttachment,
+  deleteUploadedAttachment,
+  receiveUpdatedApplicantInfoCheckItem,
+} from "@/application/slice";
 import { receiveError } from "@/api/slice";
 import {
   deleteUploadRequest,
@@ -41,11 +49,6 @@ import {
 import { getApplicantInfoCheckFormName } from "@/application/helpers";
 import { getContentUser } from "@/users/helpers";
 import { displayUIMessage } from "@/util/helpers";
-import type {
-  DeleteUploadAction,
-  ReceiveUpdatedTargetInfoCheckItemAction,
-  UploadFileAction,
-} from "@/application/types";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -101,8 +104,11 @@ function* fetchApplicantInfoCheckAttributesSaga(): Generator<any, any, any> {
 
 function* receiveUpdatedApplicantInfoCheckItemSaga({
   payload,
-  type,
-}: ReceiveUpdatedTargetInfoCheckItemAction): Generator<any, any, any> {
+}: ReturnType<typeof receiveUpdatedApplicantInfoCheckItem>): Generator<
+  any,
+  any,
+  any
+> {
   const formName = getApplicantInfoCheckFormName(payload.id);
   const oldValues = yield select(getFormValues(formName));
   yield put(
@@ -118,8 +124,7 @@ function* receiveUpdatedApplicantInfoCheckItemSaga({
 
 function* fetchFormAttributesSaga({
   payload: id,
-  type,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchFormAttributes>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -175,8 +180,11 @@ export function* fetchAttachmentAttributesSaga(): Generator<any, any, any> {
 
 function* fetchApplicationRelatedAttachmentsSaga({
   payload: id,
-  type,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchApplicationRelatedAttachments>): Generator<
+  any,
+  any,
+  any
+> {
   try {
     const {
       response: { status: statusCode },
@@ -216,8 +224,7 @@ function* fetchApplicationRelatedAttachmentsSaga({
 
 function* deleteUploadSaga({
   payload,
-  type,
-}: DeleteUploadAction): Generator<any, any, any> {
+}: ReturnType<typeof deleteUploadedAttachment>): Generator<any, any, any> {
   try {
     yield call(deleteUploadRequest, payload.id);
     yield put(receiveFileOperationFinished());
@@ -236,8 +243,7 @@ function* deleteUploadSaga({
 
 function* uploadFileSaga({
   payload,
-  type,
-}: UploadFileAction): Generator<any, any, any> {
+}: ReturnType<typeof uploadAttachment>): Generator<any, any, any> {
   try {
     const { path, callback, fileData } = payload;
     const result = yield call(uploadFileRequest, fileData);
@@ -281,43 +287,40 @@ function* fetchPendingUploadsSaga(): Generator<any, any, any> {
 
 function* receiveUpdatedTargetInfoCheckItemSaga({
   payload,
-  type,
-}: ReceiveUpdatedTargetInfoCheckItemAction): Generator<any, any, any> {
+}: ReturnType<typeof receiveUpdatedTargetInfoCheckItem>): Generator<
+  any,
+  any,
+  any
+> {
   yield put(initialize(payload.targetForm, payload.data));
 }
 
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
-      yield takeLatest("mvj/application/FETCH_ATTRIBUTES", fetchAttributesSaga);
+      yield takeLatest(fetchAttributes, fetchAttributesSaga);
       yield takeLatest(
-        "mvj/application/FETCH_APPLICANT_INFO_CHECK_ATTRIBUTES",
+        fetchApplicantInfoCheckAttributes,
         fetchApplicantInfoCheckAttributesSaga,
       );
       yield takeEvery(
-        "mvj/application/RECEIVE_UPDATED_APPLICANT_INFO_CHECK_ITEM",
+        receiveUpdatedApplicantInfoCheckItem,
         receiveUpdatedApplicantInfoCheckItemSaga,
       );
+      yield takeLatest(fetchFormAttributes, fetchFormAttributesSaga);
       yield takeLatest(
-        "mvj/application/FETCH_FORM_ATTRIBUTES",
-        fetchFormAttributesSaga,
-      );
-      yield takeLatest(
-        "mvj/application/FETCH_ATTACHMENT_ATTRIBUTES",
+        fetchAttachmentAttributes,
         fetchAttachmentAttributesSaga,
       );
       yield takeLatest(
-        "mvj/application/FETCH_ATTACHMENTS",
+        fetchApplicationRelatedAttachments,
         fetchApplicationRelatedAttachmentsSaga,
       );
-      yield takeEvery("mvj/application/UPLOAD_FILE", uploadFileSaga);
-      yield takeEvery("mvj/application/DELETE_UPLOAD", deleteUploadSaga);
-      yield takeLatest(
-        "mvj/application/FETCH_PENDING_UPLOADS",
-        fetchPendingUploadsSaga,
-      );
+      yield takeEvery(uploadAttachment, uploadFileSaga);
+      yield takeEvery(deleteUploadedAttachment, deleteUploadSaga);
+      yield takeLatest(fetchPendingUploads, fetchPendingUploadsSaga);
       yield takeEvery(
-        "mvj/application/RECEIVE_UPDATED_TARGET_INFO_CHECK_ITEM",
+        receiveUpdatedTargetInfoCheckItem,
         receiveUpdatedTargetInfoCheckItemSaga,
       );
     }),

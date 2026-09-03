@@ -51,7 +51,7 @@ import {
   getFormAttributes,
   getIsFetchingFormAttributes,
 } from "@/application/selectors";
-import { fetchFormAttributes } from "@/application/actions";
+import { fetchFormAttributes } from "@/application/slice";
 import type { UploadedFileMeta } from "@/application/types";
 type OwnProps = {};
 type Props = OwnProps & {
