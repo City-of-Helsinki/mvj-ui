@@ -161,6 +161,10 @@ const Search: React.FC<Props> = ({
   );
   const leaseMethods = useSelector(getLeaseMethods);
   const userServiceUnits = useSelector(getUserServiceUnits);
+  const [, setPersistedServiceUnits] = useLocalStorageState<Array<string>>(
+    "lease-search-service-units",
+    [],
+  );
 
   const prevValues = useRef(values);
 
@@ -1181,9 +1185,13 @@ const Search: React.FC<Props> = ({
                   }}
                   value={filterSelectedOptions(value, serviceUnitOptions)}
                   options={serviceUnitOptions}
-                  onChange={(selectedOptions) =>
-                    onChange(selectedOptions.map((option) => option.value))
-                  }
+                  onChange={(selectedOptions) => {
+                    const serviceUnits = selectedOptions.map((option) =>
+                      String(option.value),
+                    );
+                    onChange(serviceUnits);
+                    setPersistedServiceUnits(serviceUnits);
+                  }}
                   style={{ width: "100%" }}
                   multiSelect
                   noTags
