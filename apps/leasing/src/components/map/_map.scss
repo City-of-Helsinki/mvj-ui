@@ -5,6 +5,7 @@
   height: 70vh;
   .leaflet-container {
     height: 100%;
+    z-index: 1;
   }
   .leaflet-tooltip {
     border-radius: 0;
