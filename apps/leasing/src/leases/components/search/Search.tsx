@@ -124,10 +124,6 @@ const SECTIONS = {
       "tenant_activity",
     ],
   },
-  preparation: {
-    label: "Valmistelu",
-    fields: ["preparation_state"],
-  },
 } as const satisfies Record<string, { label: string; fields: Array<string> }>;
 
 type SearchSectionKey = keyof typeof SECTIONS;
@@ -145,6 +141,7 @@ const NON_SECTION_QUERY_KEYS = new Set([
   "service_unit",
   "preparer",
   "preparers_own_leases",
+  "preparation_state",
 ]);
 
 const Search: React.FC<Props> = ({
@@ -1058,48 +1055,6 @@ const Search: React.FC<Props> = ({
     </Fieldset>
   );
 
-  const sectionPreparation = (
-    <Fieldset
-      heading="Valmistelu"
-      className="lease-search-fieldset-group lease-search-fieldset-group--preparation"
-    >
-      <SearchRow style={{ alignItems: "center" }}>
-        <Row>
-          <Field name="preparation_state">
-            {({ input: { value, onChange } }) => {
-              const selectedOptions = preparationStateFilterOptions.filter(
-                (option) =>
-                  (Array.isArray(value) ? value : [value]).some(
-                    (v) => v == option.value,
-                  ),
-              );
-
-              return (
-                <Select
-                  id="preparation_state"
-                  texts={{
-                    label: "Valmistelu kesken",
-                    placeholder: "Valitse vaihe",
-                    language: "fi",
-                  }}
-                  value={selectedOptions}
-                  options={preparationStateFilterOptions}
-                  onChange={(selectedOptions) =>
-                    onChange(selectedOptions.map((option) => option.value))
-                  }
-                  multiSelect
-                  noTags
-                  clearable
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-        </Row>
-      </SearchRow>
-    </Fieldset>
-  );
-
   return (
     <SearchContainer onSubmit={handleSubmit}>
       <DistrictLoader municipality={municipality} />
@@ -1182,7 +1137,6 @@ const Search: React.FC<Props> = ({
                 {mergedVisibleSections.dates && sectionDates}
                 {mergedVisibleSections.decision && sectionDecision}
                 {mergedVisibleSections.tenant && sectionTenant}
-                {mergedVisibleSections.preparation && sectionPreparation}
               </Fieldset>
             </Column>
           </Row>
@@ -1282,6 +1236,35 @@ const Search: React.FC<Props> = ({
                         onChange(selectedOptions.map((option) => option.value));
                       }
                     }}
+                    clearable
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+            <Field name="preparation_state">
+              {({ input: { value, onChange } }) => {
+                const selectedOptions = preparationStateFilterOptions.filter(
+                  (option) =>
+                    (Array.isArray(value) ? value : [value]).some(
+                      (v) => v == option.value,
+                    ),
+                );
+                return (
+                  <Select
+                    id="preparation_state"
+                    texts={{
+                      label: "Valmistelu kesken",
+                      placeholder: "Valitse vaihe",
+                      language: "fi",
+                    }}
+                    value={selectedOptions}
+                    options={preparationStateFilterOptions}
+                    onChange={(selectedOptions) =>
+                      onChange(selectedOptions.map((option) => option.value))
+                    }
+                    multiSelect
+                    noTags
                     clearable
                     style={{ width: "100%" }}
                   />
