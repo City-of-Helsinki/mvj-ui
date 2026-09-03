@@ -16,7 +16,7 @@ import {
   getFormAttributes,
   getIsFetchingFormAttributes,
 } from "@/application/selectors";
-import { fetchFormAttributes } from "@/application/actions";
+import { fetchFormAttributes } from "@/application/slice";
 import type { PlotSearchSubType } from "@/plotSearch/types";
 import type { Attributes, Methods } from "types";
 

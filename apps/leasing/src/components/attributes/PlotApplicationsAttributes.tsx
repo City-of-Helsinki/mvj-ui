@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { flowRight } from "lodash-es";
 import type { Attributes, Methods } from "types";
-import { fetchAttributes as fetchPlotApplicationsAttributes } from "@/application/actions";
+import { fetchAttributes as fetchPlotApplicationsAttributes } from "@/application/slice";
 import {
   getAttributes as getPlotApplicationsAttributes,
   getIsFetchingAttributes as getIsFetchingPlotApplicationsAttributes,

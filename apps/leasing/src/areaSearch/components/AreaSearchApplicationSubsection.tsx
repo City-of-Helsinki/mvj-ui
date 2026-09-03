@@ -46,7 +46,7 @@ import {
 import {
   deleteUploadedAttachment,
   uploadAttachment,
-} from "@/application/actions";
+} from "@/application/slice";
 import type {
   FormSection,
   PlotApplicationFormValue,

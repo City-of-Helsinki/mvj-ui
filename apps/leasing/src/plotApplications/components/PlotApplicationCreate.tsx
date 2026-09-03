@@ -56,7 +56,7 @@ import {
   fetchAttachmentAttributes,
   fetchFormAttributes,
   fetchPendingUploads,
-} from "@/application/actions";
+} from "@/application/slice";
 import { TARGET_SECTION_IDENTIFIER } from "@/application/constants";
 import type { Attributes } from "types";
 import type { PlotSearchList } from "@/plotSearch/types";

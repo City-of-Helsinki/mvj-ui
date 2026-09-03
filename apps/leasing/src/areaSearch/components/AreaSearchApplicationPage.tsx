@@ -69,7 +69,7 @@ import AreaSearchApplicationAuditLog from "@/areaSearch/components/AreaSearchApp
 import {
   fetchApplicantInfoCheckAttributes,
   fetchFormAttributes,
-} from "@/application/actions";
+} from "@/application/slice";
 import {
   getFormAttributes,
   getIsFetchingApplicantInfoCheckAttributes,

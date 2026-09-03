@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import applicationReducer from "./reducer";
-import type { ApplicationState } from "./types";
-import {
+import applicationReducer, {
   attributesNotFound,
   fetchAttachmentAttributes,
   fetchAttributes,
@@ -9,8 +7,9 @@ import {
   receiveAttributes,
   receiveFormAttributes,
   receiveMethods,
-} from "./actions";
-import mockFormAttributes from "./form-attributes-mock-data.json" assert { type: "json" };
+  initialState,
+} from "./slice";
+import mockFormAttributes from "./form-attributes-mock-data.json";
 import {
   companyIdentifierValidator,
   emailValidator,
@@ -18,30 +17,12 @@ import {
   validateApplicationForm,
 } from "./formValidation";
 import { get } from "lodash-es";
-const baseState: ApplicationState = {
-  attributes: null,
-  methods: null,
-  isFetchingAttributes: false,
-  applicantInfoCheckAttributes: null,
-  attachmentAttributes: null,
-  attachmentMethods: null,
-  isFetchingAttachmentAttributes: false,
-  isFetchingApplicantInfoCheckAttributes: false,
-  isFetchingFormAttributes: false,
-  fieldTypeMapping: {},
-  formAttributes: null,
-  pendingUploads: [],
-  isFetchingPendingUploads: false,
-  applicationAttachments: null,
-  isFetchingApplicationAttachments: false,
-  isPerformingFileOperation: false,
-};
 describe("Application", () => {
   describe("Reducer", () => {
     describe("applicationReducer", () => {
       it("should update isFetchingAttributes flag to true", () => {
-        const newState = { ...baseState, isFetchingAttributes: true };
-        const state = applicationReducer({}, fetchAttributes());
+        const newState = { ...initialState, isFetchingAttributes: true };
+        const state = applicationReducer(initialState, fetchAttributes());
         expect(state).to.deep.equal(newState);
       });
       it("should update attributes", () => {
@@ -51,12 +32,12 @@ describe("Application", () => {
           name: "Bar",
         };
         const newState = {
-          ...baseState,
+          ...initialState,
           attributes: dummyAttributes,
           isFetchingAttributes: false,
         };
         const state = applicationReducer(
-          {},
+          initialState,
           receiveAttributes(dummyAttributes),
         );
         expect(state).to.deep.equal(newState);
@@ -71,19 +52,28 @@ describe("Application", () => {
           OPTIONS: true,
           PUT: true,
         };
-        const newState = { ...baseState, methods: dummyMethods };
-        const state = applicationReducer({}, receiveMethods(dummyMethods));
+        const newState = { ...initialState, methods: dummyMethods };
+        const state = applicationReducer(
+          initialState,
+          receiveMethods(dummyMethods),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingAttributes flag to false by attributesNotFound", () => {
-        const newState = { ...baseState, isFetchingAttributes: false };
-        let state = applicationReducer({}, fetchAttributes());
+        const newState = { ...initialState, isFetchingAttributes: false };
+        let state = applicationReducer(initialState, fetchAttributes());
         state = applicationReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingAttachmentAttributes flag to true", () => {
-        const newState = { ...baseState, isFetchingAttachmentAttributes: true };
-        const state = applicationReducer({}, fetchAttachmentAttributes());
+        const newState = {
+          ...initialState,
+          isFetchingAttachmentAttributes: true,
+        };
+        const state = applicationReducer(
+          initialState,
+          fetchAttachmentAttributes(),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update attachment attributes", () => {
@@ -93,12 +83,12 @@ describe("Application", () => {
           name: "Bar",
         };
         const newState = {
-          ...baseState,
+          ...initialState,
           attachmentAttributes: dummyAttributes,
           isFetchingAttachmentAttributes: false,
         };
         const state = applicationReducer(
-          { ...baseState },
+          { ...initialState },
           receiveAttachmentAttributes(dummyAttributes),
         );
         expect(state).to.deep.equal(newState);
@@ -106,12 +96,12 @@ describe("Application", () => {
     });
     it("should update form attributes", () => {
       const newState = {
-        ...baseState,
+        ...initialState,
         formAttributes: mockFormAttributes,
         isFetchingFormAttributes: false,
       };
       const state = applicationReducer(
-        { ...baseState, isFetchingFormAttributes: true },
+        { ...initialState, isFetchingFormAttributes: true },
         receiveFormAttributes(mockFormAttributes),
       );
       expect(state).to.deep.equal(newState);
