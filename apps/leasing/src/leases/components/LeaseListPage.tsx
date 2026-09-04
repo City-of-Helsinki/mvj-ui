@@ -82,6 +82,7 @@ import {
   isMethodAllowed,
   setPageTitle,
 } from "@/util/helpers";
+import useLocalStorageState from "@/util/useLocalStorageState";
 import {
   Button,
   ButtonSize,
@@ -152,6 +153,10 @@ const LeaseListPage: React.FC = () => {
   const sortKey = queryParams.sort_key || DEFAULT_SORT_KEY;
   const sortOrder = queryParams.sort_order || DEFAULT_SORT_ORDER;
   const activePage = queryParams.page ? Number(queryParams.page) : 1;
+  const [persistedServiceUnits] = useLocalStorageState<Array<string> | null>(
+    "lease-search-service-units",
+    null,
+  );
 
   const getOnlyActiveLeasesValue = (query: Record<string, any>) => {
     return query.only_active_leases != undefined
@@ -309,24 +314,26 @@ const LeaseListPage: React.FC = () => {
       return;
     }
 
-    // Update query on initialization to include user's service units
-    if (
-      searchQuery.service_unit === undefined &&
-      userServiceUnits?.length > 0 &&
-      !hasFetchedLeases.current
-    ) {
-      const updatedQuery = {
-        ...searchQuery,
-        service_unit: userServiceUnits.map((unit) => String(unit.id)),
-      };
-      navigate(
-        {
-          pathname: getRouteById(Routes.LEASES),
-          search: getSearchQuery(updatedQuery),
-        },
-        { replace: true },
-      );
-      return;
+    // Restore the saved selection, or default to the user's service units.
+    if (searchQuery.service_unit === undefined && !hasFetchedLeases.current) {
+      const initialServiceUnits =
+        persistedServiceUnits ??
+        userServiceUnits.map((unit) => String(unit.id));
+
+      if (initialServiceUnits.length > 0) {
+        const updatedQuery = {
+          ...searchQuery,
+          service_unit: initialServiceUnits,
+        };
+        navigate(
+          {
+            pathname: getRouteById(Routes.LEASES),
+            search: getSearchQuery(updatedQuery),
+          },
+          { replace: true },
+        );
+        return;
+      }
     }
 
     if (searchQuery.visualization === VisualizationTypes.MAP) {
@@ -458,6 +465,7 @@ const LeaseListPage: React.FC = () => {
     dispatch,
     location.search,
     navigate,
+    persistedServiceUnits,
     userServiceUnits,
     debouncedFetchLeases,
     debouncedFetchLeasesByBBox,

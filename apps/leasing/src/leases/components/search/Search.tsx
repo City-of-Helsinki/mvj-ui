@@ -4,7 +4,6 @@ import {
   ButtonVariant,
   Checkbox,
   DateInput,
-  Fieldset,
   IconEye,
   IconEyeCrossed,
   IconMinus,
@@ -27,7 +26,6 @@ import Authorization from "@/components/authorization/Authorization";
 import { ButtonLabels } from "@/components/enums";
 import { Column, Row } from "@/components/grid/Grid";
 import SearchContainer from "@/components/search/SearchContainer";
-import SearchInputColumn from "@/components/search/SearchInputColumn";
 import SearchRow from "@/components/search/SearchRow";
 import { getContactOptions } from "@/contacts/helpers";
 import type { Contact } from "@/contacts/types";
@@ -51,6 +49,7 @@ import {
   getAttributes as getLeaseAttributes,
   getMethods as getLeaseMethods,
 } from "@/leases/selectors";
+import { getUserServiceUnits } from "@/usersPermissions/selectors";
 import { getLessorList } from "@/lessor/selectors";
 import { getUserOptions } from "@/users/helpers";
 import { fetchOfficers } from "@/users/requestsAsync";
@@ -124,10 +123,6 @@ const SECTIONS = {
       "tenant_activity",
     ],
   },
-  preparation: {
-    label: "Valmistelu",
-    fields: ["preparation_state"],
-  },
 } as const satisfies Record<string, { label: string; fields: Array<string> }>;
 
 type SearchSectionKey = keyof typeof SECTIONS;
@@ -145,6 +140,7 @@ const NON_SECTION_QUERY_KEYS = new Set([
   "service_unit",
   "preparer",
   "preparers_own_leases",
+  "preparation_state",
 ]);
 
 const Search: React.FC<Props> = ({
@@ -162,6 +158,11 @@ const Search: React.FC<Props> = ({
     getDistrictsByMunicipality(state, Number(municipality)),
   );
   const leaseMethods = useSelector(getLeaseMethods);
+  const userServiceUnits = useSelector(getUserServiceUnits);
+  const [, setPersistedServiceUnits] = useLocalStorageState<Array<string>>(
+    "lease-search-service-units",
+    [],
+  );
 
   const prevValues = useRef(values);
 
@@ -196,7 +197,9 @@ const Search: React.FC<Props> = ({
   };
 
   const handleClear = () => {
-    onSearch({}, true, true);
+    // Exception: persist the user's chosen service units in the form, because
+    // they are likely to be reused frequently and clearing them would be inconvenient.
+    onSearch({ service_unit: values.service_unit }, true, true);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -218,35 +221,57 @@ const Search: React.FC<Props> = ({
     [leaseAttributes],
   );
 
+  const serviceUnitOptions = useMemo(() => {
+    const userServiceUnitOrder = new Map(
+      userServiceUnits.map((unit, index) => [String(unit.id), index]),
+    );
+
+    return getFieldOptions(leaseAttributes, "service_unit", false)
+      .map(toHdsOption)
+      .sort((first, second) => {
+        const firstOrder =
+          userServiceUnitOrder.get(String(first.value)) ?? Number.MAX_VALUE;
+        const secondOrder =
+          userServiceUnitOrder.get(String(second.value)) ?? Number.MAX_VALUE;
+        return firstOrder - secondOrder;
+      });
+  }, [leaseAttributes, userServiceUnits]);
+
   const intendedUseGroupedOptions = useMemo(() => {
     if (!Array.isArray(intendedUseList) || !intendedUseList?.length) {
       return [];
     }
 
-    const serviceUnits = Object.fromEntries(
-      getFieldOptions(leaseAttributes, LeaseFieldPaths.SERVICE_UNIT, false).map(
-        (opt) => [opt.value, opt.label],
-      ),
+    const allServiceUnits = Object.fromEntries(
+      serviceUnitOptions.map((option) => [option.value, option.label]),
+    );
+    const serviceUnitOrder = new Map(
+      serviceUnitOptions.map((option, index) => [option.label, index]),
     );
 
     const intendedUsesByServiceUnit = Object.groupBy(
       intendedUseList,
-      (item) => serviceUnits[item.service_unit] || "Muut",
+      (item) => allServiceUnits[item.service_unit] || "Muut",
     );
     // Note: This gets all IntendedUse's on purpose, even those that are not active (is_active=false).
     // For now no reason to not allow filtering for inactive IntendedUse's has come up.
-    const groupedOptions = Object.entries(intendedUsesByServiceUnit).map(
-      ([label, options]) => ({
+    const groupedOptions = Object.entries(intendedUsesByServiceUnit)
+      .sort(([firstLabel], [secondLabel]) => {
+        const firstOrder = serviceUnitOrder.get(firstLabel) ?? Number.MAX_VALUE;
+        const secondOrder =
+          serviceUnitOrder.get(secondLabel) ?? Number.MAX_VALUE;
+        return firstOrder - secondOrder;
+      })
+      .map(([label, options]) => ({
         label,
         options: options.map((item) => ({
           label: item.name,
           value: String(item.id),
         })),
-      }),
-    );
+      }));
 
     return groupedOptions;
-  }, [intendedUseList, leaseAttributes]);
+  }, [intendedUseList, serviceUnitOptions]);
 
   const municipalityOptions = useMemo(
     () =>
@@ -293,12 +318,6 @@ const Search: React.FC<Props> = ({
     [lessors],
   ).map(toHdsOption);
 
-  const serviceUnitOptions = useMemo(
-    () =>
-      getFieldOptions(leaseAttributes, "service_unit", false).map(toHdsOption),
-    [leaseAttributes],
-  );
-
   const leaseStateOptions = useMemo(
     () => getFieldOptions(leaseAttributes, "state", false).map(toHdsOption),
     [leaseAttributes],
@@ -338,7 +357,12 @@ const Search: React.FC<Props> = ({
   // Persist newly-opened sections back to localStorage when searchParams changes.
   useEffect(() => {
     setVisibleSections((prev) => {
-      const merged = { ...prev };
+      // Filter out any sections from the previous state that no longer exist in SECTIONS.
+      const validSectionsFromState = Object.fromEntries(
+        Object.entries(prev).filter(([key]) => key in SECTIONS),
+      ) as SearchSectionVisibility;
+
+      const merged = { ...validSectionsFromState };
       (Object.keys(sectionsFromParams) as Array<SearchSectionKey>).forEach(
         (key) => {
           if (sectionsFromParams[key]) merged[key] = true;
@@ -364,10 +388,7 @@ const Search: React.FC<Props> = ({
   const anySectionVisible = Object.values(mergedVisibleSections).some(Boolean);
 
   const sectionTarget = (
-    <Fieldset
-      heading="Kohde"
-      className="lease-search-fieldset-group lease-search-fieldset-group--target"
-    >
+    <div className="lease-search-fieldset-group lease-search-fieldset-group--target">
       <SearchRow>
         <Row>
           <Field name="lessor">
@@ -590,14 +611,11 @@ const Search: React.FC<Props> = ({
           </Field>
         </Row>
       </SearchRow>
-    </Fieldset>
+    </div>
   );
 
   const sectionDates = (
-    <Fieldset
-      heading="Voimassaolo"
-      className="lease-search-fieldset-group lease-search-fieldset-group--dates"
-    >
+    <div className="lease-search-fieldset-group lease-search-fieldset-group--dates">
       <SearchRow>
         <Row>
           <Field name="lease_start_date_start">
@@ -688,85 +706,58 @@ const Search: React.FC<Props> = ({
       </SearchRow>
 
       <SearchRow>
-        <SearchInputColumn>
-          <Row>
-            <Column small={6}>
-              <SelectionGroup direction="horizontal">
-                <Field name="only_active_leases">
-                  {({
-                    input: { value, onBlur, onChange, onFocus },
-                    meta: { error, invalid },
-                  }) => {
-                    return (
-                      <Checkbox
-                        label="Voimassa"
-                        id="only_active_leases"
-                        checked={value === true || value === "true"}
-                        onBlur={onBlur}
-                        onFocus={onFocus}
-                        onChange={(event) =>
-                          onChange(event.target.checked ? true : undefined)
-                        }
-                      />
-                    );
-                  }}
-                </Field>
-                <Field name="only_expired_leases">
-                  {({
-                    input: { value, onBlur, onChange, onFocus },
-                    meta: { error, invalid },
-                  }) => {
-                    return (
-                      <Checkbox
-                        label="Päättyneet"
-                        id="only_expired_leases"
-                        checked={value === true || value === "true"}
-                        onBlur={onBlur}
-                        onFocus={onFocus}
-                        onChange={(event) =>
-                          onChange(event.target.checked ? true : undefined)
-                        }
-                      />
-                    );
-                  }}
-                </Field>
-              </SelectionGroup>
-            </Column>
-          </Row>
-        </SearchInputColumn>
+        <Row>
+          <Column small={6}>
+            <SelectionGroup direction="horizontal">
+              <Field name="only_active_leases">
+                {({
+                  input: { value, onBlur, onChange, onFocus },
+                  meta: { error, invalid },
+                }) => {
+                  return (
+                    <Checkbox
+                      label="Voimassa"
+                      id="only_active_leases"
+                      checked={value === true || value === "true"}
+                      onBlur={onBlur}
+                      onFocus={onFocus}
+                      onChange={(event) =>
+                        onChange(event.target.checked ? true : undefined)
+                      }
+                    />
+                  );
+                }}
+              </Field>
+              <Field name="only_expired_leases">
+                {({
+                  input: { value, onBlur, onChange, onFocus },
+                  meta: { error, invalid },
+                }) => {
+                  return (
+                    <Checkbox
+                      label="Päättyneet"
+                      id="only_expired_leases"
+                      checked={value === true || value === "true"}
+                      onBlur={onBlur}
+                      onFocus={onFocus}
+                      onChange={(event) =>
+                        onChange(event.target.checked ? true : undefined)
+                      }
+                    />
+                  );
+                }}
+              </Field>
+            </SelectionGroup>
+          </Column>
+        </Row>
       </SearchRow>
-    </Fieldset>
+    </div>
   );
 
   const sectionDecision = (
-    <Fieldset
-      heading="Päätös ja laskutus"
-      className="lease-search-fieldset-group lease-search-fieldset-group--decision"
-    >
+    <div className="lease-search-fieldset-group lease-search-fieldset-group--decision">
       <SearchRow>
         <Row>
-          <Field name="decision_date">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <DateInput
-                  helperText="Käytä muotoa P.K.VVVV"
-                  id="decision_date"
-                  initialMonth={new Date()}
-                  label="Päätöspvm"
-                  language="fi"
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onFocus={onFocus}
-                  onChange={(nextValue) => onChange(nextValue)}
-                  style={{ width: "100%" }}
-                  disableConfirmation
-                />
-              );
-            }}
-          </Field>
           <Field name="decision_maker">
             {({
               input: { value, onBlur, onChange, onFocus },
@@ -790,6 +781,27 @@ const Search: React.FC<Props> = ({
                   }
                   clearable
                   style={{ width: "100%" }}
+                />
+              );
+            }}
+          </Field>
+          <Field name="decision_date">
+            {({
+              input: { value, onBlur, onChange, onFocus },
+              meta: { error, invalid },
+            }) => {
+              return (
+                <DateInput
+                  id="decision_date"
+                  initialMonth={new Date()}
+                  label="Päätöspvm"
+                  language="fi"
+                  value={value || ""}
+                  onBlur={onBlur}
+                  onFocus={onFocus}
+                  onChange={(nextValue) => onChange(nextValue)}
+                  style={{ width: "100%" }}
+                  disableConfirmation
                 />
               );
             }}
@@ -895,14 +907,11 @@ const Search: React.FC<Props> = ({
           </Field>
         </Row>
       </SearchRow>
-    </Fieldset>
+    </div>
   );
 
   const sectionTenant = (
-    <Fieldset
-      heading="Asiakas"
-      className="lease-search-fieldset-group lease-search-fieldset-group--tenant"
-    >
+    <div className="lease-search-fieldset-group lease-search-fieldset-group--tenant">
       <SearchRow>
         <Row>
           <Field name="tenant_name">
@@ -989,115 +998,71 @@ const Search: React.FC<Props> = ({
         </Row>
       </SearchRow>
       <SearchRow>
-        <SearchInputColumn>
-          <SelectionGroup
-            label="Asiakkaan tila"
-            direction="horizontal"
-            style={{ width: "100%" }}
-          >
-            <Field name="tenant_activity" key="tenant_activity-1">
-              {({
-                input: { value, onBlur, onChange, onFocus },
-                meta: { error, invalid },
-              }) => {
-                return (
-                  <RadioButton
-                    id="tenant_activity-1"
-                    name="tenant_activity"
-                    value=""
-                    label="Kaikki asiakkaat"
-                    checked={value === ""}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    onFocus={onFocus}
-                  />
-                );
-              }}
-            </Field>
-            <Field name="tenant_activity" key="tenant_activity-2">
-              {({
-                input: { value, onBlur, onChange, onFocus },
-                meta: { error, invalid },
-              }) => {
-                return (
-                  <RadioButton
-                    id="tenant_activity-2"
-                    name="tenant_activity"
-                    value="past"
-                    label="Vain entiset asiakkaat"
-                    checked={value === "past"}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    onFocus={onFocus}
-                  />
-                );
-              }}
-            </Field>
-            <Field name="tenant_activity" key="tenant_activity-3">
-              {({
-                input: { value, onBlur, onChange, onFocus },
-                meta: { error, invalid },
-              }) => {
-                return (
-                  <RadioButton
-                    id="tenant_activity-3"
-                    name="tenant_activity"
-                    value="active"
-                    label="Vain nykyiset asiakkaat"
-                    checked={value === "active"}
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    onFocus={onFocus}
-                  />
-                );
-              }}
-            </Field>
-          </SelectionGroup>
-        </SearchInputColumn>
-      </SearchRow>
-    </Fieldset>
-  );
-
-  const sectionPreparation = (
-    <Fieldset
-      heading="Valmistelu"
-      className="lease-search-fieldset-group lease-search-fieldset-group--preparation"
-    >
-      <SearchRow style={{ alignItems: "center" }}>
-        <Row>
-          <Field name="preparation_state">
-            {({ input: { value, onChange } }) => {
-              const selectedOptions = preparationStateFilterOptions.filter(
-                (option) =>
-                  (Array.isArray(value) ? value : [value]).some(
-                    (v) => v == option.value,
-                  ),
-              );
-
+        <SelectionGroup
+          label="Asiakkaan tila"
+          direction="horizontal"
+          style={{ width: "100%" }}
+        >
+          <Field name="tenant_activity" key="tenant_activity-1">
+            {({
+              input: { value, onBlur, onChange, onFocus },
+              meta: { error, invalid },
+            }) => {
               return (
-                <Select
-                  id="preparation_state"
-                  texts={{
-                    label: "Valmistelu kesken",
-                    placeholder: "Valitse vaihe",
-                    language: "fi",
-                  }}
-                  value={selectedOptions}
-                  options={preparationStateFilterOptions}
-                  onChange={(selectedOptions) =>
-                    onChange(selectedOptions.map((option) => option.value))
-                  }
-                  multiSelect
-                  noTags
-                  clearable
-                  style={{ width: "100%" }}
+                <RadioButton
+                  id="tenant_activity-1"
+                  name="tenant_activity"
+                  value=""
+                  label="Kaikki asiakkaat"
+                  checked={value === ""}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  onFocus={onFocus}
                 />
               );
             }}
           </Field>
-        </Row>
+          <Field name="tenant_activity" key="tenant_activity-2">
+            {({
+              input: { value, onBlur, onChange, onFocus },
+              meta: { error, invalid },
+            }) => {
+              return (
+                <RadioButton
+                  id="tenant_activity-2"
+                  name="tenant_activity"
+                  value="past"
+                  label="Vain entiset asiakkaat"
+                  checked={value === "past"}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  onFocus={onFocus}
+                />
+              );
+            }}
+          </Field>
+          <Field name="tenant_activity" key="tenant_activity-3">
+            {({
+              input: { value, onBlur, onChange, onFocus },
+              meta: { error, invalid },
+            }) => {
+              return (
+                <RadioButton
+                  id="tenant_activity-3"
+                  name="tenant_activity"
+                  value="active"
+                  label="Vain nykyiset asiakkaat"
+                  checked={value === "active"}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  onFocus={onFocus}
+                />
+              );
+            }}
+          </Field>
+        </SelectionGroup>
       </SearchRow>
-    </Fieldset>
+    </div>
   );
 
   return (
@@ -1177,34 +1142,60 @@ const Search: React.FC<Props> = ({
           <Row>
             {/* First column */}
             <Column small={12} large={12}>
-              <Fieldset
-                heading="Tarkennettu haku"
-                className="lease-search-advanced-section"
-              >
+              <div className="lease-search-advanced-section">
                 {mergedVisibleSections.target && sectionTarget}
                 {mergedVisibleSections.dates && sectionDates}
                 {mergedVisibleSections.decision && sectionDecision}
                 {mergedVisibleSections.tenant && sectionTenant}
-                {mergedVisibleSections.preparation && sectionPreparation}
-              </Fieldset>
+              </div>
             </Column>
           </Row>
         </>
       )}
-      <Fieldset heading="Perushaku">
-        <SearchRow>
-          <Row className="lease-search-fieldset-group">
-            <Field name="service_unit">
-              {({ input: { value, onChange } }) => (
+      <SearchRow>
+        <Row className="lease-search-fieldset-group">
+          <Field name="service_unit">
+            {({ input: { value, onChange } }) => (
+              <Select
+                id="service_unit"
+                texts={{
+                  label: LeaseFieldTitles.SERVICE_UNIT,
+                  placeholder: "Valitse palvelukokonaisuus",
+                  language: "fi",
+                }}
+                value={filterSelectedOptions(value, serviceUnitOptions)}
+                options={serviceUnitOptions}
+                onChange={(selectedOptions) => {
+                  const serviceUnits = selectedOptions.map((option) =>
+                    String(option.value),
+                  );
+                  onChange(serviceUnits);
+                  setPersistedServiceUnits(serviceUnits);
+                }}
+                style={{ width: "100%" }}
+                multiSelect
+                noTags
+                clearable
+              />
+            )}
+          </Field>
+          <Field name="lease_state">
+            {({ input: { value, onChange } }) => {
+              const selected = leaseStateOptions.filter((option) =>
+                (Array.isArray(value) ? value : [value]).some(
+                  (v) => v == option.value,
+                ),
+              );
+              return (
                 <Select
-                  id="service_unit"
+                  id="lease_state"
                   texts={{
-                    label: LeaseFieldTitles.SERVICE_UNIT,
-                    placeholder: "Valitse palvelukokonaisuus",
+                    label: "Tyyppi",
+                    placeholder: "Valitse tyyppi",
                     language: "fi",
                   }}
-                  value={filterSelectedOptions(value, serviceUnitOptions)}
-                  options={serviceUnitOptions}
+                  value={selected}
+                  options={leaseStateOptions}
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
@@ -1213,87 +1204,86 @@ const Search: React.FC<Props> = ({
                   noTags
                   clearable
                 />
-              )}
-            </Field>
-            <Field name="lease_state">
-              {({ input: { value, onChange } }) => {
-                const selected = leaseStateOptions.filter((option) =>
+              );
+            }}
+          </Field>
+          <Field name="preparer">
+            {({ input: { value, onChange } }) => {
+              // Combines "preparer" and "preparers_own_leases" into one select
+              const allPreparers = [
+                PreparerOwnLeasesOption,
+                ...preparerOptions,
+              ];
+              const selected =
+                value === PreparerOwnLeasesOption.value
+                  ? [PreparerOwnLeasesOption]
+                  : preparerOptions.filter((option) =>
+                      (Array.isArray(value) ? value : [value]).some(
+                        (v) => v == option.value,
+                      ),
+                    );
+              return (
+                <Select
+                  id="preparer"
+                  texts={{
+                    label: "Valmistelija",
+                    placeholder: "Valitse valmistelija",
+                    language: "fi",
+                  }}
+                  value={selected}
+                  options={allPreparers}
+                  filter={(option, filterStr) =>
+                    option.label.toLowerCase().includes(filterStr.toLowerCase())
+                  }
+                  onChange={(selectedOptions) => {
+                    if (
+                      selectedOptions.some(
+                        (option) =>
+                          option.value === PreparerOwnLeasesOption.value,
+                      )
+                    ) {
+                      onChange(PreparerOwnLeasesOption.value);
+                    } else {
+                      onChange(selectedOptions.map((option) => option.value));
+                    }
+                  }}
+                  clearable
+                  style={{ width: "100%" }}
+                />
+              );
+            }}
+          </Field>
+          <Field name="preparation_state">
+            {({ input: { value, onChange } }) => {
+              const selectedOptions = preparationStateFilterOptions.filter(
+                (option) =>
                   (Array.isArray(value) ? value : [value]).some(
                     (v) => v == option.value,
                   ),
-                );
-                return (
-                  <Select
-                    id="lease_state"
-                    texts={{
-                      label: "Tyyppi",
-                      placeholder: "Valitse tyyppi",
-                      language: "fi",
-                    }}
-                    value={selected}
-                    options={leaseStateOptions}
-                    onChange={(selectedOptions) =>
-                      onChange(selectedOptions.map((option) => option.value))
-                    }
-                    style={{ width: "100%" }}
-                    multiSelect
-                    noTags
-                    clearable
-                  />
-                );
-              }}
-            </Field>
-            <Field name="preparer">
-              {({ input: { value, onChange } }) => {
-                // Combines "preparer" and "preparers_own_leases" into one select
-                const allPreparers = [
-                  PreparerOwnLeasesOption,
-                  ...preparerOptions,
-                ];
-                const selected =
-                  value === PreparerOwnLeasesOption.value
-                    ? [PreparerOwnLeasesOption]
-                    : preparerOptions.filter((option) =>
-                        (Array.isArray(value) ? value : [value]).some(
-                          (v) => v == option.value,
-                        ),
-                      );
-                return (
-                  <Select
-                    id="preparer"
-                    texts={{
-                      label: "Valmistelija",
-                      placeholder: "Valitse valmistelija",
-                      language: "fi",
-                    }}
-                    value={selected}
-                    options={allPreparers}
-                    filter={(option, filterStr) =>
-                      option.label
-                        .toLowerCase()
-                        .includes(filterStr.toLowerCase())
-                    }
-                    onChange={(selectedOptions) => {
-                      if (
-                        selectedOptions.some(
-                          (option) =>
-                            option.value === PreparerOwnLeasesOption.value,
-                        )
-                      ) {
-                        onChange(PreparerOwnLeasesOption.value);
-                      } else {
-                        onChange(selectedOptions.map((option) => option.value));
-                      }
-                    }}
-                    clearable
-                    style={{ width: "100%" }}
-                  />
-                );
-              }}
-            </Field>
-          </Row>
-        </SearchRow>
-      </Fieldset>
+              );
+              return (
+                <Select
+                  id="preparation_state"
+                  texts={{
+                    label: "Valmistelu kesken",
+                    placeholder: "Valitse vaihe",
+                    language: "fi",
+                  }}
+                  value={selectedOptions}
+                  options={preparationStateFilterOptions}
+                  onChange={(selectedOptions) =>
+                    onChange(selectedOptions.map((option) => option.value))
+                  }
+                  multiSelect
+                  noTags
+                  clearable
+                  style={{ width: "100%" }}
+                />
+              );
+            }}
+          </Field>
+        </Row>
+      </SearchRow>
     </SearchContainer>
   );
 };

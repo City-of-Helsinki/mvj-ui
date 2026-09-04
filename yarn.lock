@@ -6512,10 +6512,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hds-core@npm:5.2.0":
-  version: 5.2.0
-  resolution: "hds-core@npm:5.2.0"
-  checksum: 10c0/66b3c4e62d0a334157cc039f803b05670399bdeeb99b4bfc641b772bca7523165791b47cbe8a3f9cf45c8484608c317b01f7fef74c9cbfd228cc7273ed51376c
+"hds-core@npm:5.2.2":
+  version: 5.2.2
+  resolution: "hds-core@npm:5.2.2"
+  checksum: 10c0/d6c66f235f8610071d9856fba595c572965a0fb0f5c9185180045bda03229badab1428fb64ac4705c93edf6523fbd9549b6a87b9b8064e57a146fee6726ad244
   languageName: node
   linkType: hard
 
@@ -6526,9 +6526,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hds-react@npm:5.2.0":
-  version: 5.2.0
-  resolution: "hds-react@npm:5.2.0"
+"hds-react@npm:5.2.2":
+  version: 5.2.2
+  resolution: "hds-react@npm:5.2.2"
   dependencies:
     "@apollo/client": "npm:^3.10.1"
     "@babel/runtime": "npm:^7.26.10"
@@ -6545,7 +6545,7 @@ __metadata:
     crc-32: "npm:1.2.0"
     date-fns: "npm:2.16.1"
     graphql: "npm:^16.8.1"
-    hds-core: "npm:5.2.0"
+    hds-core: "npm:5.2.2"
     jwt-decode: "npm:^3.1.2"
     kashe: "npm:1.0.4"
     lodash: "npm:^4.18.1"
@@ -6562,7 +6562,7 @@ __metadata:
     postcss: ^8.4.21
     react: ^16.8.0 || ^17 || ^18 || ^19
     react-dom: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10c0/37fd86eca5e8c608567dc67971a2361034bccc8688ff98e561a0f32072ddc0bf9692a32186122db20d9cdf572717c7cfcab632fcc3d362fe92027dfb865422ed
+  checksum: 10c0/2fd927f243ef940e1e68169c33ce99bf9b269b17ebd16a271e44fc55f3bf599cc0c0e8e6677f96203eedf9b326c44ade9e635193d4ae2dfd3de351b8f25c05f9
   languageName: node
   linkType: hard
 
@@ -7911,7 +7911,7 @@ __metadata:
     final-form-arrays: "npm:4.0.0"
     globals: "npm:16.5.0"
     hds-design-tokens: "npm:5.2.0"
-    hds-react: "npm:5.2.0"
+    hds-react: "npm:5.2.2"
     jsdom: "npm:27.2.0"
     postcss: "npm:8.5.16"
     postcss-url: "npm:10.1.4"
