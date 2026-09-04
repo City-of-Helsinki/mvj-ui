@@ -26,6 +26,16 @@
   justify-content: space-between;
 }
 
+.lease-search-filter-field {
+  min-width: 0;
+}
+
+.lease-search-filter-field--active {
+  background-color: hds.$color-coat-of-arms-light;
+  border: 2px solid hds.$color-coat-of-arms;
+  padding: 0.25rem 0.5rem;
+}
+
 #lease-list-table tbody tr:hover td,
 #lease-list-table tbody tr:focus-within td {
   background-color: hds.$color-bus-light;
