@@ -26,6 +26,28 @@
   justify-content: space-between;
 }
 
+.lease-search-filter-field {
+  min-width: 0;
+}
+
+// Emphasize active lease search TextInputs
+.lease-search-filter-field--active [class*="TextInput-module_input__"] {
+  &:valid {
+    background-color: hds.$color-coat-of-arms-light;
+  }
+}
+// Emphasize active lease search Selects
+.lease-search-filter-field--active
+  [class*="Select-module_selectAndListContainer__"] {
+  &:not(:empty) {
+    background-color: hds.$color-coat-of-arms-light;
+  }
+  // The multi-select "+N" count indicator renders its own span with an
+  // inline background color, which needs extra specificity to override.
+  [class*="Select-module_count__"][class*="Select-module_count__"] .count {
+    background-color: hds.$color-coat-of-arms-light;
+  }
+}
 #lease-list-table tbody tr:hover td,
 #lease-list-table tbody tr:focus-within td {
   background-color: hds.$color-bus-light;
