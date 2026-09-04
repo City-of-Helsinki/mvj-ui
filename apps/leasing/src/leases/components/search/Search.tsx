@@ -391,7 +391,7 @@ const Search: React.FC<Props> = ({
 
   const sectionTarget = (
     <Fieldset
-      heading="Kohde"
+      heading=""
       className="lease-search-fieldset-group lease-search-fieldset-group--target"
     >
       <SearchRow>
@@ -621,7 +621,7 @@ const Search: React.FC<Props> = ({
 
   const sectionDates = (
     <Fieldset
-      heading="Voimassaolo"
+      heading=""
       className="lease-search-fieldset-group lease-search-fieldset-group--dates"
     >
       <SearchRow>
@@ -766,7 +766,7 @@ const Search: React.FC<Props> = ({
 
   const sectionDecision = (
     <Fieldset
-      heading="Päätös ja laskutus"
+      heading=""
       className="lease-search-fieldset-group lease-search-fieldset-group--decision"
     >
       <SearchRow>
@@ -925,7 +925,7 @@ const Search: React.FC<Props> = ({
 
   const sectionTenant = (
     <Fieldset
-      heading="Asiakas"
+      heading=""
       className="lease-search-fieldset-group lease-search-fieldset-group--tenant"
     >
       <SearchRow>
