@@ -482,6 +482,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
               onChange={setAsemakaavanLainvoimaisuusPvmValue}
               placeholder="DD.MM.YYYY"
               language="fi"
+              disableConfirmation
             />
           </div>
         </div>
@@ -914,6 +915,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                 onChange={signedDateInput.onChange}
                                 placeholder="DD.MM.YYYY"
                                 language="fi"
+                                disableConfirmation
                               />
                             ) : (
                               <TextInput
@@ -943,6 +945,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                 }
                                 placeholder="DD.MM.YYYY"
                                 language="fi"
+                                disableConfirmation
                               />
                             ) : (
                               <TextInput
@@ -970,6 +973,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                 onChange={dueDateInput.onChange}
                                 placeholder="DD.MM.YYYY"
                                 language="fi"
+                                disableConfirmation
                               />
                             ) : (
                               <TextInput

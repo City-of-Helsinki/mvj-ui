@@ -275,6 +275,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           onChange={input.onChange}
                                           placeholder="DD.MM.YYYY"
                                           language="fi"
+                                          disableConfirmation
                                         />
                                       ) : (
                                         <TextInput
@@ -301,6 +302,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           onChange={input.onChange}
                                           placeholder="DD.MM.YYYY"
                                           language="fi"
+                                          disableConfirmation
                                         />
                                       ) : (
                                         <TextInput
@@ -327,6 +329,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           onChange={input.onChange}
                                           placeholder="DD.MM.YYYY"
                                           language="fi"
+                                          disableConfirmation
                                         />
                                       ) : (
                                         <TextInput
@@ -353,6 +356,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           onChange={input.onChange}
                                           placeholder="DD.MM.YYYY"
                                           language="fi"
+                                          disableConfirmation
                                         />
                                       ) : (
                                         <TextInput
@@ -379,6 +383,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                           onChange={input.onChange}
                                           placeholder="DD.MM.YYYY"
                                           language="fi"
+                                          disableConfirmation
                                         />
                                       ) : (
                                         <TextInput
@@ -471,6 +476,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                                 onChange={input.onChange}
                                                 placeholder="DD.MM.YYYY"
                                                 language="fi"
+                                                disableConfirmation
                                               />
                                             ) : (
                                               <TextInput
@@ -499,6 +505,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                                 onChange={input.onChange}
                                                 placeholder="DD.MM.YYYY"
                                                 language="fi"
+                                                disableConfirmation
                                               />
                                             ) : (
                                               <TextInput
@@ -527,6 +534,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                                 onChange={input.onChange}
                                                 placeholder="DD.MM.YYYY"
                                                 language="fi"
+                                                disableConfirmation
                                               />
                                             ) : (
                                               <TextInput
@@ -555,6 +563,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                                 onChange={input.onChange}
                                                 placeholder="DD.MM.YYYY"
                                                 language="fi"
+                                                disableConfirmation
                                               />
                                             ) : (
                                               <TextInput
@@ -583,6 +592,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                                 onChange={input.onChange}
                                                 placeholder="DD.MM.YYYY"
                                                 language="fi"
+                                                disableConfirmation
                                               />
                                             ) : (
                                               <TextInput
