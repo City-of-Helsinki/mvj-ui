@@ -771,28 +771,6 @@ const Search: React.FC<Props> = ({
     >
       <SearchRow>
         <Row>
-          <Field name="decision_date">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <DateInput
-                  helperText="Käytä muotoa P.K.VVVV"
-                  id="decision_date"
-                  initialMonth={new Date()}
-                  label="Päätöspvm"
-                  language="fi"
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onFocus={onFocus}
-                  onChange={(nextValue) => onChange(nextValue)}
-                  style={{ width: "100%" }}
-                  disableConfirmation
-                />
-              );
-            }}
-          </Field>
           <Field name="decision_maker">
             {({
               input: { value, onBlur, onChange, onFocus },
@@ -816,6 +794,27 @@ const Search: React.FC<Props> = ({
                   }
                   clearable
                   style={{ width: "100%" }}
+                />
+              );
+            }}
+          </Field>
+          <Field name="decision_date">
+            {({
+              input: { value, onBlur, onChange, onFocus },
+              meta: { error, invalid },
+            }) => {
+              return (
+                <DateInput
+                  id="decision_date"
+                  initialMonth={new Date()}
+                  label="Päätöspvm"
+                  language="fi"
+                  value={value || ""}
+                  onBlur={onBlur}
+                  onFocus={onFocus}
+                  onChange={(nextValue) => onChange(nextValue)}
+                  style={{ width: "100%" }}
+                  disableConfirmation
                 />
               );
             }}
