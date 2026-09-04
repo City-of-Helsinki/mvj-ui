@@ -99,6 +99,7 @@ export const CollateralDateField: React.FC<CommonProps> = ({
             onChange={input.onChange}
             placeholder="DD.MM.YYYY"
             language="fi"
+            disableConfirmation
           />
         ) : (
           <TextInput

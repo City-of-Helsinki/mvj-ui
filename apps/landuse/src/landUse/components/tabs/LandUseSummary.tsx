@@ -394,6 +394,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                     placeholder="DD.MM.YYYY"
                                     disabled={!isEditMode}
                                     language="fi"
+                                    disableConfirmation
                                   />
                                 ) : (
                                   <TextInput
