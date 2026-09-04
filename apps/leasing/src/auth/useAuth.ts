@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   useApiTokens,
@@ -7,6 +7,9 @@ import {
   isApiTokensUpdatedSignal,
   isApiTokensRemovedSignal,
   isApiTokensRenewalStartedSignal,
+  isApiTokensFetchFailedErrorSignal,
+  isInvalidApiTokensErrorSignal,
+  isInvalidApiTokensUserErrorSignal,
   useAuthenticatedUser,
 } from "hds-react";
 import { setRedirectUrlToSessionStorage } from "@/util/storage";
@@ -26,22 +29,15 @@ const useAuth = () => {
   const dispatch = useDispatch();
   const [apiTokensClientSignal, apiTokensClientSignalReset] =
     useApiTokensClientTracking();
-  const { getStoredApiTokens } = useApiTokens();
+  const { getStoredApiTokens, isRenewing } = useApiTokens();
+  const renewalInProgress = useRef(false);
 
   const reduxUser = useSelector(getLoggedInUser);
   const reduxApiToken = useSelector(getApiToken);
 
-  // Sync user updates
-  useEffect(() => {
-    if (authenticatedUser) {
-      const isUserEqual =
-        JSON.stringify(authenticatedUser) === JSON.stringify(reduxUser);
-      if (!reduxUser || !isUserEqual) dispatch(userFound(authenticatedUser));
-    } else {
-      if (reduxApiToken) dispatch(clearApiToken());
-      if (reduxUser) dispatch(clearUser());
-    }
-  }, [authenticatedUser, dispatch, reduxApiToken, reduxUser]);
+  // Process token lifecycle signals before syncing user updates, so a
+  // simultaneous user-state update cannot lock the user out while renewal is
+  // starting.
 
   // Initial sync for apiToken
   useEffect(() => {
@@ -60,14 +56,29 @@ const useAuth = () => {
     }
     // 2.
     if (isApiTokensRenewalStartedSignal(apiTokensClientSignal)) {
-      // Placeholder for future use
+      renewalInProgress.current = true;
     }
     // 3.
     if (isApiTokensUpdatedSignal(apiTokensClientSignal)) {
+      renewalInProgress.current = false;
       const [_error, apiToken] = getStoredApiTokens();
       if (apiToken && apiToken?.[apiTokenKeyName] !== reduxApiToken) {
         dispatch(receiveApiToken(apiToken));
+      } else if (!apiToken) {
+        if (reduxApiToken) dispatch(clearApiToken());
+        if (reduxUser) dispatch(clearUser());
       }
+    }
+
+    if (
+      apiTokensClientSignal &&
+      (isApiTokensFetchFailedErrorSignal(apiTokensClientSignal) ||
+        isInvalidApiTokensErrorSignal(apiTokensClientSignal) ||
+        isInvalidApiTokensUserErrorSignal(apiTokensClientSignal))
+    ) {
+      renewalInProgress.current = false;
+      if (reduxApiToken) dispatch(clearApiToken());
+      if (reduxUser) dispatch(clearUser());
     }
 
     return apiTokensClientSignalReset;
@@ -77,7 +88,20 @@ const useAuth = () => {
     getStoredApiTokens,
     dispatch,
     reduxApiToken,
+    reduxUser,
   ]);
+
+  // Sync user updates after processing token lifecycle signals
+  useEffect(() => {
+    if (authenticatedUser) {
+      const isUserEqual =
+        JSON.stringify(authenticatedUser) === JSON.stringify(reduxUser);
+      if (!reduxUser || !isUserEqual) dispatch(userFound(authenticatedUser));
+    } else if (!renewalInProgress.current && !isRenewing?.()) {
+      if (reduxApiToken) dispatch(clearApiToken());
+      if (reduxUser) dispatch(clearUser());
+    }
+  }, [authenticatedUser, dispatch, isRenewing, reduxApiToken, reduxUser]);
 
   const loggedIn = Boolean(reduxUser) && Boolean(reduxApiToken);
 

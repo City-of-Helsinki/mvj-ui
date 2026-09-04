@@ -11,6 +11,8 @@ import {
   useApiTokensClientTracking,
   apiTokensClientEvents,
   createApiTokensClientEventSignal,
+  isApiTokensRenewalStartedSignal,
+  isApiTokensFetchFailedErrorSignal,
 } from "hds-react";
 import type { User } from "oidc-client-ts";
 import type { ModuleNamespace } from "vite/types/hot";
@@ -69,6 +71,12 @@ vi.mock("hds-react", async (importOriginal) => {
     }),
     isApiTokensUpdatedSignal: vi.fn(actual.isApiTokensUpdatedSignal),
     isApiTokensRemovedSignal: vi.fn(actual.isApiTokensRemovedSignal),
+    isApiTokensRenewalStartedSignal: vi.fn(
+      actual.isApiTokensRenewalStartedSignal,
+    ),
+    isApiTokensFetchFailedErrorSignal: vi.fn(
+      actual.isApiTokensFetchFailedErrorSignal,
+    ),
   };
 });
 
@@ -119,7 +127,7 @@ describe("useAuth", () => {
     expect(result.current.loggedIn).toBe(false);
   });
 
-  it("should clear user and apitoken", () => {
+  it("should clear auth state when authenticated user is unavailable", () => {
     vi.spyOn(selectors, "getLoggedInUser").mockReturnValue(() => ({
       name: "John Doe",
     }));
@@ -127,6 +135,7 @@ describe("useAuth", () => {
     vi.mocked(useAuthenticatedUser).mockReturnValue(null);
     vi.mocked(useApiTokens).mockReturnValue({
       getStoredApiTokens: vi.fn().mockReturnValue([null, null]),
+      isRenewing: vi.fn().mockReturnValue(false),
     } as any);
     const { result } = renderHook(() => useAuth(), {
       wrapper: ({ children }) => (
@@ -140,6 +149,63 @@ describe("useAuth", () => {
     waitFor(() => {
       expect(result.current.loggedIn).toBe(false);
     });
+  });
+
+  it("should preserve auth state while API tokens are renewing", () => {
+    vi.spyOn(selectors, "getLoggedInUser").mockReturnValue(() => ({
+      name: "John Doe",
+    }));
+    vi.spyOn(selectors, "getApiToken").mockReturnValue("dummyApiToken");
+    vi.mocked(useAuthenticatedUser).mockReturnValue(null);
+    vi.mocked(useApiTokens).mockReturnValue({
+      getStoredApiTokens: vi.fn().mockReturnValue([null, null]),
+      isRenewing: vi.fn().mockReturnValue(true),
+    } as any);
+    const clearUserCallCount = vi.mocked(clearUser).mock.calls.length;
+    const clearApiTokenCallCount = vi.mocked(clearApiToken).mock.calls.length;
+
+    renderHook(() => useAuth(), {
+      wrapper: ({ children }) => (
+        <Provider store={mockStore}>
+          <LoginProvider {...loginProviderProperties}>{children}</LoginProvider>
+        </Provider>
+      ),
+    });
+
+    expect(clearUser).toHaveBeenCalledTimes(clearUserCallCount);
+    expect(clearApiToken).toHaveBeenCalledTimes(clearApiTokenCallCount);
+  });
+
+  it("should clear auth state when API token renewal fails", () => {
+    vi.spyOn(selectors, "getLoggedInUser").mockReturnValue(() => ({
+      name: "John Doe",
+    }));
+    vi.spyOn(selectors, "getApiToken").mockReturnValue("dummyApiToken");
+    vi.mocked(useAuthenticatedUser).mockReturnValue(null);
+    vi.mocked(useApiTokens).mockReturnValue({
+      getStoredApiTokens: vi.fn().mockReturnValue([null, null]),
+      isRenewing: vi.fn().mockReturnValue(true),
+    } as any);
+    vi.mocked(isApiTokensFetchFailedErrorSignal).mockReturnValue(true);
+    vi.mocked(isApiTokensRenewalStartedSignal).mockReturnValue(false);
+    vi.mocked(useApiTokensClientTracking).mockReturnValue([
+      {} as any,
+      () => null,
+      null,
+    ]);
+    const clearUserCallCount = vi.mocked(clearUser).mock.calls.length;
+    const clearApiTokenCallCount = vi.mocked(clearApiToken).mock.calls.length;
+
+    renderHook(() => useAuth(), {
+      wrapper: ({ children }) => (
+        <Provider store={mockStore}>
+          <LoginProvider {...loginProviderProperties}>{children}</LoginProvider>
+        </Provider>
+      ),
+    });
+
+    expect(clearUser).toHaveBeenCalledTimes(clearUserCallCount + 1);
+    expect(clearApiToken).toHaveBeenCalledTimes(clearApiTokenCallCount + 1);
   });
 
   it("should trigger log in", () => {
