@@ -1339,7 +1339,7 @@ const DistrictLoader = ({ municipality }: DistrictLoaderProps) => {
   const form = useForm();
   const dispatch = useDispatch();
   const firstUpdate = useRef(true);
-  const prevValue = useRef(municipality);
+  const prevValue = useRef<DistrictLoaderProps["municipality"]>();
 
   useEffect(() => {
     // Avoids double fetching when changing the selected options.
