@@ -18,7 +18,13 @@
 }
 
 .lease-search-advanced-section {
-  background-color: hds.$color-black-5;
+  > .lease-search-fieldset-group:nth-child(odd) {
+    background-color: hds.$color-black-5;
+  }
+
+  > .lease-search-fieldset-group:nth-child(even) {
+    background-color: hds.$color-black-10;
+  }
 }
 
 .lease-search-fieldset-group {
