@@ -227,19 +227,17 @@ const Search: React.FC<Props> = ({
   ) as Array<OptionInProps>;
 
   const toggleSection = (key: SearchSectionKey) => {
-    setVisibleSections((prev) => {
-      const next = { ...prev, [key]: !prev[key] };
+    const isVisible = visibleSections[key];
 
-      // When hiding a section, clear its field values so the hidden filters
-      // don't keep affecting the search silently.
-      if (!next[key]) {
-        SECTIONS[key].fields.forEach((fieldName) => {
-          form.change(fieldName, undefined);
-        });
-      }
+    // When hiding a section, clear its field values so the hidden filters
+    // don't keep affecting the search silently.
+    if (isVisible) {
+      SECTIONS[key].fields.forEach((fieldName) => {
+        form.change(fieldName, undefined);
+      });
+    }
 
-      return next;
-    });
+    setVisibleSections((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const handleClear = () => {
