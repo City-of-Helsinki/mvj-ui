@@ -754,7 +754,7 @@ const Search: React.FC<Props> = ({
         <Row>
           <Column small={6}>
             <SelectionGroup direction="horizontal">
-              <FilterField name="only_active_leases">
+              <FilterField id="only_active_leases" name="only_active_leases">
                 {({
                   input: { value, onBlur, onChange, onFocus },
                   meta: { error, invalid },
@@ -773,7 +773,7 @@ const Search: React.FC<Props> = ({
                   );
                 }}
               </FilterField>
-              <FilterField name="only_expired_leases">
+              <FilterField id="only_expired_leases" name="only_expired_leases">
                 {({
                   input: { value, onBlur, onChange, onFocus },
                   meta: { error, invalid },
@@ -1048,7 +1048,7 @@ const Search: React.FC<Props> = ({
           direction="horizontal"
           style={{ width: "100%" }}
         >
-          <FilterField name="tenant_activity" key="tenant_activity-1">
+          <FilterField id="tenant_activity-1" name="tenant_activity">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -1067,7 +1067,7 @@ const Search: React.FC<Props> = ({
               );
             }}
           </FilterField>
-          <FilterField name="tenant_activity" key="tenant_activity-2">
+          <FilterField id="tenant_activity-2" name="tenant_activity">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -1086,7 +1086,7 @@ const Search: React.FC<Props> = ({
               );
             }}
           </FilterField>
-          <FilterField name="tenant_activity" key="tenant_activity-3">
+          <FilterField id="tenant_activity-3" name="tenant_activity">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
