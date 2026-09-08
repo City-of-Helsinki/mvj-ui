@@ -391,7 +391,7 @@ const Search: React.FC<Props> = ({
   const anySectionVisible = Object.values(mergedVisibleSections).some(Boolean);
 
   const sectionTarget = (
-    <div className="lease-search-fieldset-group lease-search-fieldset-group--target">
+    <section className="lease-search-fieldset-group lease-search-fieldset-group--target">
       <SearchRow>
         <Row>
           <Field name="lessor">
@@ -622,11 +622,11 @@ const Search: React.FC<Props> = ({
           </Field>
         </Row>
       </SearchRow>
-    </div>
+    </section>
   );
 
   const sectionDates = (
-    <div className="lease-search-fieldset-group lease-search-fieldset-group--dates">
+    <section className="lease-search-fieldset-group lease-search-fieldset-group--dates">
       <SearchRow>
         <Row>
           <Field name="lease_start_date_start">
@@ -766,11 +766,11 @@ const Search: React.FC<Props> = ({
           </Column>
         </Row>
       </SearchRow>
-    </div>
+    </section>
   );
 
   const sectionDecision = (
-    <div className="lease-search-fieldset-group lease-search-fieldset-group--decision">
+    <section className="lease-search-fieldset-group lease-search-fieldset-group--decision">
       <SearchRow>
         <Row>
           <Field name="decision_maker">
@@ -929,11 +929,11 @@ const Search: React.FC<Props> = ({
           </Field>
         </Row>
       </SearchRow>
-    </div>
+    </section>
   );
 
   const sectionTenant = (
-    <div className="lease-search-fieldset-group lease-search-fieldset-group--tenant">
+    <section className="lease-search-fieldset-group lease-search-fieldset-group--tenant">
       <SearchRow>
         <Row>
           <Field name="tenant_name">
@@ -1088,7 +1088,7 @@ const Search: React.FC<Props> = ({
           </Field>
         </SelectionGroup>
       </SearchRow>
-    </div>
+    </section>
   );
 
   return (
@@ -1169,12 +1169,12 @@ const Search: React.FC<Props> = ({
           <Row>
             {/* First column */}
             <Column small={12} large={12}>
-              <div className="lease-search-advanced-section">
+              <section className="lease-search-advanced-section">
                 {mergedVisibleSections.target && sectionTarget}
                 {mergedVisibleSections.dates && sectionDates}
                 {mergedVisibleSections.decision && sectionDecision}
                 {mergedVisibleSections.tenant && sectionTenant}
-              </div>
+              </section>
             </Column>
           </Row>
         </>
