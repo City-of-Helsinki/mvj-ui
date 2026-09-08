@@ -15,6 +15,7 @@ import {
 import type { User } from "oidc-client-ts";
 import type { ModuleNamespace } from "vite/types/hot";
 import type { Store } from "redux";
+import { configureStore } from "@reduxjs/toolkit";
 import {
   clearApiToken,
   receiveApiToken,
@@ -23,7 +24,7 @@ import {
 } from "./actions";
 import useAuth from "./useAuth";
 import { setRedirectUrlToSessionStorage } from "@/util/storage";
-import store from "@/root/store";
+import { authReducer } from "./reducer";
 import * as selectors from "@/auth/selectors";
 
 vi.mock("@/index", () => {
@@ -97,7 +98,11 @@ describe("useAuth", () => {
   };
 
   beforeEach(() => {
-    mockStore = store;
+    mockStore = configureStore({
+      reducer: {
+        auth: authReducer,
+      },
+    });
   });
 
   afterEach(() => {
