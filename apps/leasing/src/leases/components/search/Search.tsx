@@ -17,21 +17,8 @@ import {
   type OptionInProps,
 } from "hds-react";
 import { isEqual } from "lodash-es";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  Field,
-  type FieldProps,
-  type FieldRenderProps,
-  useForm,
-  useFormState,
-} from "react-final-form";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Field, useForm, useFormState } from "react-final-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 
@@ -89,30 +76,10 @@ type DistrictLoaderProps = {
   municipality: any;
 };
 
-const ActiveSearchFiltersContext = createContext<Set<string>>(new Set());
-
-const FilterField = ({
-  children,
-  ...props
-}: FieldProps<any, FieldRenderProps<any>>) => {
-  const activeSearchFilters = useContext(ActiveSearchFiltersContext);
-  const isActive = activeSearchFilters.has(props.name);
-
-  return (
-    <Field {...props}>
-      {(fieldRenderProps) => (
-        <div
-          className={`lease-search-filter-field${isActive ? " lease-search-filter-field--active" : ""}`}
-          data-active-filter={isActive || undefined}
-        >
-          {typeof children === "function"
-            ? children(fieldRenderProps)
-            : children}
-        </div>
-      )}
-    </Field>
-  );
-};
+const hasInputValue = (value: unknown) =>
+  Array.isArray(value)
+    ? value.length > 0
+    : value !== undefined && value !== null && value !== "";
 
 const SECTIONS = {
   target: {
@@ -189,13 +156,6 @@ const Search: React.FC<Props> = ({
   const location = useLocation();
   const { search: searchParams } = location;
   const searchQuery = useMemo(() => getUrlParams(searchParams), [searchParams]);
-  const activeSearchFilters = useMemo(() => {
-    const activeFilters = new Set(Object.keys(searchQuery));
-    if (activeFilters.has("preparers_own_leases")) {
-      activeFilters.add("preparer");
-    }
-    return activeFilters;
-  }, [searchQuery]);
 
   const form = useForm();
   const { values, dirty } = useFormState();
@@ -434,7 +394,7 @@ const Search: React.FC<Props> = ({
     <div className="lease-search-fieldset-group lease-search-fieldset-group--target">
       <SearchRow>
         <Row>
-          <FilterField name="lessor">
+          <Field name="lessor">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -452,13 +412,14 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
+                  className={hasInputValue(value) ? "active" : undefined}
                   clearable
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="intended_use">
+          </Field>
+          <Field name="intended_use">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -486,12 +447,13 @@ const Search: React.FC<Props> = ({
                   filter={(option, filterStr) =>
                     option.label.toLowerCase().includes(filterStr.toLowerCase())
                   }
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="address">
+          </Field>
+          <Field name="address">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -505,12 +467,13 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="property_identifier">
+          </Field>
+          <Field name="property_identifier">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -524,17 +487,18 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
+          </Field>
         </Row>
       </SearchRow>
 
       <SearchRow>
         <Row>
-          <FilterField name="type">
+          <Field name="type">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -555,13 +519,14 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
+                  className={hasInputValue(value) ? "active" : undefined}
                   clearable
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="municipality">
+          </Field>
+          <Field name="municipality">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -582,6 +547,7 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
+                  className={hasInputValue(value) ? "active" : undefined}
                   clearable
                   multiSelect
                   noTags
@@ -589,8 +555,8 @@ const Search: React.FC<Props> = ({
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="district">
+          </Field>
+          <Field name="district">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -616,12 +582,13 @@ const Search: React.FC<Props> = ({
                     // Fetching districts from multiple municipalities adds complexity and creates a confusing experience.
                     !municipality || municipality.length !== 1
                   }
+                  className={hasInputValue(value) ? "active" : undefined}
                   clearable
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
+          </Field>
           <IconMinus
             aria-hidden="true"
             focusable="false"
@@ -633,7 +600,7 @@ const Search: React.FC<Props> = ({
               maxWidth: "20px",
             }}
           />
-          <FilterField name="sequence">
+          <Field name="sequence">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -647,11 +614,12 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ maxWidth: "120px" }}
                 />
               );
             }}
-          </FilterField>
+          </Field>
         </Row>
       </SearchRow>
     </div>
@@ -661,7 +629,7 @@ const Search: React.FC<Props> = ({
     <div className="lease-search-fieldset-group lease-search-fieldset-group--dates">
       <SearchRow>
         <Row>
-          <FilterField name="lease_start_date_start">
+          <Field name="lease_start_date_start">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -678,11 +646,12 @@ const Search: React.FC<Props> = ({
                   onChange={(nextValue) => onChange(nextValue)}
                   style={{ width: "100%" }}
                   disableConfirmation
+                  className={hasInputValue(value) ? "active" : undefined}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="lease_start_date_end">
+          </Field>
+          <Field name="lease_start_date_end">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -699,11 +668,12 @@ const Search: React.FC<Props> = ({
                   onChange={(nextValue) => onChange(nextValue)}
                   style={{ width: "100%" }}
                   disableConfirmation
+                  className={hasInputValue(value) ? "active" : undefined}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="lease_end_date_start">
+          </Field>
+          <Field name="lease_end_date_start">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -720,11 +690,12 @@ const Search: React.FC<Props> = ({
                   onChange={(nextValue) => onChange(nextValue)}
                   style={{ width: "100%" }}
                   disableConfirmation
+                  className={hasInputValue(value) ? "active" : undefined}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="lease_end_date_end">
+          </Field>
+          <Field name="lease_end_date_end">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -741,10 +712,11 @@ const Search: React.FC<Props> = ({
                   onChange={(nextValue) => onChange(nextValue)}
                   style={{ width: "100%" }}
                   disableConfirmation
+                  className={hasInputValue(value) ? "active" : undefined}
                 />
               );
             }}
-          </FilterField>
+          </Field>
         </Row>
       </SearchRow>
 
@@ -752,7 +724,7 @@ const Search: React.FC<Props> = ({
         <Row>
           <Column small={6}>
             <SelectionGroup direction="horizontal">
-              <FilterField id="only_active_leases" name="only_active_leases">
+              <Field id="only_active_leases" name="only_active_leases">
                 {({
                   input: { value, onBlur, onChange, onFocus },
                   meta: { error, invalid },
@@ -770,8 +742,8 @@ const Search: React.FC<Props> = ({
                     />
                   );
                 }}
-              </FilterField>
-              <FilterField id="only_expired_leases" name="only_expired_leases">
+              </Field>
+              <Field id="only_expired_leases" name="only_expired_leases">
                 {({
                   input: { value, onBlur, onChange, onFocus },
                   meta: { error, invalid },
@@ -789,7 +761,7 @@ const Search: React.FC<Props> = ({
                     />
                   );
                 }}
-              </FilterField>
+              </Field>
             </SelectionGroup>
           </Column>
         </Row>
@@ -801,7 +773,7 @@ const Search: React.FC<Props> = ({
     <div className="lease-search-fieldset-group lease-search-fieldset-group--decision">
       <SearchRow>
         <Row>
-          <FilterField name="decision_maker">
+          <Field name="decision_maker">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -822,13 +794,14 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
+                  className={hasInputValue(value) ? "active" : undefined}
                   clearable
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="decision_date">
+          </Field>
+          <Field name="decision_date">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -845,11 +818,12 @@ const Search: React.FC<Props> = ({
                   onChange={(nextValue) => onChange(nextValue)}
                   style={{ width: "100%" }}
                   disableConfirmation
+                  className={hasInputValue(value) ? "active" : undefined}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="decision_section">
+          </Field>
+          <Field name="decision_section">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -863,12 +837,13 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="reference_number">
+          </Field>
+          <Field name="reference_number">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -882,16 +857,17 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
+          </Field>
         </Row>
       </SearchRow>
       <SearchRow>
         <Row>
-          <FilterField name="contract_number">
+          <Field name="contract_number">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -905,12 +881,13 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="institution_identifier">
+          </Field>
+          <Field name="institution_identifier">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -924,12 +901,13 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="invoice_number">
+          </Field>
+          <Field name="invoice_number">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -943,11 +921,12 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
+          </Field>
         </Row>
       </SearchRow>
     </div>
@@ -957,7 +936,7 @@ const Search: React.FC<Props> = ({
     <div className="lease-search-fieldset-group lease-search-fieldset-group--tenant">
       <SearchRow>
         <Row>
-          <FilterField name="tenant_name">
+          <Field name="tenant_name">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -971,12 +950,13 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="tenantcontact_type">
+          </Field>
+          <Field name="tenantcontact_type">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -994,13 +974,14 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
+                  className={hasInputValue(value) ? "active" : undefined}
                   clearable
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="business_id">
+          </Field>
+          <Field name="business_id">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -1014,12 +995,13 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
-          <FilterField name="national_identification_number">
+          </Field>
+          <Field name="national_identification_number">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -1033,11 +1015,12 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                 />
               );
             }}
-          </FilterField>
+          </Field>
         </Row>
       </SearchRow>
       <SearchRow>
@@ -1046,7 +1029,7 @@ const Search: React.FC<Props> = ({
           direction="horizontal"
           style={{ width: "100%" }}
         >
-          <FilterField id="tenant_activity-1" name="tenant_activity">
+          <Field id="tenant_activity-1" name="tenant_activity">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -1064,8 +1047,8 @@ const Search: React.FC<Props> = ({
                 />
               );
             }}
-          </FilterField>
-          <FilterField id="tenant_activity-2" name="tenant_activity">
+          </Field>
+          <Field id="tenant_activity-2" name="tenant_activity">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -1083,8 +1066,8 @@ const Search: React.FC<Props> = ({
                 />
               );
             }}
-          </FilterField>
-          <FilterField id="tenant_activity-3" name="tenant_activity">
+          </Field>
+          <Field id="tenant_activity-3" name="tenant_activity">
             {({
               input: { value, onBlur, onChange, onFocus },
               meta: { error, invalid },
@@ -1102,236 +1085,237 @@ const Search: React.FC<Props> = ({
                 />
               );
             }}
-          </FilterField>
+          </Field>
         </SelectionGroup>
       </SearchRow>
     </div>
   );
 
   return (
-    <ActiveSearchFiltersContext.Provider value={activeSearchFilters}>
-      <SearchContainer onSubmit={handleSubmit}>
-        <DistrictLoader municipality={municipality} />
-        <Row className="lease-search-row">
-          <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
-            <Button
-              variant={ButtonVariant.Supplementary}
-              iconStart={<IconPlusCircleFill />}
-              onClick={showCreateLeaseModal}
-            >
-              {ButtonLabels.CREATE_LEASE_IDENTIFIER}
-            </Button>
-          </Authorization>
+    <SearchContainer onSubmit={handleSubmit}>
+      <DistrictLoader municipality={municipality} />
+      <Row className="lease-search-row">
+        <Authorization allow={isMethodAllowed(leaseMethods, Methods.POST)}>
+          <Button
+            variant={ButtonVariant.Supplementary}
+            iconStart={<IconPlusCircleFill />}
+            onClick={showCreateLeaseModal}
+          >
+            {ButtonLabels.CREATE_LEASE_IDENTIFIER}
+          </Button>
+        </Authorization>
 
-          <FilterField name="search">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => (
-              <TextInput
-                id="search"
-                label=""
-                hideLabel
-                placeholder="Hae hakusanalla"
-                invalid={invalid}
-                value={value || ""}
-                onBlur={onBlur}
-                onChange={onChange}
-                onFocus={onFocus}
-                buttonIcon={<IconSearch aria-hidden />}
-                buttonAriaLabel="Hae"
-                onButtonClick={form.submit}
+        <Field name="search">
+          {({
+            input: { value, onBlur, onChange, onFocus },
+            meta: { error, invalid },
+          }) => (
+            <TextInput
+              id="search"
+              label=""
+              hideLabel
+              placeholder="Hae hakusanalla"
+              invalid={invalid}
+              value={value || ""}
+              onBlur={onBlur}
+              onChange={onChange}
+              onFocus={onFocus}
+              buttonIcon={<IconSearch aria-hidden />}
+              buttonAriaLabel="Hae"
+              onButtonClick={form.submit}
+              className={hasInputValue(value) ? "active" : undefined}
+            />
+          )}
+        </Field>
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Small}
+          iconEnd={<IconTrash />}
+          onClick={handleClear}
+          style={{ marginLeft: "auto" }}
+        >
+          Tyhjennä haku
+        </Button>
+      </Row>
+
+      <Row className="lease-search-section-toggles">
+        {(
+          Object.entries(SECTIONS) as Array<
+            [SearchSectionKey, { label: string; fields: Array<string> }]
+          >
+        ).map(([key, { label }]) => (
+          <Button
+            key={key}
+            id={`lease-search-toggle-${key}`}
+            size={ButtonSize.Small}
+            variant={
+              mergedVisibleSections[key]
+                ? ButtonVariant.Primary
+                : ButtonVariant.Supplementary
+            }
+            aria-pressed={mergedVisibleSections[key]}
+            onClick={() => toggleSection(key)}
+            iconStart={
+              mergedVisibleSections[key] ? <IconEye /> : <IconEyeCrossed />
+            }
+          >
+            {label}
+          </Button>
+        ))}
+      </Row>
+
+      {anySectionVisible && (
+        <>
+          <Row>
+            {/* First column */}
+            <Column small={12} large={12}>
+              <div className="lease-search-advanced-section">
+                {mergedVisibleSections.target && sectionTarget}
+                {mergedVisibleSections.dates && sectionDates}
+                {mergedVisibleSections.decision && sectionDecision}
+                {mergedVisibleSections.tenant && sectionTenant}
+              </div>
+            </Column>
+          </Row>
+        </>
+      )}
+      <SearchRow>
+        <Row className="lease-search-fieldset-group">
+          <Field name="service_unit">
+            {({ input: { value, onChange } }) => (
+              <Select
+                id="service_unit"
+                texts={{
+                  label: LeaseFieldTitles.SERVICE_UNIT,
+                  placeholder: "Valitse palvelukokonaisuus",
+                  language: "fi",
+                }}
+                value={filterSelectedOptions(value, serviceUnitOptions)}
+                options={serviceUnitOptions}
+                onChange={(selectedOptions) => {
+                  const serviceUnits = selectedOptions.map((option) =>
+                    String(option.value),
+                  );
+                  onChange(serviceUnits);
+                  setPersistedServiceUnits(serviceUnits);
+                }}
+                className={hasInputValue(value) ? "active" : undefined}
+                style={{ width: "100%" }}
+                multiSelect
+                noTags
+                clearable
               />
             )}
-          </FilterField>
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Small}
-            iconEnd={<IconTrash />}
-            onClick={handleClear}
-            style={{ marginLeft: "auto" }}
-          >
-            Tyhjennä haku
-          </Button>
-        </Row>
-
-        <Row className="lease-search-section-toggles">
-          {(
-            Object.entries(SECTIONS) as Array<
-              [SearchSectionKey, { label: string; fields: Array<string> }]
-            >
-          ).map(([key, { label }]) => (
-            <Button
-              key={key}
-              id={`lease-search-toggle-${key}`}
-              size={ButtonSize.Small}
-              variant={
-                mergedVisibleSections[key]
-                  ? ButtonVariant.Primary
-                  : ButtonVariant.Supplementary
-              }
-              aria-pressed={mergedVisibleSections[key]}
-              onClick={() => toggleSection(key)}
-              iconStart={
-                mergedVisibleSections[key] ? <IconEye /> : <IconEyeCrossed />
-              }
-            >
-              {label}
-            </Button>
-          ))}
-        </Row>
-
-        {anySectionVisible && (
-          <>
-            <Row>
-              {/* First column */}
-              <Column small={12} large={12}>
-                <div className="lease-search-advanced-section">
-                  {mergedVisibleSections.target && sectionTarget}
-                  {mergedVisibleSections.dates && sectionDates}
-                  {mergedVisibleSections.decision && sectionDecision}
-                  {mergedVisibleSections.tenant && sectionTenant}
-                </div>
-              </Column>
-            </Row>
-          </>
-        )}
-        <SearchRow>
-          <Row className="lease-search-fieldset-group">
-            <FilterField name="service_unit">
-              {({ input: { value, onChange } }) => (
+          </Field>
+          <Field name="lease_state">
+            {({ input: { value, onChange } }) => {
+              const selected = leaseStateOptions.filter((option) =>
+                (Array.isArray(value) ? value : [value]).some(
+                  (v) => v == option.value,
+                ),
+              );
+              return (
                 <Select
-                  id="service_unit"
+                  id="lease_state"
                   texts={{
-                    label: LeaseFieldTitles.SERVICE_UNIT,
-                    placeholder: "Valitse palvelukokonaisuus",
+                    label: "Tyyppi",
+                    placeholder: "Valitse tyyppi",
                     language: "fi",
                   }}
-                  value={filterSelectedOptions(value, serviceUnitOptions)}
-                  options={serviceUnitOptions}
-                  onChange={(selectedOptions) => {
-                    const serviceUnits = selectedOptions.map((option) =>
-                      String(option.value),
-                    );
-                    onChange(serviceUnits);
-                    setPersistedServiceUnits(serviceUnits);
-                  }}
+                  value={selected}
+                  options={leaseStateOptions}
+                  onChange={(selectedOptions) =>
+                    onChange(selectedOptions.map((option) => option.value))
+                  }
+                  className={hasInputValue(value) ? "active" : undefined}
                   style={{ width: "100%" }}
                   multiSelect
                   noTags
                   clearable
                 />
-              )}
-            </FilterField>
-            <FilterField name="lease_state">
-              {({ input: { value, onChange } }) => {
-                const selected = leaseStateOptions.filter((option) =>
+              );
+            }}
+          </Field>
+          <Field name="preparer">
+            {({ input: { value, onChange } }) => {
+              // Combines "preparer" and "preparers_own_leases" into one select
+              const allPreparers = [
+                PreparerOwnLeasesOption,
+                ...preparerOptions,
+              ];
+              const selected =
+                value === PreparerOwnLeasesOption.value
+                  ? [PreparerOwnLeasesOption]
+                  : preparerOptions.filter((option) =>
+                      (Array.isArray(value) ? value : [value]).some(
+                        (v) => v == option.value,
+                      ),
+                    );
+              return (
+                <Select
+                  id="preparer"
+                  texts={{
+                    label: "Valmistelija",
+                    placeholder: "Valitse valmistelija",
+                    language: "fi",
+                  }}
+                  value={selected}
+                  options={allPreparers}
+                  filter={(option, filterStr) =>
+                    option.label.toLowerCase().includes(filterStr.toLowerCase())
+                  }
+                  onChange={(selectedOptions) => {
+                    if (
+                      selectedOptions.some(
+                        (option) =>
+                          option.value === PreparerOwnLeasesOption.value,
+                      )
+                    ) {
+                      onChange(PreparerOwnLeasesOption.value);
+                    } else {
+                      onChange(selectedOptions.map((option) => option.value));
+                    }
+                  }}
+                  className={hasInputValue(value) ? "active" : undefined}
+                  clearable
+                  style={{ width: "100%" }}
+                />
+              );
+            }}
+          </Field>
+          <Field name="preparation_state">
+            {({ input: { value, onChange } }) => {
+              const selectedOptions = preparationStateFilterOptions.filter(
+                (option) =>
                   (Array.isArray(value) ? value : [value]).some(
                     (v) => v == option.value,
                   ),
-                );
-                return (
-                  <Select
-                    id="lease_state"
-                    texts={{
-                      label: "Tyyppi",
-                      placeholder: "Valitse tyyppi",
-                      language: "fi",
-                    }}
-                    value={selected}
-                    options={leaseStateOptions}
-                    onChange={(selectedOptions) =>
-                      onChange(selectedOptions.map((option) => option.value))
-                    }
-                    style={{ width: "100%" }}
-                    multiSelect
-                    noTags
-                    clearable
-                  />
-                );
-              }}
-            </FilterField>
-            <FilterField name="preparer">
-              {({ input: { value, onChange } }) => {
-                // Combines "preparer" and "preparers_own_leases" into one select
-                const allPreparers = [
-                  PreparerOwnLeasesOption,
-                  ...preparerOptions,
-                ];
-                const selected =
-                  value === PreparerOwnLeasesOption.value
-                    ? [PreparerOwnLeasesOption]
-                    : preparerOptions.filter((option) =>
-                        (Array.isArray(value) ? value : [value]).some(
-                          (v) => v == option.value,
-                        ),
-                      );
-                return (
-                  <Select
-                    id="preparer"
-                    texts={{
-                      label: "Valmistelija",
-                      placeholder: "Valitse valmistelija",
-                      language: "fi",
-                    }}
-                    value={selected}
-                    options={allPreparers}
-                    filter={(option, filterStr) =>
-                      option.label
-                        .toLowerCase()
-                        .includes(filterStr.toLowerCase())
-                    }
-                    onChange={(selectedOptions) => {
-                      if (
-                        selectedOptions.some(
-                          (option) =>
-                            option.value === PreparerOwnLeasesOption.value,
-                        )
-                      ) {
-                        onChange(PreparerOwnLeasesOption.value);
-                      } else {
-                        onChange(selectedOptions.map((option) => option.value));
-                      }
-                    }}
-                    clearable
-                    style={{ width: "100%" }}
-                  />
-                );
-              }}
-            </FilterField>
-            <FilterField name="preparation_state">
-              {({ input: { value, onChange } }) => {
-                const selectedOptions = preparationStateFilterOptions.filter(
-                  (option) =>
-                    (Array.isArray(value) ? value : [value]).some(
-                      (v) => v == option.value,
-                    ),
-                );
-                return (
-                  <Select
-                    id="preparation_state"
-                    texts={{
-                      label: "Valmistelu kesken",
-                      placeholder: "Valitse vaihe",
-                      language: "fi",
-                    }}
-                    value={selectedOptions}
-                    options={preparationStateFilterOptions}
-                    onChange={(selectedOptions) =>
-                      onChange(selectedOptions.map((option) => option.value))
-                    }
-                    multiSelect
-                    noTags
-                    clearable
-                    style={{ width: "100%" }}
-                  />
-                );
-              }}
-            </FilterField>
-          </Row>
-        </SearchRow>
-      </SearchContainer>
-    </ActiveSearchFiltersContext.Provider>
+              );
+              return (
+                <Select
+                  id="preparation_state"
+                  texts={{
+                    label: "Valmistelu kesken",
+                    placeholder: "Valitse vaihe",
+                    language: "fi",
+                  }}
+                  value={selectedOptions}
+                  options={preparationStateFilterOptions}
+                  onChange={(selectedOptions) =>
+                    onChange(selectedOptions.map((option) => option.value))
+                  }
+                  className={hasInputValue(value) ? "active" : undefined}
+                  multiSelect
+                  noTags
+                  clearable
+                  style={{ width: "100%" }}
+                />
+              );
+            }}
+          </Field>
+        </Row>
+      </SearchRow>
+    </SearchContainer>
   );
 };
 
