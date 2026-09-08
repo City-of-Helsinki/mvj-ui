@@ -25,7 +25,7 @@ import {
 import useAuth from "./useAuth";
 import { setRedirectUrlToSessionStorage } from "@/util/storage";
 import { authReducer } from "./reducer";
-import * as selectors from "@/auth/selectors";
+import { apiTokenKeyName } from "./constants";
 
 vi.mock("@/index", () => {
   return {
@@ -124,11 +124,11 @@ describe("useAuth", () => {
     expect(result.current.loggedIn).toBe(false);
   });
 
-  it("should clear user and apitoken", () => {
-    vi.spyOn(selectors, "getLoggedInUser").mockReturnValue(() => ({
-      name: "John Doe",
-    }));
-    vi.spyOn(selectors, "getApiToken").mockReturnValue("dummyApiToken");
+  it("should clear user and apitoken", async () => {
+    mockStore.dispatch(userFound({ name: "John Doe" } as unknown as User));
+    mockStore.dispatch(receiveApiToken({ [apiTokenKeyName]: "dummyApiToken" }));
+    vi.mocked(userFound).mockClear();
+    vi.mocked(receiveApiToken).mockClear();
     vi.mocked(useAuthenticatedUser).mockReturnValue(null);
     vi.mocked(useApiTokens).mockReturnValue({
       getStoredApiTokens: vi.fn().mockReturnValue([null, null]),
@@ -142,7 +142,7 @@ describe("useAuth", () => {
     });
     expect(clearUser).toHaveBeenCalled();
     expect(clearApiToken).toHaveBeenCalled();
-    waitFor(() => {
+    await waitFor(() => {
       expect(result.current.loggedIn).toBe(false);
     });
   });
@@ -186,13 +186,14 @@ describe("useAuth", () => {
     expect(userFound).toBeCalledWith(mockAuthenticatedUser);
   });
 
-  it("should sync state for logged in user", () => {
+  it("should sync state for logged in user", async () => {
     const mockAuthenticatedUser = { name: "John Doe" };
     vi.mocked(useAuthenticatedUser).mockReturnValue(
       mockAuthenticatedUser as unknown as User,
     );
+    const storedApiTokens = { [apiTokenKeyName]: "dummyApiToken" };
     const mockApiTokens = {
-      getStoredApiTokens: vi.fn().mockReturnValue([null, "dummyApiToken"]),
+      getStoredApiTokens: vi.fn().mockReturnValue([null, storedApiTokens]),
     };
     vi.mocked(useApiTokens).mockReturnValue(
       mockApiTokens as unknown as ReturnType<typeof useApiTokens>,
@@ -206,8 +207,8 @@ describe("useAuth", () => {
     });
 
     expect(userFound).toBeCalledWith(mockAuthenticatedUser);
-    expect(receiveApiToken).toBeCalledWith("dummyApiToken");
-    waitFor(() => {
+    expect(receiveApiToken).toBeCalledWith(storedApiTokens);
+    await waitFor(() => {
       expect(result.current.loggedIn).toBe(true);
     });
   });
@@ -230,8 +231,16 @@ describe("useAuth", () => {
   });
 
   it("should handle API token updates", async () => {
+    const mockAuthenticatedUser = { name: "John Doe" };
+    vi.mocked(useAuthenticatedUser).mockReturnValue(
+      mockAuthenticatedUser as unknown as User,
+    );
+    const updatedApiTokens = { [apiTokenKeyName]: "dummyApiToken2" };
     const mockApiTokens = {
-      getStoredApiTokens: vi.fn().mockReturnValue([null, "dummyApiToken2"]),
+      getStoredApiTokens: vi
+        .fn()
+        .mockReturnValueOnce([null, null])
+        .mockReturnValue([null, updatedApiTokens]),
     };
     vi.mocked(useApiTokens).mockReturnValue(
       mockApiTokens as unknown as ReturnType<typeof useApiTokens>,
@@ -255,8 +264,8 @@ describe("useAuth", () => {
     expect(isApiTokensUpdatedSignal).toHaveBeenCalledWith(
       apiTokensUpdatedSignal,
     );
-    expect(receiveApiToken).toHaveBeenCalledWith("dummyApiToken2");
-    waitFor(() => {
+    expect(receiveApiToken).toHaveBeenCalledWith(updatedApiTokens);
+    await waitFor(() => {
       expect(result.current.loggedIn).toBe(true);
     });
   });
