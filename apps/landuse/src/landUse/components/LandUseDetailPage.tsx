@@ -851,22 +851,22 @@ const LandUseDetailPage: React.FC = () => {
         case "paymentSchedule": {
           // Mark invoices paid when remaining amount is zero or less
           // TODO: In the future API should handle this
-          const psInvoices =
-            (state.values as LandUsePaymentScheduleFormValues).invoices || [];
-          for (const invoice of psInvoices) {
-            if (
-              invoice.remainingAmount === "0" ||
-              invoice.remainingAmount === "0.00" ||
-              invoice.remainingAmount === "0,00"
-            ) {
-              invoice.status = LAND_USE_INVOICE_STATUSES.PAID;
+          const paymentScheduleValues =
+            state.values as LandUsePaymentScheduleFormValues;
+          for (const paymentSchedule of paymentScheduleValues.paymentSchedules ??
+            []) {
+            for (const invoice of paymentSchedule.installments) {
+              if (
+                invoice.remainingAmount === "0" ||
+                invoice.remainingAmount === "0.00" ||
+                invoice.remainingAmount === "0,00"
+              ) {
+                invoice.status = LAND_USE_INVOICE_STATUSES.PAID;
+              }
             }
           }
           mutations.push(
-            paymentScheduleMutation.mutateAsync({
-              ...state.values,
-              invoices: psInvoices,
-            } as LandUsePaymentScheduleFormValues),
+            paymentScheduleMutation.mutateAsync(paymentScheduleValues),
           );
           break;
         }
@@ -1075,7 +1075,9 @@ const LandUseDetailPage: React.FC = () => {
                 compensationsQuery.data?.muuKorvaus,
               ) -
               calculatePaidMaankayttokorvaus(
-                paymentScheduleQuery.data?.invoices ?? [],
+                paymentScheduleQuery.data?.paymentSchedules?.flatMap(
+                  (paymentSchedule) => paymentSchedule.installments,
+                ) ?? [],
               )
             }
             onSetTabDirty={handleSetTabDirty}

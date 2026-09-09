@@ -126,7 +126,7 @@ export const clonePartiesFormValues = (
 
 export const createEmptyPaymentScheduleFormValues =
   (): LandUsePaymentScheduleFormValues => ({
-    invoices: [],
+    paymentSchedules: [],
   });
 
 export const createEmptyBillingFormValues = (): LandUseBillingFormValues => ({
