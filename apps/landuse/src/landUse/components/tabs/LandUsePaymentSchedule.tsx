@@ -7,13 +7,11 @@ import {
   DateInput,
   Dialog,
   Fieldset,
-  IconAngleDown,
-  IconAngleUp,
   IconPlusCircle,
   IconPlusCircleFill,
-  IconSize,
   NumberInput,
   Select,
+  StepByStep,
   TextInput,
 } from "hds-react";
 import React, { useState } from "react";
@@ -95,12 +93,7 @@ const handleSelectChange = (
 
 function isInvoiceEditableBasedOnStatus(invoice: LandUseInvoice): boolean {
   if (!invoice || !invoice.status) return true;
-  const editableStatuses: LandUseInvoiceStatus[] = [
-    LAND_USE_INVOICE_STATUSES.DRAFT,
-    LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
-  ];
-
-  return editableStatuses.includes(invoice.status);
+  return invoice.status === LAND_USE_INVOICE_STATUSES.DRAFT;
 }
 
 const getPartyName = (value: string | undefined): string => value?.trim() ?? "";
@@ -218,41 +211,17 @@ const createEmptyInvoiceItemRow = (): LandUseInvoiceItem => ({
   amountExcludingVat: "",
 });
 
-const getInvoiceStatusAction = (
+const getScheduleStatusAction = (
   status: LandUseInvoiceStatus | undefined,
 ): { buttonLabel: string; nextStatus: LandUseInvoiceStatus } | null => {
   if (status === LAND_USE_INVOICE_STATUSES.DRAFT) {
     return {
-      buttonLabel: "Merkitse valmiiksi",
-      nextStatus: LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
+      buttonLabel: "Siirrä laskutukseen",
+      nextStatus: LAND_USE_INVOICE_STATUSES.READY,
     };
   }
-
-  if (status === LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL) {
-    return {
-      buttonLabel: "Hyväksy ja lähetä",
-      nextStatus: LAND_USE_INVOICE_STATUSES.OPEN,
-    };
-  }
-
   return null;
 };
-
-interface InvoiceTableRowProps {
-  fieldName: string;
-  index: number;
-  isEditMode: boolean;
-  isExistingInvoice: boolean;
-  isOpen: boolean;
-  parties: PartyEntry[];
-  partyOptions: SelectOption[];
-  agreementOptions: AgreementOption[];
-  asemakaavanNumero: string;
-  korkoResults: KorkoResult[];
-  isInvoiceTableRowEditable: boolean;
-  onRemove: (index: number) => void;
-  onToggle: (index: number) => void;
-}
 
 const getInvoiceDeleteLabel = (invoiceNumber: string | undefined): string => {
   const trimmedInvoiceNumber = invoiceNumber?.trim();
@@ -474,718 +443,483 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
   );
 };
 
-const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
+interface InvoiceGroupEntry {
+  fieldName: string;
+  index: number;
+  invoice: LandUseInvoice;
+  isExistingInvoice: boolean;
+}
+
+const buildInstallmentStep = ({
   fieldName,
   index,
   isEditMode,
-  isExistingInvoice,
-  isOpen,
+  invoice,
+  korkoResults,
+  onRemove,
+}: {
+  fieldName: string;
+  index: number;
+  isEditMode: boolean;
+  invoice: LandUseInvoice;
+  korkoResults: KorkoResult[];
+  onRemove: (index: number) => void;
+}) => {
+  const canEdit = isEditMode && isInvoiceEditableBasedOnStatus(invoice);
+  const installmentLabel =
+    invoice.installmentNumber && invoice.installmentTotal
+      ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
+      : `Erä ${index + 1}`;
+
+  return {
+    title: installmentLabel,
+    key: `installment-${index}`,
+    description: (
+      <Fieldset heading="" className="full-width">
+        <div className="landuse-grid landuse-grid__bottom-margin">
+          <div className="landuse-grid__column-1">
+            <Field name={`${fieldName}.installmentNumber`}>
+              {({ input }) =>
+                canEdit ? (
+                  <NumberInput
+                    id={`landuse-payment-schedule-installment-number-${index}`}
+                    label="Laskutuserä"
+                    value={input.value}
+                    onChange={input.onChange}
+                  />
+                ) : (
+                  <TextInput
+                    id={`landuse-payment-schedule-installment-number-${index}`}
+                    label="Laskutuserä"
+                    value={readOnlyTextValue(input.value)}
+                    readOnly
+                  />
+                )
+              }
+            </Field>
+          </div>
+
+          <div className="landuse-grid__column-2">
+            <Field name={`${fieldName}.installmentTotal`}>
+              {({ input }) =>
+                canEdit ? (
+                  <NumberInput
+                    id={`landuse-payment-schedule-installment-total-${index}`}
+                    label="Laskutuseriä yhteensä"
+                    value={input.value}
+                    onChange={input.onChange}
+                  />
+                ) : (
+                  <TextInput
+                    id={`landuse-payment-schedule-installment-total-${index}`}
+                    label="Laskutuseriä yhteensä"
+                    value={readOnlyTextValue(input.value)}
+                    readOnly
+                  />
+                )
+              }
+            </Field>
+          </div>
+
+          <div className="landuse-grid__column-3">
+            <Field name={`${fieldName}.dueDate`}>
+              {({ input }) =>
+                canEdit ? (
+                  <DateInput
+                    id={`landuse-payment-schedule-due-date-${index}`}
+                    label="Eräpäivä"
+                    value={input.value}
+                    onChange={input.onChange}
+                    placeholder="DD.MM.YYYY"
+                    language="fi"
+                  />
+                ) : (
+                  <TextInput
+                    id={`landuse-payment-schedule-due-date-${index}`}
+                    label="Eräpäivä"
+                    value={readOnlyTextValue(input.value)}
+                    readOnly
+                  />
+                )
+              }
+            </Field>
+          </div>
+        </div>
+
+        <Fieldset heading="Laskurivit">
+          <FieldArray<LandUseInvoiceItem> name={`${fieldName}.invoiceItems`}>
+            {({ fields: itemFields }) => (
+              <>
+                {itemFields.length > 0 ? (
+                  itemFields.map((itemFieldName, itemIndex) => (
+                    <div
+                      key={itemFieldName}
+                      className="landuse-grid landuse-grid__bottom-margin"
+                    >
+                      <div className="landuse-grid__column-12">
+                        <Field name={`${itemFieldName}.description`}>
+                          {({ input: descriptionInput }) => (
+                            <TextInput
+                              id={`landuse-payment-schedule-invoice-row-description-${index}-${itemIndex}`}
+                              label="Selite"
+                              value={getFieldTextValue(
+                                canEdit,
+                                descriptionInput.value,
+                              )}
+                              onChange={descriptionInput.onChange}
+                              readOnly={!canEdit}
+                            />
+                          )}
+                        </Field>
+                      </div>
+
+                      <div className="landuse-grid__column-2">
+                        <Field name={`${itemFieldName}.itemType`}>
+                          {({ input: itemTypeInput }) =>
+                            canEdit ? (
+                              <Select
+                                id={`landuse-payment-schedule-invoice-row-item-type-${index}-${itemIndex}`}
+                                texts={{
+                                  label: "Laskurivin tyyppi",
+                                  placeholder: "Valitse",
+                                }}
+                                options={landUseInvoiceItemTypeSelectOptions}
+                                value={itemTypeInput.value}
+                                onChange={(selected) => {
+                                  if (selected.length > 0) {
+                                    itemTypeInput.onChange(selected[0].value);
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <TextInput
+                                id={`landuse-payment-schedule-invoice-row-item-type-${index}-${itemIndex}`}
+                                label="Laskurivin tyyppi"
+                                value={readOnlyTextValue(itemTypeInput.value)}
+                                readOnly
+                              />
+                            )
+                          }
+                        </Field>
+                      </div>
+
+                      <Field name={`${itemFieldName}.amountExcludingVat`}>
+                        {({ input: amountInput }) => (
+                          <>
+                            <div className="landuse-grid__column-2">
+                              <NumericDecimalInput
+                                id={`landuse-payment-schedule-invoice-row-amount-${index}-${itemIndex}`}
+                                label="Veroton summa (€)"
+                                value={amountInput.value}
+                                onChange={amountInput.onChange}
+                                unit="€"
+                                isEditMode={canEdit}
+                              />
+                            </div>
+                            {canEdit && (
+                              <div className="landuse-grid__column-2">
+                                <Select
+                                  id={`landuse-payment-schedule-invoice-row-korko-select-${index}-${itemIndex}`}
+                                  options={korkoResults.map((r) => ({
+                                    label: `${r.id}. ${formatLandUseEuroDisplayValue(r.korkoValue)}`,
+                                    value: String(r.korkoValue),
+                                  }))}
+                                  onChange={(selected) => {
+                                    if (selected.length > 0) {
+                                      amountInput.onChange(
+                                        Number(selected[0].value).toFixed(2),
+                                      );
+                                    }
+                                  }}
+                                  disabled={korkoResults.length === 0}
+                                  texts={{
+                                    label: "Täytä korkolaskimesta",
+                                    placeholder:
+                                      korkoResults.length > 0
+                                        ? "Valitse"
+                                        : "Ei tuloksia",
+                                  }}
+                                />
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </Field>
+
+                      {canEdit && (
+                        <div className="landuse-grid__column-2 landuse-compensations-table__detail-actions">
+                          <Button
+                            type="button"
+                            size={ButtonSize.Small}
+                            variant={ButtonVariant.Secondary}
+                            onClick={() => itemFields.remove(itemIndex)}
+                          >
+                            Poista rivi
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <p>Ei laskurivejä.</p>
+                )}
+
+                {canEdit && (
+                  <div>
+                    <Button
+                      type="button"
+                      variant={ButtonVariant.Supplementary}
+                      size={ButtonSize.Small}
+                      iconStart={<IconPlusCircleFill />}
+                      onClick={() =>
+                        itemFields.push(createEmptyInvoiceItemRow())
+                      }
+                    >
+                      Lisää laskurivi
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
+          </FieldArray>
+        </Fieldset>
+
+        {/* TODO: Do not allow deleting sent invoices, for now enabled for testing */}
+        {isEditMode && (
+          <div className="landuse-compensations-table__detail-actions">
+            <ConfirmDeleteButton
+              id={`payment-schedule-delete-${index}`}
+              buttonLabel="Poista lasku"
+              buttonVariant={ButtonVariant.Danger}
+              buttonSize={ButtonSize.Small}
+              onConfirm={() => onRemove(index)}
+              dialogTitle="Poista lasku"
+              dialogContent={`Haluatko varmasti poistaa laskun ${getInvoiceDeleteLabel(invoice.invoiceNumber)}?`}
+            />
+          </div>
+        )}
+      </Fieldset>
+    ),
+  };
+};
+
+interface PartyGroupSectionProps {
+  partyLabel: string;
+  partyIndex: string;
+  entries: InvoiceGroupEntry[];
+  isEditMode: boolean;
+  parties: PartyEntry[];
+  partyOptions: SelectOption[];
+  agreementOptions: AgreementOption[];
+  asemakaavanNumero: string;
+  korkoResults: KorkoResult[];
+  onRemove: (index: number) => void;
+  onAddInstallment: () => void;
+}
+
+const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
+  partyLabel,
+  partyIndex,
+  entries,
+  isEditMode,
   parties,
   partyOptions,
   agreementOptions,
   asemakaavanNumero,
   korkoResults,
-  isInvoiceTableRowEditable,
   onRemove,
-  onToggle,
+  onAddInstallment,
 }) => {
-  const canEditContract =
-    isEditMode && !isExistingInvoice && isInvoiceTableRowEditable;
+  const firstEntry = entries[0];
+
+  if (!firstEntry) {
+    return (
+      <div className="landuse-payment-schedule__party-group">
+        <h2 className="landuse-payment-schedule__party-heading">
+          {partyLabel}
+        </h2>
+        <p>Ei maksuaikatauluja.</p>
+        {isEditMode && (
+          <div className="landuse-invoicing__invoice-actions">
+            <Button
+              type="button"
+              variant={ButtonVariant.Supplementary}
+              iconStart={<IconPlusCircleFill />}
+              onClick={onAddInstallment}
+            >
+              Lisää erä
+            </Button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  const firstInvoice = firstEntry.invoice;
+  const firstFieldName = firstEntry.fieldName;
+  const firstIndex = firstEntry.index;
+
+  const canEditFirst =
+    isEditMode && isInvoiceEditableBasedOnStatus(firstInvoice);
+  const canEditContractFirst =
+    isEditMode &&
+    !firstEntry.isExistingInvoice &&
+    isInvoiceEditableBasedOnStatus(firstInvoice);
+
+  const contractNumberDisplayValue =
+    agreementOptions.find(
+      (option) => option.value === firstInvoice.contractIndex,
+    )?.sopimusnumero ?? "-";
+
+  const selectedPartyData = getSelectedPartyInvoiceData(
+    firstInvoice.recipientPartyIndex,
+    parties,
+  );
 
   return (
-    <Field name={fieldName} subscription={{ value: true }}>
-      {({ input }) => {
-        const invoice = (input.value ?? {}) as LandUseInvoice;
-        const contractNumberDisplayValue =
-          agreementOptions.find(
-            (option) => option.value === invoice.contractIndex,
-          )?.sopimusnumero ?? "-";
-        const installmentDisplayValue =
-          invoice.installmentNumber && invoice.installmentTotal
-            ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
-            : "-";
-        const selectedPartyData = getSelectedPartyInvoiceData(
-          invoice.recipientPartyIndex,
-          parties,
-        );
+    <div className="landuse-payment-schedule__party-group">
+      <h2 className="landuse-payment-schedule__party-heading">{partyLabel}</h2>
+      <div className="landuse-grid landuse-grid__bottom-margin">
+        <div className="landuse-grid__column-3">
+          <TextInput
+            id={`landuse-payment-schedule-street-address-${firstIndex}`}
+            label="Katuosoite"
+            value={readOnlyTextValue(selectedPartyData.streetAddress)}
+            readOnly
+          />
+        </div>
 
-        return (
-          <>
-            <tr
-              className="landuse-compensations-table__row"
-              onClick={() => onToggle(index)}
-            >
-              <td className="landuse-compensations-table__toggle-cell">
-                <button
-                  type="button"
-                  className="landuse-compensations-table__toggle-btn"
-                  aria-expanded={isOpen}
-                  aria-label={
-                    isOpen ? "Sulje laskun tiedot" : "Avaa laskun tiedot"
-                  }
-                >
-                  {isOpen ? (
-                    <IconAngleUp size={IconSize.Small} />
-                  ) : (
-                    <IconAngleDown size={IconSize.Small} />
+        <div className="landuse-grid__column-3">
+          <TextInput
+            id={`landuse-payment-schedule-city-${firstIndex}`}
+            label="Postitoimipaikka"
+            value={readOnlyTextValue(selectedPartyData.city)}
+            readOnly
+          />
+        </div>
+
+        <div className="landuse-grid__column-3">
+          <TextInput
+            id={`landuse-payment-schedule-postal-code-${firstIndex}`}
+            label="Postinumero"
+            value={readOnlyTextValue(selectedPartyData.postalCode)}
+            readOnly
+          />
+        </div>
+
+        <div className="landuse-grid__column-3">
+          <TextInput
+            id={`landuse-payment-schedule-ovt-code-${firstIndex}`}
+            label="OVT-tunnus"
+            value={readOnlyTextValue(selectedPartyData.ovtCode)}
+            readOnly
+          />
+        </div>
+
+        <div className="landuse-grid__column-3">
+          <TextInput
+            id={`landuse-payment-schedule-reference-${firstIndex}`}
+            label="Asiakkaan viite"
+            value={readOnlyTextValue(selectedPartyData.reference)}
+            readOnly
+          />
+        </div>
+
+        {selectedPartyData.isCompany && (
+          <div className="landuse-grid__column-3">
+            <TextInput
+              id={`landuse-payment-schedule-business-id-${firstIndex}`}
+              label="Y-tunnus"
+              value={readOnlyTextValue(selectedPartyData.businessId)}
+              readOnly
+            />
+          </div>
+        )}
+      </div>
+      <h3>Sopimus: {contractNumberDisplayValue}</h3>
+      <div className="landuse-grid landuse-grid__bottom-margin">
+        <div className="landuse-grid__column-3 landuse-compensations-table__field--background-coat-of-arms-light">
+          <Field name={`${firstFieldName}.status`}>
+            {({ input: statusInput }) => {
+              const statusAction = getScheduleStatusAction(statusInput.value);
+              return (
+                <>
+                  <TextInput
+                    id={`landuse-payment-schedule-status-${firstIndex}`}
+                    label="Maksuaikataulun tila"
+                    value={readOnlyTextValue(statusInput.value)}
+                    readOnly
+                  />
+                  {isEditMode && statusAction && (
+                    <div>
+                      <Button
+                        type="button"
+                        variant={ButtonVariant.Primary}
+                        size={ButtonSize.Small}
+                        onClick={() =>
+                          statusInput.onChange(statusAction.nextStatus)
+                        }
+                      >
+                        {statusAction.buttonLabel}
+                      </Button>
+                    </div>
                   )}
-                </button>
-              </td>
-              <td>
-                {getOptionsDisplayValue(
-                  invoice.recipientPartyIndex,
-                  partyOptions,
-                )}
-              </td>
-              <td>{readOnlyTextValue(contractNumberDisplayValue)}</td>
-              <td>{readOnlyTextValue(installmentDisplayValue)}</td>
-              <td>{readOnlyTextValue(invoice.dueDate)}</td>
-              <td>{readOnlyTextValue(invoice.invoiceNumber)}</td>
-              <td>{readOnlyTextValue(invoice.type)}</td>
-              <td>{readOnlyTextValue(invoice.status)}</td>
-              <td>{formatLandUseEuroDisplayValue(invoice.billedAmount)}</td>
-              <td>{formatLandUseEuroDisplayValue(invoice.remainingAmount)}</td>
-            </tr>
-            {isOpen && (
-              <tr className="landuse-compensations-table__detail-row">
-                <td colSpan={10}>
-                  <div
-                    className="landuse-compensations-table__detail-content"
-                    aria-label={`Laskun ${invoice.invoiceNumber || index + 1} tiedot`}
-                  >
-                    <div className="landuse-grid landuse-grid__bottom-margin">
-                      <div className="landuse-grid__column-3">
-                        <Field name={`${fieldName}.type`}>
-                          {({ input: typeInput }) =>
-                            isEditMode &&
-                            isInvoiceEditableBasedOnStatus(invoice) ? (
-                              <Select
-                                id={`landuse-payment-schedule-type-${index}`}
-                                options={landUseInvoiceTypeSelectOptions}
-                                value={normalizeSelectValue(typeInput.value)}
-                                onChange={(selectedOptions) =>
-                                  handleSelectChange(
-                                    selectedOptions,
-                                    typeInput.onChange,
-                                  )
-                                }
-                                texts={{
-                                  label: "Laskun tyyppi",
-                                  placeholder: "Valitse",
-                                }}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-payment-schedule-type-${index}`}
-                                label="Laskun tyyppi"
-                                value={readOnlyTextValue(typeInput.value)}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
+                </>
+              );
+            }}
+          </Field>
+        </div>
 
-                      <div className="landuse-grid__column-3">
-                        <Field name={`${fieldName}.recipientPartyIndex`}>
-                          {({ input: recipientInput }) =>
-                            isEditMode &&
-                            isInvoiceEditableBasedOnStatus(invoice) ? (
-                              <Select
-                                id={`landuse-payment-schedule-recipient-${index}`}
-                                options={partyOptions}
-                                value={normalizeSelectValue(
-                                  recipientInput.value,
-                                )}
-                                onChange={(selectedOptions) =>
-                                  handleSelectChange(
-                                    selectedOptions,
-                                    recipientInput.onChange,
-                                  )
-                                }
-                                disabled={partyOptions.length === 0}
-                                texts={{
-                                  label: "Laskunsaaja",
-                                  placeholder:
-                                    partyOptions.length > 0
-                                      ? "Valitse"
-                                      : "Ei osapuolia",
-                                }}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-payment-schedule-recipient-${index}`}
-                                label="Laskunsaaja"
-                                value={getOptionsDisplayValue(
-                                  recipientInput.value,
-                                  partyOptions,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
+        <div className="landuse-grid__column-3">
+          <Field name={`${firstFieldName}.signedDate`}>
+            {({ input }) =>
+              canEditFirst ? (
+                <DateInput
+                  id={`landuse-payment-schedule-signed-date-${firstIndex}`}
+                  label="Allekirjoituspäivämäärä"
+                  value={input.value}
+                  onChange={input.onChange}
+                  placeholder="DD.MM.YYYY"
+                  language="fi"
+                />
+              ) : (
+                <TextInput
+                  id={`landuse-payment-schedule-signed-date-${firstIndex}`}
+                  label="Allekirjoituspäivämäärä"
+                  value={readOnlyTextValue(input.value)}
+                  readOnly
+                />
+              )
+            }
+          </Field>
+        </div>
+      </div>
 
-                      <div className="landuse-grid__column-3">
-                        <Field name={`${fieldName}.contractIndex`}>
-                          {({ input: contractInput }) =>
-                            canEditContract ? (
-                              <Select
-                                id={`landuse-payment-schedule-contract-${index}`}
-                                options={agreementOptions}
-                                value={normalizeSelectValue(
-                                  contractInput.value,
-                                )}
-                                onChange={(selectedOptions) =>
-                                  handleSelectChange(
-                                    selectedOptions,
-                                    contractInput.onChange,
-                                  )
-                                }
-                                disabled={agreementOptions.length === 0}
-                                texts={{
-                                  label: "Sopimus",
-                                  placeholder:
-                                    agreementOptions.length > 0
-                                      ? "Valitse"
-                                      : "Ei sopimuksia",
-                                }}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-payment-schedule-contract-${index}`}
-                                label="Sopimus"
-                                value={
-                                  agreementOptions.find(
-                                    (option) =>
-                                      option.value === contractInput.value,
-                                  )?.label ?? "-"
-                                }
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
-
-                      <div className="landuse-grid__column-3 landuse-compensations-table__field--background-coat-of-arms-light">
-                        <Field name={`${fieldName}.status`}>
-                          {({ input: statusInput }) =>
-                            (() => {
-                              const statusAction = getInvoiceStatusAction(
-                                statusInput.value,
-                              );
-
-                              return (
-                                <>
-                                  <TextInput
-                                    id={`landuse-payment-schedule-status-${index}`}
-                                    label="Laskun tila"
-                                    value={readOnlyTextValue(statusInput.value)}
-                                    readOnly
-                                  />
-                                  {isEditMode &&
-                                    isInvoiceEditableBasedOnStatus(invoice) &&
-                                    statusAction && (
-                                      <div>
-                                        <Button
-                                          type="button"
-                                          variant={ButtonVariant.Primary}
-                                          size={ButtonSize.Small}
-                                          onClick={() => {
-                                            const nextSentAtValue =
-                                              statusAction.nextStatus ===
-                                              "Avoin"
-                                                ? getSentAtTimestamp()
-                                                : (invoice.sentAt ?? "");
-                                            if (
-                                              statusAction.nextStatus ===
-                                              "Avoin"
-                                            ) {
-                                              const invoiceAmount =
-                                                invoice.invoiceItems?.reduce(
-                                                  (sum, item) => {
-                                                    const amount = Number(
-                                                      item.amountExcludingVat,
-                                                    );
-                                                    return sum + amount;
-                                                  },
-                                                  0,
-                                                );
-                                              input.onChange({
-                                                ...invoice,
-                                                status: statusAction.nextStatus,
-                                                sentAt: nextSentAtValue,
-                                                invoiceNumber:
-                                                  Date.now().toString(),
-                                                billedAmount: invoiceAmount,
-                                                remainingAmount: invoiceAmount,
-                                              });
-                                            } else {
-                                              input.onChange({
-                                                ...invoice,
-                                                status: statusAction.nextStatus,
-                                                sentAt: nextSentAtValue,
-                                              });
-                                            }
-                                          }}
-                                        >
-                                          {statusAction.buttonLabel}
-                                        </Button>
-                                      </div>
-                                    )}
-                                </>
-                              );
-                            })()
-                          }
-                        </Field>
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-payment-schedule-contract-number-${index}`}
-                          label="Sopimusnumero"
-                          value={contractNumberDisplayValue}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-payment-schedule-asemakaavanumero-${index}`}
-                          label="Kaavanumero"
-                          value={readOnlyTextValue(asemakaavanNumero)}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-payment-schedule-street-address-${index}`}
-                          label="Katuosoite"
-                          value={readOnlyTextValue(
-                            selectedPartyData.streetAddress,
-                          )}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-payment-schedule-city-${index}`}
-                          label="Postitoimipaikka"
-                          value={readOnlyTextValue(selectedPartyData.city)}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-payment-schedule-postal-code-${index}`}
-                          label="Postinumero"
-                          value={readOnlyTextValue(
-                            selectedPartyData.postalCode,
-                          )}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-payment-schedule-ovt-code-${index}`}
-                          label="OVT-tunnus"
-                          value={readOnlyTextValue(selectedPartyData.ovtCode)}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-payment-schedule-reference-${index}`}
-                          label="Asiakkaan viite"
-                          value={readOnlyTextValue(selectedPartyData.reference)}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        {selectedPartyData.isCompany && (
-                          <TextInput
-                            id={`landuse-payment-schedule-business-id-${index}`}
-                            label="Y-tunnus"
-                            value={readOnlyTextValue(
-                              selectedPartyData.businessId,
-                            )}
-                            readOnly
-                          />
-                        )}
-                      </div>
-
-                      <div className="landuse-grid__column-1">
-                        <Field name={`${fieldName}.installmentNumber`}>
-                          {({ input: installmentNumberInput }) =>
-                            isEditMode &&
-                            isInvoiceEditableBasedOnStatus(invoice) ? (
-                              <NumberInput
-                                id={`landuse-payment-schedule-installment-number-${index}`}
-                                label="Laskutuserä"
-                                value={installmentNumberInput.value}
-                                onChange={installmentNumberInput.onChange}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-payment-schedule-installment-number-${index}`}
-                                label="Laskutuserä"
-                                value={readOnlyTextValue(
-                                  installmentNumberInput.value,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
-
-                      <div className="landuse-grid__column-2">
-                        <Field name={`${fieldName}.installmentTotal`}>
-                          {({ input: installmentTotalInput }) =>
-                            isEditMode &&
-                            isInvoiceEditableBasedOnStatus(invoice) ? (
-                              <NumberInput
-                                id={`landuse-payment-schedule-installment-total-${index}`}
-                                label="Laskutuseriä yhteensä"
-                                value={installmentTotalInput.value}
-                                onChange={installmentTotalInput.onChange}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-payment-schedule-installment-total-${index}`}
-                                label="Laskutuseriä yhteensä"
-                                value={readOnlyTextValue(
-                                  installmentTotalInput.value,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <Field name={`${fieldName}.signedDate`}>
-                          {({ input: signedDateInput }) =>
-                            isEditMode &&
-                            isInvoiceEditableBasedOnStatus(invoice) ? (
-                              <DateInput
-                                id={`landuse-payment-schedule-signed-date-${index}`}
-                                label="Allekirjoituspäivämäärä"
-                                value={signedDateInput.value}
-                                onChange={signedDateInput.onChange}
-                                placeholder="DD.MM.YYYY"
-                                language="fi"
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-payment-schedule-signed-date-${index}`}
-                                label="Allekirjoituspäivämäärä"
-                                value={readOnlyTextValue(signedDateInput.value)}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <Field
-                          name={`${fieldName}.asemakaavanLainvoimaisuusPvm`}
-                        >
-                          {({ input: asemakaavanLainvoimaisuusPvmInput }) =>
-                            isEditMode &&
-                            isInvoiceEditableBasedOnStatus(invoice) ? (
-                              <DateInput
-                                id={`landuse-payment-schedule-valid-date-${index}`}
-                                label="Lainvoimaisuuspäivämäärä"
-                                value={asemakaavanLainvoimaisuusPvmInput.value}
-                                onChange={
-                                  asemakaavanLainvoimaisuusPvmInput.onChange
-                                }
-                                placeholder="DD.MM.YYYY"
-                                language="fi"
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-payment-schedule-valid-date-${index}`}
-                                label="Lainvoimaisuuspäivämäärä"
-                                value={readOnlyTextValue(
-                                  asemakaavanLainvoimaisuusPvmInput.value,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <Field name={`${fieldName}.dueDate`}>
-                          {({ input: dueDateInput }) =>
-                            isEditMode &&
-                            isInvoiceEditableBasedOnStatus(invoice) ? (
-                              <DateInput
-                                id={`landuse-payment-schedule-due-date-${index}`}
-                                label="Eräpäivä"
-                                value={dueDateInput.value}
-                                onChange={dueDateInput.onChange}
-                                placeholder="DD.MM.YYYY"
-                                language="fi"
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-payment-schedule-due-date-${index}`}
-                                label="Eräpäivä"
-                                value={readOnlyTextValue(dueDateInput.value)}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
-                    </div>
-                    <div className="landuse-grid landuse-grid__bottom-margin">
-                      <div className="landuse-grid__column-12">
-                        <Fieldset heading="Laskurivit">
-                          <FieldArray<LandUseInvoiceItem>
-                            name={`${fieldName}.invoiceItems`}
-                          >
-                            {({ fields: invoiceItemFields }) => (
-                              <>
-                                {invoiceItemFields.length > 0 ? (
-                                  invoiceItemFields.map(
-                                    (
-                                      invoiceItemFieldName,
-                                      invoiceItemIndex,
-                                    ) => (
-                                      <div
-                                        key={invoiceItemFieldName}
-                                        className="landuse-grid landuse-grid__bottom-margin"
-                                      >
-                                        <div
-                                          className={"landuse-grid__column-12"}
-                                        >
-                                          <Field
-                                            name={`${invoiceItemFieldName}.description`}
-                                          >
-                                            {({ input: descriptionInput }) => (
-                                              <TextInput
-                                                id={`landuse-payment-schedule-invoice-row-description-${index}-${invoiceItemIndex}`}
-                                                label="Selite"
-                                                value={getFieldTextValue(
-                                                  isEditMode &&
-                                                    isInvoiceEditableBasedOnStatus(
-                                                      invoice,
-                                                    ),
-                                                  descriptionInput.value,
-                                                )}
-                                                onChange={
-                                                  descriptionInput.onChange
-                                                }
-                                                readOnly={
-                                                  !isEditMode ||
-                                                  !isInvoiceEditableBasedOnStatus(
-                                                    invoice,
-                                                  )
-                                                }
-                                              />
-                                            )}
-                                          </Field>
-                                        </div>
-
-                                        <div className="landuse-grid__column-2">
-                                          <Field
-                                            name={`${invoiceItemFieldName}.itemType`}
-                                          >
-                                            {({ input: itemTypeInput }) =>
-                                              isEditMode &&
-                                              isInvoiceEditableBasedOnStatus(
-                                                invoice,
-                                              ) ? (
-                                                <Select
-                                                  id={`landuse-payment-schedule-invoice-row-item-type-${index}-${invoiceItemIndex}`}
-                                                  texts={{
-                                                    label: "Laskurivin tyyppi",
-                                                    placeholder: "Valitse",
-                                                  }}
-                                                  options={
-                                                    landUseInvoiceItemTypeSelectOptions
-                                                  }
-                                                  value={itemTypeInput.value}
-                                                  onChange={(selected) => {
-                                                    if (selected.length > 0) {
-                                                      itemTypeInput.onChange(
-                                                        selected[0].value,
-                                                      );
-                                                    }
-                                                  }}
-                                                />
-                                              ) : (
-                                                <TextInput
-                                                  id={`landuse-payment-schedule-invoice-row-item-type-${index}-${invoiceItemIndex}`}
-                                                  label="Laskurivin tyyppi"
-                                                  value={readOnlyTextValue(
-                                                    itemTypeInput.value,
-                                                  )}
-                                                  readOnly
-                                                />
-                                              )
-                                            }
-                                          </Field>
-                                        </div>
-
-                                        <Field
-                                          name={`${invoiceItemFieldName}.amountExcludingVat`}
-                                        >
-                                          {({ input: amountInput }) => (
-                                            <>
-                                              <div className="landuse-grid__column-2">
-                                                <NumericDecimalInput
-                                                  id={`landuse-payment-schedule-invoice-row-amount-${index}-${invoiceItemIndex}`}
-                                                  label="Veroton summa (€)"
-                                                  value={amountInput.value}
-                                                  onChange={
-                                                    amountInput.onChange
-                                                  }
-                                                  unit="€"
-                                                  isEditMode={
-                                                    isEditMode &&
-                                                    isInvoiceEditableBasedOnStatus(
-                                                      invoice,
-                                                    )
-                                                  }
-                                                />
-                                              </div>
-
-                                              {isEditMode &&
-                                                isInvoiceEditableBasedOnStatus(
-                                                  invoice,
-                                                ) && (
-                                                  <div className="landuse-grid__column-2">
-                                                    <Select
-                                                      id={`landuse-payment-schedule-invoice-row-korko-select-${index}-${invoiceItemIndex}`}
-                                                      options={korkoResults.map(
-                                                        (r) => ({
-                                                          label: `${r.id}. ${formatLandUseEuroDisplayValue(r.korkoValue)}`,
-                                                          value: String(
-                                                            r.korkoValue,
-                                                          ),
-                                                        }),
-                                                      )}
-                                                      onChange={(selected) => {
-                                                        if (
-                                                          selected.length > 0
-                                                        ) {
-                                                          amountInput.onChange(
-                                                            Number(
-                                                              selected[0].value,
-                                                            ).toFixed(2),
-                                                          );
-                                                        }
-                                                      }}
-                                                      disabled={
-                                                        korkoResults.length ===
-                                                        0
-                                                      }
-                                                      texts={{
-                                                        label:
-                                                          "Täytä korkolaskimesta",
-                                                        placeholder:
-                                                          korkoResults.length >
-                                                          0
-                                                            ? "Valitse"
-                                                            : "Ei tuloksia",
-                                                      }}
-                                                    />
-                                                  </div>
-                                                )}
-                                            </>
-                                          )}
-                                        </Field>
-
-                                        {isEditMode &&
-                                          isInvoiceEditableBasedOnStatus(
-                                            invoice,
-                                          ) && (
-                                            <div className="landuse-grid__column-2 landuse-compensations-table__detail-actions">
-                                              <Button
-                                                type="button"
-                                                size={ButtonSize.Small}
-                                                variant={
-                                                  ButtonVariant.Secondary
-                                                }
-                                                onClick={() =>
-                                                  invoiceItemFields.remove(
-                                                    invoiceItemIndex,
-                                                  )
-                                                }
-                                              >
-                                                Poista rivi
-                                              </Button>
-                                            </div>
-                                          )}
-                                      </div>
-                                    ),
-                                  )
-                                ) : (
-                                  <p>Ei laskurivejä.</p>
-                                )}
-
-                                {isEditMode &&
-                                  isInvoiceEditableBasedOnStatus(invoice) && (
-                                    <div>
-                                      <Button
-                                        type="button"
-                                        variant={ButtonVariant.Supplementary}
-                                        size={ButtonSize.Small}
-                                        iconStart={<IconPlusCircleFill />}
-                                        onClick={() =>
-                                          invoiceItemFields.push(
-                                            createEmptyInvoiceItemRow(),
-                                          )
-                                        }
-                                      >
-                                        Lisää laskurivi
-                                      </Button>
-                                    </div>
-                                  )}
-                              </>
-                            )}
-                          </FieldArray>
-                        </Fieldset>
-                      </div>
-                    </div>
-                    {/* TODO: Do not allow deleting sent invoices, for now enabled for testing */}
-                    {isEditMode && (
-                      <div className="landuse-compensations-table__detail-actions">
-                        <ConfirmDeleteButton
-                          id={`payment-schedule-delete-${index}`}
-                          buttonLabel="Poista lasku"
-                          buttonVariant={ButtonVariant.Danger}
-                          buttonSize={ButtonSize.Small}
-                          onConfirm={() => onRemove(index)}
-                          dialogTitle="Poista lasku"
-                          dialogContent={`Haluatko varmasti poistaa laskun ${getInvoiceDeleteLabel(invoice.invoiceNumber)}?`}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            )}
-          </>
-        );
-      }}
-    </Field>
+      <StepByStep
+        steps={entries.map(({ fieldName, index, invoice }) =>
+          buildInstallmentStep({
+            fieldName,
+            index,
+            isEditMode,
+            invoice,
+            korkoResults,
+            onRemove,
+          }),
+        )}
+      />
+      {isEditMode && (
+        <div className="landuse-invoicing__invoice-actions">
+          <Button
+            type="button"
+            variant={ButtonVariant.Supplementary}
+            iconStart={<IconPlusCircleFill />}
+            onClick={onAddInstallment}
+          >
+            Lisää erä
+          </Button>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -1200,7 +934,6 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
   korkoResults,
   setKorkoResults,
 }) => {
-  const [openInvoiceIndex, setOpenInvoiceIndex] = useState<number | null>(null);
   const [isBulkCreateOpen, setIsBulkCreateOpen] = useState(false);
 
   const partyOptions = React.useMemo(
@@ -1225,8 +958,6 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       partyOptions.find((o) => o.value === values.recipientPartyIndex)?.label ??
       "";
 
-    const currentLength = form.getState().values.invoices?.length ?? 0;
-
     for (let i = 0; i < total; i++) {
       form.mutators.push(
         "invoices",
@@ -1242,7 +973,6 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       );
     }
 
-    setOpenInvoiceIndex(currentLength);
     setIsBulkCreateOpen(false);
   };
 
@@ -1258,17 +988,13 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                 LandUsePaymentScheduleFormValues | undefined
             )?.invoices ?? [];
 
-          const handleAddInvoice = (
-            push: (value: LandUseInvoice) => void,
-            currentLength: number,
-          ) => {
+          const handleAddInvoice = (push: (value: LandUseInvoice) => void) => {
             push(
               createEmptyInvoiceTableRow(
                 partyOptions[0]?.value,
                 agreementOptions[0]?.value,
               ),
             );
-            setOpenInvoiceIndex(currentLength);
           };
 
           const handleRemoveInvoice = (
@@ -1276,120 +1002,110 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
             index: number,
           ) => {
             remove(index);
-
-            setOpenInvoiceIndex((currentOpenInvoiceIndex) => {
-              if (currentOpenInvoiceIndex === null) {
-                return null;
-              }
-
-              if (currentOpenInvoiceIndex === index) {
-                return null;
-              }
-
-              if (currentOpenInvoiceIndex > index) {
-                return currentOpenInvoiceIndex - 1;
-              }
-
-              return currentOpenInvoiceIndex;
-            });
-          };
-
-          const handleToggleInvoice = (index: number) => {
-            setOpenInvoiceIndex((currentOpenInvoiceIndex) =>
-              currentOpenInvoiceIndex === index ? null : index,
-            );
           };
 
           return (
             <div className="landuse-detail__content">
               <h1>Maksuaikataulu ja erät</h1>
+              <div className="landuse-grid landuse-grid__bottom-margin">
+                <div className="landuse-grid__column-12">
+                  {isEditMode && (
+                    <div className="landuse-invoicing__invoice-actions">
+                      <Button
+                        type="button"
+                        variant={ButtonVariant.Supplementary}
+                        iconStart={<IconPlusCircle />}
+                        onClick={() => setIsBulkCreateOpen(true)}
+                      >
+                        Syötä maksuaikataulu
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="landuse-grid landuse-grid__bottom-margin">
+                <div className="landuse-grid__column-3">
+                  <TextInput
+                    id="landuse-payment-schedule-asemakaavanumero"
+                    label="Kaavanumero"
+                    value={readOnlyTextValue(asemakaavanNumero)}
+                    readOnly
+                  />
+                </div>
+                <div className="landuse-grid__column-3">
+                  <Field name="asemakaavanLainvoimaisuusPvm">
+                    {({ input }) => (
+                      <TextInput
+                        id={`landuse-payment-schedule-valid-date`}
+                        label="Lainvoimaisuuspäivämäärä"
+                        value={readOnlyTextValue(input.value)}
+                        readOnly
+                      />
+                    )}
+                  </Field>
+                </div>
+              </div>
+
               <form onSubmit={handleSubmit}>
                 <Fieldset
                   heading=""
                   className="landuse-detail__fieldset--with-margin"
                 >
-                  <div className="landuse-detail__sites-table-wrapper">
-                    <FieldArray<LandUseInvoice> name="invoices">
-                      {({ fields }) => (
-                        <>
-                          <table className="landuse-compensations-table">
-                            <thead>
-                              <tr>
-                                <th className="landuse-compensations-table__toggle-cell" />
-                                <th>Laskunsaaja</th>
-                                <th>Sopimusnumero</th>
-                                <th>Laskutuserä</th>
-                                <th>Eräpäivä</th>
-                                <th>Laskunumero</th>
-                                <th>Tyyppi</th>
-                                <th>Laskun tila</th>
-                                <th>Laskutettu</th>
-                                <th>Maksamatta</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {fields.length > 0 ? (
-                                fields.map((fieldName, index) => (
-                                  <InvoiceTableRow
-                                    key={fieldName}
-                                    fieldName={fieldName}
-                                    index={index}
-                                    isEditMode={isEditMode}
-                                    isExistingInvoice={Boolean(
-                                      existingInvoices[index],
-                                    )}
-                                    isOpen={openInvoiceIndex === index}
-                                    parties={parties}
-                                    partyOptions={partyOptions}
-                                    agreementOptions={agreementOptions}
-                                    asemakaavanNumero={asemakaavanNumero}
-                                    korkoResults={korkoResults}
-                                    isInvoiceTableRowEditable={isInvoiceEditableBasedOnStatus(
-                                      existingInvoices[index] as LandUseInvoice,
-                                    )}
-                                    onRemove={(removeIndex) =>
-                                      handleRemoveInvoice(
-                                        fields.remove,
-                                        removeIndex,
-                                      )
-                                    }
-                                    onToggle={handleToggleInvoice}
-                                  />
-                                ))
-                              ) : (
-                                <tr>
-                                  <td colSpan={10}>Ei laskuja.</td>
-                                </tr>
-                              )}
-                            </tbody>
-                          </table>
+                  <FieldArray<LandUseInvoice> name="invoices">
+                    {({ fields }) => {
+                      const groupedByParty = new Map<
+                        string,
+                        InvoiceGroupEntry[]
+                      >();
+                      fields.forEach((fieldName, index) => {
+                        const invoice = (fields.value?.[index] ??
+                          {}) as LandUseInvoice;
+                        const key =
+                          invoice.recipientPartyIndex ?? "__ungrouped";
+                        if (!groupedByParty.has(key)) {
+                          groupedByParty.set(key, []);
+                        }
+                        groupedByParty.get(key)!.push({
+                          fieldName,
+                          index,
+                          invoice,
+                          isExistingInvoice: Boolean(existingInvoices[index]),
+                        });
+                      });
 
-                          {isEditMode && (
-                            <div className="landuse-invoicing__invoice-actions">
-                              <Button
-                                type="button"
-                                variant={ButtonVariant.Supplementary}
-                                iconStart={<IconPlusCircleFill />}
-                                onClick={() =>
-                                  handleAddInvoice(fields.push, fields.length)
-                                }
-                              >
-                                Lisää lasku
-                              </Button>
-                              <Button
-                                type="button"
-                                variant={ButtonVariant.Supplementary}
-                                iconStart={<IconPlusCircle />}
-                                onClick={() => setIsBulkCreateOpen(true)}
-                              >
-                                Lisää useita maankäyttökorvauslaskuja
-                              </Button>
-                            </div>
-                          )}
+                      return (
+                        <>
+                          {partyOptions.map((partyOption) => (
+                            <PartyGroupSection
+                              key={partyOption.value}
+                              partyLabel={partyOption.label}
+                              partyIndex={partyOption.value}
+                              entries={
+                                groupedByParty.get(partyOption.value) ?? []
+                              }
+                              isEditMode={isEditMode}
+                              parties={parties}
+                              partyOptions={partyOptions}
+                              agreementOptions={agreementOptions}
+                              asemakaavanNumero={asemakaavanNumero}
+                              korkoResults={korkoResults}
+                              onRemove={(removeIndex) =>
+                                handleRemoveInvoice(fields.remove, removeIndex)
+                              }
+                              onAddInstallment={() =>
+                                fields.push(
+                                  createEmptyInvoiceTableRow(
+                                    partyOption.value,
+                                    agreementOptions[0]?.value,
+                                  ),
+                                )
+                              }
+                            />
+                          ))}
                         </>
-                      )}
-                    </FieldArray>
-                  </div>
+                      );
+                    }}
+                  </FieldArray>
                 </Fieldset>
               </form>
               <h2>Korkolaskin</h2>
