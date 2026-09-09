@@ -365,7 +365,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
     >
       <Dialog.Header
         id="landuse-bulk-create-invoices-schedule-title"
-        title="Luo maksuaikataulu"
+        title="Syötä maksusuunnitelma"
       />
       <Dialog.Content>
         <div className="landuse-grid">
@@ -728,7 +728,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
         <h2 className="landuse-payment-schedule__party-heading">
           {partyLabel}
         </h2>
-        <p>Ei maksuaikatauluja.</p>
+        <p>Ei maksusuunnitelmia.</p>
         {isEditMode && (
           <div className="landuse-invoicing__invoice-actions">
             <Button
@@ -836,7 +836,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                 <>
                   <TextInput
                     id={`landuse-payment-schedule-status-${firstIndex}`}
-                    label="Maksuaikataulun tila"
+                    label="Maksusuunnitelman tila"
                     value={readOnlyTextValue(statusInput.value)}
                     readOnly
                   />
@@ -996,7 +996,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
 
           return (
             <div className="landuse-detail__content">
-              <h1>Maksuaikataulu ja erät</h1>
+              <h1>Maksusuunnitelmat</h1>
               <div className="landuse-grid landuse-grid__bottom-margin">
                 <div className="landuse-grid__column-12">
                   {isEditMode && (
@@ -1007,7 +1007,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                         iconStart={<IconPlusCircle />}
                         onClick={() => setIsBulkCreateOpen(true)}
                       >
-                        Syötä maksuaikataulu
+                        Syötä maksusuunnitelma
                       </Button>
                     </div>
                   )}
