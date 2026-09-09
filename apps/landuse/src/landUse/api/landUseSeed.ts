@@ -1,8 +1,9 @@
 import { mockLandUseTabStore } from "../mocks/landUseMockData";
 import {
-  createEmptyInvoicingFormValues,
   clonePartiesFormValues,
+  createEmptyBillingFormValues,
   createEmptyPartiesFormValues,
+  createEmptyPaymentScheduleFormValues,
   mapMockToSummaryFormValues,
 } from "./landUseFormValues";
 import { hasAgreementTab, setAgreementTab } from "./landUseDb";
@@ -42,12 +43,22 @@ export const seedLandUseDb = async (): Promise<void> => {
       await seedTabIfMissing(agreementId, "parties", partiesData);
       await seedTabIfMissing(
         agreementId,
-        "invoicing",
-        agreementMock?.invoicing ?? createEmptyInvoicingFormValues(),
+        "paymentSchedule",
+        agreementMock?.paymentSchedule ??
+          createEmptyPaymentScheduleFormValues(),
+      );
+      await seedTabIfMissing(
+        agreementId,
+        "billing",
+        agreementMock?.billing ?? createEmptyBillingFormValues(),
       );
 
       const emptyTabs = LAND_USE_TAB_KEYS.filter(
-        (key) => key !== "summary" && key !== "parties" && key !== "invoicing",
+        (key) =>
+          key !== "summary" &&
+          key !== "parties" &&
+          key !== "paymentSchedule" &&
+          key !== "billing",
       );
 
       await Promise.all(

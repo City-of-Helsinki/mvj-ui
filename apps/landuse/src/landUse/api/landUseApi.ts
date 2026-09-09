@@ -2,7 +2,8 @@ import type { LandUseCompensationsFormValues } from "../components/tabs/LandUseC
 import type { LandUseCollateralsFormValues } from "../components/tabs/LandUseCollaterals";
 import type { LandUseContractsFormValues } from "../components/tabs/LandUseContracts";
 import type { LandUseDecisionsFormValues } from "../components/tabs/LandUseDecisions";
-import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoicing";
+import type { LandUseBillingFormValues } from "../components/tabs/LandUseBilling";
+import type { LandUsePaymentScheduleFormValues } from "../components/tabs/LandUsePaymentSchedule";
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
 import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
@@ -185,16 +186,32 @@ export const updateContracts = async (
   return values;
 };
 
-export const getInvoicing = async (
+export const getPaymentSchedule = async (
   agreementId: string,
-): Promise<LandUseInvoicingFormValues | null> =>
-  getAgreementTab<LandUseInvoicingFormValues>(agreementId, "invoicing");
+): Promise<LandUsePaymentScheduleFormValues | null> =>
+  getAgreementTab<LandUsePaymentScheduleFormValues>(
+    agreementId,
+    "paymentSchedule",
+  );
 
-export const updateInvoicing = async (
+export const updatePaymentSchedule = async (
   agreementId: string,
-  values: LandUseInvoicingFormValues,
-): Promise<LandUseInvoicingFormValues> => {
-  await setAgreementTab(agreementId, "invoicing", values);
+  values: LandUsePaymentScheduleFormValues,
+): Promise<LandUsePaymentScheduleFormValues> => {
+  await setAgreementTab(agreementId, "paymentSchedule", values);
+  return values;
+};
+
+export const getBilling = async (
+  agreementId: string,
+): Promise<LandUseBillingFormValues | null> =>
+  getAgreementTab<LandUseBillingFormValues>(agreementId, "billing");
+
+export const updateBilling = async (
+  agreementId: string,
+  values: LandUseBillingFormValues,
+): Promise<LandUseBillingFormValues> => {
+  await setAgreementTab(agreementId, "billing", values);
   return values;
 };
 

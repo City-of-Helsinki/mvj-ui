@@ -408,6 +408,22 @@ export const landUseCompensationSelectOptions = {
   suojeltu: ["-", "SR1", "SR2"],
 };
 
+export const LAND_USE_INVOICE_STATUSES = {
+  DRAFT: "Luonnos",
+  PENDING_APPROVAL: "Odottaa hyväksyntää",
+  OPEN: "Avoin",
+  PAID: "Maksettu",
+} as const;
+
+export type LandUseInvoiceStatus =
+  (typeof LAND_USE_INVOICE_STATUSES)[keyof typeof LAND_USE_INVOICE_STATUSES];
+
+export interface LandUseInvoiceItem {
+  description: string;
+  itemType: string;
+  amountExcludingVat: string;
+}
+
 export const LAND_USE_INVOICE_TYPES = {
   MAANKAYTTOKORVAUS: "Maankäyttökorvaus",
   SAKKO: "Sakko",
@@ -416,6 +432,23 @@ export const LAND_USE_INVOICE_TYPES = {
 
 export type LandUseInvoiceType =
   (typeof LAND_USE_INVOICE_TYPES)[keyof typeof LAND_USE_INVOICE_TYPES];
+
+export interface LandUseInvoice {
+  recipientPartyIndex: string | undefined;
+  contractIndex: string | undefined;
+  installmentNumber: string;
+  installmentTotal: string;
+  signedDate: string;
+  asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
+  dueDate: string;
+  invoiceNumber: string;
+  type: LandUseInvoiceType | undefined;
+  status: LandUseInvoiceStatus | undefined;
+  sentAt?: string;
+  billedAmount: string;
+  remainingAmount: string;
+  invoiceItems?: LandUseInvoiceItem[];
+}
 
 export const landUseInvoiceTypeSelectOptions: {
   label: string;
