@@ -5,7 +5,8 @@ import type {
 } from "../components/tabs/LandUseCompensations";
 import type { LandUseContractsFormValues } from "../components/tabs/LandUseContracts";
 import type { LandUseDecisionsFormValues } from "../components/tabs/LandUseDecisions";
-import type { LandUseInvoicingFormValues } from "../components/tabs/LandUseInvoicing";
+import type { LandUseBillingFormValues } from "../components/tabs/LandUseBilling";
+import type { LandUsePaymentScheduleFormValues } from "../components/tabs/LandUsePaymentSchedule";
 import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
 import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
@@ -99,7 +100,8 @@ export interface LandUseAgreementMockTabs {
   monitoring: LandUseMonitoringFormValues;
   decisions: LandUseDecisionsFormValues;
   contracts: LandUseContractsFormValues;
-  invoicing: LandUseInvoicingFormValues;
+  paymentSchedule: LandUsePaymentScheduleFormValues;
+  billing: LandUseBillingFormValues;
   map: LandUseMapFormValues;
 }
 
@@ -233,7 +235,40 @@ const ma113Monitoring: LandUseMonitoringFormValues = {
   ],
 };
 
-const ma113Invoicing: LandUseInvoicingFormValues = {
+const ma113PaymentSchedule: LandUsePaymentScheduleFormValues = {
+  invoices: [
+    {
+      recipientPartyIndex: "0",
+      contractIndex: "0",
+      installmentNumber: "1",
+      installmentTotal: "2",
+      signedDate: "2026-01-20",
+      asemakaavanLainvoimaisuusPvm: "2026-02-20",
+      dueDate: "2026-04-15",
+      invoiceNumber: "123456789",
+      type: "Maankäyttökorvaus",
+      status: "Avoin",
+      billedAmount: "450000",
+      remainingAmount: "125000",
+    },
+    {
+      recipientPartyIndex: "0",
+      contractIndex: "0",
+      installmentNumber: "2",
+      installmentTotal: "2",
+      signedDate: "2026-01-20",
+      asemakaavanLainvoimaisuusPvm: "2026-02-20",
+      dueDate: "2026-06-10",
+      invoiceNumber: "123456790",
+      type: "Perintä",
+      status: "Maksettu",
+      billedAmount: "3500",
+      remainingAmount: "0",
+    },
+  ],
+};
+
+const ma113Billing: LandUseBillingFormValues = {
   invoices: [
     {
       recipientPartyIndex: "0",
@@ -315,7 +350,8 @@ export const mockLandUseTabStore: Record<string, LandUseAgreementMockTabs> = {
     monitoring: ma113Monitoring,
     decisions: ma113Decisions,
     contracts: ma113Agreements,
-    invoicing: ma113Invoicing,
+    paymentSchedule: ma113PaymentSchedule,
+    billing: ma113Billing,
     map: ma113Map,
   },
 };

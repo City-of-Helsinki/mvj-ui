@@ -210,8 +210,8 @@ vi.mock("../tabs/LandUseDecisions", () => ({
   ),
 }));
 
-vi.mock("../tabs/LandUseInvoicing", () => ({
-  LandUseInvoicing: ({
+vi.mock("../tabs/LandUsePaymentSchedule", () => ({
+  LandUsePaymentSchedule: ({
     form,
     isEditMode,
   }: {
@@ -222,10 +222,36 @@ vi.mock("../tabs/LandUseInvoicing", () => ({
       form={form}
       onSubmit={() => {}}
       render={() => (
-        <Field name="invoicingField">
+        <Field name="paymentScheduleField">
           {({ input }) => (
             <input
-              aria-label="invoicing-input"
+              aria-label="payment-schedule-input"
+              {...input}
+              disabled={!isEditMode}
+            />
+          )}
+        </Field>
+      )}
+    />
+  ),
+}));
+
+vi.mock("../tabs/LandUseBilling", () => ({
+  LandUseBilling: ({
+    form,
+    isEditMode,
+  }: {
+    form: any;
+    isEditMode: boolean;
+  }) => (
+    <Form
+      form={form}
+      onSubmit={() => {}}
+      render={() => (
+        <Field name="billingField">
+          {({ input }) => (
+            <input
+              aria-label="billing-input"
               {...input}
               disabled={!isEditMode}
             />
@@ -384,7 +410,8 @@ vi.mock("../../api/landUseApi", () => ({
   getMonitoring: vi.fn(),
   getDecisions: vi.fn(),
   getContracts: vi.fn(),
-  getInvoicing: vi.fn(),
+  getPaymentSchedule: vi.fn(),
+  getBilling: vi.fn(),
   getMap: vi.fn(),
   getCollaterals: vi.fn(),
   updateSummary: vi.fn(),
@@ -393,7 +420,8 @@ vi.mock("../../api/landUseApi", () => ({
   updateMonitoring: vi.fn(),
   updateDecisions: vi.fn(),
   updateContracts: vi.fn(),
-  updateInvoicing: vi.fn(),
+  updatePaymentSchedule: vi.fn(),
+  updateBilling: vi.fn(),
   updateMap: vi.fn(),
   updateCollaterals: vi.fn(),
 }));
@@ -422,7 +450,8 @@ describe("LandUseDetailPage", () => {
     vi.mocked(landUseApi.getMonitoring).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getDecisions).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getContracts).mockResolvedValue({} as any);
-    vi.mocked(landUseApi.getInvoicing).mockResolvedValue({} as any);
+    vi.mocked(landUseApi.getPaymentSchedule).mockResolvedValue({} as any);
+    vi.mocked(landUseApi.getBilling).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getMap).mockResolvedValue({} as any);
 
     vi.mocked(landUseApi.updateSummary).mockImplementation(
@@ -446,7 +475,10 @@ describe("LandUseDetailPage", () => {
     vi.mocked(landUseApi.updateContracts).mockImplementation(
       async (_agreementId, values) => values as any,
     );
-    vi.mocked(landUseApi.updateInvoicing).mockImplementation(
+    vi.mocked(landUseApi.updatePaymentSchedule).mockImplementation(
+      async (_agreementId, values) => values as any,
+    );
+    vi.mocked(landUseApi.updateBilling).mockImplementation(
       async (_agreementId, values) => values as any,
     );
     vi.mocked(landUseApi.updateMap).mockImplementation(
