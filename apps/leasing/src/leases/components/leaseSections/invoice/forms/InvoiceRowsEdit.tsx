@@ -55,7 +55,7 @@ const InvoiceRowsEdit = ({
   const receivableType = receivableTypeFromRows(rows);
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         return (
           <>
             <SubTitle
@@ -70,7 +70,7 @@ const InvoiceRowsEdit = ({
                 <BoxItemContainer>
                   {fields.map((row, index) => {
                     const handleRemove = () => {
-                      appDispatch({
+                      dispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           fields.remove(index);

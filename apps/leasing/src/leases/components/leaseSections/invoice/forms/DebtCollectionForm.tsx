@@ -243,7 +243,7 @@ const DebtCollectionForm: React.FC = () => {
 
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         return (
           <>
             <Authorization
@@ -328,7 +328,7 @@ const DebtCollectionForm: React.FC = () => {
                     !!sortedCollectionLetters.length &&
                     sortedCollectionLetters.map((collectionLetter, index) => {
                       const handleRemove = () => {
-                        appDispatch({
+                        dispatch({
                           type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                           confirmationFunction: () => {
                             handleDeleteCollectionLetter(collectionLetter.id);
@@ -546,7 +546,7 @@ const DebtCollectionForm: React.FC = () => {
                     sortedCollectionCourtDecisions.map(
                       (collectionCourtDecision, index) => {
                         const handleRemove = () => {
-                          appDispatch({
+                          dispatch({
                             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                             confirmationFunction: () => {
                               handleDeleteCollectionCourtDecision(
@@ -651,7 +651,7 @@ const DebtCollectionForm: React.FC = () => {
                         {sortedCollectionCourtDecisions.map(
                           (collectionCourtDecision, index) => {
                             const handleRemove = () => {
-                              appDispatch({
+                              dispatch({
                                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                                 confirmationFunction: () => {
                                   handleDeleteCollectionCourtDecision(
@@ -884,7 +884,7 @@ const DebtCollectionForm: React.FC = () => {
                 isServiceUnitSameAsActiveServiceUnit={
                   isServiceUnitSameAsActiveServiceUnit
                 }
-                appDispatch={appDispatch}
+                appDispatch={dispatch}
               />
             </Authorization>
             <Authorization

@@ -281,10 +281,10 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
 
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         const handleCreateLeaseModalSubmit = (payload: Record<string, any>) => {
           if (hasAnyDirtyForms) {
-            appDispatch({
+            dispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 handleLeaseCreate(payload);

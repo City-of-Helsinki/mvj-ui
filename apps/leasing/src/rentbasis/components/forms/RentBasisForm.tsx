@@ -63,7 +63,7 @@ const PropertyIdentifiers = ({
 
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         return (
           <>
             <FormTextTitle
@@ -93,7 +93,7 @@ const PropertyIdentifiers = ({
               !!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  appDispatch({
+                  dispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);

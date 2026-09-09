@@ -80,7 +80,7 @@ const UsageDistributions = ({
 
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         return (
           <>
             {!isFieldAllowedToEdit(
@@ -93,7 +93,7 @@ const UsageDistributions = ({
               <BoxItemContainer>
                 {fields.map((usageDistribution, index) => {
                   const handleRemove = () => {
-                    appDispatch({
+                    dispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -263,7 +263,7 @@ const InfoLinks = ({
 
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         return (
           <>
             {!isFieldAllowedToEdit(
@@ -276,7 +276,7 @@ const InfoLinks = ({
               <BoxItemContainer>
                 {fields.map((infoLink, index) => {
                   const handleRemove = () => {
-                    appDispatch({
+                    dispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);

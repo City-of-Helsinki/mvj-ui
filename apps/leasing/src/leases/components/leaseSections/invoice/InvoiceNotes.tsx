@@ -151,7 +151,7 @@ const InvoiceNotesEdit = ({ fields }: EditProps): ReactElement => {
 
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         return (
           <>
             {fields && !!fields.length && (
@@ -197,7 +197,7 @@ const InvoiceNotesEdit = ({ fields }: EditProps): ReactElement => {
 
             {fields.map((note, index) => {
               const handleRemove = () => {
-                appDispatch({
+                dispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
                     fields.remove(index);
@@ -368,10 +368,10 @@ const InvoiceNotes: React.FC<Props> = ({ invoiceNotes }) => {
             }
           >
             <AppConsumer>
-              {({ dispatch: appDispatch }) => {
+              {({ dispatch }) => {
                 const handleCancel = () => {
                   if (dirty) {
-                    appDispatch({
+                    dispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         form.reset();

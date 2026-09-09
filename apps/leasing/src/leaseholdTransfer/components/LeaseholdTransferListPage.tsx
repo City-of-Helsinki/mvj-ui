@@ -217,10 +217,10 @@ const LeaseholdTransferListPage: React.FC = () => {
 
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         const handleDelete = (id: number) => {
-          if (!appDispatch) return;
-          appDispatch({
+          if (!dispatch) return;
+          dispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               const mappedSearchQuery = getMappedSearchQuery();

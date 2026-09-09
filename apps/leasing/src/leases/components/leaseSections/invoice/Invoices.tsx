@@ -360,9 +360,9 @@ const Invoices: React.FC = () => {
     return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         const handleStartInvoicing = () => {
-          appDispatch({
+          dispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               startInvoicing();
@@ -378,7 +378,7 @@ const Invoices: React.FC = () => {
         };
 
         const handleStopInvoicing = () => {
-          appDispatch({
+          dispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               stopInvoicing();
