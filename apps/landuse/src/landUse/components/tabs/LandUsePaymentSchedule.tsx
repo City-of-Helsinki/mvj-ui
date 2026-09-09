@@ -365,22 +365,24 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
     >
       <Dialog.Header
         id="landuse-bulk-create-invoices-schedule-title"
-        title="Luo maankäyttökorvaus laskuja"
+        title="Luo maksuaikataulu"
       />
       <Dialog.Content>
         <div className="landuse-grid">
           <div className="landuse-grid__column-12">
-            <NumberInput
-              id="bulk-create-installment-total-schedule"
-              label="Laskutuseriä yhteensä"
-              value={installmentTotal}
-              onChange={(e) =>
-                setInstallmentTotal(
-                  e.target.value === "" ? "" : Number(e.target.value),
-                )
+            <Select
+              id="bulk-create-recipient-schedule"
+              options={partyOptions}
+              value={normalizeSelectValue(recipientPartyIndex)}
+              onChange={(selected) =>
+                handleSelectChange(selected, setRecipientPartyIndex)
               }
-              min={1}
-              step={1}
+              disabled={partyOptions.length === 0}
+              texts={{
+                label: "Osapuoli",
+                placeholder:
+                  partyOptions.length > 0 ? "Valitse" : "Ei osapuolia",
+              }}
             />
           </div>
           <div className="landuse-grid__column-12">
@@ -400,29 +402,17 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
             />
           </div>
           <div className="landuse-grid__column-12">
-            <Select
-              id="bulk-create-recipient-schedule"
-              options={partyOptions}
-              value={normalizeSelectValue(recipientPartyIndex)}
-              onChange={(selected) =>
-                handleSelectChange(selected, setRecipientPartyIndex)
+            <NumberInput
+              id="bulk-create-installment-total-schedule"
+              label="Laskutuseriä yhteensä"
+              value={installmentTotal}
+              onChange={(e) =>
+                setInstallmentTotal(
+                  e.target.value === "" ? "" : Number(e.target.value),
+                )
               }
-              disabled={partyOptions.length === 0}
-              texts={{
-                label: "Laskunsaaja",
-                placeholder:
-                  partyOptions.length > 0 ? "Valitse" : "Ei osapuolia",
-              }}
-            />
-          </div>
-          <div className="landuse-grid__column-12">
-            <DateInput
-              id="bulk-create-valid-date-schedule"
-              label="Lainvoimaisuus"
-              value={asemakaavanLainvoimaisuusPvmValue}
-              onChange={setAsemakaavanLainvoimaisuusPvmValue}
-              placeholder="DD.MM.YYYY"
-              language="fi"
+              min={1}
+              step={1}
             />
           </div>
         </div>
