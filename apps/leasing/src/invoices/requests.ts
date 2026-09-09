@@ -1,6 +1,11 @@
 import callApi from "@/api/callApi";
 import createUrl from "@/api/createUrl";
-import type { Invoice, InvoiceId } from "./types";
+import type {
+  CreditInvoicePayload,
+  Invoice,
+  InvoiceId,
+  InvoicePayload,
+} from "./types";
 export const fetchAttributes = () => {
   return callApi(
     new Request(createUrl("invoice/"), {
@@ -23,7 +28,7 @@ export const createInvoice = (invoice: Invoice): Generator<any, any, any> => {
   );
 };
 export const creditInvoice = (
-  payload: Record<string, any>,
+  payload: CreditInvoicePayload,
 ): Generator<any, any, any> => {
   const { creditData, invoiceId } = payload;
   const body = JSON.stringify(creditData);
@@ -34,7 +39,9 @@ export const creditInvoice = (
     }),
   );
 };
-export const patchInvoice = (invoice: Invoice): Generator<any, any, any> => {
+export const patchInvoice = (
+  invoice: InvoicePayload,
+): Generator<any, any, any> => {
   const { id } = invoice;
   delete invoice.id;
   const body = JSON.stringify(invoice);

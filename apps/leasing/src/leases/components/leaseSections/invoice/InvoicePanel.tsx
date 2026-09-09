@@ -27,10 +27,10 @@ import {
 import { getCurrentLease } from "@/leases/selectors";
 import { getUserActiveServiceUnit } from "@/usersPermissions/selectors";
 import type { Methods as MethodsType } from "types";
-import type { Invoice } from "@/invoices/types";
+import type { ContentInvoice } from "@/invoices/types";
 
 type Props = {
-  invoice: Invoice | null | undefined;
+  invoice: ContentInvoice | null | undefined;
   onClose: (...args: Array<any>) => any;
   onInvoiceLinkClick: (...args: Array<any>) => any;
   onSave: (...args: Array<any>) => any;

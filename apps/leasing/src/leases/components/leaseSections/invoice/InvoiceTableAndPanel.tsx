@@ -50,15 +50,15 @@ import {
 import { getInvoiceSetsByLease } from "@/invoiceSets/selectors";
 import { getCurrentLease } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import type { Invoice, InvoiceList } from "@/invoices/types";
+import type { ContentInvoice, Invoice, InvoiceList } from "@/invoices/types";
 import type { InvoiceSetList } from "@/invoiceSets/types";
 import type { Attributes } from "types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import Loader from "@/components/loader/Loader";
 type Props = {
-  invoiceToCredit: Invoice | null | undefined;
-  onInvoiceToCreditChange: (invoice: Invoice | null) => void;
+  invoiceToCredit: ContentInvoice | null | undefined;
+  onInvoiceToCreditChange: (invoice: ContentInvoice | null) => void;
 };
 
 const InvoiceTableAndPanel: React.FC<Props> = ({
@@ -83,12 +83,14 @@ const InvoiceTableAndPanel: React.FC<Props> = ({
   const tableAndPanelWrapper = useRef<TableAndPanelWrapper>(null);
 
   const [columns, setColumns] = useState<Array<Column>>([]);
-  const [invoices, setInvoices] = useState<Array<Record<string, any>>>([]);
+  const [invoices, setInvoices] = useState<Array<ContentInvoice>>([]);
   const [invoiceToCreditRowId, setInvoiceToCreditRowId] = useState<
     string | null
   >(null);
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
-  const [openedInvoice, setOpenedInvoice] = useState<Invoice | null>(null);
+  const [openedInvoice, setOpenedInvoice] = useState<ContentInvoice | null>(
+    null,
+  );
 
   const forceUpdateInvoiceToCreditRow = useCallback(
     (rowId: string | null | undefined) => {
@@ -492,11 +494,11 @@ const InvoiceTableAndPanel: React.FC<Props> = ({
     }
   }, [forceUpdateInvoiceToCreditRow, invoiceToCreditRowId, scrollToOpenedRow]);
 
-  const selectOpenedInvoice = (invoice: Invoice) => {
+  const selectOpenedInvoice = (invoice: ContentInvoice) => {
     setOpenedInvoice(invoice);
   };
 
-  const handleRowClick = (id: number, row: Record<string, any>) => {
+  const handleRowClick = (id: number, row: ContentInvoice) => {
     setIsPanelOpen(true);
     setOpenedInvoice(row);
   };
@@ -519,7 +521,7 @@ const InvoiceTableAndPanel: React.FC<Props> = ({
     }
   };
 
-  const handleSelectRow = (row: Record<string, any>) => {
+  const handleSelectRow = (row: ContentInvoice) => {
     onInvoiceToCreditChange(row);
   };
 
@@ -557,7 +559,7 @@ const InvoiceTableAndPanel: React.FC<Props> = ({
     }
   };
 
-  const editInvoice = (invoice: Record<string, any>) => {
+  const editInvoice = (invoice: ContentInvoice) => {
     dispatch(patchInvoice(getPayloadEditInvoice(invoice)));
   };
 

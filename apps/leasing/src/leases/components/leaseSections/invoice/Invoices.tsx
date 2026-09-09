@@ -95,7 +95,7 @@ import {
 } from "@/leaseCreateCharge/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
-import type { Invoice } from "@/invoices/types";
+import type { ContentInvoice } from "@/invoices/types";
 
 const Invoices: React.FC = () => {
   const currentLease: Lease = useAppSelector(getCurrentLease);
@@ -338,7 +338,7 @@ const Invoices: React.FC = () => {
     handleCollapseToggle("preview_invoices", val);
   };
 
-  const handleInvoiceToCreditChange = (val: Invoice | null) => {
+  const handleInvoiceToCreditChange = (val: ContentInvoice | null) => {
     dispatch(receiveInvoiceToCredit(val));
   };
 
