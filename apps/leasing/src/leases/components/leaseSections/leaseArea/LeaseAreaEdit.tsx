@@ -109,7 +109,7 @@ const PlanUnits = ({
   const planUnitErrors = errors?.[name];
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         return (
           <Collapse
             className="collapse__secondary"
@@ -130,7 +130,7 @@ const PlanUnits = ({
               <BoxItemContainer>
                 {fields.map((planunit, index) => {
                   const handleRemove = () => {
-                    appDispatch({
+                    dispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -238,7 +238,7 @@ const Plots = ({
   const plotErrors = errors?.[name];
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         return (
           <Collapse
             className="collapse__secondary"
@@ -256,7 +256,7 @@ const Plots = ({
               <BoxItemContainer>
                 {fields.map((plot, index) => {
                   const handleDelete = () => {
-                    appDispatch({
+                    dispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -461,7 +461,7 @@ const AddressItems = ({ formApi, fields }: AddressesProps): ReactElement => {
 
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         return (
           <>
             <SubTitle
@@ -564,7 +564,7 @@ const AddressItems = ({ formApi, fields }: AddressesProps): ReactElement => {
               !!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  appDispatch({
+                  dispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);

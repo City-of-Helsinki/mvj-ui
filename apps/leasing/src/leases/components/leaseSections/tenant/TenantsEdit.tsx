@@ -262,7 +262,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
 
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         const handleCreateOrEdit = async (
           values: Contact,
           isValid: boolean,
@@ -289,7 +289,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
             });
 
             if (exists) {
-              appDispatch({
+              dispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   createOrEditContact(values);
@@ -371,7 +371,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
                         tenants: savedTenants,
                         usersPermissions,
                         formValues: values,
-                        appDispatch,
+                        appDispatch: dispatch,
                       })
                     }
                   </FieldArray>
@@ -386,7 +386,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
                         tenants: savedTenantsArchived,
                         usersPermissions,
                         formValues: values,
-                        appDispatch,
+                        appDispatch: dispatch,
                       })
                     }
                   </FieldArray>

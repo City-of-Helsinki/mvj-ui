@@ -206,9 +206,9 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
       </Authorization>
 
       <AppConsumer>
-        {({ dispatch: appDispatch }) => {
+        {({ dispatch }) => {
           const handleDelete = () => {
-            appDispatch({
+            dispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 handleDeleteInvoicePanelButtonClick();

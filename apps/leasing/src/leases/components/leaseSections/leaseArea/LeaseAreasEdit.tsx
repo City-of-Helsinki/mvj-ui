@@ -83,7 +83,7 @@ const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
 
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => (
+      {({ dispatch }) => (
         <>
           {!isActive && !!fields && !!fields.length && (
             <h3
@@ -100,7 +100,7 @@ const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
             !!fields.length &&
             fields.map((area, index) => {
               const handleRemove = () => {
-                appDispatch({
+                dispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
                     removeArea(index);
@@ -125,7 +125,7 @@ const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
                   onArchive={onArchive}
                   onRemove={handleRemove}
                   onUnarchive={(idx, areaData) =>
-                    onUnarchive(idx, areaData, appDispatch)
+                    onUnarchive(idx, areaData, dispatch)
                   }
                 />
               );
@@ -395,9 +395,9 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
 
   return (
     <AppConsumer>
-      {({ dispatch: appDispatch }) => {
+      {({ dispatch }) => {
         const handleCopyAreasToContract = () => {
-          appDispatch({
+          dispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               copyAreasToContract();
