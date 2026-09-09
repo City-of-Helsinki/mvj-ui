@@ -17,6 +17,7 @@ import {
 } from "@/landUse/utils/number";
 import { copyNumberToClipboard } from "@/landUse/utils/fieldUtils";
 import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
+import { calculateInvoicingPeriodDays } from "@/landUse/utils/date";
 
 export interface KorkoResult {
   id: number;
@@ -50,50 +51,6 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
   const [daysInYear, setDaysInYear] = useState<number>(365);
 
   const korkoPercentage = peruskorko + marginaali;
-
-  /**
-   * Parse HDS DateInput string (DD.MM.YYYY) to ISO format (YYYY-MM-DD).
-   */
-  const parseFinnishDateStringToISO = (dateStr: string): string | null => {
-    const [day, month, year] = dateStr.split(".");
-    const dayPadded = day.padStart(2, "0");
-    const monthPadded = month.padStart(2, "0");
-    return `${year}-${monthPadded}-${dayPadded}`;
-  };
-
-  /**
-   * @param startDateStr - Start date in DD.MM.YYYY format
-   * @param endDateStr - End date in DD.MM.YYYY format
-   * @returns Number of days between dates (inclusive), or 0 if invalid
-   *
-   * @requires Temporal
-   */
-  const calculateInvoicingPeriodDays = (
-    startDateStr: string,
-    endDateStr: string,
-  ): number => {
-    if (!startDateStr.trim() || !endDateStr.trim()) {
-      return 0;
-    }
-    const startISO = parseFinnishDateStringToISO(startDateStr);
-    const endISO = parseFinnishDateStringToISO(endDateStr);
-
-    if (!startISO || !endISO) {
-      console.error("Invalid date format. Expected DD.MM.YYYY", {
-        start: startDateStr,
-        end: endDateStr,
-      });
-      return 0;
-    }
-
-    const startDate = Temporal.PlainDate.from(startISO);
-    const endDate = Temporal.PlainDate.from(endISO);
-
-    const duration = startDate.until(endDate, { largestUnit: "day" });
-    const durationInDaysExclusive = duration.days;
-
-    return durationInDaysExclusive;
-  };
 
   const korkoPeriodLengthDays = calculateInvoicingPeriodDays(
     dueDate,
