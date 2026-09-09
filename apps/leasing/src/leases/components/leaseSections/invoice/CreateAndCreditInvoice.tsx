@@ -40,8 +40,13 @@ import { AppConsumer, ActionTypes } from "@/app/AppContext";
 import { ConfirmationModalTexts } from "@/enums";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import type {
+  CreditInvoice,
+  NewInvoice,
+  ContentInvoice,
+} from "@/invoices/types";
 type Props = {
-  invoiceToCredit: Record<string, any> | null | undefined;
+  invoiceToCredit: ContentInvoice | null | undefined;
 };
 
 const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
@@ -107,7 +112,7 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
     dispatch(receiveIsCreateInvoicePanelOpen(false));
   };
 
-  const handleCreateInvoice = (invoice: Record<string, any>) => {
+  const handleCreateInvoice = (invoice: NewInvoice) => {
     invoice.lease = currentLease.id;
 
     if (invoice.tenant === RecipientOptions.ALL) {
@@ -164,7 +169,7 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
     return invoiceToCredit && invoiceToCredit.tableGroupName ? true : false;
   };
 
-  const handleCreditInvoice = (creditInvoiceData: Record<string, any>) => {
+  const handleCreditInvoice = (creditInvoiceData: CreditInvoice) => {
     if (isInvoiceSet()) {
       dispatch(
         creditInvoiceSet({
@@ -229,11 +234,11 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
             >
               <Button
                 className={ButtonColors.ALERT}
-                disabled={
+                disabled={Boolean(
                   !invoiceToCredit ||
                   isCreditInvoicePanelOpen ||
-                  invoiceToCredit.number
-                }
+                  invoiceToCredit.number,
+                )}
                 onClick={handleDelete}
                 text="Poista lasku"
               />

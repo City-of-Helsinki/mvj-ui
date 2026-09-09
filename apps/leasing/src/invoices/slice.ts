@@ -6,6 +6,8 @@ import type {
   ExportInvoiceToLaskeAndUpdateListPayload,
   InvoiceState,
   CreditInvoicePayload,
+  InvoicePayload,
+  ContentInvoice,
 } from "./types";
 import type { LeaseId } from "@/leases/types";
 
@@ -53,14 +55,14 @@ const invoiceSlice = createSlice({
       state.isFetching = false;
       state.isSaving = false;
     },
-    createInvoice: (state, _action: PayloadAction<Invoice>) => {
+    createInvoice: (state, _action: PayloadAction<InvoicePayload>) => {
       state.isFetching = true;
     },
     creditInvoice: (_state, _action: PayloadAction<CreditInvoicePayload>) => {},
-    patchInvoice: (state, _action: PayloadAction<Invoice>) => {
+    patchInvoice: (state, _action: PayloadAction<InvoicePayload>) => {
       state.isSaving = true;
     },
-    deleteInvoice: (state, _action: PayloadAction<Invoice>) => {
+    deleteInvoice: (state, _action: PayloadAction<ContentInvoice>) => {
       state.isSaving = true;
     },
     exportInvoiceToLaskeAndUpdateList: (
@@ -98,7 +100,7 @@ const invoiceSlice = createSlice({
     },
     receiveInvoiceToCredit: (
       state,
-      { payload }: PayloadAction<Invoice | null | undefined>,
+      { payload }: PayloadAction<ContentInvoice | null | undefined>,
     ) => {
       state.invoiceToCredit = payload;
     },

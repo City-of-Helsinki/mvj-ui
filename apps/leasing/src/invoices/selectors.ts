@@ -1,6 +1,6 @@
 import type { Attributes, Methods, Selector } from "types";
 import type { RootState } from "@/root/types";
-import type { Invoice, InvoiceList } from "./types";
+import type { Invoice, InvoiceList, ContentInvoice } from "./types";
 import type { LeaseId } from "@/leases/types";
 export const getIsFetching: Selector<boolean, void> = (
   state: RootState,
@@ -36,9 +36,11 @@ export const getInvoicesByLease: Selector<InvoiceList, LeaseId> = (
   state: RootState,
   leaseId: LeaseId,
 ): InvoiceList => state.invoice.byLease[leaseId];
-export const getInvoiceToCredit: Selector<Invoice | null | undefined, void> = (
-  state: RootState,
-): Invoice | null | undefined => state.invoice.invoiceToCredit;
+export const getInvoiceToCredit: Selector<
+  ContentInvoice | null | undefined,
+  void
+> = (state: RootState): ContentInvoice | null | undefined =>
+  state.invoice.invoiceToCredit;
 export const getPatchedInvoice: Selector<Invoice | null | undefined, void> = (
   state: RootState,
 ): Invoice | null | undefined => state.invoice.patchedInvoice;

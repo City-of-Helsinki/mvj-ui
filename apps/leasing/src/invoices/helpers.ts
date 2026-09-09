@@ -7,6 +7,13 @@ import {
   getLabelOfOption,
   sortStringAsc,
 } from "@/util/helpers";
+import type {
+  ContentInvoice,
+  CreditInvoice,
+  Invoice,
+  InvoicePayload,
+  NewInvoice,
+} from "./types";
 
 /**
  * Get payments of single invoice to show on UI
@@ -14,7 +21,7 @@ import {
  * @returns {Object[]}
  */
 const getContentInvoicePayments = (
-  invoice: Record<string, any>,
+  invoice: Invoice,
 ): Array<Record<string, any>> => {
   return get(invoice, "payments", []).map((payment) => ({
     id: payment.id,
@@ -29,7 +36,7 @@ const getContentInvoicePayments = (
  * @returns {Object[]}
  */
 const getContentIncoiceRows = (
-  invoice: Record<string, any>,
+  invoice: Invoice,
 ): Array<Record<string, any>> => {
   const rows = get(invoice, "rows", []);
   return rows.map((row) => ({
@@ -69,7 +76,7 @@ export const getContentInvoiceReceivableTypes = (
  * @returns {number}
  */
 const getContentInvoiceTotalSharePercentage = (
-  invoice: Record<string, any>,
+  invoice: Invoice,
 ): number | null | undefined => {
   if (
     invoice.total_amount === null ||
@@ -87,7 +94,7 @@ const getContentInvoiceTotalSharePercentage = (
  * @returns {Object}
  */
 const getContentCreditOrInterestInvoice = (
-  invoice: Record<string, any>,
+  invoice: Invoice,
 ): Record<string, any> => ({
   id: invoice.id,
   number: invoice.number,
@@ -101,7 +108,7 @@ const getContentCreditOrInterestInvoice = (
  * @returns {Object[]}
  */
 const getContentCreditInvoices = (
-  invoice: Record<string, any>,
+  invoice: Invoice,
 ): Array<Record<string, any>> =>
   get(invoice, "credit_invoices", []).map((item) =>
     getContentCreditOrInterestInvoice(item),
@@ -113,7 +120,7 @@ const getContentCreditInvoices = (
  * @returns {Object[]}
  */
 const getContentInterestInvoices = (
-  invoice: Record<string, any>,
+  invoice: Invoice,
 ): Array<Record<string, any>> =>
   get(invoice, "interest_invoices", []).map((item) =>
     getContentCreditOrInterestInvoice(item),
@@ -124,9 +131,7 @@ const getContentInterestInvoices = (
  * @param {Object} invoice
  * @returns {Object}
  */
-export const getContentIncoive = (
-  invoice: Record<string, any>,
-): Record<string, any> => {
+export const getContentIncoive = (invoice: Invoice): ContentInvoice => {
   const rows = getContentIncoiceRows(invoice);
   return {
     id: invoice.id,
@@ -172,8 +177,8 @@ export const getContentIncoive = (
  * @returns {Object[]}
  */
 export const getContentInvoices = (
-  invoices: Array<Record<string, any>>,
-): Array<Record<string, any>> => {
+  invoices: Array<Invoice>,
+): Array<ContentInvoice> => {
   return invoices ? invoices.map((invoice) => getContentIncoive(invoice)) : [];
 };
 
@@ -183,8 +188,8 @@ export const getContentInvoices = (
  * @returns {Object[]}
  */
 export const getContentOverdueInvoices = (
-  invoices: Array<Record<string, any>>,
-): Array<Record<string, any>> => {
+  invoices: Array<Invoice>,
+): Array<ContentInvoice> => {
   return invoices && invoices.length
     ? invoices
         .filter((invoice) => isInvoiceOverdue(invoice))
@@ -198,7 +203,7 @@ export const getContentOverdueInvoices = (
  * @returns {Object[]}
  */
 const getPayloadInvoicePayments = (
-  invoice: Record<string, any>,
+  invoice: ContentInvoice,
 ): Array<Record<string, any>> => {
   return get(invoice, "payments", []).map((payment) => ({
     id: payment.id,
@@ -213,7 +218,7 @@ const getPayloadInvoicePayments = (
  * @returns {Object[]}
  */
 const getPayloadInvoiceRows = (
-  invoice: Record<string, any>,
+  invoice: ContentInvoice | NewInvoice,
 ): Array<Record<string, any>> => {
   return get(invoice, "rows", []).map((row) => {
     return {
@@ -234,8 +239,8 @@ const getPayloadInvoiceRows = (
  * @returns {Object}
  */
 export const getPayloadEditInvoice = (
-  invoice: Record<string, any>,
-): Record<string, any> => {
+  invoice: ContentInvoice,
+): InvoicePayload => {
   return {
     id: invoice.id,
     due_date:
@@ -267,8 +272,8 @@ export const getPayloadEditInvoice = (
  * @returns {Object}
  */
 export const getPayloadCreateInvoice = (
-  invoice: Record<string, any>,
-): Record<string, any> => {
+  invoice: NewInvoice,
+): InvoicePayload => {
   return {
     lease: invoice.lease,
     recipient: invoice.recipient,
@@ -288,8 +293,8 @@ export const getPayloadCreateInvoice = (
  * @returns {Object}
  */
 export const getPayloadCreditInvoice = (
-  invoice: Record<string, any>,
-): Record<string, any> => {
+  invoice: CreditInvoice,
+): InvoicePayload => {
   if (!invoice) return undefined;
   const payload: any = {};
 
