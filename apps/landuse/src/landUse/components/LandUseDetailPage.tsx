@@ -12,24 +12,26 @@ import React, {
 import { useLocation, useNavigate, useParams } from "react-router";
 import LandUseNotFoundPage from "../../landUse/components/LandUseNotFoundPage";
 import {
+  getBilling,
   getCollaterals,
   getCompensations,
   getContracts,
   getDecisions,
-  getInvoicing,
   getLandUseList,
   getMap,
   getMonitoring,
   getParties,
+  getPaymentSchedule,
   getSummary,
+  updateBilling,
   updateCollaterals,
   updateCompensations,
   updateContracts,
   updateDecisions,
-  updateInvoicing,
   updateMap,
   updateMonitoring,
   updateParties,
+  updatePaymentSchedule,
   updateSummary,
 } from "../api/landUseApi";
 import { DEFAULT_KOROTUSKERROIN } from "../constants";
@@ -38,7 +40,12 @@ import {
   getTocScrollTarget,
   TableOfContentsProvider,
 } from "../hooks/useTableOfContents";
-import { LAND_USE_INVOICE_ITEM_TYPES } from "../options";
+import {
+  LAND_USE_INVOICE_ITEM_TYPES,
+  LAND_USE_INVOICE_STATUSES,
+  type LandUseInvoice,
+  type LandUseInvoiceItem,
+} from "../options";
 import { parseLandUseNumericValueOrZero } from "../utils/number";
 import type { KorkoResult } from "./invoicing/KorkoCalculator";
 import type { SectionEntry, SideNavigationTab } from "./SideNavigation";
@@ -61,12 +68,13 @@ import {
   type LandUseDecisionsFormValues,
 } from "./tabs/LandUseDecisions";
 import {
-  LAND_USE_INVOICE_STATUSES,
-  LandUseInvoice,
-  LandUseInvoiceItem,
-  LandUseInvoicing,
-  type LandUseInvoicingFormValues,
-} from "./tabs/LandUseInvoicing";
+  LandUseBilling,
+  type LandUseBillingFormValues,
+} from "./tabs/LandUseBilling";
+import {
+  LandUsePaymentSchedule,
+  type LandUsePaymentScheduleFormValues,
+} from "./tabs/LandUsePaymentSchedule";
 import { LandUseMap, type LandUseMapFormValues } from "./tabs/LandUseMap";
 import {
   LandUseMonitoring,
@@ -94,7 +102,8 @@ export type FormKey =
   | "monitoring"
   | "decisions"
   | "contracts"
-  | "invoicing"
+  | "paymentSchedule"
+  | "billing"
   | "map"
   | "history";
 
@@ -149,10 +158,16 @@ const TABS_CONFIG: TabConfig[] = [
     formKey: "monitoring",
   },
   {
-    label: "Laskutus",
-    queryKey: "invoicing",
+    label: "Maksuaikataulu ja erät",
+    queryKey: "paymentSchedule",
     hasForm: true,
-    formKey: "invoicing",
+    formKey: "paymentSchedule",
+  },
+  {
+    label: "Laskutus ja reskontra",
+    queryKey: "billing",
+    hasForm: true,
+    formKey: "billing",
   },
   { label: "Kartta", queryKey: "map", hasForm: true, formKey: "map" },
   { label: "Muutoshistoria", queryKey: "history", hasForm: false },
@@ -248,7 +263,8 @@ const LandUseDetailPage: React.FC = () => {
     monitoring: { ...initialFormState },
     decisions: { ...initialFormState },
     contracts: { ...initialFormState },
-    invoicing: { ...initialFormState },
+    paymentSchedule: { ...initialFormState },
+    billing: { ...initialFormState },
     map: { ...initialFormState },
   });
 
@@ -333,9 +349,16 @@ const LandUseDetailPage: React.FC = () => {
     refetchOnWindowFocus: false,
   });
 
-  const invoicingQuery = useQuery({
-    queryKey: ["land-use", agreementId, "invoicing"],
-    queryFn: () => getInvoicing(agreementId),
+  const paymentScheduleQuery = useQuery({
+    queryKey: ["land-use", agreementId, "paymentSchedule"],
+    queryFn: () => getPaymentSchedule(agreementId),
+    enabled: canLoadAgreementData,
+    refetchOnWindowFocus: false,
+  });
+
+  const billingQuery = useQuery({
+    queryKey: ["land-use", agreementId, "billing"],
+    queryFn: () => getBilling(agreementId),
     enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
@@ -425,11 +448,22 @@ const LandUseDetailPage: React.FC = () => {
     [],
   );
 
-  const invoicingFormApi = useMemo(
+  const paymentScheduleFormApi = useMemo(
     () =>
-      createForm<LandUseInvoicingFormValues>({
+      createForm<LandUsePaymentScheduleFormValues>({
         onSubmit: (values) => {
-          console.log("Invoicing form submitted:", values);
+          console.log("Payment schedule form submitted:", values);
+        },
+        mutators: { ...arrayMutators },
+      }),
+    [],
+  );
+
+  const billingFormApi = useMemo(
+    () =>
+      createForm<LandUseBillingFormValues>({
+        onSubmit: (values) => {
+          console.log("Billing form submitted:", values);
         },
         mutators: { ...arrayMutators },
       }),
@@ -457,7 +491,8 @@ const LandUseDetailPage: React.FC = () => {
       monitoring: monitoringFormApi,
       decisions: decisionsFormApi,
       contracts: contractsFormApi,
-      invoicing: invoicingFormApi,
+      paymentSchedule: paymentScheduleFormApi,
+      billing: billingFormApi,
       map: mapFormApi,
     }),
     [
@@ -468,7 +503,8 @@ const LandUseDetailPage: React.FC = () => {
       monitoringFormApi,
       decisionsFormApi,
       contractsFormApi,
-      invoicingFormApi,
+      paymentScheduleFormApi,
+      billingFormApi,
       mapFormApi,
     ],
   );
@@ -583,13 +619,24 @@ const LandUseDetailPage: React.FC = () => {
   ]);
 
   useEffect(() => {
-    if (invoicingQuery.data) {
-      invoicingFormApi.initialize(invoicingQuery.data);
+    if (paymentScheduleQuery.data) {
+      paymentScheduleFormApi.initialize(paymentScheduleQuery.data);
     }
   }, [
-    invoicingFormApi,
-    invoicingQuery.data,
-    invoicingQuery.dataUpdatedAt,
+    paymentScheduleFormApi,
+    paymentScheduleQuery.data,
+    paymentScheduleQuery.dataUpdatedAt,
+    agreementId,
+  ]);
+
+  useEffect(() => {
+    if (billingQuery.data) {
+      billingFormApi.initialize(billingQuery.data);
+    }
+  }, [
+    billingFormApi,
+    billingQuery.data,
+    billingQuery.dataUpdatedAt,
     agreementId,
   ]);
 
@@ -700,11 +747,22 @@ const LandUseDetailPage: React.FC = () => {
     },
   });
 
-  const invoicingMutation = useMutation({
-    mutationFn: (values: LandUseInvoicingFormValues) =>
-      updateInvoicing(agreementId, values),
+  const paymentScheduleMutation = useMutation({
+    mutationFn: (values: LandUsePaymentScheduleFormValues) =>
+      updatePaymentSchedule(agreementId, values),
     onSuccess: (data) => {
-      queryClient.setQueryData(["land-use", agreementId, "invoicing"], data);
+      queryClient.setQueryData(
+        ["land-use", agreementId, "paymentSchedule"],
+        data,
+      );
+    },
+  });
+
+  const billingMutation = useMutation({
+    mutationFn: (values: LandUseBillingFormValues) =>
+      updateBilling(agreementId, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["land-use", agreementId, "billing"], data);
     },
   });
 
@@ -790,12 +848,12 @@ const LandUseDetailPage: React.FC = () => {
             ),
           );
           break;
-        case "invoicing": {
+        case "paymentSchedule": {
           // Mark invoices paid when remaining amount is zero or less
           // TODO: In the future API should handle this
-          const invoicesValues =
-            (state.values as LandUseInvoicingFormValues).invoices || [];
-          for (const invoice of invoicesValues) {
+          const psInvoices =
+            (state.values as LandUsePaymentScheduleFormValues).invoices || [];
+          for (const invoice of psInvoices) {
             if (
               invoice.remainingAmount === "0" ||
               invoice.remainingAmount === "0.00" ||
@@ -805,10 +863,30 @@ const LandUseDetailPage: React.FC = () => {
             }
           }
           mutations.push(
-            invoicingMutation.mutateAsync({
+            paymentScheduleMutation.mutateAsync({
               ...state.values,
-              invoices: invoicesValues,
-            } as LandUseInvoicingFormValues),
+              invoices: psInvoices,
+            } as LandUsePaymentScheduleFormValues),
+          );
+          break;
+        }
+        case "billing": {
+          const billingInvoices =
+            (state.values as LandUseBillingFormValues).invoices || [];
+          for (const invoice of billingInvoices) {
+            if (
+              invoice.remainingAmount === "0" ||
+              invoice.remainingAmount === "0.00" ||
+              invoice.remainingAmount === "0,00"
+            ) {
+              invoice.status = LAND_USE_INVOICE_STATUSES.PAID;
+            }
+          }
+          mutations.push(
+            billingMutation.mutateAsync({
+              ...state.values,
+              invoices: billingInvoices,
+            } as LandUseBillingFormValues),
           );
           break;
         }
@@ -997,7 +1075,7 @@ const LandUseDetailPage: React.FC = () => {
                 compensationsQuery.data?.muuKorvaus,
               ) -
               calculatePaidMaankayttokorvaus(
-                invoicingQuery.data?.invoices ?? [],
+                paymentScheduleQuery.data?.invoices ?? [],
               )
             }
             onSetTabDirty={handleSetTabDirty}
@@ -1005,8 +1083,8 @@ const LandUseDetailPage: React.FC = () => {
         );
       case 7:
         return (
-          <LandUseInvoicing
-            form={invoicingFormApi}
+          <LandUsePaymentSchedule
+            form={paymentScheduleFormApi}
             isEditMode={isEditMode}
             parties={activeParties}
             contracts={
@@ -1033,8 +1111,35 @@ const LandUseDetailPage: React.FC = () => {
           />
         );
       case 8:
-        return <LandUseMap form={mapFormApi} isEditMode={isEditMode} />;
+        return (
+          <LandUseBilling
+            form={billingFormApi}
+            isEditMode={isEditMode}
+            parties={activeParties}
+            contracts={
+              (contractsFormApi.getState().values as LandUseContractsFormValues)
+                ?.contracts ??
+              contractsQuery.data?.contracts ??
+              []
+            }
+            asemakaavanNumero={
+              ((summaryFormApi.getState().values as LandUseSummaryFormValues)
+                ?.asemakaavanNumero ??
+                summaryQuery.data?.asemakaavanNumero) ||
+              ""
+            }
+            asemakaavanLainvoimaisuusPvm={
+              ((summaryFormApi.getState().values as LandUseSummaryFormValues)
+                ?.asemakaavanLainvoimaisuusPvm ??
+                summaryQuery.data?.asemakaavanLainvoimaisuusPvm) ||
+              ""
+            }
+            agreementIdentifier={agreementId}
+          />
+        );
       case 9:
+        return <LandUseMap form={mapFormApi} isEditMode={isEditMode} />;
+      case 10:
         return (
           <div>
             <h1>Muutoshistoria</h1>
