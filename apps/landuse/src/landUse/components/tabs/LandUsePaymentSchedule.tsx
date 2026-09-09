@@ -956,88 +956,91 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                 </Field>
                               </div>
                             </div>
-                            <div className="landuse-grid landuse-grid__bottom-margin">
-                              <div className="landuse-grid__column-12">
-                                <strong>Korotus</strong>
+
+                            <Fieldset heading="Korotus">
+                              <div className="landuse-grid landuse-grid">
+                                <div className="landuse-grid__column-3">
+                                  <Field
+                                    name={`${fieldName}.korotusPeruskorko`}
+                                  >
+                                    {({ input }) => (
+                                      <NumericDecimalInput
+                                        id={`landuse-payment-schedule-korotus-peruskorko-${index}`}
+                                        label="Peruskorko %"
+                                        value={input.value}
+                                        onChange={input.onChange}
+                                        unit="%"
+                                        isEditMode={
+                                          isEditMode &&
+                                          schedule.status ===
+                                            LAND_USE_INVOICE_STATUSES.DRAFT
+                                        }
+                                      />
+                                    )}
+                                  </Field>
+                                </div>
+                                <div className="landuse-grid__column-3">
+                                  <Field
+                                    name={`${fieldName}.korotusMarginaali`}
+                                  >
+                                    {({ input }) => (
+                                      <NumericDecimalInput
+                                        id={`landuse-payment-schedule-korotus-marginaali-${index}`}
+                                        label="Marginaali %"
+                                        value={input.value}
+                                        onChange={input.onChange}
+                                        unit="%"
+                                        isEditMode={
+                                          isEditMode &&
+                                          schedule.status ===
+                                            LAND_USE_INVOICE_STATUSES.DRAFT
+                                        }
+                                      />
+                                    )}
+                                  </Field>
+                                </div>
                               </div>
-                              <div className="landuse-grid__column-3">
-                                <Field name={`${fieldName}.korotusPeruskorko`}>
-                                  {({ input }) => (
-                                    <NumericDecimalInput
-                                      id={`landuse-payment-schedule-korotus-peruskorko-${index}`}
-                                      label="Peruskorko %"
-                                      value={input.value}
-                                      onChange={input.onChange}
-                                      unit="%"
-                                      isEditMode={
-                                        isEditMode &&
-                                        schedule.status ===
-                                          LAND_USE_INVOICE_STATUSES.DRAFT
-                                      }
-                                    />
-                                  )}
-                                </Field>
+                            </Fieldset>
+                            <Fieldset heading="Korko">
+                              <div className="landuse-grid landuse-grid">
+                                <div className="landuse-grid__column-3">
+                                  <Field name={`${fieldName}.korkoPeruskorko`}>
+                                    {({ input }) => (
+                                      <NumericDecimalInput
+                                        id={`landuse-payment-schedule-korko-peruskorko-${index}`}
+                                        label="Peruskorko %"
+                                        value={input.value}
+                                        onChange={input.onChange}
+                                        unit="%"
+                                        isEditMode={
+                                          isEditMode &&
+                                          schedule.status ===
+                                            LAND_USE_INVOICE_STATUSES.DRAFT
+                                        }
+                                      />
+                                    )}
+                                  </Field>
+                                </div>
+                                <div className="landuse-grid__column-3">
+                                  <Field name={`${fieldName}.korkoMarginaali`}>
+                                    {({ input }) => (
+                                      <NumericDecimalInput
+                                        id={`landuse-payment-schedule-korko-marginaali-${index}`}
+                                        label="Marginaali %"
+                                        value={input.value}
+                                        onChange={input.onChange}
+                                        unit="%"
+                                        isEditMode={
+                                          isEditMode &&
+                                          schedule.status ===
+                                            LAND_USE_INVOICE_STATUSES.DRAFT
+                                        }
+                                      />
+                                    )}
+                                  </Field>
+                                </div>
                               </div>
-                              <div className="landuse-grid__column-3">
-                                <Field name={`${fieldName}.korotusMarginaali`}>
-                                  {({ input }) => (
-                                    <NumericDecimalInput
-                                      id={`landuse-payment-schedule-korotus-marginaali-${index}`}
-                                      label="Marginaali %"
-                                      value={input.value}
-                                      onChange={input.onChange}
-                                      unit="%"
-                                      isEditMode={
-                                        isEditMode &&
-                                        schedule.status ===
-                                          LAND_USE_INVOICE_STATUSES.DRAFT
-                                      }
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-                            </div>
-                            <div className="landuse-grid landuse-grid__bottom-margin">
-                              <div className="landuse-grid__column-12">
-                                <strong>Korko</strong>
-                              </div>
-                              <div className="landuse-grid__column-3">
-                                <Field name={`${fieldName}.korkoPeruskorko`}>
-                                  {({ input }) => (
-                                    <NumericDecimalInput
-                                      id={`landuse-payment-schedule-korko-peruskorko-${index}`}
-                                      label="Peruskorko %"
-                                      value={input.value}
-                                      onChange={input.onChange}
-                                      unit="%"
-                                      isEditMode={
-                                        isEditMode &&
-                                        schedule.status ===
-                                          LAND_USE_INVOICE_STATUSES.DRAFT
-                                      }
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-                              <div className="landuse-grid__column-3">
-                                <Field name={`${fieldName}.korkoMarginaali`}>
-                                  {({ input }) => (
-                                    <NumericDecimalInput
-                                      id={`landuse-payment-schedule-korko-marginaali-${index}`}
-                                      label="Marginaali %"
-                                      value={input.value}
-                                      onChange={input.onChange}
-                                      unit="%"
-                                      isEditMode={
-                                        isEditMode &&
-                                        schedule.status ===
-                                          LAND_USE_INVOICE_STATUSES.DRAFT
-                                      }
-                                    />
-                                  )}
-                                </Field>
-                              </div>
-                            </div>
+                            </Fieldset>
                           </Fieldset>
                         ),
                       },
