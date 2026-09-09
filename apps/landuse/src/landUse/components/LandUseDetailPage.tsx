@@ -158,7 +158,7 @@ const TABS_CONFIG: TabConfig[] = [
     formKey: "monitoring",
   },
   {
-    label: "Maksuaikataulu ja erät",
+    label: "Maksusuunnitelmat",
     queryKey: "paymentSchedule",
     hasForm: true,
     formKey: "paymentSchedule",
