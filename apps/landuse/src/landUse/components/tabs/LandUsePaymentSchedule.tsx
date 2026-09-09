@@ -459,7 +459,7 @@ const buildInstallmentStep = ({
   const installmentLabel =
     invoice.installmentNumber && invoice.installmentTotal
       ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
-      : `Erä ${index + 1}`;
+      : `x/x`;
 
   return {
     title: installmentLabel,
