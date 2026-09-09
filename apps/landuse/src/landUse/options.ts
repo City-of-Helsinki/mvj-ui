@@ -410,6 +410,7 @@ export const landUseCompensationSelectOptions = {
 
 export const LAND_USE_INVOICE_STATUSES = {
   DRAFT: "Luonnos",
+  READY: "Valmis",
   PENDING_APPROVAL: "Odottaa hyväksyntää",
   OPEN: "Avoin",
   PAID: "Maksettu",
