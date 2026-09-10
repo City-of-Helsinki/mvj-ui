@@ -588,7 +588,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
           <div className="landuse-grid__column-12">
             <NumberInput
               id="bulk-create-installment-total-schedule"
-              label="Laskutuseriä yhteensä"
+              label="Maksueriä yhteensä"
               value={installmentTotal}
               onChange={(e) =>
                 setInstallmentTotal(
@@ -610,7 +610,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
           onClick={handleBulkInvoiceCreate}
           disabled={isSubmitDisabled}
         >
-          Luo laskut
+          Luo maksusuunnitelma
         </Button>
       </Dialog.ActionButtons>
     </Dialog>
@@ -759,7 +759,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                   />
                 ))
               ) : (
-                <p>Ei laskurivejä.</p>
+                <p>Ei eriä.</p>
               )}
             </>
           )}
