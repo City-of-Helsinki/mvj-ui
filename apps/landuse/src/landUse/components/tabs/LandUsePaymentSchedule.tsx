@@ -13,9 +13,10 @@ import {
   StepByStep,
   TextInput,
 } from "hds-react";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Field, Form, useField } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
+import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   AsemakaavaListItem,
   LAND_USE_INVOICE_ITEM_TYPES,
@@ -806,6 +807,7 @@ const buildInstallmentStep = ({
 
 interface PartyGroupSectionProps {
   partyLabel: string;
+  partyHeadingId: string;
   schedules: Array<{
     fieldName: string;
     index: number;
@@ -818,8 +820,12 @@ interface PartyGroupSectionProps {
   onRemoveSchedule: (index: number) => void;
 }
 
+const getPartyGroupHeadingId = (partyValue: string): string =>
+  `payment-schedule-party-heading-${partyValue}`;
+
 const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   partyLabel,
+  partyHeadingId,
   schedules,
   isEditMode,
   parties,
@@ -830,7 +836,10 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   if (schedules.length === 0) {
     return (
       <div className="landuse-payment-schedule__party-group">
-        <h2 className="landuse-payment-schedule__party-heading">
+        <h2
+          id={partyHeadingId}
+          className="landuse-payment-schedule__party-heading"
+        >
           {partyLabel}
         </h2>
         <p>Ei maksusuunnitelmia.</p>
@@ -845,7 +854,12 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
 
   return (
     <div className="landuse-payment-schedule__party-group">
-      <h2 className="landuse-payment-schedule__party-heading">{partyLabel}</h2>
+      <h2
+        id={partyHeadingId}
+        className="landuse-payment-schedule__party-heading"
+      >
+        {partyLabel}
+      </h2>
       <div className="landuse-grid landuse-grid__bottom-margin">
         <div className="landuse-grid__column-3">
           <TextInput
@@ -1110,6 +1124,18 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
     [contracts],
   );
 
+  const tocEntries = useMemo(
+    () =>
+      partyOptions.map((partyOption) => ({
+        id: getPartyGroupHeadingId(partyOption.value),
+        text: partyOption.label,
+        level: 2,
+      })),
+    [partyOptions],
+  );
+
+  useTocEntries(tocEntries);
+
   const handleBulkCreate = (values: BulkCreateFormValues) => {
     const total = parseInt(values.installmentTotal, 10);
     if (
@@ -1242,6 +1268,9 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                             <PartyGroupSection
                               key={partyOption.value}
                               partyLabel={partyOption.label}
+                              partyHeadingId={getPartyGroupHeadingId(
+                                partyOption.value,
+                              )}
                               schedules={
                                 groupedByParty.get(partyOption.value) ?? []
                               }
