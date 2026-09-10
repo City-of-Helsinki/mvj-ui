@@ -12,6 +12,7 @@ import {
   Select,
   StepByStep,
   TextInput,
+  Tooltip,
 } from "hds-react";
 import React, { useMemo, useState } from "react";
 import { Field, Form, useField } from "react-final-form";
@@ -19,9 +20,9 @@ import { FieldArray } from "react-final-form-arrays";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   AsemakaavaListItem,
+  INTEREST_CALCULATION_DAYS_IN_YEAR,
   LAND_USE_INVOICE_ITEM_TYPES,
   LAND_USE_INVOICE_TYPES,
-  landUseInterestDaysInYearOptions,
   landUseInvoiceItemTypeSelectOptions,
 } from "../../options";
 import {
@@ -67,6 +68,7 @@ export interface LandUsePaymentScheduleEntry {
   korotusMarginaali: string;
   korkoPeruskorko: string;
   korkoMarginaali: string;
+  daysInYear: string;
   installments: LandUseInvoice[];
 }
 
@@ -276,6 +278,7 @@ interface InvoiceItemRowProps {
   installmentIndex: number;
   itemIndex: number;
   canEdit: boolean;
+  periodDays: number | null;
 }
 
 const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
@@ -286,23 +289,18 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
   installmentIndex,
   itemIndex,
   canEdit,
+  periodDays,
 }) => {
   const { input: itemTypeInput } = useField(`${itemFieldName}.itemType`);
   const { input: amountInput } = useField(
     `${itemFieldName}.amountExcludingVat`,
-  );
-  const { input: alkupvmInput } = useField(
-    `${installmentFieldName}.korotuksenAlkupvm`,
-  );
-  const { input: loppupvmInput } = useField(
-    `${installmentFieldName}.korotuksenLoppupvm`,
   );
   // Base amount for interest is always the Maankäyttökorvaus row (index 0)
   const { input: baseAmountInput } = useField(
     `${installmentFieldName}.invoiceItems[0].amountExcludingVat`,
   );
   const { input: daysInYearInput } = useField(
-    `${installmentFieldName}.daysInYear`,
+    `${scheduleFieldName}.daysInYear`,
   );
 
   const itemType = itemTypeInput.value;
@@ -319,9 +317,6 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
 
   const marginaaliForCalc =
     interestKind === "korotus" ? marginaaliInput.value : null;
-  const periodDays =
-    calculateInvoicingPeriodDays(alkupvmInput.value, loppupvmInput.value) ||
-    null;
   const calculated = shouldCalculate
     ? calculateInterestAmount({
         baseAmount: baseAmountInput.value,
@@ -459,7 +454,6 @@ const createBulkInvoice = (
   dueDate: "",
   korotuksenAlkupvm: "",
   korotuksenLoppupvm: "",
-  daysInYear: "365",
   invoiceNumber: "",
   type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
   status: "Luonnos",
@@ -628,6 +622,158 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
   );
 };
 
+interface InstallmentStepProps {
+  fieldName: string;
+  scheduleFieldName: string;
+  scheduleIndex: number;
+  installmentIndex: number;
+  canEdit: boolean;
+}
+
+const InstallmentStep: React.FC<InstallmentStepProps> = ({
+  fieldName,
+  scheduleFieldName,
+  scheduleIndex,
+  installmentIndex,
+  canEdit,
+}) => {
+  const { input: alkupvmInput } = useField(`${fieldName}.korotuksenAlkupvm`, {
+    subscription: { value: true },
+  });
+  const { input: loppupvmInput } = useField(`${fieldName}.korotuksenLoppupvm`, {
+    subscription: { value: true },
+  });
+  const rawDays = calculateInvoicingPeriodDays(
+    alkupvmInput.value,
+    loppupvmInput.value,
+  );
+  const periodDays = rawDays > 0 ? rawDays : null;
+
+  return (
+    <Fieldset heading="" className="full-width">
+      <div className="landuse-grid landuse-grid__bottom-margin">
+        <div className="landuse-grid__column-3">
+          <Field name={`${fieldName}.dueDate`}>
+            {({ input }) =>
+              canEdit ? (
+                <DateInput
+                  id={`landuse-payment-schedule-due-date-${scheduleIndex}-${installmentIndex}`}
+                  label="Eräpäivä"
+                  value={input.value}
+                  onChange={input.onChange}
+                  placeholder="DD.MM.YYYY"
+                  language="fi"
+                  disableConfirmation
+                />
+              ) : (
+                <TextInput
+                  id={`landuse-payment-schedule-due-date-${scheduleIndex}-${installmentIndex}`}
+                  label="Eräpäivä"
+                  value={readOnlyTextValue(input.value)}
+                  readOnly
+                />
+              )
+            }
+          </Field>
+        </div>
+        <Field name={`${fieldName}.invoiceItems[1].itemType`}>
+          {({ input: secondItemTypeInput }) => {
+            const kind =
+              getInterestKind(secondItemTypeInput.value) ?? "korotus";
+            const { startLabel, endLabel } = getInterestPeriodLabels(kind);
+            return (
+              <>
+                <div className="landuse-grid__column-3">
+                  <Field name={`${fieldName}.korotuksenAlkupvm`}>
+                    {({ input }) =>
+                      canEdit ? (
+                        <DateInput
+                          id={`landuse-payment-schedule-korotuksen-alkupvm-${scheduleIndex}-${installmentIndex}`}
+                          label={startLabel}
+                          value={input.value}
+                          onChange={input.onChange}
+                          placeholder="DD.MM.YYYY"
+                          language="fi"
+                          disableConfirmation
+                        />
+                      ) : (
+                        <TextInput
+                          id={`landuse-payment-schedule-korotuksen-alkupvm-${scheduleIndex}-${installmentIndex}`}
+                          label={startLabel}
+                          value={readOnlyTextValue(input.value)}
+                          readOnly
+                        />
+                      )
+                    }
+                  </Field>
+                </div>
+                <div className="landuse-grid__column-3">
+                  <Field name={`${fieldName}.korotuksenLoppupvm`}>
+                    {({ input }) =>
+                      canEdit ? (
+                        <DateInput
+                          id={`landuse-payment-schedule-korotuksen-loppupvm-${scheduleIndex}-${installmentIndex}`}
+                          label={endLabel}
+                          value={input.value}
+                          onChange={input.onChange}
+                          placeholder="DD.MM.YYYY"
+                          language="fi"
+                          disableConfirmation
+                        />
+                      ) : (
+                        <TextInput
+                          id={`landuse-payment-schedule-korotuksen-loppupvm-${scheduleIndex}-${installmentIndex}`}
+                          label={endLabel}
+                          value={readOnlyTextValue(input.value)}
+                          readOnly
+                        />
+                      )
+                    }
+                  </Field>
+                </div>
+                <div className="landuse-grid__column-3">
+                  <TextInput
+                    id={`landuse-payment-schedule-korkojakson-pituus-${scheduleIndex}-${installmentIndex}`}
+                    label="Korkojakson pituus"
+                    value={periodDays !== null ? `${periodDays} pv` : "-"}
+                    readOnly
+                  />
+                </div>
+              </>
+            );
+          }}
+        </Field>
+      </div>
+
+      <section>
+        <FieldArray<LandUseInvoiceItem> name={`${fieldName}.invoiceItems`}>
+          {({ fields: itemFields }) => (
+            <>
+              {itemFields.length > 0 ? (
+                itemFields.map((itemFieldName, itemIndex) => (
+                  <InvoiceItemRow
+                    key={itemFieldName}
+                    itemFieldName={itemFieldName}
+                    installmentFieldName={fieldName}
+                    scheduleFieldName={scheduleFieldName}
+                    scheduleIndex={scheduleIndex}
+                    installmentIndex={installmentIndex}
+                    itemIndex={itemIndex}
+                    canEdit={canEdit}
+                    periodDays={periodDays}
+                  />
+                ))
+              ) : (
+                <p>Ei laskurivejä.</p>
+              )}
+            </>
+          )}
+        </FieldArray>
+      </section>
+    </Fieldset>
+  );
+};
+
 const buildInstallmentStep = ({
   fieldName,
   scheduleFieldName,
@@ -636,8 +782,6 @@ const buildInstallmentStep = ({
   isEditMode,
   scheduleStatus,
   invoice,
-  korkoResults,
-  onRemove,
 }: {
   fieldName: string;
   scheduleFieldName: string;
@@ -646,8 +790,6 @@ const buildInstallmentStep = ({
   isEditMode: boolean;
   scheduleStatus: LandUseInvoiceStatus | undefined;
   invoice: LandUseInvoice;
-  korkoResults: KorkoResult[];
-  onRemove: () => void;
 }) => {
   const canEdit =
     isEditMode && scheduleStatus === LAND_USE_INVOICE_STATUSES.DRAFT;
@@ -660,147 +802,13 @@ const buildInstallmentStep = ({
     title: `Erä ${installmentLabel}`,
     key: `payment-schedule-${scheduleIndex}-installment-${installmentIndex}`,
     description: (
-      <Fieldset heading="" className="full-width">
-        <div className="landuse-grid landuse-grid__bottom-margin">
-          <div className="landuse-grid__column-3">
-            <Field name={`${fieldName}.dueDate`}>
-              {({ input }) =>
-                canEdit ? (
-                  <DateInput
-                    id={`landuse-payment-schedule-due-date-${scheduleIndex}-${installmentIndex}`}
-                    label="Eräpäivä"
-                    value={input.value}
-                    onChange={input.onChange}
-                    placeholder="DD.MM.YYYY"
-                    language="fi"
-                    disableConfirmation
-                  />
-                ) : (
-                  <TextInput
-                    id={`landuse-payment-schedule-due-date-${scheduleIndex}-${installmentIndex}`}
-                    label="Eräpäivä"
-                    value={readOnlyTextValue(input.value)}
-                    readOnly
-                  />
-                )
-              }
-            </Field>
-          </div>
-          <Field name={`${fieldName}.invoiceItems[1].itemType`}>
-            {({ input: secondItemTypeInput }) => {
-              const kind =
-                getInterestKind(secondItemTypeInput.value) ?? "korotus";
-              const { startLabel, endLabel } = getInterestPeriodLabels(kind);
-              return (
-                <>
-                  <div className="landuse-grid__column-3">
-                    <Field name={`${fieldName}.korotuksenAlkupvm`}>
-                      {({ input }) =>
-                        canEdit ? (
-                          <DateInput
-                            id={`landuse-payment-schedule-korotuksen-alkupvm-${scheduleIndex}-${installmentIndex}`}
-                            label={startLabel}
-                            value={input.value}
-                            onChange={input.onChange}
-                            placeholder="DD.MM.YYYY"
-                            language="fi"
-                            disableConfirmation
-                          />
-                        ) : (
-                          <TextInput
-                            id={`landuse-payment-schedule-korotuksen-alkupvm-${scheduleIndex}-${installmentIndex}`}
-                            label={startLabel}
-                            value={readOnlyTextValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
-                    </Field>
-                  </div>
-                  <div className="landuse-grid__column-3">
-                    <Field name={`${fieldName}.korotuksenLoppupvm`}>
-                      {({ input }) =>
-                        canEdit ? (
-                          <DateInput
-                            id={`landuse-payment-schedule-korotuksen-loppupvm-${scheduleIndex}-${installmentIndex}`}
-                            label={endLabel}
-                            value={input.value}
-                            onChange={input.onChange}
-                            placeholder="DD.MM.YYYY"
-                            language="fi"
-                            disableConfirmation
-                          />
-                        ) : (
-                          <TextInput
-                            id={`landuse-payment-schedule-korotuksen-loppupvm-${scheduleIndex}-${installmentIndex}`}
-                            label={endLabel}
-                            value={readOnlyTextValue(input.value)}
-                            readOnly
-                          />
-                        )
-                      }
-                    </Field>
-                  </div>
-                </>
-              );
-            }}
-          </Field>
-          <div className="landuse-grid__column-2">
-            <Field name={`${fieldName}.daysInYear`}>
-              {({ input }) =>
-                canEdit ? (
-                  <Select
-                    id={`landuse-payment-schedule-days-in-year-${scheduleIndex}-${installmentIndex}`}
-                    options={landUseInterestDaysInYearOptions}
-                    value={input.value || "365"}
-                    onChange={(selected) => {
-                      if (selected.length > 0) {
-                        input.onChange(selected[0].value);
-                      }
-                    }}
-                    texts={{
-                      label: "Päiviä vuodessa",
-                      placeholder: "Valitse",
-                    }}
-                  />
-                ) : (
-                  <TextInput
-                    id={`landuse-payment-schedule-days-in-year-${scheduleIndex}-${installmentIndex}`}
-                    label="Päiviä vuodessa"
-                    value={readOnlyTextValue(input.value)}
-                    readOnly
-                  />
-                )
-              }
-            </Field>
-          </div>
-        </div>
-
-        <section>
-          <FieldArray<LandUseInvoiceItem> name={`${fieldName}.invoiceItems`}>
-            {({ fields: itemFields }) => (
-              <>
-                {itemFields.length > 0 ? (
-                  itemFields.map((itemFieldName, itemIndex) => (
-                    <InvoiceItemRow
-                      key={itemFieldName}
-                      itemFieldName={itemFieldName}
-                      installmentFieldName={fieldName}
-                      scheduleFieldName={scheduleFieldName}
-                      scheduleIndex={scheduleIndex}
-                      installmentIndex={installmentIndex}
-                      itemIndex={itemIndex}
-                      canEdit={canEdit}
-                    />
-                  ))
-                ) : (
-                  <p>Ei laskurivejä.</p>
-                )}
-              </>
-            )}
-          </FieldArray>
-        </section>
-      </Fieldset>
+      <InstallmentStep
+        fieldName={fieldName}
+        scheduleFieldName={scheduleFieldName}
+        scheduleIndex={scheduleIndex}
+        installmentIndex={installmentIndex}
+        canEdit={canEdit}
+      />
     ),
   };
 };
@@ -816,7 +824,6 @@ interface PartyGroupSectionProps {
   isEditMode: boolean;
   parties: PartyEntry[];
   agreementOptions: AgreementOption[];
-  korkoResults: KorkoResult[];
   onRemoveSchedule: (index: number) => void;
 }
 
@@ -830,7 +837,6 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   isEditMode,
   parties,
   agreementOptions,
-  korkoResults,
   onRemoveSchedule,
 }) => {
   if (schedules.length === 0) {
@@ -1006,72 +1012,97 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                               </div>
                             </div>
 
-                            <Fieldset heading="Korotus">
-                              <div className="landuse-grid landuse-grid">
-                                <div className="landuse-grid__column-3">
-                                  <Field
-                                    name={`${fieldName}.korotusPeruskorko`}
-                                  >
-                                    {({ input }) => (
-                                      <NumericDecimalInput
-                                        id={`landuse-payment-schedule-korotus-peruskorko-${index}`}
-                                        label="Peruskorko %"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                        unit="%"
-                                        isEditMode={
-                                          isEditMode &&
-                                          schedule.status ===
-                                            LAND_USE_INVOICE_STATUSES.DRAFT
-                                        }
-                                      />
-                                    )}
-                                  </Field>
-                                </div>
-                                <div className="landuse-grid__column-3">
-                                  <Field
-                                    name={`${fieldName}.korotusMarginaali`}
-                                  >
-                                    {({ input }) => (
-                                      <NumericDecimalInput
-                                        id={`landuse-payment-schedule-korotus-marginaali-${index}`}
-                                        label="Marginaali %"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                        unit="%"
-                                        isEditMode={
-                                          isEditMode &&
-                                          schedule.status ===
-                                            LAND_USE_INVOICE_STATUSES.DRAFT
-                                        }
-                                      />
-                                    )}
-                                  </Field>
-                                </div>
+                            <div className="landuse-grid landuse-grid">
+                              <div className="landuse-grid__column-3">
+                                <Field name={`${fieldName}.korotusPeruskorko`}>
+                                  {({ input }) => (
+                                    <NumericDecimalInput
+                                      id={`landuse-payment-schedule-korotus-peruskorko-${index}`}
+                                      label="Korotuksen peruskorko %"
+                                      value={input.value}
+                                      onChange={input.onChange}
+                                      unit="%"
+                                      isEditMode={
+                                        isEditMode &&
+                                        schedule.status ===
+                                          LAND_USE_INVOICE_STATUSES.DRAFT
+                                      }
+                                    />
+                                  )}
+                                </Field>
                               </div>
-                            </Fieldset>
-                            <Fieldset heading="Korko">
-                              <div className="landuse-grid landuse-grid">
-                                <div className="landuse-grid__column-3">
-                                  <Field name={`${fieldName}.korkoPeruskorko`}>
-                                    {({ input }) => (
-                                      <NumericDecimalInput
-                                        id={`landuse-payment-schedule-korko-peruskorko-${index}`}
-                                        label="Peruskorko %"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                        unit="%"
-                                        isEditMode={
-                                          isEditMode &&
-                                          schedule.status ===
-                                            LAND_USE_INVOICE_STATUSES.DRAFT
-                                        }
-                                      />
-                                    )}
-                                  </Field>
-                                </div>
+                              <div className="landuse-grid__column-3">
+                                <Field name={`${fieldName}.korotusMarginaali`}>
+                                  {({ input }) => (
+                                    <NumericDecimalInput
+                                      id={`landuse-payment-schedule-korotus-marginaali-${index}`}
+                                      label="Korotuksen marginaali %"
+                                      value={input.value}
+                                      onChange={input.onChange}
+                                      unit="%"
+                                      isEditMode={
+                                        isEditMode &&
+                                        schedule.status ===
+                                          LAND_USE_INVOICE_STATUSES.DRAFT
+                                      }
+                                    />
+                                  )}
+                                </Field>
                               </div>
-                            </Fieldset>
+                            </div>
+
+                            <div className="landuse-grid landuse-grid">
+                              <div className="landuse-grid__column-3">
+                                <Field name={`${fieldName}.korkoPeruskorko`}>
+                                  {({ input }) => (
+                                    <NumericDecimalInput
+                                      id={`landuse-payment-schedule-korko-peruskorko-${index}`}
+                                      label="Korko %"
+                                      value={input.value}
+                                      onChange={input.onChange}
+                                      unit="%"
+                                      isEditMode={
+                                        isEditMode &&
+                                        schedule.status ===
+                                          LAND_USE_INVOICE_STATUSES.DRAFT
+                                      }
+                                    />
+                                  )}
+                                </Field>
+                              </div>
+                              <div className="landuse-grid__column-3">
+                                <TextInput
+                                  id={`landuse-payment-schedule-days-in-year-${index}`}
+                                  label="Koronlaskutapa"
+                                  value={"Englantilainen"}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="landuse-grid__column-3">
+                                <Field name={`${fieldName}.daysInYear`}>
+                                  {({ input }) => {
+                                    return (
+                                      <TextInput
+                                        id={`landuse-payment-schedule-days-in-year-${index}`}
+                                        label="Päiviä vuodessa"
+                                        value={readOnlyTextValue(input.value)}
+                                        tooltip={
+                                          <Tooltip
+                                            tooltipLabel="Päiviä vuodessa selitys"
+                                            buttonLabel="Näytä päiviä vuodessa selitys"
+                                            placement="right"
+                                          >
+                                            Karkausvuotta ei oteta huomioon
+                                            koron tai korotuksen laskemisessa.
+                                          </Tooltip>
+                                        }
+                                        readOnly
+                                      />
+                                    );
+                                  }}
+                                </Field>
+                              </div>
+                            </div>
                           </Fieldset>
                         ),
                       },
@@ -1085,9 +1116,6 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                             isEditMode,
                             scheduleStatus: schedule.status,
                             invoice: installmentFields.value[installmentIndex],
-                            korkoResults,
-                            onRemove: () =>
-                              installmentFields.remove(installmentIndex),
                           }),
                       ),
                     ]}
@@ -1178,6 +1206,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       korotusMarginaali: "",
       korkoPeruskorko: "",
       korkoMarginaali: "",
+      daysInYear: INTEREST_CALCULATION_DAYS_IN_YEAR.DAYS_365,
       installments,
     } satisfies LandUsePaymentScheduleEntry);
 
@@ -1277,7 +1306,6 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                               isEditMode={isEditMode}
                               parties={parties}
                               agreementOptions={agreementOptions}
-                              korkoResults={korkoResults}
                               onRemoveSchedule={fields.remove}
                             />
                           ))}
