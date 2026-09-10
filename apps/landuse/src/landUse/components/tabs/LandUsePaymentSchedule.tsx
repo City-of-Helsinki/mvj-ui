@@ -191,42 +191,80 @@ const getSelectedPartyInvoiceData = (
   };
 };
 
-/** Interest formula: amount × (rate/100) × days / daysInYear (English annual interest) */
-const calculateInterestAmount = (
-  amountStr: string,
-  peruskorkoStr: string,
-  marginaaliStr: string,
-  alkupvmStr: string,
-  loppupvmStr: string,
-  daysInYearStr: string,
-): number | null => {
-  const amount = parseFloat(amountStr);
-  const peruskorko = parseFloat(peruskorkoStr);
-  const marginaali = parseFloat(marginaaliStr);
-  const daysInYear = parseFloat(daysInYearStr) || 365;
+/**
+ * The second invoice row is either a "korotus" (increase, peruskorko + marginaali)
+ * or a "korko" (interest, peruskorko only). Everything that differs between the
+ * two variants is derived from an `InterestKind`.
+ */
+type InterestKind = "korotus" | "korko";
+
+const getInterestKind = (itemType: string): InterestKind | null => {
+  if (itemType === LAND_USE_INVOICE_ITEM_TYPES.KOROTUS) return "korotus";
+  if (itemType === LAND_USE_INVOICE_ITEM_TYPES.KORKO) return "korko";
+  return null;
+};
+
+const getPeruskorkoFieldPath = (
+  kind: InterestKind,
+  scheduleFieldName: string,
+): string =>
+  kind === "korotus"
+    ? `${scheduleFieldName}.korotusPeruskorko`
+    : `${scheduleFieldName}.korkoPeruskorko`;
+
+// Only korotus has a marginaali; korko is calculated from peruskorko alone.
+const getMarginaaliFieldPath = (scheduleFieldName: string): string =>
+  `${scheduleFieldName}.korotusMarginaali`;
+
+const getInterestPeriodLabels = (
+  kind: InterestKind,
+): { startLabel: string; endLabel: string } =>
+  kind === "korotus"
+    ? { startLabel: "Korotuksen alkupäivä", endLabel: "Korotuksen loppupäivä" }
+    : { startLabel: "Koron alkupäivä", endLabel: "Koron loppupäivä" };
+
+const formatInterestCalcLabel = (
+  kind: InterestKind,
+  peruskorko: string,
+  marginaali: string | null,
+  periodDays: number | null,
+): string => {
+  const days = periodDays !== null ? `${periodDays}` : "-";
+  const base = peruskorko || "-";
+  if (kind === "korotus") {
+    return `Laskettu korotus (${base}% + ${marginaali || "-"}%) * ${days} pv`;
+  }
+  return `Laskettu korko (${base}%) * ${days} pv`;
+};
+
+/** English annual interest: amount × (peruskorko + marginaali)/100 × days / daysInYear. */
+const calculateInterestAmount = ({
+  baseAmount,
+  peruskorko,
+  marginaali,
+  periodDays,
+  daysInYear,
+}: {
+  baseAmount: string;
+  peruskorko: string;
+  marginaali: string | null; // null when the kind has no marginaali (korko)
+  periodDays: number | null;
+  daysInYear: string;
+}): number | null => {
+  if (periodDays === null || periodDays <= 0) return null;
+  const parsedAmount = parseFloat(baseAmount);
+  const parsedPeruskorko = parseFloat(peruskorko);
+  const parsedMarginaali = marginaali === null ? 0 : parseFloat(marginaali);
   if (
-    isNaN(amount) ||
-    isNaN(peruskorko) ||
-    isNaN(marginaali) ||
-    !alkupvmStr.trim() ||
-    !loppupvmStr.trim()
-  )
+    isNaN(parsedAmount) ||
+    isNaN(parsedPeruskorko) ||
+    isNaN(parsedMarginaali)
+  ) {
     return null;
-  const parseFinnish = (s: string): Date | null => {
-    const p = s.split(".");
-    if (p.length !== 3) return null;
-    const d = new Date(
-      `${p[2]}-${p[1].padStart(2, "0")}-${p[0].padStart(2, "0")}T00:00:00`,
-    );
-    return isNaN(d.getTime()) ? null : d;
-  };
-  const start = parseFinnish(alkupvmStr);
-  const end = parseFinnish(loppupvmStr);
-  if (!start || !end) return null;
-  const days = Math.round((end.getTime() - start.getTime()) / 86400000);
-  if (days <= 0) return null;
-  const rate = peruskorko + marginaali;
-  return (amount * (rate / 100) * days) / daysInYear;
+  }
+  const parsedDaysInYear = parseFloat(daysInYear) || 365;
+  const rate = parsedPeruskorko + parsedMarginaali;
+  return (parsedAmount * (rate / 100) * periodDays) / parsedDaysInYear;
 };
 
 interface InvoiceItemRowProps {
@@ -267,31 +305,30 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
   );
 
   const itemType = itemTypeInput.value;
-  const isKorotus = itemType === LAND_USE_INVOICE_ITEM_TYPES.KOROTUS;
-  const isKorko = itemType === LAND_USE_INVOICE_ITEM_TYPES.KORKO;
-  const needsCalc = canEdit && (isKorotus || isKorko);
-  const peruskorkoFieldName = isKorotus
-    ? `${scheduleFieldName}.korotusPeruskorko`
-    : `${scheduleFieldName}.korkoPeruskorko`;
-  const marginaaliFieldName = isKorotus
-    ? `${scheduleFieldName}.korotusMarginaali`
-    : `${scheduleFieldName}.korkoMarginaali`;
-  const { input: peruskorkoInput } = useField(peruskorkoFieldName);
-  const { input: marginaaliInput } = useField(marginaaliFieldName);
+  const interestKind = getInterestKind(itemType);
+  const shouldCalculate = canEdit && interestKind !== null;
 
-  const calculated = needsCalc
-    ? calculateInterestAmount(
-        baseAmountInput.value,
-        peruskorkoInput.value,
-        marginaaliInput.value,
-        alkupvmInput.value,
-        loppupvmInput.value,
-        daysInYearInput.value,
-      )
-    : null;
-  const periodDays = needsCalc
-    ? calculateInvoicingPeriodDays(alkupvmInput.value, loppupvmInput.value) ||
-      null
+  // useField must be called unconditionally; when there's no interest kind the values are unused.
+  const { input: peruskorkoInput } = useField(
+    getPeruskorkoFieldPath(interestKind ?? "korotus", scheduleFieldName),
+  );
+  const { input: marginaaliInput } = useField(
+    getMarginaaliFieldPath(scheduleFieldName),
+  );
+
+  const marginaaliForCalc =
+    interestKind === "korotus" ? marginaaliInput.value : null;
+  const periodDays =
+    calculateInvoicingPeriodDays(alkupvmInput.value, loppupvmInput.value) ||
+    null;
+  const calculated = shouldCalculate
+    ? calculateInterestAmount({
+        baseAmount: baseAmountInput.value,
+        peruskorko: peruskorkoInput.value,
+        marginaali: marginaaliForCalc,
+        periodDays,
+        daysInYear: daysInYearInput.value,
+      })
     : null;
 
   return (
@@ -331,12 +368,17 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
         />
       </div>
 
-      {needsCalc && (
+      {shouldCalculate && interestKind && (
         <>
           <div className="landuse-grid__column-4">
             <TextInput
               id={`landuse-payment-schedule-invoice-row-calc-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
-              label={`Laskettu ${isKorotus ? "korotus" : "korko"} (${peruskorkoInput.value || "-"}% + ${marginaaliInput.value || "-"}%) * ${periodDays !== null ? `${periodDays}` : "-"} pv`}
+              label={formatInterestCalcLabel(
+                interestKind,
+                peruskorkoInput.value,
+                marginaaliForCalc,
+                periodDays,
+              )}
               value={
                 calculated !== null
                   ? formatLandUseEuroDisplayValue(calculated)
@@ -645,14 +687,9 @@ const buildInstallmentStep = ({
           </div>
           <Field name={`${fieldName}.invoiceItems[1].itemType`}>
             {({ input: secondItemTypeInput }) => {
-              const isKorko =
-                secondItemTypeInput.value === LAND_USE_INVOICE_ITEM_TYPES.KORKO;
-              const alkuLabel = isKorko
-                ? "Koron alkupäivä"
-                : "Korotuksen alkupäivä";
-              const loppuLabel = isKorko
-                ? "Koron loppupäivä"
-                : "Korotuksen loppupäivä";
+              const kind =
+                getInterestKind(secondItemTypeInput.value) ?? "korotus";
+              const { startLabel, endLabel } = getInterestPeriodLabels(kind);
               return (
                 <>
                   <div className="landuse-grid__column-3">
@@ -661,7 +698,7 @@ const buildInstallmentStep = ({
                         canEdit ? (
                           <DateInput
                             id={`landuse-payment-schedule-korotuksen-alkupvm-${scheduleIndex}-${installmentIndex}`}
-                            label={alkuLabel}
+                            label={startLabel}
                             value={input.value}
                             onChange={input.onChange}
                             placeholder="DD.MM.YYYY"
@@ -671,7 +708,7 @@ const buildInstallmentStep = ({
                         ) : (
                           <TextInput
                             id={`landuse-payment-schedule-korotuksen-alkupvm-${scheduleIndex}-${installmentIndex}`}
-                            label={alkuLabel}
+                            label={startLabel}
                             value={readOnlyTextValue(input.value)}
                             readOnly
                           />
@@ -685,7 +722,7 @@ const buildInstallmentStep = ({
                         canEdit ? (
                           <DateInput
                             id={`landuse-payment-schedule-korotuksen-loppupvm-${scheduleIndex}-${installmentIndex}`}
-                            label={loppuLabel}
+                            label={endLabel}
                             value={input.value}
                             onChange={input.onChange}
                             placeholder="DD.MM.YYYY"
@@ -695,7 +732,7 @@ const buildInstallmentStep = ({
                         ) : (
                           <TextInput
                             id={`landuse-payment-schedule-korotuksen-loppupvm-${scheduleIndex}-${installmentIndex}`}
-                            label={loppuLabel}
+                            label={endLabel}
                             value={readOnlyTextValue(input.value)}
                             readOnly
                           />
@@ -1007,24 +1044,6 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                       <NumericDecimalInput
                                         id={`landuse-payment-schedule-korko-peruskorko-${index}`}
                                         label="Peruskorko %"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                        unit="%"
-                                        isEditMode={
-                                          isEditMode &&
-                                          schedule.status ===
-                                            LAND_USE_INVOICE_STATUSES.DRAFT
-                                        }
-                                      />
-                                    )}
-                                  </Field>
-                                </div>
-                                <div className="landuse-grid__column-3">
-                                  <Field name={`${fieldName}.korkoMarginaali`}>
-                                    {({ input }) => (
-                                      <NumericDecimalInput
-                                        id={`landuse-payment-schedule-korko-marginaali-${index}`}
-                                        label="Marginaali %"
                                         value={input.value}
                                         onChange={input.onChange}
                                         unit="%"
