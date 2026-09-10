@@ -20,6 +20,7 @@ import {
   AsemakaavaListItem,
   LAND_USE_INVOICE_ITEM_TYPES,
   LAND_USE_INVOICE_TYPES,
+  landUseInterestDaysInYearOptions,
   landUseInvoiceItemTypeSelectOptions,
 } from "../../options";
 import {
@@ -712,10 +713,7 @@ const buildInstallmentStep = ({
                 canEdit ? (
                   <Select
                     id={`landuse-payment-schedule-days-in-year-${scheduleIndex}-${installmentIndex}`}
-                    options={[
-                      { label: "365", value: "365" },
-                      { label: "366", value: "366" },
-                    ]}
+                    options={landUseInterestDaysInYearOptions}
                     value={input.value || "365"}
                     onChange={(selected) => {
                       if (selected.length > 0) {
