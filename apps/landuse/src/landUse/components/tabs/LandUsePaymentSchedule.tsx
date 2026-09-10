@@ -861,7 +861,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
         {partyLabel}
       </h2>
       <div className="landuse-grid landuse-grid__bottom-margin">
-        <div className="landuse-grid__column-3">
+        <div className="landuse-grid__column-6">
           <TextInput
             id={`landuse-payment-schedule-street-address-${schedules[0].index}`}
             label="Katuosoite"
@@ -870,7 +870,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
           />
         </div>
 
-        <div className="landuse-grid__column-3">
+        <div className="landuse-grid__column-6">
           <TextInput
             id={`landuse-payment-schedule-city-${schedules[0].index}`}
             label="Postitoimipaikka"
@@ -879,7 +879,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
           />
         </div>
 
-        <div className="landuse-grid__column-3">
+        <div className="landuse-grid__column-6">
           <TextInput
             id={`landuse-payment-schedule-postal-code-${schedules[0].index}`}
             label="Postinumero"
@@ -888,7 +888,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
           />
         </div>
 
-        <div className="landuse-grid__column-3">
+        <div className="landuse-grid__column-6">
           <TextInput
             id={`landuse-payment-schedule-ovt-code-${schedules[0].index}`}
             label="OVT-tunnus"
@@ -897,7 +897,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
           />
         </div>
 
-        <div className="landuse-grid__column-3">
+        <div className="landuse-grid__column-6">
           <TextInput
             id={`landuse-payment-schedule-reference-${schedules[0].index}`}
             label="Asiakkaan viite"
@@ -907,7 +907,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
         </div>
 
         {selectedPartyData.isCompany && (
-          <div className="landuse-grid__column-3">
+          <div className="landuse-grid__column-6">
             <TextInput
               id={`landuse-payment-schedule-business-id-${schedules[0].index}`}
               label="Y-tunnus"
