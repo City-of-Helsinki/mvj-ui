@@ -152,12 +152,6 @@ const TABS_CONFIG: TabConfig[] = [
     formKey: "contracts",
   },
   {
-    label: "Valvonta",
-    queryKey: "monitoring",
-    hasForm: true,
-    formKey: "monitoring",
-  },
-  {
     label: "Maksusuunnitelmat",
     queryKey: "paymentSchedule",
     hasForm: true,
@@ -168,6 +162,12 @@ const TABS_CONFIG: TabConfig[] = [
     queryKey: "billing",
     hasForm: true,
     formKey: "billing",
+  },
+  {
+    label: "Valvonta",
+    queryKey: "monitoring",
+    hasForm: true,
+    formKey: "monitoring",
   },
   { label: "Kartta", queryKey: "map", hasForm: true, formKey: "map" },
   { label: "Muutoshistoria", queryKey: "history", hasForm: false },
@@ -996,19 +996,20 @@ const LandUseDetailPage: React.FC = () => {
     [];
 
   const renderActiveTabPanel = () => {
-    switch (activeTab) {
-      case 0:
+    const activeTabKey = TABS_CONFIG[activeTab]?.queryKey;
+    switch (activeTabKey) {
+      case "summary":
         return <LandUseSummary form={summaryFormApi} isEditMode={isEditMode} />;
-      case 1:
+      case "parties":
         return <LandUseParties form={partiesFormApi} isEditMode={isEditMode} />;
-      case 2:
+      case "compensations":
         return (
           <LandUseCompensations
             form={compensationsFormApi}
             isEditMode={isEditMode}
           />
         );
-      case 3:
+      case "collaterals":
         return (
           <LandUseCollaterals
             form={collateralsFormApi}
@@ -1031,7 +1032,7 @@ const LandUseDetailPage: React.FC = () => {
             }
           />
         );
-      case 4:
+      case "decisions":
         return (
           <LandUseDecisions
             form={decisionsFormApi}
@@ -1039,7 +1040,7 @@ const LandUseDetailPage: React.FC = () => {
             parties={activeParties}
           />
         );
-      case 5:
+      case "contracts":
         return (
           <LandUseContracts
             form={contractsFormApi}
@@ -1047,7 +1048,7 @@ const LandUseDetailPage: React.FC = () => {
             parties={activeParties}
           />
         );
-      case 6:
+      case "monitoring":
         return (
           <LandUseMonitoring
             form={monitoringFormApi}
@@ -1083,7 +1084,7 @@ const LandUseDetailPage: React.FC = () => {
             onSetTabDirty={handleSetTabDirty}
           />
         );
-      case 7:
+      case "paymentSchedule":
         return (
           <LandUsePaymentSchedule
             form={paymentScheduleFormApi}
@@ -1112,7 +1113,7 @@ const LandUseDetailPage: React.FC = () => {
             setKorkoResults={setKorkoResults}
           />
         );
-      case 8:
+      case "billing":
         return (
           <LandUseBilling
             form={billingFormApi}
@@ -1139,9 +1140,9 @@ const LandUseDetailPage: React.FC = () => {
             agreementIdentifier={agreementId}
           />
         );
-      case 9:
+      case "map":
         return <LandUseMap form={mapFormApi} isEditMode={isEditMode} />;
-      case 10:
+      case "history":
         return (
           <div>
             <h1>Muutoshistoria</h1>
