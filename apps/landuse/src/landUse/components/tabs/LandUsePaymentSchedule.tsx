@@ -7,6 +7,7 @@ import {
   DateInput,
   Dialog,
   Fieldset,
+  IconLock,
   IconPlusCircle,
   NumberInput,
   Select,
@@ -930,7 +931,12 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               {({ fields: installmentFields }) => (
                 <>
                   <div className="landuse-detail__heading-with-delete">
-                    <h4>Maksusuunnitelma {scheduleListIndex + 1}</h4>
+                    <h4>
+                      {schedule.status !== LAND_USE_INVOICE_STATUSES.DRAFT && (
+                        <IconLock aria-label="Maksusuunnitelma lukittu" />
+                      )}{" "}
+                      Maksusuunnitelma {scheduleListIndex + 1}
+                    </h4>
                     {isEditMode &&
                       schedule.status === LAND_USE_INVOICE_STATUSES.DRAFT && (
                         <ConfirmDeleteButton
