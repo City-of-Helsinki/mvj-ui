@@ -444,7 +444,6 @@ export interface LandUseInvoice {
   dueDate: string;
   korotuksenAlkupvm: string;
   korotuksenLoppupvm: string;
-  daysInYear: string;
   invoiceNumber: string;
   type: LandUseInvoiceType | undefined;
   status: LandUseInvoiceStatus | undefined;
@@ -487,11 +486,18 @@ export const landUseInvoiceItemTypeSelectOptions: {
   value,
 }));
 
-export const landUseInterestDaysInYearOptions = [
-  { label: "360", value: "360" },
-  { label: "365", value: "365" },
-  { label: "366", value: "366" },
-];
+// Only 365 is supported for now; additional entries can be added later without
+// requiring further changes to the payment schedule UI.
+export const INTEREST_CALCULATION_DAYS_IN_YEAR = {
+  DAYS_365: "365",
+} as const;
+
+export type InterestCalculationDaysInYear =
+  (typeof INTEREST_CALCULATION_DAYS_IN_YEAR)[keyof typeof INTEREST_CALCULATION_DAYS_IN_YEAR];
+
+export const interestCalculationDaysInYearOptions = Object.values(
+  INTEREST_CALCULATION_DAYS_IN_YEAR,
+).map((value) => ({ label: value, value }));
 
 export const landUseKohdeSelectOptions = [
   { label: "91-10-100-1", value: "91-10-100-1" },
