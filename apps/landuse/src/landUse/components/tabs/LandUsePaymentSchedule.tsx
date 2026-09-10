@@ -1222,7 +1222,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                     <div className="landuse-invoicing__invoice-actions">
                       <Button
                         type="button"
-                        variant={ButtonVariant.Supplementary}
+                        variant={ButtonVariant.Primary}
                         iconStart={<IconPlusCircle />}
                         onClick={() => setIsBulkCreateOpen(true)}
                       >
