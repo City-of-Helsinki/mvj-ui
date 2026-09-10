@@ -47,7 +47,6 @@ import {
   type LandUseInvoiceItem,
 } from "../options";
 import { parseLandUseNumericValueOrZero } from "../utils/number";
-import type { KorkoResult } from "./invoicing/KorkoCalculator";
 import type { SectionEntry, SideNavigationTab } from "./SideNavigation";
 import { SideNavigation } from "./SideNavigation";
 import {
@@ -236,7 +235,6 @@ const LandUseDetailPage: React.FC = () => {
   );
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSaveClicked, setIsSaveClicked] = useState(false);
-  const [korkoResults, setKorkoResults] = useState<KorkoResult[]>([]);
   const [sectionEntries, setSectionEntries] = useState<SectionEntry[]>([]);
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -1109,8 +1107,6 @@ const LandUseDetailPage: React.FC = () => {
               ""
             }
             agreementIdentifier={agreementId}
-            korkoResults={korkoResults}
-            setKorkoResults={setKorkoResults}
           />
         );
       case "billing":
