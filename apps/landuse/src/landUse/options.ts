@@ -487,6 +487,12 @@ export const landUseInvoiceItemTypeSelectOptions: {
   value,
 }));
 
+export const landUseInterestDaysInYearOptions = [
+  { label: "360", value: "360" },
+  { label: "365", value: "365" },
+  { label: "366", value: "366" },
+];
+
 export const landUseKohdeSelectOptions = [
   { label: "91-10-100-1", value: "91-10-100-1" },
   { label: "91-11-200-2", value: "91-11-200-2" },
