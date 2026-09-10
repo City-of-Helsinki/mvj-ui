@@ -141,6 +141,10 @@ const CollectionNoteEdit: React.FC<Props> = ({
                             ? FieldTypes.CHOICE
                             : FieldTypes.MULTISELECT,
                       }}
+                      disabled={
+                        values.collection_stage ===
+                        CollectionStageOptions.PAYMENT_DEFERRAL
+                      }
                     />
                   </Authorization>
                 </Column>
@@ -185,6 +189,7 @@ const CollectionNoteEdit: React.FC<Props> = ({
                         overrideValues={{
                           label: CollectionNoteFieldTitles.POSTPONE_DATE,
                         }}
+                        disabled
                       />
                     </Authorization>
                   </Column>
