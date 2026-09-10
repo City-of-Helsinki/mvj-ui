@@ -34,10 +34,6 @@ import { calculateInvoicingPeriodDays } from "../../utils/date";
 import { formatLandUseEuroDisplayValue } from "../../utils/number";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
 import {
-  KorkoCalculator,
-  type KorkoResult,
-} from "../invoicing/KorkoCalculator";
-import {
   LAND_USE_INVOICE_STATUSES,
   type LandUseInvoice,
   type LandUseInvoiceItem,
@@ -80,8 +76,6 @@ interface LandUsePaymentScheduleProps {
   asemakaavanNumero: AsemakaavaListItem["asemakaavanNumero"];
   asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
   agreementIdentifier: string;
-  korkoResults: KorkoResult[];
-  setKorkoResults: React.Dispatch<React.SetStateAction<KorkoResult[]>>;
 }
 
 interface SelectedPartyInvoiceData {
@@ -1138,8 +1132,6 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
   asemakaavanNumero,
   asemakaavanLainvoimaisuusPvm,
   agreementIdentifier,
-  korkoResults,
-  setKorkoResults,
 }) => {
   const [isBulkCreateOpen, setIsBulkCreateOpen] = useState(false);
 
@@ -1315,11 +1307,6 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                   </FieldArray>
                 </Fieldset>
               </form>
-              <h2>Korkolaskin</h2>
-              <KorkoCalculator
-                korkoResults={korkoResults}
-                setKorkoResults={setKorkoResults}
-              />
             </div>
           );
         }}
