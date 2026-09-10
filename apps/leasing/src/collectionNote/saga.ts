@@ -18,6 +18,7 @@ import {
   patchCollectionNote,
 } from "./requests";
 import { getCollectionNotesByLease } from "./selectors";
+import { fetchInvoicesByLease } from "@/invoices/actions";
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -93,6 +94,7 @@ function* createCollectionNoteSaga({
     switch (statusCode) {
       case 201:
         yield put(fetchCollectionNotesByLeaseAction(payload.lease));
+        yield put(fetchInvoicesByLease(payload.lease));
         displayUIMessage({
           title: "",
           body: "Huomautus tallennettu",

@@ -127,7 +127,8 @@ const InvoicePanel = forwardRef<any, Props>(
         innerRef={setComponentRef}
         footer={
           invoice &&
-          !invoice.sap_id && (
+          !invoice.sap_id &&
+          !invoice.sent_to_sap_at && (
             <Authorization
               allow={
                 isMethodAllowed(invoiceMethods, Methods.PATCH) &&

@@ -185,6 +185,7 @@ const NewCollectionNote: React.FC<Props> = ({ onSave }) => {
                       name="postpone_date"
                       overrideValues={{
                         label: CollectionNoteFieldTitles.POSTPONE_DATE,
+                        required: true,
                       }}
                     />
                   </Authorization>
@@ -278,11 +279,7 @@ const NewCollectionNote: React.FC<Props> = ({ onSave }) => {
         )}
       >
         {!isAddingNote && (
-          <AddButtonThird
-            label="Lisää huomautus"
-            onClick={handleAdd}
-            style={{ marginTop: "1rem" }}
-          />
+          <AddButtonThird label="Lisää huomautus" onClick={handleAdd} />
         )}
       </Authorization>
     </>
