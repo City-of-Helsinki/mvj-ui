@@ -18,7 +18,7 @@ import {
 import { copyNumberToClipboard } from "@/landUse/utils/fieldUtils";
 import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
 import { calculateInvoicingPeriodDays } from "@/landUse/utils/date";
-import { landUseInterestDaysInYearOptions } from "@/landUse/options";
+import { interestCalculationDaysInYearOptions } from "@/landUse/options";
 
 export interface KorkoResult {
   id: number;
@@ -246,7 +246,7 @@ export const KorkoCalculator: React.FC<KorkoCalculatorProps> = ({
         <div className="landuse-grid__column-2">
           <Select
             id="landuse-invoicing-korko-calculator-days-in-year"
-            options={landUseInterestDaysInYearOptions}
+            options={interestCalculationDaysInYearOptions}
             value={daysInYear.toString()}
             onChange={(selectedOptions) => {
               const selected =
