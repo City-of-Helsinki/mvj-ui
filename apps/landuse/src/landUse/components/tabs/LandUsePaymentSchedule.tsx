@@ -1167,22 +1167,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
           return (
             <div className="landuse-detail__content">
               <h1>Maksusuunnitelmat</h1>
-              <div className="landuse-grid landuse-grid__bottom-margin">
-                <div className="landuse-grid__column-12">
-                  {isEditMode && (
-                    <div className="landuse-invoicing__invoice-actions">
-                      <Button
-                        type="button"
-                        variant={ButtonVariant.Supplementary}
-                        iconStart={<IconPlusCircle />}
-                        onClick={() => setIsBulkCreateOpen(true)}
-                      >
-                        Syötä maksusuunnitelma
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
+
               <div className="landuse-grid landuse-grid__bottom-margin">
                 <div className="landuse-grid__column-3">
                   <TextInput
@@ -1203,6 +1188,22 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                       />
                     )}
                   </Field>
+                </div>
+              </div>
+              <div className="landuse-grid landuse-grid__bottom-margin">
+                <div className="landuse-grid__column-12">
+                  {isEditMode && (
+                    <div className="landuse-invoicing__invoice-actions">
+                      <Button
+                        type="button"
+                        variant={ButtonVariant.Supplementary}
+                        iconStart={<IconPlusCircle />}
+                        onClick={() => setIsBulkCreateOpen(true)}
+                      >
+                        Syötä maksusuunnitelma
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
 
