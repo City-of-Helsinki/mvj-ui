@@ -918,7 +918,6 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
           </div>
         )}
       </div>
-      <h3>Maksusuunnitelmat</h3>
       {schedules.map(({ fieldName, index, schedule }, scheduleListIndex) => {
         const contractNumber =
           agreementOptions.find(
@@ -931,12 +930,12 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               {({ fields: installmentFields }) => (
                 <>
                   <div className="landuse-detail__heading-with-delete">
-                    <h4>
+                    <h3>
                       {schedule.status !== LAND_USE_INVOICE_STATUSES.DRAFT && (
                         <IconLock aria-label="Maksusuunnitelma lukittu" />
                       )}{" "}
                       Maksusuunnitelma {scheduleListIndex + 1}
-                    </h4>
+                    </h3>
                     {isEditMode &&
                       schedule.status === LAND_USE_INVOICE_STATUSES.DRAFT && (
                         <ConfirmDeleteButton
@@ -951,7 +950,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                   <StepByStep
                     steps={[
                       {
-                        title: `Maksusuunnitelman perustiedot`,
+                        title: `Perustiedot`,
                         key: `payment-schedule-${index}-details`,
                         description: (
                           <Fieldset heading="" className="full-width">
@@ -972,7 +971,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                   readOnly
                                 />
                               </div>
-                              <div className="landuse-grid__column-3 landuse-compensations-table__field--background-coat-of-arms-light">
+                              <div className="landuse-grid__column-3">
                                 <Field name={`${fieldName}.status`}>
                                   {({ input: statusInput }) => {
                                     const statusAction =
