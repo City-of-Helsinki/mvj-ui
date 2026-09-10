@@ -5,11 +5,9 @@ import {
   ButtonSize,
   ButtonVariant,
   DateInput,
-  Dialog,
   Fieldset,
   IconAngleDown,
   IconAngleUp,
-  IconPlusCircle,
   IconPlusCircleFill,
   IconSize,
   NumberInput,
@@ -21,8 +19,6 @@ import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import {
   AsemakaavaListItem,
-  LAND_USE_INVOICE_ITEM_TYPES,
-  LAND_USE_INVOICE_TYPES,
   landUseInvoiceItemTypeSelectOptions,
   landUseInvoiceTypeSelectOptions,
 } from "../../options";
@@ -62,8 +58,6 @@ interface LandUseBillingProps {
   parties: PartyEntry[];
   contracts: ContractItem[];
   asemakaavanNumero: AsemakaavaListItem["asemakaavanNumero"];
-  asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
-  agreementIdentifier: string;
 }
 
 interface SelectedPartyInvoiceData {
@@ -258,214 +252,6 @@ const getInvoiceDeleteLabel = (invoiceNumber: string | undefined): string => {
 };
 
 const getSentAtTimestamp = (): string => new Date().toISOString();
-
-interface BulkCreateFormValues {
-  installmentTotal: string;
-  contractIndex: string | undefined;
-  recipientPartyIndex: string | undefined;
-  asemakaavanLainvoimaisuusPvm: string;
-}
-
-const buildSecondRowSelite = (
-  agreementIdentifier: string,
-  sopimusnumero: string,
-  asemakaavanNumero: string,
-  installmentNumber: number,
-  installmentTotal: string,
-  recipientName: string,
-  isFirst: boolean,
-): string =>
-  `Maankäyttökorvaus ${agreementIdentifier}, ${sopimusnumero}, ${asemakaavanNumero}, ${installmentNumber}/${installmentTotal}, ${recipientName}, ${isFirst ? "Korotus" : "Korko"}`;
-
-const createBulkInvoice = (
-  installmentNumber: number,
-  values: BulkCreateFormValues,
-  signedDate: string,
-  agreementIdentifier: string,
-  sopimusnumero: string,
-  asemakaavanNumero: string,
-  recipientName: string,
-): LandUseInvoice => ({
-  recipientPartyIndex: values.recipientPartyIndex,
-  contractIndex: values.contractIndex,
-  installmentNumber: String(installmentNumber),
-  installmentTotal: values.installmentTotal,
-  signedDate,
-  asemakaavanLainvoimaisuusPvm: values.asemakaavanLainvoimaisuusPvm,
-  dueDate: "",
-  invoiceNumber: "",
-  type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
-  status: "Luonnos",
-  sentAt: "",
-  billedAmount: "",
-  remainingAmount: "",
-  invoiceItems: [
-    {
-      itemType: LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS,
-      description: "Maksutuotot maankäyttösopimuksista",
-      amountExcludingVat: "",
-    },
-    {
-      itemType:
-        installmentNumber === 1
-          ? LAND_USE_INVOICE_ITEM_TYPES.KOROTUS
-          : LAND_USE_INVOICE_ITEM_TYPES.KORKO,
-      description: buildSecondRowSelite(
-        agreementIdentifier,
-        sopimusnumero,
-        asemakaavanNumero,
-        installmentNumber,
-        values.installmentTotal,
-        recipientName,
-        installmentNumber === 1,
-      ),
-      amountExcludingVat: "",
-    },
-  ],
-});
-
-interface BulkCreateInvoicesDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (values: BulkCreateFormValues) => void;
-  partyOptions: SelectOption[];
-  agreementOptions: AgreementOption[];
-  asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
-}
-
-const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  partyOptions,
-  agreementOptions,
-  asemakaavanLainvoimaisuusPvm: asemakaavanLainvoimaisuusPvmProp,
-}) => {
-  const [installmentTotal, setInstallmentTotal] = useState<number | "">("");
-  const [contractIndex, setContractIndex] = useState<string | undefined>(
-    undefined,
-  );
-  const [recipientPartyIndex, setRecipientPartyIndex] = useState<
-    string | undefined
-  >(undefined);
-  const [
-    asemakaavanLainvoimaisuusPvmValue,
-    setAsemakaavanLainvoimaisuusPvmValue,
-  ] = useState<AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"]>(
-    asemakaavanLainvoimaisuusPvmProp,
-  );
-
-  const reset = () => {
-    setInstallmentTotal("");
-    setContractIndex(undefined);
-    setRecipientPartyIndex(undefined);
-    setAsemakaavanLainvoimaisuusPvmValue(asemakaavanLainvoimaisuusPvmProp);
-  };
-
-  const handleClose = () => {
-    reset();
-    onClose();
-  };
-
-  const handleBulkInvoiceCreate = () => {
-    onSubmit({
-      installmentTotal: String(installmentTotal),
-      contractIndex,
-      recipientPartyIndex,
-      asemakaavanLainvoimaisuusPvm: asemakaavanLainvoimaisuusPvmValue,
-    });
-    reset();
-  };
-
-  const isSubmitDisabled = installmentTotal === "" || installmentTotal <= 0;
-
-  return (
-    <Dialog
-      id="landuse-bulk-create-invoices-billing"
-      isOpen={isOpen}
-      aria-labelledby="landuse-bulk-create-invoices-billing-title"
-      closeButtonLabelText="Sulje"
-      close={handleClose}
-    >
-      <Dialog.Header
-        id="landuse-bulk-create-invoices-billing-title"
-        title="Luo maankäyttökorvaus laskuja"
-      />
-      <Dialog.Content>
-        <div className="landuse-grid">
-          <div className="landuse-grid__column-12">
-            <NumberInput
-              id="bulk-create-installment-total-billing"
-              label="Laskutuseriä yhteensä"
-              value={installmentTotal}
-              onChange={(e) =>
-                setInstallmentTotal(
-                  e.target.value === "" ? "" : Number(e.target.value),
-                )
-              }
-              min={1}
-              step={1}
-            />
-          </div>
-          <div className="landuse-grid__column-12">
-            <Select
-              id="bulk-create-contract-billing"
-              options={agreementOptions}
-              value={normalizeSelectValue(contractIndex)}
-              onChange={(selected) =>
-                handleSelectChange(selected, setContractIndex)
-              }
-              disabled={agreementOptions.length === 0}
-              texts={{
-                label: "Sopimus",
-                placeholder:
-                  agreementOptions.length > 0 ? "Valitse" : "Ei sopimuksia",
-              }}
-            />
-          </div>
-          <div className="landuse-grid__column-12">
-            <Select
-              id="bulk-create-recipient-billing"
-              options={partyOptions}
-              value={normalizeSelectValue(recipientPartyIndex)}
-              onChange={(selected) =>
-                handleSelectChange(selected, setRecipientPartyIndex)
-              }
-              disabled={partyOptions.length === 0}
-              texts={{
-                label: "Laskunsaaja",
-                placeholder:
-                  partyOptions.length > 0 ? "Valitse" : "Ei osapuolia",
-              }}
-            />
-          </div>
-          <div className="landuse-grid__column-12">
-            <DateInput
-              id="bulk-create-valid-date-billing"
-              label="Lainvoimaisuus"
-              value={asemakaavanLainvoimaisuusPvmValue}
-              onChange={setAsemakaavanLainvoimaisuusPvmValue}
-              placeholder="DD.MM.YYYY"
-              language="fi"
-            />
-          </div>
-        </div>
-      </Dialog.Content>
-      <Dialog.ActionButtons>
-        <Button variant={ButtonVariant.Secondary} onClick={handleClose}>
-          Peruuta
-        </Button>
-        <Button
-          variant={ButtonVariant.Primary}
-          onClick={handleBulkInvoiceCreate}
-          disabled={isSubmitDisabled}
-        >
-          Luo laskut
-        </Button>
-      </Dialog.ActionButtons>
-    </Dialog>
-  );
-};
 
 const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
   fieldName,
@@ -1205,11 +991,8 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
   parties,
   contracts,
   asemakaavanNumero,
-  asemakaavanLainvoimaisuusPvm,
-  agreementIdentifier,
 }) => {
   const [openInvoiceIndex, setOpenInvoiceIndex] = useState<number | null>(null);
-  const [isBulkCreateOpen, setIsBulkCreateOpen] = useState(false);
 
   const partyOptions = React.useMemo(
     () => createInvoiceRecipientOptions(parties ?? []),
@@ -1220,197 +1003,145 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
     [contracts],
   );
 
-  const handleBulkCreate = (values: BulkCreateFormValues) => {
-    const total = parseInt(values.installmentTotal, 10);
-    if (!total || total <= 0) return;
-
-    const selectedContract = contracts[Number(values.contractIndex)];
-    const signedDate = selectedContract?.allekirjoituspvm ?? "";
-    const sopimusnumero =
-      agreementOptions.find((o) => o.value === values.contractIndex)
-        ?.sopimusnumero ?? "";
-    const recipientName =
-      partyOptions.find((o) => o.value === values.recipientPartyIndex)?.label ??
-      "";
-
-    const currentLength = form.getState().values.invoices?.length ?? 0;
-
-    for (let i = 0; i < total; i++) {
-      form.mutators.push(
-        "invoices",
-        createBulkInvoice(
-          i + 1,
-          values,
-          signedDate,
-          agreementIdentifier,
-          sopimusnumero,
-          asemakaavanNumero,
-          recipientName,
-        ),
-      );
-    }
-
-    setOpenInvoiceIndex(currentLength);
-    setIsBulkCreateOpen(false);
-  };
-
   return (
-    <>
-      <Form<LandUseBillingFormValues>
-        form={form}
-        onSubmit={() => {}}
-        render={({ handleSubmit }) => {
-          const existingInvoices =
-            (
-              form.getState().initialValues as
-                LandUseBillingFormValues | undefined
-            )?.invoices ?? [];
+    <Form<LandUseBillingFormValues>
+      form={form}
+      onSubmit={() => {}}
+      render={({ handleSubmit }) => {
+        const existingInvoices =
+          (
+            form.getState().initialValues as
+              LandUseBillingFormValues | undefined
+          )?.invoices ?? [];
 
-          const handleAddInvoice = (
-            push: (value: LandUseInvoice) => void,
-            currentLength: number,
-          ) => {
-            push(
-              createEmptyInvoiceTableRow(
-                partyOptions[0]?.value,
-                agreementOptions[0]?.value,
-              ),
-            );
-            setOpenInvoiceIndex(currentLength);
-          };
-
-          const handleRemoveInvoice = (
-            remove: (index: number) => void,
-            index: number,
-          ) => {
-            remove(index);
-
-            setOpenInvoiceIndex((currentOpenInvoiceIndex) => {
-              if (currentOpenInvoiceIndex === null) {
-                return null;
-              }
-
-              if (currentOpenInvoiceIndex === index) {
-                return null;
-              }
-
-              if (currentOpenInvoiceIndex > index) {
-                return currentOpenInvoiceIndex - 1;
-              }
-
-              return currentOpenInvoiceIndex;
-            });
-          };
-
-          const handleToggleInvoice = (index: number) => {
-            setOpenInvoiceIndex((currentOpenInvoiceIndex) =>
-              currentOpenInvoiceIndex === index ? null : index,
-            );
-          };
-
-          return (
-            <div className="landuse-detail__content">
-              <h1>Laskutus ja reskontra</h1>
-              <form onSubmit={handleSubmit}>
-                <Fieldset
-                  heading=""
-                  className="landuse-detail__fieldset--with-margin"
-                >
-                  <div className="landuse-detail__sites-table-wrapper">
-                    <FieldArray<LandUseInvoice> name="invoices">
-                      {({ fields }) => (
-                        <>
-                          <table className="landuse-compensations-table">
-                            <thead>
-                              <tr>
-                                <th className="landuse-compensations-table__toggle-cell" />
-                                <th>Laskunsaaja</th>
-                                <th>Sopimusnumero</th>
-                                <th>Laskutuserä</th>
-                                <th>Eräpäivä</th>
-                                <th>Laskunumero</th>
-                                <th>Tyyppi</th>
-                                <th>Laskun tila</th>
-                                <th>Laskutettu</th>
-                                <th>Maksamatta</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {fields.length > 0 ? (
-                                fields.map((fieldName, index) => (
-                                  <InvoiceTableRow
-                                    key={fieldName}
-                                    fieldName={fieldName}
-                                    index={index}
-                                    isEditMode={isEditMode}
-                                    isExistingInvoice={Boolean(
-                                      existingInvoices[index],
-                                    )}
-                                    isOpen={openInvoiceIndex === index}
-                                    parties={parties}
-                                    partyOptions={partyOptions}
-                                    agreementOptions={agreementOptions}
-                                    asemakaavanNumero={asemakaavanNumero}
-                                    isInvoiceTableRowEditable={isInvoiceEditableBasedOnStatus(
-                                      existingInvoices[index] as LandUseInvoice,
-                                    )}
-                                    onRemove={(removeIndex) =>
-                                      handleRemoveInvoice(
-                                        fields.remove,
-                                        removeIndex,
-                                      )
-                                    }
-                                    onToggle={handleToggleInvoice}
-                                  />
-                                ))
-                              ) : (
-                                <tr>
-                                  <td colSpan={10}>Ei laskuja.</td>
-                                </tr>
-                              )}
-                            </tbody>
-                          </table>
-
-                          {isEditMode && (
-                            <div className="landuse-invoicing__invoice-actions">
-                              <Button
-                                type="button"
-                                variant={ButtonVariant.Supplementary}
-                                iconStart={<IconPlusCircleFill />}
-                                onClick={() =>
-                                  handleAddInvoice(fields.push, fields.length)
-                                }
-                              >
-                                Lisää lasku
-                              </Button>
-                              <Button
-                                type="button"
-                                variant={ButtonVariant.Supplementary}
-                                iconStart={<IconPlusCircle />}
-                                onClick={() => setIsBulkCreateOpen(true)}
-                              >
-                                Lisää useita maankäyttökorvauslaskuja
-                              </Button>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </FieldArray>
-                  </div>
-                </Fieldset>
-              </form>
-            </div>
+        const handleAddInvoice = (
+          push: (value: LandUseInvoice) => void,
+          currentLength: number,
+        ) => {
+          push(
+            createEmptyInvoiceTableRow(
+              partyOptions[0]?.value,
+              agreementOptions[0]?.value,
+            ),
           );
-        }}
-      />
-      <BulkCreateInvoicesDialog
-        isOpen={isBulkCreateOpen}
-        onClose={() => setIsBulkCreateOpen(false)}
-        onSubmit={handleBulkCreate}
-        partyOptions={partyOptions}
-        agreementOptions={agreementOptions}
-        asemakaavanLainvoimaisuusPvm={asemakaavanLainvoimaisuusPvm}
-      />
-    </>
+          setOpenInvoiceIndex(currentLength);
+        };
+
+        const handleRemoveInvoice = (
+          remove: (index: number) => void,
+          index: number,
+        ) => {
+          remove(index);
+
+          setOpenInvoiceIndex((currentOpenInvoiceIndex) => {
+            if (currentOpenInvoiceIndex === null) {
+              return null;
+            }
+
+            if (currentOpenInvoiceIndex === index) {
+              return null;
+            }
+
+            if (currentOpenInvoiceIndex > index) {
+              return currentOpenInvoiceIndex - 1;
+            }
+
+            return currentOpenInvoiceIndex;
+          });
+        };
+
+        const handleToggleInvoice = (index: number) => {
+          setOpenInvoiceIndex((currentOpenInvoiceIndex) =>
+            currentOpenInvoiceIndex === index ? null : index,
+          );
+        };
+
+        return (
+          <div className="landuse-detail__content">
+            <h1>Laskutus ja reskontra</h1>
+            <form onSubmit={handleSubmit}>
+              <Fieldset
+                heading=""
+                className="landuse-detail__fieldset--with-margin"
+              >
+                <div className="landuse-detail__sites-table-wrapper">
+                  <FieldArray<LandUseInvoice> name="invoices">
+                    {({ fields }) => (
+                      <>
+                        <table className="landuse-compensations-table">
+                          <thead>
+                            <tr>
+                              <th className="landuse-compensations-table__toggle-cell" />
+                              <th>Laskunsaaja</th>
+                              <th>Sopimusnumero</th>
+                              <th>Laskutuserä</th>
+                              <th>Eräpäivä</th>
+                              <th>Laskunumero</th>
+                              <th>Tyyppi</th>
+                              <th>Laskun tila</th>
+                              <th>Laskutettu</th>
+                              <th>Maksamatta</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {fields.length > 0 ? (
+                              fields.map((fieldName, index) => (
+                                <InvoiceTableRow
+                                  key={fieldName}
+                                  fieldName={fieldName}
+                                  index={index}
+                                  isEditMode={isEditMode}
+                                  isExistingInvoice={Boolean(
+                                    existingInvoices[index],
+                                  )}
+                                  isOpen={openInvoiceIndex === index}
+                                  parties={parties}
+                                  partyOptions={partyOptions}
+                                  agreementOptions={agreementOptions}
+                                  asemakaavanNumero={asemakaavanNumero}
+                                  isInvoiceTableRowEditable={isInvoiceEditableBasedOnStatus(
+                                    existingInvoices[index] as LandUseInvoice,
+                                  )}
+                                  onRemove={(removeIndex) =>
+                                    handleRemoveInvoice(
+                                      fields.remove,
+                                      removeIndex,
+                                    )
+                                  }
+                                  onToggle={handleToggleInvoice}
+                                />
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan={10}>Ei laskuja.</td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+
+                        {isEditMode && (
+                          <div className="landuse-invoicing__invoice-actions">
+                            <Button
+                              type="button"
+                              variant={ButtonVariant.Supplementary}
+                              iconStart={<IconPlusCircleFill />}
+                              onClick={() =>
+                                handleAddInvoice(fields.push, fields.length)
+                              }
+                            >
+                              Lisää lasku
+                            </Button>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </FieldArray>
+                </div>
+              </Fieldset>
+            </form>
+          </div>
+        );
+      }}
+    />
   );
 };
