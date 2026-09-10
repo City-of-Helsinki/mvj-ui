@@ -77,6 +77,7 @@ interface LandUsePaymentScheduleProps {
   asemakaavanNumero: AsemakaavaListItem["asemakaavanNumero"];
   asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
   agreementIdentifier: string;
+  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => void;
 }
 
 interface SelectedPartyInvoiceData {
@@ -407,7 +408,7 @@ const getScheduleStatusAction = (
   if (status === LAND_USE_INVOICE_STATUSES.DRAFT) {
     return {
       buttonLabel: "Siirrä laskutukseen",
-      nextStatus: LAND_USE_INVOICE_STATUSES.READY,
+      nextStatus: LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
     };
   }
   return null;
@@ -820,6 +821,7 @@ interface PartyGroupSectionProps {
   parties: PartyEntry[];
   agreementOptions: AgreementOption[];
   onRemoveSchedule: (index: number) => void;
+  onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => void;
 }
 
 const getPartyGroupHeadingId = (partyValue: string): string =>
@@ -833,6 +835,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   parties,
   agreementOptions,
   onRemoveSchedule,
+  onSendToInvoicing,
 }) => {
   if (schedules.length === 0) {
     return (
@@ -995,9 +998,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                               variant={ButtonVariant.Primary}
                                               size={ButtonSize.Small}
                                               onClick={() =>
-                                                statusInput.onChange(
-                                                  statusAction.nextStatus,
-                                                )
+                                                onSendToInvoicing(schedule)
                                               }
                                             >
                                               {statusAction.buttonLabel}
@@ -1137,6 +1138,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
   asemakaavanNumero,
   asemakaavanLainvoimaisuusPvm,
   agreementIdentifier,
+  onSendToInvoicing,
 }) => {
   const [isBulkCreateOpen, setIsBulkCreateOpen] = useState(false);
 
@@ -1304,6 +1306,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                               parties={parties}
                               agreementOptions={agreementOptions}
                               onRemoveSchedule={fields.remove}
+                              onSendToInvoicing={onSendToInvoicing}
                             />
                           ))}
                         </>

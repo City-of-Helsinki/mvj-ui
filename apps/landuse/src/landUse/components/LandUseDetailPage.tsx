@@ -47,6 +47,10 @@ import {
   type LandUseInvoiceItem,
 } from "../options";
 import { parseLandUseNumericValueOrZero } from "../utils/number";
+import {
+  createAcceptedBillingInvoices,
+  setPaymentScheduleStatus,
+} from "../utils/invoiceReview";
 import type { SectionEntry, SideNavigationTab } from "./SideNavigation";
 import { SideNavigation } from "./SideNavigation";
 import {
@@ -68,10 +72,12 @@ import {
 } from "./tabs/LandUseDecisions";
 import {
   LandUseBilling,
+  type LandUseBillingInvoice,
   type LandUseBillingFormValues,
 } from "./tabs/LandUseBilling";
 import {
   LandUsePaymentSchedule,
+  type LandUsePaymentScheduleEntry,
   type LandUsePaymentScheduleFormValues,
 } from "./tabs/LandUsePaymentSchedule";
 import { LandUseMap, type LandUseMapFormValues } from "./tabs/LandUseMap";
@@ -993,6 +999,72 @@ const LandUseDetailPage: React.FC = () => {
       partiesQuery.data?.parties) ||
     [];
 
+  const handleSendToInvoicing = async (
+    schedule: LandUsePaymentScheduleEntry,
+  ) => {
+    const paymentSchedules =
+      (
+        paymentScheduleFormApi.getState()
+          .values as LandUsePaymentScheduleFormValues
+      ).paymentSchedules ?? [];
+    const paymentSchedule = {
+      paymentSchedules: setPaymentScheduleStatus(
+        paymentSchedules,
+        schedule.id,
+        LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
+      ),
+    };
+    const persistedValues =
+      await paymentScheduleMutation.mutateAsync(paymentSchedule);
+    paymentScheduleFormApi.initialize(persistedValues);
+  };
+
+  const updateReviewedSchedule = async (
+    schedule: LandUsePaymentScheduleEntry,
+    status: LandUsePaymentScheduleEntry["status"],
+  ) => {
+    const paymentSchedules =
+      (
+        paymentScheduleFormApi.getState()
+          .values as LandUsePaymentScheduleFormValues
+      ).paymentSchedules ?? [];
+
+    const paymentSchedule = {
+      paymentSchedules: setPaymentScheduleStatus(
+        paymentSchedules,
+        schedule.id,
+        status,
+      ),
+    };
+    const persistedValues =
+      await paymentScheduleMutation.mutateAsync(paymentSchedule);
+    paymentScheduleFormApi.initialize(persistedValues);
+  };
+
+  const handleDeclineSchedule = async (
+    schedule: LandUsePaymentScheduleEntry,
+  ) => {
+    await updateReviewedSchedule(schedule, LAND_USE_INVOICE_STATUSES.DRAFT);
+  };
+
+  const handleAcceptSchedule = async (
+    schedule: LandUsePaymentScheduleEntry,
+  ) => {
+    const existingBillingInvoices =
+      (billingFormApi.getState().values as LandUseBillingFormValues).invoices ??
+      [];
+    const acceptedInvoices = createAcceptedBillingInvoices(
+      schedule,
+      existingBillingInvoices,
+    );
+    const billing = {
+      invoices: [...existingBillingInvoices, ...acceptedInvoices],
+    };
+    const persistedBilling = await billingMutation.mutateAsync(billing);
+    billingFormApi.initialize(persistedBilling);
+    await updateReviewedSchedule(schedule, LAND_USE_INVOICE_STATUSES.READY);
+  };
+
   const renderActiveTabPanel = () => {
     const activeTabKey = TABS_CONFIG[activeTab]?.queryKey;
     switch (activeTabKey) {
@@ -1107,6 +1179,7 @@ const LandUseDetailPage: React.FC = () => {
               ""
             }
             agreementIdentifier={agreementId}
+            onSendToInvoicing={handleSendToInvoicing}
           />
         );
       case "billing":
@@ -1127,6 +1200,16 @@ const LandUseDetailPage: React.FC = () => {
                 summaryQuery.data?.asemakaavanNumero) ||
               ""
             }
+            paymentSchedules={
+              (
+                paymentScheduleFormApi.getState()
+                  .values as LandUsePaymentScheduleFormValues
+              ).paymentSchedules ??
+              paymentScheduleQuery.data?.paymentSchedules ??
+              []
+            }
+            onAcceptSchedule={handleAcceptSchedule}
+            onDeclineSchedule={handleDeclineSchedule}
           />
         );
       case "map":
