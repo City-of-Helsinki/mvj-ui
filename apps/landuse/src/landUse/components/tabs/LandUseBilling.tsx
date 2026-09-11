@@ -19,9 +19,12 @@ import React, { useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
 import {
-  AsemakaavaListItem,
+  LAND_USE_INVOICE_STATUSES,
   landUseInvoiceItemTypeSelectOptions,
   landUseInvoiceTypeSelectOptions,
+  type LandUseInvoice,
+  type LandUseInvoiceItem,
+  type LandUseInvoiceStatus,
 } from "../../options";
 import {
   getFieldTextValue,
@@ -30,35 +33,63 @@ import {
   readOnlyTextValue,
   type SelectOption,
 } from "../../utils/fieldUtils";
+import { getSchedulesPendingInvoiceReview } from "../../utils/invoiceReview";
 import {
   formatLandUseEuroDisplayValue,
   parseLandUseNumericValueOrZero,
 } from "../../utils/number";
 import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
-import {
-  LAND_USE_INVOICE_STATUSES,
-  type LandUseInvoice,
-  type LandUseInvoiceItem,
-  type LandUseInvoiceStatus,
-} from "../../options";
-import type { LandUseContractsFormValues } from "./LandUseContracts";
-import type { PartyEntry } from "./LandUseParties";
+import type {
+  BasePartyDetails,
+  BillingDetails,
+  CompanyPartyDetails,
+} from "./LandUseParties";
 import type { LandUsePaymentScheduleEntry } from "./LandUsePaymentSchedule";
-import { getSchedulesPendingInvoiceReview } from "../../utils/invoiceReview";
 
-type ContractItem = NonNullable<
-  LandUseContractsFormValues["contracts"]
->[number];
+type BillingPartyDetails = Pick<
+  BasePartyDetails,
+  "name" | "partyType" | "streetAddress" | "city" | "postalCode"
+> & { businessId?: CompanyPartyDetails["businessId"] };
 
-interface AgreementOption extends SelectOption {
-  sopimusnumero: string;
+export interface LandUseBillingParty {
+  party: { details: BillingPartyDetails };
+  invoiceRecipient?: { details: BillingPartyDetails };
+  billingDetails: Pick<BillingDetails, "ovtCode" | "reference">;
 }
+
+export type LandUseBillingScheduleInstallment = Pick<
+  LandUseInvoice,
+  | "recipientPartyIndex"
+  | "installmentNumber"
+  | "installmentTotal"
+  | "dueDate"
+  | "type"
+  | "invoiceItems"
+>;
+
+export type LandUseBillingSchedule = Pick<
+  LandUsePaymentScheduleEntry,
+  "id" | "recipientPartyIndex" | "status"
+> & { installments: LandUseBillingScheduleInstallment[] };
 
 export interface LandUseBillingFormValues {
   invoices?: LandUseBillingInvoice[];
 }
 
-export interface LandUseBillingInvoice extends LandUseInvoice {
+export interface LandUseBillingInvoice extends Pick<
+  LandUseInvoice,
+  | "recipientPartyIndex"
+  | "installmentNumber"
+  | "installmentTotal"
+  | "dueDate"
+  | "invoiceNumber"
+  | "type"
+  | "status"
+  | "sentAt"
+  | "billedAmount"
+  | "remainingAmount"
+  | "invoiceItems"
+> {
   sourcePaymentScheduleId?: string;
   sourceInstallmentIndex?: number;
 }
@@ -66,12 +97,10 @@ export interface LandUseBillingInvoice extends LandUseInvoice {
 interface LandUseBillingProps {
   form: FormApi<LandUseBillingFormValues>;
   isEditMode: boolean;
-  parties: PartyEntry[];
-  contracts: ContractItem[];
-  asemakaavanNumero: AsemakaavaListItem["asemakaavanNumero"];
-  paymentSchedules: LandUsePaymentScheduleEntry[];
-  onAcceptSchedule: (schedule: LandUsePaymentScheduleEntry) => void;
-  onDeclineSchedule: (schedule: LandUsePaymentScheduleEntry) => void;
+  parties: LandUseBillingParty[];
+  paymentSchedules: LandUseBillingSchedule[];
+  onAcceptSchedule: (schedule: LandUseBillingSchedule) => void;
+  onDeclineSchedule: (schedule: LandUseBillingSchedule) => void;
 }
 
 interface SelectedPartyInvoiceData {
@@ -95,7 +124,9 @@ const handleSelectChange = (
   }
 };
 
-function isInvoiceEditableBasedOnStatus(invoice: LandUseInvoice): boolean {
+function isInvoiceEditableBasedOnStatus(
+  invoice: Pick<LandUseInvoice, "status"> | undefined,
+): boolean {
   if (!invoice || !invoice.status) return true;
   const editableStatuses: LandUseInvoiceStatus[] = [
     LAND_USE_INVOICE_STATUSES.DRAFT,
@@ -112,7 +143,10 @@ export const isInvoiceContentEditableInBilling = (
 
 const getPartyName = (value: string | undefined): string => value?.trim() ?? "";
 
-const getInvoiceRecipientLabel = (party: PartyEntry, index: number): string => {
+const getInvoiceRecipientLabel = (
+  party: LandUseBillingParty,
+  index: number,
+): string => {
   const invoiceRecipientName = getPartyName(
     party.invoiceRecipient?.details?.name,
   );
@@ -128,32 +162,17 @@ const getInvoiceRecipientLabel = (party: PartyEntry, index: number): string => {
   return `Osapuoli ${index + 1}`;
 };
 
-const createInvoiceRecipientOptions = (parties: PartyEntry[]): SelectOption[] =>
+const createInvoiceRecipientOptions = (
+  parties: LandUseBillingParty[],
+): SelectOption[] =>
   parties.map((party, index) => ({
     label: getInvoiceRecipientLabel(party, index),
     value: String(index),
   }));
 
-const createInvoiceContractOptions = (
-  contracts: ContractItem[],
-): AgreementOption[] =>
-  contracts.map((agreement, index) => {
-    const contractType = agreement.sopimuksenTyyppi?.trim();
-    const contractNumber = agreement.sopimusnumero?.trim() ?? "";
-    const parts = [contractType, contractNumber].filter(
-      (part): part is string => Boolean(part),
-    );
-
-    return {
-      label: parts.join(" ") || `Sopimus ${index + 1}`,
-      value: String(index),
-      sopimusnumero: contractNumber,
-    };
-  });
-
 const getSelectedPartyInvoiceData = (
   recipientPartyIndex: string | undefined,
-  parties: PartyEntry[],
+  parties: LandUseBillingParty[],
 ): SelectedPartyInvoiceData => {
   const selectedIndex = Number(recipientPartyIndex);
   if (!Number.isInteger(selectedIndex) || selectedIndex < 0) {
@@ -201,17 +220,11 @@ const getSelectedPartyInvoiceData = (
 
 const createEmptyInvoiceTableRow = (
   recipientPartyIndex: string | undefined,
-  contractIndex: string | undefined,
-): LandUseInvoice => ({
+): LandUseBillingInvoice => ({
   recipientPartyIndex,
-  contractIndex,
   installmentNumber: "",
   installmentTotal: "",
-  signedDate: "",
-  asemakaavanLainvoimaisuusPvm: "",
   dueDate: "",
-  korotuksenAlkupvm: "",
-  korotuksenLoppupvm: "",
   invoiceNumber: "",
   type: undefined,
   status: "Luonnos",
@@ -253,10 +266,8 @@ interface InvoiceTableRowProps {
   isEditMode: boolean;
   isExistingInvoice: boolean;
   isOpen: boolean;
-  parties: PartyEntry[];
+  parties: LandUseBillingParty[];
   partyOptions: SelectOption[];
-  agreementOptions: AgreementOption[];
-  asemakaavanNumero: string;
   isInvoiceTableRowEditable: boolean;
   onRemove: (index: number) => void;
   onToggle: (index: number) => void;
@@ -278,13 +289,9 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
   fieldName,
   index,
   isEditMode,
-  isExistingInvoice,
   isOpen,
   parties,
   partyOptions,
-  agreementOptions,
-  asemakaavanNumero,
-  isInvoiceTableRowEditable,
   onRemove,
   onToggle,
 }) => {
@@ -292,10 +299,6 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
     <Field name={fieldName} subscription={{ value: true }}>
       {({ input }) => {
         const invoice = (input.value ?? {}) as LandUseBillingInvoice;
-        const contractNumberDisplayValue =
-          agreementOptions.find(
-            (option) => option.value === invoice.contractIndex,
-          )?.sopimusnumero ?? "-";
         const installmentDisplayValue =
           invoice.installmentNumber && invoice.installmentTotal
             ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
@@ -306,10 +309,6 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
         );
         const canEditInvoiceContent =
           isEditMode && isInvoiceContentEditableInBilling(invoice);
-        const canEditContract =
-          canEditInvoiceContent &&
-          !isExistingInvoice &&
-          isInvoiceTableRowEditable;
 
         return (
           <>
@@ -339,7 +338,6 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                   partyOptions,
                 )}
               </td>
-              <td>{readOnlyTextValue(contractNumberDisplayValue)}</td>
               <td>{readOnlyTextValue(installmentDisplayValue)}</td>
               <td>{readOnlyTextValue(invoice.dueDate)}</td>
               <td>{readOnlyTextValue(invoice.invoiceNumber)}</td>
@@ -350,7 +348,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
             </tr>
             {isOpen && (
               <tr className="landuse-compensations-table__detail-row">
-                <td colSpan={10}>
+                <td colSpan={9}>
                   <div
                     className="landuse-compensations-table__detail-content"
                     aria-label={`Laskun ${invoice.invoiceNumber || index + 1} tiedot`}
@@ -428,40 +426,132 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                       </div>
 
                       <div className="landuse-grid__column-3">
-                        <Field name={`${fieldName}.contractIndex`}>
-                          {({ input: contractInput }) =>
-                            canEditContract ? (
-                              <Select
-                                id={`landuse-billing-contract-${index}`}
-                                options={agreementOptions}
-                                value={normalizeSelectValue(
-                                  contractInput.value,
-                                )}
-                                onChange={(selectedOptions) =>
-                                  handleSelectChange(
-                                    selectedOptions,
-                                    contractInput.onChange,
-                                  )
-                                }
-                                disabled={agreementOptions.length === 0}
-                                texts={{
-                                  label: "Sopimus",
-                                  placeholder:
-                                    agreementOptions.length > 0
-                                      ? "Valitse"
-                                      : "Ei sopimuksia",
-                                }}
+                        {selectedPartyData.isCompany && (
+                          <TextInput
+                            id={`landuse-billing-business-id-${index}`}
+                            label="Y-tunnus"
+                            value={readOnlyTextValue(
+                              selectedPartyData.businessId,
+                            )}
+                            readOnly
+                          />
+                        )}
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <Field name={`${fieldName}.dueDate`}>
+                          {({ input: dueDateInput }) =>
+                            canEditInvoiceContent ? (
+                              <DateInput
+                                id={`landuse-billing-due-date-${index}`}
+                                label="Eräpäivä"
+                                value={dueDateInput.value}
+                                onChange={dueDateInput.onChange}
+                                placeholder="DD.MM.YYYY"
+                                language="fi"
                               />
                             ) : (
                               <TextInput
-                                id={`landuse-billing-contract-${index}`}
-                                label="Sopimus"
-                                value={
-                                  agreementOptions.find(
-                                    (option) =>
-                                      option.value === contractInput.value,
-                                  )?.label ?? "-"
-                                }
+                                id={`landuse-billing-due-date-${index}`}
+                                label="Eräpäivä"
+                                value={readOnlyTextValue(dueDateInput.value)}
+                                readOnly
+                              />
+                            )
+                          }
+                        </Field>
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-billing-street-address-${index}`}
+                          label="Katuosoite"
+                          value={readOnlyTextValue(
+                            selectedPartyData.streetAddress,
+                          )}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-billing-city-${index}`}
+                          label="Postitoimipaikka"
+                          value={readOnlyTextValue(selectedPartyData.city)}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-billing-postal-code-${index}`}
+                          label="Postinumero"
+                          value={readOnlyTextValue(
+                            selectedPartyData.postalCode,
+                          )}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-billing-ovt-code-${index}`}
+                          label="OVT-tunnus"
+                          value={readOnlyTextValue(selectedPartyData.ovtCode)}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-billing-reference-${index}`}
+                          label="Asiakkaan viite"
+                          value={readOnlyTextValue(selectedPartyData.reference)}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-1">
+                        <Field name={`${fieldName}.installmentNumber`}>
+                          {({ input: installmentNumberInput }) =>
+                            canEditInvoiceContent ? (
+                              <NumberInput
+                                id={`landuse-billing-installment-number-${index}`}
+                                label="Laskutuserä"
+                                value={installmentNumberInput.value}
+                                onChange={installmentNumberInput.onChange}
+                              />
+                            ) : (
+                              <TextInput
+                                id={`landuse-billing-installment-number-${index}`}
+                                label="Laskutuserä"
+                                value={readOnlyTextValue(
+                                  installmentNumberInput.value,
+                                )}
+                                readOnly
+                              />
+                            )
+                          }
+                        </Field>
+                      </div>
+
+                      <div className="landuse-grid__column-2">
+                        <Field name={`${fieldName}.installmentTotal`}>
+                          {({ input: installmentTotalInput }) =>
+                            canEditInvoiceContent ? (
+                              <NumberInput
+                                id={`landuse-billing-installment-total-${index}`}
+                                label="Laskutuseriä yhteensä"
+                                value={installmentTotalInput.value}
+                                onChange={installmentTotalInput.onChange}
+                              />
+                            ) : (
+                              <TextInput
+                                id={`landuse-billing-installment-total-${index}`}
+                                label="Laskutuseriä yhteensä"
+                                value={readOnlyTextValue(
+                                  installmentTotalInput.value,
+                                )}
                                 readOnly
                               />
                             )
@@ -537,213 +627,8 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                           }
                         </Field>
                       </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-billing-contract-number-${index}`}
-                          label="Sopimusnumero"
-                          value={contractNumberDisplayValue}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-billing-asemakaavanumero-${index}`}
-                          label="Kaavanumero"
-                          value={readOnlyTextValue(asemakaavanNumero)}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-billing-street-address-${index}`}
-                          label="Katuosoite"
-                          value={readOnlyTextValue(
-                            selectedPartyData.streetAddress,
-                          )}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-billing-city-${index}`}
-                          label="Postitoimipaikka"
-                          value={readOnlyTextValue(selectedPartyData.city)}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-billing-postal-code-${index}`}
-                          label="Postinumero"
-                          value={readOnlyTextValue(
-                            selectedPartyData.postalCode,
-                          )}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-billing-ovt-code-${index}`}
-                          label="OVT-tunnus"
-                          value={readOnlyTextValue(selectedPartyData.ovtCode)}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <TextInput
-                          id={`landuse-billing-reference-${index}`}
-                          label="Asiakkaan viite"
-                          value={readOnlyTextValue(selectedPartyData.reference)}
-                          readOnly
-                        />
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        {selectedPartyData.isCompany && (
-                          <TextInput
-                            id={`landuse-billing-business-id-${index}`}
-                            label="Y-tunnus"
-                            value={readOnlyTextValue(
-                              selectedPartyData.businessId,
-                            )}
-                            readOnly
-                          />
-                        )}
-                      </div>
-
-                      <div className="landuse-grid__column-1">
-                        <Field name={`${fieldName}.installmentNumber`}>
-                          {({ input: installmentNumberInput }) =>
-                            canEditInvoiceContent ? (
-                              <NumberInput
-                                id={`landuse-billing-installment-number-${index}`}
-                                label="Laskutuserä"
-                                value={installmentNumberInput.value}
-                                onChange={installmentNumberInput.onChange}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-billing-installment-number-${index}`}
-                                label="Laskutuserä"
-                                value={readOnlyTextValue(
-                                  installmentNumberInput.value,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
-
-                      <div className="landuse-grid__column-2">
-                        <Field name={`${fieldName}.installmentTotal`}>
-                          {({ input: installmentTotalInput }) =>
-                            canEditInvoiceContent ? (
-                              <NumberInput
-                                id={`landuse-billing-installment-total-${index}`}
-                                label="Laskutuseriä yhteensä"
-                                value={installmentTotalInput.value}
-                                onChange={installmentTotalInput.onChange}
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-billing-installment-total-${index}`}
-                                label="Laskutuseriä yhteensä"
-                                value={readOnlyTextValue(
-                                  installmentTotalInput.value,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <Field name={`${fieldName}.signedDate`}>
-                          {({ input: signedDateInput }) =>
-                            canEditInvoiceContent ? (
-                              <DateInput
-                                id={`landuse-billing-signed-date-${index}`}
-                                label="Allekirjoituspäivämäärä"
-                                value={signedDateInput.value}
-                                onChange={signedDateInput.onChange}
-                                placeholder="DD.MM.YYYY"
-                                language="fi"
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-billing-signed-date-${index}`}
-                                label="Allekirjoituspäivämäärä"
-                                value={readOnlyTextValue(signedDateInput.value)}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <Field
-                          name={`${fieldName}.asemakaavanLainvoimaisuusPvm`}
-                        >
-                          {({ input: asemakaavanLainvoimaisuusPvmInput }) =>
-                            canEditInvoiceContent ? (
-                              <DateInput
-                                id={`landuse-billing-valid-date-${index}`}
-                                label="Lainvoimaisuuspäivämäärä"
-                                value={asemakaavanLainvoimaisuusPvmInput.value}
-                                onChange={
-                                  asemakaavanLainvoimaisuusPvmInput.onChange
-                                }
-                                placeholder="DD.MM.YYYY"
-                                language="fi"
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-billing-valid-date-${index}`}
-                                label="Lainvoimaisuuspäivämäärä"
-                                value={readOnlyTextValue(
-                                  asemakaavanLainvoimaisuusPvmInput.value,
-                                )}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
-
-                      <div className="landuse-grid__column-3">
-                        <Field name={`${fieldName}.dueDate`}>
-                          {({ input: dueDateInput }) =>
-                            canEditInvoiceContent ? (
-                              <DateInput
-                                id={`landuse-billing-due-date-${index}`}
-                                label="Eräpäivä"
-                                value={dueDateInput.value}
-                                onChange={dueDateInput.onChange}
-                                placeholder="DD.MM.YYYY"
-                                language="fi"
-                              />
-                            ) : (
-                              <TextInput
-                                id={`landuse-billing-due-date-${index}`}
-                                label="Eräpäivä"
-                                value={readOnlyTextValue(dueDateInput.value)}
-                                readOnly
-                              />
-                            )
-                          }
-                        </Field>
-                      </div>
                     </div>
+
                     <Fieldset heading="Reskontra">
                       <div className="landuse-grid landuse-grid__bottom-margin">
                         <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
@@ -802,7 +687,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                         </div>
                       </div>
                     </Fieldset>
-                    <div className="landuse-grid landuse-grid__bottom-margin">
+                    <div className="landuse-grid">
                       <div className="landuse-grid__column-12">
                         <Fieldset heading="Laskurivit">
                           <FieldArray<LandUseInvoiceItem>
@@ -821,7 +706,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                         key={invoiceItemFieldName}
                                         style={{ marginBottom: "0.5rem" }}
                                       >
-                                        <div className="landuse-grid landuse-grid__bottom-margin">
+                                        <div className="landuse-grid">
                                           <div
                                             className={
                                               "landuse-grid__column-12"
@@ -986,22 +871,18 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
 };
 
 interface InvoiceReviewTableProps {
-  schedules: LandUsePaymentScheduleEntry[];
-  parties: PartyEntry[];
+  schedules: LandUseBillingSchedule[];
+  parties: LandUseBillingParty[];
   partyOptions: SelectOption[];
-  agreementOptions: AgreementOption[];
-  asemakaavanNumero: string;
   isEditMode: boolean;
-  onAccept: (schedule: LandUsePaymentScheduleEntry) => void;
-  onDecline: (schedule: LandUsePaymentScheduleEntry) => void;
+  onAccept: (schedule: LandUseBillingSchedule) => void;
+  onDecline: (schedule: LandUseBillingSchedule) => void;
 }
 
 const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
   schedules,
   parties,
   partyOptions,
-  agreementOptions,
-  asemakaavanNumero,
   isEditMode,
   onAccept,
   onDecline,
@@ -1012,10 +893,6 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
     <>
       {schedules.length > 0 ? (
         schedules.map((schedule, scheduleIndex) => {
-          const contractNumber =
-            agreementOptions.find(
-              (option) => option.value === schedule.contractIndex,
-            )?.sopimusnumero ?? "-";
           const invoiceRecipientIndex =
             schedule.installments[0]?.recipientPartyIndex ??
             schedule.recipientPartyIndex;
@@ -1033,7 +910,6 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                     <tr>
                       <th className="landuse-compensations-table__toggle-cell" />
                       <th>Laskunsaaja</th>
-                      <th>Sopimusnumero</th>
                       <th>Laskutuserä</th>
                       <th>Eräpäivä</th>
                       <th>Veroton summa yhteensä</th>
@@ -1047,11 +923,6 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                         installment.recipientPartyIndex,
                         parties,
                       );
-                      const contractDisplayValue =
-                        agreementOptions.find(
-                          (option) =>
-                            option.value === installment.contractIndex,
-                        )?.label ?? "-";
                       const installmentDisplayValue =
                         installment.installmentNumber &&
                         installment.installmentTotal
@@ -1099,7 +970,6 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                 partyOptions,
                               )}
                             </td>
-                            <td>{readOnlyTextValue(contractNumber)}</td>
                             <td>
                               {readOnlyTextValue(installmentDisplayValue)}
                             </td>
@@ -1112,7 +982,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                           </tr>
                           {isOpen && (
                             <tr className="landuse-compensations-table__detail-row">
-                              <td colSpan={6}>
+                              <td colSpan={5}>
                                 <div
                                   className="landuse-compensations-table__detail-content"
                                   aria-label={`Laskun ${index + 1} tiedot`}
@@ -1140,37 +1010,23 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                       />
                                     </div>
                                     <div className="landuse-grid__column-3">
-                                      <TextInput
-                                        id={`landuse-billing-review-contract-${scheduleIndex}-${index}`}
-                                        label="Sopimus"
-                                        value={contractDisplayValue}
-                                        readOnly
-                                      />
-                                    </div>
-                                    <div className="landuse-grid__column-3 landuse-compensations-table__field--background-coat-of-arms-light">
-                                      <TextInput
-                                        id={`landuse-billing-review-status-${scheduleIndex}-${index}`}
-                                        label="Laskun tila"
-                                        value={readOnlyTextValue(
-                                          schedule.status,
-                                        )}
-                                        readOnly
-                                      />
+                                      {selectedPartyData.isCompany && (
+                                        <TextInput
+                                          id={`landuse-billing-review-business-id-${scheduleIndex}-${index}`}
+                                          label="Y-tunnus"
+                                          value={readOnlyTextValue(
+                                            selectedPartyData.businessId,
+                                          )}
+                                          readOnly
+                                        />
+                                      )}
                                     </div>
                                     <div className="landuse-grid__column-3">
                                       <TextInput
-                                        id={`landuse-billing-review-contract-number-${scheduleIndex}-${index}`}
-                                        label="Sopimusnumero"
-                                        value={contractNumber}
-                                        readOnly
-                                      />
-                                    </div>
-                                    <div className="landuse-grid__column-3">
-                                      <TextInput
-                                        id={`landuse-billing-review-asemakaavanumero-${scheduleIndex}-${index}`}
-                                        label="Kaavanumero"
+                                        id={`landuse-billing-review-due-date-${scheduleIndex}-${index}`}
+                                        label="Eräpäivä"
                                         value={readOnlyTextValue(
-                                          asemakaavanNumero,
+                                          installment.dueDate,
                                         )}
                                         readOnly
                                       />
@@ -1225,18 +1081,6 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                         readOnly
                                       />
                                     </div>
-                                    <div className="landuse-grid__column-3">
-                                      {selectedPartyData.isCompany && (
-                                        <TextInput
-                                          id={`landuse-billing-review-business-id-${scheduleIndex}-${index}`}
-                                          label="Y-tunnus"
-                                          value={readOnlyTextValue(
-                                            selectedPartyData.businessId,
-                                          )}
-                                          readOnly
-                                        />
-                                      )}
-                                    </div>
                                     <div className="landuse-grid__column-1">
                                       <TextInput
                                         id={`landuse-billing-review-installment-number-${scheduleIndex}-${index}`}
@@ -1253,36 +1097,6 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                         label="Laskutuseriä yhteensä"
                                         value={readOnlyTextValue(
                                           installment.installmentTotal,
-                                        )}
-                                        readOnly
-                                      />
-                                    </div>
-                                    <div className="landuse-grid__column-3">
-                                      <TextInput
-                                        id={`landuse-billing-review-signed-date-${scheduleIndex}-${index}`}
-                                        label="Allekirjoituspäivämäärä"
-                                        value={readOnlyTextValue(
-                                          installment.signedDate,
-                                        )}
-                                        readOnly
-                                      />
-                                    </div>
-                                    <div className="landuse-grid__column-3">
-                                      <TextInput
-                                        id={`landuse-billing-review-valid-date-${scheduleIndex}-${index}`}
-                                        label="Lainvoimaisuuspäivämäärä"
-                                        value={readOnlyTextValue(
-                                          installment.asemakaavanLainvoimaisuusPvm,
-                                        )}
-                                        readOnly
-                                      />
-                                    </div>
-                                    <div className="landuse-grid__column-3">
-                                      <TextInput
-                                        id={`landuse-billing-review-due-date-${scheduleIndex}-${index}`}
-                                        label="Eräpäivä"
-                                        value={readOnlyTextValue(
-                                          installment.dueDate,
                                         )}
                                         readOnly
                                       />
@@ -1374,7 +1188,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
           );
         })
       ) : (
-        <p>Ei hyväksyttäviä laskuja.</p>
+        <p>Ei hyväksyttäviä maksusuunnitelmia.</p>
       )}
     </>
   );
@@ -1384,8 +1198,6 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
   form,
   isEditMode,
   parties,
-  contracts,
-  asemakaavanNumero,
   paymentSchedules,
   onAcceptSchedule,
   onDeclineSchedule,
@@ -1395,10 +1207,6 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
   const partyOptions = React.useMemo(
     () => createInvoiceRecipientOptions(parties ?? []),
     [parties],
-  );
-  const agreementOptions = React.useMemo(
-    () => createInvoiceContractOptions(contracts ?? []),
-    [contracts],
   );
   const schedulesPendingReview =
     getSchedulesPendingInvoiceReview(paymentSchedules);
@@ -1418,12 +1226,7 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
           push: (value: LandUseBillingInvoice) => void,
           currentLength: number,
         ) => {
-          push(
-            createEmptyInvoiceTableRow(
-              partyOptions[0]?.value,
-              agreementOptions[0]?.value,
-            ),
-          );
+          push(createEmptyInvoiceTableRow(partyOptions[0]?.value));
           setOpenInvoiceIndex(currentLength);
         };
 
@@ -1464,8 +1267,6 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
               schedules={schedulesPendingReview}
               parties={parties}
               partyOptions={partyOptions}
-              agreementOptions={agreementOptions}
-              asemakaavanNumero={asemakaavanNumero}
               isEditMode={isEditMode}
               onAccept={onAcceptSchedule}
               onDecline={onDeclineSchedule}
@@ -1485,7 +1286,6 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
                             <tr>
                               <th className="landuse-compensations-table__toggle-cell" />
                               <th>Laskunsaaja</th>
-                              <th>Sopimusnumero</th>
                               <th>Laskutuserä</th>
                               <th>Eräpäivä</th>
                               <th>Laskunumero</th>
@@ -1509,8 +1309,6 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
                                   isOpen={openInvoiceIndex === index}
                                   parties={parties}
                                   partyOptions={partyOptions}
-                                  agreementOptions={agreementOptions}
-                                  asemakaavanNumero={asemakaavanNumero}
                                   isInvoiceTableRowEditable={isInvoiceEditableBasedOnStatus(
                                     existingInvoices[index] as LandUseInvoice,
                                   )}
@@ -1525,7 +1323,7 @@ export const LandUseBilling: React.FC<LandUseBillingProps> = ({
                               ))
                             ) : (
                               <tr>
-                                <td colSpan={10}>Ei laskuja.</td>
+                                <td colSpan={9}>Ei laskuja.</td>
                               </tr>
                             )}
                           </tbody>

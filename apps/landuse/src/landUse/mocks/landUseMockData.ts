@@ -243,6 +243,11 @@ const ma113PaymentSchedule: LandUsePaymentScheduleFormValues = {
       contractIndex: "0",
       status: "Avoin",
       signedDate: "2026-01-20",
+      korotusPeruskorko: "",
+      korotusMarginaali: "",
+      korkoPeruskorko: "",
+      korkoMarginaali: "",
+      daysInYear: "365",
       installments: [
         {
           recipientPartyIndex: "0",
@@ -252,6 +257,8 @@ const ma113PaymentSchedule: LandUsePaymentScheduleFormValues = {
           signedDate: "2026-01-20",
           asemakaavanLainvoimaisuusPvm: "2026-02-20",
           dueDate: "2026-04-15",
+          korotuksenAlkupvm: "",
+          korotuksenLoppupvm: "",
           invoiceNumber: "123456789",
           type: "Maankäyttökorvaus",
           status: "Avoin",
@@ -266,6 +273,8 @@ const ma113PaymentSchedule: LandUsePaymentScheduleFormValues = {
           signedDate: "2026-01-20",
           asemakaavanLainvoimaisuusPvm: "2026-02-20",
           dueDate: "2026-06-10",
+          korotuksenAlkupvm: "",
+          korotuksenLoppupvm: "",
           invoiceNumber: "123456790",
           type: "Perintä",
           status: "Maksettu",
@@ -281,11 +290,8 @@ const ma113Billing: LandUseBillingFormValues = {
   invoices: [
     {
       recipientPartyIndex: "0",
-      contractIndex: "0",
       installmentNumber: "1",
       installmentTotal: "2",
-      signedDate: "2026-01-20",
-      asemakaavanLainvoimaisuusPvm: "2026-02-20",
       dueDate: "2026-04-15",
       invoiceNumber: "123456789",
       type: "Maankäyttökorvaus",
@@ -295,11 +301,8 @@ const ma113Billing: LandUseBillingFormValues = {
     },
     {
       recipientPartyIndex: "0",
-      contractIndex: "0",
       installmentNumber: "2",
       installmentTotal: "2",
-      signedDate: "2026-01-20",
-      asemakaavanLainvoimaisuusPvm: "2026-02-20",
       dueDate: "2026-06-10",
       invoiceNumber: "123456790",
       type: "Perintä",
