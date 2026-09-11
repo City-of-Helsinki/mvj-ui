@@ -1,12 +1,12 @@
-import { normalizeSelectValue } from "../utils/fieldUtils";
-import type { MockLandUseData } from "../mocks/landUseMockData";
-import type { LandUseBillingFormValues } from "../components/tabs/LandUseBilling";
-import type { LandUsePaymentScheduleFormValues } from "../components/tabs/LandUsePaymentSchedule";
-import type { LandUseSummaryFormValues } from "../components/tabs/LandUseSummary";
+import { normalizeSelectValue } from "@/landUse/utils/fieldUtils";
+import type { MockLandUseData } from "@/landUse/mocks/landUseMockData";
+import type { LandUseBillingFormValues } from "@/landUse/components/tabs/LandUseBilling";
+import type { LandUsePaymentScheduleFormValues } from "@/landUse/components/tabs/LandUsePaymentSchedule";
+import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import type {
   LandUsePartiesFormValues,
   PartyEntry,
-} from "../components/tabs/LandUseParties";
+} from "@/landUse/components/tabs/LandUseParties";
 
 const normalizeProjectAreaBoolean = (value: unknown): boolean => {
   if (typeof value === "boolean") {

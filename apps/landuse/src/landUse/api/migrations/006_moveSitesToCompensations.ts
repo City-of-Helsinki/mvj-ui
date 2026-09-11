@@ -1,4 +1,4 @@
-import type { LandUseDbMigration } from "./types";
+import type { LandUseDbMigration } from "@/landUse/api/migrations/types";
 
 type LegacyAgreementTabRecord = {
   agreementId: string;
@@ -93,8 +93,7 @@ export const migration006MoveSitesToCompensations: LandUseDbMigration = {
         getCompensationsRequest.onsuccess = () => {
           const compensationsRecord =
             (getCompensationsRequest.result as
-              | LegacyAgreementTabRecord
-              | undefined) ?? null;
+              LegacyAgreementTabRecord | undefined) ?? null;
           const currentData =
             ((compensationsRecord?.data ?? {}) as CompensationsData) ?? {};
 

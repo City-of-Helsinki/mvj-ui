@@ -9,7 +9,7 @@ import { TextInput } from "hds-react";
 import {
   formatLandUseDecimalValue,
   parseLandUseNumericValue,
-} from "../utils/number";
+} from "@/landUse/utils/number";
 
 type NumericDecimalInputProps = {
   isEditMode: boolean;

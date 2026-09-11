@@ -1,4 +1,7 @@
-import type { LandUseDbMigration, AgreementTabRecord } from "./types";
+import type {
+  LandUseDbMigration,
+  AgreementTabRecord,
+} from "@/landUse/api/migrations/types";
 
 type MonitoringEntry = { value: string; createdAt: string };
 

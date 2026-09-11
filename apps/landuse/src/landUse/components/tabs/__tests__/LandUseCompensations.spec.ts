@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   maankayttokorvausYhteensaDecorator,
   type LandUseCompensationsFormValues,
-} from "../LandUseCompensations";
+} from "@/landUse/components/tabs/LandUseCompensations";
 
 describe("maankayttokorvausYhteensaDecorator", () => {
   it("keeps the form pristine on mount and recalculates after an edit", () => {

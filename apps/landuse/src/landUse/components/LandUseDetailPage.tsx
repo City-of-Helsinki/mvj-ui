@@ -10,7 +10,7 @@ import React, {
   useState,
 } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
-import LandUseNotFoundPage from "../../landUse/components/LandUseNotFoundPage";
+import LandUseNotFoundPage from "@/landUse/components/LandUseNotFoundPage";
 import {
   getBilling,
   getCollaterals,
@@ -33,67 +33,73 @@ import {
   updateParties,
   updatePaymentSchedule,
   updateSummary,
-} from "../api/landUseApi";
-import { DEFAULT_KOROTUSKERROIN } from "../constants";
-import { useCalculateActivePageSection } from "../hooks/useCalculateActivePageSection";
+} from "@/landUse/api/landUseApi";
+import { DEFAULT_KOROTUSKERROIN } from "@/landUse/constants";
+import { useCalculateActivePageSection } from "@/landUse/hooks/useCalculateActivePageSection";
 import {
   getTocScrollTarget,
   TableOfContentsProvider,
-} from "../hooks/useTableOfContents";
+} from "@/landUse/hooks/useTableOfContents";
 import {
   LAND_USE_INVOICE_ITEM_TYPES,
   LAND_USE_INVOICE_STATUSES,
   type LandUseInvoice,
   type LandUseInvoiceItem,
-} from "../options";
-import { parseLandUseNumericValueOrZero } from "../utils/number";
+} from "@/landUse/options";
+import { parseLandUseNumericValueOrZero } from "@/landUse/utils/number";
 import {
   createAcceptedBillingInvoices,
   setPaymentScheduleStatus,
-} from "../utils/invoiceReview";
-import type { SectionEntry, SideNavigationTab } from "./SideNavigation";
-import { SideNavigation } from "./SideNavigation";
+} from "@/landUse/utils/invoiceReview";
+import type {
+  SectionEntry,
+  SideNavigationTab,
+} from "@/landUse/components/SideNavigation";
+import { SideNavigation } from "@/landUse/components/SideNavigation";
 import {
   LandUseCollaterals,
   type LandUseCollateralsFormValues,
-} from "./tabs/LandUseCollaterals";
+} from "@/landUse/components/tabs/LandUseCollaterals";
 import {
   calculateMaankayttokorvausYhteensa,
   LandUseCompensations,
   type LandUseCompensationsFormValues,
-} from "./tabs/LandUseCompensations";
+} from "@/landUse/components/tabs/LandUseCompensations";
 import {
   LandUseContracts,
   type LandUseContractsFormValues,
-} from "./tabs/LandUseContracts";
+} from "@/landUse/components/tabs/LandUseContracts";
 import {
   LandUseDecisions,
   type LandUseDecisionsFormValues,
-} from "./tabs/LandUseDecisions";
+} from "@/landUse/components/tabs/LandUseDecisions";
 import {
   LandUseBilling,
   type LandUseBillingFormValues,
   type LandUseBillingParty,
   type LandUseBillingSchedule,
-} from "./tabs/LandUseBilling";
+} from "@/landUse/components/tabs/LandUseBilling";
 import {
   LandUsePaymentSchedule,
   type LandUsePaymentScheduleEntry,
   type LandUsePaymentScheduleFormValues,
-} from "./tabs/LandUsePaymentSchedule";
-import { LandUseMap, type LandUseMapFormValues } from "./tabs/LandUseMap";
+} from "@/landUse/components/tabs/LandUsePaymentSchedule";
+import {
+  LandUseMap,
+  type LandUseMapFormValues,
+} from "@/landUse/components/tabs/LandUseMap";
 import {
   LandUseMonitoring,
   type LandUseMonitoringFormValues,
-} from "./tabs/LandUseMonitoring";
+} from "@/landUse/components/tabs/LandUseMonitoring";
 import {
   LandUseParties,
   type LandUsePartiesFormValues,
-} from "./tabs/LandUseParties";
+} from "@/landUse/components/tabs/LandUseParties";
 import {
   LandUseSummary,
   type LandUseSummaryFormValues,
-} from "./tabs/LandUseSummary";
+} from "@/landUse/components/tabs/LandUseSummary";
 
 interface FormState {
   dirty: boolean;

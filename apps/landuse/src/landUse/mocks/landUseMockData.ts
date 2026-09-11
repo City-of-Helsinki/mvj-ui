@@ -1,27 +1,27 @@
-import type { LandUseCollateralsFormValues } from "../components/tabs/LandUseCollaterals";
+import type { LandUseCollateralsFormValues } from "@/landUse/components/tabs/LandUseCollaterals";
 import type {
   LandUseCompensationsFormValues,
   LandUseSite,
-} from "../components/tabs/LandUseCompensations";
-import type { LandUseContractsFormValues } from "../components/tabs/LandUseContracts";
-import type { LandUseDecisionsFormValues } from "../components/tabs/LandUseDecisions";
-import type { LandUseBillingFormValues } from "../components/tabs/LandUseBilling";
-import type { LandUsePaymentScheduleFormValues } from "../components/tabs/LandUsePaymentSchedule";
-import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
-import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
-import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
+} from "@/landUse/components/tabs/LandUseCompensations";
+import type { LandUseContractsFormValues } from "@/landUse/components/tabs/LandUseContracts";
+import type { LandUseDecisionsFormValues } from "@/landUse/components/tabs/LandUseDecisions";
+import type { LandUseBillingFormValues } from "@/landUse/components/tabs/LandUseBilling";
+import type { LandUsePaymentScheduleFormValues } from "@/landUse/components/tabs/LandUsePaymentSchedule";
+import type { LandUseMapFormValues } from "@/landUse/components/tabs/LandUseMap";
+import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/LandUseMonitoring";
+import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
 import {
   DEFAULT_KOROTUSKERROIN,
   INITIAL_KORVAUSKYNNYS_EURO,
   INITIAL_KORVAUS_PERCENTAGE,
-} from "../constants";
-import { createEmptyPartiesFormValues } from "../api/landUseFormValues";
+} from "@/landUse/constants";
+import { createEmptyPartiesFormValues } from "@/landUse/api/landUseFormValues";
 import {
   ASEMAKAAVA_KASITTELYVAIHE_OPTIONS,
   LAND_USE_INVOICE_TYPES,
   landUseAsemakaavaListItems,
   LAND_USE_INVOICE_STATUSES,
-} from "../options";
+} from "@/landUse/options";
 
 export interface MockLandUseData {
   identifier: string;

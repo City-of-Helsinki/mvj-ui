@@ -1,2 +1,2 @@
-import "../../../sentry";
-import "./landUse/index";
+import "./../../../sentry";
+import "@/landUse/index";

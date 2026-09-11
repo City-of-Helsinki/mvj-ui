@@ -12,14 +12,14 @@ import {
 } from "hds-react";
 import React, { useMemo } from "react";
 import { Field, Form } from "react-final-form";
-import { DEFAULT_KOROTUSKERROIN } from "../../constants";
-import { useTocEntries } from "../../hooks/useTableOfContents";
+import { DEFAULT_KOROTUSKERROIN } from "@/landUse/constants";
+import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   formatLandUseDecimalValue,
   formatLandUseEuroValue,
   formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
-} from "../../utils/number";
+} from "@/landUse/utils/number";
 import {
   calculateHintaero,
   calculateSaantelynMukainenOriginalValue,
@@ -27,8 +27,8 @@ import {
   calculateVakuustarve,
   getVakuustarveKerroinPercent,
   MINIMUM_HINTAERO,
-} from "../../utils/vakuustarve";
-import type { LandUseSite } from "./LandUseCompensations";
+} from "@/landUse/utils/vakuustarve";
+import type { LandUseSite } from "@/landUse/components/tabs/LandUseCompensations";
 
 export interface LandUseCollateralsFormValues {
   korotuskerroin?: string | number;

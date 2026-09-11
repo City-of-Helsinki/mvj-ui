@@ -1,9 +1,9 @@
-import { LAND_USE_INVOICE_STATUSES } from "../options";
+import { LAND_USE_INVOICE_STATUSES } from "@/landUse/options";
 import type {
   LandUseBillingInvoice,
   LandUseBillingSchedule,
-} from "../components/tabs/LandUseBilling";
-import type { LandUsePaymentScheduleEntry } from "../components/tabs/LandUsePaymentSchedule";
+} from "@/landUse/components/tabs/LandUseBilling";
+import type { LandUsePaymentScheduleEntry } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 
 export const createAcceptedBillingInvoices = (
   schedule: LandUseBillingSchedule,

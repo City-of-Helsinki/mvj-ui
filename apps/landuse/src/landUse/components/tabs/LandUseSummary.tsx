@@ -15,20 +15,20 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
-import { getAsemakaavat } from "../../api/landUseApi";
-import { useTocEntries } from "../../hooks/useTableOfContents";
+import { getAsemakaavat } from "@/landUse/api/landUseApi";
+import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   type AsemakaavaListItem,
   landUseDecisionMakerOptions,
   landUseKohdeSelectOptions,
   landUseNegotiationPhaseOptions,
-} from "../../options";
+} from "@/landUse/options";
 import {
   getFieldTextValue,
   normalizeSelectValue,
   readOnlyTextValue,
-} from "../../utils/fieldUtils";
-import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
+} from "@/landUse/utils/fieldUtils";
+import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 
 interface ValmistelijaEntry {
   value: string | undefined;

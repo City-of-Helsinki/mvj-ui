@@ -5,18 +5,18 @@ import { FieldArray } from "react-final-form-arrays";
 import {
   landUseGuaranteeCategoryOptions,
   landUseGuaranteeTargetOptions,
-} from "../../options";
+} from "@/landUse/options";
 import {
   CollateralDateField,
   CollateralRadioField,
   CollateralSelectField,
   CollateralTextField,
-} from "./fields";
-import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
-import { SharedCollateralFields } from "./SharedCollateralFields";
-import { getFieldTextValue } from "../../utils/fieldUtils";
+} from "@/landUse/components/collateralForms/fields";
+import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
+import { SharedCollateralFields } from "@/landUse/components/collateralForms/SharedCollateralFields";
+import { getFieldTextValue } from "@/landUse/utils/fieldUtils";
 import { TextInput } from "hds-react";
-import type { CollateralFormProps } from "./types";
+import type { CollateralFormProps } from "@/landUse/components/collateralForms/types";
 
 /**
  * Panttikirja (kiinteistökiinnitys) form.

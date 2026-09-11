@@ -1,4 +1,4 @@
-import type { LandUseDbMigration } from "./types";
+import type { LandUseDbMigration } from "@/landUse/api/migrations/types";
 
 export const migration003CreateMonitoringToteutunutStore: LandUseDbMigration = {
   version: 3,

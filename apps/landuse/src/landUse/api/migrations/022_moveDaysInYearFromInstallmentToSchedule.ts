@@ -1,5 +1,8 @@
-import type { AgreementTabRecord, LandUseDbMigration } from "./types";
-import { INTEREST_CALCULATION_DAYS_IN_YEAR } from "../../options";
+import type {
+  AgreementTabRecord,
+  LandUseDbMigration,
+} from "@/landUse/api/migrations/types";
+import { INTEREST_CALCULATION_DAYS_IN_YEAR } from "@/landUse/options";
 
 type LegacyInstallment = {
   daysInYear?: string;

@@ -1,4 +1,7 @@
-import type { LandUseDbMigration, LandUseDbMigrationContext } from "./types";
+import type {
+  LandUseDbMigration,
+  LandUseDbMigrationContext,
+} from "@/landUse/api/migrations/types";
 
 type MigrationModule = Record<string, unknown>;
 

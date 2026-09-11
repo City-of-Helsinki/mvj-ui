@@ -3,13 +3,16 @@ import {
   createAcceptedBillingInvoices,
   getSchedulesPendingInvoiceReview,
   setPaymentScheduleStatus,
-} from "../invoiceReview";
-import { LAND_USE_INVOICE_STATUSES, type LandUseInvoice } from "../../options";
+} from "@/landUse/utils/invoiceReview";
+import {
+  LAND_USE_INVOICE_STATUSES,
+  type LandUseInvoice,
+} from "@/landUse/options";
 import {
   isInvoiceContentEditableInBilling,
   type LandUseBillingInvoice,
-} from "../../components/tabs/LandUseBilling";
-import type { LandUsePaymentScheduleEntry } from "../../components/tabs/LandUsePaymentSchedule";
+} from "@/landUse/components/tabs/LandUseBilling";
+import type { LandUsePaymentScheduleEntry } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 
 const createInvoice = (installmentNumber: string): LandUseInvoice => ({
   recipientPartyIndex: "0",

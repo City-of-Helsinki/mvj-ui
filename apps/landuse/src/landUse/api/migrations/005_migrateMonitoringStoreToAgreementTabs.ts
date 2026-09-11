@@ -2,7 +2,7 @@ import type {
   AgreementTabRecord,
   LandUseDbMigration,
   MonitoringToteutunutEntryRecord,
-} from "./types";
+} from "@/landUse/api/migrations/types";
 
 type MonitoringEntry = { value: string; createdAt: string };
 
@@ -62,8 +62,7 @@ export const migration005MigrateMonitoringStoreToAgreementTabs: LandUseDbMigrati
             getMonitoringRequest.onsuccess = () => {
               const monitoringRecord =
                 (getMonitoringRequest.result as
-                  | AgreementTabRecord
-                  | undefined) ?? null;
+                  AgreementTabRecord | undefined) ?? null;
               const currentData =
                 ((monitoringRecord?.data ?? {}) as MonitoringData) ?? {};
               const currentEntriesBySiteId = {

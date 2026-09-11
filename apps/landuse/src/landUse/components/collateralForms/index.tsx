@@ -2,21 +2,24 @@ import React from "react";
 import {
   LAND_USE_GUARANTEE_TYPES,
   type LandUseGuaranteeType,
-} from "../../options";
-import { PanttikirjaForm } from "./PanttikirjaForm";
-import { RahavakuusForm } from "./RahavakuusForm";
-import { OmavelkainenTakausForm } from "./OmavelkainenTakausForm";
-import { TilivarojenPanttausForm } from "./TilivarojenPanttausForm";
-import { MuuVakuusForm } from "./MuuVakuusForm";
-import type { CollateralFormProps } from "./types";
+} from "@/landUse/options";
+import { PanttikirjaForm } from "@/landUse/components/collateralForms/PanttikirjaForm";
+import { RahavakuusForm } from "@/landUse/components/collateralForms/RahavakuusForm";
+import { OmavelkainenTakausForm } from "@/landUse/components/collateralForms/OmavelkainenTakausForm";
+import { TilivarojenPanttausForm } from "@/landUse/components/collateralForms/TilivarojenPanttausForm";
+import { MuuVakuusForm } from "@/landUse/components/collateralForms/MuuVakuusForm";
+import type { CollateralFormProps } from "@/landUse/components/collateralForms/types";
 
-export { PanttikirjaForm } from "./PanttikirjaForm";
-export { RahavakuusForm } from "./RahavakuusForm";
-export { OmavelkainenTakausForm } from "./OmavelkainenTakausForm";
-export { TilivarojenPanttausForm } from "./TilivarojenPanttausForm";
-export { MuuVakuusForm } from "./MuuVakuusForm";
-export { SharedCollateralFields } from "./SharedCollateralFields";
-export type { Guarantee, CollateralFormProps } from "./types";
+export { PanttikirjaForm } from "@/landUse/components/collateralForms/PanttikirjaForm";
+export { RahavakuusForm } from "@/landUse/components/collateralForms/RahavakuusForm";
+export { OmavelkainenTakausForm } from "@/landUse/components/collateralForms/OmavelkainenTakausForm";
+export { TilivarojenPanttausForm } from "@/landUse/components/collateralForms/TilivarojenPanttausForm";
+export { MuuVakuusForm } from "@/landUse/components/collateralForms/MuuVakuusForm";
+export { SharedCollateralFields } from "@/landUse/components/collateralForms/SharedCollateralFields";
+export type {
+  Guarantee,
+  CollateralFormProps,
+} from "@/landUse/components/collateralForms/types";
 
 interface CollateralFormByTypeProps extends CollateralFormProps {
   type: LandUseGuaranteeType | undefined;

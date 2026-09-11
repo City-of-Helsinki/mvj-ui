@@ -1,8 +1,11 @@
 import React from "react";
-import { landUseGuaranteeCategoryOptions } from "../../options";
-import { CollateralSelectField, CollateralTextField } from "./fields";
-import { SharedCollateralFields } from "./SharedCollateralFields";
-import type { CollateralFormProps } from "./types";
+import { landUseGuaranteeCategoryOptions } from "@/landUse/options";
+import {
+  CollateralSelectField,
+  CollateralTextField,
+} from "@/landUse/components/collateralForms/fields";
+import { SharedCollateralFields } from "@/landUse/components/collateralForms/SharedCollateralFields";
+import type { CollateralFormProps } from "@/landUse/components/collateralForms/types";
 
 export const TilivarojenPanttausForm: React.FC<CollateralFormProps> = ({
   namePrefix,

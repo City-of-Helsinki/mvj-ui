@@ -1,7 +1,10 @@
 import React from "react";
-import { CollateralDateField, CollateralTextField } from "./fields";
-import { SharedCollateralFields } from "./SharedCollateralFields";
-import type { CollateralFormProps } from "./types";
+import {
+  CollateralDateField,
+  CollateralTextField,
+} from "@/landUse/components/collateralForms/fields";
+import { SharedCollateralFields } from "@/landUse/components/collateralForms/SharedCollateralFields";
+import type { CollateralFormProps } from "@/landUse/components/collateralForms/types";
 
 export const RahavakuusForm: React.FC<CollateralFormProps> = ({
   namePrefix,

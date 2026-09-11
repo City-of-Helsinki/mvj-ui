@@ -1,18 +1,18 @@
 import React from "react";
 import { Select, TextInput } from "hds-react";
 import { Field } from "react-final-form";
-import { landUseGuaranteeVierasvelkapanttausOptions } from "../../options";
+import { landUseGuaranteeVierasvelkapanttausOptions } from "@/landUse/options";
 import {
   CollateralDateField,
   CollateralEuroField,
   CollateralRadioField,
   CollateralTextArea,
-} from "./fields";
+} from "@/landUse/components/collateralForms/fields";
 import {
   normalizeMultiSelectValue,
   type SelectOption,
-} from "../../utils/fieldUtils";
-import type { CollateralFormProps } from "./types";
+} from "@/landUse/utils/fieldUtils";
+import type { CollateralFormProps } from "@/landUse/components/collateralForms/types";
 
 const handleMultiSelectChange = (
   selectedOptions: SelectOption[],

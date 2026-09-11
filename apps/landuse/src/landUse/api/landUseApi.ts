@@ -1,24 +1,28 @@
-import type { LandUseCompensationsFormValues } from "../components/tabs/LandUseCompensations";
-import type { LandUseCollateralsFormValues } from "../components/tabs/LandUseCollaterals";
-import type { LandUseContractsFormValues } from "../components/tabs/LandUseContracts";
-import type { LandUseDecisionsFormValues } from "../components/tabs/LandUseDecisions";
-import type { LandUseBillingFormValues } from "../components/tabs/LandUseBilling";
-import type { LandUsePaymentScheduleFormValues } from "../components/tabs/LandUsePaymentSchedule";
-import type { LandUseMapFormValues } from "../components/tabs/LandUseMap";
-import type { LandUseMonitoringFormValues } from "../components/tabs/LandUseMonitoring";
-import type { LandUsePartiesFormValues } from "../components/tabs/LandUseParties";
-import type { LandUseSummaryFormValues } from "../components/tabs/LandUseSummary";
+import type { LandUseCompensationsFormValues } from "@/landUse/components/tabs/LandUseCompensations";
+import type { LandUseCollateralsFormValues } from "@/landUse/components/tabs/LandUseCollaterals";
+import type { LandUseContractsFormValues } from "@/landUse/components/tabs/LandUseContracts";
+import type { LandUseDecisionsFormValues } from "@/landUse/components/tabs/LandUseDecisions";
+import type { LandUseBillingFormValues } from "@/landUse/components/tabs/LandUseBilling";
+import type { LandUsePaymentScheduleFormValues } from "@/landUse/components/tabs/LandUsePaymentSchedule";
+import type { LandUseMapFormValues } from "@/landUse/components/tabs/LandUseMap";
+import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/LandUseMonitoring";
+import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
+import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
 import {
   landUseAsemakaavaListItems,
   type AsemakaavaListItem,
-} from "../options";
+} from "@/landUse/options";
 import {
   createLandUseIdentifier,
   getNextLandUseSequence,
-} from "../utils/landUseIdentifier";
-import { createEmptySummaryFormValues } from "./landUseFormValues";
-import { getAgreementIds, getAgreementTab, setAgreementTab } from "./landUseDb";
-import type { LandUseListItem } from "./landUseListTypes";
+} from "@/landUse/utils/landUseIdentifier";
+import { createEmptySummaryFormValues } from "@/landUse/api/landUseFormValues";
+import {
+  getAgreementIds,
+  getAgreementTab,
+  setAgreementTab,
+} from "@/landUse/api/landUseDb";
+import type { LandUseListItem } from "@/landUse/api/landUseListTypes";
 
 export const getAsemakaavat = async (): Promise<AsemakaavaListItem[]> =>
   landUseAsemakaavaListItems;
