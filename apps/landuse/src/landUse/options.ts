@@ -428,7 +428,6 @@ export interface LandUseInvoiceItem {
 export const LAND_USE_INVOICE_TYPES = {
   MAANKAYTTOKORVAUS: "Maankäyttökorvaus",
   SAKKO: "Sakko",
-  PERINTA: "Perintä",
 } as const;
 
 export type LandUseInvoiceType =
