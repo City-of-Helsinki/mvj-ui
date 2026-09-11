@@ -187,9 +187,6 @@ const maankayttokorvausDecorator = createDecorator({
   },
 }) as Decorator<LandUseCompensationsFormValues>;
 
-const createEstateMapLink = (kohteenTunnus: string): string =>
-  `https://kartta.hel.fi/?RegFormEstate=${encodeURIComponent(kohteenTunnus)}`;
-
 const kayttotarkoitusOptions =
   landUseCompensationSelectOptions.kayttotarkoitus.map((value) => ({
     label: value,
@@ -289,20 +286,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
             )}
           </button>
         </td>
-        <td>
-          {site.kohteenTunnus ? (
-            <a
-              href={createEstateMapLink(site.kohteenTunnus)}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {site.kohteenTunnus}
-            </a>
-          ) : (
-            "-"
-          )}
-        </td>
+        <td>{site.kohteenTunnus ? site.kohteenTunnus : "-"}</td>
         <td>{site.kayttotarkoitus ?? "-"}</td>
         <td>
           {Array.isArray(site.hallintamuoto) && site.hallintamuoto.length > 0
