@@ -1,4 +1,7 @@
-import type { AgreementTabRecord, LandUseDbMigration } from "./types";
+import type {
+  AgreementTabRecord,
+  LandUseDbMigration,
+} from "@/landUse/api/migrations/types";
 
 /**
  * Reshapes the Guarantee entries stored under the `decisions` tab to align

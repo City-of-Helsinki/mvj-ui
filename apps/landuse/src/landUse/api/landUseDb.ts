@@ -1,6 +1,9 @@
 import type { PersistedClient } from "@tanstack/query-persist-client-core";
-import type { LandUseTabKey } from "./landUseTypes";
-import { applyLandUseMigrations, LAND_USE_DB_VERSION } from "./migrations";
+import type { LandUseTabKey } from "@/landUse/api/landUseTypes";
+import {
+  applyLandUseMigrations,
+  LAND_USE_DB_VERSION,
+} from "@/landUse/api/migrations";
 
 const LAND_USE_DB_NAME = "landUseDb";
 const AGREEMENT_TAB_STORE = "agreementTabs";

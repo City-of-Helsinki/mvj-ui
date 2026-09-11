@@ -25,28 +25,28 @@ import {
   LAND_USE_INVOICE_ITEM_TYPES,
   LAND_USE_INVOICE_TYPES,
   landUseInvoiceItemTypeSelectOptions,
-} from "../../options";
+} from "@/landUse/options";
 import {
   normalizeSelectValue,
   readOnlyTextValue,
   type SelectOption,
-} from "../../utils/fieldUtils";
-import { calculateInvoicingPeriodDays } from "../../utils/date";
-import { formatLandUseEuroDisplayValue } from "../../utils/number";
-import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
+} from "@/landUse/utils/fieldUtils";
+import { calculateInvoicingPeriodDays } from "@/landUse/utils/date";
+import { formatLandUseEuroDisplayValue } from "@/landUse/utils/number";
+import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 import {
   LAND_USE_INVOICE_STATUSES,
   type LandUseInvoice,
   type LandUseInvoiceItem,
   type LandUseInvoiceStatus,
-} from "../../options";
-import type { LandUseContractsFormValues } from "./LandUseContracts";
+} from "@/landUse/options";
+import type { LandUseContractsFormValues } from "@/landUse/components/tabs/LandUseContracts";
 import type {
   PartyEntry,
   CompanyPartyDetails,
   BillingDetails,
   BasePartyDetails,
-} from "./LandUseParties";
+} from "@/landUse/components/tabs/LandUseParties";
 
 type ContractItem = NonNullable<
   LandUseContractsFormValues["contracts"]

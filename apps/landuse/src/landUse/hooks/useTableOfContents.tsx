@@ -5,8 +5,8 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
-import type { SectionEntry } from "../components/SideNavigation";
-import { HEADING_TAGS_TO_SHOW_IN_TOC } from "../components/SideNavigation";
+import type { SectionEntry } from "@/landUse/components/SideNavigation";
+import { HEADING_TAGS_TO_SHOW_IN_TOC } from "@/landUse/components/SideNavigation";
 
 interface TableOfContentsContextValue {
   setEntries: (entries: SectionEntry[]) => void;
@@ -16,8 +16,7 @@ const TableOfContentsContext =
   createContext<TableOfContentsContextValue | null>(null);
 
 // HDS applies a build-specific suffix to this CSS module class.
-const STEP_BY_STEP_ITEM_SELECTOR =
-  'li[class*="hds-step-by-step__step-item"]';
+const STEP_BY_STEP_ITEM_SELECTOR = 'li[class*="hds-step-by-step__step-item"]';
 
 /**
  * Explicit TOC targets inside StepByStep descriptions sit below their visible

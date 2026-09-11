@@ -1,4 +1,4 @@
-import type { LandUseDbMigration } from "./types";
+import type { LandUseDbMigration } from "@/landUse/api/migrations/types";
 
 type LegacyTabRecord = {
   agreementId: string;

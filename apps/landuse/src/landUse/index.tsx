@@ -10,7 +10,7 @@ import { loginProviderProperties } from "@/landUse/auth/constants";
 import { seedLandUseDb } from "@/landUse/api/landUseSeed";
 import { createLandUsePersister } from "@/landUse/api/landUseQueryPersister";
 import "@/landUse/landUse.scss"; // Only import landUse styles
-import { LANDUSE_BASE_PATH } from "../../constants";
+import { LANDUSE_BASE_PATH } from "./../../constants";
 
 const createQueryClient = () =>
   new QueryClient({

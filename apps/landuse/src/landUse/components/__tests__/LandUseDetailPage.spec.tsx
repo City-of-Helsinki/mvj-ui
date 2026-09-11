@@ -10,9 +10,9 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Form, Field } from "react-final-form";
 import createDecorator from "final-form-calculate";
-import LandUseDetailPage from "../LandUseDetailPage";
-import * as landUseApi from "../../api/landUseApi";
-import { LAND_USE_NEGOTIATION_PHASES } from "../../options";
+import LandUseDetailPage from "@/landUse/components/LandUseDetailPage";
+import * as landUseApi from "@/landUse/api/landUseApi";
+import { LAND_USE_NEGOTIATION_PHASES } from "@/landUse/options";
 
 const mockNavigate = vi.fn();
 let mockLocationSearch = "";

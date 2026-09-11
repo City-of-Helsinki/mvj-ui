@@ -25,26 +25,26 @@ import {
   type LandUseInvoice,
   type LandUseInvoiceItem,
   type LandUseInvoiceStatus,
-} from "../../options";
+} from "@/landUse/options";
 import {
   getFieldTextValue,
   getOptionsDisplayValue,
   normalizeSelectValue,
   readOnlyTextValue,
   type SelectOption,
-} from "../../utils/fieldUtils";
-import { getSchedulesPendingInvoiceReview } from "../../utils/invoiceReview";
+} from "@/landUse/utils/fieldUtils";
+import { getSchedulesPendingInvoiceReview } from "@/landUse/utils/invoiceReview";
 import {
   formatLandUseEuroDisplayValue,
   parseLandUseNumericValueOrZero,
-} from "../../utils/number";
-import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
+} from "@/landUse/utils/number";
+import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 import type {
   BasePartyDetails,
   BillingDetails,
   CompanyPartyDetails,
-} from "./LandUseParties";
-import type { LandUsePaymentScheduleEntry } from "./LandUsePaymentSchedule";
+} from "@/landUse/components/tabs/LandUseParties";
+import type { LandUsePaymentScheduleEntry } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 
 type BillingPartyDetails = Pick<
   BasePartyDetails,

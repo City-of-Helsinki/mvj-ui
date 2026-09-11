@@ -3,7 +3,7 @@ import {
   getPersistedClient,
   removePersistedClient,
   setPersistedClient,
-} from "./landUseDb";
+} from "@/landUse/api/landUseDb";
 
 export const createLandUsePersister = (): Persister => ({
   persistClient: async (client) => {
