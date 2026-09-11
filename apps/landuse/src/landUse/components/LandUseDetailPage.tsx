@@ -72,8 +72,9 @@ import {
 } from "./tabs/LandUseDecisions";
 import {
   LandUseBilling,
-  type LandUseBillingInvoice,
   type LandUseBillingFormValues,
+  type LandUseBillingParty,
+  type LandUseBillingSchedule,
 } from "./tabs/LandUseBilling";
 import {
   LandUsePaymentSchedule,
@@ -999,6 +1000,51 @@ const LandUseDetailPage: React.FC = () => {
       partiesQuery.data?.parties) ||
     [];
 
+  const billingParties: LandUseBillingParty[] = activeParties.map((party) => ({
+    party: {
+      details: {
+        name: party.party.details.name,
+        partyType: party.party.details.partyType,
+        streetAddress: party.party.details.streetAddress,
+        city: party.party.details.city,
+        postalCode: party.party.details.postalCode,
+        ...(party.party.details.partyType === "yritys" &&
+        "businessId" in party.party.details
+          ? { businessId: party.party.details.businessId }
+          : {}),
+      },
+    },
+    billingDetails: {
+      ovtCode: party.billingDetails.ovtCode,
+      reference: party.billingDetails.reference,
+    },
+    ...(party.invoiceRecipient
+      ? {
+          invoiceRecipient: {
+            details: {
+              name: party.invoiceRecipient.details.name,
+              partyType: party.invoiceRecipient.details.partyType,
+              streetAddress: party.invoiceRecipient.details.streetAddress,
+              city: party.invoiceRecipient.details.city,
+              postalCode: party.invoiceRecipient.details.postalCode,
+              ...(party.invoiceRecipient.details.partyType === "yritys" &&
+              "businessId" in party.invoiceRecipient.details
+                ? { businessId: party.invoiceRecipient.details.businessId }
+                : {}),
+            },
+          },
+        }
+      : {}),
+  }));
+
+  const billingPaymentSchedules: LandUseBillingSchedule[] =
+    (
+      paymentScheduleFormApi.getState()
+        .values as LandUsePaymentScheduleFormValues
+    ).paymentSchedules ??
+    paymentScheduleQuery.data?.paymentSchedules ??
+    [];
+
   const handleSendToInvoicing = async (
     schedule: LandUsePaymentScheduleEntry,
   ) => {
@@ -1187,27 +1233,20 @@ const LandUseDetailPage: React.FC = () => {
           <LandUseBilling
             form={billingFormApi}
             isEditMode={isEditMode}
-            parties={activeParties}
-            contracts={
-              (contractsFormApi.getState().values as LandUseContractsFormValues)
-                ?.contracts ??
-              contractsQuery.data?.contracts ??
-              []
-            }
-            asemakaavanNumero={
-              ((summaryFormApi.getState().values as LandUseSummaryFormValues)
-                ?.asemakaavanNumero ??
-                summaryQuery.data?.asemakaavanNumero) ||
-              ""
-            }
-            paymentSchedules={
-              (
-                paymentScheduleFormApi.getState()
-                  .values as LandUsePaymentScheduleFormValues
-              ).paymentSchedules ??
-              paymentScheduleQuery.data?.paymentSchedules ??
-              []
-            }
+            parties={billingParties}
+            paymentSchedules={billingPaymentSchedules.map((schedule) => ({
+              id: schedule.id,
+              recipientPartyIndex: schedule.recipientPartyIndex,
+              status: schedule.status,
+              installments: schedule.installments.map((installment) => ({
+                recipientPartyIndex: installment.recipientPartyIndex,
+                installmentNumber: installment.installmentNumber,
+                installmentTotal: installment.installmentTotal,
+                dueDate: installment.dueDate,
+                type: installment.type,
+                invoiceItems: installment.invoiceItems,
+              })),
+            }))}
             onAcceptSchedule={handleAcceptSchedule}
             onDeclineSchedule={handleDeclineSchedule}
           />

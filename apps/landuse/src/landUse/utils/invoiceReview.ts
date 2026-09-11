@@ -1,9 +1,12 @@
 import { LAND_USE_INVOICE_STATUSES } from "../options";
-import type { LandUseBillingInvoice } from "../components/tabs/LandUseBilling";
+import type {
+  LandUseBillingInvoice,
+  LandUseBillingSchedule,
+} from "../components/tabs/LandUseBilling";
 import type { LandUsePaymentScheduleEntry } from "../components/tabs/LandUsePaymentSchedule";
 
 export const createAcceptedBillingInvoices = (
-  schedule: LandUsePaymentScheduleEntry,
+  schedule: LandUseBillingSchedule,
   existingInvoices: LandUseBillingInvoice[],
 ): LandUseBillingInvoice[] => {
   const existingInstallmentIndexes = new Set(
@@ -19,7 +22,7 @@ export const createAcceptedBillingInvoices = (
       return [];
     }
 
-    const amount = installment.invoiceItems.reduce(
+    const amount = (installment.invoiceItems ?? []).reduce(
       (sum, item) => sum + Number(item.amountExcludingVat || 0),
       0,
     );
@@ -30,8 +33,8 @@ export const createAcceptedBillingInvoices = (
         status: LAND_USE_INVOICE_STATUSES.OPEN,
         sentAt,
         invoiceNumber: `${Date.now()}-${installmentIndex + 1}`,
-        billedAmount: amount,
-        remainingAmount: amount,
+        billedAmount: String(amount),
+        remainingAmount: String(amount),
         sourcePaymentScheduleId: schedule.id,
         sourceInstallmentIndex: installmentIndex,
       },
@@ -39,9 +42,11 @@ export const createAcceptedBillingInvoices = (
   });
 };
 
-export const getSchedulesPendingInvoiceReview = (
-  schedules: LandUsePaymentScheduleEntry[],
-): LandUsePaymentScheduleEntry[] =>
+export const getSchedulesPendingInvoiceReview = <
+  Schedule extends Pick<LandUsePaymentScheduleEntry, "status">,
+>(
+  schedules: Schedule[],
+): Schedule[] =>
   schedules.filter(
     (schedule) =>
       schedule.status === LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
