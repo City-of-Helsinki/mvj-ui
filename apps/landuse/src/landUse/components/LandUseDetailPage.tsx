@@ -18,7 +18,6 @@ import {
   getContracts,
   getDecisions,
   getLandUseList,
-  getMap,
   getMonitoring,
   getParties,
   getPaymentSchedule,
@@ -28,7 +27,6 @@ import {
   updateCompensations,
   updateContracts,
   updateDecisions,
-  updateMap,
   updateMonitoring,
   updateParties,
   updatePaymentSchedule,
@@ -85,10 +83,6 @@ import {
   type LandUsePaymentScheduleFormValues,
 } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 import {
-  LandUseMap,
-  type LandUseMapFormValues,
-} from "@/landUse/components/tabs/LandUseMap";
-import {
   LandUseMonitoring,
   type LandUseMonitoringFormValues,
 } from "@/landUse/components/tabs/LandUseMonitoring";
@@ -115,9 +109,7 @@ export type FormKey =
   | "decisions"
   | "contracts"
   | "paymentSchedule"
-  | "billing"
-  | "map"
-  | "history";
+  | "billing";
 
 interface TabConfig {
   label: string;
@@ -181,8 +173,6 @@ const TABS_CONFIG: TabConfig[] = [
     hasForm: true,
     formKey: "monitoring",
   },
-  { label: "Kartta", queryKey: "map", hasForm: true, formKey: "map" },
-  { label: "Muutoshistoria", queryKey: "history", hasForm: false },
 ];
 
 const TAB_QUERY_PARAM = "tab";
@@ -276,7 +266,6 @@ const LandUseDetailPage: React.FC = () => {
     contracts: { ...initialFormState },
     paymentSchedule: { ...initialFormState },
     billing: { ...initialFormState },
-    map: { ...initialFormState },
   });
 
   const resetFormStates = () => {
@@ -370,13 +359,6 @@ const LandUseDetailPage: React.FC = () => {
   const billingQuery = useQuery({
     queryKey: ["land-use", agreementId, "billing"],
     queryFn: () => getBilling(agreementId),
-    enabled: canLoadAgreementData,
-    refetchOnWindowFocus: false,
-  });
-
-  const mapQuery = useQuery({
-    queryKey: ["land-use", agreementId, "map"],
-    queryFn: () => getMap(agreementId),
     enabled: canLoadAgreementData,
     refetchOnWindowFocus: false,
   });
@@ -481,17 +463,6 @@ const LandUseDetailPage: React.FC = () => {
     [],
   );
 
-  const mapFormApi = useMemo(
-    () =>
-      createForm<LandUseMapFormValues>({
-        onSubmit: (values) => {
-          console.log("Map form submitted:", values);
-        },
-        mutators: { ...arrayMutators },
-      }),
-    [],
-  );
-
   // Collection of all form APIs for easy iteration
   const formApis = useMemo(
     () => ({
@@ -504,7 +475,6 @@ const LandUseDetailPage: React.FC = () => {
       contracts: contractsFormApi,
       paymentSchedule: paymentScheduleFormApi,
       billing: billingFormApi,
-      map: mapFormApi,
     }),
     [
       summaryFormApi,
@@ -516,7 +486,6 @@ const LandUseDetailPage: React.FC = () => {
       contractsFormApi,
       paymentScheduleFormApi,
       billingFormApi,
-      mapFormApi,
     ],
   );
 
@@ -651,12 +620,6 @@ const LandUseDetailPage: React.FC = () => {
     agreementId,
   ]);
 
-  useEffect(() => {
-    if (mapQuery.data) {
-      mapFormApi.initialize(mapQuery.data);
-    }
-  }, [mapFormApi, mapQuery.data, mapQuery.dataUpdatedAt, agreementId]);
-
   // Check if any form is dirty
   const isAnyFormDirty = useCallback(() => {
     return Object.values(formStates).some((state) => state.dirty);
@@ -777,14 +740,6 @@ const LandUseDetailPage: React.FC = () => {
     },
   });
 
-  const mapMutation = useMutation({
-    mutationFn: (values: LandUseMapFormValues) =>
-      updateMap(agreementId, values),
-    onSuccess: (data) => {
-      queryClient.setQueryData(["land-use", agreementId, "map"], data);
-    },
-  });
-
   const handleSaveClick = async () => {
     setIsSaveClicked(true);
 
@@ -901,11 +856,6 @@ const LandUseDetailPage: React.FC = () => {
           );
           break;
         }
-        case "map":
-          mutations.push(
-            mapMutation.mutateAsync(state.values as LandUseMapFormValues),
-          );
-          break;
         default:
           break;
       }
@@ -1256,14 +1206,6 @@ const LandUseDetailPage: React.FC = () => {
             onAcceptSchedule={handleAcceptSchedule}
             onDeclineSchedule={handleDeclineSchedule}
           />
-        );
-      case "map":
-        return <LandUseMap form={mapFormApi} isEditMode={isEditMode} />;
-      case "history":
-        return (
-          <div>
-            <h1>Muutoshistoria</h1>
-          </div>
         );
       default:
         return null;
