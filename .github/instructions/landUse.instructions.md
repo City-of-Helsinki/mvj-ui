@@ -69,3 +69,4 @@ This minimizes regressions where UI changes land before data contracts.
   - Repeated logic in multiple locations.
   - The intent cannot be explained in a short phrase without reading implementation details.
 - Prefer writing docstrings that explain why the function exists. Do not write docstrings if function and variable names are expressive enough.
+- Avoid redefining new TypeScript types when the type can be composed from existing ones.
