@@ -12,20 +12,20 @@ import {
 } from "hds-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { Field, Form } from "react-final-form";
-import { useTocEntries } from "../../hooks/useTableOfContents";
+import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   landUseConditionTypeOptions,
   landUseDecisionMakerOptions,
   landUseDecisionTypeOptions,
   landUseSectionOptions,
-} from "../../options";
+} from "@/landUse/options";
 import {
   getFieldTextValue,
   normalizeSelectValue,
   readOnlyTextValue,
-} from "../../utils/fieldUtils";
-import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
-import type { PartyEntry } from "./LandUseParties";
+} from "@/landUse/utils/fieldUtils";
+import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
+import type { PartyEntry } from "@/landUse/components/tabs/LandUseParties";
 
 interface DecisionCondition {
   conditionType?: string;

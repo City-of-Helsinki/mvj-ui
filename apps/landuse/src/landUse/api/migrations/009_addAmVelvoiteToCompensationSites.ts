@@ -1,4 +1,7 @@
-import type { AgreementTabRecord, LandUseDbMigration } from "./types";
+import type {
+  AgreementTabRecord,
+  LandUseDbMigration,
+} from "@/landUse/api/migrations/types";
 
 type CompensationSite = {
   amVelvoite?: boolean;

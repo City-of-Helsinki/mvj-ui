@@ -12,7 +12,7 @@ import {
   getFieldTextValue,
   normalizeSelectValue,
   readOnlyTextValue,
-} from "../../utils/fieldUtils";
+} from "@/landUse/utils/fieldUtils";
 import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
 
 interface CommonProps {

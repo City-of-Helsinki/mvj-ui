@@ -12,20 +12,20 @@ import {
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Field, Form } from "react-final-form";
 import { FieldArray } from "react-final-form-arrays";
-import { createEmptyPartyEntry } from "../../api/landUseFormValues";
-import { useTocEntries } from "../../hooks/useTableOfContents";
+import { createEmptyPartyEntry } from "@/landUse/api/landUseFormValues";
+import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   countryOptions,
   languageOptions,
   partyRoleOptions,
   partyTypeOptions,
-} from "../../options";
+} from "@/landUse/options";
 import {
   getFieldTextValue,
   getOptionsDisplayValue,
   normalizeSelectValue,
-} from "../../utils/fieldUtils";
-import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
+} from "@/landUse/utils/fieldUtils";
+import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 export interface BasePartyDetails {
   partyRole: string | undefined;
   partyType: string | undefined;

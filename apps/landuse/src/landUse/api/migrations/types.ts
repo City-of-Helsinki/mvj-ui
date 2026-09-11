@@ -1,4 +1,4 @@
-import type { LandUseTabKey } from "../landUseTypes";
+import type { LandUseTabKey } from "@/landUse/api/landUseTypes";
 
 export interface LandUseDbStores {
   agreementTabStore: string;

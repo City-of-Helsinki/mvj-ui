@@ -1,4 +1,4 @@
-import type { LandUseGuaranteeType } from "../../options";
+import type { LandUseGuaranteeType } from "@/landUse/options";
 
 /**
  * Union of all possible fields across collateral types.

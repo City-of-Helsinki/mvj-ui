@@ -22,21 +22,21 @@ import {
 } from "hds-react";
 import React, { useMemo } from "react";
 import { Field, Form } from "react-final-form";
-import { useTocEntries } from "../../hooks/useTableOfContents";
-import { landUseCompensationSelectOptions } from "../../options";
+import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
+import { landUseCompensationSelectOptions } from "@/landUse/options";
 import {
   normalizeMultiSelectValue,
   normalizeSelectValue,
   readOnlyTextValue,
   type SelectOption,
-} from "../../utils/fieldUtils";
+} from "@/landUse/utils/fieldUtils";
 import {
   formatLandUseEuroValue,
   formatLandUseNumericValueWithUnit,
   parseLandUseNumericValue,
   parseNumber,
-} from "../../utils/number";
-import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
+} from "@/landUse/utils/number";
+import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 
 export interface LandUseSite {
   id: string;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getTocScrollTarget } from "../useTableOfContents";
+import { getTocScrollTarget } from "@/landUse/hooks/useTableOfContents";
 
 describe("getTocScrollTarget", () => {
   it("uses the enclosing StepByStep item so its title remains visible", () => {

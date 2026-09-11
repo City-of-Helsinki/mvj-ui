@@ -12,21 +12,24 @@ import {
 } from "hds-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { Field, Form } from "react-final-form";
-import { useTocEntries } from "../../hooks/useTableOfContents";
+import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
   landUseAgreementTypeOptions,
   landUseDecisionTypeOptions,
   landUseGuaranteeTypeOptions,
   type LandUseGuaranteeType,
-} from "../../options";
+} from "@/landUse/options";
 import {
   getFieldTextValue,
   normalizeSelectValue,
   readOnlyTextValue,
-} from "../../utils/fieldUtils";
-import { ConfirmDeleteButton } from "../ConfirmDeleteButton";
-import { CollateralFormByType, type Guarantee } from "../collateralForms";
-import type { PartyEntry } from "./LandUseParties";
+} from "@/landUse/utils/fieldUtils";
+import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
+import {
+  CollateralFormByType,
+  type Guarantee,
+} from "@/landUse/components/collateralForms";
+import type { PartyEntry } from "@/landUse/components/tabs/LandUseParties";
 
 interface ContractChange {
   allekirjoituspvm: string;

@@ -14,22 +14,22 @@ import {
   Select,
 } from "hds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { parseUrlParams, buildQueryString } from "../urlParams";
+import { parseUrlParams, buildQueryString } from "@/landUse/urlParams";
 import {
   createLandUseIdentifier,
   getNextLandUseSequence,
-} from "../utils/landUseIdentifier";
+} from "@/landUse/utils/landUseIdentifier";
 import {
   createLandUseAgreement,
   getAgreementIdentifiers,
   getLandUseList,
-} from "../api/landUseApi";
+} from "@/landUse/api/landUseApi";
 import {
   DISTRICT_OPTIONS,
   MUNICIPALITY_OPTIONS,
   LAND_USE_NEGOTIATION_PHASES,
   type LandUseNegotiationPhase,
-} from "../options";
+} from "@/landUse/options";
 
 type LandUseFilters = {
   search: string;

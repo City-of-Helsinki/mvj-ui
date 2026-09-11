@@ -1,5 +1,5 @@
-import { LandUseSite } from "../components/tabs/LandUseCompensations";
-import { parseLandUseNumericValue } from "./number";
+import { LandUseSite } from "@/landUse/components/tabs/LandUseCompensations";
+import { parseLandUseNumericValue } from "@/landUse/utils/number";
 
 export const MINIMUM_HINTAERO = 250;
 

@@ -1,13 +1,16 @@
-import { mockLandUseTabStore } from "../mocks/landUseMockData";
+import { mockLandUseTabStore } from "@/landUse/mocks/landUseMockData";
 import {
   clonePartiesFormValues,
   createEmptyBillingFormValues,
   createEmptyPartiesFormValues,
   createEmptyPaymentScheduleFormValues,
   mapMockToSummaryFormValues,
-} from "./landUseFormValues";
-import { hasAgreementTab, setAgreementTab } from "./landUseDb";
-import { LAND_USE_TAB_KEYS, type LandUseTabKey } from "./landUseTypes";
+} from "@/landUse/api/landUseFormValues";
+import { hasAgreementTab, setAgreementTab } from "@/landUse/api/landUseDb";
+import {
+  LAND_USE_TAB_KEYS,
+  type LandUseTabKey,
+} from "@/landUse/api/landUseTypes";
 
 const getAgreementIds = (): string[] => {
   const ids = new Set<string>();
