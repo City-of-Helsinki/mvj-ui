@@ -4,7 +4,6 @@ import type { LandUseContractsFormValues } from "@/landUse/components/tabs/LandU
 import type { LandUseDecisionsFormValues } from "@/landUse/components/tabs/LandUseDecisions";
 import type { LandUseBillingFormValues } from "@/landUse/components/tabs/LandUseBilling";
 import type { LandUsePaymentScheduleFormValues } from "@/landUse/components/tabs/LandUsePaymentSchedule";
-import type { LandUseMapFormValues } from "@/landUse/components/tabs/LandUseMap";
 import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
@@ -216,18 +215,5 @@ export const updateBilling = async (
   values: LandUseBillingFormValues,
 ): Promise<LandUseBillingFormValues> => {
   await setAgreementTab(agreementId, "billing", values);
-  return values;
-};
-
-export const getMap = async (
-  agreementId: string,
-): Promise<LandUseMapFormValues | null> =>
-  getAgreementTab<LandUseMapFormValues>(agreementId, "map");
-
-export const updateMap = async (
-  agreementId: string,
-  values: LandUseMapFormValues,
-): Promise<LandUseMapFormValues> => {
-  await setAgreementTab(agreementId, "map", values);
   return values;
 };

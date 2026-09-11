@@ -7,7 +7,6 @@ import type { LandUseContractsFormValues } from "@/landUse/components/tabs/LandU
 import type { LandUseDecisionsFormValues } from "@/landUse/components/tabs/LandUseDecisions";
 import type { LandUseBillingFormValues } from "@/landUse/components/tabs/LandUseBilling";
 import type { LandUsePaymentScheduleFormValues } from "@/landUse/components/tabs/LandUsePaymentSchedule";
-import type { LandUseMapFormValues } from "@/landUse/components/tabs/LandUseMap";
 import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
 import {
@@ -104,7 +103,6 @@ export interface LandUseAgreementMockTabs {
   contracts: LandUseContractsFormValues;
   paymentSchedule: LandUsePaymentScheduleFormValues;
   billing: LandUseBillingFormValues;
-  map: LandUseMapFormValues;
 }
 
 const ma113Sites: LandUseSite[] = [
@@ -314,8 +312,6 @@ const ma113Billing: LandUseBillingFormValues = {
     },
   ],
 };
-const ma113Map: LandUseMapFormValues = {};
-
 export const mockLandUseTabStore: Record<string, LandUseAgreementMockTabs> = {
   "MA113-1": {
     summary: {
@@ -366,7 +362,6 @@ export const mockLandUseTabStore: Record<string, LandUseAgreementMockTabs> = {
     contracts: ma113Agreements,
     paymentSchedule: ma113PaymentSchedule,
     billing: ma113Billing,
-    map: ma113Map,
   },
 };
 
