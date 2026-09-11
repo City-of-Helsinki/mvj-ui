@@ -262,22 +262,6 @@ vi.mock("../tabs/LandUseBilling", () => ({
   ),
 }));
 
-vi.mock("../tabs/LandUseMap", () => ({
-  LandUseMap: ({ form, isEditMode }: { form: any; isEditMode: boolean }) => (
-    <Form
-      form={form}
-      onSubmit={() => {}}
-      render={() => (
-        <Field name="mapField">
-          {({ input }) => (
-            <input aria-label="map-input" {...input} disabled={!isEditMode} />
-          )}
-        </Field>
-      )}
-    />
-  ),
-}));
-
 vi.mock("hds-react", async (importOriginal) => {
   const ReactLib = await import("react");
   const TabsContext = ReactLib.createContext<{
@@ -412,7 +396,6 @@ vi.mock("../../api/landUseApi", () => ({
   getContracts: vi.fn(),
   getPaymentSchedule: vi.fn(),
   getBilling: vi.fn(),
-  getMap: vi.fn(),
   getCollaterals: vi.fn(),
   updateSummary: vi.fn(),
   updateParties: vi.fn(),
@@ -422,7 +405,6 @@ vi.mock("../../api/landUseApi", () => ({
   updateContracts: vi.fn(),
   updatePaymentSchedule: vi.fn(),
   updateBilling: vi.fn(),
-  updateMap: vi.fn(),
   updateCollaterals: vi.fn(),
 }));
 
@@ -452,7 +434,6 @@ describe("LandUseDetailPage", () => {
     vi.mocked(landUseApi.getContracts).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getPaymentSchedule).mockResolvedValue({} as any);
     vi.mocked(landUseApi.getBilling).mockResolvedValue({} as any);
-    vi.mocked(landUseApi.getMap).mockResolvedValue({} as any);
 
     vi.mocked(landUseApi.updateSummary).mockImplementation(
       async (_agreementId, values) => values as any,
@@ -479,9 +460,6 @@ describe("LandUseDetailPage", () => {
       async (_agreementId, values) => values as any,
     );
     vi.mocked(landUseApi.updateBilling).mockImplementation(
-      async (_agreementId, values) => values as any,
-    );
-    vi.mocked(landUseApi.updateMap).mockImplementation(
       async (_agreementId, values) => values as any,
     );
   });
