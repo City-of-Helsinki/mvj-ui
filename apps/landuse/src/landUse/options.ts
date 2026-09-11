@@ -403,6 +403,7 @@ export const landUseCompensationSelectOptions = {
     "Vapaarahoitteinen omistus",
     "Vapaarahoitteinen vuokra",
     "Lyhyt korkotuki (ARA 10)",
+    "Pitkä korkotuki (ARA)",
     "ASO",
   ],
   suojeltu: ["-", "SR1", "SR2"],
