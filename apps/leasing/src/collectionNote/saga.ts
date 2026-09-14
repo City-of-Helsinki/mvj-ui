@@ -1,6 +1,7 @@
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveError } from "@/api/slice";
+import { fetchSingleLeaseAfterEdit } from "@/leases/slice";
 import {
   receiveAttributes,
   receiveMethods,
@@ -95,10 +96,12 @@ function* createCollectionNoteSaga({
       case 201:
         yield put(fetchCollectionNotesByLeaseAction(payload.lease));
         yield put(fetchInvoicesByLease(payload.lease));
-        displayUIMessage({
-          title: "",
-          body: "Huomautus tallennettu",
-        });
+        yield put(
+          fetchSingleLeaseAfterEdit({
+            leaseId: payload.lease,
+            successMessage: "Huomautus tallennettu",
+          }),
+        );
         break;
 
       default:
