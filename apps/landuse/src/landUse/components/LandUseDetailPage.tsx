@@ -959,33 +959,33 @@ const LandUseDetailPage: React.FC = () => {
   const billingParties: LandUseBillingParty[] = activeParties.map((party) => ({
     party: {
       details: {
-        name: party.party.details.name,
-        partyType: party.party.details.partyType,
-        streetAddress: party.party.details.streetAddress,
-        city: party.party.details.city,
-        postalCode: party.party.details.postalCode,
-        ...(party.party.details.partyType === "yritys" &&
+        name: party.party.details?.name,
+        partyType: party.party.details?.partyType,
+        streetAddress: party.party.details?.streetAddress,
+        city: party.party.details?.city,
+        postalCode: party.party.details?.postalCode,
+        ...(party.party.details?.partyType === "yritys" &&
         "businessId" in party.party.details
-          ? { businessId: party.party.details.businessId }
+          ? { businessId: party.party.details?.businessId }
           : {}),
       },
     },
     billingDetails: {
-      ovtCode: party.billingDetails.ovtCode,
-      reference: party.billingDetails.reference,
+      ovtCode: party.billingDetails?.ovtCode,
+      reference: party.billingDetails?.reference,
     },
     ...(party.invoiceRecipient
       ? {
           invoiceRecipient: {
             details: {
-              name: party.invoiceRecipient.details.name,
-              partyType: party.invoiceRecipient.details.partyType,
-              streetAddress: party.invoiceRecipient.details.streetAddress,
-              city: party.invoiceRecipient.details.city,
-              postalCode: party.invoiceRecipient.details.postalCode,
-              ...(party.invoiceRecipient.details.partyType === "yritys" &&
+              name: party.invoiceRecipient?.details?.name,
+              partyType: party.invoiceRecipient?.details?.partyType,
+              streetAddress: party.invoiceRecipient?.details?.streetAddress,
+              city: party.invoiceRecipient?.details?.city,
+              postalCode: party.invoiceRecipient?.details?.postalCode,
+              ...(party.invoiceRecipient?.details?.partyType === "yritys" &&
               "businessId" in party.invoiceRecipient.details
-                ? { businessId: party.invoiceRecipient.details.businessId }
+                ? { businessId: party.invoiceRecipient?.details?.businessId }
                 : {}),
             },
           },
