@@ -54,7 +54,10 @@ type BillingPartyDetails = Pick<
 export interface LandUseBillingParty {
   party: { details: BillingPartyDetails };
   invoiceRecipient?: { details: BillingPartyDetails };
-  billingDetails: Pick<BillingDetails, "ovtCode" | "reference">;
+  billingDetails: Pick<
+    BillingDetails,
+    "ovtCode" | "reference" | "sapCustomerNumber"
+  >;
 }
 
 export type LandUseBillingScheduleInstallment = Pick<
@@ -109,6 +112,7 @@ interface SelectedPartyInvoiceData {
   postalCode: string;
   ovtCode: string;
   reference: string;
+  sapCustomerNumber: string;
   businessId: string;
   isCompany: boolean;
 }
@@ -182,6 +186,7 @@ const getSelectedPartyInvoiceData = (
       postalCode: "",
       ovtCode: "",
       reference: "",
+      sapCustomerNumber: "",
       businessId: "",
       isCompany: false,
     };
@@ -195,6 +200,7 @@ const getSelectedPartyInvoiceData = (
       postalCode: "",
       ovtCode: "",
       reference: "",
+      sapCustomerNumber: "",
       businessId: "",
       isCompany: false,
     };
@@ -210,6 +216,7 @@ const getSelectedPartyInvoiceData = (
     postalCode: recipientDetails?.postalCode ?? "",
     ovtCode: selectedParty.billingDetails?.ovtCode ?? "",
     reference: selectedParty.billingDetails?.reference ?? "",
+    sapCustomerNumber: selectedParty.billingDetails?.sapCustomerNumber ?? "",
     businessId:
       isCompany && "businessId" in recipientDetails
         ? (recipientDetails.businessId ?? "")
@@ -489,6 +496,17 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                           label="Postinumero"
                           value={readOnlyTextValue(
                             selectedPartyData.postalCode,
+                          )}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="landuse-grid__column-3">
+                        <TextInput
+                          id={`landuse-billing-sap-customer-number-${index}`}
+                          label="SAP-asiakasnumero"
+                          value={readOnlyTextValue(
+                            selectedPartyData.sapCustomerNumber,
                           )}
                           readOnly
                         />
@@ -1058,6 +1076,16 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                         label="Postinumero"
                                         value={readOnlyTextValue(
                                           selectedPartyData.postalCode,
+                                        )}
+                                        readOnly
+                                      />
+                                    </div>
+                                    <div className="landuse-grid__column-3">
+                                      <TextInput
+                                        id={`landuse-billing-review-sap-customer-number-${scheduleIndex}-${index}`}
+                                        label="SAP-asiakasnumero"
+                                        value={readOnlyTextValue(
+                                          selectedPartyData.sapCustomerNumber,
                                         )}
                                         readOnly
                                       />

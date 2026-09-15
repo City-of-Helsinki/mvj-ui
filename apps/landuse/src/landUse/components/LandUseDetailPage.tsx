@@ -973,6 +973,7 @@ const LandUseDetailPage: React.FC = () => {
     billingDetails: {
       ovtCode: party.billingDetails?.ovtCode,
       reference: party.billingDetails?.reference,
+      sapCustomerNumber: party.billingDetails?.sapCustomerNumber,
     },
     ...(party.invoiceRecipient
       ? {
