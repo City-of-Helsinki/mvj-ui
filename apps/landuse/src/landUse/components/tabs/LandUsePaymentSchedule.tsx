@@ -90,7 +90,9 @@ type SelectedPartyInvoiceData = Pick<
   "name" | "streetAddress" | "city" | "postalCode"
 > &
   Pick<CompanyPartyDetails, "businessId"> &
-  Pick<BillingDetails, "ovtCode" | "reference"> & { isCompany: boolean };
+  Pick<BillingDetails, "ovtCode" | "reference" | "sapCustomerNumber"> & {
+    isCompany: boolean;
+  };
 
 const handleSelectChange = (
   selectedOptions: SelectOption[],
@@ -146,6 +148,7 @@ const getSelectedPartyInvoiceData = (
       postalCode: "",
       ovtCode: "",
       reference: "",
+      sapCustomerNumber: "",
       businessId: "",
       isCompany: false,
     };
@@ -160,6 +163,7 @@ const getSelectedPartyInvoiceData = (
       postalCode: "",
       ovtCode: "",
       reference: "",
+      sapCustomerNumber: "",
       businessId: "",
       isCompany: false,
     };
@@ -176,6 +180,7 @@ const getSelectedPartyInvoiceData = (
     postalCode: recipientDetails?.postalCode ?? "",
     ovtCode: selectedParty.billingDetails?.ovtCode ?? "",
     reference: selectedParty.billingDetails?.reference ?? "",
+    sapCustomerNumber: selectedParty.billingDetails?.sapCustomerNumber ?? "",
     businessId:
       isCompany && "businessId" in recipientDetails
         ? (recipientDetails.businessId ?? "")
@@ -910,6 +915,18 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               label="Postitoimipaikka"
               value={readOnlyTextValue(selectedPartyData.city)}
               errorText={selectedPartyData.city ? undefined : "Puuttuu"}
+              readOnly
+            />
+          </div>
+
+          <div className="landuse-grid__column-6">
+            <TextInput
+              id={`landuse-payment-schedule-sap-customer-number-${partyValue}`}
+              label="SAP-asiakasnumero"
+              value={readOnlyTextValue(selectedPartyData.sapCustomerNumber)}
+              errorText={
+                selectedPartyData.sapCustomerNumber ? undefined : "Puuttuu"
+              }
               readOnly
             />
           </div>
