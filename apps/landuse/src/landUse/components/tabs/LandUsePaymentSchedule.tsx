@@ -867,23 +867,29 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               id={`landuse-payment-schedule-invoice-recipient-${partyValue}`}
               label="Nimi"
               value={readOnlyTextValue(selectedPartyData.name)}
+              errorText={selectedPartyData.name ? undefined : "Puuttuu"}
               readOnly
             />
           </div>
+          {selectedPartyData.isCompany && (
+            <div className="landuse-grid__column-6">
+              <TextInput
+                id={`landuse-payment-schedule-business-id-${partyValue}`}
+                label="Y-tunnus"
+                value={readOnlyTextValue(selectedPartyData.businessId)}
+                errorText={selectedPartyData.businessId ? undefined : "Puuttuu"}
+                readOnly
+              />
+            </div>
+          )}
           <div className="landuse-grid__column-6">
             <TextInput
               id={`landuse-payment-schedule-street-address-${partyValue}`}
               label="Katuosoite"
               value={readOnlyTextValue(selectedPartyData.streetAddress)}
-              readOnly
-            />
-          </div>
-
-          <div className="landuse-grid__column-6">
-            <TextInput
-              id={`landuse-payment-schedule-city-${partyValue}`}
-              label="Postitoimipaikka"
-              value={readOnlyTextValue(selectedPartyData.city)}
+              errorText={
+                selectedPartyData.streetAddress ? undefined : "Puuttuu"
+              }
               readOnly
             />
           </div>
@@ -893,6 +899,17 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               id={`landuse-payment-schedule-postal-code-${partyValue}`}
               label="Postinumero"
               value={readOnlyTextValue(selectedPartyData.postalCode)}
+              errorText={selectedPartyData.postalCode ? undefined : "Puuttuu"}
+              readOnly
+            />
+          </div>
+
+          <div className="landuse-grid__column-6">
+            <TextInput
+              id={`landuse-payment-schedule-city-${partyValue}`}
+              label="Postitoimipaikka"
+              value={readOnlyTextValue(selectedPartyData.city)}
+              errorText={selectedPartyData.city ? undefined : "Puuttuu"}
               readOnly
             />
           </div>
@@ -902,6 +919,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               id={`landuse-payment-schedule-ovt-code-${partyValue}`}
               label="OVT-tunnus"
               value={readOnlyTextValue(selectedPartyData.ovtCode)}
+              infoText={selectedPartyData.ovtCode ? undefined : "Puuttuu"}
               readOnly
             />
           </div>
@@ -911,20 +929,10 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               id={`landuse-payment-schedule-reference-${partyValue}`}
               label="Asiakkaan viite"
               value={readOnlyTextValue(selectedPartyData.reference)}
+              infoText={selectedPartyData.reference ? undefined : "Puuttuu"}
               readOnly
             />
           </div>
-
-          {selectedPartyData.isCompany && (
-            <div className="landuse-grid__column-6">
-              <TextInput
-                id={`landuse-payment-schedule-business-id-${partyValue}`}
-                label="Y-tunnus"
-                value={readOnlyTextValue(selectedPartyData.businessId)}
-                readOnly
-              />
-            </div>
-          )}
         </div>
       </Fieldset>
       {partysSchedules.map(
@@ -1244,6 +1252,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                     id="landuse-payment-schedule-asemakaavanumero"
                     label="Kaavanumero"
                     value={readOnlyTextValue(asemakaavanNumero)}
+                    errorText={asemakaavanNumero ? undefined : "Puuttuu"}
                     readOnly
                   />
                 </div>
@@ -1254,6 +1263,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                         id={`landuse-payment-schedule-valid-date`}
                         label="Lainvoimaisuuspäivämäärä"
                         value={readOnlyTextValue(input.value)}
+                        errorText={input.value ? undefined : "Puuttuu"}
                         readOnly
                       />
                     )}
