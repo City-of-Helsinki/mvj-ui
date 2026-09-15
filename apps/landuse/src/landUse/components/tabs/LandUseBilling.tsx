@@ -449,6 +449,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                 onChange={dueDateInput.onChange}
                                 placeholder="DD.MM.YYYY"
                                 language="fi"
+                                disableConfirmation
                               />
                             ) : (
                               <TextInput
