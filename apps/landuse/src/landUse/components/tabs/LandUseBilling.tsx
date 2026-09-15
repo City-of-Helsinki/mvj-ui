@@ -1181,7 +1181,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                     size={ButtonSize.Small}
                     onClick={() => onAccept(schedule)}
                   >
-                    Hyväksy kaikki ja luo laskut
+                    Hyväksy kaikki ja lähetä laskut
                   </Button>
                 </div>
               )}
