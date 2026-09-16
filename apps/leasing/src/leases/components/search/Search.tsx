@@ -521,6 +521,9 @@ const Search: React.FC<Props> = ({
                   }
                   className={hasInputValue(value) ? "active" : undefined}
                   clearable
+                  filter={(option, filterStr) =>
+                    option.label.toLowerCase().includes(filterStr.toLowerCase())
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -796,6 +799,9 @@ const Search: React.FC<Props> = ({
                   }
                   className={hasInputValue(value) ? "active" : undefined}
                   clearable
+                  filter={(option, filterStr) =>
+                    option.label.toLowerCase().includes(filterStr.toLowerCase())
+                  }
                   style={{ width: "100%" }}
                 />
               );
