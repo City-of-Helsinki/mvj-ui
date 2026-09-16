@@ -76,6 +76,13 @@ export const SideNavigation: React.FC<SideNavigationProps> = ({
                     isActive ? " landuse-detail__sidebar-tab--active" : ""
                   }`}
                   onClick={() => onTabClick(index)}
+                  // Temporarily disable Valvonta tab
+                  disabled={tab.label.toLowerCase() === "valvonta"}
+                  style={
+                    tab.label.toLowerCase() === "valvonta"
+                      ? { cursor: "not-allowed", color: "gray" }
+                      : {}
+                  }
                 >
                   <span className="landuse-detail__sidebar-tab-label">
                     {tab.label}
