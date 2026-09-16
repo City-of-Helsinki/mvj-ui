@@ -400,21 +400,24 @@ export const landUseMaapoliittinenOhjelmaOptions = [
   { label: "MAPO4", value: "MAPO4", defaultHuojennusProsentti: "4" },
 ];
 
-export const landUseCompensationSelectOptions = {
-  kayttotarkoitus: [
-    "Asuinkerrostalojen korttelialue",
-    "Asuinkerrostalojen, liike- ja toimistorakennusten korttelialue",
-    "Toimitilat",
-  ],
-  hallintamuoto: [
-    "Vapaarahoitteinen omistus",
-    "Vapaarahoitteinen vuokra",
-    "Lyhyt korkotuki (ARA 10)",
-    "Pitkä korkotuki (ARA)",
-    "ASO",
-  ],
-  suojeltu: ["-", "SR1", "SR2"],
-};
+export const landUseKayttotarkoitusOptions = [
+  "Asuinkerrostalojen korttelialue",
+  "Asuinkerrostalojen, liike- ja toimistorakennusten korttelialue",
+  "Toimitilat",
+].map((value) => ({ label: value, value }));
+
+export const landUseHallintamuotoOptions = [
+  "Vapaarahoitteinen omistus",
+  "Vapaarahoitteinen vuokra",
+  "Lyhyt korkotuki (ARA 10)",
+  "Pitkä korkotuki (ARA)",
+  "ASO",
+].map((value) => ({ label: value, value }));
+
+export const landUseSuojeltuOptions = ["-", "SR1", "SR2"].map((value) => ({
+  label: value,
+  value,
+}));
 
 export const LAND_USE_INVOICE_STATUSES = {
   DRAFT: "Luonnos",
