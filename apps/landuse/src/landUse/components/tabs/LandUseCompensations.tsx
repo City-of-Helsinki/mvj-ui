@@ -72,17 +72,13 @@ interface LandUseCompensationsProps {
 }
 
 const COMPENSATION_STEP_KEYS = {
-  maankayttokorvaus: "maankayttokorvaus",
   laskelma: "laskelma",
   kohteet: "kohteet",
+  maankayttokorvaus: "maankayttokorvaus",
   yleisetAlueet: "yleiset-alueet",
 } as const;
 
 const COMPENSATION_STEPS = [
-  {
-    key: COMPENSATION_STEP_KEYS.maankayttokorvaus,
-    title: "Maankäyttökorvaus",
-  },
   {
     key: COMPENSATION_STEP_KEYS.laskelma,
     title: "Maankäyttökorvauksen laskelma",
@@ -90,6 +86,10 @@ const COMPENSATION_STEPS = [
   {
     key: COMPENSATION_STEP_KEYS.kohteet,
     title: "Kohteet",
+  },
+  {
+    key: COMPENSATION_STEP_KEYS.maankayttokorvaus,
+    title: "Maankäyttökorvaus",
   },
   {
     key: COMPENSATION_STEP_KEYS.yleisetAlueet,
@@ -829,19 +829,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                 steps={[
                   {
                     title: COMPENSATION_STEPS[0].title,
-                    key: COMPENSATION_STEP_KEYS.maankayttokorvaus,
-                    description: (
-                      <div
-                        id={getCompensationStepId(
-                          COMPENSATION_STEP_KEYS.maankayttokorvaus,
-                        )}
-                      >
-                        {maankayttokorvausStep}
-                      </div>
-                    ),
-                  },
-                  {
-                    title: COMPENSATION_STEPS[1].title,
                     key: COMPENSATION_STEP_KEYS.laskelma,
                     description: (
                       <div
@@ -854,7 +841,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                     ),
                   },
                   {
-                    title: COMPENSATION_STEPS[2].title,
+                    title: COMPENSATION_STEPS[1].title,
                     key: COMPENSATION_STEP_KEYS.kohteet,
                     description: (
                       <div
@@ -863,6 +850,19 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                         )}
                       >
                         {kohteetStep}
+                      </div>
+                    ),
+                  },
+                  {
+                    title: COMPENSATION_STEPS[2].title,
+                    key: COMPENSATION_STEP_KEYS.maankayttokorvaus,
+                    description: (
+                      <div
+                        id={getCompensationStepId(
+                          COMPENSATION_STEP_KEYS.maankayttokorvaus,
+                        )}
+                      >
+                        {maankayttokorvausStep}
                       </div>
                     ),
                   },
