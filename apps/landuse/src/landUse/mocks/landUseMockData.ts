@@ -133,6 +133,8 @@ const ma113Compensations: LandUseCompensationsFormValues = {
   },
   purkuTaiMuuVahennys: 0,
   maankayttokorvaus: "450000",
+  maapoliittinenOhjelma: "MAPO2",
+  huojennusProsentti: "25",
   yleisetAlueetNeliot: "850",
   yleisetAlueetHankinnanArvo: "40000",
 };

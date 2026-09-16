@@ -19,7 +19,10 @@ import {
 import React, { useMemo } from "react";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import { landUseCompensationSelectOptions } from "@/landUse/options";
+import {
+  landUseCompensationSelectOptions,
+  landUseMaapoliittinenOhjelmaOptions,
+} from "@/landUse/options";
 import {
   normalizeMultiSelectValue,
   normalizeSelectValue,
@@ -62,6 +65,8 @@ export interface LandUseCompensationsFormValues {
   perustietotaulukkoRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
   purkuTaiMuuVahennys: number;
   maankayttokorvaus: string;
+  maapoliittinenOhjelma: string | undefined;
+  huojennusProsentti: string;
   yleisetAlueetNeliot: string;
   yleisetAlueetHankinnanArvo: string;
 }
@@ -75,7 +80,7 @@ const COMPENSATION_STEP_KEYS = {
   laskelma: "laskelma",
   kohteet: "kohteet",
   maankayttokorvaus: "maankayttokorvaus",
-  yleisetAlueet: "yleiset-alueet",
+  tilastoitavatTiedot: "tilastoitavat-tiedot",
 } as const;
 
 const COMPENSATION_STEPS = [
@@ -92,8 +97,8 @@ const COMPENSATION_STEPS = [
     title: "Maankäyttökorvaus",
   },
   {
-    key: COMPENSATION_STEP_KEYS.yleisetAlueet,
-    title: "Korvauksetta luovutettavat yleiset alueet",
+    key: COMPENSATION_STEP_KEYS.tilastoitavatTiedot,
+    title: "Tilastoitavat tiedot",
   },
 ] as const;
 
@@ -517,6 +522,21 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           );
         };
 
+        const handleMaapoliittinenOhjelmaChange = (
+          selectedOptions: SelectOption[],
+        ) => {
+          const selectedValue = selectedOptions[0]?.value;
+          const selectedOption = landUseMaapoliittinenOhjelmaOptions.find(
+            (option) => option.value === selectedValue,
+          );
+
+          form.change("maapoliittinenOhjelma", selectedOption?.value);
+          form.change(
+            "huojennusProsentti",
+            selectedOption?.defaultHuojennusProsentti ?? "",
+          );
+        };
+
         const totals = sites.reduce(
           (accumulator, site) => {
             const row = rowsBySiteId[site.id];
@@ -655,7 +675,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
 
         const laskelmaStep = (
           <Fieldset heading="" className="full-width">
-            <h3>Luonnos</h3>
+            <h3>Excel-laskelma</h3>
             {isEditMode && (
               <Button
                 type="button"
@@ -780,44 +800,94 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           </>
         );
 
-        const yleisetAlueetStep = (
-          <Fieldset heading="" className="full-width">
-            <div className="landuse-grid">
-              <div className="landuse-grid__column-6">
-                <Field name="yleisetAlueetNeliot">
-                  {({ input }) => (
-                    <NumericDecimalInput
-                      id="landuse-compensations-yleiset-alueet-neliot"
-                      label="Neliöt"
-                      isEditMode={isEditMode}
-                      unit="m²"
-                      value={input.value}
-                      onChange={input.onChange}
-                      errorText={input.error}
-                      invalid={Boolean(input.error)}
-                    />
-                  )}
-                </Field>
-              </div>
+        const tilastoitavatTiedotStep = (
+          <>
+            <h3>Maapoliittinen huojennus</h3>
+            <Fieldset heading="" className="full-width">
+              <div className="landuse-grid">
+                <div className="landuse-grid__column-6">
+                  <Field name="maapoliittinenOhjelma">
+                    {({ input }) =>
+                      !isEditMode ? (
+                        <TextInput
+                          id="landuse-compensations-maapoliittinen-ohjelma"
+                          label="Maapoliittinen ohjelma"
+                          value={readOnlyTextValue(input.value)}
+                          readOnly
+                        />
+                      ) : (
+                        <Select
+                          id="landuse-compensations-maapoliittinen-ohjelma"
+                          options={landUseMaapoliittinenOhjelmaOptions}
+                          value={normalizeSelectValue(input.value)}
+                          onChange={handleMaapoliittinenOhjelmaChange}
+                          texts={{
+                            label: "Maapoliittinen ohjelma",
+                            placeholder: "Valitse",
+                          }}
+                        />
+                      )
+                    }
+                  </Field>
+                </div>
 
-              <div className="landuse-grid__column-6">
-                <Field name="yleisetAlueetHankinnanArvo">
-                  {({ input }) => (
-                    <NumericDecimalInput
-                      id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
-                      label="Hankinnan arvo (€)"
-                      isEditMode={isEditMode}
-                      value={input.value}
-                      unit="€"
-                      onChange={input.onChange}
-                      errorText={input.error}
-                      invalid={Boolean(input.error)}
-                    />
-                  )}
-                </Field>
+                <div className="landuse-grid__column-6">
+                  <Field name="huojennusProsentti">
+                    {({ input, meta }) => (
+                      <NumericDecimalInput
+                        id="landuse-compensations-huojennus-prosentti"
+                        label="Huojennus %"
+                        isEditMode={isEditMode}
+                        value={input.value}
+                        unit="%"
+                        onChange={input.onChange}
+                        errorText={meta.error}
+                        invalid={Boolean(meta.error)}
+                      />
+                    )}
+                  </Field>
+                </div>
               </div>
-            </div>
-          </Fieldset>
+            </Fieldset>
+            <h3>Korvauksetta luovutettavat yleiset alueet</h3>
+            <Fieldset heading="" className="full-width">
+              <div className="landuse-grid">
+                <div className="landuse-grid__column-6">
+                  <Field name="yleisetAlueetNeliot">
+                    {({ input }) => (
+                      <NumericDecimalInput
+                        id="landuse-compensations-yleiset-alueet-neliot"
+                        label="Neliöt"
+                        isEditMode={isEditMode}
+                        unit="m²"
+                        value={input.value}
+                        onChange={input.onChange}
+                        errorText={input.error}
+                        invalid={Boolean(input.error)}
+                      />
+                    )}
+                  </Field>
+                </div>
+
+                <div className="landuse-grid__column-6">
+                  <Field name="yleisetAlueetHankinnanArvo">
+                    {({ input }) => (
+                      <NumericDecimalInput
+                        id="landuse-compensations-yleiset-alueet-hankinnan-arvo"
+                        label="Hankinnan arvo (€)"
+                        isEditMode={isEditMode}
+                        value={input.value}
+                        unit="€"
+                        onChange={input.onChange}
+                        errorText={input.error}
+                        invalid={Boolean(input.error)}
+                      />
+                    )}
+                  </Field>
+                </div>
+              </div>
+            </Fieldset>
+          </>
         );
 
         return (
@@ -868,14 +938,14 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   },
                   {
                     title: COMPENSATION_STEPS[3].title,
-                    key: COMPENSATION_STEP_KEYS.yleisetAlueet,
+                    key: COMPENSATION_STEP_KEYS.tilastoitavatTiedot,
                     description: (
                       <div
                         id={getCompensationStepId(
-                          COMPENSATION_STEP_KEYS.yleisetAlueet,
+                          COMPENSATION_STEP_KEYS.tilastoitavatTiedot,
                         )}
                       >
-                        {yleisetAlueetStep}
+                        {tilastoitavatTiedotStep}
                       </div>
                     ),
                   },
