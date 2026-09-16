@@ -412,7 +412,9 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   clearable
                   style={{ width: "100%" }}
                 />
@@ -447,7 +449,9 @@ const Search: React.FC<Props> = ({
                   filter={(option, filterStr) =>
                     option.label.toLowerCase().includes(filterStr.toLowerCase())
                   }
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -467,7 +471,9 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -487,7 +493,9 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -519,7 +527,9 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   clearable
                   filter={(option, filterStr) =>
                     option.label.toLowerCase().includes(filterStr.toLowerCase())
@@ -550,7 +560,9 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   clearable
                   multiSelect
                   noTags
@@ -585,7 +597,9 @@ const Search: React.FC<Props> = ({
                     // Fetching districts from multiple municipalities adds complexity and creates a confusing experience.
                     !municipality || municipality.length !== 1
                   }
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   clearable
                   style={{ width: "100%" }}
                 />
@@ -617,7 +631,9 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ maxWidth: "120px" }}
                 />
               );
@@ -649,7 +665,9 @@ const Search: React.FC<Props> = ({
                   onChange={(nextValue) => onChange(nextValue)}
                   style={{ width: "100%" }}
                   disableConfirmation
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                 />
               );
             }}
@@ -671,7 +689,9 @@ const Search: React.FC<Props> = ({
                   onChange={(nextValue) => onChange(nextValue)}
                   style={{ width: "100%" }}
                   disableConfirmation
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                 />
               );
             }}
@@ -693,7 +713,9 @@ const Search: React.FC<Props> = ({
                   onChange={(nextValue) => onChange(nextValue)}
                   style={{ width: "100%" }}
                   disableConfirmation
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                 />
               );
             }}
@@ -715,7 +737,9 @@ const Search: React.FC<Props> = ({
                   onChange={(nextValue) => onChange(nextValue)}
                   style={{ width: "100%" }}
                   disableConfirmation
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                 />
               );
             }}
@@ -797,7 +821,9 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   clearable
                   filter={(option, filterStr) =>
                     option.label.toLowerCase().includes(filterStr.toLowerCase())
@@ -824,7 +850,9 @@ const Search: React.FC<Props> = ({
                   onChange={(nextValue) => onChange(nextValue)}
                   style={{ width: "100%" }}
                   disableConfirmation
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                 />
               );
             }}
@@ -843,7 +871,9 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -863,7 +893,9 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -887,7 +919,9 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -907,7 +941,9 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -927,7 +963,9 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -956,7 +994,9 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -980,7 +1020,9 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   clearable
                   style={{ width: "100%" }}
                 />
@@ -1001,7 +1043,9 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -1021,7 +1065,9 @@ const Search: React.FC<Props> = ({
                   onBlur={onBlur}
                   onChange={onChange}
                   onFocus={onFocus}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                 />
               );
@@ -1129,7 +1175,9 @@ const Search: React.FC<Props> = ({
               buttonIcon={<IconSearch aria-hidden />}
               buttonAriaLabel="Hae"
               onButtonClick={form.submit}
-              className={hasInputValue(value) ? "active" : undefined}
+              className={
+                hasInputValue(value) ? "hds-input-with-value" : undefined
+              }
             />
           )}
         </Field>
@@ -1205,7 +1253,9 @@ const Search: React.FC<Props> = ({
                   onChange(serviceUnits);
                   setPersistedServiceUnits(serviceUnits);
                 }}
-                className={hasInputValue(value) ? "active" : undefined}
+                className={
+                  hasInputValue(value) ? "hds-input-with-value" : undefined
+                }
                 style={{ width: "100%" }}
                 multiSelect
                 noTags
@@ -1233,7 +1283,9 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   style={{ width: "100%" }}
                   multiSelect
                   noTags
@@ -1282,7 +1334,9 @@ const Search: React.FC<Props> = ({
                       onChange(selectedOptions.map((option) => option.value));
                     }
                   }}
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   clearable
                   style={{ width: "100%" }}
                 />
@@ -1310,7 +1364,9 @@ const Search: React.FC<Props> = ({
                   onChange={(selectedOptions) =>
                     onChange(selectedOptions.map((option) => option.value))
                   }
-                  className={hasInputValue(value) ? "active" : undefined}
+                  className={
+                    hasInputValue(value) ? "hds-input-with-value" : undefined
+                  }
                   multiSelect
                   noTags
                   clearable

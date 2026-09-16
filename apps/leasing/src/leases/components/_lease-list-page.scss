@@ -38,7 +38,7 @@
 }
 
 // Emphasize active lease search HDS inputs
-.active {
+.hds-input-with-value {
   // TextInput, DateInput
   --input-background-default: #{hds.$color-coat-of-arms-light};
   // Select
