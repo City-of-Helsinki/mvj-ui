@@ -684,7 +684,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                         <div className="landuse-grid__column-3 landuse-compensations-table__field--grey">
                           <TextInput
                             id={`landuse-billing-sent-at-${index}`}
-                            label="Lähetetty laskutukseen"
+                            label="Lähetetty SAP:iin"
                             value={readOnlyTextValue(invoice.sentAt)}
                             readOnly
                           />
