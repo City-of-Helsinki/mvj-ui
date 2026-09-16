@@ -107,7 +107,7 @@ const SECTIONS = {
     ],
   },
   decision: {
-    label: "Päätös ja laskutus",
+    label: "Päätös ja sopimus",
     fields: [
       "decision_date",
       "decision_maker",
@@ -510,7 +510,7 @@ const Search: React.FC<Props> = ({
                 <Select
                   id="type"
                   texts={{
-                    label: "Laji",
+                    label: "Vuokraustunnuksen laji",
                     placeholder: "Valitse laji",
                     language: "fi",
                   }}
@@ -608,7 +608,7 @@ const Search: React.FC<Props> = ({
               return (
                 <TextInput
                   id="sequence"
-                  label="Tunnus"
+                  label="MVJ-Tunnus"
                   invalid={invalid}
                   value={value || ""}
                   onBlur={onBlur}
