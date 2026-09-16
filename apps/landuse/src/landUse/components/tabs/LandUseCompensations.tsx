@@ -1,8 +1,4 @@
 import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
-import {
-  INITIAL_KORVAUSKYNNYS_EURO,
-  INITIAL_KORVAUS_PERCENTAGE,
-} from "@/landUse/constants";
 import { Decorator, FormApi } from "final-form";
 import createDecorator from "final-form-calculate";
 import {
@@ -64,9 +60,7 @@ export interface LandUseCompensationsFormValues {
   muuSelite: string;
   kaavaehdotustaEdeltavaArvo: string;
   perustietotaulukkoRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
-  korvauskynnys: number;
   purkuTaiMuuVahennys: number;
-  korvausprosentti: number;
   maankayttokorvaus: string;
   yleisetAlueetNeliot: string;
   yleisetAlueetHankinnanArvo: string;
@@ -81,7 +75,6 @@ const COMPENSATION_STEP_KEYS = {
   maankayttokorvaus: "maankayttokorvaus",
   laskelma: "laskelma",
   kohteet: "kohteet",
-  laskuri: "laskuri",
   yleisetAlueet: "yleiset-alueet",
 } as const;
 
@@ -97,10 +90,6 @@ const COMPENSATION_STEPS = [
   {
     key: COMPENSATION_STEP_KEYS.kohteet,
     title: "Kohteet",
-  },
-  {
-    key: COMPENSATION_STEP_KEYS.laskuri,
-    title: "Maankäyttökorvauksen laskuri",
   },
   {
     key: COMPENSATION_STEP_KEYS.yleisetAlueet,
@@ -138,52 +127,6 @@ export const maankayttokorvausYhteensaDecorator = createDecorator({
       previousValues === undefined
         ? allValues.maankayttokorvausYhteensa
         : calculateMaankayttokorvausYhteensa(allValues),
-  },
-}) as Decorator<LandUseCompensationsFormValues>;
-
-const calculateSitesSumma = (
-  values: Partial<LandUseCompensationsFormValues>,
-): number => {
-  const sites = values.sites ?? [];
-  const rowsBySiteId = values.perustietotaulukkoRowsBySiteId ?? {};
-
-  return sites.reduce((sum, site) => {
-    const kerrosala = parseNumber(site.kem2);
-    const yksikkohinta = parseNumber(rowsBySiteId[site.id]?.yksikkohinta);
-    return sum + kerrosala * yksikkohinta;
-  }, 0);
-};
-
-const calculateMaankayttokorvaus = (
-  values: Partial<LandUseCompensationsFormValues>,
-): number => {
-  const arvonnousu =
-    calculateSitesSumma(values) -
-    parseNumber(values.kaavaehdotustaEdeltavaArvo);
-  const korvauskynnys = parseNumber(values.korvauskynnys);
-  const purkuTaiMuuVahennys = parseNumber(values.purkuTaiMuuVahennys);
-  const korvausprosentti = parseNumber(values.korvausprosentti);
-
-  return (
-    (arvonnousu - korvauskynnys + purkuTaiMuuVahennys) *
-    (korvausprosentti / 100)
-  );
-};
-
-// Recalculates the derived "Maankäyttökorvaus" field so its value is stored in
-// and saved with the form whenever any of its source fields change.
-const maankayttokorvausDecorator = createDecorator({
-  field:
-    /^(sites|perustietotaulukkoRowsBySiteId|kaavaehdotustaEdeltavaArvo|korvauskynnys|purkuTaiMuuVahennys|korvausprosentti).*/,
-  updates: {
-    maankayttokorvaus: (
-      _value,
-      allValues: Partial<LandUseCompensationsFormValues>,
-      previousValues: Partial<LandUseCompensationsFormValues> | undefined,
-    ) =>
-      previousValues === undefined
-        ? allValues.maankayttokorvaus
-        : calculateMaankayttokorvaus(allValues).toString(),
   },
 }) as Decorator<LandUseCompensationsFormValues>;
 
@@ -528,10 +471,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
     <Form<LandUseCompensationsFormValues>
       form={form}
       onSubmit={() => {}}
-      decorators={[
-        maankayttokorvausYhteensaDecorator,
-        maankayttokorvausDecorator,
-      ]}
+      decorators={[maankayttokorvausYhteensaDecorator]}
       render={({ handleSubmit, values }) => {
         const sites = values.sites ?? [];
         const rowsBySiteId = values.perustietotaulukkoRowsBySiteId ?? {};
@@ -840,99 +780,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
           </>
         );
 
-        const laskuriStep = (
-          <Fieldset heading="" className="full-width">
-            <div className="landuse-grid">
-              <div className="landuse-grid__column-1 math-operator-xl">(</div>
-              <div className="landuse-grid__column-2">
-                <NumericDecimalInput
-                  id="landuse-compensations-arvonnousu"
-                  label="Arvonnousu"
-                  value={
-                    totals.summa -
-                    parseNumber(values.kaavaehdotustaEdeltavaArvo)
-                  }
-                  isEditMode={false}
-                  unit="€"
-                />
-              </div>
-              <div className="landuse-grid__column-1 math-operator-xl">-</div>
-              <div className="landuse-grid__column-2">
-                <Field
-                  name="korvauskynnys"
-                  initialValue={INITIAL_KORVAUSKYNNYS_EURO}
-                  validate={(value) =>
-                    // TODO collect validators to central place
-                    value <= 0
-                      ? "Korvauskynnys ei saa olla negatiivinen"
-                      : undefined
-                  }
-                >
-                  {({ input, meta }) => (
-                    <NumericDecimalInput
-                      id="landuse-compensations-korvauskynnys"
-                      label="Korvauskynnys"
-                      isEditMode={isEditMode}
-                      value={input.value}
-                      unit="€"
-                      onChange={input.onChange}
-                      errorText={meta.error}
-                      invalid={Boolean(meta.error)}
-                    />
-                  )}
-                </Field>
-              </div>
-              <div className="landuse-grid__column-1 math-operator-xl">+</div>
-              <div className="landuse-grid__column-2">
-                <Field name="purkuTaiMuuVahennys">
-                  {({ input }) => (
-                    <NumericDecimalInput
-                      id="landuse-compensations-purku-tai-muu-vahennys"
-                      label="Purkuvähennys"
-                      isEditMode={isEditMode}
-                      value={input.value}
-                      unit="€"
-                      onChange={input.onChange}
-                    />
-                  )}
-                </Field>
-              </div>
-              <div className="landuse-grid__column-1 math-operator-xl">) *</div>
-              <div className="landuse-grid__column-2">
-                <Field
-                  name="korvausprosentti"
-                  initialValue={INITIAL_KORVAUS_PERCENTAGE}
-                >
-                  {({ input }) => (
-                    <NumericDecimalInput
-                      id="landuse-compensations-korvausprosentti"
-                      label="Korvausprosentti %"
-                      isEditMode={isEditMode}
-                      value={input.value}
-                      unit="%"
-                      onChange={input.onChange}
-                    />
-                  )}
-                </Field>
-              </div>
-              <div className="landuse-grid__column-1 math-operator-xl">=</div>
-              <div className="landuse-grid__column-2">
-                <Field name="maankayttokorvaus">
-                  {({ input }) => (
-                    <NumericDecimalInput
-                      id="landuse-compensations-maankayttokorvaus"
-                      label="Maankäyttökorvaus"
-                      value={input.value}
-                      unit="€"
-                      isEditMode={false}
-                    />
-                  )}
-                </Field>
-              </div>
-            </div>
-          </Fieldset>
-        );
-
         const yleisetAlueetStep = (
           <Fieldset heading="" className="full-width">
             <div className="landuse-grid">
@@ -1021,19 +868,6 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                   },
                   {
                     title: COMPENSATION_STEPS[3].title,
-                    key: COMPENSATION_STEP_KEYS.laskuri,
-                    description: (
-                      <div
-                        id={getCompensationStepId(
-                          COMPENSATION_STEP_KEYS.laskuri,
-                        )}
-                      >
-                        {laskuriStep}
-                      </div>
-                    ),
-                  },
-                  {
-                    title: COMPENSATION_STEPS[4].title,
                     key: COMPENSATION_STEP_KEYS.yleisetAlueet,
                     description: (
                       <div

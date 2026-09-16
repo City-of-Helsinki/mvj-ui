@@ -9,11 +9,7 @@ import type { LandUseBillingFormValues } from "@/landUse/components/tabs/LandUse
 import type { LandUsePaymentScheduleFormValues } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 import type { LandUseMonitoringFormValues } from "@/landUse/components/tabs/LandUseMonitoring";
 import type { LandUsePartiesFormValues } from "@/landUse/components/tabs/LandUseParties";
-import {
-  DEFAULT_KOROTUSKERROIN,
-  INITIAL_KORVAUSKYNNYS_EURO,
-  INITIAL_KORVAUS_PERCENTAGE,
-} from "@/landUse/constants";
+import { DEFAULT_KOROTUSKERROIN } from "@/landUse/constants";
 import { createEmptyPartiesFormValues } from "@/landUse/api/landUseFormValues";
 import {
   ASEMAKAAVA_KASITTELYVAIHE_OPTIONS,
@@ -135,9 +131,7 @@ const ma113Compensations: LandUseCompensationsFormValues = {
       yksikkohinta: "1725",
     },
   },
-  korvauskynnys: INITIAL_KORVAUSKYNNYS_EURO,
   purkuTaiMuuVahennys: 0,
-  korvausprosentti: INITIAL_KORVAUS_PERCENTAGE,
   maankayttokorvaus: "450000",
   yleisetAlueetNeliot: "850",
   yleisetAlueetHankinnanArvo: "40000",
