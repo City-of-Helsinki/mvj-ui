@@ -17,6 +17,7 @@ import {
 import { createEmptyPartiesFormValues } from "@/landUse/api/landUseFormValues";
 import {
   ASEMAKAAVA_KASITTELYVAIHE_OPTIONS,
+  LAND_USE_INVOICE_ITEM_TYPES,
   LAND_USE_INVOICE_TYPES,
   landUseAsemakaavaListItems,
   LAND_USE_INVOICE_STATUSES,
@@ -60,33 +61,34 @@ export interface MockLandUseData {
 const ma113Parties = createEmptyPartiesFormValues();
 ma113Parties.parties[0].party.details = {
   ...ma113Parties.parties[0].party.details,
+  partyRole: "maanomistaja",
   partyType: "yritys",
-  name: "Helsingin kaupunki",
-  businessId: "3100001-5",
+  name: "Yrttilän Yritys Oy",
+  businessId: "1111111-1",
   language: "suomi",
   country: "suomi",
 };
 ma113Parties.parties[0].contactPersons = [
   {
-    name: "Liisa Virtanen",
-    phone: "050 555 0000",
-    email: "liisa.virtanen@example.com",
+    name: "Elina Esimerkki",
+    phone: "050 111 1111",
+    email: "elina.esimerkki@example.com",
   },
 ];
 ma113Parties.parties[0].billingDetails = {
-  ovtCode: "003703100001",
-  sapCustomerNumber: "SAP-0456",
-  reference: "MA113-REF",
+  ovtCode: "ovt-1111",
+  sapCustomerNumber: "SAP-1111",
+  reference: "viite-1111",
 };
 ma113Parties.parties[0].invoiceRecipient = {
   ...ma113Parties.parties[0].invoiceRecipient,
   details: {
     ...ma113Parties.parties[0].invoiceRecipient?.details,
     partyType: "yritys",
-    name: "Helsingin kaupunki",
-    businessId: "3100001-5",
+    name: "Yrttilän Laskujaosto",
+    businessId: "1111111-2",
     language: "suomi",
-    streetAddress: "Kaupungintalo 1",
+    streetAddress: "Laskutie 1",
     city: "Helsinki",
     postalCode: "00100",
     country: "suomi",
@@ -134,9 +136,9 @@ const ma113Compensations: LandUseCompensationsFormValues = {
     },
   },
   korvauskynnys: INITIAL_KORVAUSKYNNYS_EURO,
-  purkuTaiMuuVahennys: undefined,
+  purkuTaiMuuVahennys: 0,
   korvausprosentti: INITIAL_KORVAUS_PERCENTAGE,
-  maankayttokorvaus: undefined,
+  maankayttokorvaus: "450000",
   yleisetAlueetNeliot: "850",
   yleisetAlueetHankinnanArvo: "40000",
 };
@@ -168,7 +170,7 @@ const ma113Agreements: LandUseContractsFormValues = {
     {
       title: "Sopimus 1",
       sopimuksenTyyppi: "Maankäyttösopimus",
-      sopimusnumero: "MA113-SOP-2026-01",
+      sopimusnumero: "123412341234",
       allekirjoituspvm: "20.01.2026",
       huomautus: "Allekirjoitettu osapuolten yhteisessä tilaisuudessa.",
       allekirjoitettavaMennessa: "28.02.2026",
@@ -262,8 +264,22 @@ const ma113PaymentSchedule: LandUsePaymentScheduleFormValues = {
           invoiceNumber: "123456789",
           type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
           status: LAND_USE_INVOICE_STATUSES.OPEN,
+          sentAt: "",
           billedAmount: "450000",
           remainingAmount: "125000",
+          invoiceItems: [
+            {
+              itemType: LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS,
+              description: "Maksutuotot maankäyttösopimuksista",
+              amountExcludingVat: "450000",
+            },
+            {
+              itemType: LAND_USE_INVOICE_ITEM_TYPES.KOROTUS,
+              description:
+                "Maankäyttökorvaus MA113-1, 123412341234, 0000738, 1/2, Yrttilän Yritys Oy, Korotus",
+              amountExcludingVat: "0",
+            },
+          ],
         },
         {
           recipientPartyIndex: "0",
@@ -278,8 +294,22 @@ const ma113PaymentSchedule: LandUsePaymentScheduleFormValues = {
           invoiceNumber: "123456790",
           type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
           status: LAND_USE_INVOICE_STATUSES.PAID,
+          sentAt: "2026-06-12T09:00:00.000Z",
           billedAmount: "3500",
           remainingAmount: "0",
+          invoiceItems: [
+            {
+              itemType: LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS,
+              description: "Maksutuotot maankäyttösopimuksista",
+              amountExcludingVat: "3500",
+            },
+            {
+              itemType: LAND_USE_INVOICE_ITEM_TYPES.KORKO,
+              description:
+                "Maankäyttökorvaus MA113-1, 123412341234, 0000738, 2/2, Yrttilän Yritys Oy, Korko",
+              amountExcludingVat: "0",
+            },
+          ],
         },
       ],
     },
@@ -296,8 +326,22 @@ const ma113Billing: LandUseBillingFormValues = {
       invoiceNumber: "123456789",
       type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
       status: LAND_USE_INVOICE_STATUSES.OPEN,
+      sentAt: "",
       billedAmount: "450000",
       remainingAmount: "125000",
+      invoiceItems: [
+        {
+          itemType: LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS,
+          description: "Maksutuotot maankäyttösopimuksista",
+          amountExcludingVat: "450000",
+        },
+        {
+          itemType: LAND_USE_INVOICE_ITEM_TYPES.KOROTUS,
+          description:
+            "Maankäyttökorvaus MA113-1, 123412341234, 0000738, 1/2, Yrttilän Yritys Oy, Korotus",
+          amountExcludingVat: "0",
+        },
+      ],
     },
     {
       recipientPartyIndex: "0",
@@ -307,8 +351,22 @@ const ma113Billing: LandUseBillingFormValues = {
       invoiceNumber: "123456790",
       type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
       status: LAND_USE_INVOICE_STATUSES.PAID,
+      sentAt: "2026-06-12T09:00:00.000Z",
       billedAmount: "3500",
       remainingAmount: "0",
+      invoiceItems: [
+        {
+          itemType: LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS,
+          description: "Maksutuotot maankäyttösopimuksista",
+          amountExcludingVat: "3500",
+        },
+        {
+          itemType: LAND_USE_INVOICE_ITEM_TYPES.KORKO,
+          description:
+            "Maankäyttökorvaus MA113-1, 123412341234, 0000738, 2/2, Yrttilän Yritys Oy, Korko",
+          amountExcludingVat: "0",
+        },
+      ],
     },
   ],
 };

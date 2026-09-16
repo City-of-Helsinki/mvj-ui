@@ -1,16 +1,21 @@
-import { mockLandUseTabStore } from "@/landUse/mocks/landUseMockData";
+import {
+  mockLandUseTabStore,
+  type MockLandUseData,
+} from "@/landUse/mocks/landUseMockData";
 import {
   clonePartiesFormValues,
   createEmptyBillingFormValues,
   createEmptyPartiesFormValues,
   createEmptyPaymentScheduleFormValues,
-  mapMockToSummaryFormValues,
+  createEmptySummaryFormValues,
 } from "@/landUse/api/landUseFormValues";
 import { hasAgreementTab, setAgreementTab } from "@/landUse/api/landUseDb";
 import {
   LAND_USE_TAB_KEYS,
   type LandUseTabKey,
 } from "@/landUse/api/landUseTypes";
+import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
+import { normalizeSelectValue } from "@/landUse/utils/fieldUtils";
 
 const getAgreementIds = (): string[] => {
   const ids = new Set<string>();
@@ -71,4 +76,56 @@ export const seedLandUseDb = async (): Promise<void> => {
       );
     }),
   );
+};
+export const mapMockToSummaryFormValues = (
+  mockData: MockLandUseData | null,
+): LandUseSummaryFormValues => {
+  if (!mockData) {
+    return createEmptySummaryFormValues();
+  }
+
+  return {
+    maankayttosopimusType: normalizeSelectValue(mockData.maankayttosopimusType),
+    kaupunginosa: mockData.kaupunginosa ?? "",
+    edistamisalue: normalizeProjectAreaBoolean(mockData.edistamisalue),
+    tila: normalizeSelectValue(mockData.tila),
+    suunnittelunPerusteenaOlevatKohteet:
+      mockData.suunnittelunPerusteenaOlevatKohteet.map((kohde) => ({
+        value: normalizeSelectValue(kohde),
+      })),
+    valmistelijat: mockData.valmistelijat.map((valmistelija) => ({
+      value: normalizeSelectValue(
+        `${valmistelija.firstName} ${valmistelija.lastName}`.trim(),
+      ),
+    })),
+    osoitteet: mockData.osoitteet.map((osoite) => ({
+      katuosoite: osoite.katuosoite,
+      postinumero: osoite.postinumero,
+      kaupunki: osoite.kaupunki,
+    })),
+    arvioituEsittelyvuosi: mockData.arvioituEsittelyvuosi,
+    arvioituMaksuvuosi: mockData.arvioituMaksuvuosi,
+    toimivaltainenPaattaja: mockData.toimivaltainenPaattaja,
+    sisaltaaAmVelvoitteita: mockData.sisaltaaAmVelvoitteita,
+    velvoitteidenMaaraika: mockData.velvoitteidenMaaraika,
+    asemakaavanNumero: mockData.asemakaavanNumero,
+    asemakaavanKasittelyvaihe: mockData.asemakaavanKasittelyvaihe,
+    vahvistamisHyvaksymisPvm: mockData.vahvistamisHyvaksymisPvm,
+    asemakaavanLainvoimaisuusPvm: mockData.asemakaavanLainvoimaisuusPvm ?? "",
+    asemakaavanHyvaksyjä: mockData.asemakaavanHyvaksyjä,
+    asemakaavanDiaarinumero: mockData.asemakaavanDiaarinumero,
+  };
+};
+
+const normalizeProjectAreaBoolean = (value: unknown): boolean => {
+  if (typeof value === "boolean") {
+    return value;
+  }
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+  if (typeof value === "string") {
+    return value.length > 0;
+  }
+  return false;
 };
