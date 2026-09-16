@@ -37,8 +37,10 @@
   min-width: 0;
 }
 
-// Emphasize active lease search HDS inputs
-.hds-input-with-value {
+// Emphasize active lease search HDS inputs.
+// The parent selector helps this rule win over HDS component defaults
+// regardless of production stylesheet order.
+.search__container .hds-input-with-value {
   // TextInput, DateInput
   --input-background-default: #{hds.$color-coat-of-arms-light};
   // Select
