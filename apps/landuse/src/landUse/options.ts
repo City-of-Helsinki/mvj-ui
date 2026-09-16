@@ -393,6 +393,13 @@ export const landUseAsemakaavaListItems: AsemakaavaListItem[] = [
   },
 ];
 
+export const landUseMaapoliittinenOhjelmaOptions = [
+  { label: "MAPO1", value: "MAPO1", defaultHuojennusProsentti: "1" },
+  { label: "MAPO2", value: "MAPO2", defaultHuojennusProsentti: "25" },
+  { label: "MAPO3", value: "MAPO3", defaultHuojennusProsentti: "3" },
+  { label: "MAPO4", value: "MAPO4", defaultHuojennusProsentti: "4" },
+];
+
 export const landUseCompensationSelectOptions = {
   kayttotarkoitus: [
     "Asuinkerrostalojen korttelialue",
