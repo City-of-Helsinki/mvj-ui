@@ -20,8 +20,10 @@ import React, { useMemo } from "react";
 import { Field, Form } from "react-final-form";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
 import {
-  landUseCompensationSelectOptions,
+  landUseHallintamuotoOptions,
+  landUseKayttotarkoitusOptions,
   landUseMaapoliittinenOhjelmaOptions,
+  landUseSuojeltuOptions,
 } from "@/landUse/options";
 import {
   normalizeMultiSelectValue,
@@ -134,26 +136,6 @@ export const maankayttokorvausYhteensaDecorator = createDecorator({
         : calculateMaankayttokorvausYhteensa(allValues),
   },
 }) as Decorator<LandUseCompensationsFormValues>;
-
-const kayttotarkoitusOptions =
-  landUseCompensationSelectOptions.kayttotarkoitus.map((value) => ({
-    label: value,
-    value,
-  }));
-
-const hallintamuotoOptions = landUseCompensationSelectOptions.hallintamuoto.map(
-  (value) => ({
-    label: value,
-    value,
-  }),
-);
-
-const suojeltuOptions = landUseCompensationSelectOptions.suojeltu.map(
-  (value) => ({
-    label: value,
-    value,
-  }),
-);
 
 const handleSelectChange = (
   selectedOptions: SelectOption[],
@@ -289,7 +271,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       ) : (
                         <Select
                           id={`landuse-compensations-kayttotarkoitus-${site.id}`}
-                          options={kayttotarkoitusOptions}
+                          options={landUseKayttotarkoitusOptions}
                           value={normalizeSelectValue(input.value)}
                           onChange={(selectedOptions) =>
                             handleSelectChange(selectedOptions, input.onChange)
@@ -321,7 +303,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       ) : (
                         <Select
                           id={`landuse-compensations-hallintamuoto-${site.id}`}
-                          options={hallintamuotoOptions}
+                          options={landUseHallintamuotoOptions}
                           value={normalizeMultiSelectValue(input.value)}
                           onChange={(selectedOptions) =>
                             handleMultiSelectChange(
@@ -353,7 +335,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                       ) : (
                         <Select
                           id={`landuse-compensations-suojeltu-${site.id}`}
-                          options={suojeltuOptions}
+                          options={landUseSuojeltuOptions}
                           value={normalizeSelectValue(input.value)}
                           onChange={(selectedOptions) =>
                             handleSelectChange(selectedOptions, input.onChange)
@@ -530,7 +512,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
             (option) => option.value === selectedValue,
           );
 
-          form.change("maapoliittinenOhjelma", selectedOption?.value);
+          form.change("maapoliittinenOhjelma", selectedOption?.value ?? "");
           form.change(
             "huojennusProsentti",
             selectedOption?.defaultHuojennusProsentti ?? "",
@@ -821,6 +803,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
                           options={landUseMaapoliittinenOhjelmaOptions}
                           value={normalizeSelectValue(input.value)}
                           onChange={handleMaapoliittinenOhjelmaChange}
+                          clearable
                           texts={{
                             label: "Maapoliittinen ohjelma",
                             placeholder: "Valitse",

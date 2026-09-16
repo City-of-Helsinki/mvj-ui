@@ -3,7 +3,7 @@ import type { FormKey } from "@/landUse/components/LandUseDetailPage";
 import type { LandUseSite } from "@/landUse/components/tabs/LandUseCompensations";
 import { INITIAL_SAKKOKERROIN } from "@/landUse/constants";
 import { useTocEntries } from "@/landUse/hooks/useTableOfContents";
-import { landUseCompensationSelectOptions } from "@/landUse/options";
+import { landUseHallintamuotoOptions } from "@/landUse/options";
 import {
   filterOptionsByValues,
   normalizeSelectValue,
@@ -147,10 +147,6 @@ const handleSelectChange = (
     callback(undefined);
   }
 };
-
-const hallintamuotoOptions = landUseCompensationSelectOptions.hallintamuoto.map(
-  (value) => ({ label: value, value }),
-);
 
 const formatSiteHallintamuoto = (
   hallintamuoto: string[] | undefined,
@@ -342,7 +338,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                     <Select
                       id={`monitoring-parent-toteutunut-hallintamuoto-${site.id}`}
                       options={filterOptionsByValues(
-                        hallintamuotoOptions,
+                        landUseHallintamuotoOptions,
                         site.hallintamuoto,
                       )}
                       value={normalizeSelectValue(input.value)}
@@ -461,7 +457,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       <Select
                         id={`monitoring-plot-division-toteutunut-hallintamuoto-${site.id}-${childIndex}`}
                         options={filterOptionsByValues(
-                          hallintamuotoOptions,
+                          landUseHallintamuotoOptions,
                           site.hallintamuoto,
                         )}
                         value={normalizeSelectValue(input.value)}
