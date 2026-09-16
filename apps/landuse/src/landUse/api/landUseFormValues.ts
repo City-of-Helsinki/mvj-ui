@@ -1,5 +1,3 @@
-import { normalizeSelectValue } from "@/landUse/utils/fieldUtils";
-import type { MockLandUseData } from "@/landUse/mocks/landUseMockData";
 import type { LandUseBillingFormValues } from "@/landUse/components/tabs/LandUseBilling";
 import type { LandUsePaymentScheduleFormValues } from "@/landUse/components/tabs/LandUsePaymentSchedule";
 import type { LandUseSummaryFormValues } from "@/landUse/components/tabs/LandUseSummary";
@@ -7,22 +5,6 @@ import type {
   LandUsePartiesFormValues,
   PartyEntry,
 } from "@/landUse/components/tabs/LandUseParties";
-
-const normalizeProjectAreaBoolean = (value: unknown): boolean => {
-  if (typeof value === "boolean") {
-    return value;
-  }
-
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  }
-
-  if (typeof value === "string") {
-    return value.length > 0;
-  }
-
-  return false;
-};
 
 export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
   maankayttosopimusType: undefined,
@@ -39,53 +21,16 @@ export const createEmptySummaryFormValues = (): LandUseSummaryFormValues => ({
   velvoitteidenMaaraika: "",
   asemakaavanNumero: "",
   asemakaavanKasittelyvaihe: "",
-  kasittelyvaiheenViimeisinPvm: "",
+  vahvistamisHyvaksymisPvm: "",
+  asemakaavanLainvoimaisuusPvm: "",
   asemakaavanHyvaksyjä: "",
   asemakaavanDiaarinumero: "",
 });
 
-export const mapMockToSummaryFormValues = (
-  mockData: MockLandUseData | null,
-): LandUseSummaryFormValues => {
-  if (!mockData) {
-    return createEmptySummaryFormValues();
-  }
-
-  return {
-    maankayttosopimusType: normalizeSelectValue(mockData.maankayttosopimusType),
-    kaupunginosa: mockData.kaupunginosa ?? "",
-    edistamisalue: normalizeProjectAreaBoolean(mockData.edistamisalue),
-    tila: normalizeSelectValue(mockData.tila),
-    suunnittelunPerusteenaOlevatKohteet:
-      mockData.suunnittelunPerusteenaOlevatKohteet.map((kohde) => ({
-        value: normalizeSelectValue(kohde),
-      })),
-    valmistelijat: mockData.valmistelijat.map((valmistelija) => ({
-      value: normalizeSelectValue(
-        `${valmistelija.firstName} ${valmistelija.lastName}`.trim(),
-      ),
-    })),
-    osoitteet: mockData.osoitteet.map((osoite) => ({
-      katuosoite: osoite.katuosoite,
-      postinumero: osoite.postinumero,
-      kaupunki: osoite.kaupunki,
-    })),
-    arvioituEsittelyvuosi: mockData.arvioituEsittelyvuosi,
-    arvioituMaksuvuosi: mockData.arvioituMaksuvuosi,
-    toimivaltainenPaattaja: mockData.toimivaltainenPaattaja,
-    sisaltaaAmVelvoitteita: mockData.sisaltaaAmVelvoitteita,
-    velvoitteidenMaaraika: mockData.velvoitteidenMaaraika,
-    asemakaavanNumero: mockData.asemakaavanNumero,
-    asemakaavanKasittelyvaihe: mockData.asemakaavanKasittelyvaihe,
-    kasittelyvaiheenViimeisinPvm: mockData.kasittelyvaiheenViimeisinPvm,
-    asemakaavanHyvaksyjä: mockData.asemakaavanHyvaksyjä,
-    asemakaavanDiaarinumero: mockData.asemakaavanDiaarinumero,
-  };
-};
-
 export const createEmptyPartyEntry = (): PartyEntry => ({
   party: {
     details: {
+      partyRole: undefined,
       partyType: undefined,
       name: "",
       businessId: "",
