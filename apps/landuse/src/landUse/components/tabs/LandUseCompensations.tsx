@@ -137,6 +137,8 @@ export const maankayttokorvausYhteensaDecorator = createDecorator({
   },
 }) as Decorator<LandUseCompensationsFormValues>;
 
+const compensationDecorators = [maankayttokorvausYhteensaDecorator];
+
 const handleSelectChange = (
   selectedOptions: SelectOption[],
   callback: (value: string | undefined) => void,
@@ -413,20 +415,21 @@ const SiteRow: React.FC<SiteRowProps> = ({
                     }
                   </Field>
                 </div>
+
+                {isEditMode && (
+                  <div className="landuse-grid__column-4 landuse-grid__column--align-bottom">
+                    <ConfirmDeleteButton
+                      id={`compensations-site-delete-${site.id}`}
+                      buttonLabel="Poista kohde"
+                      buttonVariant={ButtonVariant.Secondary}
+                      buttonSize={ButtonSize.Small}
+                      onConfirm={() => onRemove(site.id)}
+                      dialogTitle="Poista kohde"
+                      dialogContent={`Haluatko varmasti poistaa kohteen ${site.kohteenTunnus?.trim() ?? ""}?`}
+                    />
+                  </div>
+                )}
               </div>
-              {!isEditMode && (
-                <div className="landuse-compensations-table__detail-actions">
-                  <ConfirmDeleteButton
-                    id={`compensations-site-delete-${site.id}`}
-                    buttonLabel="Poista kohde"
-                    buttonVariant={ButtonVariant.Danger}
-                    buttonSize={ButtonSize.Small}
-                    onConfirm={() => onRemove(site.id)}
-                    dialogTitle="Poista kohde"
-                    dialogContent={`Haluatko varmasti poistaa kohteen ${site.kohteenTunnus?.trim() ?? ""}?`}
-                  />
-                </div>
-              )}
             </div>
           </td>
         </tr>
@@ -458,7 +461,7 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
     <Form<LandUseCompensationsFormValues>
       form={form}
       onSubmit={() => {}}
-      decorators={[maankayttokorvausYhteensaDecorator]}
+      decorators={compensationDecorators}
       render={({ handleSubmit, values }) => {
         const sites = values.sites ?? [];
         const rowsBySiteId = values.perustietotaulukkoRowsBySiteId ?? {};
