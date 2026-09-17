@@ -260,7 +260,6 @@ class PlotApplicationsPage extends Component<Props & WithRouterProps, State> {
       if (!data) {
         // an error occurred
         receiveIsSaveClicked(false);
-        console.log(data);
         return;
       }
 
