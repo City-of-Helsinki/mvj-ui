@@ -365,6 +365,16 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
                 marginForCalculation,
                 periodDays,
               )}
+              tooltip={
+                <Tooltip
+                  tooltipLabel="Päiviä vuodessa selitys"
+                  buttonLabel="Näytä päiviä vuodessa selitys"
+                  placement="right"
+                >
+                  Käytössä englantilainen koronlaskutapa. Vuodessa on 365 päivää
+                  ja karkausvuotta ei oteta huomioon.
+                </Tooltip>
+              }
               value={
                 calculated !== null
                   ? formatLandUseEuroDisplayValue(calculated)
@@ -1104,38 +1114,6 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                         }
                                       />
                                     )}
-                                  </Field>
-                                </div>
-                                <div className="landuse-grid__column-3">
-                                  <TextInput
-                                    id={`landuse-payment-schedule-days-in-year-${index}`}
-                                    label="Koronlaskutapa"
-                                    value={"Englantilainen"}
-                                    readOnly
-                                  />
-                                </div>
-                                <div className="landuse-grid__column-3">
-                                  <Field name={`${fieldName}.daysInYear`}>
-                                    {({ input }) => {
-                                      return (
-                                        <TextInput
-                                          id={`landuse-payment-schedule-days-in-year-${index}`}
-                                          label="Päiviä vuodessa"
-                                          value={readOnlyTextValue(input.value)}
-                                          tooltip={
-                                            <Tooltip
-                                              tooltipLabel="Päiviä vuodessa selitys"
-                                              buttonLabel="Näytä päiviä vuodessa selitys"
-                                              placement="right"
-                                            >
-                                              Karkausvuotta ei oteta huomioon
-                                              koron tai korotuksen laskemisessa.
-                                            </Tooltip>
-                                          }
-                                          readOnly
-                                        />
-                                      );
-                                    }}
                                   </Field>
                                 </div>
                               </div>
