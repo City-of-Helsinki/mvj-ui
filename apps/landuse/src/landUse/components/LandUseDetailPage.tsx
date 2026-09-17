@@ -41,6 +41,7 @@ import {
 import {
   LAND_USE_INVOICE_ITEM_TYPES,
   LAND_USE_INVOICE_STATUSES,
+  LAND_USE_PAYMENT_SCHEDULE_STATUSES,
   type LandUseInvoice,
   type LandUseInvoiceItem,
 } from "@/landUse/options";
@@ -210,7 +211,9 @@ const getActiveTabFromSearch = (search: string): number => {
   return 0;
 };
 
-const calculatePaidMaankayttokorvaus = (invoices: LandUseInvoice[]) => {
+const calculatePaidMaankayttokorvaus = (
+  invoices: Pick<LandUseInvoice, "status" | "invoiceItems">[],
+) => {
   const isMaankayttokorvausItem = (item: LandUseInvoiceItem) =>
     item.itemType === LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS;
 
@@ -815,22 +818,8 @@ const LandUseDetailPage: React.FC = () => {
           );
           break;
         case "paymentSchedule": {
-          // Mark invoices paid when remaining amount is zero or less
-          // TODO: In the future API should handle this
           const paymentScheduleValues =
             state.values as LandUsePaymentScheduleFormValues;
-          for (const paymentSchedule of paymentScheduleValues.paymentSchedules ??
-            []) {
-            for (const invoice of paymentSchedule.installments) {
-              if (
-                invoice.remainingAmount === "0" ||
-                invoice.remainingAmount === "0.00" ||
-                invoice.remainingAmount === "0,00"
-              ) {
-                invoice.status = LAND_USE_INVOICE_STATUSES.PAID;
-              }
-            }
-          }
           mutations.push(
             paymentScheduleMutation.mutateAsync(paymentScheduleValues),
           );
@@ -841,9 +830,10 @@ const LandUseDetailPage: React.FC = () => {
             (state.values as LandUseBillingFormValues).invoices || [];
           for (const invoice of billingInvoices) {
             if (
-              invoice.remainingAmount === "0" ||
-              invoice.remainingAmount === "0.00" ||
-              invoice.remainingAmount === "0,00"
+              invoice.status === LAND_USE_INVOICE_STATUSES.OPEN &&
+              (invoice.remainingAmount === "0" ||
+                invoice.remainingAmount === "0.00" ||
+                invoice.remainingAmount === "0,00")
             ) {
               invoice.status = LAND_USE_INVOICE_STATUSES.PAID;
             }
@@ -1014,7 +1004,7 @@ const LandUseDetailPage: React.FC = () => {
       paymentSchedules: setPaymentScheduleStatus(
         paymentSchedules,
         schedule.id,
-        LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
+        LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL,
       ),
     };
     const persistedValues =
@@ -1047,7 +1037,10 @@ const LandUseDetailPage: React.FC = () => {
   const handleDeclineSchedule = async (
     schedule: LandUsePaymentScheduleEntry,
   ) => {
-    await updateReviewedSchedule(schedule, LAND_USE_INVOICE_STATUSES.DRAFT);
+    await updateReviewedSchedule(
+      schedule,
+      LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED,
+    );
   };
 
   const handleAcceptSchedule = async (
@@ -1065,7 +1058,10 @@ const LandUseDetailPage: React.FC = () => {
     };
     const persistedBilling = await billingMutation.mutateAsync(billing);
     billingFormApi.initialize(persistedBilling);
-    await updateReviewedSchedule(schedule, LAND_USE_INVOICE_STATUSES.READY);
+    await updateReviewedSchedule(
+      schedule,
+      LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED,
+    );
   };
 
   const renderActiveTabPanel = () => {
@@ -1148,11 +1144,7 @@ const LandUseDetailPage: React.FC = () => {
               parseLandUseNumericValueOrZero(
                 compensationsQuery.data?.muuKorvaus,
               ) -
-              calculatePaidMaankayttokorvaus(
-                paymentScheduleQuery.data?.paymentSchedules?.flatMap(
-                  (paymentSchedule) => paymentSchedule.installments,
-                ) ?? [],
-              )
+              calculatePaidMaankayttokorvaus(billingQuery.data?.invoices ?? [])
             }
             onSetTabDirty={handleSetTabDirty}
           />

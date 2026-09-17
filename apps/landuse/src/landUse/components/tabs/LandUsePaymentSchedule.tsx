@@ -7,13 +7,19 @@ import {
   DateInput,
   Dialog,
   Fieldset,
+  IconCheckCircleFill,
+  IconClock,
+  IconCrossCircleFill,
+  IconHammers,
   IconLock,
   IconPlusCircle,
   NumberInput,
   Select,
+  StatusLabel,
   StepByStep,
   TextInput,
   Tooltip,
+  type StatusLabelType,
 } from "hds-react";
 import React, { useMemo, useState } from "react";
 import { Field, Form, useField } from "react-final-form";
@@ -24,6 +30,7 @@ import {
   INTEREST_CALCULATION_DAYS_IN_YEAR,
   LAND_USE_INVOICE_ITEM_TYPES,
   LAND_USE_INVOICE_TYPES,
+  LAND_USE_PAYMENT_SCHEDULE_STATUSES,
   landUseInvoiceItemTypeSelectOptions,
 } from "@/landUse/options";
 import {
@@ -38,7 +45,7 @@ import {
   LAND_USE_INVOICE_STATUSES,
   type LandUseInvoice,
   type LandUseInvoiceItem,
-  type LandUseInvoiceStatus,
+  type LandUsePaymentScheduleStatus,
 } from "@/landUse/options";
 import type { LandUseContractsFormValues } from "@/landUse/components/tabs/LandUseContracts";
 import type {
@@ -64,7 +71,7 @@ export interface LandUsePaymentScheduleEntry {
   id: string;
   recipientPartyIndex: string | undefined;
   contractIndex: string | undefined;
-  status: LandUseInvoiceStatus | undefined;
+  status: LandUsePaymentScheduleStatus | undefined;
   signedDate: string;
   korotusProsentti: string;
   korkoPeruskorko: string;
@@ -401,16 +408,53 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
 };
 
 const getScheduleStatusAction = (
-  status: LandUseInvoiceStatus | undefined,
-): { buttonLabel: string; nextStatus: LandUseInvoiceStatus } | null => {
-  if (status === LAND_USE_INVOICE_STATUSES.DRAFT) {
+  status: LandUsePaymentScheduleStatus | undefined,
+): { buttonLabel: string; nextStatus: LandUsePaymentScheduleStatus } | null => {
+  if (
+    status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT ||
+    status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED
+  ) {
     return {
       buttonLabel: "Siirrä laskutukseen",
-      nextStatus: LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
+      nextStatus: LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL,
     };
   }
   return null;
 };
+
+const getScheduleStatusLabelType = (
+  status: LandUsePaymentScheduleStatus | undefined,
+): StatusLabelType => {
+  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED) return "success";
+  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED) return "error";
+  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL)
+    return "info";
+  return "neutral";
+};
+
+const getScheduleStatusIcon = (
+  status: LandUsePaymentScheduleStatus | undefined,
+): React.ReactNode => {
+  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED) {
+    return <IconCheckCircleFill aria-hidden />;
+  }
+  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED) {
+    return <IconCrossCircleFill aria-hidden />;
+  }
+  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL) {
+    return <IconClock aria-hidden />;
+  }
+  if (status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT) {
+    return <IconHammers aria-hidden />;
+  }
+  return null;
+};
+
+const isScheduleEditable = (
+  status: LandUsePaymentScheduleStatus | undefined,
+): boolean =>
+  status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT ||
+  status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED;
 
 interface BulkCreateFormValues {
   installmentTotal: string;
@@ -450,7 +494,7 @@ const createBulkInvoice = (
   laskentajaksonLoppupvm: "",
   invoiceNumber: "",
   type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
-  status: "Luonnos",
+  status: LAND_USE_INVOICE_STATUSES.DRAFT,
   sentAt: "",
   billedAmount: "",
   remainingAmount: "",
@@ -788,11 +832,10 @@ const buildInstallmentStep = ({
   scheduleIndex: number;
   installmentIndex: number;
   isEditMode: boolean;
-  scheduleStatus: LandUseInvoiceStatus | undefined;
+  scheduleStatus: LandUsePaymentScheduleStatus | undefined;
   invoice: LandUseInvoice;
 }) => {
-  const canEdit =
-    isEditMode && scheduleStatus === LAND_USE_INVOICE_STATUSES.DRAFT;
+  const canEdit = isEditMode && isScheduleEditable(scheduleStatus);
   const installmentLabel =
     invoice.installmentNumber && invoice.installmentTotal
       ? `${invoice.installmentNumber}/${invoice.installmentTotal}`
@@ -969,6 +1012,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
             contractOptions.find(
               (option) => option.value === schedule.contractIndex,
             )?.sopimusnumero ?? "-";
+          const statusAction = getScheduleStatusAction(schedule.status);
 
           return (
             <section key={schedule.id}>
@@ -976,23 +1020,39 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                 {({ fields: installmentFields }) => (
                   <>
                     <div className="landuse-detail__heading-with-delete">
-                      <h3>
-                        {schedule.status !==
-                          LAND_USE_INVOICE_STATUSES.DRAFT && (
-                          <IconLock aria-label="Maksusuunnitelma lukittu" />
-                        )}{" "}
-                        Maksusuunnitelma {scheduleListIndex + 1}
-                      </h3>
-                      {isEditMode &&
-                        schedule.status === LAND_USE_INVOICE_STATUSES.DRAFT && (
-                          <ConfirmDeleteButton
-                            id={`payment-schedule-${index}-delete`}
-                            buttonLabel="Poista maksusuunnitelma"
-                            onConfirm={() => onRemoveSchedule(index)}
-                            dialogTitle="Poista maksusuunnitelma"
-                            dialogContent={`Haluatko varmasti poistaa maksusuunnitelman ${scheduleListIndex + 1}?`}
-                          />
+                      <div className="landuse-detail__heading-actions">
+                        <h3>
+                          {!isScheduleEditable(schedule.status) && (
+                            <IconLock aria-label="Maksusuunnitelma lukittu" />
+                          )}{" "}
+                          Maksusuunnitelma {scheduleListIndex + 1}
+                        </h3>
+                        <StatusLabel
+                          type={getScheduleStatusLabelType(schedule.status)}
+                          iconStart={getScheduleStatusIcon(schedule.status)}
+                        >
+                          {schedule.status ?? "-"}
+                        </StatusLabel>
+                        {isEditMode && statusAction && (
+                          <Button
+                            type="button"
+                            variant={ButtonVariant.Primary}
+                            size={ButtonSize.Small}
+                            onClick={() => onSendToInvoicing(schedule)}
+                          >
+                            {statusAction.buttonLabel}
+                          </Button>
                         )}
+                      </div>
+                      {isEditMode && isScheduleEditable(schedule.status) && (
+                        <ConfirmDeleteButton
+                          id={`payment-schedule-${index}-delete`}
+                          buttonLabel="Poista maksusuunnitelma"
+                          onConfirm={() => onRemoveSchedule(index)}
+                          dialogTitle="Poista maksusuunnitelma"
+                          dialogContent={`Haluatko varmasti poistaa maksusuunnitelman ${scheduleListIndex + 1}?`}
+                        />
+                      )}
                     </div>
                     <StepByStep
                       steps={[
@@ -1020,42 +1080,6 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                     readOnly
                                   />
                                 </div>
-                                <div className="landuse-grid__column-3">
-                                  <Field name={`${fieldName}.status`}>
-                                    {({ input: statusInput }) => {
-                                      const statusAction =
-                                        getScheduleStatusAction(
-                                          statusInput.value,
-                                        );
-                                      return (
-                                        <>
-                                          <TextInput
-                                            id={`landuse-payment-schedule-status-${index}`}
-                                            label="Maksusuunnitelman tila"
-                                            value={readOnlyTextValue(
-                                              statusInput.value,
-                                            )}
-                                            readOnly
-                                          />
-                                          {isEditMode && statusAction && (
-                                            <div>
-                                              <Button
-                                                type="button"
-                                                variant={ButtonVariant.Primary}
-                                                size={ButtonSize.Small}
-                                                onClick={() =>
-                                                  onSendToInvoicing(schedule)
-                                                }
-                                              >
-                                                {statusAction.buttonLabel}
-                                              </Button>
-                                            </div>
-                                          )}
-                                        </>
-                                      );
-                                    }}
-                                  </Field>
-                                </div>
                               </div>
 
                               <div className="landuse-grid landuse-grid">
@@ -1070,8 +1094,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                         unit="%"
                                         isEditMode={
                                           isEditMode &&
-                                          schedule.status ===
-                                            LAND_USE_INVOICE_STATUSES.DRAFT
+                                          isScheduleEditable(schedule.status)
                                         }
                                       />
                                     )}
@@ -1091,8 +1114,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                         unit="%"
                                         isEditMode={
                                           isEditMode &&
-                                          schedule.status ===
-                                            LAND_USE_INVOICE_STATUSES.DRAFT
+                                          isScheduleEditable(schedule.status)
                                         }
                                       />
                                     )}
@@ -1109,8 +1131,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                         unit="%"
                                         isEditMode={
                                           isEditMode &&
-                                          schedule.status ===
-                                            LAND_USE_INVOICE_STATUSES.DRAFT
+                                          isScheduleEditable(schedule.status)
                                         }
                                       />
                                     )}
@@ -1215,7 +1236,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       id: crypto.randomUUID(),
       recipientPartyIndex: values.recipientPartyIndex,
       contractIndex: values.contractIndex,
-      status: LAND_USE_INVOICE_STATUSES.DRAFT,
+      status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT,
       signedDate,
       korotusProsentti: "",
       korkoPeruskorko: "",

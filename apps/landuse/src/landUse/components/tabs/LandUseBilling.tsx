@@ -132,12 +132,7 @@ function isInvoiceEditableBasedOnStatus(
   invoice: Pick<LandUseInvoice, "status"> | undefined,
 ): boolean {
   if (!invoice || !invoice.status) return true;
-  const editableStatuses: LandUseInvoiceStatus[] = [
-    LAND_USE_INVOICE_STATUSES.DRAFT,
-    LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
-  ];
-
-  return editableStatuses.includes(invoice.status);
+  return invoice.status === LAND_USE_INVOICE_STATUSES.DRAFT;
 }
 
 export const isInvoiceContentEditableInBilling = (
@@ -234,7 +229,7 @@ const createEmptyInvoiceTableRow = (
   dueDate: "",
   invoiceNumber: "",
   type: undefined,
-  status: "Luonnos",
+  status: LAND_USE_INVOICE_STATUSES.DRAFT,
   sentAt: "",
   billedAmount: "",
   remainingAmount: "",
@@ -251,13 +246,6 @@ const getInvoiceStatusAction = (
   status: LandUseInvoiceStatus | undefined,
 ): { buttonLabel: string; nextStatus: LandUseInvoiceStatus } | null => {
   if (status === LAND_USE_INVOICE_STATUSES.DRAFT) {
-    return {
-      buttonLabel: "Merkitse valmiiksi",
-      nextStatus: LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
-    };
-  }
-
-  if (status === LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL) {
     return {
       buttonLabel: "Hyväksy ja lähetä",
       nextStatus: LAND_USE_INVOICE_STATUSES.OPEN,
@@ -602,11 +590,13 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                         size={ButtonSize.Small}
                                         onClick={() => {
                                           const nextSentAtValue =
-                                            statusAction.nextStatus === "Avoin"
+                                            statusAction.nextStatus ===
+                                            LAND_USE_INVOICE_STATUSES.OPEN
                                               ? getSentAtTimestamp()
                                               : (invoice.sentAt ?? "");
                                           if (
-                                            statusAction.nextStatus === "Avoin"
+                                            statusAction.nextStatus ===
+                                            LAND_USE_INVOICE_STATUSES.OPEN
                                           ) {
                                             const invoiceAmount =
                                               invoice.invoiceItems?.reduce(

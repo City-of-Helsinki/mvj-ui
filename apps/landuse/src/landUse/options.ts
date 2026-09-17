@@ -421,14 +421,23 @@ export const landUseSuojeltuOptions = ["-", "SR1", "SR2"].map((value) => ({
 
 export const LAND_USE_INVOICE_STATUSES = {
   DRAFT: "Luonnos",
-  READY: "Valmis",
-  PENDING_APPROVAL: "Odottaa hyväksyntää",
   OPEN: "Avoin",
   PAID: "Maksettu",
+  CREDITED: "Hyvitetty",
 } as const;
 
 export type LandUseInvoiceStatus =
   (typeof LAND_USE_INVOICE_STATUSES)[keyof typeof LAND_USE_INVOICE_STATUSES];
+
+export const LAND_USE_PAYMENT_SCHEDULE_STATUSES = {
+  DRAFT: "Luonnos",
+  PENDING_APPROVAL: "Odottaa hyväksyntää",
+  APPROVED: "Hyväksytty",
+  REJECTED: "Hylätty",
+} as const;
+
+export type LandUsePaymentScheduleStatus =
+  (typeof LAND_USE_PAYMENT_SCHEDULE_STATUSES)[keyof typeof LAND_USE_PAYMENT_SCHEDULE_STATUSES];
 
 export interface LandUseInvoiceItem {
   description: string;
@@ -471,12 +480,9 @@ export const landUseInvoiceTypeSelectOptions: {
   value,
 }));
 
-export const landUseInvoiceStatusSelectOptions = [
-  "Luonnos",
-  "Odottaa hyväksyntää",
-  "Avoin",
-  "Maksettu",
-].map((status) => ({ label: status, value: status }));
+export const landUseInvoiceStatusSelectOptions = Object.values(
+  LAND_USE_INVOICE_STATUSES,
+).map((status) => ({ label: status, value: status }));
 
 export const LAND_USE_INVOICE_ITEM_TYPES = {
   MAANKAYTTOKORVAUS: "Maankäyttökorvaus",

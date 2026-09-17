@@ -17,6 +17,7 @@ import {
   LAND_USE_INVOICE_TYPES,
   landUseAsemakaavaListItems,
   LAND_USE_INVOICE_STATUSES,
+  LAND_USE_PAYMENT_SCHEDULE_STATUSES,
 } from "@/landUse/options";
 
 export interface MockLandUseData {
@@ -239,7 +240,7 @@ const ma113PaymentSchedule: LandUsePaymentScheduleFormValues = {
       id: "ma113-payment-schedule-1",
       recipientPartyIndex: "0",
       contractIndex: "0",
-      status: LAND_USE_INVOICE_STATUSES.OPEN,
+      status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT,
       signedDate: "2026-01-20",
       korotusProsentti: "",
       korkoPeruskorko: "",
