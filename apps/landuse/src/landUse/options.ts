@@ -452,8 +452,8 @@ export interface LandUseInvoice {
   signedDate: string;
   asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
   dueDate: string;
-  korotuksenAlkupvm: string;
-  korotuksenLoppupvm: string;
+  laskentajaksonAlkupvm: string;
+  laskentajaksonLoppupvm: string;
   invoiceNumber: string;
   type: LandUseInvoiceType | undefined;
   status: LandUseInvoiceStatus | undefined;

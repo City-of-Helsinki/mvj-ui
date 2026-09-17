@@ -52,7 +52,7 @@ type ContractItem = NonNullable<
   LandUseContractsFormValues["contracts"]
 >[number];
 
-interface AgreementOption extends SelectOption {
+interface ContractOption extends SelectOption {
   sopimusnumero: string;
 }
 
@@ -66,8 +66,7 @@ export interface LandUsePaymentScheduleEntry {
   contractIndex: string | undefined;
   status: LandUseInvoiceStatus | undefined;
   signedDate: string;
-  korotusPeruskorko: string;
-  korotusMarginaali: string;
+  korotusProsentti: string;
   korkoPeruskorko: string;
   korkoMarginaali: string;
   daysInYear: string;
@@ -120,7 +119,7 @@ const createPartyOptions = (parties: PartyEntry[]): SelectOption[] =>
 
 const createInvoiceContractOptions = (
   contracts: ContractItem[],
-): AgreementOption[] =>
+): ContractOption[] =>
   contracts.map((agreement, index) => {
     const contractType = agreement.sopimuksenTyyppi?.trim();
     const contractNumber = agreement.sopimusnumero?.trim() ?? "";
@@ -190,9 +189,9 @@ const getSelectedPartyInvoiceData = (
 };
 
 /**
- * The second invoice row is either a "korotus" (increase, peruskorko + marginaali)
- * or a "korko" (interest, peruskorko only). Everything that differs between the
- * two variants is derived from an `InterestKind`.
+ * The second invoice row is either a "korotus"
+ * or a "korko" (interest, peruskorko + marginaali). Everything that differs
+ * between the two variants is derived from a `InterestKind`.
  */
 type InterestKind = "korotus" | "korko";
 
@@ -202,67 +201,63 @@ const getInterestKind = (itemType: string): InterestKind | null => {
   return null;
 };
 
-const getPeruskorkoFieldPath = (
+const getRateFieldPath = (
   kind: InterestKind,
   scheduleFieldName: string,
 ): string =>
   kind === "korotus"
-    ? `${scheduleFieldName}.korotusPeruskorko`
+    ? `${scheduleFieldName}.korotusProsentti`
     : `${scheduleFieldName}.korkoPeruskorko`;
 
-// Only korotus has a marginaali; korko is calculated from peruskorko alone.
-const getMarginaaliFieldPath = (scheduleFieldName: string): string =>
-  `${scheduleFieldName}.korotusMarginaali`;
+// Only korko has a marginaali; korotus is calculated from korotusprosentti alone.
+const getMarginFieldPath = (scheduleFieldName: string): string =>
+  `${scheduleFieldName}.korkoMarginaali`;
 
-const getInterestPeriodLabels = (
+const getCalculationPeriodLabels = (
   kind: InterestKind,
 ): { startLabel: string; endLabel: string } =>
   kind === "korotus"
     ? { startLabel: "Korotuksen alkupäivä", endLabel: "Korotuksen loppupäivä" }
     : { startLabel: "Koron alkupäivä", endLabel: "Koron loppupäivä" };
 
-const formatInterestCalcLabel = (
+const formatCalculationLabel = (
   kind: InterestKind,
-  peruskorko: string,
-  marginaali: string | null,
+  rate: string,
+  margin: string | null,
   periodDays: number | null,
 ): string => {
   const days = periodDays !== null ? `${periodDays}` : "-";
-  const base = peruskorko || "-";
-  if (kind === "korotus") {
-    return `Laskettu korotus (${base}% + ${marginaali || "-"}%) * ${days} pv`;
+  const base = rate || "-";
+  if (kind === "korko") {
+    return `Laskettu korko (${base}% + ${margin || "-"}%) * ${days} pv`;
   }
-  return `Laskettu korko (${base}%) * ${days} pv`;
+  return `Laskettu korotus (${base}%) * ${days} pv`;
 };
 
-/** English annual interest: amount × (peruskorko + marginaali)/100 × days / daysInYear. */
-const calculateInterestAmount = ({
+/** English annual calculation: amount × (rate + margin)/100 × days / daysInYear. */
+const calculatePeriodAmount = ({
   baseAmount,
-  peruskorko,
-  marginaali,
+  rate,
+  margin,
   periodDays,
   daysInYear,
 }: {
   baseAmount: string;
-  peruskorko: string;
-  marginaali: string | null; // null when the kind has no marginaali (korko)
+  rate: string;
+  margin: string | null;
   periodDays: number | null;
   daysInYear: string;
 }): number | null => {
   if (periodDays === null || periodDays <= 0) return null;
   const parsedAmount = parseFloat(baseAmount);
-  const parsedPeruskorko = parseFloat(peruskorko);
-  const parsedMarginaali = marginaali === null ? 0 : parseFloat(marginaali);
-  if (
-    isNaN(parsedAmount) ||
-    isNaN(parsedPeruskorko) ||
-    isNaN(parsedMarginaali)
-  ) {
+  const parsedRate = parseFloat(rate);
+  const parsedMargin = margin === null ? 0 : parseFloat(margin);
+  if (isNaN(parsedAmount) || isNaN(parsedRate) || isNaN(parsedMargin)) {
     return null;
   }
   const parsedDaysInYear = parseFloat(daysInYear) || 365;
-  const rate = parsedPeruskorko + parsedMarginaali;
-  return (parsedAmount * (rate / 100) * periodDays) / parsedDaysInYear;
+  const combinedRate = parsedRate + parsedMargin;
+  return (parsedAmount * (combinedRate / 100) * periodDays) / parsedDaysInYear;
 };
 
 interface InvoiceItemRowProps {
@@ -303,20 +298,20 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
   const shouldCalculate = canEdit && interestKind !== null;
 
   // useField must be called unconditionally; when there's no interest kind the values are unused.
-  const { input: peruskorkoInput } = useField(
-    getPeruskorkoFieldPath(interestKind ?? "korotus", scheduleFieldName),
+  const { input: rateInput } = useField(
+    getRateFieldPath(interestKind ?? "korotus", scheduleFieldName),
   );
-  const { input: marginaaliInput } = useField(
-    getMarginaaliFieldPath(scheduleFieldName),
+  const { input: marginInput } = useField(
+    getMarginFieldPath(scheduleFieldName),
   );
 
-  const marginaaliForCalc =
-    interestKind === "korotus" ? marginaaliInput.value : null;
+  const marginForCalculation =
+    interestKind === "korko" ? marginInput.value : null;
   const calculated = shouldCalculate
-    ? calculateInterestAmount({
+    ? calculatePeriodAmount({
         baseAmount: baseAmountInput.value,
-        peruskorko: peruskorkoInput.value,
-        marginaali: marginaaliForCalc,
+        rate: rateInput.value,
+        margin: marginForCalculation,
         periodDays,
         daysInYear: daysInYearInput.value,
       })
@@ -364,10 +359,10 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
           <div className="landuse-grid__column-4">
             <TextInput
               id={`landuse-payment-schedule-invoice-row-calc-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
-              label={formatInterestCalcLabel(
+              label={formatCalculationLabel(
                 interestKind,
-                peruskorkoInput.value,
-                marginaaliForCalc,
+                rateInput.value,
+                marginForCalculation,
                 periodDays,
               )}
               value={
@@ -441,8 +436,8 @@ const createBulkInvoice = (
   signedDate,
   asemakaavanLainvoimaisuusPvm: values.asemakaavanLainvoimaisuusPvm,
   dueDate: "",
-  korotuksenAlkupvm: "",
-  korotuksenLoppupvm: "",
+  laskentajaksonAlkupvm: "",
+  laskentajaksonLoppupvm: "",
   invoiceNumber: "",
   type: LAND_USE_INVOICE_TYPES.MAANKAYTTOKORVAUS,
   status: "Luonnos",
@@ -479,7 +474,7 @@ interface BulkCreateInvoicesDialogProps {
   onClose: () => void;
   onSubmit: (values: BulkCreateFormValues) => void;
   partyOptions: SelectOption[];
-  agreementOptions: AgreementOption[];
+  contractOptions: ContractOption[];
   asemakaavanLainvoimaisuusPvm: AsemakaavaListItem["asemakaavanLainvoimaisuusPvm"];
 }
 
@@ -488,7 +483,7 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
   onClose,
   onSubmit,
   partyOptions,
-  agreementOptions,
+  contractOptions,
   asemakaavanLainvoimaisuusPvm: asemakaavanLainvoimaisuusPvmProp,
 }) => {
   const [installmentTotal, setInstallmentTotal] = useState<number | "">("");
@@ -566,16 +561,16 @@ const BulkCreateInvoicesDialog: React.FC<BulkCreateInvoicesDialogProps> = ({
           <div className="landuse-grid__column-12">
             <Select
               id="bulk-create-contract-schedule"
-              options={agreementOptions}
+              options={contractOptions}
               value={normalizeSelectValue(contractIndex)}
               onChange={(selected) =>
                 handleSelectChange(selected, setContractIndex)
               }
-              disabled={agreementOptions.length === 0}
+              disabled={contractOptions.length === 0}
               texts={{
                 label: "Sopimus",
                 placeholder:
-                  agreementOptions.length > 0 ? "Valitse" : "Ei sopimuksia",
+                  contractOptions.length > 0 ? "Valitse" : "Ei sopimuksia",
               }}
             />
           </div>
@@ -626,15 +621,21 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
   installmentIndex,
   canEdit,
 }) => {
-  const { input: alkupvmInput } = useField(`${fieldName}.korotuksenAlkupvm`, {
-    subscription: { value: true },
-  });
-  const { input: loppupvmInput } = useField(`${fieldName}.korotuksenLoppupvm`, {
-    subscription: { value: true },
-  });
+  const { input: periodStartDateInput } = useField(
+    `${fieldName}.laskentajaksonAlkupvm`,
+    {
+      subscription: { value: true },
+    },
+  );
+  const { input: periodEndDateInput } = useField(
+    `${fieldName}.laskentajaksonLoppupvm`,
+    {
+      subscription: { value: true },
+    },
+  );
   const rawDays = calculateInvoicingPeriodDays(
-    alkupvmInput.value,
-    loppupvmInput.value,
+    periodStartDateInput.value,
+    periodEndDateInput.value,
   );
   const periodDays = rawDays > 0 ? rawDays : null;
 
@@ -669,15 +670,15 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
           {({ input: secondItemTypeInput }) => {
             const kind =
               getInterestKind(secondItemTypeInput.value) ?? "korotus";
-            const { startLabel, endLabel } = getInterestPeriodLabels(kind);
+            const { startLabel, endLabel } = getCalculationPeriodLabels(kind);
             return (
               <>
                 <div className="landuse-grid__column-3">
-                  <Field name={`${fieldName}.korotuksenAlkupvm`}>
+                  <Field name={`${fieldName}.laskentajaksonAlkupvm`}>
                     {({ input }) =>
                       canEdit ? (
                         <DateInput
-                          id={`landuse-payment-schedule-korotuksen-alkupvm-${scheduleIndex}-${installmentIndex}`}
+                          id={`landuse-payment-schedule-laskentajakson-alkupvm-${scheduleIndex}-${installmentIndex}`}
                           label={startLabel}
                           value={input.value}
                           onChange={input.onChange}
@@ -687,7 +688,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                         />
                       ) : (
                         <TextInput
-                          id={`landuse-payment-schedule-korotuksen-alkupvm-${scheduleIndex}-${installmentIndex}`}
+                          id={`landuse-payment-schedule-laskentajakson-alkupvm-${scheduleIndex}-${installmentIndex}`}
                           label={startLabel}
                           value={readOnlyTextValue(input.value)}
                           readOnly
@@ -697,11 +698,11 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                   </Field>
                 </div>
                 <div className="landuse-grid__column-3">
-                  <Field name={`${fieldName}.korotuksenLoppupvm`}>
+                  <Field name={`${fieldName}.laskentajaksonLoppupvm`}>
                     {({ input }) =>
                       canEdit ? (
                         <DateInput
-                          id={`landuse-payment-schedule-korotuksen-loppupvm-${scheduleIndex}-${installmentIndex}`}
+                          id={`landuse-payment-schedule-laskentajakson-loppupvm-${scheduleIndex}-${installmentIndex}`}
                           label={endLabel}
                           value={input.value}
                           onChange={input.onChange}
@@ -711,7 +712,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                         />
                       ) : (
                         <TextInput
-                          id={`landuse-payment-schedule-korotuksen-loppupvm-${scheduleIndex}-${installmentIndex}`}
+                          id={`landuse-payment-schedule-laskentajakson-loppupvm-${scheduleIndex}-${installmentIndex}`}
                           label={endLabel}
                           value={readOnlyTextValue(input.value)}
                           readOnly
@@ -806,14 +807,14 @@ interface PartyGroupSectionProps {
   partyValue: string;
   partyLabel: string;
   partyHeadingId: string;
-  partysSchedules: Array<{
+  partySchedules: Array<{
     fieldName: string;
     index: number;
     schedule: LandUsePaymentScheduleEntry;
   }>;
   isEditMode: boolean;
   parties: PartyEntry[];
-  agreementOptions: AgreementOption[];
+  contractOptions: ContractOption[];
   onRemoveSchedule: (index: number) => void;
   onSendToInvoicing: (schedule: LandUsePaymentScheduleEntry) => void;
 }
@@ -825,14 +826,14 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   partyValue,
   partyLabel,
   partyHeadingId,
-  partysSchedules,
+  partySchedules,
   isEditMode,
   parties,
-  agreementOptions,
+  contractOptions,
   onRemoveSchedule,
   onSendToInvoicing,
 }) => {
-  if (partysSchedules.length === 0) {
+  if (partySchedules.length === 0) {
     return (
       <div className="landuse-payment-schedule__party-group">
         <h2
@@ -952,10 +953,10 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
           </div>
         </div>
       </Fieldset>
-      {partysSchedules.map(
+      {partySchedules.map(
         ({ fieldName, index, schedule }, scheduleListIndex) => {
           const contractNumber =
-            agreementOptions.find(
+            contractOptions.find(
               (option) => option.value === schedule.contractIndex,
             )?.sopimusnumero ?? "-";
 
@@ -1049,33 +1050,11 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
 
                               <div className="landuse-grid landuse-grid">
                                 <div className="landuse-grid__column-3">
-                                  <Field
-                                    name={`${fieldName}.korotusPeruskorko`}
-                                  >
+                                  <Field name={`${fieldName}.korotusProsentti`}>
                                     {({ input }) => (
                                       <NumericDecimalInput
-                                        id={`landuse-payment-schedule-korotus-peruskorko-${index}`}
-                                        label="Korotuksen peruskorko %"
-                                        value={input.value}
-                                        onChange={input.onChange}
-                                        unit="%"
-                                        isEditMode={
-                                          isEditMode &&
-                                          schedule.status ===
-                                            LAND_USE_INVOICE_STATUSES.DRAFT
-                                        }
-                                      />
-                                    )}
-                                  </Field>
-                                </div>
-                                <div className="landuse-grid__column-3">
-                                  <Field
-                                    name={`${fieldName}.korotusMarginaali`}
-                                  >
-                                    {({ input }) => (
-                                      <NumericDecimalInput
-                                        id={`landuse-payment-schedule-korotus-marginaali-${index}`}
-                                        label="Korotuksen marginaali %"
+                                        id={`landuse-payment-schedule-korotus-prosentti-${index}`}
+                                        label="Korotusprosentti %"
                                         value={input.value}
                                         onChange={input.onChange}
                                         unit="%"
@@ -1097,6 +1076,24 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                       <NumericDecimalInput
                                         id={`landuse-payment-schedule-korko-peruskorko-${index}`}
                                         label="Korko %"
+                                        value={input.value}
+                                        onChange={input.onChange}
+                                        unit="%"
+                                        isEditMode={
+                                          isEditMode &&
+                                          schedule.status ===
+                                            LAND_USE_INVOICE_STATUSES.DRAFT
+                                        }
+                                      />
+                                    )}
+                                  </Field>
+                                </div>
+                                <div className="landuse-grid__column-3">
+                                  <Field name={`${fieldName}.korkoMarginaali`}>
+                                    {({ input }) => (
+                                      <NumericDecimalInput
+                                        id={`landuse-payment-schedule-korko-marginaali-${index}`}
+                                        label="Koron marginaali %"
                                         value={input.value}
                                         onChange={input.onChange}
                                         unit="%"
@@ -1187,7 +1184,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
     () => createPartyOptions(parties ?? []),
     [parties],
   );
-  const agreementOptions = useMemo(
+  const contractOptions = useMemo(
     () => createInvoiceContractOptions(contracts ?? []),
     [contracts],
   );
@@ -1218,7 +1215,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
     const selectedContract = contracts[Number(values.contractIndex)];
     const signedDate = selectedContract?.allekirjoituspvm ?? "";
     const sopimusnumero =
-      agreementOptions.find((o) => o.value === values.contractIndex)
+      contractOptions.find((option) => option.value === values.contractIndex)
         ?.sopimusnumero ?? "";
     const recipientName =
       partyOptions.find((o) => o.value === values.recipientPartyIndex)?.label ??
@@ -1242,8 +1239,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       contractIndex: values.contractIndex,
       status: LAND_USE_INVOICE_STATUSES.DRAFT,
       signedDate,
-      korotusPeruskorko: "",
-      korotusMarginaali: "",
+      korotusProsentti: "",
       korkoPeruskorko: "",
       korkoMarginaali: "",
       daysInYear: INTEREST_CALCULATION_DAYS_IN_YEAR.DAYS_365,
@@ -1341,12 +1337,12 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                               partyHeadingId={getPartyGroupHeadingId(
                                 partyOption.value,
                               )}
-                              partysSchedules={
+                              partySchedules={
                                 groupedByParty.get(partyOption.value) ?? []
                               }
                               isEditMode={isEditMode}
                               parties={parties}
-                              agreementOptions={agreementOptions}
+                              contractOptions={contractOptions}
                               onRemoveSchedule={fields.remove}
                               onSendToInvoicing={onSendToInvoicing}
                             />
@@ -1366,7 +1362,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
         onClose={() => setIsBulkCreateOpen(false)}
         onSubmit={handleBulkCreate}
         partyOptions={partyOptions}
-        agreementOptions={agreementOptions}
+        contractOptions={contractOptions}
         asemakaavanLainvoimaisuusPvm={asemakaavanLainvoimaisuusPvm}
       />
     </>
