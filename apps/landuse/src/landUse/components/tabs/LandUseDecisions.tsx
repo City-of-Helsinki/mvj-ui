@@ -471,6 +471,26 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                         )}
                                       </Field>
                                     </div>
+                                    <div className="landuse-grid__column-12 landuse-grid__column--align-center landuse-grid__column--justify-end">
+                                      {isEditMode && (
+                                        <ConfirmDeleteButton
+                                          id={`decision-${decisionIndex}-condition-${conditionIndex}-delete`}
+                                          buttonLabel="Poista ehto"
+                                          buttonAriaLabel={`Poista ehto ${conditionIndex + 1}`}
+                                          buttonVariant={
+                                            ButtonVariant.Supplementary
+                                          }
+                                          onConfirm={() =>
+                                            form.mutators.remove(
+                                              `decisions.${decisionIndex}.ehdot`,
+                                              conditionIndex,
+                                            )
+                                          }
+                                          dialogTitle="Poista ehto"
+                                          dialogContent="Haluatko varmasti poistaa ehdon?"
+                                        />
+                                      )}
+                                    </div>
                                   </div>
                                 );
                               })}
