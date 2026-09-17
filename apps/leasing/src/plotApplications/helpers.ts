@@ -243,10 +243,16 @@ export const preparePlotApplicationForSubmission = (): Record<
   const state = store.getState();
   const selector = formValueSelector(FormNames.PLOT_APPLICATION);
   const sections = selector(state, "formEntries.sections");
+  const preparedSections = prepareApplicationForSubmission(sections);
+
+  if (!preparedSections) {
+    return null;
+  }
+
   return {
     form: selector(state, "formId"),
     entries: {
-      sections: prepareApplicationForSubmission(sections),
+      sections: preparedSections,
     },
     targets: selector(state, "targets"),
     attachments: selector(state, "formEntries.attachments"),

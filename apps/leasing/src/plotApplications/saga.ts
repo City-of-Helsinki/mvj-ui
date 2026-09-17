@@ -187,28 +187,12 @@ function* createPlotApplicationSaga({
 
       default:
         yield put(receivePlotApplicationSaveFailed());
-        displayUIMessage(
-          {
-            title: "",
-            body: "Hakemuksen tallennus epäonnistui",
-          },
-          {
-            type: "error",
-          },
-        );
+        yield put(receiveError({ errors: bodyAsJson }));
     }
   } catch (e) {
     yield put(receivePlotApplicationSaveFailed());
     console.log(e);
-    displayUIMessage(
-      {
-        title: "",
-        body: "Hakemuksen tallennus epäonnistui",
-      },
-      {
-        type: "error",
-      },
-    );
+    yield put(receiveError(e));
   }
 }
 

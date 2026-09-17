@@ -36,6 +36,7 @@ import {
   getIsPerformingFileOperation,
   getPendingUploads,
 } from "@/application/selectors";
+import { getIsSaveClicked } from "@/plotApplications/selectors";
 import { ApplicationSectionKeys } from "@/application/components/enums";
 import {
   APPLICANT_MAIN_IDENTIFIERS,
@@ -283,6 +284,7 @@ const ApplicationFormSubsectionFields = connect(
       props.section,
       props.identifier,
     ),
+    isSaveClicked: getIsSaveClicked(state, props.formName),
   }),
   {
     change,
@@ -296,176 +298,182 @@ const ApplicationFormSubsectionFields = connect(
   formPath,
   sectionTitleTransformers,
   answerId,
+  isSaveClicked,
 }) => {
-  const renderField = useCallback((pathName, field) => {
-    if (!field.enabled) {
-      return null;
-    }
+  const renderField = useCallback(
+    (pathName, field) => {
+      if (!field.enabled) {
+        return null;
+      }
 
-    const fieldName = [
-      pathName,
-      ApplicationSectionKeys.Fields,
-      field.identifier,
-    ].join(".");
-    const fieldType = field.type;
+      const fieldName = [
+        pathName,
+        ApplicationSectionKeys.Fields,
+        field.identifier,
+      ].join(".");
+      const fieldType = field.type;
 
-    // Special cases that use a different submission path and thus different props
-    if (fieldType === "uploadfiles") {
-      return (
-        <ApplicationFormFileField
-          field={field}
-          fieldName={fieldName}
-          formName={formName}
-          formPath={formPath}
-          answerId={answerId}
-        />
-      );
-    }
+      // Special cases that use a different submission path and thus different props
+      if (fieldType === "uploadfiles") {
+        return (
+          <ApplicationFormFileField
+            field={field}
+            fieldName={fieldName}
+            formName={formName}
+            formPath={formPath}
+            answerId={answerId}
+          />
+        );
+      }
 
-    let extraAttributes = {};
-    let fieldOverrides = {};
-    let columnWidths = {
-      small: 12,
-      medium: 6,
-      large: 3,
-    };
+      let extraAttributes = {};
+      let fieldOverrides = {};
+      let columnWidths = {
+        small: 12,
+        medium: 6,
+        large: 3,
+      };
 
-    switch (fieldType) {
-      case "textbox":
-      case "fractional":
-        break;
+      switch (fieldType) {
+        case "textbox":
+        case "fractional":
+          break;
 
-      case "textarea":
-        columnWidths = {
-          small: 12,
-          medium: 12,
-          large: 12,
-        };
-        break;
+        case "textarea":
+          columnWidths = {
+            small: 12,
+            medium: 12,
+            large: 12,
+          };
+          break;
 
-      case "dropdown":
-        extraAttributes = {
-          choices: field.choices.map((option) => ({
-            display_name: option.label,
-            value: option.value,
-          })),
-        };
-        break;
+        case "dropdown":
+          extraAttributes = {
+            choices: field.choices.map((option) => ({
+              display_name: option.label,
+              value: option.value,
+            })),
+          };
+          break;
 
-      case "hidden":
-        if (field.identifier === APPLICANT_TYPE_FIELD_IDENTIFIER) {
-          change(
-            formName,
-            `${identifier}.metadata.applicantType`,
-            valueToApplicantType(field.default_value),
-          );
-        }
+        case "hidden":
+          if (field.identifier === APPLICANT_TYPE_FIELD_IDENTIFIER) {
+            change(
+              formName,
+              `${identifier}.metadata.applicantType`,
+              valueToApplicantType(field.default_value),
+            );
+          }
 
-        extraAttributes = {
-          type: "hidden",
-        };
-        break;
+          extraAttributes = {
+            type: "hidden",
+          };
+          break;
 
-      case "checkbox":
-        fieldOverrides = {
-          options: field.choices.map((choice) => ({
-            value: choice.value,
-            label: choice.has_text_input ? (
-              <>
-                {choice.text}{" "}
-                <FormFieldLegacy
-                  name={`${fieldName}.extraValue`}
-                  fieldAttributes={{
-                    type: "textbox",
-                    required: false,
-                    read_only: false,
-                    label: "",
-                  }}
-                  invisibleLabel
-                />
-              </>
-            ) : (
-              choice.text
-            ),
-          })),
-        };
-        columnWidths = {
-          small: 12,
-          medium: 12,
-          large: 12,
-        };
-        break;
-
-      case "radiobutton":
-      case "radiobuttoninline":
-        extraAttributes = {
-          type: "radio-with-field",
-        };
-        fieldOverrides = {
-          options: getFieldChoicesSorted(field, field.choices || []).map(
-            (choice) => ({
-              label: choice.text,
+        case "checkbox":
+          fieldOverrides = {
+            options: field.choices.map((choice) => ({
               value: choice.value,
-              field: choice.has_text_input ? (
-                <FormFieldLegacy
-                  name={`${fieldName}.extraValue`}
-                  fieldAttributes={{
-                    type: "textbox",
-                    required: false,
-                    read_only: false,
-                    label: "",
-                  }}
-                  invisibleLabel
-                />
-              ) : null,
-            }),
-          ),
-        };
-        columnWidths = {
-          small: 12,
-          medium: 12,
-          large: 12,
-        };
-        break;
+              label: choice.has_text_input ? (
+                <>
+                  {choice.text}{" "}
+                  <FormFieldLegacy
+                    name={`${fieldName}.extraValue`}
+                    fieldAttributes={{
+                      type: "textbox",
+                      required: false,
+                      read_only: false,
+                      label: "",
+                    }}
+                    invisibleLabel
+                  />
+                </>
+              ) : (
+                choice.text
+              ),
+            })),
+          };
+          columnWidths = {
+            small: 12,
+            medium: 12,
+            large: 12,
+          };
+          break;
 
-      default:
-        break;
-    }
+        case "radiobutton":
+        case "radiobuttoninline":
+          extraAttributes = {
+            type: "radio-with-field",
+          };
+          fieldOverrides = {
+            options: getFieldChoicesSorted(field, field.choices || []).map(
+              (choice) => ({
+                label: choice.text,
+                value: choice.value,
+                field: choice.has_text_input ? (
+                  <FormFieldLegacy
+                    name={`${fieldName}.extraValue`}
+                    fieldAttributes={{
+                      type: "textbox",
+                      required: false,
+                      read_only: false,
+                      label: "",
+                    }}
+                    invisibleLabel
+                  />
+                ) : null,
+              }),
+            ),
+          };
+          columnWidths = {
+            small: 12,
+            medium: 12,
+            large: 12,
+          };
+          break;
 
-    let validator;
+        default:
+          break;
+      }
 
-    switch (fieldName.substring(fieldName.lastIndexOf(".") + 1)) {
-      case APPLICANT_MAIN_IDENTIFIERS[ApplicantTypes.PERSON].IDENTIFIER_FIELD:
-        validator = personalIdentifierValidator;
-        break;
+      let validator;
 
-      case APPLICANT_MAIN_IDENTIFIERS[ApplicantTypes.COMPANY].IDENTIFIER_FIELD:
-        validator = companyIdentifierValidator;
-        break;
+      switch (fieldName.substring(fieldName.lastIndexOf(".") + 1)) {
+        case APPLICANT_MAIN_IDENTIFIERS[ApplicantTypes.PERSON].IDENTIFIER_FIELD:
+          validator = personalIdentifierValidator;
+          break;
 
-      case EMAIL_FIELD_IDENTIFIER:
-        validator = emailValidator;
-        break;
-    }
+        case APPLICANT_MAIN_IDENTIFIERS[ApplicantTypes.COMPANY]
+          .IDENTIFIER_FIELD:
+          validator = companyIdentifierValidator;
+          break;
 
-    return (
-      <Column {...columnWidths} className="ApplicationFormField__container">
-        <FormFieldLegacy
-          name={`${fieldName}.value`}
-          fieldAttributes={{
-            read_only: false,
-            type: fieldType,
-            label: field.label,
-            required: field.required,
-            ...extraAttributes,
-          }}
-          overrideValues={fieldOverrides}
-          onChange={(newValue) => checkSpecialValues(field, newValue)}
-          validate={validator}
-        />
-      </Column>
-    );
-  }, []);
+        case EMAIL_FIELD_IDENTIFIER:
+          validator = emailValidator;
+          break;
+      }
+
+      return (
+        <Column {...columnWidths} className="ApplicationFormField__container">
+          <FormFieldLegacy
+            name={`${fieldName}.value`}
+            fieldAttributes={{
+              read_only: false,
+              type: fieldType,
+              label: field.label,
+              required: field.required,
+              ...extraAttributes,
+            }}
+            overrideValues={fieldOverrides}
+            onChange={(newValue) => checkSpecialValues(field, newValue)}
+            validate={validator}
+            disableTouched={isSaveClicked}
+          />
+        </Column>
+      );
+    },
+    [isSaveClicked],
+  );
   const checkSpecialValues = useCallback(
     (field: Record<string, any>, newValue: PlotApplicationFormValue): void => {
       if (
