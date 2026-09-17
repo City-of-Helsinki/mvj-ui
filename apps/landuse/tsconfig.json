@@ -13,7 +13,6 @@
     "../../types"
   ],
   "exclude": [
-    "**/*.spec.ts",
     "defs",
     "**/node_modules",
     "**/.*/",
