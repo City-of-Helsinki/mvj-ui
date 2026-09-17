@@ -1,4 +1,7 @@
-import { LAND_USE_INVOICE_STATUSES } from "@/landUse/options";
+import {
+  LAND_USE_INVOICE_STATUSES,
+  LAND_USE_PAYMENT_SCHEDULE_STATUSES,
+} from "@/landUse/options";
 import type {
   LandUseBillingInvoice,
   LandUseBillingSchedule,
@@ -49,7 +52,7 @@ export const getSchedulesPendingInvoiceReview = <
 ): Schedule[] =>
   schedules.filter(
     (schedule) =>
-      schedule.status === LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
+      schedule.status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL,
   );
 
 export const setPaymentScheduleStatus = (

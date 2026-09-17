@@ -6,6 +6,7 @@ import {
 } from "@/landUse/utils/invoiceReview";
 import {
   LAND_USE_INVOICE_STATUSES,
+  LAND_USE_PAYMENT_SCHEDULE_STATUSES,
   type LandUseInvoice,
 } from "@/landUse/options";
 import {
@@ -36,7 +37,7 @@ const createSchedule = (): LandUsePaymentScheduleEntry => ({
   id: "schedule-1",
   recipientPartyIndex: "0",
   contractIndex: "0",
-  status: LAND_USE_INVOICE_STATUSES.DRAFT,
+  status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT,
   signedDate: "2026-01-20",
   korotusProsentti: "",
   korkoPeruskorko: "",
@@ -78,7 +79,7 @@ describe("invoice review workflow", () => {
   it("derives review rows only from schedules pending approval", () => {
     const pendingSchedule = {
       ...createSchedule(),
-      status: LAND_USE_INVOICE_STATUSES.PENDING_APPROVAL,
+      status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL,
     };
     const draftSchedule = { ...createSchedule(), id: "schedule-2" };
 
@@ -87,17 +88,17 @@ describe("invoice review workflow", () => {
     ).toEqual([pendingSchedule]);
   });
 
-  it("unlocks only the matching payment schedule", () => {
+  it("rejects only the matching payment schedule", () => {
     const schedule = createSchedule();
     const otherSchedule = { ...createSchedule(), id: "schedule-2" };
 
     const result = setPaymentScheduleStatus(
       [schedule, otherSchedule],
       schedule.id,
-      LAND_USE_INVOICE_STATUSES.DRAFT,
+      LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED,
     );
 
-    expect(result[0].status).toBe(LAND_USE_INVOICE_STATUSES.DRAFT);
+    expect(result[0].status).toBe(LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED);
     expect(result[1]).toBe(otherSchedule);
   });
 
@@ -124,6 +125,18 @@ describe("invoice review workflow", () => {
       isInvoiceContentEditableInBilling({
         ...manualInvoice,
         status: LAND_USE_INVOICE_STATUSES.OPEN,
+      }),
+    ).toBe(false);
+    expect(
+      isInvoiceContentEditableInBilling({
+        ...manualInvoice,
+        status: LAND_USE_INVOICE_STATUSES.PAID,
+      }),
+    ).toBe(false);
+    expect(
+      isInvoiceContentEditableInBilling({
+        ...manualInvoice,
+        status: LAND_USE_INVOICE_STATUSES.CREDITED,
       }),
     ).toBe(false);
   });
