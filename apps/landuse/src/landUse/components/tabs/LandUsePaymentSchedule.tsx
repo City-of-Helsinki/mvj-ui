@@ -213,7 +213,7 @@ const getRateFieldPath = (
 const getMarginFieldPath = (scheduleFieldName: string): string =>
   `${scheduleFieldName}.korkoMarginaali`;
 
-const getCalculationPeriodLabels = (
+const getInterestPeriodLabels = (
   kind: InterestKind,
 ): { startLabel: string; endLabel: string } =>
   kind === "korotus"
@@ -234,8 +234,8 @@ const formatCalculationLabel = (
   return `Laskettu korotus (${base}%) * ${days} pv`;
 };
 
-/** English annual calculation: amount × (rate + margin)/100 × days / daysInYear. */
-const calculatePeriodAmount = ({
+/** English annual interest calculation: amount × (rate + margin)/100 × days / daysInYear. */
+const calculatePeriodRateAmount = ({
   baseAmount,
   rate,
   margin,
@@ -308,7 +308,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
   const marginForCalculation =
     interestKind === "korko" ? marginInput.value : null;
   const calculated = shouldCalculate
-    ? calculatePeriodAmount({
+    ? calculatePeriodRateAmount({
         baseAmount: baseAmountInput.value,
         rate: rateInput.value,
         margin: marginForCalculation,
@@ -346,7 +346,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
       <div className="landuse-grid__column-2">
         <NumericDecimalInput
           id={`landuse-payment-schedule-invoice-row-amount-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
-          label="Veroton summa (€)"
+          label="Summa (€)"
           value={amountInput.value}
           onChange={amountInput.onChange}
           unit="€"
@@ -670,7 +670,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
           {({ input: secondItemTypeInput }) => {
             const kind =
               getInterestKind(secondItemTypeInput.value) ?? "korotus";
-            const { startLabel, endLabel } = getCalculationPeriodLabels(kind);
+            const { startLabel, endLabel } = getInterestPeriodLabels(kind);
             return (
               <>
                 <div className="landuse-grid__column-3">

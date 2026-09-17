@@ -801,7 +801,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                               <div className="landuse-grid__column-2">
                                                 <NumericDecimalInput
                                                   id={`landuse-billing-invoice-row-amount-${index}-${invoiceItemIndex}`}
-                                                  label="Veroton summa (€)"
+                                                  label="Summa (€)"
                                                   value={amountInput.value}
                                                   onChange={
                                                     amountInput.onChange
@@ -931,7 +931,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                       <th>Laskunsaaja</th>
                       <th>Laskutuserä</th>
                       <th>Eräpäivä</th>
-                      <th>Veroton summa yhteensä</th>
+                      <th>Summa yhteensä</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1167,7 +1167,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                                               <div className="landuse-grid__column-2">
                                                 <NumericDecimalInput
                                                   id={`landuse-billing-review-amount-${scheduleIndex}-${index}-${invoiceItemIndex}`}
-                                                  label="Veroton summa (€)"
+                                                  label="Summa (€)"
                                                   value={
                                                     invoiceItem.amountExcludingVat
                                                   }
