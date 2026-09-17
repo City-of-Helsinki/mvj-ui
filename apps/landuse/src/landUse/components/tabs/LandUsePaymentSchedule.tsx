@@ -1274,17 +1274,15 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
                   />
                 </div>
                 <div className="landuse-grid__column-3">
-                  <Field name="asemakaavanLainvoimaisuusPvm">
-                    {({ input }) => (
-                      <TextInput
-                        id={`landuse-payment-schedule-valid-date`}
-                        label="Lainvoimaisuuspäivämäärä"
-                        value={readOnlyTextValue(input.value)}
-                        errorText={input.value ? undefined : "Puuttuu"}
-                        readOnly
-                      />
-                    )}
-                  </Field>
+                  <TextInput
+                    id="landuse-payment-schedule-valid-date"
+                    label="Lainvoimaisuuspäivämäärä"
+                    value={readOnlyTextValue(asemakaavanLainvoimaisuusPvm)}
+                    errorText={
+                      asemakaavanLainvoimaisuusPvm ? undefined : "Puuttuu"
+                    }
+                    readOnly
+                  />
                 </div>
               </div>
               <div className="landuse-grid landuse-grid__bottom-margin">
