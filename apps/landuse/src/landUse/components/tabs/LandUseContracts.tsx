@@ -614,19 +614,38 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
 
                                       <div className="landuse-grid__column-6">
                                         <Field name={`${changeName}.paatos`}>
-                                          {({ input }) => (
-                                            <TextInput
-                                              inputMode="text"
-                                              id={`contract-muutos-paatos-${contractIndex}-${changeIndex}`}
-                                              label="Päätös"
-                                              value={getFieldTextValue(
-                                                isEditMode,
-                                                input.value,
-                                              )}
-                                              onChange={input.onChange}
-                                              readOnly={!isEditMode}
-                                            />
-                                          )}
+                                          {({ input }) =>
+                                            isEditMode ? (
+                                              <Select
+                                                id={`contract-muutos-paatos-${contractIndex}-${changeIndex}`}
+                                                texts={{
+                                                  label: "Päätös",
+                                                  placeholder: "Valitse",
+                                                }}
+                                                options={
+                                                  landUseDecisionTypeOptions
+                                                }
+                                                value={normalizeSelectValue(
+                                                  input.value,
+                                                )}
+                                                onChange={(selected) =>
+                                                  handleSelectChange(
+                                                    selected,
+                                                    input.onChange,
+                                                  )
+                                                }
+                                              />
+                                            ) : (
+                                              <TextInput
+                                                id={`contract-muutos-paatos-${contractIndex}-${changeIndex}`}
+                                                label="Päätös"
+                                                value={readOnlyTextValue(
+                                                  input.value,
+                                                )}
+                                                readOnly
+                                              />
+                                            )
+                                          }
                                         </Field>
                                       </div>
 
