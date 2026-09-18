@@ -25,6 +25,7 @@ import {
 } from "@/landUse/options";
 import {
   getFieldTextValue,
+  selectLabelIncludesFilter,
   normalizeSelectValue,
   readOnlyTextValue,
 } from "@/landUse/utils/fieldUtils";
@@ -97,11 +98,6 @@ const SUMMARY_STEPS = [
 ] as const;
 
 const getSummaryStepId = (key: string): string => `summary-step-${key}`;
-
-const kohdeSelectFilter = (
-  option: { label: string },
-  filterStr: string,
-): boolean => option.label.toLowerCase().includes(filterStr.toLowerCase());
 
 const handleSelectChange = (
   selectedOptions: { label: string; value: string }[],
@@ -462,7 +458,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                     options={asemakaavaNumberOptions}
                                     value={normalizeSelectValue(input.value)}
                                     onChange={handleAsemakaavaNumberChange}
-                                    filter={kohdeSelectFilter}
+                                    filter={selectLabelIncludesFilter}
                                     texts={{
                                       label: "Asemakaavan numero",
                                       placeholder: "Valitse",
@@ -602,7 +598,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                                   input.onChange,
                                                 )
                                               }
-                                              filter={kohdeSelectFilter}
+                                              filter={selectLabelIncludesFilter}
                                               texts={{
                                                 label: `Kohde ${index + 1}`,
                                                 placeholder: "Valitse",

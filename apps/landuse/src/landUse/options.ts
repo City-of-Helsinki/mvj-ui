@@ -247,7 +247,7 @@ export const DISTRICT_OPTIONS = [
     value: "59",
     label: "Ultuna",
   },
-];
+].map(({ value, label }) => ({ value, label: `${label} (${value})` }));
 
 export const LAND_USE_NEGOTIATION_PHASES = {
   DRAFT: "Luonnos",
