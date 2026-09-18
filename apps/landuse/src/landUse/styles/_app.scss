@@ -3,12 +3,16 @@
 // ============================================================================
 @use "hds-design-tokens/lib/all" as hds;
 
+html {
+  font-family: hds.$font-default;
+}
+
 body {
   margin: 0;
+  font-family: inherit;
 }
 
 .landuse-app {
-  font-family: hds.$font-default;
   background-color: hds.$color-white;
   min-height: 100vh;
   padding: 0;
