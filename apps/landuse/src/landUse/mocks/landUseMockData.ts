@@ -241,6 +241,7 @@ const ma113PaymentSchedule: LandUsePaymentScheduleFormValues = {
       recipientPartyIndex: "0",
       contractIndex: "0",
       status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT,
+      rejectedReason: null,
       signedDate: "2026-01-20",
       korotusProsentti: "",
       korkoPeruskorko: "",

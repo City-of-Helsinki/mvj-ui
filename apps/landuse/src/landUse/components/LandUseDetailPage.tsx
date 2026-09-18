@@ -1015,6 +1015,7 @@ const LandUseDetailPage: React.FC = () => {
   const updateReviewedSchedule = async (
     schedule: LandUsePaymentScheduleEntry,
     status: LandUsePaymentScheduleEntry["status"],
+    rejectedReason?: LandUsePaymentScheduleEntry["rejectedReason"],
   ) => {
     const paymentSchedules =
       (
@@ -1027,6 +1028,7 @@ const LandUseDetailPage: React.FC = () => {
         paymentSchedules,
         schedule.id,
         status,
+        rejectedReason,
       ),
     };
     const persistedValues =
@@ -1036,10 +1038,12 @@ const LandUseDetailPage: React.FC = () => {
 
   const handleDeclineSchedule = async (
     schedule: LandUsePaymentScheduleEntry,
+    rejectedReason: string,
   ) => {
     await updateReviewedSchedule(
       schedule,
       LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED,
+      rejectedReason,
     );
   };
 
@@ -1061,6 +1065,7 @@ const LandUseDetailPage: React.FC = () => {
     await updateReviewedSchedule(
       schedule,
       LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED,
+      null,
     );
   };
 

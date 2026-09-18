@@ -59,7 +59,14 @@ export const setPaymentScheduleStatus = (
   schedules: LandUsePaymentScheduleEntry[],
   scheduleId: string,
   status: LandUsePaymentScheduleEntry["status"],
+  rejectedReason?: LandUsePaymentScheduleEntry["rejectedReason"],
 ): LandUsePaymentScheduleEntry[] =>
   schedules.map((schedule) =>
-    schedule.id === scheduleId ? { ...schedule, status } : schedule,
+    schedule.id === scheduleId
+      ? {
+          ...schedule,
+          status,
+          ...(rejectedReason !== undefined ? { rejectedReason } : {}),
+        }
+      : schedule,
   );
