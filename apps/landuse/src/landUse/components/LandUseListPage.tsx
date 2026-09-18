@@ -19,6 +19,7 @@ import {
   createLandUseIdentifier,
   getNextLandUseSequence,
 } from "@/landUse/utils/landUseIdentifier";
+import { selectLabelIncludesFilter } from "@/landUse/utils/fieldUtils";
 import {
   createLandUseAgreement,
   getAgreementIdentifiers,
@@ -408,6 +409,7 @@ const LandUseListPage: React.FC = () => {
                 label: "Kaupunginosa",
                 placeholder: "Valitse",
               }}
+              filter={selectLabelIncludesFilter}
               required
             />
           </div>

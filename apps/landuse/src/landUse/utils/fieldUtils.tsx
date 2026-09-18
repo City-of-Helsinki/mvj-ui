@@ -55,3 +55,8 @@ export const filterOptionsByValues = (
     (values || []).includes(option.value),
   );
 };
+
+export const selectLabelIncludesFilter = (
+  option: { label: string },
+  filterStr: string,
+): boolean => option.label.toLowerCase().includes(filterStr.toLowerCase());
