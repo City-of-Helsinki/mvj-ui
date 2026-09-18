@@ -38,6 +38,7 @@ const createSchedule = (): LandUsePaymentScheduleEntry => ({
   recipientPartyIndex: "0",
   contractIndex: "0",
   status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT,
+  rejectedReason: null,
   signedDate: "2026-01-20",
   korotusProsentti: "",
   korkoPeruskorko: "",
@@ -88,7 +89,7 @@ describe("invoice review workflow", () => {
     ).toEqual([pendingSchedule]);
   });
 
-  it("rejects only the matching payment schedule", () => {
+  it("rejects only the matching payment schedule and stores the reason", () => {
     const schedule = createSchedule();
     const otherSchedule = { ...createSchedule(), id: "schedule-2" };
 
@@ -96,10 +97,35 @@ describe("invoice review workflow", () => {
       [schedule, otherSchedule],
       schedule.id,
       LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED,
+      "Tarkista laskurivit",
     );
 
     expect(result[0].status).toBe(LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED);
+    expect(result[0].rejectedReason).toBe("Tarkista laskurivit");
     expect(result[1]).toBe(otherSchedule);
+  });
+
+  it("preserves a rejection reason unless explicitly cleared", () => {
+    const rejectedSchedule = {
+      ...createSchedule(),
+      status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED,
+      rejectedReason: "Tarkista laskurivit",
+    };
+
+    const pendingResult = setPaymentScheduleStatus(
+      [rejectedSchedule],
+      rejectedSchedule.id,
+      LAND_USE_PAYMENT_SCHEDULE_STATUSES.PENDING_APPROVAL,
+    );
+    const approvedResult = setPaymentScheduleStatus(
+      pendingResult,
+      rejectedSchedule.id,
+      LAND_USE_PAYMENT_SCHEDULE_STATUSES.APPROVED,
+      null,
+    );
+
+    expect(pendingResult[0].rejectedReason).toBe("Tarkista laskurivit");
+    expect(approvedResult[0].rejectedReason).toBeNull();
   });
 
   it("keeps schedule-derived review invoices read-only in billing", () => {

@@ -14,6 +14,7 @@ import {
   IconLock,
   IconPlusCircle,
   NumberInput,
+  Notification,
   Select,
   StatusLabel,
   StepByStep,
@@ -72,6 +73,7 @@ export interface LandUsePaymentScheduleEntry {
   recipientPartyIndex: string | undefined;
   contractIndex: string | undefined;
   status: LandUsePaymentScheduleStatus | undefined;
+  rejectedReason: string | null;
   signedDate: string;
   korotusProsentti: string;
   korkoPeruskorko: string;
@@ -1054,6 +1056,13 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                         />
                       )}
                     </div>
+                    {schedule.status ===
+                      LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED &&
+                      schedule.rejectedReason !== null && (
+                        <Notification type="error" label="Hylkäyksen syy">
+                          {schedule.rejectedReason}
+                        </Notification>
+                      )}
                     <StepByStep
                       steps={[
                         {
@@ -1237,6 +1246,7 @@ export const LandUsePaymentSchedule: React.FC<LandUsePaymentScheduleProps> = ({
       recipientPartyIndex: values.recipientPartyIndex,
       contractIndex: values.contractIndex,
       status: LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT,
+      rejectedReason: null,
       signedDate,
       korotusProsentti: "",
       korkoPeruskorko: "",

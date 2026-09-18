@@ -6,6 +6,7 @@ import {
   ButtonVariant,
   Card,
   DateInput,
+  Dialog,
   Fieldset,
   IconAngleDown,
   IconAngleUp,
@@ -13,6 +14,7 @@ import {
   IconSize,
   NumberInput,
   Select,
+  TextArea,
   TextInput,
 } from "hds-react";
 import React, { useState } from "react";
@@ -103,7 +105,10 @@ interface LandUseBillingProps {
   parties: LandUseBillingParty[];
   paymentSchedules: LandUseBillingSchedule[];
   onAcceptSchedule: (schedule: LandUseBillingSchedule) => void;
-  onDeclineSchedule: (schedule: LandUseBillingSchedule) => void;
+  onDeclineSchedule: (
+    schedule: LandUseBillingSchedule,
+    rejectedReason: string,
+  ) => void;
 }
 
 interface SelectedPartyInvoiceData {
@@ -887,7 +892,7 @@ interface InvoiceReviewTableProps {
   partyOptions: SelectOption[];
   isEditMode: boolean;
   onAccept: (schedule: LandUseBillingSchedule) => void;
-  onDecline: (schedule: LandUseBillingSchedule) => void;
+  onDecline: (schedule: LandUseBillingSchedule, rejectedReason: string) => void;
 }
 
 const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
@@ -899,6 +904,21 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
   onDecline,
 }) => {
   const [openInvoice, setOpenInvoice] = useState<string | null>(null);
+  const [scheduleToDecline, setScheduleToDecline] =
+    useState<LandUseBillingSchedule | null>(null);
+  const [rejectedReason, setRejectedReason] = useState("");
+
+  const closeDeclineDialog = () => {
+    setScheduleToDecline(null);
+    setRejectedReason("");
+  };
+
+  const handleDeclineConfirm = () => {
+    if (!scheduleToDecline) return;
+
+    onDecline(scheduleToDecline, rejectedReason);
+    closeDeclineDialog();
+  };
 
   return (
     <>
@@ -1191,7 +1211,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                     type="button"
                     variant={ButtonVariant.Secondary}
                     size={ButtonSize.Small}
-                    onClick={() => onDecline(schedule)}
+                    onClick={() => setScheduleToDecline(schedule)}
                   >
                     Hylkää kaikki
                   </Button>
@@ -1211,6 +1231,42 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
       ) : (
         <p>Ei hyväksyttäviä maksusuunnitelmia.</p>
       )}
+      <Dialog
+        id="landuse-decline-payment-schedule"
+        isOpen={scheduleToDecline !== null}
+        aria-labelledby="landuse-decline-payment-schedule-title"
+        closeButtonLabelText="Sulje"
+        close={closeDeclineDialog}
+      >
+        <Dialog.Header
+          id="landuse-decline-payment-schedule-title"
+          title="Hylkää maksusuunnitelma"
+        />
+        <Dialog.Content>
+          <TextArea
+            id="landuse-payment-schedule-rejected-reason"
+            label="Hylkäyksen syy"
+            value={rejectedReason}
+            onChange={(event) => setRejectedReason(event.target.value)}
+          />
+        </Dialog.Content>
+        <Dialog.ActionButtons>
+          <Button
+            type="button"
+            variant={ButtonVariant.Secondary}
+            onClick={closeDeclineDialog}
+          >
+            Peruuta
+          </Button>
+          <Button
+            type="button"
+            variant={ButtonVariant.Danger}
+            onClick={handleDeclineConfirm}
+          >
+            Hylkää kaikki
+          </Button>
+        </Dialog.ActionButtons>
+      </Dialog>
     </>
   );
 };
