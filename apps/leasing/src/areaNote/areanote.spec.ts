@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
+import areaNotesReducer, {
   fetchAttributes,
   attributesNotFound,
   receiveAttributes,
@@ -15,23 +15,8 @@ import {
   showEditMode,
   hideEditMode,
   initializeAreaNote,
-} from "./actions";
-import areaNotesReducer from "./reducer";
-import type { AreaNoteState } from "./types";
-const defaultState: AreaNoteState = {
-  attributes: null,
-  initialValues: {
-    id: -1,
-    geoJSON: {},
-    isNew: true,
-    note: "",
-  },
-  isEditMode: false,
-  isFetching: false,
-  isFetchingAttributes: false,
-  list: [],
-  methods: null,
-};
+  initialState,
+} from "./slice";
 
 describe("AreaNoteList", () => {
   describe("Reducer", () => {
@@ -40,26 +25,32 @@ describe("AreaNoteList", () => {
         const dummyAttributes = {
           foo: "bar",
         };
-        const newState = { ...defaultState, attributes: dummyAttributes };
-        const state = areaNotesReducer({}, receiveAttributes(dummyAttributes));
+        const newState = { ...initialState, attributes: dummyAttributes };
+        const state = areaNotesReducer(
+          initialState,
+          receiveAttributes(dummyAttributes),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update methods", () => {
         const dummyMethods = {
           foo: "bar",
         };
-        const newState = { ...defaultState, methods: dummyMethods };
-        const state = areaNotesReducer({}, receiveMethods(dummyMethods));
+        const newState = { ...initialState, methods: dummyMethods };
+        const state = areaNotesReducer(
+          initialState,
+          receiveMethods(dummyMethods),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingAttributes flag to true by fetchAttributes", () => {
-        const newState = { ...defaultState, isFetchingAttributes: true };
-        const state = areaNotesReducer({}, fetchAttributes());
+        const newState = { ...initialState, isFetchingAttributes: true };
+        const state = areaNotesReducer(initialState, fetchAttributes());
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingAttributes flag to false by attributesNotFound", () => {
-        const newState = { ...defaultState, isFetchingAttributes: false };
-        let state = areaNotesReducer({}, fetchAttributes());
+        const newState = { ...initialState, isFetchingAttributes: false };
+        let state = areaNotesReducer(initialState, fetchAttributes());
         state = areaNotesReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
@@ -70,20 +61,23 @@ describe("AreaNoteList", () => {
             label: "Foo",
           },
         ];
-        const newState = { ...defaultState, list: dummyAreaNotes };
-        const state = areaNotesReducer({}, receiveAreaNoteList(dummyAreaNotes));
+        const newState = { ...initialState, list: dummyAreaNotes };
+        const state = areaNotesReducer(
+          initialState,
+          receiveAreaNoteList(dummyAreaNotes),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to true when fetching area notes", () => {
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.isFetching = true;
-        const state = areaNotesReducer({}, fetchAreaNoteList({}));
+        const state = areaNotesReducer(initialState, fetchAreaNoteList({}));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to true when creating area note", () => {
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.isFetching = true;
-        const state = areaNotesReducer({}, createAreaNote({}));
+        const state = areaNotesReducer(initialState, createAreaNote({}));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to false when receiving created area note", () => {
@@ -96,11 +90,14 @@ describe("AreaNoteList", () => {
           foo: "barEdited",
         };
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetching: false,
           list: [editedAreaNote],
         };
-        let state = areaNotesReducer({}, createAreaNote(dummyAreaNote));
+        let state = areaNotesReducer(
+          initialState,
+          createAreaNote(dummyAreaNote),
+        );
         state = areaNotesReducer(state, receiveEditedAreaNote(dummyAreaNote));
         state = areaNotesReducer(state, receiveEditedAreaNote(editedAreaNote));
         expect(state).to.deep.equal(newState);
@@ -110,48 +107,51 @@ describe("AreaNoteList", () => {
           id: 1,
           foo: "bar",
         };
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.isFetching = false;
-        let state = areaNotesReducer({}, receiveEditedAreaNote(dummyAreaNote));
+        let state = areaNotesReducer(
+          initialState,
+          receiveEditedAreaNote(dummyAreaNote),
+        );
         state = areaNotesReducer(state, receiveDeletedAreaNote(1));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to true when deleting area note", () => {
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.isFetching = true;
-        const state = areaNotesReducer({}, deleteAreaNote(1));
+        const state = areaNotesReducer(initialState, deleteAreaNote(1));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to true when editing area note", () => {
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.isFetching = true;
-        const state = areaNotesReducer({}, editAreaNote({}));
+        const state = areaNotesReducer(initialState, editAreaNote({}));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetching flag to false by notFound action", () => {
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.isFetching = false;
-        let state = areaNotesReducer({}, editAreaNote({}));
+        let state = areaNotesReducer(initialState, editAreaNote({}));
         state = areaNotesReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });
       it("should update isEditMode flag to true", () => {
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.isEditMode = true;
-        const state = areaNotesReducer({}, showEditMode());
+        const state = areaNotesReducer(initialState, showEditMode());
         expect(state).to.deep.equal(newState);
       });
       it("should update isEditMode flag to false", () => {
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.isFetching = false;
-        let state = areaNotesReducer({}, showEditMode());
+        let state = areaNotesReducer(initialState, showEditMode());
         state = areaNotesReducer(state, hideEditMode());
         expect(state).to.deep.equal(newState);
       });
       it("should update initial values", () => {
-        const newState = { ...defaultState };
+        const newState = { ...initialState };
         newState.initialValues = {};
-        const state = areaNotesReducer({}, initializeAreaNote({}));
+        const state = areaNotesReducer(initialState, initializeAreaNote({}));
         expect(state).to.deep.equal(newState);
       });
     });

@@ -3,8 +3,7 @@ import { debounce, isArray, isEmpty } from "lodash-es";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Form } from "react-final-form";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
-
-import { fetchAreaNoteList } from "@/areaNote/actions";
+import { fetchAreaNoteList } from "@/areaNote/slice";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContentContainerHds from "@/components/content/ContentContainerHds";

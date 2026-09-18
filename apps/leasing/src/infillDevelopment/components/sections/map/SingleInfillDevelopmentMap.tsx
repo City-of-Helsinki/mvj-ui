@@ -7,7 +7,7 @@ import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import InfillDevelopmentLeaseLayer from "./InfillDevelopmentLeaseLayer";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
-import { fetchAreaNoteList } from "@/areaNote/actions";
+import { fetchAreaNoteList } from "@/areaNote/slice";
 import { fetchLeaseById } from "@/leases/slice";
 import { MAP_COLORS } from "@/util/constants";
 import {

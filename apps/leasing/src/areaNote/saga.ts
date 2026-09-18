@@ -10,7 +10,12 @@ import {
   receiveAreaNoteList,
   receiveDeletedAreaNote,
   receiveEditedAreaNote,
-} from "./actions";
+  fetchAttributes as fetchAttributesAction,
+  fetchAreaNoteList,
+  createAreaNote as createAreaNoteAction,
+  deleteAreaNote as deleteAreaNoteAction,
+  editAreaNote as editAreaNoteAction,
+} from "./slice";
 import { displayUIMessage } from "@/util/helpers";
 import {
   createAreaNote,
@@ -51,8 +56,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchAreaNoteListSaga({
   payload: query,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchAreaNoteList>): Generator<any, any, any> {
   try {
     let {
       response: { status: statusCode },
@@ -81,13 +85,15 @@ function* fetchAreaNoteListSaga({
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch leases with error "%s"', error);
+    console.error('Failed to fetch area notes with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
 }
 
-function* createAreaNoteSaga({ payload, type: any }): Generator<any, any, any> {
+function* createAreaNoteSaga({
+  payload,
+}: ReturnType<typeof createAreaNoteAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -130,8 +136,7 @@ function* createAreaNoteSaga({ payload, type: any }): Generator<any, any, any> {
 
 function* deleteAreaNoteSaga({
   payload: id,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof deleteAreaNoteAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -172,7 +177,9 @@ function* deleteAreaNoteSaga({
   }
 }
 
-function* editAreaNoteSaga({ payload, type: any }): Generator<any, any, any> {
+function* editAreaNoteSaga({
+  payload,
+}: ReturnType<typeof editAreaNoteAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -216,11 +223,11 @@ function* editAreaNoteSaga({ payload, type: any }): Generator<any, any, any> {
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
-      yield takeLatest("mvj/areaNote/FETCH_ATTRIBUTES", fetchAttributesSaga);
-      yield takeLatest("mvj/areaNote/FETCH_ALL", fetchAreaNoteListSaga);
-      yield takeLatest("mvj/areaNote/CREATE", createAreaNoteSaga);
-      yield takeLatest("mvj/areaNote/DELETE", deleteAreaNoteSaga);
-      yield takeLatest("mvj/areaNote/EDIT", editAreaNoteSaga);
+      yield takeLatest(fetchAttributesAction, fetchAttributesSaga);
+      yield takeLatest(fetchAreaNoteList, fetchAreaNoteListSaga);
+      yield takeLatest(createAreaNoteAction, createAreaNoteSaga);
+      yield takeLatest(deleteAreaNoteAction, deleteAreaNoteSaga);
+      yield takeLatest(editAreaNoteAction, editAreaNoteSaga);
     }),
   ]);
 }

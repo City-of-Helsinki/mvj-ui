@@ -37,6 +37,7 @@ export type ApiResponse<T = any> =
       | undefined
     )
   | null;
+export type QueryParams = Record<string, string | number>;
 type Coordinate = Array<number>;
 export type LeafletFeatureGeometry = {
   coordinates: Array<Coordinate>;

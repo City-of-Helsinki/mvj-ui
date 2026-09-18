@@ -21,7 +21,7 @@ import {
   deleteAreaNote,
   editAreaNote,
   hideEditMode,
-} from "@/areaNote/actions";
+} from "@/areaNote/slice";
 import { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/util/constants";
 import { convertFeatureCollectionToFeature } from "@/areaNote/helpers";
 import { localizeMap } from "@/util/map";

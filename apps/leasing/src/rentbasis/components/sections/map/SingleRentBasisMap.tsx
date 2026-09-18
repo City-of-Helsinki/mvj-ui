@@ -4,7 +4,7 @@ import { isEmpty } from "lodash-es";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
 import RentBasisLayer from "./RentBasisLayer";
-import { fetchAreaNoteList } from "@/areaNote/actions";
+import { fetchAreaNoteList } from "@/areaNote/slice";
 import { MAP_COLORS } from "@/util/constants";
 import { RentBasisFieldPaths } from "@/rentbasis/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
