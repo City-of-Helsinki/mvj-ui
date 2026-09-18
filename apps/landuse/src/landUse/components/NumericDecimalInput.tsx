@@ -87,6 +87,7 @@ export const NumericDecimalInput = ({
     <TextInput
       id={id}
       label={label}
+      inputMode="decimal"
       value={displayValue}
       onChange={handleChange}
       onBlur={handleBlur}

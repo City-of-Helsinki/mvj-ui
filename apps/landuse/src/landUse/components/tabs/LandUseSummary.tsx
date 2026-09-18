@@ -320,6 +320,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 <TextInput
                                   id="arvioitu-esittelyvuosi"
                                   label="Arvioitu esittelyvuosi"
+                                  inputMode="numeric"
                                   value={getFieldTextValue(
                                     isEditMode,
                                     input.value,
@@ -337,6 +338,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                 <TextInput
                                   id="arvioitu-maksuvuosi"
                                   label="Arvioitu maksuvuosi"
+                                  inputMode="numeric"
                                   value={getFieldTextValue(
                                     isEditMode,
                                     input.value,
@@ -695,6 +697,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                       <Field name={`${name}.katuosoite`}>
                                         {({ input }) => (
                                           <TextInput
+                                            inputMode="text"
                                             id={`katuosoite-${index}`}
                                             label="Katuosoite"
                                             value={getFieldTextValue(
@@ -714,6 +717,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                           <TextInput
                                             id={`postinumero-${index}`}
                                             label="Postinumero"
+                                            inputMode="numeric"
                                             value={getFieldTextValue(
                                               isEditMode,
                                               input.value,
@@ -729,6 +733,7 @@ export const LandUseSummary: React.FC<LandUseSummaryProps> = ({
                                       <Field name={`${name}.kaupunki`}>
                                         {({ input }) => (
                                           <TextInput
+                                            inputMode="text"
                                             id={`kaupunki-${index}`}
                                             label="Kaupunki"
                                             value={getFieldTextValue(

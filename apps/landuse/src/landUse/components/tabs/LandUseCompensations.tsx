@@ -250,6 +250,7 @@ const SiteRow: React.FC<SiteRowProps> = ({
                         />
                       ) : (
                         <TextInput
+                          inputMode="text"
                           id={`landuse-compensations-kohteen-tunnus-${site.id}`}
                           label="Kohteen tunnus"
                           value={input.value ?? ""}

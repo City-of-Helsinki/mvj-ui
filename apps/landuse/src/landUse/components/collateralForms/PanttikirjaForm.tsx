@@ -59,6 +59,7 @@ export const PanttikirjaForm: React.FC<CollateralFormProps> = ({
                       <Field name={fieldName}>
                         {({ input }) => (
                           <TextInput
+                            inputMode="text"
                             id={`${namePrefix.replace(/\./g, "-")}-kiinteistotunnus-${index}`}
                             label={
                               index === 0

@@ -483,6 +483,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       <TextInput
                         id={`monitoring-plot-division-vaadittu-kem2-${site.id}-${childIndex}`}
                         label=""
+                        inputMode="decimal"
                         value={input.value}
                         onChange={input.onChange}
                       />
@@ -521,6 +522,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                       <TextInput
                         id={`monitoring-plot-division-yksikkohinta-${site.id}-${childIndex}`}
                         label=""
+                        inputMode="decimal"
                         value={input.value}
                         onChange={input.onChange}
                       />
@@ -1066,6 +1068,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                   </div>
 
                   <TextInput
+                    inputMode="text"
                     id="landuse-monitoring-site-edit-kohteen-tunnus"
                     label="Uusi kohteen tunnus"
                     value={plotDivisionFormValues.kohteenTunnus}
@@ -1164,6 +1167,7 @@ export const LandUseMonitoring: React.FC<LandUseMonitoringProps> = ({
                     <TextInput
                       id="landuse-monitoring-toteutunut-kem2"
                       label="Toteutunut kerrosala"
+                      inputMode="decimal"
                       value={newToteutunutKem2}
                       onChange={(event) =>
                         setNewToteutunutKem2(event.target.value)

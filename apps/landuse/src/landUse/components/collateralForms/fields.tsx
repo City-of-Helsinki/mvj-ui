@@ -38,6 +38,7 @@ export const CollateralTextField: React.FC<CommonProps> = ({
     <Field name={`${namePrefix}.${fieldName}`}>
       {({ input }) => (
         <TextInput
+          inputMode="text"
           id={id}
           label={label}
           value={getFieldTextValue(isEditMode, input.value)}
