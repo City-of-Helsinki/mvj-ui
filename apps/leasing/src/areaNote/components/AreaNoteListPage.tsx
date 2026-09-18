@@ -18,7 +18,7 @@ import {
   hideEditMode,
   initializeAreaNote,
   showEditMode,
-} from "@/areaNote/actions";
+} from "@/areaNote/slice";
 import { receiveTopNavigationSettings } from "@/components/topNavigation/actions";
 import { Methods, PermissionMissingTexts } from "@/enums";
 import { getAreaNoteById, getAreaNoteCoordinates } from "@/areaNote/helpers";

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { GeoJSON } from "react-leaflet";
-import { initializeAreaNote, showEditMode } from "@/areaNote/actions";
+import { initializeAreaNote, showEditMode } from "@/areaNote/slice";
 import { Methods } from "@/enums";
 import {
   convertAreaNoteListToGeoJson,
