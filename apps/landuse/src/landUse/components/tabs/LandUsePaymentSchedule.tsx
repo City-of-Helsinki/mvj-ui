@@ -40,7 +40,10 @@ import {
   type SelectOption,
 } from "@/landUse/utils/fieldUtils";
 import { calculateInvoicingPeriodDays } from "@/landUse/utils/date";
-import { formatLandUseEuroDisplayValue } from "@/landUse/utils/number";
+import {
+  formatLandUseEuroDisplayValue,
+  parseLandUseNumericValueOrZero,
+} from "@/landUse/utils/number";
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 import {
   LAND_USE_INVOICE_STATUSES,
@@ -457,6 +460,26 @@ const isScheduleEditable = (
 ): boolean =>
   status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.DRAFT ||
   status === LAND_USE_PAYMENT_SCHEDULE_STATUSES.REJECTED;
+
+const calculateScheduleTotals = (
+  installments: LandUseInvoice[],
+): { landUseCompensationTotal: number; scheduleTotal: number } =>
+  installments.reduce(
+    (totals, installment) =>
+      (installment.invoiceItems ?? []).reduce((itemTotals, item) => {
+        const amount = parseLandUseNumericValueOrZero(item.amountExcludingVat);
+
+        return {
+          landUseCompensationTotal:
+            itemTotals.landUseCompensationTotal +
+            (item.itemType === LAND_USE_INVOICE_ITEM_TYPES.MAANKAYTTOKORVAUS
+              ? amount
+              : 0),
+          scheduleTotal: itemTotals.scheduleTotal + amount,
+        };
+      }, totals),
+    { landUseCompensationTotal: 0, scheduleTotal: 0 },
+  );
 
 interface BulkCreateFormValues {
   installmentTotal: string;
@@ -1029,6 +1052,8 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
               (option) => option.value === schedule.contractIndex,
             )?.sopimusnumero ?? "-";
           const statusAction = getScheduleStatusAction(schedule.status);
+          const { landUseCompensationTotal, scheduleTotal } =
+            calculateScheduleTotals(schedule.installments);
 
           return (
             <section key={schedule.id}>
@@ -1103,6 +1128,32 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                     readOnly
                                   />
                                 </div>
+                                <div className="landuse-grid__column-3">
+                                  <TextInput
+                                    id={`landuse-payment-schedule-land-use-compensation-total-${index}`}
+                                    label="Erien maankäyttökorvausten summa"
+                                    value={formatLandUseEuroDisplayValue(
+                                      landUseCompensationTotal,
+                                    )}
+                                    readOnly
+                                  />
+                                </div>
+                                <div className="landuse-grid__column-3">
+                                  <TextInput
+                                    id={`landuse-payment-schedule-total-${index}`}
+                                    label="Erien koko summa"
+                                    tooltip={
+                                      <Tooltip>
+                                        Erien maankäyttökorvausten, korotusten,
+                                        ja korkojen summa
+                                      </Tooltip>
+                                    }
+                                    value={formatLandUseEuroDisplayValue(
+                                      scheduleTotal,
+                                    )}
+                                    readOnly
+                                  />
+                                </div>
                               </div>
 
                               <div className="landuse-grid landuse-grid">
@@ -1123,9 +1174,6 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                     )}
                                   </Field>
                                 </div>
-                              </div>
-
-                              <div className="landuse-grid landuse-grid">
                                 <div className="landuse-grid__column-3">
                                   <Field name={`${fieldName}.korkoPeruskorko`}>
                                     {({ input }) => (

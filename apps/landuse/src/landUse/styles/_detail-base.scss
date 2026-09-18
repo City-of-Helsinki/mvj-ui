@@ -71,7 +71,7 @@
 .landuse-detail__heading-with-delete {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
 
   h1,
   h2,
@@ -91,7 +91,7 @@
 
 .landuse-detail__heading-actions {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: hds.$spacing-s;
 }
 
