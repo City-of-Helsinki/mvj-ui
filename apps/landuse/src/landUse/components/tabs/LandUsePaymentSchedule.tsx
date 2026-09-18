@@ -888,6 +888,20 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   onRemoveSchedule,
   onSendToInvoicing,
 }) => {
+  const [scheduleToSend, setScheduleToSend] =
+    useState<LandUsePaymentScheduleEntry | null>(null);
+
+  const closeSendDialog = () => {
+    setScheduleToSend(null);
+  };
+
+  const handleSendConfirm = () => {
+    if (!scheduleToSend) return;
+
+    onSendToInvoicing(scheduleToSend);
+    closeSendDialog();
+  };
+
   if (partySchedules.length === 0) {
     return (
       <div className="landuse-payment-schedule__party-group">
@@ -1040,7 +1054,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                             type="button"
                             variant={ButtonVariant.Primary}
                             size={ButtonSize.Small}
-                            onClick={() => onSendToInvoicing(schedule)}
+                            onClick={() => setScheduleToSend(schedule)}
                           >
                             {statusAction.buttonLabel}
                           </Button>
@@ -1172,6 +1186,37 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
           );
         },
       )}
+      <Dialog
+        id={`landuse-send-payment-schedule-${partyValue}`}
+        isOpen={scheduleToSend !== null}
+        aria-labelledby={`landuse-send-payment-schedule-${partyValue}-title`}
+        closeButtonLabelText="Sulje"
+        close={closeSendDialog}
+      >
+        <Dialog.Header
+          id={`landuse-send-payment-schedule-${partyValue}-title`}
+          title="Siirrä maksusuunnitelma laskutukseen"
+        />
+        <Dialog.Content>
+          Maksusuunnitelman maksuerät siirretään laskutukseen hyväksyttäviksi.
+        </Dialog.Content>
+        <Dialog.ActionButtons>
+          <Button
+            type="button"
+            variant={ButtonVariant.Secondary}
+            onClick={closeSendDialog}
+          >
+            Peruuta
+          </Button>
+          <Button
+            type="button"
+            variant={ButtonVariant.Primary}
+            onClick={handleSendConfirm}
+          >
+            Siirrä laskutukseen
+          </Button>
+        </Dialog.ActionButtons>
+      </Dialog>
     </div>
   );
 };
