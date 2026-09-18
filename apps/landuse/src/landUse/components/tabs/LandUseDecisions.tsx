@@ -300,6 +300,7 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                   <Field name={`${decisionName}.diaarinumero`}>
                                     {({ input }) => (
                                       <TextInput
+                                        inputMode="text"
                                         id={`decision-diaarinumero-${decisionIndex}`}
                                         label="Diaarinumero"
                                         value={getFieldTextValue(

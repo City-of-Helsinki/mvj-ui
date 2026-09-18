@@ -108,6 +108,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       <Field name={`${fieldPrefix}.name`}>
         {({ input }) => (
           <TextInput
+            inputMode="text"
             id={`${idPrefix}-name`}
             label="Nimi"
             value={getFieldTextValue(isEditMode, input.value)}
@@ -123,6 +124,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       <Field name={`${fieldPrefix}.businessId`}>
         {({ input }) => (
           <TextInput
+            inputMode="text"
             id={`${idPrefix}-business-id`}
             label="Y-tunnus"
             value={getFieldTextValue(isEditMode, input.value)}
@@ -166,6 +168,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       <Field name={`${fieldPrefix}.streetAddress`}>
         {({ input }) => (
           <TextInput
+            inputMode="text"
             id={`${idPrefix}-street`}
             label="Katuosoite"
             value={getFieldTextValue(isEditMode, input.value)}
@@ -183,6 +186,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
           <TextInput
             id={`${idPrefix}-postal-code`}
             label="Postinumero"
+            inputMode="numeric"
             value={getFieldTextValue(isEditMode, input.value)}
             onChange={input.onChange}
             readOnly={!isEditMode}
@@ -196,6 +200,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       <Field name={`${fieldPrefix}.city`}>
         {({ input }) => (
           <TextInput
+            inputMode="text"
             id={`${idPrefix}-city`}
             label="Postitoimipaikka"
             value={getFieldTextValue(isEditMode, input.value)}
@@ -239,6 +244,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
       <Field name={`${fieldPrefix}.careOf`}>
         {({ input }) => (
           <TextInput
+            inputMode="text"
             id={`${idPrefix}-care-of`}
             label="c/o"
             value={getFieldTextValue(isEditMode, input.value)}
@@ -256,6 +262,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
           <TextInput
             id={`${idPrefix}-phone`}
             label="Puhelinnumero"
+            inputMode="tel"
             value={getFieldTextValue(isEditMode, input.value)}
             onChange={input.onChange}
             readOnly={!isEditMode}
@@ -271,6 +278,7 @@ const CompanyPartyForm: React.FC<PartyFormProps> = ({
           <TextInput
             id={`${idPrefix}-email`}
             label="Sähköposti"
+            inputMode="email"
             value={getFieldTextValue(isEditMode, input.value)}
             onChange={input.onChange}
             readOnly={!isEditMode}
@@ -307,6 +315,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       <Field name={`${fieldPrefix}.name`}>
         {({ input }) => (
           <TextInput
+            inputMode="text"
             id={`${idPrefix}-name`}
             label="Nimi"
             value={getFieldTextValue(isEditMode, input.value)}
@@ -322,6 +331,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       <Field name={`${fieldPrefix}.nationalIdentificationNumber`}>
         {({ input }) => (
           <TextInput
+            inputMode="text"
             id={`${idPrefix}-national-id`}
             label="Henkilötunnus"
             value={getFieldTextValue(isEditMode, input.value)}
@@ -365,6 +375,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       <Field name={`${fieldPrefix}.streetAddress`}>
         {({ input }) => (
           <TextInput
+            inputMode="text"
             id={`${idPrefix}-street`}
             label="Katuosoite"
             value={getFieldTextValue(isEditMode, input.value)}
@@ -382,6 +393,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
           <TextInput
             id={`${idPrefix}-postal-code`}
             label="Postinumero"
+            inputMode="numeric"
             value={getFieldTextValue(isEditMode, input.value)}
             onChange={input.onChange}
             readOnly={!isEditMode}
@@ -395,6 +407,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       <Field name={`${fieldPrefix}.city`}>
         {({ input }) => (
           <TextInput
+            inputMode="text"
             id={`${idPrefix}-city`}
             label="Postitoimipaikka"
             value={getFieldTextValue(isEditMode, input.value)}
@@ -438,6 +451,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
       <Field name={`${fieldPrefix}.careOf`}>
         {({ input }) => (
           <TextInput
+            inputMode="text"
             id={`${idPrefix}-care-of`}
             label="c/o"
             value={getFieldTextValue(isEditMode, input.value)}
@@ -455,6 +469,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
           <TextInput
             id={`${idPrefix}-phone`}
             label="Puhelinnumero"
+            inputMode="tel"
             value={getFieldTextValue(isEditMode, input.value)}
             onChange={input.onChange}
             readOnly={!isEditMode}
@@ -470,6 +485,7 @@ const PersonPartyForm: React.FC<PartyFormProps> = ({
           <TextInput
             id={`${idPrefix}-email`}
             label="Sähköposti"
+            inputMode="email"
             value={getFieldTextValue(isEditMode, input.value)}
             onChange={input.onChange}
             readOnly={!isEditMode}
@@ -697,6 +713,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                                   >
                                                     {({ input }) => (
                                                       <TextInput
+                                                        inputMode="text"
                                                         id={`party-${index}-contact-${contactIndex}-name`}
                                                         label="Nimi"
                                                         value={getFieldTextValue(
@@ -721,6 +738,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                                       <TextInput
                                                         id={`party-${index}-contact-${contactIndex}-phone`}
                                                         label="Puhelinnumero"
+                                                        inputMode="tel"
                                                         value={getFieldTextValue(
                                                           isEditMode,
                                                           input.value,
@@ -743,6 +761,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                                       <TextInput
                                                         id={`party-${index}-contact-${contactIndex}-email`}
                                                         label="Sähköposti"
+                                                        inputMode="email"
                                                         value={getFieldTextValue(
                                                           isEditMode,
                                                           input.value,
@@ -823,6 +842,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                         >
                                           {({ input }) => (
                                             <TextInput
+                                              inputMode="text"
                                               id={`party-${index}-billing-ovt-code`}
                                               label="Ovt-tunnus"
                                               value={getFieldTextValue(
@@ -843,6 +863,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                         >
                                           {({ input }) => (
                                             <TextInput
+                                              inputMode="text"
                                               id={`party-${index}-billing-sap-customer-number`}
                                               label="SAP-asiakasnumero"
                                               value={getFieldTextValue(
@@ -863,6 +884,7 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                         >
                                           {({ input }) => (
                                             <TextInput
+                                              inputMode="text"
                                               id={`party-${index}-billing-reference`}
                                               label="Asiakkaan viite"
                                               value={getFieldTextValue(

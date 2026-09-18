@@ -644,6 +644,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                           <Field name={`${fieldName}.invoiceNumber`}>
                             {({ input: invoiceNumberInput }) => (
                               <TextInput
+                                inputMode="text"
                                 id={`landuse-billing-invoice-number-${index}`}
                                 label="Laskunumero"
                                 value={getFieldTextValue(
@@ -728,6 +729,7 @@ const InvoiceTableRow: React.FC<InvoiceTableRowProps> = ({
                                                 input: descriptionInput,
                                               }) => (
                                                 <TextInput
+                                                  inputMode="text"
                                                   id={`landuse-billing-invoice-row-description-${index}-${invoiceItemIndex}`}
                                                   label="Selite"
                                                   value={getFieldTextValue(

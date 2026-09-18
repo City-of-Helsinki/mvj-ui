@@ -252,6 +252,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                   <Field name={`${contractName}.sopimusnumero`}>
                                     {({ input }) => (
                                       <TextInput
+                                        inputMode="text"
                                         id={`contract-sopimusnumero-${contractIndex}`}
                                         label="Sopimusnumero"
                                         value={getFieldTextValue(
@@ -615,6 +616,7 @@ export const LandUseContracts: React.FC<LandUseContractsProps> = ({
                                         <Field name={`${changeName}.paatos`}>
                                           {({ input }) => (
                                             <TextInput
+                                              inputMode="text"
                                               id={`contract-muutos-paatos-${contractIndex}-${changeIndex}`}
                                               label="Päätös"
                                               value={getFieldTextValue(
