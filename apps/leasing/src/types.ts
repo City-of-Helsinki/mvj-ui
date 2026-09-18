@@ -37,6 +37,11 @@ export type ApiResponse<T = any> =
       | undefined
     )
   | null;
+export type QueryParams = {
+  [key: string]: string | number | undefined;
+  id?: number;
+  limit?: number;
+};
 type Coordinate = Array<number>;
 export type LeafletFeatureGeometry = {
   coordinates: Array<Coordinate>;

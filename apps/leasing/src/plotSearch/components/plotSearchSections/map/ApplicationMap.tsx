@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { flowRight, isEmpty } from "lodash-es";
 import AreaNotesEditMap from "@/areaNote/components/AreaNotesEditMap";
 import AreaNotesLayer from "@/areaNote/components/AreaNotesLayer";
-import { fetchAreaNoteList } from "@/areaNote/actions";
+import { fetchAreaNoteList } from "@/areaNote/slice";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { hasPermissions } from "@/util/helpers";
 import { getAreaNoteList } from "@/areaNote/selectors";

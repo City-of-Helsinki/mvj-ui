@@ -12,7 +12,7 @@ import Divider from "@/components/content/Divider";
 import PlanUnitsLayer from "./PlanUnitsLayer";
 import PlotsLayer from "./PlotsLayer";
 import Title from "@/components/content/Title";
-import { fetchAreaNoteList } from "@/areaNote/actions";
+import { fetchAreaNoteList } from "@/areaNote/slice";
 import { MAP_COLORS } from "@/util/constants";
 import {
   LeaseAreasFieldPaths,
