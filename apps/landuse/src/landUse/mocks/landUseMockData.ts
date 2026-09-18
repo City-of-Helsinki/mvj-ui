@@ -146,7 +146,7 @@ const ma113Decisions: LandUseDecisionsFormValues = {
       title: "Päätös 1",
       paattaja: "Ville Virkailija",
       paatospvm: "15.01.2026",
-      pykala: "60 §",
+      pykala: "60",
       paatoksenTyyppi: "Maankäyttösopimuksen hyväksyntä",
       diaarinumero: "HEL 2024-012345",
       huomautus: "Päätös eteni lautakunnan käsittelyyn suunnitellusti.",

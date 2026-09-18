@@ -17,7 +17,6 @@ import {
   landUseConditionTypeOptions,
   landUseDecisionMakerOptions,
   landUseDecisionTypeOptions,
-  landUseSectionOptions,
 } from "@/landUse/options";
 import {
   getFieldTextValue,
@@ -26,6 +25,7 @@ import {
 } from "@/landUse/utils/fieldUtils";
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 import type { PartyEntry } from "@/landUse/components/tabs/LandUseParties";
+import { validatePykala } from "@/landUse/validators";
 
 interface DecisionCondition {
   conditionType?: string;
@@ -242,35 +242,22 @@ export const LandUseDecisions: React.FC<LandUseDecisionsProps> = ({
                                 </div>
 
                                 <div className="landuse-grid__column-6">
-                                  <Field name={`${decisionName}.pykala`}>
-                                    {({ input }) =>
-                                      isEditMode ? (
-                                        <Select
-                                          id={`decision-pykala-${decisionIndex}`}
-                                          texts={{
-                                            label: "Pykälä",
-                                            placeholder: "Valitse",
-                                          }}
-                                          options={landUseSectionOptions}
-                                          value={normalizeSelectValue(
-                                            input.value,
-                                          )}
-                                          onChange={(selected) =>
-                                            handleSelectChange(
-                                              selected,
-                                              input.onChange,
-                                            )
-                                          }
-                                        />
-                                      ) : (
-                                        <TextInput
-                                          id={`decision-pykala-${decisionIndex}`}
-                                          label="Pykälä"
-                                          value={readOnlyTextValue(input.value)}
-                                          readOnly
-                                        />
-                                      )
-                                    }
+                                  <Field
+                                    name={`${decisionName}.pykala`}
+                                    validate={validatePykala}
+                                  >
+                                    {({ input, meta }) => (
+                                      <TextInput
+                                        id={`decision-pykala-${decisionIndex}`}
+                                        label="Pykälä §"
+                                        value={input.value}
+                                        onChange={input.onChange}
+                                        readOnly={!isEditMode}
+                                        inputMode="numeric"
+                                        invalid={Boolean(meta.error)}
+                                        errorText={meta.error}
+                                      />
+                                    )}
                                   </Field>
                                 </div>
 
