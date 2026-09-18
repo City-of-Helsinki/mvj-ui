@@ -904,9 +904,22 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
   onDecline,
 }) => {
   const [openInvoice, setOpenInvoice] = useState<string | null>(null);
+  const [scheduleToAccept, setScheduleToAccept] =
+    useState<LandUseBillingSchedule | null>(null);
   const [scheduleToDecline, setScheduleToDecline] =
     useState<LandUseBillingSchedule | null>(null);
   const [rejectedReason, setRejectedReason] = useState("");
+
+  const closeAcceptDialog = () => {
+    setScheduleToAccept(null);
+  };
+
+  const handleAcceptConfirm = () => {
+    if (!scheduleToAccept) return;
+
+    onAccept(scheduleToAccept);
+    closeAcceptDialog();
+  };
 
   const closeDeclineDialog = () => {
     setScheduleToDecline(null);
@@ -1219,7 +1232,7 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
                     type="button"
                     variant={ButtonVariant.Primary}
                     size={ButtonSize.Small}
-                    onClick={() => onAccept(schedule)}
+                    onClick={() => setScheduleToAccept(schedule)}
                   >
                     Hyväksy kaikki ja lähetä laskut
                   </Button>
@@ -1231,6 +1244,37 @@ const InvoiceReviewTable: React.FC<InvoiceReviewTableProps> = ({
       ) : (
         <p>Ei hyväksyttäviä maksusuunnitelmia.</p>
       )}
+      <Dialog
+        id="landuse-accept-payment-schedule"
+        isOpen={scheduleToAccept !== null}
+        aria-labelledby="landuse-accept-payment-schedule-title"
+        closeButtonLabelText="Sulje"
+        close={closeAcceptDialog}
+      >
+        <Dialog.Header
+          id="landuse-accept-payment-schedule-title"
+          title="Hyväksy maksusuunnitelma"
+        />
+        <Dialog.Content>
+          Hyväksytyistä maksueristä luodaan laskut, ja lähetetään SAP:iin
+        </Dialog.Content>
+        <Dialog.ActionButtons>
+          <Button
+            type="button"
+            variant={ButtonVariant.Secondary}
+            onClick={closeAcceptDialog}
+          >
+            Peruuta
+          </Button>
+          <Button
+            type="button"
+            variant={ButtonVariant.Primary}
+            onClick={handleAcceptConfirm}
+          >
+            Hyväksy kaikki ja lähetä laskut
+          </Button>
+        </Dialog.ActionButtons>
+      </Dialog>
       <Dialog
         id="landuse-decline-payment-schedule"
         isOpen={scheduleToDecline !== null}
