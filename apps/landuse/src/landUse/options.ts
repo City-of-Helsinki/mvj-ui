@@ -280,12 +280,6 @@ export const landUseDecisionMakerOptions = [
   { label: "Kaupunginhallitus", value: "Kaupunginhallitus" },
 ];
 
-export const landUseSectionOptions = [
-  { label: "10 §", value: "10 §" },
-  { label: "20 §", value: "20 §" },
-  { label: "30 §", value: "30 §" },
-];
-
 export const landUseDecisionTypeOptions = [
   {
     label: "Rasite- ja/tai rasitteenluont.ehdon lis. (1 ehto)",
