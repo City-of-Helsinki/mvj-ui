@@ -384,7 +384,7 @@ const LandUseListPage: React.FC = () => {
           title="Luo uusi maankäyttösopimustunnus"
         />
         <Dialog.Content>
-          <div className="landuse-list__dialog-content">
+          <div>
             <Select
               id="landuse-municipality"
               options={MUNICIPALITY_OPTIONS}
