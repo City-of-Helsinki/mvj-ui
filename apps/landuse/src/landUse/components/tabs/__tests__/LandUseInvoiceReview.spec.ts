@@ -13,7 +13,11 @@ import {
   isInvoiceContentEditableInBilling,
   type LandUseBillingInvoice,
 } from "@/landUse/components/tabs/LandUseBilling";
-import type { LandUsePaymentScheduleEntry } from "@/landUse/components/tabs/LandUsePaymentSchedule";
+import {
+  getMissingPaymentScheduleFieldLabels,
+  type LandUsePaymentScheduleEntry,
+  validateRequiredInstallmentField,
+} from "@/landUse/components/tabs/LandUsePaymentSchedule";
 
 const createInvoice = (installmentNumber: string): LandUseInvoice => ({
   recipientPartyIndex: "0",
@@ -48,6 +52,46 @@ const createSchedule = (): LandUsePaymentScheduleEntry => ({
 });
 
 describe("invoice review workflow", () => {
+  it("requires a non-empty installment field value", () => {
+    expect(validateRequiredInstallmentField("")).toBe("Pakollinen tieto");
+    expect(validateRequiredInstallmentField("   ")).toBe("Pakollinen tieto");
+    expect(validateRequiredInstallmentField("2026-04-15")).toBeUndefined();
+    expect(validateRequiredInstallmentField(0)).toBeUndefined();
+  });
+
+  it("lists required party and installment fields missing before invoicing", () => {
+    const schedule = createSchedule();
+
+    expect(
+      getMissingPaymentScheduleFieldLabels(schedule, {
+        name: "",
+        streetAddress: "",
+        city: "Helsinki", // correct
+        postalCode: "",
+        ovtCode: "", // not required
+        reference: "", // not required
+        sapCustomerNumber: "",
+        businessId: "",
+        isCompany: true, // correct
+      }),
+    ).toEqual([
+      "Nimi",
+      "Y-tunnus",
+      "Katuosoite",
+      "Postinumero",
+      "SAP-asiakasnumero",
+      "Korotusprosentti %",
+      "Korko %",
+      "Koron marginaali %",
+      "Erä 1: Korotuksen alkupäivä",
+      "Erä 1: Korotuksen loppupäivä",
+      "Erä 1: Maksurivit",
+      "Erä 2: Korotuksen alkupäivä",
+      "Erä 2: Korotuksen loppupäivä",
+      "Erä 2: Maksurivit",
+    ]);
+  });
+
   it("creates one open billing invoice per accepted schedule installment", () => {
     const result = createAcceptedBillingInvoices(createSchedule(), []);
 

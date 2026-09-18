@@ -105,6 +105,73 @@ type SelectedPartyInvoiceData = Pick<
     isCompany: boolean;
   };
 
+export const validateRequiredInstallmentField = (
+  value: unknown,
+): string | undefined => {
+  return isPaymentScheduleFieldFilled(value) ? undefined : "Pakollinen tieto";
+};
+
+const isPaymentScheduleFieldFilled = (value: unknown): boolean =>
+  typeof value === "string"
+    ? Boolean(value.trim())
+    : value !== null && value !== undefined;
+
+export const getMissingPaymentScheduleFieldLabels = (
+  schedule: LandUsePaymentScheduleEntry,
+  party: SelectedPartyInvoiceData,
+): string[] => {
+  const missingPartyFields = [
+    ["Nimi", party.name],
+    ...(party.isCompany ? [["Y-tunnus", party.businessId]] : []),
+    ["Katuosoite", party.streetAddress],
+    ["Postinumero", party.postalCode],
+    ["Postitoimipaikka", party.city],
+    ["SAP-asiakasnumero", party.sapCustomerNumber],
+  ].flatMap(([label, value]) =>
+    isPaymentScheduleFieldFilled(value) ? [] : [label],
+  );
+
+  const missingBasicFieldLabels = [
+    ["Korotusprosentti %", schedule.korotusProsentti],
+    ["Korko %", schedule.korkoPeruskorko],
+    ["Koron marginaali %", schedule.korkoMarginaali],
+  ].flatMap(([label, value]) =>
+    isPaymentScheduleFieldFilled(value) ? [] : [label],
+  );
+
+  const missingInstallmentFields = schedule.installments.flatMap(
+    (installment, installmentIndex) => {
+      const secondItemKind = getInterestKind(
+        installment.invoiceItems?.[1]?.itemType ?? "",
+      );
+      const periodLabels = getInterestPeriodLabels(secondItemKind ?? "korotus");
+      const installmentLabel = `Erä ${installmentIndex + 1}`;
+      const fields = [
+        ["Eräpäivä", installment.dueDate],
+        [periodLabels.startLabel, installment.laskentajaksonAlkupvm],
+        [periodLabels.endLabel, installment.laskentajaksonLoppupvm],
+        ...(!installment.invoiceItems?.length ? [["Maksurivit", ""]] : []),
+        ...(installment.invoiceItems ?? []).flatMap((item, itemIndex) => [
+          [`Maksun tyyppi, rivi ${itemIndex + 1}`, item.itemType],
+          [`Summa (€), rivi ${itemIndex + 1}`, item.amountExcludingVat],
+        ]),
+      ];
+
+      return fields.flatMap(([label, value]) =>
+        isPaymentScheduleFieldFilled(value)
+          ? []
+          : [`${installmentLabel}: ${label}`],
+      );
+    },
+  );
+
+  return [
+    ...missingPartyFields,
+    ...missingBasicFieldLabels,
+    ...missingInstallmentFields,
+  ];
+};
+
 const handleSelectChange = (
   selectedOptions: SelectOption[],
   callback: (value: string | undefined) => void,
@@ -281,6 +348,7 @@ interface InvoiceItemRowProps {
   itemIndex: number;
   canEdit: boolean;
   periodDays: number | null;
+  validateInstallments: boolean;
 }
 
 const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
@@ -292,10 +360,23 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
   itemIndex,
   canEdit,
   periodDays,
+  validateInstallments,
 }) => {
-  const { input: itemTypeInput } = useField(`${itemFieldName}.itemType`);
-  const { input: amountInput } = useField(
+  const { input: itemTypeInput, meta: itemTypeMeta } = useField<string>(
+    `${itemFieldName}.itemType`,
+    {
+      validate: validateInstallments
+        ? validateRequiredInstallmentField
+        : undefined,
+    },
+  );
+  const { input: amountInput, meta: amountMeta } = useField<string>(
     `${itemFieldName}.amountExcludingVat`,
+    {
+      validate: validateInstallments
+        ? validateRequiredInstallmentField
+        : undefined,
+    },
   );
   // Base amount for interest is always the Maankäyttökorvaus row (index 0)
   const { input: baseAmountInput } = useField(
@@ -339,6 +420,7 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
             texts={{ label: "Maksun tyyppi", placeholder: "Valitse" }}
             options={landUseInvoiceItemTypeSelectOptions}
             value={itemTypeInput.value}
+            invalid={Boolean(itemTypeMeta.error)}
             onChange={(selected) => {
               if (selected.length > 0) {
                 itemTypeInput.onChange(selected[0].value);
@@ -350,6 +432,8 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
             id={`landuse-payment-schedule-invoice-row-item-type-${scheduleIndex}-${installmentIndex}-${itemIndex}`}
             label="Maksun tyyppi"
             value={readOnlyTextValue(itemTypeInput.value)}
+            invalid={Boolean(itemTypeMeta.error)}
+            errorText={itemTypeMeta.error}
             readOnly
           />
         )}
@@ -363,6 +447,8 @@ const InvoiceItemRow: React.FC<InvoiceItemRowProps> = ({
           onChange={amountInput.onChange}
           unit="€"
           isEditMode={canEdit}
+          invalid={Boolean(amountMeta.error)}
+          errorText={amountMeta.error}
         />
       </div>
 
@@ -691,6 +777,7 @@ interface InstallmentStepProps {
   scheduleIndex: number;
   installmentIndex: number;
   canEdit: boolean;
+  validateInstallments: boolean;
 }
 
 const InstallmentStep: React.FC<InstallmentStepProps> = ({
@@ -699,6 +786,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
   scheduleIndex,
   installmentIndex,
   canEdit,
+  validateInstallments,
 }) => {
   const { input: periodStartDateInput } = useField(
     `${fieldName}.laskentajaksonAlkupvm`,
@@ -722,8 +810,15 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
     <Fieldset heading="" className="full-width">
       <div className="landuse-grid landuse-grid__bottom-margin">
         <div className="landuse-grid__column-3">
-          <Field name={`${fieldName}.dueDate`}>
-            {({ input }) =>
+          <Field<string>
+            name={`${fieldName}.dueDate`}
+            validate={
+              validateInstallments
+                ? validateRequiredInstallmentField
+                : undefined
+            }
+          >
+            {({ input, meta }) =>
               canEdit ? (
                 <DateInput
                   id={`landuse-payment-schedule-due-date-${scheduleIndex}-${installmentIndex}`}
@@ -733,12 +828,16 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                   placeholder="DD.MM.YYYY"
                   language="fi"
                   disableConfirmation
+                  invalid={Boolean(meta.error)}
+                  errorText={meta.error}
                 />
               ) : (
                 <TextInput
                   id={`landuse-payment-schedule-due-date-${scheduleIndex}-${installmentIndex}`}
                   label="Eräpäivä"
                   value={readOnlyTextValue(input.value)}
+                  invalid={Boolean(meta.error)}
+                  errorText={meta.error}
                   readOnly
                 />
               )
@@ -753,8 +852,15 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
             return (
               <>
                 <div className="landuse-grid__column-3">
-                  <Field name={`${fieldName}.laskentajaksonAlkupvm`}>
-                    {({ input }) =>
+                  <Field<string>
+                    name={`${fieldName}.laskentajaksonAlkupvm`}
+                    validate={
+                      validateInstallments
+                        ? validateRequiredInstallmentField
+                        : undefined
+                    }
+                  >
+                    {({ input, meta }) =>
                       canEdit ? (
                         <DateInput
                           id={`landuse-payment-schedule-laskentajakson-alkupvm-${scheduleIndex}-${installmentIndex}`}
@@ -764,12 +870,16 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                           placeholder="DD.MM.YYYY"
                           language="fi"
                           disableConfirmation
+                          invalid={Boolean(meta.error)}
+                          errorText={meta.error}
                         />
                       ) : (
                         <TextInput
                           id={`landuse-payment-schedule-laskentajakson-alkupvm-${scheduleIndex}-${installmentIndex}`}
                           label={startLabel}
                           value={readOnlyTextValue(input.value)}
+                          invalid={Boolean(meta.error)}
+                          errorText={meta.error}
                           readOnly
                         />
                       )
@@ -777,8 +887,15 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                   </Field>
                 </div>
                 <div className="landuse-grid__column-3">
-                  <Field name={`${fieldName}.laskentajaksonLoppupvm`}>
-                    {({ input }) =>
+                  <Field<string>
+                    name={`${fieldName}.laskentajaksonLoppupvm`}
+                    validate={
+                      validateInstallments
+                        ? validateRequiredInstallmentField
+                        : undefined
+                    }
+                  >
+                    {({ input, meta }) =>
                       canEdit ? (
                         <DateInput
                           id={`landuse-payment-schedule-laskentajakson-loppupvm-${scheduleIndex}-${installmentIndex}`}
@@ -788,12 +905,16 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                           placeholder="DD.MM.YYYY"
                           language="fi"
                           disableConfirmation
+                          invalid={Boolean(meta.error)}
+                          errorText={meta.error}
                         />
                       ) : (
                         <TextInput
                           id={`landuse-payment-schedule-laskentajakson-loppupvm-${scheduleIndex}-${installmentIndex}`}
                           label={endLabel}
                           value={readOnlyTextValue(input.value)}
+                          invalid={Boolean(meta.error)}
+                          errorText={meta.error}
                           readOnly
                         />
                       )
@@ -830,6 +951,7 @@ const InstallmentStep: React.FC<InstallmentStepProps> = ({
                     itemIndex={itemIndex}
                     canEdit={canEdit}
                     periodDays={periodDays}
+                    validateInstallments={validateInstallments}
                   />
                 ))
               ) : (
@@ -851,6 +973,7 @@ const buildInstallmentStep = ({
   isEditMode,
   scheduleStatus,
   invoice,
+  validateInstallments,
 }: {
   fieldName: string;
   scheduleFieldName: string;
@@ -859,6 +982,7 @@ const buildInstallmentStep = ({
   isEditMode: boolean;
   scheduleStatus: LandUsePaymentScheduleStatus | undefined;
   invoice: LandUseInvoice;
+  validateInstallments: boolean;
 }) => {
   const canEdit = isEditMode && isScheduleEditable(scheduleStatus);
   const installmentLabel =
@@ -871,11 +995,13 @@ const buildInstallmentStep = ({
     key: `payment-schedule-${scheduleIndex}-installment-${installmentIndex}`,
     description: (
       <InstallmentStep
+        key={validateInstallments ? "validate" : "draft"}
         fieldName={fieldName}
         scheduleFieldName={scheduleFieldName}
         scheduleIndex={scheduleIndex}
         installmentIndex={installmentIndex}
         canEdit={canEdit}
+        validateInstallments={validateInstallments}
       />
     ),
   };
@@ -940,6 +1066,9 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
   }
 
   const selectedPartyData = getSelectedPartyInvoiceData(partyValue, parties);
+  const missingSendFieldLabels = scheduleToSend
+    ? getMissingPaymentScheduleFieldLabels(scheduleToSend, selectedPartyData)
+    : [];
 
   return (
     <div className="landuse-payment-schedule__party-group">
@@ -1108,7 +1237,15 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                           title: `Perustiedot`,
                           key: `payment-schedule-${index}-details`,
                           description: (
-                            <Fieldset heading="" className="full-width">
+                            <Fieldset
+                              key={
+                                scheduleToSend?.id === schedule.id
+                                  ? "validate"
+                                  : "draft"
+                              }
+                              heading=""
+                              className="full-width"
+                            >
                               <div className="landuse-grid landuse-grid__bottom-margin">
                                 <div className="landuse-grid__column-3">
                                   <TextInput
@@ -1158,14 +1295,23 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
 
                               <div className="landuse-grid landuse-grid">
                                 <div className="landuse-grid__column-3">
-                                  <Field name={`${fieldName}.korotusProsentti`}>
-                                    {({ input }) => (
+                                  <Field<string | number>
+                                    name={`${fieldName}.korotusProsentti`}
+                                    validate={
+                                      scheduleToSend?.id === schedule.id
+                                        ? validateRequiredInstallmentField
+                                        : undefined
+                                    }
+                                  >
+                                    {({ input, meta }) => (
                                       <NumericDecimalInput
                                         id={`landuse-payment-schedule-korotus-prosentti-${index}`}
                                         label="Korotusprosentti %"
                                         value={input.value}
                                         onChange={input.onChange}
                                         unit="%"
+                                        invalid={Boolean(meta.error)}
+                                        errorText={meta.error}
                                         isEditMode={
                                           isEditMode &&
                                           isScheduleEditable(schedule.status)
@@ -1175,14 +1321,23 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                   </Field>
                                 </div>
                                 <div className="landuse-grid__column-3">
-                                  <Field name={`${fieldName}.korkoPeruskorko`}>
-                                    {({ input }) => (
+                                  <Field<string | number>
+                                    name={`${fieldName}.korkoPeruskorko`}
+                                    validate={
+                                      scheduleToSend?.id === schedule.id
+                                        ? validateRequiredInstallmentField
+                                        : undefined
+                                    }
+                                  >
+                                    {({ input, meta }) => (
                                       <NumericDecimalInput
                                         id={`landuse-payment-schedule-korko-peruskorko-${index}`}
                                         label="Korko %"
                                         value={input.value}
                                         onChange={input.onChange}
                                         unit="%"
+                                        invalid={Boolean(meta.error)}
+                                        errorText={meta.error}
                                         isEditMode={
                                           isEditMode &&
                                           isScheduleEditable(schedule.status)
@@ -1192,14 +1347,23 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                                   </Field>
                                 </div>
                                 <div className="landuse-grid__column-3">
-                                  <Field name={`${fieldName}.korkoMarginaali`}>
-                                    {({ input }) => (
+                                  <Field<string | number>
+                                    name={`${fieldName}.korkoMarginaali`}
+                                    validate={
+                                      scheduleToSend?.id === schedule.id
+                                        ? validateRequiredInstallmentField
+                                        : undefined
+                                    }
+                                  >
+                                    {({ input, meta }) => (
                                       <NumericDecimalInput
                                         id={`landuse-payment-schedule-korko-marginaali-${index}`}
                                         label="Koron marginaali %"
                                         value={input.value}
                                         onChange={input.onChange}
                                         unit="%"
+                                        invalid={Boolean(meta.error)}
+                                        errorText={meta.error}
                                         isEditMode={
                                           isEditMode &&
                                           isScheduleEditable(schedule.status)
@@ -1223,6 +1387,8 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
                               scheduleStatus: schedule.status,
                               invoice:
                                 installmentFields.value[installmentIndex],
+                              validateInstallments:
+                                scheduleToSend?.id === schedule.id,
                             }),
                         ),
                       ]}
@@ -1246,7 +1412,18 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
           title="Siirrä maksusuunnitelma laskutukseen"
         />
         <Dialog.Content>
-          Maksusuunnitelman maksuerät siirretään laskutukseen hyväksyttäviksi.
+          {missingSendFieldLabels.length > 0 ? (
+            <>
+              <p>Seuraavat pakolliset tiedot puuttuvat:</p>
+              <ul>
+                {missingSendFieldLabels.map((label) => (
+                  <li key={label}>{label}</li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            "Maksusuunnitelman maksuerät siirretään laskutukseen hyväksyttäviksi."
+          )}
         </Dialog.Content>
         <Dialog.ActionButtons>
           <Button
@@ -1260,6 +1437,7 @@ const PartyGroupSection: React.FC<PartyGroupSectionProps> = ({
             type="button"
             variant={ButtonVariant.Primary}
             onClick={handleSendConfirm}
+            disabled={missingSendFieldLabels.length > 0}
           >
             Siirrä laskutukseen
           </Button>

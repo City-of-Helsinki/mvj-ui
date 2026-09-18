@@ -79,7 +79,15 @@ export const NumericDecimalInput = ({
         : "-";
 
     return (
-      <TextInput id={id} label={label} value={display} readOnly style={style} />
+      <TextInput
+        id={id}
+        label={label}
+        value={display}
+        readOnly
+        errorText={errorText}
+        invalid={invalid}
+        style={style}
+      />
     );
   }
 
