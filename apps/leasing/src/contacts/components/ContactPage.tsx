@@ -189,7 +189,7 @@ const ContactPageView: React.FC<{
         showSearch: false,
       }),
     );
-    dispatch(fetchSingleContact(contactId));
+    dispatch(fetchSingleContact(Number(contactId)));
 
     if (query.tab) {
       setActiveTab(Number(query.tab));

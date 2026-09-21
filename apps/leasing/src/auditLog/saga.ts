@@ -1,19 +1,21 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { receiveError } from "@/api/slice";
 import {
+  fetchAuditLogByContact,
   receiveAuditLogByContact,
   notFoundByContact,
+  fetchAuditLogByLease,
   receiveAuditLogByLease,
   notFoundByLease,
+  fetchAuditLogByAreaSearch,
   receiveAuditLogByAreaSearch,
   notFoundByAreaSearch,
-} from "./actions";
+} from "./slice";
 import { fetchAuditLog } from "./requests";
 
 function* fetchAuditLogByContactSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchAuditLogByContact>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -43,8 +45,7 @@ function* fetchAuditLogByContactSaga({
 
 function* fetchAuditLogByLeaseSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchAuditLogByLease>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -74,8 +75,7 @@ function* fetchAuditLogByLeaseSaga({
 
 function* fetchAuditLogByAreaSearchSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchAuditLogByAreaSearch>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -109,13 +109,10 @@ function* fetchAuditLogByAreaSearchSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
+      yield takeLatest(fetchAuditLogByContact, fetchAuditLogByContactSaga);
+      yield takeLatest(fetchAuditLogByLease, fetchAuditLogByLeaseSaga);
       yield takeLatest(
-        "mvj/auditLog/FETCH_BY_CONTACT",
-        fetchAuditLogByContactSaga,
-      );
-      yield takeLatest("mvj/auditLog/FETCH_BY_LEASE", fetchAuditLogByLeaseSaga);
-      yield takeLatest(
-        "mvj/auditLog/FETCH_BY_AREASEARCH",
+        fetchAuditLogByAreaSearch,
         fetchAuditLogByAreaSearchSaga,
       );
     }),

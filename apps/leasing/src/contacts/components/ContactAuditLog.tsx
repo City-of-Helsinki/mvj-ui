@@ -6,7 +6,7 @@ import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import Pagination from "@/components/table/Pagination";
 import TableWrapper from "@/components/table/TableWrapper";
-import { fetchAuditLogByContact } from "@/auditLog/actions";
+import { fetchAuditLogByContact } from "@/auditLog/slice";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import {
   getApiResponseCount,
