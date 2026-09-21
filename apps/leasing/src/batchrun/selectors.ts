@@ -48,6 +48,6 @@ export const getIsFetchingScheduledJobs: Selector<boolean, void> = (
 export const getScheduledJobs: Selector<ScheduledJobs, void> = (
   state: RootState,
 ): ScheduledJobs => state.batchrun.scheduledJobs;
-export const getIsFetchingRuns: Selector<Attributes, void> = (
+export const getIsFetchingRuns: Selector<boolean, void> = (
   state: RootState,
-): Attributes => state.batchrun.isFetchingJobRuns;
+): boolean => state.batchrun.isFetchingJobRuns;

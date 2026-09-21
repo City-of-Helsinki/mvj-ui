@@ -5,7 +5,7 @@ import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import SortableTable from "@/components/table/SortableTable";
 import TablePanel from "@/components/table/TablePanel";
-import { fetchJobRunLogEntriesByRun } from "@/batchrun/actions";
+import { fetchJobRunLogEntriesByRun } from "@/batchrun/slice";
 import {
   JobRunLogEntryFieldPaths,
   JobRunLogEntryFieldTitles,

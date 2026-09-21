@@ -14,7 +14,7 @@ import {
   fetchJobRunAttributes,
   fetchJobRunLogEntryAttributes,
   fetchJobRuns,
-} from "@/batchrun/actions";
+} from "@/batchrun/slice";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import { PermissionMissingTexts } from "@/enums";
 import {
