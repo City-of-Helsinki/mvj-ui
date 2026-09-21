@@ -8,7 +8,7 @@ import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import Pagination from "@/components/table/Pagination";
 import TableWrapper from "@/components/table/TableWrapper";
 import Title from "@/components/content/Title";
-import { fetchAuditLogByLease } from "@/auditLog/actions";
+import { fetchAuditLogByLease } from "@/auditLog/slice";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import { LeaseFieldPaths, LeaseFieldTitles } from "@/leases/enums";
 import {

@@ -8,7 +8,7 @@ import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import Pagination from "@/components/table/Pagination";
 import TableWrapper from "@/components/table/TableWrapper";
 import Title from "@/components/content/Title";
-import { fetchAuditLogByAreaSearch } from "@/auditLog/actions";
+import { fetchAuditLogByAreaSearch } from "@/auditLog/slice";
 import { LIST_TABLE_PAGE_SIZE } from "@/util/constants";
 import {
   AreaSearchFieldPaths,

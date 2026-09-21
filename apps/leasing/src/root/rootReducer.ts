@@ -3,7 +3,7 @@ import { reducer as formReducer } from "redux-form";
 import apiReducer from "@/api/slice";
 import areaNoteReducer from "@/areaNote/slice";
 import areaSearchReducer from "@/areaSearch/reducer";
-import auditLogReducer from "@/auditLog/reducer";
+import auditLogReducer from "@/auditLog/slice";
 import { authReducer } from "@/auth/reducer";
 import batchrunReducer from "@/batchrun/reducer";
 import billingPeriodReducer from "@/billingPeriods/reducer";

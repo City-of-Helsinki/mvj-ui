@@ -1,22 +1,13 @@
 import { describe, expect, it } from "vitest";
-import {
+import auditLogReducer, {
+  initialState,
   fetchAuditLogByContact,
   receiveAuditLogByContact,
   notFoundByContact,
   fetchAuditLogByLease,
   receiveAuditLogByLease,
   notFoundByLease,
-} from "./actions";
-import auditLogReducer from "./reducer";
-import type { AuditLogState } from "./types";
-const defaultState: AuditLogState = {
-  byContact: {},
-  byLease: {},
-  byAreaSearch: {},
-  isFetchingByContact: {},
-  isFetchingByLease: {},
-  isFetchingByAreaSearch: {},
-};
+} from "./slice";
 
 describe("AuditLog", () => {
   describe("Reducer", () => {
@@ -24,59 +15,62 @@ describe("AuditLog", () => {
       it("should update isFetchingByContact to true when fetching contact auditlog", () => {
         const dummyContactId = 123;
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingByContact: {
             [dummyContactId]: true,
           },
         };
         const state = auditLogReducer(
-          {},
-          fetchAuditLogByContact(dummyContactId),
+          initialState,
+          fetchAuditLogByContact({ id: dummyContactId }),
         );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingByContact to false by notFoundByContact", () => {
         const dummyContactId = 123;
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingByContact: {
             [dummyContactId]: false,
           },
         };
-        let state = auditLogReducer({}, fetchAuditLogByContact(dummyContactId));
+        let state = auditLogReducer(
+          initialState,
+          fetchAuditLogByContact({ id: dummyContactId }),
+        );
         state = auditLogReducer(state, notFoundByContact(dummyContactId));
         expect(state).to.deep.equal(newState);
       });
       it("should update auditLogByContact", () => {
-        const dummyContactId = "123";
+        const dummyContactId = 123;
         const dummyPayload = {
           [dummyContactId]: {
             foo: "bar",
           },
         };
         const newState = {
-          ...defaultState,
+          ...initialState,
           byContact: dummyPayload,
           isFetchingByContact: {
             [dummyContactId]: false,
           },
         };
         const state = auditLogReducer(
-          {},
+          initialState,
           receiveAuditLogByContact(dummyPayload),
         );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingByLease to true when fetching lease auditlog", () => {
-        const dummyLeaseId = "123";
+        const dummyLeaseId = 123;
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingByLease: {
             [dummyLeaseId]: true,
           },
         };
         const state = auditLogReducer(
-          {},
+          initialState,
           fetchAuditLogByLease({
             id: dummyLeaseId,
           }),
@@ -86,13 +80,13 @@ describe("AuditLog", () => {
       it("should update isFetchingByLease to false by notFoundByLease", () => {
         const dummyLeaseId = 123;
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingByLease: {
             [dummyLeaseId]: false,
           },
         };
         let state = auditLogReducer(
-          {},
+          initialState,
           fetchAuditLogByLease({
             id: dummyLeaseId,
           }),
@@ -101,20 +95,23 @@ describe("AuditLog", () => {
         expect(state).to.deep.equal(newState);
       });
       it("should update auditLogByLease", () => {
-        const dummyLeaseId = "123";
+        const dummyLeaseId = 123;
         const dummyPayload = {
           [dummyLeaseId]: {
             foo: "bar",
           },
         };
         const newState = {
-          ...defaultState,
+          ...initialState,
           byLease: dummyPayload,
           isFetchingByLease: {
             [dummyLeaseId]: false,
           },
         };
-        const state = auditLogReducer({}, receiveAuditLogByLease(dummyPayload));
+        const state = auditLogReducer(
+          initialState,
+          receiveAuditLogByLease(dummyPayload),
+        );
         expect(state).to.deep.equal(newState);
       });
     });
