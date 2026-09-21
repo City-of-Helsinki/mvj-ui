@@ -190,14 +190,11 @@ function* editRentBasisSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
-      yield takeLatest(fetchAttributesAction.type, fetchAttributesSaga);
-      yield takeLatest(fetchRentBasisListAction.type, fetchRentBasisListSaga);
-      yield takeLatest(createRentBasisAction.type, createRentBasisSaga);
-      yield takeLatest(editRentBasisAction.type, editRentBasisSaga);
-      yield takeLatest(
-        fetchSingleRentBasisAction.type,
-        fetchSingleRentBasisSaga,
-      );
+      yield takeLatest(fetchAttributesAction, fetchAttributesSaga);
+      yield takeLatest(fetchRentBasisListAction, fetchRentBasisListSaga);
+      yield takeLatest(createRentBasisAction, createRentBasisSaga);
+      yield takeLatest(editRentBasisAction, editRentBasisSaga);
+      yield takeLatest(fetchSingleRentBasisAction, fetchSingleRentBasisSaga);
     }),
   ]);
 }
