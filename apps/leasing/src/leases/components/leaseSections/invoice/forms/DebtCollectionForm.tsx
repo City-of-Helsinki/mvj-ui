@@ -25,7 +25,7 @@ import {
   receiveIsSaveClicked,
   showCollectionCourtDecisionPanel,
   uploadCollectionCourtDecision,
-} from "@/collectionCourtDecision/actions";
+} from "@/collectionCourtDecision/slice";
 import {
   deleteCollectionLetter,
   uploadCollectionLetter,
