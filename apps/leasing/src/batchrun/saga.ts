@@ -1,6 +1,12 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { receiveError } from "@/api/slice";
 import {
+  fetchJobRunAttributes as fetchJobRunAttributesAction,
+  fetchJobRuns as fetchJobRunsAction,
+  fetchJobRunLogEntryAttributes as fetchJobRunLogEntryAttributesAction,
+  fetchJobRunLogEntriesByRun as fetchJobRunLogEntriesByRunAction,
+  fetchScheduledJobAttributes as fetchScheduledJobAttributesAction,
+  fetchScheduledJobs as fetchScheduledJobsAction,
   notFoundJobRuns,
   notFoundJobRunAttributes,
   notFoundJobRunLogEntryAttributes,
@@ -16,7 +22,7 @@ import {
   receiveScheduledJobAttributes,
   receiveScheduledJobMethods,
   receiveScheduledJobs,
-} from "@/batchrun/actions";
+} from "@/batchrun/slice";
 import {
   fetchJobRunAttributes,
   fetchJobRuns,
@@ -58,8 +64,7 @@ function* fetchJobRunAttributesSaga(): Generator<any, any, any> {
 
 function* fetchJobRunsSaga({
   payload: query,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchJobRunsAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -115,8 +120,11 @@ function* fetchJobRunLogEntryAttributesSaga(): Generator<any, any, any> {
 
 function* fetchJobRunLogEntriesByRunSaga({
   payload: run,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchJobRunLogEntriesByRunAction>): Generator<
+  any,
+  any,
+  any
+> {
   try {
     const {
       response: { status: statusCode },
@@ -180,8 +188,7 @@ function* fetchScheduledJobAttributesSaga(): Generator<any, any, any> {
 
 function* fetchScheduledJobsSaga({
   payload: query,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchScheduledJobsAction>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -208,27 +215,21 @@ function* fetchScheduledJobsSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
+      yield takeLatest(fetchJobRunAttributesAction, fetchJobRunAttributesSaga);
       yield takeLatest(
-        "mvj/batchrun/FETCH_JOB_RUN_ATTRIBUTES",
-        fetchJobRunAttributesSaga,
-      );
-      yield takeLatest(
-        "mvj/batchrun/FETCH_JOB_RUN_LOG_ENTRY_ATTRIBUTES",
+        fetchJobRunLogEntryAttributesAction,
         fetchJobRunLogEntryAttributesSaga,
       );
       yield takeLatest(
-        "mvj/batchrun/FETCH_SCHEDULED_JOB_ATTRIBUTES",
+        fetchScheduledJobAttributesAction,
         fetchScheduledJobAttributesSaga,
       );
-      yield takeLatest("mvj/batchrun/FETCH_JOB_RUNS", fetchJobRunsSaga);
+      yield takeLatest(fetchJobRunsAction, fetchJobRunsSaga);
       yield takeLatest(
-        "mvj/batchrun/FETCH_JOB_RUN_LOG_ENTRIES_BY_ID",
+        fetchJobRunLogEntriesByRunAction,
         fetchJobRunLogEntriesByRunSaga,
       );
-      yield takeLatest(
-        "mvj/batchrun/FETCH_SCHEDULED_JOBS",
-        fetchScheduledJobsSaga,
-      );
+      yield takeLatest(fetchScheduledJobsAction, fetchScheduledJobsSaga);
     }),
   ]);
 }

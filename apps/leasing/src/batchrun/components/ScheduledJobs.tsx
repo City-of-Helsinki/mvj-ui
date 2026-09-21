@@ -10,7 +10,7 @@ import SortableTable from "@/components/table/SortableTable";
 import {
   fetchScheduledJobAttributes,
   fetchScheduledJobs,
-} from "@/batchrun/actions";
+} from "@/batchrun/slice";
 import { PermissionMissingTexts } from "@/enums";
 import {
   ScheduledJobFieldPaths,

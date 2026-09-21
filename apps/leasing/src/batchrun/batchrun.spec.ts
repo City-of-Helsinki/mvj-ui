@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
+import batchrunReducer, {
+  initialState,
   fetchJobRunAttributes,
   notFoundJobRunAttributes,
   receiveJobRunAttributes,
@@ -21,41 +22,19 @@ import {
   fetchScheduledJobs,
   receiveScheduledJobs,
   notFoundScheduledJobs,
-} from "./actions";
-import batchrunReducer from "./reducer";
-import type { BatchRunState } from "./types";
-const defaultState: BatchRunState = {
-  isFetchingJobRunAttributes: false,
-  isFetchingJobRuns: false,
-  isFetchingJobRunLogEntryAttributes: false,
-  isFetchingScheduledJobs: false,
-  isFetchingScheduledJobAttributes: false,
-  isFetchingJobRunLogEntriesByRun: {},
-  jobRunAttributes: null,
-  jobRunMethods: null,
-  jobRuns: null,
-  jobRunLogEntryAttributes: null,
-  jobRunLogEntryMethods: null,
-  jobRunLogEntriesByRun: {},
-  scheduledJobAttributes: null,
-  scheduledJobMethods: null,
-  scheduledJobs: null,
-};
+} from "./slice";
 
 describe("Batchrun", () => {
   describe("Reducer", () => {
     describe("batchrunReducer", () => {
       it("should update isFetchingJobRunAttributes flag to true by fetchJobRunAttributes", () => {
-        const newState = { ...defaultState, isFetchingJobRunAttributes: true };
-        const state = batchrunReducer({}, fetchJobRunAttributes());
+        const newState = { ...initialState, isFetchingJobRunAttributes: true };
+        const state = batchrunReducer(initialState, fetchJobRunAttributes());
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingJobRunAttributes flag to false by notFoundJobRunAttributes", () => {
-        const newState = { ...defaultState, isFetchingJobRunAttributes: false };
-        let state: Record<string, any> = batchrunReducer(
-          {},
-          fetchJobRunAttributes(),
-        );
+        const newState = { ...initialState, isFetchingJobRunAttributes: false };
+        let state = batchrunReducer(initialState, fetchJobRunAttributes());
         state = batchrunReducer(state, notFoundJobRunAttributes());
         expect(state).to.deep.equal(newState);
       });
@@ -65,9 +44,9 @@ describe("Batchrun", () => {
           label: "Foo",
           name: "Bar",
         };
-        const newState = { ...defaultState, jobRunAttributes: dummyAttributes };
+        const newState = { ...initialState, jobRunAttributes: dummyAttributes };
         const state = batchrunReducer(
-          {},
+          initialState,
           receiveJobRunAttributes(dummyAttributes),
         );
         expect(state).to.deep.equal(newState);
@@ -78,25 +57,31 @@ describe("Batchrun", () => {
           label: "Foo",
           name: "Bar",
         };
-        const newState = { ...defaultState, jobRunMethods: dummyMethods };
-        const state = batchrunReducer({}, receiveJobRunMethods(dummyMethods));
+        const newState = { ...initialState, jobRunMethods: dummyMethods };
+        const state = batchrunReducer(
+          initialState,
+          receiveJobRunMethods(dummyMethods),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingJobRunLogEntryAttributes flag to true by fetchJobRunLogEntryAttributes", () => {
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingJobRunLogEntryAttributes: true,
         };
-        const state = batchrunReducer({}, fetchJobRunLogEntryAttributes());
+        const state = batchrunReducer(
+          initialState,
+          fetchJobRunLogEntryAttributes(),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingJobRunLogEntryAttributes flag to false by notFoundJobRunLogEntryAttributes", () => {
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingJobRunLogEntryAttributes: false,
         };
-        let state: Record<string, any> = batchrunReducer(
-          {},
+        let state = batchrunReducer(
+          initialState,
           fetchJobRunLogEntryAttributes(),
         );
         state = batchrunReducer(state, notFoundJobRunLogEntryAttributes());
@@ -109,11 +94,11 @@ describe("Batchrun", () => {
           name: "Bar",
         };
         const newState = {
-          ...defaultState,
+          ...initialState,
           jobRunLogEntryAttributes: dummyAttributes,
         };
         const state = batchrunReducer(
-          {},
+          initialState,
           receiveJobRunLogEntryAttributes(dummyAttributes),
         );
         expect(state).to.deep.equal(newState);
@@ -125,30 +110,33 @@ describe("Batchrun", () => {
           name: "Bar",
         };
         const newState = {
-          ...defaultState,
+          ...initialState,
           jobRunLogEntryMethods: dummyMethods,
         };
         const state = batchrunReducer(
-          {},
+          initialState,
           receiveJobRunLogEntryMethods(dummyMethods),
         );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingScheduledJobAttributes flag to true by fetchScheduledJobAttributes", () => {
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingScheduledJobAttributes: true,
         };
-        const state = batchrunReducer({}, fetchScheduledJobAttributes());
+        const state = batchrunReducer(
+          initialState,
+          fetchScheduledJobAttributes(),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingScheduledJobAttributes flag to false by notFoundScheduledJobAttributes", () => {
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingScheduledJobAttributes: false,
         };
-        let state: Record<string, any> = batchrunReducer(
-          {},
+        let state = batchrunReducer(
+          initialState,
           fetchScheduledJobAttributes(),
         );
         state = batchrunReducer(state, notFoundScheduledJobAttributes());
@@ -161,11 +149,11 @@ describe("Batchrun", () => {
           name: "Bar",
         };
         const newState = {
-          ...defaultState,
+          ...initialState,
           scheduledJobAttributes: dummyAttributes,
         };
         const state = batchrunReducer(
-          {},
+          initialState,
           receiveScheduledJobAttributes(dummyAttributes),
         );
         expect(state).to.deep.equal(newState);
@@ -176,21 +164,21 @@ describe("Batchrun", () => {
           label: "Foo",
           name: "Bar",
         };
-        const newState = { ...defaultState, scheduledJobMethods: dummyMethods };
+        const newState = { ...initialState, scheduledJobMethods: dummyMethods };
         const state = batchrunReducer(
-          {},
+          initialState,
           receiveScheduledJobMethods(dummyMethods),
         );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingJobRuns flag to true when fetching batch runs", () => {
-        const newState = { ...defaultState, isFetchingJobRuns: true };
-        const state = batchrunReducer({}, fetchJobRuns({}));
+        const newState = { ...initialState, isFetchingJobRuns: true };
+        const state = batchrunReducer(initialState, fetchJobRuns({}));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingJobRuns flag to true by notFoundJobRuns", () => {
-        const newState = { ...defaultState, isFetchingJobRuns: false };
-        let state = batchrunReducer({}, fetchJobRuns({}));
+        const newState = { ...initialState, isFetchingJobRuns: false };
+        let state = batchrunReducer(initialState, fetchJobRuns({}));
         state = batchrunReducer(state, notFoundJobRuns());
         expect(state).to.deep.equal(newState);
       });
@@ -202,21 +190,24 @@ describe("Batchrun", () => {
           results: [],
         };
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingJobRuns: false,
           jobRuns: dummyJobRuns,
         };
-        const state = batchrunReducer({}, receiveJobRuns(dummyJobRuns));
+        const state = batchrunReducer(
+          initialState,
+          receiveJobRuns(dummyJobRuns),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingScheduledJobs flag to true when fetching scheduled jobs", () => {
-        const newState = { ...defaultState, isFetchingScheduledJobs: true };
-        const state = batchrunReducer({}, fetchScheduledJobs({}));
+        const newState = { ...initialState, isFetchingScheduledJobs: true };
+        const state = batchrunReducer(initialState, fetchScheduledJobs({}));
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingScheduledJobs flag to true by notFoundScheduledJobs", () => {
-        const newState = { ...defaultState, isFetchingScheduledJobs: false };
-        let state = batchrunReducer({}, fetchScheduledJobs({}));
+        const newState = { ...initialState, isFetchingScheduledJobs: false };
+        let state = batchrunReducer(initialState, fetchScheduledJobs({}));
         state = batchrunReducer(state, notFoundScheduledJobs());
         expect(state).to.deep.equal(newState);
       });
@@ -228,24 +219,27 @@ describe("Batchrun", () => {
           results: [],
         };
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingScheduledJobs: false,
           scheduledJobs: dummyScheduledJobs,
         };
         const state = batchrunReducer(
-          {},
+          initialState,
           receiveScheduledJobs(dummyScheduledJobs),
         );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingJobRunLogEntriesByRun flag to true when fetching job run log entries", () => {
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingJobRunLogEntriesByRun: {
             "1": true,
           },
         };
-        const state = batchrunReducer({}, fetchJobRunLogEntriesByRun(1));
+        const state = batchrunReducer(
+          initialState,
+          fetchJobRunLogEntriesByRun(1),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingJobRunLogEntriesByRun flag to false when received job run log entries", () => {
@@ -254,7 +248,7 @@ describe("Batchrun", () => {
           foo: "bar",
         };
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingJobRunLogEntriesByRun: {
             [id]: false,
           },
@@ -263,7 +257,7 @@ describe("Batchrun", () => {
           },
         };
         const state = batchrunReducer(
-          {},
+          initialState,
           receiveJobRunLogEntriesByRun({
             run: id,
             data: dummyPayload,
@@ -273,12 +267,15 @@ describe("Batchrun", () => {
       });
       it("should update isFetchingJobRunLogEntriesByRun flag to true by notFoundJobRunLogEntriesByRun", () => {
         const newState = {
-          ...defaultState,
+          ...initialState,
           isFetchingJobRunLogEntriesByRun: {
             "1": false,
           },
         };
-        let state = batchrunReducer({}, fetchJobRunLogEntriesByRun(1));
+        let state = batchrunReducer(
+          initialState,
+          fetchJobRunLogEntriesByRun(1),
+        );
         state = batchrunReducer(state, notFoundJobRunLogEntriesByRun(1));
         expect(state).to.deep.equal(newState);
       });
