@@ -2,15 +2,18 @@ import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import { SubmissionError } from "redux-form";
 import { receiveError } from "@/api/slice";
 import {
+  fetchAttributes as fetchAttributesAction,
   receiveAttributes,
   receiveMethods,
   attributesNotFound,
   fetchCollectionCourtDecisionsByLease as fetchCollectionCourtDecisionsByLeaseAction,
+  uploadCollectionCourtDecision as uploadCollectionCourtDecisionAction,
+  deleteCollectionCourtDecision as deleteCollectionCourtDecisionAction,
   hideCollectionCourtDecisionPanel,
   receiveCollectionCourtDecisionsByLease,
   notFoundByLease,
   receiveIsSaveClicked,
-} from "./actions";
+} from "./slice";
 import { displayUIMessage } from "@/util/helpers";
 import {
   fetchAttributes,
@@ -49,8 +52,11 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 
 function* fetchCollectionCourtDecisionsByLeaseSaga({
   payload: lease,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchCollectionCourtDecisionsByLeaseAction>): Generator<
+  any,
+  any,
+  any
+> {
   try {
     const {
       response: { status: statusCode },
@@ -82,8 +88,11 @@ function* fetchCollectionCourtDecisionsByLeaseSaga({
 
 function* uploadCollectionCourtDecisionSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof uploadCollectionCourtDecisionAction>): Generator<
+  any,
+  any,
+  any
+> {
   try {
     const {
       response: { status: statusCode },
@@ -119,8 +128,11 @@ function* uploadCollectionCourtDecisionSaga({
 
 function* deleteCollectionCourtDecisionSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof deleteCollectionCourtDecisionAction>): Generator<
+  any,
+  any,
+  any
+> {
   try {
     const {
       response: { status: statusCode },
@@ -164,20 +176,17 @@ function* deleteCollectionCourtDecisionSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
+      yield takeLatest(fetchAttributesAction, fetchAttributesSaga);
       yield takeLatest(
-        "mvj/collectionCourtDecision/FETCH_ATTRIBUTES",
-        fetchAttributesSaga,
-      );
-      yield takeLatest(
-        "mvj/collectionCourtDecision/FETCH_BY_LEASE",
+        fetchCollectionCourtDecisionsByLeaseAction,
         fetchCollectionCourtDecisionsByLeaseSaga,
       );
       yield takeLatest(
-        "mvj/collectionCourtDecision/UPLOAD",
+        uploadCollectionCourtDecisionAction,
         uploadCollectionCourtDecisionSaga,
       );
       yield takeLatest(
-        "mvj/collectionCourtDecision/DELETE",
+        deleteCollectionCourtDecisionAction,
         deleteCollectionCourtDecisionSaga,
       );
     }),

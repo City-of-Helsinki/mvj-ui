@@ -1,4 +1,4 @@
-import type { Action, Attributes, Methods } from "types";
+import type { Attributes, Methods } from "types";
 import type { LeaseId } from "@/leases/types";
 export type CollectionCourtDecisionState = {
   attributes: Attributes;
@@ -22,33 +22,7 @@ export type DeleteCollectionCourtDecisionPayload = {
   id: CollectionCourtDecisionId;
   lease: LeaseId;
 };
-export type FetchAttributesAction = Action<string, void>;
-export type ReceiveAttributesAction = Action<string, Attributes>;
-export type ReceiveMethodsAction = Action<string, Methods>;
-export type CollectionCourtDecisionAttributesNotFoundAction = Action<
-  string,
-  void
->;
-export type FetchCollectionCourtDecisionsByLeaseAction = Action<
-  string,
-  LeaseId
->;
-export type ReceiveCollectionCourtDecisionsByLeaseAction = Action<
-  string,
-  Record<string, any>
->;
-export type CollectionCourtDecisionsNotFoundByLeaseAction = Action<
-  string,
-  LeaseId
->;
-export type UploadCollectionCourtDecisionAction = Action<
-  string,
-  UploadCollectionCourtDecisionPayload
->;
-export type DeleteCollectionCourtDecisionAction = Action<
-  string,
-  DeleteCollectionCourtDecisionPayload
->;
-export type HideCollectionCourtDecisionPanelAction = Action<string, void>;
-export type ShowCollectionCourtDecisionPanelAction = Action<string, void>;
-export type ReceiveIsSaveClickedAction = Action<string, boolean>;
+export type ReceiveCollectionCourtDecisionsByLeasePayload = {
+  lease: LeaseId;
+  collectionCourtDecisions: Array<Record<string, any>>;
+};

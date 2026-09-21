@@ -18,7 +18,10 @@ import SuccessField from "@/components/form/SuccessField";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
 import WarningField from "@/components/form/WarningField";
-import { fetchCollectionCourtDecisionsByLease } from "@/collectionCourtDecision/actions";
+import {
+  fetchCollectionCourtDecisionsByLease,
+  fetchAttributes as fetchCollectionCourtDecisionAttributes,
+} from "@/collectionCourtDecision/slice";
 import { fetchCollectionLettersByLease } from "@/collectionLetter/actions";
 import { fetchCollectionNotesByLease } from "@/collectionNote/actions";
 import { fetchInvoiceSetsByLease } from "@/invoiceSets/slice";
@@ -32,7 +35,6 @@ import {
   startInvoicing as startInvoicingForLease,
   stopInvoicing as stopInvoicingForLease,
 } from "@/leases/slice";
-import { fetchAttributes as fetchCollectionCourtDecisionAttributes } from "@/collectionCourtDecision/actions";
 import { fetchAttributes as fetchCollectionLetterAttributes } from "@/collectionLetter/actions";
 import { fetchAttributes as fetchCollectionNoteAttributes } from "@/collectionNote/actions";
 import { fetchAttributes as fetchCreateCollectionLetterAttributes } from "@/createCollectionLetter/actions";
@@ -55,7 +57,6 @@ import { UsersPermissions } from "@/usersPermissions/enums";
 import { getContentInvoiceNotes } from "@/leases/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";
 import { hasPermissions, isFieldAllowedToRead } from "@/util/helpers";
-import { getCollectionCourtDecisionsByLease } from "@/collectionCourtDecision/selectors";
 import { getCollectionLettersByLease } from "@/collectionLetter/selectors";
 import { getCollectionNotesByLease } from "@/collectionNote/selectors";
 import { getInvoiceToCredit } from "@/invoices/selectors";
@@ -72,6 +73,7 @@ import {
 import {
   getAttributes as getCollectionCourtDecisionAttributes,
   getIsFetchingAttributes as getIsFetchingCollectionCourtDecisionAttributes,
+  getCollectionCourtDecisionsByLease,
 } from "@/collectionCourtDecision/selectors";
 import {
   getAttributes as getCollectionLetterAttributes,

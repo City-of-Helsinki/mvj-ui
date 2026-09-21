@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
+import collectionCourtDecisionReducer, {
+  initialState,
   fetchAttributes,
   attributesNotFound,
   receiveAttributes,
@@ -12,8 +13,7 @@ import {
   hideCollectionCourtDecisionPanel,
   showCollectionCourtDecisionPanel,
   receiveIsSaveClicked,
-} from "./actions";
-import collectionCourtDecisionReducer from "./reducer";
+} from "./slice";
 import type { CollectionCourtDecisionState } from "./types";
 const defaultState: CollectionCourtDecisionState = {
   attributes: null,
@@ -30,12 +30,18 @@ describe("collectionCourtDecision", () => {
     describe("collectionCourtDecisionReducer", () => {
       it("should update isFetchingAttributes flag to true when fetching attributes", () => {
         const newState = { ...defaultState, isFetchingAttributes: true };
-        const state = collectionCourtDecisionReducer({}, fetchAttributes());
+        const state = collectionCourtDecisionReducer(
+          initialState,
+          fetchAttributes(),
+        );
         expect(state).to.deep.equal(newState);
       });
       it("should update isFetchingAttributes flag to false by attributesNotFound", () => {
         const newState = { ...defaultState, isFetchingAttributes: false };
-        let state = collectionCourtDecisionReducer({}, fetchAttributes());
+        let state = collectionCourtDecisionReducer(
+          initialState,
+          fetchAttributes(),
+        );
         state = collectionCourtDecisionReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
@@ -45,7 +51,7 @@ describe("collectionCourtDecision", () => {
         };
         const newState = { ...defaultState, attributes: dummyAttributes };
         const state = collectionCourtDecisionReducer(
-          {},
+          initialState,
           receiveAttributes(dummyAttributes),
         );
         expect(state).to.deep.equal(newState);
@@ -56,7 +62,7 @@ describe("collectionCourtDecision", () => {
         };
         const newState = { ...defaultState, methods: dummyMethods };
         const state = collectionCourtDecisionReducer(
-          {},
+          initialState,
           receiveMethods(dummyMethods),
         );
         expect(state).to.deep.equal(newState);
@@ -70,7 +76,7 @@ describe("collectionCourtDecision", () => {
           },
         };
         const state = collectionCourtDecisionReducer(
-          {},
+          initialState,
           fetchCollectionCourtDecisionsByLease(lease),
         );
         expect(state).to.deep.equal(newState);
@@ -94,7 +100,7 @@ describe("collectionCourtDecision", () => {
           },
         };
         const state = collectionCourtDecisionReducer(
-          {},
+          initialState,
           receiveCollectionCourtDecisionsByLease({
             lease: lease,
             collectionCourtDecisions: dummyCollectionCourtDecisions,
@@ -111,7 +117,7 @@ describe("collectionCourtDecision", () => {
           },
         };
         const state = collectionCourtDecisionReducer(
-          {},
+          initialState,
           notFoundByLease(lease),
         );
         expect(state).to.deep.equal(newState);
@@ -119,7 +125,7 @@ describe("collectionCourtDecision", () => {
       it("should update isPanelOpen flag to false", () => {
         const newState = { ...defaultState, isPanelOpen: false };
         let state = collectionCourtDecisionReducer(
-          {},
+          initialState,
           showCollectionCourtDecisionPanel(),
         );
         state = collectionCourtDecisionReducer(
@@ -130,7 +136,7 @@ describe("collectionCourtDecision", () => {
       });
       it("uploadCollectionCourtDecision should not change state", () => {
         const state = collectionCourtDecisionReducer(
-          {},
+          initialState,
           uploadCollectionCourtDecision({
             data: {
               decision_date: "foo",
@@ -144,7 +150,7 @@ describe("collectionCourtDecision", () => {
       });
       it("deleteCollectionCourtDecision should not change state", () => {
         const state = collectionCourtDecisionReducer(
-          {},
+          initialState,
           deleteCollectionCourtDecision({
             id: 1,
             lease: 1,
@@ -155,7 +161,7 @@ describe("collectionCourtDecision", () => {
       it("should update isPanelOpen flag to true", () => {
         const newState = { ...defaultState, isPanelOpen: true };
         const state = collectionCourtDecisionReducer(
-          {},
+          initialState,
           showCollectionCourtDecisionPanel(),
         );
         expect(state).to.deep.equal(newState);
@@ -163,7 +169,7 @@ describe("collectionCourtDecision", () => {
       it("should update isSaveClicked", () => {
         const newState = { ...defaultState, isSaveClicked: true };
         const state = collectionCourtDecisionReducer(
-          {},
+          initialState,
           receiveIsSaveClicked(true),
         );
         expect(state).to.deep.equal(newState);
