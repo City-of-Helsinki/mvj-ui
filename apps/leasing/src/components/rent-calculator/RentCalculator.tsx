@@ -8,7 +8,7 @@ import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import RentCalculatorForm from "./RentCalculatorForm";
 import RentForPeriod from "./RentForPeriod";
 import SubTitle from "@/components/content/SubTitle";
-import { fetchBillingPeriodsByLease } from "@/billingPeriods/actions";
+import { fetchBillingPeriodsByLease } from "@/billingPeriods/slice";
 import {
   deleteRentForPeriodByLease,
   fetchRentForPeriodByLease,
