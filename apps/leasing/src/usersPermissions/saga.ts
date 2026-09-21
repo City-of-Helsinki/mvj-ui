@@ -51,10 +51,7 @@ function* fetchUsersPermissionsSaga(): Generator<any, any, any> {
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
-      yield takeLatest(
-        fetchUsersPermissionsAction.type,
-        fetchUsersPermissionsSaga,
-      );
+      yield takeLatest(fetchUsersPermissionsAction, fetchUsersPermissionsSaga);
     }),
   ]);
 }
