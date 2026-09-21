@@ -1,12 +1,15 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { notFound, receiveBillingPeriodsByLease } from "./actions";
+import {
+  fetchBillingPeriodsByLease,
+  notFound,
+  receiveBillingPeriodsByLease,
+} from "./slice";
 import { fetchBillingPeriods } from "./requests";
 import { receiveError } from "@/api/slice";
 
 function* fetchBillingPeriodsSaga({
   payload,
-  type: any,
-}): Generator<any, any, any> {
+}: ReturnType<typeof fetchBillingPeriodsByLease>): Generator<any, any, any> {
   try {
     const {
       response: { status: statusCode },
@@ -41,7 +44,7 @@ function* fetchBillingPeriodsSaga({
 export default function* (): Generator<any, any, any> {
   yield all([
     fork(function* (): Generator<any, any, any> {
-      yield takeLatest("mvj/billingperiods/FETCH_ALL", fetchBillingPeriodsSaga);
+      yield takeLatest(fetchBillingPeriodsByLease, fetchBillingPeriodsSaga);
     }),
   ]);
 }

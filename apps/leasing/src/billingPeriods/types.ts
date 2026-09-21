@@ -1,17 +1,15 @@
-import type { Action } from "@/types";
 import type { LeaseId } from "@/leases/types";
 export type BillingPeriodState = {
-  byLease: Record<string, any>;
+  byLease: Record<string, BillingPeriodList>;
   isFetching: boolean;
 };
 export type FetchBillingPeriodsPayload = {
   leaseId: LeaseId;
   year: string;
 };
-export type BillingPeriodList = Array<Record<string, any>>;
-export type FetchBillingPeriodsAction = Action<
-  string,
-  FetchBillingPeriodsPayload
->;
-export type ReceiveBillingPeriodsAction = Action<string, Record<string, any>>;
-export type BillingPeriodsNotFoundAction = Action<string, void>;
+export type ReceiveBillingPeriodsPayload = {
+  leaseId: LeaseId;
+  billingPeriods: BillingPeriodList;
+};
+export type BillingPeriod = [string, string];
+export type BillingPeriodList = Array<BillingPeriod>;
