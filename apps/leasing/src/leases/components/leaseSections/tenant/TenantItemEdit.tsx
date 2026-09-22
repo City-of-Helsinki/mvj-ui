@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
@@ -95,8 +95,8 @@ const renderRentShares = ({
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <Fragment>
             <SubTitle>{LeaseTenantRentSharesFieldTitles.RENT_SHARES}</SubTitle>
@@ -153,7 +153,7 @@ const renderRentShares = ({
                 </Row>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -296,7 +296,7 @@ const renderRentShares = ({
           </Fragment>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -324,15 +324,15 @@ const renderOtherTenants = ({
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <Fragment>
             {fields &&
               !!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -385,7 +385,7 @@ const renderOtherTenants = ({
           </Fragment>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

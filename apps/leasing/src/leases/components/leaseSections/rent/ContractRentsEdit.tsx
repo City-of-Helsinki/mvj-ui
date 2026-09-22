@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
@@ -37,15 +37,15 @@ const ContractRentsEdit = ({ fields, rentField, rentType }: Props) => {
   }
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {fields && !!fields.length && (
               <BoxItemContainer>
                 {fields.map((rent, index) => {
                   const handleRemove = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -93,7 +93,7 @@ const ContractRentsEdit = ({ fields, rentField, rentType }: Props) => {
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

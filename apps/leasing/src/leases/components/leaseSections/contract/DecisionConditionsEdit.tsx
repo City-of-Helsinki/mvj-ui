@@ -2,7 +2,7 @@ import React from "react";
 import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import Authorization from "@/components/authorization/Authorization";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
@@ -65,8 +65,8 @@ const DecisionConditionsEdit: React.FC<Props> = ({
 
   const decisionConditionsErrors = get(errors, name);
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <Collapse
             className="collapse__secondary"
@@ -180,7 +180,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
                 )}
                 {fields.map((condition, index) => {
                   const handleRemove = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -449,7 +449,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
           </Collapse>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 export default DecisionConditionsEdit;

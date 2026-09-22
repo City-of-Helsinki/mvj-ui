@@ -15,7 +15,7 @@ import { ButtonColors } from "@/components/enums";
 import FormHintText from "@/components/form/FormHintText";
 import { formatDate, isFieldAllowedToRead } from "@/util/helpers";
 import { ConfirmationModalTexts } from "@/enums";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import { ApplicantTypes } from "@/application/enums";
 import {
   getApplicationAttachmentDownloadLink,
@@ -64,7 +64,7 @@ type ApplicationFormFileFieldOwnProps = {
   formName: string;
   formPath: string;
   answerId: number | null;
-}
+};
 
 type ApplicationFormFileFieldProps = ApplicationFormFileFieldOwnProps & {
   uploadAttachment: (...args: any) => void;
@@ -80,7 +80,7 @@ type ApplicationFormFileFieldProps = ApplicationFormFileFieldOwnProps & {
   isPerformingFileOperation: boolean;
   fieldFileIds: number[];
   attachmentIds: number[];
-}
+};
 
 type ApplicationFormSubsectionFieldsOwnProps = {
   section: FormSection;
@@ -91,12 +91,13 @@ type ApplicationFormSubsectionFieldsOwnProps = {
     (arg0: string, arg1: FormSection, arg2: string) => string
   >;
   answerId: number | null;
-}
-
-type ApplicationFormSubsectionFieldsProps = ApplicationFormSubsectionFieldsOwnProps & {
-  sectionApplicantType: string | null;
-  change: (...args: any) => void;
 };
+
+type ApplicationFormSubsectionFieldsProps =
+  ApplicationFormSubsectionFieldsOwnProps & {
+    sectionApplicantType: string | null;
+    change: (...args: any) => void;
+  };
 
 type ApplicationFormSubsectionFieldArrayProps = {
   fields: any;
@@ -156,8 +157,8 @@ const ApplicationFormFileField = connect(
   answerId,
 }: ApplicationFormFileFieldProps) => {
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         const isNew = !answerId;
         const pathWithinForm = fieldName.split(".").slice(1).join(".");
 
@@ -201,7 +202,7 @@ const ApplicationFormFileField = connect(
         );
 
         const deleteFile = (file) => {
-          contextDispatch({
+          modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               // Hard delete only if this is a new editor. Edit mode can be canceled, in which case changes to files
@@ -324,7 +325,7 @@ const ApplicationFormFileField = connect(
           </Column>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 });
 const ApplicationFormSubsectionFields = connect(

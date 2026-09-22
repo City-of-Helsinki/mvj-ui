@@ -8,7 +8,7 @@ import React, {
 import { useAppSelector } from "@/root/hooks";
 import classNames from "classnames";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
 import FormFieldLabel from "@/components/form/FormFieldLabel";
@@ -80,10 +80,10 @@ const SaveConditionPanel = forwardRef<SaveConditionPanelHandle, Props>(
     };
 
     return (
-      <AppConsumer>
-        {({ contextDispatch }) => {
+      <ModalConsumer>
+        {({ modalDispatch }) => {
           const handleDelete = () => {
-            contextDispatch?.({
+            modalDispatch?.({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 onDelete();
@@ -185,7 +185,7 @@ const SaveConditionPanel = forwardRef<SaveConditionPanelHandle, Props>(
             </div>
           );
         }}
-      </AppConsumer>
+      </ModalConsumer>
     );
   },
 );

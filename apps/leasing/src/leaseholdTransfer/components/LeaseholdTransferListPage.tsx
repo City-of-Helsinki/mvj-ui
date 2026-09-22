@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { useLocation, useNavigate } from "react-router";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
@@ -216,11 +216,11 @@ const LeaseholdTransferListPage: React.FC = () => {
     );
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         const handleDelete = (id: number) => {
-          if (!contextDispatch) return;
-          contextDispatch({
+          if (!modalDispatch) return;
+          modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               const mappedSearchQuery = getMappedSearchQuery();
@@ -383,7 +383,7 @@ const LeaseholdTransferListPage: React.FC = () => {
           </PageContainer>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

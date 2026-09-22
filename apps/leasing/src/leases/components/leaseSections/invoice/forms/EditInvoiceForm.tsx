@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import { Row, Column } from "@/components/grid/Grid";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import AmountWithVat from "@/components/vat/AmountWithVat";
 import Authorization from "@/components/authorization/Authorization";
@@ -70,8 +70,8 @@ const Payments = ({ fields, relativeTo }: PaymentsProps): ReactElement => {
   const handleAdd = () => fields.push({});
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {!fields || (!fields.length && <FormText>Ei maksuja</FormText>)}
@@ -120,7 +120,7 @@ const Payments = ({ fields, relativeTo }: PaymentsProps): ReactElement => {
               !!fields.length &&
               fields.map((payment, index) => {
                 const handleRemove = () => {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -217,7 +217,7 @@ const Payments = ({ fields, relativeTo }: PaymentsProps): ReactElement => {
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

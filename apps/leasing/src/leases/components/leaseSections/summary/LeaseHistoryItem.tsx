@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import classNames from "classnames";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AccordionIcon from "@/components/icons/AccordionIcon";
 import Authorization from "@/components/authorization/Authorization";
 import ExternalLink from "@/components/links/ExternalLink";
@@ -72,10 +72,10 @@ const LeaseHistoryItem = ({
     UsersPermissions.DELETE_LEASE_HISTORY_ITEM,
   );
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         const handleDelete = () => {
-          contextDispatch({
+          modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               if (onDelete) {
@@ -155,7 +155,7 @@ const LeaseHistoryItem = ({
           </div>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

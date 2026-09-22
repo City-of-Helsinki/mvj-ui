@@ -4,7 +4,7 @@ import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButton from "@/components/form/AddButton";
 import AttachDecisionModal from "./AttachDecisionModal";
 import Authorization from "@/components/authorization/Authorization";
@@ -41,8 +41,8 @@ const Decisions = ({
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_DECISION) &&
@@ -53,7 +53,7 @@ const Decisions = ({
               !!fields.length &&
               fields.map((decision, index) => {
                 const handleRemove = () => {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -93,7 +93,7 @@ const Decisions = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

@@ -4,7 +4,7 @@ import { withRouterLegacy } from "@/root/withRouterLegacy";
 import { useLocation, useNavigate } from "react-router";
 import { flowRight, get } from "lodash-es";
 import { setNavigate } from "@/root/navigationService";
-import { ActionTypes, AppConsumer, AppProvider } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer, ModalProvider } from "@/app/ModalContext";
 import ApiErrorModal from "@/api/ApiErrorModal";
 import ConfirmationModal from "@/components/modal/ConfirmationModal";
 import Loader from "@/components/loader/Loader";
@@ -128,8 +128,8 @@ const App: React.FC<Props> = (props) => {
   }
 
   return (
-    <AppProvider>
-      <AppConsumer>
+    <ModalProvider>
+      <ModalConsumer>
         {({
           isConfirmationModalOpen,
           confirmationFunction,
@@ -137,7 +137,7 @@ const App: React.FC<Props> = (props) => {
           confirmationModalButtonText,
           confirmationModalLabel,
           confirmationModalTitle,
-          contextDispatch,
+          modalDispatch,
         }) => {
           const handleConfirmation = () => {
             confirmationFunction?.();
@@ -145,7 +145,7 @@ const App: React.FC<Props> = (props) => {
           };
 
           const handleHideConfirmationModal = () => {
-            contextDispatch({
+            modalDispatch({
               type: ActionTypes.HIDE_CONFIRMATION_MODAL,
             });
           };
@@ -209,8 +209,8 @@ const App: React.FC<Props> = (props) => {
             </div>
           );
         }}
-      </AppConsumer>
-    </AppProvider>
+      </ModalConsumer>
+    </ModalProvider>
   );
 };
 

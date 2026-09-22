@@ -4,7 +4,7 @@ import { Row, Column } from "@/components/grid/Grid";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import arrayMutators from "final-form-arrays";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
@@ -83,8 +83,8 @@ const InvoiceRows = ({
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             <SubTitle
@@ -195,7 +195,7 @@ const InvoiceRows = ({
 
                 {fields.map((row, index) => {
                   const handleRemove = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -371,7 +371,7 @@ const InvoiceRows = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

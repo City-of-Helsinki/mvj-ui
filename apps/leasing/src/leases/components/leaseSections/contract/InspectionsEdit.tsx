@@ -4,7 +4,7 @@ import { Row, Column } from "@/components/grid/Grid";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import { getLoggedInUser } from "@/auth/selectors";
@@ -70,15 +70,15 @@ const Inspections = ({
   }
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <GreenBox>
             {fields && !!fields.length && (
               <BoxItemContainer>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -123,7 +123,7 @@ const Inspections = ({
           </GreenBox>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddFileButton from "@/components/form/AddFileButton";
 import Authorization from "@/components/authorization/Authorization";
@@ -87,8 +87,8 @@ const InspectionItemEdit: React.FC<Props> = ({
     : null;
   const inspectionAttachments = inspection ? inspection.attachments : [];
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <BoxItem className="no-border-on-first-child">
             <ActionButtonWrapper>
@@ -280,7 +280,7 @@ const InspectionItemEdit: React.FC<Props> = ({
                       </Row>
                       {inspectionAttachments.map((file, index) => {
                         const handleRemove = () => {
-                          contextDispatch({
+                          modalDispatch({
                             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                             confirmationFunction: () => {
                               handleDeleteInspectionAttachment(file.id);
@@ -370,7 +370,7 @@ const InspectionItemEdit: React.FC<Props> = ({
           </BoxItem>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

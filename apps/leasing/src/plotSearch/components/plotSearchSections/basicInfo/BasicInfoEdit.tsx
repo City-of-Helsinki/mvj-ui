@@ -10,7 +10,7 @@ import {
   FormNames,
   ViewModes,
 } from "@/enums";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import ErrorField from "@/components/form/ErrorField";
 import BasicInfoDecisionEdit from "@/plotSearch/components/plotSearchSections/basicInfo/BasicInfoDecisionEdit";
@@ -115,8 +115,8 @@ const renderDecisions = ({
 
   const cacheKey = decisionCandidates.map((item) => item.id).join(",");
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <Fragment>
             <Column small={12} large={10}>
@@ -140,7 +140,7 @@ const renderDecisions = ({
               {!!fields.length &&
                 fields.map((field, index) => {
                   const handleRemove = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -193,7 +193,7 @@ const renderDecisions = ({
           </Fragment>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -220,14 +220,14 @@ const renderPlotSearchSites = ({
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <Fragment>
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       const id =
@@ -281,7 +281,7 @@ const renderPlotSearchSites = ({
           </Fragment>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

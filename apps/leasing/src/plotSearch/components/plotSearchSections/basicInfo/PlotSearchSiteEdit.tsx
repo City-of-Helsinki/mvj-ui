@@ -7,7 +7,7 @@ import Loader from "@/components/loader/Loader";
 import ExternalLink from "@/components/links/ExternalLink";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import PlanUnitSelectInput from "@/components/inputs/PlanUnitSelectInput";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import { ButtonColors } from "@/components/enums";
 import { ConfirmationModalTexts } from "@/enums";
@@ -70,8 +70,8 @@ const renderSuggested = ({
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <Fragment>
             <Column>
@@ -89,7 +89,7 @@ const renderSuggested = ({
               {!!fields.length &&
                 fields.map((field, index) => {
                   const handleRemove = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -128,7 +128,7 @@ const renderSuggested = ({
           </Fragment>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -150,8 +150,8 @@ const renderInfoLinks = ({
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <div>
             <FormTextTitle>Lisätietolinkit</FormTextTitle>
@@ -177,7 +177,7 @@ const renderInfoLinks = ({
               {!!fields.length &&
                 fields.map((field, index) => {
                   const handleRemove = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -269,7 +269,7 @@ const renderInfoLinks = ({
           </div>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

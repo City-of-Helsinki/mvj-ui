@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import AddFileButton from "@/components/form/AddFileButton";
 import Authorization from "@/components/authorization/Authorization";
@@ -114,8 +114,8 @@ const renderDecisions = ({
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             <SubTitle
@@ -233,7 +233,7 @@ const renderDecisions = ({
                 </Row>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -376,7 +376,7 @@ const renderDecisions = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -396,8 +396,8 @@ const renderIntendedUses = ({
   const handleAdd = () => fields.push({});
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             <SubTitle
@@ -499,7 +499,7 @@ const renderIntendedUses = ({
                 </Row>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -622,7 +622,7 @@ const renderIntendedUses = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -1233,8 +1233,8 @@ const LeaseItemEdit = (props: Props) => {
           )}
         >
           {!!infillDevelopmentCompensationLeaseId && (
-            <AppConsumer>
-              {({ contextDispatch }) => {
+            <ModalConsumer>
+              {({ modalDispatch }) => {
                 return (
                   <>
                     <SubTitle
@@ -1304,7 +1304,7 @@ const LeaseItemEdit = (props: Props) => {
                         </Row>
                         {attachments.map((file, index) => {
                           const handleRemove = () => {
-                            contextDispatch({
+                            modalDispatch({
                               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                               confirmationFunction: () => {
                                 handleDeleteInfillDevelopmentFile(file.id);
@@ -1390,7 +1390,7 @@ const LeaseItemEdit = (props: Props) => {
                   </>
                 );
               }}
-            </AppConsumer>
+            </ModalConsumer>
           )}
         </Authorization>
 

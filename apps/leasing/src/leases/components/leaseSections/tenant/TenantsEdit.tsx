@@ -4,7 +4,7 @@ import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import Authorization from "@/components/authorization/Authorization";
 import AddButton from "@/components/form/AddButton";
 import ContactModal from "@/contacts/components/ContactModal";
@@ -98,7 +98,7 @@ type TenantsProps = {
   tenants: Array<Record<string, any>>;
   usersPermissions: UsersPermissionsType;
   formValues: Record<string, any>;
-  contextDispatch: (action: Record<string, any>) => void;
+  modalDispatch: (action: Record<string, any>) => void;
 };
 
 const renderTenants = ({
@@ -110,7 +110,7 @@ const renderTenants = ({
   tenants,
   usersPermissions,
   formValues,
-  contextDispatch,
+  modalDispatch,
 }: TenantsProps) => {
   const handleAdd = () => {
     fields.push({});
@@ -144,7 +144,7 @@ const renderTenants = ({
         !!fields.length &&
         fields.map((tenant, index) => {
           const handleRemove = () => {
-            contextDispatch({
+            modalDispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 fields.remove(index);
@@ -261,8 +261,8 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         const handleCreateOrEdit = async (
           values: Contact,
           isValid: boolean,
@@ -289,7 +289,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
             });
 
             if (exists) {
-              contextDispatch({
+              modalDispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   createOrEditContact(values);
@@ -371,7 +371,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
                         tenants: savedTenants,
                         usersPermissions,
                         formValues: values,
-                        contextDispatch,
+                        modalDispatch,
                       })
                     }
                   </FieldArray>
@@ -386,7 +386,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
                         tenants: savedTenantsArchived,
                         usersPermissions,
                         formValues: values,
-                        contextDispatch,
+                        modalDispatch,
                       })
                     }
                   </FieldArray>
@@ -396,7 +396,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

@@ -4,7 +4,7 @@ import { FieldArray } from "react-final-form-arrays";
 import { Field, Form } from "react-final-form";
 import type { FormApi } from "final-form";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButton from "@/components/form/AddButton";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
@@ -94,8 +94,8 @@ const Rents: React.FC<RentsProps> = ({ archived, fields, rents }) => {
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_RENT) &&
@@ -119,7 +119,7 @@ const Rents: React.FC<RentsProps> = ({ archived, fields, rents }) => {
               !!fields.length &&
               fields.map((item, index) => {
                 const handleRemove = () => {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -161,7 +161,7 @@ const Rents: React.FC<RentsProps> = ({ archived, fields, rents }) => {
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

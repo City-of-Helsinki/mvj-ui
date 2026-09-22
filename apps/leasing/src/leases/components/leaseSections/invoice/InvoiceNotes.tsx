@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import arrayMutators from "final-form-arrays";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButton from "@/components/form/AddButton";
 import Authorization from "@/components/authorization/Authorization";
 import Button from "@/components/button/Button";
@@ -150,8 +150,8 @@ const InvoiceNotesEdit = ({ fields }: EditProps): ReactElement => {
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {fields && !!fields.length && (
@@ -197,7 +197,7 @@ const InvoiceNotesEdit = ({ fields }: EditProps): ReactElement => {
 
             {fields.map((note, index) => {
               const handleRemove = () => {
-                contextDispatch({
+                modalDispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
                     fields.remove(index);
@@ -310,7 +310,7 @@ const InvoiceNotesEdit = ({ fields }: EditProps): ReactElement => {
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -367,11 +367,11 @@ const InvoiceNotes: React.FC<Props> = ({ invoiceNotes }) => {
               isServiceUnitSameAsActiveServiceUnit()
             }
           >
-            <AppConsumer>
-              {({ contextDispatch }) => {
+            <ModalConsumer>
+              {({ modalDispatch }) => {
                 const handleCancel = () => {
                   if (dirty) {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         form.reset();
@@ -419,7 +419,7 @@ const InvoiceNotes: React.FC<Props> = ({ invoiceNotes }) => {
                   </>
                 );
               }}
-            </AppConsumer>
+            </ModalConsumer>
           </Authorization>
         </form>
       )}

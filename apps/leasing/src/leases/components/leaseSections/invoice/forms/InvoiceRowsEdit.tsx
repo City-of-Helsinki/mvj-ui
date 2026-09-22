@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
@@ -54,8 +54,8 @@ const InvoiceRowsEdit = ({
 
   const receivableType = receivableTypeFromRows(rows);
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             <SubTitle
@@ -70,7 +70,7 @@ const InvoiceRowsEdit = ({
                 <BoxItemContainer>
                   {fields.map((row, index) => {
                     const handleRemove = () => {
-                      contextDispatch({
+                      modalDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           fields.remove(index);
@@ -263,7 +263,7 @@ const InvoiceRowsEdit = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

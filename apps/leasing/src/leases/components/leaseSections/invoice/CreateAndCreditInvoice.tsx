@@ -36,7 +36,7 @@ import {
   getUserActiveServiceUnit,
   getUsersPermissions,
 } from "@/usersPermissions/selectors";
-import { AppConsumer, ActionTypes } from "@/app/AppContext";
+import { ModalConsumer, ActionTypes } from "@/app/ModalContext";
 import { ConfirmationModalTexts } from "@/enums";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
@@ -205,10 +205,10 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
         />
       </Authorization>
 
-      <AppConsumer>
-        {({ contextDispatch }) => {
+      <ModalConsumer>
+        {({ modalDispatch }) => {
           const handleDelete = () => {
-            contextDispatch({
+            modalDispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 handleDeleteInvoicePanelButtonClick();
@@ -245,7 +245,7 @@ const CreateAndCreditInvoice: React.FC<Props> = ({ invoiceToCredit }) => {
             </Authorization>
           );
         }}
-      </AppConsumer>
+      </ModalConsumer>
 
       <Authorization
         allow={

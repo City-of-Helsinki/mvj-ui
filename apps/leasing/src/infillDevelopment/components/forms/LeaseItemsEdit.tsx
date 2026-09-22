@@ -3,7 +3,7 @@ import { useAppSelector } from "@/root/hooks";
 import { useFormState } from "react-final-form";
 import { get } from "lodash-es";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import FormText from "@/components/form/FormText";
@@ -39,8 +39,8 @@ const LeaseItemsEdit = ({
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {!hasPermissions(
@@ -54,7 +54,7 @@ const LeaseItemsEdit = ({
               !!fields.length &&
               fields.map((lease, index) => {
                 const handleRemove = () => {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -117,7 +117,7 @@ const LeaseItemsEdit = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

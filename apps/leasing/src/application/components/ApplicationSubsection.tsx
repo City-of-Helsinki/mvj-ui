@@ -15,7 +15,7 @@ import { ButtonColors } from "@/components/enums";
 import FormHintText from "@/components/form/FormHintText";
 import { formatDate, isFieldAllowedToRead } from "@/util/helpers";
 import { ConfirmationModalTexts } from "@/enums";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import { ApplicantTypes } from "@/application/enums";
 import {
   getApplicationAttachmentDownloadLink,
@@ -105,8 +105,8 @@ const ApplicationFormFileField = connect(
   answerId,
 }) => {
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         const isNew = !answerId;
         const pathWithinForm = fieldName.split(".").slice(1).join(".");
 
@@ -150,7 +150,7 @@ const ApplicationFormFileField = connect(
         );
 
         const deleteFile = (file) => {
-          contextDispatch({
+          modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               // Hard delete only if this is a new editor. Edit mode can be canceled, in which case changes to files
@@ -273,7 +273,7 @@ const ApplicationFormFileField = connect(
           </Column>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 });
 const ApplicationFormSubsectionFields = connect(

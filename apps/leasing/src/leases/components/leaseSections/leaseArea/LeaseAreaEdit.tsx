@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { useLocation, Link } from "react-router";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
@@ -108,8 +108,8 @@ const PlanUnits = ({
 
   const planUnitErrors = errors?.[name];
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <Collapse
             className="collapse__secondary"
@@ -130,7 +130,7 @@ const PlanUnits = ({
               <BoxItemContainer>
                 {fields.map((planunit, index) => {
                   const handleRemove = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -186,7 +186,7 @@ const PlanUnits = ({
           </Collapse>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -237,8 +237,8 @@ const Plots = ({
 
   const plotErrors = errors?.[name];
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <Collapse
             className="collapse__secondary"
@@ -256,7 +256,7 @@ const Plots = ({
               <BoxItemContainer>
                 {fields.map((plot, index) => {
                   const handleDelete = () => {
-                    contextDispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -314,7 +314,7 @@ const Plots = ({
           </Collapse>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -460,8 +460,8 @@ const AddressItems = ({ formApi, fields }: AddressesProps): ReactElement => {
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             <SubTitle
@@ -564,7 +564,7 @@ const AddressItems = ({ formApi, fields }: AddressesProps): ReactElement => {
               !!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -604,7 +604,7 @@ const AddressItems = ({ formApi, fields }: AddressesProps): ReactElement => {
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { ReactElement, useCallback, useEffect, useRef } from "react";
 import { FieldArray } from "react-final-form-arrays";
 import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import AddButtonThird from "@/components/form/AddButtonThird";
@@ -76,8 +76,8 @@ const ManagementSubventions = ({
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {!isFieldAllowedToEdit(
@@ -142,7 +142,7 @@ const ManagementSubventions = ({
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -185,7 +185,7 @@ const ManagementSubventions = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -205,8 +205,8 @@ const TemporarySubventions = ({
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {!isFieldAllowedToEdit(
@@ -271,7 +271,7 @@ const TemporarySubventions = ({
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -314,7 +314,7 @@ const TemporarySubventions = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -757,10 +757,10 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
           </Authorization>
         )}
         {type === RentAdjustmentTypes.DISCOUNT && showSubventions && (
-          <AppConsumer>
-            {({ contextDispatch }) => {
+          <ModalConsumer>
+            {({ modalDispatch }) => {
               const handleRemoveSubventions = () => {
-                contextDispatch({
+                modalDispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
                     removeSubventions();
@@ -972,7 +972,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
                 </GreenBox>
               );
             }}
-          </AppConsumer>
+          </ModalConsumer>
         )}
       </BoxContentWrapper>
     </BoxItem>

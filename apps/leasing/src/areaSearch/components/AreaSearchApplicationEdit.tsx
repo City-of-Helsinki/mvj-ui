@@ -87,7 +87,7 @@ import {
   getContactModalSettings,
   getIsContactModalOpen,
 } from "@/contacts/selectors";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import type { Contact, ContactModalSettings } from "@/contacts/types";
 import { contactExists } from "@/contacts/requestsAsync";
 import { ContactTypes } from "@/contacts/enums";
@@ -303,8 +303,8 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
           onSubmit={createLease}
           areaSearch={areaSearch}
         />
-        <AppConsumer>
-          {({ contextDispatch }) => {
+        <ModalConsumer>
+          {({ modalDispatch }) => {
             const {
               contactModalSettings,
               receiveIsSaveClicked,
@@ -334,7 +334,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                 });
 
                 if (exists) {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       this.handleCreateContact(values);
@@ -368,7 +368,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
               />
             );
           }}
-        </AppConsumer>
+        </ModalConsumer>
         <div className="AreaSearchApplication__header">
           <Title>Hakemus</Title>
           <AddButtonSecondary

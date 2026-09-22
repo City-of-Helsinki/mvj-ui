@@ -22,7 +22,7 @@ import type { RootState } from "@/root/types";
 import type { Attributes } from "types";
 import { getUserFullName } from "@/users/helpers";
 import { ConfirmationModalTexts, FieldTypes } from "@/enums";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import PlotApplicationInfoCheckCollapse from "@/plotApplications/components/infoCheck/PlotApplicationInfoCheckCollapse";
 import {
   getIsPerformingFileOperation,
@@ -66,8 +66,8 @@ class PlotApplicationTargetInfoCheckManagements extends PureComponent<TargetSubF
     };
 
     return (
-      <AppConsumer>
-        {({ contextDispatch }) => (
+      <ModalConsumer>
+        {({ modalDispatch }) => (
           <div role="table">
             <Row>
               <Column small={4} medium={4} large={2} role="columnheader">
@@ -84,7 +84,7 @@ class PlotApplicationTargetInfoCheckManagements extends PureComponent<TargetSubF
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -180,7 +180,7 @@ class PlotApplicationTargetInfoCheckManagements extends PureComponent<TargetSubF
             )}
           </div>
         )}
-      </AppConsumer>
+      </ModalConsumer>
     );
   }
 }
@@ -194,8 +194,8 @@ class PlotApplicationTargetInfoCheckConditions extends PureComponent<TargetSubFi
     };
 
     return (
-      <AppConsumer>
-        {({ contextDispatch }) => (
+      <ModalConsumer>
+        {({ modalDispatch }) => (
           <div role="table">
             <Row>
               <Column large={11} role="columnheader">
@@ -206,7 +206,7 @@ class PlotApplicationTargetInfoCheckConditions extends PureComponent<TargetSubFi
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  contextDispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -267,7 +267,7 @@ class PlotApplicationTargetInfoCheckConditions extends PureComponent<TargetSubFi
             )}
           </div>
         )}
-      </AppConsumer>
+      </ModalConsumer>
     );
   }
 }
@@ -300,8 +300,8 @@ const PlotApplicationTargetInfoCheckMeetingMemos = connect(null, {
   };
 
   return (
-    <AppConsumer>
-      {({ contextDispatch }) => (
+    <ModalConsumer>
+      {({ modalDispatch }) => (
         <div role="table">
           <Row>
             <Column large={11} role="columnheader">
@@ -356,7 +356,7 @@ const PlotApplicationTargetInfoCheckMeetingMemos = connect(null, {
                   </Row>
                   {fields.getAll().map((entry, index) => {
                     const handleRemove = () => {
-                      contextDispatch({
+                      modalDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           deleteTargetInfoCheckMeetingMemo({
@@ -441,7 +441,7 @@ const PlotApplicationTargetInfoCheckMeetingMemos = connect(null, {
           )}
         </div>
       )}
-    </AppConsumer>
+    </ModalConsumer>
   );
 });
 type OwnProps = {
