@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import Authorization from "@/components/authorization/Authorization";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import Button from "@/components/button/Button";
@@ -361,10 +361,10 @@ const Invoices: React.FC = () => {
   if (!hasPermissions(usersPermissions, UsersPermissions.VIEW_INVOICE))
     return <AuthorizationError text={PermissionMissingTexts.GENERAL} />;
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         const handleStartInvoicing = () => {
-          dispatch({
+          modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               startInvoicing();
@@ -380,7 +380,7 @@ const Invoices: React.FC = () => {
         };
 
         const handleStopInvoicing = () => {
-          dispatch({
+          modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               stopInvoicing();
@@ -579,7 +579,7 @@ const Invoices: React.FC = () => {
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

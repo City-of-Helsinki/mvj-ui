@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Row, Column } from "@/components/grid/Grid";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import CreateLeaseModal from "@/leases/components/createLease/CreateLeaseModal";
@@ -280,11 +280,11 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
   };
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         const handleCreateLeaseModalSubmit = (payload: Record<string, any>) => {
           if (hasAnyDirtyForms) {
-            dispatch({
+            modalDispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 handleLeaseCreate(payload);
@@ -376,7 +376,7 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
           </div>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

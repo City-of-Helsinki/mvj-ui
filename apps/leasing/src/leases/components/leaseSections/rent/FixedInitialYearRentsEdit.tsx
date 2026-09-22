@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
@@ -58,8 +58,8 @@ const FixedInitialYearRentsEdit = ({ fields }: Props) => {
   }
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {fields && !!fields.length && (
@@ -156,7 +156,7 @@ const FixedInitialYearRentsEdit = ({ fields }: Props) => {
                 )}
                 {fields.map((rent, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -429,7 +429,7 @@ const FixedInitialYearRentsEdit = ({ fields }: Props) => {
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Row, Column } from "@/components/grid/Grid";
 import { FieldArray } from "react-final-form-arrays";
 import { isEmpty } from "lodash-es";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import AddFileButton from "@/components/form/AddFileButton";
 import Authorization from "@/components/authorization/Authorization";
@@ -162,8 +162,8 @@ const RenderComments: React.FC<CommentProps> = ({
   }
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             <SubTitle
@@ -260,7 +260,7 @@ const RenderComments: React.FC<CommentProps> = ({
                 </Row>
                 {fields.map((comment, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -384,7 +384,7 @@ const RenderComments: React.FC<CommentProps> = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -958,8 +958,8 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
             LeaseAreaAttachmentsFieldPaths.ATTACHMENTS,
           )}
         >
-          <AppConsumer>
-            {({ dispatch }) => {
+          <ModalConsumer>
+            {({ modalDispatch }) => {
               return (
                 <>
                   <SubTitle
@@ -1027,7 +1027,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                       </Row>
                       {pollutedLandMattiAttachments.map((file, index) => {
                         const handleRemove = () => {
-                          dispatch({
+                          modalDispatch({
                             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                             confirmationFunction: () => {
                               handleDeleteLeaseAreaAttachment(file.id);
@@ -1113,7 +1113,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 </>
               );
             }}
-          </AppConsumer>
+          </ModalConsumer>
         </Authorization>
 
         <Authorization
@@ -1272,8 +1272,8 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
             LeaseAreaAttachmentsFieldPaths.ATTACHMENTS,
           )}
         >
-          <AppConsumer>
-            {({ dispatch }) => {
+          <ModalConsumer>
+            {({ modalDispatch }) => {
               return (
                 <>
                   <SubTitle
@@ -1344,7 +1344,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                       {constructabilityReportGeotechnicalAttachments.map(
                         (file, index) => {
                           const handleRemove = () => {
-                            dispatch({
+                            modalDispatch({
                               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                               confirmationFunction: () => {
                                 handleDeleteLeaseAreaAttachment(file.id);
@@ -1431,7 +1431,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                 </>
               );
             }}
-          </AppConsumer>
+          </ModalConsumer>
         </Authorization>
 
         <Authorization

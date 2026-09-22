@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Form } from "react-final-form";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import AddFileButton from "@/components/form/AddFileButton";
@@ -242,8 +242,8 @@ const DebtCollectionForm: React.FC = () => {
   };
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             <Authorization
@@ -328,7 +328,7 @@ const DebtCollectionForm: React.FC = () => {
                     !!sortedCollectionLetters.length &&
                     sortedCollectionLetters.map((collectionLetter, index) => {
                       const handleRemove = () => {
-                        dispatch({
+                        modalDispatch({
                           type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                           confirmationFunction: () => {
                             handleDeleteCollectionLetter(collectionLetter.id);
@@ -546,7 +546,7 @@ const DebtCollectionForm: React.FC = () => {
                     sortedCollectionCourtDecisions.map(
                       (collectionCourtDecision, index) => {
                         const handleRemove = () => {
-                          dispatch({
+                          modalDispatch({
                             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                             confirmationFunction: () => {
                               handleDeleteCollectionCourtDecision(
@@ -651,7 +651,7 @@ const DebtCollectionForm: React.FC = () => {
                         {sortedCollectionCourtDecisions.map(
                           (collectionCourtDecision, index) => {
                             const handleRemove = () => {
-                              dispatch({
+                              modalDispatch({
                                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                                 confirmationFunction: () => {
                                   handleDeleteCollectionCourtDecision(
@@ -884,7 +884,7 @@ const DebtCollectionForm: React.FC = () => {
                 isServiceUnitSameAsActiveServiceUnit={
                   isServiceUnitSameAsActiveServiceUnit
                 }
-                appDispatch={dispatch}
+                modalDispatch={modalDispatch}
               />
             </Authorization>
             <Authorization
@@ -904,7 +904,7 @@ const DebtCollectionForm: React.FC = () => {
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

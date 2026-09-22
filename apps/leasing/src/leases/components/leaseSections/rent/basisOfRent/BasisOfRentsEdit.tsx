@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { FormApi } from "final-form";
 import { Row, Column } from "@/components/grid/Grid";
 import classNames from "classnames";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import BasisOfRentEdit from "./BasisOfRentEdit";
@@ -136,8 +136,8 @@ const BasisOfRentsEdit = ({
   }
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         if (archived) {
           if (!fields || !fields.length) return null;
           return (
@@ -156,7 +156,7 @@ const BasisOfRentsEdit = ({
                     !!fields.length &&
                     fields.map((field, index) => {
                       const handleRemove = () => {
-                        dispatch({
+                        modalDispatch({
                           type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                           confirmationFunction: () => {
                             fields.remove(index);
@@ -177,7 +177,7 @@ const BasisOfRentsEdit = ({
                       const handleUnarchive = (
                         savedItem: Record<string, any>,
                       ) => {
-                        dispatch({
+                        modalDispatch({
                           type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                           confirmationFunction: () => {
                             if (onUnarchive) {
@@ -233,7 +233,7 @@ const BasisOfRentsEdit = ({
                   !!fields.length &&
                   fields.map((field, index) => {
                     const handleRemove = () => {
-                      dispatch({
+                      modalDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           fields.remove(index);
@@ -252,7 +252,7 @@ const BasisOfRentsEdit = ({
                     };
 
                     const handleArchive = (savedItem: Record<string, any>) => {
-                      dispatch({
+                      modalDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           if (onArchive) {
@@ -327,7 +327,7 @@ const BasisOfRentsEdit = ({
           );
         }
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

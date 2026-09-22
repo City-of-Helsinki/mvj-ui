@@ -6,7 +6,7 @@ import {
   withRouterLegacy,
   type WithRouterProps,
 } from "@/root/withRouterLegacy";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import MainMenuIcon from "@/components/icons/MainMenuIcon";
 import SearchInput from "@/components/inputs/SearchInput";
 import UserServiceUnitSelectInput from "@/components/inputs/UserServiceUnitSelectInput";
@@ -99,15 +99,15 @@ class TopNavigation extends Component<Props & WithRouterProps, State> {
     } = this.props;
     const { search } = this.state;
     return (
-      <AppConsumer>
-        {({ dispatch }) => {
+      <ModalConsumer>
+        {({ modalDispatch }) => {
           const handleLinkClick = (e: any) => {
             const hasDirtyPages = hasAnyPageDirtyForms();
 
             if (hasDirtyPages) {
               const target = e.target;
               e.preventDefault();
-              dispatch({
+              modalDispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   const { navigate } = this.props;
@@ -129,7 +129,7 @@ class TopNavigation extends Component<Props & WithRouterProps, State> {
             const hasDirtyPages = hasAnyPageDirtyForms();
 
             if (hasDirtyPages) {
-              dispatch({
+              modalDispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   this.moveSearchPage();
@@ -158,7 +158,7 @@ class TopNavigation extends Component<Props & WithRouterProps, State> {
               hasDirtyPages = hasAnyPageDirtyForms();
 
             if (hasDirtyPages) {
-              dispatch({
+              modalDispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   onLogout();
@@ -249,7 +249,7 @@ class TopNavigation extends Component<Props & WithRouterProps, State> {
             </section>
           );
         }}
-      </AppConsumer>
+      </ModalConsumer>
     );
   }
 }

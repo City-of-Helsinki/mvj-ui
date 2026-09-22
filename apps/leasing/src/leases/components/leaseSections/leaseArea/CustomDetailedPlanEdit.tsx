@@ -3,7 +3,7 @@ import { useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import BoxItem from "@/components/content/BoxItem";
 import BoxContentWrapper from "@/components/content/BoxContentWrapper";
@@ -79,8 +79,8 @@ const UsageDistributions = ({
   }, [attributes, fields]);
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {!isFieldAllowedToEdit(
@@ -93,7 +93,7 @@ const UsageDistributions = ({
               <BoxItemContainer>
                 {fields.map((usageDistribution, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -233,7 +233,7 @@ const UsageDistributions = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -262,8 +262,8 @@ const InfoLinks = ({
     useAppSelector(getUsersPermissions);
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {!isFieldAllowedToEdit(
@@ -276,7 +276,7 @@ const InfoLinks = ({
               <BoxItemContainer>
                 {fields.map((infoLink, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -413,7 +413,7 @@ const InfoLinks = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

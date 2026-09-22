@@ -10,7 +10,7 @@ import Authorization from "@/components/authorization/Authorization";
 import Loader from "@/components/loader/Loader";
 import LoaderWrapper from "@/components/loader/LoaderWrapper";
 import SubMenu from "./SubMenu";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
@@ -117,8 +117,8 @@ class SideMenu extends Component<Props & WithRouterProps, State> {
     const { isClosing, isOpening, subMenuKey } = this.state;
     const width = this.getSideMenuWidth();
     return (
-      <AppConsumer>
-        {({ dispatch }) => {
+      <ModalConsumer>
+        {({ modalDispatch }) => {
           const handleClick = (e: any) => {
             const { onLinkClick } = this.props,
               hasDirtyPages = hasAnyPageDirtyForms();
@@ -129,7 +129,7 @@ class SideMenu extends Component<Props & WithRouterProps, State> {
             if (hasDirtyPages) {
               const target = e.target;
               e.preventDefault();
-              dispatch({
+              modalDispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   const { navigate } = this.props;
@@ -442,7 +442,7 @@ class SideMenu extends Component<Props & WithRouterProps, State> {
             </div>
           );
         }}
-      </AppConsumer>
+      </ModalConsumer>
     );
   }
 }

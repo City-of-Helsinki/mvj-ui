@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { Form } from "react-final-form";
 import { useNavigate, useLocation } from "react-router";
 import { useContactAttributes } from "@/components/attributes/ContactAttributes";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AuthorizationError from "@/components/authorization/AuthorizationError";
 import ContactForm from "./forms/ContactForm";
 import ContentContainer from "@/components/content/ContentContainer";
@@ -114,7 +114,7 @@ const NewContactPage: React.FC = () => {
     });
   };
 
-  const handleSave = async (contextDispatch) => {
+  const handleSave = async (modalDispatch) => {
     if (!formApiRef.current) {
       return;
     }
@@ -136,7 +136,7 @@ const NewContactPage: React.FC = () => {
       });
 
       if (exists) {
-        contextDispatch({
+        modalDispatch({
           type: ActionTypes.SHOW_CONFIRMATION_MODAL,
           confirmationFunction: () => {
             dispatch(receiveIsSaveClicked(true));
@@ -179,8 +179,8 @@ const NewContactPage: React.FC = () => {
     );
 
   return (
-    <AppConsumer>
-      {({ dispatch: contextDispatch }) => (
+    <ModalConsumer>
+      {({ modalDispatch }) => (
         <FullWidthContainer>
           <PageNavigationWrapper>
             <ControlButtonBar
@@ -191,7 +191,7 @@ const NewContactPage: React.FC = () => {
                   isEditMode={true}
                   isSaveDisabled={isSaveClicked && !formState.valid}
                   onCancel={cancelChanges}
-                  onSave={async () => await handleSave(contextDispatch)}
+                  onSave={async () => await handleSave(modalDispatch)}
                   showCommentButton={false}
                   showCopyButton={true}
                 />
@@ -224,7 +224,7 @@ const NewContactPage: React.FC = () => {
           </PageContainer>
         </FullWidthContainer>
       )}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

@@ -9,7 +9,7 @@ import CollectionNoteItem from "@/collectionNote/components/CollectionNote";
 import CollectionNoteEdit from "@/collectionNote/components/CollectionNoteEdit";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
 import BoxItem from "@/components/content/BoxItem";
-import { ActionTypes } from "@/app/AppContext";
+import { ActionTypes } from "@/app/ModalContext";
 import { getUiDataCollectionNoteKey } from "@/uiData/helpers";
 import {
   CollectionNoteFieldPaths,
@@ -31,14 +31,14 @@ type CollectionNotesProps = {
   collectionNotes: Array<CollectionNote>;
   handleDeleteCollectionNote: (...args: Array<any>) => any;
   isServiceUnitSameAsActiveServiceUnit: () => boolean;
-  appDispatch: (...args: Array<any>) => any;
+  modalDispatch: (...args: Array<any>) => any;
 };
 
 const CollectionNotes: React.FC<CollectionNotesProps> = ({
   collectionNotes,
   handleDeleteCollectionNote,
   isServiceUnitSameAsActiveServiceUnit,
-  appDispatch,
+  modalDispatch,
 }) => {
   const dispatch = useAppDispatch();
   const currentLease = useAppSelector(getCurrentLease);
@@ -84,7 +84,7 @@ const CollectionNotes: React.FC<CollectionNotesProps> = ({
                   )
                   .map((note) => {
                     const handleRemove = () => {
-                      appDispatch({
+                      modalDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           handleDeleteCollectionNote(note.id);

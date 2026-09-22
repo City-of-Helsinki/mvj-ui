@@ -2,7 +2,7 @@ import React from "react";
 import Button from "../button/Button";
 import Authorization from "@/components/authorization/Authorization";
 import CommentButton from "./CommentButton";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import { ConfirmationModalTexts } from "@/enums";
 import { hasAnyPageDirtyForms } from "@/util/forms";
 import { ButtonColors } from "@/components/enums";
@@ -61,13 +61,13 @@ const ControlButtons = ({
   };
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         const handleCancel = () => {
           const hasDirtyPages = hasAnyPageDirtyForms();
 
           if (hasDirtyPages) {
-            dispatch({
+            modalDispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 if (onCancel) onCancel();
@@ -89,7 +89,7 @@ const ControlButtons = ({
           const hasDirtyPages = hasAnyPageDirtyForms();
 
           if (hasDirtyPages) {
-            dispatch({
+            modalDispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 if (onCopy) onCopy();
@@ -108,7 +108,7 @@ const ControlButtons = ({
         };
 
         const handleDelete = () => {
-          dispatch({
+          modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               if (onDelete) onDelete();
@@ -189,7 +189,7 @@ const ControlButtons = ({
           </div>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

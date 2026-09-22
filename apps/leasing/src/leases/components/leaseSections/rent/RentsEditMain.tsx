@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import type { FormApi } from "final-form";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import { setRentInfoComplete, setRentInfoUncomplete } from "@/leases/slice";
 import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
@@ -32,10 +32,10 @@ const RentsEditMain: React.FC<Props> = ({
   };
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         const handleSetRentInfoComplete = () => {
-          dispatch({
+          modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               handleRentInfoComplete();
@@ -51,7 +51,7 @@ const RentsEditMain: React.FC<Props> = ({
         };
 
         const handleSetRentInfoUncomplete = () => {
-          dispatch({
+          modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               handleRentInfoUncomplete();
@@ -78,7 +78,7 @@ const RentsEditMain: React.FC<Props> = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

@@ -4,7 +4,7 @@ import { Form } from "react-final-form";
 import { FormApi } from "final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonThird from "@/components/form/AddButtonThird";
 import Authorization from "@/components/authorization/Authorization";
 import FieldAndRemoveButtonWrapper from "@/components/form/FieldAndRemoveButtonWrapper";
@@ -62,8 +62,8 @@ const PropertyIdentifiers = ({
   };
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             <FormTextTitle
@@ -93,7 +93,7 @@ const PropertyIdentifiers = ({
               !!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -176,7 +176,7 @@ const PropertyIdentifiers = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -198,8 +198,8 @@ const Decisions = ({
   };
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             <SubTitle
@@ -314,7 +314,7 @@ const Decisions = ({
               !!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -456,7 +456,7 @@ const Decisions = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -480,8 +480,8 @@ const RentRates = ({
   };
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             <SubTitle
@@ -574,7 +574,7 @@ const RentRates = ({
 
                 {fields.map((field, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -697,7 +697,7 @@ const RentRates = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

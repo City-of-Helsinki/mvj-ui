@@ -5,7 +5,7 @@ import addMonths from "date-fns/addMonths";
 import format from "date-fns/format";
 import isAfter from "date-fns/isAfter";
 import subDays from "date-fns/subDays";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
 import BoxItemContainer from "@/components/content/BoxItemContainer";
@@ -130,8 +130,8 @@ const RentAdjustmentsEdit: React.FC<Props> = ({ fields }) => {
   }
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             <SteppedDiscountModal
@@ -143,7 +143,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({ fields }) => {
               <BoxItemContainer>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    modalDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -205,7 +205,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({ fields }) => {
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

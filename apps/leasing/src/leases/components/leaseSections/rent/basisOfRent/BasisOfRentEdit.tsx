@@ -4,7 +4,7 @@ import type { FormApi } from "final-form";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { cloneDeep, get, set, unset } from "lodash-es";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import AddButtonThird from "@/components/form/AddButtonThird";
@@ -105,8 +105,8 @@ const ManagementSubventions = ({
   };
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {!isFieldAllowedToEdit(
@@ -207,7 +207,7 @@ const ManagementSubventions = ({
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -256,7 +256,7 @@ const ManagementSubventions = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -283,8 +283,8 @@ const TemporarySubventions = ({
   };
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {!isFieldAllowedToEdit(
@@ -370,7 +370,7 @@ const TemporarySubventions = ({
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -420,7 +420,7 @@ const TemporarySubventions = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -436,7 +436,7 @@ const MastChildren = ({
   fieldsDisabled,
 }: MastChildrenProps): ReactElement => {
   return (
-    <AppConsumer>
+    <ModalConsumer>
       {() => {
         return (
           <>
@@ -454,7 +454,7 @@ const MastChildren = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -1777,7 +1777,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                         <Column large={6} medium={9} small={12}></Column>
                       )}
                       {calculatorType === CalculatorTypes.MAST && (
-                        <AppConsumer>
+                        <ModalConsumer>
                           {() => {
                             return (
                               <Column large={6} medium={9} small={12}>
@@ -1793,7 +1793,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                               </Column>
                             );
                           }}
-                        </AppConsumer>
+                        </ModalConsumer>
                       )}
                       {calculatorType !== CalculatorTypes.MAST && (
                         <Column small={6} medium={4} large={2}>
@@ -2917,10 +2917,10 @@ const BasisOfRentEdit: React.FC<Props> = ({
         {showSubventions &&
           (calculatorType === CalculatorTypes.LEASE ||
             calculatorType === CalculatorTypes.LEASE2022) && (
-            <AppConsumer>
-              {({ dispatch }) => {
+            <ModalConsumer>
+              {({ modalDispatch }) => {
                 const handleRemoveSubventions = () => {
-                  dispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       removeSubventions();
@@ -3189,7 +3189,7 @@ const BasisOfRentEdit: React.FC<Props> = ({
                   </WhiteBox>
                 );
               }}
-            </AppConsumer>
+            </ModalConsumer>
           )}
       </BoxContentWrapper>
     </BoxItem>

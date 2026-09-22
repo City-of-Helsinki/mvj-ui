@@ -1,5 +1,5 @@
 import React from "react";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import BackButton from "@/components/button/BackButton";
 import { ConfirmationModalTexts } from "@/enums";
 import { ButtonColors } from "@/components/enums";
@@ -15,13 +15,13 @@ const ControlButtonBar = ({
   infoComponent,
   onBack,
 }: Props) => (
-  <AppConsumer>
-    {({ dispatch }) => {
+  <ModalConsumer>
+    {({ modalDispatch }) => {
       const handleBack = () => {
         const hasDirtyPages = hasAnyPageDirtyForms();
 
         if (hasDirtyPages) {
-          dispatch({
+          modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               onBack();
@@ -52,7 +52,7 @@ const ControlButtonBar = ({
         </div>
       );
     }}
-  </AppConsumer>
+  </ModalConsumer>
 );
 
 export default ControlButtonBar;

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
 import { get, isEmpty } from "lodash-es";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import ActionButtonWrapper from "@/components/form/ActionButtonWrapper";
 import AddButtonSecondary from "@/components/form/AddButtonSecondary";
 import Authorization from "@/components/authorization/Authorization";
@@ -109,8 +109,8 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
 
   const contractChangeErrors = get(errors, name);
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <Collapse
             className="collapse__secondary"
@@ -136,7 +136,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                   !!fields.length &&
                   fields.map((change, index) => {
                     const handleRemove = () => {
-                      dispatch({
+                      modalDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           fields.remove(index);
@@ -405,7 +405,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
           </Collapse>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 type CollateralsProps = {
@@ -438,8 +438,8 @@ const Collaterals: React.FC<CollateralsProps> = ({
 
   const collateralsErrors = get(errors, name);
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <Collapse
             className="collapse__secondary"
@@ -464,7 +464,7 @@ const Collaterals: React.FC<CollateralsProps> = ({
                   !!fields.length &&
                   fields.map((field, index) => {
                     const handleRemove = () => {
-                      dispatch({
+                      modalDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           fields.remove(index);
@@ -512,7 +512,7 @@ const Collaterals: React.FC<CollateralsProps> = ({
           </Collapse>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

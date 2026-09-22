@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { isEmpty } from "lodash-es";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddIcon from "@/components/icons/AddIcon";
 import Button from "@/components/button/Button";
 import ErrorBlock from "@/components/form/ErrorBlock";
@@ -204,12 +204,12 @@ class UIDataTooltip extends PureComponent<Props, State> {
     }
 
     return (
-      <AppConsumer>
-        {({ dispatch }) => {
+      <ModalConsumer>
+        {({ modalDispatch }) => {
           const handleDelete = (e: any) => {
             e.preventDefault();
             this.closeTooltip();
-            dispatch({
+            modalDispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 this.handleDelete();
@@ -296,7 +296,7 @@ class UIDataTooltip extends PureComponent<Props, State> {
             </TooltipWrapper>
           );
         }}
-      </AppConsumer>
+      </ModalConsumer>
     );
   }
 }

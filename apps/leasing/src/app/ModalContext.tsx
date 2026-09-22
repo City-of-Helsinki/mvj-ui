@@ -1,5 +1,5 @@
 import React from "react";
-const Context: React.Context<Partial<AppContextState>> = React.createContext(
+const Context: React.Context<Partial<ModalContextState>> = React.createContext(
   {},
 );
 export const ActionTypes = {
@@ -36,24 +36,24 @@ const reducer = (state, action) => {
 type Props = {
   children: any;
 };
-type AppContextState = {
+type ModalContextState = {
   confirmationFunction: ((...args: Array<any>) => any) | null | undefined;
   confirmationModalButtonClassName: string | null | undefined;
   confirmationModalButtonText: string | null | undefined;
   confirmationModalLabel: string | null | undefined;
   confirmationModalTitle: string | null | undefined;
   isConfirmationModalOpen: boolean;
-  dispatch: (...args: Array<any>) => any;
+  modalDispatch: (...args: Array<any>) => any;
 };
-export class AppProvider extends React.Component<Props, AppContextState> {
-  state: AppContextState = {
+export class ModalProvider extends React.Component<Props, ModalContextState> {
+  state: ModalContextState = {
     confirmationFunction: null,
     confirmationModalButtonClassName: null,
     confirmationModalButtonText: null,
     confirmationModalLabel: null,
     confirmationModalTitle: null,
     isConfirmationModalOpen: false,
-    dispatch: (action) => {
+    modalDispatch: (action) => {
       this.setState((state) => reducer(state, action));
     },
   };
@@ -66,4 +66,4 @@ export class AppProvider extends React.Component<Props, AppContextState> {
     return <Context.Provider value={state}>{children}</Context.Provider>;
   }
 }
-export const AppConsumer = Context.Consumer;
+export const ModalConsumer = Context.Consumer;

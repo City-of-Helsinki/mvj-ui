@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { initialize, isDirty } from "redux-form";
 import classNames from "classnames";
 import { flowRight, isEmpty } from "lodash-es";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import Authorization from "@/components/authorization/Authorization";
 import CheckboxInput from "@/components/inputs/CheckboxInput";
 import CloseButton from "@/components/button/CloseButton";
@@ -232,8 +232,8 @@ class CommentPanel extends PureComponent<Props, State> {
           <div className="comment-panel__wrapper">
             <div className="comment-panel__title">
               <h1>Kommentit</h1>
-              <AppConsumer>
-                {({ dispatch }) => {
+              <ModalConsumer>
+                {({ modalDispatch }) => {
                   const isAnyCommentEditOpen = () => {
                     if (isEmpty(editModeFlags)) return false;
 
@@ -246,7 +246,7 @@ class CommentPanel extends PureComponent<Props, State> {
 
                   const handleClose = () => {
                     if (isNewCommentFormDirty || isAnyCommentEditOpen()) {
-                      dispatch({
+                      modalDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           onClose();
@@ -274,7 +274,7 @@ class CommentPanel extends PureComponent<Props, State> {
                     />
                   );
                 }}
-              </AppConsumer>
+              </ModalConsumer>
             </div>
 
             <Authorization

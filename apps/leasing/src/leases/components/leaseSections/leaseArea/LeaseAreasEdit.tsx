@@ -9,7 +9,7 @@ import React, {
 import { useAppSelector } from "@/root/hooks";
 import { FieldArray } from "react-final-form-arrays";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButton from "@/components/form/AddButton";
 import ArchiveAreaModal from "./ArchiveAreaModal";
 import LeaseAreaWithArchiveInfoEdit from "./LeaseAreaWithArchiveInfoEdit";
@@ -52,7 +52,7 @@ type AreaItemProps = {
   onUnarchive: (
     index: number,
     area: Record<string, any>,
-    appDispatch: (...args: Array<any>) => any,
+    modalDispatch: (...args: Array<any>) => any,
   ) => void;
   formApi: FormApi;
 };
@@ -82,8 +82,8 @@ const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
   );
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => (
+    <ModalConsumer>
+      {({ modalDispatch }) => (
         <>
           {!isActive && !!fields && !!fields.length && (
             <h3
@@ -100,7 +100,7 @@ const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
             !!fields.length &&
             fields.map((area, index) => {
               const handleRemove = () => {
-                dispatch({
+                modalDispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
                     removeArea(index);
@@ -125,7 +125,7 @@ const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
                   onArchive={onArchive}
                   onRemove={handleRemove}
                   onUnarchive={(idx, areaData) =>
-                    onUnarchive(idx, areaData, dispatch)
+                    onUnarchive(idx, areaData, modalDispatch)
                   }
                 />
               );
@@ -147,7 +147,7 @@ const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
           )}
         </>
       )}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
@@ -347,9 +347,9 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
     (
       index: number,
       area: Record<string, any>,
-      appDispatch: (...args: Array<any>) => any,
+      modalDispatch: (...args: Array<any>) => any,
     ) => {
-      appDispatch({
+      modalDispatch({
         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
         confirmationFunction: () => {
           handleUnarchiving(index, area);
@@ -394,10 +394,10 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
   }, [formApi]);
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         const handleCopyAreasToContract = () => {
-          dispatch({
+          modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               copyAreasToContract();
@@ -507,7 +507,7 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
           </Form>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 

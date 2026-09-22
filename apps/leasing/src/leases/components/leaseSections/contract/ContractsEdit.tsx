@@ -4,7 +4,7 @@ import { FieldArray } from "react-final-form-arrays";
 import { Form } from "react-final-form";
 import type { FormApi } from "final-form";
 import { Row, Column } from "@/components/grid/Grid";
-import { ActionTypes, AppConsumer } from "@/app/AppContext";
+import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AddButton from "@/components/form/AddButton";
 import Authorization from "@/components/authorization/Authorization";
 import ContractFileModal from "./ContractFileModal";
@@ -40,8 +40,8 @@ const Contracts = ({
   };
 
   return (
-    <AppConsumer>
-      {({ dispatch }) => {
+    <ModalConsumer>
+      {({ modalDispatch }) => {
         return (
           <>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACT) &&
@@ -53,7 +53,7 @@ const Contracts = ({
               !!fields.length &&
               fields.map((contract, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  modalDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -96,7 +96,7 @@ const Contracts = ({
           </>
         );
       }}
-    </AppConsumer>
+    </ModalConsumer>
   );
 };
 
