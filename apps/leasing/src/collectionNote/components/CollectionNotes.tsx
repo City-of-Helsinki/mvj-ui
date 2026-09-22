@@ -31,14 +31,14 @@ type CollectionNotesProps = {
   collectionNotes: Array<CollectionNote>;
   handleDeleteCollectionNote: (...args: Array<any>) => any;
   isServiceUnitSameAsActiveServiceUnit: () => boolean;
-  appDispatch: (...args: Array<any>) => any;
+  contextDispatch: (...args: Array<any>) => any;
 };
 
 const CollectionNotes: React.FC<CollectionNotesProps> = ({
   collectionNotes,
   handleDeleteCollectionNote,
   isServiceUnitSameAsActiveServiceUnit,
-  appDispatch,
+  contextDispatch,
 }) => {
   const dispatch = useAppDispatch();
   const currentLease = useAppSelector(getCurrentLease);
@@ -84,7 +84,7 @@ const CollectionNotes: React.FC<CollectionNotesProps> = ({
                   )
                   .map((note) => {
                     const handleRemove = () => {
-                      appDispatch({
+                      contextDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           handleDeleteCollectionNote(note.id);

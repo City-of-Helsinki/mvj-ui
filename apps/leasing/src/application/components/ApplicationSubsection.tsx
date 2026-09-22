@@ -106,7 +106,7 @@ const ApplicationFormFileField = connect(
 }) => {
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         const isNew = !answerId;
         const pathWithinForm = fieldName.split(".").slice(1).join(".");
 
@@ -150,7 +150,7 @@ const ApplicationFormFileField = connect(
         );
 
         const deleteFile = (file) => {
-          dispatch({
+          contextDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               // Hard delete only if this is a new editor. Edit mode can be canceled, in which case changes to files

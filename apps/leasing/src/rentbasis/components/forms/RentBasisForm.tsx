@@ -63,7 +63,7 @@ const PropertyIdentifiers = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             <FormTextTitle
@@ -93,7 +93,7 @@ const PropertyIdentifiers = ({
               !!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -199,7 +199,7 @@ const Decisions = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             <SubTitle
@@ -314,7 +314,7 @@ const Decisions = ({
               !!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -481,7 +481,7 @@ const RentRates = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             <SubTitle
@@ -574,7 +574,7 @@ const RentRates = ({
 
                 {fields.map((field, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    contextDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);

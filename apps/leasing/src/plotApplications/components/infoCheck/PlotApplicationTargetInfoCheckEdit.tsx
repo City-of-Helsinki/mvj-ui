@@ -67,7 +67,7 @@ class PlotApplicationTargetInfoCheckManagements extends PureComponent<TargetSubF
 
     return (
       <AppConsumer>
-        {({ dispatch }) => (
+        {({ contextDispatch }) => (
           <div role="table">
             <Row>
               <Column small={4} medium={4} large={2} role="columnheader">
@@ -84,7 +84,7 @@ class PlotApplicationTargetInfoCheckManagements extends PureComponent<TargetSubF
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -195,7 +195,7 @@ class PlotApplicationTargetInfoCheckConditions extends PureComponent<TargetSubFi
 
     return (
       <AppConsumer>
-        {({ dispatch }) => (
+        {({ contextDispatch }) => (
           <div role="table">
             <Row>
               <Column large={11} role="columnheader">
@@ -206,7 +206,7 @@ class PlotApplicationTargetInfoCheckConditions extends PureComponent<TargetSubFi
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -301,7 +301,7 @@ const PlotApplicationTargetInfoCheckMeetingMemos = connect(null, {
 
   return (
     <AppConsumer>
-      {({ dispatch }) => (
+      {({ contextDispatch }) => (
         <div role="table">
           <Row>
             <Column large={11} role="columnheader">
@@ -356,7 +356,7 @@ const PlotApplicationTargetInfoCheckMeetingMemos = connect(null, {
                   </Row>
                   {fields.getAll().map((entry, index) => {
                     const handleRemove = () => {
-                      dispatch({
+                      contextDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           deleteTargetInfoCheckMeetingMemo({

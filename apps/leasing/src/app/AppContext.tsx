@@ -43,7 +43,7 @@ type AppContextState = {
   confirmationModalLabel: string | null | undefined;
   confirmationModalTitle: string | null | undefined;
   isConfirmationModalOpen: boolean;
-  dispatch: (...args: Array<any>) => any;
+  contextDispatch: (...args: Array<any>) => any;
 };
 export class AppProvider extends React.Component<Props, AppContextState> {
   state: AppContextState = {
@@ -53,7 +53,7 @@ export class AppProvider extends React.Component<Props, AppContextState> {
     confirmationModalLabel: null,
     confirmationModalTitle: null,
     isConfirmationModalOpen: false,
-    dispatch: (action) => {
+    contextDispatch: (action) => {
       this.setState((state) => reducer(state, action));
     },
   };

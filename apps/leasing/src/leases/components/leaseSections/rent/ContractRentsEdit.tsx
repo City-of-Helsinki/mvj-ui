@@ -38,14 +38,14 @@ const ContractRentsEdit = ({ fields, rentField, rentType }: Props) => {
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             {fields && !!fields.length && (
               <BoxItemContainer>
                 {fields.map((rent, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    contextDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);

@@ -205,11 +205,11 @@ class UIDataTooltip extends PureComponent<Props, State> {
 
     return (
       <AppConsumer>
-        {({ dispatch }) => {
+        {({ contextDispatch }) => {
           const handleDelete = (e: any) => {
             e.preventDefault();
             this.closeTooltip();
-            dispatch({
+            contextDispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 this.handleDelete();

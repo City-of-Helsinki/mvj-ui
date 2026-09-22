@@ -42,7 +42,7 @@ const Decisions = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_DECISION) &&
@@ -53,7 +53,7 @@ const Decisions = ({
               !!fields.length &&
               fields.map((decision, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);

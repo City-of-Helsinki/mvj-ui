@@ -233,7 +233,7 @@ class CommentPanel extends PureComponent<Props, State> {
             <div className="comment-panel__title">
               <h1>Kommentit</h1>
               <AppConsumer>
-                {({ dispatch }) => {
+                {({ contextDispatch }) => {
                   const isAnyCommentEditOpen = () => {
                     if (isEmpty(editModeFlags)) return false;
 
@@ -246,7 +246,7 @@ class CommentPanel extends PureComponent<Props, State> {
 
                   const handleClose = () => {
                     if (isNewCommentFormDirty || isAnyCommentEditOpen()) {
-                      dispatch({
+                      contextDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           onClose();

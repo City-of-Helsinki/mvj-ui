@@ -52,7 +52,7 @@ type AreaItemProps = {
   onUnarchive: (
     index: number,
     area: Record<string, any>,
-    appDispatch: (...args: Array<any>) => any,
+    contextDispatch: (...args: Array<any>) => any,
   ) => void;
   formApi: FormApi;
 };
@@ -83,7 +83,7 @@ const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => (
+      {({ contextDispatch }) => (
         <>
           {!isActive && !!fields && !!fields.length && (
             <h3
@@ -100,7 +100,7 @@ const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
             !!fields.length &&
             fields.map((area, index) => {
               const handleRemove = () => {
-                dispatch({
+                contextDispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
                     removeArea(index);
@@ -125,7 +125,7 @@ const InnerLeaseAreasBase: React.FC<AreaItemProps> = ({
                   onArchive={onArchive}
                   onRemove={handleRemove}
                   onUnarchive={(idx, areaData) =>
-                    onUnarchive(idx, areaData, dispatch)
+                    onUnarchive(idx, areaData, contextDispatch)
                   }
                 />
               );
@@ -347,9 +347,9 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
     (
       index: number,
       area: Record<string, any>,
-      appDispatch: (...args: Array<any>) => any,
+      contextDispatch: (...args: Array<any>) => any,
     ) => {
-      appDispatch({
+      contextDispatch({
         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
         confirmationFunction: () => {
           handleUnarchiving(index, area);
@@ -395,9 +395,9 @@ const LeaseAreasEdit: React.FC<Props> = ({ formApi }) => {
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         const handleCopyAreasToContract = () => {
-          dispatch({
+          contextDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               copyAreasToContract();

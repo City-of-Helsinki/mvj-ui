@@ -71,7 +71,7 @@ const Payments = ({ fields, relativeTo }: PaymentsProps): ReactElement => {
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             {!fields || (!fields.length && <FormText>Ei maksuja</FormText>)}
@@ -120,7 +120,7 @@ const Payments = ({ fields, relativeTo }: PaymentsProps): ReactElement => {
               !!fields.length &&
               fields.map((payment, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);

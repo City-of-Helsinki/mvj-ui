@@ -95,7 +95,7 @@ const Rents: React.FC<RentsProps> = ({ archived, fields, rents }) => {
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_RENT) &&
@@ -119,7 +119,7 @@ const Rents: React.FC<RentsProps> = ({ archived, fields, rents }) => {
               !!fields.length &&
               fields.map((item, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);

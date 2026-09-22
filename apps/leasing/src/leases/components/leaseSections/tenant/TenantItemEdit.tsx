@@ -96,7 +96,7 @@ const renderRentShares = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <Fragment>
             <SubTitle>{LeaseTenantRentSharesFieldTitles.RENT_SHARES}</SubTitle>
@@ -153,7 +153,7 @@ const renderRentShares = ({
                 </Row>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    contextDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -325,14 +325,14 @@ const renderOtherTenants = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <Fragment>
             {fields &&
               !!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);

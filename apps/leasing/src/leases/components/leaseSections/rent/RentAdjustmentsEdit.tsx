@@ -131,7 +131,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({ fields }) => {
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             <SteppedDiscountModal
@@ -143,7 +143,7 @@ const RentAdjustmentsEdit: React.FC<Props> = ({ fields }) => {
               <BoxItemContainer>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    contextDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);

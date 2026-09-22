@@ -110,7 +110,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
   const contractChangeErrors = get(errors, name);
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <Collapse
             className="collapse__secondary"
@@ -136,7 +136,7 @@ const ContractChanges: React.FC<ContractChangesProps> = ({
                   !!fields.length &&
                   fields.map((change, index) => {
                     const handleRemove = () => {
-                      dispatch({
+                      contextDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           fields.remove(index);
@@ -439,7 +439,7 @@ const Collaterals: React.FC<CollateralsProps> = ({
   const collateralsErrors = get(errors, name);
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <Collapse
             className="collapse__secondary"
@@ -464,7 +464,7 @@ const Collaterals: React.FC<CollateralsProps> = ({
                   !!fields.length &&
                   fields.map((field, index) => {
                     const handleRemove = () => {
-                      dispatch({
+                      contextDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           fields.remove(index);

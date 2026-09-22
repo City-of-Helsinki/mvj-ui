@@ -77,7 +77,7 @@ const ManagementSubventions = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             {!isFieldAllowedToEdit(
@@ -142,7 +142,7 @@ const ManagementSubventions = ({
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -206,7 +206,7 @@ const TemporarySubventions = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             {!isFieldAllowedToEdit(
@@ -271,7 +271,7 @@ const TemporarySubventions = ({
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);
@@ -758,9 +758,9 @@ const RentAdjustmentsEdit: React.FC<Props> = ({
         )}
         {type === RentAdjustmentTypes.DISCOUNT && showSubventions && (
           <AppConsumer>
-            {({ dispatch }) => {
+            {({ contextDispatch }) => {
               const handleRemoveSubventions = () => {
-                dispatch({
+                contextDispatch({
                   type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                   confirmationFunction: () => {
                     removeSubventions();

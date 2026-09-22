@@ -137,7 +137,7 @@ const BasisOfRentsEdit = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         if (archived) {
           if (!fields || !fields.length) return null;
           return (
@@ -156,7 +156,7 @@ const BasisOfRentsEdit = ({
                     !!fields.length &&
                     fields.map((field, index) => {
                       const handleRemove = () => {
-                        dispatch({
+                        contextDispatch({
                           type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                           confirmationFunction: () => {
                             fields.remove(index);
@@ -177,7 +177,7 @@ const BasisOfRentsEdit = ({
                       const handleUnarchive = (
                         savedItem: Record<string, any>,
                       ) => {
-                        dispatch({
+                        contextDispatch({
                           type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                           confirmationFunction: () => {
                             if (onUnarchive) {
@@ -233,7 +233,7 @@ const BasisOfRentsEdit = ({
                   !!fields.length &&
                   fields.map((field, index) => {
                     const handleRemove = () => {
-                      dispatch({
+                      contextDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           fields.remove(index);
@@ -252,7 +252,7 @@ const BasisOfRentsEdit = ({
                     };
 
                     const handleArchive = (savedItem: Record<string, any>) => {
-                      dispatch({
+                      contextDispatch({
                         type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                         confirmationFunction: () => {
                           if (onArchive) {

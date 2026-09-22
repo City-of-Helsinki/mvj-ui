@@ -163,7 +163,7 @@ const RenderComments: React.FC<CommentProps> = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             <SubTitle
@@ -260,7 +260,7 @@ const RenderComments: React.FC<CommentProps> = ({
                 </Row>
                 {fields.map((comment, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    contextDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -959,7 +959,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
           )}
         >
           <AppConsumer>
-            {({ dispatch }) => {
+            {({ contextDispatch }) => {
               return (
                 <>
                   <SubTitle
@@ -1027,7 +1027,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                       </Row>
                       {pollutedLandMattiAttachments.map((file, index) => {
                         const handleRemove = () => {
-                          dispatch({
+                          contextDispatch({
                             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                             confirmationFunction: () => {
                               handleDeleteLeaseAreaAttachment(file.id);
@@ -1273,7 +1273,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
           )}
         >
           <AppConsumer>
-            {({ dispatch }) => {
+            {({ contextDispatch }) => {
               return (
                 <>
                   <SubTitle
@@ -1344,7 +1344,7 @@ const ConstructabilityItemEdit: React.FC<Props> = ({
                       {constructabilityReportGeotechnicalAttachments.map(
                         (file, index) => {
                           const handleRemove = () => {
-                            dispatch({
+                            contextDispatch({
                               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                               confirmationFunction: () => {
                                 handleDeleteLeaseAreaAttachment(file.id);

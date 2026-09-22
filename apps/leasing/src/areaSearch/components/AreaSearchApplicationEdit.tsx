@@ -304,7 +304,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
           areaSearch={areaSearch}
         />
         <AppConsumer>
-          {({ dispatch }) => {
+          {({ contextDispatch }) => {
             const {
               contactModalSettings,
               receiveIsSaveClicked,
@@ -334,7 +334,7 @@ class AreaSearchApplicationEdit extends Component<Props, State> {
                 });
 
                 if (exists) {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       this.handleCreateContact(values);

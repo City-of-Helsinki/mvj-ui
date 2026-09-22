@@ -51,7 +51,7 @@ type SectionFieldProps = {
   isSaveClicked: Boolean;
   form: string;
   fieldIdentifiers: Array<string>;
-  dispatch: (...args: Array<any>) => any;
+  contextDispatch: (...args: Array<any>) => any;
   collapseStates: Record<string, boolean>;
   setSectionEditorCollapseState: (...args: Array<any>) => any;
   meta: Record<string, any>;
@@ -62,7 +62,7 @@ const EditPlotApplicationSectionFormSectionFields = ({
   fields,
   form,
   fieldIdentifiers,
-  dispatch,
+  contextDispatch,
   collapseStates,
   setSectionEditorCollapseState,
   meta, // usersPermissions,
@@ -70,7 +70,7 @@ const EditPlotApplicationSectionFormSectionFields = ({
   const fieldRefs = useRef({});
 
   const handleRemove = (index: number) => {
-    dispatch({
+    contextDispatch({
       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
       confirmationFunction: () => {
         fields.remove(index);
@@ -157,7 +157,7 @@ type SectionSubsectionProps = {
   level: number;
   stagedSectionValues: Record<string, any>;
   change: (...args: Array<any>) => any;
-  dispatch: (...args: Array<any>) => any;
+  contextDispatch: (...args: Array<any>) => any;
   collapseStates: Record<string, boolean>;
   setSectionEditorCollapseState: (...args: Array<any>) => any;
   meta: Record<string, any>;
@@ -171,13 +171,13 @@ const EditPlotApplicationSectionFormSectionSubsections = ({
   level,
   stagedSectionValues,
   change,
-  dispatch,
+  contextDispatch,
   collapseStates,
   setSectionEditorCollapseState,
   meta,
 }: SectionSubsectionProps): JSX.Element => {
   const handleRemove = (index: number) => {
-    dispatch({
+    contextDispatch({
       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
       confirmationFunction: () => {
         fields.remove(index);
@@ -245,7 +245,7 @@ const EditPlotApplicationSectionFormSectionSubsections = ({
             onDelete={() => handleRemove(index)}
             onMoveUp={index > 0 ? handleMoveUp : null}
             onMoveDown={index < fields.length - 1 ? handleMoveDown : null}
-            dispatch={dispatch}
+            contextDispatch={contextDispatch}
             collapseStates={collapseStates}
             setSectionEditorCollapseState={setSectionEditorCollapseState}
             sectionRefs={sectionRefs}
@@ -278,7 +278,7 @@ type SubsectionProps = {
   onMoveUp: ((...args: Array<any>) => any) | null | undefined;
   onMoveDown: ((...args: Array<any>) => any) | null | undefined;
   onDelete: ((...args: Array<any>) => any) | null | undefined;
-  dispatch: (...args: Array<any>) => any;
+  contextDispatch: (...args: Array<any>) => any;
   collapseStates: Record<string, boolean>;
   setSectionEditorCollapseState: (...args: Array<any>) => any;
   sectionRefs?: any;
@@ -559,7 +559,7 @@ const EditPlotApplicationSectionFormSubsection: React.ComponentType<
   onMoveUp,
   onMoveDown,
   onDelete,
-  dispatch,
+  contextDispatch,
   collapseStates,
   setSectionEditorCollapseState,
   sectionRefs,
@@ -602,7 +602,7 @@ const EditPlotApplicationSectionFormSubsection: React.ComponentType<
           form={form}
           name={`${sectionPath}.fields`}
           fieldIdentifiers={fieldIdentifiers}
-          dispatch={dispatch}
+          contextDispatch={contextDispatch}
           collapseStates={collapseStates}
           setSectionEditorCollapseState={setSectionEditorCollapseState}
           validate={(value) => {
@@ -624,7 +624,7 @@ const EditPlotApplicationSectionFormSubsection: React.ComponentType<
           stagedSectionValues={stagedSectionValues}
           change={change}
           sectionPath={sectionPath}
-          dispatch={dispatch}
+          contextDispatch={contextDispatch}
           collapseStates={collapseStates}
           setSectionEditorCollapseState={setSectionEditorCollapseState}
           validate={(value) => {
@@ -739,7 +739,7 @@ class EditPlotApplicationSectionForm extends Component<Props> {
 
     return (
       <AppConsumer>
-        {({ dispatch }) => (
+        {({ contextDispatch }) => (
           <form>
             <SubTitle>{parentFormSection.title}</SubTitle>
             <Row>
@@ -775,7 +775,7 @@ class EditPlotApplicationSectionForm extends Component<Props> {
               form={form}
               attributes={attributes}
               change={change}
-              dispatch={dispatch}
+              contextDispatch={contextDispatch}
               collapseStates={collapseStates}
               setSectionEditorCollapseState={setSectionEditorCollapseState} // Root section has limited editing capabilities
               peerSectionIdentifiers={[]}

@@ -116,7 +116,7 @@ const renderDecisions = ({
   const cacheKey = decisionCandidates.map((item) => item.id).join(",");
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <Fragment>
             <Column small={12} large={10}>
@@ -140,7 +140,7 @@ const renderDecisions = ({
               {!!fields.length &&
                 fields.map((field, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    contextDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -221,13 +221,13 @@ const renderPlotSearchSites = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <Fragment>
             {!!fields.length &&
               fields.map((field, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       const id =

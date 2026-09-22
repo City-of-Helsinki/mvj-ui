@@ -88,7 +88,7 @@ const InspectionItemEdit: React.FC<Props> = ({
   const inspectionAttachments = inspection ? inspection.attachments : [];
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <BoxItem className="no-border-on-first-child">
             <ActionButtonWrapper>
@@ -280,7 +280,7 @@ const InspectionItemEdit: React.FC<Props> = ({
                       </Row>
                       {inspectionAttachments.map((file, index) => {
                         const handleRemove = () => {
-                          dispatch({
+                          contextDispatch({
                             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                             confirmationFunction: () => {
                               handleDeleteInspectionAttachment(file.id);

@@ -98,7 +98,7 @@ type TenantsProps = {
   tenants: Array<Record<string, any>>;
   usersPermissions: UsersPermissionsType;
   formValues: Record<string, any>;
-  appDispatch: (action: Record<string, any>) => void;
+  contextDispatch: (action: Record<string, any>) => void;
 };
 
 const renderTenants = ({
@@ -110,7 +110,7 @@ const renderTenants = ({
   tenants,
   usersPermissions,
   formValues,
-  appDispatch,
+  contextDispatch,
 }: TenantsProps) => {
   const handleAdd = () => {
     fields.push({});
@@ -144,7 +144,7 @@ const renderTenants = ({
         !!fields.length &&
         fields.map((tenant, index) => {
           const handleRemove = () => {
-            appDispatch({
+            contextDispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 fields.remove(index);
@@ -262,7 +262,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         const handleCreateOrEdit = async (
           values: Contact,
           isValid: boolean,
@@ -289,7 +289,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
             });
 
             if (exists) {
-              dispatch({
+              contextDispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   createOrEditContact(values);
@@ -371,7 +371,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
                         tenants: savedTenants,
                         usersPermissions,
                         formValues: values,
-                        appDispatch: dispatch,
+                        contextDispatch,
                       })
                     }
                   </FieldArray>
@@ -386,7 +386,7 @@ const TenantsEdit: React.FC<Props> = ({ formApi }) => {
                         tenants: savedTenantsArchived,
                         usersPermissions,
                         formValues: values,
-                        appDispatch: dispatch,
+                        contextDispatch,
                       })
                     }
                   </FieldArray>

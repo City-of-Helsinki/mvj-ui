@@ -137,7 +137,7 @@ const App: React.FC<Props> = (props) => {
           confirmationModalButtonText,
           confirmationModalLabel,
           confirmationModalTitle,
-          dispatch,
+          contextDispatch,
         }) => {
           const handleConfirmation = () => {
             confirmationFunction?.();
@@ -145,7 +145,7 @@ const App: React.FC<Props> = (props) => {
           };
 
           const handleHideConfirmationModal = () => {
-            dispatch({
+            contextDispatch({
               type: ActionTypes.HIDE_CONFIRMATION_MODAL,
             });
           };

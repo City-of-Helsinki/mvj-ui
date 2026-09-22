@@ -66,7 +66,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
   const decisionConditionsErrors = get(errors, name);
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <Collapse
             className="collapse__secondary"
@@ -180,7 +180,7 @@ const DecisionConditionsEdit: React.FC<Props> = ({
                 )}
                 {fields.map((condition, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    contextDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);

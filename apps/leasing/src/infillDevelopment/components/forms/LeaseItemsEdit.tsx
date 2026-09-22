@@ -40,7 +40,7 @@ const LeaseItemsEdit = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             {!hasPermissions(
@@ -54,7 +54,7 @@ const LeaseItemsEdit = ({
               !!fields.length &&
               fields.map((lease, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);

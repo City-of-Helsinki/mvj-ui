@@ -81,9 +81,9 @@ const SaveConditionPanel = forwardRef<SaveConditionPanelHandle, Props>(
 
     return (
       <AppConsumer>
-        {({ dispatch }) => {
+        {({ contextDispatch }) => {
           const handleDelete = () => {
-            dispatch?.({
+            contextDispatch?.({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 onDelete();

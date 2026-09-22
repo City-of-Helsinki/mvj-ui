@@ -115,7 +115,7 @@ const renderDecisions = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             <SubTitle
@@ -233,7 +233,7 @@ const renderDecisions = ({
                 </Row>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    contextDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -397,7 +397,7 @@ const renderIntendedUses = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             <SubTitle
@@ -499,7 +499,7 @@ const renderIntendedUses = ({
                 </Row>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    contextDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -1234,7 +1234,7 @@ const LeaseItemEdit = (props: Props) => {
         >
           {!!infillDevelopmentCompensationLeaseId && (
             <AppConsumer>
-              {({ dispatch }) => {
+              {({ contextDispatch }) => {
                 return (
                   <>
                     <SubTitle
@@ -1304,7 +1304,7 @@ const LeaseItemEdit = (props: Props) => {
                         </Row>
                         {attachments.map((file, index) => {
                           const handleRemove = () => {
-                            dispatch({
+                            contextDispatch({
                               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                               confirmationFunction: () => {
                                 handleDeleteInfillDevelopmentFile(file.id);

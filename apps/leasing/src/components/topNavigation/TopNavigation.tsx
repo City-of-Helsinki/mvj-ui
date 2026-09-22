@@ -100,14 +100,14 @@ class TopNavigation extends Component<Props & WithRouterProps, State> {
     const { search } = this.state;
     return (
       <AppConsumer>
-        {({ dispatch }) => {
+        {({ contextDispatch }) => {
           const handleLinkClick = (e: any) => {
             const hasDirtyPages = hasAnyPageDirtyForms();
 
             if (hasDirtyPages) {
               const target = e.target;
               e.preventDefault();
-              dispatch({
+              contextDispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   const { navigate } = this.props;
@@ -129,7 +129,7 @@ class TopNavigation extends Component<Props & WithRouterProps, State> {
             const hasDirtyPages = hasAnyPageDirtyForms();
 
             if (hasDirtyPages) {
-              dispatch({
+              contextDispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   this.moveSearchPage();
@@ -158,7 +158,7 @@ class TopNavigation extends Component<Props & WithRouterProps, State> {
               hasDirtyPages = hasAnyPageDirtyForms();
 
             if (hasDirtyPages) {
-              dispatch({
+              contextDispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   onLogout();

@@ -118,7 +118,7 @@ class SideMenu extends Component<Props & WithRouterProps, State> {
     const width = this.getSideMenuWidth();
     return (
       <AppConsumer>
-        {({ dispatch }) => {
+        {({ contextDispatch }) => {
           const handleClick = (e: any) => {
             const { onLinkClick } = this.props,
               hasDirtyPages = hasAnyPageDirtyForms();
@@ -129,7 +129,7 @@ class SideMenu extends Component<Props & WithRouterProps, State> {
             if (hasDirtyPages) {
               const target = e.target;
               e.preventDefault();
-              dispatch({
+              contextDispatch({
                 type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                 confirmationFunction: () => {
                   const { navigate } = this.props;

@@ -71,7 +71,7 @@ const renderSuggested = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <Fragment>
             <Column>
@@ -89,7 +89,7 @@ const renderSuggested = ({
               {!!fields.length &&
                 fields.map((field, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    contextDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);
@@ -151,7 +151,7 @@ const renderInfoLinks = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <div>
             <FormTextTitle>Lisätietolinkit</FormTextTitle>
@@ -177,7 +177,7 @@ const renderInfoLinks = ({
               {!!fields.length &&
                 fields.map((field, index) => {
                   const handleRemove = () => {
-                    dispatch({
+                    contextDispatch({
                       type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                       confirmationFunction: () => {
                         fields.remove(index);

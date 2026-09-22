@@ -180,7 +180,7 @@ const NewContactPage: React.FC = () => {
 
   return (
     <AppConsumer>
-      {({ dispatch: contextDispatch }) => (
+      {({ contextDispatch }) => (
         <FullWidthContainer>
           <PageNavigationWrapper>
             <ControlButtonBar

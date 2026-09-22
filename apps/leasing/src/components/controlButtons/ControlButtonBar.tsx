@@ -16,12 +16,12 @@ const ControlButtonBar = ({
   onBack,
 }: Props) => (
   <AppConsumer>
-    {({ dispatch }) => {
+    {({ contextDispatch }) => {
       const handleBack = () => {
         const hasDirtyPages = hasAnyPageDirtyForms();
 
         if (hasDirtyPages) {
-          dispatch({
+          contextDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               onBack();

@@ -62,12 +62,12 @@ const ControlButtons = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         const handleCancel = () => {
           const hasDirtyPages = hasAnyPageDirtyForms();
 
           if (hasDirtyPages) {
-            dispatch({
+            contextDispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 if (onCancel) onCancel();
@@ -89,7 +89,7 @@ const ControlButtons = ({
           const hasDirtyPages = hasAnyPageDirtyForms();
 
           if (hasDirtyPages) {
-            dispatch({
+            contextDispatch({
               type: ActionTypes.SHOW_CONFIRMATION_MODAL,
               confirmationFunction: () => {
                 if (onCopy) onCopy();
@@ -108,7 +108,7 @@ const ControlButtons = ({
         };
 
         const handleDelete = () => {
-          dispatch({
+          contextDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               if (onDelete) onDelete();

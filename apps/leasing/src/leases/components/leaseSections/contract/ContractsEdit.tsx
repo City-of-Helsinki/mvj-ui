@@ -41,7 +41,7 @@ const Contracts = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         return (
           <>
             {!hasPermissions(usersPermissions, UsersPermissions.ADD_CONTRACT) &&
@@ -53,7 +53,7 @@ const Contracts = ({
               !!fields.length &&
               fields.map((contract, index) => {
                 const handleRemove = () => {
-                  dispatch({
+                  contextDispatch({
                     type: ActionTypes.SHOW_CONFIRMATION_MODAL,
                     confirmationFunction: () => {
                       fields.remove(index);

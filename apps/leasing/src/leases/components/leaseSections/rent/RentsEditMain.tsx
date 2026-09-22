@@ -33,9 +33,9 @@ const RentsEditMain: React.FC<Props> = ({
 
   return (
     <AppConsumer>
-      {({ dispatch }) => {
+      {({ contextDispatch }) => {
         const handleSetRentInfoComplete = () => {
-          dispatch({
+          contextDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               handleRentInfoComplete();
@@ -51,7 +51,7 @@ const RentsEditMain: React.FC<Props> = ({
         };
 
         const handleSetRentInfoUncomplete = () => {
-          dispatch({
+          contextDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
               handleRentInfoUncomplete();
