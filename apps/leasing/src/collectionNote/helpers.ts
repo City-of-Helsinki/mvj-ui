@@ -40,12 +40,14 @@ export const getInvoiceLabel = (
   invoiceStateOptions: SelectListOption[],
 ) => {
   const parts = [
+    invoice.number,
     getLabelOfOption(invoiceStateOptions, invoice.state),
     formatDateRange(
       invoice.billing_period_start_date,
       invoice.billing_period_end_date,
     ),
-    invoice.total_amount != null ? `${invoice.total_amount} €` : null,
+    invoice.billed_amount != null ? `${invoice.billed_amount} €` : null,
+    invoice.recipient.name,
   ].filter(Boolean);
   return parts.join(" · ");
 };

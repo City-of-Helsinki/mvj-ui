@@ -63,10 +63,6 @@ const CollectionNoteItem: React.FC<Props> = ({
     collectionNoteAttributes,
     CollectionNoteFieldPaths.COLLECTION_STAGE,
   );
-  const stateOptions = getFieldOptions(
-    invoiceAttributes,
-    InvoiceFieldPaths.STATE,
-  );
 
   const invoices = useMemo(() => {
     return (
@@ -279,7 +275,7 @@ const CollectionNoteItem: React.FC<Props> = ({
       </Row>
 
       <Row>
-        <Column small={4} large={6}>
+        <Column small={12} large={6}>
           <Authorization
             allow={isFieldAllowedToRead(
               collectionNoteAttributes,
@@ -308,14 +304,14 @@ const CollectionNoteItem: React.FC<Props> = ({
           {invoices.length > 0 && (
             <Column small={8} large={6}>
               <Row>
-                <Column small={3} large={2}>
+                <Column small={2} large={2}>
                   <FormTextTitle
                     enableUiDataEdit
                     uiDataKey={getUiDataCollectionNoteKey(
-                      InvoiceFieldPaths.STATE,
+                      InvoiceFieldPaths.NUMBER,
                     )}
                   >
-                    {InvoiceFieldTitles.STATE}
+                    {InvoiceFieldTitles.NUMBER}
                   </FormTextTitle>
                 </Column>
                 <Column small={5} large={4}>
@@ -328,23 +324,31 @@ const CollectionNoteItem: React.FC<Props> = ({
                     {InvoiceFieldTitles.BILLING_PERIOD}
                   </FormTextTitle>
                 </Column>
-                <Column small={4} large={3}>
+                <Column small={3} large={2}>
                   <FormTextTitle
                     enableUiDataEdit
                     uiDataKey={getUiDataCollectionNoteKey(
-                      InvoiceFieldPaths.TOTAL_AMOUNT,
+                      InvoiceFieldPaths.BILLED_AMOUNT,
                     )}
                   >
-                    {InvoiceFieldTitles.TOTAL_AMOUNT}
+                    {InvoiceFieldTitles.BILLED_AMOUNT}
+                  </FormTextTitle>
+                </Column>
+                <Column small={2} large={3}>
+                  <FormTextTitle
+                    enableUiDataEdit
+                    uiDataKey={getUiDataCollectionNoteKey(
+                      InvoiceFieldPaths.RECIPIENT,
+                    )}
+                  >
+                    {InvoiceFieldTitles.RECIPIENT}
                   </FormTextTitle>
                 </Column>
               </Row>
               {invoices?.filter(Boolean).map((invoice) => (
                 <Row key={invoice.id}>
-                  <Column small={3} large={2}>
-                    <FormText>
-                      {getLabelOfOption(stateOptions, invoice.state) || "-"}
-                    </FormText>
+                  <Column small={2} large={2}>
+                    <FormText>{invoice.number || "-"}</FormText>
                   </Column>
                   <Column small={5} large={4}>
                     <FormText>
@@ -354,12 +358,15 @@ const CollectionNoteItem: React.FC<Props> = ({
                       )}
                     </FormText>
                   </Column>
-                  <Column small={4} large={3}>
+                  <Column small={3} large={2}>
                     <FormText>
-                      {invoice.total_amount != null
-                        ? `${invoice.total_amount} €`
+                      {invoice.billed_amount != null
+                        ? `${invoice.billed_amount} €`
                         : "-"}
                     </FormText>
+                  </Column>
+                  <Column small={2} large={3}>
+                    <FormText>{invoice.recipient?.name ?? "-"}</FormText>
                   </Column>
                 </Row>
               ))}
