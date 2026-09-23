@@ -10,6 +10,7 @@ import {
   IconAngleUp,
   IconPlusCircleFill,
   IconSize,
+  Link,
   Select,
   StepByStep,
   TextArea,
@@ -63,6 +64,7 @@ export interface LandUseCompensationsFormValues {
   perushinta: string;
   maakorvausSelite: string;
   muuSelite: string;
+  excelLaskelmaUrl: string;
   kaavaehdotustaEdeltavaArvo: string;
   perustietotaulukkoRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
   purkuTaiMuuVahennys: number;
@@ -662,15 +664,41 @@ export const LandUseCompensations: React.FC<LandUseCompensationsProps> = ({
         const laskelmaStep = (
           <Fieldset heading="" className="full-width">
             <h3>Excel-laskelma</h3>
-            {isEditMode && (
-              <Button
-                type="button"
-                variant={ButtonVariant.Supplementary}
-                iconStart={<IconPlusCircleFill />}
-              >
-                Lisää tiedosto
-              </Button>
-            )}
+            <div className="landuse-grid landuse-grid__bottom-margin">
+              <div className="landuse-grid__column-6">
+                <Field name="excelLaskelmaUrl">
+                  {({ input }) =>
+                    isEditMode ? (
+                      <>
+                        <TextInput
+                          id="landuse-compensations-excel-laskelma-url"
+                          inputMode="url"
+                          label="Excel-laskelman verkko-osoite"
+                          value={input.value ?? ""}
+                          onChange={input.onChange}
+                        />
+                        {input.value && (
+                          <Link href={input.value} external openInNewTab>
+                            {input.value}
+                          </Link>
+                        )}
+                      </>
+                    ) : input.value ? (
+                      <Link href={input.value} external openInNewTab>
+                        {input.value}
+                      </Link>
+                    ) : (
+                      <TextInput
+                        id="landuse-compensations-excel-laskelma-url"
+                        label="Excel-laskelman verkko-osoite"
+                        value="-"
+                        readOnly
+                      />
+                    )
+                  }
+                </Field>
+              </div>
+            </div>
             <h3>Kaavaehdotusta edeltävä arvo</h3>
             <div className="landuse-grid landuse-grid__bottom-margin">
               <div className="landuse-grid__column-6">
