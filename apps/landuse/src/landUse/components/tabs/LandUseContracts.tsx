@@ -53,7 +53,6 @@ interface ContractItem {
   kolmasKutsuLahetetty: string;
   paatos?: string;
   muutokset: ContractChange[];
-  vakuuslaskuri: boolean;
   vakuudet: Guarantee[];
 }
 
@@ -104,7 +103,6 @@ const createNewContract = (): ContractItem => ({
   kolmasKutsuLahetetty: "",
   paatos: undefined,
   muutokset: [],
-  vakuuslaskuri: false,
   vakuudet: [],
 });
 

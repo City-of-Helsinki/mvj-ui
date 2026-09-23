@@ -187,7 +187,6 @@ const ma113Agreements: LandUseContractsFormValues = {
           huomautus: "Muutoksella tarkennettu vakuuden ehtoja.",
         },
       ],
-      vakuuslaskuri: true,
       vakuudet: [
         {
           tyyppi: "Rahavakuus",
