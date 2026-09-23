@@ -16,7 +16,7 @@ import {
   createRelatedPlotApplication,
   deleteRelatedPlotApplication,
 } from "@/relatedLease/actions";
-import { ConfirmationModalTexts, FormNames, Methods } from "@/enums";
+import { ConfirmationModalTexts, Methods } from "@/enums";
 import { ButtonColors, ButtonLabels } from "@/components/enums";
 import {
   LeaseFieldPaths,
