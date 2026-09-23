@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useAppSelector } from "@/root/hooks";
 import classNames from "classnames";
 import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AccordionIcon from "@/components/icons/AccordionIcon";
@@ -16,7 +16,6 @@ import { formatDate, getLabelOfOption, hasPermissions } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Lease } from "@/leases/types";
-import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
 type Props = {
   active?: boolean;
   indented?: boolean;
@@ -34,7 +33,6 @@ type Props = {
   itemType?: string;
   onDelete?: (...args: Array<any>) => any;
   stateOptions: Array<Record<string, any>>;
-  usersPermissions: UsersPermissionsType;
 };
 
 const LeaseHistoryItem = ({
@@ -53,24 +51,21 @@ const LeaseHistoryItem = ({
   itemType = "",
   onDelete,
   stateOptions,
-  usersPermissions,
 }: Props) => {
   const titleString = lease ? getContentLeaseIdentifier(lease) : itemTitle;
   const MAX_TITLE_LENGTH = 16;
   const title = getTitleText(titleString, MAX_TITLE_LENGTH);
-  const externalLinkHref = lease
-    ? `${getRouteById(Routes.LEASES)}/${lease.id}`
-    : itemType === LeaseHistoryItemTypes.PLOTSEARCH && id
-      ? `${getRouteById(Routes.PLOT_SEARCH)}/${id}`
-      : itemType === LeaseHistoryItemTypes.PLOT_APPLICATION && id
-        ? `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`
-        : itemType === LeaseHistoryItemTypes.AREA_SEARCH && id
-          ? `${getRouteById(Routes.AREA_SEARCH)}/${id}`
-          : null;
-  const permissions = hasPermissions(
-    usersPermissions,
-    UsersPermissions.DELETE_LEASE_HISTORY_ITEM,
-  );
+  const externalLinkHref = (() => {
+    if (lease) return `${getRouteById(Routes.LEASES)}/${lease.id}`;
+    if (itemType === LeaseHistoryItemTypes.PLOTSEARCH && id)
+      return `${getRouteById(Routes.PLOT_SEARCH)}/${id}`;
+    if (itemType === LeaseHistoryItemTypes.PLOT_APPLICATION && id)
+      return `${getRouteById(Routes.PLOT_APPLICATIONS)}/${id}`;
+    if (itemType === LeaseHistoryItemTypes.AREA_SEARCH && id)
+      return `${getRouteById(Routes.AREA_SEARCH)}/${id}`;
+    return null;
+  })();
+  const usersPermissions = useAppSelector(getUsersPermissions);
   return (
     <ModalConsumer>
       {({ modalDispatch }) => {
@@ -159,8 +154,4 @@ const LeaseHistoryItem = ({
   );
 };
 
-export default connect((state) => {
-  return {
-    usersPermissions: getUsersPermissions(state),
-  };
-})(LeaseHistoryItem);
+export default LeaseHistoryItem;

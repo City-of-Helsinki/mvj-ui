@@ -1,5 +1,8 @@
 import type { Action, ApiResponse, Attributes, Methods, User } from "types";
-import type { FormSection, SavedApplicationFormSection } from "@/application/types";
+import type {
+  FormSection,
+  SavedApplicationFormSection,
+} from "@/application/types";
 import type { Lease } from "@/leases/types";
 import type { Contact } from "@/contacts/types";
 
@@ -34,6 +37,7 @@ export type AreaSearch = {
   answer: Record<string, any>;
   // TODO: specify
   applicants: Array<string>;
+  applicant_names?: Array<string>;
   area_search_attachments: Array<UploadedAreaSearchAttachmentMeta>;
   area_search_status: Record<string, any>;
   // TODO: specify
