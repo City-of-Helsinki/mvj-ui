@@ -126,6 +126,7 @@ const ma113Compensations: LandUseCompensationsFormValues = {
   maankayttokorvausYhteensa: "595000",
   maakorvausSelite: "Maakorvaus kohdistuu puistoalueiden hankintaan.",
   muuSelite: "Muu korvaus sisältää kunnallistekniikan liittymismaksuja.",
+  excelLaskelmaUrl: null,
   kaavaehdotustaEdeltavaArvo: "5000",
   perustietotaulukkoRowsBySiteId: {
     "MA113-1-site-1": {
