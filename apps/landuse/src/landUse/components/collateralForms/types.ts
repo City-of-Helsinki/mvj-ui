@@ -11,7 +11,9 @@ export interface Guarantee {
   kiinteistoVaiLaitos?: string;
   kiinteistotunnukset?: string[];
   laitostunnus?: string;
-  vierasvelkapanttaus?: string;
+  vierasvelkapanttaus?: boolean;
+  vierasvelkapanttauksenAntajanNimi?: string;
+  vierasvelkapanttauksenAntajanYTunnus?: string;
   antajanNimi?: string;
   antajanYTunnus?: string;
   antajanHenkilotunnus?: string;
