@@ -56,6 +56,12 @@
   @include flex-col(hds.$spacing-xs);
 }
 
+.landuse-detail__ownership-share-separator {
+  display: flex;
+  align-items: center;
+  height: hds.$spacing-3-xl;
+}
+
 .landuse-detail__add-button {
   justify-content: flex-start;
 }
@@ -136,6 +142,10 @@
     color: hds.$color-black-70;
     font-weight: 600;
   }
+}
+
+.landuse-detail__ownership-share-table tbody tr:last-child td {
+  background-color: hds.$color-black-5;
 }
 
 // -- Perustietotaulukko expandable table -------------------------------------

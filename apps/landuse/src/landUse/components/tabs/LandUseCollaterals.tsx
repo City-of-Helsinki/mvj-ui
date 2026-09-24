@@ -1,4 +1,5 @@
 import { NumericDecimalInput } from "@/landUse/components/NumericDecimalInput";
+import { OwnershipShareCollateralTable } from "@/landUse/components/OwnershipShareCollateralTable";
 import { FormApi } from "final-form";
 import {
   Fieldset,
@@ -29,6 +30,7 @@ import {
   MINIMUM_HINTAERO,
 } from "@/landUse/utils/vakuustarve";
 import type { LandUseSite } from "@/landUse/components/tabs/LandUseCompensations";
+import type { PartyEntry } from "@/landUse/components/tabs/LandUseParties";
 
 export interface LandUseCollateralsFormValues {
   korotuskerroin?: string | number;
@@ -55,6 +57,7 @@ interface LandUseCollateralsProps {
   perushinta?: string;
   compensationsRowsBySiteId: Record<string, PerustietotaulukkoRowValues>;
   maankayttokorvausYhteensa?: number;
+  parties: PartyEntry[];
 }
 
 const formatSiteHallintamuoto = (
@@ -100,6 +103,7 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
   perushinta,
   compensationsRowsBySiteId,
   maankayttokorvausYhteensa,
+  parties,
 }) => {
   const tocEntries = useMemo(
     () =>
@@ -232,6 +236,10 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
           },
         ];
 
+        const totalCollateral = Math.max(
+          sopimuksenMukainenValue,
+          saantelynMukainenValue,
+        );
         return (
           <form onSubmit={handleSubmit}>
             <div className="landuse-detail__content">
@@ -360,6 +368,10 @@ export const LandUseCollaterals: React.FC<LandUseCollateralsProps> = ({
                               }
                             />
                           </div>
+                          <OwnershipShareCollateralTable
+                            parties={parties}
+                            totalCollateral={totalCollateral}
+                          />
                         </Fieldset>
                       </div>
                     ),

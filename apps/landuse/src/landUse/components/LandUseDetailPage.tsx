@@ -1104,6 +1104,7 @@ const LandUseDetailPage: React.FC = () => {
                 compensationsQuery.data?.muuKorvaus,
               )
             }
+            parties={activeParties}
           />
         );
       case "decisions":
@@ -1151,6 +1152,7 @@ const LandUseDetailPage: React.FC = () => {
               ) -
               calculatePaidMaankayttokorvaus(billingQuery.data?.invoices ?? [])
             }
+            parties={activeParties}
             onSetTabDirty={handleSetTabDirty}
           />
         );
