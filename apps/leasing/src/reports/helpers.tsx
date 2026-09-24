@@ -131,7 +131,7 @@ export const getQueryParams = (formValues: Record<string, any>): any => {
   if (formValues)
     Object.entries(formValues).forEach(([key, value]) => {
       if (key.includes("date")) {
-        query += `${key}=${format(value, "yyyy-MM-dd")}&`;
+        query += `${key}=${format(new Date(value), "yyyy-MM-dd")}&`;
       } else if (key.includes("service_unit")) {
         const serviceUnitIds = value;
         serviceUnitIds.forEach((id) => {
