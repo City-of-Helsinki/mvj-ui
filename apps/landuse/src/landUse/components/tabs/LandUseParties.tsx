@@ -4,6 +4,7 @@ import {
   ButtonVariant,
   Fieldset,
   IconPlusCircleFill,
+  NumberInput,
   Select,
   StepByStep,
   TextArea,
@@ -28,6 +29,10 @@ import {
 import { ConfirmDeleteButton } from "@/landUse/components/ConfirmDeleteButton";
 export interface BasePartyDetails {
   partyRole: string | undefined;
+  ownershipShare?: {
+    numerator?: string | number;
+    denominator?: string | number;
+  };
   partyType: string | undefined;
   name: string;
   language: string | undefined;
@@ -517,6 +522,28 @@ const getPartyHeadingId = (index: number): string => `party-heading-${index}`;
 const getPartyName = (partyEntry: PartyEntry | undefined): string =>
   partyEntry?.party?.details?.name?.trim() || "Uusi osapuoli";
 
+const setPartyRole = (
+  partyEntry: PartyEntry,
+  partyRole: string | undefined,
+): PartyEntry => {
+  const details = {
+    ...partyEntry.party.details,
+    partyRole,
+  };
+
+  if (partyRole !== "maanomistaja") {
+    delete details.ownershipShare;
+  }
+
+  return {
+    ...partyEntry,
+    party: {
+      ...partyEntry.party,
+      details,
+    },
+  };
+};
+
 export const LandUseParties: React.FC<LandUsePartiesProps> = ({
   form,
   isEditMode,
@@ -605,12 +632,17 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                                 value={normalizeSelectValue(
                                                   input.value,
                                                 )}
-                                                onChange={(selected) =>
-                                                  handleSelectChange(
-                                                    selected,
-                                                    input.onChange,
-                                                  )
-                                                }
+                                                onChange={(selected) => {
+                                                  const selectedRole =
+                                                    selected[0]?.value;
+                                                  fields.update(
+                                                    index,
+                                                    setPartyRole(
+                                                      partyEntry,
+                                                      selectedRole,
+                                                    ),
+                                                  );
+                                                }}
                                                 required
                                               />
                                             ) : (
@@ -627,6 +659,80 @@ export const LandUseParties: React.FC<LandUsePartiesProps> = ({
                                           }
                                         </Field>
                                       </div>
+                                      {partyEntry?.party?.details?.partyRole ===
+                                        "maanomistaja" && (
+                                        <Fieldset
+                                          heading="Omistusosuus"
+                                          className="landuse-grid__column-6"
+                                        >
+                                          <div className="landuse-grid">
+                                            <div className="landuse-grid__column-3">
+                                              <Field
+                                                name={`${fieldName}.party.details.ownershipShare.numerator`}
+                                              >
+                                                {({ input }) =>
+                                                  isEditMode ? (
+                                                    <NumberInput
+                                                      id={`party-${index}-ownership-share-numerator`}
+                                                      label=""
+                                                      aria-label="Omistusosuuden osoittaja"
+                                                      min={0}
+                                                      value={input.value}
+                                                      onChange={input.onChange}
+                                                    />
+                                                  ) : (
+                                                    <TextInput
+                                                      id={`party-${index}-ownership-share-numerator`}
+                                                      label=""
+                                                      aria-label="Omistusosuuden osoittaja"
+                                                      value={getFieldTextValue(
+                                                        false,
+                                                        input.value,
+                                                      )}
+                                                      readOnly
+                                                    />
+                                                  )
+                                                }
+                                              </Field>
+                                            </div>
+                                            <span
+                                              className="landuse-detail__ownership-share-separator"
+                                              aria-hidden="true"
+                                            >
+                                              /
+                                            </span>
+                                            <div className="landuse-grid__column-3">
+                                              <Field
+                                                name={`${fieldName}.party.details.ownershipShare.denominator`}
+                                              >
+                                                {({ input }) =>
+                                                  isEditMode ? (
+                                                    <NumberInput
+                                                      id={`party-${index}-ownership-share-denominator`}
+                                                      label=""
+                                                      aria-label="Omistusosuuden nimittäjä"
+                                                      min={1}
+                                                      value={input.value}
+                                                      onChange={input.onChange}
+                                                    />
+                                                  ) : (
+                                                    <TextInput
+                                                      id={`party-${index}-ownership-share-denominator`}
+                                                      label=""
+                                                      aria-label="Omistusosuuden nimittäjä"
+                                                      value={getFieldTextValue(
+                                                        false,
+                                                        input.value,
+                                                      )}
+                                                      readOnly
+                                                    />
+                                                  )
+                                                }
+                                              </Field>
+                                            </div>
+                                          </div>
+                                        </Fieldset>
+                                      )}
                                     </div>
                                     <div className="landuse-grid landuse-grid__bottom-margin">
                                       <div className="landuse-grid__column-6">
