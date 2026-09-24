@@ -190,7 +190,7 @@ const ma113Agreements: LandUseContractsFormValues = {
       vakuudet: [
         {
           tyyppi: "Rahavakuus",
-          vierasvelkapanttaus: "Ei",
+          vierasvelkapanttaus: false,
           antajanNimi: "Rakentaja Oy",
           antajanYTunnus: "1234567-8",
           tilinumero: "FI21 1234 5600 0007 85",

@@ -1,11 +1,10 @@
 import React from "react";
-import { Select, TextInput } from "hds-react";
-import { Field } from "react-final-form";
-import { landUseGuaranteeVierasvelkapanttausOptions } from "@/landUse/options";
+import { Select, TextInput, ToggleButton } from "hds-react";
+import { Field, useForm } from "react-final-form";
 import {
   CollateralDateField,
   CollateralEuroField,
-  CollateralRadioField,
+  CollateralTextField,
   CollateralTextArea,
 } from "@/landUse/components/collateralForms/fields";
 import {
@@ -34,98 +33,149 @@ export const SharedCollateralFields: React.FC<CollateralFormProps> = ({
   namePrefix,
   isEditMode,
   partyOptions,
-}) => (
-  <>
-    <div className="landuse-grid__column-6">
-      <Field name={`${namePrefix}.osapuolet`}>
-        {({ input }) =>
-          isEditMode ? (
-            <Select
-              id={`${namePrefix.replace(/\./g, "-")}-osapuolet`}
-              texts={{ label: "Osapuolet", placeholder: "Valitse" }}
-              options={partyOptions}
-              value={normalizeMultiSelectValue(input.value)}
-              onChange={(selected) =>
-                handleMultiSelectChange(selected, input.onChange)
-              }
-              multiSelect
-              required
-            />
-          ) : (
-            <TextInput
-              id={`${namePrefix.replace(/\./g, "-")}-osapuolet`}
-              label="Osapuolet"
-              value={
-                Array.isArray(input.value) && input.value.length > 0
-                  ? input.value.join(", ")
-                  : "-"
-              }
-              readOnly
-            />
-          )
-        }
+}) => {
+  const form = useForm();
+
+  const handleVierasvelkapanttausChange = (isThirdPartyPledge: boolean) => {
+    form.batch(() => {
+      form.change(`${namePrefix}.vierasvelkapanttaus`, isThirdPartyPledge);
+      if (!isThirdPartyPledge) {
+        form.change(`${namePrefix}.vierasvelkapanttauksenAntajanNimi`, "");
+        form.change(`${namePrefix}.vierasvelkapanttauksenAntajanYTunnus`, "");
+      }
+    });
+  };
+
+  return (
+    <>
+      <div className="landuse-grid__column-6">
+        <Field name={`${namePrefix}.osapuolet`}>
+          {({ input }) =>
+            isEditMode ? (
+              <Select
+                id={`${namePrefix.replace(/\./g, "-")}-osapuolet`}
+                texts={{ label: "Osapuolet", placeholder: "Valitse" }}
+                options={partyOptions}
+                value={normalizeMultiSelectValue(input.value)}
+                onChange={(selected) =>
+                  handleMultiSelectChange(selected, input.onChange)
+                }
+                multiSelect
+                required
+              />
+            ) : (
+              <TextInput
+                id={`${namePrefix.replace(/\./g, "-")}-osapuolet`}
+                label="Osapuolet"
+                value={
+                  Array.isArray(input.value) && input.value.length > 0
+                    ? input.value.join(", ")
+                    : "-"
+                }
+                readOnly
+              />
+            )
+          }
+        </Field>
+      </div>
+
+      <Field<boolean> name={`${namePrefix}.vierasvelkapanttaus`}>
+        {({ input }) => (
+          <>
+            <div className="landuse-grid__column-6">
+              {isEditMode ? (
+                <ToggleButton
+                  id={`${namePrefix.replace(/\./g, "-")}-vierasvelkapanttaus`}
+                  label="Vierasvelkapanttaus"
+                  checked={Boolean(input.value)}
+                  onChange={() => handleVierasvelkapanttausChange(!input.value)}
+                />
+              ) : (
+                <TextInput
+                  id={`${namePrefix.replace(/\./g, "-")}-vierasvelkapanttaus`}
+                  label="Vierasvelkapanttaus"
+                  value={input.value ? "Kyllä" : "Ei"}
+                  readOnly
+                />
+              )}
+            </div>
+
+            {input.value && (
+              <>
+                <div className="landuse-grid__column-6">
+                  <CollateralTextField
+                    namePrefix={namePrefix}
+                    fieldName="vierasvelkapanttauksenAntajanNimi"
+                    label="Vierasvelkapanttauksen antajan nimi"
+                    idSuffix="vierasvelkapanttauksen-antajan-nimi"
+                    isEditMode={isEditMode}
+                  />
+                </div>
+
+                <div className="landuse-grid__column-6">
+                  <CollateralTextField
+                    namePrefix={namePrefix}
+                    fieldName="vierasvelkapanttauksenAntajanYTunnus"
+                    label="Vierasvelkapanttauksen antajan y-tunnus"
+                    idSuffix="vierasvelkapanttauksen-antajan-y-tunnus"
+                    isEditMode={isEditMode}
+                  />
+                </div>
+              </>
+            )}
+          </>
+        )}
       </Field>
-    </div>
 
-    <div className="landuse-grid__column-6">
-      <CollateralRadioField
-        namePrefix={namePrefix}
-        fieldName="vierasvelkapanttaus"
-        label="Vierasvelkapanttaus"
-        idSuffix="vierasvelkapanttaus"
-        isEditMode={isEditMode}
-        options={landUseGuaranteeVierasvelkapanttausOptions}
-      />
-    </div>
+      <div className="landuse-grid__column-6">
+        <CollateralDateField
+          namePrefix={namePrefix}
+          fieldName="alkupvm"
+          label="Alkupäivämäärä"
+          idSuffix="alkupvm"
+          isEditMode={isEditMode}
+        />
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <CollateralDateField
-        namePrefix={namePrefix}
-        fieldName="alkupvm"
-        label="Alkupäivämäärä"
-        idSuffix="alkupvm"
-        isEditMode={isEditMode}
-      />
-    </div>
+      <div className="landuse-grid__column-6">
+        <CollateralDateField
+          namePrefix={namePrefix}
+          fieldName="loppupvm"
+          label="Päättymispäivämäärä"
+          idSuffix="loppupvm"
+          isEditMode={isEditMode}
+        />
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <CollateralDateField
-        namePrefix={namePrefix}
-        fieldName="loppupvm"
-        label="Päättymispäivämäärä"
-        idSuffix="loppupvm"
-        isEditMode={isEditMode}
-      />
-    </div>
+      <div className="landuse-grid__column-6">
+        <CollateralEuroField
+          namePrefix={namePrefix}
+          fieldName="maara"
+          label="Määrä (€)"
+          idSuffix="maara"
+          isEditMode={isEditMode}
+        />
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <CollateralEuroField
-        namePrefix={namePrefix}
-        fieldName="maara"
-        label="Määrä (€)"
-        idSuffix="maara"
-        isEditMode={isEditMode}
-      />
-    </div>
+      <div className="landuse-grid__column-6">
+        <CollateralDateField
+          namePrefix={namePrefix}
+          fieldName="palautettuPvm"
+          label="Palautettu päivämäärällä"
+          idSuffix="palautettu-pvm"
+          isEditMode={isEditMode}
+        />
+      </div>
 
-    <div className="landuse-grid__column-6">
-      <CollateralDateField
-        namePrefix={namePrefix}
-        fieldName="palautettuPvm"
-        label="Palautettu päivämäärällä"
-        idSuffix="palautettu-pvm"
-        isEditMode={isEditMode}
-      />
-    </div>
-
-    <div className="landuse-grid__column-6">
-      <CollateralTextArea
-        namePrefix={namePrefix}
-        fieldName="lisatiedot"
-        label="Lisätiedot"
-        idSuffix="lisatiedot"
-        isEditMode={isEditMode}
-      />
-    </div>
-  </>
-);
+      <div className="landuse-grid__column-6">
+        <CollateralTextArea
+          namePrefix={namePrefix}
+          fieldName="lisatiedot"
+          label="Lisätiedot"
+          idSuffix="lisatiedot"
+          isEditMode={isEditMode}
+        />
+      </div>
+    </>
+  );
+};
