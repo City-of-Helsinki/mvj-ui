@@ -7,7 +7,7 @@ import Authorization from "@/components/authorization/Authorization";
 import CreateLeaseModal from "@/leases/components/createLease/CreateLeaseModal";
 import FormFieldLabel from "@/components/form/FormFieldLabel";
 import LeaseSelectInput from "@/components/inputs/LeaseSelectInput";
-import LeaseHistoryItem from "./LeaseHistoryItem";
+import LeaseHistoryNode from "./LeaseHistoryNode";
 import TitleH3 from "@/components/content/TitleH3";
 import { createLease, hideCreateModal, showCreateModal } from "@/leases/slice";
 import {
@@ -21,18 +21,11 @@ import { ButtonColors, ButtonLabels } from "@/components/enums";
 import {
   LeaseFieldPaths,
   LeaseFieldTitles,
-  LeaseHistoryContentTypes,
-  LeaseHistoryItemTypes,
   RelationTypes,
 } from "@/leases/enums";
 import { RelatedLeasePaths } from "@/relatedLease/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
-import {
-  getContentRelatedLeasesFrom,
-  getContentRelatedLeasesTo,
-  isAnyLeaseFormDirty,
-  sortRelatedLeasesFrom,
-} from "@/leases/helpers";
+import { isAnyLeaseFormDirty } from "@/leases/helpers";
 import { getUiDataLeaseKey, getUiDataRelatedLeaseKey } from "@/uiData/helpers";
 import {
   getFieldOptions,
@@ -46,9 +39,11 @@ import {
   getIsCreateModalOpen,
 } from "@/leases/selectors";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
-import { restructureLease, sortRelatedHistoryItems } from "@/leases/helpers";
+import {
+  buildLeaseHistoryNodes,
+  groupHistoryNodesByServiceUnit,
+} from "@/leases/leaseHistory";
 import type { UserServiceUnit } from "@/usersPermissions/types";
-import { Lease } from "@/leases/types";
 
 type Props = {
   serviceUnit: UserServiceUnit;
@@ -70,24 +65,41 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
     return getFieldOptions(leaseAttributes, LeaseFieldPaths.STATE);
   }, [leaseAttributes]);
 
-  const { relatedLeasesFrom, relatedLeasesTo, leaseHistoryItemsAll } =
-    useMemo(() => {
-      const from = sortRelatedLeasesFrom(
-        getContentRelatedLeasesFrom(currentLease),
-      );
-      const to = getContentRelatedLeasesTo(currentLease);
-      const all = [...from, { lease: currentLease }, ...to];
+  const handleRelatedLeaseDelete = (id: number) => {
+    dispatch(
+      deleteReleatedLease({
+        id: id,
+        leaseId: currentLease.id,
+      }),
+    );
+  };
+  const handleDeleteRelatedPlotApplication = (id: number) => {
+    dispatch(
+      deleteRelatedPlotApplication({
+        id: id,
+        leaseId: currentLease.id,
+      }),
+    );
+  };
 
-      return {
-        relatedLeasesFrom: from,
-        relatedLeasesTo: to,
-        leaseHistoryItemsAll: all,
-      };
-    }, [currentLease]);
+  const { historyGroups, leaseHistoryItemsAll } = useMemo(() => {
+    const nodes = buildLeaseHistoryNodes(currentLease, {
+      onDeleteRelatedLease: handleRelatedLeaseDelete,
+      onDeleteRelatedPlotApplication: handleDeleteRelatedPlotApplication,
+    });
+    const groups = groupHistoryNodesByServiceUnit(nodes);
+    // LeaseSelectInput expects `{ lease: { id } }` wrappers to exclude already-linked leases.
+    const all = nodes.map((node) => ({ lease: node.lease }));
+
+    return { historyGroups: groups, leaseHistoryItemsAll: all };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentLease]);
+
+  const showServiceUnitHeadings = historyGroups.length > 1;
 
   useEffect(() => {
     setNewLease(null);
-  }, [relatedLeasesTo]);
+  }, [currentLease]);
 
   const handleHistoryItemCreate = (newHistoryItem: Record<string, any>) => {
     setNewLease(newHistoryItem);
@@ -113,22 +125,6 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
         break;
     }
   };
-  const handleRelatedLeaseDelete = (id: number) => {
-    dispatch(
-      deleteReleatedLease({
-        id: id,
-        leaseId: currentLease.id,
-      }),
-    );
-  };
-  const handleDeleteRelatedPlotApplication = (id: number) => {
-    dispatch(
-      deleteRelatedPlotApplication({
-        id: id,
-        leaseId: currentLease.id,
-      }),
-    );
-  };
   const showCreateLeaseModal = () => {
     dispatch(showCreateModal());
   };
@@ -143,140 +139,6 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
         relation_type: RelationTypes.TRANSFER,
       }),
     );
-  };
-
-  const renderLeaseWithPlotSearchesAndApplications = (lease, active) => {
-    const historyItems = [];
-
-    if (lease.plot_searches?.length) {
-      lease.plot_searches.forEach((plotSearch) => {
-        historyItems.push({
-          key: `plot-search_lease${lease.id}-plotsearch${plotSearch.id}`,
-          id: plotSearch.id,
-          itemTitle: plotSearch.name,
-          startDate: plotSearch.begin_at,
-          endDate: plotSearch.end_at,
-          plotSearchType: plotSearch.type,
-          plotSearchSubtype: plotSearch.subtype,
-          itemType: LeaseHistoryItemTypes.PLOTSEARCH,
-        });
-      });
-    }
-
-    if (lease.target_statuses?.length) {
-      lease.target_statuses.forEach((plotApplication) => {
-        historyItems.push({
-          key: `plot-application_lease${lease.id}-plotapplication${plotApplication.id}`,
-          id: plotApplication.id,
-          itemTitle: plotApplication.application_identifier,
-          receivedAt: plotApplication.received_at,
-          itemType: LeaseHistoryItemTypes.PLOT_APPLICATION,
-        });
-      });
-    }
-
-    if (lease.area_searches?.length) {
-      lease.area_searches.forEach((areaSearch) => {
-        historyItems.push({
-          key: `area-search_lease${lease.id}-areasearch${areaSearch.id}`,
-          id: areaSearch.id,
-          itemTitle: areaSearch.identifier,
-          receivedAt: areaSearch.received_date,
-          applicantName: `${areaSearch.applicant_names.join(" ")}`,
-          itemType: LeaseHistoryItemTypes.AREA_SEARCH,
-        });
-      });
-    }
-
-    if (lease.related_plot_applications?.length) {
-      lease.related_plot_applications.forEach((relatedPlotApplication) => {
-        if (
-          relatedPlotApplication.content_type?.model ===
-          LeaseHistoryContentTypes.PLOTSEARCH
-        ) {
-          const { content_object } = relatedPlotApplication;
-          historyItems.push({
-            key: `related-plot-application-plotsearch_lease${lease.id}-contentobject${content_object.id}`,
-            id: content_object.id,
-            deleteId: relatedPlotApplication.id,
-            itemTitle: content_object.name,
-            startDate: content_object.begin_at,
-            endDate: content_object.end_at,
-            plotSearchType: content_object.type,
-            plotSearchSubtype: content_object.subtype,
-            itemType: LeaseHistoryItemTypes.PLOTSEARCH,
-            onDelete: handleDeleteRelatedPlotApplication,
-          });
-        }
-
-        if (
-          relatedPlotApplication.content_type?.model ===
-          LeaseHistoryContentTypes.TARGET_STATUS
-        ) {
-          const { content_object } = relatedPlotApplication;
-          historyItems.push({
-            key: `related-plot-application-targetstatus-${lease.id}-${content_object.id}`,
-            id: content_object.id,
-            deleteId: relatedPlotApplication.id,
-            itemTitle: content_object.application_identifier,
-            receivedAt: content_object.received_at,
-            itemType: LeaseHistoryItemTypes.PLOT_APPLICATION,
-            onDelete: handleDeleteRelatedPlotApplication,
-          });
-        } else if (
-          relatedPlotApplication.content_type?.model ===
-          LeaseHistoryContentTypes.AREA_SEARCH
-        ) {
-          const { content_object } = relatedPlotApplication;
-          historyItems.push({
-            key: `related-plot-application-areasearch-${lease.id}-${content_object.id}`,
-            id: content_object.id,
-            deleteId: relatedPlotApplication.id,
-            itemTitle: content_object.identifier,
-            applicantName: `${content_object.applicant_names.join(" ")}`,
-            receivedAt: content_object.received_date,
-            itemType: LeaseHistoryItemTypes.AREA_SEARCH,
-            onDelete: handleDeleteRelatedPlotApplication,
-          });
-        }
-      });
-    }
-
-    const leaseProps: {
-      key: string;
-      id: Lease["id"];
-      deleteId: number;
-      lease: Partial<Lease>;
-      startDate: Lease["start_date"];
-      endDate: Lease["end_date"];
-      onDelete: typeof handleRelatedLeaseDelete;
-      active?: boolean;
-    } = {
-      key: `lease-${lease.id}`,
-      id: lease.id,
-      deleteId: lease.related_lease_id,
-      lease: lease,
-      startDate: lease.start_date,
-      endDate: lease.end_date,
-      onDelete: handleRelatedLeaseDelete,
-    };
-
-    // used for highlighting the current lease
-    if (typeof active === "boolean") {
-      leaseProps.active = active;
-    }
-
-    historyItems.push(leaseProps);
-    historyItems.sort(sortRelatedHistoryItems);
-    return historyItems.map((item) => {
-      return (
-        <LeaseHistoryItem
-          {...item}
-          key={item.key}
-          stateOptions={stateOptions}
-        />
-      );
-    });
   };
 
   return (
@@ -357,21 +219,31 @@ const LeaseHistoryEdit: React.FC<Props> = (props) => {
             </Authorization>
 
             <div className="summary__related-leases_items">
-              <div className="summary__related-leases_items_border-left" />
-              {!!relatedLeasesTo &&
-                !!relatedLeasesTo.length &&
-                relatedLeasesTo
-                  .map(restructureLease)
-                  .map(renderLeaseWithPlotSearchesAndApplications)}
-
-              {!!currentLease &&
-                renderLeaseWithPlotSearchesAndApplications(currentLease, true)}
-
-              {!!relatedLeasesFrom &&
-                !!relatedLeasesFrom.length &&
-                relatedLeasesFrom
-                  .map(restructureLease)
-                  .map(renderLeaseWithPlotSearchesAndApplications)}
+              {historyGroups.map((group) => (
+                <div
+                  className="summary__related-leases_group"
+                  key={`service-unit-${group.serviceUnitId}`}
+                >
+                  {showServiceUnitHeadings && (
+                    <h4 className="summary__related-leases_service-unit">
+                      {group.serviceUnitName}
+                    </h4>
+                  )}
+                  <div className="summary__related-leases_group_items">
+                    <div className="summary__related-leases_items_border-left" />
+                    {group.nodes.map((node, index) => (
+                      <LeaseHistoryNode
+                        key={node.key}
+                        node={node}
+                        stateOptions={stateOptions}
+                        onDeleteRelatedLease={handleRelatedLeaseDelete}
+                        isFirstNode={index === 0}
+                        isLastNode={index === group.nodes.length - 1}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         );

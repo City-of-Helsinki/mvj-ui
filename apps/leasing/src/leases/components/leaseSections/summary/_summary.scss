@@ -22,6 +22,15 @@
       margin: rem-calc(15px 0 10px);
     }
 
+    &_service-unit {
+      font-size: rem-calc(14px);
+      line-height: rem-calc(18px);
+      font-weight: variables.$semibold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: rem-calc(15px 0 5px);
+    }
+
     .related-leases-item {
       padding-left: 17.5px;
       padding-right: 7.5px;
@@ -33,10 +42,14 @@
         padding: rem-calc(7.5px 0 7.5px 23px);
       }
 
+      // Per-item vertical connector segment. Positioned at the badge x-axis and
+      // spanning the full item height by default; trimmed for first/last items.
       .left-border-overlay {
-        border-left: 3px solid variables.$green;
         position: absolute;
-        left: -1px;
+        top: 0;
+        bottom: 0;
+        left: rem-calc(1px);
+        border-left: 1px dashed variables.$blue;
       }
 
       &_badge {
@@ -124,12 +137,30 @@
         top: rem-calc(10px);
       }
 
+      &_badge {
+        &--current {
+          background-color: variables.$black;
+        }
+
+        &--active {
+          background-color: variables.$blue;
+
+          .icons {
+            fill: variables.$blue;
+            stroke: variables.$blue;
+          }
+        }
+
+        &--ended {
+          .icons {
+            fill: variables.$medium-dark-gray;
+            stroke: variables.$medium-dark-gray;
+          }
+        }
+      }
+
       &.active {
         background-color: variables.$white;
-
-        .left-border-overlay {
-          border-color: variables.$white !important;
-        }
 
         .related-leases-item {
           &_badge {
@@ -142,37 +173,37 @@
     }
 
     &_items {
-      position: relative;
       margin-top: rem-calc(15px);
+    }
 
-      &_border-left {
-        position: absolute;
+    &_group {
+      & + & {
+        margin-top: rem-calc(10px);
+      }
+
+      &_items {
+        position: relative;
+      }
+    }
+
+    // The connector line spans between node badges within a group. Trim the
+    // segment above the first node's badge and below the last node's badge so
+    // the line does not overhang the top or bottom of the group.
+    .related-leases-item {
+      &--first .left-border-overlay {
+        top: rem-calc(18px);
+        bottom: auto;
+        height: calc(100% - #{rem-calc(18px)});
+      }
+
+      &--last .left-border-overlay {
         top: 0;
-        bottom: 0;
-        left: 9px;
-        border-left: 1px dashed variables.$blue;
+        bottom: auto;
+        height: rem-calc(18px);
       }
 
-      .related-leases-item:nth-of-type(2) {
-        .left-border-overlay {
-          top: 0;
-          bottom: unset;
-          height: 17.5px;
-        }
-      }
-
-      .related-leases-item:last-of-type {
-        .left-border-overlay {
-          bottom: 0;
-          top: 17.5px;
-        }
-      }
-      .related-leases-item:nth-of-type(2):last-of-type {
-        .left-border-overlay {
-          bottom: 0;
-          top: 0;
-          height: 100%;
-        }
+      &--first.related-leases-item--last .left-border-overlay {
+        display: none;
       }
     }
   }
