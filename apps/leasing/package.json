@@ -9,6 +9,7 @@
         "start": "vite --config ./vite.config.js"
     },
     "dependencies": {
+        "@dagrejs/dagre": "3.1.1",
         "@reduxjs/toolkit": "2.12.0",
         "classnames": "2.5.1",
         "copy-to-clipboard": "3.3.3",
