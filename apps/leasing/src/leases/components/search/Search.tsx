@@ -394,251 +394,276 @@ const Search: React.FC<Props> = ({
     <section className="lease-search-fieldset-group lease-search-fieldset-group--target">
       <SearchRow>
         <Row>
-          <Field name="lessor">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <Select
-                  id="lessor"
-                  texts={{
-                    label: "Vuokranantaja",
-                    placeholder: "Valitse vuokranantaja",
-                    language: "fi",
-                  }}
-                  value={filterSelectedOptions(value, lessorOptions)}
-                  options={lessorOptions}
-                  onChange={(selectedOptions) =>
-                    onChange(selectedOptions.map((option) => option.value))
-                  }
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  clearable
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="intended_use">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <Select
-                  id="intended_use"
-                  texts={{
-                    label: "Vuokrauksen käyttötarkoitus",
-                    placeholder: "Valitse käyttötarkoitus",
-                    language: "fi",
-                  }}
-                  disabled={isFetchingIntendedUses}
-                  value={filterSelectedGroupedOptions(
-                    value,
-                    intendedUseGroupedOptions,
-                  )}
-                  groups={intendedUseGroupedOptions}
-                  onChange={(selectedOptions) =>
-                    onChange(selectedOptions.map((option) => option.value))
-                  }
-                  multiSelect
-                  noTags
-                  clearable
-                  filter={(option, filterStr) =>
-                    option.label.toLowerCase().includes(filterStr.toLowerCase())
-                  }
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="address">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <TextInput
-                  id="address"
-                  label="Vuokrakohteen osoite"
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="property_identifier">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <TextInput
-                  id="property_identifier"
-                  label="Kiinteistötunnus"
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
+          <Column small={12} large={3}>
+            <Field name="lessor">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <Select
+                    id="lessor"
+                    texts={{
+                      label: "Vuokranantaja",
+                      placeholder: "Valitse vuokranantaja",
+                      language: "fi",
+                    }}
+                    value={filterSelectedOptions(value, lessorOptions)}
+                    options={lessorOptions}
+                    onChange={(selectedOptions) =>
+                      onChange(selectedOptions.map((option) => option.value))
+                    }
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    clearable
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="intended_use">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <Select
+                    id="intended_use"
+                    texts={{
+                      label: "Vuokrauksen käyttötarkoitus",
+                      placeholder: "Valitse käyttötarkoitus",
+                      language: "fi",
+                    }}
+                    disabled={isFetchingIntendedUses}
+                    value={filterSelectedGroupedOptions(
+                      value,
+                      intendedUseGroupedOptions,
+                    )}
+                    groups={intendedUseGroupedOptions}
+                    onChange={(selectedOptions) =>
+                      onChange(selectedOptions.map((option) => option.value))
+                    }
+                    multiSelect
+                    noTags
+                    clearable
+                    filter={(option, filterStr) =>
+                      option.label
+                        .toLowerCase()
+                        .includes(filterStr.toLowerCase())
+                    }
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="address">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <TextInput
+                    id="address"
+                    label="Vuokrakohteen osoite"
+                    invalid={invalid}
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="property_identifier">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <TextInput
+                    id="property_identifier"
+                    label="Kiinteistötunnus"
+                    invalid={invalid}
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
         </Row>
       </SearchRow>
 
       <SearchRow>
         <Row>
-          <Field name="type">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              const selectedOption = typeOptions.filter(
-                (option) => value == option.value,
-              );
-              return (
-                <Select
-                  id="type"
-                  texts={{
-                    label: "Vuokraustunnuksen laji",
-                    placeholder: "Valitse laji",
-                    language: "fi",
-                  }}
-                  value={selectedOption}
-                  options={typeOptions}
-                  onChange={(selectedOptions) =>
-                    onChange(selectedOptions.map((option) => option.value))
-                  }
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  clearable
-                  filter={(option, filterStr) =>
-                    option.label.toLowerCase().includes(filterStr.toLowerCase())
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="municipality">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <Select
-                  id="municipality"
-                  texts={{
-                    label: "Kunta",
-                    placeholder: "Valitse kunta",
-                    language: "fi",
-                  }}
-                  value={filterSelectedGroupedOptions(
-                    value,
-                    municipalityGroupedOptions,
-                  )}
-                  groups={municipalityGroupedOptions}
-                  onChange={(selectedOptions) =>
-                    onChange(selectedOptions.map((option) => option.value))
-                  }
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  clearable
-                  multiSelect
-                  noTags
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="district">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              const selectedOption = districtOptions.filter(
-                (option) => value == option.value,
-              );
-              return (
-                <Select
-                  id="district"
-                  texts={{
-                    label: "Kaupunginosa",
-                    placeholder: "Valitse kaupunginosa",
-                    language: "fi",
-                  }}
-                  value={selectedOption}
-                  options={districtOptions}
-                  onChange={(selectedOptions) =>
-                    onChange(selectedOptions.map((option) => option.value))
-                  }
-                  disabled={
-                    // Only allow district selection if one municipality is selected.
-                    // Fetching districts from multiple municipalities adds complexity and creates a confusing experience.
-                    !municipality || municipality.length !== 1
-                  }
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  clearable
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <IconMinus
-            aria-hidden="true"
-            focusable="false"
-            style={{
-              alignSelf: "flex-end",
-              marginBottom: "24px",
-              marginLeft: "-0.9rem",
-              marginRight: "-0.9rem",
-              maxWidth: "20px",
-            }}
-          />
-          <Field name="sequence">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <TextInput
-                  id="sequence"
-                  label="MVJ-Tunnus"
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ maxWidth: "120px" }}
-                />
-              );
-            }}
-          </Field>
+          <Column small={12} large={3}>
+            <Field name="type">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                const selectedOption = typeOptions.filter(
+                  (option) => value == option.value,
+                );
+                return (
+                  <Select
+                    id="type"
+                    texts={{
+                      label: "Vuokraustunnuksen laji",
+                      placeholder: "Valitse laji",
+                      language: "fi",
+                    }}
+                    value={selectedOption}
+                    options={typeOptions}
+                    onChange={(selectedOptions) =>
+                      onChange(selectedOptions.map((option) => option.value))
+                    }
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    clearable
+                    filter={(option, filterStr) =>
+                      option.label
+                        .toLowerCase()
+                        .includes(filterStr.toLowerCase())
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="municipality">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <Select
+                    id="municipality"
+                    texts={{
+                      label: "Kunta",
+                      placeholder: "Valitse kunta",
+                      language: "fi",
+                    }}
+                    value={filterSelectedGroupedOptions(
+                      value,
+                      municipalityGroupedOptions,
+                    )}
+                    groups={municipalityGroupedOptions}
+                    onChange={(selectedOptions) =>
+                      onChange(selectedOptions.map((option) => option.value))
+                    }
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    clearable
+                    multiSelect
+                    noTags
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="district">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                const selectedOption = districtOptions.filter(
+                  (option) => value == option.value,
+                );
+                return (
+                  <Select
+                    id="district"
+                    texts={{
+                      label: "Kaupunginosa",
+                      placeholder: "Valitse kaupunginosa",
+                      language: "fi",
+                    }}
+                    value={selectedOption}
+                    options={districtOptions}
+                    onChange={(selectedOptions) =>
+                      onChange(selectedOptions.map((option) => option.value))
+                    }
+                    disabled={
+                      // Only allow district selection if one municipality is selected.
+                      // Fetching districts from multiple municipalities adds complexity and creates a confusing experience.
+                      !municipality || municipality.length !== 1
+                    }
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    clearable
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <div style={{ position: "relative" }}>
+              <IconMinus
+                aria-hidden="true"
+                focusable="false"
+                style={{
+                  position: "absolute",
+                  top: "calc(50% + 12px)",
+                  left: "-18px",
+                  maxWidth: "20px",
+                  strokeWidth: 3,
+                  transform: "translateY(-50%)",
+                }}
+              />
+              <Field name="sequence">
+                {({
+                  input: { value, onBlur, onChange, onFocus },
+                  meta: { error, invalid },
+                }) => {
+                  return (
+                    <TextInput
+                      id="sequence"
+                      label="MVJ-Tunnus"
+                      invalid={invalid}
+                      value={value || ""}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      onFocus={onFocus}
+                      className={
+                        hasInputValue(value)
+                          ? "hds-input-with-value"
+                          : undefined
+                      }
+                      style={{ maxWidth: "120px" }}
+                    />
+                  );
+                }}
+              </Field>
+            </div>
+          </Column>
         </Row>
       </SearchRow>
     </section>
@@ -648,102 +673,110 @@ const Search: React.FC<Props> = ({
     <section className="lease-search-fieldset-group lease-search-fieldset-group--dates">
       <SearchRow>
         <Row>
-          <Field name="lease_start_date_start">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <DateInput
-                  id="lease_start_date_start"
-                  initialMonth={new Date()}
-                  label="Vuokrauksen alkupvm alkaen"
-                  language="fi"
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onFocus={onFocus}
-                  onChange={(nextValue) => onChange(nextValue)}
-                  style={{ width: "100%" }}
-                  disableConfirmation
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                />
-              );
-            }}
-          </Field>
-          <Field name="lease_start_date_end">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <DateInput
-                  id="lease_start_date_end"
-                  initialMonth={new Date()}
-                  label="Vuokrauksen alkupvm loppuen"
-                  language="fi"
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onFocus={onFocus}
-                  onChange={(nextValue) => onChange(nextValue)}
-                  style={{ width: "100%" }}
-                  disableConfirmation
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                />
-              );
-            }}
-          </Field>
-          <Field name="lease_end_date_start">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <DateInput
-                  id="lease_end_date_start"
-                  initialMonth={new Date()}
-                  label="Vuokrauksen loppupvm alkaen"
-                  language="fi"
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onFocus={onFocus}
-                  onChange={(nextValue) => onChange(nextValue)}
-                  style={{ width: "100%" }}
-                  disableConfirmation
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                />
-              );
-            }}
-          </Field>
-          <Field name="lease_end_date_end">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <DateInput
-                  id="lease_end_date_end"
-                  initialMonth={new Date()}
-                  label="Vuokrauksen loppupvm loppuen"
-                  language="fi"
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onFocus={onFocus}
-                  onChange={(nextValue) => onChange(nextValue)}
-                  style={{ width: "100%" }}
-                  disableConfirmation
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                />
-              );
-            }}
-          </Field>
+          <Column small={12} large={3}>
+            <Field name="lease_start_date_start">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <DateInput
+                    id="lease_start_date_start"
+                    initialMonth={new Date()}
+                    label="Vuokrauksen alkupvm alkaen"
+                    language="fi"
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onFocus={onFocus}
+                    onChange={(nextValue) => onChange(nextValue)}
+                    style={{ width: "100%" }}
+                    disableConfirmation
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="lease_start_date_end">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <DateInput
+                    id="lease_start_date_end"
+                    initialMonth={new Date()}
+                    label="Vuokrauksen alkupvm loppuen"
+                    language="fi"
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onFocus={onFocus}
+                    onChange={(nextValue) => onChange(nextValue)}
+                    style={{ width: "100%" }}
+                    disableConfirmation
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="lease_end_date_start">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <DateInput
+                    id="lease_end_date_start"
+                    initialMonth={new Date()}
+                    label="Vuokrauksen loppupvm alkaen"
+                    language="fi"
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onFocus={onFocus}
+                    onChange={(nextValue) => onChange(nextValue)}
+                    style={{ width: "100%" }}
+                    disableConfirmation
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="lease_end_date_end">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <DateInput
+                    id="lease_end_date_end"
+                    initialMonth={new Date()}
+                    label="Vuokrauksen loppupvm loppuen"
+                    language="fi"
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onFocus={onFocus}
+                    onChange={(nextValue) => onChange(nextValue)}
+                    style={{ width: "100%" }}
+                    disableConfirmation
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                  />
+                );
+              }}
+            </Field>
+          </Column>
         </Row>
       </SearchRow>
 
@@ -800,177 +833,193 @@ const Search: React.FC<Props> = ({
     <section className="lease-search-fieldset-group lease-search-fieldset-group--decision">
       <SearchRow>
         <Row>
-          <Field name="decision_maker">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              const selectedOption = decisionMakerOptions.filter(
-                (option) => value == option.value,
-              );
-              return (
-                <Select
-                  id="decision_maker"
-                  texts={{
-                    label: "Päätöksentekijä",
-                    placeholder: "Valitse päätöksentekijä",
-                    language: "fi",
-                  }}
-                  value={selectedOption}
-                  options={decisionMakerOptions}
-                  onChange={(selectedOptions) =>
-                    onChange(selectedOptions.map((option) => option.value))
-                  }
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  clearable
-                  filter={(option, filterStr) =>
-                    option.label.toLowerCase().includes(filterStr.toLowerCase())
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="decision_date">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <DateInput
-                  id="decision_date"
-                  initialMonth={new Date()}
-                  label="Päätöspvm"
-                  language="fi"
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onFocus={onFocus}
-                  onChange={(nextValue) => onChange(nextValue)}
-                  style={{ width: "100%" }}
-                  disableConfirmation
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                />
-              );
-            }}
-          </Field>
-          <Field name="decision_section">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <TextInput
-                  id="decision_section"
-                  label="Pykälä (§)"
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="reference_number">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <TextInput
-                  id="reference_number"
-                  label="Diaarinro"
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
+          <Column small={12} large={3}>
+            <Field name="decision_maker">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                const selectedOption = decisionMakerOptions.filter(
+                  (option) => value == option.value,
+                );
+                return (
+                  <Select
+                    id="decision_maker"
+                    texts={{
+                      label: "Päätöksentekijä",
+                      placeholder: "Valitse päätöksentekijä",
+                      language: "fi",
+                    }}
+                    value={selectedOption}
+                    options={decisionMakerOptions}
+                    onChange={(selectedOptions) =>
+                      onChange(selectedOptions.map((option) => option.value))
+                    }
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    clearable
+                    filter={(option, filterStr) =>
+                      option.label
+                        .toLowerCase()
+                        .includes(filterStr.toLowerCase())
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="decision_date">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <DateInput
+                    id="decision_date"
+                    initialMonth={new Date()}
+                    label="Päätöspvm"
+                    language="fi"
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onFocus={onFocus}
+                    onChange={(nextValue) => onChange(nextValue)}
+                    style={{ width: "100%" }}
+                    disableConfirmation
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="decision_section">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <TextInput
+                    id="decision_section"
+                    label="Pykälä (§)"
+                    invalid={invalid}
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="reference_number">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <TextInput
+                    id="reference_number"
+                    label="Diaarinro"
+                    invalid={invalid}
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
         </Row>
       </SearchRow>
       <SearchRow>
         <Row>
-          <Field name="contract_number">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <TextInput
-                  id="contract_number"
-                  label="Sopimusnro"
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="institution_identifier">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <TextInput
-                  id="institution_identifier"
-                  label="Laitostunnus"
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="invoice_number">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <TextInput
-                  id="invoice_number"
-                  label="Laskunro"
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
+          <Column small={12} large={3}>
+            <Field name="contract_number">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <TextInput
+                    id="contract_number"
+                    label="Sopimusnro"
+                    invalid={invalid}
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="institution_identifier">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <TextInput
+                    id="institution_identifier"
+                    label="Laitostunnus"
+                    invalid={invalid}
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="invoice_number">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <TextInput
+                    id="invoice_number"
+                    label="Laskunro"
+                    invalid={invalid}
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
         </Row>
       </SearchRow>
     </section>
@@ -980,99 +1029,107 @@ const Search: React.FC<Props> = ({
     <section className="lease-search-fieldset-group lease-search-fieldset-group--tenant">
       <SearchRow>
         <Row>
-          <Field name="tenant_name">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <TextInput
-                  id="tenant_name"
-                  label="Asiakkaan nimi"
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="tenantcontact_type">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <Select
-                  id="tenantcontact_type"
-                  texts={{
-                    label: "Asiakkaan rooli",
-                    placeholder: "Valitse rooli",
-                    language: "fi",
-                  }}
-                  value={filterSelectedOptions(value, tenantTypeOptions)}
-                  options={tenantTypeOptions}
-                  onChange={(selectedOptions) =>
-                    onChange(selectedOptions.map((option) => option.value))
-                  }
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  clearable
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="business_id">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <TextInput
-                  id="business_id"
-                  label="Y-tunnus"
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
-          <Field name="national_identification_number">
-            {({
-              input: { value, onBlur, onChange, onFocus },
-              meta: { error, invalid },
-            }) => {
-              return (
-                <TextInput
-                  id="national_identification_number"
-                  label="Henkilötunnus"
-                  invalid={invalid}
-                  value={value || ""}
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  onFocus={onFocus}
-                  className={
-                    hasInputValue(value) ? "hds-input-with-value" : undefined
-                  }
-                  style={{ width: "100%" }}
-                />
-              );
-            }}
-          </Field>
+          <Column small={12} large={3}>
+            <Field name="tenant_name">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <TextInput
+                    id="tenant_name"
+                    label="Asiakkaan nimi"
+                    invalid={invalid}
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="tenantcontact_type">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <Select
+                    id="tenantcontact_type"
+                    texts={{
+                      label: "Asiakkaan rooli",
+                      placeholder: "Valitse rooli",
+                      language: "fi",
+                    }}
+                    value={filterSelectedOptions(value, tenantTypeOptions)}
+                    options={tenantTypeOptions}
+                    onChange={(selectedOptions) =>
+                      onChange(selectedOptions.map((option) => option.value))
+                    }
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    clearable
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="business_id">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <TextInput
+                    id="business_id"
+                    label="Y-tunnus"
+                    invalid={invalid}
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
+          <Column small={12} large={3}>
+            <Field name="national_identification_number">
+              {({
+                input: { value, onBlur, onChange, onFocus },
+                meta: { error, invalid },
+              }) => {
+                return (
+                  <TextInput
+                    id="national_identification_number"
+                    label="Henkilötunnus"
+                    invalid={invalid}
+                    value={value || ""}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    className={
+                      hasInputValue(value) ? "hds-input-with-value" : undefined
+                    }
+                    style={{ width: "100%" }}
+                  />
+                );
+              }}
+            </Field>
+          </Column>
         </Row>
       </SearchRow>
       <SearchRow>
