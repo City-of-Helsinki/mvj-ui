@@ -3,22 +3,30 @@ import { useAppSelector } from "@/root/hooks";
 import classNames from "classnames";
 import { ActionTypes, ModalConsumer } from "@/app/ModalContext";
 import AccordionIcon from "@/components/icons/AccordionIcon";
+import CircleIcon from "@/components/icons/CircleIcon";
+import DiamondIcon from "@/components/icons/DiamondIcon";
 import Authorization from "@/components/authorization/Authorization";
 import ExternalLink from "@/components/links/ExternalLink";
 import FormText from "@/components/form/FormText";
 import RemoveButton from "@/components/form/RemoveButton";
 import { ConfirmationModalTexts } from "@/enums";
-import { LeaseHistoryItemTypes } from "@/leases/enums";
+import {
+  LeaseHistoryStates,
+  LeaseHistoryItemTypes,
+} from "@/leaseHistory/enums";
 import { ButtonColors } from "@/components/enums";
 import { UsersPermissions } from "@/usersPermissions/enums";
 import { getContentLeaseIdentifier, getTitleText } from "@/leases/helpers";
 import { formatDate, getLabelOfOption, hasPermissions } from "@/util/helpers";
 import { getRouteById, Routes } from "@/root/routes";
 import { getUsersPermissions } from "@/usersPermissions/selectors";
+import type { HistoryState } from "@/leaseHistory/types";
 import type { Lease } from "@/leases/types";
+
 type Props = {
   active?: boolean;
   indented?: boolean;
+  state?: HistoryState;
   lease?: Lease;
   id?: number;
   deleteId?: number;
@@ -35,6 +43,38 @@ type Props = {
   stateOptions: Array<Record<string, any>>;
 };
 
+const LeaseHistoryItemIcon = ({
+  active = false,
+  state,
+  indented = false,
+}: {
+  active: boolean;
+  state: HistoryState | undefined;
+  indented: boolean;
+}) => {
+  return (
+    <div
+      className={classNames("related-leases-item_badge", {
+        [`${state}`]: Boolean(state),
+        current: active,
+        indented,
+      })}
+    >
+      {(() => {
+        switch (state) {
+          case LeaseHistoryStates.ACTIVE:
+            return <CircleIcon />;
+          case LeaseHistoryStates.TERMINAL:
+            return <DiamondIcon />;
+          case LeaseHistoryStates.CONTINUED:
+          default:
+            return <AccordionIcon />;
+        }
+      })()}
+    </div>
+  );
+};
+
 const LeaseHistoryItem = ({
   active = false,
   indented = false,
@@ -49,6 +89,7 @@ const LeaseHistoryItem = ({
   plotSearchSubtype,
   applicantName,
   itemType = "",
+  state,
   onDelete,
   stateOptions,
 }: Props) => {
@@ -72,11 +113,7 @@ const LeaseHistoryItem = ({
         const handleDelete = () => {
           modalDispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-            confirmationFunction: () => {
-              if (onDelete) {
-                onDelete(deleteId);
-              }
-            },
+            confirmationFunction: () => onDelete?.(deleteId),
             confirmationModalButtonClassName: ButtonColors.ALERT,
             confirmationModalButtonText:
               ConfirmationModalTexts.DELETE_RELATED_LEASE.BUTTON,
@@ -89,23 +126,19 @@ const LeaseHistoryItem = ({
 
         return (
           <div
-            className={classNames(
-              "related-leases-item",
-              {
-                active: active,
-              },
-              {
-                indented: indented,
-              },
-            )}
+            className={classNames("related-leases-item", {
+              active: active,
+              indented: indented,
+            })}
           >
             <div className="related-leases-item_wrapper">
-              <div className="left-border-overlay" />
-              <div className="connection-line" />
-              <div className={classNames("related-leases-item_badge")}>
-                {!active && <AccordionIcon />}
-              </div>
-              <div className={classNames("related-leases-item_info")}>
+              {indented && <div className="connection-line" />}
+              <LeaseHistoryItemIcon
+                active={active}
+                state={state}
+                indented={indented}
+              />
+              <div className="related-leases-item_info">
                 <p className="identifier">
                   {active ? (
                     title
@@ -118,9 +151,10 @@ const LeaseHistoryItem = ({
                 {receivedAt && (
                   <FormText>Saapunut {formatDate(receivedAt)}</FormText>
                 )}
-                {startDate && endDate && (
+                {(startDate || endDate) && (
                   <FormText>
-                    {formatDate(startDate)} - {formatDate(endDate)}
+                    {startDate ? formatDate(startDate) : ""} {"- "}
+                    {endDate ? formatDate(endDate) : ""}
                   </FormText>
                 )}
                 {plotSearchType && <FormText>{plotSearchType}</FormText>}

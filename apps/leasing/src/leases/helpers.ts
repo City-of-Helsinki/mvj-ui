@@ -101,10 +101,7 @@ export const isLeaseEmpty = (lease: Lease): boolean => {
         }
       } else {
         if (key === "related_leases") {
-          if (
-            (lease[key].related_to && lease[key].related_to.length) ||
-            (lease[key].related_from && lease[key].related_from.length)
-          ) {
+          if (lease[key]?.edges?.length) {
             empty = false;
             return false;
           }
@@ -463,86 +460,6 @@ export const getContentLeaseSummary = (lease: Lease): Record<string, any> => {
     transferable: lease.transferable,
   };
 };
-
-/**
- * Get related lease content by path
- * @param {Object} content
- * @param {string} path
- * @returns {Object}
- */
-export const getContentRelatedLease = (
-  content: RelatedLeaseWrapper,
-  path: string = "from_lease",
-): Lease => get(content, path, {} as Lease);
-
-/**
- * Get content related leases from list sorted by start and end date
- * @param {Object} lease
- * @returns {Object[]}
- */
-
-/**
- * Get content related leases from list
- * @param {Object} lease
- * @returns {Object[]}
- */
-export const getContentRelatedLeasesFrom = (
-  lease: Lease,
-): Array<RelatedLeaseWrapper> =>
-  get(lease, "related_leases.related_from", []).map((leaseHistoryItem) => {
-    return {
-      head: lease.id,
-      id: leaseHistoryItem.id,
-      lease: getContentRelatedLease(leaseHistoryItem, "from_lease"),
-      to_lease: leaseHistoryItem.to_lease,
-    };
-  });
-
-/**
- * Sort related leases by to_lease
- * @param {Object[]} leases
- * @returns {Object[]}
- */
-export const sortRelatedLeasesFrom = (
-  leases: Array<RelatedLeaseWrapper>,
-): Array<RelatedLeaseWrapper> => {
-  let current;
-  const leaseHistoryItemsFromSorted = [];
-  leases.forEach((lease) => {
-    if (lease.to_lease === lease.head) {
-      leaseHistoryItemsFromSorted.push(lease);
-      current = lease.lease.id;
-    }
-  });
-  leases.forEach(() => {
-    leases.forEach((lease) => {
-      if (lease.to_lease === current) {
-        leaseHistoryItemsFromSorted.push(lease);
-        current = lease.lease.id;
-        return;
-      }
-    });
-  });
-  return leaseHistoryItemsFromSorted;
-};
-
-/**
- * Get content related leases to list sorted by start and end date
- * @param {Object} lease
- * @returns {Object[]}
- */
-export const getContentRelatedLeasesTo = (lease: Lease) =>
-  get(lease, "related_leases.related_to", [])
-    .map((leaseHistoryItem) => {
-      return {
-        id: leaseHistoryItem.id,
-        lease: getContentRelatedLease(leaseHistoryItem, "to_lease"),
-      };
-    })
-    .sort((a, b) =>
-      sortByStartAndEndDateDesc(a, b, "lease.start_date", "lease.end_date"),
-    );
-
 /**
  * Get lease area addresses content
  * @param {Object} area
@@ -3946,17 +3863,6 @@ export const getLeasesWithContractNumber = (
   leasesForContractNumbers: LeaseList,
 ): boolean => {
   return get(leasesForContractNumbers, "count") > 0;
-};
-
-/**
- * Destructures a nested lease object in a related lease.
- */
-export const restructureLease = (lease: RelatedLeaseWrapper) => {
-  const destructuredLease = lease.lease;
-  return {
-    related_lease_id: lease.id,
-    ...destructuredLease,
-  };
 };
 
 /**

@@ -89,7 +89,7 @@ export type Lease = {
   reference_number: string | null;
   regulated: boolean | null;
   regulation: Record<string, any> | null;
-  related_leases: Array<RelatedLeases>;
+  related_leases: RelatedLeases;
   related_plot_applications: Array<Record<string, any>>;
   rents: Array<Record<string, any>>;
   reservation_procedure: Record<string, any> | null;
@@ -110,9 +110,14 @@ export type CreateLease = Partial<Lease> & {
 };
 export type LeaseList = ApiResponse;
 export type LeaseId = number;
+export type RelatedLeaseEdge = {
+  predecessor: number;
+  successor: number;
+  related_lease_id: number;
+};
 export type RelatedLeases = {
-  related_from: Array<Record<string, any>>;
-  related_to: Array<Record<string, any> & { to_lease: Lease }>;
+  leases: Record<string, Lease>;
+  edges: Array<RelatedLeaseEdge>;
 };
 export type RelatedPlotApplicationFormValues = {
   object_id: number;

@@ -10,7 +10,6 @@ import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import ListItem from "@/components/content/ListItem";
 import ListItems from "@/components/content/ListItems";
-import LeaseHistory from "./LeaseHistory";
 import ShowMore from "@/components/showMore/ShowMore";
 import SummaryLeaseInfo from "./SummaryLeaseInfo";
 import Title from "@/components/content/Title";
@@ -47,6 +46,7 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
+import LeaseHistory from "./LeaseHistory";
 type Props = {
   attributes: Attributes;
   collapseStateBasic: boolean;
