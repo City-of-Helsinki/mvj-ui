@@ -12,7 +12,6 @@ import FormText from "@/components/form/FormText";
 import FormTextTitle from "@/components/form/FormTextTitle";
 import ListItem from "@/components/content/ListItem";
 import ListItems from "@/components/content/ListItems";
-import LeaseHistoryEdit from "./LeaseHistoryEdit";
 import SummaryLeaseInfo from "./SummaryLeaseInfo";
 import Title from "@/components/content/Title";
 import WarningContainer from "@/components/content/WarningContainer";
@@ -48,6 +47,7 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 import { internalOrder, referenceNumber } from "@/components/form/validations";
 import type { Attributes } from "types";
 import type { FormApi } from "final-form";
+import LeaseHistoryEdit from "./LeaseHistoryEdit";
 
 type Props = {
   formApi: FormApi;
