@@ -6,5 +6,6 @@
       "@leasing/*": ["./apps/leasing/src/*"],
       "@landuse/*": ["./apps/landuse/src/*"],
     }
-  }
+  },
+  "exclude": ["node_modules", "apps/*/node_modules", "**/dist", "**/.cache"]
 }
