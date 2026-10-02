@@ -50,6 +50,20 @@
 
           @include mixins.transform(rotate(-90deg));
         }
+
+        &.active,
+        &.indented {
+          .icons {
+            fill: variables.$blue;
+            stroke: variables.$blue;
+          }
+        }
+        &.current {
+          .icons {
+            fill: variables.$black;
+            stroke: variables.$black;
+          }
+        }
       }
 
       &.indented {
@@ -107,22 +121,6 @@
         position: absolute;
         right: 0;
         top: rem-calc(10px);
-      }
-
-      &_badge {
-        &.active,
-        &.indented {
-          .icons {
-            fill: variables.$blue;
-            stroke: variables.$blue;
-          }
-        }
-        &.current {
-          .icons {
-            fill: variables.$black;
-            stroke: variables.$black;
-          }
-        }
       }
 
       &.active {

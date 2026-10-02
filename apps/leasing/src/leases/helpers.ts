@@ -3866,18 +3866,6 @@ export const getLeasesWithContractNumber = (
 };
 
 /**
- * Destructures a nested lease object in a related lease.
- */
-//TODO: unused?
-export const restructureLease = (lease: RelatedLeaseWrapper) => {
-  const destructuredLease = lease.lease;
-  return {
-    related_lease_id: lease.id,
-    ...destructuredLease,
-  };
-};
-
-/**
  * Sorts related leases and other items
  * by comparing start dates or received dates.
  * @param {Object} lease
