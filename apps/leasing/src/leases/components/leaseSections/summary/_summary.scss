@@ -33,12 +33,6 @@
         padding: rem-calc(7.5px 0 7.5px 23px);
       }
 
-      .left-border-overlay {
-        border-left: 3px solid variables.$green;
-        position: absolute;
-        left: -1px;
-      }
-
       &_badge {
         height: rem-calc(15px);
         width: rem-calc(15px);
@@ -46,44 +40,49 @@
         left: rem-calc(-8px);
         border-radius: 50%;
         top: rem-calc(3px);
+        z-index: 1;
 
         .icons {
           height: rem-calc(15px);
           width: rem-calc(15px);
-          left: rem-calc(10px);
+          fill: variables.$medium-dark-gray;
+          stroke: variables.$medium-dark-gray;
 
           @include mixins.transform(rotate(-90deg));
+        }
+
+        &.active,
+        &.indented {
+          .icons {
+            fill: variables.$blue;
+            stroke: variables.$blue;
+          }
+        }
+        &.current {
+          .icons {
+            fill: variables.$black;
+            stroke: variables.$black;
+          }
         }
       }
 
       &.indented {
-        padding-left: 42.5px;
+        padding-left: rem-calc(20px);
 
-        .left-border-overlay {
-          left: -27.5px;
+        .related-leases-item_badge {
+          left: rem-calc(12px);
+
+          .icons {
+            @include mixins.transform(rotate(0deg));
+          }
         }
 
         .connection-line {
           position: absolute;
           border-top: 1px dashed variables.$blue;
-          width: 20px;
-          top: 17.5px;
-          left: -26px;
-        }
-
-        .related-leases-item {
-          &_wrapper {
-            padding-left: 0;
-          }
-
-          &_badge {
-            top: rem-calc(4px);
-            left: rem-calc(-10px);
-
-            .icons {
-              @include mixins.transform(rotate(0deg));
-            }
-          }
+          width: rem-calc(20px);
+          top: rem-calc(16px);
+          left: rem-calc(-1px);
         }
       }
 
@@ -126,53 +125,47 @@
 
       &.active {
         background-color: variables.$white;
-
-        .left-border-overlay {
-          border-color: variables.$white !important;
-        }
-
-        .related-leases-item {
-          &_badge {
-            top: rem-calc(10px);
-            left: rem-calc(-8px);
-            background-color: variables.$black;
-          }
-        }
       }
     }
 
     &_items {
-      position: relative;
       margin-top: rem-calc(15px);
+    }
 
-      &_border-left {
+    &_group {
+      & + & {
+        margin-top: rem-calc(10px);
+      }
+    }
+
+    $badge-center: rem-calc(10px);
+
+    &_chain {
+      position: relative;
+
+      &_line {
         position: absolute;
-        top: 0;
+        left: rem-calc(9.5px);
+        top: $badge-center;
         bottom: 0;
-        left: 9px;
         border-left: 1px dashed variables.$blue;
       }
 
-      .related-leases-item:nth-of-type(2) {
-        .left-border-overlay {
-          top: 0;
-          bottom: unset;
-          height: 17.5px;
-        }
+      .related-leases-item:last-child .related-leases-item_wrapper::after {
+        content: "";
+        position: absolute;
+        left: rem-calc(-2px);
+        top: $badge-center;
+        bottom: rem-calc(-7.5px);
+        width: rem-calc(3px);
+        background-color: variables.$light-gray;
+        z-index: 0;
       }
 
-      .related-leases-item:last-of-type {
-        .left-border-overlay {
-          bottom: 0;
-          top: 17.5px;
-        }
-      }
-      .related-leases-item:nth-of-type(2):last-of-type {
-        .left-border-overlay {
-          bottom: 0;
-          top: 0;
-          height: 100%;
-        }
+      .related-leases-item.active:last-child
+        .related-leases-item_wrapper::after {
+        background-color: variables.$white;
+        bottom: 0;
       }
     }
   }
