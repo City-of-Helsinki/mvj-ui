@@ -56,7 +56,6 @@ import type {
   IntendedUse,
   PeriodicRentAdjustmentType,
   CreateLeaseFormValues,
-  RelatedLeaseWrapper,
   BasisOfRent,
 } from "./types";
 import type { CommentList } from "@/comments/types";

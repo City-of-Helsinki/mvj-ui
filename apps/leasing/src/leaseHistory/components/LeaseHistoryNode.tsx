@@ -1,5 +1,5 @@
 import React from "react";
-import LeaseHistoryItem from "./LeaseHistoryItem";
+import LeaseHistoryItem from "@/leaseHistory/components/LeaseHistoryItem";
 import type { HistoryLeaseNode } from "@/leaseHistory/types";
 
 type Props = {

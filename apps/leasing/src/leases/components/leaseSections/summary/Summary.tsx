@@ -11,8 +11,9 @@ import FormTextTitle from "@/components/form/FormTextTitle";
 import ListItem from "@/components/content/ListItem";
 import ListItems from "@/components/content/ListItems";
 import ShowMore from "@/components/showMore/ShowMore";
-import SummaryLeaseInfo from "./SummaryLeaseInfo";
+import SummaryLeaseInfo from "@/leases/components/leaseSections/summary/SummaryLeaseInfo";
 import Title from "@/components/content/Title";
+import LeaseHistory from "@/leaseHistory/components/LeaseHistory";
 import WarningContainer from "@/components/content/WarningContainer";
 import { receiveCollapseStates } from "@/leases/slice";
 import { FormNames, ViewModes } from "@/enums";
@@ -46,7 +47,6 @@ import { getUsersPermissions } from "@/usersPermissions/selectors";
 import type { Attributes } from "types";
 import type { Lease } from "@/leases/types";
 import type { UsersPermissions as UsersPermissionsType } from "@/usersPermissions/types";
-import LeaseHistory from "./LeaseHistory";
 type Props = {
   attributes: Attributes;
   collapseStateBasic: boolean;

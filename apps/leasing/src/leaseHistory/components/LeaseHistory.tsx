@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useAppSelector } from "@/root/hooks";
 import TitleH3 from "@/components/content/TitleH3";
-import LeaseHistoryNode from "./LeaseHistoryNode";
+import LeaseHistoryNode from "@/leaseHistory/components/LeaseHistoryNode";
 import { LeaseFieldPaths, LeaseFieldTitles } from "@/leases/enums";
 import { getFieldOptions } from "@/util/helpers";
 import { getUiDataLeaseKey } from "@/uiData/helpers";

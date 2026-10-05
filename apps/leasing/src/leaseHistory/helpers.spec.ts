@@ -167,7 +167,7 @@ describe("leaseHistory", () => {
     const parent = makeLease({ id: 10, start_date: "2020-01-01" });
     const a = withOtherServiceUnit(1, "2021-01-01", "2021-12-31");
     const b = withOtherServiceUnit(2, "2021-01-01", "2021-12-31");
-    const c = withOtherServiceUnit(3, "2021-01-01", "2029-12-31");
+    const c = withOtherServiceUnit(3, "2021-01-01", "9999-12-31");
     const d = withOtherServiceUnit(4, "2022-01-01", "2022-06-30");
 
     const current = withGraph(parent, {
